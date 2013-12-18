@@ -16,6 +16,6 @@ galaxy_info:
       - raring
       - saucy
   categories:
-   - web:redis
+   - web
 dependencies: []
   
