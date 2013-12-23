@@ -9,26 +9,19 @@
 
 - name: Install the Redis packages 
   yum: name={{ item }} state=present
-  with_items: redhat_pkg
+  with_items: redis_redhat_pkg
   when: ansible_os_family == "RedHat"
 
 - name: Install the Redis packages 
   apt: name={{ item }} state=present update_cache=yes
-  with_items: ubuntu_pkg
+  with_items: redis_ubuntu_pkg
   environment: env
   when: ansible_os_family == "Debian"
 
 - name: Copy the redis configuration file 
-  template: src=redis.conf.j2 dest=/etc/redis.conf
+  template: src=redis.conf.j2 dest={{ redis_conf_dest }}
   notify: 
    - restart redis 
-  when: ansible_os_family == "RedHat"
-
-- name: Copy the redis configuration file 
-  template: src=redis.conf.j2 dest=/etc/redis/redis.conf
-  notify: 
-   - restart redis 
-  when: ansible_os_family == "Debian"
 
 - name: Set the max open file descriptors 
   sysctl: name=vm.overcommit_memory value=1 state=present

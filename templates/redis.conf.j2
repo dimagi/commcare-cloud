@@ -27,7 +27,7 @@ port {{ redis_port }}
 # If you want you can bind a single interface, if the bind option is not
 # specified all the interfaces will listen for incoming connections.
 #
-bind 0.0.0.0
+bind {{ redis_bind_address }}
 
 # Specify the path for the unix socket that will be used to listen for
 # incoming connections. There is no default, so Redis will not listen
@@ -54,7 +54,7 @@ logfile /var/log/redis/redis.log
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
-syslog-enabled {{ syslog_enabled }}
+syslog-enabled {{ redis_syslog_enabled }}
 
 # Specify the syslog identity.
 syslog-ident redis
@@ -65,7 +65,7 @@ syslog-facility local0
 # Set the number of databases. The default database is DB 0, you can select
 # a different one on a per-connection basis using SELECT <dbid> where
 # dbid is a number between 0 and 'databases'-1
-databases {{ databases }}
+databases {{ redis_databases }}
 
 ################################ SNAPSHOTTING  #################################
 #
@@ -82,7 +82,7 @@ databases {{ databases }}
 #   after 60 sec if at least 10000 keys changed
 #
 #   Note: you can disable saving at all commenting all the "save" lines.
-{% for i in database_save_times %}
+{% for i in redis_database_save_times %}
 save  {{ i[0] }} {{ i[1] }}
 {% endfor %} 
 
@@ -93,7 +93,7 @@ save  {{ i[0] }} {{ i[1] }}
 rdbcompression yes
 
 # The filename where to dump the DB
-dbfilename {{ dbfilename }}
+dbfilename {{ redis_dbfilename }}
 
 # The working directory.
 #
@@ -103,7 +103,7 @@ dbfilename {{ dbfilename }}
 # Also the Append Only File will be created inside this directory.
 # 
 # Note that you must specify a directory here, not a file name.
-dir {{ db_dir }}
+dir {{ redis_db_dir }}
 
 ################################# REPLICATION #################################
 
@@ -113,9 +113,9 @@ dir {{ db_dir }}
 # different interval, or to listen to another port, and so on.
 #
 {% if role == 'slave' %}
-slaveof {{ master_ip }} {{ master_port }}
+slaveof {{ redis_master_ip }} {{ redis_master_port }}
 
-masterauth {{ master_auth }}
+masterauth {{ redis_master_auth }}
 
 slave-serve-stale-data yes
 
@@ -148,7 +148,7 @@ slave-serve-stale-data yes
 # 150k passwords per second against a good box. This means that you should
 # use a very strong password otherwise it will be very easy to break.
 #
-{% if requirepass %} 
+{% if redis_requirepass %} 
 requirepass {{ redis_pass }}
 {% endif %}
 
@@ -176,7 +176,7 @@ requirepass {{ redis_pass }}
 # Once the limit is reached Redis will close all the new connections sending
 # an error 'max number of clients reached'.
 #
-maxclients {{ max_clients }}
+maxclients {{ redis_max_clients }}
 
 # Don't use more memory than the specified amount of bytes.
 # When the memory limit is reached Redis will try to remove keys
@@ -201,7 +201,7 @@ maxclients {{ max_clients }}
 # limit for maxmemory so that there is some free RAM on the system for slave
 # output buffers (but this is not needed if the policy is 'noeviction').
 #
-maxmemory {{ max_memory }}
+maxmemory {{ redis_max_memory }}
 
 # MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
 # is reached? You can select among five behavior:
@@ -224,7 +224,7 @@ maxmemory {{ max_memory }}
 #
 # The default is:
 #
-maxmemory-policy {{ maxmemory_policy }}
+maxmemory-policy {{ redis_maxmemory_policy }}
 
 # LRU and minimal TTL algorithms are not precise algorithms but approximated
 # algorithms (in order to save memory), so you can select as well the sample
@@ -278,7 +278,7 @@ appendonly no
 # If unsure, use "everysec".
 
 # appendfsync always
-appendfsync {{ appendfsync }}
+appendfsync {{ redis_appendfsync }}
 # appendfsync no
 
 # When the AOF fsync policy is set to always or everysec, and a background

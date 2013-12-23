@@ -17,7 +17,8 @@ Role Variables
 The variables that can be passed to this role and a brief description about
 them are as follows. See the documentation for Redis for details:
 
-	redis_port: 6379            # Port for redis server
+	redis_bind_address          # The network address for redis to bind to 
+        redis_port: 6379            # Port for redis server
 	syslog_enabled: "yes"       # enable_syslog
 	databases: 16               # Set number of databases
 	database_save_times:        # Save the DB on disk (seconds changes)
@@ -47,14 +48,14 @@ The following example sets up a master Redis server.
 	- hosts: all
 	  sudo: true
 	  roles:
-	  - {role: redis, redis_port: 11244}
+	  - {role: bennojoy.redis, redis_port: 11244}
 
 The following example sets up a slave Redis server.
 
 	- hosts: all
 	  sudo: true
 	  roles:
-	  - {role: redis,
+	  - {role: bennojoy.redis,
 	     redis_role: 'slave',
 	     master_ip: '192.168.2.10',
 	     master_auth: 'foobar'}

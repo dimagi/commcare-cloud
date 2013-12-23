@@ -3,11 +3,11 @@
 env:
  RUNLEVEL: 1
 
-redhat_pkg:
+redis_redhat_pkg:
   - libselinux-python
   - redis
 
-ubuntu_pkg:
+redis_ubuntu_pkg:
   - python-selinux
   - redis-server
 
