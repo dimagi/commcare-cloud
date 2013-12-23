@@ -17,28 +17,28 @@ Role Variables
 The variables that can be passed to this role and a brief description about
 them are as follows. See the documentation for Redis for details:
 
-	redis_bind_address          # The network address for redis to bind to 
-        redis_port: 6379            # Port for redis server
-	syslog_enabled: "yes"       # enable_syslog
-	databases: 16               # Set number of databases
-	database_save_times:        # Save the DB on disk (seconds changes)
+	redis_bind_address                # The network address for redis to bind to 
+        redis_port: 6379                  # Port for redis server
+	redis_syslog_enabled: "yes"       # enable_syslog
+	redis_databases: 16               # Set number of databases
+	redis_database_save_times:        # Save the DB on disk (seconds changes)
 	  - [900, 1]
 	  - [300, 10]
 	  - [60, 10000]
-	dbfilename: dump.rdb        # Filename for the db
-	db_dir: /var/lib/redis      # DB directory
-	redis_role: master          # The role for this redis deployment (master/slave)
-	requirepass: false          # If password is required for querying
-	redis_pass: None            # Password if require_pass is enabled
-	max_clients: 128
-	max_memory: 512mb
-	maxmemory_policy: volatile-lru
-	appendfsync: everysec       # How often to sync the filesystem
+	redis_dbfilename: dump.rdb        # Filename for the db
+	redis_db_dir: /var/lib/redis      # DB directory
+	redis_role: master                # The role for this redis deployment (master/slave)
+	redis_requirepass: false          # If password is required for querying
+	redis_pass: None                  # Password if require_pass is enabled
+	redis_max_clients: 128
+	redis_max_memory: 512mb
+	redis_maxmemory_policy: volatile-lru
+	redis_appendfsync: everysec       # How often to sync the filesystem
 
 	# If redis_role is "slave", set these values too
-	master_ip: 1.1.1.1          # The master's IP
-	master_port: 6379           # master port
-	master_auth: None           # master auth
+	redis_master_ip: 1.1.1.1          # The master's IP
+	redis_master_port: 6379           # master port
+	redis_master_auth: None           # master auth
 
 Examples
 --------
