@@ -23,7 +23,7 @@
   notify: 
    - restart redis 
 
-- name: Set the max open file descriptors 
+- name: Set the kernel paramter for vm overcommit 
   sysctl: name=vm.overcommit_memory value=1 state=present
 
 - name: start the redis service
