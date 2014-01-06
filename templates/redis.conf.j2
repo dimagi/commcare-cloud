@@ -112,7 +112,7 @@ dir {{ redis_db_dir }}
 # so for example it is possible to configure the slave to save the DB with a
 # different interval, or to listen to another port, and so on.
 #
-{% if role == 'slave' %}
+{% if redis_role == 'slave' %}
 slaveof {{ redis_master_ip }} {{ redis_master_port }}
 
 masterauth {{ redis_master_auth }}
