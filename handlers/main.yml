@@ -3,4 +3,4 @@
   service: name={{ redis_service }}  state=restarted
 
 - name: restart rsyslogd
-  service: name=rsyslogd  state=restarted
+  service: name=rsyslog  state=restarted
