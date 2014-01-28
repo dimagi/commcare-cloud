@@ -3,6 +3,9 @@
 redis_bind_address: "0.0.0.0"
 redis_port: 6379
 redis_syslog_enabled: "yes"
+# Must be USER or between LOCAL0-LOCAL7.
+redis_syslog_facility: "local0"
+redis_logfile: /var/log/redis.log
 redis_databases: 16
 redis_database_save_times:
   - [900, 1]

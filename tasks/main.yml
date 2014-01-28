@@ -23,6 +23,12 @@
   notify: 
    - restart redis 
 
+- name: Copy the rsyslogd configuration file for redis filter
+  template: src=rsyslogd.conf.j2 dest=/etc/rsyslog.d/redis.conf
+  when: redis_syslog_enabled == "yes"
+  notify:
+  - restart rsyslogd
+
 - name: Set the kernel paramter for vm overcommit 
   sysctl: name=vm.overcommit_memory value=1 state=present
 
