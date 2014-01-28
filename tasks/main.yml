@@ -30,7 +30,7 @@
   - restart rsyslog
 
 - name: Set the kernel paramter for vm overcommit 
-  sysctl: name=vm.overcommit_memory value=1 state=present
+  sysctl: name=vm.overcommit_memory value={{ redis_overcommit_memory }} state=present
 
 - name: start the redis service
   service: name={{ redis_service }} state=started enabled=yes
