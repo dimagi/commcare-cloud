@@ -1,0 +1,23 @@
+- name: Webworkers
+  hosts: us-webworkers-staging
+  vars:
+    deploy_env: staging
+
+  roles:
+    - webworker
+#
+# - name: Postgresql
+#   hosts: us-postgresql-staging
+#   vars:
+#     deploy_env: staging
+#
+#   roles:
+#     - postgresql
+
+# - name: Proxy
+#   hosts: us-proxy-staging
+#   vars:
+#     deploy_env: staging
+#
+#   roles:
+#     - proxy

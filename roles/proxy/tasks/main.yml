@@ -1,0 +1,7 @@
+- name: Update virtualhost
+  lineinfile:
+    dest: /etc/apache2/sites-enabled/prod.conf
+    line: "        BalancerMember http://{{item}}:9010 loadfactor=2"
+    insertbefore: "ProxySet lbmethod=byrequests"
+    state: "present"
+  with_items: groups['us-webworkers-{{deploy_env}}']

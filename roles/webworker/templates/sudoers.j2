@@ -1,0 +1,30 @@
+User_Alias HIPAA_USERS = {{dev_users|join(',')}}
+Runas_Alias HIPAA_ACTOR = {{cchq_user}}
+
+Cmnd_Alias APACHE = /etc/init.d/apache2
+Cmnd_Alias PACKAGES = /usr/bin/apt-get
+Cmnd_Alias GIT = /usr/bin/git
+Cmnd_Alias PYTHON = /home/{{ cchq_user }}/www/{{deploy_env}}/python_env/bin/python,/home/{{ cchq_user }}/www/{{deploy_env}}/python_env/bin/pip
+Cmnd_Alias SUPERVISORD = /bin/bash -l -c sudo /usr/local/bin/supervisorctl*,/usr/local/bin/supervisorctl*,/usr/local/bin/echo_supervisord_conf > /tmp/supervisord_deploy.tmp
+Cmnd_Alias CHOWN_CONF = /bin/chown -R {{ cchq_user }} /tmp/supervisor*
+Cmnd_Alias CHMOD_CONF = /bin/chmod -R g+w /tmp/supervisor*
+Cmnd_Alias MV_CONF = /bin/mv -f /tmp/supervisor*,/bin/rm -f /tmp/supervisor_*
+Cmnd_Alias UPSTART = /sbin/stop, /sbin/start, /sbin/initctl
+
+Cmnd_Alias HQCOMMANDS = PACKAGES, GIT, PYTHON, SUPERVISORD, CHOWN_CONF, CHMOD_CONF, MV_CONF, UPSTART
+
+HIPAA_USERS ALL = (root) ALL
+{{ cchq_user }}    ALL = (ALL) NOPASSWD: HQCOMMANDS
+
+HIPAA_ACTOR ALL = (ALL) ALL
+HIPAA_USERS ALL = (HIPAA_ACTOR) NOPASSWD: ALL
+HIPAA_USERS ALL = (root) NOPASSWD: HQCOMMANDS
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Members of the admin group may gain root privileges
+%admin ALL=(ALL) NOPASSWD:ALL
+
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
