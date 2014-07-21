@@ -2,4 +2,4 @@
 config/
 group_vars/
 hosts
-roledefs.json
+roledefs.yml

@@ -1,70 +1,48 @@
 # Install base packages
-# - name: Install packages
-#   apt: name={{item}} state=present update_cache=yes
-#   with_items:
-#     - build-essential
-#     - python-pip
-#     - python-dev
-#     - python-setuptools
-#     - python-psycopg2
-#     - libxml2-dev
-#     - libxslt1-dev
-#     - git
-#     - libpq-dev
-#
-# - name: Install pip packages
-#   pip: name={{item}}
-#   with_items:
-#     - fabric
-#     - virtualenv
-#
-# - name: Add cchq user
-#   user: name={{cchq_user}} state=present shell=/bin/bash
-#
-# - name: Add dev users
-#   user: name={{item}} state=present shell=/bin/bash
-#   with_items: dev_users 
-#
-# - name: Add public keys
-#   authorized_key: "user={{item}} key=\"{{lookup('file', inventory_dir + '/config/keys/' + item + '.pub')}}\""    
-#   with_items: dev_users
-#
-# - name: Copy sudoers file
-#   template: src=sudoers.j2 dest=/etc/sudoers validate='visudo -cf %s' owner=root group=root mode=0440
+- name: Install packages
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - build-essential
+    - python-pip
+    - python-dev
+    - python-setuptools
+    - python-psycopg2
+    - libxml2-dev
+    - libxslt1-dev
+    - git
+    - libpq-dev
 
-# Generate keypair for localhost passwordless localhost SSH
-# - name: Generate SSH keypair
-#   shell: "{{item}}"
-#   with_items:
-#     - rm ~/.ssh/id_rsa*
-#     - ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa 
-#   sudo: no
-#
-# - name: Add to authorized_keys
-#   shell: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-#   sudo: no
-#
-# - name: Upload fabfile
-#   template: src=fabfile.py.j2 dest=~/fabfile.py
-#   sudo: no
+- name: Install pip packages
+  pip: name={{item}}
+  with_items:
+    - fabric
+    - virtualenv
 
-# - name: Bootstrap via fabric
-#   shell: fab -H localhost staging bootstrap
-#   args:
-#     chdir: ~/ 
-#   sudo: no
+- name: Add cchq user
+  user: name={{cchq_user}} state=present shell=/bin/bash
 
-# - name: Copy localsettings
-#   template:
-#     src: localsettings.py.j2
-#     dest: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/localsettings.py"
+- name: Add dev users
+  user: name={{item}} state=present shell=/bin/bash
+  with_items: dev_users 
+
+- name: Add public keys
+  authorized_key: "user={{item}} key=\"{{lookup('file', inventory_dir + '/config/keys/' + item + '.pub')}}\""    
+  with_items: dev_users
+
+- name: Copy sudoers file
+  template: src=sudoers.j2 dest=/etc/sudoers validate='visudo -cf %s' owner=root group=root mode=0440
 
 - name: Copy roledefs file
-  template: "src=roledefs.json.j2 dest={{inventory_dir}}/roledefs.json"
+  template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
   delegate_to: 127.0.0.1
   sudo: no
 
-# - name: Fab bootstrap
-#   command: "fab -H {{inventory_hostname}} ansible:deploy_env={{deploy_env}},roledefs_path=roledefs.json bootstrap -u vagrant"
-#   delegate_to: 127.0.0.1
-#   sudo: no
+- name: Fab bootstrap
+  command: "fab -H {{inventory_hostname}} ansible:deploy_env={{deploy_env}},roledefs_path=roledefs.json bootstrap -u vagrant"
+  delegate_to: 127.0.0.1
+  sudo: no
+
+- name: Copy localsettings
+  template:
+    src: localsettings.py.j2
+    dest: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/localsettings.py"

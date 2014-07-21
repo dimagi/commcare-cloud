@@ -3,7 +3,7 @@
     dest: /etc/postgresql/9.1/main/pg_hba.conf
     line: "host  {{item}} all     all       trust" 
     state: present
-  with_items: groups['us-webworkers-staging']
+  with_items: groups['us-webworkers-{{deploy_env}}']
 
 - name: Reload Postgresql
   service: name=postgresql state=reloaded

@@ -1,0 +1,13 @@
+couch: {{groups['us-postgresql-' + deploy_env]}}
+pg: {{groups['us-postgresql-' + deploy_env]}}
+rabbitmq: {{groups['us-postgresql-' + deploy_env]}}
+django_celery: {{groups['us-postgresql-' + deploy_env]}}
+sms_queue: {{groups['us-postgresql-' + deploy_env]}}
+pillow_retry_queue: {{groups['us-postgresql-' + deploy_env]}}
+django_app: {{groups['us-webworkers-' + deploy_env]}}
+django_pillowtop: {{groups['us-postgresql-' + deploy_env]}}
+formsplayer: []
+lb: []
+staticfiles: {{groups['us-proxy-' + deploy_env]}}
+deploy: ["192.168.33.15"]
+django_monolith: []
