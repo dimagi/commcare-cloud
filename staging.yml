@@ -1,3 +1,11 @@
+- name: Common
+  hosts: all
+  vars:
+    deploy_env: staging
+
+  roles:
+    - newrelic
+
 - name: Webworkers
   hosts: us-webworkers-staging
   vars:
