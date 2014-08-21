@@ -2,7 +2,7 @@
 # roles/webworker/tasks/main.yml
 
 - name: copy webworker source
-  git: repo={{repository}} dest="/home/{{cchq_user}}/www/{{deploy_env}}/code_root/" version={{cchq_version}}
+  git: repo={{repository}} dest="/home/{{cchq_user}}/www/{{deploy_env}}/code_root/" version={{cchq_version}} accept_hostkey=yes
   notify:
     - copy roledefs file
     - copy localsettings
