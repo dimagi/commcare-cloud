@@ -8,7 +8,7 @@
     #- repository=fill me in with your git repo address!
     - deploy_env=production
     #- cchq_version= put a tag/branch name here, appropriate to your release naming
-    #- app_name= the supervisorctl restart handler depends on this, can be replace once a supervisord roles is written so the config can be templated properly
+    #- app_name= the supervisorctl restart handler depends on this, can be replace once a supervisord role is written so the config can be templated properly
 
   pre_tasks:
 
@@ -37,3 +37,8 @@
 
     - webworker
 
+#I'm putting this here to make a note that the apache config should be templated, so we can return to a nice known state. Lininfile has a reputation for getting funkyover long periods of time
+- name: Proxy
+  hosts: us-proxy-production
+  roles:
+    - proxy
