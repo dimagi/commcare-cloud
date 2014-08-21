@@ -1,6 +1,14 @@
 ---
 # roles/webworker/handlers/main.yml
 
+- name: install pip requirements
+  pip:
+
+#FINISH ME! Oh GOD, DON'T LEAVE ME LIKE THIS
+
+    requirements: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/requirements.txt"
+    virtualenv: "/home/{{cchq_user}}/.virtualenv/{{deploy_env}}"
+
 - name: copy roledefs file
   template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
   delegate_to: 127.0.0.1
