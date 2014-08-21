@@ -1,0 +1,19 @@
+---
+# deploy_production_webworker.yml
+- name: Webworkers
+  hosts: us-webworkers-production
+  serial: 1
+  vars:
+    #- repository=fill me in with your git repo address!
+    - deploy_env=production
+    #- cchq_version= put a tag/branch name here, appropriate to your release naming
+    #- app_name= the supervisorctl restart handler depends on this, can be replace once a supervisord roles is written so the config can be templated properly
+  pre_tasks:
+    # need to flesh out this task
+    - name: remove worker from load balancer
+  post_tasks:
+    # need to flesh out this task
+    - name: add worker back to load balancer
+  roles:
+    - webworker
+
