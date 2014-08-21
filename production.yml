@@ -1,6 +1,9 @@
 - name: Webworkers
   hosts: us-webworkers-production
-
+  vars:
+    #- repository=fill me in with your git repo address!
+    - deploy_env=production
+    #- cchq_version= put a tag/branch name here, appropriate to your release naming
   roles:
     - webworker
 

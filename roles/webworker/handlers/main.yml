@@ -1,0 +1,15 @@
+---
+# roles/webworker/handlers/main.yml
+
+- name: copy roledefs file
+  template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
+  delegate_to: 127.0.0.1
+  sudo: no
+
+- name: copy localsettings
+  template:
+    src: localsettings.py.j2
+    dest: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/localsettings.py"
+
+- name: restart webworker app
+  supervisorctl: name={{app_name}} state=restarted

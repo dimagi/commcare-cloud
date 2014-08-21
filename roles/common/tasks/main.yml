@@ -1,0 +1,41 @@
+---
+# roles/common/tasks/main.yml
+
+# Install base packages, common to all servers
+- name: Install packages
+  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - build-essential
+    - python-pip
+    - python-dev
+    - python-setuptools
+    - python-psycopg2
+    - libxml2-dev
+    - libxslt1-dev
+    - git
+    - libpq-dev
+    - curl
+    - vim
+    - htop
+    - tmpreaper
+
+- name: Install pip packages
+  pip: name={{item}}
+  with_items:
+    - fabric
+    - virtualenv
+
+- name: Add cchq user
+  user: name={{cchq_user}} state=present shell=/bin/bash
+
+- name: Add dev users
+  user: name={{item.name}} state={{item.state}} passwd={{item.passwd}} shell=/bin/bash
+  with_items: dev_users 
+
+- name: Add public keys
+  authorized_key: user={{item.name}} state={{item.state}} key="{{lookup('file', 'ssh_keys/{{item.name}}.pub')}}"    
+  with_items: dev_users
+
+- name: Copy sudoers file
+  template: src=sudoers.j2 dest=/etc/sudoers validate='visudo -cf %s' owner=root group=root mode=0440
+

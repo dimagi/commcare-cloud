@@ -1,48 +1,9 @@
-# Install base packages
-- name: Install packages
-  apt: name={{item}} state=present update_cache=yes
-  with_items:
-    - build-essential
-    - python-pip
-    - python-dev
-    - python-setuptools
-    - python-psycopg2
-    - libxml2-dev
-    - libxslt1-dev
-    - git
-    - libpq-dev
+---
+# roles/webworker/tasks/main.yml
 
-- name: Install pip packages
-  pip: name={{item}}
-  with_items:
-    - fabric
-    - virtualenv
-
-- name: Add cchq user
-  user: name={{cchq_user}} state=present shell=/bin/bash
-
-- name: Add dev users
-  user: name={{item}} state=present shell=/bin/bash
-  with_items: dev_users 
-
-- name: Add public keys
-  authorized_key: "user={{item}} key=\"{{lookup('file', inventory_dir + '/config/keys/' + item + '.pub')}}\""    
-  with_items: dev_users
-
-- name: Copy sudoers file
-  template: src=sudoers.j2 dest=/etc/sudoers validate='visudo -cf %s' owner=root group=root mode=0440
-
-- name: Copy roledefs file
-  template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
-  delegate_to: 127.0.0.1
-  sudo: no
-
-- name: Fab bootstrap
-  command: "fab -H {{inventory_hostname}} ansible:deploy_env={{deploy_env}},roledefs_path=roledefs.json bootstrap -u vagrant"
-  delegate_to: 127.0.0.1
-  sudo: no
-
-- name: Copy localsettings
-  template:
-    src: localsettings.py.j2
-    dest: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/localsettings.py"
+- name: copy webworker source
+  git: repo={{repository}} dest="/home/{{cchq_user}}/www/{{deploy_env}}/code_root/" version={{cchq_version}}
+  notify:
+    - copy roledefs file
+    - copy localsettings
+    - restart webworker app

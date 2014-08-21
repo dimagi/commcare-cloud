@@ -1,9 +1,4 @@
 # Web worker settings
-cchq_user: cchq
-dev_users:
-  - test1
-  - test2
-  - test3
 
 localsettings:
   ALLOWED_HOSTS:
