@@ -8,6 +8,12 @@ galaxy_info:
    - name: EL
      versions:
       - 6
+   - name: Fedora
+     versions:
+      - 19
+      - 20
+      - 21
+      - rawhide
    - name: Ubuntu
      versions:
       - precise
