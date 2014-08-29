@@ -3,3 +3,6 @@
 
 cchq_repository: https://github.com/dimagi/commcare-hq.git
 cchq_version: HEAD
+cchq_requirements:
+  - requirements.txt
+  - prod-requirements.txt
