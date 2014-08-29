@@ -4,6 +4,7 @@
 # Install base packages, common to all servers
 - name: Install packages
   apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+  sudo: yes
   with_items:
     - build-essential
     - python-pip
@@ -21,21 +22,30 @@
 
 - name: Install pip packages
   pip: name={{item}}
+  sudo: yes
   with_items:
     - fabric
     - virtualenv
 
 - name: Add cchq user
+  sudo: yes
   user: name={{cchq_user}} state=present shell=/bin/bash
 
+- name: Add dev group
+  sudo: yes
+  group: name=dev state=present
+
 - name: Add dev users
-  user: name={{item.name}} state={{item.state}} passwd={{item.passwd}} shell=/bin/bash
-  with_items: dev_users 
+  sudo: yes
+  user: name={{item.name}} state={{item.state}} password={{item.passwd}} shell=/bin/bash
+  with_items: dev_users
 
 - name: Add public keys
+  sudo: yes
   authorized_key: user={{item.name}} state={{item.state}} key="{{lookup('file', 'ssh_keys/{{item.name}}.pub')}}"    
   with_items: dev_users
 
 - name: Copy sudoers file
-  template: src=sudoers.j2 dest=/etc/sudoers validate='visudo -cf %s' owner=root group=root mode=0440
+  sudo: yes
+  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq_sudoers validate='visudo -cf %s' owner=root group=root mode=0440
 
