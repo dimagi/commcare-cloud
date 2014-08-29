@@ -1,0 +1,5 @@
+---
+# roles/webworker/vars/main.yml
+
+cchq_repository: https://github.com/dimagi/commcare-hq.git
+cchq_version: HEAD
