@@ -2,11 +2,11 @@
 # roles/webworker/tasks/main.yml
 
 - name: setup django
-  git: repo={{cchq_repository}} dest="/home/{{cchq_user}}/www/{{deploy_env}}/code_root/" version={{cchq_version}} accept_hostkey=yes
+  git: repo={{cchq_repository}} dest="/home/{{cchq_user}}/www/{{deploy_env}}/code_root/" version={{cchq_version}} accept_hostkey=yes depth=1
   sudo: yes
   sudo_user: "{{cchq_user}}"
-  # notify:
-  #   - install pip requirements
+  notify:
+    - install pip requirements
   #   - copy roledefs file
-  #   - copy localsettings
+    - copy localsettings
   #   - restart webworker app
