@@ -5,6 +5,7 @@
   serial: 1
   vars:
     deploy_env: staging
+    app_name: commcarehq
   # vars:
   #   - deploy_env=production
     #- repository=fill me in with your git repo address!
