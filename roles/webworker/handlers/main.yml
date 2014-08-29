@@ -2,19 +2,23 @@
 # roles/webworker/handlers/main.yml
 
 - name: install pip requirements
+  sudo: yes
+  sudo_user: "{{cchq_user}}"
+  with_items: cchq_requirements
   pip:
-
-#FINISH ME! Oh GOD, DON'T LEAVE ME LIKE THIS
-
-    requirements: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/requirements.txt"
+    requirements: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/requirements/{{item}}"
     virtualenv: "/home/{{cchq_user}}/.virtualenv/{{deploy_env}}"
 
-- name: copy roledefs file
-  template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
-  delegate_to: 127.0.0.1
-  sudo: no
+
+#This needs to be filled out and fixed once we figure out what the point is.
+# - name: copy roledefs file
+#   template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
+#   delegate_to: 127.0.0.1
+#   sudo: no
 
 - name: copy localsettings
+  sudo: yes
+  sudo_user: "{{cchq_user}}"
   template:
     src: localsettings.py.j2
     dest: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/localsettings.py"
