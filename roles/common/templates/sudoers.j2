@@ -1,4 +1,8 @@
-User_Alias HIPAA_USERS = {{dev_users|join(',')}}
+User_Alias HIPAA_USERS = {% for user in dev_users -%}
+{{ user.name }}
+{%- if not loop.last %}, {% endif %}
+{%- endfor %}
+
 Runas_Alias HIPAA_ACTOR = {{cchq_user}}
 
 Cmnd_Alias APACHE = /etc/init.d/apache2
