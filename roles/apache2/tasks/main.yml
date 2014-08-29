@@ -1,0 +1,4 @@
+---
+# tasks for apache role
+- name: stub
+  debug: msg="I am the apache role"
