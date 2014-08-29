@@ -1,0 +1,5 @@
+---
+# supervisor role, to be replaced??
+
+- name: stub
+  debug: msg="This is the supervisor role"
