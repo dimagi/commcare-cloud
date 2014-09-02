@@ -1,5 +1,31 @@
 ---
-# supervisor role, to be replaced??
 
-- name: stub
-  debug: msg="This is the supervisor role"
+- name: install supervisor
+  apt: name=supervisor state=present update_cache=true
+  sudo: yes
+
+- name: configure supervisor
+  template: src=supervisord.conf.j2 dest={{supervisor_conf_home}}/supervisord.conf
+  sudo: yes
+  register: supervisor_configured
+
+- name: make supervisor task home
+  sudo: yes
+  file: path={{supervisor_task_conf}} state=directory owner={{cchq_user}}
+
+- name: add supervised tasks
+  with_items: supervisor_tasks
+  template: src=tasks.conf.j2 dest={{supervisor_task_conf}}/{{item.name}}.conf owner={{cchq_user}} mode=0644
+  register: supervisor_task_list
+  sudo: yes
+
+- name: stop supervisor
+  service: name=supervisor state=stopped
+  when: supervisor_configured.changed or supervisor_task_list.changed
+  sudo: yes
+  sudo_user: "{{cchq_user}}"
+
+- name: start supervisord
+  service: name=supervisor state=started
+  sudo: yes
+  sudo_user: "{{cchq_user}}"

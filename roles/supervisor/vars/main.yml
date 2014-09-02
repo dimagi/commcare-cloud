@@ -1,0 +1,6 @@
+supervisor_conf_home: /etc/supervisor
+supervisor_task_conf: "{{service_home}}/supervisor"
+supervisorctl_command: supervisorctl
+supervisor_env_vars: {}
+supervisor_tasks:
+  - {name: django, command: "{{virtualenv_home}}/bin/python manage.py runserver", directory: "{{www_home}}"}

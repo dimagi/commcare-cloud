@@ -1,0 +1,10 @@
+[program:{{ item.name }}]
+command={{ item.command }}
+directory={{ item.directory }}
+redirect_stderr={{ item.redirect_stderr|default(true) }}
+autostart={{item.autostart|default(true)}}
+autorestart={{item.autorestart|default(true)}}
+user={{ cchq_user }}
+{% if supervisor_env_vars|length > 0 %}
+environment={% for name, value in env_vars.iteritems() %}{{ name }}="{{ value }}"{% if not loop.last %},{% endif %}{% endfor %}
+{% endif %}
