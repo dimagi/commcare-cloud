@@ -1,0 +1,18 @@
+---
+# roles/postgresql/handlers/main.yml
+
+- name: Restart PostgreSQL service
+  sudo: yes
+  service: name=postgresql state=restarted
+
+- name: Stop PostgreSQL service
+  sudo: yes
+  service: name=postgresql state=stopped
+
+- name: Start PostgreSQL service
+  sudo: yes
+  service: name=postgresql state=started
+
+- name: Reload PostgreSQL service
+  sudo: yes
+  service: name=postgresql state=reloaded

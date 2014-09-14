@@ -1,9 +1,56 @@
-- name: Update pg_hba file
-  lineinfile:
-    dest: /etc/postgresql/9.1/main/pg_hba.conf
-    line: "host  {{item}} all     all       trust" 
-    state: present
-  with_items: groups['us-webworkers-{{deploy_env}}']
+---
+# roles/postgresql/tasks/main.yml
 
-- name: Reload Postgresql
-  service: name=postgresql state=reloaded
+- name: Install PostgreSQL & dependencies
+  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+  sudo: yes
+  tags:
+    - installation
+  with_items:
+    - postgresql
+    - libpq-dev
+    - python-psycopg2
+  when:
+    pg_install == True
+
+- name: Create PostgreSQL databases
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db: name={{item}} state=present
+  tags:
+    - installation
+  with_items:
+    - "{{postgres_db}}"
+    - "{{postgres_reporting_db}}"
+  when:
+    pg_install == True
+
+- name: Create PostgreSQL users
+  sudo: yes
+  sudo_user: postgres
+  tags:
+    - installation
+  postgresql_user: name={{postgres_user}} password={{postgres_pw}} role_attr_flags=CREATEDB state=present
+  when:
+    pg_install == True
+
+- name: PostgreSQL app configuration
+  sudo: yes
+  sudo_user: postgres
+  tags:
+    - configuration
+  template: src=pg_hba.conf.j2 dest={{postgresql_config_home}}/pg_hba.conf
+  notify:
+    - Restart PostgreSQL service
+  when:
+    pg_install == True
+
+- name: PostgreSQL access configuration
+  sudo: yes
+  sudo_user: postgres
+  tags:
+    - configuration
+  template: src=postgresql.conf.j2 dest={{postgresql_config_home}}/postgresql.conf
+  notify:
+    - Restart PostgreSQL service
+
