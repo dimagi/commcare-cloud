@@ -4,4 +4,3 @@
 dependencies:
   - { role: common }
   - { role: supervisor }
-  - { role: apache2 }

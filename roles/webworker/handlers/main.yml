@@ -6,22 +6,15 @@
   sudo_user: "{{cchq_user}}"
   with_items: cchq_requirements
   pip:
-    requirements: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/requirements/{{item}}"
-    virtualenv: "/home/{{cchq_user}}/.virtualenv/{{deploy_env}}"
-
-
-#This needs to be filled out and fixed once we figure out what the point is.
-# - name: copy roledefs file
-#   template: "src=roledefs.yml.j2 dest={{inventory_dir}}/roledefs.yml"
-#   delegate_to: 127.0.0.1
-#   sudo: no
+    requirements: "{{code_home}}/requirements/{{item}}"
+    virtualenv: "{{virtualenv_home}}"
 
 - name: copy localsettings
   sudo: yes
   sudo_user: "{{cchq_user}}"
   template:
     src: localsettings.py.j2
-    dest: "/home/{{cchq_user}}/www/{{deploy_env}}/code_root/localsettings.py"
+    dest: "{{code_home}}/localsettings.py"
 
 - name: restart webworker app
   supervisorctl: name={{app_name}} state=restarted
