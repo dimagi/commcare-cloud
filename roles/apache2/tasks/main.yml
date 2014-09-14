@@ -1,4 +1,50 @@
 ---
-# tasks for apache role
-- name: stub
-  debug: msg="I am the apache role"
+# roles/apache2/tasks/main.yml
+
+- name: Install apache2
+  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+  sudo: yes
+  with_items:
+    - apache2
+  when: apache_install == True
+
+- name: Create apache2 logfile home
+  sudo: yes
+  file: path={{log_home}} owner={{cchq_user}} group={{http_user}} mode=0770 state=directory
+  when: apache_install == True
+
+- name: Enable required apache2 modules
+  sudo: yes
+  command: a2enmod {{item}}
+  with_items:
+    - headers
+    - info
+    - log_forensic
+    - proxy
+    - proxy_balancer
+    - proxy_connect
+    - proxy_http
+    - rewrite
+    - ssl
+    - status
+  notify:
+    - Reload Apache2 service
+  when: apache_install == True
+
+- name: Add sites
+  sudo: yes
+  template: src={{item}}.j2 dest=/etc/apache2/sites-available/{{item}}
+  with_items:
+    - cchq
+  notify:
+    - Reload Apache2 service
+
+- name: Enable sites
+  sudo: yes
+  command: a2ensite {{item}}
+  with_items:
+    - cchq
+  notify:
+    - Reload Apache2 service
+
+

@@ -1,0 +1,5 @@
+---
+# roles/apache2/meta/main.yml
+
+dependencies:
+  - { role: common }
