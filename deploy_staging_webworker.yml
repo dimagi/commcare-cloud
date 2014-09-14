@@ -1,10 +1,9 @@
 ---
 # deploy_staging_webworker.yml
 - name: Webworkers
-  hosts: us-webworkers-staging
+  hosts: webworkers
   serial: 1
   vars:
-    deploy_env: staging
     app_name: commcarehq
   # vars:
   #   - deploy_env=production
@@ -38,6 +37,8 @@
   roles:
 
     - webworker
+    # - { role: apache2, tags: ['config'] }
+    # - { role: postgresql, tags: ['config'] }
 
 #I'm putting this here to make a note that the apache config should be
 #templated, so we can return to a nice known state. Lininfile has a reputation
