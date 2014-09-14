@@ -1,0 +1,2 @@
+django_port: 9010
+http_user: www-data
