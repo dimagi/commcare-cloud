@@ -1,0 +1,8 @@
+---
+# deploy_staging_proxy.yml
+- name: Proxy
+  hosts: proxy
+  serial: 1
+
+  roles:
+    - apache2

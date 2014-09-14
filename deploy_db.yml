@@ -1,0 +1,9 @@
+---
+# deploy-staging-db.yml
+- name: Databases
+  hosts: postgresql
+  serial: 1
+
+  roles:
+    - postgresql
+    - couchdb
