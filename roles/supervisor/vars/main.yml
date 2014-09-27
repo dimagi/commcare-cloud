@@ -3,4 +3,4 @@ supervisor_task_conf: "{{service_home}}/supervisor"
 supervisorctl_command: supervisorctl
 supervisor_env_vars: {}
 supervisor_tasks:
-  - {name: "{{app_name}}", command: "{{virtualenv_home}}/bin/python manage.py run_gunicorn", directory: "{{www_home}}"}
+  - {name: "{{app_name}}", command: "{{virtualenv_home}}/bin/python manage.py run_gunicorn 0.0.0.0:{{ django_port }}", directory: "{{code_home}}"}
