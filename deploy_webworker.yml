@@ -3,34 +3,32 @@
 - name: Webworkers
   hosts: webworkers
   serial: 1
+  sudo: yes
   vars:
     app_name: commcarehq
 
   pre_tasks:
 
     - name: remove worker from load balancer
-      sudo: yes
-      delegate_to: "{{item}}"
+      delegate_to: "{{ item }}"
       with_items: groups.proxy
       lineinfile:
         dest: /etc/apache2/sites-enabled/cchq
-        regexp: ^[\s]*BalancerMember http://{{inventory_hostname}}:9010 loadfactor=2
+        regexp: ^[\s]*BalancerMember http://{{ inventory_hostname }}:9010 loadfactor=2
         state: absent
 
   post_tasks:
 
     - name: add worker back to load balancer
-      sudo: yes
-      delegate_to: "{{item}}"
+      delegate_to: "{{ item }}"
       with_items: groups.proxy
       lineinfile:
         dest: /etc/apache2/sites-enabled/cchq
-        line: "        BalancerMember http://{{inventory_hostname}}:9010 loadfactor=2"
+        line: "        BalancerMember http://{{ inventory_hostname }}:9010 loadfactor=2"
         insertbefore: "ProxySet lbmethod=byrequests"
         state: present
 
   roles:
-
     - webworker
 
 # after everything else is done, run the steps in pg and apache config that
@@ -38,6 +36,7 @@
 
 - name: PostgreSQL
   hosts: postgresql
+  sudo: yes
   roles:
     - postgresql
   vars:
@@ -45,7 +44,8 @@
 
 - name: Proxy
   hosts: proxy
+  sudo: yes
   roles:
     - apache2
   vars:
-    apache_install: False
+    apache2_install: False
