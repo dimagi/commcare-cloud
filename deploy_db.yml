@@ -1,9 +1,13 @@
 ---
 # deploy-staging-db.yml
 - name: Databases
-  hosts: postgresql
+  hosts: db
+  sudo: yes
   serial: 1
 
   roles:
     - postgresql
     - couchdb
+    - { role: bennjoy.memcached }
+    - { role: bennojoy.redis }
+
