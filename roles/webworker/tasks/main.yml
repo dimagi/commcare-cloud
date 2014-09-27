@@ -10,12 +10,12 @@
     - "{{ log_home }}"
 
 - name: setup django
-  git: repo={{ cchq_repository }} dest={{ code_home }} version={{ cchq_version }} recursive=yes accept_hostkey=yes depth=1
+  git: repo={{ webworker_cchq_repository }} dest={{ code_home }} version={{ webworker_cchq_version }} recursive=yes accept_hostkey=yes depth=1
   sudo_user: "{{ cchq_user }}"
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
-  with_items: cchq_requirements
+  with_items: webworker_cchq_requirements
   pip:
     requirements: "{{ code_home }}/requirements/{{ item }}"
     virtualenv: "{{ virtualenv_home }}"
