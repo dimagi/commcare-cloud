@@ -5,27 +5,19 @@
   sudo: yes
 
 - name: configure supervisor
-  template: src=supervisord.conf.j2 dest={{supervisor_conf_home}}/supervisord.conf
+  template: src=supervisord.conf.j2 dest={{ supervisor_conf_home }}/supervisord.conf
   sudo: yes
   register: supervisor_configured
 
 - name: make supervisor task home
   sudo: yes
-  file: path={{supervisor_task_conf}} state=directory owner={{cchq_user}}
+  file: path={{ supervisor_task_conf }} state=directory owner={{ cchq_user }}
 
-- name: add supervised tasks
-  with_items: supervisor_tasks
-  template: src=tasks.conf.j2 dest={{supervisor_task_conf}}/{{item.name}}.conf owner={{cchq_user}} mode=0644
-  register: supervisor_task_list
+- name: apply configuration changes
+  debug: msg="Stopping supervisor to pick up configuration changes"
+  when: supervisor_configured.changed
   sudo: yes
-
-- name: stop supervisor
-  service: name=supervisor state=stopped
-  when: supervisor_configured.changed or supervisor_task_list.changed
-  sudo: yes
-  sudo_user: "{{cchq_user}}"
-
-- name: start supervisord
-  service: name=supervisor state=started
-  sudo: yes
-  sudo_user: "{{cchq_user}}"
+  sudo_user: "{{ cchq_user }}"
+  notify:
+    - stop supervisor
+    - start supervisor
