@@ -2,8 +2,7 @@
 # roles/postgresql/tasks/main.yml
 
 - name: Install PostgreSQL & dependencies
-  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
-  sudo: yes
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
   tags:
     - installation
   with_items:
@@ -14,43 +13,39 @@
     pg_install == True
 
 - name: Create PostgreSQL databases
-  sudo: yes
   sudo_user: postgres
-  postgresql_db: name={{item}} state=present
+  postgresql_db: name={{ item }} state=present
   tags:
     - installation
   with_items:
-    - "{{postgres_db}}"
-    - "{{postgres_reporting_db}}"
+    - "{{ postgres_db }}"
+    - "{{ postgres_reporting_db }}"
   when:
     pg_install == True
 
 - name: Create PostgreSQL users
-  sudo: yes
   sudo_user: postgres
   tags:
     - installation
-  postgresql_user: name={{postgres_user}} password={{postgres_pw}} role_attr_flags=CREATEDB state=present
+  postgresql_user: name={{ postgres_user }} password={{ postgres_pw }} role_attr_flags=CREATEDB state=present
   when:
     pg_install == True
 
 - name: PostgreSQL app configuration
-  sudo: yes
   sudo_user: postgres
   tags:
     - configuration
-  template: src=pg_hba.conf.j2 dest={{postgresql_config_home}}/pg_hba.conf
+  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
   notify:
-    - Restart PostgreSQL service
+    - restart postgresql service
   when:
     pg_install == True
 
 - name: PostgreSQL access configuration
-  sudo: yes
   sudo_user: postgres
   tags:
     - configuration
-  template: src=postgresql.conf.j2 dest={{postgresql_config_home}}/postgresql.conf
+  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
   notify:
-    - Restart PostgreSQL service
+    - restart postgresql service
 

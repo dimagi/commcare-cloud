@@ -1,3 +1,7 @@
+#
+# {{ ansible_managed }}
+#
+
 # PostgreSQL Client Authentication Configuration File
 # ===================================================
 #
@@ -101,5 +105,6 @@ host    all             all             ::1/128                 md5
 # host all all 192.168.33.0/24 md5
 
 {% for host in groups['webworkers'] %}
-host  {{postgres_db}}   {{postgres_user}} {{host}}/32    md5
+host   {{ postgres_db }}   {{ postgres_user }}   {{ host }}/32   md5
+host   {{ postgres_reporting_db }}    {{ postgres_user }}   {{ host }}/32 md5
 {% endfor %}
