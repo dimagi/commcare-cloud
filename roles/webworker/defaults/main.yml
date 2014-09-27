@@ -1,0 +1,8 @@
+---
+# roles/webworker/defaults/main.yml
+
+webworker_cchq_repository: https://github.com/dimagi/commcare-hq.git
+webworker_cchq_version: "{{version}}"
+webworker_cchq_requirements:
+  - requirements.txt
+  - prod-requirements.txt
