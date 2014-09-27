@@ -1,7 +1,6 @@
 # CouchDB
 - name: Install prequisites
-  apt: name={{item}} state=present update_cache=yes
-  sudo: yes
+  apt: name={{ item }} state=present update_cache=yes
   with_items:
     - build-essential
     - g++
@@ -19,30 +18,29 @@
   register: couchdb_path
 
 - name: Download CouchDB source
+  sudo: no
   get_url: url=http://mirrors.ibiblio.org/apache/couchdb/source/1.5.1/apache-couchdb-1.5.1.tar.gz dest=~/apache-couchdb-1.5.1.tar.gz
   when: not couchdb_path.stat.exists
 
 - name: Compile + install CouchDB
-  shell: "{{item}}"
+  shell: "{{ item }}"
+  sudo: no
   with_items:
     - tar xvf ~/apache-couchdb-1.5.1.tar.gz
     - cd apache-couchdb-1.5.1 && ./configure
     - make -C ~/apache-couchdb-1.5.1
     - sudo make install -C ~/apache-couchdb-1.5.1
-    - rm -rf ~/apache-couchdb-1.5.1*
+    - sudo rm -rf ~/apache-couchdb-1.5.1*
   when: not couchdb_path.stat.exists
 
 - name: Add CouchDB user
-  sudo: yes
   user: name=couchdb createhome=no password=no state=present
 
 - name: Apply CouchDB config
-  sudo: yes
   template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
 
 - name: CouchDB ownership permissions
-  sudo: yes
-  file: path={{item}} owner=couchdb group=couchdb recurse=yes state=directory
+  file: path={{ item }} owner=couchdb group=couchdb recurse=yes state=directory
   with_items:
     - /usr/local/var/log/couchdb
     - /usr/local/var/lib/couchdb
@@ -50,19 +48,16 @@
     - /usr/local/etc/couchdb/
 
 - name: Configure CouchDB as service
-  sudo: yes
   file: src=/usr/local/etc/init.d/couchdb dest=/etc/init.d/couchdb state=link
 
-- name: Update rc.d 
-  sudo: yes
+- name: Update rc.d
   shell: update-rc.d couchdb defaults
 
 - name: Start CouchDB service
-  sudo: yes
   service: name=couchdb state=started
 
 - name: Add CouchDB databases
-  shell: "{{item}}"
+  shell: "{{ item }}"
   with_items:
-    - curl -X PUT "http://localhost:5984/{{couchdb_db}}"
-    - curl -X PUT "http://localhost:5984/_config/admins/{{couchdb_user}}" -d '"{{couchdb_pw}}"'
+    - curl -X PUT "http://localhost:5984/{{ couchdb_db }}"
+    - curl -X PUT "http://localhost:5984/_config/admins/{{ couchdb_user }}" -d '"{{ couchdb_pw }}"'
