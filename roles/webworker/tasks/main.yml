@@ -1,17 +1,50 @@
 ---
 # roles/webworker/tasks/main.yml
 
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    state: directory
+  with_items:
+    - "{{ log_home }}"
+
 - name: setup django
-  git: repo={{cchq_repository}} dest={{code_home}} version={{cchq_version}} accept_hostkey=yes depth=1
-  sudo: yes
-  sudo_user: "{{cchq_user}}"
-  notify:
-    - install pip requirements
+  git: repo={{ cchq_repository }} dest={{ code_home }} version={{ cchq_version }} recursive=yes accept_hostkey=yes depth=1
+  sudo_user: "{{ cchq_user }}"
+
+- name: install pip requirements
+  sudo_user: "{{ cchq_user }}"
+  with_items: cchq_requirements
+  pip:
+    requirements: "{{ code_home }}/requirements/{{ item }}"
+    virtualenv: "{{ virtualenv_home }}"
 
 - name: copy localsettings
-  sudo: yes
-  sudo_user: "{{cchq_user}}"
+  sudo_user: "{{ cchq_user }}"
   template:
     src: localsettings.py.j2
-    dest: "{{code_home}}/localsettings.py"
+    dest: "{{ code_home }}/localsettings.py"
   notify: restart webworker app
+
+- name: Run syncdb
+  sudo_user: "{{ cchq_user }}"
+  django_manage:
+    app_path: "{{ code_home }}"
+    virtualenv: "{{ virtualenv_home }}"
+    command: syncdb
+
+- name: Migrate apps
+  sudo_user: "{{ cchq_user }}"
+  django_manage:
+    app_path: "{{ code_home }}"
+    virtualenv: "{{ virtualenv_home }}"
+    command: migrate
+
+- name: Collect static files
+  sudo_user: "{{ cchq_user }}"
+  django_manage:
+    app_path: "{{ code_home }}"
+    virtualenv: "{{ virtualenv_home }}"
+    command: collectstatic
+
