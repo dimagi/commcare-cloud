@@ -48,3 +48,9 @@
     virtualenv: "{{ virtualenv_home }}"
     command: collectstatic
 
+- name: add supervised tasks
+  template: src=supervisor_tasks.conf.j2 dest={{ supervisor_task_conf}}/{{item.name}}.conf owner={{ cchq_user }} mode=0644
+  with_items: webworker_supervised_tasks
+  notify:
+    - stop supervisor
+    - start supervisor
