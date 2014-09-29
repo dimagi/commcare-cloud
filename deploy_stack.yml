@@ -1,0 +1,10 @@
+---
+# deploy-stack.yml
+
+- name: Deploy full stack
+  hosts: localhost
+  gather_facts: False
+
+- include: deploy_db.yml
+- include: deploy_proxy.yml
+- include: deploy_webworker.yml
