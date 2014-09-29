@@ -3,8 +3,6 @@
 
 - name: Install PostgreSQL & dependencies
   apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
-  tags:
-    - installation
   with_items:
     - postgresql
     - libpq-dev
@@ -15,8 +13,6 @@
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db: name={{ item }} state=present
-  tags:
-    - installation
   with_items:
     - "{{ postgres_db }}"
     - "{{ postgres_reporting_db }}"
@@ -25,16 +21,12 @@
 
 - name: Create PostgreSQL users
   sudo_user: postgres
-  tags:
-    - installation
   postgresql_user: name={{ postgres_user }} password={{ postgres_pw }} role_attr_flags=CREATEDB state=present
   when:
     pg_install == True
 
 - name: PostgreSQL app configuration
   sudo_user: postgres
-  tags:
-    - configuration
   template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
   notify:
     - restart postgresql service
@@ -43,8 +35,6 @@
 
 - name: PostgreSQL access configuration
   sudo_user: postgres
-  tags:
-    - configuration
   template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
   notify:
     - restart postgresql service
