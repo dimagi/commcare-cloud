@@ -11,7 +11,12 @@
 
 - name: Create apache2 logfile home
   sudo: yes
-  file: path={{ log_home }} owner={{ cchq_user }} group={{ http_user }} mode=0770 state=directory
+  file: path={{ log_home }} owner={{ cchq_user }} group={{ apache2_http_user }} mode=0770 state=directory
+  when: apache2_install == True
+
+- name: Create static files home
+  sudo: yes
+  file: path={{ apache2_static_home }} owner={{ cchq_user }} group={{ apache2_http_user }} mode=0744 state=directory
   when: apache2_install == True
 
 - name: Enable required apache2 modules
