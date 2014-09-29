@@ -1,4 +1,6 @@
 apache2_install: True
+apache2_http_user: www-data
+apache2_static_home: "{{ code_home }}/staticfiles"
 apache2_ssl_cert: /etc/ssl/certs/ssl-cert-snakeoil.pem
 apache2_ssl_key: /etc/ssl/private/ssl-cert-snakeoil.key
 apache2_ssl_ca_certificate_file:
