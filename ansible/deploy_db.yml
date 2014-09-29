@@ -8,6 +8,6 @@
   roles:
     - postgresql
     - couchdb
-    - { role: bennjoy.memcached }
+    - { role: bennojoy.memcached }
     - { role: bennojoy.redis }
 
