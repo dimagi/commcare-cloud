@@ -1,0 +1,6 @@
+[submodule "ansible/roles/bennojoy.memcached"]
+	path = ansible/roles/bennojoy.memcached
+	url = https://github.com/bennojoy/memcached.git
+[submodule "ansible/roles/bennojoy.redis"]
+	path = ansible/roles/bennojoy.redis
+	url = https://github.com/bennojoy/redis.git
