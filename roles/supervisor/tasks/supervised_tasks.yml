@@ -1,0 +1,12 @@
+---
+# roles/supervisor/tasks/supervised_tasks.yml
+
+- name: add supervised tasks
+  template: src=supervisor_task.conf.j2 dest={{ supervisor_task_conf}}/{{item.name}}.conf owner={{ cchq_user }} mode=0644
+  with_items: supervised_tasks
+
+- name: bounce supervisor to pick up new tasks
+  service: name=supervisor state=stopped
+  when: supervised_tasks|length > 0
+- service: name=supervisor state=started
+  when: supervised_tasks|length > 0
