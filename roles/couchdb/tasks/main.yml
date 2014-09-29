@@ -21,7 +21,7 @@
   sudo: no
   get_url:
     url: "{{ couchdb_source_mirror }}/{{ couchdb_version }}/{{ couchdb_distro_filename }}"
-    dest: ~/{{ couchdb_db_distro_filename }}
+    dest: ~/{{ couchdb_distro_filename }}
   when: not couchdb_path.stat.exists
 
 - name: Compile + install CouchDB
@@ -61,5 +61,5 @@
 - name: Add CouchDB databases
   shell: "{{ item }}"
   with_items:
-    - curl -X PUT "http://localhost:5984/{{ couchdb_db }}"
-    - curl -X PUT "http://localhost:5984/_config/admins/{{ couchdb_user }}" -d '"{{ couchdb_pw }}"'
+    - curl -X PUT "http://{{ groups['couchdb'][0] }}:5984/{{ couchdb_db }}"
+    - curl -X PUT "http://{{ groups['couchdb'][0] }}:5984/_config/admins/{{ couchdb_user }}" -d '"{{ couchdb_pw }}"'
