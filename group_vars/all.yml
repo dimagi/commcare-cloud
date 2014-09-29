@@ -12,3 +12,6 @@ postgres_pw: commcarehq
 couchdb_db: commcarehq
 couchdb_user: commcarehq
 couchdb_pw: commcarehq
+couchdb_https: False
+
+django_port: 9010
