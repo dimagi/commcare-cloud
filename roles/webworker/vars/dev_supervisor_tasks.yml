@@ -1,0 +1,25 @@
+supervised_tasks:
+  - name: "{{app_name}}-{{deploy_env}}-django"
+    config:
+      command: "{{ virtualenv_home }}/bin/python manage.py run_gunicorn -c services/gunicorn_conf.py -k gevent --bind {{ inventory_hostname }}:{{ django_port }} --log-file {{ log_home }}/{{app_name}}.gunicorn.log --log-level debug"
+      directory: "{{ code_home }}"
+      autostart: true
+      autorestart: true
+      stdout_logfile: "{{ log_home }}/django.log"
+      redirect_stderr: true
+      stderr_logfile: "{{ log_home }}/djanog.error.log"
+  - name: "{{app_name}}-{{deploy_env}}-celery_main"
+    config:
+      command: "{{ virtualenv_home }}/bin/python manage.py celery worker --queues=celery --events --loglevel=INFO --hostname={{inventory_hostname}}_main --maxtasksperchild=20 --concurrency=8"
+      directory: "{{ code_home }}"
+      numprocs: 1
+      autostart: true
+      autorestart: true
+      stopasgroup: true
+      killasgroup: true
+      stdout_logfile: "{{ log_home }}/celery_main.log"
+      redirect_stderr: true
+      stderr_logfile: "{{ log_home }}/celery_main.error.log"
+      startsecs: 10
+      stopwaitsecs: 60
+      priority: 998
