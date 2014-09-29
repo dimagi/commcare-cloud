@@ -1,6 +1,0 @@
-[submodule "roles/bennjoy.memcached"]
-	path = roles/bennjoy.memcached
-	url = https://github.com/bennojoy/memcached.git
-[submodule "roles/bennojoy.redis"]
-	path = roles/bennojoy.redis
-	url = https://github.com/bennojoy/redis.git
