@@ -8,15 +8,26 @@ servers for a multi-machine deployment similar to the US production stack
 described in
 [Dimagi devops needs](https://docs.google.com/document/d/1tQFDC56SU8N1M-1abDWpnQKti2zYroTPBC2EmeIM8SA/pub)
 
-Simply start the vagrant cluster and then ssh into the control box to run an
-ansible deployment:
+Begin by checkout out the source for this repostiory:
 
 ```
+$ git clone https://github.com/dimagi/commcare-ansible-master
+```
+
+Then, change directories into the new clone and start vagrant:
+
+```
+$ cd commcare-ansible-master
 $ vagrant up
-...
+```
+
+Once the vagrant cluster is done building, you may ssh into the control server
+and run a full deployment:
+
+```
 $ vagrant ssh control
 ...
-$ cd /vagrant/commcare-ansible-master
+$ cd /vagrant/ansible
 $ ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD"
 ```
 
