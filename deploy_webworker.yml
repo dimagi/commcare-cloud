@@ -1,4 +1,13 @@
 ---
+# hook all webworkers into the db machine pg access config
+- name: PostgreSQL
+  hosts: postgresql
+  sudo: yes
+  roles:
+    - postgresql
+  vars:
+    pg_install: False
+
 # deploy_staging_webworker.yml
 - name: Webworkers
   hosts: webworkers
@@ -16,6 +25,10 @@
         dest: /etc/apache2/sites-enabled/cchq
         regexp: ^[\s]*BalancerMember http://{{ inventory_hostname }}:9010 loadfactor=2
         state: absent
+    - name: restart apache
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=apache2 state=reloaded
 
   post_tasks:
 
@@ -27,20 +40,16 @@
         line: "        BalancerMember http://{{ inventory_hostname }}:9010 loadfactor=2"
         insertbefore: "ProxySet lbmethod=byrequests"
         state: present
+    - name: restart apache
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=apache2 state=reloaded
 
   roles:
     - webworker
 
 # after everything else is done, run the steps in pg and apache config that
 # are specific to hooking in any new web-workers.
-
-- name: PostgreSQL
-  hosts: postgresql
-  sudo: yes
-  roles:
-    - postgresql
-  vars:
-    pg_install: False
 
 - name: Proxy
   hosts: proxy
