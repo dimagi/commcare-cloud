@@ -41,6 +41,26 @@ $ ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=de
 This will build a database server, a proxy server and a single web worker,
 hooked into both appropriately.
 
+**NOTE**
+
+After executing the `ansible-playbook` command you may run into an error that looks like this:
+
+```
+GATHERING FACTS *************************************************************** 
+fatal: [192.168.33.16] => SSH encountered an unknown error during the connection. We recommend you re-run the command using -vvvv, which will enable SSH debugging output to help diagnose the issue
+```
+
+This means that you have run afoul of an intermittent bug in the vagrant provisioning system with regard to external provisioning scripts, ssh and Ubuntu 12.04.  The solution is to manually cat the appropriate public key onto the vagrant user's `authorized_hosts` file:
+
+```
+$ vagrant ssh <box>
+...
+$ sudo cat /vagrant/provisioning/id_rsa.pub >> ~/.ssh/authorized_keys
+$ exit
+```
+You will need to repeat this process for all four of the non-control nodes in the vagrant cluster: app1, app2, proxy1 and db1.
+
+
 Once the preliminary deployment is complete, a new web worker may be added
 simply by editing the file `inventories/development.yml` and adding the second
 web worker server IP address:
