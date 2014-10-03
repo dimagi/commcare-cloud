@@ -14,10 +14,17 @@ Begin by checkout out the source for this repostiory:
 $ git clone https://github.com/dimagi/commcare-ansible-master
 ```
 
-Then, change directories into the new clone and start vagrant:
+Then, change directories into the new clone and set up submodules:
 
 ```
 $ cd commcare-ansible-master
+$ git submodule init
+$ git submodule update
+```
+
+Then start vagrant:
+
+```
 $ vagrant up
 ```
 
