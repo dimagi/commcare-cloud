@@ -42,7 +42,7 @@
 
 - name: Add public keys
   sudo: yes
-  authorized_key: user={{item.name}} state={{item.state}} key="{{lookup('file', 'ssh_keys/{{item.name}}.pub')}}"    
+  authorized_key: user={{item.name}} state={{item.state}} key="{{lookup('file', 'ssh_keys/' + item.name + '.pub')}}"
   with_items: dev_users
 
 - name: Copy sudoers file
