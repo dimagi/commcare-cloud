@@ -1,0 +1,9 @@
+---
+# Runs an individual ansible role
+# Usage:
+#   ansible-playbook ./run_role.yml -i "hostname," -e role=my_awesome_role
+#
+- hosts: all
+  gather_facts: True
+  roles:
+    - "{{role}}"
