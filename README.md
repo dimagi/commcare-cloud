@@ -11,13 +11,13 @@ described in
 Begin by checkout out the source for this repostiory:
 
 ```
-$ git clone https://github.com/dimagi/commcare-ansible-master
+$ git clone https://github.com/dimagi/commcarehq-ansible
 ```
 
 Then, change directories into the new clone and set up submodules:
 
 ```
-$ cd commcare-ansible-master
+$ cd commcarehq-ansible
 $ git submodule init
 $ git submodule update
 ```
