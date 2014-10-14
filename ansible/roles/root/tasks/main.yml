@@ -1,3 +1,0 @@
-- name: Set root password
-  sudo: yes
-  user: name=root state=present password={{root_password}}
