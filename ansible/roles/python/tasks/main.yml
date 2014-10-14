@@ -1,0 +1,26 @@
+---
+# Install base packages, common to all servers
+- name: Install packages
+  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+  sudo: yes
+  with_items:
+    - build-essential
+    - python-pip
+    - python-dev
+    - python-setuptools
+    - python-psycopg2
+    - libxml2-dev
+    - libxslt1-dev
+    - git
+    - libpq-dev
+    - curl
+    - vim
+    - htop
+    - tmpreaper
+
+- name: Install pip packages
+  pip: name={{item}}
+  sudo: yes
+  with_items:
+    - fabric
+    - virtualenv
