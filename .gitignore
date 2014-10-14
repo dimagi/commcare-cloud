@@ -1,3 +1,4 @@
 *.swp
 config/
 roledefs.yml
+.vagrant/

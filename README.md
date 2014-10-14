@@ -22,11 +22,18 @@ $ git submodule init
 $ git submodule update
 ```
 
+Ensure you have downloaded Vagrant and virtual box
+If you needed to download virtual box, you should also download a box configuration:
+```
+vagrant box add precise64 http://files.vagrantup.com/precise64.box
+```
+
 Then start vagrant:
 
 ```
 $ vagrant up
 ```
+If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
 Once the vagrant cluster is done building, you may ssh into the control server
 and run a full deployment:
@@ -66,3 +73,15 @@ web worker server IP address:
 192.168.33.15
 192.168.33.18
 ```
+
+### Troubleshooting
+
+`vagrant up` fails.
+* Start VirtualBox `$ VirtualBox`
+* Attempt to start the VM
+  * If the error message is: `VT-x needs to be enabled in BIOS`
+For the Lenovo T440s: 
+  * Restart machine, press Enter during startup
+  * Navigate to Security -> Virtualization
+    * Turn both settings on
+
