@@ -1,0 +1,18 @@
+---
+- name: Install Jython
+  sudo: yes
+  script: install_jython.sh creates=/usr/local/lib/jython/bin/jython
+
+- name: Verify Jython
+  shell: jython --version
+  changed_when: False #Never report changed, only fail if jython is not found
+
+# This feels like it shouldn't be managed here
+
+# - name: Copy Jython localsettings.py
+#   template:
+#     src: localsettings.py.j2
+#     dest: "{{ code_home }}/submodules/touchforms-src/touchforms/backend/localsettings.py"
+#     group: cchq
+#     owner: cchq
+#     mode: 664
