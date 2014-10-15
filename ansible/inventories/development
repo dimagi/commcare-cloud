@@ -27,6 +27,7 @@ postgresql
 couchdb
 redis
 memcached
+elasticsearch
 
 [proxy]
 192.168.33.17

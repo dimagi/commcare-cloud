@@ -1,0 +1,23 @@
+- name: Downloads Directory
+  file: path=/home/{{cchq_user}}/downloads/ state=directory
+
+- name: Download Elasticsearch
+  sudo: yes
+  get_url:
+    url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{elasticsearch_version}}.tar.gz"
+    dest: "/home/{{cchq_user}}/downloads/elasticsearch-{{elasticsearch_version}}.tar.gz"
+    sha256sum: f14ff217039b5c398a9256b68f46a90093e0a1e54e89f94ee6a2ee7de557bd6d
+
+- name: Unarchive Elasticsearch
+  sudo: yes
+  unarchive:
+    src: /home/{{cchq_user}}/downloads/elasticsearch-{{elasticsearch_version}}.tar.gz
+    dest: /opt/
+    copy: no
+
+- name: Link Elasticsearch
+  sudo: yes
+  file:
+    state: link
+    src: /opt/elasticsearch-{{elasticsearch_version}}
+    dest: /opt/elasticsearch
