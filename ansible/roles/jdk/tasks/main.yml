@@ -1,5 +1,4 @@
 ---
 - name: Install JDK
   sudo: yes #?
-  script: ../files/install_java.sh
-  # creates: /usr/lib/jvm/success.txt why?
+  script: ../files/install_java.sh creates=/usr/lib/jvm/success.txt why?
