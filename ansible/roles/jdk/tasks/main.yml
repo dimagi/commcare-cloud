@@ -6,4 +6,4 @@
 - name: Verify Java
   sudo: no
   shell: java -version
-  changed_when: False
+  changed_when: False #Never report changed, only fail

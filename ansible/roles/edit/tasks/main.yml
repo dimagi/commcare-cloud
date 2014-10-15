@@ -1,0 +1,19 @@
+---
+  # Vim comes installed with the precise64 box
+  # - name: Install Vim
+  #   sudo: yes
+  #   apt: vim
+
+- name: Install Emacs
+  sudo: yes
+  apt:
+    name: emacs23
+
+- name: Include vimrc
+  sudo: yes
+  copy:
+    src: vimrc
+    dest: /etc/vimrc
+    owner: root
+    group: root # This forks based on OS in salt
+    mode: 644
