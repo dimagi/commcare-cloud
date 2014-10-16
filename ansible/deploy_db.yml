@@ -6,8 +6,8 @@
   serial: 1
 
   roles:
+    - common
     - postgresql
     - couchdb
     - { role: bennojoy.memcached }
     - { role: bennojoy.redis }
-
