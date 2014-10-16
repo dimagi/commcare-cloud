@@ -5,3 +5,4 @@ dependencies:
   - { role: python }
   - { role: users }
   - { role: supervisor }
+  - { role: java }
