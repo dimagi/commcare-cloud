@@ -2,3 +2,4 @@
 config/
 roledefs.yml
 .vagrant/
+DimagiKeyStore
