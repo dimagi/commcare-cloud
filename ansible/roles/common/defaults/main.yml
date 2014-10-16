@@ -1,8 +1,0 @@
----
-# roles/common/vars/main.yml
-
-cchq_user: cchq
-dev_users:
-  - {name: test1, group: dev, state: present, passwd: hashedpasswordgoeshere}
-  - {name: test2, group: dev, state: present, passwd: hashedpasswordgoeshere}
-  # - {name: test2, ...}

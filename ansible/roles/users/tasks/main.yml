@@ -1,0 +1,22 @@
+---
+- name: Add cchq user
+  sudo: yes
+  user: name={{cchq_user}} state=present shell=/bin/bash
+
+- name: Add dev group
+  sudo: yes
+  group: name=dev state=present
+
+- name: Add dev users
+  sudo: yes
+  user: name={{item.name}} state={{item.state}} shell=/bin/bash
+  with_items: dev_users
+
+- name: Add public keys
+  sudo: yes
+  authorized_key: user={{item.name}} state={{item.state}} key="{{lookup('file', 'ssh_keys/' + item.name + '.pub')}}"
+  with_items: dev_users
+
+- name: Copy sudoers file
+  sudo: yes
+  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq_sudoers validate='visudo -cf %s' owner=root group=root mode=0440
