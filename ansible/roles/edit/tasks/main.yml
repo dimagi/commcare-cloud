@@ -15,5 +15,5 @@
     src: vimrc
     dest: /etc/vimrc
     owner: root
-    group: root  # This forks based on OS in salt
+    group: root
     mode: 644
