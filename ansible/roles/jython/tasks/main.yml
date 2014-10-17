@@ -1,0 +1,8 @@
+---
+- name: Install Jython
+  sudo: yes
+  script: install_jython.sh creates=/usr/local/lib/jython/bin/jython
+
+- name: Verify Jython
+  shell: jython --version
+  changed_when: False #Never report changed, only fail if jython is not found

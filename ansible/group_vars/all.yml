@@ -15,3 +15,5 @@ couchdb_pw: commcarehq
 couchdb_https: False
 
 django_port: 9010
+
+cchq_user: cchq
