@@ -1,0 +1,9 @@
+---
+- name: Install Java
+  sudo: yes
+  script: ../files/install_java.sh creates=/usr/lib/jvm/success.txt
+
+- name: Verify Java
+  sudo: no
+  shell: java -version
+  changed_when: False

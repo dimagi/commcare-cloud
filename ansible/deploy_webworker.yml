@@ -46,6 +46,7 @@
       service: name=apache2 state=reloaded
 
   roles:
+    - common
     - webworker
 
 # after everything else is done, run the steps in pg and apache config that

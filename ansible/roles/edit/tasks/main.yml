@@ -1,0 +1,19 @@
+---
+- name: Install Vim
+  sudo: yes
+  apt:
+    name: vim
+
+- name: Install Emacs
+  sudo: yes
+  apt:
+    name: emacs23
+
+- name: Include vimrc
+  sudo: yes
+  copy:
+    src: vimrc
+    dest: /etc/vimrc
+    owner: root
+    group: root
+    mode: 644
