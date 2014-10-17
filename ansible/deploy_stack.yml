@@ -8,3 +8,4 @@
 - include: deploy_db.yml
 - include: deploy_proxy.yml
 - include: deploy_webworker.yml
+- include: deploy_touchforms.yml
