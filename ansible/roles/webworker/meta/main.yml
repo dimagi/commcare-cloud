@@ -2,7 +2,8 @@
 # roles/webworker/meta/main.yml
 
 dependencies:
-  - { role: python }
-  - { role: users }
-  - { role: supervisor }
-  - { role: java }
+  - role: python
+  - role: users
+  - role: supervisor
+  - role: java
+  - role: commcarehq

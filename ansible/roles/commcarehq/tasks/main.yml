@@ -1,0 +1,24 @@
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    state: directory
+  with_items:
+    - "{{ log_home }}"
+
+- name: pull CommCare HQ source
+  git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
+  sudo_user: "{{ cchq_user }}"
+
+- name: install pip requirements
+  sudo_user: "{{ cchq_user }}"
+  with_items: commcarehq_requirements
+  pip:
+    requirements: "{{ code_home }}/requirements/{{ item }}"
+    virtualenv: "{{ virtualenv_home }}"
+
+- name: copy localsettings
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: localsettings.py.j2
+    dest: "{{ code_home }}/localsettings.py"
