@@ -66,7 +66,7 @@ echo control app1 app2 proxy1 db1 | xargs -n1 -J% vagrant ssh % -c 'sudo cat /va
 
 Once the preliminary deployment is complete, a new web worker may be added
 simply by editing the file `ansible/inventories/development.yml` and adding the second
-web worker server IP address:
+web worker server IP address. Also uncomment the section of the vagrant file that refers to 'app2':
 
 ```ini
 [webworkers]
