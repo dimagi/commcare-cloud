@@ -1,0 +1,144 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+EXAMPLES = '''
+# Add the django user 'johnd'
+- django_user: name=johnd password={{password}} virtualenv=/home/www/.virtualenvs/myvenv app_path=/var/www/mycode/
+'''
+
+import sh
+
+USER_EXISTS_CMD = """
+username = {username}
+
+from django.contrib.auth import get_user_model
+
+user_model = get_user_model()
+if user_model.objects.filter(username=username):
+    exit(0)
+else:
+    exit(1)
+
+"""  # final blank line here is actually super important
+
+
+CREATE_USER_CMD = """
+username = {username}
+password = {password}
+superuser = {superuser}
+staff = {staff}
+
+from django.contrib.auth import get_user_model
+
+user_model = get_user_model()
+user = user_model.objects.create(username=username)
+user.set_password(password)
+user.superuser = superuser
+user.staff = staff
+user.save()
+"""
+
+REMOVE_USER_CMD = """
+username = {username}
+
+from django.contrib.auth import get_user_model
+
+user_model = get_user_model()
+user = user_model.objects.get(username=username)
+user.delete()
+"""
+
+
+class User(object):
+
+    def __init__(self, module):
+        self.module = module
+        self.state = module.params['state']
+        self.name = module.params['name']
+        self.staff = module.params['staff']
+        self.superuser = module.params['superuser']
+        self.password = module.params['password']
+        self.virtualenv = module.params['virtualenv']
+        self.app_path = module.params['app_path']
+
+        which_python = '{}/bin/python'.format(self.virtualenv)
+        self.manage_shell = (
+            sh.Command(which_python)
+            .bake('manage.py', 'shell', '--plain', _cwd=self.app_path)
+        )
+
+    def user_exists(self):
+        result = self.manage_shell(_in=USER_EXISTS_CMD.format(
+            username=repr(self.name)
+        ), _ok_code=[0, 1])
+        if result.exit_code == 0:
+            return True
+        else:
+            return False
+
+    def create_user(self):
+        self.manage_shell(_in=CREATE_USER_CMD.format(
+            username=repr(self.name),
+            password=repr(self.password),
+            staff=repr(self.staff),
+            superuser=repr(self.superuser),
+        ))
+
+    def modify_user(self):
+        pass
+
+    def remove_user(self):
+        self.manage_shell(_in=REMOVE_USER_CMD.format(username=repr(self.name)))
+
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            state=dict(
+                default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, aliases=['user'], type='str'),
+            password=dict(default=None, type='str'),
+            app_path=dict(required=True, type='str'),
+            virtualenv=dict(required=False, aliases=['virtual_env']),
+            staff=dict(default=False, type='bool'),
+            superuser=dict(default=False, type='bool'),
+        ),
+        supports_check_mode=False
+    )
+
+    user = User(module)
+
+    result = {
+        'name': user.name,
+        'state': user.state
+    }
+
+    if user.state != 'absent':
+        result.update({
+            'staff': user.staff,
+            'superuser': user.superuser,
+        })
+
+    if user.state == 'present':
+        try:
+            if not user.user_exists():
+                user.create_user()
+                return module.exit_json(changed=True, **result)
+            else:
+                # user.modify_user()
+                return module.exit_json(changed=False, **result)
+        except sh.ErrorReturnCode as e:
+            print e.stderr
+            raise
+    elif user.state == 'absent':
+        if user.user_exists():
+            user.remove_user()
+            return module.exit_json(changed=True, **result)
+        else:
+            return module.exit_json(changed=False, **result)
+    else:
+        raise NotImplementedError()
+
+# import module snippets
+from ansible.module_utils.basic import *
+main()
