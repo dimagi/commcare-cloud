@@ -1,3 +1,4 @@
+app_name: commcarehq
 supervised_tasks:
   - name: "{{app_name}}-{{deploy_env}}-django"
     config:
