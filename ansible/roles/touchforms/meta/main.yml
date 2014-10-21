@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: jython
+  - role: commcarehq
+  - role: supervisor

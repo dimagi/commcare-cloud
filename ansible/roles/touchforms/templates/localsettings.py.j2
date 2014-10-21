@@ -1,0 +1,7 @@
+URL_ROOT = "https://{{ url_base }}/a/{{ '{{' }}DOMAIN{{ '}}' }}"
+PERSISTENCE_DIRECTORY = "{{ www_home }}/data/touchforms"
+
+{% if deploy_env == 'dev' %}
+from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
+SSLContext.setDefault(TRUST_ALL_CONTEXT)
+{% endif %}

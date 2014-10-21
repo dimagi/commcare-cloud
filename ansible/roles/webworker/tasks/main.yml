@@ -1,32 +1,6 @@
 ---
 # roles/webworker/tasks/main.yml
 
-- name: create required directories
-  file:
-    path: "{{ item }}"
-    owner: "{{ cchq_user }}"
-    state: directory
-  with_items:
-    - "{{ log_home }}"
-
-- name: setup django
-  git: repo={{ webworker_cchq_repository }} dest={{ code_home }} version={{ webworker_cchq_version }} recursive=yes accept_hostkey=yes depth=1
-  sudo_user: "{{ cchq_user }}"
-
-- name: install pip requirements
-  sudo_user: "{{ cchq_user }}"
-  with_items: webworker_cchq_requirements
-  pip:
-    requirements: "{{ code_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_home }}"
-
-- name: copy localsettings
-  sudo_user: "{{ cchq_user }}"
-  template:
-    src: localsettings.py.j2
-    dest: "{{ code_home }}/localsettings.py"
-  notify: restart webworker app
-
 - name: Run syncdb
   sudo_user: "{{ cchq_user }}"
   django_manage:
@@ -58,5 +32,4 @@
     command: collectstatic
 
 - include_vars: "{{ deploy_env }}_supervisor_tasks.yml"
-
 - include: ../../supervisor/tasks/supervised_tasks.yml

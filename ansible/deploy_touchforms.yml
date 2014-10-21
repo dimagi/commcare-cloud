@@ -1,10 +1,9 @@
 ---
-# deploy-staging-db.yml
-- name: Databases
+- name: Touchforms
   hosts: touchforms
   sudo: yes
   serial: 1
 
   roles:
     - common
-    - jython
+    - touchforms

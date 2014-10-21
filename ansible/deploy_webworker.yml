@@ -13,8 +13,6 @@
   hosts: webworkers
   serial: 1
   sudo: yes
-  vars:
-    app_name: commcarehq
 
   pre_tasks:
 
