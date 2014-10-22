@@ -9,5 +9,6 @@
     - common
     - postgresql
     - couchdb
-    - { role: bennojoy.memcached }
-    - { role: bennojoy.redis }
+    - bennojoy.memcached
+    - bennojoy.redis
+    - ecryptfs
