@@ -1,0 +1,9 @@
+- name: Send Keystore
+  sudo: yes
+  copy:
+    src: "DimagiKeyStore"
+    dest: "{{ cchq_home }}/www/DimagiKeyStore"
+    group: cchq
+    owner: cchq
+    mode: 644
+    backup: yes
