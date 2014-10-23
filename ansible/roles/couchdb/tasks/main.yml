@@ -61,5 +61,5 @@
 - name: Add CouchDB databases
   shell: "{{ item }}"
   with_items:
-    - curl -X PUT "http://{{ groups['couchdb'][0] }}:5984/{{ couchdb_db }}"
-    - curl -X PUT "http://{{ groups['couchdb'][0] }}:5984/_config/admins/{{ couchdb_user }}" -d '"{{ couchdb_pw }}"'
+    - curl -X PUT "http://{{ groups['couchdb'][0] }}:5984/{{ settings.couchdb.db.name }}"
+    - curl -X PUT "http://{{ groups['couchdb'][0] }}:5984/_config/admins/{{ settings.couchdb.db.user }}" -d '"{{ settings.couchdb.db.password }}"'

@@ -5,15 +5,5 @@ log_home: "{{ www_home }}/log"
 service_home: "{{ cchq_home }}/services/{{ deploy_env }}"
 virtualenv_home: "{{ cchq_home }}/.virtualenv/{{ deploy_env }}"
 
-postgres_db: commcarehq
-postgres_reporting_db: commcarehq_reporting
-postgres_user: commcarehq
-postgres_pw: commcarehq
-couchdb_db: commcarehq
-couchdb_user: commcarehq
-couchdb_pw: commcarehq
-couchdb_https: False
-
-django_port: 9010
-
 cchq_user: cchq
+django_port: 9010

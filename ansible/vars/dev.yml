@@ -1,10 +1,33 @@
-url_base: 192.168.33.17
-XFORMS_PLAYER_URL: "http://192.168.33.16:4444"
-# can't point to proxy because of self-signed cert
-TOUCHFORMS_API_USER: 'touchforms@example.com'
-TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
+settings:
+  common:
+    url_base: 192.168.33.17
 
-encrypted_drive_password: 'xxBvYiMZ3YVIVkFR'
+  touchforms:
+    user:
+      username: 'touchforms@example.com'
+      password: 'TsyasEivKf4GtbQX'
 
-# define this to activate ksplice
-# ksplice_activation_key:
+  ecryptfs:
+    encrypted_drive_password: 'xxBvYiMZ3YVIVkFR'
+
+  ksplice:
+    active: no
+    activation_key:
+
+  postgresql:
+    db:
+      name: commcarehq
+      user: commcarehq
+      password: commcarehq
+    reporting_db: commcarehq_reporting
+
+  couchdb:
+    https: no
+    host: "{{ groups.couchdb.0 }}"
+    db:
+      name: commcarehq
+      user: commcarehq
+      password: commcarehq
+
+XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
+POSTGRES_HOST: "{{ groups.postgresql.0 }}"

@@ -3,7 +3,7 @@
   shell: sudo uptrack-show
   ignore_errors: yes
   register: command_result
-  when: ksplice_activation_key is defined or deploy_env != 'dev'
+  when: settings.ksplice.active
 
 - name: Download install-uptrack
   sudo: yes
@@ -17,7 +17,7 @@
 
 - name: Install ksplice
   sudo: yes
-  shell: /tmp/install-uptrack {{ ksplice_activation_key }} --autoinstall
+  shell: /tmp/install-uptrack {{ settings.ksplice.activation_key }} --autoinstall
   when: command_result|failed
 
 - name: Run uptrack upgrade

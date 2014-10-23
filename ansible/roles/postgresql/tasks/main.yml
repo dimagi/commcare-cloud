@@ -13,15 +13,17 @@
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db: name={{ item }} state=present
-  with_items:
-    - "{{ postgres_db }}"
-    - "{{ postgres_reporting_db }}"
+  with_items: postgresql_dbs
   when:
     pg_install == True
 
 - name: Create PostgreSQL users
   sudo_user: postgres
-  postgresql_user: name={{ postgres_user }} password={{ postgres_pw }} role_attr_flags=CREATEDB state=present
+  postgresql_user:
+    name: "{{ settings.postgresql.db.user }}"
+    password: "{{ settings.postgresql.db.password }}"
+    role_attr_flags: CREATEDB
+    state: present
   when:
     pg_install == True
 
@@ -38,4 +40,3 @@
   template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
   notify:
     - restart postgresql service
-
