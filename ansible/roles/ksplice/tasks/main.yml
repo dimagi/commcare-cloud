@@ -1,0 +1,25 @@
+---
+- name: Check for uptrack installation
+  shell: sudo uptrack-show
+  ignore_errors: yes
+  register: command_result
+
+- name: Download install-uptrack
+  sudo: yes
+  get_url:
+    url: https://www.ksplice.com/uptrack/install-uptrack
+    dest: /tmp/install-uptrack
+    mode: 0700
+    owner: root
+    group: root
+  when: command_result|failed
+
+- name: Install ksplice
+  sudo: yes
+  shell: /tmp/install-uptrack {{ ksplice_activation_key }} --autoinstall
+  when: command_result|failed
+
+- name: Run uptrack upgrade
+  sudo: yes
+  shell: uptrack-upgrade -y
+  when: command_result|failed
