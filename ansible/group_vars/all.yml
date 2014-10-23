@@ -1,9 +1,9 @@
-cchq_home: /home/{{cchq_user}}
-www_home: "{{cchq_home}}/www/{{deploy_env}}"
-code_home: "{{www_home}}/code_root"
-log_home: "{{www_home}}/log"
-service_home: "{{cchq_home}}/services/{{deploy_env}}"
-virtualenv_home: "{{cchq_home}}/.virtualenv/{{deploy_env}}"
+cchq_home: /home/{{ cchq_user }}
+www_home: "{{ cchq_home }}/www/{{ deploy_env }}"
+code_home: "{{ www_home }}/code_root"
+log_home: "{{ www_home }}/log"
+service_home: "{{ cchq_home }}/services/{{ deploy_env }}"
+virtualenv_home: "{{ cchq_home }}/.virtualenv/{{ deploy_env }}"
 
 postgres_db: commcarehq
 postgres_reporting_db: commcarehq_reporting
