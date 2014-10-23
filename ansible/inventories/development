@@ -30,9 +30,15 @@ touchforms
 webworkers
 
 [all:vars]
+
 url_base=192.168.33.17
+
 XFORMS_PLAYER_URL=http://192.168.33.16:4444
 # can't point to proxy because of self-signed cert
 TOUCHFORMS_API_USER='touchforms@example.com'
 TOUCHFORMS_API_PASSWORD='TsyasEivKf4GtbQX'
+
 encrypted_drive_password='xxBvYiMZ3YVIVkFR'
+
+# define this to activate ksplice
+# ksplice_activation_key=
