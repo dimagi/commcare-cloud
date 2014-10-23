@@ -3,6 +3,7 @@
   shell: sudo uptrack-show
   ignore_errors: yes
   register: command_result
+  when: ksplice_activation_key is defined
 
 - name: Download install-uptrack
   sudo: yes
