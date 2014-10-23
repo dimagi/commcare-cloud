@@ -2,5 +2,4 @@
 # roles/postgresql/meta/main.yml
 
 dependencies:
-  - { role: python }
-  - { role: users }
+  - role: common

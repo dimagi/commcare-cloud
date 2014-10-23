@@ -1,6 +1,5 @@
 ---
 dependencies:
   - role: users
-  - role: python
   - role: edit
   - role: ksplice

@@ -2,8 +2,7 @@
 # roles/webworker/meta/main.yml
 
 dependencies:
-  - role: python
-  - role: users
+  - role: common
   - role: supervisor
   - role: java
   - role: commcarehq
