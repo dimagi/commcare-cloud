@@ -5,5 +5,7 @@
 #
 - hosts: all
   gather_facts: True
+  vars_files:
+    - "vars/{{ deploy_env }}.yml"
   roles:
     - "{{ role }}"
