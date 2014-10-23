@@ -3,5 +3,5 @@
 ;
 [program:{{ item.name }}]
 {% for key, val in item.config.items() %}
-{{key}}={{val}}
+{{ key }}={{ val }}
 {% endfor %}

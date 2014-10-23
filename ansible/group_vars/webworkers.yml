@@ -12,10 +12,10 @@ localsettings:
   CELERY_FLOWER_URL: d
   CELERY_RESULT_BACKEND: e
   CELERY_PERIODIC_QUEUE: f
-  COUCH_DATABASE_NAME: "{{couchdb_db}}"
-  COUCH_PASSWORD: "{{couchdb_pw}}"
-  COUCH_SERVER_ROOT: "{{groups['couchdb'][0]}}:5984"
-  COUCH_USERNAME: "{{couchdb_user}}"
+  COUCH_DATABASE_NAME: "{{ couchdb_db }}"
+  COUCH_PASSWORD: "{{ couchdb_pw }}"
+  COUCH_SERVER_ROOT: "{{ groups['couchdb'][0] }}:5984"
+  COUCH_USERNAME: "{{ couchdb_user }}"
   COUCH_HTTPS: False
   COUCH_CACHE_DOCS: l
   COUCH_CACHE_VIEWS: m
@@ -41,7 +41,7 @@ localsettings:
   MACH_USERNAME: ee
   MEMCACHED_HOST: ff
   MEMCACHED_PORT: 123
-  PG_DATABASE_HOST: "{{groups['postgresql'][0]}}"
+  PG_DATABASE_HOST: "{{ groups['postgresql'][0] }}"
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: commcarehq
   PG_DATABASE_USER: commcarehq
@@ -49,7 +49,7 @@ localsettings:
   REDIS_HOST: ii
   REDIS_PORT: 123
   REDIS_DB: kk
-  REPORT_DATABASE_NAME: "{{postgres_reporting_db}}"
+  REPORT_DATABASE_NAME: "{{ postgres_reporting_db }}"
   REPORT_OBJECT_OWNER: mm
   CTABLE_PREFIX: nn
   SECRET_KEY: oo

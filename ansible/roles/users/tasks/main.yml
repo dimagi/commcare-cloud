@@ -1,7 +1,7 @@
 ---
 - name: Add cchq user
   sudo: yes
-  user: name={{cchq_user}} state=present shell=/bin/bash
+  user: name={{ cchq_user }} state=present shell=/bin/bash
 
 - name: Add dev group
   sudo: yes
@@ -9,12 +9,12 @@
 
 - name: Add dev users
   sudo: yes
-  user: name={{item.name}} state={{item.state}} shell=/bin/bash
+  user: name={{ item.name }} state={{ item.state }} shell=/bin/bash
   with_items: dev_users
 
 - name: Add public keys
   sudo: yes
-  authorized_key: user={{item.name}} state={{item.state}} key="{{lookup('file', 'ssh_keys/' + item.name + '.pub')}}"
+  authorized_key: user={{ item.name }} state={{ item.state }} key="{{ lookup('file', 'ssh_keys/' + item.name + '.pub') }}"
   with_items: dev_users
 
 - name: Copy sudoers file

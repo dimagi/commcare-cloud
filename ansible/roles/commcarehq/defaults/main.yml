@@ -1,5 +1,5 @@
 commcarehq_repository: https://github.com/dimagi/commcare-hq.git
-commcarehq_version: "{{version}}"
+commcarehq_version: "{{ version }}"
 commcarehq_requirements:
   - requirements.txt
   - prod-requirements.txt

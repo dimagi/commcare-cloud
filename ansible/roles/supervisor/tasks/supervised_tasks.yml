@@ -2,7 +2,7 @@
 # roles/supervisor/tasks/supervised_tasks.yml
 
 - name: add supervised tasks
-  template: src=supervisor_task.conf.j2 dest="{{ supervisor_task_conf }}/{{item.name}}.conf" owner="{{ cchq_user }}" mode=0644
+  template: src=supervisor_task.conf.j2 dest="{{ supervisor_task_conf }}/{{ item.name }}.conf" owner="{{ cchq_user }}" mode=0644
   with_items: supervised_tasks
 
 - name: restart supervised tasks
