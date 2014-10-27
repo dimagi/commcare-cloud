@@ -4,5 +4,5 @@ postgresql_home: /var/lib/postgresql/{{ postgresql_version }}/main
 postgresql_config_home: /etc/postgresql/{{ postgresql_version }}/main
 postgresql_pid_file: /var/run/postgresql/{{ postgresql_version }}-main.pid
 postgresql_dbs:
-  - "{{ settings.postgresql.db.name }}"
-  - "{{ settings.postgresql.reporting_db }}"
+  - "{{ localsettings.PG_DATABASE_NAME }}"
+  - "{{ localsettings.REPORT_DATABASE_NAME }}"

@@ -5,8 +5,8 @@
     app_path: "{{ code_home }}"
     virtualenv: "{{ virtualenv_home }}"
     state: present
-    name: "{{ settings.touchforms.user.username }}"
-    password: "{{ settings.touchforms.user.password }}"
+    name: "{{ localsettings.TOUCHFORMS_API_USER }}"
+    password: "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
     superuser: yes
 
 - name: Copy Jython localsettings.py

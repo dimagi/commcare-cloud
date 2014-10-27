@@ -20,8 +20,8 @@
 - name: Create PostgreSQL users
   sudo_user: postgres
   postgresql_user:
-    name: "{{ settings.postgresql.db.user }}"
-    password: "{{ settings.postgresql.db.password }}"
+    name: "{{ localsettings.PG_DATABASE_USER }}"
+    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
     role_attr_flags: CREATEDB
     state: present
   when:

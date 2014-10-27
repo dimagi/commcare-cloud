@@ -106,6 +106,6 @@ host    all             all             ::1/128                 md5
 
 {% for host in groups['db_accessors'] %}
 {% for db in postgresql_dbs %}
-host   {{ db }}   {{ settings.postgresql.db.user }}   {{ host }}/32   md5
+host   {{ db }}   {{ localsettings.PG_DATABASE_USER }}   {{ host }}/32   md5
 {% endfor %}
 {% endfor %}

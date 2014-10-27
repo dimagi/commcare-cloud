@@ -3,7 +3,7 @@
   shell: sudo uptrack-show
   ignore_errors: yes
   register: command_result
-  when: settings.ksplice.active
+  when: settings.KSPLICE_ACTIVE
 
 - name: Download install-uptrack
   sudo: yes
@@ -17,7 +17,7 @@
 
 - name: Install ksplice
   sudo: yes
-  shell: /tmp/install-uptrack {{ settings.ksplice.activation_key }} --autoinstall
+  shell: /tmp/install-uptrack {{ settings.KSPLICE_ACTIVATION_KEY }} --autoinstall
   when: command_result|failed
 
 - name: Run uptrack upgrade
