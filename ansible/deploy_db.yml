@@ -12,3 +12,4 @@
     - bennojoy.memcached
     - bennojoy.redis
     - ecryptfs
+    - monitoring

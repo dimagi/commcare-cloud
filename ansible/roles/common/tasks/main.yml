@@ -16,6 +16,7 @@
     - curl
     - htop
     - tmpreaper
+    - mailutils
 
 - name: Install pip packages
   pip: name={{ item }}

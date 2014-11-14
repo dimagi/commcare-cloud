@@ -1,0 +1,23 @@
+#!/bin/bash
+# Taken from http://www.akamaras.com/linux/linux-script-to-check-if-a-service-is-running-and-start-it-if-its-stopped/
+
+###edit the following
+service=redis-server
+email={{ alert_email }}
+###stop editing
+
+host=`hostname -f`
+if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 ))
+then
+echo "$service is running"
+else 
+/etc/init.d/$service start
+if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 ))
+then
+subject="$service at $host has been started"
+echo "$service at $host wasn't running and has been started" | mail -s "$subject" $email
+else
+subject="$service at $host is not running"
+echo "$service at $host is stopped and cannot be started!!!" | mail -s "$subject" $email
+fi
+fi
