@@ -8,23 +8,23 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '{{ postgres_db }}',
-        'USER': '{{ postgres_user }}',
-        'PASSWORD': '{{ postgres_pw }}',
-        'HOST': '{{ groups['postgresql'][0] }}',
+        'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
+        'USER': '{{ localsettings.PG_DATABASE_USER }}',
+        'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
+        'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
         'PORT': '5432'
     }
 }
 
 ### Reporting database
-SQL_REPORTING_DATABASE_URL = "postgresql://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s/{{ postgres_reporting_db }}" % DATABASES['default']
+SQL_REPORTING_DATABASE_URL = 'postgresql+psycopg2://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.REPORT_DATABASE_NAME }}?sslmode=require'
 
 ####### Couch Config ######
-COUCH_HTTPS = {{ couchdb_https }} # recommended production value is True if enabling https
-COUCH_SERVER_ROOT = '{{ groups['couchdb'][0] or groups['db'][0] }}:5984' #6984 for https couch
-COUCH_USERNAME = '{{ couchdb_user }}'
-COUCH_PASSWORD = '{{ couchdb_pw }}'
-COUCH_DATABASE_NAME = '{{ couchdb_db }}'
+COUCH_HTTPS = {{ localsettings.COUCH_HTTPS }} # recommended production value is True if enabling https
+COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}'
+COUCH_USERNAME = '{{ localsettings.COUCH_USERNAME }}'
+COUCH_PASSWORD = '{{ localsettings.COUCH_PASSWORD }}'
+COUCH_DATABASE_NAME = '{{ localsettings.COUCH_DATABASE_NAME }}'
 
 ### Staging Replication Setup for Production/Staging
 
@@ -115,12 +115,12 @@ DOMAIN_SYNC_APP_NAME_MAP = { "app_name": "new_app_name" }
 
 ####### Touchforms config - for CloudCare #######
 
-XFORMS_PLAYER_URL = '{{ XFORMS_PLAYER_URL }}'
+XFORMS_PLAYER_URL = '{{ localsettings.XFORMS_PLAYER_URL }}'
 
 # email and password for an admin django user, such as one created with
 # ./manage.py bootstrap <project-name> <email> <password>
-TOUCHFORMS_API_USER = '{{ TOUCHFORMS_API_USER }}'
-TOUCHFORMS_API_PASSWORD = '{{ TOUCHFORMS_API_PASSWORD }}'
+TOUCHFORMS_API_USER = '{{ localsettings.TOUCHFORMS_API_USER }}'
+TOUCHFORMS_API_PASSWORD = '{{ localsettings.TOUCHFORMS_API_PASSWORD }}'
 
 
 ####### Misc / HQ-specific Config ########
@@ -182,11 +182,15 @@ REPORT_CACHE = 'default' # or e.g. 'redis'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '{{ groups['memcached'][0] or groups['db'][0] }}:11211',
+        'LOCATION': '{{ localsettings['MEMCACHED_HOST'] }}:{{ localsettings['MEMCACHED_PORT'] }}',
     },
     'redis': {
         'BACKEND': 'redis_cache.cache.RedisCache',
-        'LOCATION': '{{ groups['redis'][0] or groups['db'][0] }}:6379:0',
+        {% if 'REDIS_DB' in localsettings %}
+        'LOCATION': '{{ localsettings['REDIS_HOST'] }}:{{ localsettings['REDIS_PORT'] }}:{{ localsettings['REDIS_DB'] }}',
+	    {% else %}
+        'LOCATION': '{{ localsettings['REDIS_HOST'] }}:{{ localsettings['REDIS_PORT'] }}',
+	    {% endif %}
         'OPTIONS': {},
     },
 }
