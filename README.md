@@ -78,10 +78,10 @@ web worker server IP address. Also uncomment the section of the vagrant file tha
 
 `vagrant up` fails.
 * Start VirtualBox `$ VirtualBox`
+  * Or on a Mac, `$ sudo /Library/StartupItems/VirtualBox/VirtualBox restart`
 * Attempt to start the VM
   * If the error message is: `VT-x needs to be enabled in BIOS`
 For the Lenovo T440s: 
   * Restart machine, press Enter during startup
   * Navigate to Security -> Virtualization
     * Turn both settings on
-
