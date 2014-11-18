@@ -5,7 +5,7 @@
   apt_key: url=https://download.newrelic.com/548C16BF.gpg state=present
 
 - name: Install newrelic-sysmond
-  apt: name=newrelic-sysmond update_cache=yes state=present
+  apt: name=newrelic-sysmond update_cache=yes state=present cache_valid_time=3600
 
 # - name: Set New Relic license key
 #   command: nrsysmond-config --set license_key=YOUR_LICENSE_KEY
