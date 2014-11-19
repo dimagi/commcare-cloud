@@ -1,6 +1,7 @@
 #!/bin/bash
 # Taken from http://www.akamaras.com/linux/linux-script-to-check-if-a-service-is-running-and-start-it-if-its-stopped/
 
+{% if alert_email %}
 ###edit the following
 service=redis-server
 email={{ alert_email }}
@@ -21,3 +22,4 @@ subject="$service at $host is not running"
 echo "$service at $host is stopped and cannot be started!!!" | mail -s "$subject" $email
 fi
 fi
+{% endif %}
