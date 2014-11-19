@@ -4,7 +4,6 @@
 
 <VirtualHost *:443>
     # much of this __should__ be paramaterized
-    ServerName {{ ansible_hostname }}
     SSLEngine On
     SSLCertificateFile {{ apache2_ssl_cert }}
     SSLCertificateKeyFile {{ apache2_ssl_key }}
@@ -51,7 +50,7 @@
 
     ProxyPass / balancer://hqcluster/
     ProxyPassReverse / balancer://hqcluster/
-    ServerName www.commcarehq.org
+    ServerName {{ SITE_HOST }}
 
     ## This directive is causing trouble in my local development tests because
     ## it always gets hit before the proxy pass has a chance to work correctly.

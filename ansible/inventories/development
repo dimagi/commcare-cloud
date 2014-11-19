@@ -16,6 +16,12 @@
 [memcached]
 192.168.33.16
 
+[celery]
+192.168.33.16
+
+[elasticsearch]
+192.168.33.16
+
 [db:children]
 postgresql
 couchdb

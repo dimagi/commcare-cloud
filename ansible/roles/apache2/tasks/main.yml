@@ -37,6 +37,14 @@
     - Reload Apache2 service
   when: apache2_install == True
 
+- name: Add mod confs
+  sudo: yes
+  template: src="mods-available/{{ item }}.j2" dest="/etc/apache2/mods-available/{{ item }}"
+  with_items:
+    - proxy.conf
+  notify:
+    - Reload Apache2 service
+
 - name: Add sites
   sudo: yes
   template: src={{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }}
