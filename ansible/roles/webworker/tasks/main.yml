@@ -1,6 +1,13 @@
 ---
 # roles/webworker/tasks/main.yml
 
+- name: Sync Couchdb
+  sudo_user: "{{ cchq_user }}"
+  django_manage:
+    app_path: "{{ code_home }}"
+    virtualenv: "{{ virtualenv_home }}"
+    command: sync_couchdb
+
 - name: Run syncdb
   sudo_user: "{{ cchq_user }}"
   django_manage:
@@ -8,21 +15,12 @@
     virtualenv: "{{ virtualenv_home }}"
     command: syncdb
 
-- name: Pre-migrate apps
-  sudo_user: "{{ cchq_user }}"
-  django_manage:
-    app_path: "{{ code_home }}"
-    virtualenv: "{{ virtualenv_home }}"
-    command: "migrate {{ item }}"
-  with_items:
-    - ilsgateway 0001 --fake
-
 - name: Migrate apps
   sudo_user: "{{ cchq_user }}"
   django_manage:
     app_path: "{{ code_home }}"
     virtualenv: "{{ virtualenv_home }}"
-    command: migrate
+    command: migrate --traceback
 
 - name: Collect static files
   sudo_user: "{{ cchq_user }}"
