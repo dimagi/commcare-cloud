@@ -2,78 +2,78 @@ import os
 import sys
 
 {% if 'ALLOWED_HOSTS' in localsettings %}
-ALLOWED_HOSTS = {{localsettings['ALLOWED_HOSTS']}}
+ALLOWED_HOSTS = {{ localsettings.ALLOWED_HOSTS }}
 {% endif %}
 
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': '{{localsettings['PG_DATABASE_NAME']}}',
-            'USER': '{{localsettings['PG_DATABASE_USER']}}',
-            'PASSWORD': '{{localsettings['PG_DATABASE_PASSWORD']}}',
-            'HOST': '{{localsettings['PG_DATABASE_HOST']}}',
+            'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
+            'USER': '{{ localsettings.PG_DATABASE_USER }}',
+            'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
+            'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
             'OPTIONS': {
                 'sslmode': 'require',
             },
         },
     }
 
-SQL_REPORTING_DATABASE_URL = 'postgresql+psycopg2://{{localsettings['PG_DATABASE_USER']}}:{{localsettings['PG_DATABASE_PASSWORD']}}@{{localsettings['PG_DATABASE_HOST']}}/{{localsettings['REPORT_DATABASE_NAME']}}?sslmode=require'
-{% if localsettings['REPORT_OBJECT_OWNER'] %}
-SQL_REPORTING_OBJECT_OWNER = '{{localsettings['REPORT_OBJECT_OWNER']}}'
+SQL_REPORTING_DATABASE_URL = 'postgresql+psycopg2://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.REPORT_DATABASE_NAME }}?sslmode=require'
+{% if localsettings.REPORT_OBJECT_OWNER %}
+SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 {% endif %}
 
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 
-{% if localsettings['CTABLE_PREFIX'] %}
-CTABLE_PREFIX = '{{localsettings['CTABLE_PREFIX']}}'
+{% if localsettings.CTABLE_PREFIX %}
+CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 {% endif %}
 
-DJANGO_LOG_FILE = os.path.join('..','log',"{{localsettings['DEPLOY_MACHINE_NAME']}}-django.log")
+DJANGO_LOG_FILE = os.path.join('..','log',"{{ localsettings.DEPLOY_MACHINE_NAME }}-django.log")
 
 # Email setup
 # email settings: these ones are the custom hq ones
-EMAIL_LOGIN = "{{localsettings['EMAIL_LOGIN']}}"
-EMAIL_PASSWORD="{{localsettings['EMAIL_PASSWORD']}}"
-EMAIL_SMTP_HOST="{{localsettings['EMAIL_SMTP_HOST']}}"
-EMAIL_SMTP_PORT={{localsettings['EMAIL_SMTP_PORT']}}
+EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
+EMAIL_PASSWORD = "{{ localsettings.EMAIL_PASSWORD }}"
+EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
+EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 
-SERVER_EMAIL = 'commcarehq-noreply+{{localsettings['DEPLOY_MACHINE_NAME']}}@dimagi.com' #the physical server emailing - differentiate if needed
-EMAIL_SUBJECT_PREFIX = '[{{hq_deploy_target}}] '
-SERVER_ENVIRONMENT = '{{hq_deploy_target}}'
+SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
+EMAIL_SUBJECT_PREFIX = '[{{ deploy_env }}] '
+SERVER_ENVIRONMENT = '{{ deploy_env }}'
 
-XFORMS_FORM_TRANSLATE_JAR=os.path.join(os.path.dirname(__file__),"lib","form_translate.jar")
+XFORMS_FORM_TRANSLATE_JAR = os.path.join(os.path.dirname(__file__),"lib","form_translate.jar")
 
 #CLOUDANT SETUP
-COUCH_USERNAME = '{{localsettings['COUCH_USERNAME']}}'
-COUCH_PASSWORD = '{{localsettings['COUCH_PASSWORD']}}'
-COUCH_SERVER_ROOT = '{{localsettings['COUCH_SERVER_ROOT']}}'
-COUCH_DATABASE_NAME = '{{localsettings['COUCH_DATABASE_NAME']}}'
-COUCH_HTTPS={{localsettings['COUCH_HTTPS']}}
+COUCH_USERNAME = '{{ localsettings.COUCH_USERNAME }}'
+COUCH_PASSWORD = '{{ localsettings.COUCH_PASSWORD }}'
+COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}'
+COUCH_DATABASE_NAME = '{{ localsettings.COUCH_DATABASE_NAME }}'
+COUCH_HTTPS = {{ localsettings.COUCH_HTTPS }}
 
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
-COUCH_CACHE_DOCS = '{{localsettings['COUCH_CACHE_DOCS']}}'
+COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% endif %}
 {% if 'COUCH_CACHE_VIEWS' in localsettings %}
-COUCH_CACHE_VIEWS = '{{localsettings['COUCH_CACHE_VIEWS']}}'
+COUCH_CACHE_VIEWS = '{{ localsettings.COUCH_CACHE_VIEWS }}'
 {% endif %}
 
 {% if 'STAGING_DOMAINS' in localsettings %}
-STAGING_DOMAINS = {{localsettings['STAGING_DOMAINS']}}
+STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
 {% endif %}
 
 {% if 'PRODUCTION_COUCHDB_URI' in localsettings %}
-PRODUCTION_COUCHDB_URI = '{{localsettings['PRODUCTION_COUCHDB_URI']}}'
+PRODUCTION_COUCHDB_URI = '{{ localsettings.PRODUCTION_COUCHDB_URI }}'
 {% endif %}
 
 
 {% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
-ES_CASE_CHECK_DIRECT_DOC_ID = '{{localsettings['ES_CASE_CHECK_DIRECT_DOC_ID']}}'
+ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
 {% else %}
 ES_CASE_CHECK_DIRECT_DOC_ID = None
 {% endif %} 
 {% if 'ES_XFORM_CHECK_DIRECT_DOC_ID' in localsettings %}
-ES_XFORM_CHECK_DIRECT_DOC_ID = '{{localsettings['ES_XFORM_CHECK_DIRECT_DOC_ID']}}'
+ES_XFORM_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_XFORM_CHECK_DIRECT_DOC_ID }}'
 {% else %}
 ES_XFORM_CHECK_DIRECT_DOC_ID = None
 {% endif %} 
@@ -81,23 +81,23 @@ ES_XFORM_CHECK_DIRECT_DOC_ID = None
 ####### For Constructing Global URLs ########
 
 {% if 'SENTRY_DSN' in localsettings %}
-SENTRY_DSN = '{{localsettings['SENTRY_DSN']}}'
+SENTRY_DSN = '{{ localsettings.SENTRY_DSN }}'
 {% else %}
 SENTRY_DSN = None
 {% endif %} 
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn', 'raven.contrib.django.raven_compat',)
 
-BITLY_LOGIN = '{{localsettings['BITLY_LOGIN']}}'
-BITLY_APIKEY = '{{localsettings['BITLY_APIKEY']}}'
+BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
+BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 JAR_SIGN = dict(
     jad_tool = os.path.join(_ROOT_DIR, "submodules", "core-hq-src", "corehq", "apps", "app_manager", "JadTool.jar"),
     key_store = os.path.join(os.path.dirname(os.path.dirname(_ROOT_DIR)), "DimagiKeyStore"),
-    key_alias = "{{localsettings['JAR_KEY_ALIAS']}}",
-    store_pass = "{{localsettings['JAR_STORE_PASS']}}",
-    key_pass = "{{localsettings['JAR_KEY_PASS']}}",
+    key_alias = "{{ localsettings.JAR_KEY_ALIAS }}",
+    store_pass = "{{ localsettings.JAR_STORE_PASS }}",
+    key_pass = "{{ localsettings.JAR_KEY_PASS }}",
 )
 
 #xep
@@ -121,26 +121,26 @@ SMS_BACKENDS = {
 }
 
 # mach sms config
-SMS_GATEWAY_URL = "{{localsettings['SMS_GATEWAY_URL']}}"
-SMS_GATEWAY_PARAMS = "{{localsettings['SMS_GATEWAY_PARAMS']}}"
+SMS_GATEWAY_URL = "{{ localsettings.SMS_GATEWAY_URL }}"
+SMS_GATEWAY_PARAMS = "{{ localsettings.SMS_GATEWAY_PARAMS }}"
 
-MACH_CONFIG = {"username": "{{localsettings['MACH_USERNAME']}}", "password": "{{localsettings['MACH_PASSWORD']}}", "service_profile": "changeme" }
+MACH_CONFIG = {"username": "{{ localsettings.MACH_USERNAME }}", "password": "{{ localsettings.MACH_PASSWORD }}", "service_profile": "changeme" }
 
 # unicel sms config
-UNICEL_CONFIG = {"username": "{{localsettings['UNICEL_USERNAME']}}",
-                 "password": "{{localsettings['UNICEL_PASSWORD']}}",
-                 "sender": "{{localsettings['UNICEL_SENDER']}}",
-                 "receive_phone": "+{{localsettings['UNICEL_RECEIVE_PHONE']}}",
+UNICEL_CONFIG = {"username": "{{ localsettings.UNICEL_USERNAME }}",
+                 "password": "{{ localsettings.UNICEL_PASSWORD }}",
+                 "sender": "{{ localsettings.UNICEL_SENDER }}",
+                 "receive_phone": "+{{ localsettings.UNICEL_RECEIVE_PHONE }}",
                 }
 
 filepath = os.path.abspath(os.path.dirname(__file__))
-{% if 'MEDIA_ROOT' in localsettings and localsettings['MEDIA_ROOT'] %}
-MEDIA_ROOT = '{{localsettings['MEDIA_ROOT']}}'
+{% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
+MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
 MEDIA_ROOT = os.path.join(filepath,'mediafiles') #media for user uploaded media.  in general this won't be used at all.
 {% endif %}
-{% if 'STATIC_ROOT' in localsettings and localsettings['STATIC_ROOT'] %}
-STATIC_ROOT = '{{localsettings['STATIC_ROOT']}}'
+{% if 'STATIC_ROOT' in localsettings and localsettings.STATIC_ROOT %}
+STATIC_ROOT = '{{ localsettings.STATIC_ROOT }}'
 {% else %}
 STATIC_ROOT = os.path.join(filepath,'staticfiles')
 {% endif %}
@@ -151,12 +151,12 @@ LESS_DEBUG = DEBUG
 ADMINS = (('HQ Dev Team', 'commcarehq-ops@dimagi.com'),)
 SEND_BROKEN_LINK_EMAILS = True
 
-OVERRIDE_LOCATION="https://www.commcarehq.org"
+OVERRIDE_LOCATION = "https://www.commcarehq.org"
 DEFAULT_PROTOCOL = "https"
 
 ANALYTICS_IDS = {
-    'GOOGLE_ANALYTICS_ID': '{{localsettings['GOOGLE_ANALYTICS_ID']}}',
-    'PINGDOM_ID': '{{localsettings['PINGDOM_ID']}}'
+    'GOOGLE_ANALYTICS_ID': '{{ localsettings.GOOGLE_ANALYTICS_ID }}',
+    'PINGDOM_ID': '{{ localsettings.PINGDOM_ID }}'
 }
 
 AXES_LOCK_OUT_AT_FAILURE = False
@@ -180,32 +180,32 @@ DOMAIN_SYNCS = { "crs": { "target": "public",
 
 DOMAIN_SYNC_APP_NAME_MAP = { "kaushambi": "Pregnancy" }
 {% if 'DOMAIN_SYNC_DATABASE_NAME' in localsettings %}
-DOMAIN_SYNC_DATABASE_NAME = '{{localsettings['DOMAIN_SYNC_DATABASE_NAME']}}'
+DOMAIN_SYNC_DATABASE_NAME = '{{ localsettings.DOMAIN_SYNC_DATABASE_NAME }}'
 {% endif %}
 
 CELERY_SEND_TASK_ERROR_EMAILS = True
-CELERY_RESULT_BACKEND = '{{localsettings['CELERY_RESULT_BACKEND']}}'
-CELERY_PERIODIC_QUEUE = '{{localsettings['CELERY_PERIODIC_QUEUE']}}'
-CELERY_FLOWER_URL = '{{localsettings['CELERY_FLOWER_URL']}}'
+CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
+CELERY_PERIODIC_QUEUE = '{{ localsettings.CELERY_PERIODIC_QUEUE }}'
+CELERY_FLOWER_URL = '{{ localsettings.CELERY_FLOWER_URL }}'
 
 {% if localsettings.get('CELERY_REMINDER_RULE_QUEUE') %}
-CELERY_REMINDER_RULE_QUEUE = '{{ localsettings['CELERY_REMINDER_RULE_QUEUE'] }}'
+CELERY_REMINDER_RULE_QUEUE = '{{ localsettings.CELERY_REMINDER_RULE_QUEUE }}'
 {% endif %}
 
 {% if localsettings.get('CELERY_REMINDER_CASE_UPDATE_QUEUE') %}
-CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings['CELERY_REMINDER_CASE_UPDATE_QUEUE'] }}'
+CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_QUEUE }}'
 {% endif %}
 
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
-GMAPS_API_KEY = '{{localsettings['GMAPS_API_KEY']}}'
+GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{localsettings['TOUCHFORMS_API_USER']}}"
-TOUCHFORMS_API_PASSWORD = "{{localsettings['TOUCHFORMS_API_PASSWORD']}}"
+TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER }}"
+TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
 
-BROKER_URL = '{{localsettings['BROKER_URL']}}'
+BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
-XFORMS_PLAYER_URL = "{{localsettings['XFORMS_PLAYER_URL']}}"
+XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
 
 SOIL_BACKEND = "soil.CachedDownload"
 SOIL_DEFAULT_CACHE = "redis"
@@ -215,14 +215,14 @@ REPORT_CACHE = 'redis'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '{{localsettings['MEMCACHED_HOST']}}:{{localsettings['MEMCACHED_PORT']}}',
+        'LOCATION': '{{ localsettings.MEMCACHED_HOST }}:{{ localsettings.MEMCACHED_PORT }}',
         },
     'redis': {
         'BACKEND': 'redis_cache.cache.RedisCache',
         {% if 'REDIS_DB' in localsettings %}
-        'LOCATION': '{{localsettings['REDIS_HOST']}}:{{localsettings['REDIS_PORT']}}:{{localsettings['REDIS_DB']}}',
+        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
 	{% else%}
-        'LOCATION': '{{localsettings['REDIS_HOST']}}:{{localsettings['REDIS_PORT']}}',
+        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
 	{% endif %}
         'OPTIONS': {
             },
@@ -230,9 +230,9 @@ CACHES = {
         }
     }
 
-ELASTICSEARCH_HOST = '{{localsettings['ELASTICSEARCH_HOST']}}'
-ELASTICSEARCH_PORT = {{localsettings['ELASTICSEARCH_PORT']}}
-SECRET_KEY="{{localsettings['SECRET_KEY']}}"
+ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
+ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
+SECRET_KEY = "{{ localsettings.SECRET_KEY }}"
 
 PRIME_VIEWS_INTERVAL = 2
 
@@ -379,99 +379,103 @@ INDICATOR_NAMESPACES = {
 }
 COUCH_STALE_QUERY = 'ok'
 
-API_THROTTLE_REQUESTS=5
-API_THROTTLE_TIMEFRAME=10
+API_THROTTLE_REQUESTS = 5
+API_THROTTLE_TIMEFRAME = 10
 
 
 {% if 'MAPS_LAYERS' in localsettings %}
 import json
-MAPS_LAYERS = json.loads('{{localsettings['MAPS_LAYERS']|json}}')
+MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_nice_json }}')
 {% endif %}
 
-{% if 'PILLOWTOP_MACHINE_ID' in localsettings and localsettings['PILLOWTOP_MACHINE_ID'] %}
-PILLOWTOP_MACHINE_ID = '{{ localsettings['PILLOWTOP_MACHINE_ID'] }}'
+{% if 'PILLOWTOP_MACHINE_ID' in localsettings and localsettings.PILLOWTOP_MACHINE_ID %}
+PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
 {% if localsettings.get('SIMPLE_API_KEYS') %}
-SIMPLE_API_KEYS = {{localsettings['SIMPLE_API_KEYS']|json}}
+SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_nice_json }}
 {% endif %}
 
 {% if localsettings.get('KAFKA_HOST') %}
-KAFKA_HOST = '{{ localsettings['KAFKA_HOST'] }}'
+KAFKA_HOST = '{{ localsettings.KAFKA_HOST }}'
 {% endif %}
 
 {% if localsettings.get('COUCHPULSE_DATABASE_URL') %}
-COUCHPULSE_DATABASE_URL = '{{ localsettings['COUCHPULSE_DATABASE_URL'] }}'
+COUCHPULSE_DATABASE_URL = '{{ localsettings.COUCHPULSE_DATABASE_URL }}'
 {% endif %}
 
 INVOICE_TERMS = "Net 30"
 
 {% if localsettings.get('BOOKKEEPER_CONTACT_EMAILS') %}
-BOOKKEEPER_CONTACT_EMAILS = {{localsettings['BOOKKEEPER_CONTACT_EMAILS']|json}}
+BOOKKEEPER_CONTACT_EMAILS = {{ localsettings.BOOKKEEPER_CONTACT_EMAILS|to_nice_json }}
 {% endif %}
 
 {% if localsettings.get('INVOICE_STARTING_NUMBER') %}
-INVOICE_STARTING_NUMBER = {{ localsettings['INVOICE_STARTING_NUMBER'] }}
+INVOICE_STARTING_NUMBER = {{ localsettings.INVOICE_STARTING_NUMBER }}
 {% endif %}
 
 {% if localsettings.get('INVOICE_PREFIX') %}
-INVOICE_PREFIX = '{{ localsettings['INVOICE_PREFIX'] }}'
+INVOICE_PREFIX = '{{ localsettings.INVOICE_PREFIX }}'
 {% endif %}
 
 {% if localsettings.get('INVOICE_FROM_ADDRESS') %}
-INVOICE_FROM_ADDRESS = {{localsettings['INVOICE_FROM_ADDRESS']|json}}
+INVOICE_FROM_ADDRESS = {{ localsettings.INVOICE_FROM_ADDRESS|to_nice_json }}
 {% endif %}
 
 {% if localsettings.get('BANK_ADDRESS') %}
-BANK_ADDRESS = {{localsettings['BANK_ADDRESS']|json}}
+BANK_ADDRESS = {{ localsettings.BANK_ADDRESS|to_nice_json }}
 {% endif %}
 
 {% if localsettings.get('BANK_NAME') %}
-BANK_NAME = '{{ localsettings['BANK_NAME'] }}'
+BANK_NAME = '{{ localsettings.BANK_NAME }}'
 {% endif %}
 
 {% if localsettings.get('BANK_ACCOUNT_NUMBER') %}
-BANK_ACCOUNT_NUMBER = '{{ localsettings['BANK_ACCOUNT_NUMBER'] }}'
+BANK_ACCOUNT_NUMBER = '{{ localsettings.BANK_ACCOUNT_NUMBER }}'
 {% endif %}
 
 {% if localsettings.get('BANK_ROUTING_NUMBER') %}
-BANK_ROUTING_NUMBER = '{{ localsettings['BANK_ROUTING_NUMBER'] }}'
+BANK_ROUTING_NUMBER = '{{ localsettings.BANK_ROUTING_NUMBER }}'
 {% endif %}
 
 {% if localsettings.get('BANK_SWIFT_CODE') %}
-BANK_SWIFT_CODE = '{{ localsettings['BANK_SWIFT_CODE'] }}'
+BANK_SWIFT_CODE = '{{ localsettings.BANK_SWIFT_CODE }}'
 {% endif %}
 
 {% if localsettings.get('OPEN_EXCHANGE_RATES_ID') %}
-OPEN_EXCHANGE_RATES_ID = '{{ localsettings['OPEN_EXCHANGE_RATES_ID'] }}'
+OPEN_EXCHANGE_RATES_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_ID }}'
+{% endif %}
+
+{% if localsettings.get('MANDRILL_APIKEY') %}
+MANDRILL_APIKEY = '{{ localsettings.MANDRILL_APIKEY }}'
 {% endif %}
 
 {% if localsettings.get('MAILCHIMP_APIKEY') %}
-MAILCHIMP_APIKEY = '{{ localsettings['MAILCHIMP_APIKEY'] }}'
+MAILCHIMP_APIKEY = '{{ localsettings.MAILCHIMP_APIKEY }}'
 {% endif %}
 
 {% if localsettings.get('MAILCHIMP_COMMCARE_USERS_ID') %}
-MAILCHIMP_COMMCARE_USERS_ID = '{{ localsettings['MAILCHIMP_COMMCARE_USERS_ID'] }}'
+MAILCHIMP_COMMCARE_USERS_ID = '{{ localsettings.MAILCHIMP_COMMCARE_USERS_ID }}'
 {% endif %}
 
 {% if localsettings.get('MAILCHIMP_MASS_EMAIL_ID') %}
-MAILCHIMP_MASS_EMAIL_ID = '{{ localsettings['MAILCHIMP_MASS_EMAIL_ID'] }}'
+MAILCHIMP_MASS_EMAIL_ID = '{{ localsettings.MAILCHIMP_MASS_EMAIL_ID }}'
 {% endif %}
 
 {% if localsettings.get('STRIPE_PRIVATE_KEY') %}
-STRIPE_PRIVATE_KEY = '{{ localsettings['STRIPE_PRIVATE_KEY'] }}'
+STRIPE_PRIVATE_KEY = '{{ localsettings.STRIPE_PRIVATE_KEY }}'
 {% endif %}
 
 {% if localsettings.get('STRIPE_PUBLIC_KEY') %}
-STRIPE_PUBLIC_KEY = '{{ localsettings['STRIPE_PUBLIC_KEY'] }}'
+STRIPE_PUBLIC_KEY = '{{ localsettings.STRIPE_PUBLIC_KEY }}'
 {% endif %}
 
 COMPRESS_OFFLINE = True
 
 {% if localsettings.get('ES_QUERY_CHUNKSIZE') %}
-ES_QUERY_CHUNKSIZE = '{{ localsettings['ES_QUERY_CHUNKSIZE'] }}'
+ES_QUERY_CHUNKSIZE = '{{ localsettings.ES_QUERY_CHUNKSIZE }}'
 {% endif %}
 
 # Set to something like "192.168.1.5:8000" (with your IP address).
 # See corehq/apps/builds/README.md for more information.
-BASE_ADDRESS = '{{ url_base }}'
+BASE_ADDRESS = '{{ SITE_HOST }}'
