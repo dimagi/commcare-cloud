@@ -12,5 +12,6 @@
     - couchdb
     - bennojoy.memcached
     - bennojoy.redis
+    - elasticsearch
     - ecryptfs
     - monitoring

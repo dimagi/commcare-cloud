@@ -1,0 +1,10 @@
+---
+- name: Elasticsearch
+  hosts: elasticsearch
+  sudo: yes
+  serial: 1
+  vars_files:
+    - "vars/{{ deploy_env }}.yml"
+  roles:
+    - common
+    - elasticsearch

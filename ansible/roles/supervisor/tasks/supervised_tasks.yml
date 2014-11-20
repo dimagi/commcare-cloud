@@ -6,5 +6,7 @@
   with_items: supervised_tasks
 
 - name: restart supervised tasks
-  supervisorctl: name="{{ item.name }}" state=restarted
+  supervisorctl: name="{{ item.name }}" state=started
+  with_items: supervised_tasks
+- supervisorctl: name="{{ item.name }}" state=restarted
   with_items: supervised_tasks

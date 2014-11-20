@@ -1,0 +1,23 @@
+# ElasticSearch Service
+
+description     "ElasticSearch"
+
+#start on (net-device-up and local-filesystems and runlevel [2345])
+#stop on runlevel [016]
+
+respawn limit 10 5
+
+env ES_HOME=/opt/elasticsearch/
+env ES_MIN_MEM={{ elasticsearch_memory }}
+env ES_MAX_MEM={{ elasticsearch_memory }}
+env DAEMON="${ES_HOME}/bin/elasticsearch"
+env DATA_DIR=/opt/data/elasticsearch/data
+env ES_JAVA_OPTS="-XX:SurvivorRatio=3 -XX:+CMSIncrementalMode"
+env CONFIG_DIR=/etc/elasticsearch
+
+console output
+
+script
+  ulimit -n 32000
+  su -s /bin/dash -c "/opt/elasticsearch/bin/elasticsearch -f -Des.path.conf=$CONFIG_DIR -Des.path.home=$ES_HOME -Des.path.data=$DATA_DIR" elasticsearch
+end script

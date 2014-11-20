@@ -1,4 +1,4 @@
 *.swp
-config/
+/config/
 .vagrant/
 DimagiKeyStore

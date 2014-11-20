@@ -1,2 +1,3 @@
 ---
 elasticsearch_version: 0.90.5
+elasticsearch_memory: 4096m
