@@ -6,5 +6,5 @@
   vars_files:
     - "vars/{{ deploy_env }}.yml"
   roles:
-    - common
+    - {role: common, sudo: yes}
     - apache2
