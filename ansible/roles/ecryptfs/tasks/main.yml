@@ -10,17 +10,17 @@
 
 - name: Create /opt/data directory
   sudo: yes
-  file: path=/opt/data owner=root group=root mode=0770 state=directory
+  file: path=/opt/data owner=root group=root mode=0755 state=directory
 
 - name: Add encryption password to keyring
   sudo: yes
-  shell: 'printf "%s" "{{ settings.ecryptfs.encrypted_drive_password }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
+  shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
   when: "'/opt/data' not in fstab_contents.stdout"
 
 - name: Mount data drive
   sudo: yes
-  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ settings.ecryptfs.encrypted_drive_password }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 /opt/data/ /opt/data/"
+  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 /opt/data/ /opt/data/"
   when: "'/opt/data' not in fstab_contents.stdout"
 
 - name: Drop unencrypted readme in directory
