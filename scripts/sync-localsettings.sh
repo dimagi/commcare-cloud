@@ -20,6 +20,7 @@ cat $salt_localsettings |
 # Set to something like "192.168.1.5:8000" (with your IP address).
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
+EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 EOF
 
 echo "Options used:"

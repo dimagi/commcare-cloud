@@ -74,6 +74,16 @@ web worker server IP address. Also uncomment the section of the vagrant file tha
 192.168.33.18
 ```
 
+In order to have this set up send email without crashing
+(which you need to do during a deploy, for example)
+run a debug smtp server daemon on control:
+
+```bash
+$ vagrant ssh control
+...
+$ python -m smtpd -n -c DebuggingServer 192.168.33.14:1025
+```
+
 ### Troubleshooting
 
 `vagrant up` fails.

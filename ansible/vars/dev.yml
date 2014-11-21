@@ -47,10 +47,13 @@ localsettings:
 #  DOMAIN_SYNC_DATABASE_NAME:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_LOGIN: 'notifications@dimagi.com'
-  EMAIL_PASSWORD: '******'
-  EMAIL_SMTP_HOST: 'smtp.gmail.com'
-  EMAIL_SMTP_PORT: '587'
+  EMAIL_LOGIN: ''
+  EMAIL_PASSWORD: ''
+  # Run `python -m smtpd -n -c DebuggingServer 192.168.33.14:1025` on control
+  EMAIL_SMTP_HOST: '192.168.33.14'
+  EMAIL_SMTP_PORT: '1025'
+  # use True in prod!
+  EMAIL_USE_TLS: no
 #  ES_CASE_CHECK_DIRECT_DOC_ID:
 #  ES_QUERY_CHUNKSIZE:
 #  ES_XFORM_CHECK_DIRECT_DOC_ID:
