@@ -83,3 +83,5 @@
 - sudo: yes
   # make sure it's started in the first place
   shell: start elasticsearch
+  register: result
+  failed_when: result.rc != 0 and 'already running' not in result.stderr
