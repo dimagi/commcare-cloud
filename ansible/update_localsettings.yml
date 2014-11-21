@@ -1,0 +1,15 @@
+---
+- name: Update Localsettings
+  hosts: all
+  sudo: yes
+  vars_files:
+    - "vars/{{ deploy_env }}.yml"
+  tasks:
+    - name: Update Localsettings
+      sudo_user: "{{ cchq_user }}"
+      template:
+        src: roles/commcarehq/templates/localsettings.salt.py.j2
+        dest: "{{ item }}/localsettings.py"
+      with_items:
+        - "{{ code_home }}"
+        - "{{ preindex_home }}"
