@@ -146,7 +146,7 @@ STATIC_ROOT = os.path.join(filepath,'staticfiles')
 {% endif %}
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-LESS_DEBUG = DEBUG
+#LESS_DEBUG = DEBUG
 
 ADMINS = (('HQ Dev Team', 'commcarehq-ops@dimagi.com'),)
 SEND_BROKEN_LINK_EMAILS = True
@@ -470,7 +470,7 @@ STRIPE_PRIVATE_KEY = '{{ localsettings.STRIPE_PRIVATE_KEY }}'
 STRIPE_PUBLIC_KEY = '{{ localsettings.STRIPE_PUBLIC_KEY }}'
 {% endif %}
 
-COMPRESS_OFFLINE = True
+#COMPRESS_OFFLINE = True
 
 {% if localsettings.get('ES_QUERY_CHUNKSIZE') %}
 ES_QUERY_CHUNKSIZE = '{{ localsettings.ES_QUERY_CHUNKSIZE }}'

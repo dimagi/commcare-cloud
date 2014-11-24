@@ -9,6 +9,10 @@
     - ssl-cert
   when: apache2_install == True
 
+- name: Create apache http user
+  sudo: yes
+  user: name="{{ apache2_http_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
+
 - name: Create apache2 logfile home
   sudo: yes
   file: path={{ log_home }} owner={{ cchq_user }} group={{ apache2_http_user }} mode=0770 state=directory
