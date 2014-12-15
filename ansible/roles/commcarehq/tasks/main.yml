@@ -28,10 +28,13 @@
   git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
   sudo_user: "{{ cchq_user }}"
 
-- stat: path="{{ preindex_home }}"
+- stat: path="{{ preindex_home }}/.git"
   register: result
 - name: copy CommCare HQ source to preindex (if not exists)
-  command: "cp -R {{ code_home }} {{ preindex_home }}"
+  command: "{{ item }}"
+  with_items:
+    - "rm -rf {{ preindex_home }}"
+    - "cp -R {{ code_home }} {{ preindex_home }}"
   sudo_user: "{{ cchq_user }}"
   when: not result.stat.exists
 
