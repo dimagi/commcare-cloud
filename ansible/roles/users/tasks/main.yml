@@ -17,6 +17,10 @@
   authorized_key: user={{ item.name }} state={{ item.state }} key="{{ lookup('file', 'ssh_keys/' + item.name + '.pub') }}"
   with_items: dev_users
 
+- name: find supervisorctl path
+  shell: 'dirname "$(which supervisorctl)"'
+  register: dirname_which_supervisorctl
+
 - name: Copy sudoers file
   sudo: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq_sudoers validate='visudo -cf %s' owner=root group=root mode=0440
