@@ -17,6 +17,8 @@
     - htop
     - tmpreaper
     - mailutils
+  tags:
+    - slow
 
 - name: Install pip packages
   pip: name={{ item }}

@@ -9,6 +9,8 @@
     - python-psycopg2
   when:
     pg_install == True
+  tags:
+    - slow
 
 - name: Create PostgreSQL databases
   sudo_user: postgres

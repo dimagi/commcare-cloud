@@ -2,10 +2,14 @@
 - name: Install Vim
   sudo: yes
   apt: name=vim state=present update_cache=yes cache_valid_time=3600
+  tags:
+    - slow
 
 - name: Install Emacs
   sudo: yes
   apt: name=emacs23 state=present update_cache=yes cache_valid_time=3600
+  tags:
+    - slow
 
 - name: Include vimrc
   sudo: yes

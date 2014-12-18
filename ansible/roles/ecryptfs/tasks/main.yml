@@ -3,6 +3,8 @@
   sudo: yes
   apt:
     name: ecryptfs-utils
+  tags:
+    - slow
 
 - name: Check for already mounted drive
   shell: cat /etc/fstab

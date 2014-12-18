@@ -27,6 +27,8 @@
 - name: pull CommCare HQ source
   git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
   sudo_user: "{{ cchq_user }}"
+  tags:
+    slow
 
 - stat: path="{{ preindex_home }}/.git"
   register: result
@@ -44,6 +46,8 @@
   pip:
     requirements: "{{ code_home }}/requirements/{{ item }}"
     virtualenv: "{{ virtualenv_home }}"
+  tags:
+    slow
 
 - stat: path="{{ virtualenv_preindex_home }}/bin/activate"
   register: result

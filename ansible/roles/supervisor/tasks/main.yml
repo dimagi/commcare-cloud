@@ -3,6 +3,8 @@
 - name: install supervisor
   apt: name=supervisor state=present update_cache=true cache_valid_time=3600
   sudo: yes
+  tags:
+    - slow
 
 - name: configure supervisor
   template: src=supervisord.conf.j2 dest={{ supervisor_conf_home }}/supervisord.conf

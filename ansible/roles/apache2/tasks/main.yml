@@ -8,6 +8,8 @@
     - apache2
     - ssl-cert
   when: apache2_install == True
+  tags:
+    - slow
 
 - name: Create apache http user
   sudo: yes
