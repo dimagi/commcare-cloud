@@ -49,7 +49,7 @@ localsettings:
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: ''
   EMAIL_PASSWORD: ''
-  # Run `python -m smtpd -n -c DebuggingServer 192.168.33.14:1025` on control
+  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on control
   EMAIL_SMTP_HOST: '192.168.33.14'
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!

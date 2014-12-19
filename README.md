@@ -81,7 +81,7 @@ run a debug smtp server daemon on control:
 ```bash
 $ vagrant ssh control
 ...
-$ python -m smtpd -n -c DebuggingServer 192.168.33.14:1025
+$ python -m smtpd -n -c DebuggingServer 0.0.0.0:1025
 ```
 
 ### Troubleshooting
