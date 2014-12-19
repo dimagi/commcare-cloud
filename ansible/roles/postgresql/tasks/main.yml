@@ -10,6 +10,24 @@
   when:
     pg_install == True
 
+- name: generate en_US.UTF-8 locale
+  locale_gen: name='en_US.UTF-8' state=present
+  when:
+    pg_install == True
+
+- name: PostgreSQL app configuration
+  sudo_user: postgres
+  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
+  when:
+    pg_install == True
+
+- name: PostgreSQL access configuration
+  sudo_user: postgres
+  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
+
+- name: start postgresql
+  service: name=postgresql state=started
+
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db: name={{ item }} state=present
@@ -26,17 +44,3 @@
     state: present
   when:
     pg_install == True
-
-- name: PostgreSQL app configuration
-  sudo_user: postgres
-  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
-  notify:
-    - restart postgresql service
-  when:
-    pg_install == True
-
-- name: PostgreSQL access configuration
-  sudo_user: postgres
-  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
-  notify:
-    - restart postgresql service
