@@ -1,5 +1,0 @@
----
-# roles/postgresql/meta/main.yml
-
-dependencies:
-  - role: common

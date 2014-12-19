@@ -68,3 +68,5 @@
   with_items:
     - "{{ code_home }}"
     - "{{ preindex_home }}"
+  tags:
+    - localsettings

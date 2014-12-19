@@ -95,3 +95,15 @@ For the Lenovo T440s:
   * Restart machine, press Enter during startup
   * Navigate to Security -> Virtualization
     * Turn both settings on
+
+
+### Running only parts of the playbook
+
+- Update localsettings:
+  ```bash
+  ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD" --tags=localsettings
+  ```
+- Skip the common setup, including apt installs and updating the commcarehq code:
+  ```bash
+  ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD" --skip-tags=common
+  ```

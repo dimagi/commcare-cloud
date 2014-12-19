@@ -2,14 +2,12 @@
 # roles/apache2/tasks/main.yml
 
 - name: Install apache2
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  apt: name={{ item }} state=present
   sudo: yes
   with_items:
     - apache2
     - ssl-cert
   when: apache2_install == True
-  tags:
-    - slow
 
 - name: Create apache http user
   sudo: yes

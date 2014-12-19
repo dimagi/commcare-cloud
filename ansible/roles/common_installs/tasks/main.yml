@@ -1,7 +1,7 @@
 ---
 # Install base packages, common to all servers
 - name: Install common packages
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  apt: name={{ item }} state=present
   sudo: yes
   with_items:
     - build-essential
@@ -17,8 +17,6 @@
     - htop
     - tmpreaper
     - mailutils
-  tags:
-    - slow
 
 - name: Install pip packages
   pip: name={{ item }}

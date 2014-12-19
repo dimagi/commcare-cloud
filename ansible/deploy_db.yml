@@ -3,11 +3,9 @@
 - name: Databases
   hosts: db
   sudo: yes
-  serial: 1
   vars_files:
     - "vars/{{ deploy_env }}.yml"
   roles:
-    - common
     - postgresql
     - couchdb
     - bennojoy.memcached

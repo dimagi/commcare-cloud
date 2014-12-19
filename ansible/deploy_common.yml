@@ -1,8 +1,7 @@
----
-- name: Touchforms
-  hosts: touchforms
+- name: Common
+  hosts: all
   sudo: yes
   vars_files:
     - "vars/{{ deploy_env }}.yml"
   roles:
-    - touchforms
+    - common

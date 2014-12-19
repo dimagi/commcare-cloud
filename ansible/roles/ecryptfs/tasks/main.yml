@@ -1,10 +1,7 @@
 ---
 - name: Install ecryptfs-utils
   sudo: yes
-  apt:
-    name: ecryptfs-utils
-  tags:
-    - slow
+  apt: name=ecryptfs-utils state=present
 
 - name: Check for already mounted drive
   shell: cat /etc/fstab
