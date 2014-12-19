@@ -20,6 +20,7 @@
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'
   register: dirname_which_supervisorctl
+  changed_when: false
 
 - name: Copy sudoers file
   sudo: yes
