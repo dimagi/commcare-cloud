@@ -54,6 +54,8 @@
   template: src={{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }}
   with_items:
     - cchq
+    # TODO: Public site not funcitonal yet, but need the redirect from http -> https
+    - 000-cchq_public
   notify:
     - Reload Apache2 service
 
@@ -62,6 +64,15 @@
   command: a2ensite {{ item }}
   with_items:
     - cchq
+    - 000-cchq_public
+  notify:
+    - Reload Apache2 service
+
+- name: Disable Apache2 Default site
+  sudo: yes
+  command: a2dissite {{ item }}
+  with_items:
+    - 000-default
   notify:
     - Reload Apache2 service
 
