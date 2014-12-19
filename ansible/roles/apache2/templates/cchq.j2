@@ -57,8 +57,8 @@
     ## I've commented it out here, but if it works for you, go ahead and put it
     ## back. --cewing@jazkarta
     #if reaching this bottom, bounce back to http://home
-    # RewriteEngine On
-    # RewriteRule ^/(home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/ http://%{HTTP_HOST}%{REQUEST_URI} [L]
+    RewriteEngine On
+    RewriteRule ^/(home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/ http://%{HTTP_HOST}%{REQUEST_URI} [L]
 </VirtualHost>
 
 <VirtualHost *:443>
@@ -68,12 +68,9 @@
 {% if apache2_ssl_ca_certificate_file %}
     SSLCACertificateFile {{ apache2_ssl_ca_certificate_file }}
 {% endif %}
-    ServerName commcarehq.org
+    ServerName {{ SITE_HOST }}
 
     RewriteEngine On
     RewriteCond %{HTTP_HOST} ^commcarehq\.org
-    RewriteRule (.*) https://www.commcarehq.org%{REQUEST_URI} [R=permanent,L]
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=permanent,L]
 </VirtualHost>
-
-
-
