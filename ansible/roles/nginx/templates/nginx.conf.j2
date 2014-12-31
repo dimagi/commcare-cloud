@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+user {{ nginx_user }};
+worker_processes  {{ ansible_processor_count }};
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  {{ nginx_max_clients }};
+}
+
+
+http {
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        access_log {{ log_home}}/{{ nginx_access_log_name}};
+        error_log {{ log_home}}/{{ nginx_error_log_name}};
+
+{% for k,v in nginx_http_params.iteritems() %}
+        {{ k }}  {{ v }};
+{% endfor %}
+
+        gzip on;
+        gzip_disable "msie6";
+
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+}

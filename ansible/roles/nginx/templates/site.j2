@@ -1,0 +1,43 @@
+{% if item.server.get('use_balancer', False) == True %}
+upstream {{ item.server.file_name }} {
+{% for host in groups['webworkers'] %}
+  server {{ host }}:{{ django_port }} weight=2;
+{% endfor %}
+}
+{% endif %}
+
+server {
+
+{% if nginx_separate_logs_per_site == True %}
+  access_log {{ nginx_log_dir}}/{{ item.server.server_name}}-{{ nginx_access_log_name}};
+  error_log {{ nginx_log_dir}}/{{ item.server.server_name}}-{{ nginx_error_log_name}};
+{% endif %}
+
+{% if 'ssl' in item.server.listen %}
+  ssl_certificate {{ nginx_ssl_cert }};
+  ssl_certificate_key {{ nginx_ssl_key }};
+{% if nginx_ssl_protocols|default('') %}
+  ssl_protocols {{ nginx_ssl_protocols }};
+{% endif %}
+{% if nginx_ssl_ciphers|default('') %}
+  ssl_ciphers {{ nginx_ssl_ciphers }};
+{% endif %}
+{% endif %}
+
+{% for k,v in item.server.iteritems() %}
+{% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' %}
+  {{ k }} {{ v }};
+{% endif %}
+{% endfor %} 
+
+{% for k,v in item.server.iteritems() if k.find('location') != -1 %}
+  location {{ v.name }} {
+{% if v.get('use_balancer', False) == True %}
+    proxy_pass http://{{ item.server.file_name }};
+{% endif %}
+{% for x,y in v.iteritems() if x != 'name' and x != 'use_balancer' %}
+    {{ x }} {{ y }};
+{% endfor %}
+  }
+{% endfor %}
+}
