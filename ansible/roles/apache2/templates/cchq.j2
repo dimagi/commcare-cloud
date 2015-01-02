@@ -4,7 +4,6 @@
 
 <VirtualHost *:443>
     # much of this __should__ be paramaterized
-    ServerName {{ ansible_hostname }}
     SSLEngine On
     SSLCertificateFile {{ apache2_ssl_cert }}
     SSLCertificateKeyFile {{ apache2_ssl_key }}
@@ -41,7 +40,7 @@
     ErrorDocument 503  "Sorry! CommCareHQ is undergoing some maintenance at the moment, we hope to be back online as soon as possible!"
     ErrorDocument 502  "Sorry! CommCareHQ is undergoing some maintenance at the moment, we hope to be back online as soon as possible!"
 
-    # ProxyPass /static !
+    ProxyPass /static !
     <Proxy balancer://hqcluster>
     {% for host in groups['webworkers'] %}
         BalancerMember http://{{ host }}:{{ django_port }} loadfactor=2
@@ -51,7 +50,7 @@
 
     ProxyPass / balancer://hqcluster/
     ProxyPassReverse / balancer://hqcluster/
-    ServerName www.commcarehq.org
+    ServerName {{ SITE_HOST }}
 
     ## This directive is causing trouble in my local development tests because
     ## it always gets hit before the proxy pass has a chance to work correctly.
@@ -69,12 +68,9 @@
 {% if apache2_ssl_ca_certificate_file %}
     SSLCACertificateFile {{ apache2_ssl_ca_certificate_file }}
 {% endif %}
-    ServerName commcarehq.org
+    ServerName {{ SITE_HOST }}
 
     RewriteEngine On
     RewriteCond %{HTTP_HOST} ^commcarehq\.org
-    RewriteRule (.*) https://www.commcarehq.org%{REQUEST_URI} [R=permanent,L]
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=permanent,L]
 </VirtualHost>
-
-
-

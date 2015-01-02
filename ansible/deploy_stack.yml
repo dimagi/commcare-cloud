@@ -1,11 +1,16 @@
 ---
 # deploy-stack.yml
 
-- name: Deploy full stack
-  hosts: localhost
-  gather_facts: False
+- name: update apt cache
+  hosts: all
+  gather_facts: no
+  sudo: yes
+  tasks:
+    - apt: update_cache=true cache_valid_time=3600
 
+- include: deploy_common.yml tags=common
 - include: deploy_db.yml
 - include: deploy_proxy.yml
 - include: deploy_webworker.yml
 - include: deploy_touchforms.yml
+- include: deploy_elasticsearch.yml

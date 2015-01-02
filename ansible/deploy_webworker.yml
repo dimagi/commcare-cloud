@@ -13,7 +13,6 @@
 # deploy_staging_webworker.yml
 - name: Webworkers
   hosts: webworkers
-  serial: 1
   sudo: yes
 
   pre_tasks:
@@ -47,7 +46,6 @@
   vars_files:
     - "vars/{{ deploy_env }}.yml"
   roles:
-    - common
     - webworker
 
 # after everything else is done, run the steps in pg and apache config that

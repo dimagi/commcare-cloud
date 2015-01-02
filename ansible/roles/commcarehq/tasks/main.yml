@@ -1,14 +1,44 @@
+# If "pull CommCare HQ source" fails with any of these messages
+# - fatal: destination path '/home/cchq/www/dev/code_root' already exists and is not an empty directory.
+# - /home/cchq/www/dev/code_root/.git: Permission denied
+# Uncomment these lines
+#- name: delete staticfiles
+#  sudo: yes
+#  file:
+#    path: "{{ code_home }}"
+#    state: absent
+
 - name: create required directories
+  sudo: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
     state: directory
   with_items:
+    - "{{ www_dir }}"
+    - "{{ www_home }}"
     - "{{ log_home }}"
+    - "{{ preindex_home }}"
+    - "{{ virtualenv_home }}"
+    - "{{ virtualenv_preindex_home }}"
 
 - name: pull CommCare HQ source
   git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
   sudo_user: "{{ cchq_user }}"
+  tags:
+    slow
+
+- stat: path="{{ preindex_home }}/.git"
+  register: result
+- name: copy CommCare HQ source to preindex (if not exists)
+  command: "{{ item }}"
+  with_items:
+    - "rm -rf {{ preindex_home }}"
+    - "cp -R {{ code_home }} {{ preindex_home }}"
+  sudo_user: "{{ cchq_user }}"
+  when: not result.stat.exists
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
@@ -16,9 +46,27 @@
   pip:
     requirements: "{{ code_home }}/requirements/{{ item }}"
     virtualenv: "{{ virtualenv_home }}"
+  tags:
+    slow
+
+- stat: path="{{ virtualenv_preindex_home }}/bin/activate"
+  register: result
+- file:
+    path: "{{ virtualenv_preindex_home }}"
+    state: absent
+  when: not result.stat.exists
+- name: copy virtualenv to preindex virtualenv (if not exists)
+  command: "cp -R {{ virtualenv_home }} {{ virtualenv_preindex_home }}"
+  sudo_user: "{{ cchq_user }}"
+  when: not result.stat.exists
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
   template:
-    src: localsettings.py.j2
-    dest: "{{ code_home }}/localsettings.py"
+    src: localsettings.salt.py.j2
+    dest: "{{ item }}/localsettings.py"
+  with_items:
+    - "{{ code_home }}"
+    - "{{ preindex_home }}"
+  tags:
+    - localsettings

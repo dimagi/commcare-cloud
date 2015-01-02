@@ -1,7 +1,7 @@
 ---
 
 - name: install supervisor
-  apt: name=supervisor state=present update_cache=true cache_valid_time=3600
+  apt: name=supervisor state=present
   sudo: yes
 
 - name: configure supervisor

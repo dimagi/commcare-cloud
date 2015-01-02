@@ -74,6 +74,16 @@ web worker server IP address. Also uncomment the section of the vagrant file tha
 192.168.33.18
 ```
 
+In order to have this set up send email without crashing
+(which you need to do during a deploy, for example)
+run a debug smtp server daemon on control:
+
+```bash
+$ vagrant ssh control
+...
+$ python -m smtpd -n -c DebuggingServer 0.0.0.0:1025
+```
+
 ### Troubleshooting
 
 `vagrant up` fails.
@@ -85,3 +95,15 @@ For the Lenovo T440s:
   * Restart machine, press Enter during startup
   * Navigate to Security -> Virtualization
     * Turn both settings on
+
+
+### Running only parts of the playbook
+
+- Update localsettings:
+  ```bash
+  ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD" --tags=localsettings
+  ```
+- Skip the common setup, including apt installs and updating the commcarehq code:
+  ```bash
+  ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD" --skip-tags=common
+  ```

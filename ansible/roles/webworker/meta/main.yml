@@ -2,7 +2,5 @@
 # roles/webworker/meta/main.yml
 
 dependencies:
-  - role: common
   - role: supervisor
   - role: java
-  - role: commcarehq

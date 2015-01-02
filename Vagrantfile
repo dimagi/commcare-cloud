@@ -8,6 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "precise64"
 
   config.vm.define "app1" do |app1|
+    app1.vm.hostname = "app1"
     app1.vm.network "private_network", ip: "192.168.33.15"
     app1.vm.provider "virtualbox" do |v|
       v.memory = 768
@@ -17,6 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # config.vm.define "app2" do |app1|
+  #   app1.vm.hostname = "app2"
   #   app1.vm.network "private_network", ip: "192.168.33.18"
   #   app1.vm.provision "shell", path: "provisioning/nodes.sh"
   #   db1.vm.provider "virtualbox" do |v|
@@ -26,6 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # end
 
   config.vm.define "db1" do |db1|
+    db1.vm.hostname = "db1"
     db1.vm.network "private_network", ip: "192.168.33.16"
     db1.vm.provider "virtualbox" do |v|
       v.memory = 768
@@ -35,11 +38,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "proxy1" do |proxy1|
+    proxy1.vm.hostname = "proxy1"
     proxy1.vm.network "private_network", ip: "192.168.33.17"
     proxy1.vm.provision "shell", path: "provisioning/nodes.sh"
   end
 
   config.vm.define "control" do |control|
+    control.vm.hostname = "control"
     control.vm.network "private_network", ip: "192.168.33.14"
     control.vm.provider "virtualbox" do |v|
       v.memory = 768

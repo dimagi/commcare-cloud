@@ -1,0 +1,88 @@
+- name: Downloads Directory
+  file: path="/home/{{ cchq_user }}/downloads/" state=directory
+
+- name: Create elasticsearch user
+  user: name=elasticsearch createhome=no password=no state=present
+
+- name: Elasticsearch User
+  user: name=elasticsearch state=present
+
+- name: Download Elasticsearch
+  sudo: yes
+  get_url:
+    url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    sha256sum: f14ff217039b5c398a9256b68f46a90093e0a1e54e89f94ee6a2ee7de557bd6d
+
+- name: Unarchive Elasticsearch
+  sudo: yes
+  unarchive:
+    src: /home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz
+    dest: /opt/
+    copy: no
+
+- name: Chown Elasticsearch
+  sudo: yes
+  file:
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+    recurse: yes
+    path: /opt/elasticsearch-{{ elasticsearch_version }}
+
+- name: Link Elasticsearch
+  sudo: yes
+  file:
+    state: link
+    owner: elasticsearch
+    group: elasticsearch
+    src: /opt/elasticsearch-{{ elasticsearch_version }}
+    dest: /opt/elasticsearch
+
+- name: Create /etc/elasticsearch
+  sudo: yes
+  file: path=/etc/elasticsearch state=directory
+
+- name: Copy Elasticsearch Config
+  sudo: yes
+  template:
+    src: config/elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  register: copy_elasticsearch_conf_result
+
+- name: Copy Elasticsearch Upstart Conf
+  sudo: yes
+  template:
+    src: elasticsearch.conf.j2
+    dest: /etc/init/elasticsearch.conf
+  register: copy_elasticsearch_upstart_result
+
+- name: Create Elasticsearch data directories
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0755
+  with_items:
+    - /opt/data/elasticsearch/
+    - /opt/data/elasticsearch/data
+    - /opt/data/elasticsearch/logs
+
+- name: Reload upstart
+  sudo: yes
+  shell: initctl reload-configuration
+
+- sudo: yes
+  # make sure it's started in the first place
+  shell: start elasticsearch
+  register: result
+  failed_when: result.rc != 0 and 'already running' not in result.stderr
+
+- name: Restart Elasticsearch
+  sudo: yes
+  # upstart isn't the default on ubuntu I think,
+  # so 'service' ansible module doesn't work for it
+  shell: restart elasticsearch
+  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed

@@ -2,13 +2,37 @@
 # roles/postgresql/tasks/main.yml
 
 - name: Install PostgreSQL & dependencies
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  apt: name={{ item }} state=present
   with_items:
     - postgresql
     - libpq-dev
     - python-psycopg2
   when:
     pg_install == True
+
+- name: generate en_US.UTF-8 locale
+  locale_gen: name='en_US.UTF-8' state=present
+  when:
+    pg_install == True
+
+- name: PostgreSQL app configuration
+  sudo_user: postgres
+  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
+  when:
+    pg_install == True
+  register: postgresql_configuration_updated
+
+- name: PostgreSQL access configuration
+  sudo_user: postgres
+  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
+  register: postgresql_access_updated
+
+- name: start postgresql
+  service: name=postgresql state=started
+
+- name: Apply PostgreSQL configuration changes
+  service: name=postgresql state=restarted
+  when: postgresql_configuration_updated.changed or postgresql_access_updated.changed
 
 - name: Create PostgreSQL databases
   sudo_user: postgres
@@ -26,17 +50,3 @@
     state: present
   when:
     pg_install == True
-
-- name: PostgreSQL app configuration
-  sudo_user: postgres
-  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
-  notify:
-    - restart postgresql service
-  when:
-    pg_install == True
-
-- name: PostgreSQL access configuration
-  sudo_user: postgres
-  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
-  notify:
-    - restart postgresql service

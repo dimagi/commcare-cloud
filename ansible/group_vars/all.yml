@@ -1,9 +1,13 @@
 cchq_home: /home/{{ cchq_user }}
-www_home: "{{ cchq_home }}/www/{{ deploy_env }}"
+www_dir: "{{ cchq_home }}/www/"
+www_home: "{{ www_dir }}/{{ deploy_env }}"
 code_home: "{{ www_home }}/code_root"
+preindex_home: "{{ www_home }}/code_root_preindex"
 log_home: "{{ www_home }}/log"
-service_home: "{{ cchq_home }}/services/{{ deploy_env }}"
-virtualenv_home: "{{ cchq_home }}/.virtualenv/{{ deploy_env }}"
+service_home: "{{ cchq_home }}/services"
+virtualenv_home: "{{ www_home }}/python_env"
+virtualenv_preindex_home: "{{ www_home }}/python_env_preindex"
+
 
 cchq_user: cchq
 django_port: 9010
