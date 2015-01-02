@@ -6,7 +6,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install the memcached packages 
-  apt: name={{ item }} state=present update_cache=yes
+  apt: name={{ item }} state=present
   with_items: memcached_ubuntu_pkgs
   environment: env
   when: ansible_os_family == "Debian"

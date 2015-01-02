@@ -19,7 +19,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install the Redis packages 
-  apt: name={{ item }} state=present update_cache=yes
+  apt: name={{ item }} state=present
   with_items: redis_ubuntu_pkg
   environment: env
   when: ansible_os_family == "Debian"
