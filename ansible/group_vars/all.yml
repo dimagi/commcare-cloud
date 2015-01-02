@@ -1,6 +1,6 @@
 cchq_home: /home/{{ cchq_user }}
 www_dir: "{{ cchq_home }}/www/"
-www_home: "{{ cchq_home }}/www/{{ deploy_env }}"
+www_home: "{{ www_dir }}/{{ deploy_env }}"
 code_home: "{{ www_home }}/code_root"
 preindex_home: "{{ www_home }}/code_root_preindex"
 log_home: "{{ www_home }}/log"
