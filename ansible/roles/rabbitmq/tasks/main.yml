@@ -1,0 +1,37 @@
+---
+# Add and configure rabbitmq
+- name: Add rabbitmq official apt repository
+  sudo: true
+  apt_repository: repo='deb http://www.rabbitmq.com/debian/ testing main' state=present
+
+- name: Install rabbitmq
+  sudo: true
+  apt: pkg=rabbitmq-server state=installed force=yes
+  notify:
+  - restart rabbitmq
+
+- name: Ensure vhost commcarehq is present
+  sudo: true
+  rabbitmq_vhost: name=commcarehq state=present
+  notify:
+  - restart rabbitmq
+
+- name: Add users
+  sudo: true
+  rabbitmq_user: >
+    user={{ AMQP_USER }}
+    password={{ AMQP_PASSWORD }}
+    tags=''
+    vhost=commcarehq
+    configure_priv=.*
+    write_priv=.*
+    read_priv=.*
+    state=present
+  notify:
+  - restart rabbitmq
+
+- name: Remove default guest user
+  sudo: true
+  rabbitmq_user: user=guest state=absent
+  notify:
+  - restart rabbitmq
