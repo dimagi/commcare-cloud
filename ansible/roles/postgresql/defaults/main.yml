@@ -1,8 +1,10 @@
 pg_install: True
 postgresql_version: '9.1'
-postgresql_home: /var/lib/postgresql/{{ postgresql_version }}/main
+postgresql_dir_original_path: /var/lib/postgresql
+postgresql_dir_path: /opt/data/postgresql
+postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 postgresql_config_home: /etc/postgresql/{{ postgresql_version }}/main
-postgresql_pid_file: /var/run/postgresql/{{ postgresql_version }}-main.pid
+postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
 postgresql_dbs:
   - "{{ localsettings.PG_DATABASE_NAME }}"
   - "{{ localsettings.REPORT_DATABASE_NAME }}"

@@ -6,10 +6,10 @@
   vars_files:
     - "vars/{{ deploy_env }}.yml"
   roles:
+    - ecryptfs
     - postgresql
     - couchdb
     - bennojoy.memcached
     - bennojoy.redis
     - elasticsearch
-    - ecryptfs
     - monitoring
