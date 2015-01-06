@@ -1,6 +1,8 @@
 ---
 # roles/apache2/tasks/main.yml
 
+- include_vars: "{% if fake_ssl_cert %}fake_ssl_cert.yml{% else %}ssl_cert.yml{% endif %}"
+
 - name: Install apache2
   apt: name={{ item }} state=present
   sudo: yes
