@@ -30,15 +30,11 @@
   tags:
     slow
 
-- stat: path="{{ preindex_home }}/.git"
-  register: result
-- name: copy CommCare HQ source to preindex (if not exists)
-  command: "{{ item }}"
-  with_items:
-    - "rm -rf {{ preindex_home }}"
-    - "cp -R {{ code_home }} {{ preindex_home }}"
+- name: pull CommCare HQ source (preindex)
+  git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
   sudo_user: "{{ cchq_user }}"
-  when: not result.stat.exists
+  tags:
+    slow
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
