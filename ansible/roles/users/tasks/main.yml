@@ -1,8 +1,5 @@
 ---
-- name: Add cchq user
-  sudo: yes
-  user: name={{ cchq_user }} state=present shell=/bin/bash
-
+# cchq user is created in commcarehq
 - name: Add dev group
   sudo: yes
   group: name=dev state=present

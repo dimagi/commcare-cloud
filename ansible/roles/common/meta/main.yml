@@ -1,8 +1,8 @@
 ---
 dependencies:
   - role: common_installs
-  - role: users
+  - role: commcarehq
   - role: supervisor
+  - role: users
   - role: edit
   - role: ksplice
-  - role: commcarehq

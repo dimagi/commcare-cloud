@@ -8,6 +8,10 @@
 #    path: "{{ code_home }}"
 #    state: absent
 
+- name: Add cchq user
+  sudo: yes
+  user: name={{ cchq_user }} state=present shell=/bin/bash
+
 - name: create required directories
   sudo: yes
   file:
