@@ -27,7 +27,7 @@
   rabbitmq_user: >
     user={{ AMQP_USER }}
     password={{ AMQP_PASSWORD }}
-    tags=''
+    tags='administrator'
     vhost=commcarehq
     configure_priv=.*
     write_priv=.*
