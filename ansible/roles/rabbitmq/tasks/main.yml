@@ -10,6 +10,12 @@
   notify:
   - restart rabbitmq
 
+- name: Install rabbitmq plugins
+  sudo: true
+  rabbitmq_plugin: >
+    names=rabbitmq_management
+    state=enabled
+
 - name: Ensure vhost commcarehq is present
   sudo: true
   rabbitmq_vhost: name=commcarehq state=present
