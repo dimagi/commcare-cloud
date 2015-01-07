@@ -9,7 +9,7 @@ ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY:
 
-AMQP_USER: hq_worker
+AMQP_USER: "{{ deploy_env }}_worker"
 AMQP_PASSWORD: '******'
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
@@ -27,8 +27,7 @@ localsettings:
   BITLY_APIKEY: ''
   BITLY_LOGIN: ''
 #  BOOKKEEPER_CONTACT_EMAILS:
-#  BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  BROKER_URL: ''
+  BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
   CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
 #  CELERY_REMINDER_CASE_UPDATE_QUEUE:
