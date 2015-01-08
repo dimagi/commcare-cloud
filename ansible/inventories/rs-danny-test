@@ -32,6 +32,9 @@ elasticsearch
 [proxy]
 10.210.101.189
 
+[pillowtop]
+10.210.102.59
+
 [db_accessors:children]
 touchforms
 webworkers
