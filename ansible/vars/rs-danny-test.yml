@@ -9,7 +9,7 @@ ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY:
 
-AMQP_USER: hq_worker
+AMQP_USER: "{{ deploy_env }}_worker"
 AMQP_PASSWORD: '******'
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
