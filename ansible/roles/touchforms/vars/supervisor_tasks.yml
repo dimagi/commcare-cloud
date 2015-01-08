@@ -1,4 +1,4 @@
-app_name: commcarehq
+app_name: commcare-hq
 supervised_tasks:
   - name: "{{ app_name }}-{{ deploy_env }}-formsplayer"
     config:

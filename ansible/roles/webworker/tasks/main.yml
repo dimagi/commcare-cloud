@@ -29,5 +29,5 @@
     virtualenv: "{{ virtualenv_home }}"
     command: collectstatic
 
-- include_vars: "supervisor_tasks.yml"
-- include: ../../supervisor/tasks/supervised_tasks.yml
+#- include_vars: "supervisor_tasks.yml"
+#- include: ../../supervisor/tasks/supervised_tasks.yml
