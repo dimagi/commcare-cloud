@@ -2,7 +2,5 @@
 # deploy_staging_proxy.yml
 - name: Proxy
   hosts: proxy
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - apache2

@@ -3,55 +3,41 @@
 - name: Common Database Machine Setup
   hosts: db
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - ecryptfs
 
 - name: Postgresql
   hosts: postgresql
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - postgresql
 
 - name: Couchdb
   hosts: couchdb
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - couchdb
 
 - name: Memcached
   hosts: memcached
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - bennojoy.memcached
 
 - name: Redis
   hosts: redis
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - bennojoy.redis
 
 - name: Elasticsearch
   hosts: elasticsearch
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - elasticsearch
 
 - name: Monitoring
   hosts: monitoring
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - monitoring

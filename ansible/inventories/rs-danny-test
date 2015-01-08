@@ -1,5 +1,10 @@
+[proxy]
+10.210.101.189
+10.209.66.4
+
 [webworkers]
 10.209.66.4
+10.210.101.189
 
 [postgresql]
 10.210.102.59
@@ -28,9 +33,6 @@ couchdb
 redis
 memcached
 elasticsearch
-
-[proxy]
-10.210.101.189
 
 [pillowtop:children]
 # make it run on proxy for now

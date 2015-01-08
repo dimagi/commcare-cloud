@@ -3,8 +3,6 @@
 - name: PostgreSQL
   hosts: postgresql
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - postgresql
   vars:
@@ -43,8 +41,6 @@
       delegate_to: "{{ item }}"
       with_items: groups.proxy
       service: name=apache2 state=reloaded
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - webworker
 
@@ -54,8 +50,6 @@
 - name: Proxy
   hosts: proxy
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - apache2
   vars:
