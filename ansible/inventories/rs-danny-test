@@ -32,8 +32,10 @@ elasticsearch
 [proxy]
 10.210.101.189
 
-[pillowtop]
-10.210.102.59
+[pillowtop:children]
+# make it run on proxy for now
+proxy
+
 
 [db_accessors:children]
 touchforms
