@@ -17,7 +17,7 @@
 
 - name: Create apache2 logfile home
   sudo: yes
-  file: path={{ log_home }} owner={{ cchq_user }} group={{ cchq_user }} mode=0770 state=directory
+  file: path={{ log_home }} owner={{ cchq_user }} group={{ cchq_user }} mode=0775 state=directory
   when: apache2_install == True
 
 - name: Create static files home
