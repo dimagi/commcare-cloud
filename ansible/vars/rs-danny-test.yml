@@ -2,6 +2,10 @@
 # should be e.g. 'www.commcarehq.org'
 SITE_HOST: '{{ groups.proxy.0 }}'
 
+dev_users:
+  - {name: droberts, group: dev, state: present, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcPH7f4OfZV8OEpISJiTxlIcx1J6HXjxG2END1t3RVgdAF6iYRBJYOnYzeAl1+bGMFZST9OrtWhiTQEy6L4fxgzOSYqmmvkvNbFMghiM41DUYIr9Gr9tlRpTDYg1WujlLLiq/TjpbatGapZzUjen992vpONGRWY7Qg1gVjjVM3Bb+kNB4UwK1IpJy0QJM9cOOeWbAEqov6nQdLirzyUtScrrF9P/B40tp6RcvNocC91z9x/5C4ovFduN+F8NClxoIvOf4vEp8BcG8CoiZeNHuYBkT8Nq2Tm/Zk/A5DJoIFs+pDf7Mw5G94s2/+YuKUZDDd9LjUufCBKijr9z+pnNTT droberts@dimagi.com'}
+  - {name: tsheffels, group: dev, state: present, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhIPGGCiVuZ3bWRNOegBk6va/dL9er5pGfV0GspmlNzMBDZ3lrYXTs//fEAraUY/1wQo7/Qyy4kwvUDhHD2aoGrTB+Da+Bb7xGDfjLm1wGUqJWEcWvjHq7YnfGKu443gEJYaUDGryxuEdNwMFxps0xRSRLjkEQOcduEK+MC6D359bXA+FLUUPH+rerQ7RauuVkCzSc49Bk25BRpr/NM7uqX8wz16Ke7Sn4pSZAIrLnXPrxY9GuD+C7OGyG1w4So1r9QV7tR+NjsPapqrQQcHRtGlnjhzD+HoqD3SkG8ulTlVVyXbZVAtq0FjPRYwicdbs3cCEwsgGqHMLwHHCIxbox tyler.sheffels@gmail.com'}
+
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 
