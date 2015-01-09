@@ -7,6 +7,9 @@
   sudo: yes
   tasks:
     - apt: update_cache=true cache_valid_time=3600
+  tags:
+    - common
+    - aptcache
 
 - include: deploy_common.yml tags=common
 - include: deploy_db.yml
