@@ -36,7 +36,7 @@ elasticsearch
 
 [pillowtop:children]
 # make it run on proxy for now
-proxy
+10.210.101.189
 
 
 [db_accessors:children]
