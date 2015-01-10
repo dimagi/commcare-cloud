@@ -11,6 +11,7 @@
 
 - name: make supervisor task home
   sudo: yes
+  sudo_user: "{{ cchq_user }}"
   file: path={{ supervisor_task_conf }} state=directory owner={{ cchq_user }}
 
 - name: apply configuration changes
