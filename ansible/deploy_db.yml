@@ -41,3 +41,9 @@
   sudo: yes
   roles:
     - monitoring
+
+- name: RabbitMQ
+  hosts: rabbitmq
+  sudo: yes
+  roles:
+    - rabbitmq

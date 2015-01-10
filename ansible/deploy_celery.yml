@@ -1,7 +1,0 @@
----
-
-- name: Databases
-  hosts: celery
-  sudo: yes
-  roles:
-    - rabbitmq
