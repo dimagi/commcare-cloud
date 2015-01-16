@@ -6,13 +6,18 @@
 
 - name: Add dev users
   sudo: yes
-  user: name={{ item.name }} state={{ item.state }} shell=/bin/bash
-  with_items: dev_users
+  user: name={{ item.name }} state=present shell=/bin/bash groups=dev
+  with_items: dev_users.present
+
+- name: Remove dev users
+  sudo: yes
+  user: name={{ item.name }} state=absent
+  with_items: dev_users.absent
 
 - name: Add public keys
   sudo: yes
-  authorized_key: user={{ item.name }} state={{ item.state }} key="{{ item.key }}"
-  with_items: dev_users
+  authorized_key: user={{ item.name }} state=present key="{{ item.key }}"
+  with_items: dev_users.present
 
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'
