@@ -20,6 +20,7 @@
     - tmpreaper
     - mailutils
     - npm
+    - at
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
