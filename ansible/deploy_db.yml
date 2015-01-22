@@ -1,5 +1,4 @@
 ---
-# deploy-staging-db.yml
 - name: Common Database Machine Setup
   hosts: db
   sudo: yes
