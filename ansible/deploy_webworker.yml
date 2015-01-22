@@ -12,6 +12,114 @@
   roles:
     - webworker
 
-# There used to be some code here for updating workers one by one
 # but it's not functionally useful until we're off fab deploy and makes things
 # look back to commit 94b08e0390bb031dd048804ce5a9c8dfcfeccbc1 if you want it
+  pre_tasks:
+
+    # these tasks will be run when the proxy_type is apache
+    - name: remove worker from load balancer in apache
+      when: proxy_type == 'apache2'
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      lineinfile:
+        dest: /etc/apache2/sites-enabled/cchq
+        regexp: ^[\s]*BalancerMember http://{{ inventory_hostname }}:9010 loadfactor=2
+        state: absent
+
+    - name: restart apache
+      when: proxy_type == 'apache2'
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=apache2 state=reloaded
+
+    # these tasks will be run when the proxy_type is nginx
+    - name: remove worker from load balancer in nginx
+      when: proxy_type == 'nginx'
+      delegate_to: "{{ item[0] }}"
+      with_nested:
+        - groups.proxy
+        - [ 'cchq', 'cchq_ssl' ]
+      lineinfile:
+        dest: /etc/nginx/sites-enabled/{{ item[1] }}
+        regexp: ^[\s]*server {{ inventory_hostname }}:9010 weight=2;
+        state: absent
+
+    - name: restart nginx
+      when: proxy_type == 'nginx' and groups.webworkers|length|int > 1
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=nginx state=reloaded
+
+    # if there is only one webworker, then after removing it from the load
+    # balancer nginx will not reload properly.  Just shut down instead
+    - name: stop nginx
+      when: proxy_type == 'nginx' and groups.webworkers|length|int == 1
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=nginx state=stopped
+
+
+  post_tasks:
+
+    # these tasks will be run when the proxy_type is apache
+    - name: add worker back to load balancer in apache
+      when: proxy_type == 'apache2'
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      lineinfile:
+        dest: /etc/apache2/sites-enabled/cchq
+        line: "        BalancerMember http://{{ inventory_hostname }}:9010 loadfactor=2"
+        insertbefore: "ProxySet lbmethod=byrequests"
+        state: present
+
+    - name: restart apache
+      when: proxy_type == 'apache2'
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=apache2 state=reloaded
+
+    # these tasks will be run when the proxy_type is nginx
+    - name: add worker back to load balancer in nginx
+      when: proxy_type == 'nginx'
+      delegate_to: "{{ item[0] }}"
+      with_nested:
+        - groups.proxy
+        - [ 'cchq', 'cchq_ssl' ]
+      lineinfile:
+        dest: /etc/nginx/sites-enabled/{{ item[1] }}
+        line: "  server {{ inventory_hostname }}:9010 weight=2;"
+        insertafter: "upstream {{ item[1] }} {"
+        state: present
+
+    - name: restart nginx
+      when: proxy_type == 'nginx' and groups.webworkers|length|int > 1
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=nginx state=reloaded
+
+      # if there was only one webworker, nginx was halted, not restarted.
+    - name: start nginx
+      when: proxy_type == 'nginx' and groups.webworkers|length|int == 1
+      delegate_to: "{{ item }}"
+      with_items: groups.proxy
+      service: name=nginx state=started
+
+  vars_files:
+    - "vars/{{ deploy_env }}.yml"
+  roles:
+    - webworker
+
+# after everything else is done, run the steps in pg and apache config that
+# are specific to hooking in any new web-workers.
+
+- name: Proxy
+  hosts: proxy
+  sudo: yes
+  vars_files:
+    - "vars/{{ deploy_env }}.yml"
+  roles:
+    - { role: apache2, when: proxy_type == 'apache2' }
+    - { role: nginx, when: proxy_type == 'nginx' }
+  vars:
+    apache2_install: False
+    nginx_install: False
