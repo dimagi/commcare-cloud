@@ -3,5 +3,6 @@
 - name: Proxy
   hosts: proxy
   roles:
-    - {role: apache2, tags: apache2}
     - {role: hq_status}
+    - { role: apache2, when: proxy_type == 'apache2' }
+    - { role: nginx, when: proxy_type == 'nginx' }

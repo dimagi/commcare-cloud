@@ -11,6 +11,9 @@ dev_users:
     - {name: tsheffels, group: dev, state: present, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhIPGGCiVuZ3bWRNOegBk6va/dL9er5pGfV0GspmlNzMBDZ3lrYXTs//fEAraUY/1wQo7/Qyy4kwvUDhHD2aoGrTB+Da+Bb7xGDfjLm1wGUqJWEcWvjHq7YnfGKu443gEJYaUDGryxuEdNwMFxps0xRSRLjkEQOcduEK+MC6D359bXA+FLUUPH+rerQ7RauuVkCzSc49Bk25BRpr/NM7uqX8wz16Ke7Sn4pSZAIrLnXPrxY9GuD+C7OGyG1w4So1r9QV7tR+NjsPapqrQQcHRtGlnjhzD+HoqD3SkG8ulTlVVyXbZVAtq0FjPRYwicdbs3cCEwsgGqHMLwHHCIxbox tyler.sheffels@gmail.com'}
   absent: []
 
+# use this value to switch between nginx and apache
+proxy_type: apache2
+
 elasticsearch_endpoint: '192.168.33.16'
 elasticsearch_memory: '128m'
 
