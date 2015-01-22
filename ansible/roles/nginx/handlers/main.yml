@@ -1,7 +1,7 @@
 ---
 - name: start nginx
   sudo: yes
-  service: name=nginx state=start
+  service: name=nginx state=started
 
 - name: restart nginx
   sudo: yes
