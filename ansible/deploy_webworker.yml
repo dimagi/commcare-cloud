@@ -1,4 +1,11 @@
 ---
+
+- name: Keystore
+  hosts: webworkers
+  sudo: yes
+  roles:
+    - {role: keystore, tags: keystore}
+
 # hook all webworkers into the db machine pg access config
 - name: PostgreSQL
   hosts: postgresql
