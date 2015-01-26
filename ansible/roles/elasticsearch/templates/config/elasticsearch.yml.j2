@@ -30,7 +30,7 @@
 # multiple clusters on the same network, make sure you're using unique names.
 #
 # cluster.name: elasticsearch
-# todo: on hqes0 this was cluster.name: prodhqes
+cluster.name: {{ elasticsearch_cluster_name }}
 
 
 
@@ -40,7 +40,9 @@
 # from configuring them manually. You can tie this node to a specific name:
 #
 # node.name: "Franz Kafka"
-# todo: on hqes0 this was: node.name: "hqes0"
+{% if elasticsearch_node_name %}
+node.name: "{{ elasticsearch_node_name }}"
+{% endif %}
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
