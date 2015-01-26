@@ -3,4 +3,4 @@
 - name: Proxy
   hosts: proxy
   roles:
-    - apache2
+    - {role: apache2, tags: apache2}
