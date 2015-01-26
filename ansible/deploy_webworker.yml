@@ -50,6 +50,8 @@
       service: name=apache2 state=reloaded
   roles:
     - webworker
+  tags:
+    - deploy
 
 # after everything else is done, run the steps in pg and apache config that
 # are specific to hooking in any new web-workers.
@@ -61,3 +63,5 @@
     - apache2
   vars:
     apache2_install: False
+  tags:
+    - deploy
