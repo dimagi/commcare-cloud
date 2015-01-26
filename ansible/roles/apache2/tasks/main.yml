@@ -3,6 +3,33 @@
 
 - include_vars: "{% if fake_ssl_cert %}fake_ssl_cert.yml{% else %}ssl_cert.yml{% endif %}"
 
+- name: "Copy SSL Cert"
+  copy:
+    src: "{{ apache2_cert_file }}"
+    dest: "{{ apache2_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert
+
+- name: "Copy SSL Key"
+  copy:
+    src: "{{ apache2_key_file }}"
+    dest: "{{ apache2_ssl_key }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert
+
+- name: "Copy SSL Intermediate Cert"
+  copy:
+    src: "{{ apache2_ca_file }}"
+    dest: "{{ apache2_ssl_ca_certificate_file }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert
+
 - name: Install apache2
   apt: name={{ item }} state=present
   sudo: yes

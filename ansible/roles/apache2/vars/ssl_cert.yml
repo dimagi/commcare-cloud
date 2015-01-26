@@ -1,4 +1,3 @@
-# todo: add tasks to copy these from somewhere to the right location and fill these in
-apache2_ssl_cert:
-apache2_ssl_key:
-apache2_ssl_ca_certificate_file:
+apache2_ssl_cert: /etc/ssl/certs/{{ deploy_env }}.pem
+apache2_ssl_key: /etc/ssl/private/{{ deploy_env }}.key
+apache2_ssl_ca_certificate_file: /etc/ssl/certs/{{ deploy_env }}-intermediate.pem
