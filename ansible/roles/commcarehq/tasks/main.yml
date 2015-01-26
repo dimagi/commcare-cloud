@@ -51,16 +51,14 @@
   tags:
     slow
 
-- stat: path="{{ virtualenv_preindex_home }}/bin/activate"
-  register: result
-- file:
-    path: "{{ virtualenv_preindex_home }}"
-    state: absent
-  when: not result.stat.exists
-- name: copy virtualenv to preindex virtualenv (if not exists)
-  command: "cp -R {{ virtualenv_home }} {{ virtualenv_preindex_home }}"
+- name: install pip requirements (preindex)
   sudo_user: "{{ cchq_user }}"
-  when: not result.stat.exists
+  with_items: commcarehq_requirements
+  pip:
+    requirements: "{{ preindex_home }}/requirements/{{ item }}"
+    virtualenv: "{{ virtualenv_preindex_home }}"
+  tags:
+    slow
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
