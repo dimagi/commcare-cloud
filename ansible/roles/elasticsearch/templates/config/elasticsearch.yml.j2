@@ -41,6 +41,7 @@ cluster.name: {{ elasticsearch_cluster_name }}
 #
 # node.name: "Franz Kafka"
 {% if elasticsearch_node_name %}
+{#- todo: this only makes any sense for single machine setup -#}
 node.name: "{{ elasticsearch_node_name }}"
 {% endif %}
 
