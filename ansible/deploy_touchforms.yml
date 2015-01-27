@@ -2,7 +2,5 @@
 - name: Touchforms
   hosts: touchforms
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - touchforms

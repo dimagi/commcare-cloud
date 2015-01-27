@@ -1,8 +1,0 @@
----
-- name: Elasticsearch
-  hosts: elasticsearch
-  sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
-  roles:
-    - elasticsearch

@@ -1,15 +1,48 @@
 ---
-# deploy-staging-db.yml
-- name: Databases
+- name: Common Database Machine Setup
   hosts: db
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
+  roles:
+    - ecryptfs
+
+- name: Postgresql
+  hosts: postgresql
+  sudo: yes
   roles:
     - postgresql
+
+- name: Couchdb
+  hosts: couchdb
+  sudo: yes
+  roles:
     - couchdb
+
+- name: Memcached
+  hosts: memcached
+  sudo: yes
+  roles:
     - bennojoy.memcached
+
+- name: Redis
+  hosts: redis
+  sudo: yes
+  roles:
     - bennojoy.redis
+
+- name: Elasticsearch
+  hosts: elasticsearch
+  sudo: yes
+  roles:
     - elasticsearch
-    - ecryptfs
+
+- name: Monitoring
+  hosts: monitoring
+  sudo: yes
+  roles:
     - monitoring
+
+- name: RabbitMQ
+  hosts: rabbitmq
+  sudo: yes
+  roles:
+    - rabbitmq

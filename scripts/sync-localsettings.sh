@@ -21,6 +21,10 @@ cat $salt_localsettings |
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
+
+{% if 'ALLOWED_HOSTS' in localsettings %}
+ALLOWED_HOSTS = {{ localsettings.ALLOWED_HOSTS }} + {{ groups.proxy|to_nice_json }}
+{% endif %}
 EOF
 
 echo "Options used:"

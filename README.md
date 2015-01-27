@@ -42,7 +42,7 @@ and run a full deployment:
 $ vagrant ssh control
 ...
 $ cd /vagrant/ansible
-$ ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD"
+$ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.yml -e "deploy_env=dev version=HEAD fake_ssl_cert=True"
 ```
 
 This will build a database server, a proxy server and a single web worker,
@@ -101,9 +101,9 @@ For the Lenovo T440s:
 
 - Update localsettings:
   ```bash
-  ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD" --tags=localsettings
+  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml -e "deploy_env=dev version=HEAD fake_ssl_cert=True" --tags=localsettings
   ```
 - Skip the common setup, including apt installs and updating the commcarehq code:
   ```bash
-  ansible-playbook -i inventories/development deploy_stack.yml -e "deploy_env=dev version=HEAD" --skip-tags=common
+  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml -e "deploy_env=dev version=HEAD fake_ssl_cert=True" --skip-tags=common
   ```

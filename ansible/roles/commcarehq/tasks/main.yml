@@ -8,6 +8,10 @@
 #    path: "{{ code_home }}"
 #    state: absent
 
+- name: Add cchq user
+  sudo: yes
+  user: name={{ cchq_user }} state=present shell=/bin/bash
+
 - name: create required directories
   sudo: yes
   file:
@@ -25,16 +29,18 @@
     - "{{ virtualenv_preindex_home }}"
 
 - name: pull CommCare HQ source
-  git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
+  git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update=no
   sudo_user: "{{ cchq_user }}"
   tags:
-    slow
+    - git
+    - slow
 
 - name: pull CommCare HQ source (preindex)
-  git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1
+  git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update=no
   sudo_user: "{{ cchq_user }}"
   tags:
-    slow
+    - git
+    - slow
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
@@ -45,16 +51,14 @@
   tags:
     slow
 
-- stat: path="{{ virtualenv_preindex_home }}/bin/activate"
-  register: result
-- file:
-    path: "{{ virtualenv_preindex_home }}"
-    state: absent
-  when: not result.stat.exists
-- name: copy virtualenv to preindex virtualenv (if not exists)
-  command: "cp -R {{ virtualenv_home }} {{ virtualenv_preindex_home }}"
+- name: install pip requirements (preindex)
   sudo_user: "{{ cchq_user }}"
-  when: not result.stat.exists
+  with_items: commcarehq_requirements
+  pip:
+    requirements: "{{ preindex_home }}/requirements/{{ item }}"
+    virtualenv: "{{ virtualenv_preindex_home }}"
+  tags:
+    slow
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"

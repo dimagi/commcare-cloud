@@ -1,6 +1,0 @@
----
-# roles/users/vars/main.yml
-
-dev_users:
-  - {name: droberts, group: dev, state: present}
-  - {name: tsheffels, group: dev, state: present}

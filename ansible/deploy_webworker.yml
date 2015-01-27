@@ -1,10 +1,15 @@
 ---
+
+- name: Keystore
+  hosts: webworkers
+  sudo: yes
+  roles:
+    - {role: keystore, tags: keystore}
+
 # hook all webworkers into the db machine pg access config
 - name: PostgreSQL
   hosts: postgresql
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - postgresql
   vars:
@@ -43,10 +48,10 @@
       delegate_to: "{{ item }}"
       with_items: groups.proxy
       service: name=apache2 state=reloaded
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - webworker
+  tags:
+    - deploy
 
 # after everything else is done, run the steps in pg and apache config that
 # are specific to hooking in any new web-workers.
@@ -54,9 +59,9 @@
 - name: Proxy
   hosts: proxy
   sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
   roles:
     - apache2
   vars:
     apache2_install: False
+  tags:
+    - deploy

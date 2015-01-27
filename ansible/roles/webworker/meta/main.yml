@@ -2,5 +2,4 @@
 # roles/webworker/meta/main.yml
 
 dependencies:
-  - role: supervisor
   - role: java

@@ -1,9 +1,0 @@
----
-
-- name: Databases
-  hosts: celery
-  sudo: yes
-  vars_files:
-    - "vars/{{ deploy_env }}.yml"
-  roles:
-    - rabbitmq
