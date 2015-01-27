@@ -1,11 +1,13 @@
 - name: Add New Relic apt repo
   apt_repository: repo='deb http://apt.newrelic.com/debian/ newrelic non-free' state=present
+  register: add_new_relic_repo
 
 - name: Add New Relic apt key
   apt_key: url=https://download.newrelic.com/548C16BF.gpg state=present
 
 - name: Update package list
   apt: update_cache=yes
+  when: add_new_relic_repo|changed
 
 - name: Install newrelic-sysmond
   apt: name=newrelic-sysmond state=present
