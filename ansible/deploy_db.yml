@@ -1,6 +1,12 @@
 ---
 - name: Common Database Machine Setup
-  hosts: db
+  hosts:
+    - postgresql
+    - couchdb
+    - redis
+    - memcached
+    - elasticsearch
+    - rabbitmq
   sudo: yes
   roles:
     - ecryptfs

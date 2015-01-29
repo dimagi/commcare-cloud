@@ -27,13 +27,6 @@
 [elasticsearch]
 10.210.102.59
 
-[db:children]
-postgresql
-couchdb
-redis
-memcached
-elasticsearch
-
 [pillowtop:children]
 # make it run on proxy for now
 10.210.101.189
