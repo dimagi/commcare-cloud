@@ -107,3 +107,23 @@ For the Lenovo T440s:
   ```bash
   ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml -e "deploy_env=dev version=HEAD fake_ssl_cert=True" --skip-tags=common
   ```
+
+Tags available:
+
+- apache2
+- aptcache
+- common
+- deploy
+- git
+- keystore
+- ksplice
+- localsettings
+- newrelic
+- slow
+
+Note: to generate this list automatically, you can run something like
+
+```bash
+ansible-playbook -u root -i ../config/india/india deploy_stack.yml -e "deploy_env=india version=master" -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
+/g' | xargs -I% echo - %
+```

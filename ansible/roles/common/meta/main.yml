@@ -5,4 +5,5 @@ dependencies:
   - role: supervisor
   - {role: users, tags: users}
   - role: edit
-  - role: ksplice
+  - {role: ksplice, tags: ksplice}
+  - {role: newrelic, tags: newrelic, when: NEW_RELIC_KEY is defined}
