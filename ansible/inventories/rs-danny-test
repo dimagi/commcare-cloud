@@ -30,8 +30,3 @@
 [pillowtop:children]
 # make it run on proxy for now
 10.210.101.189
-
-
-[db_accessors:children]
-touchforms
-webworkers

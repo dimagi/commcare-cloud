@@ -24,7 +24,3 @@
 
 [proxy]
 192.168.33.17
-
-[db_accessors:children]
-touchforms
-webworkers
