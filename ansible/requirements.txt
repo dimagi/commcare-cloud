@@ -1,2 +1,2 @@
-ansible
+ansible==1.8.2
 passlib
