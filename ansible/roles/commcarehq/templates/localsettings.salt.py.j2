@@ -385,7 +385,7 @@ API_THROTTLE_TIMEFRAME = 10
 
 {% if 'MAPS_LAYERS' in localsettings %}
 import json
-MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_nice_json }}')
+MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_json }}')
 {% endif %}
 
 {% if 'PILLOWTOP_MACHINE_ID' in localsettings and localsettings.PILLOWTOP_MACHINE_ID %}
@@ -393,7 +393,7 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
 {% if localsettings.get('SIMPLE_API_KEYS') %}
-SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_nice_json }}
+SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
 {% if localsettings.get('KAFKA_HOST') %}
@@ -407,7 +407,7 @@ COUCHPULSE_DATABASE_URL = '{{ localsettings.COUCHPULSE_DATABASE_URL }}'
 INVOICE_TERMS = "Net 30"
 
 {% if localsettings.get('BOOKKEEPER_CONTACT_EMAILS') %}
-BOOKKEEPER_CONTACT_EMAILS = {{ localsettings.BOOKKEEPER_CONTACT_EMAILS|to_nice_json }}
+BOOKKEEPER_CONTACT_EMAILS = {{ localsettings.BOOKKEEPER_CONTACT_EMAILS|to_json }}
 {% endif %}
 
 {% if localsettings.get('INVOICE_STARTING_NUMBER') %}
@@ -419,11 +419,11 @@ INVOICE_PREFIX = '{{ localsettings.INVOICE_PREFIX }}'
 {% endif %}
 
 {% if localsettings.get('INVOICE_FROM_ADDRESS') %}
-INVOICE_FROM_ADDRESS = {{ localsettings.INVOICE_FROM_ADDRESS|to_nice_json }}
+INVOICE_FROM_ADDRESS = {{ localsettings.INVOICE_FROM_ADDRESS|to_json }}
 {% endif %}
 
 {% if localsettings.get('BANK_ADDRESS') %}
-BANK_ADDRESS = {{ localsettings.BANK_ADDRESS|to_nice_json }}
+BANK_ADDRESS = {{ localsettings.BANK_ADDRESS|to_json }}
 {% endif %}
 
 {% if localsettings.get('BANK_NAME') %}
@@ -482,5 +482,5 @@ BASE_ADDRESS = '{{ SITE_HOST }}'
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
 {% if 'ALLOWED_HOSTS' in localsettings %}
-ALLOWED_HOSTS = {{ localsettings.ALLOWED_HOSTS }} + {{ groups.proxy|to_nice_json }}
+ALLOWED_HOSTS = {{ localsettings.ALLOWED_HOSTS }} + {{ groups.proxy|to_json }}
 {% endif %}

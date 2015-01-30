@@ -12,7 +12,7 @@ ansible_localsettings=ansible/roles/commcarehq/templates/localsettings.salt.py.j
 
 cat $salt_localsettings |
   sed 's/pillar\[localsettings_key\]/localsettings/g' |
-  sed 's/|json/|to_nice_json/g' |
+  sed 's/|json/|to_json/g' |
   sed 's/hq_deploy_target/deploy_env/g' > $ansible_localsettings
 
 >> $ansible_localsettings cat <<EOF
@@ -23,7 +23,7 @@ BASE_ADDRESS = '{{ SITE_HOST }}'
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
 {% if 'ALLOWED_HOSTS' in localsettings %}
-ALLOWED_HOSTS = {{ localsettings.ALLOWED_HOSTS }} + {{ groups.proxy|to_nice_json }}
+ALLOWED_HOSTS = {{ localsettings.ALLOWED_HOSTS }} + {{ groups.proxy|to_json }}
 {% endif %}
 EOF
 
