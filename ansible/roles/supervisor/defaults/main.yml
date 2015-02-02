@@ -1,2 +1,1 @@
-supervisor_conf_home: /etc/supervisor
 supervisor_task_conf: "{{ service_home }}/supervisor"

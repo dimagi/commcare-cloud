@@ -2,7 +2,7 @@
 dependencies:
   - role: common_installs
   - role: commcarehq
-  - role: supervisor
+  - {role: supervisor, tags: supervisor}
   - {role: users, tags: users}
   - role: edit
   - {role: ksplice, tags: ksplice}
