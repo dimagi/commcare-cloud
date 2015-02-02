@@ -17,3 +17,11 @@
 
 - name: Make sure newrelic-sysmond has started
   service: name=newrelic-sysmond state=started
+
+- name: copy newrelic ini file
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: newrelic.ini.j2
+    dest: "{{ item }}/newrelic.ini"
+  with_items:
+    - "{{ www_home }}"
