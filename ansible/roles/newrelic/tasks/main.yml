@@ -25,3 +25,4 @@
     dest: "{{ item }}/newrelic.ini"
   with_items:
     - "{{ www_home }}"
+  when: newrelic_app_name is defined

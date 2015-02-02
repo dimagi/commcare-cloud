@@ -223,11 +223,11 @@ monitor_mode = false
 monitor_mode = false
 
 [newrelic:staging]
-app_name = [staging] CommCare HQ ({{ inventory_hostname }})
+app_name = [staging] CommCare HQ ({{ newrelic_app_name }})
 monitor_mode = false
 
 [newrelic:production]
-app_name = [production] CommCare HQ ({{ inventory_hostname }})
+app_name = [production] CommCare HQ ({{ newrelic_app_name }})
 monitor_mode = true
 log_file = {{ log_home }}/newrelic-python-agent.log
 

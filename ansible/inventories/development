@@ -1,5 +1,5 @@
 [webworkers]
-192.168.33.15
+192.168.33.15 newrelic_app_name=django
 
 [postgresql]
 192.168.33.16
@@ -17,7 +17,7 @@
 192.168.33.16
 
 [celery]
-192.168.33.16
+192.168.33.16 newrelic_app_name=celery
 
 [elasticsearch]
 192.168.33.16
