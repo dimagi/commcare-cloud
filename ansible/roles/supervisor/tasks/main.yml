@@ -35,24 +35,22 @@
 - name: configure supervisor
   template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
   sudo: yes
-  register: supervisor_configured
 
 - name: make supervisor task home
   sudo: yes
   sudo_user: "{{ cchq_user }}"
   file: path={{ supervisor_task_conf }} state=directory owner={{ cchq_user }}
 
-- name: apply configuration changes
-  debug: msg="Stopping supervisor to pick up configuration changes"
-  when: supervisor_configured.changed
-  sudo: yes
-  sudo_user: "{{ cchq_user }}"
-  notify:
-    - stop supervisor
-    - start supervisor
-
 - name: Add Upstart Conf
   sudo: yes
   template:
     src: supervisord.upstart.conf.j2
     dest: /etc/init/supervisord.conf
+
+- name: restart supervisor to pick up configuration changes
+  sudo: yes
+  command: stop supervisord
+  failed_when: no
+- sudo: yes
+  command: start supervisord
+  failed_when: no
