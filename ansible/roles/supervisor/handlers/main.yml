@@ -2,9 +2,7 @@
 # handlers for supervisor role
 
 - name: start supervisor
-  sudo_user: "{{ cchq_user }}"
-  service: name=supervisor state=started
+  service: start supervisord
 
 - name: stop supervisor
-  sudo_user: "{{ cchq_user }}"
-  service: name=supervisor state=stopped
+  command: stop supervisord
