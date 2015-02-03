@@ -26,4 +26,9 @@
 
 - name: Copy sudoers file
   sudo: yes
-  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq_sudoers validate='visudo -cf %s' owner=root group=root mode=0440
+  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+
+# ansible used to create this file
+# but for consistency with prod machines, we changed to 'cchq'
+- name: remove cchq_sudoers
+  file: state=absent path=/etc/sudoers.d/cchq_sudoers
