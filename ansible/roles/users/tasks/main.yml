@@ -2,11 +2,11 @@
 # cchq user is created in commcarehq
 - name: Add dev group
   sudo: yes
-  group: name=dev state=present
+  group: name={{ dev_group }} state=present
 
 - name: Add dev users
   sudo: yes
-  user: name={{ item.name }} state=present shell=/bin/bash groups=dev
+  user: name={{ item.name }} state=present shell=/bin/bash groups={{ dev_group }}
   with_items: dev_users.present
 
 - name: Remove dev users
