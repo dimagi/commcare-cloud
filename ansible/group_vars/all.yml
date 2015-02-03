@@ -8,6 +8,7 @@ service_home: "{{ cchq_home }}/services"
 virtualenv_home: "{{ www_home }}/python_env"
 virtualenv_preindex_home: "{{ www_home }}/python_env_preindex"
 
-
 cchq_user: cchq
+dev_group: dev
+
 django_port: 9010
