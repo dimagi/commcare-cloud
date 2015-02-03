@@ -29,14 +29,18 @@
     - "{{ virtualenv_preindex_home }}"
 
 - name: pull CommCare HQ source
-  git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update=no
+  stat: path="{{ code_home }}/commcare-hq/.git"
+  register: gitdir
+- git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
   tags:
     - git
     - slow
 
 - name: pull CommCare HQ source (preindex)
-  git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update=no
+  stat: path="{{ preindex_home }}/commcare-hq/.git"
+  register: gitdir
+- git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
   tags:
     - git
