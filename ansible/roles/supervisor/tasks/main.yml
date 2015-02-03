@@ -1,24 +1,56 @@
 ---
 
+- name: find supervisord path
+  shell: 'which supervisord'
+  register: which_supervisord
+  changed_when: false
+
 - name: install supervisor
   apt: name=supervisor state=present
   sudo: yes
+  when: not which_supervisord.stdout
+
+- name: check for sysvinit conf
+  stat: path=/etc/init.d/supervisor
+  register: init_d_conf
+
+- name: service stop supervisor
+  sudo: yes
+  service: name=supervisor state=stopped
+  when: init_d_conf.stat.exists
+
+- name: pkill supervisord if run by cchq
+  command: pkill -U cchq supervisord
+  # if it returns 1 with no output, that just means no process to kill
+  register: result
+  failed_when: result.rc != 0 and (result.stderr or result.stdout)
+
+- name: remove /etc/init.d/supervisor
+  file: state=absent path=/etc/init.d/supervisor
+  when: init_d_conf.stat.exists
+
+- name: remove default /etc/supervisor directory
+  file: state=absent path=/etc/supervisor
 
 - name: configure supervisor
-  template: src=supervisord.conf.j2 dest={{ supervisor_conf_home }}/supervisord.conf
+  template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
   sudo: yes
-  register: supervisor_configured
 
 - name: make supervisor task home
   sudo: yes
   sudo_user: "{{ cchq_user }}"
   file: path={{ supervisor_task_conf }} state=directory owner={{ cchq_user }}
 
-- name: apply configuration changes
-  debug: msg="Stopping supervisor to pick up configuration changes"
-  when: supervisor_configured.changed
+- name: Add Upstart Conf
   sudo: yes
-  sudo_user: "{{ cchq_user }}"
-  notify:
-    - stop supervisor
-    - start supervisor
+  template:
+    src: supervisord.upstart.conf.j2
+    dest: /etc/init/supervisord.conf
+
+- name: restart supervisor to pick up configuration changes
+  sudo: yes
+  command: stop supervisord
+  failed_when: no
+- sudo: yes
+  command: start supervisord
+  failed_when: no
