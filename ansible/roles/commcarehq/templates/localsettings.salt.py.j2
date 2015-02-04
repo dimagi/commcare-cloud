@@ -212,23 +212,23 @@ SOIL_DEFAULT_CACHE = "redis"
 
 REPORT_CACHE = 'redis'
 
+memcached = {
+    'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    'LOCATION': '{{ localsettings.MEMCACHED_HOST }}:{{ localsettings.MEMCACHED_PORT }}',
+}
+redis_cache = {
+    'BACKEND': 'redis_cache.cache.RedisCache',
+    {% if 'REDIS_DB' in localsettings %}
+    'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
+{% else%}
+    'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+{% endif %}
+    'OPTIONS': {},
+}
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '{{ localsettings.MEMCACHED_HOST }}:{{ localsettings.MEMCACHED_PORT }}',
-        },
-    'redis': {
-        'BACKEND': 'redis_cache.cache.RedisCache',
-        {% if 'REDIS_DB' in localsettings %}
-        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
-	{% else%}
-        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
-	{% endif %}
-        'OPTIONS': {
-            },
-
-        }
-    }
+    'default': {% if localsettings.get('DEFAULT_CACHE', 'memcached') == 'memcached' %}memcached{% else %}redis_cache{% endif %},
+    'redis': redis_cache,
+}
 
 ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
 ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
@@ -474,6 +474,10 @@ COMPRESS_OFFLINE = True
 
 {% if localsettings.get('ES_QUERY_CHUNKSIZE') %}
 ES_QUERY_CHUNKSIZE = '{{ localsettings.ES_QUERY_CHUNKSIZE }}'
+{% endif %}
+
+{% if localsettings.get('SMS_PREFIXES_BY_COUNTRY') %}
+SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 {% endif %}
 
 # Set to something like "192.168.1.5:8000" (with your IP address).
