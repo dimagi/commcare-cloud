@@ -39,8 +39,8 @@ EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 
 SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
-EMAIL_SUBJECT_PREFIX = '[{{ deploy_env }}] '
-SERVER_ENVIRONMENT = '{{ deploy_env }}'
+EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
+SERVER_ENVIRONMENT = '{{ item.deploy_env_name }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(os.path.dirname(__file__),"lib","form_translate.jar")
 

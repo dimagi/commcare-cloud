@@ -13,7 +13,7 @@ ansible_localsettings=ansible/roles/commcarehq/templates/localsettings.salt.py.j
 cat $salt_localsettings |
   sed 's/pillar\[localsettings_key\]/localsettings/g' |
   sed 's/|json/|to_json/g' |
-  sed 's/hq_deploy_target/deploy_env/g' > $ansible_localsettings
+  sed 's/hq_deploy_target/item.deploy_env_name/g' > $ansible_localsettings
 
 >> $ansible_localsettings cat <<EOF
 
