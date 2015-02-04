@@ -4,6 +4,7 @@
   shell: 'which supervisord'
   register: which_supervisord
   changed_when: false
+  failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
 
 - name: install supervisor
   apt: name=supervisor state=present
