@@ -69,7 +69,7 @@
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
   template:
-    src: localsettings.salt.py.j2
+    src: localsettings.py.j2
     dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ deploy_env }}" }
