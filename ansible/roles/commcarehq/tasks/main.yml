@@ -68,9 +68,9 @@
   sudo_user: "{{ cchq_user }}"
   template:
     src: localsettings.salt.py.j2
-    dest: "{{ item }}/localsettings.py"
+    dest: "{{ item.path }}/localsettings.py"
   with_items:
-    - "{{ code_home }}"
-    - "{{ preindex_home }}"
+    - { path: "{{ code_home }}", deploy_env_name: "{{ deploy_env }}" }
+    - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
   tags:
     - localsettings
