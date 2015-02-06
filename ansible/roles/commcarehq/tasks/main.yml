@@ -28,8 +28,10 @@
     - "{{ virtualenv_home }}"
     - "{{ virtualenv_preindex_home }}"
 
+# Do not update source unless you're cloning for the first time
+
 - name: pull CommCare HQ source
-  stat: path="{{ code_home }}/commcare-hq/.git"
+  stat: path="{{ code_home }}/.git"
   register: gitdir
 - git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
@@ -38,7 +40,7 @@
     - slow
 
 - name: pull CommCare HQ source (preindex)
-  stat: path="{{ preindex_home }}/commcare-hq/.git"
+  stat: path="{{ preindex_home }}/.git"
   register: gitdir
 - git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
