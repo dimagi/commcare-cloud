@@ -42,7 +42,7 @@ and run a full deployment:
 $ vagrant ssh control
 ...
 $ cd /vagrant/ansible
-$ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.yml -e "deploy_env=dev fake_ssl_cert=True"
+$ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.yml
 ```
 
 This will build a database server, a proxy server and a single web worker,
@@ -101,11 +101,11 @@ For the Lenovo T440s:
 
 - Update localsettings:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml -e "deploy_env=dev fake_ssl_cert=True" --tags=localsettings
+  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml --tags=localsettings
   ```
 - Skip the common setup, including apt installs and updating the commcarehq code:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml -e "deploy_env=dev fake_ssl_cert=True" --skip-tags=common
+  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml --skip-tags=common
   ```
 
 Tags available:
@@ -124,6 +124,6 @@ Tags available:
 Note: to generate this list automatically, you can run something like
 
 ```bash
-ansible-playbook -u root -i ../config/india/india deploy_stack.yml -e "deploy_env=india version=master" -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
+ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
 /g' | xargs -I% echo - %
 ```
