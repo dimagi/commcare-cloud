@@ -8,17 +8,17 @@ import sys
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
-            'USER': '{{ localsettings.PG_DATABASE_USER }}',
-            'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
-            'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
-            'OPTIONS': {
-                'sslmode': 'require',
-            },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
+        'USER': '{{ localsettings.PG_DATABASE_USER }}',
+        'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
+        'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
+        'OPTIONS': {
+            'sslmode': 'require',
         },
-    }
+    },
+}
 
 SQL_REPORTING_DATABASE_URL = 'postgresql+psycopg2://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.REPORT_DATABASE_NAME }}?sslmode=require'
 {% if localsettings.REPORT_OBJECT_OWNER %}
@@ -73,12 +73,12 @@ PRODUCTION_COUCHDB_URI = '{{ localsettings.PRODUCTION_COUCHDB_URI }}'
 ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
 {% else %}
 ES_CASE_CHECK_DIRECT_DOC_ID = None
-{% endif %} 
+{% endif %}
 {% if 'ES_XFORM_CHECK_DIRECT_DOC_ID' in localsettings %}
 ES_XFORM_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_XFORM_CHECK_DIRECT_DOC_ID }}'
 {% else %}
 ES_XFORM_CHECK_DIRECT_DOC_ID = None
-{% endif %} 
+{% endif %}
 
 ####### For Constructing Global URLs ########
 
@@ -86,7 +86,7 @@ ES_XFORM_CHECK_DIRECT_DOC_ID = None
 SENTRY_DSN = '{{ localsettings.SENTRY_DSN }}'
 {% else %}
 SENTRY_DSN = None
-{% endif %} 
+{% endif %}
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn', 'raven.contrib.django.raven_compat',)
 
@@ -163,7 +163,7 @@ ANALYTICS_IDS = {
 
 AXES_LOCK_OUT_AT_FAILURE = False
 
-LUCENE_ENABLED = True 
+LUCENE_ENABLED = True
 
 BUG_REPORT_RECIPIENTS = ['commcarehq-support@dimagi.com']
 NEW_DOMAIN_RECIPIENTS = ['inquiries@dimagi.com']
@@ -220,9 +220,9 @@ memcached = {
 }
 redis_cache = {
     'BACKEND': 'redis_cache.cache.RedisCache',
-    {% if 'REDIS_DB' in localsettings %}
+{% if 'REDIS_DB' in localsettings %}
     'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
-{% else%}
+{% else %}
     'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
 {% endif %}
     'OPTIONS': {},
