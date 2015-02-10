@@ -18,5 +18,25 @@
     owner: cchq
     mode: 0644
 
+- name: create touchforms data directory
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ touchforms_data_dir }}"
+
+- name: Create session purging cron job
+  sudo: yes
+  cron:
+    name: "Purge old touchforms sessions"
+    special_time: daily
+    job: "find {{ touchforms_data_dir }} -maxdepth 1 -mtime +90 -delete"
+    user: root
+    cron_file: ../crontab
+
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
