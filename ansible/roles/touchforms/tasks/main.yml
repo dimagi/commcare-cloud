@@ -18,5 +18,14 @@
     owner: cchq
     mode: 0644
 
+- name: Create session purging cron job
+  sudo: yes
+  cron:
+    name: "Purge old touchforms sessions"
+    special_time: daily
+    job: "find {{ touchforms_data_dir }} -maxdepth 1 -mtime +90 -delete"
+    user: root
+    cron_file: ../crontab
+
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
