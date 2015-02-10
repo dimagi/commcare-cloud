@@ -18,6 +18,17 @@
     owner: cchq
     mode: 0644
 
+- name: create touchforms data directory
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ touchforms_data_dir }}"
+
 - name: Create session purging cron job
   sudo: yes
   cron:
