@@ -4,3 +4,4 @@
   hosts: proxy
   roles:
     - {role: apache2, tags: apache2}
+    - {role: hq_status}

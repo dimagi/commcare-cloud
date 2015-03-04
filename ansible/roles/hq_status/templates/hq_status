@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    ServerName slow.commcarehq.org
+    DocumentRoot {{ hq_status_home }}
+
+    <Directory {{ hq_status_home }}>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+</VirtualHost>
