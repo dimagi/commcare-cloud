@@ -1,0 +1,25 @@
+- name: Add hq status apache conf
+  sudo: yes
+  template: src=hq_status dest=/etc/apache2/sites-available/hq_status
+  tags:
+    - hq_status
+
+- name: Create hq status files home
+  sudo: yes
+  file: path={{ hq_status_home }} owner={{ apache2_http_user }} group={{ apache2_http_user }} mode=0755 state=directory
+  tags:
+    - hq_status
+
+- name: Add hq status html
+  sudo: yes
+  template: src=index.html dest={{ hq_status_home }}/index.html
+  tags:
+    - hq_status
+
+- name: Enable hq status site
+  sudo: yes
+  command: a2ensite hq_status
+  notify:
+    - Reload Apache2 service
+  tags:
+    - hq_status

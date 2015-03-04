@@ -41,6 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     proxy1.vm.hostname = "proxy1"
     proxy1.vm.network "private_network", ip: "192.168.33.17"
     proxy1.vm.provision "shell", path: "provisioning/nodes.sh"
+    proxy1.vm.network "forwarded_port", guest: 80, host: 8080
   end
 
   config.vm.define "control" do |control|
