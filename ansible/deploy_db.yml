@@ -41,11 +41,11 @@
   roles:
     - elasticsearch
 
-- name: Monitoring
-  hosts: monitoring
+- name: Redis Monitoring
+  hosts: redis
   sudo: yes
   roles:
-    - monitoring
+    - redis_monitoring
 
 - name: RabbitMQ
   hosts: rabbitmq
