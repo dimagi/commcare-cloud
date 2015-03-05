@@ -30,7 +30,7 @@
 # multiple clusters on the same network, make sure you're using unique names.
 #
 # cluster.name: elasticsearch
-cluster.name: {{ elasticsearch_cluster_name }}
+cluster.name: elasticsearch_{{ deploy_env }}
 
 
 
@@ -42,7 +42,7 @@ cluster.name: {{ elasticsearch_cluster_name }}
 # node.name: "Franz Kafka"
 {% if elasticsearch_node_name %}
 {#- todo: this only makes any sense for single machine setup -#}
-node.name: "{{ elasticsearch_node_name }}"
+node.name: "elasticsearch_node_{{ host_name }}"
 {% endif %}
 
 # Every node can be configured to allow or deny being eligible as the master,
