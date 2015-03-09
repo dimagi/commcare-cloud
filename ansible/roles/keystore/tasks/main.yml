@@ -1,7 +1,7 @@
 - name: Send Keystore
   sudo: yes
   copy:
-    src: "{{ keystore_file }}"
+    src: "../files/{{ keystore_file }}"
     dest: "{{ www_dir }}/DimagiKeyStore"
     group: cchq
     owner: cchq
