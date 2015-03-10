@@ -4,8 +4,8 @@
   apt: name=ecryptfs-utils state=present
 
 - name: Check for already mounted drive
-  shell: cat /etc/fstab
-  register: fstab_contents
+  shell: cat /etc/mtab
+  register: mtab_contents
 
 - name: Create /opt/data directory
   sudo: yes
@@ -15,12 +15,12 @@
   sudo: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
-  when: "'/opt/data' not in fstab_contents.stdout"
+  when: "'/opt/data' not in mtab_contents.stdout"
 
 - name: Mount data drive
   sudo: yes
   shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 /opt/data/ /opt/data/"
-  when: "'/opt/data' not in fstab_contents.stdout"
+  when: "'/opt/data' not in mtab_contents.stdout"
 
 - name: Drop unencrypted readme in directory
   sudo: yes
@@ -39,9 +39,9 @@
 
 - name: Create entry in fstab
   sudo: yes
-  lineinfile: 
+  lineinfile:
     dest: "/etc/fstab"
     regexp: "^/opt/data"
     backup: yes
     line: "{{ mount_configuration.stdout }}"
-  when: "'/opt/data' not in fstab_contents.stdout"
+  when: "'/opt/data' not in mtab_contents.stdout"

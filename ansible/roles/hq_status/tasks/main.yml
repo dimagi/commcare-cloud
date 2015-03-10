@@ -3,6 +3,7 @@
   template: src=hq_status dest=/etc/apache2/sites-available/hq_status
   tags:
     - hq_status
+    - test
 
 - name: Create hq status files home
   sudo: yes
