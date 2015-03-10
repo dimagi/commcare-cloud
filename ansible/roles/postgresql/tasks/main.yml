@@ -48,9 +48,11 @@
   register: postgresql_access_updated
 
 - name: start postgresql
+  sudo_user: postgres
   service: name=postgresql state=started
 
 - name: Apply PostgreSQL configuration changes
+  sudo_user: postgres
   service: name=postgresql state=restarted
   when: postgresql_configuration_updated.changed or postgresql_access_updated.changed
 
