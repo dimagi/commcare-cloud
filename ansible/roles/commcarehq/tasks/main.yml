@@ -76,3 +76,11 @@
     - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
   tags:
     - localsettings
+
+- name: Create payload purging cron job
+  sudo: yes
+  cron:
+    name: "Purge old restore payload files"
+    special_time: daily
+    job: "find {{ restore_payload_dir }} -name \"*.xml\" -maxdepth 1 -mtime +4 -delete"
+    user: root
