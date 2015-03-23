@@ -1,2 +1,10 @@
 # This currently is all taken care of by fab deploy
 # the webworker role currently just ensures java gets installed (see meta)
+
+- name: Create payload purging cron job
+  sudo: yes
+  cron:
+    name: "Purge old restore payload files"
+    special_time: daily
+    job: "find {{ restore_payload_dir }} -name \"*.xml\" -maxdepth 1 -mtime +4 -delete"
+    user: root
