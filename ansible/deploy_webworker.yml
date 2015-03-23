@@ -9,6 +9,8 @@
 - name: Webworkers
   hosts: webworkers
   sudo: yes
+  roles:
+    - webworker
 
 # There used to be some code here for updating workers one by one
 # but it's not functionally useful until we're off fab deploy and makes things
