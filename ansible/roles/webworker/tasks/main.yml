@@ -2,6 +2,7 @@
 
 - name: Create payload purging cron job
   sudo: yes
+  sudo_user: "{{ cchq_user }}"
   cron:
     name: "Purge old restore payload files"
     special_time: daily
