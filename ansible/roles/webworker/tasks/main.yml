@@ -1,5 +1,4 @@
-# This currently is all taken care of by fab deploy
-# the webworker role currently just ensures java gets installed (see meta)
+# Tasks to be run on machines running django
 
 - name: Create payload purging cron job
   sudo: yes
