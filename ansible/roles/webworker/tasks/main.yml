@@ -7,3 +7,5 @@
     special_time: daily
     job: "find {{ restore_payload_dir }} -name \"*.xml\" -maxdepth 1 -mtime +4 -delete"
     user: root
+  tags:
+    - restore
