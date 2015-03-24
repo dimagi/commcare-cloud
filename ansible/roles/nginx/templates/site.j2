@@ -25,19 +25,19 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-{% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' %}
+  {% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' %}
   {{ k }} {{ v }};
-{% endif %}
-{% endfor %} 
+  {% endif %}
+{% endfor %}
 
 {% for k,v in item.server.iteritems() if k.find('location') != -1 %}
   location {{ v.name }} {
-{% if v.get('use_balancer', False) == True %}
-    proxy_pass http://{{ item.server.file_name }};
-{% endif %}
-{% for x,y in v.iteritems() if x != 'name' and x != 'use_balancer' %}
-    {{ x }} {{ y }};
-{% endfor %}
+    {% if v.get('use_balancer', False) == True %}
+        proxy_pass http://{{ item.server.file_name }};
+    {% endif %}
+    {% for x,y in v.iteritems() if x != 'name' and x != 'use_balancer' %}
+        {{ x }} {{ y }};
+    {% endfor %}
   }
 {% endfor %}
 }
