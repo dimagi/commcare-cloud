@@ -30,24 +30,29 @@ nginx_sites:
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 25m
    use_balancer: True
+   proxy_set_header: "Host $http_host"
    location1:
     name: /
     try_files: "$uri $uri/ @proxy_to_app"
    location2:
     name: "@proxy_to_app"
     use_balancer: True
+   location3:
+    name: /static
+    alias: "{{ nginx_static_home }}"
 - server:
    file_name: cchq_ssl
    listen: "443 ssl"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 25m
    use_balancer: True
+   proxy_set_header: "Host $http_host"
    location1:
     name: /
     try_files: "$uri $uri/ @proxy_to_app"
    location2:
     name: "@proxy_to_app"
     use_balancer: True
-  location3:
+   location3:
     name: /static
     alias: "{{ nginx_static_home }}"
