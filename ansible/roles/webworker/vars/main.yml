@@ -1,1 +1,0 @@
-restore_payload_dir: "{{ code_home }}/restore_payloads"

@@ -1,5 +1,14 @@
 # Tasks to be run on machines running django
 
+- name: create restore payloads directory
+  sudo: yes
+  file:
+    path: "{{ restore_payload_dir }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+
 - name: Create payload purging cron job
   sudo: yes
   cron:
