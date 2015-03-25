@@ -28,7 +28,7 @@ nginx_sites:
    file_name: cchq
    listen: "80"
    server_name: "{{ SITE_HOST }}"
-   client_max_body_size: 25m
+   client_max_body_size: 100m
    use_balancer: True
    proxy_set_header: "Host $http_host"
    location1:
@@ -44,7 +44,7 @@ nginx_sites:
    file_name: cchq_ssl
    listen: "443 ssl"
    server_name: "{{ SITE_HOST }}"
-   client_max_body_size: 25m
+   client_max_body_size: 100m
    use_balancer: True
    proxy_set_header: "Host $http_host"
    location1:
