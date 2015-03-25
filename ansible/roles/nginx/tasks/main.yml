@@ -1,5 +1,8 @@
 ---
 
+- name: Add nginx repository
+  apt_repository: repo='ppa:nginx/stable' state=present
+
 - name: Install nginx
   sudo: yes
   apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
@@ -37,7 +40,7 @@
 
 - name: Create the link for site enabled specific configurations
   sudo: yes
-  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default 
+  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
 
 - name: Create the configurations for sites
   sudo: yes
