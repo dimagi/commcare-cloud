@@ -8,6 +8,8 @@
     group: "{{ cchq_user }}"
     mode: 0755
     state: directory
+  tags:
+    - restore
 
 - name: Create payload purging cron job
   sudo: yes
