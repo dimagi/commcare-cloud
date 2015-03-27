@@ -47,10 +47,14 @@ nginx_sites:
    proxy_set_header: "Host $http_host"
    location1:
     name: /
-    try_files: "$uri $uri/ @proxy_to_app"
+    try_files: "$@proxy_to_app"
    location2:
     name: "@proxy_to_app"
     use_balancer: True
    location3:
     name: /static
     alias: "{{ nginx_static_home }}"
+   location4:
+    name: "~* /(?:home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/"
+    alias: "{{ public_site_path }}/$1"
+    try_files: "$uri $uri/index.html $uri/ =404"
