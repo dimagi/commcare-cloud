@@ -14,8 +14,8 @@ http {
         include /etc/nginx/mime.types;
         default_type application/octet-stream;
 
-        access_log {{ log_home}}/{{ nginx_access_log_name}};
-        error_log {{ log_home}}/{{ nginx_error_log_name}};
+        access_log {{ log_home }}/{{ nginx_access_log_name }};
+        error_log {{ log_home }}/{{ nginx_error_log_name }};
 
 {% for k,v in nginx_http_params.iteritems() %}
         {{ k }}  {{ v }};
