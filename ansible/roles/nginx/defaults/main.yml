@@ -21,7 +21,7 @@ nginx_http_params:
   keepalive_timeout: "65"
   types_hash_max_size: 2048
 
-nginx_separate_logs_per_site: False
+nginx_separate_logs_per_site: True
 
 nginx_sites:
 - server:
@@ -33,13 +33,11 @@ nginx_sites:
    proxy_set_header: "Host $http_host"
    location1:
     name: /
-    try_files: "$uri $uri/ @proxy_to_app"
+    return: "301 https://$server_name$request_uri"
    location2:
-    name: "@proxy_to_app"
-    use_balancer: True
-   location3:
-    name: /static
-    alias: "{{ nginx_static_home }}"
+    name: "~* /(?:home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/"
+    alias: "{{ public_site_path }}/$1"
+    try_files: "$uri $uri/index.html $uri/ =404"
 - server:
    file_name: cchq
    listen: "443 ssl"
