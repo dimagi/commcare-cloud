@@ -10,3 +10,10 @@ nginx_sites:
    location1:
     name: /
     root: /var/www/hq_status
+- server:
+   file_name: tableau
+   listen: "443 ssl"
+   server_name: tableau.commcarehq.org
+   location1:
+    name: /
+    proxy_pass: http://tableau1.internal.commcarehq.org
