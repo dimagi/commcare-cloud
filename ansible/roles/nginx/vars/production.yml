@@ -25,7 +25,9 @@ nginx_sites:
    proxy_set_header: "Host $http_host"
    location1:
     name: /
-    try_files: "@proxy_to_app"
+    # The /dev/null is a hack because try files require more than one argument,
+    # might make sense to remove the @proxy_to_app and just use proxy_pass
+    try_files: "/dev/null @proxy_to_app"
    location2:
     name: "@proxy_to_app"
     use_balancer: True
@@ -59,7 +61,9 @@ nginx_sites:
    proxy_set_header: "Host $http_host"
    location1:
     name: /
-    try_files: "@proxy_to_app"
+    # The /dev/null is a hack because try files require more than one argument,
+    # might make sense to remove the @proxy_to_app and just use proxy_pass
+    try_files: "/dev/null @proxy_to_app"
    location2:
     name: "@proxy_to_app"
     use_balancer: True
