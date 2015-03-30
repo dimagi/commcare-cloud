@@ -3,7 +3,7 @@ ubuntu_pkg: nginx
 
 nginx_sites:
 - server:
-   file_name: cchq_public
+   file_name: "{{ deploy_env }}_commcare_public"
    listen: "80"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 100m
@@ -17,7 +17,7 @@ nginx_sites:
     alias: "{{ public_site_path }}/$1"
     try_files: "$uri $uri/index.html $uri/ =404"
 - server:
-   file_name: cchq
+   file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 100m

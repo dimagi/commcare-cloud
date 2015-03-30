@@ -6,6 +6,7 @@ nginx_sites:
 - server:
    file_name: hq_status
    listen: "80"
+   # Move these to a localsetting?
    server_name: slow.commcarehq.org
    location1:
     name: /
@@ -13,6 +14,7 @@ nginx_sites:
 - server:
    file_name: tableau
    listen: "443 ssl"
+   # Move these to a localsetting?
    server_name: tableau.commcarehq.org
    location1:
     name: /
