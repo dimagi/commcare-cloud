@@ -1,3 +1,12 @@
 ---
 
 ubuntu_pkg: nginx
+
+nginx_sites:
+- server:
+   file_name: hq_status
+   listen: "80"
+   server_name: slow.commcarehq.org
+   location1:
+    name: /
+    root: /var/www/hq_status

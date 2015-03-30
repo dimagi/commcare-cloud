@@ -5,4 +5,5 @@
   roles:
     - {role: hq_status}
     - { role: apache2, when: proxy_type == 'apache2' }
+    # The first pass deploys the constant sites, e.g.
     - { role: nginx, when: proxy_type == 'nginx' }
