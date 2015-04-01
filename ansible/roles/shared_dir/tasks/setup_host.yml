@@ -6,7 +6,7 @@
     path: "{{ shared_data_dir }}"
     owner: "nobody"
     group: "nogroup"
-    mode: 0755
+    mode: 0775
     state: directory
   tags:
     - nfs
@@ -15,7 +15,7 @@
   sudo: yes
   lineinfile:
     dest: /etc/exports
-    line: "{{ shared_data_dir }} {{ item }}(rw,sync,no_subtree_check,no_root_squash)"
+    line: "{{ shared_data_dir }} {{ item }}(rw,sync,no_subtree_check)"
     regexp: "^{{ shared_data_dir }} {{ item }}"
     state: present
   with_items: groups.webworkers

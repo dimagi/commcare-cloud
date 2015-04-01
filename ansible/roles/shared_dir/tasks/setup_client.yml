@@ -6,7 +6,7 @@
     path: "{{ shared_mount_dir }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
-    mode: 0755
+    mode: 0775
     state: directory
   tags:
     - nfs
