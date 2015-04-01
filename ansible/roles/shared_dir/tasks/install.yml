@@ -1,0 +1,17 @@
+---
+
+- name: Install NFS packages
+  sudo: yes
+  apt: name={{ item }} state=present
+  with_items:
+    - nfs-kernel-server
+    - portmap
+  tags:
+    - nfs
+
+- name: ensure nfs service is running
+  service:
+    name: nfs-kernel-server
+    state: started
+  tags:
+    - nfs

@@ -7,7 +7,9 @@ log_home: "{{ www_home }}/log"
 service_home: "{{ cchq_home }}/services"
 virtualenv_home: "{{ www_home }}/python_env"
 virtualenv_preindex_home: "{{ www_home }}/python_env_preindex"
-restore_payload_dir: "{{ www_home }}/data/restore_payloads"
+
+shared_mount_dir: "/mnt/shared_data"
+restore_payload_dir: "{{ shared_mount_dir }}/restore_payloads"
 
 cchq_user: cchq
 dev_group: dev

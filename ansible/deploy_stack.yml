@@ -16,3 +16,4 @@
 - include: deploy_proxy.yml
 - include: deploy_webworker.yml
 - include: deploy_touchforms.yml
+- include: deploy_shared_dir.yml
