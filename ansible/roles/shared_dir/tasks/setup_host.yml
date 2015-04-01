@@ -4,8 +4,8 @@
   sudo: yes
   file:
     path: "{{ shared_data_dir }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
+    owner: "nobody"
+    group: "nogroup"
     mode: 0755
     state: directory
   tags:
