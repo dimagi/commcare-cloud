@@ -3,9 +3,9 @@
 - name: Create shared mount dir
   sudo: yes
   file:
-    path: {{ shared_mount_dir }}
-    owner: {{ cchq_user }}
-    group: {{ cchq_user }}
+    path: "{{ shared_mount_dir }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
     mode: 0755
     state: directory
   tags:
@@ -14,8 +14,8 @@
 - name: Mount directory in /etc/fstab
   sudo: yes
   mount:
-    name: {{ shared_mount_dir }}
-    src: {{ groups.shared_dir_host[0] }}:{{ shared_mount_dir }}
+    name: "{{ shared_mount_dir }}"
+    src: "{{ groups.shared_dir_host[0] }}:{{ shared_mount_dir }}"
     fstype: nfs
     state: mounted
   tags:
