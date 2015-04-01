@@ -15,7 +15,8 @@
   sudo: yes
   lineinfile:
     dest: /etc/exports
-    line: "{{ shared_data_dir }} {{ item }}(rw,sync,no_subtree_check)"
+    line: "{{ shared_data_dir }} {{ item }}(rw,sync,no_subtree_check,no_root_squash)"
+    regexp: "^{{ shared_data_dir }}"
     state: present
   with_items: groups.webworkers
   tags:
