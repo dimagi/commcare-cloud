@@ -15,7 +15,7 @@
   sudo: yes
   mount:
     name: "{{ shared_mount_dir }}"
-    src: "{{ groups.shared_dir_host[0] }}:{{ shared_mount_dir }}"
+    src: "{{ groups.shared_dir_host[0] }}:{{ shared_data_dir }}"
     fstype: nfs
     state: mounted
   tags:
