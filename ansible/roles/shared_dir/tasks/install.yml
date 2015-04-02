@@ -19,12 +19,16 @@
 - name: Create group with same GID
   sudo: yes
   group:
-    name: {{ shared_dir_groupname }}
+    name: "{{ shared_dir_groupname }}"
     state: present
-    gid: {{ shared_dir_gid }}
+    gid: "{{ shared_dir_gid }}"
+  tags:
+    - nfs
 
 - name: Add cchq to nfs group
   user:
-    name: {{ cchq_user }}
-    groups: {{ shared_dir_groupname }}
+    name: "{{ cchq_user }}"
+    groups: "{{ shared_dir_groupname }}"
     append: yes
+  tags:
+    - nfs
