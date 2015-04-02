@@ -1,1 +1,3 @@
 shared_data_dir: /opt/shared_data
+shared_dir_gid: 1500  # This GID cannot already be allocated
+shared_dir_groupname: nfs

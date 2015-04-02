@@ -5,7 +5,7 @@
   file:
     path: "{{ shared_data_dir }}"
     owner: "nobody"
-    group: "nogroup"
+    group: "{{ shared_dir_gid }}"
     mode: 0775
     state: directory
   tags:

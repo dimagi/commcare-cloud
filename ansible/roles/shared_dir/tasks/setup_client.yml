@@ -4,8 +4,8 @@
   sudo: yes
   file:
     path: "{{ shared_mount_dir }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
+    owner: "nobody"
+    group: "{{ shared_dir_gid }}"
     mode: 0775
     state: directory
   tags:

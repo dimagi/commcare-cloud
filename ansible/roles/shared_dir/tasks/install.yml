@@ -15,3 +15,16 @@
     state: started
   tags:
     - nfs
+
+- name: Create group with same GID
+  sudo: yes
+  group:
+    name: {{ shared_dir_groupname }}
+    state: present
+    gid: {{ shared_dir_gid }}
+
+- name: Add cchq to nfs group
+  user:
+    name: {{ cchq_user }}
+    groups: {{ shared_dir_groupname }}
+    append: yes
