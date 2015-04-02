@@ -1,0 +1,29 @@
+---
+
+- name: Create shared data dir
+  sudo: yes
+  file:
+    path: "{{ shared_data_dir }}"
+    owner: "nobody"
+    group: "{{ shared_dir_gid }}"
+    mode: 0775
+    state: directory
+  tags:
+    - nfs
+
+- name: Add shared dir to exports
+  sudo: yes
+  lineinfile:
+    dest: /etc/exports
+    line: "{{ shared_data_dir }} {{ item }}(rw,sync,no_subtree_check,anongid={{ shared_dir_gid }})"
+    regexp: "^{{ shared_data_dir }} {{ item }}"
+    state: present
+  with_items: groups.webworkers
+  tags:
+    - nfs
+
+- name: Export directories
+  sudo: yes
+  command: "exportfs -a"
+  tags:
+    - nfs

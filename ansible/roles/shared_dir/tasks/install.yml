@@ -1,0 +1,34 @@
+---
+
+- name: Install NFS packages
+  sudo: yes
+  apt: name={{ item }} state=present
+  with_items:
+    - nfs-kernel-server
+    - portmap
+  tags:
+    - nfs
+
+- name: ensure nfs service is running
+  service:
+    name: nfs-kernel-server
+    state: started
+  tags:
+    - nfs
+
+- name: Create group with same GID
+  sudo: yes
+  group:
+    name: "{{ shared_dir_groupname }}"
+    state: present
+    gid: "{{ shared_dir_gid }}"
+  tags:
+    - nfs
+
+- name: Add cchq to nfs group
+  user:
+    name: "{{ cchq_user }}"
+    groups: "{{ shared_dir_groupname }}"
+    append: yes
+  tags:
+    - nfs

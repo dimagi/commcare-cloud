@@ -1,0 +1,19 @@
+---
+
+- name: SharedDirHost
+  hosts: shared_dir_host  # Should be one
+  sudo: yes
+  vars_files:
+    - shared_dir/vars/main.yml
+  tasks:
+    - include: shared_dir/tasks/install.yml
+    - include: shared_dir/tasks/setup_host.yml
+
+- name: SharedDirClient
+  hosts: webworkers
+  sudo: yes
+  vars_files:
+    - shared_dir/vars/main.yml
+  tasks:
+    - include: shared_dir/tasks/install.yml
+    - include: shared_dir/tasks/setup_client.yml
