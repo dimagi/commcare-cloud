@@ -2,3 +2,4 @@
 /config/
 .vagrant/
 DimagiKeyStore
+.idea/

@@ -23,6 +23,9 @@ AMQP_PASSWORD: '******'
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
+# This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
+keystore_file: 'DimagiKeyStore'
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -51,6 +54,7 @@ localsettings:
   COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}:5984"
   COUCH_USERNAME: commcarehq
   CTABLE_PREFIX: null
+  DEFAULT_CACHE: redis
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
 #  DOMAIN_SYNC_DATABASE_NAME:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"

@@ -1,0 +1,7 @@
+---
+dependencies:
+  - role: apache2
+    when: proxy_type == 'apache2'
+
+  - role: nginx
+    when: proxy_type == 'nginx'

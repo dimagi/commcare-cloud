@@ -4,7 +4,6 @@
     - postgresql
     - couchdb
     - redis
-    - memcached
     - elasticsearch
     - rabbitmq
   sudo: yes
@@ -22,12 +21,6 @@
   sudo: yes
   roles:
     - couchdb
-
-- name: Memcached
-  hosts: memcached
-  sudo: yes
-  roles:
-    - bennojoy.memcached
 
 - name: Redis
   hosts: redis
