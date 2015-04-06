@@ -5,7 +5,7 @@
   file:
     path: "{{ restore_payload_dir }}"
     owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
+    group: "{{ shared_dir_groupname }}"
     mode: 0755
     state: directory
   tags:
