@@ -2,10 +2,11 @@
 
 - name: create restore payloads directory
   sudo: yes
+  sudo_user: "{{ cchq_user }}"
   file:
     path: "{{ restore_payload_dir }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
+    owner: "nobody"
+    group: "nogroup"
     mode: 0755
     state: directory
   tags:
