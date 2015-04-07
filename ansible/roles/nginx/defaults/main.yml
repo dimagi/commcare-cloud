@@ -1,5 +1,5 @@
 ---
-
+nginx_ubuntu_pkg: nginx
 nginx_install: True
 nginx_user: www-data
 nginx_static_home: "{{ code_home }}/staticfiles"

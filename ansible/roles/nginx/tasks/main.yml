@@ -5,7 +5,7 @@
 - name: Install nginx
   sudo: yes
   apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
-  with_items: ubuntu_pkg
+  with_items: nginx_ubuntu_pkg
   when: nginx_install == True
 
 - name: Create nginx http user
@@ -41,37 +41,22 @@
   sudo: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
 
-- name: Create the configurations for sites independent of inventory
+- name: Create the site configurations
   sudo: yes
-  template: src=site.j2 dest=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
-  with_items: nginx_sites
-  when: nginx_sites|lower != 'none'
+  template: src=site.j2 dest=/etc/nginx/sites-available/{{ server['file_name'] }}
+  with_items:
+    - active_sites + ['cchq']
+  include_vars: {{ item }}.yml
   notify:
    - reload nginx
 
 - name: Create the links to enable site configurations
   sudo: yes
-  file: path=/etc/nginx/sites-enabled/{{ item['server']['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
-  with_items: nginx_sites
-  when: nginx_sites|lower != 'none'
-
-- include_vars: '{{deploy_env}}.yml'
-
-- name: Create the configurations for sites based on inventory
-  sudo: yes
-  template: src=site.j2 dest=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
-  with_items: nginx_sites
-  when: nginx_sites|lower != 'none'
-  notify:
-   - reload nginx
-
-- name: Create the links to enable site configurations
-  sudo: yes
-  file: path=/etc/nginx/sites-enabled/{{ item['server']['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
-  with_items: nginx_sites
-  when: nginx_sites|lower != 'none'
+  file: path=/etc/nginx/sites-enabled/{{ server['file_name'] }} state=link src=/etc/nginx/sites-available/{{ server['file_name'] }}
+  with_items:
+    - active_sites + ['cchq']
+  include_vars: {{ item }}.yml
 
 - name: start the nginx service
   sudo: yes
   service: name=nginx state=started enabled=yes
-

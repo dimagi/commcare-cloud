@@ -1,0 +1,10 @@
+---
+server:
+ file_name: "{{ deploy_env }}_commcare_redirect"
+ listen: "443 ssl"
+ server_name: "{{ SITE_HOST }}"
+ client_max_body_size: 100m
+ proxy_set_header: "Host $http_host"
+ location1:
+  name: /
+  return: "301 https://{{ WWW_SITE_HOST }}$request_uri"
