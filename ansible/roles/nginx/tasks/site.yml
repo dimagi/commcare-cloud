@@ -1,0 +1,20 @@
+---
+
+- name: load configuration
+  include_vars: "{{ site_name }}.yml"
+
+- debug: var=site_name
+- debug: var=nginx_sites
+
+
+- name: Create the site configurations
+  sudo: yes
+  template: src=site.j2 dest=/etc/nginx/sites-available/{{ item.server.file_name }}
+  with_items: nginx_sites
+  notify:
+   - reload nginx
+
+- name: Create the links to enable site configurations
+  sudo: yes
+  file: path=/etc/nginx/sites-enabled/{{ item.server['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item.server['file_name'] }}
+  with_items: nginx_sites
