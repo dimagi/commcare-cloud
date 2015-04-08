@@ -6,7 +6,7 @@
   file:
     path: "{{ restore_payload_dir }}"
     owner: "nobody"
-    group: "nogroup"
+    group: "{{ shared_dir_gid }}"
     mode: "u=rwx,g=rwx,o=r"
     state: directory
   tags:
