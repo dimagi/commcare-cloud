@@ -7,7 +7,7 @@
     path: "{{ restore_payload_dir }}"
     owner: "nobody"
     group: "nogroup"
-    mode: 0755
+    mode: "u=rwx,g=rwx,o=r"
     state: directory
   tags:
     - restore

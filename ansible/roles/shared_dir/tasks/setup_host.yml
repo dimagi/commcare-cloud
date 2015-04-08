@@ -6,7 +6,7 @@
     path: "{{ shared_data_dir }}"
     owner: "nobody"
     group: "{{ shared_dir_gid }}"
-    mode: 0775
+    mode: "u=rwx,g=rwx,o=r"
     state: directory
   tags:
     - nfs
