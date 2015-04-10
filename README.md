@@ -127,3 +127,10 @@ Note: to generate this list automatically, you can run something like
 ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
 /g' | xargs -I% echo - %
 ```
+
+
+### Setting up ansible control machine
+
+```bash
+ansible-playbook -u root -i ../../commcare-hq/fab/inventory/$ENV deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
+```
