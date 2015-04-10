@@ -387,6 +387,9 @@ COUCH_STALE_QUERY = 'ok'
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
 
+{% if 'SAVED_EXPORT_ACCESS_CUTOFF' in localsettings %}
+SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
+{% endif %}
 
 {% if 'MAPS_LAYERS' in localsettings %}
 import json
