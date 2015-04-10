@@ -132,5 +132,5 @@ ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.y
 ### Setting up ansible control machine
 
 ```bash
-ansible-playbook -u root -i ../../commcare-hq/fab/inventory/$ENV deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
+ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
 ```
