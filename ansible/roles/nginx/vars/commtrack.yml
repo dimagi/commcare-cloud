@@ -20,5 +20,5 @@ nginx_sites:
     alias: "{{ nginx_static_home }}"
    location4:
     name: "~* /(?:home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/"
-    alias: "{{ public_site_path }}/$1"
+    alias: "{{ commtrack_public_site_path }}/$1"
     try_files: "$uri $uri/index.html $uri/ =404"

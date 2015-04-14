@@ -1,5 +1,4 @@
 ---
-public_site_path: /opt/commcare-hq-public/site/output/
 nginx_sites:
 - server:
    file_name: "{{ deploy_env }}_commcare_static"

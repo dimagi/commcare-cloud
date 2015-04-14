@@ -1,5 +1,4 @@
 ---
-public_site_path: /opt/commtrack-static/site/output/
 nginx_sites:
 - server:
    file_name: commtrack_public
@@ -13,5 +12,5 @@ nginx_sites:
     return: "301 https://$server_name$request_uri"
    location2:
     name: "~* /(?:home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/"
-    alias: "{{ public_site_path }}/$1"
+    alias: "{{ commtrack_public_site_path }}/$1"
     try_files: "$uri $uri/index.html $uri/ =404"
