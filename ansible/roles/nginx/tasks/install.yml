@@ -26,8 +26,6 @@
 - name: Copy the nginx configuration file
   sudo: yes
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
-  notify:
-   - restart nginx
 
 - name: Copy the nginx default configuration file
   sudo: yes
@@ -40,14 +38,3 @@
 - name: Create the link for site enabled specific configurations
   sudo: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
-
-- name: start the nginx service
-  sudo: yes
-  service: name=nginx state=started enabled=yes
-
-- name: Assert nginx is running
-  sudo: yes
-  shell: 'service nginx status'
-  register: nginx_status
-  changed_when: false
-  failed_when: nginx_status.rc != 0

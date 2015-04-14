@@ -1,0 +1,15 @@
+---
+- name: start the nginx service
+  sudo: yes
+  service: name=nginx state=started enabled=yes
+
+- name: restart the nginx service
+  sudo: yes
+  service: name=nginx state=restarted enabled=yes
+
+- name: Assert nginx is running
+  sudo: yes
+  shell: 'service nginx status'
+  register: nginx_status
+  changed_when: false
+  failed_when: nginx_status.rc != 0

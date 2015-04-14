@@ -3,9 +3,10 @@
   include: install.yml
   when: action == 'install'
 
-
-- debug: msg="echo {{site_name}}"
-  when: action == 'site'
 - name: Configure Site
   include: site.yml
   when: action == 'site'
+
+- name: restart Site
+  include: restart.yml
+  when: action == 'restart'
