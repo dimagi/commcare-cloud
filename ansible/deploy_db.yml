@@ -8,7 +8,7 @@
     - rabbitmq
   sudo: yes
   roles:
-    - ecryptfs
+    - {role: ecryptfs, tags: 'ecryptfs'}
 
 - name: Postgresql
   hosts: postgresql
