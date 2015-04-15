@@ -6,6 +6,8 @@
 - name: Check for already mounted drive
   shell: cat /etc/mtab
   register: mtab_contents
+  tags:
+    - ecrypt_mount
 
 - name: Create /opt/data directory
   sudo: yes
@@ -16,11 +18,15 @@
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
   when: "'/opt/data' not in mtab_contents.stdout"
+  tags:
+    - ecrypt_mount
 
 - name: Mount data drive
   sudo: yes
   shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 /opt/data/ /opt/data/"
   when: "'/opt/data' not in mtab_contents.stdout"
+  tags:
+    - ecrypt_mount
 
 - name: Drop unencrypted readme in directory
   sudo: yes
