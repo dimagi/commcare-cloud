@@ -1,0 +1,24 @@
+---
+nginx_sites:
+- server:
+   file_name: commtrack
+   listen: "8443 ssl"
+   server_name: "{{ COMMTRACK_SITE_HOST }}"
+   client_max_body_size: 100m
+   use_balancer: True
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    # The /dev/null is a hack because try files require more than one argument,
+    # might make sense to remove the @proxy_to_app and just use proxy_pass
+    try_files: "/dev/null @proxy_to_app"
+   location2:
+    name: "@proxy_to_app"
+    use_balancer: True
+   location3:
+    name: /static
+    alias: "{{ nginx_static_home }}"
+   location4:
+    name: "~* /(?:home|users|support|plans|images|pdfs|style|js|tour|div2|docs|fr|poc|es)/"
+    alias: "{{ commtrack_public_site_path }}/$1"
+    try_files: "$uri $uri/index.html $uri/ =404"

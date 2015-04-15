@@ -1,0 +1,12 @@
+---
+- name: Install Nginx
+  include: install.yml
+  when: action == 'install'
+
+- name: Configure Site
+  include: site.yml
+  when: action == 'site'
+
+- name: restart Site
+  include: restart.yml
+  when: action == 'restart'

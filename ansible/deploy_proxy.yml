@@ -3,5 +3,15 @@
 - name: Proxy
   hosts: proxy
   roles:
-    - {role: apache2, tags: apache2}
     - {role: hq_status}
+    - { role: apache2, when: proxy_type == 'apache2' }
+    - { role: nginx, when: proxy_type == 'nginx', action: install }
+    - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_redirect == True, action: site, site_name: cchq_redirect }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_static == True, action: site, site_name: cchq_static }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_static_redirect == True, action: site, site_name: cchq_static_redirect }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack == True, action: site, site_name: commtrack }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_static == True, action: site, site_name: commtrack_static }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau }
+    - { role: nginx, when: proxy_type == 'nginx', action: restart }
