@@ -32,7 +32,7 @@
   hosts: elasticsearch
   sudo: yes
   roles:
-    - elasticsearch
+    - {role: elasticsearch, tags: 'elasticsearch'}
 
 - name: Redis Monitoring
   hosts: redis
