@@ -14,7 +14,7 @@
   hosts: postgresql
   sudo: yes
   roles:
-    - postgresql
+    - {role: postgresql, tags: 'postgresql'}
 
 - name: Couchdb
   hosts: couchdb
