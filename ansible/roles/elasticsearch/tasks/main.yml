@@ -50,6 +50,13 @@
     dest: /etc/elasticsearch/elasticsearch.yml
   register: copy_elasticsearch_conf_result
 
+- name: Copy Elasticsearch logging config
+  sudo: yes
+  template:
+    src: config/logging.yml.j2
+    dest: /etc/elasticsearch/logging.yml
+  register: copy_elasticsearch_logging_result
+
 - name: Copy Elasticsearch Upstart Conf
   sudo: yes
   template:
@@ -85,4 +92,4 @@
   # upstart isn't the default on ubuntu I think,
   # so 'service' ansible module doesn't work for it
   shell: restart elasticsearch
-  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed
+  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
