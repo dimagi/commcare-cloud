@@ -277,21 +277,21 @@ shared_buffers = 24MB           # min 128kB
 
 # - Where to Log -
 
-#log_destination = 'stderr'     # Valid values are combinations of
+log_destination = 'csvlog'     # Valid values are combinations of
                     # stderr, csvlog, syslog, and eventlog,
                     # depending on platform.  csvlog
                     # requires logging_collector to be on.
 
 # This is used when logging to stderr:
-#logging_collector = off        # Enable capturing of stderr and csvlog
+logging_collector = on        # Enable capturing of stderr and csvlog
                     # into log files. Required to be on for
                     # csvlogs.
                     # (change requires restart)
 
 # These are only used if logging_collector is on:
-#log_directory = 'pg_log'       # directory where log files are written,
+log_directory = 'pg_log'       # directory where log files are written,
                     # can be absolute or relative to PGDATA
-#log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'    # log file name pattern,
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'    # log file name pattern,
                     # can include strftime() escapes
 #log_file_mode = 0600           # creation mode for log files,
                     # begin with 0 to use octal notation
@@ -303,9 +303,9 @@ shared_buffers = 24MB           # min 128kB
                     # or size-driven rotation.  Default is
                     # off, meaning append to existing files
                     # in all cases.
-#log_rotation_age = 1d          # Automatic rotation of logfiles will
+log_rotation_age = 1d          # Automatic rotation of logfiles will
                     # happen after that time.  0 disables.
-#log_rotation_size = 10MB       # Automatic rotation of logfiles will
+log_rotation_size = 10MB       # Automatic rotation of logfiles will
                     # happen after that much log output.
                     # 0 disables.
 
@@ -321,7 +321,7 @@ shared_buffers = 24MB           # min 128kB
 
 # - When to Log -
 
-#client_min_messages = notice       # values in order of decreasing detail:
+client_min_messages = notice       # values in order of decreasing detail:
                     #   debug5
                     #   debug4
                     #   debug3
@@ -332,7 +332,7 @@ shared_buffers = 24MB           # min 128kB
                     #   warning
                     #   error
 
-#log_min_messages = warning     # values in order of decreasing detail:
+log_min_messages = warning     # values in order of decreasing detail:
                     #   debug5
                     #   debug4
                     #   debug3
@@ -346,7 +346,7 @@ shared_buffers = 24MB           # min 128kB
                     #   fatal
                     #   panic
 
-#log_min_error_statement = error    # values in order of decreasing detail:
+log_min_error_statement = error    # values in order of decreasing detail:
                     #   debug5
                     #   debug4
                     #   debug3
@@ -360,7 +360,7 @@ shared_buffers = 24MB           # min 128kB
                     #   fatal
                     #   panic (effectively off)
 
-#log_min_duration_statement = -1    # -1 is disabled, 0 logs all statements
+log_min_duration_statement = 300    # -1 is disabled, 0 logs all statements
                     # and their durations, > 0 logs only
                     # statements running at least this number
                     # of milliseconds
