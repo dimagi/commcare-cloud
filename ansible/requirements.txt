@@ -1,2 +1,4 @@
-ansible==1.8.2
+ansible==1.9.0.1
+netaddr
+dnspython
 passlib
