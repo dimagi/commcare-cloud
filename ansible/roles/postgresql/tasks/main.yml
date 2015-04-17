@@ -38,8 +38,6 @@
 - name: PostgreSQL app configuration
   sudo_user: postgres
   template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
-  when:
-    pg_install == True
   register: postgresql_configuration_updated
 
 - name: PostgreSQL access configuration
