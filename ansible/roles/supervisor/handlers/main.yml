@@ -6,3 +6,6 @@
 
 - name: stop supervisor
   command: stop supervisord
+
+- name: restart all supervisor
+  command: supervisorctl restart all
