@@ -10,3 +10,7 @@
 - name: restart Site
   include: restart.yml
   when: action == 'restart'
+
+- name: Configure Static Error pages
+  include: errorpages.yml
+  when: action == 'errorpages'
