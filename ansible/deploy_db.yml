@@ -13,6 +13,8 @@
 - name: Postgresql
   hosts: postgresql
   sudo: yes
+  handlers:
+    - include: roles/supervisor/handlers/main.yml
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
