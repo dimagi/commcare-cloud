@@ -1,6 +1,6 @@
 ---
 dependencies:
-  - role: common_installs
+  - {role: common_installs, tags: common_installs}
   - role: commcarehq
   - {role: supervisor, tags: supervisor}
   - {role: users, tags: users}
