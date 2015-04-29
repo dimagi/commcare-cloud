@@ -22,6 +22,7 @@
     - npm
     - at
     - screen
+    - gettext
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
