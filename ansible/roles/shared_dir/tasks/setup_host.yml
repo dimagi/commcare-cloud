@@ -29,3 +29,32 @@
   command: "exportfs -a"
   tags:
     - nfs
+
+- name: create shared directories
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    owner: "nobody"
+    group: "{{ shared_dir_gid }}"
+    mode: "u=rwx,g=rwx,o=r"
+    state: directory
+  with_items:
+    - "{{ restore_payload_dir }}"
+    - "{{ transer_payload_dir }}"
+  tags:
+    - shared_files
+
+- name: Create purging cron jobs
+  sudo: yes
+  cron:
+    name: "{{ item.name }}"
+    special_time: daily
+    job: "find {{ item.dir }} -type f -maxdepth 1 -mtime +4 -delete"
+    user: root
+    cron_file: purge_cache_files
+  with_items:
+    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir }}"}
+    - {name: 'Purge old transfer files', dir: "{{ transer_payload_dir }}"}
+  tags:
+    - shared_files
+
