@@ -24,6 +24,7 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
+    - "{{ rotated_log_home }}"
     - "{{ preindex_home }}"
     - "{{ virtualenv_home }}"
     - "{{ virtualenv_preindex_home }}"
@@ -76,3 +77,11 @@
     - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
   tags:
     - localsettings
+
+- name: copy logrotate.conf
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: logrotate.conf.j2
+    dest: "/etc/logrotate.conf"
+  tags:
+    - logs
