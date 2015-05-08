@@ -4,6 +4,7 @@
   hosts: proxy
   roles:
     - {role: hq_status}
+    - {role: shared_dir}
     - { role: apache2, when: proxy_type == 'apache2' }
     - { role: nginx, when: proxy_type == 'nginx', action: install }
     - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq }

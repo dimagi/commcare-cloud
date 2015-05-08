@@ -1,23 +1,10 @@
 # Tasks to be run on machines running django
 
-- name: create restore payloads directory
-  sudo: yes
-  sudo_user: "{{ cchq_user }}"
-  file:
-    path: "{{ restore_payload_dir }}"
-    owner: "nobody"
-    group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
-    state: directory
-  tags:
-    - restore
-
-- name: Create payload purging cron job
+- name: Remove old cron jobs
   sudo: yes
   cron:
     name: "Purge old restore payload files"
-    special_time: daily
-    job: "find {{ restore_payload_dir }} -name \"*.xml\" -maxdepth 1 -mtime +4 -delete"
     user: "{{ cchq_user }}"
+    state: absent
   tags:
-    - restore
+    - shared_files
