@@ -36,6 +36,7 @@
   with_items:
     - apache2
     - ssl-cert
+    - libapache2-mod-xsendfile
   when: apache2_install == True
 
 - name: Create apache http user
@@ -66,6 +67,7 @@
     - rewrite
     - ssl
     - status
+    - xsendfile
   notify:
     - Reload Apache2 service
   when: apache2_install == True

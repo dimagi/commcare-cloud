@@ -21,6 +21,8 @@
     RequestHeader set X-FORWARDED-SSL on
     RequestHeader set X-FORWADED-PROTO https
 
+    XSendFile on
+    XSendFilePath {{ transfer_payload_dir }}
 
     Alias /static {{ code_home }}/staticfiles/
     <Directory {{ code_home }}/staticfiles>

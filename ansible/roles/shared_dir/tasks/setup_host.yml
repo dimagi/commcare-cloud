@@ -53,8 +53,8 @@
     user: root
     cron_file: purge_cache_files
   with_items:
-    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir }}"}
-    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir }}"}
+    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}"}
+    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}"}
   tags:
     - shared_files
 
