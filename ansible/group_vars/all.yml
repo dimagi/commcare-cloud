@@ -11,7 +11,9 @@ virtualenv_preindex_home: "{{ www_home }}/python_env_preindex"
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_mount_dir: "/mnt/shared_data"
 transfer_payload_dir_name: "transfer_payloads"
+restore_payload_dir_name: "restore_payloads"
 transfer_payload_dir: "{{ shared_mount_dir }}/{{ transfer_payload_dir_name }}"
+restore_payload_dir: "{{ shared_mount_dir }}/{{ restore_payload_dir_name }}"
 public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
