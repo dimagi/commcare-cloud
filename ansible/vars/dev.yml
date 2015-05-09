@@ -28,6 +28,7 @@ proxy_type: apache2
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
+elasticsearch_cluster_name: 'deves'
 
 ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
