@@ -39,8 +39,8 @@
     mode: "u=rwx,g=rwx,o=r"
     state: directory
   with_items:
-    - "{{ restore_payload_dir }}"
-    - "{{ transer_payload_dir }}"
+    - "{{ restore_payload_dir_host }}"
+    - "{{ transfer_payload_dir_host }}"
   tags:
     - shared_files
 
