@@ -1,6 +1,6 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
-SITE_HOST: 192.168.33.17
+SITE_HOST: '{{ groups.proxy.0 }}'
 
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
@@ -26,8 +26,9 @@ dev_users:
 # use this value to switch between nginx and apache
 proxy_type: apache2
 
-elasticsearch_endpoint: '192.168.33.16'
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
+elasticsearch_cluster_name: 'deves'
 
 ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
@@ -78,8 +79,8 @@ localsettings:
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: ''
   EMAIL_PASSWORD: ''
-  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on control
-  EMAIL_SMTP_HOST: '192.168.33.14'
+  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
+  EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no

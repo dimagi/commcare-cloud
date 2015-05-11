@@ -1,6 +1,6 @@
-shared_data_dir: /opt/shared_data
+shared_data_dir: "/opt/shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_groupname: nfs
 
-restore_payload_dir_host: "{{ shared_data_dir }}/restore_payloads"
+restore_payload_dir_host: "{{ shared_data_dir }}/{{ restore_payload_dir_name }}"
 transfer_payload_dir_host: "{{ shared_data_dir }}/{{ transfer_payload_dir_name }}"
