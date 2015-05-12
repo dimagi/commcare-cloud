@@ -1,4 +1,5 @@
 ---
+# Send anything from http://commcarehq.org -> http://www.commcarehq.org
 nginx_sites:
 - server:
    file_name: "{{ deploy_env }}_commcare_static_redirect"
