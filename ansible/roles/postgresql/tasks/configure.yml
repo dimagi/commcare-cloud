@@ -1,0 +1,60 @@
+- name: Check for original postgresql directory
+  stat: path="{{ postgresql_dir_original_path }}"
+  register: orig_path
+  when: pg_install == True
+
+- name: Check for new postgresql directory
+  stat: path="{{ postgresql_dir_path }}"
+  register: new_path
+  when: pg_install == True
+
+- name: Assert postgresql directory shows up in exactly one place
+  fail: msg="postgresl directory must either be {{ postgresql_dir_path }} or {{ postgresql_dir_original_path }} (and not both)"
+  when: >
+    pg_install == True and
+    ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
+
+- name: Move postgres to encrypted drive
+  command: "mv {{ postgresql_dir_original_path }} {{ postgresql_dir_path }}"
+  when: pg_install == True and orig_path.stat.exists
+
+- name: generate en_US.UTF-8 locale
+  locale_gen: name='en_US.UTF-8' state=present
+  when:
+    pg_install == True
+
+- name: PostgreSQL app configuration
+  sudo_user: postgres
+  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
+  register: postgresql_configuration_updated
+
+- name: PostgreSQL access configuration
+  sudo_user: postgres
+  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
+  register: postgresql_access_updated
+
+- name: start postgresql
+  sudo_user: postgres
+  service: name=postgresql state=started
+
+- name: Apply PostgreSQL configuration changes
+  sudo_user: postgres
+  service: name=postgresql state=restarted
+  when: postgresql_configuration_updated.changed or postgresql_access_updated.changed
+
+- name: Create PostgreSQL databases
+  sudo_user: postgres
+  postgresql_db: name={{ item }} state=present
+  with_items: postgresql_dbs
+  when:
+    pg_install == True
+
+- name: Create PostgreSQL users
+  sudo_user: postgres
+  postgresql_user:
+    name: "{{ localsettings.PG_DATABASE_USER }}"
+    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+    role_attr_flags: CREATEDB
+    state: present
+  when:
+    pg_install == True

@@ -1,0 +1,8 @@
+- name: Configure CouchDB as service
+  file: src=/usr/local/etc/init.d/couchdb dest=/etc/init.d/couchdb state=link
+
+- name: Update rc.d
+  shell: update-rc.d couchdb defaults
+
+- name: Start CouchDB service
+  service: name=couchdb state=started

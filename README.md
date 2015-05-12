@@ -127,3 +127,11 @@ Note: to generate this list automatically, you can run something like
 ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
 /g' | xargs -I% echo - %
 ```
+
+
+### Provisioning build servers (experimental)
+
+For a stripped down setup that's only enough to run the test suite, use the following:
+```bash
+ansible-playbook -i ../buildservers deploy_buildservers.yml --skip-tags=node_installs
+```

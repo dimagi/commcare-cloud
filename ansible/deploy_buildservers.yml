@@ -1,0 +1,30 @@
+- name: update apt cache
+  hosts: buildserver
+  gather_facts: no
+  sudo: yes
+  tasks:
+    - apt: update_cache=true cache_valid_time=3600
+
+- name: Common Installs
+  hosts: buildserver
+  sudo: yes
+  roles:
+    - common_installs
+
+- name: Postgresql
+  hosts: buildserver
+  sudo: yes
+  roles:
+    - {role: postgresql, skip_configure: yes}
+
+- name: Couchdb
+  hosts: buildserver
+  sudo: yes
+  roles:
+    - {role: couchdb, skip_configure: yes}
+
+- name: Redis
+  hosts: buildserver
+  sudo: yes
+  roles:
+    - bennojoy.redis
