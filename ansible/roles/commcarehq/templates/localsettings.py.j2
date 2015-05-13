@@ -31,7 +31,118 @@ CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 {% endif %}
 
-DJANGO_LOG_FILE = os.path.join('..','log',"{{ localsettings.DEPLOY_MACHINE_NAME }}-django.log")
+DJANGO_LOG_FILE = os.path.join('..','log',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
+ACCOUNTING_LOG_FILE = os.path.join('..','log',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(message)s'
+        },
+        'pillowtop': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(message)s'
+        },
+    },
+    'handlers': {
+        'pillowtop': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'pillowtop'
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': DJANGO_LOG_FILE,
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 20  # Backup 200 MB of logs
+        },
+        'accountinglog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': ACCOUNTING_LOG_FILE,
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 20  # Backup 200 MB of logs
+        },
+        'couchlog': {
+            'level': 'WARNING',
+            'class': 'couchlog.handlers.CouchHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'corehq.util.log.HqAdminEmailHandler',
+        },
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
+        'null': {
+            'class': 'django.utils.log.NullHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file', 'couchlog', 'sentry'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.security.DisallowedHost': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+        'notify': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'celery.task': {
+            'handlers': ['console', 'file', 'couchlog', 'sentry'],
+            'level': 'INFO',
+            'propagate': True
+        },
+        'pillowtop': {
+            'handlers': ['pillowtop', 'sentry'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'pillowtop_eval': {
+            'handlers': ['sentry'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'smsbillables': {
+            'handlers': ['file', 'sentry'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'currency_update': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'accounting': {
+            'handlers': ['accountinglog', 'sentry', 'console', 'couchlog', 'mail_admins'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    }
+}
 
 # Email setup
 # email settings: these ones are the custom hq ones
