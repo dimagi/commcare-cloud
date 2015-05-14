@@ -21,6 +21,7 @@
   with_flattened:
     - groups.webworkers
     - groups.proxy
+    - groups.celery
   tags:
     - nfs
 
