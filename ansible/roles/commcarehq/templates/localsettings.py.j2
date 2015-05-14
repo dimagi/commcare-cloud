@@ -332,7 +332,10 @@ SOIL_DEFAULT_CACHE = "redis"
 
 REPORT_CACHE = 'redis'
 
-RESTORE_PAYLOAD_DIR = '{{ restore_payload_dir }}'
+SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
+RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
+TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
+TRANSFER_SERVER = '{{ localsettings.TRANSFER_SERVER }}'
 
 memcached = {
     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
