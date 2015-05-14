@@ -10,7 +10,7 @@
     - include: shared_dir/tasks/setup_host.yml
 
 - name: SharedDirClient
-  hosts: webworkers:proxy
+  hosts: webworkers:proxy:celery
   sudo: yes
   vars_files:
     - shared_dir/vars/main.yml
