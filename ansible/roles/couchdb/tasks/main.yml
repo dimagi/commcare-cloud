@@ -38,9 +38,6 @@
 - name: Add CouchDB user
   user: name=couchdb createhome=no password=no state=present
 
-- name: Apply CouchDB config
-  template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
-
 - name: CouchDB ownership permissions
   file: path={{ item }} owner=couchdb group=couchdb recurse=yes state=directory
   with_items:
@@ -49,17 +46,10 @@
     - /usr/local/var/run/couchdb
     - /usr/local/etc/couchdb/
 
-- name: Configure CouchDB as service
-  file: src=/usr/local/etc/init.d/couchdb dest=/etc/init.d/couchdb state=link
+- include: 'configure.yml'
+  when: not skip_configure
 
-- name: Update rc.d
-  shell: update-rc.d couchdb defaults
+- include: 'service.yml'
+  when: skip_configure
 
-- name: Start CouchDB service
-  service: name=couchdb state=started
 
-- name: Add CouchDB databases
-  shell: "{{ item }}"
-  with_items:
-    - curl -X PUT "http://{{ localsettings.COUCH_SERVER_ROOT }}/{{ localsettings.COUCH_DATABASE_NAME }}"
-    - curl -X PUT "http://{{ localsettings.COUCH_SERVER_ROOT }}/_config/admins/{{ localsettings.COUCH_USERNAME }}" -d '"{{ localsettings.COUCH_PASSWORD }}"'

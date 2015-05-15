@@ -1,0 +1,16 @@
+- name: Create postgres user
+  user: name=postgres state=present
+
+- name: Create PostgreSQL users
+  sudo_user: postgres
+  postgresql_user:
+    name: "postgres"
+    password: ''
+    role_attr_flags: CREATEDB
+    state: present
+  when: skip_configure
+
+- name: start postgresql
+  sudo_user: postgres
+  service: name=postgresql state=started
+  when: skip_configure
