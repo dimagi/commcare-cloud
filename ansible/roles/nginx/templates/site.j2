@@ -39,7 +39,10 @@ server {
     {% if v.get('use_balancer', False) == True %}
         proxy_pass http://{{ item.server.file_name }};
     {% endif %}
-    {% for x,y in v.iteritems() if x != 'name' and x != 'use_balancer' %}
+    {% if v.get('is_internal', False) == True %}
+        internal;
+    {% endif %}
+    {% for x,y in v.iteritems() if x not in ['name', 'use_balancer', 'is_internal'] %}
         {{ x }} {{ y }};
     {% endfor %}
   }
