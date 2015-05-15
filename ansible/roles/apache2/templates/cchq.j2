@@ -10,6 +10,7 @@
 {% if apache2_ssl_ca_certificate_file %}
     SSLCACertificateFile {{ apache2_ssl_ca_certificate_file }}
 {% endif %}
+    SSLProtocol All -SSLv2 -SSLv3
     SSLProxyEngine On
     SetEnv proxy-sendcl 1
 
@@ -19,7 +20,7 @@
     SetEnv proxy-nokeepalive 1
     RequestHeader set X-FORWARDED-PROTOCOL ssl
     RequestHeader set X-FORWARDED-SSL on
-    RequestHeader set X-FORWADED-PROTO https
+    RequestHeader set X-FORWARDED-PROTO https
 
     XSendFile on
     XSendFilePath {{ transfer_payload_dir }}
