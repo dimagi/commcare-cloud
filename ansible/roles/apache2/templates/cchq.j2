@@ -54,6 +54,7 @@
     ProxyPass / balancer://hqcluster/
     ProxyPassReverse / balancer://hqcluster/
     ServerName {{ SITE_HOST }}
+    Header edit Location ^http: https:
 
     ## This directive is causing trouble in my local development tests because
     ## it always gets hit before the proxy pass has a chance to work correctly.
