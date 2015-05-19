@@ -1,5 +1,11 @@
+#
+# {{ ansible_managed }}
+#
+import os
+
 URL_ROOT = "https://{{ SITE_HOST }}/a/{{ '{{' }}DOMAIN{{ '}}' }}"
 PERSISTENCE_DIRECTORY = "{{ touchforms_data_dir }}"
+FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}','log',"formplayer.clean-{{ localsettings.DEPLOY_MACHINE_NAME }}.log")
 
 {% if fake_ssl_cert %}
 from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
