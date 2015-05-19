@@ -131,7 +131,7 @@ ssl = true              # (change requires restart)
 
 # - Cost-Based Vacuum Delay -
 
-#vacuum_cost_delay = 0ms        # 0-100 milliseconds
+vacuum_cost_delay = 20ms        # 0-100 milliseconds
 #vacuum_cost_page_hit = 1       # 0-10000 credits
 #vacuum_cost_page_miss = 10     # 0-10000 credits
 #vacuum_cost_page_dirty = 20        # 0-10000 credits
@@ -432,7 +432,7 @@ log_temp_files = 0            # log temporary files equal or larger
 # AUTOVACUUM PARAMETERS
 #------------------------------------------------------------------------------
 
-#autovacuum = on            # Enable autovacuum subprocess?  'on'
+autovacuum = on            # Enable autovacuum subprocess?  'on'
                     # requires track_counts to also be on.
 #log_autovacuum_min_duration = -1   # -1 disables, 0 logs all actions and
                     # their durations, > 0 logs only
