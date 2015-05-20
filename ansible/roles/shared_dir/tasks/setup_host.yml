@@ -42,6 +42,7 @@
   with_items:
     - "{{ restore_payload_dir_host }}"
     - "{{ transfer_payload_dir_host }}"
+    - "{{ shared_temp_dir_host }}"
   tags:
     - shared_files
 
@@ -50,12 +51,13 @@
   cron:
     name: "{{ item.name }}"
     special_time: daily
-    job: "find {{ item.dir }} -type f -maxdepth 1 -mtime +4 -delete"
+    job: "find {{ item.dir }} -type f -maxdepth 1 -mtime +{{ item.max_age }} -delete"
     user: root
     cron_file: purge_cache_files
   with_items:
-    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}"}
-    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}"}
+    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 2}
+    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 2}
+    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 1}
   tags:
     - shared_files
 
