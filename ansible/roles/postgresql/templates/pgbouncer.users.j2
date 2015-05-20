@@ -1,1 +1,3 @@
-"{{ localsettings.PG_DATABASE_USER }}" "{{ localsettings.PG_DATABASE_PASSWORD }}"
+{% for group in postgres_users %}
+"{{ group.username }}" "{{ group.password }}"
+{% endfor %}
