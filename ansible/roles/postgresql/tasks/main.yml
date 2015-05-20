@@ -1,6 +1,23 @@
 ---
 # roles/postgresql/tasks/main.yml
 
+- name: Add PosgreSQL apt repo
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main' state=present
+  register: add_postgresql_repo
+  tags:
+    - pgbouncer
+
+- name: Add PosgreSQL apt key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+  tags:
+    - pgbouncer
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_postgresql_repo|changed
+  tags:
+    - pgbouncer
+
 - name: Install PostgreSQL & dependencies
   apt: name={{ item }} state=present
   with_items:
@@ -70,3 +87,40 @@
     state: present
   when:
     pg_install == True
+
+- name: Install pgbouncer
+  apt: name=pgbouncer state=present
+  when:
+    pg_install == True
+  tags:
+    - pgbouncer
+
+- name: pgbouncer configuration
+  template: src=pgbouncer.ini.j2 dest=/etc/pgbouncer/pgbouncer.ini
+  register: pgbouncer_configuration_updated
+  tags:
+    - pgbouncer
+
+- name: pgbouncer users
+  template: src=pgbouncer.users.j2 dest=/etc/pgbouncer/userlist.txt
+  register: pgbouncer_configuration_updated
+  tags:
+    - pgbouncer
+
+- name: pgbouncer defaults
+  template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
+  register: pgbouncer_configuration_updated
+  tags:
+    - pgbouncer
+
+- name: Apply pgbouncer configuration changes
+  service: name=pgbouncer state=reloaded
+  when: pgbouncer_configuration_updated.changed
+  tags:
+    - pgbouncer
+
+- name: start pgbouncer
+  service: name=pgbouncer state=started
+  tags:
+    - pgbouncer
+
