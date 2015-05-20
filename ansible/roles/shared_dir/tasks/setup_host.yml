@@ -42,6 +42,7 @@
   with_items:
     - "{{ restore_payload_dir_host }}"
     - "{{ transfer_payload_dir_host }}"
+    - "{{ shared_temp_dir_host }}"
   tags:
     - shared_files
 
@@ -56,6 +57,7 @@
   with_items:
     - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}"}
     - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}"}
+    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}"}
   tags:
     - shared_files
 
