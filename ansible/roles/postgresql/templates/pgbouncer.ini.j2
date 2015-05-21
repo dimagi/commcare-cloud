@@ -46,7 +46,7 @@ auth_file = /etc/pgbouncer/userlist.txt
 ;;;
 
 ; comma-separated list of users, who are allowed to change settings
-admin_users = commcarehq
+admin_users = {{ localsettings.PG_DATABASE_USER }}
 
 ; comma-separated list of users who are just allowed to use SHOW command
 ;stats_users = stats, root
