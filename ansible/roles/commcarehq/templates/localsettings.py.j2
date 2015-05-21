@@ -31,8 +31,8 @@ CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 {% endif %}
 
-DJANGO_LOG_FILE = os.path.join('..','log',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
-ACCOUNTING_LOG_FILE = os.path.join('..','log',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
+DJANGO_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
+ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
 
 LOGGING = {
     'version': 1,
