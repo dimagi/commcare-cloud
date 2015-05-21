@@ -12,6 +12,13 @@ from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
 SSLContext.setDefault(TRUST_ALL_CONTEXT)
 {% endif %}
 
+### REDIS CONFIG ###
+REDIS_HOST = {{ localsettings.REDIS_HOST }}
+REDIS_PORT = {{ localsettings.REDIS_PORT }}
+### END REDIS CONFIG ###
+
+
+### POSTGRES CONFIG ###
 USES_POSTGRES = True
 POSTGRES_TABLE = "formplayer_session"
 POSTGRES_JDBC_JAR = "{{ code_home }}/submodules/touchforms-src/touchforms/backend/jrlib/postgresql-9.0-801.jdbc3.jar"
@@ -22,3 +29,4 @@ DATABASE = {
         'user': '{{ localsettings.PG_DATABASE_USER }}',
         'password': '{{ localsettings.PG_DATABASE_PASSWORD }}',
 }
+### END POSTGRES CONFIG ###
