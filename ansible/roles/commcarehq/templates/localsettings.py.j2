@@ -14,9 +14,7 @@ DATABASES = {
         'USER': '{{ localsettings.PG_DATABASE_USER }}',
         'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
         'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
+        'PORT': '{{ localsettings.get('PG_DATABASE_PORT', 5432) }}'
     },
 }
 
