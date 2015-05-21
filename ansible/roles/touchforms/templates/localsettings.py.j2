@@ -11,3 +11,7 @@ FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"formplayer.clean-{{ localse
 from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
 SSLContext.setDefault(TRUST_ALL_CONTEXT)
 {% endif %}
+
+### REDIS CONFIG ###
+REDIS_HOST = {{ localsettings.REDIS_HOST }}
+REDIS_PORT = {{ localsettings.REDIS_PORT }}
