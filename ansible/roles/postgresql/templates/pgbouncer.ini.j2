@@ -98,18 +98,18 @@ server_reset_query = DISCARD ALL
 ;;;
 
 ; total number of clients that can connect
-max_client_conn = 300
+max_client_conn = {{ postgres_config.max_connections }}
 
 ; default pool size.  20 is good number when transaction pooling
 ; is in use, in session pooling it needs to be the number of
 ; max clients you want to handle at any moment
-default_pool_size = 40
+default_pool_size = {{ postgres_config.pgb_default_pool }}
 
 ; how many additional connection to allow in case of trouble
-;reserve_pool_size = 5
+reserve_pool_size = {{ postgres_config.pgb_reserve_pool }}
 
 ; if a clients needs to wait more than this many seconds, use reserve pool
-;reserve_pool_timeout = 3
+reserve_pool_timeout = {{ postgres_config.pgb_pool_timeout }}
 
 ; log if client connects or server connection is made
 ;log_connections = 1
