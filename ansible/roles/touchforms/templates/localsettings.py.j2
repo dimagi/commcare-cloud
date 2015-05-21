@@ -11,3 +11,14 @@ FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"formplayer.clean-{{ localse
 from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
 SSLContext.setDefault(TRUST_ALL_CONTEXT)
 {% endif %}
+
+USES_POSTGRES = True
+POSTGRES_TABLE = "formplayer_session"
+POSTGRES_JDBC_JAR = "{{ code_home }}/submodules/touchforms-src/touchforms/backend/jrlib/postgresql-9.0-801.jdbc3.jar"
+
+DATABASE = {
+        'serverName': '{{ localsettings.PG_DATABASE_HOST }}:5432',
+        'databaseName': '{{ localsettings.PG_DATABASE_NAME }}',
+        'user': '{{ localsettings.PG_DATABASE_USER }}',
+        'password': '{{ localsettings.PG_DATABASE_PASSWORD }}',
+}
