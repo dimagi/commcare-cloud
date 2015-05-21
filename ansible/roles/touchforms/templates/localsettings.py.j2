@@ -12,7 +12,7 @@ from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
 SSLContext.setDefault(TRUST_ALL_CONTEXT)
 {% endif %}
 
-USES_POSTGRES = False
+USES_POSTGRES = True
 POSTGRES_TABLE = "formplayer_session"
 POSTGRES_JDBC_JAR = "{{ code_home }}/submodules/touchforms-src/touchforms/backend/jrlib/postgresql-9.0-801.jdbc3.jar"
 
