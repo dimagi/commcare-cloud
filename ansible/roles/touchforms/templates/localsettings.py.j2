@@ -24,7 +24,7 @@ POSTGRES_TABLE = "formplayer_session"
 POSTGRES_JDBC_JAR = "{{ code_home }}/submodules/touchforms-src/touchforms/backend/jrlib/postgresql-9.0-801.jdbc3.jar"
 
 DATABASE = {
-        'serverName': '{{ localsettings.PG_DATABASE_HOST }}:5432',
+        'serverName': '{{ localsettings.PG_DATABASE_HOST }}:{{ localsettings.PG_DATABASE_PORT }}',
         'databaseName': '{{ localsettings.PG_DATABASE_NAME }}',
         'user': '{{ localsettings.PG_DATABASE_USER }}',
         'password': '{{ localsettings.PG_DATABASE_PASSWORD }}',
