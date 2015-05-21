@@ -116,6 +116,7 @@ hostssl   {{ db }}	{{ localsettings.PG_DATABASE_USER }}	{{ lookup('dig', host, w
 {% endfor %}
 {% endfor %}
 
+{% if 'sentry' in groups %}
 {% for host in (groups['sentry']) | unique %}
 {% if host | ipaddr %}
 hostssl   sentry	sentry	{{ host }}/32   md5
@@ -124,3 +125,4 @@ hostssl   sentry	sentry	{{ host }}/32   md5
 hostssl   sentry	sentry	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {% endif %}
 {% endfor %}
+{% endif %}
