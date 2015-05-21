@@ -1,0 +1,11 @@
+---
+nginx_sites:
+- server:
+   file_name: "{{ deploy_env }}_commcare_com_redirect"
+   listen: "80"
+   server_name: "{{ SITE_HOST_COM }}"
+   client_max_body_size: 100m
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    return: "301 https://{{ WWW_SITE_HOST }}$request_uri"
