@@ -59,7 +59,7 @@ admin_users = {{ localsettings.PG_DATABASE_USER }}
 ;   session      - after client disconnects
 ;   transaction  - after transaction finishes
 ;   statement    - after statement finishes
-pool_mode = session
+pool_mode = {{ postgres_config.pgb_pool_mode }}
 
 ;
 ; Query for cleaning connection immediately after releasing from client.
@@ -74,7 +74,7 @@ pool_mode = session
 ;
 ; Empty if transaction pooling is in use.
 ;
-server_reset_query = DISCARD ALL
+server_reset_query = {% if postgres_config.pgb_pool_mode == 'session' %}DISCARD ALL{% endif %}
 
 ;
 ; Comma-separated list of parameters to ignore when given
