@@ -18,7 +18,6 @@ DATABASES = {
     },
 }
 
-SQL_REPORTING_DATABASE_URL = 'postgresql+psycopg2://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.REPORT_DATABASE_NAME }}?sslmode=require'
 {% if localsettings.REPORT_OBJECT_OWNER %}
 SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 {% endif %}
