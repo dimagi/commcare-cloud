@@ -47,6 +47,12 @@ postgres_users:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
 
+postgres_config:
+  max_connections: 20
+  pgb_default_pool: 15
+  pgb_reserve_pool: 4
+  pgb_pool_timeout: 2
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
