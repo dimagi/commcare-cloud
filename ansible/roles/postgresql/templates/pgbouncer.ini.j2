@@ -81,7 +81,7 @@ server_reset_query = {% if postgres_config.pgb_pool_mode == 'session' %}DISCARD 
 ; in startup packet.  Newer JDBC versions require the
 ; extra_float_digits here.
 ;
-;ignore_startup_parameters = extra_float_digits
+ignore_startup_parameters = extra_float_digits
 
 ;
 ; When taking idle server into use, this query is ran first.
