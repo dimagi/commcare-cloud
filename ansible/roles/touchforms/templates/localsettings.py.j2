@@ -21,12 +21,13 @@ REDIS_PORT = {{ localsettings.REDIS_PORT }}
 ### POSTGRES CONFIG ###
 USES_POSTGRES = True
 POSTGRES_TABLE = "formplayer_session"
-POSTGRES_JDBC_JAR = "{{ code_home }}/submodules/touchforms-src/touchforms/backend/jrlib/postgresql-9.0-801.jdbc3.jar"
+POSTGRES_JDBC_JAR = "{{ code_home }}/submodules/touchforms-src/touchforms/backend/jrlib/postgresql-9.4-1201.jdbc41.jar"
 
 DATABASE = {
         'serverName': '{{ localsettings.PG_DATABASE_HOST }}:{{ localsettings.PG_DATABASE_PORT }}',
         'databaseName': '{{ localsettings.PG_DATABASE_NAME }}',
         'user': '{{ localsettings.PG_DATABASE_USER }}',
         'password': '{{ localsettings.PG_DATABASE_PASSWORD }}',
+        'prepareThreshold': 0
 }
 ### END POSTGRES CONFIG ###
