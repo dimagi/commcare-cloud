@@ -97,25 +97,24 @@
 
 - name: pgbouncer configuration
   template: src=pgbouncer.ini.j2 dest=/etc/pgbouncer/pgbouncer.ini
-  register: pgbouncer_configuration_updated
+  register: pgb_configuration_updated
   tags:
     - pgbouncer
 
 - name: pgbouncer users
   template: src=pgbouncer.users.j2 dest=/etc/pgbouncer/userlist.txt
-  register: pgbouncer_configuration_updated
+  register: pgb_userlist_updated
   tags:
     - pgbouncer
 
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
-  register: pgbouncer_configuration_updated
   tags:
     - pgbouncer
 
 - name: Apply pgbouncer configuration changes
   service: name=pgbouncer state=reloaded
-  when: pgbouncer_configuration_updated.changed
+  when: pgb_configuration_updated.changed or pgb_userlist_updated.changed
   tags:
     - pgbouncer
 
