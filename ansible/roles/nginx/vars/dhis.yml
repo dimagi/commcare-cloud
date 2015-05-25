@@ -1,0 +1,11 @@
+---
+nginx_sites:
+- server:
+   file_name: dhis
+   listen: "443 ssl"
+   # Move these to a localsetting?
+   server_name: dhis-test.commcarehq.org
+   location1:
+    name: /
+    proxy_pass: http://dhis1.internal.commcarehq.org
+

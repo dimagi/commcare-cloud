@@ -15,4 +15,5 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_static == True, action: site, site_name: commtrack_static }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
