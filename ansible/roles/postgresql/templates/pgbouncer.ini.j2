@@ -112,10 +112,10 @@ reserve_pool_size = {{ postgres_config.pgb_reserve_pool }}
 reserve_pool_timeout = {{ postgres_config.pgb_pool_timeout }}
 
 ; log if client connects or server connection is made
-;log_connections = 1
+log_connections = 0
 
 ; log if and why connection was closed
-;log_disconnections = 1
+log_disconnections = 0
 
 ; log error messages pooler sends to clients
 ;log_pooler_errors = 1
