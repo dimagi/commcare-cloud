@@ -1,0 +1,2 @@
+newrelic_agents_nginx: False
+newrelic_agents_apache: True

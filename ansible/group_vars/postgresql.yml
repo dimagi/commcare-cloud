@@ -1,0 +1,3 @@
+newrelic_agents_postgresql: True
+newrelic_agents_pgbouncer: True
+newrelic_agents_elastic: True
