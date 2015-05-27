@@ -45,3 +45,14 @@
   sudo: yes
   roles:
     - rabbitmq
+
+- name: Newrelic Plugin Agent for DB
+  hosts:
+    - postgresql
+    - redis
+    - rabbitmq
+  tasks:
+    - include: roles/newrelic/tasks/plugin-agent.yml
+      when: run_newrelic_plugin_agent
+  tags:
+    - newrelic-plugin-agent

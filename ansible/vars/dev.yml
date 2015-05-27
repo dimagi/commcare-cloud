@@ -34,6 +34,9 @@ ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY:
 
+NEW_RELIC_KEY: '123'
+run_newrelic_plugin_agent: True
+
 AMQP_USER: "{{ deploy_env }}_worker"
 AMQP_PASSWORD: '******'
 AMQP_HOST: "{{ groups.celery.0 }}"
