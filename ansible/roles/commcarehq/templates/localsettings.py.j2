@@ -350,7 +350,7 @@ redis_cache = {
     'OPTIONS': {},
 }
 CACHES = {
-    'default': {% if localsettings.get('DEFAULT_CACHE', 'memcached') == 'memcached' %}memcached{% else %}redis_cache{% endif %},
+    'default': {% if localsettings.get('DEFAULT_CACHE') == 'memcached' %}memcached{% else %}redis_cache{% endif %},
     'redis': redis_cache,
 }
 
