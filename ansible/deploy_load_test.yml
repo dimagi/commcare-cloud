@@ -1,0 +1,22 @@
+---
+- name: Load testing runner
+  hosts:
+    - load_test_runner
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  sudo: yes
+  tasks:
+    - include: roles/load_test/tasks/install_runner.yml
+  roles:
+    - {role: load_test, tags: 'load_test'}
+
+- name: Load testing host
+  hosts:
+    - load_test_host
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  sudo: yes
+  tasks:
+    - include: roles/load_test/tasks/install_host.yml
+  roles:
+    - {role: load_test, tags: 'load_test'}

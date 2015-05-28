@@ -1,0 +1,5 @@
+db_name: bench
+pgbench_tests:
+  - read
+  - writeread
+  - write

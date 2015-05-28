@@ -1,0 +1,26 @@
+---
+
+- name: Install packages to be used for load testing
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - postgresql-contrib
+
+- name: Symlink pgbench to PATH
+  sudo: yes
+  file:
+    src: '/usr/lib/postgresql/{{ postgresql_version }}/bin/pgbench'
+    dest: '/usr/local/bin/pgbench{{ postgresql_version }}'
+    state: link
+    owner: '{{ cchq_user }}'
+    group: '{{ cchq_user }}'
+
+- name: Copy scripts
+  sudo: yes
+  template:
+    src: 'pgbench-test.j2'
+    dest: '/usr/local/bin/pgbench{{ postgresql_version }}-{{ item }}test'
+    group: ansible
+    owner: ansible
+    mode: "u=rwx,g=rwx,o=r"
+  with_items: pgbench_tests

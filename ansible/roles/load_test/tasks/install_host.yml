@@ -1,0 +1,21 @@
+---
+
+- name: Create PostgreSQL benchmark database
+  sudo_user: postgres
+  postgresql_db: name={{ item }} state=present
+  with_items:
+    - '{{ db_name }}'
+
+- name: Allow access to runner
+  sudo_user: postgres
+  lineinfile:
+    dest: "{{ postgresql_config_home }}/pg_hba.conf"
+    state: present
+    line: "host bench postgres {{ groups['load_test_runner'][0] }}/32 trust"
+    regexp: "{{ groups['load_test_runner'][0] }}"
+  register: postgresql_access_updated
+
+- name: Apply PostgreSQL configuration changes
+  sudo_user: postgres
+  service: name=postgresql state=restarted
+  when: postgresql_access_updated.changed

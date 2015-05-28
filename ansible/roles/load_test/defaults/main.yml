@@ -1,0 +1,9 @@
+threads: 4
+connections: 32  # 4 threads for each core (usually 8)
+time_in_sec: 1800  # 30 minutes, the longer the more accurate results. Should be between 10 minutes and an hour
+
+# Each iteration goes up increases the size of the database exponentionally. Iteration 1 will be 10,000 tuples
+# iteration 2 will be 100,000, etc.
+iterations: 5
+reruns: 3  # how many times to run the exact same test
+receiver: youremail@dimagi.com
