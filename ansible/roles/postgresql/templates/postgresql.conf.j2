@@ -64,7 +64,7 @@ listen_addresses = '*'      # what IP address(es) to listen on;
                     # comma-separated list of addresses;
                     # defaults to 'localhost', '*' = all
                     # (change requires restart)
-port = 5432             # (change requires restart)
+port = {{ postgresql_port }}             # (change requires restart)
 max_connections = {{ postgres_config.max_connections }}           # (change requires restart)
 # Note:  Increasing max_connections costs ~400 bytes of shared memory per
 # connection slot, plus lock space (see max_locks_per_transaction).
