@@ -35,7 +35,7 @@
   sudo: yes
   template:
     src: 'pgbench_tools_config.j2'
-    dest: '{{ pgbench_home }}/config'
+    dest: '{{ pgbench_home }}/local_config'
     group: cchq
     owner: cchq
     mode: "u=rw,g=rw,o=r"
