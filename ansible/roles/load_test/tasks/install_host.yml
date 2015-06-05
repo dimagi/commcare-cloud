@@ -4,7 +4,7 @@
   sudo_user: postgres
   postgresql_db: name={{ item }} state=present
   with_items:
-    - '{{ db_name }}'
+    - '{{ bench_db_name }}'
 
 - name: Allow access to runner
   sudo_user: postgres

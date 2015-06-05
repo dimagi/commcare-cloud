@@ -24,3 +24,40 @@
     owner: ansible
     mode: "u=rwx,g=rwx,o=r"
   with_items: pgbench_tests
+
+- name: clone pgbench tools
+  git: repo=https://github.com/dimagi/pgbench-tools.git
+       dest="{{ pgbench_home }}"
+       update=no
+       version=dimagi-tweaks
+
+- name: Copy pgbench tools config
+  sudo: yes
+  template:
+    src: 'pgbench_tools_config.j2'
+    dest: '{{ pgbench_home }}/config'
+    group: cchq
+    owner: cchq
+    mode: "u=rw,g=rw,o=r"
+
+- name: Create PostgreSQL results database
+  sudo_user: postgres
+  postgresql_db: name={{ results_db_name }} state=present
+
+- name: Allow access to runner
+  sudo_user: postgres
+  lineinfile:
+    dest: "{{ postgresql_config_home }}/pg_hba.conf"
+    state: present
+    line: "host {{ results_db_name }} all 127.0.0.1/32 trust"
+    regexp: "^host\\s*{{ results_db_name }}\\s*all\\s*127.0.0.1/32"
+    insertbefore: "^host\\s*all\\s*all\\s*127.0.0.1/32"
+  register: postgresql_access_updated
+
+- name: Apply PostgreSQL configuration changes
+  sudo_user: postgres
+  service: name=postgresql state=restarted
+  when: postgresql_access_updated.changed
+
+- name: install gnuplot
+  apt: name=gnuplot state=present

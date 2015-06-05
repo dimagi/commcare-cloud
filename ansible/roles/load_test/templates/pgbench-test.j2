@@ -14,15 +14,15 @@ do
 
         # Initialize database
         scale=$((scales[$i - 1]))
-        pgbench{{ postgresql_version }} $conn_options -i -s $scale {{ db_name }}
+        pgbench{{ postgresql_version }} $conn_options -i -s $scale {{ bench_db_name }}
 
         # Run actual test
         {% if item == "read" %}
-        out+=$(pgbench{{ postgresql_version }} $conn_options -c {{ connections }} -j {{ threads }} -T {{ time_in_sec }} -S {{ db_name }})
+        out+=$(pgbench{{ postgresql_version }} $conn_options -c {{ connections }} -j {{ threads }} -T {{ time_in_sec }} -S {{ bench_db_name }})
         {% elif item == "writeread" %}
-        out+=$(pgbench{{ postgresql_version }} $conn_options -c {{ connections }} -j {{ threads }} -T {{ time_in_sec }} {{ db_name }})
+        out+=$(pgbench{{ postgresql_version }} $conn_options -c {{ connections }} -j {{ threads }} -T {{ time_in_sec }} {{ bench_db_name }})
         {% elif item == "write" %}
-        out+=$(pgbench{{ postgresql_version }} $conn_options -c {{ connections }} -j {{ threads }} -T {{ time_in_sec }} -N {{ db_name }})
+        out+=$(pgbench{{ postgresql_version }} $conn_options -c {{ connections }} -j {{ threads }} -T {{ time_in_sec }} -N {{ bench_db_name }})
         {% endif %}
 
         out+="\n\n"
