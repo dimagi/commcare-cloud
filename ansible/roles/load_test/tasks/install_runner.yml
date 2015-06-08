@@ -15,16 +15,6 @@
     owner: '{{ cchq_user }}'
     group: '{{ cchq_user }}'
 
-- name: Copy scripts
-  sudo: yes
-  template:
-    src: 'pgbench-test.j2'
-    dest: '/usr/local/bin/pgbench{{ postgresql_version }}-{{ item }}test'
-    group: ansible
-    owner: ansible
-    mode: "u=rwx,g=rwx,o=r"
-  with_items: pgbench_tests
-
 - name: clone pgbench tools
   git: repo=https://github.com/dimagi/pgbench-tools.git
        dest="{{ pgbench_home }}"

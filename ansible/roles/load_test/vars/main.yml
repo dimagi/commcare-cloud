@@ -1,8 +1,3 @@
 bench_db_name: bench
 results_db_name: results
-pgbench_tests:
-  - read
-  - writeread
-  - write
-
 pgbench_home: "{{ cchq_home }}/pgbench-tools"
