@@ -38,3 +38,22 @@
 - name: Create the link for site enabled specific configurations
   sudo: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
+
+- name: Copy ssl cert
+  copy:
+    src: "{{ nginx_combined_cert_file }}"
+    dest: "{{ nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert
+
+- name: Copy SSL Key
+  copy:
+    src: "{{ apache2_key_file }}"
+    dest: "{{ nginx_ssl_key }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert
+
