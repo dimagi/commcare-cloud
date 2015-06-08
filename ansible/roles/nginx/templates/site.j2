@@ -18,8 +18,8 @@ server {
 {% endif %}
 
 {% if 'ssl' in item.server.listen %}
-  ssl_certificate {{ nginx_ssl_cert }};
-  ssl_certificate_key {{ nginx_ssl_key }};
+  ssl_certificate {{ ssl_certs_dir }}/{{ nginx_ssl_cert }};
+  ssl_certificate_key {{ ssl_keys_dir }}/{{ nginx_ssl_key }};
 {% if nginx_ssl_protocols|default('') %}
   ssl_protocols {{ nginx_ssl_protocols }};
 {% endif %}
