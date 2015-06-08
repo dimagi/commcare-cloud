@@ -19,7 +19,7 @@
     - htop
     - tmpreaper
     - mailutils
-    - npm
+    - nodejs
     - at
     - screen
     - gettext
