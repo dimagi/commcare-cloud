@@ -9,6 +9,8 @@ nginx_error_log_name: nginx_error.log
 ssl_base_dir: "/etc/pki/tls"
 ssl_certs_dir: "{{ ssl_base_dir }}/certs"
 ssl_keys_dir: "{{ ssl_base_dir }}/private"
+nginx_ssl_cert: "nginx_hq_combined.crt"
+nginx_ssl_key: "commcarehq.org.key"
 commtrack_nginx_ssl_cert: "nginx_commtrack_combined.crt"
 commtrack_nginx_ssl_key: "commctrack.org.key"
 # providing this will ensure that the poodle vulnerability is closed
