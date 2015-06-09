@@ -51,7 +51,7 @@
     - "{{ ssl_keys_dir }}"
 
 
-- name: Copy ssl cert
+- name: Copy cchq SSL cert
   copy:
     src: "{{ nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
@@ -60,7 +60,7 @@
     group: root
   when: not fake_ssl_cert
 
-- name: Copy SSL Key
+- name: Copy cchq SSL Key
   copy:
     src: "{{ apache2_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
@@ -69,3 +69,20 @@
     group: root
   when: not fake_ssl_cert
 
+- name: Copy cchq SSL cert
+  copy:
+    src: "{{ commtrack_nginx_combined_cert_file }}"
+    dest: "{{ ssl_certs_dir }}/{{ commtrack_nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and commtrack_nginx_ssl_cert
+
+- name: Copy cchq SSL Key
+  copy:
+    src: "{{ commtrack_apache2_key_file }}"
+    dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and commtrack_nginx_ssl_cert
