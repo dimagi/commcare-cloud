@@ -85,4 +85,4 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and commtrack_apache2_key_file is defined
+  when: not fake_ssl_cert and commtrack_key_file is defined
