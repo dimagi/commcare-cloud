@@ -1,6 +1,6 @@
 ---
-nginx_ssl_cert: {{ commtrack_nginx_ssl_cert }}
-nginx_ssl_key:  {{ commtrack_nginx_ssl_key}}
+nginx_ssl_cert: "{{ commtrack_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ commtrack_nginx_ssl_key}}"
 
 nginx_sites:
 - server:
