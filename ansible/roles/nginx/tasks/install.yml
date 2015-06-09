@@ -76,7 +76,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and commtrack_nginx_ssl_cert
+  when: not fake_ssl_cert and commtrack_nginx_ssl_cert is defined
 
 - name: Copy cchq SSL Key
   copy:
@@ -85,4 +85,4 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and commtrack_nginx_ssl_cert
+  when: not fake_ssl_cert and commtrack_nginx_ssl_cert is defined
