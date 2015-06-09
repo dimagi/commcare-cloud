@@ -80,7 +80,7 @@
 
 - name: Copy commtrack SSL Key
   copy:
-    src: "{{ commtrack_apache2_key_file }}"
+    src: "{{ commtrack_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"
     mode: 0400
     owner: root
