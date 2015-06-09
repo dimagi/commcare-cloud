@@ -1,0 +1,12 @@
+---
+nginx_sites:
+- server:
+   file_name: commtrack_public
+   listen: "80"
+   server_name: "{{ COMMTRACK_SITE_HOST }}"
+   client_max_body_size: 100m
+   use_balancer: True
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    return: "301 https://{{ SITE_HOST }}$request_uri"
