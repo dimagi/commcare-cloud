@@ -51,3 +51,40 @@
 
 - name: install gnuplot
   apt: name=gnuplot state=present
+
+- name: Install tsung dependencies
+  apt: pkg={{ item }} state=present
+  with_items: "{{ tsung_debian_pkgs }}"
+  tags:
+    - tsung
+
+- name: Clone the tsung github repository
+  git:
+    repo: https://github.com/processone/tsung.git
+    dest: "{{ tsung_dest_dir }}"
+    version: "{{ tsung_version }}"
+  tags:
+    - tsung
+
+- name: configure
+  shell: ./configure
+  args:
+    chdir: "{{ tsung_dest_dir }}"
+    creates: "{{ tsung_dest_dir }}/config.status"
+  tags:
+    - tsung
+
+- name: make
+  shell: /usr/bin/make
+  args:
+    chdir: "{{ tsung_dest_dir}}"
+    creates: "{{ tsung_dest_dir }}/ebin/tsung.app"
+  tags:
+    - tsung
+
+- name: make install
+  shell: /usr/bin/make install
+  args:
+    chdir: "{{ tsung_dest_dir }}"
+  tags:
+    - tsung
