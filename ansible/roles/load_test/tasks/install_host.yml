@@ -37,13 +37,15 @@
 
 - name: configure
   shell: ./configure
-    chdir: {{ tsung_dest_dir }}
-    creates: {{ tsung_dest_dir }}/config.status
+  args:
+    chdir: "{{ tsung_dest_dir }}"
+    creates: "{{ tsung_dest_dir }}/config.status"
   tags:
     - tsung
 
 - name: make
   shell: /usr/bin/make
+  args:
     chdir: "{{ tsung_dest_dir}}"
     creates: "{{ tsung_dest_dir }}/ebin/tsung.app"
   tags:
@@ -51,6 +53,7 @@
 
 - name: make install
   shell: /usr/bin/make install
+  args:
     chdir: "{{ tsung_dest_dir }}"
   tags:
     - tsung
