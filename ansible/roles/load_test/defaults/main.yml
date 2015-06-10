@@ -1,3 +1,4 @@
+### PGBENCH DEFAULTS
 threads: 4
 connections: 32  # 4 threads for each core (usually 8)
 time_in_sec: 1800  # 30 minutes, the longer the more accurate results. Should be between 10 minutes and an hour
@@ -7,3 +8,22 @@ time_in_sec: 1800  # 30 minutes, the longer the more accurate results. Should be
 iterations: 5
 reruns: 3  # how many times to run the exact same test
 receiver: youremail@dimagi.com
+
+### TSUNG DEFAULTS
+
+# destination dir of tsung source code
+tsung_dest_dir: /usr/local/src/tsung
+
+tsung_version: v1.5.1
+
+tsung_debian_pkgs:
+  - autoconf
+  - automake
+  - erlang-base
+  - erlang-crypto
+  - erlang-eunit
+  - erlang-inets
+  - erlang-snmp
+  - erlang-ssl
+  - erlang-xmerl
+  - erlang-dev
