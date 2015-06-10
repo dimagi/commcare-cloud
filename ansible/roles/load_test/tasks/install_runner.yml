@@ -114,8 +114,7 @@
   tags:
     - tsung
 
-# This copies over all session files
-- name: Copy postgres sessions
+- name: Copy tsung sessions
   sudo_user: "{{ cchq_user }}"
   copy:
     src: "{{ item }}"
@@ -129,11 +128,11 @@
     - tsung
 
 # This creates tsung postgres configuration files. One for each session file
-- name: Copy postgres sessions
+- name: Create tsung configuration files
   sudo_user: "{{ cchq_user }}"
   template:
     src: 'tsung_pg_config.xml.j2'
-    path: "{{ tsung_home_dir }}/{{ item }}.xml"
+    dest: "{{ tsung_home_dir }}/{{ item }}.xml"
     group: "{{ cchq_user }}"
     owner: "{{ cchq_user }}"
     mode: "u=rw,g=rw,o=r"
