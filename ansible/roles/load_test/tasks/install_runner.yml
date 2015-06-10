@@ -96,6 +96,8 @@
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     state: directory
+  tags:
+    - tsung
 
 - name: Setup tsung configuration sessions directory
   sudo_user: "{{ cchq_user }}"
@@ -104,6 +106,8 @@
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     state: directory
+  tags:
+    - tsung
 
 # This copies over all session files
 - name: Copy postgres sessions
@@ -116,6 +120,8 @@
     mode: "u=rw,g=rw,o=r"
   with_fileglob:
     - "./pg_sessions/*"
+  tags:
+    - tsung
 
 # This creates tsung postgres configuration files. One for each session file
 - name: Copy postgres sessions
@@ -128,3 +134,5 @@
     mode: "u=rw,g=rw,o=r"
   with_fileglob:
     - "./pg_sessions/*"
+  tags:
+    - tsung
