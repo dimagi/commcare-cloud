@@ -43,3 +43,15 @@ Get the results
 And then locally:
   
   $ scp {load_test_runner}:/home/cchq/pgbench-tools/results.tar.gz
+
+Running Tsung
+-------------
+
+* login to "load_test_runner" machine
+
+  $ sudo -iu cchq
+  $ cd ~
+
+* run the tsung command specifying the configuration desired
+
+  $ tsung -f ~/.tsung/simple_session.xml start
