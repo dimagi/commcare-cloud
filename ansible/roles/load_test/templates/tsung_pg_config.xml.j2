@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE tsung SYSTEM "{{ tsung_dest_dir }}/tsung-1.0.dtd" [
-    <!ENTITY sessions SYSTEM "{{ tsung_pg_session_dir }}/{{ item }}">
+    <!ENTITY sessions SYSTEM "{{ tsung_pg_session_dir }}/{{ item|basename }}">
 ] >
 <tsung loglevel="info">
     <clients>
