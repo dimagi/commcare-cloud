@@ -4,7 +4,7 @@ nginx_ssl_key:  "{{ commtrack_nginx_ssl_key}}"
 
 nginx_sites:
 - server:
-   file_name: commtrack
+   file_name: zz_commtrack #There was a bug where a phone would default to connecting to commtrack on login and use this cert, then failing.  Renaming the file makes it load later and work.
    listen: "443 ssl"
    server_name: "{{ COMMTRACK_SITE_HOST }}"
    client_max_body_size: 100m
