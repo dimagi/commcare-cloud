@@ -57,6 +57,7 @@
   with_items: "{{ tsung_debian_pkgs }}"
   tags:
     - tsung
+  when: tsung_install == True
 
 - name: Clone the tsung github repository
   git:
@@ -65,6 +66,7 @@
     version: "{{ tsung_version }}"
   tags:
     - tsung
+  when: tsung_install == True
 
 - name: configure
   shell: ./configure
@@ -73,6 +75,7 @@
     creates: "{{ tsung_dest_dir }}/config.status"
   tags:
     - tsung
+  when: tsung_install == True
 
 - name: make
   shell: /usr/bin/make
@@ -81,6 +84,7 @@
     creates: "{{ tsung_dest_dir }}/ebin/tsung.app"
   tags:
     - tsung
+  when: tsung_install == True
 
 - name: make install
   shell: /usr/bin/make install
@@ -88,6 +92,7 @@
     chdir: "{{ tsung_dest_dir }}"
   tags:
     - tsung
+  when: tsung_install == True
 
 - name: Setup tsung configuration directory
   sudo_user: "{{ cchq_user }}"

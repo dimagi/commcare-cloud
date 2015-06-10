@@ -27,3 +27,5 @@ tsung_debian_pkgs:
   - erlang-ssl
   - erlang-xmerl
   - erlang-dev
+
+tsung_install: False
