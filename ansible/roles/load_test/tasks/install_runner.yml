@@ -132,7 +132,7 @@
   sudo_user: "{{ cchq_user }}"
   template:
     src: 'tsung_pg_config.xml.j2'
-    dest: "{{ tsung_home_dir }}/{{ item|filename }}"
+    dest: "{{ tsung_home_dir }}/{{ item|basename }}"
     group: "{{ cchq_user }}"
     owner: "{{ cchq_user }}"
     mode: "u=rw,g=rw,o=r"
