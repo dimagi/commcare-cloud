@@ -13,3 +13,6 @@ nginx_sites:
    location1:
     name: /
     return: "301 https://{{ SITE_HOST }}$request_uri"
+   location2:
+    name: /home
+    return: "302 http://{{ SITE_HOST }}/solutions/#supply"
