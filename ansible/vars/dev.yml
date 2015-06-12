@@ -5,13 +5,14 @@ SITE_HOST: '{{ groups.proxy.0 }}'
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
-  cchq_redirect: False
-  cchq_static: False
-  cchq_static_redirect: False
-  commtrack: False
-  commtrack_static: False
+  cchq_redirect: True
+  cchq_http: True
+  cchq_http_redirect: True
+  commtrack_ssl: True
+  commtrack_http: True
   hq_status: False
   tableau: False
+  dhis: False
 
 
 deploy_env: dev

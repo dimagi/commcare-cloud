@@ -9,10 +9,10 @@
     - { role: nginx, when: proxy_type == 'nginx', action: install }
     - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_redirect == True, action: site, site_name: cchq_redirect }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_static == True, action: site, site_name: cchq_static }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_static_redirect == True, action: site, site_name: cchq_static_redirect }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack == True, action: site, site_name: commtrack }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_static == True, action: site, site_name: commtrack_static }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_hhtp == True, action: site, site_name: cchq_hhtp }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_hhtp_redirect == True, action: site, site_name: cchq_hhtp_redirect }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_ssl == True, action: site, site_name: commtrack_ssl }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_http == True, action: site, site_name: commtrack_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis }

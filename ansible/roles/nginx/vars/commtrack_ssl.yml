@@ -1,0 +1,18 @@
+---
+nginx_ssl_cert: "{{ commtrack_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ commtrack_nginx_ssl_key}}"
+
+nginx_sites:
+- server:
+   file_name: zz_commtrack #There was a bug where a phone would default to connecting to commtrack on login and use this cert, then failing.  Renaming the file makes it load later and work.
+   listen: "443 ssl"
+   server_name: "{{ COMMTRACK_SITE_HOST }}"
+   client_max_body_size: 100m
+   use_balancer: True
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    return: "301 https://{{ SITE_HOST }}$request_uri"
+   location2:
+    name: /home
+    return: "302 http://{{ SITE_HOST }}/solutions/#supply"

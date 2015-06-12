@@ -6,8 +6,13 @@ nginx_static_home: "{{ code_home }}/staticfiles"
 nginx_max_clients: 512
 nginx_access_log_name: nginx_access.log
 nginx_error_log_name: nginx_error.log
-nginx_ssl_cert: /etc/ssl/certs/ssl-cert-snakeoil.pem
-nginx_ssl_key: /etc/ssl/private/ssl-cert-snakeoil.key
+ssl_base_dir: "/etc/pki/tls"
+ssl_certs_dir: "{{ ssl_base_dir }}/certs"
+ssl_keys_dir: "{{ ssl_base_dir }}/private"
+nginx_ssl_cert: "nginx_hq_combined.crt"
+nginx_ssl_key: "commcarehq.org.key"
+commtrack_nginx_ssl_cert: "nginx_commtrack_combined.crt"
+commtrack_nginx_ssl_key: "commtrack.org.key"
 # providing this will ensure that the poodle vulnerability is closed
 nginx_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
 # you can also provide a cipher suite to prevent browsers using old, vulnerable
