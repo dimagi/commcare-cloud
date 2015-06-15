@@ -27,3 +27,4 @@ nginx_http_params:
   types_hash_max_size: 2048
 
 nginx_separate_logs_per_site: True
+nginx_set_default_server: ""
