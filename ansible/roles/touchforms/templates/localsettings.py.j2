@@ -12,12 +12,6 @@ from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
 SSLContext.setDefault(TRUST_ALL_CONTEXT)
 {% endif %}
 
-### REDIS CONFIG ###
-REDIS_HOST = '{{ localsettings.REDIS_HOST }}'
-REDIS_PORT = {{ localsettings.REDIS_PORT }}
-### END REDIS CONFIG ###
-
-
 ### POSTGRES CONFIG ###
 USES_POSTGRES = True
 POSTGRES_TABLE = "formplayer_session"
