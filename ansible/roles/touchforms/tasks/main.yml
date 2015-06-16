@@ -17,6 +17,8 @@
     group: cchq
     owner: cchq
     mode: 0644
+  tags:
+    - tf-localsettings
 
 - name: create touchforms data directory
   sudo: yes
