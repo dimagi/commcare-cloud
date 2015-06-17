@@ -107,6 +107,36 @@
 - name: Setup tsung configuration sessions directory
   git:
     repo: https://github.com/dimagi/mobile-endpoint.git
-    dest: "{{ tsung_home_dir }}"
+    dest: "{{ tsung_home_dir }}/mobile-endpoint"
+  tags:
+    - tsung
+
+- name: Chown mobile-endpoint dir
+  sudo: yes
+  file:
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+    path: "{{ tsung_home_dir }}/mobile-endpoint"
+  tags:
+    - tsung
+
+- name: Copy mobile-endpoint localsettings
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: localsettings.py.j2
+    dest: "{{ tsung_home_dir }}/mobile-endpoint/localsettings.py"
+  tags:
+    - tsung
+
+- name: Chown tsung src dir
+  sudo: yes
+  file:
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+    path: "{{ tsung_dest_dir }}"
   tags:
     - tsung
