@@ -14,7 +14,10 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki_http == True, action: site, site_name: wiki_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_ssl == True, action: site, site_name: commtrack_ssl }
+    # Don't put any .commcarehq.org ssl configurations below commtrack, the ssl cert variable that gets loaded persists between roles
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_http == True, action: site, site_name: commtrack_http }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
 
