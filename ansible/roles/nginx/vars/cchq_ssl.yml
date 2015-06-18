@@ -11,6 +11,8 @@ nginx_sites:
     name: /
     use_balancer: True
     proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+    proxy_next_upstream_tries: 1
+    proxy_read_timeout: 900s
    location2:
     name: "/static"
     alias: "{{ nginx_static_home }}"
