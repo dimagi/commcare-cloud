@@ -28,3 +28,5 @@ nginx_http_params:
 
 nginx_separate_logs_per_site: True
 nginx_set_default_server: ""
+commcarehq_errors_repository: "https://github.com/dimagi/commcare-hq-errorpages.git"
+errors_home: "{{ www_home }}/error_root"
