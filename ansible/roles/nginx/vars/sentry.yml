@@ -1,14 +1,14 @@
 ---
 nginx_sites:
 - server:
-   file_name: dhis
+   file_name: sentry
    listen: "443 ssl"
    # Move these to a localsetting?
-   server_name: dhis-test.commcarehq.org
+   server_name: sentry.commcarehq.org
    error_page: "502 503 /errors/50x.html"
    location1:
     name: /
-    proxy_pass: http://dhis1.internal.commcarehq.org:8080
+    proxy_pass: http://logs.internal.dimagi.com:9000
    location2:
     name: /errors
     alias: "{{ errors_home }}/pages"
