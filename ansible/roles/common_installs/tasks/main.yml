@@ -1,4 +1,12 @@
 ---
+- name: Add mosh apt repo
+  apt_repository: repo='ppa:keithw/mosh' state=present
+  register: add_mosh_repo
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_mosh_repo|changed
+
 # Install base packages, common to all servers
 - name: Install common packages
   apt: name={{ item }} state=present
@@ -23,6 +31,8 @@
     - at
     - screen
     - gettext
+    - python-software-properties
+    - mosh
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
