@@ -34,7 +34,7 @@ server {
   {% endif %}
 {% endfor %}
 
-{% for k,v in item.server.iteritems() if k == 'proxy_set_headers' }
+{% for k,v in item.server.iteritems() if k == 'proxy_set_headers' %}
   {% for header in v %}
   proxy_set_header {{ header }};
   {% endfor %}
