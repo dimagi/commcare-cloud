@@ -13,6 +13,6 @@ nginx_sites:
    location2:
     name: /home
     return: "302 https://{{ SITE_HOST }}/solutions/#supply"
-   location2:
+   location3:
     name: " = /"
     return: "302 https://{{ SITE_HOST }}/solutions/#supply"
