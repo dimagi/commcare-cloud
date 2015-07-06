@@ -6,8 +6,9 @@ nginx_sites:
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 100m
    use_balancer: True
-   proxy_set_header: "Host $http_host"
-   proxy_set_header: "X-Forwarded-For $remote_addr"
+   proxy_set_headers:
+   - "Host $http_host"
+   - "X-Forwarded-For $remote_addr"
    error_page: "502 503 /errors/50x.html"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    location1:
