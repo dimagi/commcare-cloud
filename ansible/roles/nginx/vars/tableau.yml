@@ -6,6 +6,11 @@ nginx_sites:
    # Move these to a localsetting?
    server_name: tableau.commcarehq.org
    error_page: "502 503 /errors/50x.html"
+   proxy_set_headers:
+   - "Host $http_host"
+   - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-Proto $scheme"
+   - "X-Forwarded-Host $host:443"
    location1:
     name: /
     proxy_pass: http://tableau1.internal.commcarehq.org
