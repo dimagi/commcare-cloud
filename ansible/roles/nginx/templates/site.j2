@@ -29,14 +29,15 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' %}
-  {% if k == 'proxy_set_headers' %}
-  {% for header in v %}
-  proxy_set_header {{ v }};
-  {% endfor %}
-  {% else %}
+  {% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' and k != 'proxy_set_headers' %}
   {{ k }} {{ v }};
   {% endif %}
+{% endfor %}
+
+{% for k,v in item.server.iteritems() if k == 'proxy_set_headers' }
+  {% for header in v %}
+  proxy_set_header {{ header }};
+  {% endfor %}
 {% endfor %}
 
 {% for k,v in item.server.iteritems() if k.find('location') != -1 %}
