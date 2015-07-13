@@ -126,8 +126,6 @@ localsettings:
 #  MANDRILL_APIKEY:
 #  MAPS_LAYERS:
 #  MEDIA_ROOT:
-  MEMCACHED_HOST: "{{ groups.memcached.0 }}"
-  MEMCACHED_PORT: '11211'
   OPEN_EXCHANGE_RATES_ID:
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
