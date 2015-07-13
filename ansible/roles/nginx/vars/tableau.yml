@@ -14,6 +14,7 @@ nginx_sites:
    location1:
     name: /
     proxy_pass: http://tableau1.internal.commcarehq.org
+    proxy_read_timeout: 120s
    location2:
     name: /errors
     alias: "{{ errors_home }}/pages"
