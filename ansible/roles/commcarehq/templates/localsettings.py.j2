@@ -336,10 +336,6 @@ TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
 TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
-memcached = {
-    'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    'LOCATION': '{{ localsettings.MEMCACHED_HOST }}:{{ localsettings.MEMCACHED_PORT }}',
-}
 redis_cache = {
     'BACKEND': 'redis_cache.cache.RedisCache',
 {% if 'REDIS_DB' in localsettings %}
@@ -350,7 +346,7 @@ redis_cache = {
     'OPTIONS': {},
 }
 CACHES = {
-    'default': {% if localsettings.get('DEFAULT_CACHE') == 'memcached' %}memcached{% else %}redis_cache{% endif %},
+    'default': redis_cache,
     'redis': redis_cache,
 }
 
