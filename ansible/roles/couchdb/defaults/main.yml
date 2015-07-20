@@ -4,3 +4,4 @@ couchdb_source_mirror: http://mirrors.ibiblio.org/apache/couchdb/source
 couchdb_version: 1.5.1
 couchdb_distro_filename: apache-couchdb-{{ couchdb_version }}.tar.gz
 couchdb_install_path: /usr/local/bin/couchdb
+couchdb_host_name: "{{ groups['couchdb'][0] }}"

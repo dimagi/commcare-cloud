@@ -21,7 +21,7 @@
 - name: Install PostgreSQL & dependencies
   apt: name={{ item }} state=present
   with_items:
-    - postgresql
+    - postgresql={{ postgresql_version }}*
     - libpq-dev
     - python-psycopg2
   when:

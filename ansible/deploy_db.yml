@@ -20,7 +20,7 @@
   hosts: couchdb
   sudo: yes
   roles:
-    - couchdb
+    - { role: couchdb, tags: 'couchdb' }
 
 - name: Redis
   hosts: redis
