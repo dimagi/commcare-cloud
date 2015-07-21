@@ -1,0 +1,9 @@
+DEBUG = False
+SQLALCHEMY_ECHO = False
+
+SQLALCHEMY_DATABASE_URI= 'postgresql://{{ localconfig.PG_USER }}:{{ localconfig.PG_PASSWORD }}@{{ localconfig.PG_HOST }}:{{ localconfig.PG_PORT }}/{{ localconfig.PG_DATABASE }}'
+SQLALCHEMY_POOL_SIZE={{ localconfig.PG_POOLS_SIZE }}
+
+SECRET_KEY = '{{ localconfig.SECRET_KEY }}'
+REDIS_URL = "redis://{{ localconfig.REDIS_HOST }}:{{ localconfig.REDIS_PORT }}/{{ localconfig.REDIS_DB }}"
+RESTORE_DIR = '{{ localconfig.RESTORE_DIR }}'
