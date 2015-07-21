@@ -11,8 +11,11 @@
   lineinfile:
     dest: "{{ postgresql_config_home }}/pg_hba.conf"
     state: present
-    line: "host bench postgres {{ groups['load_test_runner'][0] }}/32 trust"
-    regexp: "{{ groups['load_test_runner'][0] }}"
+    line: "host bench {{ user }} {{ groups['load_test_runner'][0] }}/32 {{ method }}"
+    regexp: "{{ user }} {{ groups['load_test_runner'][0] }}/32 {{ method }}"
+  with_items:
+    - { user: 'postgres', method: 'trust' }
+    - { user: 'tsung', method: 'md5' }
   register: postgresql_access_updated
 
 - name: Apply PostgreSQL configuration changes
