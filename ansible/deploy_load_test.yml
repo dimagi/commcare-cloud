@@ -20,3 +20,15 @@
     - include: roles/load_test/tasks/install_host.yml
   roles:
     - {role: load_test, tags: 'load_test'}
+
+- name: Prototype service
+  hosts:
+    - load_test_host
+  vars_files:
+    - roles/supervisor/defaults/main.yml
+    - roles/load_test/defaults/main.yml
+    - roles/postgresql/defaults/main.yml
+  tasks:
+    - include: roles/load_test/tasks/install_prototype.yml
+  roles:
+    - {role: load_test, tags: ['prototype']}

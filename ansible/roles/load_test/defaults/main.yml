@@ -30,3 +30,11 @@ tsung_debian_pkgs:
   - erlang-asn1
 
 tsung_install: False
+
+### Prototype defaults
+prototype_dir: "{{ cchq_home }}/prototype"
+prototype_code_home: "{{ prototype_dir }}/mobile-endpoint"
+prototype_log_home: "{{ prototype_dir }}/log"
+prototype_virtualenv_home: "{{ prototype_dir }}/python_env"
+prototype_repository: https://github.com/dimagi/mobile-endpoint.git
+

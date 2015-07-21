@@ -1,0 +1,66 @@
+- name: Add cchq user
+  sudo: yes
+  user: name={{ cchq_user }} state=present shell=/bin/bash
+
+- name: create required directories
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ prototype_dir }}"
+    - "{{ prototype_log_home }}"
+    - "{{ prototype_virtualenv_home }}"
+
+# Do not update source unless you're cloning for the first time
+- name: pull Prototype source
+  stat: path="{{ prototype_code_home }}/.git"
+  register: gitdir
+- git: repo={{ prototype_repository }} dest={{ prototype_code_home }} recursive=yes accept_hostkey=yes update={{ not gitdir.stat.exists }}
+  sudo_user: "{{ cchq_user }}"
+
+- name: install pip requirements
+  sudo_user: "{{ cchq_user }}"
+  pip:
+    requirements: "{{ prototype_code_home }}/requirements.txt"
+    virtualenv: "{{ prototype_virtualenv_home }}"
+
+- name: copy localconfig
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: prototype_localconfig.py.j2
+    dest: "{{ prototype_code_home }}/localconfig.py"
+
+- name: Create PostgreSQL database
+  sudo_user: postgres
+  postgresql_db: name={{ localconfig.PG_DATABASE }} state=present
+
+- name: Create PostgreSQL users
+  sudo_user: postgres
+  postgresql_user:
+    name: "{{ localconfig.PG_USER }}"
+    password: "{{ localconfig.PG_PASSWORD }}"
+    role_attr_flags: CREATEDB
+    state: present
+
+- name: Allow access to postgres
+  sudo_user: postgres
+  lineinfile:
+    dest: "{{ postgresql_config_home }}/pg_hba.conf"
+    state: present
+    line: "host {{ localconfig.PG_DATABASE }} {{ localconfig.PG_USER }} {{ groups['load_test_runner'][0] }}/24 md5"
+    regexp: "{{ localconfig.PG_USER }} {{ groups['load_test_runner'][0] }}/24 md5"
+  register: postgresql_access_updated
+
+- name: Apply PostgreSQL configuration changes
+  sudo_user: postgres
+  service: name=postgresql state=restarted
+  when: postgresql_access_updated.changed
+
+- name: Copy supervisor conf
+  command: "cp {{ prototype_code_home }}/prototype/deploy/supervisor_flask.conf {{ supervisor_task_conf }}/"
+  args:
+    creates: "{{ supervisor_task_conf }}/supervisor_flask.conf"
