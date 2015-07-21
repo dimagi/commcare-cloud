@@ -1,0 +1,53 @@
+BASEDIR=`pwd`
+PGBENCHBIN=`which pgbench{{ postgresql_version }}`
+GNUPLOT=`which gnuplot`
+TESTDIR="tests"
+
+# SKIPINIT should be set to 1 either when simulating a cold cache, or
+# if you are not using the pgbench tables for your test
+SKIPINIT=0
+
+# Set TABBED to 1 to use Javascript for a multi-tabbed display format
+TABBED=1
+
+# Set OSDATA to 1 to collect OS data using vmstat and iostat
+OSDATA=0
+
+# Test/result database connection
+TESTHOST={{ groups['load_test_host'][0] }}
+TESTUSER=postgres
+TESTPORT=5432
+TESTDB={{ bench_db_name }}
+
+RESULTHOST=localhost
+RESULTUSER="$TESTUSER"
+RESULTPORT="$TESTPORT"
+RESULTDB={{ results_db_name }}
+
+#
+# Main test run customization
+#
+
+# Set this to a number only when using pgbench 9.0 or later.  This will set
+# the number of worker threads up to this maximum for each client count
+# Setting to auto will use 'nproc' to set it to the number of processors.
+MAX_WORKERS="auto"
+
+SCRIPT="select.sql"
+SCALES="1 10 100 1000 2000 4000 6000 8000 10000"
+SETCLIENTS="8 16 32"
+# The number of times each test will be run.
+SETTIMES=3
+
+# RUNTIME is in seconds.  If it is specified, then TOTTRANS is ignored.
+RUNTIME=1800
+TOTTRANS=""
+
+# Starting in the 9.4 pgbench, you can limit the maximum rate.
+# This takes a list like scale and clients
+SETRATES=""
+
+#
+# Parameters for system monitoring code
+#
+DISKLIST="sda"

@@ -22,18 +22,19 @@
   apt: name={{ item }} state=present
   with_items:
     - postgresql
+    - postgresql-{{ postgresql_version }}
     - libpq-dev
     - python-psycopg2
   when:
     pg_install == True
 
 - name: Check for original postgresql directory
-  stat: path="{{ postgresql_dir_original_path }}"
+  stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}"
   register: orig_path
   when: pg_install == True
 
 - name: Check for new postgresql directory
-  stat: path="{{ postgresql_dir_path }}"
+  stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}"
   register: new_path
   when: pg_install == True
 
@@ -44,7 +45,7 @@
     ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
 
 - name: Move postgres to encrypted drive
-  command: "mv {{ postgresql_dir_original_path }} {{ postgresql_dir_path }}"
+  command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/{{ postgresql_version }}"
   when: pg_install == True and orig_path.stat.exists
 
 - name: generate en_US.UTF-8 locale

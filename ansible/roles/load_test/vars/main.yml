@@ -1,0 +1,8 @@
+### PGBENCH VARIABLES
+bench_db_name: bench
+results_db_name: results
+pgbench_home: "{{ cchq_home }}/pgbench-tools"
+
+### TSUNG VARIABLES
+tsung_home_dir: "{{ cchq_home }}/.tsung"
+tsung_pg_session_dir: "{{ tsung_home_dir }}/pg_sessions"

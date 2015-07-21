@@ -1,0 +1,142 @@
+---
+
+- name: Install packages to be used for load testing
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - postgresql-contrib
+
+- name: Symlink pgbench to PATH
+  sudo: yes
+  file:
+    src: '/usr/lib/postgresql/{{ postgresql_version }}/bin/pgbench'
+    dest: '/usr/local/bin/pgbench{{ postgresql_version }}'
+    state: link
+    owner: '{{ cchq_user }}'
+    group: '{{ cchq_user }}'
+
+- name: clone pgbench tools
+  git: repo=https://github.com/dimagi/pgbench-tools.git
+       dest="{{ pgbench_home }}"
+       update=no
+       version=dimagi-tweaks
+
+- name: Copy pgbench tools config
+  sudo: yes
+  template:
+    src: 'pgbench_tools_config.j2'
+    dest: '{{ pgbench_home }}/local_config'
+    group: cchq
+    owner: cchq
+    mode: "u=rw,g=rw,o=r"
+
+- name: Create PostgreSQL results database
+  sudo_user: postgres
+  postgresql_db: name={{ results_db_name }} state=present
+
+- name: Allow access to runner
+  sudo_user: postgres
+  lineinfile:
+    dest: "{{ postgresql_config_home }}/pg_hba.conf"
+    state: present
+    line: "host {{ results_db_name }} all 127.0.0.1/32 trust"
+    regexp: "^host\\s*{{ results_db_name }}\\s*all\\s*127.0.0.1/32"
+    insertbefore: "^host\\s*all\\s*all\\s*127.0.0.1/32"
+  register: postgresql_access_updated
+
+- name: Apply PostgreSQL configuration changes
+  sudo_user: postgres
+  service: name=postgresql state=restarted
+  when: postgresql_access_updated.changed
+
+- name: install gnuplot
+  apt: name=gnuplot state=present
+
+- name: Install tsung dependencies
+  apt: pkg={{ item }} state=present
+  with_items: "{{ tsung_debian_pkgs }}"
+  tags:
+    - tsung
+  when: tsung_install == True
+
+- name: Clone the tsung github repository
+  git:
+    repo: https://github.com/processone/tsung.git
+    dest: "{{ tsung_dest_dir }}"
+    version: "{{ tsung_version }}"
+  tags:
+    - tsung
+  when: tsung_install == True
+
+- name: configure
+  shell: ./configure
+  args:
+    chdir: "{{ tsung_dest_dir }}"
+    creates: "{{ tsung_dest_dir }}/config.status"
+  tags:
+    - tsung
+  when: tsung_install == True
+
+- name: make
+  shell: /usr/bin/make
+  args:
+    chdir: "{{ tsung_dest_dir}}"
+    creates: "{{ tsung_dest_dir }}/ebin/tsung.app"
+  tags:
+    - tsung
+  when: tsung_install == True
+
+- name: make install
+  shell: /usr/bin/make install
+  args:
+    chdir: "{{ tsung_dest_dir }}"
+  tags:
+    - tsung
+  when: tsung_install == True
+
+- name: Setup tsung configuration directory
+  sudo_user: "{{ cchq_user }}"
+  file:
+    path: "{{ tsung_home_dir }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    state: directory
+  tags:
+    - tsung
+
+- name: Setup tsung configuration sessions directory
+  git:
+    repo: https://github.com/dimagi/mobile-endpoint.git
+    dest: "{{ tsung_home_dir }}/mobile-endpoint"
+  tags:
+    - tsung
+
+- name: Chown mobile-endpoint dir
+  sudo: yes
+  file:
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+    path: "{{ tsung_home_dir }}/mobile-endpoint"
+  tags:
+    - tsung
+
+- name: Copy mobile-endpoint localsettings
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: localsettings.py.j2
+    dest: "{{ tsung_home_dir }}/mobile-endpoint/localsettings.py"
+  tags:
+    - tsung
+
+- name: Chown tsung src dir
+  sudo: yes
+  file:
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+    path: "{{ tsung_dest_dir }}"
+  tags:
+    - tsung
