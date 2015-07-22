@@ -1,0 +1,13 @@
+
+localconfig:
+  PG_HOST: "{{ groups.postgresql.0 }}"
+  PG_DATABASE: prototype
+  PG_PASSWORD: prototype
+  PG_USER: prototype
+  PG_PORT: 6432
+  PG_POOLS_SIZE: 20
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+  RESTORE_DIR: "{{ prototype_dir }}/restore_tmp"
+  SECRET_KEY: '1234567890'

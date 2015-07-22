@@ -25,14 +25,14 @@
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
   pip:
-    requirements: "{{ prototype_code_home }}/requirements.txt"
+    requirements: "{{ prototype_code_home }}/prototype/requirements.txt"
     virtualenv: "{{ prototype_virtualenv_home }}"
 
 - name: copy localconfig
   sudo_user: "{{ cchq_user }}"
   template:
     src: prototype_localconfig.py.j2
-    dest: "{{ prototype_code_home }}/localconfig.py"
+    dest: "{{ prototype_code_home }}/prototype/localconfig.py"
 
 - name: Create PostgreSQL database
   sudo_user: postgres
@@ -52,15 +52,40 @@
     dest: "{{ postgresql_config_home }}/pg_hba.conf"
     state: present
     line: "host {{ localconfig.PG_DATABASE }} {{ localconfig.PG_USER }} {{ groups['load_test_runner'][0] }}/24 md5"
-    regexp: "{{ localconfig.PG_USER }} {{ groups['load_test_runner'][0] }}/24 md5"
   register: postgresql_access_updated
+
+- name: Allow access to pgbouncer
+  sudo: yes
+  lineinfile:
+    dest: "{{ pg_bouncer_users }}"
+    state: present
+    line: '"{{ localconfig.PG_USER }}" "{{ localconfig.PG_PASSWORD }}"'
+  register: pgbouncer_config_updated
+
+- name: Tell pgbouncer about prototype DB
+  sudo: yes
+  lineinfile:
+    dest: "{{ pg_bouncer_ini }}"
+    state: present
+    line: '{{ localconfig.PG_DATABASE }} = host=localhost port=5432'
+  register: pgbouncer_config_updated
 
 - name: Apply PostgreSQL configuration changes
   sudo_user: postgres
   service: name=postgresql state=restarted
   when: postgresql_access_updated.changed
 
+- name: Apply Pgbouncer configuration changes
+  sudo: yes
+  service: name=pgbouncer state=restarted
+  when: pgbouncer_config_updated.changed
+
 - name: Copy supervisor conf
   command: "cp {{ prototype_code_home }}/prototype/deploy/supervisor_flask.conf {{ supervisor_task_conf }}/"
+  args:
+    creates: "{{ supervisor_task_conf }}/supervisor_flask.conf"
+
+- name: Set supervisor conf file modes
+  command: "chmod {{ cchq_user }}:{{ cchq_user }} {{ supervisor_task_conf }}/supervisor_flask.conf"
   args:
     creates: "{{ supervisor_task_conf }}/supervisor_flask.conf"

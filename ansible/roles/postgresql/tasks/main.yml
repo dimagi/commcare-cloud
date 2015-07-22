@@ -97,13 +97,13 @@
     - pgbouncer
 
 - name: pgbouncer configuration
-  template: src=pgbouncer.ini.j2 dest=/etc/pgbouncer/pgbouncer.ini
+  template: src=pgbouncer.ini.j2 dest={{ pg_bouncer_ini }}
   register: pgb_configuration_updated
   tags:
     - pgbouncer
 
 - name: pgbouncer users
-  template: src=pgbouncer.users.j2 dest=/etc/pgbouncer/userlist.txt
+  template: src=pgbouncer.users.j2 dest={{ pg_bouncer_users }}
   register: pgb_userlist_updated
   tags:
     - pgbouncer
