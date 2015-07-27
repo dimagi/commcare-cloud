@@ -176,6 +176,13 @@ STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
 PRODUCTION_COUCHDB_URI = '{{ localsettings.PRODUCTION_COUCHDB_URI }}'
 {% endif %}
 
+{% if 'DROPBOX_KEY' in localsettings %}
+DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
+{% endif %}
+
+{% if 'DROPBOX_SECRET' in localsettings %}
+DROPBOX_SECRET = '{{ localsettings.DROPBOX_SECRET }}'
+{% endif %}
 
 {% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
 ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
