@@ -48,14 +48,14 @@ The following example sets up a master Redis server.
 	- hosts: all
 	  sudo: true
 	  roles:
-	  - {role: bennojoy.redis, redis_port: 11244}
+	  - {role: redis, redis_port: 11244}
 
 The following example sets up a slave Redis server.
 
 	- hosts: all
 	  sudo: true
 	  roles:
-	  - {role: bennojoy.redis,
+	  - {role: redis,
 	     redis_role: 'slave',
 	     master_ip: '192.168.2.10',
 	     master_auth: 'foobar'}

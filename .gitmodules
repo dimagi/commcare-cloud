@@ -1,6 +1,3 @@
-[submodule "ansible/roles/bennojoy.redis"]
-	path = ansible/roles/bennojoy.redis
-	url = https://github.com/bennojoy/redis.git
 [submodule "ansible/roles/ansible-logrotate"]
 	path = ansible/roles/ansible-logrotate
 	url = git@github.com:nickhammond/ansible-logrotate.git
