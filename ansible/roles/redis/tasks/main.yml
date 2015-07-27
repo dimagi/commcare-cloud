@@ -1,4 +1,11 @@
 ---
+- name: Add Redis apt repo
+  apt_repository: repo='ppa:chris-lea/redis-server' state=present
+  register: add_redis_repo
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_redis_repo|changed
 
 - name: Install the Redis packages
   apt: name={{ item }} state=present
