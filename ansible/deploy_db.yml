@@ -26,7 +26,7 @@
   hosts: redis
   sudo: yes
   roles:
-    - {role: bennojoy.redis, tags: 'redis'}
+    - {role: redis, tags: 'redis'}
 
 - name: Elasticsearch
   hosts: elasticsearch
