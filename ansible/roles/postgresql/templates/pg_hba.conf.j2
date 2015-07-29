@@ -101,7 +101,7 @@ host    all             all             ::1/128                 md5
 #local   replication     postgres                                peer
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
-hostssl    all      devreadonly            0.0.0.0/0       md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
 
 # host all all 192.168.33.0/24 md5
 
@@ -119,10 +119,10 @@ host   {{ db }}	{{ localsettings.PG_DATABASE_USER }}	{{ lookup('dig', host, want
 {% if 'sentry' in groups %}
 {% for host in (groups['sentry']) | unique %}
 {% if host | ipaddr %}
-hostssl   sentry	sentry	{{ host }}/32   md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}   sentry	sentry	{{ host }}/32   md5
 {% else %}
 # {{ host }}
-hostssl   sentry	sentry	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}   sentry	sentry	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {% endif %}
 {% endfor %}
 {% endif %}
