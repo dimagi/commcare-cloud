@@ -16,7 +16,7 @@ redis_db_dir: /var/lib/redis
 redis_role: master
 redis_requirepass: false
 redis_pass: None
-redis_max_clients: 128
+redis_max_clients: 10000
 redis_max_memory: 512mb
 redis_maxmemory_policy: volatile-lru
 redis_appendfsync: everysec
