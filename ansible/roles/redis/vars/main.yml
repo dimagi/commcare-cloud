@@ -8,6 +8,4 @@ env:
 
 redis_ubuntu_pkg:
   - python-selinux
-  - redis-server
-
-  
+  - redis-server=3:3.0.*
