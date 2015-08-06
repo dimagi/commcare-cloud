@@ -4,8 +4,9 @@
 
 {% if item.server.get('use_balancer', False) == True %}
 upstream {{ item.server.file_name }} {
+  least_conn;
 {% for host in groups['webworkers'] %}
-  server {{ host }}:{{ django_port }} weight=2;
+  server {{ host }}:{{ django_port }};
 {% endfor %}
 }
 {% endif %}
