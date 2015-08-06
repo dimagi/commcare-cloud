@@ -92,6 +92,7 @@ localsettings:
   CTABLE_PREFIX: null
   DEFAULT_CACHE: redis
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  DROPBOX_APP_NAME: ''
   DROPBOX_KEY: ''
   DROPBOX_SECRET: ''
 #  DOMAIN_SYNC_DATABASE_NAME:
