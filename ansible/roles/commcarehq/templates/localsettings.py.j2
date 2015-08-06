@@ -180,6 +180,10 @@ STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
 PRODUCTION_COUCHDB_URI = '{{ localsettings.PRODUCTION_COUCHDB_URI }}'
 {% endif %}
 
+{% if 'DROPBOX_APP_NAME' in localsettings %}
+DROPBOX_APP_NAME = '{{ localsettings.DROPBOX_APP_NAME }}'
+{% endif %}
+
 {% if 'DROPBOX_KEY' in localsettings %}
 DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
 {% endif %}
