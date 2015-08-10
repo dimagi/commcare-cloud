@@ -349,11 +349,11 @@ SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
 TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
 redis_cache = {
-    'BACKEND': 'redis_cache.cache.RedisCache',
+    'BACKEND': 'django_redis.cache.RedisCache',
 {% if 'REDIS_DB' in localsettings %}
-    'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
+    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
 {% else %}
-    'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
 {% endif %}
     'OPTIONS': {},
 }
