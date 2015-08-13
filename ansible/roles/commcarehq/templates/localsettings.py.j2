@@ -348,15 +348,29 @@ TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
 TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
-redis_cache = {
-    'BACKEND': 'django_redis.cache.RedisCache',
-{% if 'REDIS_DB' in localsettings %}
-    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
-{% else %}
-    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
-{% endif %}
-    'OPTIONS': {},
-}
+try:
+    import django_redis
+except ImportError:
+    redis_cache = {
+        'BACKEND': 'redis_cache.cache.RedisCache',
+    {% if 'REDIS_DB' in localsettings %}
+        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
+    {% else %}
+        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+    {% endif %}
+        'OPTIONS': {},
+    }
+else:
+    redis_cache = {
+        'BACKEND': 'django_redis.cache.RedisCache',
+    {% if 'REDIS_DB' in localsettings %}
+        'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
+    {% else %}
+        'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+    {% endif %}
+        'OPTIONS': {},
+    }
+
 CACHES = {
     'default': redis_cache,
     'redis': redis_cache,
