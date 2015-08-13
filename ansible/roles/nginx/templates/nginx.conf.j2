@@ -14,8 +14,8 @@ http {
         include /etc/nginx/mime.types;
         default_type application/octet-stream;
 
-        access_log {{ log_home }}/{{ nginx_access_log_name }};
-        error_log {{ log_home }}/{{ nginx_error_log_name }} warn;
+        access_log /var/log/{{ nginx_access_log_name }};
+        error_log /var/log/{{ nginx_error_log_name }} warn;
 
         log_format timing '$request $status $request_time';
 
