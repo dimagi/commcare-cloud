@@ -1,12 +1,11 @@
 cchq_home: /home/{{ cchq_user }}
 www_dir: "{{ cchq_home }}/www"
 www_home: "{{ www_dir }}/{{ deploy_env }}"
-code_home: "{{ www_home }}/code_root"
+code_home: "{{ www_home }}/current"
 preindex_home: "{{ www_home }}/code_root_preindex"
 log_home: "{{ www_home }}/log"
 service_home: "{{ cchq_home }}/services"
 virtualenv_home: "{{ www_home }}/python_env"
-virtualenv_preindex_home: "{{ www_home }}/python_env_preindex"
 
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_mount_dir: "/mnt/shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"

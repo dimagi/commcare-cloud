@@ -24,9 +24,7 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
-    - "{{ preindex_home }}"
     - "{{ virtualenv_home }}"
-    - "{{ virtualenv_preindex_home }}"
 
 # Do not update source unless you're cloning for the first time
 
@@ -39,15 +37,6 @@
     - git
     - slow
 
-- name: pull CommCare HQ source (preindex)
-  stat: path="{{ preindex_home }}/.git"
-  register: gitdir
-- git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
-  sudo_user: "{{ cchq_user }}"
-  tags:
-    - git
-    - slow
-
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
   with_items: commcarehq_requirements
@@ -55,16 +44,7 @@
     requirements: "{{ code_home }}/requirements/{{ item }}"
     virtualenv: "{{ virtualenv_home }}"
   tags:
-    slow
-
-- name: install pip requirements (preindex)
-  sudo_user: "{{ cchq_user }}"
-  with_items: commcarehq_requirements
-  pip:
-    requirements: "{{ preindex_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_preindex_home }}"
-  tags:
-    slow
+    - slow
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
@@ -73,6 +53,5 @@
     dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ deploy_env }}" }
-    - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
   tags:
     - localsettings
