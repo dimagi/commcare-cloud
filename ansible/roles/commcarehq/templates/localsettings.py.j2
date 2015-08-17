@@ -352,8 +352,9 @@ TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
 TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
+import imp
 try:
-    import django_redis
+    imp.find_module('django_redis')
 except ImportError:
     redis_cache = {
         'BACKEND': 'redis_cache.cache.RedisCache',
