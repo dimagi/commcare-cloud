@@ -48,6 +48,24 @@
     - git
     - slow
 
+# special because Pillow needs to be reinstalled
+- name: Install libjpeg-dev
+  apt: name=libjpeg-dev state=present
+  register: libjpeg_install
+  tags:
+    slow
+
+- name: Uninstall Pillow if necessary
+  sudo_user: "{{ cchq_user }}"
+  with_items: commcarehq_requirements
+  pip:
+    name: Pillow
+    virtualenv: "{{ virtualenv_home }}"
+    state: absent
+  tags:
+    slow
+  when: libjpeg_install|changed
+
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
   with_items: commcarehq_requirements
