@@ -33,6 +33,7 @@
     - gettext
     - python-software-properties
     - mosh
+    - libjpeg-dev
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
