@@ -60,4 +60,5 @@
   with_items:
     - fabric
     - virtualenv
+    - virtualenvwrapper
     - sh
