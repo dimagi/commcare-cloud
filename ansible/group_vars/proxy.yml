@@ -1,2 +1,2 @@
-newrelic_agents_nginx: False
-newrelic_agents_apache: True
+newrelic_agents_nginx: True
+newrelic_agents_apache: False
