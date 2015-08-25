@@ -28,14 +28,30 @@
 
 # Do not update source unless you're cloning for the first time
 
-- name: pull CommCare HQ source
+- name: register git repo
   stat: path="{{ code_home }}/.git"
   register: gitdir
-- git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
+
+- name: Pull full CommcareHQ source
+  git:
+    repo: "{{ commcarehq_repository }}"
+    dest: "{{ code_source }}"
+    version: "{{ commcarehq_version }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
   sudo_user: "{{ cchq_user }}"
   tags:
     - git
     - slow
+  when: not gitdir.stat.exists
+
+- name: Link source to code_home
+  sudo_user: "{{ cchq_user }}"
+  file:
+    state: link
+    src: "{{ code_source }}"
+    dest: "{{ code_home }}"
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
