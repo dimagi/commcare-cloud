@@ -24,7 +24,6 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
-    - "{{ virtualenv_home }}"
 
 # Do not update source unless you're cloning for the first time
 
