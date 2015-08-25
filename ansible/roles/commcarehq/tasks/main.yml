@@ -24,6 +24,7 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
+    - "{{ code_releases }}"
 
 # Do not update source unless you're cloning for the first time
 
