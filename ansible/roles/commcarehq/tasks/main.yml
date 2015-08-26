@@ -59,7 +59,7 @@
   with_items: commcarehq_requirements
   pip:
     requirements: "{{ code_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_home }}"
+    virtualenv: "{{ virtualenv_source }}"
   tags:
     - slow
   when: not gitdir.stat.exists
