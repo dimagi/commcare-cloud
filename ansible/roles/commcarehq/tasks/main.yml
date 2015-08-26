@@ -52,6 +52,7 @@
     state: link
     src: "{{ code_source }}"
     dest: "{{ code_home }}"
+  when: not gitdir.stat.exists
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
@@ -61,6 +62,7 @@
     virtualenv: "{{ virtualenv_home }}"
   tags:
     - slow
+  when: not gitdir.stat.exists
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
