@@ -61,4 +61,5 @@
   with_items:
     - fabric
     - virtualenv
+    - virtualenv-clone
     - sh

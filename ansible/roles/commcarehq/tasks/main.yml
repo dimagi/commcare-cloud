@@ -24,47 +24,45 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
-    - "{{ preindex_home }}"
-    - "{{ virtualenv_home }}"
-    - "{{ virtualenv_preindex_home }}"
+    - "{{ code_releases }}"
 
 # Do not update source unless you're cloning for the first time
 
-- name: pull CommCare HQ source
+- name: register git repo
   stat: path="{{ code_home }}/.git"
   register: gitdir
-- git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
-  sudo_user: "{{ cchq_user }}"
-  tags:
-    - git
-    - slow
 
-- name: pull CommCare HQ source (preindex)
-  stat: path="{{ preindex_home }}/.git"
-  register: gitdir
-- git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
+- name: Pull full CommcareHQ source
+  git:
+    repo: "{{ commcarehq_repository }}"
+    dest: "{{ code_source }}"
+    version: "{{ commcarehq_version }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
   sudo_user: "{{ cchq_user }}"
   tags:
     - git
     - slow
+  when: not gitdir.stat.exists
+
+- name: Link source to code_home
+  sudo_user: "{{ cchq_user }}"
+  file:
+    state: link
+    src: "{{ code_source }}"
+    dest: "{{ code_home }}"
+  when: not gitdir.stat.exists
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
   with_items: commcarehq_requirements
   pip:
     requirements: "{{ code_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_home }}"
+    virtualenv: "{{ virtualenv_source }}"
   tags:
-    slow
-
-- name: install pip requirements (preindex)
-  sudo_user: "{{ cchq_user }}"
-  with_items: commcarehq_requirements
-  pip:
-    requirements: "{{ preindex_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_preindex_home }}"
-  tags:
-    slow
+    - slow
+  when: not gitdir.stat.exists
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
@@ -73,6 +71,5 @@
     dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ deploy_env }}" }
-    - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
   tags:
     - localsettings
