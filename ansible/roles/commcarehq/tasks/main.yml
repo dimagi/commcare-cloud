@@ -24,45 +24,47 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
-    - "{{ code_releases }}"
+    - "{{ preindex_home }}"
+    - "{{ virtualenv_home }}"
+    - "{{ virtualenv_preindex_home }}"
 
 # Do not update source unless you're cloning for the first time
 
-- name: register git repo
+- name: pull CommCare HQ source
   stat: path="{{ code_home }}/.git"
   register: gitdir
-
-- name: Pull full CommcareHQ source
-  git:
-    repo: "{{ commcarehq_repository }}"
-    dest: "{{ code_source }}"
-    version: "{{ commcarehq_version }}"
-    recursive: yes
-    accept_hostkey: yes
-    update: yes
+- git: repo={{ commcarehq_repository }} dest={{ code_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
   tags:
     - git
     - slow
-  when: not gitdir.stat.exists
 
-- name: Link source to code_home
+- name: pull CommCare HQ source (preindex)
+  stat: path="{{ preindex_home }}/.git"
+  register: gitdir
+- git: repo={{ commcarehq_repository }} dest={{ preindex_home }} version={{ commcarehq_version }} recursive=yes accept_hostkey=yes depth=1 update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
-  file:
-    state: link
-    src: "{{ code_source }}"
-    dest: "{{ code_home }}"
-  when: not gitdir.stat.exists
+  tags:
+    - git
+    - slow
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
   with_items: commcarehq_requirements
   pip:
     requirements: "{{ code_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_source }}"
+    virtualenv: "{{ virtualenv_home }}"
   tags:
-    - slow
-  when: not gitdir.stat.exists
+    slow
+
+- name: install pip requirements (preindex)
+  sudo_user: "{{ cchq_user }}"
+  with_items: commcarehq_requirements
+  pip:
+    requirements: "{{ preindex_home }}/requirements/{{ item }}"
+    virtualenv: "{{ virtualenv_preindex_home }}"
+  tags:
+    slow
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
@@ -71,5 +73,6 @@
     dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ deploy_env }}" }
+    - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
   tags:
     - localsettings
