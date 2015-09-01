@@ -61,5 +61,10 @@
   with_items:
     - fabric
     - virtualenv
-    - virtualenv-clone
     - sh
+
+- name: Install virtualenv-clone
+  sudo: yes
+  pip:
+    name: virtualenv-clone
+    version: 0.2.6
