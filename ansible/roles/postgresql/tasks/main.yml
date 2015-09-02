@@ -33,6 +33,16 @@
   register: orig_path
   when: pg_install == True
 
+- name: Make new postgresql directory
+  sudo: yes
+  file:
+    path: '{{ postgresql_dir_path }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+  when: pg_install == True
+
 - name: Check for new postgresql directory
   stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}"
   register: new_path
