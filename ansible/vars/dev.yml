@@ -37,7 +37,7 @@ KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY:
 
 NEW_RELIC_KEY:
-run_newrelic_plugin_agent: True
+run_newrelic_plugin_agent: False
 
 AMQP_USER: "{{ deploy_env }}_worker"
 AMQP_PASSWORD: '******'
