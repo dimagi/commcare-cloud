@@ -72,7 +72,7 @@
     src: localsettings.py.j2
     dest: "{{ item.path }}/localsettings.py"
   with_items:
-    - { path: "{{ code_home }}", deploy_env_name: "{{ deploy_env }}" }
-    - { path: "{{ preindex_home }}", deploy_env_name: "{{ deploy_env }}_preindex" }
+    - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
+    - { path: "{{ preindex_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}_preindex" }
   tags:
     - localsettings
