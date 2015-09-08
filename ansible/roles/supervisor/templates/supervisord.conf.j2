@@ -11,10 +11,12 @@ file=/tmp/supervisor.sock   ; (the path to the socket file)
 ;username=user              ; (default is no username (open server))
 ;password=123               ; (default is no password (open server))
 
-;[inet_http_server]         ; inet (TCP) server disabled by default
-;port=127.0.0.1:9001        ; (ip_address:port specifier, *:port for all iface)
-;username=user              ; (default is no username (open server))
-;password=123               ; (default is no password (open server))
+{% if supervisor_http_enabled|default(false) %}
+[inet_http_server]         ; inet (TCP) server disabled by default
+port=*:9001                ; (ip_address:port specifier, *:port for all iface)
+username={{ supervisor_http_username }}              ; (default is no username (open server))
+password={{ supervisor_http_password }}               ; (default is no password (open server))
+{% endif %}
 
 [supervisord]
 logfile=/tmp/supervisord.log ; (main log file;default $CWD/supervisord.log)
