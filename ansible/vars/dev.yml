@@ -60,6 +60,10 @@ postgres_config:
   pgb_pool_timeout: 2
   pgb_pool_mode: session
 
+supervisor_http_enabled: True
+supervisor_http_username: user
+supervisor_http_password: 123
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
