@@ -15,6 +15,8 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau_http }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.icds_tableau == True, action: site, site_name: icds_tableau }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.icds_tableau == True, action: site, site_name: icds_tableau_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki }

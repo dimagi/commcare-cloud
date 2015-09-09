@@ -1,0 +1,11 @@
+---
+# Send anything from http -> https
+nginx_sites:
+- server:
+   file_name: "icds_tableau_http"
+   listen: "80"
+   server_name: "icds.commcarehq.org"
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    return: "301 https://$server_name"

@@ -1,10 +1,10 @@
 ---
 nginx_sites:
 - server:
-   file_name: tableau
+   file_name: icds_tableau
    listen: "443 ssl"
    # Move these to a localsetting?
-   server_name: tableau.commcarehq.org
+   server_name: icds.commcarehq.org
    error_page: "502 503 /errors/50x.html"
    proxy_set_headers:
    - "Host $http_host"
@@ -13,7 +13,7 @@ nginx_sites:
    - "X-Forwarded-Host $host:443"
    location1:
     name: /
-    proxy_pass: http://tableau3.internal.commcarehq.org
+    proxy_pass: http://tableau2.internal.commcarehq.org
     proxy_read_timeout: 120s
    location2:
     name: /errors

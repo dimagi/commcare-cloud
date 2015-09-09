@@ -21,7 +21,6 @@
 - name: Install PostgreSQL & dependencies
   apt: name={{ item }} state=present
   with_items:
-    - postgresql
     - postgresql-{{ postgresql_version }}
     - libpq-dev
     - python-psycopg2
@@ -31,6 +30,16 @@
 - name: Check for original postgresql directory
   stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}"
   register: orig_path
+  when: pg_install == True
+
+- name: Make new postgresql directory
+  sudo: yes
+  file:
+    path: '{{ postgresql_dir_path }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
   when: pg_install == True
 
 - name: Check for new postgresql directory

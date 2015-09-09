@@ -16,7 +16,8 @@ DATABASES = {
         'USER': '{{ localsettings.PG_DATABASE_USER }}',
         'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
         'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
-        'PORT': '{{ localsettings.get('PG_DATABASE_PORT', 5432) }}'
+        'PORT': '{{ localsettings.get('PG_DATABASE_PORT', 5432) }}',
+        'OPTIONS': {{ localsettings.get('PG_DATABASE_OPTIONS', {})|to_json }},
     },
 }
 
@@ -346,11 +347,13 @@ SOIL_DEFAULT_CACHE = "redis"
 
 REPORT_CACHE = 'redis'
 
+{% if shared_drive_enabled|default(true) %}
 SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
 RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
 TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
 TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
+{% endif %}
 
 import imp
 try:
@@ -643,3 +646,9 @@ BANK_ROUTING_NUMBER_ACH = '{{ localsettings.BANK_ROUTING_NUMBER_ACH }}'
 BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
 
 ENABLE_PRELOGIN_SITE = True
+
+{% if supervisor_http_enabled|default(false) %}
+SUPERVISOR_RPC_ENABLED = True
+SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
+SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
+{% endif %}
