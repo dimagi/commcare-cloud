@@ -220,7 +220,6 @@ BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
 
 JAR_SIGN = dict(
-    jad_tool = os.path.join(_ROOT_DIR, "submodules", "core-hq-src", "corehq", "apps", "app_manager", "JadTool.jar"),
     key_store = os.path.join('{{ www_dir }}', "DimagiKeyStore"),
     key_alias = "{{ localsettings.JAR_KEY_ALIAS }}",
     store_pass = "{{ localsettings.JAR_STORE_PASS }}",
