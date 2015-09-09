@@ -62,3 +62,9 @@
     - fabric
     - virtualenv
     - sh
+
+- name: Install virtualenv-clone
+  sudo: yes
+  pip:
+    name: virtualenv-clone
+    version: 0.2.6

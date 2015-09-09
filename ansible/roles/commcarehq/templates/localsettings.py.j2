@@ -5,6 +5,8 @@
 import os
 import sys
 
+_ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
+
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
 DATABASES = {
@@ -157,7 +159,7 @@ SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimag
 EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
 SERVER_ENVIRONMENT = '{{ item.deploy_env_name }}'
 
-XFORMS_FORM_TRANSLATE_JAR = os.path.join(os.path.dirname(__file__),"lib","form_translate.jar")
+XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 
 #CLOUDANT SETUP
 COUCH_USERNAME = '{{ localsettings.COUCH_USERNAME }}'
@@ -217,9 +219,8 @@ LOCAL_APPS = ('dimagi.utils', 'gunicorn', 'raven.contrib.django.raven_compat',)
 BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
 
-_ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 JAR_SIGN = dict(
-    key_store = os.path.join(os.path.dirname(os.path.dirname(_ROOT_DIR)), "DimagiKeyStore"),
+    key_store = os.path.join('{{ www_dir }}', "DimagiKeyStore"),
     key_alias = "{{ localsettings.JAR_KEY_ALIAS }}",
     store_pass = "{{ localsettings.JAR_STORE_PASS }}",
     key_pass = "{{ localsettings.JAR_KEY_PASS }}",
@@ -258,16 +259,15 @@ UNICEL_CONFIG = {"username": "{{ localsettings.UNICEL_USERNAME }}",
                  "receive_phone": "+{{ localsettings.UNICEL_RECEIVE_PHONE }}",
                 }
 
-filepath = os.path.abspath(os.path.dirname(__file__))
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
-MEDIA_ROOT = os.path.join(filepath,'mediafiles') #media for user uploaded media.  in general this won't be used at all.
+MEDIA_ROOT = os.path.join(_ROOT_DIR,'mediafiles') #media for user uploaded media.  in general this won't be used at all.
 {% endif %}
 {% if 'STATIC_ROOT' in localsettings and localsettings.STATIC_ROOT %}
 STATIC_ROOT = '{{ localsettings.STATIC_ROOT }}'
 {% else %}
-STATIC_ROOT = os.path.join(filepath,'staticfiles')
+STATIC_ROOT = os.path.join(_ROOT_DIR,'staticfiles')
 {% endif %}
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
