@@ -132,4 +132,3 @@
   service: name=pgbouncer state=started
   tags:
     - pgbouncer
-
