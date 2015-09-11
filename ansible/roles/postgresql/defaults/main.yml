@@ -10,6 +10,7 @@ postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pi
 postgresql_dbs:
   - "{{ localsettings.PG_DATABASE_NAME }}"
   - "{{ localsettings.REPORT_DATABASE_NAME }}"
+  - "{{ localsettings.UCR_DATABASE_NAME }}"
 pg_bouncer_config_home: /etc/pgbouncer
 pg_bouncer_ini: "{{ pg_bouncer_config_home }}/pgbouncer.ini"
 pg_bouncer_users: "{{ pg_bouncer_config_home }}/userlist.txt"
