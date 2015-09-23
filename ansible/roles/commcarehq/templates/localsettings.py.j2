@@ -25,7 +25,7 @@ DATABASES = {
 SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 {% endif %}
 
-{% if localsettings.UCR_DATABASE_NAME %}
+{% if localsettings.get('UCR_DATABASE_NAME') %}
 UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.UCR_DATABASE_NAME }}"
 {% endif %}
 
