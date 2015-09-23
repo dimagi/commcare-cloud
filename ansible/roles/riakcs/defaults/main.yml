@@ -1,0 +1,25 @@
+---
+riak_user: riak
+
+riak_package_release: 1
+riak_version: 2.1.1
+riak_script_url: https://packagecloud.io/install/repositories/basho/riak/script.deb.sh
+riak_install_script: /tmp/riak-install
+riak_dest: /etc/riak
+riak_data_dir: /opt/data/riak
+riak_conf: riak.conf
+
+riakcs_package_release: 1
+riakcs_version: 2.0.1
+riakcs_ebin: /usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin
+riakcs_script_url: https://packagecloud.io/install/repositories/basho/riak-cs/script.deb.sh
+riakcs_install_script: /tmp/riakcs-install
+riakcs_dest: /etc/riak-cs
+riakcs_conf: riak-cs.conf
+# Where to write the riakcs key/secret for the admin user
+riakcs_keys_dest: /home/salt/ansible/config/{{ deploy_env }}/{{ deploy_env }}.yml
+
+create_admin_user: False
+set_admin_keys: False
+join_nodes: False
+riak_install: True

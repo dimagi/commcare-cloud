@@ -12,6 +12,7 @@ active_sites:
   cchq_http_redirect: True
   commtrack_ssl: True
   commtrack_http: True
+  riakcs: True
   hq_status: False
   tableau: False
   icds_tableau: False
@@ -42,7 +43,6 @@ ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY:
 
-NEW_RELIC_KEY:
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: False
@@ -71,6 +71,8 @@ postgres_config:
   pgb_reserve_pool: 4
   pgb_pool_timeout: 2
   pgb_pool_mode: session
+
+riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
 
 supervisor_http_enabled: True
 supervisor_http_username: user

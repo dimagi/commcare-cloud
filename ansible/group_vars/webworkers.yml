@@ -1,2 +1,3 @@
+upstream_port: "{{ django_port }}"
 datadog_integrations:
   - gunicorn

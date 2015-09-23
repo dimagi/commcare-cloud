@@ -1,0 +1,6 @@
+---
+stanchion_package_release: 1
+stanchion_version: 2.0.0
+stanchion_script_url: https://packagecloud.io/install/repositories/basho/stanchion/script.deb.sh
+stanchion_install_script: /tmp/stanchion-install
+

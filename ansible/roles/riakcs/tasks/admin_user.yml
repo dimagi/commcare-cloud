@@ -1,0 +1,89 @@
+# These tasks create an admin_user and then saves those credentials to the inventory
+# file for later use
+#
+# Note: this operation can only be done once with the specified admin user or else it will error
+- name: Turn on anonymous user creation
+  replace:
+    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    regexp: "anonymous_user_creation = off"
+    replace: "anonymous_user_creation = on"
+    backup: yes
+  tags: riakcs-admin-user
+
+# Note this can't be notify because we need it to restart immediately
+- name: Restart RiakCS
+  command: riak-cs restart
+
+- name: Create admin user
+  command: "curl -H 'Content-Type: application/json'   -XPOST http://{{ inventory_hostname }}:{{ riakcs_port }}/riak-cs/user   --data '{\"email\":\"devops@dimagi.com\", \"name\":\"CommCareHQ DevOps\"}'"
+  register: result
+  tags: riakcs-admin-user
+
+- debug:
+    var: result.stdout
+  when: "'Error' in result.stdout"
+  tags: riakcs-admin-user
+
+- name: Fail on failed admin user creation
+  fail:
+    msg: "Access denied when creating the admin_user. You may already have created an admin-user and saved the credentials to the riakcs.conf"
+  when: "'Access Denied' in result.stdout"
+  tags: riakcs-admin-user
+
+- name: Fail on failed admin user creation
+  fail:
+    msg: "Unable to create admin user"
+  when: "'Error' in result.stdout"
+  tags: riakcs-admin-user
+
+- set_fact:
+    admin_user: "{{ result.stdout | from_json }}"
+  tags: riakcs-admin-user
+
+- name: Update Riak CS admin.key
+  replace:
+    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    regexp: "^admin.key.*$"
+    replace: "admin.key = {{ admin_user.key_id }}"
+    backup: yes
+  tags: riakcs-admin-user
+
+- name: Update Riak CS admin.secret
+  replace:
+    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    regexp: "^admin.secret.*$"
+    replace: "admin.secret = {{ admin_user.key_secret }}"
+    backup: yes
+  tags: riakcs-admin-user
+
+- name: Turn off anonymous user creation
+  replace:
+    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    regexp: "anonymous_user_creation = on"
+    replace: "anonymous_user_creation = off"
+    backup: yes
+  tags: riakcs-admin-user
+
+- name: Restart RiakCS
+  command: riak-cs restart
+  tags: riakcs-admin-user
+
+- name: Write key_id to inventory file
+  local_action:
+    module: lineinfile
+    dest: "{{ riakcs_keys_dest }}"
+    state: present
+    regexp: "^riak_key"
+    line: "riak_key: {{ admin_user.key_id }}"
+    backup: yes
+  tags: riakcs-admin-user
+
+- name: Write key_secret to inventory file
+  local_action:
+    module: lineinfile
+    dest: "{{ riakcs_keys_dest }}"
+    state: present
+    regexp: "^riak_secret"
+    line: "riak_secret: {{ admin_user.key_secret }}"
+    backup: yes
+  tags: riakcs-admin-user

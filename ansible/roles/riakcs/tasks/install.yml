@@ -1,0 +1,32 @@
+# These tasks are used to install Riak and RiakCS to the riakcs group
+---
+- name: Fetch Riak install script
+  command: curl -o {{ riak_install_script }} {{ riak_script_url }}
+
+- name: Run Riak install script
+  command: bash {{ riak_install_script }}
+
+- name: Install riak from apt
+  apt: name={{ riak_package }} state=present
+
+- name: Fetch Riak CS install script
+  command: curl -o {{ riakcs_install_script }} {{ riakcs_script_url }}
+
+- name: Run Riak CS install script
+  command: bash {{ riakcs_install_script }}
+
+- name: Install Riak CS from apt
+  apt: name={{ riakcs_package }} state=present
+
+- name: Create Riak data dir
+  file:
+    path: "{{ riak_data_dir }}"
+    state: directory
+    owner: "{{ riak_user }}"
+    group: "{{ riak_user }}"
+
+- name: Start Riak
+  command: riak start
+
+- name: Start RiakCS
+  command: riak-cs start
