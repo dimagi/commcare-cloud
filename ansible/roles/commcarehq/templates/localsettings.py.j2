@@ -661,5 +661,5 @@ ENVIRONMENT_HOSTS = {{ groups | to_json }}
 
 {% if localsettings.get('HQ_PRIVATE_KEY') %}
 HQ_PRIVATE_KEY = \
-"""{{ localsettings.HQ_PRIVATE_KEY }}"""
+{{ localsettings.HQ_PRIVATE_KEY }}
 {% endif %}
