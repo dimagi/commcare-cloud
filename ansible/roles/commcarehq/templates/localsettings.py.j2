@@ -35,6 +35,7 @@ CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 {% endif %}
 
+COUCH_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
 DJANGO_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
 ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
 
@@ -50,6 +51,14 @@ LOGGING = {
         },
         'pillowtop': {
             'format': '%(asctime)s %(levelname)s %(module)s %(message)s'
+        },
+        'couch-request-formatter': {
+            'format': '[%(username)s:%(domain)s] %(hq_url)s %(method)s %(path)s %(duration)s'
+        },
+    },
+    'filters': {
+        'hqcontext': {
+            '()': 'corehq.util.log.HQRequestFilter',
         },
     },
     'handlers': {
@@ -68,6 +77,15 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': DJANGO_LOG_FILE,
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 20  # Backup 200 MB of logs
+        },
+        'couch-request-handler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'couch-request-formatter',
+            'filters': ['hqcontext'],
+            'filename': COUCH_LOG_FILE,
             'maxBytes': 10 * 1024 * 1024,  # 10 MB
             'backupCount': 20  # Backup 200 MB of logs
         },
@@ -104,6 +122,11 @@ LOGGING = {
             'handlers': ['console', 'file', 'couchlog', 'sentry'],
             'propagate': True,
             'level': 'INFO',
+        },
+        'couchdbkit.request': {
+            'handlers': ['couch-request-handler'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
         'django.request': {
             'handlers': ['mail_admins'],
