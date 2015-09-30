@@ -102,6 +102,7 @@ host    all             all             ::1/128                 md5
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      ucrreadonly            0.0.0.0/0       md5
 
 # host all all 192.168.33.0/24 md5
 
