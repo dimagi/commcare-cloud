@@ -1,0 +1,8 @@
+---
+# Deploys optional one off tasks that may or may not be necessary given the environment
+
+- name: Deploy proxy log scripts
+  hosts: proxy
+  roles:
+    - {role: proxy_log_scripts, tags: 'proxy_log_scripts'}
+

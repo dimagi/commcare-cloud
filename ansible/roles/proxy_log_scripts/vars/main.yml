@@ -1,0 +1,5 @@
+hqscripts_dir: "{{ cchq_home }}/commcarehq-scripts"
+daterange_script: "{{ hqscripts_dir }}/logparsing/proxy/daterange.py"
+timings_parser_script: "{{ hqscripts_dir }}/logparsing/proxy/timings_parser.sh"
+aggregate_proxy_logs_script: aggregate-proxy-logs.sh
+aggregate_proxy_logs_out: "aggregate-proxy.log"

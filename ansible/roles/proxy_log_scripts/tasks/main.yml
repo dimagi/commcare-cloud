@@ -1,0 +1,27 @@
+---
+
+- name: Pull CommCareHQ scripts dir
+  sudo_user: "{{ cchq_user }}"
+  git:
+    repo: https://github.com/dimagi/commcarehq-scripts.git
+    dest: "{{ hqscripts_dir }}"
+    accept_hostkey: yes
+
+- name: Install necessary mail utils
+  apt:
+    name: sharutils
+    state: present
+
+- name: Copy script to cron.d
+  template:
+    src: "{{ aggregate_proxy_logs_script }}.j2"
+    dest: "/etc/cron.d/{{ aggregate_proxy_logs_script }}"
+
+- name: Deploy cronjob to aggregate scripts
+  sudo: yes
+  cron:
+    name: "Aggregate scripts"
+    job: "/etc/cron.d/{{ aggregate_proxy_logs_script }}"
+    special_time: monthly
+    user: root
+    cron_file: ../crontab
