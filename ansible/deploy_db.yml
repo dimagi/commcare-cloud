@@ -65,7 +65,7 @@
     - role: ansible-logrotate
       logrotate_scripts:
         - name: "postgresql_{{ deploy_env }}"
-          path: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main/pg_log/*.csv"
+          path: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main/pg_log/*"
           options:
             - daily
             - rotate 30
