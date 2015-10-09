@@ -56,3 +56,20 @@
       when: run_newrelic_plugin_agent
   tags:
     - newrelic-plugin-agent
+
+- name: Postgres log rolling configurations
+  hosts: postgresql
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  roles:
+    - role: ansible-logrotate
+      logrotate_scripts:
+        - name: "postgresql_{{ deploy_env }}"
+          path: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main/pg_log/*"
+          options:
+            - daily
+            - rotate 30
+            - missingok
+            - compress
+            - delaycompress
+            - notifempty
