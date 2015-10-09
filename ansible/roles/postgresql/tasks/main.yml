@@ -88,13 +88,6 @@
   when:
     pg_install == True
 
-- name: Create Custom PostgreSQL databases
-  sudo_user: postgres
-  postgresql_db: name={{ item }} state=present
-  with_items: CUSTOM_DATABASES
-  when:
-    pg_install == True
-
 - name: Create PostgreSQL users
   sudo_user: postgres
   postgresql_user:
