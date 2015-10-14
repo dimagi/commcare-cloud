@@ -39,6 +39,10 @@ KSPLICE_ACTIVATION_KEY:
 NEW_RELIC_KEY:
 run_newrelic_plugin_agent: False
 
+DATADOG_ENABLED: False
+DATADOG_API_KEY: null
+DATADOG_APP_KEY: null
+
 AMQP_USER: "{{ deploy_env }}_worker"
 AMQP_PASSWORD: '******'
 AMQP_HOST: "{{ groups.celery.0 }}"

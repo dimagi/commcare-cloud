@@ -689,3 +689,8 @@ ENVIRONMENT_HOSTS = {{ groups | to_json }}
 HQ_PRIVATE_KEY = \
 {{ localsettings.HQ_PRIVATE_KEY }}
 {% endif %}
+
+{% if DATADOG_ENABLED|default(false) %}
+DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
+DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
+{% endif %}
