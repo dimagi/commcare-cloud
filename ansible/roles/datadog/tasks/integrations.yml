@@ -2,4 +2,4 @@
   notify: restart datadog
   tags:
     - datadog_integrations
-  with_items: {{ datadog_integrations }}
+  with_items: "{{ datadog_integrations }}"
