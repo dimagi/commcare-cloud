@@ -1,5 +1,7 @@
 newrelic_agents_postgresql: True
 newrelic_agents_pgbouncer: True
+newrelic_agents_elastic: True  # included here since we only need on agent for the cluster
 datadog_integrations:
   - postgres
   - pgbouncer
+  - elastic  # included here since we only need on agent for the cluster
