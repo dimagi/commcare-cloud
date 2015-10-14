@@ -1,0 +1,9 @@
+init_config:
+
+instances:
+   - host: localhost
+     port: 6432
+     username: devreadonly
+     password: {{ devreadonly_password }}
+     tags:
+       - environment:{{ deploy_env }}

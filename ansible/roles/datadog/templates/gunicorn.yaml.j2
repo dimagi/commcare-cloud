@@ -1,0 +1,6 @@
+init_config:
+
+instances:
+  - proc_name: gunicorn
+    tags:
+      - environment:{{ deploy_env }}

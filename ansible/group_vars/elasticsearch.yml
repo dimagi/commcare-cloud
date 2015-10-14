@@ -1,0 +1,3 @@
+newrelic_agents_elastic: True
+datadog_integrations:
+  - elastic

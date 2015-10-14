@@ -1,0 +1,8 @@
+init_config:
+
+instances:
+  - rabbitmq_api_url: http://localhost:15672/api/
+    rabbitmq_user: {{ AMQP_USER }}
+    rabbitmq_pass: {{ AMQP_PASSWORD }}
+    tags:
+      - environment:{{ deploy_env }}
