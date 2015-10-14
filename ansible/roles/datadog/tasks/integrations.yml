@@ -3,3 +3,4 @@
   tags:
     - datadog_integrations
   with_items: "{{ datadog_integrations }}"
+  when: datadog_integrations is defined
