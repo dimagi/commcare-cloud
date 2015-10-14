@@ -1,3 +1,1 @@
 newrelic_agents_redis: True
-datadog_integrations:
-  - redisdb

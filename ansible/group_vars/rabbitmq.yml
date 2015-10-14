@@ -1,3 +1,1 @@
 newrelic_agents_rabbitmq: True
-datadog_integrations:
-  - rabbitmq
