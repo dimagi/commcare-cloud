@@ -1,10 +1,10 @@
-- name: Add datadog apt repo
-  apt_repository: repo='deb http://apt.datadoghq.com/ stable main' state=present update_cache=yes
+- name: Add datadog apt key
+  apt_key: id=C7A7DA52 keyserver=keyserver.ubuntu.com state=present
   tags:
     - datadog
 
-- name: Add datadog apt key
-  apt_key: id=C7A7DA52 keyserver=keyserver.ubuntu.com state=present
+- name: Add datadog apt repo
+  apt_repository: repo='deb http://apt.datadoghq.com/ stable main' state=present update_cache=yes
   tags:
     - datadog
 
