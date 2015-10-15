@@ -52,7 +52,7 @@ AMQP_NAME: commcarehq
 keystore_file: 'DimagiKeyStore'
 
 postgres_users:
-  - commcare:
+  commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
 

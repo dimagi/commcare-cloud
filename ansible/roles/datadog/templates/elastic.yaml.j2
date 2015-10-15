@@ -1,0 +1,9 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+  - url: http://{{ elasticsearch_endpoint }}:9200
+    tags:
+      - environment:{{ deploy_env }}
