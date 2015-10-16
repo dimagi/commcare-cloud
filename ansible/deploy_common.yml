@@ -13,6 +13,8 @@
 - name: Datadog cloudnat
   hosts:
     - postgresql
+  vars_files:
+    - roles/datadog/defaults/main.yml
   tasks:
     - include: roles/datadog/tasks/cloudant_integration.yml
       when: DATADOG_ENABLED
