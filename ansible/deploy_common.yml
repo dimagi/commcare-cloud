@@ -13,10 +13,10 @@
 - name: Datadog cloudnat
   hosts:
     - postgresql
-  run_once: true
   tasks:
     - include: roles/datadog/tasks/cloudant_integration.yml
       when: DATADOG_ENABLED
+      run_once: true
   tags:
     - datadog
     - datadog-cloudant
