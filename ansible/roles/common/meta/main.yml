@@ -7,4 +7,3 @@ dependencies:
   - role: edit
   - {role: ksplice, tags: ksplice}
   - {role: newrelic, tags: newrelic, when: NEW_RELIC_KEY}
-  - {role: datadog, tags: datadog, when: DATADOG_ENABLED}

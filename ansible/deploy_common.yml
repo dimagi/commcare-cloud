@@ -3,3 +3,20 @@
   sudo: yes
   roles:
     - common
+
+- name: Datadog agent
+  hosts: all
+  sudo: yes
+  roles:
+    - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
+
+- name: Datadog cloudnat
+  hosts:
+    - postgresql
+  run_once: true
+  tasks:
+    - include: roles/datadog/tasks/cloudant_integration.yml
+      when: DATADOG_ENABLED
+  tags:
+    - datadog
+    - datadog-cloudant
