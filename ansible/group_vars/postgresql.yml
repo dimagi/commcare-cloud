@@ -9,3 +9,4 @@ datadog_integrations:
   - elastic
   - redisdb
   - rabbitmq
+  - cloudant

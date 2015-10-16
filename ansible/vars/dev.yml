@@ -43,6 +43,8 @@ DATADOG_ENABLED: False
 DATADOG_API_KEY: null
 DATADOG_APP_KEY: null
 
+CLOUDANT_CLUSTER_NAME: null
+
 AMQP_USER: "{{ deploy_env }}_worker"
 AMQP_PASSWORD: '******'
 AMQP_HOST: "{{ groups.celery.0 }}"
