@@ -2,5 +2,5 @@
   get_url:
     url: "https://raw.githubusercontent.com/dimagi/datadog-cloudant/{{ datadog_cloudant_version }}/cloudant.py"
     dest: /etc/dd-agent/checks.d/cloudant.py
-    checksum: "{{ datadog_cloudant_checksum}}"
+    sha256sum: "{{ datadog_cloudant_sha256sum }}"
   notify: restart datadog
