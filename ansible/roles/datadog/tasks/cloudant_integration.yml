@@ -1,6 +1,6 @@
 - name: Install cloudant check
-  when: inventory_hostname == postgresql[0]
   get_url:
     url: "https://raw.githubusercontent.com/dimagi/datadog-cloudant/{{ datadog_cloudant_version }}/cloudant.py"
     dest: /etc/dd-agent/checks.d/cloudant.py
     checksum: "{{ datadog_cloudant_checksum}}"
+  notify: restart datadog
