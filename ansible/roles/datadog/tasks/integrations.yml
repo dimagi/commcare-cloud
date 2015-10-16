@@ -1,12 +1,12 @@
-- template: src={{ item }}.yaml.j2 dest=/etc/dd-agent/conf.d/{{ item }}.yaml
+- name: add datadog integration configs
+  template: src={{ item }}.yaml.j2 dest=/etc/dd-agent/conf.d/{{ item }}.yaml
   notify: restart datadog
   tags:
     - datadog_integrations
   with_items: "{{ datadog_integrations|default([]) }}"
 
 - name: Install cloudant check
-  hosts: postgresql
-  run_once: true
+  when: inventory_hostname == postgresql[0]
   get_url:
     url: "https://raw.githubusercontent.com/dimagi/datadog-cloudant/{{ datadog_cloudant_version }}/cloudant.py"
     dest: /etc/dd-agent/checks.d/cloudant.py
