@@ -5,6 +5,8 @@
   with_items: "{{ datadog_integrations|default([]) }}"
 
 - name: Install cloudant check
+  hosts: postgresql
+  run_once: true
   get_url:
     url: "https://raw.githubusercontent.com/dimagi/datadog-cloudant/{{ datadog_cloudant_version }}/cloudant.py"
     dest: /etc/dd-agent/checks.d/cloudant.py
