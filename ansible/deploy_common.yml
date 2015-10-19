@@ -10,7 +10,7 @@
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
 
-- name: Datadog cloudnat
+- name: Datadog cloudant
   hosts:
     - postgresql
   vars_files:
