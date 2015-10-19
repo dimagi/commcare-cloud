@@ -1,0 +1,7 @@
+init_config:
+
+instances:
+    -   cluster: {{ CLOUDANT_CLUSTER_NAME }}
+        username: {{ localsettings.COUCH_USERNAME }}
+        password: {{ localsettings.COUCH_PASSWORD }}
+        timeout: 10

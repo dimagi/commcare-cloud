@@ -1,5 +1,7 @@
-- template: src={{ item }}.yaml.j2 dest=/etc/dd-agent/conf.d/{{ item }}.yaml
+- name: add datadog integration configs
+  template: src={{ item }}.yaml.j2 dest=/etc/dd-agent/conf.d/{{ item }}.yaml
   notify: restart datadog
   tags:
     - datadog_integrations
   with_items: "{{ datadog_integrations|default([]) }}"
+
