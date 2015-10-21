@@ -75,6 +75,7 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
+  ANALYTICS_ID_PUBLIC_COMMCARE: ''
 #  BANK_ACCOUNT_NUMBER:
 #  BANK_ADDRESS:
 #  BANK_NAME:
