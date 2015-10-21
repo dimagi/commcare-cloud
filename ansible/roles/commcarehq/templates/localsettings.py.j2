@@ -218,6 +218,13 @@ DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
 DROPBOX_SECRET = '{{ localsettings.DROPBOX_SECRET }}'
 {% endif %}
 
+{% if 'S3_ACCESS_KEY' in localsettings %}
+S3_ACCESS_KEY = '{{ localsettings.S3_ACCESS_KEY }}'
+{% endif %}
+{% if 'S3_SECRET_KEY' in localsettings %}
+S3_SECRET_KEY = '{{ localsettings.S3_SECRET_KEY }}'
+{% endif %}
+
 {% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
 ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
 {% else %}
