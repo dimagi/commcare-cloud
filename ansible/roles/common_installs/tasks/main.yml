@@ -63,7 +63,7 @@
 - name: Install lessc from source
   sudo: yes
   # this is lessc 1.7.3
-  git: repo='https://github.com/less/less.js' dest='/opt/lessc' version='546bedd3' recursive=yes accept_hostkey=yes depth=1
+  git: repo='https://github.com/less/less.js' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes depth=1
 
 - name: Install pip packages
   pip: name={{ item }}

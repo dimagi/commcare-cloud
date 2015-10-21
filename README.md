@@ -35,8 +35,13 @@ $ vagrant up
 ```
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-Once the vagrant cluster is done building, you may ssh into the control server
-and run a full deployment:
+Once the vagrant cluster is done building, make sure that the appropriate SSH keys are available on all servers for passwordless login.
+
+```
+echo control app1 app2 proxy1 db1 | xargs -n1 -J% vagrant ssh % -c 'sudo cat /vagrant/provisioning/id_rsa.pub >> ~/.ssh/authorized_keys'
+```
+
+Once this is done, you may ssh into the control server and run a full deployment:
 
 ```
 $ vagrant ssh control
@@ -47,22 +52,6 @@ $ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.ym
 
 This will build a database server, a proxy server and a single web worker,
 hooked into both appropriately.
-
-**NOTE**
-
-After executing the `ansible-playbook` command you may run into an error that looks like this:
-
-```
-GATHERING FACTS ***************************************************************
-fatal: [192.168.33.16] => SSH encountered an unknown error during the connection. We recommend you re-run the command using -vvvv, which will enable SSH debugging output to help diagnose the issue
-```
-
-This means that you have run afoul of an intermittent bug in the vagrant provisioning system with regard to external provisioning scripts, ssh and Ubuntu 12.04.  The solution is to manually cat the appropriate public key onto the vagrant user's `authorized_hosts` file:
-
-```
-echo control app1 app2 proxy1 db1 | xargs -n1 -J% vagrant ssh % -c 'sudo cat /vagrant/provisioning/id_rsa.pub >> ~/.ssh/authorized_keys'
-```
-
 
 Once the preliminary deployment is complete, a new web worker may be added
 simply by editing the file `ansible/inventories/development.yml` and adding the second
