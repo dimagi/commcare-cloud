@@ -1,6 +1,8 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
 SITE_HOST: '{{ groups.proxy.0 }}'
+COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
+NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
 
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
@@ -12,7 +14,9 @@ active_sites:
   commtrack_http: True
   hq_status: False
   tableau: False
+  icds_tableau: False
   dhis: False
+  motech: False
   wiki: False
 
 

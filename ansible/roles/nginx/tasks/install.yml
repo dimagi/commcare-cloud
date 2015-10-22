@@ -40,6 +40,7 @@
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
 
 - name: Create directories for certificates
+  sudo: yes
   file:
     path: "{{ item }}"
     owner: "root"
