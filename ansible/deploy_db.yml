@@ -6,6 +6,7 @@
     - redis
     - elasticsearch
     - rabbitmq
+    - zookeeper
   sudo: yes
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -45,6 +46,12 @@
   sudo: yes
   roles:
     - rabbitmq
+
+- name: Zookeeper
+  hosts: zookeeper
+  sudo: yes
+  roles:
+    - {role: zookeeper, tags: 'zookeeper'}
 
 - name: Newrelic Plugin Agent for DB
   hosts:

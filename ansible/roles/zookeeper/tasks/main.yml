@@ -1,0 +1,9 @@
+# note: if we want a non-apt install we could change to use something like one of these:
+# https://github.com/glynnbird/ansible-install-kafka/blob/master/tasks/install-zookeeper.yml
+# https://github.com/rackerlabs/ansible-kafka/blob/master/playbooks/roles/zookeeper/tasks/main.yml
+- name: install zookeeper
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - zookeeper
+    - zookeeperd
