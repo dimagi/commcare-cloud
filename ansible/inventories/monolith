@@ -28,6 +28,9 @@
 [zookeeper]
 192.168.33.21
 
+[kafka]
+192.168.33.21 kafka_broker_id=0
+
 [pillowtop]
 192.168.33.21
 
