@@ -9,3 +9,5 @@ instances:
     rabbitmq_pass: {{ AMQP_PASSWORD }}
     tags:
       - environment:{{ deploy_env }}
+    vhosts:
+      - {{ AMQP_NAME }}
