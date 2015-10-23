@@ -577,8 +577,8 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
-{% if localsettings.get('KAFKA_HOST') %}
-KAFKA_HOST = '{{ localsettings.KAFKA_HOST }}'
+{% if localsettings.get('KAFKA_URL') %}
+KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
 {% endif %}
 
 {% if localsettings.get('COUCHPULSE_DATABASE_URL') %}
