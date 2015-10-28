@@ -1,0 +1,3 @@
+datadog_custom_dir: "{{ cchq_home }}/datadog"
+datadog_parsers_repo: https://github.com/dimagi/datadog-parsers
+datadog_parsers_dest: "{{ datadog_custom_dir }}/datadog-parsers"

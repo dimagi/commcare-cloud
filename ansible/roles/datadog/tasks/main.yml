@@ -24,4 +24,19 @@
   tags:
     - datadog
 
+- name: Add datadog custom dir
+  file:
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    path: "{{ datadog_custom_dir }}"
+
+- name: Pull datadog parsers
+  git:
+    repo: "{{ datadog_parsers_repo }}"
+    dest: "{{ datadog_parsers_dest }}"
+    accept_hostkey: yes
+    update: yes
+  sudo_user: "{{ cchq_user }}"
+
 - include: integrations.yml

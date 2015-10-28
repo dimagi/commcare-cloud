@@ -14,3 +14,7 @@ gce_updated_hostname: yes
 # Use mount points instead of volumes to track disk and fs metrics
 # DEPRECATED: use conf.d/disk.yaml instead to configure it
 use_mount: no
+
+{% if inventory_host in groups['proxy'] %}
+dogstreams: {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings:parse_nginx_timings
+{% endif %}
