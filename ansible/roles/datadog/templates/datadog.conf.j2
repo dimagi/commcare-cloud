@@ -19,6 +19,6 @@ use_mount: no
 dogstreams: {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings:parse_nginx_timings
 {% endif %}
 
-{% if inventory_host in groups['webworkers'] %}
+{% if inventory_hostname in groups['webworkers'] %}
 dogstreams: {{ log_home }}/{{ inventory_hostname_short }}-commcarehq.couch.log:{{ datadog_parsers_dest }}/couch/parsers.py:parse_couch_logs
 {% endif %}
