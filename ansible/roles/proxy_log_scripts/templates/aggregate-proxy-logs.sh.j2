@@ -1,0 +1,9 @@
+firstday=`date +%Y-%m-%d -d "-$(date +%d) days +1 day"`
+lastday=`date +%Y-%m-%d -d "-$(date +%d) days +1 month"`
+
+python {{ daterange_script }} $firstday..$lastday < {{ log_home }}/{{ deploy_env }}-timing.log > /tmp/{{ aggregate_proxy_logs_out }}
+
+bash {{ timings_parser_script }} /tmp/{{ aggregate_proxy_logs_out }} > /tmp/{{ aggregate_proxy_logs_out }}.csv
+
+
+uuencode /tmp/{{ aggregate_proxy_logs_out }}.csv proxy_logs.csv | mail -s "Nginx proxy logs" {{ proxy_log_receiver }}
