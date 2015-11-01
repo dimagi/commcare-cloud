@@ -15,6 +15,6 @@ gce_updated_hostname: yes
 # DEPRECATED: use conf.d/disk.yaml instead to configure it
 use_mount: no
 
-{% if inventory_host in groups['proxy'] %}
-dogstreams: {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings:parse_nginx_timings
+{% if inventory_hostname in groups['proxy'] %}
+dogstreams: {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings.py:parse_nginx_timings
 {% endif %}
