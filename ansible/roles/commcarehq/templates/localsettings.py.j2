@@ -270,19 +270,6 @@ SMS_BACKENDS = {
     "265" : "MOBILE_BACKEND_TROPO_CANADIAN",
 }
 
-# mach sms config
-SMS_GATEWAY_URL = "{{ localsettings.SMS_GATEWAY_URL }}"
-SMS_GATEWAY_PARAMS = "{{ localsettings.SMS_GATEWAY_PARAMS }}"
-
-MACH_CONFIG = {"username": "{{ localsettings.MACH_USERNAME }}", "password": "{{ localsettings.MACH_PASSWORD }}", "service_profile": "changeme" }
-
-# unicel sms config
-UNICEL_CONFIG = {"username": "{{ localsettings.UNICEL_USERNAME }}",
-                 "password": "{{ localsettings.UNICEL_PASSWORD }}",
-                 "sender": "{{ localsettings.UNICEL_SENDER }}",
-                 "receive_phone": "+{{ localsettings.UNICEL_RECEIVE_PHONE }}",
-                }
-
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
