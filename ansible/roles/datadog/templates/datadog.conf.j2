@@ -16,7 +16,7 @@ gce_updated_hostname: yes
 use_mount: no
 
 {% if inventory_hostname in groups['proxy'] %}
-dogstreams: {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings.py:parse_nginx_timings
+dogstreams: {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings.py:parse_nginx_timings, {{ log_home }}/{{ deploy_env }}-timing.log:{{ datadog_parsers_dest }}/nginx/timings.py:parse_nginx_apdex
 {% endif %}
 
 {% if inventory_hostname in groups['webworkers'] + groups['pillowtop'] + groups['celery'] %}
