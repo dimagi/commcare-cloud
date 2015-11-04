@@ -1,5 +1,5 @@
 ---
-# deploy_staging_proxy.yml
+# deploy_proxy.yml
 - name: Proxy
   hosts: proxy
   roles:
