@@ -29,6 +29,12 @@ SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.UCR_DATABASE_NAME }}"
 {% endif %}
 
+CUSTOM_DATABASES {
+    {% for custom_database in CUSTOM_DATABASES %}
+    {{ custom_database }}: {{ custom_database | upper }}_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ custom_database }}"
+    {% endfor %}
+}
+
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 
 {% if localsettings.CTABLE_PREFIX %}
