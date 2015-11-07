@@ -321,14 +321,6 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-DOMAIN_SYNCS = { "crs": { "target": "public",
-                          "transform": "corehq.apps.domainsync.transforms.deidentify_domain" }}
-
-DOMAIN_SYNC_APP_NAME_MAP = { "kaushambi": "Pregnancy" }
-{% if 'DOMAIN_SYNC_DATABASE_NAME' in localsettings %}
-DOMAIN_SYNC_DATABASE_NAME = '{{ localsettings.DOMAIN_SYNC_DATABASE_NAME }}'
-{% endif %}
-
 CELERY_SEND_TASK_ERROR_EMAILS = True
 CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
 CELERY_PERIODIC_QUEUE = '{{ localsettings.CELERY_PERIODIC_QUEUE }}'
