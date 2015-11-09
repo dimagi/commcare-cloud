@@ -110,7 +110,6 @@ localsettings:
   DROPBOX_APP_NAME: ''
   DROPBOX_KEY: ''
   DROPBOX_SECRET: ''
-#  DOMAIN_SYNC_DATABASE_NAME:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: ''
