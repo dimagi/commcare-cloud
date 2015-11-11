@@ -10,6 +10,8 @@
 - name: restart Site
   include: restart.yml
   when: action == 'restart'
+  tags:
+    - update-cert
 
 - name: Configure Static Error pages
   include: errorpages.yml

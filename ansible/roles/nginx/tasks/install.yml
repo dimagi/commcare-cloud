@@ -60,6 +60,8 @@
     owner: root
     group: root
   when: not fake_ssl_cert
+  tags:
+    - update-cert
 
 - name: Copy cchq SSL Key
   copy:
@@ -69,6 +71,8 @@
     owner: root
     group: root
   when: not fake_ssl_cert
+  tags:
+    - update-cert
 
 - name: Copy commtrack SSL cert
   copy:
