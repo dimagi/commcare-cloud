@@ -1,3 +1,16 @@
 datadog_custom_dir: "{{ cchq_home }}/datadog"
 datadog_parsers_repo: https://github.com/dimagi/datadog-parsers
 datadog_parsers_dest: "{{ datadog_custom_dir }}/datadog-parsers"
+datadog_parsers:
+  - input: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
+    python_function: parse_nginx_timings
+    hosts: "{{ groups['proxy'] }}"
+  - input: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
+    python_function: parse_nginx_apdex
+    hosts: "{{ groups['proxy'] }}"
+  - input: "{{ log_home }}/{{ inventory_hostname_short }}-commcarehq.couch.log"
+    python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
+    python_function: parse_couch_logs
+    hosts: "{{ groups['webworkers'] + groups['pillowtop'] + groups['celery'] }}"
