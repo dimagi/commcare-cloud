@@ -270,19 +270,6 @@ SMS_BACKENDS = {
     "265" : "MOBILE_BACKEND_TROPO_CANADIAN",
 }
 
-# mach sms config
-SMS_GATEWAY_URL = "{{ localsettings.SMS_GATEWAY_URL }}"
-SMS_GATEWAY_PARAMS = "{{ localsettings.SMS_GATEWAY_PARAMS }}"
-
-MACH_CONFIG = {"username": "{{ localsettings.MACH_USERNAME }}", "password": "{{ localsettings.MACH_PASSWORD }}", "service_profile": "changeme" }
-
-# unicel sms config
-UNICEL_CONFIG = {"username": "{{ localsettings.UNICEL_USERNAME }}",
-                 "password": "{{ localsettings.UNICEL_PASSWORD }}",
-                 "sender": "{{ localsettings.UNICEL_SENDER }}",
-                 "receive_phone": "+{{ localsettings.UNICEL_RECEIVE_PHONE }}",
-                }
-
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
@@ -304,11 +291,11 @@ OVERRIDE_LOCATION = "https://www.commcarehq.org"
 DEFAULT_PROTOCOL = "https"
 
 ANALYTICS_IDS = {
-    'GOOGLE_ANALYTICS_ID': '{{ localsettings.GOOGLE_ANALYTICS_ID }}',
-    'PINGDOM_ID': '{{ localsettings.PINGDOM_ID }}',
-    'ANALYTICS_ID_PUBLIC_COMMCARE': '{{ localsettings.ANALYTICS_ID_PUBLIC_COMMCARE }}',
+    'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID }}',
+    'PINGDOM_API_ID': '{{ localsettings.PINGDOM_API_ID }}',
+    'ANALYTICS_API_ID_PUBLIC_COMMCARE': '{{ localsettings.ANALYTICS_API_ID_PUBLIC_COMMCARE }}',
     'SEGMENT_ANALYTICS_KEY': '{{ localsettings.SEGMENT_ANALYTICS_KEY }}',
-    'HUBSPOT_ID': '{{ localsettings.HUBSPOT_ID }}',
+    'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID }}',
     'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY }}',
     'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY}}'
 }
@@ -333,14 +320,6 @@ CUSTOM_REPORT_MAP = {
         'pathfinder.models.PathfinderWardSummaryReport',
     ]
 }
-
-DOMAIN_SYNCS = { "crs": { "target": "public",
-                          "transform": "corehq.apps.domainsync.transforms.deidentify_domain" }}
-
-DOMAIN_SYNC_APP_NAME_MAP = { "kaushambi": "Pregnancy" }
-{% if 'DOMAIN_SYNC_DATABASE_NAME' in localsettings %}
-DOMAIN_SYNC_DATABASE_NAME = '{{ localsettings.DOMAIN_SYNC_DATABASE_NAME }}'
-{% endif %}
 
 CELERY_SEND_TASK_ERROR_EMAILS = True
 CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
@@ -623,8 +602,8 @@ BANK_ROUTING_NUMBER = '{{ localsettings.BANK_ROUTING_NUMBER }}'
 BANK_SWIFT_CODE = '{{ localsettings.BANK_SWIFT_CODE }}'
 {% endif %}
 
-{% if localsettings.get('OPEN_EXCHANGE_RATES_ID') %}
-OPEN_EXCHANGE_RATES_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_ID }}'
+{% if localsettings.get('OPEN_EXCHANGE_RATES_API_ID') %}
+OPEN_EXCHANGE_RATES_API_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_API_ID }}'
 {% endif %}
 
 {% if localsettings.get('MANDRILL_APIKEY') %}
@@ -661,9 +640,10 @@ ES_QUERY_CHUNKSIZE = '{{ localsettings.ES_QUERY_CHUNKSIZE }}'
 SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 {% endif %}
 
-{% if localsettings.get('MIA_THE_DEPLOY_BOT') %}
-MIA_THE_DEPLOY_BOT = '{{ localsettings.MIA_THE_DEPLOY_BOT }}'
+{% if localsettings.get('MIA_THE_DEPLOY_BOT_API') %}
+MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
 {% endif %}
+
 # Set to something like "192.168.1.5:8000" (with your IP address).
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'

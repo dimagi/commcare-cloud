@@ -13,11 +13,6 @@
   user: name={{ nginx_user }} createhome=no password=no state=present groups="{{ cchq_user }}"
   when: nginx_install == True
 
-- name: Create nginx logfile home
-  sudo: yes
-  file: path={{ log_home }} owner={{ cchq_user }} group={{ cchq_user }} mode=0770 state=directory
-  when: nginx_install == True
-
 - name: Create static files home
   sudo: yes
   file: path={{ nginx_static_home }} owner={{ cchq_user }} group={{ cchq_user }} mode=0755 state=directory
@@ -60,6 +55,8 @@
     owner: root
     group: root
   when: not fake_ssl_cert
+  tags:
+    - update-cert
 
 - name: Copy cchq SSL Key
   copy:
@@ -69,6 +66,8 @@
     owner: root
     group: root
   when: not fake_ssl_cert
+  tags:
+    - update-cert
 
 - name: Copy commtrack SSL cert
   copy:
