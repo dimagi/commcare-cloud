@@ -671,9 +671,8 @@ DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
 DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
 
-
-{% if WS4REDIS_CONNECTION_HOST|default(false) %}
+{% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
 WS4REDIS_CONNECTION = {
-    'host': '{{ WS4REDIS_CONNECTION_HOST }}'
+    'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
 }
 {% endif %}
