@@ -5,7 +5,8 @@ import os
 
 URL_ROOT = "https://{{ SITE_HOST }}/a/{{ '{{' }}DOMAIN{{ '}}' }}"
 PERSISTENCE_DIRECTORY = "{{ touchforms_data_dir }}"
-FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"formplayer.clean-{{ localsettings.DEPLOY_MACHINE_NAME }}.log")
+FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"formplayer.clean-{{ inventory_hostname_short }}.log")
+DATADOG_FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"datadog-formplayer-{{ inventory_hostname_short }}.log")
 
 {% if fake_ssl_cert %}
 from jython_ssl import SSLContext, TRUST_ALL_CONTEXT
