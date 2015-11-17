@@ -36,6 +36,7 @@
     - htop
     - tmpreaper
     - mailutils
+    - ntp
     - nodejs
     - at
     - screen
