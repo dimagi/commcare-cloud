@@ -83,7 +83,10 @@
 
 - name: Create PostgreSQL databases
   sudo_user: postgres
-  postgresql_db: name={{ item }} state=present
+  postgresql_db:
+    name: "{{ item }}"
+    state: present
+    port: "{{ postgresql_port }}"
   with_items: postgresql_dbs
   when:
     pg_install == True
@@ -95,6 +98,7 @@
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
     role_attr_flags: CREATEDB
     state: present
+    port: "{{ postgresql_port }}"
   when:
     pg_install == True
 
