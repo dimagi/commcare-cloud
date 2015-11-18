@@ -148,7 +148,6 @@ localsettings:
   PG_DATABASE_USER: commcarehq
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
-  PINGDOM_API_ID: ''
 #  PRODUCTION_COUCHDB_URI:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
