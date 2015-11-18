@@ -14,3 +14,5 @@ datadog_parsers:
     python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
     python_function: parse_couch_logs
     hosts: "{{ groups['webworkers'] + groups['pillowtop'] + groups['celery'] }}"
+  - input: "{{ log_home }}/datadog-formplayer-{{ inventory_hostname_short }}.log"
+    hosts: "{{ groups['touchforms'] }}"
