@@ -19,12 +19,12 @@ use_mount: no
 dogstreams: {% for parser in datadog_parsers -%}
     {%- if inventory_hostname in parser.hosts -%}
         {{ parser.input }}
-	{%- if parser.python_file is defined -%}
-	:{{ parser.python_file }}
-	{%- endif -%}
-	{%- if parser.python_function is defined -%}
-	:{{ parser.python_function }},
-	{%- endif -%}
+        {%- if parser.python_file is defined -%}
+        :{{ parser.python_file }}
+        {%- endif -%}
+        {%- if parser.python_function is defined -%}
+        :{{ parser.python_function }},
+        {%- endif -%}
     {%- endif -%}
 {%- endfor %}
 {% endif %}
