@@ -18,7 +18,13 @@ use_mount: no
 {% if inventory_hostname in datadog_parsers|map(attribute='hosts')|join %}
 dogstreams: {% for parser in datadog_parsers -%}
     {%- if inventory_hostname in parser.hosts -%}
-        {{ parser.input }}:{{ parser.python_file }}:{{ parser.python_function }},
+        {{ parser.input }}
+        {%- if parser.python_file is defined -%}
+        :{{ parser.python_file }}
+        {%- endif -%}
+        {%- if parser.python_function is defined -%}
+        :{{ parser.python_function }},
+        {%- endif -%}
     {%- endif -%}
 {%- endfor %}
 {% endif %}
