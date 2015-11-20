@@ -6,4 +6,4 @@ dependencies:
   - {role: users, tags: users}
   - role: edit
   - {role: ksplice, tags: ksplice}
-  - {role: newrelic, tags: newrelic, when: NEW_RELIC_KEY}
+  - {role: newrelic, tags: newrelic, when: NEW_RELIC_KEY is defined}
