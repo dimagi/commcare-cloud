@@ -61,7 +61,7 @@
   command: 'n 0.10.29'
   sudo: yes
 
-- stat: path=/path/to/something
+- stat: path=/opt/lessc
   register: lessc_stat
 
 - name: Install lessc from source
