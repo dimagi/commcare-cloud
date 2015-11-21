@@ -1,5 +1,5 @@
 - name: Add New Relic apt repo
-  apt_repository: repo='deb http://apt.newrelic.com/debian/ newrelic non-free' state=present
+  apt_repository: repo="deb http://apt.newrelic.com/debian/ newrelic non-free" state=present
   register: add_new_relic_repo
 
 - name: Add New Relic apt key
