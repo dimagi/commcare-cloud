@@ -29,3 +29,10 @@ nginx_sites:
    location4:
     name: /errors
     alias: "{{ errors_home }}/pages"
+   location5:
+    name: /ws
+    proxy_pass: "http://unix:{{ www_home }}/web.socket"
+    proxy_http_version: "1.1"
+    proxy_set_headers:
+    - "Upgrade $http_upgrade"
+    - "Connection \"upgrade\""
