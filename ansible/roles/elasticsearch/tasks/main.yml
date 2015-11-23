@@ -39,15 +39,15 @@
     src: /opt/elasticsearch-{{ elasticsearch_version }}
     dest: /opt/elasticsearch
 
-- name: Create /etc/elasticsearch
+- name: Create /etc/elasticsearch-(current version)
   sudo: yes
-  file: path=/etc/elasticsearch state=directory
+  file: path=/etc/elasticsearch-{{ elasticsearch_version }} state=directory
 
 - name: Copy Elasticsearch Config
   sudo: yes
   template:
     src: config/elasticsearch.yml.j2
-    dest: /etc/elasticsearch/elasticsearch.yml
+    dest: /etc/elasticsearch-{{ elasticsearch_version }}/elasticsearch.yml
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
@@ -56,7 +56,7 @@
   sudo: yes
   template:
     src: config/logging.yml.j2
-    dest: /etc/elasticsearch/logging.yml
+    dest: /etc/elasticsearch-{{elasticsearch_version}}/logging.yml
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf

@@ -13,7 +13,7 @@ env ES_MAX_MEM={{ elasticsearch_memory }}
 env DAEMON="${ES_HOME}/bin/elasticsearch"
 env DATA_DIR=/opt/data/elasticsearch/data
 env ES_JAVA_OPTS="-XX:SurvivorRatio=3 -XX:+CMSIncrementalMode"
-env CONFIG_DIR=/etc/elasticsearch
+env CONFIG_DIR=/etc/elasticsearch-{{ elasticsearch_version}}
 
 console output
 
