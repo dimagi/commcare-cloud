@@ -8,4 +8,4 @@ env:
 
 redis_ubuntu_pkg:
   - python-selinux
-  - redis-server=3:3.0.*
+  - redis-server=3:3.0.5-1chl1~{{ ansible_lsb.codename}}1
