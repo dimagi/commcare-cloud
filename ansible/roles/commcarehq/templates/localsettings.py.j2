@@ -639,6 +639,10 @@ ES_QUERY_CHUNKSIZE = '{{ localsettings.ES_QUERY_CHUNKSIZE }}'
 SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 {% endif %}
 
+{% if localsettings.get('INACTIVITY_TIMEOUT') %}
+INACTIVITY_TIMEOUT = {{ localsettings.INACTIVITY_TIMEOUT }}
+{% endif %}
+
 {% if localsettings.get('MIA_THE_DEPLOY_BOT_API') %}
 MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
 {% endif %}
