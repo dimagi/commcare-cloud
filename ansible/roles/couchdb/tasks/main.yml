@@ -26,6 +26,8 @@
 
 - name: Compile + install CouchDB
   shell: "{{ item }}"
+  args:
+    chdir: ~/
   sudo: no
   with_items:
     - tar xvf ~/{{ couchdb_distro_filename }}
