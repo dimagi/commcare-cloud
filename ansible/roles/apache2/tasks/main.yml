@@ -82,7 +82,7 @@
 
 - name: Add sites
   sudo: yes
-  template: src={{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }}
+  template: src={{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }}.conf
   with_items:
     - cchq
     # TODO: Public site not funcitonal yet, but need the redirect from http -> https
