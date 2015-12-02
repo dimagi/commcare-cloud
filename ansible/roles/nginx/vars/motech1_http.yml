@@ -2,7 +2,7 @@
 # Send anything from http -> https
 nginx_sites:
 - server:
-   file_name: "motech_http"
+   file_name: "motech1_http"
    listen: "80"
    server_name: "test-endos-motech.commcarehq.org"
    proxy_set_header: "Host $http_host"
