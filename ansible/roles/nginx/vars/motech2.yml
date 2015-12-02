@@ -1,7 +1,7 @@
 ---
 nginx_sites:
 - server:
-   file_name: dhis
+   file_name: motech2
    listen: "443 ssl"
    # Move these to a localsetting?
    server_name: test-supply-motech.commcarehq.org
