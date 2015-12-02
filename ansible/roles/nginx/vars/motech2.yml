@@ -1,0 +1,14 @@
+---
+nginx_sites:
+- server:
+   file_name: dhis
+   listen: "443 ssl"
+   # Move these to a localsetting?
+   server_name: test-supply-motech.commcarehq.org
+   error_page: "502 503 /errors/50x.html"
+   location1:
+    name: /
+    proxy_pass: http://motech2.internal.commcarehq.org:8080
+   location2:
+    name: /errors
+    alias: "{{ errors_home }}/pages"
