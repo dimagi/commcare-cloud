@@ -12,16 +12,7 @@
   get_url:
     url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    sha256sum: f14ff217039b5c398a9256b68f46a90093e0a1e54e89f94ee6a2ee7de557bd6d
-
-- name: Download future Elasticsearch
-  sudo: yes
-  get_url:
-    url: "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_future_version }}.tar.gz"
-    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_future_version }}.tar.gz"
     sha256sum: af517611493374cfb2daa8897ae17e63e2efea4d0377d316baa351c1776a2bca
-  tags:
-    - es_future
 
 - name: Unarchive Elasticsearch
   sudo: yes
@@ -29,15 +20,6 @@
     src: /home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz
     dest: /opt/
     copy: no
-
-- name: Unarchive future Elasticsearch
-  sudo: yes
-  unarchive:
-    src: /home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_future_version }}.tar.gz
-    dest: /opt/
-    copy: no
-  tags:
-    - es_future
 
 - name: Chown Elasticsearch
   sudo: yes
@@ -48,18 +30,6 @@
     recurse: yes
     path: /opt/elasticsearch-{{ elasticsearch_version }}
 
-- name: Chown future Elasticsearch
-  sudo: yes
-  file:
-    state: directory
-    owner: elasticsearch
-    group: elasticsearch
-    recurse: yes
-    path: /opt/elasticsearch-{{ elasticsearch_future_version }}
-  tags:
-    - es_future
-
-
 - name: Link Elasticsearch
   sudo: yes
   file:
@@ -69,15 +39,9 @@
     src: /opt/elasticsearch-{{ elasticsearch_version }}
     dest: /opt/elasticsearch
 
-- name: Create /etc/elasticsearch-(current version)
+- name: Create /etc/elasticsearch
   sudo: yes
   file: path=/etc/elasticsearch-{{ elasticsearch_version }} state=directory
-
-- name: Create /etc/elasticsearch-(future version)
-  sudo: yes
-  file: path=/etc/elasticsearch-{{ elasticsearch_future_version }} state=directory
-  tags:
-    - es_future
 
 - name: Copy Elasticsearch Config
   sudo: yes
@@ -88,17 +52,6 @@
   tags:
     - es_conf
 
-- name: Copy future Elasticsearch Config
-  sudo: yes
-  template:
-    src: config/elasticsearch.yml.j2
-    dest: /etc/elasticsearch-{{ elasticsearch_future_version}}/elasticsearch.yml
-  register: copy_future_elasticsearch_conf_result
-  tags:
-    - es_conf
-    - es_future
-
-
 - name: Copy Elasticsearch logging config
   sudo: yes
   template:
@@ -107,27 +60,6 @@
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
-
-# TODO: Should the future version log somewhere else?
-- name: Copy future Elasticsearch logging config
-  sudo: yes
-  template:
-    src: config/logging.yml.j2
-    dest: /etc/elasticsearch-{{ elasticsearch_future_version }}/logging.yml
-  register: copy_future_elasticsearch_logging_result
-  tags:
-    - es_conf
-    - es_future
-
-- name: Copy future Elasticsearch Upstart Conf
-  sudo: yes
-  template:
-    src: elasticsearchfuture.conf.j2
-    dest: /etc/init/elasticsearchfuture.conf
-  register: copy_future_elasticsearch_upstart_result
-  tags:
-    - es_conf
-    - es_future
 
 - name: Copy Elasticsearch Upstart Conf
   sudo: yes
