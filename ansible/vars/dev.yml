@@ -17,6 +17,8 @@ active_sites:
   icds_tableau: False
   dhis: False
   motech: False
+  motech1: False
+  motech2: False
   wiki: False
 
 
