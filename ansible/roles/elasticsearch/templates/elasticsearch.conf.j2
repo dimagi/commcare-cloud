@@ -19,5 +19,5 @@ console output
 
 script
   ulimit -n 32000
-  su -s /bin/dash -c "/opt/elasticsearch/bin/elasticsearch -f -Des.path.conf=$CONFIG_DIR -Des.path.home=$ES_HOME -Des.path.data=$DATA_DIR" elasticsearch
+  su -s /bin/dash -c "/opt/elasticsearch/bin/elasticsearch --path.conf=$CONFIG_DIR --path.home=$ES_HOME --path.data=$DATA_DIR" elasticsearch
 end script
