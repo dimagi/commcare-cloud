@@ -10,7 +10,6 @@ nginx_sites:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
    add_header: "X-Frame-Options DENY"
-   error_page: "502 503 /errors/50x.html"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    location1:
     name: /
