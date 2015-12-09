@@ -5,7 +5,6 @@ nginx_sites:
    listen: "443 ssl"
    # Move these to a localsetting?
    server_name: endos-motech.commcarehq.org
-   error_page: "502 503 /errors/50x.html"
    proxy_set_headers:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"

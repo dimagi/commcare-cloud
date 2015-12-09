@@ -5,7 +5,6 @@ nginx_sites:
    listen: "443 ssl"
    server_name: "wiki.commcarehq.org help.commcarehq.org"
    proxy_set_header: "Host $http_host"
-   error_page: "502 503 /errors/50x.html"
    location1:
     name: /
     proxy_pass: https://confluence.internal.dimagi.com

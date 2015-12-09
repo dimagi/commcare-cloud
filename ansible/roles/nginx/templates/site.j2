@@ -41,6 +41,10 @@ server {
   {% endfor %}
 {% endfor %}
 
+{% for value in error_pages %}
+  error_page {{ value }};
+{% endfor %}
+
 {% for k,v in item.server.iteritems() if k.find('location') != -1 %}
   location {{ v.name }} {
     {% if v.get('use_balancer', False) == True %}
