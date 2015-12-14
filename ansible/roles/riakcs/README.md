@@ -4,7 +4,7 @@ For a system overview look [here](https://docs.google.com/document/d/1F5KjtyXmvG
 
 # Configuring RiakCS
 
-1. Run `deploy_proxy` to update Nginx with the new configs to allow RiakCS to communicate with Stanchion
+1. Run `deploy_proxy` to update Nginx with the new configs to allow webworkers to communicate with RiakCS cluster
 
 2. Install Riak & RiakCS & Stanchion `ansible-playbook deploy_stack.yml --tags=riakcs,stanchion`
 
@@ -23,7 +23,7 @@ This needs to have `riak_key` and `riak_secret` set in the config files which th
 5. Join cluster
 To join all nodes that haven't been joined with the control machine, run this:
 ```
-ansible-playbook deploy_stack.yml --tags=riakcs-admin-keys -e set_admin_keys=True
+ansible-playbook deploy_stack.yml --tags=riakcs-cluster -e join_nodes=True
 ```
 For more finer grain controls checkout `riakcs/tasks/join_nodes.yml`
 
