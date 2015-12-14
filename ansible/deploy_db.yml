@@ -69,3 +69,17 @@
       when: run_newrelic_plugin_agent
   tags:
     - newrelic-plugin-agent
+
+- name: Riak Cluster
+  sudo: True
+  hosts:
+    - riakcs
+  roles:
+  - { role: riakcs, tags: riakcs }
+
+- name: Stanchion
+  sudo: True
+  hosts:
+    - stanchion
+  roles:
+  - { role: stanchion, tags: stanchion }

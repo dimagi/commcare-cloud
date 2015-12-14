@@ -17,5 +17,5 @@ Add change this setting in the config yaml file:
 * listen: 443 ssl or 80
 * server_name: subdomain to listen on e.g. slow.commcarehq.org
 * location#: Locations define endpoints for incoming requests, read more at http://nginx.org/en/docs/http/ngx_http_core_module.html#location
-  * use_balancer: this will proxy requests to the django workers rather than to files on the proxy machine (and load balance requests)
+  * balancer: this will proxy requests to the group defined rather than to files on the proxy machine (and load balance requests). e.g. balancer: webworkers will proxy requests to the django machines
 * Other settings can be copied from an existing site in that folder

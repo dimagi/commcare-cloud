@@ -34,5 +34,11 @@
 [pillowtop]
 192.168.33.16
 
+[stanchion]
+192.168.33.15
+
+[riakcs]
+192.168.33.16
+
 [shared_dir_host]
 192.168.33.16

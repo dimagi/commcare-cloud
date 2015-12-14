@@ -20,6 +20,10 @@ cchq_user: cchq
 dev_group: dev
 
 django_port: 9010
+riakcs_port: 8080
+riakcs_control: "{{ groups['riakcs'][0] }}"
+riak_port: 8087
+stanchion_port: 8085
 
 newrelic_agents_pgbouncer: False
 newrelic_agents_postgresql: False

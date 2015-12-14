@@ -2,11 +2,11 @@
 # {{ ansible_managed }}
 #
 
-{% if item.server.get('use_balancer', False) == True %}
+{% if item.server.get('balancer', None) %}
 upstream {{ item.server.file_name }} {
   least_conn;
-{% for host in groups['webworkers'] %}
-  server {{ host }}:{{ django_port }};
+{% for host in groups[item.server.balancer] %}
+  server {{ host }}:{{ item.server.get('upstream_port', django_port) }};
 {% endfor %}
 }
 {% endif %}
@@ -30,7 +30,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' and k != 'proxy_set_headers' %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancer', 'proxy_set_headers', 'upstream_port'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
@@ -47,13 +47,13 @@ server {
 
 {% for k,v in item.server.iteritems() if k.find('location') != -1 %}
   location {{ v.name }} {
-    {% if v.get('use_balancer', False) == True %}
+    {% if v.get('balancer', None) %}
         proxy_pass http://{{ item.server.file_name }};
     {% endif %}
     {% if v.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in v.iteritems() if x not in ['name', 'use_balancer', 'is_internal', 'proxy_set_headers'] %}
+    {% for x,y in v.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
         {{ x }} {{ y }};
     {% endfor %}
     {% for k,v in v.iteritems() if k == 'proxy_set_headers' %}
