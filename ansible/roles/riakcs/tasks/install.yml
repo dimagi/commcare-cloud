@@ -1,19 +1,19 @@
 # These tasks are used to install Riak and RiakCS to the riakcs group
 ---
 # Riak hosts their own apt repos and have scripts for installing that repo on debian machines
-- name: Fetch Riak apt repo script
+- name: Fetch Riak apt repo install script
   command: curl -o {{ riak_install_script }} {{ riak_script_url }}
 
-- name: Run Riak apt repo script
+- name: Run Riak apt repo install script
   command: bash {{ riak_install_script }}
 
 - name: Install riak from apt
   apt: name={{ riak_package }} state=present
 
-- name: Fetch Riak CS apt repo script
+- name: Fetch Riak CS apt repo install script
   command: curl -o {{ riakcs_install_script }} {{ riakcs_script_url }}
 
-- name: Run Riak CS apt repo script
+- name: Run Riak CS apt repo install script
   command: bash {{ riakcs_install_script }}
 
 - name: Install Riak CS from apt

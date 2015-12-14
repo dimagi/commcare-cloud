@@ -1,8 +1,8 @@
 ---
-- name: Fetch Stanchion install script
+- name: Fetch Stanchion apt repo install script
   command: curl -o {{ stanchion_install_script }} {{ stanchion_script_url }}
 
-- name: Run Stanchion install script
+- name: Run Stanchion apt repo install script
   command: bash {{ stanchion_install_script }}
 
 - name: Install Stanchion from apt
