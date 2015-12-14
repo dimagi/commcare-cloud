@@ -17,7 +17,7 @@ riakcs_install_script: /tmp/riakcs-install
 riakcs_dest: /etc/riak-cs
 riakcs_conf: riak-cs.conf
 # Where to write the riakcs key/secret for the admin user
-riakcs_keys_dest: /home/salt/ansible/config/{{ deploy_env }}/{{ deploy_env }}.yml
+riakcs_keys_dest: ../../config/{{ deploy_env }}/{{ deploy_env }}.yml
 
 create_admin_user: False
 set_admin_keys: False
