@@ -37,14 +37,14 @@
   tags: riakcs-admin-user
 
 - set_fact:
-    admin_user: "{{ result.stdout | from_json }}"
+    riakcs_admin_user: "{{ result.stdout | from_json }}"
   tags: riakcs-admin-user
 
 - name: Update Riak CS admin.key
   replace:
     dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
     regexp: "^admin.key.*$"
-    replace: "admin.key = {{ admin_user.key_id }}"
+    replace: "admin.key = {{ riakcs_admin_user.key_id }}"
     backup: yes
   tags: riakcs-admin-user
 
@@ -52,7 +52,7 @@
   replace:
     dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
     regexp: "^admin.secret.*$"
-    replace: "admin.secret = {{ admin_user.key_secret }}"
+    replace: "admin.secret = {{ riakcs_admin_user.key_secret }}"
     backup: yes
   tags: riakcs-admin-user
 
@@ -74,7 +74,7 @@
     dest: "{{ riakcs_keys_dest }}"
     state: present
     regexp: "^riak_key"
-    line: "riak_key: {{ admin_user.key_id }}"
+    line: "riak_key: {{ riakcs_admin_user.key_id }}"
     backup: yes
   tags: riakcs-admin-user
 
@@ -84,6 +84,6 @@
     dest: "{{ riakcs_keys_dest }}"
     state: present
     regexp: "^riak_secret"
-    line: "riak_secret: {{ admin_user.key_secret }}"
+    line: "riak_secret: {{ riakcs_admin_user.key_secret }}"
     backup: yes
   tags: riakcs-admin-user
