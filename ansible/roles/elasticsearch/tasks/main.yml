@@ -30,15 +30,6 @@
     recurse: yes
     path: "{{ elasticsearch_home }}"
 
-- name: Link Elasticsearch
-  sudo: yes
-  file:
-    state: link
-    owner: elasticsearch
-    group: elasticsearch
-    src: "{{ elasticsearch_home }}"
-    dest: /opt/elasticsearch
-
 - name: Create /etc/elasticsearch
   sudo: yes
   file: path="{{ elasticsearch_conf_dir }}" state=directory
