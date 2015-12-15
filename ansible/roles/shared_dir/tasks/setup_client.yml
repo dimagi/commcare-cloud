@@ -20,3 +20,9 @@
     state: mounted
   tags:
     - nfs
+
+- name: "Link {{ shared_mount_dir }} to {{ shared_data_dir }}"
+  sudo: yes
+  file: src={{ shared_mount_dir }} dest={{ shared_data_dir }} state=link
+  tags:
+    - nfs
