@@ -1,4 +1,4 @@
-{{ ansible_managed }}
+# {{ ansible_managed }}
 
 # For information on supported formats and syntax for the config file, see
 # <http://elasticsearch.org/guide/en/elasticsearch/reference/current/setup-configuration.html>
@@ -12,6 +12,9 @@ transport.tcp.port: {{ elasticsearch_tcp_port }}
 http.port: {{ elasticsearch_http_port }}
 
 http.cors.enabled: true
+
+path.data: {{ elasticsearch_data_dir }}/data
+path.logs: {{ elasticsearch_data_dir }}/logs
 
 discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s

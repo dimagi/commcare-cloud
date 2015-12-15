@@ -11,8 +11,6 @@ env ES_HOME={{ elasticsearch_home }}
 env ES_MIN_MEM={{ elasticsearch_memory }}
 env ES_MAX_MEM={{ elasticsearch_memory }}
 env DAEMON="${ES_HOME}/bin/elasticsearch"
-env DATA_DIR={{ elasticsearch_data_dir }}/data
-env LOG_DIR={{ elasticsearch_data_dir }}/logs
 env CONFIG_DIR={{ elasticsearch_conf_dir}}
 env ES_JAVA_OPTS="-XX:SurvivorRatio=3 -XX:+CMSIncrementalMode"
 
@@ -20,5 +18,9 @@ console output
 
 script
   ulimit -n 32000
-  su -s /bin/dash -c "$DAEMON --path.conf=$CONFIG_DIR --path.home=$ES_HOME --path.data=$DATA_DIR --path.logs=$LOG_DIR"
+{% if elasticsearch_version|int < 1 %}
+  su -s /bin/dash -c "$DAEMON -f -Des.path.conf=$CONFIG_DIR -Des.path.home=$ES_HOME" elasticsearch
+{% else %}
+  su -s /bin/dash -c "$DAEMON --path.conf=$CONFIG_DIR --path.home=$ES_HOME" elasticsearch
+{% endif %}
 end script
