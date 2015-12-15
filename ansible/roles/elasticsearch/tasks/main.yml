@@ -41,13 +41,13 @@
 
 - name: Create /etc/elasticsearch
   sudo: yes
-  file: path="{{ elasticsearch_conf_home }}" state=directory
+  file: path="{{ elasticsearch_conf_dir }}" state=directory
 
 - name: Copy Elasticsearch Config
   sudo: yes
   template:
     src: config/elasticsearch.yml.j2
-    dest: "{{ elasticsearch_conf_home }}/elasticsearch.yml"
+    dest: "{{ elasticsearch_conf_dir }}/elasticsearch.yml"
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
@@ -56,7 +56,7 @@
   sudo: yes
   template:
     src: config/logging.yml.j2
-    dest: "{{ elasticsearch_conf_home }}/logging.yml"
+    dest: "{{ elasticsearch_conf_dir }}/logging.yml"
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
