@@ -12,7 +12,7 @@
   get_url:
     url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    sha256sum: af517611493374cfb2daa8897ae17e63e2efea4d0377d316baa351c1776a2bca
+    sha256sum: "{{ elasticsearch_download_sha256 }}"
 
 - name: Unarchive Elasticsearch
   sudo: yes
@@ -28,7 +28,7 @@
     owner: elasticsearch
     group: elasticsearch
     recurse: yes
-    path: /opt/elasticsearch-{{ elasticsearch_version }}
+    path: "{{ elasticsearch_home }}"
 
 - name: Link Elasticsearch
   sudo: yes
@@ -36,18 +36,18 @@
     state: link
     owner: elasticsearch
     group: elasticsearch
-    src: /opt/elasticsearch-{{ elasticsearch_version }}
+    src: "{{ elasticsearch_home }}"
     dest: /opt/elasticsearch
 
 - name: Create /etc/elasticsearch
   sudo: yes
-  file: path=/etc/elasticsearch-{{ elasticsearch_version }} state=directory
+  file: path="{{ elasticsearch_conf_home }}" state=directory
 
 - name: Copy Elasticsearch Config
   sudo: yes
   template:
     src: config/elasticsearch.yml.j2
-    dest: /etc/elasticsearch-{{ elasticsearch_version }}/elasticsearch.yml
+    dest: "{{ elasticsearch_conf_home }}/elasticsearch.yml"
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
@@ -56,7 +56,7 @@
   sudo: yes
   template:
     src: config/logging.yml.j2
-    dest: /etc/elasticsearch-{{elasticsearch_version}}/logging.yml
+    dest: "{{ elasticsearch_conf_home }}/logging.yml"
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
@@ -64,8 +64,8 @@
 - name: Copy Elasticsearch Upstart Conf
   sudo: yes
   template:
-    src: elasticsearch.conf.j2
-    dest: /etc/init/elasticsearch.conf
+    src: upstart/elasticsearch.conf.j2
+    dest: "/etc/init/elasticsearch-{{ elasticsearch_version }}.conf"
   register: copy_elasticsearch_upstart_result
   tags:
     - es_conf
@@ -79,9 +79,9 @@
     group: elasticsearch
     mode: 0755
   with_items:
-    - /opt/data/elasticsearch/
-    - /opt/data/elasticsearch/data
-    - /opt/data/elasticsearch/logs
+    - "{{ elasticsearch_data_dir }}"
+    - "{{ elasticsearch_data_dir }}/data"
+    - "{{ elasticsearch_data_dir }}/logs"
 
 - name: Reload upstart
   sudo: yes
@@ -97,7 +97,7 @@
   sudo: yes
   # upstart isn't the default on ubuntu I think,
   # so 'service' ansible module doesn't work for it
-  shell: restart elasticsearch
-  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
+  shell: "restart elasticsearch-{{ elasticsearch_version }}"
+  when: elasticsearch_allow_restart and (copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed)
   tags:
     - es_conf
