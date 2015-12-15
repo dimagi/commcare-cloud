@@ -78,9 +78,10 @@
   sudo: yes
   shell: initctl reload-configuration
 
-- sudo: yes
+- name: Start Elasticsearch
+  sudo: yes
   # make sure it's started in the first place
-  shell: start elasticsearch
+  shell: "start elasticsearch-{{ elasticsearch_version }}"
   register: result
   failed_when: result.rc != 0 and 'already running' not in result.stderr
 
@@ -89,6 +90,6 @@
   # upstart isn't the default on ubuntu I think,
   # so 'service' ansible module doesn't work for it
   shell: "restart elasticsearch-{{ elasticsearch_version }}"
-  when: elasticsearch_allow_restart and (copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed)
+  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
   tags:
     - es_conf
