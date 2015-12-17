@@ -34,8 +34,13 @@
 
 - name: Register mount configuration
   sudo: yes
-  shell: "cat /etc/mtab | grep '/opt/data' | sed -e 's/ rw/ user,noauto,rw/'"
-  register: mount_configuration
+  shell: "cat /etc/mtab | grep '/opt/data'"
+  register: mount_conf
+
+- name: add user, noauto to mount conf
+  shell: "echo {{ mount_conf.stdout }} | sed -e 's/rw/user,noauto,rw/'"
+  when: "'noauto' not in mount_conf.stdout"
+  register: updated_mount_conf
 
 - name: Create entry in fstab
   sudo: yes
@@ -43,5 +48,5 @@
     dest: "/etc/fstab"
     regexp: "^/opt/data"
     backup: yes
-    line: "{{ mount_configuration.stdout }}"
+    line: "{{ updated_mount_conf.stdout if not 'skipped' in updated_mount_conf else mount_conf.stdout }}"
   when: "'/opt/data' not in mtab_contents.stdout"
