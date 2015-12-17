@@ -34,7 +34,7 @@
 
 - name: Register mount configuration
   sudo: yes
-  shell: "tail /etc/mtab -n1"
+  shell: "cat /etc/mtab | grep '/opt/data' | sed -e 's/ rw/ user,noauto,rw/'"
   register: mount_configuration
 
 - name: Create entry in fstab
