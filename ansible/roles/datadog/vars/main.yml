@@ -20,3 +20,5 @@ datadog_parsers:
     hosts: "{{ groups['webworkers'] + groups['pillowtop'] + groups['celery'] }}"
   - input: "{{ log_home }}/datadog-formplayer-{{ inventory_hostname_short }}.log"
     hosts: "{{ groups['touchforms'] }}"
+  - input: "{{ log_home }}/{{ inventory_hostname_short }}-commcarehq.datadog.log"
+    hosts: "{{ groups['webworkers'] }}"
