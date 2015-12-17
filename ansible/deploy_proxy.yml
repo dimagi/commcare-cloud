@@ -38,6 +38,7 @@
 
 - name: Nginx log rolling configurations
   hosts: proxy
+  sudo: yes
   roles:
     - role: ansible-logrotate
       logrotate_scripts:
