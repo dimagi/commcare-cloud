@@ -18,7 +18,7 @@ console output
 
 script
   ulimit -n 32000
-{% if elasticsearch_version|int < 1 %}
+{% if elasticsearch_version[0] == 0 %}
   su -s /bin/dash -c "$DAEMON -f -Des.path.conf=$CONFIG_DIR -Des.path.home=$ES_HOME" elasticsearch
 {% else %}
   su -s /bin/dash -c "$DAEMON --path.conf=$CONFIG_DIR --path.home=$ES_HOME" elasticsearch
