@@ -22,7 +22,11 @@ discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
 
 discovery.zen.ping.multicast.enabled: false
+{% if elasticsearch_endpoint|ipaddr %}
 discovery.zen.ping.unicast.hosts: ["{{ elasticsearch_endpoint }}:{{ elasticsearch_tcp_port }}"]
+{% else %}
+discovery.zen.ping.unicast.hosts: ["{{ lookup('dig', elasticsearch_endpoint, wantlist=True)[0] }}:{{ elasticsearch_tcp_port }}"]
+{% endif %}
 
 index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
