@@ -1,5 +1,5 @@
 pg_install: True
-postgresql_version: '9.1'
+postgresql_version: '9.4'
 postgresql_port: 5432
 postgresql_ssl_enabled: True
 postgresql_dir_original_path: /var/lib/postgresql
