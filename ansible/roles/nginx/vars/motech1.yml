@@ -5,6 +5,11 @@ nginx_sites:
    listen: "443 ssl"
    # Move these to a localsetting?
    server_name: test-endos-motech.commcarehq.org
+   proxy_set_headers:
+   - "Host $http_host"
+   - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-Proto $scheme"
+   - "X-Forwarded-Host $host:443"
    error_page: "502 503 /errors/50x.html"
    location1:
     name: /
