@@ -1,0 +1,11 @@
+- name: default to denying all incoming traffic
+  ufw: policy=deny direction=incoming
+  when: ufw_enabled and ufw_private_interface is defined
+
+- name: allow incoming traffic on private interface
+  ufw: rule=allow direction=in interface={{ ufw_private_interface }}
+  when: ufw_enabled and ufw_private_interface is defined
+
+- name: turn on firewall
+  ufw: state=enabled
+  when: ufw_enabled and ufw_private_interface is defined

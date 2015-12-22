@@ -4,6 +4,13 @@
   roles:
     - common
 
+- name: ufw (firewall)
+  hosts: '!proxy'
+  sudo: yes
+  roles:
+    - {role: ufw, tags: ufw, when: ufw_enabled and ufw_private_interface is defined}
+
+
 - name: Datadog agent
   hosts: all
   sudo: yes
