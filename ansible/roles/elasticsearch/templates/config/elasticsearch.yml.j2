@@ -382,3 +382,11 @@ index.search.slowlog.threshold.query.trace: 500ms
 index.cache.field.max_size: 5000
 index.cache.field.expire: 10m
 index.cache.field.type: soft
+
+
+################################## Security ##################################
+
+# "...the issue with dynamic scripting is that it opens the full power of the JVM to execute arbitrary scripts."
+# -- https://www.elastic.co/blog/scripting-security
+
+script.disable_dynamic: true
