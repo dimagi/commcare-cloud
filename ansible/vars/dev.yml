@@ -83,7 +83,6 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-  ANALYTICS_API_ID_PUBLIC_COMMCARE: ''
 #  BANK_ACCOUNT_NUMBER:
 #  BANK_ADDRESS:
 #  BANK_NAME:
@@ -161,7 +160,6 @@ localsettings:
   UCR_DATABASE_NAME: commcarehq_ucr
   REPORT_OBJECT_OWNER: null
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
-  SEGMENT_ANALYTICS_KEY: ''
 #  SIMPLE_API_KEYS:
 #  SMS_QUEUE_ENABLED: ''
 #  STAGING_DOMAINS:
