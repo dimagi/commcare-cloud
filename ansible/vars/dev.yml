@@ -39,9 +39,8 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'
 
-# change to True to only allow access to eth1
-ufw_enabled: False
-ufw_private_interface: eth1
+# uncomment to only allow access to eth1
+# ufw_private_interface: eth1
 
 ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
