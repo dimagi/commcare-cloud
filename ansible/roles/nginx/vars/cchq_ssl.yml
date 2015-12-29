@@ -9,7 +9,7 @@ nginx_sites:
    proxy_set_headers:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
-   add_header: "X-Frame-Options DENY"
+   add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    location1:
     name: /
