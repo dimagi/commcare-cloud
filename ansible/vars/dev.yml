@@ -14,7 +14,6 @@ active_sites:
   commtrack_http: True
   riakcs: True
   hq_status: False
-  tableau: False
   icds_tableau: False
   dhis: False
   motech: False
