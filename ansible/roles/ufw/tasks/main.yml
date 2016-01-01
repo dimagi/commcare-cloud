@@ -1,6 +1,9 @@
 - name: allow incoming traffic on private interface
   ufw: rule=allow direction=in interface={{ ufw_private_interface }}
 
+- name: allow ssh traffic from control machine
+  ufw: rule=allow from={{ ansible_eth0.ipv4.address }}
+
 - name: default to denying all incoming traffic
   ufw: policy=deny direction=incoming
 
