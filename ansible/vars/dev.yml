@@ -40,7 +40,11 @@ elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'
 
 # uncomment to only allow access to eth1
-# ufw_private_interface: eth1
+#ufw_private_interface: eth1
+
+# uncomment and change to the control machine IP when using ufw
+# this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
+#control_machine_ip: 127.0.0.1
 
 ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
