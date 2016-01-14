@@ -12,9 +12,9 @@
     - aptcache
 
 - include: deploy_common.yml tags=common
-- include: deploy_shared_data_dir.yml tags=shared_data_dir
 - include: deploy_db.yml
 - include: deploy_proxy.yml
+- include: deploy_shared_data_dir.yml tags=shared_data_dir
 - include: deploy_shared_dir.yml
 - include: deploy_webworker.yml
 - include: deploy_touchforms.yml
