@@ -1,16 +1,5 @@
 ---
 
-- name: Create shared data dir
-  sudo: yes
-  file:
-    path: "{{ shared_data_dir }}"
-    owner: "nobody"
-    group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
-    state: directory
-  tags:
-    - nfs
-
 - name: Add shared dir to exports
   sudo: yes
   lineinfile:
@@ -32,34 +21,3 @@
   command: "exportfs -a"
   tags:
     - nfs
-
-- name: create shared directories
-  sudo: yes
-  file:
-    path: "{{ item }}"
-    owner: "nobody"
-    group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
-    state: directory
-  with_items:
-    - "{{ restore_payload_dir_host }}"
-    - "{{ transfer_payload_dir_host }}"
-    - "{{ shared_temp_dir_host }}"
-  tags:
-    - shared_files
-
-- name: Create purging cron jobs
-  sudo: yes
-  cron:
-    name: "{{ item.name }}"
-    special_time: daily
-    job: "find {{ item.dir }} -type f -maxdepth 1 -mtime +{{ item.max_age }} -delete"
-    user: root
-    cron_file: purge_cache_files
-  with_items:
-    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 2}
-    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 2}
-    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 1}
-  tags:
-    - shared_files
-
