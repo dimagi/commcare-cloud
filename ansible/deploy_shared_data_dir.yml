@@ -1,0 +1,2 @@
+---
+- include: roles/shared_data_dir.yml
