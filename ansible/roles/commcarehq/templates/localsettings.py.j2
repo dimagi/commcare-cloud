@@ -38,6 +38,7 @@ CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 COUCH_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
 DJANGO_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
 ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
+DATADOG_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
 
 LOGGING = {
     'version': 1,
@@ -54,6 +55,9 @@ LOGGING = {
         },
         'couch-request-formatter': {
             'format': '%(asctime)s [%(username)s:%(domain)s] %(hq_url)s %(method)s %(error_status)s %(path)s %(duration)s'
+        },
+        'datadog': {
+            'format': '%(metric)s %(created)s %(value)s metric_type=%(metric_type)s %(message)s'
         },
     },
     'filters': {
@@ -94,6 +98,14 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': ACCOUNTING_LOG_FILE,
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 20  # Backup 200 MB of logs
+        },
+        'datadog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'datadog',
+            'filename': DATADOG_LOG_FILE,
             'maxBytes': 10 * 1024 * 1024,  # 10 MB
             'backupCount': 20  # Backup 200 MB of logs
         },
@@ -167,6 +179,11 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'ERROR',
             'propagate': True,
+        },
+        'datadog-metrics': {
+            'handlers': ['datadog'],
+            'level': 'INFO',
+            'propogate': False,
         },
     }
 }
@@ -292,8 +309,6 @@ DEFAULT_PROTOCOL = "https"
 
 ANALYTICS_IDS = {
     'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID }}',
-    'ANALYTICS_API_ID_PUBLIC_COMMCARE': '{{ localsettings.ANALYTICS_API_ID_PUBLIC_COMMCARE }}',
-    'SEGMENT_ANALYTICS_KEY': '{{ localsettings.SEGMENT_ANALYTICS_KEY }}',
     'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID }}',
     'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY }}',
     'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY}}'
@@ -351,11 +366,13 @@ REPORT_CACHE = 'redis'
 
 {% if shared_drive_enabled|default(true) %}
 SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
+{% else %}
+SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
+{% endif %}
 RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
 TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
 TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
-{% endif %}
 
 import imp
 try:

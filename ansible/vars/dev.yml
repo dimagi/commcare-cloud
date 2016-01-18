@@ -12,11 +12,13 @@ active_sites:
   cchq_http_redirect: True
   commtrack_ssl: True
   commtrack_http: True
+  riakcs: True
   hq_status: False
-  tableau: False
   icds_tableau: False
   dhis: False
   motech: False
+  motech1: False
+  motech2: False
   wiki: False
 
 
@@ -36,11 +38,17 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'
 
+# uncomment to only allow access to eth1
+#ufw_private_interface: eth1
+
+# uncomment and change to the control machine IP when using ufw
+# this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
+#control_machine_ip: 127.0.0.1
+
 ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY:
 
-NEW_RELIC_KEY:
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: False
@@ -70,6 +78,8 @@ postgres_config:
   pgb_pool_timeout: 2
   pgb_pool_mode: session
 
+riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
+
 supervisor_http_enabled: True
 supervisor_http_username: user
 supervisor_http_password: 123
@@ -79,7 +89,6 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-  ANALYTICS_API_ID_PUBLIC_COMMCARE: ''
 #  BANK_ACCOUNT_NUMBER:
 #  BANK_ADDRESS:
 #  BANK_NAME:
@@ -157,7 +166,6 @@ localsettings:
   UCR_DATABASE_NAME: commcarehq_ucr
   REPORT_OBJECT_OWNER: null
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
-  SEGMENT_ANALYTICS_KEY: ''
 #  SIMPLE_API_KEYS:
 #  SMS_QUEUE_ENABLED: ''
 #  STAGING_DOMAINS:

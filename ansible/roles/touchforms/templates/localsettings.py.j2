@@ -3,7 +3,10 @@
 #
 import os
 
-URL_ROOT = "https://{{ SITE_HOST }}/a/{{ '{{' }}DOMAIN{{ '}}' }}"
+URL_HOST = "https://{{ SITE_HOST }}"
+{% raw %}
+URL_ROOT = "%s/a/{{DOMAIN}}" % URL_HOST
+{% endraw %}
 PERSISTENCE_DIRECTORY = "{{ touchforms_data_dir }}"
 FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"formplayer.clean-{{ inventory_hostname_short }}.log")
 DATADOG_FORMPLAYER_LOG_FILE = os.path.join('{{ log_home }}',"datadog-formplayer-{{ inventory_hostname_short }}.log")

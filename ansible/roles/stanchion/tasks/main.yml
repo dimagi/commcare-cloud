@@ -1,0 +1,15 @@
+---
+- name: Fetch Stanchion apt repo install script
+  command: curl -o {{ stanchion_install_script }} {{ stanchion_script_url }}
+
+- name: Run Stanchion apt repo install script
+  command: bash {{ stanchion_install_script }}
+
+- name: Install Stanchion from apt
+  apt: name={{ stanchion_package }} state=present
+
+- name: Set Stanchion conf
+  template: src=stanchion.conf.j2 dest={{ stanchion_dest }}/stanchion.conf owner=stanchion group=riak
+
+- name: Start Stanchion
+  command: stanchion start

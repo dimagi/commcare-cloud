@@ -49,6 +49,7 @@
 
 
 - name: Copy cchq SSL cert
+  sudo: yes
   copy:
     src: "{{ nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
@@ -60,6 +61,7 @@
     - update-cert
 
 - name: Copy cchq SSL Key
+  sudo: yes
   copy:
     src: "{{ apache2_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
@@ -71,6 +73,7 @@
     - update-cert
 
 - name: Copy commtrack SSL cert
+  sudo: yes
   copy:
     src: "{{ commtrack_nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ commtrack_nginx_ssl_cert }}"
@@ -80,6 +83,7 @@
   when: not fake_ssl_cert and commtrack_nginx_combined_cert_file is defined
 
 - name: Copy commtrack SSL Key
+  sudo: yes
   copy:
     src: "{{ commtrack_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"

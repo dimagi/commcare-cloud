@@ -1,20 +1,18 @@
 ---
 nginx_sites:
 - server:
-   file_name: tableau
+   file_name: motech2
    listen: "443 ssl"
    # Move these to a localsetting?
-   server_name: tableau.commcarehq.org
-   error_page: "502 503 /errors/50x.html"
+   server_name: test-supply-motech.commcarehq.org
    proxy_set_headers:
-   - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Proto $scheme"
    - "X-Forwarded-Host $host:443"
+   error_page: "502 503 /errors/50x.html"
    location1:
     name: /
-    proxy_pass: http://tableau3.internal.commcarehq.org
-    proxy_read_timeout: 120s
+    proxy_pass: http://motech2.internal.commcarehq.org:8080
    location2:
     name: /errors
     alias: "{{ errors_home }}/pages"

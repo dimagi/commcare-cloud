@@ -1,0 +1,41 @@
+---
+- include: install.yml
+  when: riak_install == True
+
+- name: Set the Riak soft ulimit
+  lineinfile:
+    dest: /etc/security/limits.conf
+    state: present
+    line: '* soft nofile 4096'
+  tags: ulimit
+
+- name: Set the Riak hard ulimit
+  lineinfile:
+    dest: /etc/security/limits.conf
+    state: present
+    line: '* hard nofile 65536'
+  tags: ulimit
+
+- name: Set Riak conf
+  template: src=riak.conf.j2 dest={{ riak_dest }}/{{ riak_conf }} owner=riak group=riak
+  notify: restart riak
+
+- name: Set Riak advanced.config
+  template: src=riak.advanced.config.j2 dest={{ riak_dest }}/advanced.config owner=riak group=riak
+  notify: restart riak
+
+- name: Set Riak CS config
+  template: src=riak-cs.conf.j2 dest={{ riakcs_dest }}/{{ riakcs_conf }} owner=riakcs group=riak
+  notify: restart riakcs
+
+- name: start riakcs
+  service: name=riak-cs state=started enabled=yes
+
+- include: admin_user.yml
+  when: "create_admin_user and '{{ inventory_hostname }}' == '{{ riakcs_control }}'"
+
+- include: set_admin_keys.yml
+  when: set_admin_keys
+
+- include: join_nodes.yml
+  when: join_nodes
