@@ -2,6 +2,7 @@
 
 - name: Install NFS packages
   sudo: yes
+  when: shared_drive_enabled
   apt: name={{ item }} state=present
   with_items:
     - nfs-kernel-server
@@ -10,6 +11,7 @@
     - nfs
 
 - name: ensure nfs service is running
+  when: shared_drive_enabled
   service:
     name: nfs-kernel-server
     state: started
@@ -18,6 +20,7 @@
 
 - name: Create group with same GID
   sudo: yes
+  when: shared_drive_enabled
   group:
     name: "{{ shared_dir_groupname }}"
     state: present
@@ -26,6 +29,7 @@
     - nfs
 
 - name: Add cchq to nfs group
+  when: shared_drive_enabled
   user:
     name: "{{ cchq_user }}"
     groups: "{{ shared_dir_groupname }}"
