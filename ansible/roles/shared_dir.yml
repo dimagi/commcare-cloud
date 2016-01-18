@@ -6,7 +6,6 @@
   vars_files:
     - shared_data_dir/vars/main.yml
   tasks:
-    - include: shared_data_dir/tasks/setup_host.yml
     - include: shared_dir/tasks/install.yml
     - include: shared_dir/tasks/setup_host.yml
 
