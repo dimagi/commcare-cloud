@@ -185,3 +185,4 @@ localsettings:
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
+  XFORMS_PLAYER_URL_SPRING: "http://{{ groups.touchforms.0 }}:8080"
