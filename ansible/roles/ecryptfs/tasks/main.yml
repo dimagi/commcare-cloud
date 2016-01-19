@@ -7,25 +7,25 @@
   shell: cat /etc/mtab
   register: mtab_contents
 
-- name: Create /opt/data directory
+- name: Create encrypted drive root directory
   sudo: yes
-  file: path=/opt/data owner=root group=root mode=0755 state=directory
+  file: path="{{ ecrypted_root }}" owner=root group=root mode=0755 state=directory
 
 - name: Add encryption password to keyring
   sudo: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
-  when: "'/opt/data' not in mtab_contents.stdout"
+  when: "'{{ ecrypted_root }}' not in mtab_contents.stdout"
 
 - name: Mount data drive
   sudo: yes
-  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 /opt/data/ /opt/data/"
-  when: "'/opt/data' not in mtab_contents.stdout"
+  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ ecrypted_root }}/ {{ ecrypted_root }}/"
+  when: "'{{ ecrypted_root }}' not in mtab_contents.stdout"
 
 - name: Drop unencrypted readme in directory
   sudo: yes
   lineinfile:
-    dest: '/opt/data/README'
+    dest: '{{ ecrypted_root }}/README'
     line: 'If you can read this file the directory is unencrypted'
     create: yes
     owner: root
@@ -34,7 +34,7 @@
 
 - name: Register mount configuration
   sudo: yes
-  shell: "cat /etc/mtab | grep '/opt/data'"
+  shell: "cat /etc/mtab | grep '{{ ecrypted_root }}'"
   register: mount_conf
 
 - name: add user, noauto to mount conf
@@ -46,7 +46,7 @@
   sudo: yes
   lineinfile:
     dest: "/etc/fstab"
-    regexp: "^/opt/data"
+    regexp: "^{{ ecrypted_root }}"
     backup: yes
     line: "{{ updated_mount_conf.stdout if not 'skipped' in updated_mount_conf else mount_conf.stdout }}"
-  when: "'/opt/data' not in mtab_contents.stdout"
+  when: "'{{ ecrypted_root }}' not in mtab_contents.stdout"
