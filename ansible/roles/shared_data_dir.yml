@@ -1,9 +1,0 @@
----
-
-- name: SharedDataDir
-  hosts: shared_dir_host  # Should be one
-  sudo: yes
-  vars_files:
-    - shared_data_dir/vars/main.yml
-  tasks:
-    - include: shared_data_dir/tasks/setup_host.yml

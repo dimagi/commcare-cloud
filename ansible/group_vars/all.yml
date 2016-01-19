@@ -7,13 +7,15 @@ service_home: "{{ cchq_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
 
 shared_dir_gid: 1500  # This GID cannot already be allocated
+shared_data_dir: "/opt/shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_mount_dir: "/mnt/shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 transfer_payload_dir_name: "transfer_payloads"
 restore_payload_dir_name: "restore_payloads"
 shared_temp_dir_name: "temp"
-transfer_payload_dir: "{{ shared_mount_dir }}/{{ transfer_payload_dir_name }}"
-restore_payload_dir: "{{ shared_mount_dir }}/{{ restore_payload_dir_name }}"
-shared_temp_dir: "{{ shared_mount_dir }}/{{ shared_temp_dir_name }}"
+shared_dir_root: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}"
+transfer_payload_dir: "{{ shared_dir_root }}/{{ transfer_payload_dir_name }}"
+restore_payload_dir: "{{ shared_dir_root }}/{{ restore_payload_dir_name }}"
+shared_temp_dir: "{{ shared_dir_root }}/{{ shared_temp_dir_name }}"
 public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq

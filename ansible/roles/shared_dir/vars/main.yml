@@ -1,5 +1,7 @@
-shared_data_dir: "/opt/shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
-shared_dir_gid: 1500  # This GID cannot already be allocated
+# the following are defined in /ansible/group_vars/all.yml
+#shared_data_dir: ...
+#shared_dir_gid: ...
+
 shared_dir_groupname: nfs
 
 restore_payload_dir_host: "{{ shared_data_dir }}/{{ restore_payload_dir_name }}"
