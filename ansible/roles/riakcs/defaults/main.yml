@@ -6,7 +6,7 @@ riak_version: 2.1.1
 riak_script_url: https://packagecloud.io/install/repositories/basho/riak/script.deb.sh
 riak_install_script: /tmp/riak-install
 riak_dest: /etc/riak
-riak_data_dir: "{{ ecrypted_root }}/riak"
+riak_data_dir: "{{ encrypted_root }}/riak"
 riak_conf: riak.conf
 
 riakcs_package_release: 1

@@ -3,6 +3,6 @@ apache_mirror: apache.mirror.anlx.net
 kafka_version: 0.8.2.2
 kafka_user: kafka
 kafka_group: kafka
-kafka_data_dir: "{{ ecrypted_root }}/kafka/data"
+kafka_data_dir: "{{ encrypted_root }}/kafka/data"
 kafka_conf_dir: /etc/kafka/config
 kafka_log_dir: /var/log/kafka
