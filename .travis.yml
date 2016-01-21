@@ -8,8 +8,7 @@ before_install:
 
 install:
   - pip install -r ansible/requirements.txt
-  - git clone --recursive https://github.com/dimagi/commcarehq-ansible.git
 
 script:
-  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/ansible/deploy_stack.yml --syntax-check
-  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/ansible/deploy_stack.yml -vvvv
+  - ansible-playbook -i dimagi/commcarehq-ansible/ansible/inventories/localhost dimagi/commcarehq-ansible/ansible/deploy_stack.yml --syntax-check
+  - ansible-playbook -i dimagi/commcarehq-ansible/ansible/inventories/localhost dimagi/commcarehq-ansible/ansible/deploy_stack.yml -vvvv
