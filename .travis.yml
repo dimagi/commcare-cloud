@@ -12,3 +12,4 @@ install:
 
 script:
   - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/deploy_stack.yml --syntax-check
+  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/deploy_stack.yml --sudo
