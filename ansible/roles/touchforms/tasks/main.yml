@@ -40,5 +40,3 @@
     user: root
     cron_file: ../crontab
 
-#- include_vars: "supervisor_tasks.yml"
-#- include: ../../supervisor/tasks/supervised_tasks.yml
