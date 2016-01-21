@@ -7,7 +7,7 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - pip install ansible
+  - pip install -r ansible/requirements.txt
   - git clone https://github.com/dimagi/commcarehq-ansible.git
 
 script:
