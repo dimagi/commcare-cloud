@@ -1,0 +1,14 @@
+---
+language: python
+python: "2.7"
+
+before_install:
+  # Make sure everything's up to date.
+  - sudo apt-get update -qq
+
+install:
+  - pip install ansible
+  - git clone https://github.com/dimagi/commcarehq-ansible.git
+
+script:
+  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/deploy_stack.yml --syntax-check
