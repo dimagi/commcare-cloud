@@ -11,5 +11,5 @@ install:
   - git clone https://github.com/dimagi/commcarehq-ansible.git
 
 script:
-  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/deploy_stack.yml --syntax-check
-  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/deploy_stack.yml --sudo
+  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/ansible/deploy_stack.yml --syntax-check
+  - ansible-playbook -i commcarehq-ansible/ansible/inventories/localhost commcarehq-ansible/ansible/deploy_stack.yml --sudo
