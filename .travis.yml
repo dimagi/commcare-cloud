@@ -10,5 +10,5 @@ install:
   - pip install -r ansible/requirements.txt
 
 script:
-  - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml --syntax-check
-  - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml -e "@ansible/vars/dev.yml" -vvvv
+  - ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml --syntax-check
+  - ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml -e "@ansible/vars/dev.yml" -vvvv

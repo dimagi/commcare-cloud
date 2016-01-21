@@ -1,0 +1,44 @@
+[webworkers]
+localhost ansible_connection=local
+
+[postgresql]
+localhost ansible_connection=local
+
+[couchdb]
+localhost ansible_connection=local
+
+[redis]
+localhost ansible_connection=local
+
+[touchforms]
+localhost ansible_connection=local
+
+[celery]
+localhost ansible_connection=local
+
+[elasticsearch]
+localhost ansible_connection=local elasticsearch_node_name=es0
+
+[proxy]
+localhost ansible_connection=local
+
+[rabbitmq]
+localhost ansible_connection=local
+
+[zookeeper]
+localhost ansible_connection=local
+
+[kafka]
+localhost ansible_connection=local kafka_broker_id=0
+
+[pillowtop]
+localhost ansible_connection=local
+
+[shared_dir_host]
+localhost ansible_connection=local
+
+[riakcs]
+localhost ansible_connection=local
+
+[stanchion]
+localhost ansible_connection=local
