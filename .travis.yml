@@ -12,5 +12,5 @@ install:
   - pip install -r ansible/requirements.txt
 
 script:
-  - ansible-playbook -i dimagi/commcarehq-ansible/ansible/inventories/localhost dimagi/commcarehq-ansible/ansible/deploy_stack.yml --syntax-check
-  - ansible-playbook -i dimagi/commcarehq-ansible/ansible/inventories/localhost dimagi/commcarehq-ansible/ansible/deploy_stack.yml -vvvv
+  - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml --syntax-check
+  - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml -vvvv
