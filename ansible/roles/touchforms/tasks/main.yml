@@ -40,3 +40,13 @@
     user: root
     cron_file: ../crontab
 
+- name: Copy Spring application.properties
+  sudo: yes
+  template:
+    src: application.properties.j2
+    dest: "{{ code_home }}/submodules/formplayer/config/{{ deploy_env }}.properties"
+    group: cchq
+    owner: cchq
+    mode: 0644
+  tags:
+    - tf-localsettings
