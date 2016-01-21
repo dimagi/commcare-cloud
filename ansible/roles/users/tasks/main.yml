@@ -14,6 +14,9 @@
   user: name={{ item.name }} state=absent
   with_items: dev_users.absent
 
+- name: Add ansible user
+  user: name=ansible state=present shell=/bin/bash groups="sudo"
+
 - name: Add public keys
   sudo: yes
   authorized_key: user={{ item.name }} state=present key="{{ item.key }}"
