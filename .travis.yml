@@ -11,4 +11,4 @@ install:
 
 script:
   - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml --syntax-check
-  - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml -vvvv
+  - ansible-playbook -i ansible/inventories/localhost ansible/deploy_stack.yml -e "@ansible/vars/dev.yml" -vvvv
