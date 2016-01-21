@@ -75,7 +75,7 @@
 - name: Install lessc from source
   sudo: yes
   # this is lessc 1.7.3
-  git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes depth=1
+  git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes
   when: lessc_stat.stat.is_dir is not defined
 
 - name: Install pip packages
