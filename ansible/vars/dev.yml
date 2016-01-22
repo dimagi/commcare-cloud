@@ -69,6 +69,10 @@ postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+  readonly:
+    username: "devreadonly"
+    password: "devreadonly"
+
 
 postgres_config:
   max_connections: 20
@@ -79,6 +83,9 @@ postgres_config:
   pgb_pool_mode: session
 
 riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
+
+shared_drive_enabled: True
+backup_postgres: False
 
 supervisor_http_enabled: True
 supervisor_http_username: user
