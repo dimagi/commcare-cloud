@@ -1,5 +1,8 @@
 # Ansible deployment orchestration and configuration management
 
+[![Build
+Status](https://travis-ci.org/dimagi/commcarehq-ansible.svg?branch=master)](https://travis-ci.org/dimagi/commcarehq-ansible)
+
 This repository represents a workable role for deploying a single new
 "webworker" to a given stack for the commcare-hq application.
 
