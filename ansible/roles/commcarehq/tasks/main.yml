@@ -62,7 +62,7 @@
     virtualenv: "{{ virtualenv_source }}"
   tags:
     - slow
-  when: not gitdir.stat.exists and (travis is not defined or not travis)
+  when: not gitdir.stat.exists
 
 - name: copy localsettings
   sudo_user: "{{ cchq_user }}"
