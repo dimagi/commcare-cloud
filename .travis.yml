@@ -1,0 +1,13 @@
+---
+language: python
+python: "2.7"
+
+before_install:
+  # Make sure everything's up to date.
+  - sudo apt-get update -qq
+
+install:
+  - pip install -r ansible/requirements.txt
+
+script:
+  - ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml --syntax-check
