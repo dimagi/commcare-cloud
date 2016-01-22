@@ -699,9 +699,9 @@ WS4REDIS_CONNECTION = {
 {% endif %}
 
 {% if localsettings.get('TWO_FACTOR_SMS_GATEWAY') %}
-TWO_FACTOR_SMS_GATEWAY = '{{TWO_FACTOR_SMS_GATEWAY}}'
+TWO_FACTOR_SMS_GATEWAY = '{{localsettings.TWO_FACTOR_SMS_GATEWAY}}'
 {% endif %}
 
 {% if localsettings.get('TWO_FACTOR_CALL_GATEWAY') %}
-TWO_FACTOR_CALL_GATEWAY = '{{TWO_FACTOR_CALL_GATEWAY}}'
+TWO_FACTOR_CALL_GATEWAY = '{{localsettings.TWO_FACTOR_CALL_GATEWAY}}'
 {% endif %}
