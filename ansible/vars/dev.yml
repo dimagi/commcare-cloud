@@ -24,6 +24,7 @@ active_sites:
 
 deploy_env: dev
 fake_ssl_cert: yes
+ansible_user_password: 'YIN9OONyKqkxY' # blahblah
 
 dev_users:
   present:
