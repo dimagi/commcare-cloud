@@ -6,7 +6,7 @@ test_syntax() {
 
 test_localsettings() {
   mkdir -p www/dev/current
-  ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml --tags=localsettings
+  ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml -e '@ansible/vars/dev.yml' --tags=localsettings
   python -m py_compile www/dev/current/localsettings.py
 }
 
