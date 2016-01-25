@@ -44,7 +44,7 @@
   tags:
     - git
     - slow
-  when: not gitdir.stat.exists and not testing|default(False)
+  when: not gitdir.stat.exists
 
 - name: Link source to code_home
   sudo_user: "{{ cchq_user }}"
@@ -52,7 +52,7 @@
     state: link
     src: "{{ code_source }}"
     dest: "{{ code_home }}"
-  when: not gitdir.stat.exists and not testing|default(False)
+  when: not gitdir.stat.exists
 
 - name: install pip requirements
   sudo_user: "{{ cchq_user }}"
