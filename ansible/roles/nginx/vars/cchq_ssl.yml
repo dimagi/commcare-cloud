@@ -23,7 +23,7 @@ nginx_sites:
     try_files: "$uri $uri/index.html $uri/ =404"
    location3:
     name: "/{{ transfer_payload_dir_name }}"
-    alias: "{{ transfer_payload_dir }}"
+    alias: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}/{{ transfer_payload_dir_name }}"
     is_internal: True
    location4:
     name: /errors

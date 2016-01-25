@@ -136,3 +136,47 @@
   service: name=pgbouncer state=started
   tags:
     - pgbouncer
+
+- name: create backup directory
+  sudo: yes
+  file:
+    path: '{{ postgresql_backup_dir }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+
+- name: Copy postgres backup script
+  sudo: yes
+  template:
+    src: "create_postgres_dump.sh.j2"
+    dest: "/etc/cron.d/create_postgres_dump.sh"
+    group: root
+    owner: root
+    mode: 700
+    backup: yes
+  when: backup_postgres
+
+- name: Create Daily Cron job
+  sudo: yes
+  cron:
+    name: "Backup postgres daily"
+    job: "/etc/cron.d/create_postgres_dump.sh daily 7"
+    minute: 0
+    hour: 0
+    weekday: "1,2,3,4,5,6"
+    user: postgres
+    cron_file: ../crontab
+  when: backup_postgres
+
+- name: Create Weekly Cron job
+  sudo: yes
+  cron:
+    name: "Backup postgres weekly"
+    job: "/etc/cron.d/create_postgres_dump.sh weekly 28"
+    minute: 0
+    hour: 0
+    weekday: 0
+    user: postgres
+    cron_file: ../crontab
+  when: backup_postgres

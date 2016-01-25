@@ -4,6 +4,8 @@ SITE_HOST: '{{ groups.proxy.0 }}'
 COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
 NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
 
+testing: True
+
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
@@ -24,6 +26,7 @@ active_sites:
 
 deploy_env: dev
 fake_ssl_cert: yes
+ansible_user_password_sha_512: 'YIN9OONyKqkxY' # blahblah
 
 dev_users:
   present:
@@ -69,6 +72,10 @@ postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+  readonly:
+    username: "devreadonly"
+    password: "devreadonly"
+
 
 postgres_config:
   max_connections: 20
@@ -81,6 +88,7 @@ postgres_config:
 riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
 
 shared_drive_enabled: True
+backup_postgres: False
 
 supervisor_http_enabled: True
 supervisor_http_username: user

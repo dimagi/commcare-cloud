@@ -20,19 +20,19 @@
 
 - name: Create group with same GID
   sudo: yes
-  when: shared_drive_enabled
   group:
     name: "{{ shared_dir_groupname }}"
     state: present
     gid: "{{ shared_dir_gid }}"
   tags:
     - nfs
+    - shared_files
 
 - name: Add cchq to nfs group
-  when: shared_drive_enabled
   user:
     name: "{{ cchq_user }}"
     groups: "{{ shared_dir_groupname }}"
     append: yes
   tags:
     - nfs
+    - shared_files

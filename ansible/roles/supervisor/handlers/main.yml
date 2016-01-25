@@ -2,7 +2,7 @@
 # handlers for supervisor role
 
 - name: start supervisor
-  service: start supervisord
+  command: start supervisord
 
 - name: stop supervisor
   command: stop supervisord
