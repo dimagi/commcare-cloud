@@ -4,6 +4,8 @@ SITE_HOST: '{{ groups.proxy.0 }}'
 COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
 NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
 
+testing: True
+
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:

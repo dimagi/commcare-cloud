@@ -10,4 +10,4 @@ install:
   - pip install -r ansible/requirements.txt
 
 script:
-  - ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml --syntax-check
+  - ".travis/tests.sh"
