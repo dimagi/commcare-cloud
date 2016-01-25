@@ -15,7 +15,7 @@
   with_items: dev_users.absent
 
 - name: Add ansible user
-  user: name=ansible state=present shell=/bin/bash groups="sudo" password={{ ansible_user_password }}
+  user: name=ansible state=present shell=/bin/bash groups="sudo" password={{ ansible_user_password_sha_512 }}
 
 - name: Add public keys
   sudo: yes
