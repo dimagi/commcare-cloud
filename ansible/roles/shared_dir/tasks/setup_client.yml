@@ -22,3 +22,23 @@
     state: mounted
   tags:
     - nfs
+
+- name: Create blob DB mount point
+  sudo: yes
+  dependencies:
+    - role: ecryptfs
+  when: shared_drive_enabled
+  file: path={{ shared_mount_dir }}/blobdb owner=root group=root mode=0755 state=directory
+  tags:
+    - ecryptfs
+    - ecryptfs-blobdb
+
+- name: Mount blob DB NFS volume
+  sudo: yes
+  dependencies:
+    - role: ecryptfs
+  when: shared_drive_enabled
+  shell: "mount -t nfs {{ groups.shared_dir_host[0] }}:/opt/data/blobdb {{ shared_mount_dir }}/blobdb"
+  tags:
+    - ecryptfs
+    - ecryptfs-blobdb
