@@ -59,24 +59,6 @@
   tags:
     - nfs
 
-- name: Add blob DB dir to exports
-  sudo: yes
-  when: shared_drive_enabled
-  lineinfile:
-    dest: /etc/exports
-    line: "/opt/data/blobdb {{ item }}(rw,sync,all_squash,no_subtree_check,anongid={{ shared_dir_gid }})"
-    regexp: "^/opt/data/blobdb {{ item }}"
-    state: present
-  with_flattened:
-    - groups.webworkers
-    - groups.proxy
-    - groups.celery
-    - groups.pillowtop
-    - groups.shared_dir_host
-  tags:
-    - nfs
-    - ecryptfs-blobdb
-
 - name: Export directories
   sudo: yes
   when: shared_drive_enabled
