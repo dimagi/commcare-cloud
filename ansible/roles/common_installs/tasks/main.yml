@@ -77,7 +77,7 @@
   sudo: yes
   # this is lessc 1.7.3
   git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes depth=1
-  when: lessc_stat.stat.is_dir is not defined
+  when: not lessc_stat.stat.exists
 
 - name: Install pip packages
   pip: name={{ item }}
