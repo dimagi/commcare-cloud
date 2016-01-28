@@ -5,6 +5,7 @@ code_home: "{{ www_home }}/current"
 log_home: "{{ www_home }}/log"
 service_home: "{{ cchq_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
+encrypted_root: "/opt/data"
 
 shared_drive_enabled: true  # overridden in ../config/$ENV/$ENV.yml
 shared_dir_gid: 1500  # This GID cannot already be allocated
