@@ -25,7 +25,7 @@
 - name: Create /opt/data/blobdb directory for setups that do not use NFS
   sudo: yes
   when: not shared_drive_enabled
-  file: path=/opt/data/blobdb owner=nobody group={{ shared_dir_gid }} mode=0755 state=directory
+  file: path=/opt/data/blobdb owner=nobody group={{ shared_dir_gid }} mode=0775 state=directory
   tags:
     - ecryptfs-blobdb
 
