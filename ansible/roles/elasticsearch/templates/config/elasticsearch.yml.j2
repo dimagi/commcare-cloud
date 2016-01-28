@@ -32,9 +32,3 @@ index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
 index.search.slowlog.threshold.query.trace: 500ms
-
-{% if elasticsearch_version|int < 1 %}
-index.cache.field.max_size: 5000
-index.cache.field.expire: 10m
-index.cache.field.type: soft
-{% endif %}
