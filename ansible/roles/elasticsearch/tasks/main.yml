@@ -56,7 +56,7 @@
   sudo: yes
   template:
     src: upstart/elasticsearch.conf.j2
-    dest: "/etc/init/elasticsearch-{{ elasticsearch_version }}.conf"
+    dest: "/etc/init/elasticsearch.conf"
   register: copy_elasticsearch_upstart_result
   tags:
     - es_conf
@@ -80,16 +80,13 @@
 
 - name: Start Elasticsearch
   sudo: yes
-  # make sure it's started in the first place
-  shell: "start elasticsearch-{{ elasticsearch_version }}"
+  service: name=elasticsearch state=started
   register: result
   failed_when: result.rc != 0 and 'already running' not in result.stderr
 
 - name: Restart Elasticsearch
   sudo: yes
-  # upstart isn't the default on ubuntu I think,
-  # so 'service' ansible module doesn't work for it
-  shell: "restart elasticsearch-{{ elasticsearch_version }}"
+  service: name=elasticsearch state=restarted
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
   tags:
     - es_conf
