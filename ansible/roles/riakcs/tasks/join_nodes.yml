@@ -1,56 +1,40 @@
-# More information on adding/removing nodes can be found here: http://docs.basho.com/riak/latest/ops/running/nodes/adding-removing/
+# More information on adding/removing nodes can be found here:
+# http://docs.basho.com/riak/latest/ops/running/nodes/adding-removing/
 #
-# Joins nodes to the control node if:
-#  - The node isn't a control node
-#  - The node isn't already a member of the cluster
-#
-#  To setup stage the cluster but not commit use tags:
-#  --tags=riakcs-cluster-prep
-#
-#  To stage and commit the cluster run:
-#  --tags=riakcs-cluster
-#
-#  To just commit the staged cluster run:
-#  --tags=riakcs-cluster-commit
-#
-#  To clear the staged commits run:
-#  --tags=riakcs-cluster-clean
-
-- set_fact:
-    riakcs_control_short: "{{ riakcs_control.split('.')[0] }}"
-  tags:
-    - riakcs-cluster-prep
-    - riakcs-cluster
-
-- name: Join nodes to cluster
-  command: "riak-admin cluster join riak-{{ riakcs_control_short }}@{{ riakcs_control }}"
-  register: result
-  tags:
-    - riakcs-cluster-prep
-    - riakcs-cluster
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
-
-- debug: var=result.stdout
-
-- name: Plan the changes
-  command: "riak-admin cluster plan"
-  register: result
-  tags:
-    - riakcs-cluster-prep
-    - riakcs-cluster
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
-
-- debug: var=result.stdout
-
-- name: Commit the changes
-  command: "riak-admin cluster commit"
-  tags:
-    - riakcs-cluster-commit
-    - riakcs-cluster
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
+# This will join nodes to the control node if the node isn't already a
+# member of the cluster
 
 - name: Clear any staged commits
   command: "riak-admin cluster clear"
-  tags:
-    - riakcs-cluster-clean
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
+  changed_when: false
+
+- name: Check if node is in the cluster
+  command: riak-admin cluster status
+  register: riak_cluster_status
+  changed_when: false
+
+#- debug: var=riak_cluster_status
+
+- set_fact: riak_control_node_name="riak-{{ riakcs_control.split('.')[0] }}@{{ riakcs_control }}"
+- set_fact: riak_control_node_pattern="{{ riak_control_node_name | replace('.', '\\.') }}"
+- set_fact: node_in_cluster="{{ riak_cluster_status.get('stdout', '') | search(riak_control_node_pattern) }}"
+
+#- debug: var=riak_control_node_pattern
+
+- name: Join nodes to cluster
+  command: "riak-admin cluster join {{ riak_control_node_name }}"
+  register: riak_cluster_join_result
+  when: not node_in_cluster
+
+#- debug: var=riak_cluster_join_result
+
+- name: Plan the changes
+  command: "riak-admin cluster plan"
+  register: riak_cluster_plan_result
+  when: not node_in_cluster
+
+#- debug: var=riak_cluster_plan_result
+
+- name: Commit the changes
+  command: "riak-admin cluster commit"
+  when: not node_in_cluster

@@ -1,41 +1,54 @@
 ---
-- include: install.yml
-  when: riak_install == True
+- name: Set ulimit for riak service
+  # this might only work on Ubuntu
+  template: src=riak-defaults.j2 dest=/etc/default/riak
+  notify: restart riak
 
-- name: Set the Riak soft ulimit
-  lineinfile:
-    dest: /etc/security/limits.conf
-    state: present
-    line: '* soft nofile 4096'
-  tags: ulimit
-
-- name: Set the Riak hard ulimit
-  lineinfile:
-    dest: /etc/security/limits.conf
-    state: present
-    line: '* hard nofile 65536'
-  tags: ulimit
+# possibly works on more platforms, but requires reboot to take effect and
+# does not check for existing high-enough ulimit
+#- name: Set the Riak soft ulimit
+#  # TODO remove this
+#  lineinfile:
+#    dest: /etc/security/limits.conf
+#    state: present
+#    line: '* soft nofile 4096'
+#  notify: reboot
+#  tags: ulimit
+#
+#- name: Set the Riak hard ulimit
+#  # TODO remove this
+#  lineinfile:
+#    dest: /etc/security/limits.conf
+#    state: present
+#    line: '* hard nofile 65536'
+#  notify: reboot
+#  tags: ulimit
 
 - name: Set Riak conf
-  template: src=riak.conf.j2 dest={{ riak_dest }}/{{ riak_conf }} owner=riak group=riak
+  template: src=riak.conf.j2 dest={{ riak_dest }}/{{ riak_conf }}
   notify: restart riak
 
 - name: Set Riak advanced.config
-  template: src=riak.advanced.config.j2 dest={{ riak_dest }}/advanced.config owner=riak group=riak
+  template: src=riak.advanced.config.j2 dest={{ riak_dest }}/advanced.config
   notify: restart riak
 
 - name: Set Riak CS config
-  template: src=riak-cs.conf.j2 dest={{ riakcs_dest }}/{{ riakcs_conf }} owner=riakcs group=riak
+  template: src=riak-cs.conf.j2 dest={{ riakcs_dest }}/{{ riakcs_conf }}
   notify: restart riakcs
 
-- name: start riakcs
-  service: name=riak-cs state=started enabled=yes
+- include: install.yml
 
 - include: admin_user.yml
-  when: "create_admin_user == True and '{{ inventory_hostname }}' == '{{ riakcs_control }}'"
+  when: inventory_hostname == riakcs_control and (riak_key is undefined or riak_secret is undefined)
 
-- include: set_admin_keys.yml
-  when: set_admin_keys == True
+- name: Write admin keys in Riak CS conf
+  include: set_admin_keys.yml
+  vars:
+    path: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    service: riakcs
+  when: "'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
+
+- meta: flush_handlers  # restart services if needed
 
 - include: join_nodes.yml
-  when: join_nodes == True
+  when: inventory_hostname != riakcs_control

@@ -1,15 +1,25 @@
 ---
+- name: Check if Stanchion is installed
+  command: dpkg -s stanchion
+  register: stanchion_deb_check
+  failed_when: false
+  changed_when: false
+
+- set_fact: stanchion_installed="{{ stanchion_deb_check.rc == 0 }}"
+
 - name: Fetch Stanchion apt repo install script
   command: curl -o {{ stanchion_install_script }} {{ stanchion_script_url }}
+  when: not stanchion_installed
 
 - name: Run Stanchion apt repo install script
   command: bash {{ stanchion_install_script }}
+  when: not stanchion_installed
 
 - name: Install Stanchion from apt
   apt: name={{ stanchion_package }} state=present
 
 - name: Set Stanchion conf
-  template: src=stanchion.conf.j2 dest={{ stanchion_dest }}/stanchion.conf owner=stanchion group=riak
+  template: src=stanchion.conf.j2 dest={{ stanchion_conf }}
 
 - name: Start Stanchion
   service: name=stanchion state=started enabled=yes

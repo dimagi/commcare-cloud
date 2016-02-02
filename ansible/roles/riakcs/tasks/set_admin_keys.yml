@@ -1,15 +1,17 @@
-- name: Update Riak CS admin.key
-  replace:
-    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
-    regexp: "^admin.key.*$"
-    replace: "admin.key = {{ riak_key }}"
-    backup: yes
-  tags: riakcs-admin-keys
+# Write admin.key and admin.secret in configuration file
 
-- name: Update Riak CS admin.secret
-  replace:
-    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
-    regexp: "^admin.secret.*$"
-    replace: "admin.secret = {{ riak_secret }}"
-    backup: yes
-  tags: riakcs-admin-keys
+- name: Update {{ service }} admin.key
+  lineinfile:
+    dest: "{{ path }}"
+    regexp: "^admin.key ?= ?.*$"
+    line: "admin.key = {{ hostvars[riakcs_control].get('riak_key', 'not-set') }}"
+    state: present
+  notify: "restart {{ service }}"
+
+- name: Update {{ service }} admin.secret
+  lineinfile:
+    dest: "{{ path }}"
+    regexp: "^admin.secret ?= ?.*$"
+    line: "admin.secret = {{ hostvars[riakcs_control].get('riak_secret', 'not-set') }}"
+    state: present
+  notify: "restart {{ service }}"
