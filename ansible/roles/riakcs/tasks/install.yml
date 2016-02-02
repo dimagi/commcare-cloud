@@ -27,7 +27,7 @@
     group: "{{ riak_user }}"
 
 - name: Start Riak
-  command: riak start
+  service: name=riak state=started enabled=yes
 
 - name: Start RiakCS
-  command: riak-cs start
+  service: name=riak-cs state=started enabled=yes

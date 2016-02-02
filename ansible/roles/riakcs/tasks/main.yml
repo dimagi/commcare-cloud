@@ -32,10 +32,10 @@
   service: name=riak-cs state=started enabled=yes
 
 - include: admin_user.yml
-  when: "create_admin_user and '{{ inventory_hostname }}' == '{{ riakcs_control }}'"
+  when: "create_admin_user == True and '{{ inventory_hostname }}' == '{{ riakcs_control }}'"
 
 - include: set_admin_keys.yml
-  when: set_admin_keys
+  when: set_admin_keys == True
 
 - include: join_nodes.yml
-  when: join_nodes
+  when: join_nodes == True

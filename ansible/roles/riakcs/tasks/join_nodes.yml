@@ -22,21 +22,13 @@
     - riakcs-cluster-prep
     - riakcs-cluster
 
-- name: Check if already part of cluster
-  command: "riak-admin member-status | grep {{ riak_nodename }}"
-  ignore_errors: True
-  register: exists
-  tags:
-    - riakcs-cluster-prep
-    - riakcs-cluster
-
 - name: Join nodes to cluster
   command: "riak-admin cluster join riak-{{ riakcs_control_short }}@{{ riakcs_control }}"
   register: result
   tags:
     - riakcs-cluster-prep
     - riakcs-cluster
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}' and exists.rc == 1"
+  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
 
 - debug: var=result.stdout
 
@@ -46,7 +38,7 @@
   tags:
     - riakcs-cluster-prep
     - riakcs-cluster
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}' and exists.rc == 1"
+  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
 
 - debug: var=result.stdout
 
@@ -55,7 +47,7 @@
   tags:
     - riakcs-cluster-commit
     - riakcs-cluster
-  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}' and exists.rc == 1"
+  when: "'{{ inventory_hostname }}' != '{{ riakcs_control }}'"
 
 - name: Clear any staged commits
   command: "riak-admin cluster clear"

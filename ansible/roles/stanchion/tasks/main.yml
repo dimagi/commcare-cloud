@@ -12,4 +12,4 @@
   template: src=stanchion.conf.j2 dest={{ stanchion_dest }}/stanchion.conf owner=stanchion group=riak
 
 - name: Start Stanchion
-  command: stanchion start
+  service: name=stanchion state=started enabled=yes
