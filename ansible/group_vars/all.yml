@@ -24,7 +24,9 @@ django_port: 9010
 riakcs_port: 8080
 riakcs_control: "{{ groups['riakcs'][0] }}"
 riak_port: 8087
+riak_data_dir: "{{ encrypted_root }}/riak"
 stanchion_port: 8085
+stanchion_data_dir: "{{ encrypted_root }}/stanchion"
 
 newrelic_agents_pgbouncer: False
 newrelic_agents_postgresql: False

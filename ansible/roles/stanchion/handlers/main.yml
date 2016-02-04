@@ -1,4 +1,0 @@
----
-
-- name: restart stanchion
-  service: name=stanchion state=restarted

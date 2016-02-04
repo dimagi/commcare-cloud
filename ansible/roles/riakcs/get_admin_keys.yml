@@ -4,13 +4,13 @@
 # the keys in the file are are 'not-set'.
 
 - name: Load admin.key from Riak CS conf
-  shell: grep -Eh '^admin\.key = ' {{ riakcs_dest }}/{{ riakcs_conf }} | grep -v not-set
+  shell: grep -Eh '^admin\.key = ' {{ riakcs_conf }} | grep -Ev '^admin\.key = (not-set|admin-key)'
   register: riakcs_conf_key
   failed_when: false
   changed_when: false
 
 - name: Load admin.secret from Riak CS conf
-  shell: grep -Eh '^admin\.secret = ' {{ riakcs_dest }}/{{ riakcs_conf }} | grep -v not-set
+  shell: grep -Eh '^admin\.secret = ' {{ riakcs_conf }} | grep -Ev '^admin\.secret = (not-set|admin-secret)'
   register: riakcs_conf_secret
   failed_when: false
   changed_when: false

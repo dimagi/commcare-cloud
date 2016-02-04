@@ -2,14 +2,13 @@
 
 - name: Turn on anonymous user creation
   lineinfile:
-    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    dest: "{{ riakcs_conf }}"
     regexp: "anonymous_user_creation = off"
     line: "anonymous_user_creation = on"
     state: present
+  notify: restart riakcs
 
-# Note this can't be notify because we need it to restart immediately
-- name: Restart RiakCS
-  service: name=riak-cs state=restarted enabled=yes
+- meta: flush_handlers  # restart services if needed
 
 # Random email address because a given email can only be used once. It
 # may be necessary to generate a new admin user if something fails
@@ -28,7 +27,7 @@
 
 - name: Turn off anonymous user creation
   lineinfile:
-    dest: "{{ riakcs_dest }}/{{ riakcs_conf }}"
+    dest: "{{ riakcs_conf }}"
     regexp: "anonymous_user_creation = on"
     line: "anonymous_user_creation = off"
     state: present
@@ -40,10 +39,15 @@
                            if riak_create_user_result.stdout.strip().startswith('{')
                            else '{}' | from_json }}"
 
+- name: Check if Riak CS admin user creation failed
+  fail:
+    msg: Unable to create admin user
+         {{ riak_create_user_result | to_nice_json }}
+  when: ('key_id' not in riakcs_admin_user or 'key_secret' not in riakcs_admin_user)
+
 # Set key facts last. Otherwise additional tasks in this file would be
 # skipped because of the `when` condition on the `include` of this file.
-- set_fact: riak_key="{{ riakcs_admin_user.key_id }}"
-  when: riakcs_admin_user.key_id is defined
-
-- set_fact: riak_secret="{{ riakcs_admin_user.key_secret }}"
-  when: riakcs_admin_user.key_secret is defined
+- set_fact:
+    riak_key: "{{ riakcs_admin_user.key_id }}"
+    riak_secret: "{{ riakcs_admin_user.key_secret }}"
+  when: riakcs_admin_user.key_id is defined and riakcs_admin_user.key_secret is defined

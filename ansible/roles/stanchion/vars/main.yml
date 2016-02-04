@@ -1,3 +1,0 @@
-stanchion_package: stanchion={{ stanchion_version }}-{{ stanchion_package_release }}
-stanchion_data_dir: "{{ encrypted_root }}/stanchion"
-stanchion_conf: /etc/stanchion/stanchion.conf

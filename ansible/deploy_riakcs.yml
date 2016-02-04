@@ -1,0 +1,93 @@
+- name: Common Setup
+  hosts:
+    - riakcs
+    - stanchion
+  sudo: yes
+  roles:
+    - {role: ecryptfs}
+
+- name: First host in riakcs group -> riakcs_control_host
+  # riakcs_control_host group must contain at most one host
+  hosts:
+    - riakcs
+    - stanchion
+  tasks:
+    - add_host: name={{ riakcs_control }} groups=riakcs_control_host
+
+- name: Load admin keys from Riak CS conf
+  sudo: True
+  hosts: riakcs_control_host
+  vars_files:
+    - roles/riakcs/install/defaults/main.yml
+  tasks:
+    - include: roles/riakcs/get_admin_keys.yml
+
+- name: Install Riak and Riak CS
+  sudo: True
+  hosts: riakcs
+  roles:
+    - {role: riakcs/install, name: riak}
+    - {role: riakcs/install, name: riakcs}
+
+- name: Install Stanchion
+  sudo: True
+  hosts: stanchion
+  roles:
+    - {role: riakcs/install, name: stanchion}
+
+- name: Configure and start Riak
+  # Riak CS must be installed before Riak can be started
+  sudo: True
+  hosts: riakcs
+  roles:
+    - role: riakcs/configure
+      name: riak
+      extra_conf: advanced.config
+      data_dirs:
+        - "{{ riak_data_dir }}"
+        - "{{ riak_ring_dir }}"
+        - "{{ riak_data_root_leveldb }}"
+        - "{{ riak_data_root_bitcask }}"
+
+- name: Join Riak nodes to cluster
+  sudo: True
+  hosts: riakcs
+  tasks:
+    - include: roles/riakcs/join_cluster.yml
+      when: inventory_hostname != riakcs_control
+
+- name: Configure and start Stanchion
+  # Riak must be started before Stanchion can be started
+  sudo: True
+  hosts: stanchion
+  roles:
+    - role: riakcs/configure
+      name: stanchion
+      ulimit_n: 4096
+      data_dirs: [ "{{ stanchion_data_dir }}" ]
+
+- name: Configure and start Riak CS
+  sudo: True
+  hosts: riakcs
+  roles:
+    - {role: riakcs/configure, name: riakcs}
+
+- name: Create admin user
+  sudo: True
+  hosts: riakcs_control_host
+  roles:
+    - role: riakcs/create_admin_user
+      when: riak_key is undefined or riak_secret is undefined
+
+- name: Sync admin user keys to Riak CS cluster
+  sudo: True
+  hosts: riakcs
+  roles:
+    - {role: riakcs/sync_keys, name: riakcs}
+
+- name: Sync admin user keys to Stanchion
+  sudo: True
+  hosts:
+    - stanchion
+  roles:
+    - {role: riakcs/sync_keys, name: stanchion}
