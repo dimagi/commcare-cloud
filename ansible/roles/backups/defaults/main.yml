@@ -1,0 +1,1 @@
+blobdb_backup_dir: "{{ encrypted_root }}/backups/blobdb"
