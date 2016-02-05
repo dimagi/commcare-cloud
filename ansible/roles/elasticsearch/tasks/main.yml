@@ -61,6 +61,9 @@
   tags:
     - es_conf
 
+- debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
+  when: copy_elasticsearch_conf_result.changed
+
 - name: Create Elasticsearch data directories
   sudo: yes
   file:
@@ -89,4 +92,4 @@
   service: name=elasticsearch state=restarted
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
   tags:
-    - es_conf
+    - es_restart

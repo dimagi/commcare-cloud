@@ -1,0 +1,34 @@
+# http://engineering.datarank.com/2015/03/14/performing-rolling-restarts-of-elasticsearch-using-ansible.html
+- name: disable cluster routing
+  shell: "curl -XPUT localhost:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'"
+  register: result
+  until: result.stdout.find('"acknowledged"') != -1
+  retries: 20
+  delay: 3
+  changed_when: result.stdout.find('"acknowledged":true') != -1
+
+- name: do restart
+  sudo: true
+  service: name=elasticsearch state=restarted
+
+- name: wait for node to restart
+  shell: curl -I -s -m 2 http://localhost:9200 | head -n 1
+  register: result
+  until: result.stdout == "HTTP/1.1 200 OK"
+  retries: 20
+  delay: 3
+
+- name: enable cluster routing
+  shell: "curl -XPUT localhost:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
+  register: result
+  until: result.stdout.find('"acknowledged"') != -1
+  retries: 20
+  delay: 3
+  changed_when: result.stdout.find('"acknowledged":true') != -1
+
+- name: wait for cluster to stabilize
+  shell: curl -s -m 2 localhost:9200/_cat/health | cut -d ' ' -f 4
+  register: result
+  until: result.stdout.find("green") != -1
+  retries: 20
+  delay: 10

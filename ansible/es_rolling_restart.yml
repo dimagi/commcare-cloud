@@ -1,0 +1,6 @@
+---
+- name: Elasticsearch
+  hosts: elasticsearch
+  sudo: yes
+  tasks:
+    - include: roles/elasticsearch/tasks/rolling_restart.yml
