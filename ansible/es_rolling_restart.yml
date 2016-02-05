@@ -6,11 +6,13 @@
   vars_prompt:
     - name: "pillows_stopped"
       prompt: "Have you stopped all the elastic pillows? [YES/NO]"
+      private: no
     - name: "confirmation"
       prompt: "Are you sure you want to do a rolling restart of the ES cluster? REALLY SURE? [YES/NO]"
+      private: no
   tasks:
     - assert:
-      that:
-        - "pillows_stopped == 'YES'"
-        - "confirmation == 'YES'"
+        that:
+          - "pillows_stopped == 'YES'"
+          - "confirmation == 'YES'"
     - include: roles/elasticsearch/tasks/rolling_restart.yml
