@@ -3,5 +3,14 @@
   hosts: elasticsearch
   sudo: yes
   serial: 1
+  vars_prompt:
+    - name: "pillows_stopped"
+      prompt: "Have you stopped all the elastic pillows? [YES/NO]"
+    - name: "confirmation"
+      prompt: "Are you sure you want to do a rolling restart of the ES cluster? REALLY SURE? [YES/NO]"
+  assert:
+    that:
+      - "pillows_stopped == 'YES'"
+      - "confirmation == 'YES'"
   tasks:
     - include: roles/elasticsearch/tasks/rolling_restart.yml

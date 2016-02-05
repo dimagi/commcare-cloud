@@ -31,4 +31,4 @@
   register: result
   until: result.stdout.find("green") != -1
   retries: 200
-  delay: 10
+  delay: 30
