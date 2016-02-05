@@ -89,6 +89,7 @@ riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
 
 shared_drive_enabled: True
 backup_postgres: False
+backup_blobdb: True
 
 supervisor_http_enabled: True
 supervisor_http_username: user
