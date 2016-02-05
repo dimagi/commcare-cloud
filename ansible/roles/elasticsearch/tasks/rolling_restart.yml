@@ -7,9 +7,13 @@
   delay: 3
   changed_when: result.stdout.find('"acknowledged":true') != -1
 
-- name: do restart
+- name: stop node
   sudo: true
-  service: name=elasticsearch state=restarted
+  service: name=elasticsearch state=stopped
+
+- name: start node
+  sudo: true
+  service: name=elasticsearch state=started
 
 - name: wait for node to restart
   shell: curl -I -s -m 2 http://localhost:9200 | head -n 1
