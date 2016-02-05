@@ -10,6 +10,7 @@
   sudo: yes
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
+    - {role: backups, tags: 'backups'}
 
 - name: Postgresql
   hosts: postgresql
