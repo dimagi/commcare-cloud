@@ -405,6 +405,11 @@ CACHES = {
     'redis': redis_cache,
 }
 
+ELASTICSEARCH_HOSTS = [
+    {% for es_host in groups.elasticsearch -%}
+    '{{ es_host }}',
+    {% endfor -%}
+]
 ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
 ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
 SECRET_KEY = "{{ localsettings.SECRET_KEY }}"
