@@ -16,7 +16,7 @@
   # works on ubuntu. may need to do other things for other platforms
   copy: >
     content="ulimit -n {{ ulimit_n }}"
-    dest=/etc/default/{{ name }}
+    dest=/etc/default/{{ service }}
     owner=root
     group=root
     force=yes
@@ -54,4 +54,4 @@
   when: extra_conf != ""
 
 - name: Start {{ name }}
-  service: name={{ 'riak-cs' if name == 'riakcs' else name }} state=started enabled=yes
+  service: name={{ service }} state=started enabled=yes

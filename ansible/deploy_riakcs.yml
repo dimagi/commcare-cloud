@@ -27,7 +27,7 @@
   hosts: riakcs
   roles:
     - {role: riakcs/install, name: riak}
-    - {role: riakcs/install, name: riakcs}
+    - {role: riakcs/install, name: riakcs, service: riak-cs}
 
 - name: Install Stanchion
   sudo: True
@@ -70,7 +70,7 @@
   sudo: True
   hosts: riakcs
   roles:
-    - {role: riakcs/configure, name: riakcs}
+    - {role: riakcs/configure, name: riakcs, service: riak-cs}
 
 - name: Create admin user
   sudo: True

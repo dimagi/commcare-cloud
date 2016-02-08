@@ -1,3 +1,4 @@
-ulimit_n: 65536
-extra_conf: ""
 data_dirs: []
+extra_conf: ""
+service: "{{ name }}"
+ulimit_n: 65536
