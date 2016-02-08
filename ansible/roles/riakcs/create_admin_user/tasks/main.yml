@@ -10,6 +10,10 @@
 
 - meta: flush_handlers  # restart services if needed
 
+- name: Wait for Riak service to become available
+  command: riak-admin wait-for-service riak_kv {{ riak_nodename }}
+  changed_when: false
+
 # Random email address because a given email can only be used once. It
 # may be necessary to generate a new admin user if something fails
 # between when the new user is created and when its keys are written to
