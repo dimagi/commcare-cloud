@@ -184,6 +184,12 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
+         'analytics': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': ANALYTICS_LOG_FILE
+        },
         'elasticsearch': {
             'handlers': ['file'],
             'level': 'ERROR',
