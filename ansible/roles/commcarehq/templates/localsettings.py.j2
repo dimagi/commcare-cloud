@@ -103,7 +103,7 @@ LOGGING = {
             'backupCount': 20  # Backup 200 MB of logs
         },
         'analyticslog': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': ANALYTICS_LOG_FILE,
@@ -185,10 +185,9 @@ LOGGING = {
             'propagate': False,
         },
          'analytics': {
+            'handlers': ['analyticslog'],
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'formatter': 'simple',
-            'filename': ANALYTICS_LOG_FILE
+            'propagate': False
         },
         'elasticsearch': {
             'handlers': ['file'],
