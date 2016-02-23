@@ -7,7 +7,6 @@ nginx_sites:
     file_name: "{{ deploy_env }}_commcare_j2me"
     listen: "443 ssl"
     server_name: "{{ J2ME_SITE_HOST }}"
-    hq_server_name: "{{ SITE_HOST }}"
     client_max_body_size: 100m
     balancer: webworkers
     proxy_set_headers:
@@ -41,4 +40,4 @@ nginx_sites:
      proxy_read_timeout: 900s
     location5:
      name: /
-     return: "301 https://$hq_server_name$request_uri"
+     return: "301 https://{{ SITE_HOST }}/$request_uri"
