@@ -1,9 +1,13 @@
 ---
+nginx_ssl_cert: "{{ j2me_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ j2me_nginx_ssl_key}}"
+
 nginx_sites:
 - server:
     file_name: "{{ deploy_env }}_commcare_j2me"
     listen: "443 ssl"
     server_name: "{{ J2ME_SITE_HOST }}"
+    hq_server_name: "{{ SITE_HOST }}"
     client_max_body_size: 100m
     balancer: webworkers
     proxy_set_headers:
@@ -37,5 +41,4 @@ nginx_sites:
      proxy_read_timeout: 900s
     location5:
      name: /
-     proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
-     return: "301 https://$server_name$request_uri"
+     return: "301 https://$hq_server_name$request_uri"
