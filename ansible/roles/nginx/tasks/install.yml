@@ -91,3 +91,27 @@
     owner: root
     group: root
   when: not fake_ssl_cert and commtrack_key_file is defined
+
+- name: Copy j2me SSL cert
+  sudo: yes
+  copy:
+    src: "{{ j2me_nginx_combined_cert_file }}"
+    dest: "{{ ssl_certs_dir }}/{{ j2me_nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and j2me_nginx_combined_cert_file is defined
+  tags:
+    - update-cert
+
+- name: Copy j2me SSL Key
+  sudo: yes
+  copy:
+    src: "{{ j2me_key_file }}"
+    dest: "{{ ssl_keys_dir }}/{{ j2me_nginx_ssl_key }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and j2me_key_file is defined
+  tags:
+    - update-cert
