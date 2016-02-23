@@ -38,6 +38,3 @@ nginx_sites:
      proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
-    location5:
-     name: /
-     return: "301 https://{{ SITE_HOST }}/$request_uri"
