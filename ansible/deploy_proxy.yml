@@ -9,6 +9,7 @@
     - { role: nginx, when: proxy_type == 'nginx', action: install }
     - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq_ssl }
     - { role: nginx, when: proxy_type == 'nginx', action: errorpages }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_ssl_j2me == True, action: site, site_name: cchq_ssl_j2me }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_redirect == True, action: site, site_name: cchq_redirect }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http == True, action: site, site_name: cchq_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_redirect == True, action: site, site_name: cchq_http_redirect }

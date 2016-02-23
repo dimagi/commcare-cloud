@@ -1,0 +1,41 @@
+---
+nginx_sites:
+- server:
+    file_name: "{{ deploy_env }}_commcare_j2me"
+    listen: "443 ssl"
+    server_name: "{{ J2ME_SITE_HOST }}"
+    client_max_body_size: 100m
+    balancer: webworkers
+    proxy_set_headers:
+    - "Host $http_host"
+    - "X-Forwarded-For $remote_addr"
+    add_header: "X-Frame-Options SAMEORIGIN"
+    access_log: "{{ log_home }}/{{ deploy_env }}-j2me-timing.log timing"
+    location1:
+     name: "~* /a/[^/]+/phone/keys/"
+     balancer: webworkers
+     proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
+     proxy_next_upstream_tries: 1
+     proxy_read_timeout: 900s
+    location2:
+     name: "~* /a/[^/]+/receiver/"
+     balancer: webworkers
+     proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
+     proxy_next_upstream_tries: 1
+     proxy_read_timeout: 900s
+    location3:
+     name: "~* /a/[^/]+/phone/restore/"
+     balancer: webworkers
+     proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
+     proxy_next_upstream_tries: 1
+     proxy_read_timeout: 900s
+    location4:
+     name: "~* /a/[^/]+/apps/download/[a-z0-9]/(profile|suite).xml"
+     balancer: webworkers
+     proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
+     proxy_next_upstream_tries: 1
+     proxy_read_timeout: 900s
+    location5:
+     name: /
+     proxy_redirect: "http://{{ J2ME_SITE_HOST }} https://{{ J2ME_SITE_HOST }}"
+     return: "301 https://$server_name$request_uri"

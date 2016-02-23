@@ -3,6 +3,7 @@
 SITE_HOST: '{{ groups.proxy.0 }}'
 COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
 NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
+J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
 
 testing: True
 
@@ -12,6 +13,7 @@ active_sites:
   cchq_redirect: True
   cchq_http: True
   cchq_http_redirect: True
+  cchq_ssl_j2me: True
   commtrack_ssl: True
   commtrack_http: True
   riakcs: True
