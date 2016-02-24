@@ -155,6 +155,7 @@ localsettings:
   JAR_KEY_ALIAS: ''
   JAR_KEY_PASS: ''
   JAR_STORE_PASS: ''
+  J2ME_ADDRESS: 'j2me.localhost'
   KAFKA_URL: ''
   KISSMETRICS_KEY: ''
 #  MAILCHIMP_APIKEY:
