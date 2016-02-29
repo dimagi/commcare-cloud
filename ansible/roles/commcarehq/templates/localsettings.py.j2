@@ -313,6 +313,9 @@ STATIC_ROOT = '{{ localsettings.STATIC_ROOT }}'
 {% else %}
 STATIC_ROOT = os.path.join(_ROOT_DIR,'staticfiles')
 {% endif %}
+{% if 'STATIC_CDN' in localsettings %}
+STATIC_CDN = '{{ localsettings.STATIC_CDN }}'
+{% endif %}
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 LESS_DEBUG = DEBUG
