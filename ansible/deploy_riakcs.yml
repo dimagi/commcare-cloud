@@ -10,9 +10,10 @@
   # riakcs_control_host group must contain at most one host
   hosts:
     - riakcs
-    - stanchion
   tasks:
     - add_host: name={{ riakcs_control }} groups=riakcs_control_host
+      when: riakcs_control_host is undefined
+      tags: localsettings
 
 - name: Load admin keys from Riak CS conf
   sudo: True
@@ -20,7 +21,7 @@
   vars_files:
     - roles/riakcs/install/defaults/main.yml
   tasks:
-    - include: roles/riakcs/get_admin_keys.yml
+    - include: roles/riakcs/get_admin_keys.yml tags=localsettings
 
 - name: Install Riak and Riak CS
   sudo: True

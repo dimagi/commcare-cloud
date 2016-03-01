@@ -22,11 +22,18 @@ dev_group: dev
 
 django_port: 9010
 riakcs_port: 8080
-riakcs_control: "{{ groups['riakcs'][0] }}"
+riakcs_is_enabled: "{{ 'true' if groups['riakcs'] else '' }}"
+riakcs_control: "{{ groups['riakcs'][0] | default('riakcs-is-disabled') }}"
 riak_port: 8087
 riak_data_dir: "{{ encrypted_root }}/riak"
 stanchion_port: 8085
 stanchion_data_dir: "{{ encrypted_root }}/stanchion"
+
+# commcare-hq connects to an S3-compatible service, which is Riak CS
+s3_blob_db_enabled: "{{ groups['riakcs'] | bool }}"
+s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_port }}"
+s3_blob_db_access_key: "{{ hostvars[riakcs_control]['riak_key'] if riakcs_is_enabled else '' }}"
+s3_blob_db_secret_key: "{{ hostvars[riakcs_control]['riak_secret'] if riakcs_is_enabled else '' }}"
 
 newrelic_agents_pgbouncer: False
 newrelic_agents_postgresql: False
