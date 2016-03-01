@@ -5,7 +5,7 @@ nginx_ssl_key:  "{{ j2me_nginx_ssl_key}}"
 nginx_sites:
 - server:
     file_name: "{{ deploy_env }}_commcare_j2me"
-    listen: "443 ssl"
+    listen: "443 ssl default_server"
     server_name: "{{ J2ME_SITE_HOST }}"
     client_max_body_size: 100m
     balancer: webworkers
