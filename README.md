@@ -34,11 +34,14 @@ vagrant box add precise64 http://files.vagrantup.com/precise64.box
 Then start vagrant:
 
 ```
-$ ./reset-vms control app1 proxy1 db1
+$ vagrant up
 ```
+
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-The `./reset-vms` command can be run at any time, possibly with a subset of the VM names, to reset the VMs to their initial state and setup SSH keys.
+The `./reset-vms` command can be run at any time, possibly with a subset of the
+VM names, to reset the VMs to their initial state and provision them with your
+SSH key. Run `./reset-vms` without arguments for usage info.
 
 Once this is done, you may ssh into the control server and run a full deployment:
 
