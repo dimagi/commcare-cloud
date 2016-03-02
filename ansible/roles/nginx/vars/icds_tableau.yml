@@ -1,4 +1,7 @@
 ---
+nginx_ssl_cert: "{{ icds_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ icds_nginx_ssl_key}}"
+
 nginx_sites:
 - server:
    file_name: icds_tableau
