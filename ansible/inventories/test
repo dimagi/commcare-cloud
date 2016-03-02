@@ -38,7 +38,5 @@ localhost ansible_connection=local
 localhost ansible_connection=local
 
 [riakcs]
-localhost ansible_connection=local
 
 [stanchion]
-localhost ansible_connection=local
