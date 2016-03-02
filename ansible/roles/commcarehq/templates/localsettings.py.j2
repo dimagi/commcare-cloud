@@ -360,7 +360,9 @@ TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
 XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+{% if 'FORMPLAYER_URL' in localsettings %}
 FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
+{% endif %}
 
 SOIL_BACKEND = "soil.CachedDownload"
 SOIL_DEFAULT_CACHE = "redis"
