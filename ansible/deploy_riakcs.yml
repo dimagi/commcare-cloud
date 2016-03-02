@@ -50,7 +50,7 @@
         - "{{ riak_data_root_leveldb }}"
         - "{{ riak_data_root_bitcask }}"
 
-- name: Join Riak nodes to cluster
+- name: Join Riak [CS] nodes to cluster
   sudo: True
   hosts: riakcs
   tasks:
