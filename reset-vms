@@ -1,0 +1,27 @@
+#! /bin/bash
+# Re-provision virtual machines
+if [[ "$#" == 0 ]]; then
+    echo "USAGE: [PUBKEY=/path/to/key.pub] ./reset-vms.sh [VM1 [VM2 ...]]"
+    exit
+fi
+
+echo "WARNING: VMs WILL BE DESTROYED:" "$@"
+read -p "Continue? [y/N] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    vagrant destroy --force "$@"
+    vagrant up "$@"
+
+    echo "adding provisioning key to" "$@" "authorized keys"
+    echo "$@" | xargs -n1 -J% vagrant ssh % -c \
+        'sudo cat /vagrant/provisioning/id_rsa.pub >> ~/.ssh/authorized_keys'
+
+    if [[ -n ${PUBKEY+x} ]]; then
+        echo "adding $PUBKEY to" "$@" "authorized keys"
+        echo "$@" | xargs -n1 -J% vagrant ssh % -c \
+            "echo $(cat $PUBKEY) >> /home/vagrant/.ssh/authorized_keys"
+    fi
+else
+    echo "aborted."
+    exit 1
+fi

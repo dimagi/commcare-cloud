@@ -44,14 +44,14 @@ riak_host = {{ lookup('dig', riakcs_control, wantlist=True)[0] }}:{{ riak_port }
 ## 
 ## Acceptable values:
 ##   - text
-admin.key = admin-key
+admin.key = {{ hostvars[riakcs_control].get("riak_key", "not-set") }}
 
 ## 
 ## Default: admin-secret
 ## 
 ## Acceptable values:
 ##   - text
-admin.secret = admin-secret
+admin.secret = {{ hostvars[riakcs_control].get("riak_secret", "not-set") }}
 
 ## Platform-specific installation paths
 ## 

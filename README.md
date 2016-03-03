@@ -36,13 +36,12 @@ Then start vagrant:
 ```
 $ vagrant up
 ```
+
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-Once the vagrant cluster is done building, make sure that the appropriate SSH keys are available on all servers for passwordless login.
-
-```
-echo control app1 app2 proxy1 db1 | xargs -n1 -J% vagrant ssh % -c 'sudo cat /vagrant/provisioning/id_rsa.pub >> ~/.ssh/authorized_keys'
-```
+The `./reset-vms` command can be run at any time, possibly with a subset of the
+VM names, to reset the VMs to their initial state and provision them with your
+SSH key. Run `./reset-vms` without arguments for usage info.
 
 Once this is done, you may ssh into the control server and run a full deployment:
 

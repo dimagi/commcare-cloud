@@ -258,6 +258,17 @@ S3_ACCESS_KEY = '{{ localsettings.S3_ACCESS_KEY }}'
 S3_SECRET_KEY = '{{ localsettings.S3_SECRET_KEY }}'
 {% endif %}
 
+{% if riakcs_is_enabled %}
+S3_BLOB_DB_SETTINGS = {
+    'url': '{{ s3_blob_db_url }}',
+    'access_key': '{{ s3_blob_db_access_key }}',
+    'secret_key': '{{ s3_blob_db_secret_key }}',
+}
+{% if 'BLOB_DB_MIGRATING_FROM_FS_TO_S3' in localsettings %}
+BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_S3 }}
+{% endif %}
+{% endif %}{# riakcs_is_enabled #}
+
 {% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
 ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
 {% else %}
