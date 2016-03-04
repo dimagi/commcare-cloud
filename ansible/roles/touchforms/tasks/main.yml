@@ -40,5 +40,12 @@
     user: root
     cron_file: ../crontab
 
+- name: Install touchforms packages
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - sqlite3
+    - libsqlite3-dev
+
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
