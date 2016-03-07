@@ -3,6 +3,8 @@ nginx_sites:
 - server:
    file_name: "{{ deploy_env }}_riakcs"
    listen: "{{ riakcs_port }}"
+   # boto3 python library switches to multipart uploads for blobs > 8M
+   client_max_body_size: "9M"
    balancer: riakcs
    upstream_port: "{{ riakcs_port }}"
    proxy_set_headers:
