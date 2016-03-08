@@ -3,9 +3,17 @@
   include: install.yml
   when: action == 'install'
 
+- debug:
+    msg: "{{ site_name }} is not a variable in the config"
+  when: site_name is defined and site_name not in active_sites
+
 - name: Configure Site
   include: site.yml
-  when: action == 'site'
+  when: action == 'site' and active_sites[site_name]
+
+- name: Remove Site
+  include: remove_site.yml
+  when: action == 'site' and not active_sites[site_name]
 
 - name: restart Site
   include: restart.yml

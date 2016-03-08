@@ -14,3 +14,11 @@ nginx_sites:
    location3:
     name: /errors
     alias: "{{ errors_home }}/pages"
+- server:
+   file_name: "wiki_http"
+   listen: "80"
+   server_name: "wiki.commcarehq.org help.commcarehq.org"
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    return: "301 https://$server_name/display/commcarepublic/Home"

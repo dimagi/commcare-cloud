@@ -11,6 +11,7 @@ testing: True
 active_sites:
   cchq_redirect: True
   cchq_http: True
+  cchq_ssl: True
   cchq_http_redirect: True
   commtrack_ssl: True
   commtrack_http: True
