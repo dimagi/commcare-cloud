@@ -1,5 +1,5 @@
 ---
-# cchq user is created in commcarehq
+# cchq user is created in supervisor role
 - name: Add dev group
   sudo: yes
   group: name={{ dev_group }} state=present
