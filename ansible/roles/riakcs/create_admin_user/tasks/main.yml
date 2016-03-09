@@ -1,0 +1,57 @@
+# Create new admin user and set riak_key and riak_secret facts
+
+- name: Turn on anonymous user creation
+  lineinfile:
+    dest: "{{ riakcs_conf }}"
+    regexp: "anonymous_user_creation = off"
+    line: "anonymous_user_creation = on"
+    state: present
+  notify: restart riakcs
+
+- meta: flush_handlers  # restart services if needed
+
+- name: Wait for Riak service to become available
+  command: riak-admin wait-for-service riak_kv {{ riak_nodename }}
+  changed_when: false
+
+# Random email address because a given email can only be used once. It
+# may be necessary to generate a new admin user if something fails
+# between when the new user is created and when its keys are written to
+# the config file (in that case there may be an orphaned admin user
+# for which we do not know the key or secret... do we care?).
+- name: Generate random email for new Riak CS admin user
+  set_fact: riakcs_admin_email="devops+riakcs{{ 1000000 | random }}@dimagi.com"
+
+- name: Create Riak CS admin user
+  command: >
+    curl -H 'Content-Type: application/json' 
+    -XPOST http://{{ inventory_hostname }}:{{ riakcs_port }}/riak-cs/user 
+    --data '{"email":"{{ riakcs_admin_email }}","name":"{{ riakcs_admin_name }}"}'
+  register: riak_create_user_result
+
+- name: Turn off anonymous user creation
+  lineinfile:
+    dest: "{{ riakcs_conf }}"
+    regexp: "anonymous_user_creation = on"
+    line: "anonymous_user_creation = off"
+    state: present
+  notify: restart riakcs
+
+- name: Decode Riak CS admin user JSON
+  set_fact:
+    riakcs_admin_user: "{{ riak_create_user_result.stdout
+                           if riak_create_user_result.stdout.strip().startswith('{')
+                           else '{}' | from_json }}"
+
+- name: Check if Riak CS admin user creation failed
+  fail:
+    msg: Unable to create admin user
+         {{ riak_create_user_result | to_nice_json }}
+  when: ('key_id' not in riakcs_admin_user or 'key_secret' not in riakcs_admin_user)
+
+# Set key facts last. Otherwise additional tasks in this file would be
+# skipped because of the `when` condition on the `include` of this file.
+- set_fact:
+    riak_key: "{{ riakcs_admin_user.key_id }}"
+    riak_secret: "{{ riakcs_admin_user.key_secret }}"
+  when: riakcs_admin_user.key_id is defined and riakcs_admin_user.key_secret is defined

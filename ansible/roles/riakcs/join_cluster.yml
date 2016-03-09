@@ -1,0 +1,44 @@
+# More information on adding/removing nodes can be found here:
+# http://docs.basho.com/riak/latest/ops/running/nodes/adding-removing/
+#
+# This will join nodes to the control node if the node isn't already a
+# member of the cluster
+
+- name: Clear any staged commits
+  command: "riak-admin cluster clear"
+  changed_when: false
+
+- name: Check if node is in the cluster
+  command: riak-admin cluster status
+  register: riak_cluster_status
+  changed_when: false
+
+#- debug: var=riak_cluster_status
+
+- set_fact: riak_control_node_name="{{ hostvars[riakcs_control]['riak_nodename'] }}"
+- set_fact: riak_control_node_pattern="{{ riak_control_node_name | replace('.', '\\.') }}"
+- set_fact: node_in_cluster="{{ riak_cluster_status.get('stdout', '') | search(riak_control_node_pattern) }}"
+
+- name: Wait for Riak service to become available
+  command: riak-admin wait-for-service riak_kv {{ riak_nodename }}
+  changed_when: false
+
+#- debug: var=riak_control_node_pattern
+
+- name: Join nodes to cluster
+  command: "riak-admin cluster join {{ riak_control_node_name }}"
+  register: riak_cluster_join_result
+  when: not node_in_cluster
+
+#- debug: var=riak_cluster_join_result
+
+- name: Plan the changes
+  command: "riak-admin cluster plan"
+  register: riak_cluster_plan_result
+  when: not node_in_cluster
+
+#- debug: var=riak_cluster_plan_result
+
+- name: Commit the changes
+  command: "riak-admin cluster commit"
+  when: not node_in_cluster

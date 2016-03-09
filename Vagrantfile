@@ -6,6 +6,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "precise64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  cchq_proxy_port = ENV.fetch("VAGRANT_CCHQ_PROXY_PORT", 8080)
 
   config.vm.define "app1" do |app1|
     app1.vm.hostname = "app1"
@@ -41,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     proxy1.vm.hostname = "proxy1"
     proxy1.vm.network "private_network", ip: "192.168.33.17"
     proxy1.vm.provision "shell", path: "provisioning/nodes.sh"
-    proxy1.vm.network "forwarded_port", guest: 80, host: 8080
+    proxy1.vm.network "forwarded_port", guest: 80, host: cchq_proxy_port
   end
 
   config.vm.define "control" do |control|

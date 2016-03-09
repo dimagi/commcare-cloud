@@ -6,6 +6,7 @@
 - name: Check for already mounted drive
   shell: cat /etc/mtab
   register: mtab_contents
+  changed_when: false
 
 - name: Create encrypted drive root directory
   sudo: yes
@@ -50,6 +51,7 @@
   sudo: yes
   shell: "cat /etc/mtab | grep '{{ encrypted_root }}'"
   register: mount_conf
+  changed_when: false
 
 - name: add user, noauto to mount conf
   shell: "echo {{ mount_conf.stdout }} | sed -e 's/rw/user,noauto,rw/'"

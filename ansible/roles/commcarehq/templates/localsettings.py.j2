@@ -26,7 +26,7 @@ SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 {% endif %}
 
 {% if localsettings.get('UCR_DATABASE_NAME') %}
-UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.UCR_DATABASE_NAME }}"
+UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}:{{localsettings.get('PG_DATABASE_PORT')}}/{{ localsettings.UCR_DATABASE_NAME }}"
 {% endif %}
 
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
@@ -258,6 +258,17 @@ S3_ACCESS_KEY = '{{ localsettings.S3_ACCESS_KEY }}'
 S3_SECRET_KEY = '{{ localsettings.S3_SECRET_KEY }}'
 {% endif %}
 
+{% if s3_blob_db_enabled %}
+S3_BLOB_DB_SETTINGS = {
+    'url': '{{ s3_blob_db_url }}',
+    'access_key': '{{ s3_blob_db_access_key }}',
+    'secret_key': '{{ s3_blob_db_secret_key }}',
+}
+{% if 'BLOB_DB_MIGRATING_FROM_FS_TO_S3' in localsettings %}
+BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_S3 }}
+{% endif %}
+{% endif %}{# s3_blob_db_enabled #}
+
 {% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
 ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
 {% else %}
@@ -377,6 +388,9 @@ TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
 XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+{% if 'FORMPLAYER_URL' in localsettings %}
+FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
+{% endif %}
 
 SOIL_BACKEND = "soil.CachedDownload"
 SOIL_DEFAULT_CACHE = "redis"

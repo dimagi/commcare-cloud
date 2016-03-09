@@ -1,0 +1,27 @@
+---
+# These tasks are used to install Riak, Stanchion, and RiakCS
+# Basho hosts their own apt repos and have scripts for installing that repo on
+# debian machines
+
+- name: Check if {{ name }} is installed
+  command: dpkg -s {{ 'riak-cs' if name == 'riakcs' else name }}
+  register: riakcs_deb_check
+  failed_when: false
+  changed_when: false
+
+- set_fact: riakcs_package_installed="{{ riakcs_deb_check.rc == 0 }}"
+
+- name: Fetch {{ name }} apt repo install script
+  get_url: >
+    url={{ hostvars[inventory_hostname].get(name + '_script_url', defaults[name + '_script_url']) }}
+    dest=/tmp/{{ name }}-install.sh
+  when: not riakcs_package_installed
+
+- name: Run {{ name }} apt repo install script
+  command: bash /tmp/{{ name }}-install.sh
+  when: not riakcs_package_installed
+
+- name: Install {{ name }} from apt
+  apt: >
+    name={{ hostvars[inventory_hostname].get(name + '_package', defaults[name + '_package']) }}
+    state=present

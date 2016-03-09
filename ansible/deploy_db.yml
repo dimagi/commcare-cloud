@@ -71,19 +71,7 @@
   tags:
     - newrelic-plugin-agent
 
-- name: Riak Cluster
-  sudo: True
-  hosts:
-    - riakcs
-  roles:
-  - { role: riakcs, tags: riakcs }
-
-- name: Stanchion
-  sudo: True
-  hosts:
-    - stanchion
-  roles:
-  - { role: stanchion, tags: stanchion }
+- include: deploy_riakcs.yml
 
 # Note other machines also have java installed, but are initiated through the meta task
 - name: Java

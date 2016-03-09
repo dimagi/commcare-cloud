@@ -49,3 +49,13 @@
 
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
+- name: Copy Spring application.properties
+  sudo: yes
+  template:
+    src: application.properties.j2
+    dest: "{{ code_home }}/submodules/formplayer/config/{{ deploy_env }}.properties"
+    group: cchq
+    owner: cchq
+    mode: 0644
+  tags:
+    - tf-localsettings
