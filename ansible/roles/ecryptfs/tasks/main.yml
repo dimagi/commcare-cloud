@@ -32,7 +32,7 @@
   when: datavol_device is defined
 
 - name: Check for already mounted encrypted drive
-  shell: cat /etc/mtab | grep {{ encrypted_root }} | grep -v /dev/
+  shell: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
   register: mtab_contents
   failed_when: false
   changed_when: false
@@ -86,7 +86,7 @@
 
 - name: Register mount configuration
   sudo: yes
-  shell: "cat /etc/mtab | grep '{{ encrypted_root }}'"
+  shell: "grep '{{ encrypted_root }} ecryptfs' /etc/mtab"
   register: mount_conf
   changed_when: false
 
