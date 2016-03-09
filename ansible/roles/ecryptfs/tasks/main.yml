@@ -1,12 +1,49 @@
 ---
+
+- name: Check for valid partition table on block storage device
+  sudo: yes
+  shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
+  register: partition_check
+  changed_when: false
+  failed_when: false
+  when: datavol_device is defined
+
+- name: Create partition on block storage volume
+  sudo: yes
+  shell: echo -e "o\nn\np\n1\n\n\nw" | fdisk {{ datavol_device }}
+  # http://superuser.com/a/739586/86694
+  # o - clear in memory partition table
+  # n - new partition
+  # p - primary partition
+  # 1 - partition number 1
+  #   - default - start at beginning of disk 
+  #   - default - use entire disk
+  # w - write the partition table
+  when: datavol_device is defined and partition_check.rc == 0
+
+- name: Format block storage volume
+  sudo: yes
+  filesystem: fstype=ext4 dev={{ datavol_device }}1
+  when: datavol_device is defined
+
+- name: Mount block storage volume
+  sudo: yes
+  mount: name={{ encrypted_root }} src={{ datavol_device }}1 fstype=ext4 state=mounted opts=defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}
+  when: datavol_device is defined
+
+- name: Check for already mounted encrypted drive
+  shell: cat /etc/mtab | grep {{ encrypted_root }} | grep -v /dev/
+  register: mtab_contents
+  failed_when: false
+  changed_when: false
+
 - name: Install ecryptfs-utils
   sudo: yes
   apt: name=ecryptfs-utils state=present
-
-- name: Check for already mounted drive
-  shell: cat /etc/mtab
-  register: mtab_contents
-  changed_when: false
+  # Do not install ecryptfs utils if already mounted. This should trigger alarm
+  # bells if something causes a false positive result on checking for encrypted
+  # volume is already mounted.
+  when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
 
 - name: Create encrypted drive root directory
   sudo: yes
@@ -23,17 +60,17 @@
   shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
   when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
 
-- name: Create /opt/data/blobdb directory for setups that do not use NFS
+- name: Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS
   sudo: yes
   when: not shared_drive_enabled
-  file: path=/opt/data/blobdb owner=nobody group={{ shared_dir_gid }} mode=0775 state=directory
+  file: path={{ encrypted_root }}/blobdb owner=nobody group={{ shared_dir_gid }} mode=0775 state=directory
   tags:
     - ecryptfs-blobdb
 
 - name: Create blob DB symlink (cchq looks for it in the shared drive)
   sudo: yes
   when: not shared_drive_enabled
-  file: src=/opt/data/blobdb dest={{ shared_data_dir }}/blobdb state=link
+  file: src={{ encrypted_root }}/blobdb dest={{ shared_data_dir }}/blobdb state=link
   tags:
     - ecryptfs-blobdb
 
