@@ -2,5 +2,8 @@ init_config:
 
 # key values are set by ../../roles/riakcs/sync_keys/main.yml
 instances:
-  - access_id: access-key
+  - host: {{ inventory_hostname if inventory_hostname|ipaddr else lookup('dig', inventory_hostname, wantlist=True)[0] }}
+    port: {{ riakcs_port }}
+    is_secure: False
+    access_id: access-key
     access_secret: access-secret
