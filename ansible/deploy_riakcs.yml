@@ -13,6 +13,7 @@
   tasks:
     - add_host: name={{ riakcs_control }} groups=riakcs_control_host
       when: riakcs_control_host is undefined
+      always_run: true
       tags: localsettings
 
 - name: Load admin keys from Riak CS conf

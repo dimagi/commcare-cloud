@@ -5,7 +5,7 @@
   # - celery
   # - proxy ?? maybe
   # - pillowtop
-  hosts: all
+  hosts: all:!riakcs:!stanchion
   sudo: yes
   roles:
     - {role: commcarehq, tags: commcarehq}

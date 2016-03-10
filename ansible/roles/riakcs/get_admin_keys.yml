@@ -6,12 +6,14 @@
 - name: Load admin.key from Riak CS conf
   shell: grep -Eh '^admin\.key = ' {{ riakcs_conf }} | grep -Ev '^admin\.key = (not-set|admin-key)'
   register: riakcs_conf_key
+  always_run: true
   failed_when: false
   changed_when: false
 
 - name: Load admin.secret from Riak CS conf
   shell: grep -Eh '^admin\.secret = ' {{ riakcs_conf }} | grep -Ev '^admin\.secret = (not-set|admin-secret)'
   register: riakcs_conf_secret
+  always_run: true
   failed_when: false
   changed_when: false
 
