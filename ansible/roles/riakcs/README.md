@@ -8,7 +8,9 @@ For a system overview look [here](https://docs.google.com/document/d/1F5KjtyXmvG
 
 2. Run `deploy_proxy` to update Nginx with the new configs to allow webworkers to communicate with RiakCS cluster
 
-3. Run `deploy_riakcs` to deploy the Riak CS cluster
+3. Optional: run `deploy_stack --tags=datadog --limit=riakcs` to setup the datadog monitoring agent.
+
+4. Run `deploy_riakcs` to deploy the Riak CS cluster
 
 ## Role layout
 

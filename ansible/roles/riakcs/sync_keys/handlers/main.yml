@@ -1,1 +1,4 @@
 - include: ../../configure/handlers/main.yml
+
+- name: restart datadog
+  action: service name=datadog-agent state=restarted
