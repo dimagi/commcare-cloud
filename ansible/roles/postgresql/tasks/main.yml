@@ -164,6 +164,12 @@
   when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
+- name: Grant usage on plproxy FDW
+  sudo_user: postgres
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
+  when: item.get('django_alias') == 'proxy'
+  with_items: postgresql_dbs
+
 - name: create backup directory
   sudo: yes
   file:
