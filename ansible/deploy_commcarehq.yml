@@ -1,11 +1,11 @@
 - name: CommcareHQ
-  # TODO seems like hosts should be able to be narrowed down to
-  # - webworkers
-  # - touchforms
-  # - celery
-  # - proxy ?? maybe
-  # - pillowtop
-  hosts: all:!riakcs:!stanchion
+  hosts:
+   - webworkers
+   - touchforms
+   - celery
+   - proxy
+   - pillowtop
+   - postgreql
   sudo: yes
   roles:
     - {role: commcarehq, tags: commcarehq}
