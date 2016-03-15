@@ -101,6 +101,31 @@ postgresql_dbs:
   - name: "{{localsettings.PG_DATABASE_NAME}}"
     django_alias: default
 
+# example setup for sharded database
+# also set localsettings.USE_PARTITIONED_DATABASE to True
+#
+#postgresql_dbs:
+#  - django_alias: default
+#    name: "{{localsettings.PG_DATABASE_NAME}}"
+#  - django_alias: proxy
+#    name: commcarehq_proxy
+#  - django_alias: p1
+#    name: commcarehq_p1
+#    shards: [0, 99]
+#  - django_alias: p2
+#    name: commcarehq_p2
+#    shards: [100, 199]
+#  - django_alias: p3
+#    name: commcarehq_p3
+#    shards: [200, 299]
+#  - django_alias: p4
+#    name: commcarehq_p4
+#    shards: [300, 399]
+#  - django_alias: p5
+#    name: commcarehq_p5
+#    shards: [400, 512]
+#  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost

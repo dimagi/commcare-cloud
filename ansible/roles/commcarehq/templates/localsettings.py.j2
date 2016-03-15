@@ -25,6 +25,29 @@ DATABASES = {
 {% endfor %}
 }
 
+USE_PARTITIONED_DATABASE = {{ localsettings.get('USE_PARTITIONED_DATABASE', False) }}
+
+{% if localsettings.get('USE_PARTITIONED_DATABASE', False) %}
+PARTITION_DATABASE_CONFIG = {
+    'shards': {
+        {% for config in postgresql_dbs %}
+            {%- if config.get('shards') %}'{{config.django_alias}}': {{config.shards|to_json}},
+        {% endif -%}
+        {% endfor %}
+    },
+    'groups': {
+        'main': ['default'],
+        'proxy': ['proxy'],
+        'form_processing': [
+            {% for config in postgresql_dbs %}
+                {%- if config.get('shards') %}'{{config.django_alias}}',
+            {% endif -%}
+            {% endfor %}
+        ]
+    }
+}
+{% endif %}
+
 {% if localsettings.REPORT_OBJECT_OWNER %}
 SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 {% endif %}
