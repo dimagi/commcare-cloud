@@ -158,6 +158,12 @@
   when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
+- name: Make plproxy a trusted language
+  sudo_user: postgres
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
+  when: item.get('django_alias') == 'proxy'
+  with_items: postgresql_dbs
+
 - name: create backup directory
   sudo: yes
   file:
