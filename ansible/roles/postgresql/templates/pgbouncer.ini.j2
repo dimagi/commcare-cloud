@@ -5,8 +5,8 @@
 ;;   client_encoding= datestyle= timezone=
 ;;   pool_size= connect_query=
 [databases]
-{% for db in postgresql_dbs | unique %}
-{{ db }} = host=localhost port=5432
+{% for db in postgresql_dbs %}
+{{ db.name }} = host={{db.get('host', localsettings.PG_DATABASE_HOST)}} port={{ db.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }}
 {% endfor %}
 
 ;; Configuration section

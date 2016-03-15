@@ -84,7 +84,7 @@
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db:
-    name: "{{ item }}"
+    name: "{{ item.name }}"
     state: present
     port: "{{ postgresql_port }}"
     owner: "{{ localsettings.PG_DATABASE_USER }}"
