@@ -42,11 +42,6 @@
   template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
   sudo: yes
 
-- name: make supervisor task home
-  sudo: yes
-  sudo_user: "{{ cchq_user }}"
-  file: path={{ supervisor_task_conf }} state=directory owner={{ cchq_user }}
-
 - name: Add Upstart Conf
   sudo: yes
   template:
