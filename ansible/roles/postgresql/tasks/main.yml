@@ -75,7 +75,7 @@
 - name: PostgreSQL access configuration
   sudo_user: postgres
   template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
-  notify: Restart postgres
+  notify: Reload postgres
 
 - name: start postgresql
   sudo_user: postgres
