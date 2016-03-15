@@ -87,6 +87,7 @@
     name: "{{ item }}"
     state: present
     port: "{{ postgresql_port }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
   with_items: postgresql_dbs
   when:
     pg_install == True
