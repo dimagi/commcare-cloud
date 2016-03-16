@@ -123,7 +123,7 @@ postgresql_dbs:
 #    shards: [300, 399]
 #  - django_alias: p5
 #    name: commcarehq_p5
-#    shards: [400, 512]
+#    shards: [400, 511]
 #  - name: "{{localsettings.UCR_DATABASE_NAME}}"
 
 localsettings:
