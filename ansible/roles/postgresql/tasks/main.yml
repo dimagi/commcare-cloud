@@ -22,8 +22,13 @@
   apt: name={{ item }} state=present
   with_items:
     - postgresql-{{ postgresql_version }}
+    - postgresql-{{ postgresql_version }}-plproxy
+    - postgresql-contrib-{{ postgresql_version }}
+    - postgresql-server-dev-{{ postgresql_version }}
+    - python-docutils  # required for building pghashlib
     - libpq-dev
     - python-psycopg2
+    - unzip
   when:
     pg_install == True
 
@@ -65,26 +70,21 @@
 - name: PostgreSQL app configuration
   sudo_user: postgres
   template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
-  register: postgresql_configuration_updated
+  notify: Restart postgres
 
 - name: PostgreSQL access configuration
   sudo_user: postgres
   template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
-  register: postgresql_access_updated
+  notify: Reload postgres
 
 - name: start postgresql
   sudo_user: postgres
   service: name=postgresql state=started
 
-- name: Apply PostgreSQL configuration changes
-  sudo_user: postgres
-  service: name=postgresql state=restarted
-  when: postgresql_configuration_updated.changed or postgresql_access_updated.changed
-
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db:
-    name: "{{ item }}"
+    name: "{{ item.name }}"
     state: present
     port: "{{ postgresql_port }}"
     owner: "{{ localsettings.PG_DATABASE_USER }}"
@@ -107,18 +107,19 @@
   apt: name=pgbouncer state=present
   when:
     pg_install == True
+  notify: Start pgbouncer
   tags:
     - pgbouncer
 
 - name: pgbouncer configuration
   template: src=pgbouncer.ini.j2 dest={{ pg_bouncer_ini }}
-  register: pgb_configuration_updated
+  notify: Reload pgbouncer
   tags:
     - pgbouncer
 
 - name: pgbouncer users
   template: src=pgbouncer.users.j2 dest={{ pg_bouncer_users }}
-  register: pgb_userlist_updated
+  notify: Reload pgbouncer
   tags:
     - pgbouncer
 
@@ -127,16 +128,47 @@
   tags:
     - pgbouncer
 
-- name: Apply pgbouncer configuration changes
-  service: name=pgbouncer state=reloaded
-  when: pgb_configuration_updated.changed or pgb_userlist_updated.changed
-  tags:
-    - pgbouncer
+- name: Download pghashlib
+  get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
 
-- name: start pgbouncer
-  service: name=pgbouncer state=started
-  tags:
-    - pgbouncer
+- name: Unzip pghashlib
+  command: unzip pghashlib.zip
+  args:
+     chdir: /tmp
+     creates: /tmp/pghashlib-master
+
+- name: Install pghashlib
+  sudo: yes
+  shell: "PG_CONFIG={{postgres_install_dir}}/bin/pg_config make install"
+  args:
+    chdir: /tmp/pghashlib-master
+    creates: "{{postgres_install_dir}}/lib/hashlib.so"
+  notify: Run ldconfig
+  notify: Restart postgres
+
+- name: Create plproxy extension
+  sudo_user: postgres
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
+  when: item.get('django_alias') == 'proxy'
+  with_items: postgresql_dbs
+
+- name: Create pghashlib extension
+  sudo_user: postgres
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
+  when: item.get('django_alias') == 'proxy'
+  with_items: postgresql_dbs
+
+- name: Make plproxy a trusted language
+  sudo_user: postgres
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
+  when: item.get('django_alias') == 'proxy'
+  with_items: postgresql_dbs
+
+- name: Grant usage on plproxy FDW
+  sudo_user: postgres
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
+  when: item.get('django_alias') == 'proxy'
+  with_items: postgresql_dbs
 
 - name: create backup directory
   sudo: yes

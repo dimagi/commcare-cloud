@@ -106,12 +106,12 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly       
 # host all all 192.168.33.0/24 md5
 
 {% for host in (groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql']) | unique %}
-{% for db in postgresql_dbs | unique %}
-{% if host | ipaddr %}
-host   {{ db }}	{{ localsettings.PG_DATABASE_USER }}	{{ host }}/32   md5
-{% else %}
 # {{ host }}
-host   {{ db }}	{{ localsettings.PG_DATABASE_USER }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+{% for db in postgresql_dbs %}
+{% if host | ipaddr %}
+host   {{ db.name }}	{{ localsettings.PG_DATABASE_USER }}	{{ host }}/32   md5
+{% else %}
+host   {{ db.name }}	{{ localsettings.PG_DATABASE_USER }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {% endif %}
 {% endfor %}
 {% endfor %}

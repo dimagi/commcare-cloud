@@ -10,16 +10,43 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
 DATABASES = {
-    'default': {
+{% for config in postgresql_dbs %}
+{%- if config.get('django_alias') %}
+    '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
-        'USER': '{{ localsettings.PG_DATABASE_USER }}',
-        'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
-        'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
-        'PORT': '{{ localsettings.get('PG_DATABASE_PORT', 5432) }}',
-        'OPTIONS': {{ localsettings.get('PG_DATABASE_OPTIONS', {})|to_json }},
+        'NAME': '{{ config.name }}',
+        'USER': '{{ config.get('user', localsettings.PG_DATABASE_USER) }}',
+        'PASSWORD': '{{ config.get('password', localsettings.PG_DATABASE_PASSWORD) }}',
+        'HOST': '{{ config.get('host', localsettings.PG_DATABASE_HOST) }}',
+        'PORT': {{ config.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }},
+        'OPTIONS': {{ config.get('options', localsettings.get('PG_DATABASE_OPTIONS', {}))|to_json }},
     },
+{% endif -%}
+{% endfor %}
 }
+
+USE_PARTITIONED_DATABASE = {{ localsettings.get('USE_PARTITIONED_DATABASE', False) }}
+
+{% if localsettings.get('USE_PARTITIONED_DATABASE', False) %}
+PARTITION_DATABASE_CONFIG = {
+    'shards': {
+        {% for config in postgresql_dbs %}
+            {%- if config.get('shards') %}'{{config.django_alias}}': {{config.shards|to_json}},
+        {% endif -%}
+        {% endfor %}
+    },
+    'groups': {
+        'main': ['default'],
+        'proxy': ['proxy'],
+        'form_processing': [
+            {% for config in postgresql_dbs %}
+                {%- if config.get('shards') %}'{{config.django_alias}}',
+            {% endif -%}
+            {% endfor %}
+        ]
+    }
+}
+{% endif %}
 
 {% if localsettings.REPORT_OBJECT_OWNER %}
 SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
