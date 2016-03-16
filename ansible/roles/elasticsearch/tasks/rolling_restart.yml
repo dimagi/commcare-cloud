@@ -11,6 +11,9 @@
   sudo: true
   service: name=elasticsearch state=stopped
 
+- name: wait for a few seconds for ES to stop
+  pause: seconds=10
+
 - name: start node
   sudo: true
   service: name=elasticsearch state=started
