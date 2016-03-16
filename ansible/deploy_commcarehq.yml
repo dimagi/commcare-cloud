@@ -5,7 +5,7 @@
    - celery
    - proxy
    - pillowtop
-   - postgreql
+   - postgresql
   sudo: yes
   roles:
     - {role: commcarehq, tags: commcarehq}
