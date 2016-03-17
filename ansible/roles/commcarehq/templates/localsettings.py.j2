@@ -229,7 +229,7 @@ LOGGING = {
     }
 }
 
-CSRF_SOFT_MODE = "{{ localsettings.CSRF_SOFT_MODE | default(true) }}"
+CSRF_SOFT_MODE = {{ localsettings.CSRF_SOFT_MODE | default(True) }}
 
 # Email setup
 # email settings: these ones are the custom hq ones
