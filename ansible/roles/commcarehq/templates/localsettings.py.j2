@@ -743,6 +743,10 @@ BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
 
 ENABLE_PRELOGIN_SITE = True
 
+{% if localsettings.get('ENABLE_DRACONIAN_SECURITY_FEATURES') %}
+ENABLE_DRACONIAN_SECURITY_FEATURES = True
+{% endif %}
+
 {% if supervisor_http_enabled|default(false) %}
 SUPERVISOR_RPC_ENABLED = True
 SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
