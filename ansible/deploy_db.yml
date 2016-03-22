@@ -11,6 +11,7 @@
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
+    - {role: Rackspace_Automation.cloud-backup-agent, tags: 'rackspace-backup'}
 
 - name: Postgresql
   hosts: postgresql

@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    driveclient_flavor: personalmatchine
+  roles:
+    - Rackspace_Automation.cloud-backup-agent
