@@ -40,3 +40,5 @@ localhost ansible_connection=local
 [riakcs]
 
 [stanchion]
+
+[rackspace_cloud_backup]

@@ -80,3 +80,10 @@
     - celery
   roles:
     - {role: java, tags: java}
+
+- name: Rackspace Cloud Backup Agent
+  sudo: yes
+  hosts:
+    - rackspace_cloud_backup
+  roles:
+    - {role: Rackspace_Automation.cloud-backup-agent, tags: 'rackspace-backup'}
