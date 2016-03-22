@@ -81,7 +81,7 @@
   roles:
     - {role: java, tags: java}
 
--name: Rackspace Cloud Backup Agent
+- name: Rackspace Cloud Backup Agent
   sudo: yes
   hosts:
     - rackspace_cloud_backup
