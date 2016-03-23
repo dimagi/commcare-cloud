@@ -48,10 +48,17 @@
     src: supervisord.upstart.conf.j2
     dest: /etc/init/supervisord.conf
 
-- name: restart supervisor to pick up configuration changes
+- name: stop supervisor to pick up configuration changes
   sudo: yes
   command: stop supervisord
   failed_when: no
+
+- name: pkill supervisord if run by cchq
+  command: pkill -U cchq supervisord
+  # if it returns 1 with no output, that just means no process to kill
+  register: result
+  failed_when: result.rc != 0 and (result.stderr or result.stdout)
+
 - sudo: yes
   command: start supervisord
   failed_when: no
