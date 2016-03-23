@@ -85,7 +85,7 @@
   sudo: yes
   service: name=elasticsearch state=started
   register: result
-  failed_when: result.rc != 0 and 'already running' not in result.stderr
+  failed_when: result.state != "started"
 
 - name: Restart Elasticsearch
   sudo: yes
