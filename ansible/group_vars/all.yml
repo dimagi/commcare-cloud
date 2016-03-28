@@ -3,7 +3,7 @@ www_dir: "{{ cchq_home }}/www"
 www_home: "{{ www_dir }}/{{ deploy_env }}"
 code_home: "{{ www_home }}/current"
 log_home: "{{ www_home }}/log"
-service_home: "{{ cchq_home }}/services"
+service_home: "{{ code_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
 encrypted_root: "/opt/data"
 
