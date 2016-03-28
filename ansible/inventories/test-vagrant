@@ -1,0 +1,55 @@
+# For testing the play that travis runs
+#
+# First run: ansible-playbook -i inventories/test-vagrant deploy_stack.yml -e '@vars/dev.yml' --tags=common,common_installs,commcarehq
+#
+# This fails part way through due to lessc (and it's fine to stop there). The
+# extra tags (common and common_installs) are necessary to get git installed on
+# the VM (it's already installed on the travis machine, which is why the
+# vagrant run is slightly different).
+#
+# Then run: ansible-playbook -i inventories/test-vagrant deploy_stack.yml -e '@vars/dev.yml' --tags=commcarehq
+#
+# This should complete without errors.
+
+[webworkers]
+192.168.33.15
+
+[postgresql]
+192.168.33.15
+
+[couchdb]
+192.168.33.15
+
+[redis]
+192.168.33.15
+
+[touchforms]
+192.168.33.15
+
+[celery]
+192.168.33.15
+
+[elasticsearch]
+192.168.33.15 elasticsearch_node_name=es0
+
+[proxy]
+192.168.33.15
+
+[rabbitmq]
+192.168.33.15
+
+[zookeeper]
+192.168.33.15
+
+[kafka]
+192.168.33.15 kafka_broker_id=0
+
+[pillowtop]
+192.168.33.15
+
+[shared_dir_host]
+192.168.33.15
+
+[riakcs]
+
+[stanchion]

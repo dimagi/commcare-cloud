@@ -9,7 +9,7 @@
     - datadog
 
 - name: Install datadog agent
-  apt: name=datadog-agent state=latest
+  apt: name=datadog-agent state=latest update_cache=yes
   tags:
     - datadog
 

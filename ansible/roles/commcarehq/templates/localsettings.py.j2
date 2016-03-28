@@ -10,23 +10,50 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
 DATABASES = {
-    'default': {
+{% for config in postgresql_dbs %}
+{%- if config.get('django_alias') %}
+    '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
-        'USER': '{{ localsettings.PG_DATABASE_USER }}',
-        'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
-        'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
-        'PORT': '{{ localsettings.get('PG_DATABASE_PORT', 5432) }}',
-        'OPTIONS': {{ localsettings.get('PG_DATABASE_OPTIONS', {})|to_json }},
+        'NAME': '{{ config.name }}',
+        'USER': '{{ config.get('user', localsettings.PG_DATABASE_USER) }}',
+        'PASSWORD': '{{ config.get('password', localsettings.PG_DATABASE_PASSWORD) }}',
+        'HOST': '{{ config.get('host', localsettings.PG_DATABASE_HOST) }}',
+        'PORT': {{ config.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }},
+        'OPTIONS': {{ config.get('options', localsettings.get('PG_DATABASE_OPTIONS', {}))|to_json }},
     },
+{% endif -%}
+{% endfor %}
 }
+
+USE_PARTITIONED_DATABASE = {{ localsettings.get('USE_PARTITIONED_DATABASE', False) }}
+
+{% if localsettings.get('USE_PARTITIONED_DATABASE', False) %}
+PARTITION_DATABASE_CONFIG = {
+    'shards': {
+        {% for config in postgresql_dbs %}
+            {%- if config.get('shards') %}'{{config.django_alias}}': {{config.shards|to_json}},
+        {% endif -%}
+        {% endfor %}
+    },
+    'groups': {
+        'main': ['default'],
+        'proxy': ['proxy'],
+        'form_processing': [
+            {% for config in postgresql_dbs %}
+                {%- if config.get('shards') %}'{{config.django_alias}}',
+            {% endif -%}
+            {% endfor %}
+        ]
+    }
+}
+{% endif %}
 
 {% if localsettings.REPORT_OBJECT_OWNER %}
 SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
 {% endif %}
 
 {% if localsettings.get('UCR_DATABASE_NAME') %}
-UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}/{{ localsettings.UCR_DATABASE_NAME }}"
+UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}:{{localsettings.get('PG_DATABASE_PORT')}}/{{ localsettings.UCR_DATABASE_NAME }}"
 {% endif %}
 
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
@@ -41,168 +68,7 @@ ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MAC
 ANALYTICS_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.analytics.log")
 DATADOG_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
-        },
-        'pillowtop': {
-            'format': '%(asctime)s %(levelname)s %(module)s %(message)s'
-        },
-        'couch-request-formatter': {
-            'format': '%(asctime)s [%(username)s:%(domain)s] %(hq_url)s %(method)s %(error_status)s %(path)s %(duration)s'
-        },
-        'datadog': {
-            'format': '%(metric)s %(created)s %(value)s metric_type=%(metric_type)s %(message)s'
-        },
-    },
-    'filters': {
-        'hqcontext': {
-            '()': 'corehq.util.log.HQRequestFilter',
-        },
-    },
-    'handlers': {
-        'pillowtop': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'pillowtop'
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': DJANGO_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'couch-request-handler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'couch-request-formatter',
-            'filters': ['hqcontext'],
-            'filename': COUCH_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'accountinglog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': ACCOUNTING_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'analyticslog': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': ANALYTICS_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'datadog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'datadog',
-            'filename': DATADOG_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'couchlog': {
-            'level': 'WARNING',
-            'class': 'couchlog.handlers.CouchHandler',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'corehq.util.log.HqAdminEmailHandler',
-        },
-        'notify_exception': {
-            'level': 'ERROR',
-            'class': 'corehq.util.log.NotifyExceptionEmailer',
-        },
-        'null': {
-            'class': 'django.utils.log.NullHandler',
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file', 'couchlog'],
-            'propagate': True,
-            'level': 'INFO',
-        },
-        'couchdbkit.request': {
-            'handlers': ['couch-request-handler'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'django.security.DisallowedHost': {
-            'handlers': ['null'],
-            'propagate': False,
-        },
-        'notify': {
-            'handlers': ['notify_exception'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'celery.task': {
-            'handlers': ['console', 'file', 'couchlog'],
-            'level': 'INFO',
-            'propagate': True
-        },
-        'pillowtop': {
-            'handlers': ['pillowtop'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'smsbillables': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'currency_update': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'accounting': {
-            'handlers': ['accountinglog', 'console', 'couchlog', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-         'analytics': {
-            'handlers': ['analyticslog'],
-            'level': 'DEBUG',
-            'propagate': False
-        },
-        'elasticsearch': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'datadog-metrics': {
-            'handlers': ['datadog'],
-            'level': 'INFO',
-            'propogate': False,
-        },
-    }
-}
-
-CSRF_SOFT_MODE = "{{ localsettings.CSRF_SOFT_MODE | default(true) }}"
+CSRF_SOFT_MODE = {{ localsettings.CSRF_SOFT_MODE | default(True) }}
 
 # Email setup
 # email settings: these ones are the custom hq ones
@@ -257,6 +123,17 @@ S3_ACCESS_KEY = '{{ localsettings.S3_ACCESS_KEY }}'
 {% if 'S3_SECRET_KEY' in localsettings %}
 S3_SECRET_KEY = '{{ localsettings.S3_SECRET_KEY }}'
 {% endif %}
+
+{% if s3_blob_db_enabled %}
+S3_BLOB_DB_SETTINGS = {
+    'url': '{{ s3_blob_db_url }}',
+    'access_key': '{{ s3_blob_db_access_key }}',
+    'secret_key': '{{ s3_blob_db_secret_key }}',
+}
+{% if 'BLOB_DB_MIGRATING_FROM_FS_TO_S3' in localsettings %}
+BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_S3 }}
+{% endif %}
+{% endif %}{# s3_blob_db_enabled #}
 
 {% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
 ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
@@ -320,7 +197,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 LESS_DEBUG = DEBUG
 
-ADMINS = (('HQ Dev Team', 'commcarehq-ops@dimagi.com'),)
+ADMINS = (('HQ Dev Team', 'commcarehq-ops+admins@dimagi.com'),)
 SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
@@ -367,6 +244,10 @@ CELERY_REMINDER_RULE_QUEUE = '{{ localsettings.CELERY_REMINDER_RULE_QUEUE }}'
 CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_QUEUE }}'
 {% endif %}
 
+{% if localsettings.get('CELERY_REPEAT_RECORD_QUEUE') %}
+CELERY_REPEAT_RECORD_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_QUEUE }}'
+{% endif %}
+
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
@@ -377,6 +258,9 @@ TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
 XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+{% if 'FORMPLAYER_URL' in localsettings %}
+FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
+{% endif %}
 
 SOIL_BACKEND = "soil.CachedDownload"
 SOIL_DEFAULT_CACHE = "redis"
@@ -698,6 +582,10 @@ BANK_ROUTING_NUMBER_ACH = '{{ localsettings.BANK_ROUTING_NUMBER_ACH }}'
 BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
 
 ENABLE_PRELOGIN_SITE = True
+
+{% if localsettings.get('ENABLE_DRACONIAN_SECURITY_FEATURES') %}
+ENABLE_DRACONIAN_SECURITY_FEATURES = True
+{% endif %}
 
 {% if supervisor_http_enabled|default(false) %}
 SUPERVISOR_RPC_ENABLED = True

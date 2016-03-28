@@ -1,5 +1,10 @@
 ---
 
+- name: Add cchq user
+  sudo: yes
+  user: name={{ cchq_user }} state=present shell=/bin/bash
+  tags: commcarehq
+
 - name: find supervisord path
   shell: 'which supervisord'
   register: which_supervisord

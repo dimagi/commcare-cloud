@@ -1,0 +1,40 @@
+- name: Update {{ name }} admin.key
+  lineinfile:
+    dest: "{{ hostvars[inventory_hostname][name + '_conf'] }}"
+    regexp: "^admin.key ?= ?.*$"
+    line: "admin.key = {{ hostvars[riakcs_control].get('riak_key', 'not-set') }}"
+    state: present
+  notify: "restart {{ name }}"
+  when: "'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
+
+- name: Update {{ name }} admin.secret
+  lineinfile:
+    dest: "{{ hostvars[inventory_hostname][name + '_conf'] }}"
+    regexp: "^admin.secret ?= ?.*$"
+    line: "admin.secret = {{ hostvars[riakcs_control].get('riak_secret', 'not-set') }}"
+    state: present
+  notify: "restart {{ name }}"
+  when: "'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
+
+- name: Check for datadog-agent service
+  stat: path=/etc/init.d/datadog-agent
+  register: datadog_service
+  when: "name == 'riakcs'"
+
+- name: Update access_id in riakcs datadog agent config
+  lineinfile:
+    dest: "/etc/dd-agent/conf.d/riakcs.yaml"
+    regexp: "^    access_id: .*$"
+    line: "    access_id: {{ hostvars[riakcs_control].get('riak_key', 'not-set') }}"
+    backrefs: yes
+  when: "name == 'riakcs' and datadog_service.stat.exists and 'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
+  notify: restart datadog
+
+- name: Update access_secret in riakcs datadog agent config
+  lineinfile:
+    dest: "/etc/dd-agent/conf.d/riakcs.yaml"
+    regexp: "^    access_secret: .*$"
+    line: "    access_secret: {{ hostvars[riakcs_control].get('riak_secret', 'not-set') }}"
+    backrefs: yes
+  when: "name == 'riakcs' and datadog_service.stat.exists and 'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
+  notify: restart datadog

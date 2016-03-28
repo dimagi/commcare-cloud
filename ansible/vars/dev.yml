@@ -78,7 +78,7 @@ postgres_users:
     username: "devreadonly"
     password: "devreadonly"
 
-
+postgresql_ssl_enabled: False
 postgres_config:
   max_connections: 20
   pgb_max_connections: 100
@@ -96,6 +96,37 @@ backup_blobdb: True
 supervisor_http_enabled: True
 supervisor_http_username: user
 supervisor_http_password: 123
+
+postgresql_dbs:
+  - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
+  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+  - name: "{{localsettings.PG_DATABASE_NAME}}"
+    django_alias: default
+
+# example setup for sharded database
+# also set localsettings.USE_PARTITIONED_DATABASE to True
+#
+#postgresql_dbs:
+#  - django_alias: default
+#    name: "{{localsettings.PG_DATABASE_NAME}}"
+#  - django_alias: proxy
+#    name: commcarehq_proxy
+#  - django_alias: p1
+#    name: commcarehq_p1
+#    shards: [0, 99]
+#  - django_alias: p2
+#    name: commcarehq_p2
+#    shards: [100, 199]
+#  - django_alias: p3
+#    name: commcarehq_p3
+#    shards: [200, 299]
+#  - django_alias: p4
+#    name: commcarehq_p4
+#    shards: [300, 399]
+#  - django_alias: p5
+#    name: commcarehq_p5
+#    shards: [400, 511]
+#  - name: "{{localsettings.UCR_DATABASE_NAME}}"
 
 localsettings:
   ALLOWED_HOSTS:
@@ -117,6 +148,7 @@ localsettings:
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
 #  CELERY_REMINDER_CASE_UPDATE_QUEUE:
 #  CELERY_REMINDER_RULE_QUEUE:
+#  CELERY_REPEAT_RECORD_QUEUE:
   CELERY_RESULT_BACKEND: 'database'
 #  COUCHPULSE_DATABASE_URL:
 #  COUCH_CACHE_DOCS:
@@ -190,3 +222,5 @@ localsettings:
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
+  FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
+#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes

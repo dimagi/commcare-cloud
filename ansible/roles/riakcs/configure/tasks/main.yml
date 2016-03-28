@@ -1,0 +1,60 @@
+# Config files contain secret keys so set mode=0640
+
+- include_vars: ../../install/defaults/main.yml
+
+# HACK set fact because defaults cannot be loaded from other hosts
+- set_fact: riak_nodename={{ riak_nodename }}
+
+- name: Create {{ name }} data dirs
+  file: >
+    path="{{ item }}"
+    state=directory
+    owner={{ name }}
+    group=riak
+    mode=0770
+  notify: restart {{ name }}
+  with_items: "{{ data_dirs }}"
+
+- name: Copy {{ name }} defaults
+  # works on ubuntu. may need to do other things for other platforms
+  copy: >
+    content="ulimit -n {{ ulimit_n }}"
+    dest=/etc/default/{{ service }}
+    owner=root
+    group=root
+    force=yes
+
+- name: Get {{ name }}_conf variable
+  set_fact:
+    _conf_file: "{{
+      hostvars[inventory_hostname].get(name + '_conf', defaults[name + '_conf'])
+      }}"
+
+- name: Create {{ name }} conf dir
+  file: >
+    path="{{ _conf_file | dirname }}"
+    state=directory
+    owner=root
+    group=root
+
+- name: Set {{ name }} conf
+  template: >
+    src={{ name }}.conf.j2
+    dest={{ _conf_file }}
+    owner=root
+    group=riak
+    mode=0640
+  notify: restart {{ name }}
+
+- name: Set {{ name }} extra conf
+  template: >
+    src={{ extra_conf }}.j2
+    dest={{ _conf_file | dirname }}/{{ extra_conf }}
+    owner=root
+    group=riak
+    mode=0640
+  notify: restart {{ name }}
+  when: extra_conf != ""
+
+- name: Start {{ name }}
+  service: name={{ service }} state=started enabled=yes

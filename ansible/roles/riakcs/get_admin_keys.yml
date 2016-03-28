@@ -1,0 +1,24 @@
+# Get Riak CS admin keys from config file
+#
+# The key facts will be left undefined if the file does not contain the keys or
+# the keys in the file are are 'not-set'.
+
+- name: Load admin.key from Riak CS conf
+  shell: grep -Eh '^admin\.key = ' {{ riakcs_conf }} | grep -Ev '^admin\.key = (not-set|admin-key)'
+  register: riakcs_conf_key
+  always_run: true
+  failed_when: false
+  changed_when: false
+
+- name: Load admin.secret from Riak CS conf
+  shell: grep -Eh '^admin\.secret = ' {{ riakcs_conf }} | grep -Ev '^admin\.secret = (not-set|admin-secret)'
+  register: riakcs_conf_secret
+  always_run: true
+  failed_when: false
+  changed_when: false
+
+- set_fact: riak_key="{{ riakcs_conf_key.stdout | regex_replace('^admin\\.key = (.*)$', '\\1') }}"
+  when: riakcs_conf_key.rc == 0
+
+- set_fact: riak_secret="{{ riakcs_conf_secret.stdout | regex_replace('^admin\\.secret = (.*)$', '\\1') }}"
+  when: riakcs_conf_secret.rc == 0

@@ -8,8 +8,7 @@ description     "ElasticSearch {{ elasticsearch_version }}"
 respawn limit 10 5
 
 env ES_HOME={{ elasticsearch_home }}
-env ES_MIN_MEM={{ elasticsearch_memory }}
-env ES_MAX_MEM={{ elasticsearch_memory }}
+env ES_HEAP_SIZE={{ elasticsearch_memory }}
 env DAEMON="${ES_HOME}/bin/elasticsearch"
 env CONFIG_DIR={{ elasticsearch_conf_dir}}
 env ES_JAVA_OPTS="-XX:SurvivorRatio=3 -XX:+CMSIncrementalMode"

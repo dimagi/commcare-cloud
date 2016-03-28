@@ -1,0 +1,11 @@
+- name: CommcareHQ
+  hosts:
+   - webworkers
+   - touchforms
+   - celery
+   - proxy
+   - pillowtop
+   - postgresql
+  sudo: yes
+  roles:
+    - {role: commcarehq, tags: commcarehq}

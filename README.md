@@ -31,18 +31,19 @@ If you needed to download virtual box, you should also download a box configurat
 vagrant box add precise64 http://files.vagrantup.com/precise64.box
 ```
 
+### Mutli-machine cluster setup
+
 Then start vagrant:
 
 ```
 $ vagrant up
 ```
+
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-Once the vagrant cluster is done building, make sure that the appropriate SSH keys are available on all servers for passwordless login.
-
-```
-echo control app1 app2 proxy1 db1 | xargs -n1 -J% vagrant ssh % -c 'sudo cat /vagrant/provisioning/id_rsa.pub >> ~/.ssh/authorized_keys'
-```
+The `./reset-vms` command can be run at any time, possibly with a subset of the
+VM names, to reset the VMs to their initial state and provision them with your
+SSH key. Run `./reset-vms` without arguments for usage info.
 
 Once this is done, you may ssh into the control server and run a full deployment:
 
@@ -57,7 +58,7 @@ This will build a database server, a proxy server and a single web worker,
 hooked into both appropriately.
 
 Once the preliminary deployment is complete, a new web worker may be added
-simply by editing the file `ansible/inventories/development.yml` and adding the second
+simply by editing the file `ansible/inventories/development` and adding the second
 web worker server IP address. Also uncomment the section of the vagrant file that refers to 'app2':
 
 ```ini
@@ -65,6 +66,24 @@ web worker server IP address. Also uncomment the section of the vagrant file tha
 192.168.33.15
 192.168.33.18
 ```
+
+### Monolith setup
+
+Sometimes multi machine setup locally can be very large. In order to setup a monolith, which is just one machine, you can use this setup:
+```
+cp Vagrantfile-monolith Vagrantfile
+vagrant up
+```
+The one other change needed is to point to the proper inventory. Instead of using `ansible/inventories/development`, use `ansible/inventories/monolith`:
+
+```
+$ vagrant ssh control
+...
+$ cd /vagrant/ansible
+$ ansible-playbook -i inventories/monolith -e '@vars/dev.yml' deploy_stack.yml
+```
+
+### Email setup
 
 In order to have this set up send email without crashing
 (which you need to do during a deploy, for example)

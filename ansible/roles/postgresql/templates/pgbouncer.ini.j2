@@ -1,3 +1,5 @@
+;;; {{ansible_managed}}
+
 ;; database name = connect string
 ;;
 ;; connect string params:
@@ -5,8 +7,8 @@
 ;;   client_encoding= datestyle= timezone=
 ;;   pool_size= connect_query=
 [databases]
-{% for db in postgresql_dbs | unique %}
-{{ db }} = host=localhost port=5432
+{% for db in postgresql_dbs %}
+{{ db.name }} = host=localhost port={{postgresql_port}}
 {% endfor %}
 
 ;; Configuration section
