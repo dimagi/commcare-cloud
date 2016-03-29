@@ -42,21 +42,23 @@
   template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
   sudo: yes
 
-- name: make supervisor task home
-  sudo: yes
-  sudo_user: "{{ cchq_user }}"
-  file: path={{ supervisor_task_conf }} state=directory owner={{ cchq_user }}
-
 - name: Add Upstart Conf
   sudo: yes
   template:
     src: supervisord.upstart.conf.j2
     dest: /etc/init/supervisord.conf
 
-- name: restart supervisor to pick up configuration changes
+- name: stop supervisor to pick up configuration changes
   sudo: yes
   command: stop supervisord
   failed_when: no
+
+- name: pkill supervisord if run by cchq
+  command: pkill -9 -U cchq
+  # if it returns 1 with no output, that just means no process to kill
+  register: result
+  failed_when: result.rc != 0 and (result.stderr or result.stdout)
+
 - sudo: yes
   command: start supervisord
   failed_when: no
