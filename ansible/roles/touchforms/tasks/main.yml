@@ -47,6 +47,13 @@
     - sqlite3
     - libsqlite3-dev
 
+- name: Check formplayer existence
+  stat:
+    path: "{{ code_home }}/submodules/formplayer"
+  register: formplayer_path
+
+#- include_vars: "supervisor_tasks.yml"
+#- include: ../../supervisor/tasks/supervised_tasks.yml
 - name: Copy Spring application.properties
   sudo: yes
   template:
@@ -57,3 +64,4 @@
     mode: 0644
   tags:
     - tf-localsettings
+  when: formplayer_path.stat.exists
