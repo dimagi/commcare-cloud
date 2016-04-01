@@ -35,7 +35,6 @@
 - name: Link the log directory
   file: src={{ kafka_log_dir }} path=/opt/kafka/logs state=link
 
-
 - name: Create Kafka conf directory
   file: path={{ kafka_conf_dir }} state=directory owner=root group=root mode=755
 
@@ -50,3 +49,36 @@
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
+
+- name: Add ruby ppa
+  apt_repository: repo='ppa:brightbox/ruby-ng'
+  register: add_ruby_ppa
+  tags:
+    - kafkat
+
+- name: Update package list for ruby
+  apt: update_cache=yes
+  when: add_ruby_ppa|changed
+  tags:
+    - kafkat
+
+- name: Install ruby
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - ruby2.3
+    - ruby2.3-dev
+  tags:
+    - kafkat
+
+- name: Install kafkat
+  command: 'gem install kafkat'
+  sudo: yes
+  tags:
+    - kafkat
+
+- name: Create kafkat config file
+  template: src=kafkatcfg.j2 dest="/etc/kafkatcfg"
+  sudo: yes
+  tags:
+    - kafkat
