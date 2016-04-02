@@ -56,6 +56,7 @@
     - mosh
     - libjpeg-dev
     - gradle
+    - ranger  # cmdline file browser
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'

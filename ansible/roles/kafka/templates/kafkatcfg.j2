@@ -1,0 +1,5 @@
+{
+  "kafka_path": "{{ encrypted_root }}/kafka",
+  "log_path": "{{ kafka_log_dir }}",
+  "zk_path": "{% for host in groups.zookeeper %}{{ host }}:{{ zookeeper_client_port }}{% if not loop.last %},{% endif %}{% endfor %}"
+}
