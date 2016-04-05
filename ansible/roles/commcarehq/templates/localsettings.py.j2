@@ -204,10 +204,10 @@ OVERRIDE_LOCATION = "https://www.commcarehq.org"
 DEFAULT_PROTOCOL = "https"
 
 ANALYTICS_IDS = {
-    'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID }}',
-    'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID }}',
-    'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY }}',
-    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY}}'
+    'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID|default('', true) }}',
+    'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID|default('', true) }}',
+    'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY|default('', true) }}',
+    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY|default('', true) }}'
 }
 
 ANALYTICS_CONFIG = {
