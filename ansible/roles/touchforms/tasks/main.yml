@@ -51,6 +51,8 @@
   stat:
     path: "{{ code_home }}/submodules/formplayer"
   register: formplayer_path
+  tags:
+    - tf-localsettings
 
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
