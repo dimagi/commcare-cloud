@@ -55,6 +55,7 @@
     - python-software-properties
     - mosh
     - libjpeg-dev
+    - libfreetype6-dev
     - gradle
     - ranger  # cmdline file browser
 
