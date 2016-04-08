@@ -1,0 +1,6 @@
+deploy_env: captain
+
+captain_dir: "{{ cchq_home }}/captain"
+captain_log_dir: "{{ captain_dir }}/log"
+captain_src_dir: "{{ captain_dir }}/src"
+captain_virtualenv_dir: "{{ captain_dir }}/python_env"

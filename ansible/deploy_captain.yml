@@ -1,0 +1,7 @@
+- include: deploy_common.yml
+
+- name: Captain
+  hosts: captain
+  sudo: yes
+  roles:
+    - { role: captain, tags: 'captain' }
