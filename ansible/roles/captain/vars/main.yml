@@ -1,8 +1,9 @@
 deploy_env: captain
+# supervisor_task_conf: "{{ service_home }}/supervisor"
 
 captain_dir: "{{ cchq_home }}/captain"
 captain_log_dir: "{{ captain_dir }}/log"
 captain_src_dir: "{{ captain_dir }}/src"
 captain_virtualenv_dir: "{{ captain_dir }}/python_env"
-captain_repository: "https://github.com/dimagi/commcare-hq-deploy.git"
+captain_repository: "https://github.com/dimagi/captain.git"
 captain_port: 9999
