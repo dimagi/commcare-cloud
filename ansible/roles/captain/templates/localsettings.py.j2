@@ -1,4 +1,5 @@
 ALLOWED_HOSTS = {{ groups.captain | unique | to_json }}
+RQ_LOG_FILE = '{{ captain_log_dir }}/rq.log'
 
 DATABASES = {
     'default': {
