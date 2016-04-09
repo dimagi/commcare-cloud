@@ -20,7 +20,7 @@
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0755
-    state: present
+    state: touch
 
 - name: Pull full Captain source
   git:
