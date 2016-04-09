@@ -1,4 +1,4 @@
-ALLOWED_HOSTS = {{ [groups.captain] | unique | to_json }}
+ALLOWED_HOSTS = {{ groups.captain | unique | to_json }}
 
 DATABASES = {
     'default': {
