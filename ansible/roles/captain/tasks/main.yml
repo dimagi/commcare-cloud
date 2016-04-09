@@ -10,7 +10,17 @@
     - "{{ captain_dir }}"
     - "{{ captain_log_dir }}"
     - "{{ captain_src_dir }}"
+    - "{{ captain_database_dir }}"
     - "{{ supervisor_task_conf }}"
+
+- name: Touch database file
+  sudo_user: "{{ cchq_user }}"
+  file:
+    path: "{{ captain_database }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: present
 
 - name: Pull full Captain source
   git:

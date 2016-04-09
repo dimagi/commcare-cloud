@@ -7,3 +7,5 @@ captain_src_dir: "{{ captain_dir }}/src"
 captain_virtualenv_dir: "{{ captain_dir }}/python_env"
 captain_repository: "https://github.com/dimagi/captain.git"
 captain_port: 9999
+captain_database_dir: "{{ captain_dir }}/db"
+captain_database: "{{ captain_database_dir }}/captain.sqlite3.db"
