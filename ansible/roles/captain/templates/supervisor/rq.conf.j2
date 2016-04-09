@@ -1,7 +1,7 @@
 [program:captain-rq]
 directory={{ captain_src_dir }}/
 command={{ captain_virtualenv_dir }}/bin/python manage.py rqworker default
-user={{ sudo_user }}
+user={{ cchq_user }}
 autostart=true
 autorestart=true
 stdout_logfile={{ captain_log_dir }}/rq.log
