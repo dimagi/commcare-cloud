@@ -50,7 +50,7 @@
   sudo_user: "{{ cchq_user }}"
   template:
     src: "supervisor/{{ item }}.conf.j2"
-    dest: "{{ supervisor_task_conf }}"
+    dest: "{{ supervisor_task_conf }}/{{ item }}.conf"
   with_items:
     - "rq"
     - "django"
