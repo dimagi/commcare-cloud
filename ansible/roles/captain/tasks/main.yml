@@ -46,7 +46,7 @@
   tags:
     - localsettings
 
-- name: Set supervisor confs
+- name: Set captain supervisor confs
   sudo_user: "{{ cchq_user }}"
   template:
     src: "supervisor/{{ item }}.conf.j2"
