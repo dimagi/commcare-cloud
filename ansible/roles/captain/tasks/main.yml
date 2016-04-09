@@ -10,6 +10,7 @@
     - "{{ captain_dir }}"
     - "{{ captain_log_dir }}"
     - "{{ captain_src_dir }}"
+    - "{{ supervisor_task_conf }}"
 
 - name: Pull full Captain source
   git:
@@ -45,3 +46,11 @@
   tags:
     - localsettings
 
+- name: Set supervisor confs
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: "{{ item }}.conf.j2"
+    dest: "{{ supervisor_task_conf }}"
+  with_items:
+    - "rq"
+    - "django"
