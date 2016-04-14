@@ -82,20 +82,20 @@ postgres_users:
     password: "testdatawriter"
     role_attr_flags: LOGIN
     privileges:
-      - db_name: "{{ localsettings.commcarehq_icds_testdata }}"
+      - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
         priv: ALL
+        readonly: False
   icds_tableau_readonly:
     username: "icds_tableau_readonly"
     password: "icds_tableau_readonly"
     role_attr_flags: LOGIN
     privileges:
-      - db_name: "{{ localsettings.commcarehq_icds_testdata }}"
-        priv: CONNECT,USAGE,SELECT
-      - db_name: "{{ localsettings.commcarehq_icds_aggregatedata }}"
-        priv: CONNECT,USAGE,SELECT
-
-postgres_privs:
-
+      - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
+        priv: CONNECT
+        readonly: True
+      - db_name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
+        priv: CONNECT
+        readonly: True
 
 postgresql_ssl_enabled: False
 postgres_config:

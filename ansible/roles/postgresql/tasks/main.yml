@@ -89,7 +89,7 @@
     role_attr_flags: "{{ item.role_attr_flags }}"
     state: present
     port: "{{ postgresql_port }}"
-  with_items: postgres_users
+  with_items: "{{ postgres_users.values() }}"
   when:
     pg_install == True
 
@@ -106,9 +106,20 @@
 
 - name: Grant PostgreSQL privileges
   sudo_user: postgres
-  postgresql_privs: database={{ item.0.db_name }} roles={{ item.0.username}} privs={{ item.1.priv}}
+  postgresql_privs: type=database database="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs="{{ item.1.priv}}"
   with_subelements:
-    - postgres_users
+    - "{{ postgres_users.values() }}"
+    - privileges
+    - flags:
+      skip_missing: True
+
+- name: Set readonly permissions
+  sudo_user: postgres
+  postgresql_privs: db="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs=SELECT objs=ALL_IN_SCHEMA
+  when:
+    item.1.readonly == True
+  with_subelements:
+    - "{{ postgres_users.values() }}"
     - privileges
     - flags:
       skip_missing: True
