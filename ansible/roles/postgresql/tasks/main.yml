@@ -110,6 +110,8 @@
   with_subelements:
     - postgres_users
     - privileges
+    - flags:
+      skip_missing: True
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
