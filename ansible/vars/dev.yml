@@ -118,10 +118,15 @@ supervisor_http_password: 123
 
 postgresql_dbs:
   - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
+    owner: "{{localsettings.PG_DATABASE_USER}}"
   - name: "{{ localsettings.UCR_DATABASE_NAME }}"
-  - name: "{{localsettings.PG_DATABASE_NAME}}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+  - name: "{{ localsettings.PG_DATABASE_NAME }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
   - name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
   - name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
     django_alias: default
 
 # example setup for sharded database

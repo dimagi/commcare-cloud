@@ -86,7 +86,7 @@
   postgresql_user:
     name: "{{ item.username }}"
     password: "{{ item.password }}"
-    role_attr_flags: "{{ item.role_attr_flags }}"
+    role_attr_flags: "{{ item.role_attr_flags|default('LOGIN') }}"
     state: present
     port: "{{ postgresql_port }}"
   with_items: "{{ postgres_users.values() }}"
@@ -99,7 +99,7 @@
     name: "{{ item.name }}"
     state: present
     port: "{{ postgresql_port }}"
-    owner: "{{ localsettings.PG_DATABASE_USER }}"
+    owner: "{{ item.owner }}"
   with_items: postgresql_dbs
   when:
     pg_install == True
