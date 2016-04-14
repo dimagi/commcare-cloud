@@ -81,17 +81,6 @@
   sudo_user: postgres
   service: name=postgresql state=started
 
-- name: Create PostgreSQL users
-  sudo_user: postgres
-  postgresql_user:
-    name: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role_attr_flags: CREATEDB
-    state: present
-    port: "{{ postgresql_port }}"
-  when:
-    pg_install == True
-
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db:
@@ -102,6 +91,25 @@
   with_items: postgresql_dbs
   when:
     pg_install == True
+
+- name: Create PostgreSQL users
+  sudo_user: postgres
+  postgresql_user:
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    role_attr_flags: "{{ item.role_attr_flags }}"
+    state: present
+    port: "{{ postgresql_port }}"
+  with_items: postgres_users
+  when:
+    pg_install == True
+
+- name: Grant PostgreSQL privileges
+  sudo_user: postgres
+  postgresql_privs: database={{ item.0.db_name }} roles={{ item.0.username}} privs={{ item.1.priv}}
+  with_subelements:
+    - postgres_users
+    - privileges
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present

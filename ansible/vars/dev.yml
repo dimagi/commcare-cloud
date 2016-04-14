@@ -72,9 +72,30 @@ postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+    role_attr_flags: CREATEDB
   readonly:
     username: "devreadonly"
     password: "devreadonly"
+    role_attr_flags: LOGIN
+  icds_testdatawriter:
+    username: "testdatawriter"
+    password: "testdatawriter"
+    role_attr_flags: LOGIN
+    privileges:
+      - db_name: "{{ localsettings.commcarehq_icds_testdata }}"
+        priv: ALL
+  icds_tableau_readonly:
+    username: "icds_tableau_readonly"
+    password: "icds_tableau_readonly"
+    role_attr_flags: LOGIN
+    privileges:
+      - db_name: "{{ localsettings.commcarehq_icds_testdata }}"
+        priv: CONNECT,USAGE,SELECT
+      - db_name: "{{ localsettings.commcarehq_icds_aggregatedata }}"
+        priv: CONNECT,USAGE,SELECT
+
+postgres_privs:
+
 
 postgresql_ssl_enabled: False
 postgres_config:
@@ -99,6 +120,8 @@ postgresql_dbs:
   - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
   - name: "{{ localsettings.UCR_DATABASE_NAME }}"
   - name: "{{localsettings.PG_DATABASE_NAME}}"
+  - name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
+  - name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
     django_alias: default
 
 # example setup for sharded database
@@ -207,6 +230,8 @@ localsettings:
 #  REMINDERS_QUEUE_ENABLED:
   REPORT_DATABASE_NAME: commcarehq_reporting
   UCR_DATABASE_NAME: commcarehq_ucr
+  COMMCAREHQ_ICDS_TESTDATA: commcarehq_icds_testdata
+  COMMCAREHQ_ICDS_AGGREGATEDATA: commcarehq_icds_aggregatedata
   REPORT_OBJECT_OWNER: null
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
   STATIC_CDN: ""
