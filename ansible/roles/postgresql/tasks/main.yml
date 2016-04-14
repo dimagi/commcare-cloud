@@ -81,17 +81,6 @@
   sudo_user: postgres
   service: name=postgresql state=started
 
-- name: Create PostgreSQL databases
-  sudo_user: postgres
-  postgresql_db:
-    name: "{{ item.name }}"
-    state: present
-    port: "{{ postgresql_port }}"
-    owner: "{{ localsettings.PG_DATABASE_USER }}"
-  with_items: postgresql_dbs
-  when:
-    pg_install == True
-
 - name: Create PostgreSQL users
   sudo_user: postgres
   postgresql_user:
@@ -101,6 +90,17 @@
     state: present
     port: "{{ postgresql_port }}"
   with_items: postgres_users
+  when:
+    pg_install == True
+
+- name: Create PostgreSQL databases
+  sudo_user: postgres
+  postgresql_db:
+    name: "{{ item.name }}"
+    state: present
+    port: "{{ postgresql_port }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+  with_items: postgresql_dbs
   when:
     pg_install == True
 
