@@ -72,18 +72,18 @@ postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role_attr_flags: CREATEDB
   readonly:
     username: "devreadonly"
     password: "devreadonly"
-    role_attr_flags: LOGIN
+
+postgres_icds_users:
   icds_testdatawriter:
-    username: "testdatawriter"
-    password: "testdatawriter"
+    username: "icds_testdatawriter"
+    password: "icds_testdatawriter"
     role_attr_flags: LOGIN
     privileges:
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
-        priv: ALL
+        db_priv: ALL
         readonly: False
   icds_tableau_readonly:
     username: "icds_tableau_readonly"
@@ -91,7 +91,7 @@ postgres_users:
     role_attr_flags: LOGIN
     privileges:
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
-        priv: CONNECT
+        db_priv: CONNECT
         readonly: True
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
         priv: CONNECT

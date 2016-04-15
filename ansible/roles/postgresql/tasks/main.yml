@@ -81,7 +81,18 @@
   sudo_user: postgres
   service: name=postgresql state=started
 
-- name: Create PostgreSQL users
+- name: Create PostgreSQL commcarehq user
+  sudo_user: postgres
+  postgresql_user:
+    name: "{{ localsettings.PG_DATABASE_USER }}"
+    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+    role_attr_flags: CREATEDB
+    state: present
+    port: "{{ postgresql_port }}"
+  when:
+    pg_install == True
+
+- name: Create PostgreSQL ICDS users
   sudo_user: postgres
   postgresql_user:
     name: "{{ item.username }}"
@@ -89,7 +100,7 @@
     role_attr_flags: "{{ item.role_attr_flags|default('LOGIN') }}"
     state: present
     port: "{{ postgresql_port }}"
-  with_items: "{{ postgres_users.values() }}"
+  with_items: "{{ postgres_icds_users.values() }}"
   when:
     pg_install == True
 
@@ -106,20 +117,23 @@
 
 - name: Grant PostgreSQL privileges
   sudo_user: postgres
-  postgresql_privs: type=database database="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs="{{ item.1.priv}}"
+  postgresql_privs: type=database database="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs="{{ item.1.db_priv}}"
   with_subelements:
     - "{{ postgres_users.values() }}"
     - privileges
     - flags:
       skip_missing: True
 
-- name: Set readonly permissions
+- name: Set readonly PostgreSQL roles
   sudo_user: postgres
-  postgresql_privs: db="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs=SELECT objs=ALL_IN_SCHEMA
+  command: "{{postgres_install_dir}}/bin/psql -U postgres {{item.1.db_name}} -c 
+    'GRANT USAGE ON SCHEMA PUBLIC to {{ item.0.username }}; 
+    GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC to {{ item.0.username }}; 
+    ALTER DEFAULT PRIVILEGES IN SCHEMA PUBLIC GRANT SELECT ON TABLES TO {{ item.0.username }}'"
   when:
     item.1.readonly == True
   with_subelements:
-    - "{{ postgres_users.values() }}"
+    - "{{ postgres_icds_users.values() }}"
     - privileges
     - flags:
       skip_missing: True
