@@ -81,18 +81,7 @@
   sudo_user: postgres
   service: name=postgresql state=started
 
-- name: Create PostgreSQL commcarehq user
-  sudo_user: postgres
-  postgresql_user:
-    name: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role_attr_flags: CREATEDB
-    state: present
-    port: "{{ postgresql_port }}"
-  when:
-    pg_install == True
-
-- name: Create PostgreSQL ICDS users
+- name: Create PostgreSQL users
   sudo_user: postgres
   postgresql_user:
     name: "{{ item.username }}"
@@ -100,7 +89,7 @@
     role_attr_flags: "{{ item.role_attr_flags|default('LOGIN') }}"
     state: present
     port: "{{ postgresql_port }}"
-  with_items: "{{ postgres_icds_users.values() }}"
+  with_items: "{{ postgres_users.values() }}"
   when:
     pg_install == True
 
@@ -126,7 +115,7 @@
 
 - name: Set readonly PostgreSQL roles
   sudo_user: postgres
-  command: "{{postgres_install_dir}}/bin/psql -U postgres {{item.1.db_name}} -c 
+  command: "{{postgres_install_dir}}/bin/psql -U {{ item.1.readonly_master }} {{item.1.db_name}} -c
     'GRANT USAGE ON SCHEMA PUBLIC to {{ item.0.username }}; 
     GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC to {{ item.0.username }}; 
     ALTER DEFAULT PRIVILEGES IN SCHEMA PUBLIC GRANT SELECT ON TABLES TO {{ item.0.username }}'"

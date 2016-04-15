@@ -68,19 +68,37 @@ AMQP_NAME: commcarehq
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
 keystore_file: 'DimagiKeyStore'
 
+# postgres_users:
+#  <key>:
+#    username: <username>
+#    password: <password>
+#    role_attr_flags: see http://docs.ansible.com/ansible/postgresql_user_module.html
+#    privileges:
+#      db_name: <dabase name>
+#      db_priv: <privilege name CSV>
+#      readonly: <True or False>
+#      readonly_master: <username of user to run readonly SQL commands as (should be user who is going to create new tables etc.>
+    
 postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-  readonly:
+    role_attr_flags: CREATEDB
+  devreadonly:
     username: "devreadonly"
     password: "devreadonly"
-
-postgres_icds_users:
+    privileges:
+      - db_name: "{{ localsettings.PG_DATABASE_NAME }}"
+        db_priv: CONNECT
+        readonly: True
+        readonly_master: commcare
+      - db_name: "{{ localsettings.UCR_DATABASE_NAME }}"
+        db_priv: CONNECT
+        readonly: True
+        readonly_master: commcare
   icds_testdatawriter:
     username: "icds_testdatawriter"
     password: "icds_testdatawriter"
-    role_attr_flags: LOGIN
     privileges:
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
         db_priv: ALL
@@ -88,14 +106,15 @@ postgres_icds_users:
   icds_tableau_readonly:
     username: "icds_tableau_readonly"
     password: "icds_tableau_readonly"
-    role_attr_flags: LOGIN
     privileges:
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
         db_priv: CONNECT
         readonly: True
+        readonly_master: icds_testdatawriter
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
-        priv: CONNECT
+        db_priv: CONNECT
         readonly: True
+        readonly_master: icds_testdatawriter
 
 postgresql_ssl_enabled: False
 postgres_config:
