@@ -1,0 +1,14 @@
+[program:captain-django]
+directory={{ captain_src_dir }}/
+; gunicorn
+command={{ captain_virtualenv_dir }}/bin/gunicorn chief.wsgi:application --bind 0.0.0.0:{{ captain_port }} --log-file {{ captain_log_dir }}/captain.gunicorn.log --log-level debug
+user={{ cchq_user }}
+autostart=true
+autorestart=true
+stdout_logfile={{ captain_log_dir }}/django.log
+redirect_stderr=true
+stderr_logfile={{ captain_log_dir }}/django.error.log
+;stopsignal=QUIT
+;stopwaitsecs=60
+;killasgroup=true
+;stopasgroup=false

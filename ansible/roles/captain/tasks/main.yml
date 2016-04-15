@@ -1,0 +1,66 @@
+- name: create required directories
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ captain_dir }}"
+    - "{{ captain_log_dir }}"
+    - "{{ captain_src_dir }}"
+    - "{{ captain_database_dir }}"
+    - "{{ supervisor_task_conf }}"
+
+- name: Touch database file
+  sudo_user: "{{ cchq_user }}"
+  file:
+    path: "{{ captain_database }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: touch
+
+- name: Pull full Captain source
+  git:
+    repo: "{{ captain_repository }}"
+    dest: "{{ captain_src_dir }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
+  sudo_user: "{{ cchq_user }}"
+  tags:
+    - git
+    - slow
+
+- name: install pip requirements
+  sudo_user: "{{ cchq_user }}"
+  pip:
+    requirements: "{{ captain_src_dir }}/requirements.txt"
+    virtualenv: "{{ captain_virtualenv_dir }}"
+  tags:
+    - slow
+
+- name: Upgrade setuptools
+  easy_install:
+    # HACK: -U allows us to force update. In ansible 2.0 we can just use the state property
+    name: "-U setuptools"
+    virtualenv: "{{ captain_virtualenv_dir }}"
+
+- name: copy localsettings
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: localsettings.py.j2
+    dest: "{{ captain_src_dir }}/chief/localsettings.py"
+  tags:
+    - localsettings
+
+- name: Set captain supervisor confs
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: "supervisor/{{ item }}.conf.j2"
+    dest: "{{ supervisor_task_conf }}/{{ item }}.conf"
+  with_items:
+    - "rq"
+    - "django"
