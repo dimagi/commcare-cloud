@@ -108,7 +108,7 @@
   sudo_user: postgres
   postgresql_privs: type=database database="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs="{{ item.1.db_priv}}"
   with_subelements:
-    - "{{ postgres_icds_users.values() }}"
+    - "{{ postgres_users.values() }}"
     - privileges
     - flags:
       skip_missing: True
@@ -122,7 +122,7 @@
   when:
     item.1.readonly == True
   with_subelements:
-    - "{{ postgres_icds_users.values() }}"
+    - "{{ postgres_users.values() }}"
     - privileges
     - flags:
       skip_missing: True
