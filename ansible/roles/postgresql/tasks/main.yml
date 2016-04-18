@@ -181,8 +181,9 @@
   args:
     chdir: /tmp/pghashlib-master
     creates: "{{postgres_install_dir}}/lib/hashlib.so"
-  notify: Run ldconfig
-  notify: Restart postgres
+  notify:
+    - Run ldconfig
+    - Restart postgres
 
 - name: Create plproxy extension
   sudo_user: postgres
