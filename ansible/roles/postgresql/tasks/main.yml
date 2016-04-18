@@ -113,7 +113,9 @@
     - flags:
       skip_missing: True
 
-- debug: msg="{{ item.0.username }} PGPASSWORD={{ postgres_users.get('{{ item.0.username }}').get('password') }}"
+- debug: msg="{{ item.0.username }} PGPASSWORD={{ postgres_users.get(item.1.readonly_master).get('password') }}"
+  when:
+    item.1.readonly == True
   with_subelements:
     - "{{ postgres_users.values() }}"
     - privileges
@@ -124,7 +126,7 @@
 
 - name: Set readonly PostgreSQL roles
   sudo_user: postgres
-  command: "PGPASSWORD={{ postgres_users.get('{{ item.1.readonly_master }}').get('password') }}
+  shell: "PGPASSWORD={{ postgres_users.get(item.1.readonly_master).get('password') }}
     {{postgres_install_dir}}/bin/psql -U {{ item.1.readonly_master }} -h localhost {{item.1.db_name}} -c
     'GRANT USAGE ON SCHEMA PUBLIC to {{ item.0.username }}; 
     GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC to {{ item.0.username }}; 
