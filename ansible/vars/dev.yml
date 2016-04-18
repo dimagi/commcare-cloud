@@ -79,8 +79,9 @@ keystore_file: 'DimagiKeyStore'
 #      readonly: <True or False>
 #      readonly_master: <username of user to run readonly SQL commands as (should be user who is going to create new tables etc.>
 
+# TODO - update commcare->commcarehq key elsewhere
 postgres_users:
-  commcare:
+  commcarehq:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
     role_attr_flags: CREATEDB

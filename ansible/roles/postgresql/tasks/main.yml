@@ -113,9 +113,19 @@
     - flags:
       skip_missing: True
 
+- debug: msg="{{ item.0.username }} PGPASSWORD={{ postgres_users.get('{{ item.0.username }}').get('password') }}"
+  with_subelements:
+    - "{{ postgres_users.values() }}"
+    - privileges
+    - flags:
+      skip_missing: True
+  tags:
+    - read_grant_psqll
+
 - name: Set readonly PostgreSQL roles
   sudo_user: postgres
-  command: "{{postgres_install_dir}}/bin/psql -U {{ item.1.readonly_master }} {{item.1.db_name}} -c
+  command: "PGPASSWORD={{ postgres_users.get('{{ item.1.readonly_master }}').get('password') }}
+    {{postgres_install_dir}}/bin/psql -U {{ item.1.readonly_master }} -h localhost {{item.1.db_name}} -c
     'GRANT USAGE ON SCHEMA PUBLIC to {{ item.0.username }}; 
     GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC to {{ item.0.username }}; 
     ALTER DEFAULT PRIVILEGES IN SCHEMA PUBLIC GRANT SELECT ON TABLES TO {{ item.0.username }}'"
@@ -126,6 +136,8 @@
     - privileges
     - flags:
       skip_missing: True
+  tags:
+    - read_grant_psql
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
