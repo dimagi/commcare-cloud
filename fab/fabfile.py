@@ -71,6 +71,7 @@ RSYNC_EXCLUDE = (
 RELEASE_RECORD = 'RELEASES.txt'
 env.linewise = True
 env.colorize_errors = True
+env.captain_user = None
 env['sudo_prefix'] += '-H '
 
 if not hasattr(env, 'code_branch'):
@@ -554,7 +555,7 @@ def record_successful_deploy():
             '"%(environment)s" --url %(url)s --mail_admins'
         ) % {
             'virtualenv_current': env.virtualenv_current,
-            'user': env.user,
+            'user': env.captain_user or env.user,
             'environment': env.environment,
             'url': env.deploy_metadata.diff_url,
         })
