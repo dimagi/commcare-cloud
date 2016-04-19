@@ -69,7 +69,7 @@ AMQP_NAME: commcarehq
 keystore_file: 'DimagiKeyStore'
 
 # postgres_users:
-#  <key>:
+#  <username>:
 #    username: <username>
 #    password: <password>
 #    role_attr_flags: see http://docs.ansible.com/ansible/postgresql_user_module.html
@@ -79,7 +79,6 @@ keystore_file: 'DimagiKeyStore'
 #      readonly: <True or False>
 #      readonly_master: <username of user to run readonly SQL commands as (should be user who is going to create new tables etc.>
 
-# TODO - update commcare->commcarehq key elsewhere
 postgres_users:
   commcarehq:
     username: "{{ localsettings.PG_DATABASE_USER }}"
