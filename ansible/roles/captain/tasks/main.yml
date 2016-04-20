@@ -70,3 +70,10 @@
   with_items:
     - "rq"
     - "django"
+    - "tailon"
+
+- name: Install tailon
+  pip: name={{ item }}
+  sudo: yes
+  with_items:
+    - tailon
