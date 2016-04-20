@@ -145,6 +145,7 @@ class DeployMetadata(object):
             tagger={
                 'name': user.name,
                 'email': user.email,
+                'date': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
             }
         )
         self._deploy_tag = tag_name
