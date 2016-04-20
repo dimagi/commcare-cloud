@@ -62,6 +62,14 @@
   tags:
     - localsettings
 
+- name: copy fab config
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: config.py.j2
+    dest: "{{ captain_src_dir }}/submodules/commcare-hq-deploy/fab/config.py"
+  tags:
+    - localsettings
+
 - name: Set captain supervisor confs
   sudo_user: "{{ cchq_user }}"
   template:
