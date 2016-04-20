@@ -262,6 +262,16 @@ def load_env(env_name):
     env.update(env_dict[env_name])
 
 
+def get_pillow_env_config(environment):
+    pillow_conf = {}
+    pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
+    with open(pillow_file, 'r+') as f:
+        yml = yaml.load(f)
+        pillow_conf.update(yml)
+
+    return pillow_conf
+
+
 @task
 def swiss():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'swiss')
@@ -1243,7 +1253,14 @@ def set_pillowtop_supervisorconf():
     if env.environment not in ['preview'] and env.all_hosts:
         # preview environment should not run pillowtop and index stuff
         # just rely on what's on staging
-        _rebuild_supervisor_conf_file('make_supervisor_pillowtop_conf', 'supervisor_pillowtop.conf')
+        _rebuild_supervisor_conf_file(
+            'make_supervisor_pillowtop_conf',
+            'supervisor_pillowtop.conf',
+            {'pillow_env_configs': [
+                get_pillow_env_config(environment)
+                for environment in ['default', env.environment]
+            ]}
+        )
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
 
 
