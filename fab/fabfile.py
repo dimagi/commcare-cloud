@@ -295,29 +295,9 @@ def softlayer():
 @task
 def zambia():
     """Our production server in wv zambia."""
+    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'zambia')
     load_env('zambia')
-    env.hosts = ['41.72.118.18']
-
-    _setup_path()
-
-    env.roledefs = {
-        'couch': [],
-        'pg': [],
-        'rabbitmq': [],
-        'django_celery': [],
-        'sms_queue': [],
-        'reminder_queue': [],
-        'pillow_retry_queue': [],
-        'django_app': [],
-        'django_pillowtop': [],
-        'formsplayer': [],
-        'staticfiles': [],
-        'lb': [],
-        'deploy': [],
-
-        'django_monolith': ['41.72.118.18'],
-    }
-    env.roles = ['django_monolith']
+    execute(env_common)
 
 
 @task
