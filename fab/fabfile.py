@@ -266,9 +266,12 @@ def load_env(env_name):
 def get_pillow_env_config(environment):
     pillow_conf = {}
     pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
-    with open(pillow_file, 'r+') as f:
-        yml = yaml.load(f)
-        pillow_conf.update(yml)
+    if os.path.exists(pillow_file):
+        with open(pillow_file, 'r+') as f:
+            yml = yaml.load(f)
+            pillow_conf.update(yml)
+    else:
+        return None
 
     return pillow_conf
 
@@ -1233,10 +1236,10 @@ def set_pillowtop_supervisorconf():
         _rebuild_supervisor_conf_file(
             'make_supervisor_pillowtop_conf',
             'supervisor_pillowtop.conf',
-            {'pillow_env_configs': [
+            {'pillow_env_configs': filter(None, [
                 get_pillow_env_config(environment)
                 for environment in ['default', env.environment]
-            ]}
+            ])}
         )
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
 
