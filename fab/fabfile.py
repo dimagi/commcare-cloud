@@ -123,7 +123,7 @@ class DeployMetadata(object):
         self._environment = environment
 
     def tag_commit(self):
-        pattern = ".*-{}-.*".format(self._environment)
+        pattern = ".*-{}-.*".format(re.escape(self._environment))
         for tag in self._repo.tags(self._max_tags):
             if re.match(pattern, tag.name):
                 self._last_tag = tag.name
