@@ -39,7 +39,7 @@ from github3 import login
 
 from fabric import utils
 from fabric.api import run, roles, execute, task, sudo, env, parallel
-from fabric.colors import blue, red, yellow
+from fabric.colors import blue, red, yellow, magenta
 from fabric.context_managers import settings, cd, shell_env
 from fabric.contrib import files, console
 from fabric.operations import require
@@ -130,7 +130,7 @@ class DeployMetadata(object):
                 break
 
         if not self._last_tag:
-            print yellow('Warning: No previous tag found in last {} tags for {}'.format(
+            print magenta('Warning: No previous tag found in last {} tags for {}'.format(
                 self._max_tags,
                 self._environment
             ))
