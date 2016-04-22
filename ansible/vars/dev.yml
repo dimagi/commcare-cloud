@@ -96,9 +96,9 @@ postgres_users:
         db_priv: CONNECT
         readonly: True
         readonly_master: "{{ localsettings.PG_DATABASE_USER }}"
-  icds_testdatawriter:
-    username: "icds_testdatawriter"
-    password: "icds_testdatawriter"
+  icds_testdata_writer:
+    username: "icds_testdata_writer"
+    password: "icds_testdata_writer"
     privileges:
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
         db_priv: ALL

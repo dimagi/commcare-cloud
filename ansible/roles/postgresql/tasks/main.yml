@@ -117,17 +117,6 @@
     - flags:
       skip_missing: True
 
-- debug: msg="{{ item.0.username }} PGPASSWORD={{ postgres_users.get(item.1.readonly_master).get('password') }}"
-  when:
-    item.1.readonly == True
-  with_subelements:
-    - "{{ postgres_users.values() }}"
-    - privileges
-    - flags:
-      skip_missing: True
-  tags:
-    - read_grant_psqll
-
 - name: Set readonly PostgreSQL roles
   sudo_user: postgres
   shell: "PGPASSWORD={{ postgres_users.get(item.1.readonly_master).get('password') }}
@@ -142,8 +131,6 @@
     - privileges
     - flags:
       skip_missing: True
-  tags:
-    - read_grant_psql
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
