@@ -143,8 +143,8 @@ class DeployMetadata(object):
             sha=self.deploy_ref,
             obj_type='commit',
             tagger={
-                'name': user.name,
-                'email': user.email,
+                'name': user.login,
+                'email': user.email or '{}@dimagi.com'.format(user.login),
                 'date': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
             }
         )
