@@ -1018,11 +1018,7 @@ def restart_services():
                            '{env.environment}?'.format(env=env), default=False):
         utils.abort('Task aborted.')
 
-    @roles(env.supervisor_roles)
-    def _inner():
-        silent_services_restart(use_current_release=True)
-
-    execute(_inner)
+    silent_services_restart(use_current_release=True)
 
 
 def silent_services_restart(use_current_release=False):
