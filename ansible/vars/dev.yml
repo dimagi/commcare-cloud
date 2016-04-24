@@ -110,11 +110,11 @@ postgres_users:
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
         db_priv: CONNECT
         readonly: True
-        readonly_master: icds_testdatawriter
+        readonly_master: icds_testdata_writer
       - db_name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
         db_priv: CONNECT
         readonly: True
-        readonly_master: icds_testdatawriter
+        readonly_master: icds_testdata_writer
 
 postgresql_ssl_enabled: False
 postgres_config:
