@@ -1,5 +1,11 @@
 ---
 # Add and configure rabbitmq
+- name: Add erlang apt repo
+  apt_repository: repo='deb http://packages.erlang-solutions.com/ubuntu {{ ansible_lsb.codename}} contrib' state=present
+
+- name: Add erlang apt key
+  apt_key: url=http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
+
 - name: Add rabbitmq official apt repository
   sudo: true
   apt_repository: repo='deb http://www.rabbitmq.com/debian/ testing main' state=present
