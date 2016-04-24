@@ -40,13 +40,13 @@
   hosts: redis
   sudo: yes
   roles:
-    - redis_monitoring
+    - {role: redis_monitoring, tags: 'redis'}
 
 - name: RabbitMQ
   hosts: rabbitmq
   sudo: yes
   roles:
-    - rabbitmq
+    - {role: rabbitmq, tags: 'rabbitmq'}
 
 - name: Zookeeper
   hosts: zookeeper
