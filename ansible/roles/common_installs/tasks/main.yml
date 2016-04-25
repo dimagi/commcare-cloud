@@ -58,6 +58,7 @@
     - libfreetype6-dev
     - gradle
     - ranger  # cmdline file browser
+    - libffi-dev  # Required for installing github3py
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'

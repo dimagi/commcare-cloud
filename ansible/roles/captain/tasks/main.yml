@@ -42,12 +42,6 @@
   tags:
     - slow
 
-- name: install apt requirements
-  apt: name={{ item }} state=present
-  sudo: yes
-  with_items:
-    - libffi-dev
-
 - name: Upgrade setuptools
   easy_install:
     # HACK: -U allows us to force update. In ansible 2.0 we can just use the state property
