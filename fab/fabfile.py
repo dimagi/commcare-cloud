@@ -1029,7 +1029,7 @@ def silent_services_restart(use_current_release=False):
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
     execute(set_in_progress_flag, use_current_release)
-    execute(_restart_services)
+    execute(_restart_all_except_webworkers)
     execute(_restart_webworkers)
 
 
@@ -1052,7 +1052,7 @@ def _restart_webworkers():
 
 @roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
 @parallel
-def _restart_services():
+def _restart_all_except_webworkers():
     _services_restart()
 
 
