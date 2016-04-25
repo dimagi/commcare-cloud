@@ -1,42 +1,42 @@
 [proxy]
-185.12.7.167
+swiss.commcarehq.org
 
 [webworkers]
-185.12.7.167
+swiss.commcarehq.org
 
 [couchdb]
-185.12.7.167
+swiss.commcarehq.org
 
 [postgresql]
-185.12.7.167
+swiss.commcarehq.org
 
 [rabbitmq]
-185.12.7.167
+swiss.commcarehq.org
 
 [zookeeper]
-185.12.7.167
+swiss.commcarehq.org
 
 [kafka]
-185.12.7.167 kafka_broker_id=0
+swiss.commcarehq.org kafka_broker_id=0
 
 
 [celery]
 # ansible makes the first thing in this list the flower url
 # a little bit redundant with with more explicit settings in environments.yml
 # but ansible doesn't currently have access to that
-185.12.7.167
+swiss.commcarehq.org
 
 [pillowtop]
-185.12.7.167
+swiss.commcarehq.org
 
 [touchforms]
-185.12.7.167
+swiss.commcarehq.org
 
 [redis]
-185.12.7.167
+swiss.commcarehq.org
 
 [elasticsearch]
-185.12.7.167 elasticsearch_node_name=hqes1
+swiss.commcarehq.org elasticsearch_node_name=hqes1
 
 [shared_dir_host]
-185.12.7.167
+swiss.commcarehq.org
