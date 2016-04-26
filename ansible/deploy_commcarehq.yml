@@ -9,3 +9,10 @@
   sudo: yes
   roles:
     - {role: commcarehq, tags: commcarehq}
+
+- name: Celery cron jobs for HQ
+  hosts:
+    - celery
+  sudo: yes
+  roles:
+    - {role: celery_hq, tags: celery_hq}
