@@ -38,7 +38,7 @@ from distutils.util import strtobool
 from github3 import login
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel
+from fabric.api import run, roles, execute, task, sudo, env, parallel, serial
 from fabric.colors import blue, red, yellow, magenta
 from fabric.context_managers import settings, cd, shell_env
 from fabric.contrib import files, console
@@ -1029,12 +1029,11 @@ def silent_services_restart(use_current_release=False):
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
     execute(set_in_progress_flag, use_current_release)
-    execute(services_restart)
+    execute(_restart_all_except_webworkers)
+    execute(_restart_webworkers)
 
 
-@roles(ROLES_ALL_SERVICES)
-@parallel
-def services_restart():
+def _services_restart():
     """Stop and restart all supervisord services"""
     _require_target()
     _supervisor_command('stop all')
@@ -1043,6 +1042,18 @@ def services_restart():
     _supervisor_command('reload')
     time.sleep(5)
     _supervisor_command('start all')
+
+
+@roles(ROLES_DJANGO)
+@serial
+def _restart_webworkers():
+    _services_restart()
+
+
+@roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
+@parallel
+def _restart_all_except_webworkers():
+    _services_restart()
 
 
 @roles(ROLES_DB_ONLY)
