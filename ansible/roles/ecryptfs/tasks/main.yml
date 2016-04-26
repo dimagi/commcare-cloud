@@ -91,7 +91,12 @@
   changed_when: false
 
 - name: add user, noauto to mount conf
-  shell: "echo {{ mount_conf.stdout }} | sed -e 's/rw/user,noauto,rw/'"
+  lineinfile:
+   dest: '/etc/mtab'
+   regexp: "^(.*)rw(.*)$"
+   line: '\1user,noauto,rw\2'
+   backup: yes
+   backrefs: yes
   when: "'noauto' not in mount_conf.stdout"
   register: updated_mount_conf
 
