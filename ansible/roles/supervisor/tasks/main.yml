@@ -11,6 +11,14 @@
   changed_when: false
   failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
 
+- name: Add git apt repo
+  apt_repository: repo='ppa:schooltool-owners/trunk' state=present
+  register: add_supervisor_ppa
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_supervisor_ppa|changed
+
 - name: install supervisor
   apt: name=supervisor state=present
   sudo: yes
