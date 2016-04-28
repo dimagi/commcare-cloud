@@ -12,8 +12,10 @@
   failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
 
 - name: install supervisord
-  shell: 'pip install supervisor==3.2.3 --install-scripts /usr/local/bin'
   sudo: yes
+  pip:
+    name: supervisor
+    version: 3.2.3
 
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
