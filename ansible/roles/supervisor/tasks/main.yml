@@ -17,6 +17,12 @@
     name: supervisor
     version: 3.2.3
 
+- name: remove apt supervisor
+  sudo: yes
+  apt:
+    name: supervisor
+    state: absent
+
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
   register: init_d_conf
