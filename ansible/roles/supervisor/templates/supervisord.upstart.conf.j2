@@ -5,4 +5,4 @@ stop on runlevel [!2345]
 
 respawn
 
-exec {{ which_supervisord.stdout }} --nodaemon --configuration /etc/supervisord.conf
+exec /usr/local/bin/supervisord --nodaemon --configuration /etc/supervisord.conf
