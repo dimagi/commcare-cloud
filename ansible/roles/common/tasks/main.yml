@@ -1,0 +1,5 @@
+- name: "Build hosts file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
+  with_items: etc_host_lines
+  tags:
+    - etc_hosts
