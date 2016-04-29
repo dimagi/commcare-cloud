@@ -29,6 +29,7 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_http == True, action: site, site_name: commtrack_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.icds_tableau == True, action: site, site_name: icds_tableau }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.icds_tableau == True, action: site, site_name: icds_tableau_http }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cas_ssl == True, action: site, site_name: cas_ssl }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
 
 - name: Newrelic Plugin Agent for Proxy
