@@ -16,6 +16,7 @@ active_sites:
   cchq_redirect: True
   cchq_http: True
   cchq_http_redirect: True
+  cchq_http_j2me: False
   commtrack_ssl: True
   commtrack_http: True
   riakcs: True
