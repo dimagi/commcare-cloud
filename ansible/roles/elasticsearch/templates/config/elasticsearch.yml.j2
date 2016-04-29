@@ -32,6 +32,12 @@ discovery.zen.ping.unicast.hosts: [
 {% endfor %}
 ]
 
+{% if inventory_hostname|ipaddr %}
+network.host: "{{ inventory_hostname }}"
+{% else %}
+network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
+{% endif %}
+
 index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
