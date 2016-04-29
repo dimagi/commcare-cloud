@@ -3,6 +3,7 @@
 SITE_HOST: '{{ groups.proxy.0 }}'
 COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
 NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
+J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
 
 testing: True
 
