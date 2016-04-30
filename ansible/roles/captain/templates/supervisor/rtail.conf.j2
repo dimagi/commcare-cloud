@@ -1,0 +1,13 @@
+[program:captain-rtail]
+directory={{ captain_src_dir }}/
+command=tail -F {{ captain_log_dir }}/rq.log | rtail --host 0.0.0.0 --port 9090
+user={{ cchq_user }}
+autostart=true
+autorestart=true
+stdout_logfile={{ captain_log_dir }}/tail.log
+redirect_stderr=true
+stderr_logfile={{ captain_log_dir }}/tail.error.log
+;stopsignal=QUIT
+;stopwaitsecs=60
+;killasgroup=true
+;stopasgroup=false
