@@ -32,3 +32,11 @@
     mode: "a+x"
   tags:
     - softlayer-vpn
+
+- name: Add custom iptables rules
+  sudo: yes
+  template:
+    src: "softlayer/rackconnect-allow-custom-iptables.j2"
+    dest: "/etc/rackconnect-allow-custom-iptables"
+  tags:
+    - softlayer-vpn
