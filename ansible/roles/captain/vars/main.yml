@@ -1,5 +1,9 @@
 deploy_env: captain
 # supervisor_task_conf: "{{ service_home }}/supervisor"
+#
+# Defined in config directory:
+# softlayer_vpn_username: ...
+# softlayer_vpn_password: ...
 
 captain_dir: "{{ cchq_home }}/captain"
 captain_log_dir: "{{ captain_dir }}/log"
