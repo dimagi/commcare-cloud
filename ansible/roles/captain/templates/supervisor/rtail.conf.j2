@@ -1,6 +1,6 @@
 [program:captain-rtail]
 directory={{ captain_src_dir }}/
-command=/bin/bash -c "tail -F -n 100 {{ captain_log_dir }}/rq.log | rtail --host 0.0.0.0 --port 9090 --name Deploy-Log"
+command=/bin/bash -c "tail -F -n 100 {{ captain_log_dir }}/rq.log | rtail --host 0.0.0.0 --port 9090 --id deploy-log"
 user={{ cchq_user }}
 autostart=true
 autorestart=true
