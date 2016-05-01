@@ -531,7 +531,7 @@ def mail_admins(subject, message):
     with cd(env.code_root):
         sudo((
             '%(virtualenv_root)s/bin/python manage.py '
-            'mail_admins --subject "%(subject)s" "%(message)s"'
+            'mail_admins --subject "%(subject)s" "%(message)s" --slack'
         ) % {
             'virtualenv_root': env.virtualenv_root,
             'subject': subject,
@@ -682,7 +682,11 @@ def _deploy_without_asking():
              "Thank you for using AWESOME DEPLOY.")
         )
     except Exception:
-        _execute_with_timing(mail_admins, "Deploy failed", "You had better check the logs.")
+        _execute_with_timing(
+            mail_admins,
+            "Deploy to {} failed".format(env.environment),
+            "You had better check the logs."
+        )
         # hopefully bring the server back to life
         silent_services_restart()
         raise
