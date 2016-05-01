@@ -9,3 +9,11 @@ captain_repository: "https://github.com/dimagi/captain.git"
 captain_port: 9999
 captain_database_dir: "{{ captain_dir }}/db"
 captain_database: "{{ captain_database_dir }}/captain.sqlite3.db"
+
+# Defined in config:
+# igor_slack_token: ...
+
+igor_dir: "{{ cchq_home }}/igor"
+igor_log_dir: "{{ igor_dir }}/log"
+igor_src_dir: "{{ igor_dir }}/src"
+igor_repository: "https://github.com/dimagi/igor.git"
