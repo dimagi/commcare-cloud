@@ -33,3 +33,13 @@
     - "igor"
   tags:
     - igor
+
+- name: Set igor config settings
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: "igor/config.json.j2"
+    dest: "{{ igor_src_dir }}/config/production.json"
+  tags:
+    - igor
+    - igor-localsettings
+

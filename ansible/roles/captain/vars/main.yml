@@ -12,6 +12,7 @@ captain_database: "{{ captain_database_dir }}/captain.sqlite3.db"
 
 # Defined in config:
 # igor_slack_token: ...
+# igor_fogbugz_apikey: ...
 
 igor_dir: "{{ cchq_home }}/igor"
 igor_log_dir: "{{ igor_dir }}/log"
