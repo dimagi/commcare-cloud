@@ -10,6 +10,8 @@
     - "{{ igor_dir }}"
     - "{{ igor_log_dir }}"
     - "{{ igor_src_dir }}"
+  tags:
+    - igor
 
 - name: Pull full Igor source
   git:
@@ -20,8 +22,7 @@
     update: yes
   sudo_user: "{{ cchq_user }}"
   tags:
-    - git
-    - slow
+    - igor
 
 - name: Set igor supervisor confs
   sudo_user: "{{ cchq_user }}"
@@ -30,3 +31,5 @@
     dest: "{{ supervisor_task_conf }}/{{ item }}.conf"
   with_items:
     - "igor"
+  tags:
+    - igor
