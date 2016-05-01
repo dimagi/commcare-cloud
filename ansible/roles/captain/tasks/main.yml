@@ -79,3 +79,6 @@
   sudo: yes
   with_items:
     - tailon
+
+- name: Igor Integration
+  include: igor.yml
