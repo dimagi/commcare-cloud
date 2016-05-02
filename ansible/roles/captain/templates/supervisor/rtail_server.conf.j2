@@ -1,0 +1,14 @@
+[program:captain-rtail-server]
+directory={{ captain_src_dir }}/
+command=rtail-server --web-host 0.0.0.0 --web-port 8080 --udp-port 9090
+user={{ cchq_user }}
+autostart=true
+autorestart=true
+stdout_logfile={{ captain_log_dir }}/rtail_server.log
+redirect_stderr=true
+stderr_logfile={{ captain_log_dir }}/rtail_server.error.log
+;stopsignal=QUIT
+;stopwaitsecs=60
+;killasgroup=true
+;stopasgroup=false
+

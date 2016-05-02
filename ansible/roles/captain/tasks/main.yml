@@ -72,13 +72,14 @@
   with_items:
     - "rq"
     - "django"
-    - "tailon"
+    - "rtail"
+    - "rtail_server"
 
-- name: Install tailon
-  pip: name={{ item }}
+- name: Install npm items
+  npm: name={{ item }} state=present global=yes
   sudo: yes
   with_items:
-    - tailon
+    - rtail@0.2.1
 
 - name: Igor Integration
   include: igor.yml
