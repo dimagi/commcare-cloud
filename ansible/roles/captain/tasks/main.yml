@@ -52,7 +52,7 @@
   sudo_user: "{{ cchq_user }}"
   template:
     src: localsettings.py.j2
-    dest: "{{ captain_src_dir }}/chief/localsettings.py"
+    dest: "{{ captain_src_dir }}/captain/localsettings.py"
   tags:
     - localsettings
 
