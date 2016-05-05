@@ -1,0 +1,28 @@
+---
+nginx_sites:
+- server:
+    file_name: "{{ deploy_env }}_commcare_j2me"
+    listen: "80"
+    server_name: "{{ J2ME_SITE_HOST }}"
+    client_max_body_size: 100m
+    balancer: webworkers
+    proxy_set_headers:
+    - "Host $http_host"
+    - "X-Forwarded-For $remote_addr"
+    add_header: "X-Frame-Options SAMEORIGIN"
+    access_log: "{{ log_home }}/{{ deploy_env }}-j2me-timing.log timing"
+    location1:
+     name: "~* /a/[^/]+/phone/keys/"
+     return: "302 https://{{ SITE_HOST }}$request_uri"
+    location2:
+     name: "~* /a/[^/]+/receiver/"
+     return: "302 https://{{ SITE_HOST }}$request_uri"
+    location3:
+     name: "~* /a/[^/]+/phone/restore/"
+     return: "302 https://{{ SITE_HOST }}$request_uri"
+    location4:
+     name: "~* /a/[^/]+/apps/download/[a-z0-9]+/(profile|suite).xml"
+     return: "302 https://{{ SITE_HOST }}$request_uri"
+    location5:
+     name: "~* /a/[^/]+/apps/download/[a-z0-9]+/modules-[0-9]+/forms-[0-9]+.xml"
+     return: "302 https://{{ SITE_HOST }}$request_uri"
