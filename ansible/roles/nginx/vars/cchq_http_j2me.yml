@@ -36,3 +36,8 @@ nginx_sites:
      balancer: webworkers
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
+    location6:
+     name: "~* /a/[^/]+/apps/download/[^/]+/[^/]+/app_strings.txt"
+     balancer: webworkers
+     proxy_next_upstream_tries: 1
+     proxy_read_timeout: 900s
