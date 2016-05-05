@@ -31,3 +31,8 @@ nginx_sites:
      balancer: webworkers
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
+    location5:
+     name: "~* /a/[^/]+/apps/download/[a-z0-9]+/modules-[0-9]+/forms-[0-9]+.xml"
+     balancer: webworkers
+     proxy_next_upstream_tries: 1
+     proxy_read_timeout: 900s
