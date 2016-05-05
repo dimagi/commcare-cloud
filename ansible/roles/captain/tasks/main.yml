@@ -52,7 +52,7 @@
   sudo_user: "{{ cchq_user }}"
   template:
     src: localsettings.py.j2
-    dest: "{{ captain_src_dir }}/chief/localsettings.py"
+    dest: "{{ captain_src_dir }}/captain/localsettings.py"
   tags:
     - localsettings
 
@@ -72,10 +72,14 @@
   with_items:
     - "rq"
     - "django"
-    - "tailon"
+    - "rtail"
+    - "rtail_server"
 
-- name: Install tailon
-  pip: name={{ item }}
+- name: Install npm items
+  npm: name={{ item }} state=present global=yes
   sudo: yes
   with_items:
-    - tailon
+    - rtail@0.2.1
+
+- name: Igor Integration
+  include: igor.yml
