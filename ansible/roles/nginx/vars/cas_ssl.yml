@@ -1,0 +1,22 @@
+---
+nginx_ssl_cert: "{{ cas_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ cas_nginx_ssl_key }}"
+
+nginx_sites:
+- server:
+   file_name: "{{ deploy_env }}_cas_commcare"
+   listen: "443 ssl"
+   server_name: "{{ CAS_SITE_HOST }}"
+   client_max_body_size: 100m
+   balancer: webworkers
+   proxy_set_headers:
+   - "Host $http_host"
+   - "X-Forwarded-For $remote_addr"
+   add_header: "X-Frame-Options SAMEORIGIN"
+   access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
+   location1:
+    name: /
+    balancer: webworkers
+    proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+    proxy_next_upstream_tries: 1
+    proxy_read_timeout: 900s
