@@ -229,4 +229,6 @@ swiss:
         concurrency: 1
       email_queue:
         concurrency: 1
+      saved_exports_queue:
+        concurrency: 1
       flower: {}
