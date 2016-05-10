@@ -9,6 +9,9 @@ node.name: "{{ elasticsearch_node_name }}"
 
 transport.tcp.port: {{ elasticsearch_tcp_port }}
 
+# don't expose ES to public
+network.bind_host: localhost
+
 http.port: {{ elasticsearch_http_port }}
 
 http.cors.enabled: true
