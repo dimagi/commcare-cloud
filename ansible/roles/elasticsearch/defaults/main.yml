@@ -9,3 +9,5 @@ elasticsearch_conf_dir: "/etc/elasticsearch-{{ elasticsearch_version }}"
 elasticsearch_data_dir: "{{ encrypted_root }}/elasticsearch-{{ elasticsearch_version }}"
 elasticsearch_tcp_port: 9300
 elasticsearch_http_port: 9200
+# If monolith env bind es to localhost
+elasticsearch_bind_to_localhost: '{{ groups["all"]|length == 1 }}'
