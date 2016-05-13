@@ -460,8 +460,8 @@ INDICATOR_NAMESPACES = {
         ('mvp_indicators', "MVP"),
     ),
 }
-# should be 'ok' if couchdb version < 1.1.0, else 'update_after'
-COUCH_STALE_QUERY = {{ localsettings.COUCH_STALE_QUERY | default('ok') }}
+# should be 'ok' if couchdb version < 1.1.0, or cloudant, else 'update_after'
+COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('ok') }}'
 
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
@@ -579,7 +579,9 @@ MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
 
+{% if localsettings.get('J2ME_ADDRESS') %}
 J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
+{% endif %}
 
 CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
 
