@@ -460,8 +460,8 @@ INDICATOR_NAMESPACES = {
         ('mvp_indicators', "MVP"),
     ),
 }
-# should be 'ok' if couchdb version < 1.1.0, else 'update_after'
-COUCH_STALE_QUERY = {{ localsettings.COUCH_STALE_QUERY | default('ok') }}
+# should be 'ok' if couchdb version < 1.1.0, or cloudant, else 'update_after'
+COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('ok') }}'
 
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
