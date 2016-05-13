@@ -579,7 +579,9 @@ MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
 
+{% if localsettings.get('J2ME_ADDRESS') %}
 J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
+{% endif %}
 
 CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
 
