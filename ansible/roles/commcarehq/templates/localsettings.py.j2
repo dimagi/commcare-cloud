@@ -70,8 +70,6 @@ DATADOG_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHIN
 FORMPLAYER_TIMING_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
 FORMPLAYER_DIFF_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
 
-CSRF_SOFT_MODE = {{ localsettings.CSRF_SOFT_MODE | default(False) }}
-
 # Email setup
 # email settings: these ones are the custom hq ones
 EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
