@@ -22,7 +22,7 @@
   ufw:
     rule: allow
     direction: in
-    port: 60003
+    port: "60000:61000"
     proto: udp
   when: is_monolith
 
