@@ -10,6 +10,11 @@
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined and control_machine_ip is defined }
 
+- name: ufw (proxy firewall)
+  hosts: 'proxy'
+  sudo: yes
+  tasks:
+    - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
 
 - name: Datadog agent
   hosts: all
