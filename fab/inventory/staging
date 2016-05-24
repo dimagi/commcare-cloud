@@ -6,10 +6,10 @@ hqdjango0-staging.internal-va.commcarehq.org
 hqdjango1-staging.internal-va.commcarehq.org
 
 [postgresql]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [rabbitmq]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [zookeeper]
 hqkafka0-staging.internal.commcarehq.org
@@ -19,29 +19,29 @@ hqkafka0-staging.internal.commcarehq.org kafka_broker_id=1
 hqkafka0-staging.internal-va.commcarehq.org kafka_broker_id=0
 
 [celery]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [pillowtop]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [touchforms]
 hqtouch0-staging.internal-va.commcarehq.org
 
 [redis]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [memcached]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [elasticsearch]
 hqes1-staging.internal.commcarehq.org elasticsearch_node_name=hqes1-staging
 hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging
 
 [shared_dir_host]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [stanchion]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
 
 [riakcs]
 hqdjango4-staging.internal.commcarehq.org
@@ -50,4 +50,4 @@ hqdjango0-staging.internal-va.commcarehq.org
 hqdjango1-staging.internal-va.commcarehq.org
 
 [rackspace_cloud_backup]
-hqdb0-staging.internal-va.commcarehq.org
+hqdb1-staging.internal-va.commcarehq.org
