@@ -11,6 +11,8 @@ base:
   project: commcare-hq
   code_repo: 'git://github.com/dimagi/commcare-hq.git'
   timing_log: null  # make a file path to log deploy timing to it. e.g. '../fabric-timing.txt'
+  jython_memory: "3584m"
+  formplayer_memory: "3584m"
 
   # list of servers where the NewRelic app agent should be running
   new_relic_enabled: []
@@ -216,6 +218,8 @@ zambia:
 swiss:
   environment: swiss
   should_migrate: True
+  jython_memory: "1024m"
+  formplayer_memory: "1024m"
 
   celery_processes:
     '*':
