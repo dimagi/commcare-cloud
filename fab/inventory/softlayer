@@ -19,6 +19,9 @@
 [proxy0]
 10.162.36.203
 
+[proxy1]
+10.162.36.208
+
 [riak0]
 10.162.36.231
 
@@ -39,6 +42,7 @@
 
 [proxy:children]
 proxy0
+proxy1
 
 [webworkers:children]
 django0

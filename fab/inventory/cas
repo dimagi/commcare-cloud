@@ -1,5 +1,0 @@
-[proxy1]
-10.162.36.208
-
-[proxy:children]
-proxy1
