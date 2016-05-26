@@ -42,6 +42,8 @@
 
 [proxy:children]
 proxy0
+
+[cas_proxy:children]
 proxy1
 
 [webworkers:children]
