@@ -14,15 +14,15 @@ nginx_sites:
    location1:
     name: /errors
     alias: "{{ errors_home }}/pages"
-  location2:
+   location2:
     name: /supply
     proxy_pass: http://motech-main.internal.commcarehq.org:8888/motech
-  location3:
+   location3:
     name: /supply-dhis
     proxy_pass: http://motech-main.internal.commcarehq.org:8888/dhis
-  location4:
+   location4:
     name: /supply-test
     proxy_pass: http://motech2.internal.commcarehq.org:8080/motech
-  location5:
+   location5:
     name: /supply-test-dhis
     proxy_pass: http://motech2.internal.commcarehq.org:8080/dhis
