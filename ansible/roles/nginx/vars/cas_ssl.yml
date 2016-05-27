@@ -5,7 +5,7 @@ nginx_ssl_key:  "{{ cas_nginx_ssl_key }}"
 nginx_sites:
 - server:
    file_name: "{{ deploy_env }}_cas_commcare"
-   listen: "443 ssl"
+   listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
    client_max_body_size: 100m
    balancer: webworkers
