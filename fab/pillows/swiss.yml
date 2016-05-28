@@ -1,0 +1,9 @@
+exclude_groups:
+  - mvp_indicators
+  - fluff
+exclude_pillows:
+  - corehq.pillows.reportcase.ReportCasePillow
+  - corehq.pillows.reportxform.ReportXFormPillow
+  - SqlXFormToElasticsearchPillow
+  - SqlCaseToElasticsearchPillow
+  - CaseSearchToElasticsearchPillow
