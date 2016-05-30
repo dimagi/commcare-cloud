@@ -1176,9 +1176,10 @@ def version_static():
 
     cmd = 'resource_static'
     with cd(env.code_root):
-        sudo('rm -f tmp.sh resource_versions.py; {venv}/bin/python manage.py {cmd}'.format(
-            venv=env.virtualenv_root, cmd=cmd
-        ),
+        sudo(
+            'rm -f tmp.sh resource_versions.py; {venv}/bin/python manage.py {cmd}'.format(
+                venv=env.virtualenv_root, cmd=cmd
+            ),
             user=env.sudo_user
         )
 
