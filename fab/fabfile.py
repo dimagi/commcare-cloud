@@ -72,6 +72,7 @@ RELEASE_RECORD = 'RELEASES.txt'
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None
+env.always_use_pty = False
 env['sudo_prefix'] += '-H '
 
 if not hasattr(env, 'code_branch'):
