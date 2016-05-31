@@ -72,6 +72,7 @@ RELEASE_RECORD = 'RELEASES.txt'
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None
+env.always_use_pty = False
 env['sudo_prefix'] += '-H '
 
 if not hasattr(env, 'code_branch'):
@@ -1175,9 +1176,10 @@ def version_static():
 
     cmd = 'resource_static'
     with cd(env.code_root):
-        sudo('rm -f tmp.sh resource_versions.py; {venv}/bin/python manage.py {cmd}'.format(
-            venv=env.virtualenv_root, cmd=cmd
-        ),
+        sudo(
+            'rm -f tmp.sh resource_versions.py; {venv}/bin/python manage.py {cmd}'.format(
+                venv=env.virtualenv_root, cmd=cmd
+            ),
             user=env.sudo_user
         )
 
