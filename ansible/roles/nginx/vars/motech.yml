@@ -16,7 +16,7 @@ nginx_sites:
     alias: "{{ errors_home }}/pages"
    location2:
     name: /supply
-    proxy_pass: http://motech-main.internal.commcarehq.org:8888/motech
+    proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply
    location3:
     name: /supply-dhis
-    proxy_pass: http://motech-main.internal.commcarehq.org:8888/dhis
+    proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply-dhis
