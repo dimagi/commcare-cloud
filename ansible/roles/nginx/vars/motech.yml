@@ -20,9 +20,3 @@ nginx_sites:
    location3:
     name: /supply-dhis
     proxy_pass: http://motech-main.internal.commcarehq.org:8888/dhis
-   location4:
-    name: /supply-test
-    proxy_pass: http://motech2.internal.commcarehq.org:8080/motech
-   location5:
-    name: /supply-test-dhis
-    proxy_pass: http://motech2.internal.commcarehq.org:8080/dhis
