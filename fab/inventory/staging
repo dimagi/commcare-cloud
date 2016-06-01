@@ -12,10 +12,9 @@ hqdb1-staging.internal-va.commcarehq.org
 hqdb1-staging.internal-va.commcarehq.org
 
 [zookeeper]
-# hqkafka0-staging.internal.commcarehq.org
+hqkafka0-staging.internal-va.commcarehq.org
 
 [kafka]
-# hqkafka0-staging.internal.commcarehq.org kafka_broker_id=1
 hqkafka0-staging.internal-va.commcarehq.org kafka_broker_id=0
 
 [celery]
