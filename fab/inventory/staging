@@ -33,7 +33,6 @@ hqdb1-staging.internal-va.commcarehq.org
 hqdb1-staging.internal-va.commcarehq.org
 
 [elasticsearch]
-# hqes1-staging.internal.commcarehq.org elasticsearch_node_name=hqes1-staging
 hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging
 
 [shared_dir_host]
@@ -43,8 +42,6 @@ hqdb1-staging.internal-va.commcarehq.org
 hqdb1-staging.internal-va.commcarehq.org
 
 [riakcs]
-# hqdjango4-staging.internal.commcarehq.org
-# hqdjango5-staging.internal.commcarehq.org
 hqdjango0-staging.internal-va.commcarehq.org
 hqdjango1-staging.internal-va.commcarehq.org
 
