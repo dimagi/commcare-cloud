@@ -24,7 +24,7 @@
     dest: ~/{{ couchdb_distro_filename }}
   when: not couchdb_path.stat.exists
 
-- name: Compile + install CouchDB
+- name: Compile CouchDB
   shell: "{{ item }}"
   args:
     chdir: ~/
@@ -33,9 +33,18 @@
     - tar xvf ~/{{ couchdb_distro_filename }}
     - cd apache-couchdb-{{ couchdb_version }} && ./configure
     - make -C ~/apache-couchdb-{{ couchdb_version }}
-    - sudo make install -C ~/apache-couchdb-{{ couchdb_version }}
-    - rm -rf ~/apache-couchdb-{{ couchdb_version }}*
   when: not couchdb_path.stat.exists
+  register: couchdb_compile
+
+- name: Install CouchDB
+  shell: "{{ item }}"
+  args:
+    chdir: ~/
+  sudo: yes
+  with_items:
+    - make install -C ~/apache-couchdb-{{ couchdb_version }}
+    - rm -rf ~/apache-couchdb-{{ couchdb_version }}*
+  when: not couchdb_path.stat.exists and couchdb_compile|success
 
 - name: Add CouchDB user
   user: name=couchdb createhome=no password=no state=present
