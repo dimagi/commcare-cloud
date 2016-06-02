@@ -24,6 +24,7 @@
     dest: ~/{{ couchdb_distro_filename }}
   when: not couchdb_path.stat.exists
 
+# Note 'chdir: ~/' evaluates to /home/<ansible_user> or to /root/ depending on whether `sudo` is set to 'no' or 'yes'
 - name: Compile CouchDB
   shell: "{{ item }}"
   args:
@@ -36,14 +37,18 @@
   when: not couchdb_path.stat.exists
   register: couchdb_compile
 
+- stat: path=~/
+  sudo: no
+  register: ansible_home_path
+
 - name: Install CouchDB
   shell: "{{ item }}"
   args:
-    chdir: ~/
+    chdir: "{{ ansible_home_path.stat.path }}"
   sudo: yes
   with_items:
-    - make install -C ~/apache-couchdb-{{ couchdb_version }}
-    - rm -rf ~/apache-couchdb-{{ couchdb_version }}*
+    - make install -C ./apache-couchdb-{{ couchdb_version }}
+    - rm -rf ./apache-couchdb-{{ couchdb_version }}*
   when: not couchdb_path.stat.exists and couchdb_compile|success
 
 - name: Add CouchDB user
