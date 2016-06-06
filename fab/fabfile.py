@@ -953,10 +953,17 @@ def awesome_deploy(confirm="yes"):
         utils.abort('Deployment aborted.')
 
     if datetime.datetime.now().isoweekday() == 5:
+        warning_message = 'Friday'
+    elif env.environment == 'zambia':
+        warning_message = "Zambia"
+    else:
+        warning_message = ''
+
+    if warning_message
         print('')
         print('┓┏┓┏┓┃')
         print('┛┗┛┗┛┃＼○／')
-        print('┓┏┓┏┓┃  /      Friday')
+        print('┓┏┓┏┓┃  /      ' + warning_message)
         print('┛┗┛┗┛┃ノ)')
         print('┓┏┓┏┓┃         deploy,')
         print('┛┗┛┗┛┃')
