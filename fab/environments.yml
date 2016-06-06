@@ -13,6 +13,7 @@ base:
   timing_log: null  # make a file path to log deploy timing to it. e.g. '../fabric-timing.txt'
   jython_memory: "3584m"
   formplayer_memory: "3584m"
+  keepalive: 60
 
   # list of servers where the NewRelic app agent should be running
   new_relic_enabled: []
