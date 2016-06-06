@@ -1,19 +1,19 @@
 [proxy]
-hqproxy6.internal.commcarehq.org
+hqproxy0.internal-va.commcarehq.org
 
 [webworkers]
-hqdjango12.internal.commcarehq.org
-hqdjango13.internal.commcarehq.org
-hqdjango14.internal.commcarehq.org
+hqdjango0.internal-va.commcarehq.org
+hqdjango1.internal-va.commcarehq.org
+hqdjango2.internal-va.commcarehq.org
 
 [webworkers:vars]
 newrelic_app_name=django
 
 [postgresql]
-hqdb0.internal.commcarehq.org
+hqdb0.internal-va.commcarehq.org
 
 [rabbitmq]
-hqdb0.internal.commcarehq.org
+hqdb0.internal-va.commcarehq.org
 
 [zookeeper]
 hqes1.internal-va.commcarehq.org
@@ -25,27 +25,29 @@ hqes1.internal-va.commcarehq.org kafka_broker_id=1
 # ansible makes the first thing in this list the flower url
 # a little bit redundant with with more explicit settings in environments.yml
 # but ansible doesn't currently have access to that
-hqcelery1.internal.commcarehq.org
-hqcelery0.internal.commcarehq.org
+hqcelery1.internal-va.commcarehq.org
+hqcelery0.internal-va.commcarehq.org
 
 [celery:vars]
 newrelic_app_name=celery
 
 [pillowtop]
-hqpillowtop0.internal.commcarehq.org
+hqpillowtop0.internal-va.commcarehq.org
 
 [touchforms]
-hqtouch1.internal.commcarehq.org
+hqtouch0.internal-va.commcarehq.org
 
 [redis]
-hqdb0.internal.commcarehq.org
+hqdb0.internal-va.commcarehq.org
 
 [elasticsearch]
 hqes2.internal.commcarehq.org elasticsearch_node_name=hqes2
 hqes3.internal.commcarehq.org elasticsearch_node_name=hqes3
+hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes2
+hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes3
 
 [shared_dir_host]
-hqdb0.internal.commcarehq.org
+hqdb0.internal-va.commcarehq.org
 
 [riakcs]
 hqriak0.internal-va.commcarehq.org
@@ -60,5 +62,5 @@ datavol_device=/dev/xvdb
 [stanchion]
 hqriak0.internal-va.commcarehq.org
 
-[rackspace_cloud_backup]
-hqdb0.internal.commcarehq.org
+# [rackspace_cloud_backup]
+# hqdb0.internal-va.commcarehq.org
