@@ -34,11 +34,3 @@ s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_port }}"
 s3_blob_db_access_key: "{{ hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '' }}"
 s3_blob_db_secret_key: "{{ hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '' }}"
-
-newrelic_agents_pgbouncer: False
-newrelic_agents_postgresql: False
-newrelic_agents_redis: False
-newrelic_agents_rabbitmq: False
-newrelic_agents_elastic: False
-newrelic_agents_nginx: False
-newrelic_agents_apache: False

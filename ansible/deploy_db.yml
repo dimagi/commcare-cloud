@@ -61,17 +61,6 @@
   roles:
     - {role: kafka, tags: 'kafka'}
 
-- name: Newrelic Plugin Agent for DB
-  hosts:
-    - postgresql
-    - redis
-    - rabbitmq
-  tasks:
-    - include: roles/newrelic/tasks/plugin-agent.yml
-      when: run_newrelic_plugin_agent
-  tags:
-    - newrelic-plugin-agent
-
 - include: deploy_riakcs.yml
 
 # Note other machines also have java installed, but are initiated through the meta task
