@@ -24,8 +24,6 @@ hqdjango0-preview.internal.commcarehq.org
 
 [redis]
 
-[memcached]
-
 [elasticsearch]
 
 [deploy]

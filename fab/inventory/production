@@ -40,9 +40,6 @@ hqtouch1.internal.commcarehq.org
 [redis]
 hqdb0.internal.commcarehq.org
 
-[memcached]
-hqdb0.internal.commcarehq.org
-
 [elasticsearch]
 hqes2.internal.commcarehq.org elasticsearch_node_name=hqes2
 hqes3.internal.commcarehq.org elasticsearch_node_name=hqes3
