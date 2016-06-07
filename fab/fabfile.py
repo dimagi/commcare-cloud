@@ -959,7 +959,7 @@ def awesome_deploy(confirm="yes"):
     else:
         warning_message = ''
 
-    if warning_message
+    if warning_message:
         print('')
         print('┓┏┓┏┓┃')
         print('┛┗┛┗┛┃＼○／')
