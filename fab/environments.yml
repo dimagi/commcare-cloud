@@ -114,12 +114,6 @@ softlayer:
         concurrency: 3
       flower: {}
 
-preview:
-  environment: preview
-  code_branch: master
-  flower_port: 5556
-  django_port: 7999
-
 production:
   environment: production
   should_migrate: True
