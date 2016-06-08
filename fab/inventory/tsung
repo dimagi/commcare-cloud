@@ -15,10 +15,10 @@ hqdb0-staging.internal.commcarehq.org
 hqdb0-staging.internal.commcarehq.org
 
 [zookeeper]
-hqkafka0-staging.internal.commcarehq.org
+hqdb0-staging.internal.commcarehq.org
 
 [kafka]
-hqkafka0-staging.internal.commcarehq.org kafka_broker_id=843
+hqdb0-staging.internal.commcarehq.org kafka_broker_id=843
 
 [celery]
 hqdb0-staging.internal.commcarehq.org
@@ -28,9 +28,6 @@ hqdb0-staging.internal.commcarehq.org
 
 [redis]
 hqdb0-staging.internal.commcarehq.org
-
-[elasticsearch]
-hqes1-staging.internal.commcarehq.org elasticsearch_node_name=hqes1-tsung
 
 [shared_dir_host]
 hqdb0-staging.internal.commcarehq.org
