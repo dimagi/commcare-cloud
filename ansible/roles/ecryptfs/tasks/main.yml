@@ -106,5 +106,6 @@
 
 - name: Verify that entry is in fstab
   sudo: yes
-  shell: "grep -q '{{ encrypted_root }}\s*ecryptfs' /etc/fstab"
+  shell: "grep -q '^{{ encrypted_root }}\\s*{{ encrypted_root }}\\s*ecryptfs' /etc/fstab"
   always_run: True
+  changed_when: False
