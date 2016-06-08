@@ -1,7 +1,7 @@
 sudo apt-get update
 sudo apt-get install -y python-software-properties
 sudo apt-get install -y python-netaddr
-sudo apt-add-repository ppa:ansible/ansible
+sudo apt-add-repository ppa:ansible/ansible-1.9
 sudo apt-get update
 sudo apt-get install -y ansible
 
