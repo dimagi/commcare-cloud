@@ -108,7 +108,7 @@ env.roledefs = {
 
 def _require_target():
     require('root', 'code_root', 'hosts', 'environment',
-            provided_by=('staging', 'preview', 'production', 'softlayer', 'zambia'))
+            provided_by=('staging', 'production', 'softlayer', 'zambia'))
 
 
 class DeployMetadata(object):
@@ -332,19 +332,6 @@ def staging():
 
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'staging')
     load_env('staging')
-    execute(env_common)
-
-
-@task
-def preview():
-    """
-    preview.commcarehq.org
-
-    production data in a safe preview environment on remote host
-
-    """
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'preview')
-    load_env('preview')
     execute(env_common)
 
 
@@ -1012,7 +999,7 @@ def update_virtualenv():
 @task
 def supervisorctl(command):
     require('supervisor_roles',
-            provided_by=('staging', 'preview', 'production', 'softlayer', 'zambia'))
+            provided_by=('staging', 'production', 'softlayer', 'zambia'))
 
     @roles(env.supervisor_roles)
     def _inner():
@@ -1251,14 +1238,11 @@ def set_celery_supervisorconf():
 @roles(ROLES_PILLOWTOP)
 @parallel
 def set_pillowtop_supervisorconf():
-    # Don't run for preview,
-    # and also don't run if there are no hosts for the 'django_pillowtop' role.
+    # Don't run if there are no hosts for the 'django_pillowtop' role.
     # If there are no matching roles, it's still run once
     # on the 'deploy' machine, db!
     # So you need to explicitly test to see if all_hosts is empty.
-    if env.environment not in ['preview'] and env.all_hosts:
-        # preview environment should not run pillowtop and index stuff
-        # just rely on what's on staging
+    if env.all_hosts:
         _rebuild_supervisor_conf_file(
             'make_supervisor_pillowtop_conf',
             'supervisor_pillowtop.conf',
