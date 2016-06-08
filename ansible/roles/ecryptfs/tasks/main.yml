@@ -103,3 +103,9 @@
     backup: yes
     line: "{{ updated_mount_conf.stdout if not 'skipped' in updated_mount_conf else mount_conf.stdout }}"
   when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
+
+- name: Verify that entry is in fstab
+  sudo: yes
+  shell: "grep -q '^{{ encrypted_root }}\\s*{{ encrypted_root }}\\s*ecryptfs' /etc/fstab"
+  always_run: True
+  changed_when: False
