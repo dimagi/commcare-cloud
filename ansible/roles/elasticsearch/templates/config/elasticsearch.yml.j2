@@ -7,6 +7,9 @@ cluster.name: "{{ elasticsearch_cluster_name }}"
 
 node.name: "{{ elasticsearch_node_name }}"
 
+# disable multiple nodes starting from the same installation location
+node.max_local_storage_nodes: 1
+
 transport.tcp.port: {{ elasticsearch_tcp_port }}
 
 http.port: {{ elasticsearch_http_port }}
