@@ -31,3 +31,9 @@ hqdb0-staging.internal.commcarehq.org
 
 [shared_dir_host]
 hqdb0-staging.internal.commcarehq.org
+
+[touchforms]
+hqdb0-staging.internal.commcarehq.org
+
+[elasticsearch]
+hqdb0-staging.internal.commcarehq.org elasticsearch_node_name=tsung_tests
