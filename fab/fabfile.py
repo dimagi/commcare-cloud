@@ -280,6 +280,13 @@ def get_pillow_env_config(environment):
 
 
 @task
+def tsung():
+    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'tsung')
+    load_env('tsung')
+    execute(env_common)
+
+
+@task
 def swiss():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'swiss')
     load_env('swiss')
