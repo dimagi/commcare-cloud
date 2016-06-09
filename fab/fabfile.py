@@ -873,7 +873,7 @@ def clean_releases(keep=3):
     Cleans old and failed deploys from the ~/www/<environment>/releases/ directory
     """
     # TODO remove
-    print red("Skipping clean_releases until the 2016-06-08 elasticsearch file "
+    print red("Skipping clean_releases until the 2016-06-08 elasticsearch fire "
               "is resolved.\n"
               "There will be long-running processes on production and we don't "
               "want those code dirs blown away.")
