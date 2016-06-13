@@ -752,9 +752,9 @@ def copy_tf_localsettings():
 def copy_formplayer_properties():
     with settings(warn_only=True):
         sudo(
-            'cp {}/submodules/formplayer/config/application.properties '
+            'cp {}/submodules/formplayer/config/{}.properties '
             '{}/submodules/formplayer/config'.format(
-                env.code_current, env.code_root
+                env.code_current, env.environment, env.code_root
             ))
 
 
