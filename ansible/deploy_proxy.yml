@@ -3,9 +3,7 @@
 - name: Proxy
   hosts: proxy
   roles:
-    - { role: hq_status, when: proxy_type == 'apache2' }
     - { role: shared_dir }
-    - { role: apache2, when: proxy_type == 'apache2' }
     - { role: nginx, when: proxy_type == 'nginx', action: install }
     - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq_ssl }
     - { role: nginx, when: proxy_type == 'nginx', action: errorpages }
