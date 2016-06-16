@@ -56,11 +56,11 @@ server {
     {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
         {{ x }} {{ y }};
     {% endfor %}
-    {% for k,v in location.iteritems() if k == 'proxy_set_headers' %}
-      {% for header in location %}
+    {% if location.get('proxy_set_headers') %}
+      {% for header in location.proxy_set_headers %}
         proxy_set_header {{ header }};
       {% endfor %}
-    {% endfor %}
+    {% endif %}
 
   }
 {% endfor %}
