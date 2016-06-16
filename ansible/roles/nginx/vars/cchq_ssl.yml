@@ -1,11 +1,17 @@
 ---
 nginx_sites:
 - server:
+   balancers:
+    - name: "{{ deploy_env }}_commcare"
+      hosts: webworkers
+      port: "{{ django_port }}"
+    - name: "{{ deploy_env }}_formplayer"
+      hosts: touchforms
+      port: 8181
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 500m
-   balancer: webworkers
    proxy_set_headers:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
@@ -13,7 +19,7 @@ nginx_sites:
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    location1:
     name: /
-    balancer: webworkers
+    balancer: "{{ deploy_env }}_commcare"
     proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
     proxy_next_upstream_tries: 1
     proxy_read_timeout: 900s
@@ -37,3 +43,8 @@ nginx_sites:
     proxy_set_headers:
     - "Upgrade $http_upgrade"
     - "Connection \"upgrade\""
+   location6:
+    name: /formplayer
+    balancer: "{{ deploy_env }}_formplayer/"
+    proxy_next_upstream_tries: 1
+    proxy_read_timeout: 900s

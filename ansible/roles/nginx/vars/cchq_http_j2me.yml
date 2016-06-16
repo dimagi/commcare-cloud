@@ -1,11 +1,15 @@
 ---
 nginx_sites:
 - server:
+    balancers:
+     - name: "{{ deploy_env }}_commcare_j2me"
+       hosts: webworkers
+       port: "{{ django_port }}"
     file_name: "{{ deploy_env }}_commcare_j2me"
     listen: "80"
     server_name: "{{ J2ME_SITE_HOST }}"
     client_max_body_size: 100m
-    balancer: webworkers
+    balancer: "{{ deploy_env }}_commcare_j2me"
     proxy_set_headers:
     - "Host $http_host"
     - "X-Forwarded-For $remote_addr"
@@ -13,31 +17,31 @@ nginx_sites:
     access_log: "{{ log_home }}/{{ deploy_env }}-j2me-timing.log timing"
     location1:
      name: "~* /a/[^/]+/phone/keys/"
-     balancer: webworkers
+     balancer: "{{ deploy_env }}_commcare_j2me"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
     location2:
      name: "~* /a/[^/]+/receiver/"
-     balancer: webworkers
+     balancer: "{{ deploy_env }}_commcare_j2me"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
     location3:
      name: "~* /a/[^/]+/phone/restore/"
-     balancer: webworkers
+     balancer: "{{ deploy_env }}_commcare_j2me"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
     location4:
      name: "~* /a/[^/]+/apps/download/[a-z0-9]+/(profile|suite).xml"
-     balancer: webworkers
+     balancer: "{{ deploy_env }}_commcare_j2me"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
     location5:
      name: "~* /a/[^/]+/apps/download/[a-z0-9]+/modules-[0-9]+/forms-[0-9]+.xml"
-     balancer: webworkers
+     balancer: "{{ deploy_env }}_commcare_j2me"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s
     location6:
      name: "~* /a/[^/]+/apps/download/[^/]+/[^/]+/app_strings.txt"
-     balancer: webworkers
+     balancer: "{{ deploy_env }}_commcare_j2me"
      proxy_next_upstream_tries: 1
      proxy_read_timeout: 900s

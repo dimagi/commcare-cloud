@@ -4,11 +4,14 @@ nginx_ssl_key:  "{{ cas_nginx_ssl_key }}"
 
 nginx_sites:
 - server:
+   balancers:
+    - name: "{{ deploy_env }}_cas_commcare"
+      hosts: webworkers
+      port: "{{ django_port }}"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
    client_max_body_size: 100m
-   balancer: webworkers
    proxy_set_headers:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
@@ -16,7 +19,7 @@ nginx_sites:
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    location1:
     name: /
-    balancer: webworkers
+    balancer: "{{ deploy_env }}_cas_commcare"
     proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
     proxy_next_upstream_tries: 1
     proxy_read_timeout: 900s

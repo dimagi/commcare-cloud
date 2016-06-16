@@ -2,14 +2,14 @@
 # {{ ansible_managed }}
 #
 
-{% if item.server.get('balancer', None) %}
-upstream {{ item.server.file_name }} {
+{% for balancer in item.server.get('balancers', []) %}
+upstream {{ balancer.name }} {
   least_conn;
-{% for host in groups[item.server.balancer] %}
-  server {{ host }}:{{ item.server.get('upstream_port', django_port) }};
+{% for host in groups[balancer.hosts] %}
+  server {{ host }}:{{ balancer.port }};
 {% endfor %}
 }
-{% endif %}
+{% endfor %}
 
 server {
 
@@ -30,7 +30,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancer', 'proxy_set_headers', 'upstream_port'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
@@ -48,7 +48,7 @@ server {
 {% for k,v in item.server.iteritems() if k.find('location') != -1 %}
   location {{ v.name }} {
     {% if v.get('balancer', None) %}
-        proxy_pass http://{{ item.server.file_name }};
+        proxy_pass http://{{ v.balancer }};
     {% endif %}
     {% if v.get('is_internal', False) == True %}
         internal;
