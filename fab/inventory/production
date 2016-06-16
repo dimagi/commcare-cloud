@@ -41,10 +41,8 @@ hqtouch1.internal.commcarehq.org
 hqdb0.internal.commcarehq.org
 
 [elasticsearch]
-hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes0 elasticsearch_node_zone=virginia
-hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes1 elasticsearch_node_zone=virginia
-hqes2.internal.commcarehq.org elasticsearch_node_name=hqes2 elasticsearch_node_zone=chicago
-hqes3.internal.commcarehq.org elasticsearch_node_name=hqes3 elasticsearch_node_zone=chicago
+hqes2.internal.commcarehq.org elasticsearch_node_name=hqes2
+hqes3.internal.commcarehq.org elasticsearch_node_name=hqes3
 
 [shared_dir_host]
 hqdb0.internal.commcarehq.org
