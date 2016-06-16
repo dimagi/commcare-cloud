@@ -9,7 +9,6 @@ nginx_sites:
     listen: "80"
     server_name: "{{ J2ME_SITE_HOST }}"
     client_max_body_size: 100m
-    balancer: "{{ deploy_env }}_commcare_j2me"
     proxy_set_headers:
     - "Host $http_host"
     - "X-Forwarded-For $remote_addr"

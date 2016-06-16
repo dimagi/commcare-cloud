@@ -2,16 +2,11 @@
 # Send anything from http -> https
 nginx_sites:
 - server:
-   balancers:
-    - name: "{{ deploy_env }}_commcare_static"
-      hosts: webworkers
-      port: "{{ django_port }}"
    file_name: "{{ deploy_env }}_commcare_static"
    listen: "80"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 100m
    proxy_set_header: "Host $http_host"
    locations:
-     - balancer: "{{ deploy_env }}_commcare_static"
-       name: /
+     - name: /
        return: "301 https://$server_name$request_uri"
