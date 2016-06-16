@@ -45,19 +45,19 @@ server {
   error_page {{ value }};
 {% endfor %}
 
-{% for k,v in item.server.iteritems() if k.find('location') != -1 %}
-  location {{ v.name }} {
-    {% if v.get('balancer', None) %}
-        proxy_pass http://{{ v.balancer }};
+{% for location in item.server.get('locations', []) %}
+  location {{ location.name }} {
+    {% if location.get('balancer', None) %}
+        proxy_pass http://{{ location.balancer }};
     {% endif %}
-    {% if v.get('is_internal', False) == True %}
+    {% if location.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in v.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
+    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
         {{ x }} {{ y }};
     {% endfor %}
-    {% for k,v in v.iteritems() if k == 'proxy_set_headers' %}
-      {% for header in v %}
+    {% for k,v in location.iteritems() if k == 'proxy_set_headers' %}
+      {% for header in location %}
         proxy_set_header {{ header }};
       {% endfor %}
     {% endfor %}
