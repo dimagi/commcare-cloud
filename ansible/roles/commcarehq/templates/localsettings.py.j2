@@ -536,17 +536,6 @@ OPEN_EXCHANGE_RATES_API_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_API_ID }}'
 MANDRILL_APIKEY = '{{ localsettings.MANDRILL_APIKEY }}'
 {% endif %}
 
-{% if localsettings.get('MAILCHIMP_APIKEY') %}
-MAILCHIMP_APIKEY = '{{ localsettings.MAILCHIMP_APIKEY }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_COMMCARE_USERS_ID') %}
-MAILCHIMP_COMMCARE_USERS_ID = '{{ localsettings.MAILCHIMP_COMMCARE_USERS_ID }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_MASS_EMAIL_ID') %}
-MAILCHIMP_MASS_EMAIL_ID = '{{ localsettings.MAILCHIMP_MASS_EMAIL_ID }}'
-{% endif %}
 
 {% if localsettings.get('STRIPE_PRIVATE_KEY') %}
 STRIPE_PRIVATE_KEY = '{{ localsettings.STRIPE_PRIVATE_KEY }}'
