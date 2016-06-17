@@ -84,6 +84,12 @@
     group: root
     mode: 0770
 
+- name: Check for encrypted drive in fstab
+  shell: grep '{{ encrypted_root }} ecryptfs' /etc/fstab
+  register: fstab_contents
+  failed_when: false
+  changed_when: false
+
 - name: Register mount configuration
   sudo: yes
   shell: "grep '{{ encrypted_root }} ecryptfs' /etc/mtab"
@@ -102,7 +108,7 @@
     regexp: "^{{ encrypted_root }}"
     backup: yes
     line: "{{ updated_mount_conf.stdout if not 'skipped' in updated_mount_conf else mount_conf.stdout }}"
-  when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
+  when: "'{{ encrypted_root }}' not in fstab_contents.stdout"
 
 - name: Verify that entry is in fstab
   sudo: yes
