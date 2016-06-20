@@ -779,7 +779,7 @@ def copy_release_files():
 def rollback():
     """
     Rolls back the servers to the previous release if it exists and is same
-    across servers. Note this will not rollback the supervisor services.
+    across servers.
     """
     number_of_releases = execute(get_number_of_releases)
     if not all(map(lambda n: n > 1, number_of_releases)):
