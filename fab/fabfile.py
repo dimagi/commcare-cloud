@@ -438,11 +438,6 @@ def preindex_views():
 
 
 def _preindex_views():
-    if not env.should_migrate:
-        utils.abort((
-            'Skipping preindex_views for "%s" because should_migrate = False'
-        ) % env.environment)
-
     with cd(env.code_root):
         sudo((
             'echo "%(virtualenv_root)s/bin/python '
@@ -626,19 +621,14 @@ def _deploy_without_asking():
 
         _execute_with_timing(build_formplayer)
 
-        do_migrate = env.should_migrate
-        if do_migrate:
+        if all(execute(_migrations_exist).values()):
+            _execute_with_timing(_stop_pillows)
+            execute(set_in_progress_flag)
+            _execute_with_timing(stop_celery_tasks)
+        _execute_with_timing(_migrate)
 
-            if all(execute(_migrations_exist).values()):
-                _execute_with_timing(_stop_pillows)
-                execute(set_in_progress_flag)
-                _execute_with_timing(stop_celery_tasks)
-            _execute_with_timing(_migrate)
-        else:
-            print blue("No migration required, skipping.")
         _execute_with_timing(do_update_translations)
-        if do_migrate:
-            _execute_with_timing(flip_es_aliases)
+        _execute_with_timing(flip_es_aliases)
 
         # hard update of manifest.json since we're about to force restart
         # all services

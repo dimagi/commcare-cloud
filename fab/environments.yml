@@ -6,7 +6,6 @@ base:
   django_bind: 0.0.0.0
   django_port: 9010
   flower_port: 5555
-  should_migrate: False
   home: "/home/cchq"
   project: commcare-hq
   code_repo: 'git://github.com/dimagi/commcare-hq.git'
@@ -19,7 +18,6 @@ base:
   new_relic_enabled: []
   
 development:
-  should_migrate: True
 
   # parameters for configuring the celery worker processes
   celery_processes:
@@ -54,7 +52,6 @@ development:
 
 india:
   environment: india
-  should_migrate: True
 
   celery_processes:
     '*':
@@ -84,7 +81,6 @@ india:
 
 softlayer:
   environment: softlayer
-  should_migrate: True
 
   celery_processes:
     '*':
@@ -116,7 +112,6 @@ softlayer:
 
 production:
   environment: production
-  should_migrate: True
 
   new_relic_enabled:
     - hqdjango12.internal.commcarehq.org
@@ -160,7 +155,6 @@ production:
 
 staging:
   environment: staging
-  should_migrate: True
 
   celery_processes:
     '*':
@@ -180,7 +174,6 @@ staging:
 
 zambia:
   environment: zambia
-  should_migrate: True
 
   celery_processes:
     '*':
@@ -212,7 +205,6 @@ zambia:
 
 swiss:
   environment: swiss
-  should_migrate: True
   jython_memory: "1024m"
   formplayer_memory: "1024m"
 
@@ -246,7 +238,6 @@ swiss:
 
 tsung:
   environment: tsung
-  should_migrate: True
   jython_memory: "1024m"
   formplayer_memory: "1024m"
 
