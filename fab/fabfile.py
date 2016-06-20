@@ -43,32 +43,27 @@ from fabric.colors import blue, red, yellow, magenta
 from fabric.context_managers import settings, cd, shell_env
 from fabric.contrib import files, console
 from fabric.operations import require
+from const import (
+    ROLES_ALL_SRC,
+    ROLES_ALL_SERVICES,
+    ROLES_CELERY,
+    ROLES_PILLOWTOP,
+    ROLES_DJANGO,
+    ROLES_TOUCHFORMS,
+    ROLES_STATIC,
+    ROLES_SMS_QUEUE,
+    ROLES_REMINDER_QUEUE,
+    ROLES_PILLOW_RETRY_QUEUE,
+    ROLES_DB_ONLY,
+    RELEASE_RECORD,
+    RSYNC_EXCLUDE,
+)
 
-
-ROLES_ALL_SRC = ['pg', 'django_monolith', 'django_app', 'django_celery', 'django_pillowtop', 'formsplayer', 'staticfiles']
-ROLES_ALL_SERVICES = ['django_monolith', 'django_app', 'django_celery', 'django_pillowtop', 'formsplayer', 'staticfiles']
-ROLES_CELERY = ['django_monolith', 'django_celery']
-ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
-ROLES_DJANGO = ['django_monolith', 'django_app']
-ROLES_TOUCHFORMS = ['django_monolith', 'formsplayer']
-ROLES_STATIC = ['django_monolith', 'staticfiles']
-ROLES_SMS_QUEUE = ['django_monolith', 'sms_queue']
-ROLES_REMINDER_QUEUE = ['django_monolith', 'reminder_queue']
-ROLES_PILLOW_RETRY_QUEUE = ['django_monolith', 'pillow_retry_queue']
-ROLES_DB_ONLY = ['pg', 'django_monolith']
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
 
 PROJECT_ROOT = os.path.dirname(__file__)
-RSYNC_EXCLUDE = (
-    '.DS_Store',
-    '.git',
-    '*.pyc',
-    '*.example',
-    '*.db',
-    )
-RELEASE_RECORD = 'RELEASES.txt'
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None
