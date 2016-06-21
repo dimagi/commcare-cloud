@@ -1,15 +1,10 @@
 ---
 nginx_sites:
 - server:
-   balancers:
-    - name: commtrack_public
-      hosts: webworkers
-      port: "{{ django_port }}"
    file_name: commtrack_public
    listen: "80"
    server_name: "{{ COMMTRACK_SITE_HOST }}"
    client_max_body_size: 100m
-   balancer: commtrack_public
    proxy_set_header: "Host $http_host"
    locations:
      - name: /
