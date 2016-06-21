@@ -7,3 +7,4 @@
   gather_facts: True
   roles:
     - "{{ role }}"
+  sudo: yes
