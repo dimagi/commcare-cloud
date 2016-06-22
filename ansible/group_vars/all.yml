@@ -32,7 +32,10 @@ stanchion_data_dir: "{{ encrypted_root }}/stanchion"
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_port }}"
-s3_blob_db_access_key: "{{ hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '' }}"
-s3_blob_db_secret_key: "{{ hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '' }}"
+
+# To use these vars without deploying the riak control machine
+# add s3_access_key and s3_secret_key to the ansible secret config directory
+s3_blob_db_access_key: "{{ s3_access_key if s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
+s3_blob_db_secret_key:  "{{ s3_secret_key if s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
 
 datadog_integrations: []
