@@ -188,8 +188,8 @@
   template:
     src: "create_postgres_dump.sh.j2"
     dest: "/etc/cron.d/create_postgres_dump.sh"
-    group: root
-    owner: root
+    group: postgres
+    owner: postgres
     mode: 700
     backup: yes
   when: backup_postgres
