@@ -5,7 +5,7 @@
     dest: "/etc/cron.d/create_blobdb_backup.sh"
     group: root
     owner: root
-    mode: 700
+    mode: 0700
     backup: yes
   when: backup_blobdb
 

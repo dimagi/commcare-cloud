@@ -190,7 +190,7 @@
     dest: "/etc/cron.d/create_postgres_dump.sh"
     group: postgres
     owner: postgres
-    mode: 700
+    mode: 0700
     backup: yes
   when: backup_postgres
 
