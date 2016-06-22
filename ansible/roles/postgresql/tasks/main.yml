@@ -182,6 +182,7 @@
     group: postgres
     mode: 0755
     state: directory
+  when: backup_postgres
 
 - name: Copy postgres backup script
   sudo: yes
