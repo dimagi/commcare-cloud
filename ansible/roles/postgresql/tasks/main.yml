@@ -182,15 +182,16 @@
     group: postgres
     mode: 0755
     state: directory
+  when: backup_postgres
 
 - name: Copy postgres backup script
   sudo: yes
   template:
     src: "create_postgres_dump.sh.j2"
     dest: "/etc/cron.d/create_postgres_dump.sh"
-    group: root
-    owner: root
-    mode: 700
+    group: postgres
+    owner: postgres
+    mode: 0700
     backup: yes
   when: backup_postgres
 
