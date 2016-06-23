@@ -48,17 +48,17 @@ hqes3.internal.commcarehq.org elasticsearch_node_name=hqes3
 hqdb0.internal.commcarehq.org
 
 [riakcs]
-hqriak0.internal.commcarehq.org
-hqriak1.internal.commcarehq.org
-hqriak2.internal.commcarehq.org
-hqriak3.internal.commcarehq.org
-hqriak4.internal.commcarehq.org
+hqriak0.internal-va.commcarehq.org
+hqriak1.internal-va.commcarehq.org
+hqriak2.internal-va.commcarehq.org
+hqriak3.internal-va.commcarehq.org
+hqriak4.internal-va.commcarehq.org
 
 [riakcs:vars]
 datavol_device=/dev/xvdb
 
 [stanchion]
-hqriak0.internal.commcarehq.org
+hqriak0.internal-va.commcarehq.org
 
 [rackspace_cloud_backup]
 hqdb0.internal.commcarehq.org
