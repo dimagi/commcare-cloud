@@ -58,6 +58,7 @@ from const import (
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
 )
+from exceptions import PreindexNotFinished
 from operations import (
     db,
     staticfiles,
