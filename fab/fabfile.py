@@ -518,7 +518,7 @@ def _deploy_without_asking():
 
         _execute_with_timing(formplayer.build_formplayer)
 
-        if all(execute(_migrations_exist).values()):
+        if all(execute(db.migrations_exist).values()):
             _execute_with_timing(supervisor.stop_pillows)
             execute(db.set_in_progress_flag)
             _execute_with_timing(supervisor.stop_celery_tasks)
@@ -892,24 +892,6 @@ def silent_services_restart(use_current_release=False):
     execute(supervisor.restart_webworkers)
 
 
-@roles(ROLES_DB_ONLY)
-def _migrations_exist():
-    """
-    Check if there exists database migrations to run
-    """
-    _require_target()
-    with cd(env.code_root):
-        try:
-            n_migrations = int(sudo(
-                '%(virtualenv_root)s/bin/python manage.py migrate --list | grep "\[ ]" | wc -l' % env)
-            )
-        except Exception:
-            # If we fail on this, return True to be safe. It's most likely cause we lost connection and
-            # failed to return a value python could parse into an int
-            return True
-        return n_migrations > 0
-
-
 @task
 def set_supervisor_config():
     setup_release()
@@ -924,7 +906,6 @@ def stop_pillows():
 @task
 def stop_pillows():
     execute(supervisor.start_pillows, True)
-
 
 
 @task
