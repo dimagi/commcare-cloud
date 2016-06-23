@@ -987,7 +987,3 @@ def _get_github():
         return login(
             token=GITHUB_APIKEY,
         )
-
-
-class PreindexNotFinished(Exception):
-    pass
