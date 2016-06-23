@@ -17,21 +17,22 @@ from ..const import (
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
 )
+from ..utils import execute_with_timing
 
 
 def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     _require_target()
-    _execute_with_timing(set_celery_supervisorconf)
-    _execute_with_timing(set_djangoapp_supervisorconf)
-    _execute_with_timing(set_errand_boy_supervisorconf)
-    _execute_with_timing(set_formsplayer_supervisorconf)
-    _execute_with_timing(set_formplayer_spring_supervisorconf)
-    _execute_with_timing(set_pillowtop_supervisorconf)
-    _execute_with_timing(set_sms_queue_supervisorconf)
-    _execute_with_timing(set_reminder_queue_supervisorconf)
-    _execute_with_timing(set_pillow_retry_queue_supervisorconf)
-    _execute_with_timing(set_websocket_supervisorconf)
+    execute_with_timing(set_celery_supervisorconf)
+    execute_with_timing(set_djangoapp_supervisorconf)
+    execute_with_timing(set_errand_boy_supervisorconf)
+    execute_with_timing(set_formsplayer_supervisorconf)
+    execute_with_timing(set_formplayer_spring_supervisorconf)
+    execute_with_timing(set_pillowtop_supervisorconf)
+    execute_with_timing(set_sms_queue_supervisorconf)
+    execute_with_timing(set_reminder_queue_supervisorconf)
+    execute_with_timing(set_pillow_retry_queue_supervisorconf)
+    execute_with_timing(set_websocket_supervisorconf)
 
     # if needing tunneled ES setup, comment this back in
     # execute(set_elasticsearch_supervisorconf)

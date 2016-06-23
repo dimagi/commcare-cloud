@@ -64,6 +64,7 @@ from operations import (
     supervisor,
     formplayer,
 )
+from utils import execute_with_timing
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -493,44 +494,44 @@ def _confirm_translated():
 @task
 def setup_release():
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    _execute_with_timing(create_code_dir)
-    _execute_with_timing(update_code, deploy_ref)
-    _execute_with_timing(update_virtualenv)
+    execute_with_timing(create_code_dir)
+    execute_with_timing(update_code, deploy_ref)
+    execute_with_timing(update_virtualenv)
 
-    _execute_with_timing(copy_release_files)
+    execute_with_timing(copy_release_files)
 
 
 def _deploy_without_asking():
     try:
         setup_release()
 
-        _execute_with_timing(db.preindex_views)
-        _execute_with_timing(db.ensure_preindex_completion)
+        execute_with_timing(db.preindex_views)
+        execute_with_timing(db.ensure_preindex_completion)
 
         # handle static files
-        _execute_with_timing(staticfiles.version_static)
-        _execute_with_timing(staticfiles.bower_install)
-        _execute_with_timing(staticfiles.npm_install)
-        _execute_with_timing(staticfiles.collectstatic)
-        _execute_with_timing(staticfiles.compress)
+        execute_with_timing(staticfiles.version_static)
+        execute_with_timing(staticfiles.bower_install)
+        execute_with_timing(staticfiles.npm_install)
+        execute_with_timing(staticfiles.collectstatic)
+        execute_with_timing(staticfiles.compress)
 
         supervisor.set_supervisor_config()
 
-        _execute_with_timing(formplayer.build_formplayer)
+        execute_with_timing(formplayer.build_formplayer)
 
         if all(execute(db.migrations_exist).values()):
-            _execute_with_timing(supervisor.stop_pillows)
+            execute_with_timing(supervisor.stop_pillows)
             execute(db.set_in_progress_flag)
-            _execute_with_timing(supervisor.stop_celery_tasks)
-        _execute_with_timing(db.migrate)
+            execute_with_timing(supervisor.stop_celery_tasks)
+        execute_with_timing(db.migrate)
 
-        _execute_with_timing(staticfiles.update_translations)
-        _execute_with_timing(db.flip_es_aliases)
+        execute_with_timing(staticfiles.update_translations)
+        execute_with_timing(db.flip_es_aliases)
 
         # hard update of manifest.json since we're about to force restart
         # all services
-        _execute_with_timing(staticfiles.update_manifest)
-        _execute_with_timing(clean_releases)
+        execute_with_timing(staticfiles.update_manifest)
+        execute_with_timing(clean_releases)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy yet",
@@ -539,7 +540,7 @@ def _deploy_without_asking():
              "Thank you for using AWESOME DEPLOY.")
         )
     except Exception:
-        _execute_with_timing(
+        execute_with_timing(
             mail_admins,
             "Deploy to {} failed".format(env.environment),
             "You had better check the logs."
@@ -548,10 +549,10 @@ def _deploy_without_asking():
         silent_services_restart()
         raise
     else:
-        _execute_with_timing(update_current)
+        execute_with_timing(update_current)
         silent_services_restart()
-        _execute_with_timing(record_successful_release)
-        _execute_with_timing(record_successful_deploy)
+        execute_with_timing(record_successful_release)
+        execute_with_timing(record_successful_deploy)
 
 
 @task
@@ -938,15 +939,6 @@ def reset_pillow(pillow):
         prefix=prefix,
         pillow=pillow
     ))
-
-
-def _execute_with_timing(fn, *args, **kwargs):
-    start_time = datetime.datetime.utcnow()
-    execute(fn, *args, **kwargs)
-    if env.timing_log:
-        with open(env.timing_log, 'a') as timing_log:
-            duration = datetime.datetime.utcnow() - start_time
-            timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
 
 
 def _get_github():
