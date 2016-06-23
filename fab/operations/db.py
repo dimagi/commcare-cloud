@@ -62,3 +62,18 @@ def flip_es_aliases():
     """Flip elasticsearch aliases to the latest version"""
     with cd(env.code_root):
         sudo('%(virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
+
+
+@roles(ROLES_DB_ONLY)
+def migrate():
+    """run migrations on remote environment"""
+    with cd(env.code_root):
+        sudo('%(virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
+        sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
+
+
+@roles(ROLES_DB_ONLY)
+def set_in_progress_flag(use_current_release=False):
+    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
+    with cd(env.code_root if not use_current_release else env.code_current):
+        sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))

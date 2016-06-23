@@ -446,12 +446,6 @@ def record_successful_deploy():
         })
 
 
-@roles(ROLES_DB_ONLY)
-def set_in_progress_flag(use_current_release=False):
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))
-
 
 @roles(ROLES_ALL_SRC)
 @parallel
@@ -526,9 +520,9 @@ def _deploy_without_asking():
 
         if all(execute(_migrations_exist).values()):
             _execute_with_timing(supervisor.stop_pillows)
-            execute(set_in_progress_flag)
+            execute(db.set_in_progress_flag)
             _execute_with_timing(supervisor.stop_celery_tasks)
-        _execute_with_timing(_migrate)
+        _execute_with_timing(db.migrate)
 
         _execute_with_timing(staticfiles.update_translations)
         _execute_with_timing(db.flip_es_aliases)
@@ -893,20 +887,9 @@ def silent_services_restart(use_current_release=False):
     """
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
-    execute(set_in_progress_flag, use_current_release)
+    execute(db.set_in_progress_flag, use_current_release)
     execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
-
-
-
-
-@roles(ROLES_DB_ONLY)
-def _migrate():
-    """run south migration on remote environment"""
-    _require_target()
-    with cd(env.code_root):
-        sudo('%(virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
-        sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
 
 
 @roles(ROLES_DB_ONLY)
