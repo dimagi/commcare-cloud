@@ -58,7 +58,7 @@ from const import (
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
 )
-from operations import db, staticfiles
+from operations import db, staticfiles, supervisor
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -165,57 +165,6 @@ class DeployMetadata(object):
         return self._deploy_ref
 
 
-def format_env(current_env, extra=None):
-    """
-    formats the current env to be a foo=bar,sna=fu type paring
-    this is used for the make_supervisor_conf management command
-    to pass current environment to make the supervisor conf files remotely
-    instead of having to upload them from the fabfile.
-
-    This is somewhat hacky in that we're going to
-    cherry pick the env vars we want and make a custom dict to return
-    """
-    ret = dict()
-    important_props = [
-        'root',
-        'environment',
-        'code_root',
-        'code_current',
-        'log_dir',
-        'sudo_user',
-        'host_string',
-        'project',
-        'es_endpoint',
-        'jython_home',
-        'virtualenv_root',
-        'virtualenv_current',
-        'django_port',
-        'django_bind',
-        'flower_port',
-        'jython_memory',
-        'formplayer_memory'
-    ]
-
-    host = current_env.get('host_string')
-    if host in current_env.get('new_relic_enabled', []):
-        ret['new_relic_command'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
-        ret['supervisor_env_vars'] = {
-            'NEW_RELIC_CONFIG_FILE': '%(root)s/newrelic.ini' % env,
-            'NEW_RELIC_ENVIRONMENT': '%(environment)s' % env
-        }
-    else:
-        ret['new_relic_command'] = ''
-        ret['supervisor_env_vars'] = []
-
-    for prop in important_props:
-        ret[prop] = current_env.get(prop, '')
-
-    if extra:
-        ret.update(extra)
-
-    return json.dumps(ret)
-
-
 @task
 def _setup_path():
     # using posixpath to ensure unix style slashes.
@@ -260,19 +209,6 @@ def load_env(env_name):
     env_dict = get_env_dict(os.path.join(PROJECT_ROOT, 'environments.yml'))
     env.update(env_dict['base'])
     env.update(env_dict[env_name])
-
-
-def get_pillow_env_config(environment):
-    pillow_conf = {}
-    pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
-    if os.path.exists(pillow_file):
-        with open(pillow_file, 'r+') as f:
-            yml = yaml.load(f)
-            pillow_conf.update(yml)
-    else:
-        return None
-
-    return pillow_conf
 
 
 @task
@@ -579,7 +515,7 @@ def _deploy_without_asking():
         _execute_with_timing(staticfiles.collectstatic)
         _execute_with_timing(staticfiles.compress)
 
-        _set_supervisor_config()
+        supervisor.set_supervisor_config()
 
         _execute_with_timing(build_formplayer)
 
@@ -1016,152 +952,10 @@ def _migrations_exist():
         return n_migrations > 0
 
 
-def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
-    sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
-
-    with cd(env.code_root):
-        sudo((
-            '%(virtualenv_root)s/bin/python manage.py '
-            '%(conf_command)s --traceback --conf_file "%(filename)s" '
-            '--conf_destination "%(destination)s" --params \'%(params)s\''
-        ) % {
-
-            'conf_command': conf_command,
-            'virtualenv_root': env.virtualenv_root,
-            'filename': filename,
-            'destination': posixpath.join(env.services, 'supervisor'),
-            'params': format_env(env, params)
-        })
-
-
-def get_celery_queues():
-    host = env.get('host_string')
-    if host and '.' in host:
-        host = host.split('.')[0]
-
-    queues = env.celery_processes.get('*', {})
-    host_queues = env.celery_processes.get(host, {})
-    queues.update(host_queues)
-
-    return queues
-
-@roles(ROLES_CELERY)
-@parallel
-def set_celery_supervisorconf():
-
-    conf_files = {
-        'main':                         ['supervisor_celery_main.conf'],
-        'periodic':                     ['supervisor_celery_beat.conf', 'supervisor_celery_periodic.conf'],
-        'sms_queue':                    ['supervisor_celery_sms_queue.conf'],
-        'reminder_queue':               ['supervisor_celery_reminder_queue.conf'],
-        'reminder_rule_queue':          ['supervisor_celery_reminder_rule_queue.conf'],
-        'reminder_case_update_queue':   ['supervisor_celery_reminder_case_update_queue.conf'],
-        'pillow_retry_queue':           ['supervisor_celery_pillow_retry_queue.conf'],
-        'background_queue':             ['supervisor_celery_background_queue.conf'],
-        'saved_exports_queue':          ['supervisor_celery_saved_exports_queue.conf'],
-        'ucr_queue':                    ['supervisor_celery_ucr_queue.conf'],
-        'email_queue':                  ['supervisor_celery_email_queue.conf'],
-        'repeat_record_queue':          ['supervisor_celery_repeat_record_queue.conf'],
-        'logistics_reminder_queue':     ['supervisor_celery_logistics_reminder_queue.conf'],
-        'logistics_background_queue':   ['supervisor_celery_logistics_background_queue.conf'],
-        'flower':                       ['supervisor_celery_flower.conf'],
-        }
-
-    queues = get_celery_queues()
-    for queue, params in queues.items():
-        for config_file in conf_files[queue]:
-            _rebuild_supervisor_conf_file('make_supervisor_conf', config_file, {'celery_params': params})
-
-
-@roles(ROLES_PILLOWTOP)
-@parallel
-def set_pillowtop_supervisorconf():
-    # Don't run if there are no hosts for the 'django_pillowtop' role.
-    # If there are no matching roles, it's still run once
-    # on the 'deploy' machine, db!
-    # So you need to explicitly test to see if all_hosts is empty.
-    if env.all_hosts:
-        _rebuild_supervisor_conf_file(
-            'make_supervisor_pillowtop_conf',
-            'supervisor_pillowtop.conf',
-            {'pillow_env_configs': filter(None, [
-                get_pillow_env_config(environment)
-                for environment in ['default', env.environment]
-            ])}
-        )
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
-
-
-@roles(ROLES_DJANGO)
-@parallel
-def set_djangoapp_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
-
-
-@roles(ROLES_DJANGO)
-@parallel
-def set_errand_boy_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
-
-
-@roles(ROLES_TOUCHFORMS)
-@parallel
-def set_formsplayer_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
-
-
-@roles(ROLES_TOUCHFORMS)
-def set_formplayer_spring_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
-
-
-@roles(ROLES_SMS_QUEUE)
-@parallel
-def set_sms_queue_supervisorconf():
-    if 'sms_queue' in get_celery_queues():
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_sms_queue.conf')
-
-@roles(ROLES_REMINDER_QUEUE)
-@parallel
-def set_reminder_queue_supervisorconf():
-    if 'reminder_queue' in get_celery_queues():
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
-
-@roles(ROLES_PILLOW_RETRY_QUEUE)
-@parallel
-def set_pillow_retry_queue_supervisorconf():
-    if 'pillow_retry_queue' in get_celery_queues():
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
-
-
-@roles(ROLES_STATIC)
-@parallel
-def set_websocket_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
-
-
 @task
 def set_supervisor_config():
     setup_release()
-    _set_supervisor_config()
-
-
-def _set_supervisor_config():
-    """Upload and link Supervisor configuration from the template."""
-    _require_target()
-    _execute_with_timing(set_celery_supervisorconf)
-    _execute_with_timing(set_djangoapp_supervisorconf)
-    _execute_with_timing(set_errand_boy_supervisorconf)
-    _execute_with_timing(set_formsplayer_supervisorconf)
-    _execute_with_timing(set_formplayer_spring_supervisorconf)
-    _execute_with_timing(set_pillowtop_supervisorconf)
-    _execute_with_timing(set_sms_queue_supervisorconf)
-    _execute_with_timing(set_reminder_queue_supervisorconf)
-    _execute_with_timing(set_pillow_retry_queue_supervisorconf)
-    _execute_with_timing(set_websocket_supervisorconf)
-
-    # if needing tunneled ES setup, comment this back in
-    # execute(set_elasticsearch_supervisorconf)
+    supervisor.set_supervisor_config()
 
 
 def _supervisor_command(command):
