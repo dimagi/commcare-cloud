@@ -1,0 +1,35 @@
+init_config:
+#  Customize the ZooKeeper connection timeout here
+  zk_timeout: 5
+#  Customize the Kafka connection timeout here
+  kafka_timeout: 5
+
+instances:
+  - kafka_connect_str: localhost:9092  # Should always be deployed to broker so localhost is OK
+    zk_connect_str: "{{ groups['zookeeper'][0] }}:{{ zookeeper_client_port }}"
+    zk_prefix: /0.8
+    consumer_groups:
+      'form-processsor':
+        'form-sql': [0] # For now we only have one partition, which is 0
+        form: [0]
+      'domains-to-es':
+        domain: [0]
+      'groups-to-es':
+        group: [0]
+      'groups-to-users':
+        group: [0]
+      'cases-to-es':
+        case: [0]
+        'case-sql': [0]
+      'ledgers-to-es':
+        ledger: [0]
+      'unknown-users':
+        'form': [0]
+        'form-sql': [0]
+      'users-to-es':
+        'commcare-user': [0]
+        'web-user': [0]
+      'sql-forms-to-es':
+        'form-sql': [0]
+      'sql-sms-to-es':
+        sms: [0]
