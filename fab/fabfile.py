@@ -58,7 +58,12 @@ from const import (
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
 )
-from operations import db, staticfiles, supervisor
+from operations import (
+    db,
+    staticfiles,
+    supervisor,
+    formplayer,
+)
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -517,7 +522,7 @@ def _deploy_without_asking():
 
         supervisor.set_supervisor_config()
 
-        _execute_with_timing(build_formplayer)
+        _execute_with_timing(formplayer.build_formplayer)
 
         if all(execute(_migrations_exist).values()):
             _execute_with_timing(_stop_pillows)
@@ -617,15 +622,6 @@ def copy_formplayer_properties():
             '{}/submodules/formplayer/config'.format(
                 env.code_current, env.code_root
             ))
-
-
-@task
-@roles(ROLES_TOUCHFORMS)
-def build_formplayer():
-    build_dir = '{}/{}'.format(env.code_root, 'submodules/formplayer/build/libs')
-    jenkins_formplayer_build_url = 'http://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
-
-    sudo('wget {} -P {}'.format(jenkins_formplayer_build_url, build_dir))
 
 
 @parallel
