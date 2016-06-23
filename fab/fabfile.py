@@ -904,7 +904,7 @@ def stop_pillows():
 
 
 @task
-def stop_pillows():
+def start_pillows():
     execute(supervisor.start_pillows, True)
 
 
