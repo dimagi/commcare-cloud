@@ -3,7 +3,7 @@ import json
 import yaml
 import posixpath
 
-from fabric.api import roles, parallel, env, sudo
+from fabric.api import roles, parallel, env, sudo, serial,
 from fabric.context_managers import cd
 
 from ..const import (
@@ -15,6 +15,7 @@ from ..const import (
     ROLES_PILLOW_RETRY_QUEUE,
     ROLES_PILLOWTOP,
     ROLES_STATIC,
+    ROLES_ALL_SERVICES,
 )
 
 
@@ -225,3 +226,50 @@ def _format_env(current_env, extra=None):
         ret.update(extra)
 
     return json.dumps(ret)
+
+
+@roles(ROLES_PILLOWTOP)
+def stop_pillows(current=False):
+    code_root = env.code_current if current else env.code_root
+    with cd(code_root):
+        sudo('scripts/supervisor-group-ctl stop pillowtop')
+
+
+@roles(ROLES_PILLOWTOP)
+def start_pillows(current=False):
+    code_root = env.code_current if current else env.code_root
+    with cd(code_root):
+        sudo('scripts/supervisor-group-ctl start pillowtop')
+
+
+@roles(ROLES_CELERY)
+@parallel
+def stop_celery_tasks():
+    with cd(env.code_root):
+        sudo('scripts/supervisor-group-ctl stop celery')
+
+
+@roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
+@parallel
+def restart_all_except_webworkers():
+    _services_restart()
+
+
+@roles(ROLES_DJANGO)
+@serial
+def restart_webworkers():
+    _services_restart()
+
+
+def _services_restart():
+    """Stop and restart all supervisord services"""
+    supervisor_command('stop all')
+
+    supervisor_command('update')
+    supervisor_command('reload')
+    time.sleep(5)
+    supervisor_command('start all')
+
+
+def supervisor_command(command):
+    sudo('supervisorctl %s' % (command), shell=False, user='root')

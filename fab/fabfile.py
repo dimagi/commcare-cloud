@@ -525,9 +525,9 @@ def _deploy_without_asking():
         _execute_with_timing(formplayer.build_formplayer)
 
         if all(execute(_migrations_exist).values()):
-            _execute_with_timing(_stop_pillows)
+            _execute_with_timing(supervisor.stop_pillows)
             execute(set_in_progress_flag)
-            _execute_with_timing(stop_celery_tasks)
+            _execute_with_timing(supervisor.stop_celery_tasks)
         _execute_with_timing(_migrate)
 
         _execute_with_timing(staticfiles.update_translations)
@@ -867,7 +867,7 @@ def supervisorctl(command):
 
     @roles(env.supervisor_roles)
     def _inner():
-        _supervisor_command(command)
+        supervisor.supervisor_command(command)
 
     execute(_inner)
 
@@ -876,7 +876,7 @@ def supervisorctl(command):
 def services_stop():
     """Stop the gunicorn servers"""
     _require_target()
-    _supervisor_command('stop all')
+    supervisor.supervisor_command('stop all')
 
 
 @task
@@ -894,31 +894,10 @@ def silent_services_restart(use_current_release=False):
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
     execute(set_in_progress_flag, use_current_release)
-    execute(_restart_all_except_webworkers)
-    execute(_restart_webworkers)
+    execute(supervisor.restart_all_except_webworkers)
+    execute(supervisor.restart_webworkers)
 
 
-def _services_restart():
-    """Stop and restart all supervisord services"""
-    _require_target()
-    _supervisor_command('stop all')
-
-    _supervisor_command('update')
-    _supervisor_command('reload')
-    time.sleep(5)
-    _supervisor_command('start all')
-
-
-@roles(ROLES_DJANGO)
-@serial
-def _restart_webworkers():
-    _services_restart()
-
-
-@roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
-@parallel
-def _restart_all_except_webworkers():
-    _services_restart()
 
 
 @roles(ROLES_DB_ONLY)
@@ -954,38 +933,15 @@ def set_supervisor_config():
     supervisor.set_supervisor_config()
 
 
-def _supervisor_command(command):
-    _require_target()
-    sudo('supervisorctl %s' % (command), shell=False, user='root')
+@task
+def stop_pillows():
+    execute(supervisor.stop_pillows, True)
 
 
 @task
 def stop_pillows():
-    execute(_stop_pillows, True)
+    execute(supervisor.start_pillows, True)
 
-
-@task
-@roles(ROLES_PILLOWTOP)
-def start_pillows():
-    _require_target()
-    with cd(env.code_current):
-        sudo('scripts/supervisor-group-ctl start pillowtop')
-
-
-@roles(ROLES_PILLOWTOP)
-def _stop_pillows(current=False):
-    code_root = env.code_current if current else env.code_root
-    _require_target()
-    with cd(code_root):
-        sudo('scripts/supervisor-group-ctl stop pillowtop')
-
-
-@roles(ROLES_CELERY)
-@parallel
-def stop_celery_tasks():
-    _require_target()
-    with cd(env.code_root):
-        sudo('scripts/supervisor-group-ctl stop celery')
 
 
 @task
@@ -1004,7 +960,7 @@ def reset_mvp_pillows():
 def reset_pillow(pillow):
     _require_target()
     prefix = 'commcare-hq-{}-pillowtop'.format(env.environment)
-    _supervisor_command('stop {prefix}-{pillow}'.format(
+    supervisor.supervisor_command('stop {prefix}-{pillow}'.format(
         prefix=prefix,
         pillow=pillow
     ))
@@ -1014,7 +970,7 @@ def reset_pillow(pillow):
             pillow=pillow,
         )
         sudo(command)
-    _supervisor_command('start {prefix}-{pillow}'.format(
+    supervisor.supervisor_command('start {prefix}-{pillow}'.format(
         prefix=prefix,
         pillow=pillow
     ))
