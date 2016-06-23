@@ -58,6 +58,7 @@ from const import (
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
 )
+from operations import db
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -429,18 +430,7 @@ def preindex_views():
     `current` release and updates it.
     """
     setup_release()
-    _preindex_views()
-
-
-def _preindex_views():
-    with cd(env.code_root):
-        sudo((
-            'echo "%(virtualenv_root)s/bin/python '
-            '%(code_root)s/manage.py preindex_everything '
-            '8 %(user)s" --mail | at -t `date -d "5 seconds" '
-            '+%%m%%d%%H%%M.%%S`'
-        ) % env)
-        version_static()
+    db.preindex_views()
 
 
 @roles(ROLES_ALL_SRC)
@@ -579,31 +569,8 @@ def _deploy_without_asking():
     try:
         setup_release()
 
-        _execute_with_timing(_preindex_views)
-
-        max_wait = datetime.timedelta(minutes=5)
-        pause_length = datetime.timedelta(seconds=5)
-        start = datetime.datetime.utcnow()
-
-        @roles(ROLES_DB_ONLY)
-        def preindex_complete():
-            with settings(warn_only=True):
-                return sudo(
-                    '%(virtualenv_root)s/bin/python '
-                    '%(code_root)s/manage.py preindex_everything '
-                    '--check' % env,
-                    user=env.sudo_user,
-                ).succeeded
-
-        done = False
-        while not done and datetime.datetime.utcnow() - start < max_wait:
-            time.sleep(pause_length.seconds)
-            if preindex_complete():
-                done = True
-            pause_length *= 2
-
-        if not done:
-            raise PreindexNotFinished()
+        _execute_with_timing(db.preindex_views)
+        _execute_with_timing(db.ensure_preindex_completion)
 
         # handle static files
         _execute_with_timing(version_static)
@@ -623,7 +590,7 @@ def _deploy_without_asking():
         _execute_with_timing(_migrate)
 
         _execute_with_timing(do_update_translations)
-        _execute_with_timing(flip_es_aliases)
+        _execute_with_timing(db.flip_es_aliases)
 
         # hard update of manifest.json since we're about to force restart
         # all services
@@ -1047,15 +1014,6 @@ def _migrations_exist():
             # failed to return a value python could parse into an int
             return True
         return n_migrations > 0
-
-
-@roles(ROLES_DB_ONLY)
-@parallel
-def flip_es_aliases():
-    """Flip elasticsearch aliases to the latest version"""
-    _require_target()
-    with cd(env.code_root):
-        sudo('%(virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
 
 
 @parallel
