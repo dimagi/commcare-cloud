@@ -57,6 +57,7 @@ from const import (
     ROLES_DB_ONLY,
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
+    PROJECT_ROOT,
 )
 from exceptions import PreindexNotFinished
 from operations import (
@@ -71,7 +72,6 @@ from utils import execute_with_timing
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
 
-PROJECT_ROOT = os.path.dirname(__file__)
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None

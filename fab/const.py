@@ -1,3 +1,7 @@
+import os
+
+PROJECT_ROOT = os.path.dirname(__file__)
+
 ROLES_ALL_SRC = [
     'pg',
     'django_monolith',

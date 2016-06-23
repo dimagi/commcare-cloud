@@ -1,9 +1,10 @@
 import os
 import json
 import yaml
+import time
 import posixpath
 
-from fabric.api import roles, parallel, env, sudo, serial,
+from fabric.api import roles, parallel, env, sudo, serial
 from fabric.context_managers import cd
 
 from ..const import (
@@ -16,13 +17,13 @@ from ..const import (
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
+    PROJECT_ROOT,
 )
 from ..utils import execute_with_timing
 
 
 def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
-    _require_target()
     execute_with_timing(set_celery_supervisorconf)
     execute_with_timing(set_djangoapp_supervisorconf)
     execute_with_timing(set_errand_boy_supervisorconf)

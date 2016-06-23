@@ -21,7 +21,7 @@ def preindex_views():
             code_root=env.code_root,
             user=env.user,
         ))
-        # staticfiles.version_static()
+        # TODO: ask abou this staticfiles.version_static()
 
 
 def ensure_preindex_completion():
@@ -43,15 +43,15 @@ def ensure_preindex_completion():
 
 
 @roles(ROLES_DB_ONLY)
-def _is_preindex_complete(code_root, virtualenv_root, user):
+def _is_preindex_complete():
     with settings(warn_only=True):
         return sudo(
             ('{virtualenv_root}/bin/python '
             '{code_root}/manage.py preindex_everything '
             '--check').format(
-                virtualenv_root=virtualenv_root,
-                code_root=code_root,
-                user=user,
+                virtualenv_root=env.virtualenv_root,
+                code_root=env.code_root,
+                user=env.user,
             ),
         ).succeeded
 

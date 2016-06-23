@@ -1,6 +1,6 @@
 from fabric.api import roles, env, sudo
 
-from const import ROLES_TOUCHFORMS
+from ..const import ROLES_TOUCHFORMS
 
 
 @roles(ROLES_TOUCHFORMS)
