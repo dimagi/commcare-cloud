@@ -16,10 +16,10 @@ hqdb0.internal.commcarehq.org
 hqdb0.internal.commcarehq.org
 
 [zookeeper]
-hqes2.internal.commcarehq.org
+hqes1.internal-va.commcarehq.org
 
 [kafka]
-hqes2.internal.commcarehq.org kafka_broker_id=0
+hqes1.internal-va.commcarehq.org kafka_broker_id=1
 
 [celery]
 # ansible makes the first thing in this list the flower url
