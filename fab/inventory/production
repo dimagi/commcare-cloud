@@ -41,10 +41,8 @@ hqtouch0.internal-va.commcarehq.org
 hqdb0.internal-va.commcarehq.org
 
 [elasticsearch]
-hqes2.internal.commcarehq.org elasticsearch_node_name=hqes2
-hqes3.internal.commcarehq.org elasticsearch_node_name=hqes3
-hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes2
-hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes3
+hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes0
+hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes1
 
 [shared_dir_host]
 hqdb0.internal-va.commcarehq.org
