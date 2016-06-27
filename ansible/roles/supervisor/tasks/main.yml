@@ -14,7 +14,7 @@
 - name: install supervisor
   apt: name=supervisor state=present
   sudo: yes
-  when: not which_supervisord.stdout
+  when: which_supervisord.stdout == ""
 
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
