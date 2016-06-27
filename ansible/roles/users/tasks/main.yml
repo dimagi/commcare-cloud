@@ -26,6 +26,9 @@
   shell: 'dirname "$(which supervisorctl)"'
   register: dirname_which_supervisorctl
   changed_when: false
+  # run in check mode
+  always_run: yes
+
 
 - name: Copy sudoers file
   sudo: yes
