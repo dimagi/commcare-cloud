@@ -170,7 +170,6 @@ class DeployMetadata(object):
         return self._deploy_ref
 
 
-@task
 def _setup_path():
     # using posixpath to ensure unix style slashes.
     # See bug-ticket: http://code.fabfile.org/attachments/61/posixpath.patch
