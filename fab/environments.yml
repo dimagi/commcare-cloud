@@ -44,6 +44,8 @@ development:
         concurrency: 1
       email_queue:
         concurrency: 1
+      async_restore_queue:
+        concurrency: 4
       logistics_reminder_queue:
         concurrency: 1
       logistics_background_queue:
@@ -108,6 +110,8 @@ softlayer:
         concurrency: 2
       repeat_record_queue:
         concurrency: 3
+      async_restore_queue:
+        concurrency: 4
       flower: {}
 
 production:
@@ -151,6 +155,8 @@ production:
         concurrency: 2
       logistics_background_queue:
         concurrency: 2
+      async_restore_queue:
+        concurrency: 4
       flower: {}
 
 staging:
@@ -169,6 +175,8 @@ staging:
       ucr_queue:
         concurrency: 1
       email_queue:
+        concurrency: 1
+      async_restore_queue:
         concurrency: 1
       flower: {}
 
@@ -200,6 +208,8 @@ zambia:
       email_queue:
         concurrency: 2
       repeat_record_queue:
+        concurrency: 1
+      async_restore_queue:
         concurrency: 1
       flower: {}
 
@@ -233,6 +243,8 @@ swiss:
       reminder_rule_queue:
         concurrency: 1
       sms_queue:
+        concurrency: 1
+      async_restore_queue:
         concurrency: 1
       flower: {}
 

@@ -70,6 +70,7 @@ def set_celery_supervisorconf():
         'repeat_record_queue':          ['supervisor_celery_repeat_record_queue.conf'],
         'logistics_reminder_queue':     ['supervisor_celery_logistics_reminder_queue.conf'],
         'logistics_background_queue':   ['supervisor_celery_logistics_background_queue.conf'],
+        'async_restore_queue':          ['supervisor_celery_async_restore_queue.conf'],
         'flower':                       ['supervisor_celery_flower.conf'],
         }
 
