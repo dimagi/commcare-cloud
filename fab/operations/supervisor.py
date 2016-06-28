@@ -17,9 +17,8 @@ from ..const import (
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
-    PROJECT_ROOT,
 )
-from ..utils import execute_with_timing
+from ..utils import execute_with_timing, get_pillow_env_config
 
 
 def set_supervisor_config():
@@ -91,7 +90,7 @@ def set_pillowtop_supervisorconf():
             'make_supervisor_pillowtop_conf',
             'supervisor_pillowtop.conf',
             {'pillow_env_configs': filter(None, [
-                _get_pillow_env_config(environment)
+                get_pillow_env_config(environment)
                 for environment in ['default', env.environment]
             ])}
         )
@@ -164,19 +163,6 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
             'destination': posixpath.join(env.services, 'supervisor'),
             'params': _format_env(env, params)
         })
-
-
-def _get_pillow_env_config(environment):
-    pillow_conf = {}
-    pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
-    if os.path.exists(pillow_file):
-        with open(pillow_file, 'r+') as f:
-            yml = yaml.load(f)
-            pillow_conf.update(yml)
-    else:
-        return None
-
-    return pillow_conf
 
 
 def _format_env(current_env, extra=None):
