@@ -190,17 +190,6 @@ def _setup_path():
     env.db = '%s_%s' % (env.project, env.environment)
 
 
-@roles(ROLES_ALL_SRC)
-def setup_dirs():
-    """
-    create uploaded media, log, etc. directories (if needed) and make writable
-
-    """
-    sudo('mkdir -p %(log_dir)s' % env)
-    sudo('chmod a+w %(log_dir)s' % env)
-    sudo('mkdir -p %(services)s/supervisor' % env)
-
-
 def load_env(env_name):
     def get_env_dict(path):
         if os.path.isfile(path):
