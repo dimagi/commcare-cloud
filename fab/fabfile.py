@@ -43,32 +43,35 @@ from fabric.colors import blue, red, yellow, magenta
 from fabric.context_managers import settings, cd, shell_env
 from fabric.contrib import files, console
 from fabric.operations import require
+from const import (
+    ROLES_ALL_SRC,
+    ROLES_ALL_SERVICES,
+    ROLES_CELERY,
+    ROLES_PILLOWTOP,
+    ROLES_DJANGO,
+    ROLES_TOUCHFORMS,
+    ROLES_STATIC,
+    ROLES_SMS_QUEUE,
+    ROLES_REMINDER_QUEUE,
+    ROLES_PILLOW_RETRY_QUEUE,
+    ROLES_DB_ONLY,
+    RELEASE_RECORD,
+    RSYNC_EXCLUDE,
+    PROJECT_ROOT,
+)
+from exceptions import PreindexNotFinished
+from operations import (
+    db,
+    staticfiles,
+    supervisor,
+    formplayer,
+)
+from utils import execute_with_timing
 
-
-ROLES_ALL_SRC = ['pg', 'django_monolith', 'django_app', 'django_celery', 'django_pillowtop', 'formsplayer', 'staticfiles']
-ROLES_ALL_SERVICES = ['django_monolith', 'django_app', 'django_celery', 'django_pillowtop', 'formsplayer', 'staticfiles']
-ROLES_CELERY = ['django_monolith', 'django_celery']
-ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
-ROLES_DJANGO = ['django_monolith', 'django_app']
-ROLES_TOUCHFORMS = ['django_monolith', 'formsplayer']
-ROLES_STATIC = ['django_monolith', 'staticfiles']
-ROLES_SMS_QUEUE = ['django_monolith', 'sms_queue']
-ROLES_REMINDER_QUEUE = ['django_monolith', 'reminder_queue']
-ROLES_PILLOW_RETRY_QUEUE = ['django_monolith', 'pillow_retry_queue']
-ROLES_DB_ONLY = ['pg', 'django_monolith']
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
 
-PROJECT_ROOT = os.path.dirname(__file__)
-RSYNC_EXCLUDE = (
-    '.DS_Store',
-    '.git',
-    '*.pyc',
-    '*.example',
-    '*.db',
-    )
-RELEASE_RECORD = 'RELEASES.txt'
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None
@@ -169,57 +172,6 @@ class DeployMetadata(object):
         return self._deploy_ref
 
 
-def format_env(current_env, extra=None):
-    """
-    formats the current env to be a foo=bar,sna=fu type paring
-    this is used for the make_supervisor_conf management command
-    to pass current environment to make the supervisor conf files remotely
-    instead of having to upload them from the fabfile.
-
-    This is somewhat hacky in that we're going to
-    cherry pick the env vars we want and make a custom dict to return
-    """
-    ret = dict()
-    important_props = [
-        'root',
-        'environment',
-        'code_root',
-        'code_current',
-        'log_dir',
-        'sudo_user',
-        'host_string',
-        'project',
-        'es_endpoint',
-        'jython_home',
-        'virtualenv_root',
-        'virtualenv_current',
-        'django_port',
-        'django_bind',
-        'flower_port',
-        'jython_memory',
-        'formplayer_memory'
-    ]
-
-    host = current_env.get('host_string')
-    if host in current_env.get('new_relic_enabled', []):
-        ret['new_relic_command'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
-        ret['supervisor_env_vars'] = {
-            'NEW_RELIC_CONFIG_FILE': '%(root)s/newrelic.ini' % env,
-            'NEW_RELIC_ENVIRONMENT': '%(environment)s' % env
-        }
-    else:
-        ret['new_relic_command'] = ''
-        ret['supervisor_env_vars'] = []
-
-    for prop in important_props:
-        ret[prop] = current_env.get(prop, '')
-
-    if extra:
-        ret.update(extra)
-
-    return json.dumps(ret)
-
-
 @task
 def _setup_path():
     # using posixpath to ensure unix style slashes.
@@ -264,19 +216,6 @@ def load_env(env_name):
     env_dict = get_env_dict(os.path.join(PROJECT_ROOT, 'environments.yml'))
     env.update(env_dict['base'])
     env.update(env_dict[env_name])
-
-
-def get_pillow_env_config(environment):
-    pillow_conf = {}
-    pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
-    if os.path.exists(pillow_file):
-        with open(pillow_file, 'r+') as f:
-            yml = yaml.load(f)
-            pillow_conf.update(yml)
-    else:
-        return None
-
-    return pillow_conf
 
 
 @task
@@ -434,23 +373,7 @@ def preindex_views():
     `current` release and updates it.
     """
     setup_release()
-    _preindex_views()
-
-
-def _preindex_views():
-    if not env.should_migrate:
-        utils.abort((
-            'Skipping preindex_views for "%s" because should_migrate = False'
-        ) % env.environment)
-
-    with cd(env.code_root):
-        sudo((
-            'echo "%(virtualenv_root)s/bin/python '
-            '%(code_root)s/manage.py preindex_everything '
-            '8 %(user)s" --mail | at -t `date -d "5 seconds" '
-            '+%%m%%d%%H%%M.%%S`'
-        ) % env)
-        version_static()
+    db.preindex_views()
 
 
 @roles(ROLES_ALL_SRC)
@@ -525,12 +448,6 @@ def record_successful_deploy():
         })
 
 
-@roles(ROLES_DB_ONLY)
-def set_in_progress_flag(use_current_release=False):
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))
-
 
 @roles(ROLES_ALL_SRC)
 @parallel
@@ -578,72 +495,45 @@ def _confirm_translated():
 @task
 def setup_release():
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    _execute_with_timing(create_code_dir)
-    _execute_with_timing(update_code, deploy_ref)
-    _execute_with_timing(update_virtualenv)
+    execute_with_timing(create_code_dir)
+    execute_with_timing(update_code, deploy_ref)
+    execute_with_timing(update_virtualenv)
 
-    _execute_with_timing(copy_release_files)
+    execute_with_timing(copy_release_files)
 
 
 def _deploy_without_asking():
     try:
         setup_release()
 
-        _execute_with_timing(_preindex_views)
-
-        max_wait = datetime.timedelta(minutes=5)
-        pause_length = datetime.timedelta(seconds=5)
-        start = datetime.datetime.utcnow()
-
-        @roles(ROLES_DB_ONLY)
-        def preindex_complete():
-            with settings(warn_only=True):
-                return sudo(
-                    '%(virtualenv_root)s/bin/python '
-                    '%(code_root)s/manage.py preindex_everything '
-                    '--check' % env,
-                    user=env.sudo_user,
-                ).succeeded
-
-        done = False
-        while not done and datetime.datetime.utcnow() - start < max_wait:
-            time.sleep(pause_length.seconds)
-            if preindex_complete():
-                done = True
-            pause_length *= 2
-
-        if not done:
-            raise PreindexNotFinished()
+        execute_with_timing(db.preindex_views)
+        execute_with_timing(db.ensure_preindex_completion)
 
         # handle static files
-        _execute_with_timing(version_static)
-        _execute_with_timing(_bower_install)
-        _execute_with_timing(_npm_install)
-        _execute_with_timing(_do_collectstatic)
-        _execute_with_timing(_do_compress)
+        execute_with_timing(staticfiles.prime_version_static)
+        execute_with_timing(staticfiles.version_static)
+        execute_with_timing(staticfiles.bower_install)
+        execute_with_timing(staticfiles.npm_install)
+        execute_with_timing(staticfiles.collectstatic)
+        execute_with_timing(staticfiles.compress)
 
-        _set_supervisor_config()
+        supervisor.set_supervisor_config()
 
-        _execute_with_timing(build_formplayer)
+        execute_with_timing(formplayer.build_formplayer)
 
-        do_migrate = env.should_migrate
-        if do_migrate:
+        if all(execute(db.migrations_exist).values()):
+            execute_with_timing(supervisor.stop_pillows)
+            execute(db.set_in_progress_flag)
+            execute_with_timing(supervisor.stop_celery_tasks)
+        execute_with_timing(db.migrate)
 
-            if all(execute(_migrations_exist).values()):
-                _execute_with_timing(_stop_pillows)
-                execute(set_in_progress_flag)
-                _execute_with_timing(stop_celery_tasks)
-            _execute_with_timing(_migrate)
-        else:
-            print blue("No migration required, skipping.")
-        _execute_with_timing(do_update_translations)
-        if do_migrate:
-            _execute_with_timing(flip_es_aliases)
+        execute_with_timing(staticfiles.update_translations)
+        execute_with_timing(db.flip_es_aliases)
 
         # hard update of manifest.json since we're about to force restart
         # all services
-        _execute_with_timing(update_manifest)
-        _execute_with_timing(clean_releases)
+        execute_with_timing(staticfiles.update_manifest)
+        execute_with_timing(clean_releases)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy yet",
@@ -652,7 +542,7 @@ def _deploy_without_asking():
              "Thank you for using AWESOME DEPLOY.")
         )
     except Exception:
-        _execute_with_timing(
+        execute_with_timing(
             mail_admins,
             "Deploy to {} failed".format(env.environment),
             "You had better check the logs."
@@ -661,10 +551,10 @@ def _deploy_without_asking():
         silent_services_restart()
         raise
     else:
-        _execute_with_timing(update_current)
+        execute_with_timing(update_current)
         silent_services_restart()
-        _execute_with_timing(record_successful_release)
-        _execute_with_timing(record_successful_deploy)
+        execute_with_timing(record_successful_release)
+        execute_with_timing(record_successful_deploy)
 
 
 @task
@@ -729,15 +619,6 @@ def copy_formplayer_properties():
             '{}/submodules/formplayer/config'.format(
                 env.code_current, env.code_root
             ))
-
-
-@task
-@roles(ROLES_TOUCHFORMS)
-def build_formplayer():
-    build_dir = '{}/{}'.format(env.code_root, 'submodules/formplayer/build/libs')
-    jenkins_formplayer_build_url = 'http://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
-
-    sudo('wget {} -P {}'.format(jenkins_formplayer_build_url, build_dir))
 
 
 @parallel
@@ -884,9 +765,9 @@ def clean_releases(keep=3):
 @task
 def force_update_static():
     _require_target()
-    execute(_do_collectstatic, use_current_release=True)
-    execute(_do_compress, use_current_release=True)
-    execute(update_manifest, use_current_release=True)
+    execute(staticfiles.collectstatic, use_current_release=True)
+    execute(staticfiles.compress, use_current_release=True)
+    execute(staticfiles.update_manifest, use_current_release=True)
     silent_services_restart(use_current_release=True)
 
 
@@ -983,7 +864,7 @@ def supervisorctl(command):
 
     @roles(env.supervisor_roles)
     def _inner():
-        _supervisor_command(command)
+        supervisor.supervisor_command(command)
 
     execute(_inner)
 
@@ -992,7 +873,7 @@ def supervisorctl(command):
 def services_stop():
     """Stop the gunicorn servers"""
     _require_target()
-    _supervisor_command('stop all')
+    supervisor.supervisor_command('stop all')
 
 
 @task
@@ -1009,349 +890,25 @@ def silent_services_restart(use_current_release=False):
     """
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
-    execute(set_in_progress_flag, use_current_release)
-    execute(_restart_all_except_webworkers)
-    execute(_restart_webworkers)
-
-
-def _services_restart():
-    """Stop and restart all supervisord services"""
-    _require_target()
-    _supervisor_command('stop all')
-
-    _supervisor_command('update')
-    _supervisor_command('reload')
-    time.sleep(5)
-    _supervisor_command('start all')
-
-
-@roles(ROLES_DJANGO)
-@serial
-def _restart_webworkers():
-    _services_restart()
-
-
-@roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
-@parallel
-def _restart_all_except_webworkers():
-    _services_restart()
-
-
-@roles(ROLES_DB_ONLY)
-def _migrate():
-    """run south migration on remote environment"""
-    _require_target()
-    with cd(env.code_root):
-        sudo('%(virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
-        sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
-
-
-@roles(ROLES_DB_ONLY)
-def _migrations_exist():
-    """
-    Check if there exists database migrations to run
-    """
-    _require_target()
-    with cd(env.code_root):
-        try:
-            n_migrations = int(sudo(
-                '%(virtualenv_root)s/bin/python manage.py migrate --list | grep "\[ ]" | wc -l' % env)
-            )
-        except Exception:
-            # If we fail on this, return True to be safe. It's most likely cause we lost connection and
-            # failed to return a value python could parse into an int
-            return True
-        return n_migrations > 0
-
-
-@roles(ROLES_DB_ONLY)
-@parallel
-def flip_es_aliases():
-    """Flip elasticsearch aliases to the latest version"""
-    _require_target()
-    with cd(env.code_root):
-        sudo('%(virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
-
-
-@parallel
-@roles(ROLES_STATIC)
-def _do_compress(use_current_release=False):
-    """Run Django Compressor after a code update"""
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('{}/bin/python manage.py compress --force -v 0'.format(venv))
-        sudo('{}/bin/python manage.py purge_compressed_files'.format(venv))
-    update_manifest(save=True, use_current_release=use_current_release)
-
-
-@parallel
-@roles(ROLES_STATIC)
-def _do_collectstatic(use_current_release=False):
-    """Collect static after a code update"""
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
-        sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
-        sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
-
-
-@parallel
-@roles(ROLES_STATIC)
-def _bower_install(use_current_release=False):
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('bower prune --production --config.interactive=false')
-        sudo('bower update --production --config.interactive=false')
-
-
-@parallel
-@roles(ROLES_DJANGO)
-def _npm_install():
-    with cd(env.code_root):
-        sudo('npm prune --production')
-        sudo('npm install --production')
-        sudo('npm update --production')
-
-
-@roles(ROLES_DJANGO)
-@parallel
-def update_manifest(save=False, soft=False, use_current_release=False):
-    """
-    Puts the manifest.json file with the references to the compressed files
-    from the proxy machines to the web workers. This must be done on the WEB WORKER, since it
-    governs the actual static reference.
-
-    save=True saves the manifest.json file to redis, otherwise it grabs the
-    manifest.json file from redis and inserts it into the staticfiles dir.
-    """
-    withpath = env.code_root if not use_current_release else env.code_current
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-
-    args = ''
-    if save:
-        args = ' save'
-    if soft:
-        args = ' soft'
-    cmd = 'update_manifest%s' % args
-    with cd(withpath):
-        sudo('{venv}/bin/python manage.py {cmd}'.format(venv=venv, cmd=cmd),
-            user=env.sudo_user
-        )
-
-
-@roles(set(ROLES_STATIC + ROLES_DJANGO))
-@parallel
-def version_static():
-    """
-    Put refs on all static references to prevent stale browser cache hits when things change.
-    This needs to be run on the WEB WORKER since the web worker governs the actual static
-    reference.
-
-    """
-
-    cmd = 'resource_static'
-    with cd(env.code_root):
-        sudo(
-            'rm -f tmp.sh resource_versions.py; {venv}/bin/python manage.py {cmd}'.format(
-                venv=env.virtualenv_root, cmd=cmd
-            ),
-            user=env.sudo_user
-        )
-
-
-def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
-    sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
-
-    with cd(env.code_root):
-        sudo((
-            '%(virtualenv_root)s/bin/python manage.py '
-            '%(conf_command)s --traceback --conf_file "%(filename)s" '
-            '--conf_destination "%(destination)s" --params \'%(params)s\''
-        ) % {
-
-            'conf_command': conf_command,
-            'virtualenv_root': env.virtualenv_root,
-            'filename': filename,
-            'destination': posixpath.join(env.services, 'supervisor'),
-            'params': format_env(env, params)
-        })
-
-
-def get_celery_queues():
-    host = env.get('host_string')
-    if host and '.' in host:
-        host = host.split('.')[0]
-
-    queues = env.celery_processes.get('*', {})
-    host_queues = env.celery_processes.get(host, {})
-    queues.update(host_queues)
-
-    return queues
-
-@roles(ROLES_CELERY)
-@parallel
-def set_celery_supervisorconf():
-
-    conf_files = {
-        'main':                         ['supervisor_celery_main.conf'],
-        'periodic':                     ['supervisor_celery_beat.conf', 'supervisor_celery_periodic.conf'],
-        'sms_queue':                    ['supervisor_celery_sms_queue.conf'],
-        'reminder_queue':               ['supervisor_celery_reminder_queue.conf'],
-        'reminder_rule_queue':          ['supervisor_celery_reminder_rule_queue.conf'],
-        'reminder_case_update_queue':   ['supervisor_celery_reminder_case_update_queue.conf'],
-        'pillow_retry_queue':           ['supervisor_celery_pillow_retry_queue.conf'],
-        'background_queue':             ['supervisor_celery_background_queue.conf'],
-        'saved_exports_queue':          ['supervisor_celery_saved_exports_queue.conf'],
-        'ucr_queue':                    ['supervisor_celery_ucr_queue.conf'],
-        'email_queue':                  ['supervisor_celery_email_queue.conf'],
-        'repeat_record_queue':          ['supervisor_celery_repeat_record_queue.conf'],
-        'logistics_reminder_queue':     ['supervisor_celery_logistics_reminder_queue.conf'],
-        'logistics_background_queue':   ['supervisor_celery_logistics_background_queue.conf'],
-        'flower':                       ['supervisor_celery_flower.conf'],
-        }
-
-    queues = get_celery_queues()
-    for queue, params in queues.items():
-        for config_file in conf_files[queue]:
-            _rebuild_supervisor_conf_file('make_supervisor_conf', config_file, {'celery_params': params})
-
-
-@roles(ROLES_PILLOWTOP)
-@parallel
-def set_pillowtop_supervisorconf():
-    # Don't run if there are no hosts for the 'django_pillowtop' role.
-    # If there are no matching roles, it's still run once
-    # on the 'deploy' machine, db!
-    # So you need to explicitly test to see if all_hosts is empty.
-    if env.all_hosts:
-        _rebuild_supervisor_conf_file(
-            'make_supervisor_pillowtop_conf',
-            'supervisor_pillowtop.conf',
-            {'pillow_env_configs': filter(None, [
-                get_pillow_env_config(environment)
-                for environment in ['default', env.environment]
-            ])}
-        )
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
-
-
-@roles(ROLES_DJANGO)
-@parallel
-def set_djangoapp_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
-
-
-@roles(ROLES_DJANGO)
-@parallel
-def set_errand_boy_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
-
-
-@roles(ROLES_TOUCHFORMS)
-@parallel
-def set_formsplayer_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
-
-
-@roles(ROLES_TOUCHFORMS)
-def set_formplayer_spring_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
-
-
-@roles(ROLES_SMS_QUEUE)
-@parallel
-def set_sms_queue_supervisorconf():
-    if 'sms_queue' in get_celery_queues():
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_sms_queue.conf')
-
-@roles(ROLES_REMINDER_QUEUE)
-@parallel
-def set_reminder_queue_supervisorconf():
-    if 'reminder_queue' in get_celery_queues():
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
-
-@roles(ROLES_PILLOW_RETRY_QUEUE)
-@parallel
-def set_pillow_retry_queue_supervisorconf():
-    if 'pillow_retry_queue' in get_celery_queues():
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
-
-
-@roles(ROLES_STATIC)
-@parallel
-def set_websocket_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
+    execute(db.set_in_progress_flag, use_current_release)
+    execute(supervisor.restart_all_except_webworkers)
+    execute(supervisor.restart_webworkers)
 
 
 @task
 def set_supervisor_config():
     setup_release()
-    _set_supervisor_config()
-
-
-def _set_supervisor_config():
-    """Upload and link Supervisor configuration from the template."""
-    _require_target()
-    _execute_with_timing(set_celery_supervisorconf)
-    _execute_with_timing(set_djangoapp_supervisorconf)
-    _execute_with_timing(set_errand_boy_supervisorconf)
-    _execute_with_timing(set_formsplayer_supervisorconf)
-    _execute_with_timing(set_formplayer_spring_supervisorconf)
-    _execute_with_timing(set_pillowtop_supervisorconf)
-    _execute_with_timing(set_sms_queue_supervisorconf)
-    _execute_with_timing(set_reminder_queue_supervisorconf)
-    _execute_with_timing(set_pillow_retry_queue_supervisorconf)
-    _execute_with_timing(set_websocket_supervisorconf)
-
-    # if needing tunneled ES setup, comment this back in
-    # execute(set_elasticsearch_supervisorconf)
-
-
-def _supervisor_command(command):
-    _require_target()
-    sudo('supervisorctl %s' % (command), shell=False, user='root')
+    supervisor.set_supervisor_config()
 
 
 @task
 def stop_pillows():
-    execute(_stop_pillows, True)
+    execute(supervisor.stop_pillows, True)
 
 
 @task
-@roles(ROLES_PILLOWTOP)
 def start_pillows():
-    _require_target()
-    with cd(env.code_current):
-        sudo('scripts/supervisor-group-ctl start pillowtop')
-
-
-@roles(ROLES_PILLOWTOP)
-def _stop_pillows(current=False):
-    code_root = env.code_current if current else env.code_root
-    _require_target()
-    with cd(code_root):
-        sudo('scripts/supervisor-group-ctl stop pillowtop')
-
-
-@roles(ROLES_CELERY)
-@parallel
-def stop_celery_tasks():
-    _require_target()
-    with cd(env.code_root):
-        sudo('scripts/supervisor-group-ctl stop celery')
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def do_update_translations():
-    with cd(env.code_root):
-        update_locale_command = '{virtualenv_root}/bin/python manage.py update_django_locales'.format(
-            virtualenv_root=env.virtualenv_root,
-        )
-        update_translations_command = '{virtualenv_root}/bin/python manage.py compilemessages'.format(
-            virtualenv_root=env.virtualenv_root,
-        )
-        sudo(update_locale_command)
-        sudo(update_translations_command)
+    execute(supervisor.start_pillows, True)
 
 
 @task
@@ -1370,7 +927,7 @@ def reset_mvp_pillows():
 def reset_pillow(pillow):
     _require_target()
     prefix = 'commcare-hq-{}-pillowtop'.format(env.environment)
-    _supervisor_command('stop {prefix}-{pillow}'.format(
+    supervisor.supervisor_command('stop {prefix}-{pillow}'.format(
         prefix=prefix,
         pillow=pillow
     ))
@@ -1380,19 +937,10 @@ def reset_pillow(pillow):
             pillow=pillow,
         )
         sudo(command)
-    _supervisor_command('start {prefix}-{pillow}'.format(
+    supervisor.supervisor_command('start {prefix}-{pillow}'.format(
         prefix=prefix,
         pillow=pillow
     ))
-
-
-def _execute_with_timing(fn, *args, **kwargs):
-    start_time = datetime.datetime.utcnow()
-    execute(fn, *args, **kwargs)
-    if env.timing_log:
-        with open(env.timing_log, 'a') as timing_log:
-            duration = datetime.datetime.utcnow() - start_time
-            timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
 
 
 def _get_github():
@@ -1414,7 +962,3 @@ def _get_github():
         return login(
             token=GITHUB_APIKEY,
         )
-
-
-class PreindexNotFinished(Exception):
-    pass
