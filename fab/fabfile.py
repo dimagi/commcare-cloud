@@ -65,6 +65,7 @@ from operations import (
     staticfiles,
     supervisor,
     formplayer,
+    release,
 )
 from utils import execute_with_timing
 
@@ -365,49 +366,6 @@ def preindex_views():
     db.preindex_views()
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_code(git_tag, use_current_release=False):
-    # If not updating current release,  we are making a new release and thus have to do cloning
-    # we should only ever not make a new release when doing a hotfix deploy
-    if not use_current_release:
-        if files.exists(env.code_current):
-            with cd(env.code_current):
-                submodules = sudo("git submodule | awk '{ print $2 }'").split()
-        with cd(env.code_root):
-            if files.exists(env.code_current):
-                local_submodule_clone = []
-                for submodule in submodules:
-                    local_submodule_clone.append('-c')
-                    local_submodule_clone.append(
-                        'submodule.{submodule}.url={code_current}/.git/modules/{submodule}'.format(
-                            submodule=submodule,
-                            code_current=env.code_current
-                        )
-                    )
-
-                sudo('git clone --recursive {} {}/.git {}'.format(
-                    ' '.join(local_submodule_clone),
-                    env.code_current,
-                    env.code_root
-                ))
-                sudo('git remote set-url origin {}'.format(env.code_repo))
-            else:
-                sudo('git clone {} {}'.format(env.code_repo, env.code_root))
-
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('git remote prune origin')
-        sudo('git fetch origin --tags -q')
-        sudo('git checkout {}'.format(git_tag))
-        sudo('git reset --hard {}'.format(git_tag))
-        sudo('git submodule sync')
-        sudo('git submodule update --init --recursive -q')
-        # remove all untracked files, including submodules
-        sudo("git clean -ffd")
-        # remove all .pyc files in the project
-        sudo("find . -name '*.pyc' -delete")
-
-
 @roles(ROLES_DB_ONLY)
 def mail_admins(subject, message):
     with cd(env.code_root):
@@ -461,7 +419,7 @@ def hotfix_deploy():
     _require_target()
     run('echo ping!')  # workaround for delayed console response
     try:
-        execute(update_code, env.deploy_metadata.deploy_ref, True)
+        execute(release.update_code, env.deploy_metadata.deploy_ref, True)
     except Exception:
         execute(mail_admins, "Deploy failed", "You had better check the logs.")
         # hopefully bring the server back to life
@@ -485,7 +443,7 @@ def _confirm_translated():
 def setup_release():
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
     execute_with_timing(create_code_dir)
-    execute_with_timing(update_code, deploy_ref)
+    execute_with_timing(release.update_code, deploy_ref)
     execute_with_timing(update_virtualenv)
 
     execute_with_timing(copy_release_files)
