@@ -510,6 +510,7 @@ def _deploy_without_asking():
         execute_with_timing(db.ensure_preindex_completion)
 
         # handle static files
+        execute_with_timing(staticfiles.prime_version_static)
         execute_with_timing(staticfiles.version_static)
         execute_with_timing(staticfiles.bower_install)
         execute_with_timing(staticfiles.npm_install)

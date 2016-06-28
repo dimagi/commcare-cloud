@@ -21,7 +21,6 @@ def preindex_views():
             code_root=env.code_root,
             user=env.user,
         ))
-        # TODO: ask abou this staticfiles.version_static()
 
 
 def ensure_preindex_completion():
