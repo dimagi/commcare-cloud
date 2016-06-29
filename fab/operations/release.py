@@ -7,7 +7,7 @@ from fabric.context_managers import cd, settings
 from fabric.contrib import files
 from fabric import utils
 
-from const import ROLES_ALL_SRC, ROLES_DB_ONLY, RELEASE_RECORD, ROLES_TOUCHFORMS, ROLES_STATIC
+from ..const import ROLES_ALL_SRC, ROLES_DB_ONLY, RELEASE_RECORD, ROLES_TOUCHFORMS, ROLES_STATIC
 
 
 @roles(ROLES_ALL_SRC)

@@ -8,7 +8,7 @@ from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
 
-from ..const import PROJECT_ROOT
+from .const import PROJECT_ROOT
 
 from const import PROJECT_ROOT
 
