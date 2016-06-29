@@ -360,8 +360,21 @@ def setup_release():
     execute_with_timing(copy_release_files)
 
 
+def conditionally_stop_pillows_and_celery_during_migrate():
+    """
+    Conditionally stops pillows and celery if any migrations exist
+    """
+    if all(execute(db.migrations_exist).values()):
+        execute_with_timing(supervisor.stop_pillows)
+        execute(db.set_in_progress_flag)
+        execute_with_timing(supervisor.stop_celery_tasks)
+    execute_with_timing(db.migrate)
+
+
 def _deploy_without_asking():
+
     try:
+
         setup_release()
 
         execute_with_timing(db.preindex_views)
@@ -382,12 +395,7 @@ def _deploy_without_asking():
         supervisor.set_supervisor_config()
 
         execute_with_timing(formplayer.build_formplayer)
-
-        if all(execute(db.migrations_exist).values()):
-            execute_with_timing(supervisor.stop_pillows)
-            execute(db.set_in_progress_flag)
-            execute_with_timing(supervisor.stop_celery_tasks)
-        execute_with_timing(db.migrate)
+        conditionally_stop_pillows_and_celery_during_migrate()
 
         execute_with_timing(db.flip_es_aliases)
 
