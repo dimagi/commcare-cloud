@@ -377,6 +377,7 @@ def _deploy_without_asking():
         execute_with_timing(staticfiles.npm_install)
         execute_with_timing(staticfiles.collectstatic)
         execute_with_timing(staticfiles.compress)
+        execute_with_timing(staticfiles.update_translations)
 
         supervisor.set_supervisor_config()
 
@@ -388,7 +389,6 @@ def _deploy_without_asking():
             execute_with_timing(supervisor.stop_celery_tasks)
         execute_with_timing(db.migrate)
 
-        execute_with_timing(staticfiles.update_translations)
         execute_with_timing(db.flip_es_aliases)
 
         # hard update of manifest.json since we're about to force restart
