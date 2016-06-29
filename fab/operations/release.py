@@ -3,11 +3,11 @@ import posixpath
 
 from fabric.api import roles, parallel, sudo, env
 from fabric.colors import red
-from fabric.context_managers import cd
+from fabric.context_managers import cd, settings
 from fabric.contrib import files
 from fabric import utils
 
-from const import ROLES_ALL_SRC, ROLES_DB_ONLY, RELEASE_RECORD
+from const import ROLES_ALL_SRC, ROLES_DB_ONLY, RELEASE_RECORD, ROLES_TOUCHFORMS, ROLES_STATIC
 
 
 @roles(ROLES_ALL_SRC)
@@ -166,3 +166,77 @@ def clean_releases(keep=3):
 
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
+
+
+@parallel
+@roles(ROLES_ALL_SRC)
+def copy_localsettings():
+    sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
+
+
+@parallel
+@roles(ROLES_TOUCHFORMS)
+def copy_tf_localsettings():
+    sudo(
+        'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
+        '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
+            env.code_current, env.code_root
+        ))
+
+
+@parallel
+@roles(ROLES_TOUCHFORMS)
+def copy_formplayer_properties():
+    with settings(warn_only=True):
+        sudo(
+            'cp {}/submodules/formplayer/config/application.properties '
+            '{}/submodules/formplayer/config'.format(
+                env.code_current, env.code_root
+            ))
+
+
+@parallel
+@roles(ROLES_ALL_SRC)
+def copy_components():
+    if files.exists('{}/bower_components'.format(env.code_current)):
+        sudo('cp -r {}/bower_components {}/bower_components'.format(env.code_current, env.code_root))
+    else:
+        sudo('mkdir {}/bower_components'.format(env.code_root))
+
+
+@parallel
+@roles(ROLES_ALL_SRC)
+def copy_node_modules():
+    if files.exists('{}/node_modules'.format(env.code_current)):
+        sudo('cp -r {}/node_modules {}/node_modules'.format(env.code_current, env.code_root))
+    else:
+        sudo('mkdir {}/node_modules'.format(env.code_root))
+
+
+@parallel
+@roles(ROLES_STATIC)
+def copy_compressed_js_staticfiles():
+    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current)):
+        sudo('mkdir -p {}/staticfiles/CACHE/js'.format(env.code_root))
+        sudo('cp -r {}/staticfiles/CACHE/js {}/staticfiles/CACHE/js'.format(env.code_current, env.code_root))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def get_previous_release():
+    # Gets second to last line in RELEASES.txt
+    with cd(env.root):
+        return sudo('tail -2 {} | head -n 1'.format(RELEASE_RECORD))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def get_number_of_releases():
+    with cd(env.root):
+        return int(sudo("wc -l {} | awk '{{ print $1 }}'".format(RELEASE_RECORD)))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def ensure_release_exists(release):
+    return files.exists(release)
