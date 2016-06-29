@@ -372,37 +372,30 @@ def conditionally_stop_pillows_and_celery_during_migrate():
 
 
 def _deploy_without_asking():
+    commands = [
+        setup_release,
+        db.preindex_views,
+        # Compute version statics while waiting for preindex
+        staticfiles.prime_version_static,
+        db.ensure_preindex_completion,
+        # handle static files
+        staticfiles.version_static,
+        staticfiles.bower_install,
+        staticfiles.npm_install,
+        staticfiles.collectstatic,
+        staticfiles.compress,
+        staticfiles.update_translations,
+        supervisor.set_supervisor_config,
+        formplayer.build_formplayer,
+        conditionally_stop_pillows_and_celery_during_migrate,
+        db.flip_es_aliases,
+        staticfiles.update_manifest,
+        release.clean_releases,
+    ]
 
     try:
-
-        setup_release()
-
-        execute_with_timing(db.preindex_views)
-
-        # Compute version statics while waiting for preindex
-        execute_with_timing(staticfiles.prime_version_static)
-
-        execute_with_timing(db.ensure_preindex_completion)
-
-        # handle static files
-        execute_with_timing(staticfiles.version_static)
-        execute_with_timing(staticfiles.bower_install)
-        execute_with_timing(staticfiles.npm_install)
-        execute_with_timing(staticfiles.collectstatic)
-        execute_with_timing(staticfiles.compress)
-        execute_with_timing(staticfiles.update_translations)
-
-        supervisor.set_supervisor_config()
-
-        execute_with_timing(formplayer.build_formplayer)
-        conditionally_stop_pillows_and_celery_during_migrate()
-
-        execute_with_timing(db.flip_es_aliases)
-
-        # hard update of manifest.json since we're about to force restart
-        # all services
-        execute_with_timing(staticfiles.update_manifest)
-        execute_with_timing(release.clean_releases)
+        for command in commands:
+            execute_with_timing(command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy yet",
