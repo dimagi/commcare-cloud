@@ -58,6 +58,8 @@
 - name: Kafka
   hosts: kafka
   sudo: yes
+  environment:
+    JMX_PORT: 9999
   roles:
     - {role: kafka, tags: 'kafka'}
 
