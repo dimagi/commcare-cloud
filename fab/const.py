@@ -38,3 +38,6 @@ RSYNC_EXCLUDE = (
     '*.example',
     '*.db',
 )
+
+CACHED_DEPLOY_ENV_FILENAME = 'cached_deploy_env.pickle'
+CACHED_DEPLOY_CHECKPOINT_FILENAME = 'cached_deploy_checkpoint.pickle'
