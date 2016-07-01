@@ -79,7 +79,9 @@
 
 - name: PostgreSQL recovery configuration
   sudo_user: postgres
-  template: src=recovery.conf.j2 dest={{ postgresql_config_home }}/recovery.conf.hq
+  template: src=recovery.conf.j2 dest={{ postgresql_config_home }}/recovery.conf
+  when:
+    standby == True
 
 - name: start postgresql
   sudo_user: postgres
