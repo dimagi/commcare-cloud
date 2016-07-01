@@ -33,7 +33,7 @@ from distutils.util import strtobool
 
 from fabric import utils
 from fabric.api import run, roles, execute, task, sudo, env, parallel
-from fabric.colors import blue, red
+from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.operations import require
@@ -61,7 +61,14 @@ from operations import (
     formplayer,
     release,
 )
-from utils import execute_with_timing, DeployMetadata
+from utils import (
+    clear_cached_deploy,
+    execute_with_timing,
+    DeployMetadata,
+    cache_deploy_state,
+    retrieve_cached_deploy_env,
+    retrieve_cached_deploy_checkpoint,
+)
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -277,6 +284,7 @@ def env_common():
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
+    env.resume = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
@@ -371,6 +379,17 @@ def conditionally_stop_pillows_and_celery_during_migrate():
     execute_with_timing(db.migrate)
 
 
+def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
+    """
+    Stores fabric env in redis and then runs the function if it shouldn't be skipped
+    """
+    if env.resume and command_index < env.checkpoint_index:
+        print blue("Skipping command: '{}'".format(command_name))
+        return
+    cache_deploy_state(command_index)
+    fn(*args, **kwargs)
+
+
 def _deploy_without_asking():
     commands = [
         setup_release,
@@ -394,8 +413,8 @@ def _deploy_without_asking():
     ]
 
     try:
-        for command in commands:
-            execute_with_timing(command)
+        for index, command in enumerate(commands):
+            deploy_checkpoint(index, command.func_name, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy yet",
@@ -417,6 +436,7 @@ def _deploy_without_asking():
         silent_services_restart()
         execute_with_timing(release.record_successful_release)
         execute_with_timing(release.record_successful_deploy)
+        clear_cached_deploy()
 
 
 @task
@@ -525,8 +545,11 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes"):
-    """preindex and deploy if it completes quickly enough, otherwise abort"""
+def awesome_deploy(confirm="yes", resume='no'):
+    """Preindex and deploy if it completes quickly enough, otherwise abort
+    fab <env> deploy:confirm=no  # do not confirm
+    fab <env> deploy:resume=yes  # resume from previous deploy
+    """
     _require_target()
     if strtobool(confirm) and (
         not _confirm_translated() or
@@ -535,6 +558,12 @@ def awesome_deploy(confirm="yes"):
             '{env.environment}?'.format(env=env), default=False)
     ):
         utils.abort('Deployment aborted.')
+
+    if resume == 'yes':
+        env.update(retrieve_cached_deploy_env())
+        env.resume = True
+        env.checkpoint_index = retrieve_cached_deploy_checkpoint() or 0
+        print magenta('You are about to resume the deploy in {}'.format(env.code_current))
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'

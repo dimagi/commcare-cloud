@@ -140,6 +140,11 @@ def cache_deploy_state(command_index):
         pickle.dump(env, f)
 
 
+def clear_cached_deploy():
+    os.remove(os.path.join(PROJECT_ROOT, CACHED_DEPLOY_CHECKPOINT_FILENAME))
+    os.remove(os.path.join(PROJECT_ROOT, CACHED_DEPLOY_ENV_FILENAME))
+
+
 def retrieve_cached_deploy_env():
     filename = os.path.join(PROJECT_ROOT, CACHED_DEPLOY_ENV_FILENAME)
     return _retrieve_cached(filename)
