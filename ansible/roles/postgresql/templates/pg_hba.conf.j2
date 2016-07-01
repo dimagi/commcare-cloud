@@ -98,7 +98,7 @@ host    all             all             127.0.0.1/32            md5
 host    all             all             ::1/128                 md5
 # Allow replication connections from localhost, by a user with the
 # replication privilege.
-#local   replication     postgres                                peer
+local   replication     postgres                                peer
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
