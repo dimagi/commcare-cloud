@@ -157,7 +157,4 @@ def retrieve_cached_deploy_checkpoint():
 
 def _retrieve_cached(filename):
     with open(filename, 'r') as f:
-        try:
-            return pickle.load(f)
-        except Exception:
-            return None
+        return pickle.load(f)

@@ -560,10 +560,16 @@ def awesome_deploy(confirm="yes", resume='no'):
         utils.abort('Deployment aborted.')
 
     if resume == 'yes':
-        env.update(retrieve_cached_deploy_env())
+        try:
+            cached_payload = retrieve_cached_deploy_env()
+            checkpoint_index = retrieve_cached_deploy_checkpoint()
+        except Exception:
+            print red('Unable to resume deploy, please start anew')
+            raise
+        env.update(cached_payload)
         env.resume = True
-        env.checkpoint_index = retrieve_cached_deploy_checkpoint() or 0
-        print magenta('You are about to resume the deploy in {}'.format(env.code_current))
+        env.checkpoint_index = checkpoint_index or 0
+        print magenta('You are about to resume the deploy in {}'.format(env.code_root))
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
