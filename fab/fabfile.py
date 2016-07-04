@@ -359,13 +359,22 @@ def _confirm_translated():
 
 
 @task
-def setup_release():
+def setup_release(keep_days=0):
+    try:
+        keep_days = int(keep_days)
+    except ValueError:
+        print red("Unable to parse '{}' into an integer")
+        exit()
+
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
     execute_with_timing(release.create_code_dir)
     execute_with_timing(release.update_code, deploy_ref)
     execute_with_timing(release.update_virtualenv)
 
     execute_with_timing(copy_release_files)
+
+    if keep_days > 0:
+        execute_with_timing(release.mark_keep_until, keep_days)
 
 
 def conditionally_stop_pillows_and_celery_during_migrate():

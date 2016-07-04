@@ -1,5 +1,6 @@
 import os
 import posixpath
+from datetime import datetime, timedelta
 
 from fabric.api import roles, parallel, sudo, env
 from fabric.colors import red
@@ -7,7 +8,15 @@ from fabric.context_managers import cd, settings
 from fabric.contrib import files
 from fabric import utils
 
-from ..const import ROLES_ALL_SRC, ROLES_DB_ONLY, RELEASE_RECORD, ROLES_TOUCHFORMS, ROLES_STATIC
+from ..const import (
+    ROLES_ALL_SRC,
+    ROLES_DB_ONLY,
+    RELEASE_RECORD,
+    ROLES_TOUCHFORMS,
+    ROLES_STATIC,
+    DATE_FMT,
+    KEEP_UNTIL_PREFIX,
+)
 
 
 @roles(ROLES_ALL_SRC)
@@ -152,6 +161,15 @@ def clean_releases(keep=3):
                 valid_releases += 1
                 if valid_releases > keep:
                     to_remove.append(release)
+            elif files.exists(os.path.join(env.releases, release, KEEP_UNTIL_PREFIX + '*')):
+                # This has a KEEP_UNTIL file, so let's not delete until time is up
+                with cd(os.path.join(env.releases, release)):
+                    filepath = sudo('find . -name {}*'.format(KEEP_UNTIL_PREFIX))
+                filename = os.path.basename(filepath)
+                _, date_to_delete_string = filename.split(KEEP_UNTIL_PREFIX)
+                date_to_delete = datetime.strptime(date_to_delete_string, DATE_FMT)
+                if date_to_delete < datetime.utcnow():
+                    to_remove.append(release)
             else:
                 # cleans all releases that were not successful deploys
                 to_remove.append(release)
@@ -240,3 +258,11 @@ def get_number_of_releases():
 @parallel
 def ensure_release_exists(release):
     return files.exists(release)
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def mark_keep_until(keep_days):
+    until_date = (datetime.utcnow() + timedelta(days=keep_days)).strftime(DATE_FMT)
+    with cd(env.code_root):
+        sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
