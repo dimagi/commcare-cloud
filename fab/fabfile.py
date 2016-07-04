@@ -363,7 +363,7 @@ def setup_release(keep_days=0):
     try:
         keep_days = int(keep_days)
     except ValueError:
-        print red("Unable to parse '{}' into an integer")
+        print red("Unable to parse '{}' into an integer".format(keep_days))
         exit()
 
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
