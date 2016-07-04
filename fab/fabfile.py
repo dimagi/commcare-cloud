@@ -33,7 +33,7 @@ from distutils.util import strtobool
 
 from fabric import utils
 from fabric.api import run, roles, execute, task, sudo, env, parallel
-from fabric.colors import blue, red
+from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.operations import require
@@ -61,7 +61,14 @@ from operations import (
     formplayer,
     release,
 )
-from utils import execute_with_timing, DeployMetadata
+from utils import (
+    clear_cached_deploy,
+    execute_with_timing,
+    DeployMetadata,
+    cache_deploy_state,
+    retrieve_cached_deploy_env,
+    retrieve_cached_deploy_checkpoint,
+)
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -277,6 +284,7 @@ def env_common():
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
+    env.resume = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
@@ -360,41 +368,53 @@ def setup_release():
     execute_with_timing(copy_release_files)
 
 
+def conditionally_stop_pillows_and_celery_during_migrate():
+    """
+    Conditionally stops pillows and celery if any migrations exist
+    """
+    if all(execute(db.migrations_exist).values()):
+        execute_with_timing(supervisor.stop_pillows)
+        execute(db.set_in_progress_flag)
+        execute_with_timing(supervisor.stop_celery_tasks)
+    execute_with_timing(db.migrate)
+
+
+def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
+    """
+    Stores fabric env in redis and then runs the function if it shouldn't be skipped
+    """
+    if env.resume and command_index < env.checkpoint_index:
+        print blue("Skipping command: '{}'".format(command_name))
+        return
+    cache_deploy_state(command_index)
+    fn(*args, **kwargs)
+
+
 def _deploy_without_asking():
-    try:
-        setup_release()
-
-        execute_with_timing(db.preindex_views)
-
+    commands = [
+        setup_release,
+        db.preindex_views,
         # Compute version statics while waiting for preindex
-        execute_with_timing(staticfiles.prime_version_static)
-
-        execute_with_timing(db.ensure_preindex_completion)
-
+        staticfiles.prime_version_static,
+        db.ensure_preindex_completion,
         # handle static files
-        execute_with_timing(staticfiles.version_static)
-        execute_with_timing(staticfiles.bower_install)
-        execute_with_timing(staticfiles.npm_install)
-        execute_with_timing(staticfiles.collectstatic)
-        execute_with_timing(staticfiles.compress)
-        execute_with_timing(staticfiles.update_translations)
+        staticfiles.version_static,
+        staticfiles.bower_install,
+        staticfiles.npm_install,
+        staticfiles.collectstatic,
+        staticfiles.compress,
+        staticfiles.update_translations,
+        supervisor.set_supervisor_config,
+        formplayer.build_formplayer,
+        conditionally_stop_pillows_and_celery_during_migrate,
+        db.flip_es_aliases,
+        staticfiles.update_manifest,
+        release.clean_releases,
+    ]
 
-        supervisor.set_supervisor_config()
-
-        execute_with_timing(formplayer.build_formplayer)
-
-        if all(execute(db.migrations_exist).values()):
-            execute_with_timing(supervisor.stop_pillows)
-            execute(db.set_in_progress_flag)
-            execute_with_timing(supervisor.stop_celery_tasks)
-        execute_with_timing(db.migrate)
-
-        execute_with_timing(db.flip_es_aliases)
-
-        # hard update of manifest.json since we're about to force restart
-        # all services
-        execute_with_timing(staticfiles.update_manifest)
-        execute_with_timing(release.clean_releases)
+    try:
+        for index, command in enumerate(commands):
+            deploy_checkpoint(index, command.func_name, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy yet",
@@ -416,6 +436,7 @@ def _deploy_without_asking():
         silent_services_restart()
         execute_with_timing(release.record_successful_release)
         execute_with_timing(release.record_successful_deploy)
+        clear_cached_deploy()
 
 
 @task
@@ -524,8 +545,11 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes"):
-    """preindex and deploy if it completes quickly enough, otherwise abort"""
+def awesome_deploy(confirm="yes", resume='no'):
+    """Preindex and deploy if it completes quickly enough, otherwise abort
+    fab <env> deploy:confirm=no  # do not confirm
+    fab <env> deploy:resume=yes  # resume from previous deploy
+    """
     _require_target()
     if strtobool(confirm) and (
         not _confirm_translated() or
@@ -534,6 +558,18 @@ def awesome_deploy(confirm="yes"):
             '{env.environment}?'.format(env=env), default=False)
     ):
         utils.abort('Deployment aborted.')
+
+    if resume == 'yes':
+        try:
+            cached_payload = retrieve_cached_deploy_env()
+            checkpoint_index = retrieve_cached_deploy_checkpoint()
+        except Exception:
+            print red('Unable to resume deploy, please start anew')
+            raise
+        env.update(cached_payload)
+        env.resume = True
+        env.checkpoint_index = checkpoint_index or 0
+        print magenta('You are about to resume the deploy in {}'.format(env.code_root))
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'

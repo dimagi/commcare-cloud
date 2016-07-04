@@ -1,2 +1,3 @@
 *.pyc
 fab/config.py
+*.pickle
