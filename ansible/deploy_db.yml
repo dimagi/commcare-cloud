@@ -19,6 +19,12 @@
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
+- name: Posgres Standby
+  hosts: pg_standby
+  sudo: yes
+  roles:
+    - {role: pg_standby, tags: 'pg_standby'}
+
 - name: Couchdb
   hosts: couchdb
   sudo: yes
