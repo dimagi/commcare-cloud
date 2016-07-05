@@ -1,0 +1,16 @@
+pg_install: True
+postgresql_version: '9.4'
+postgresql_port: 5432
+postgresql_ssl_enabled: False
+postgresql_dir_original_path: /var/lib/postgresql
+postgresql_dir_path: "{{ encrypted_root }}/postgresql"
+postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
+postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
+postgresql_config_home: /etc/postgresql/{{ postgresql_version }}/main
+postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
+pg_bouncer_config_home: /etc/pgbouncer
+pg_bouncer_ini: "{{ pg_bouncer_config_home }}/pgbouncer.ini"
+pg_bouncer_users: "{{ pg_bouncer_config_home }}/userlist.txt"
+postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
+archive_dir: "{{ postgresql_dir_path }}/wal_archive"
+standbyhost: "hqcelery0.internal.commcarehq.org"
