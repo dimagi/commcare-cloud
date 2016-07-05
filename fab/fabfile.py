@@ -26,21 +26,15 @@ Server layout:
 
 """
 import datetime
-import json
 import os
 import posixpath
-import sh
-import time
 import yaml
-import re
-from getpass import getpass
 from distutils.util import strtobool
-from github3 import login
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel, serial
-from fabric.colors import blue, red, yellow, magenta
-from fabric.context_managers import settings, cd, shell_env
+from fabric.api import run, roles, execute, task, sudo, env, parallel
+from fabric.colors import blue, red, magenta
+from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.operations import require
 from const import (
@@ -65,8 +59,16 @@ from operations import (
     staticfiles,
     supervisor,
     formplayer,
+    release,
 )
-from utils import execute_with_timing
+from utils import (
+    clear_cached_deploy,
+    execute_with_timing,
+    DeployMetadata,
+    cache_deploy_state,
+    retrieve_cached_deploy_env,
+    retrieve_cached_deploy_checkpoint,
+)
 
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -115,65 +117,6 @@ def _require_target():
             provided_by=('staging', 'production', 'softlayer', 'zambia'))
 
 
-class DeployMetadata(object):
-    def __init__(self, code_branch, environment):
-        self.timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%d_%H.%M')
-        self._deploy_ref = None
-        self._deploy_tag = None
-        self._github = _get_github()
-        self._repo = self._github.repository('dimagi', 'commcare-hq')
-        self._max_tags = 100
-        self._last_tag = None
-        self._code_branch = code_branch
-        self._environment = environment
-
-    def tag_commit(self):
-        pattern = ".*-{}-.*".format(re.escape(self._environment))
-        for tag in self._repo.tags(self._max_tags):
-            if re.match(pattern, tag.name):
-                self._last_tag = tag.name
-                break
-
-        if not self._last_tag:
-            print magenta('Warning: No previous tag found in last {} tags for {}'.format(
-                self._max_tags,
-                self._environment
-            ))
-        tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        msg = "{} deploy at {}".format(self._environment, self.timestamp)
-        user = self._github.me()
-        self._repo.create_tag(
-            tag=tag_name,
-            message=msg,
-            sha=self.deploy_ref,
-            obj_type='commit',
-            tagger={
-                'name': user.login,
-                'email': user.email or '{}@dimagi.com'.format(user.login),
-                'date': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            }
-        )
-        self._deploy_tag = tag_name
-
-    @property
-    def diff_url(self):
-        if self._deploy_tag is None:
-            raise Exception("You haven't tagged anything yet.")
-        return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
-            self._last_tag,
-            self._deploy_tag,
-        )
-
-    @property
-    def deploy_ref(self):
-        if self._deploy_ref is None:
-            # turn whatever `code_branch` is into a commit hash
-            branch = self._repo.branch(self._code_branch)
-            self._deploy_ref = branch.commit.sha
-        return self._deploy_ref
-
-
-@task
 def _setup_path():
     # using posixpath to ensure unix style slashes.
     # See bug-ticket: http://code.fabfile.org/attachments/61/posixpath.patch
@@ -189,17 +132,6 @@ def _setup_path():
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.environment)
-
-
-@roles(ROLES_ALL_SRC)
-def setup_dirs():
-    """
-    create uploaded media, log, etc. directories (if needed) and make writable
-
-    """
-    sudo('mkdir -p %(log_dir)s' % env)
-    sudo('chmod a+w %(log_dir)s' % env)
-    sudo('mkdir -p %(services)s/supervisor' % env)
 
 
 def load_env(env_name):
@@ -353,6 +285,7 @@ def env_common():
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
+    env.resume = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
@@ -377,49 +310,6 @@ def preindex_views():
     db.preindex_views()
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_code(git_tag, use_current_release=False):
-    # If not updating current release,  we are making a new release and thus have to do cloning
-    # we should only ever not make a new release when doing a hotfix deploy
-    if not use_current_release:
-        if files.exists(env.code_current):
-            with cd(env.code_current):
-                submodules = sudo("git submodule | awk '{ print $2 }'").split()
-        with cd(env.code_root):
-            if files.exists(env.code_current):
-                local_submodule_clone = []
-                for submodule in submodules:
-                    local_submodule_clone.append('-c')
-                    local_submodule_clone.append(
-                        'submodule.{submodule}.url={code_current}/.git/modules/{submodule}'.format(
-                            submodule=submodule,
-                            code_current=env.code_current
-                        )
-                    )
-
-                sudo('git clone --recursive {} {}/.git {}'.format(
-                    ' '.join(local_submodule_clone),
-                    env.code_current,
-                    env.code_root
-                ))
-                sudo('git remote set-url origin {}'.format(env.code_repo))
-            else:
-                sudo('git clone {} {}'.format(env.code_repo, env.code_root))
-
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('git remote prune origin')
-        sudo('git fetch origin --tags -q')
-        sudo('git checkout {}'.format(git_tag))
-        sudo('git reset --hard {}'.format(git_tag))
-        sudo('git submodule sync')
-        sudo('git submodule update --init --recursive -q')
-        # remove all untracked files, including submodules
-        sudo("git clean -ffd")
-        # remove all .pyc files in the project
-        sudo("find . -name '*.pyc' -delete")
-
-
 @roles(ROLES_DB_ONLY)
 def mail_admins(subject, message):
     with cd(env.code_root):
@@ -431,30 +321,6 @@ def mail_admins(subject, message):
             'subject': subject,
             'message': message,
         })
-
-
-@roles(ROLES_DB_ONLY)
-def record_successful_deploy():
-    with cd(env.code_current):
-        env.deploy_metadata.tag_commit()
-        sudo((
-            '%(virtualenv_current)s/bin/python manage.py '
-            'record_deploy_success --user "%(user)s" --environment '
-            '"%(environment)s" --url %(url)s --mail_admins'
-        ) % {
-            'virtualenv_current': env.virtualenv_current,
-            'user': env.captain_user or env.user,
-            'environment': env.environment,
-            'url': env.deploy_metadata.diff_url,
-        })
-
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def record_successful_release():
-    with cd(env.root):
-        files.append(RELEASE_RECORD, str(env.code_root), use_sudo=True)
 
 
 @task
@@ -473,7 +339,7 @@ def hotfix_deploy():
     _require_target()
     run('echo ping!')  # workaround for delayed console response
     try:
-        execute(update_code, env.deploy_metadata.deploy_ref, True)
+        execute(release.update_code, env.deploy_metadata.deploy_ref, True)
     except Exception:
         execute(mail_admins, "Deploy failed", "You had better check the logs.")
         # hopefully bring the server back to life
@@ -481,7 +347,7 @@ def hotfix_deploy():
         raise
     else:
         silent_services_restart(use_current_release=True)
-        execute(record_successful_deploy)
+        execute(release.record_successful_deploy)
 
 
 def _confirm_translated():
@@ -494,50 +360,82 @@ def _confirm_translated():
 
 
 @task
-def setup_release():
+def setup_release(keep_days=0):
+    """
+    Setup a release in the releases directory with the most recent code.
+    Useful for running management commands. These releases will automatically
+    be cleaned up at the finish of each deploy. To ensure that a release will
+    last past a deploy use the `keep_days` param.
+
+    :param keep_days: The number of days to keep this release before it will be purged
+
+    Example:
+    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
+    try:
+        keep_days = int(keep_days)
+    except ValueError:
+        print red("Unable to parse '{}' into an integer".format(keep_days))
+        exit()
+
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    execute_with_timing(create_code_dir)
-    execute_with_timing(update_code, deploy_ref)
-    execute_with_timing(update_virtualenv)
+    execute_with_timing(release.create_code_dir)
+    execute_with_timing(release.update_code, deploy_ref)
+    execute_with_timing(release.update_virtualenv)
 
     execute_with_timing(copy_release_files)
 
+    if keep_days > 0:
+        execute_with_timing(release.mark_keep_until, keep_days)
+
+
+def conditionally_stop_pillows_and_celery_during_migrate():
+    """
+    Conditionally stops pillows and celery if any migrations exist
+    """
+    if all(execute(db.migrations_exist).values()):
+        execute_with_timing(supervisor.stop_pillows)
+        execute(db.set_in_progress_flag)
+        execute_with_timing(supervisor.stop_celery_tasks)
+    execute_with_timing(db.migrate)
+
+
+def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
+    """
+    Stores fabric env in redis and then runs the function if it shouldn't be skipped
+    """
+    if env.resume and command_index < env.checkpoint_index:
+        print blue("Skipping command: '{}'".format(command_name))
+        return
+    cache_deploy_state(command_index)
+    fn(*args, **kwargs)
+
 
 def _deploy_without_asking():
-    try:
-        setup_release()
-
-        execute_with_timing(db.preindex_views)
-
+    commands = [
+        setup_release,
+        db.preindex_views,
         # Compute version statics while waiting for preindex
-        execute_with_timing(staticfiles.prime_version_static)
-
-        execute_with_timing(db.ensure_preindex_completion)
-
+        staticfiles.prime_version_static,
+        db.ensure_preindex_completion,
         # handle static files
-        execute_with_timing(staticfiles.version_static)
-        execute_with_timing(staticfiles.bower_install)
-        execute_with_timing(staticfiles.npm_install)
-        execute_with_timing(staticfiles.collectstatic)
-        execute_with_timing(staticfiles.compress)
+        staticfiles.version_static,
+        staticfiles.bower_install,
+        staticfiles.npm_install,
+        staticfiles.collectstatic,
+        staticfiles.compress,
+        staticfiles.update_translations,
+        supervisor.set_supervisor_config,
+        formplayer.build_formplayer,
+        conditionally_stop_pillows_and_celery_during_migrate,
+        db.flip_es_aliases,
+        staticfiles.update_manifest,
+        release.clean_releases,
+    ]
 
-        supervisor.set_supervisor_config()
-
-        execute_with_timing(formplayer.build_formplayer)
-
-        if all(execute(db.migrations_exist).values()):
-            execute_with_timing(supervisor.stop_pillows)
-            execute(db.set_in_progress_flag)
-            execute_with_timing(supervisor.stop_celery_tasks)
-        execute_with_timing(db.migrate)
-
-        execute_with_timing(staticfiles.update_translations)
-        execute_with_timing(db.flip_es_aliases)
-
-        # hard update of manifest.json since we're about to force restart
-        # all services
-        execute_with_timing(staticfiles.update_manifest)
-        execute_with_timing(clean_releases)
+    try:
+        for index, command in enumerate(commands):
+            deploy_checkpoint(index, command.func_name, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy yet",
@@ -555,24 +453,16 @@ def _deploy_without_asking():
         silent_services_restart()
         raise
     else:
-        execute_with_timing(update_current)
+        execute_with_timing(release.update_current)
         silent_services_restart()
-        execute_with_timing(record_successful_release)
-        execute_with_timing(record_successful_deploy)
+        execute_with_timing(release.record_successful_release)
+        execute_with_timing(release.record_successful_deploy)
+        clear_cached_deploy()
 
 
 @task
-@roles(ROLES_ALL_SRC)
-@parallel
 def update_current(release=None):
-    """
-    Updates the current release to the one specified or to the code_root
-    """
-    if ((not release and not files.exists(env.code_root)) or
-            (release and not files.exists(release))):
-        utils.abort('About to update current to non-existant release')
-
-    sudo('ln -nfs {} {}'.format(release or env.code_root, env.code_current))
+    execute(release.update_current, release)
 
 
 @task
@@ -591,73 +481,13 @@ def unlink_current():
         sudo('unlink {}'.format(env.code_current))
 
 
-@task
-@roles(ROLES_ALL_SRC)
-@parallel
-def create_code_dir():
-    sudo('mkdir -p {}'.format(env.code_root))
-
-
-@parallel
-@roles(ROLES_ALL_SRC)
-def copy_localsettings():
-    sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
-
-
-@parallel
-@roles(ROLES_TOUCHFORMS)
-def copy_tf_localsettings():
-    sudo(
-        'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
-        '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
-            env.code_current, env.code_root
-        ))
-
-
-@parallel
-@roles(ROLES_TOUCHFORMS)
-def copy_formplayer_properties():
-    with settings(warn_only=True):
-        sudo(
-            'cp {}/submodules/formplayer/config/application.properties '
-            '{}/submodules/formplayer/config'.format(
-                env.code_current, env.code_root
-            ))
-
-
-@parallel
-@roles(ROLES_ALL_SRC)
-def copy_components():
-    if files.exists('{}/bower_components'.format(env.code_current)):
-        sudo('cp -r {}/bower_components {}/bower_components'.format(env.code_current, env.code_root))
-    else:
-        sudo('mkdir {}/bower_components'.format(env.code_root))
-
-
-@parallel
-@roles(ROLES_ALL_SRC)
-def copy_node_modules():
-    if files.exists('{}/node_modules'.format(env.code_current)):
-        sudo('cp -r {}/node_modules {}/node_modules'.format(env.code_current, env.code_root))
-    else:
-        sudo('mkdir {}/node_modules'.format(env.code_root))
-
-
-@parallel
-@roles(ROLES_STATIC)
-def copy_compressed_js_staticfiles():
-    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current)):
-        sudo('mkdir -p {}/staticfiles/CACHE/js'.format(env.code_root))
-        sudo('cp -r {}/staticfiles/CACHE/js {}/staticfiles/CACHE/js'.format(env.code_current, env.code_root))
-
-
 def copy_release_files():
-    execute(copy_localsettings)
-    execute(copy_tf_localsettings)
-    execute(copy_formplayer_properties)
-    execute(copy_components)
-    execute(copy_node_modules)
-    execute(copy_compressed_js_staticfiles)
+    execute(release.copy_localsettings)
+    execute(release.copy_tf_localsettings)
+    execute(release.copy_formplayer_properties)
+    execute(release.copy_components)
+    execute(release.copy_node_modules)
+    execute(release.copy_compressed_js_staticfiles)
 
 
 @task
@@ -666,12 +496,12 @@ def rollback():
     Rolls back the servers to the previous release if it exists and is same
     across servers.
     """
-    number_of_releases = execute(get_number_of_releases)
+    number_of_releases = execute(release.get_number_of_releases)
     if not all(map(lambda n: n > 1, number_of_releases)):
         print red('Aborting because there are not enough previous releases.')
         exit()
 
-    releases = execute(get_previous_release)
+    releases = execute(release.get_previous_release)
 
     unique_releases = set(releases.values())
     if len(unique_releases) != 1:
@@ -689,81 +519,24 @@ def rollback():
         print blue('Exiting.')
         exit()
 
-    exists = execute(ensure_release_exists, unique_release)
+    exists = execute(release.ensure_release_exists, unique_release)
 
     if all(exists.values()):
         print blue('Updating current and restarting services')
-        execute(update_current, unique_release)
+        execute(release.update_current, unique_release)
         silent_services_restart(use_current_release=True)
-        execute(mark_last_release_unsuccessful)
+        execute(release.mark_last_release_unsuccessful)
     else:
         print red('Aborting because not all hosts have release')
         exit()
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def get_number_of_releases():
-    with cd(env.root):
-        return int(sudo("wc -l {} | awk '{{ print $1 }}'".format(RELEASE_RECORD)))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def mark_last_release_unsuccessful():
-    # Removes last line from RELEASE_RECORD file
-    with cd(env.root):
-        sudo("sed -i '$d' {}".format(RELEASE_RECORD))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def ensure_release_exists(release):
-    return files.exists(release)
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def get_previous_release():
-    # Gets second to last line in RELEASES.txt
-    with cd(env.root):
-        return sudo('tail -2 {} | head -n 1'.format(RELEASE_RECORD))
-
-
 @task
-@roles(ROLES_ALL_SRC)
-@parallel
 def clean_releases(keep=3):
     """
     Cleans old and failed deploys from the ~/www/<environment>/releases/ directory
     """
-    releases = sudo('ls {}'.format(env.releases)).split()
-    current_release = os.path.basename(sudo('readlink {}'.format(env.code_current)))
-
-    to_remove = []
-    valid_releases = 0
-    with cd(env.root):
-        for index, release in enumerate(reversed(releases)):
-            if (release == current_release or release == os.path.basename(env.code_root)):
-                valid_releases += 1
-            elif (files.contains(RELEASE_RECORD, release)):
-                valid_releases += 1
-                if valid_releases > keep:
-                    to_remove.append(release)
-            else:
-                # cleans all releases that were not successful deploys
-                to_remove.append(release)
-
-    if len(to_remove) == len(releases):
-        print red('Aborting clean_releases, about to remove every release')
-        return
-
-    if os.path.basename(env.code_root) in to_remove:
-        print red('Aborting clean_releases, about to remove current release')
-        return
-
-    for release in to_remove:
-        sudo('rm -rf {}/{}'.format(env.releases, release))
+    execute(release.clean_releases, keep)
 
 
 @task
@@ -793,8 +566,11 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes"):
-    """preindex and deploy if it completes quickly enough, otherwise abort"""
+def awesome_deploy(confirm="yes", resume='no'):
+    """Preindex and deploy if it completes quickly enough, otherwise abort
+    fab <env> deploy:confirm=no  # do not confirm
+    fab <env> deploy:resume=yes  # resume from previous deploy
+    """
     _require_target()
     if strtobool(confirm) and (
         not _confirm_translated() or
@@ -803,6 +579,18 @@ def awesome_deploy(confirm="yes"):
             '{env.environment}?'.format(env=env), default=False)
     ):
         utils.abort('Deployment aborted.')
+
+    if resume == 'yes':
+        try:
+            cached_payload = retrieve_cached_deploy_env()
+            checkpoint_index = retrieve_cached_deploy_checkpoint()
+        except Exception:
+            print red('Unable to resume deploy, please start anew')
+            raise
+        env.update(cached_payload)
+        env.resume = True
+        env.checkpoint_index = checkpoint_index or 0
+        print magenta('You are about to resume the deploy in {}'.format(env.code_root))
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
@@ -826,39 +614,6 @@ def awesome_deploy(confirm="yes"):
         print('┻┻┻┻┻┻')
 
     _deploy_without_asking()
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_virtualenv():
-    """
-    update external dependencies on remote host
-
-    assumes you've done a code update
-
-    """
-    _require_target()
-    requirements = posixpath.join(env.code_root, 'requirements')
-
-    # Optimization if we have current setup (i.e. not the first deploy)
-    if files.exists(env.virtualenv_current):
-        print 'Cloning virtual env'
-        # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
-        current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
-        sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
-
-    with cd(env.code_root):
-        cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
-            env.sudo_user, env.virtualenv_root)
-        # uninstall requirements in uninstall-requirements.txt
-        # but only the ones that are actually installed (checks pip freeze)
-        sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
-             user=env.sudo_user)
-        sudo('%s pip install --timeout 60 --quiet --requirement %s --requirement %s' % (
-            cmd_prefix,
-            posixpath.join(requirements, 'prod-requirements.txt'),
-            posixpath.join(requirements, 'requirements.txt'),
-        ))
 
 
 @task
@@ -945,24 +700,3 @@ def reset_pillow(pillow):
         prefix=prefix,
         pillow=pillow
     ))
-
-
-def _get_github():
-    try:
-        from .config import GITHUB_APIKEY
-    except ImportError:
-        print (
-            "You can add a GitHub API key to automate this step:\n"
-            "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
-            "Then edit {project_root}/config.py"
-        ).format(project_root=PROJECT_ROOT)
-        username = raw_input('Github username: ')
-        password = getpass('Github password: ')
-        return login(
-            username=username,
-            password=password,
-        )
-    else:
-        return login(
-            token=GITHUB_APIKEY,
-        )
