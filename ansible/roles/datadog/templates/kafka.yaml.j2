@@ -13,37 +13,6 @@ init_config:
 
   # Metrics collected by this check. You should not have to modify this.
   conf:
-    # v0.8.2.x Producers
-    - include:
-        domain: 'kafka.producer'
-        bean_regex: 'kafka\.producer:type=ProducerRequestMetrics,name=ProducerRequestRateAndTimeMs,clientId=.*'
-        attribute:
-          Count:
-            metric_type: rate
-            alias: kafka.producer.request_rate
-    - include:
-        domain: 'kafka.producer'
-        bean_regex: 'kafka\.producer:type=ProducerRequestMetrics,name=ProducerRequestRateAndTimeMs,clientId=.*'
-        attribute:
-          Mean:
-            metric_type: gauge
-            alias: kafka.producer.request_latency_avg
-    - include:
-        domain: 'kafka.producer'
-        bean_regex: 'kafka\.producer:type=ProducerTopicMetrics,name=BytesPerSec,clientId=.*'
-        attribute:
-          Count:
-            metric_type: rate
-            alias: kafka.producer.bytes_out
-    - include:
-        domain: 'kafka.producer'
-        bean_regex: 'kafka\.producer:type=ProducerTopicMetrics,name=MessagesPerSec,clientId=.*'
-        attribute:
-          Count:
-            metric_type: rate
-            alias: kafka.producer.message_rate
-
-
     # v0.9.0.x Producers
     - include:
         domain: 'kafka.producer'
@@ -80,37 +49,6 @@ init_config:
           io-wait-time-ns-avg:
             metric_type: gauge
             alias: kafka.producer.io_wait
-
-
-    # v0.8.2.x Consumers
-    - include:
-        domain: 'kafka.consumer'
-        bean_regex: 'kafka\.consumer:type=ConsumerFetcherManager,name=MaxLag,clientId=.*'
-        attribute:
-          Value:
-            metric_type: gauge
-            alias: kafka.consumer.max_lag
-    - include:
-        domain: 'kafka.consumer'
-        bean_regex: 'kafka\.consumer:type=ConsumerFetcherManager,name=MinFetchRate,clientId=.*'
-        attribute:
-          Value:
-            metric_type: gauge
-            alias: kafka.consumer.fetch_rate
-    - include:
-        domain: 'kafka.consumer'
-        bean_regex: 'kafka\.consumer:type=ConsumerTopicMetrics,name=BytesPerSec,clientId=.*'
-        attribute:
-          Count:
-            metric_type: rate
-            alias: kafka.consumer.bytes_in
-    - include:
-        domain: 'kafka.consumer'
-        bean_regex: 'kafka\.consumer:type=ConsumerTopicMetrics,name=MessagesPerSec,clientId=.*'
-        attribute:
-          Count:
-            metric_type: rate
-            alias: kafka.consumer.messages_in
 
     # Offsets committed to ZooKeeper
     - include:
