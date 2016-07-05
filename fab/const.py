@@ -30,6 +30,8 @@ ROLES_PILLOW_RETRY_QUEUE = ['django_monolith', 'pillow_retry_queue']
 ROLES_DB_ONLY = ['pg', 'django_monolith']
 
 RELEASE_RECORD = 'RELEASES.txt'
+KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
+DATE_FMT = '%Y-%m-%d_%H.%M'
 
 RSYNC_EXCLUDE = (
     '.DS_Store',

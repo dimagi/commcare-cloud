@@ -359,13 +359,33 @@ def _confirm_translated():
 
 
 @task
-def setup_release():
+def setup_release(keep_days=0):
+    """
+    Setup a release in the releases directory with the most recent code.
+    Useful for running management commands. These releases will automatically
+    be cleaned up at the finish of each deploy. To ensure that a release will
+    last past a deploy use the `keep_days` param.
+
+    :param keep_days: The number of days to keep this release before it will be purged
+
+    Example:
+    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
+    try:
+        keep_days = int(keep_days)
+    except ValueError:
+        print red("Unable to parse '{}' into an integer".format(keep_days))
+        exit()
+
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
     execute_with_timing(release.create_code_dir)
     execute_with_timing(release.update_code, deploy_ref)
     execute_with_timing(release.update_virtualenv)
 
     execute_with_timing(copy_release_files)
+
+    if keep_days > 0:
+        execute_with_timing(release.mark_keep_until, keep_days)
 
 
 def conditionally_stop_pillows_and_celery_during_migrate():

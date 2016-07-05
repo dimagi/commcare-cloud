@@ -13,6 +13,7 @@ from const import (
     PROJECT_ROOT,
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
+    DATE_FMT,
 )
 
 
@@ -43,7 +44,7 @@ def get_pillow_env_config(environment):
 
 class DeployMetadata(object):
     def __init__(self, code_branch, environment):
-        self.timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%d_%H.%M')
+        self.timestamp = datetime.datetime.utcnow().strftime(DATE_FMT)
         self._deploy_ref = None
         self._deploy_tag = None
         self._max_tags = 100
