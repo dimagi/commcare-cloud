@@ -360,6 +360,17 @@ def _confirm_translated():
 
 @task
 def setup_release(keep_days=0):
+    """
+    Setup a release in the releases directory with the most recent code.
+    Useful for running management commands. These releases will automatically
+    be cleaned up at the finish of each deploy. To ensure that a release will
+    last past a deploy use the `keep_days` param.
+
+    :param keep_days: The number of days to keep this release before it will be purged
+
+    Example:
+    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
     try:
         keep_days = int(keep_days)
     except ValueError:
