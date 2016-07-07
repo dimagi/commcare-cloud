@@ -157,7 +157,7 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 #------------------------------------------------------------------------------
 
 # - Settings -
-
+{% if groups["pg_standby"] %}
 wal_level = hot_standby           # minimal, archive, or hot_standby
                     # (change requires restart)
 #fsync = on             # turns forced synchronization on or off
@@ -185,14 +185,13 @@ wal_level = hot_standby           # minimal, archive, or hot_standby
 #checkpoint_warning = 30s       # 0 disables
 
 # - Archiving -
-
 archive_mode = on     # allows archiving to be done
                 # (change requires restart)
-archive_command = 'rsync -a %p postgres@{{ standbyhost }}:{{ archive_dir }}/%f'   # command to use to archive a logfile segment
+archive_command = 'rsync -a %p postgres@{{ groups["pg_standby"][0] }}:{{ archive_dir }}/%f'   # command to use to archive a logfile segment, archive directory lives on first standby machine specified in the inventory file
 #archive_timeout = 0        # force a logfile segment switch after this
                 # number of seconds; 0 disables
 
-
+{% endif %}
 #------------------------------------------------------------------------------
 # REPLICATION
 #------------------------------------------------------------------------------
