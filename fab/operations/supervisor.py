@@ -4,6 +4,7 @@ import yaml
 import time
 import posixpath
 
+from ansible.inventory import InventoryParser
 from fabric.api import roles, parallel, env, sudo, serial
 from fabric.context_managers import cd
 
@@ -198,7 +199,11 @@ def _format_env(current_env, extra=None):
     ]
 
     host = current_env.get('host_string')
-    if host in current_env.get('new_relic_enabled', []):
+    inventory_groups = InventoryParser(current_env.inventory).groups.values()
+    newrelic_machines = [machine.name
+                         for group in inventory_groups for machine in group.hosts
+                         if 'newrelic_app_name' in group.vars]
+    if host in newrelic_machines:
         ret['new_relic_command'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
         ret['supervisor_env_vars'] = {
             'NEW_RELIC_CONFIG_FILE': '%(root)s/newrelic.ini' % env,
