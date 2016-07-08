@@ -14,9 +14,6 @@ base:
   formplayer_memory: "3584m"
   keepalive: 60
 
-  # list of servers where the NewRelic app agent should be running
-  new_relic_enabled: []
-  
 development:
 
   # parameters for configuring the celery worker processes
@@ -116,13 +113,6 @@ softlayer:
 
 production:
   environment: production
-
-  new_relic_enabled:
-    - hqdjango12.internal.commcarehq.org
-    - hqdjango13.internal.commcarehq.org
-    - hqdjango14.internal.commcarehq.org
-    - hqcelery1.internal.commcarehq.org
-    - hqcelery0.internal.commcarehq.org
 
   celery_processes:
     hqcelery0:
