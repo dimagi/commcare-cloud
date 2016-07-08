@@ -62,13 +62,14 @@ CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 {% endif %}
 
-COUCH_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
-DJANGO_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
-ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
-ANALYTICS_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.analytics.log")
-DATADOG_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
-FORMPLAYER_TIMING_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
-FORMPLAYER_DIFF_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
+LOG_HOME = '{{ log_home }}'
+COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
+DJANGO_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
+ACCOUNTING_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
+ANALYTICS_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.analytics.log")
+DATADOG_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
+FORMPLAYER_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
+FORMPLAYER_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
 
 # Email setup
 # email settings: these ones are the custom hq ones
