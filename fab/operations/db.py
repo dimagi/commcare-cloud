@@ -5,10 +5,10 @@ from fabric.context_managers import cd, settings
 from fabric.api import roles, sudo, env, parallel
 
 from ..exceptions import PreindexNotFinished
-from ..const import ROLES_DB_ONLY
+from ..const import ROLES_DB_ONLY, ROLES_PILLOWTOP
 
 
-@roles(ROLES_DB_ONLY)
+@roles(ROLES_PILLOWTOP)
 def preindex_views():
     with cd(env.code_root):
         sudo((
