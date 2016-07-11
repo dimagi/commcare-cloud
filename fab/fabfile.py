@@ -300,7 +300,7 @@ def pillowtop():
 
 
 @task
-@roles(ROLES_DB_ONLY)
+@roles(ROLES_PILLOWTOP)
 def preindex_views():
     """
     Creates a new release that runs preindex_everything. Clones code from
