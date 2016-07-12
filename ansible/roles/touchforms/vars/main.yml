@@ -1,3 +1,2 @@
 touchforms_data_dir: "{{ www_home }}/data/touchforms"
-
-formplayer_db_name: formplayer
+# formplayer_db_name: ..defined in group_vars/all.yml

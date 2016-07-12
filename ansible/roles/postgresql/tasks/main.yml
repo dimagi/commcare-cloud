@@ -118,6 +118,8 @@
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
+  when:
+    pg_install == True
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
