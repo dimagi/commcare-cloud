@@ -8,6 +8,6 @@ instances:
        port: 5432
        username: {{ postgres_users.devreadonly.username }}
        password: {{ postgres_users.devreadonly.password }}
-       ssl: True
+       ssl: False
        tags:
             - environment:{{ deploy_env }}
