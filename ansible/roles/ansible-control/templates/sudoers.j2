@@ -7,5 +7,5 @@ User_Alias ANSIBLE_USERS = {% for user in dev_users.present -%}
 {%- if not loop.last %}, {% endif %}
 {%- endfor %}
 
-{{ ansible_control_user }}    ALL=(ALL) ALL
+{{ ansible_control_user }}    ALL=(ALL) NOPASSWD: ALL
 ANSIBLE_USERS ALL = ({{ ansible_control_user }}) NOPASSWD: ALL
