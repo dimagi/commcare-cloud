@@ -47,7 +47,7 @@
   hosts: rabbitmq
   sudo: yes
   roles:
-    - rabbitmq
+    - {role: rabbitmq, tags: 'rabbitmq'}
 
 - name: Zookeeper
   hosts: zookeeper
