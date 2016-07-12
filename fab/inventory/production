@@ -13,7 +13,7 @@ newrelic_app_name=django
 hqdb0.internal-va.commcarehq.org
 
 [rabbitmq]
-hqdb0.internal-va.commcarehq.org
+hqes0.internal-va.commcarehq.org
 
 [zookeeper]
 hqes1.internal-va.commcarehq.org
