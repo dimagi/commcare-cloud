@@ -103,6 +103,7 @@ postgresql_dbs:
   - name: "{{ localsettings.UCR_DATABASE_NAME }}"
   - name: "{{localsettings.PG_DATABASE_NAME}}"
     django_alias: default
+  - name: "{{ formplayer_db_name }}"
 
 # example setup for sharded database
 # also set localsettings.USE_PARTITIONED_DATABASE to True
