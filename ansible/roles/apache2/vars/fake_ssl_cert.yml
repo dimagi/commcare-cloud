@@ -1,3 +1,0 @@
-apache2_ssl_cert: /etc/ssl/certs/ssl-cert-snakeoil.pem
-apache2_ssl_key: /etc/ssl/private/ssl-cert-snakeoil.key
-apache2_ssl_ca_certificate_file:
