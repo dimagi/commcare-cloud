@@ -95,25 +95,15 @@
 - name: Create PostgreSQL devreadonly user
   sudo_user: postgres
   postgresql_user:
-    name: postgres_users.devreadonly.username
-    password: postgres_users.devreadonly.password
+    name: "{{ postgres_users.devreadonly.username }}"
+    password: "{{ postgres_users.devreadonly.password }}"
     role_attr_flags: LOGIN
     encrypted: yes
     state: present
+    priv: SELECT
     port: "{{ postgresql_port }}"
   when:
     pg_install == True
-
-- name: Grant Read Access for devreadonly user
-  sudo_user: postgres
-  postgresql_privs:
-    database: "{{ item.name }}"
-    login: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role: postgres_users.devreadonly.username
-    privs: SELECT
-  with_items: "{{ postgresql_dbs }}"
-  when: pg_install == True
 
 - name: Create PostgreSQL databases
   sudo_user: postgres
