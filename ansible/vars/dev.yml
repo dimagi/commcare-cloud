@@ -98,6 +98,8 @@ supervisor_http_enabled: True
 supervisor_http_username: user
 supervisor_http_password: 123
 
+formplayer_db_name: formplayer
+
 postgresql_dbs:
   - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
   - name: "{{ localsettings.UCR_DATABASE_NAME }}"
