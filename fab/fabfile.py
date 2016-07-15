@@ -114,7 +114,7 @@ env.roledefs = {
 
 def _require_target():
     require('root', 'code_root', 'hosts', 'environment',
-            provided_by=('staging', 'production', 'softlayer', 'zambia'))
+            provided_by=('staging', 'production', 'softlayer'))
 
 
 def _setup_path():
@@ -174,14 +174,6 @@ def india():
 def softlayer():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'softlayer')
     load_env('softlayer')
-    execute(env_common)
-
-
-@task
-def zambia():
-    """Our production server in wv zambia."""
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'zambia')
-    load_env('zambia')
     execute(env_common)
 
 
@@ -594,8 +586,6 @@ def awesome_deploy(confirm="yes", resume='no'):
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
-    elif env.environment == 'zambia':
-        warning_message = "Zambia"
     else:
         warning_message = ''
 
@@ -619,7 +609,7 @@ def awesome_deploy(confirm="yes", resume='no'):
 @task
 def supervisorctl(command):
     require('supervisor_roles',
-            provided_by=('staging', 'production', 'softlayer', 'zambia'))
+            provided_by=('staging', 'production', 'softlayer'))
 
     @roles(env.supervisor_roles)
     def _inner():
