@@ -1,0 +1,5 @@
+---
+# roles/pg_standby/meta/main.yml
+
+dependencies:
+  - role: postgresql
