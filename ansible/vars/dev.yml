@@ -20,6 +20,7 @@ active_sites:
   commtrack_ssl: True
   commtrack_http: True
   riakcs: True
+  read_only_es: True
   hq_status: False
   icds_tableau: False
   dhis: False

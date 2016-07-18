@@ -1,0 +1,18 @@
+---
+# Provides a GET only access point for ES
+nginx_sites:
+- server:
+   file_name: "{{ deploy_env }}_read_only_es"
+   listen: "9201"
+   server_name: "{{ NO_WWW_SITE_HOST }}"
+   client_max_body_size: 100m
+   proxy_set_header: "Host $http_host"
+   location1:
+    name: /
+    if: '($request_method !~ "GET") {return 403; break;}'
+    proxy_pass: "http://{{ groups.elasticsearch.0 }}:{{ localsettings.ELASTICSEARCH_PORT }}"
+    proxy_redirect: "off"
+    proxy_set_headers:
+      - "X-Real-IP  $remote_addr"
+      - "X-Forwarded-For $proxy_add_x_forwarded_for"
+      - "Host $http_host"

@@ -53,7 +53,10 @@ server {
     {% if v.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in v.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
+    {% if v.get('if', False) %}
+        if {{ v['if'] }}
+    {% endif %}
+    {% for x,y in v.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'if'] %}
         {{ x }} {{ y }};
     {% endfor %}
     {% for k,v in v.iteritems() if k == 'proxy_set_headers' %}
