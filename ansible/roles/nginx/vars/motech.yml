@@ -11,14 +11,12 @@ nginx_sites:
    - "X-Forwarded-Proto $scheme"
    - "X-Forwarded-Host $host:443"
    error_page: "502 503 /errors/50x.html"
-   location1:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
-   location2:
-    name: /supply
-    proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply
-    proxy_read_timeout: 180s
-   location3:
-    name: /supply-dhis
-    proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply-dhis
-    proxy_read_timeout: 180s
+   locations:
+     - name: /errors
+       alias: "{{ errors_home }}/pages"
+     - name: /supply
+       proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply
+       proxy_read_timeout: 180s
+     - name: /supply-dhis
+       proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply-dhis
+       proxy_read_timeout: 180s
