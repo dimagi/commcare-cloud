@@ -1,6 +1,8 @@
 import datetime
 import os
 import pickle
+import sys
+import traceback
 import yaml
 import re
 from getpass import getpass
@@ -159,3 +161,9 @@ def retrieve_cached_deploy_checkpoint():
 def _retrieve_cached(filename):
     with open(filename, 'r') as f:
         return pickle.load(f)
+
+
+def traceback_string():
+    exc_type, exc, tb = sys.exc_info()
+    trace = "".join(traceback.format_tb(tb))
+    return u"Exception: {exc}\n Traceback:\n{trace}".format(exc=exc, t=trace)

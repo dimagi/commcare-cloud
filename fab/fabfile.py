@@ -68,6 +68,7 @@ from utils import (
     cache_deploy_state,
     retrieve_cached_deploy_env,
     retrieve_cached_deploy_checkpoint,
+    traceback_string,
 )
 
 
@@ -332,8 +333,12 @@ def hotfix_deploy():
     run('echo ping!')  # workaround for delayed console response
     try:
         execute(release.update_code, env.deploy_metadata.deploy_ref, True)
-    except Exception as e:
-        execute(mail_admins, "Deploy failed", u"Exception message:\n{exc}".format(exc=e))
+    except Exception:
+        execute(
+            mail_admins,
+            "Deploy failed",
+            traceback_string()
+        )
         # hopefully bring the server back to life
         silent_services_restart(use_current_release=True)
         raise
@@ -426,6 +431,7 @@ def _deploy_without_asking():
     ]
 
     try:
+        raise Exception
         for index, command in enumerate(commands):
             deploy_checkpoint(index, command.func_name, execute_with_timing, command)
     except PreindexNotFinished:
@@ -435,11 +441,11 @@ def _deploy_without_asking():
              "and wait for an email saying it's done. "
              "Thank you for using AWESOME DEPLOY.")
         )
-    except Exception as e:
+    except Exception:
         execute_with_timing(
             mail_admins,
             "Deploy to {} failed".format(env.environment),
-            u"Exception message:\n{exc}".format(exc=e)
+            traceback_string()
         )
         # hopefully bring the server back to life
         silent_services_restart()
