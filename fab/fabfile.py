@@ -68,6 +68,7 @@ from utils import (
     cache_deploy_state,
     retrieve_cached_deploy_env,
     retrieve_cached_deploy_checkpoint,
+    traceback_string,
 )
 
 
@@ -333,7 +334,11 @@ def hotfix_deploy():
     try:
         execute(release.update_code, env.deploy_metadata.deploy_ref, True)
     except Exception:
-        execute(mail_admins, "Deploy failed", "You had better check the logs.")
+        execute(
+            mail_admins,
+            "Deploy failed",
+            traceback_string()
+        )
         # hopefully bring the server back to life
         silent_services_restart(use_current_release=True)
         raise
@@ -439,7 +444,7 @@ def _deploy_without_asking():
         execute_with_timing(
             mail_admins,
             "Deploy to {} failed".format(env.environment),
-            "You had better check the logs."
+            traceback_string()
         )
         # hopefully bring the server back to life
         silent_services_restart()
