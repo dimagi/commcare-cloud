@@ -431,7 +431,6 @@ def _deploy_without_asking():
     ]
 
     try:
-        raise Exception
         for index, command in enumerate(commands):
             deploy_checkpoint(index, command.func_name, execute_with_timing, command)
     except PreindexNotFinished:
