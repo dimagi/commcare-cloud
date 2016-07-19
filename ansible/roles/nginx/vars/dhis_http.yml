@@ -6,6 +6,6 @@ nginx_sites:
    listen: "80"
    server_name: "dhis-test.commcarehq.org"
    proxy_set_header: "Host $http_host"
-   location1:
-    name: /
-    return: "301 https://$server_name"
+   locations:
+     - name: /
+       return: "301 https://$server_name"
