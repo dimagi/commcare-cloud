@@ -166,4 +166,8 @@ def _retrieve_cached(filename):
 def traceback_string():
     exc_type, exc, tb = sys.exc_info()
     trace = "".join(traceback.format_tb(tb))
-    return u"Exception: {exc}\n Traceback:\n{trace}".format(exc=exc, t=trace)
+    return u"Traceback:\n{trace}{type}: {exc}".format(
+        trace=trace,
+        type=exc_type.__name__,
+        exc=exc,
+    )
