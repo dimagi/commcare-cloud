@@ -1,43 +1,41 @@
 ---
 nginx_sites:
 - server:
+    balancers:
+     - name: "{{ deploy_env }}_commcare_j2me"
+       hosts: webworkers
+       port: "{{ django_port }}"
     file_name: "{{ deploy_env }}_commcare_j2me"
     listen: "80"
     server_name: "{{ J2ME_SITE_HOST }}"
     client_max_body_size: 100m
-    balancer: webworkers
     proxy_set_headers:
     - "Host $http_host"
     - "X-Forwarded-For $remote_addr"
     add_header: "X-Frame-Options SAMEORIGIN"
     access_log: "{{ log_home }}/{{ deploy_env }}-j2me-timing.log timing"
-    location1:
-     name: "~* /a/[^/]+/phone/keys/"
-     balancer: webworkers
-     proxy_next_upstream_tries: 1
-     proxy_read_timeout: 900s
-    location2:
-     name: "~* /a/[^/]+/receiver/"
-     balancer: webworkers
-     proxy_next_upstream_tries: 1
-     proxy_read_timeout: 900s
-    location3:
-     name: "~* /a/[^/]+/phone/restore/"
-     balancer: webworkers
-     proxy_next_upstream_tries: 1
-     proxy_read_timeout: 900s
-    location4:
-     name: "~* /a/[^/]+/apps/download/[a-z0-9]+/(profile|suite).xml"
-     balancer: webworkers
-     proxy_next_upstream_tries: 1
-     proxy_read_timeout: 900s
-    location5:
-     name: "~* /a/[^/]+/apps/download/[a-z0-9]+/modules-[0-9]+/forms-[0-9]+.xml"
-     balancer: webworkers
-     proxy_next_upstream_tries: 1
-     proxy_read_timeout: 900s
-    location6:
-     name: "~* /a/[^/]+/apps/download/[^/]+/[^/]+/app_strings.txt"
-     balancer: webworkers
-     proxy_next_upstream_tries: 1
-     proxy_read_timeout: 900s
+    locations:
+      - name: "~* /a/[^/]+/phone/keys/"
+        balancer: "{{ deploy_env }}_commcare_j2me"
+        proxy_next_upstream_tries: 1
+        proxy_read_timeout: 900s
+      - name: "~* /a/[^/]+/receiver/"
+        balancer: "{{ deploy_env }}_commcare_j2me"
+        proxy_next_upstream_tries: 1
+        proxy_read_timeout: 900s
+      - name: "~* /a/[^/]+/phone/restore/"
+        balancer: "{{ deploy_env }}_commcare_j2me"
+        proxy_next_upstream_tries: 1
+        proxy_read_timeout: 900s
+      - name: "~* /a/[^/]+/apps/download/[a-z0-9]+/(profile|suite).xml"
+        balancer: "{{ deploy_env }}_commcare_j2me"
+        proxy_next_upstream_tries: 1
+        proxy_read_timeout: 900s
+      - name: "~* /a/[^/]+/apps/download/[a-z0-9]+/modules-[0-9]+/forms-[0-9]+.xml"
+        balancer: "{{ deploy_env }}_commcare_j2me"
+        proxy_next_upstream_tries: 1
+        proxy_read_timeout: 900s
+      - name: "~* /a/[^/]+/apps/download/[^/]+/[^/]+/app_strings.txt"
+        balancer: "{{ deploy_env }}_commcare_j2me"
+        proxy_next_upstream_tries: 1
+        proxy_read_timeout: 900s

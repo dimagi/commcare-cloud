@@ -7,6 +7,6 @@ nginx_sites:
    server_name: "{{ NO_WWW_SITE_HOST }}"
    client_max_body_size: 100m
    proxy_set_header: "Host $http_host"
-   location1:
-    name: /
-    return: "301 https://{{ SITE_HOST }}$request_uri"
+   locations:
+     - name: /
+       return: "301 https://{{ SITE_HOST }}$request_uri"

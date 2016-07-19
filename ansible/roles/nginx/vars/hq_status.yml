@@ -5,6 +5,6 @@ nginx_sites:
    listen: "80"
    # Move these to a localsetting?
    server_name: slow.commcarehq.org
-   location1:
-    name: /
-    root: /var/www/hq_status
+   locations:
+     - name: /
+       root: /var/www/hq_status

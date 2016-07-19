@@ -5,14 +5,11 @@ nginx_sites:
    listen: "80"
    server_name: "{{ COMMTRACK_SITE_HOST }}"
    client_max_body_size: 100m
-   balancer: webworkers
    proxy_set_header: "Host $http_host"
-   location1:
-    name: /
-    return: "301 https://{{ SITE_HOST }}$request_uri"
-   location2:
-    name: /home
-    return: "302 https://{{ SITE_HOST }}/solutions/#supply"
-   location3:
-    name: " = /"
-    return: "302 https://{{ SITE_HOST }}/solutions/#supply"
+   locations:
+     - name: /
+       return: "301 https://{{ SITE_HOST }}$request_uri"
+     - name: /home
+       return: "302 https://{{ SITE_HOST }}/solutions/#supply"
+     - name: " = /"
+       return: "302 https://{{ SITE_HOST }}/solutions/#supply"
