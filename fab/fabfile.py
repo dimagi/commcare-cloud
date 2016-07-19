@@ -332,7 +332,7 @@ def hotfix_deploy():
     run('echo ping!')  # workaround for delayed console response
     try:
         execute(release.update_code, env.deploy_metadata.deploy_ref, True)
-    except Exception, e:
+    except Exception as e:
         execute(mail_admins, "Deploy failed", u"Exception message:\n{exc}".format(exc=e))
         # hopefully bring the server back to life
         silent_services_restart(use_current_release=True)
@@ -435,7 +435,7 @@ def _deploy_without_asking():
              "and wait for an email saying it's done. "
              "Thank you for using AWESOME DEPLOY.")
         )
-    except Exception, e:
+    except Exception as e:
         execute_with_timing(
             mail_admins,
             "Deploy to {} failed".format(env.environment),
