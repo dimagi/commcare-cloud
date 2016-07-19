@@ -21,3 +21,4 @@ nginx_sites:
    location3:
     name: /supply-dhis
     proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply-dhis
+    proxy_read_timeout: 180s
