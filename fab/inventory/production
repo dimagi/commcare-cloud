@@ -59,3 +59,6 @@ datavol_device=/dev/xvdb
 
 [stanchion]
 hqriak0.internal-va.commcarehq.org
+
+[pg_standby]
+hqstandby0.internal-va.commcarehq.org
