@@ -1,4 +1,3 @@
-pg_install: True
 postgresql_version: '9.4'
 postgresql_port: 5432
 postgresql_ssl_enabled: False
