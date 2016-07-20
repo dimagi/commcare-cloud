@@ -1,0 +1,14 @@
+[program:igor-express]
+directory={{ igor_src_dir }}/
+; gunicorn
+command=/bin/bash -c "NODE_ENV=production EXPRESS_PORT=3000 HUBOT_SLACK_TOKEN={{ igor_slack_token }} ./bin/hubot --adapter slack"
+user={{ cchq_user }}
+autostart=true
+autorestart=true
+stdout_logfile={{ igor_log_dir }}/express.log
+redirect_stderr=true
+stderr_logfile={{ igor_log_dir }}/express.error.log
+;stopsignal=QUIT
+;stopwaitsecs=60
+;killasgroup=true
+;stopasgroup=false

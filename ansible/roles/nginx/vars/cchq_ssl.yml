@@ -1,39 +1,45 @@
 ---
 nginx_sites:
 - server:
+   balancers:
+    - name: "{{ deploy_env }}_commcare"
+      hosts: webworkers
+      port: "{{ django_port }}"
+    - name: "{{ deploy_env }}_formplayer"
+      hosts: touchforms
+      port: "{{ formplayer_port }}"
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    server_name: "{{ SITE_HOST }}"
-   client_max_body_size: 100m
-   balancer: webworkers
+   client_max_body_size: 500m
    proxy_set_headers:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
-   location1:
-    name: /
-    balancer: webworkers
-    proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
-    proxy_next_upstream_tries: 1
-    proxy_read_timeout: 900s
-   location2:
-    name: "/static"
-    alias: "{{ nginx_static_home }}"
-    add_header: "Access-Control-Allow-Origin *"
-    expires: "1M"
-    try_files: "$uri $uri/index.html $uri/ =404"
-   location3:
-    name: "/{{ transfer_payload_dir_name }}"
-    alias: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}/{{ transfer_payload_dir_name }}"
-    is_internal: True
-   location4:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
-   location5:
-    name: /ws
-    proxy_pass: "http://unix:{{ www_home }}/web.socket"
-    proxy_http_version: "1.1"
-    proxy_set_headers:
-    - "Upgrade $http_upgrade"
-    - "Connection \"upgrade\""
+   locations:
+    - name: /
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+    - name: "/static"
+      alias: "{{ nginx_static_home }}"
+      add_header: "Access-Control-Allow-Origin *"
+      expires: "1M"
+      try_files: "$uri $uri/index.html $uri/ =404"
+    - name: "/{{ transfer_payload_dir_name }}"
+      alias: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}/{{ transfer_payload_dir_name }}"
+      is_internal: True
+    - name: /errors
+      alias: "{{ errors_home }}/pages"
+    - name: /ws
+      proxy_pass: "http://unix:{{ www_home }}/web.socket"
+      proxy_http_version: "1.1"
+      proxy_set_headers:
+      - "Upgrade $http_upgrade"
+      - "Connection \"upgrade\""
+    - name: /formplayer
+      balancer: "{{ deploy_env }}_formplayer/"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s

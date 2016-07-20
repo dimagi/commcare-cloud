@@ -3,5 +3,5 @@
   gather_facts: no
   sudo: yes
   roles:
-    - {role: users, tags: users}
+    - {role: ansible-control, tags: ansible-control}
     - edit

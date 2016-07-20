@@ -104,7 +104,7 @@
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
-  with_items: postgresql_dbs
+  with_items: "{{ postgresql_dbs }}"
   when:
     pg_install == True
 
@@ -178,68 +178,24 @@
 
 - name: Create plproxy extension
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
   when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
 - name: Create pghashlib extension
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
   when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
 - name: Make plproxy a trusted language
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
   when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
 - name: Grant usage on plproxy FDW
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
   when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
-
-- name: create backup directory
-  sudo: yes
-  file:
-    path: '{{ postgresql_backup_dir }}'
-    owner: postgres
-    group: postgres
-    mode: 0755
-    state: directory
-
-- name: Copy postgres backup script
-  sudo: yes
-  template:
-    src: "create_postgres_dump.sh.j2"
-    dest: "/etc/cron.d/create_postgres_dump.sh"
-    group: root
-    owner: root
-    mode: 700
-    backup: yes
-  when: backup_postgres
-
-- name: Create Daily Cron job
-  sudo: yes
-  cron:
-    name: "Backup postgres daily"
-    job: "/etc/cron.d/create_postgres_dump.sh daily 7"
-    minute: 0
-    hour: 0
-    weekday: "1,2,3,4,5,6"
-    user: postgres
-    cron_file: ../crontab
-  when: backup_postgres
-
-- name: Create Weekly Cron job
-  sudo: yes
-  cron:
-    name: "Backup postgres weekly"
-    job: "/etc/cron.d/create_postgres_dump.sh weekly 28"
-    minute: 0
-    hour: 0
-    weekday: 0
-    user: postgres
-    cron_file: ../crontab
-  when: backup_postgres

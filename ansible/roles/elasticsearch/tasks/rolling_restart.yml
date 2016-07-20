@@ -18,6 +18,8 @@
   sudo: true
   service: name=elasticsearch state=started
 
+- debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
+
 - name: wait for node to restart
   shell: curl -I -s -m 2 http://localhost:9200 | head -n 1
   register: result

@@ -1,0 +1,11 @@
+- name: "Build hosts file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
+  with_items: etc_host_lines
+  tags:
+    - etc_hosts
+
+# For 12.04 Ubuntu, upgrade OpenSSL version
+- name: "Install libssl1.0.0"
+  apt: name="libssl1.0.0" state=present
+  tags:
+    - upgrade_openssl

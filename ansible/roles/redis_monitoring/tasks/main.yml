@@ -5,7 +5,7 @@
     dest: "/etc/cron.d/redis-restart.sh"
     group: root
     owner: root
-    mode: 700
+    mode: 0700
     backup: yes
 
 - name: Create Cron job

@@ -5,12 +5,10 @@ nginx_sites:
    listen: "443 ssl"
    server_name: "wiki.commcarehq.org help.commcarehq.org"
    proxy_set_header: "Host $http_host"
-   location1:
-    name: /
-    proxy_pass: https://confluence.internal.dimagi.com
-   location2:
-    name: "= /"
-    return: "302 https://$server_name/display/commcarepublic/Home"
-   location3:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
+   locations:
+     - name: /
+       proxy_pass: https://confluence.internal.dimagi.com
+     - name: "= /"
+       return: "302 https://$server_name/display/commcarepublic/Home"
+     - name: /errors
+       alias: "{{ errors_home }}/pages"

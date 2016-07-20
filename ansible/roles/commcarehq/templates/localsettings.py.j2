@@ -62,15 +62,14 @@ CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
 {% endif %}
 
-COUCH_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
-DJANGO_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
-ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
-ANALYTICS_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.analytics.log")
-DATADOG_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
-FORMPLAYER_TIMING_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
-FORMPLAYER_DIFF_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
-
-CSRF_SOFT_MODE = {{ localsettings.CSRF_SOFT_MODE | default(False) }}
+LOG_HOME = '{{ log_home }}'
+COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
+DJANGO_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
+ACCOUNTING_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
+ANALYTICS_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.analytics.log")
+DATADOG_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
+FORMPLAYER_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
+FORMPLAYER_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
 
 # Email setup
 # email settings: these ones are the custom hq ones
@@ -209,7 +208,8 @@ ANALYTICS_IDS = {
     'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID|default('', true) }}',
     'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID|default('', true) }}',
     'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY|default('', true) }}',
-    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY|default('', true) }}'
+    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY|default('', true) }}',
+    'FULLSTORY_ID': '{{ localsettings.FULLSTORY_ID|default('', true) }}'
 }
 
 ANALYTICS_CONFIG = {
@@ -460,7 +460,8 @@ INDICATOR_NAMESPACES = {
         ('mvp_indicators', "MVP"),
     ),
 }
-COUCH_STALE_QUERY = 'ok'
+# should be 'ok' if couchdb version < 1.1.0, or cloudant, else 'update_after'
+COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('ok') }}'
 
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
@@ -536,17 +537,6 @@ OPEN_EXCHANGE_RATES_API_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_API_ID }}'
 MANDRILL_APIKEY = '{{ localsettings.MANDRILL_APIKEY }}'
 {% endif %}
 
-{% if localsettings.get('MAILCHIMP_APIKEY') %}
-MAILCHIMP_APIKEY = '{{ localsettings.MAILCHIMP_APIKEY }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_COMMCARE_USERS_ID') %}
-MAILCHIMP_COMMCARE_USERS_ID = '{{ localsettings.MAILCHIMP_COMMCARE_USERS_ID }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_MASS_EMAIL_ID') %}
-MAILCHIMP_MASS_EMAIL_ID = '{{ localsettings.MAILCHIMP_MASS_EMAIL_ID }}'
-{% endif %}
 
 {% if localsettings.get('STRIPE_PRIVATE_KEY') %}
 STRIPE_PRIVATE_KEY = '{{ localsettings.STRIPE_PRIVATE_KEY }}'
@@ -577,6 +567,10 @@ MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
 # Set to something like "192.168.1.5:8000" (with your IP address).
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
+
+{% if localsettings.get('J2ME_ADDRESS') %}
+J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
+{% endif %}
 
 CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
 

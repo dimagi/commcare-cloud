@@ -1,6 +1,0 @@
-- name: Install cloudant check
-  get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-cloudant/{{ datadog_cloudant_version }}/cloudant.py"
-    dest: /etc/dd-agent/checks.d/cloudant.py
-    sha256sum: "{{ datadog_cloudant_sha256sum }}"
-  notify: restart datadog

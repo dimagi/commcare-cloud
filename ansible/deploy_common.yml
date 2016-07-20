@@ -10,25 +10,14 @@
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined and control_machine_ip is defined }
 
+- name: ufw (proxy firewall)
+  hosts: 'proxy'
+  sudo: yes
+  tasks:
+    - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
 
 - name: Datadog agent
   hosts: all
   sudo: yes
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
-
-- name: Datadog cloudant
-  hosts:
-    - postgresql
-  vars_files:
-    - roles/datadog/defaults/main.yml
-  handlers:
-    - include: roles/datadog/handlers/main.yml
-  tasks:
-    - include: roles/datadog/tasks/cloudant_integration.yml
-      when: DATADOG_ENABLED
-      run_once: true
-  tags:
-    - datadog
-    - datadog-cloudant
-

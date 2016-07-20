@@ -1,9 +1,0 @@
-#!/bin/bash
-BACKUP_TYPE=$1
-DAYS_TO_RETAIN_BACKUPS=$2
-
-TODAY=$(date +"%Y_%m_%d")
-pg_dumpall --clean | gzip  > "{{ postgresql_backup_dir }}/postgres_$BACKUP_TYPE_$TODAY.db.gz"
-
-# Remove old backups of this backup type
-find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_$BACKUP_TYPE_*" -exec rm {} \;

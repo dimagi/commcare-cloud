@@ -5,9 +5,8 @@ nginx_sites:
    listen: "443 ssl"
    # Move these to a localsetting?
    server_name: dhis-test.commcarehq.org
-   location1:
-    name: /
-    proxy_pass: http://dhis1.internal.commcarehq.org:8080
-   location2:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
+   locations:
+     - name: /
+       proxy_pass: http://dhis1.internal.commcarehq.org:8080
+     - name: /errors
+       alias: "{{ errors_home }}/pages"

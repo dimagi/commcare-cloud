@@ -7,6 +7,7 @@
     - elasticsearch
     - rabbitmq
     - zookeeper
+    - riakcs
   sudo: yes
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -17,6 +18,12 @@
   sudo: yes
   roles:
     - {role: postgresql, tags: 'postgresql'}
+
+- name: Posgres Standby
+  hosts: pg_standby
+  sudo: yes
+  roles:
+    - {role: pg_standby, tags: 'pg_standby'}
 
 - name: Couchdb
   hosts: couchdb
@@ -57,19 +64,10 @@
 - name: Kafka
   hosts: kafka
   sudo: yes
+  environment:
+    JMX_PORT: 9999
   roles:
     - {role: kafka, tags: 'kafka'}
-
-- name: Newrelic Plugin Agent for DB
-  hosts:
-    - postgresql
-    - redis
-    - rabbitmq
-  tasks:
-    - include: roles/newrelic/tasks/plugin-agent.yml
-      when: run_newrelic_plugin_agent
-  tags:
-    - newrelic-plugin-agent
 
 - include: deploy_riakcs.yml
 
@@ -80,10 +78,3 @@
     - celery
   roles:
     - {role: java, tags: java}
-
-- name: Rackspace Cloud Backup Agent
-  sudo: yes
-  hosts:
-    - rackspace_cloud_backup
-  roles:
-    - {role: Rackspace_Automation.cloud-backup-agent, tags: 'rackspace-backup'}

@@ -15,6 +15,9 @@
 
 #- debug: var=riak_cluster_status
 
+# If this line fails, it might be because you're not also deploying to the
+# control node This means it doesn't get processed and this stuff is never set.
+# Try including the first entry in [riakcs] in your `--limit=` declaration.
 - set_fact: riak_control_node_name="{{ hostvars[riakcs_control]['riak_nodename'] }}"
 - set_fact: riak_control_node_pattern="{{ riak_control_node_name | replace('.', '\\.') }}"
 - set_fact: node_in_cluster="{{ riak_cluster_status.get('stdout', '') | search(riak_control_node_pattern) }}"

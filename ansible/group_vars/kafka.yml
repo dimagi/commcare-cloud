@@ -1,0 +1,4 @@
+datadog_integrations:
+  - kafka
+  - kafka_consumer
+  - zk

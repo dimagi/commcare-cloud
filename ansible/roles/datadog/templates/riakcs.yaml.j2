@@ -5,5 +5,5 @@ instances:
   - host: {{ inventory_hostname if inventory_hostname|ipaddr else lookup('dig', inventory_hostname, wantlist=True)[0] }}
     port: {{ riakcs_port }}
     is_secure: False
-    access_id: access-key
-    access_secret: access-secret
+    access_id: {{ s3_blob_db_access_key }}
+    access_secret: {{ s3_blob_db_secret_key }}

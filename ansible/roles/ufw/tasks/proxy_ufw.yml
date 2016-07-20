@@ -1,0 +1,35 @@
+# Rules for monoliths
+- name: allow web traffic
+  ufw:
+    rule: allow
+    direction: in
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - 443  # https
+    - 80   # http
+  when: is_monolith
+
+- name: allow ssh traffic
+  ufw:
+    rule: allow
+    direction: in
+    port: 22
+    proto: any
+  when: is_monolith
+
+- name: allow mosh traffic
+  ufw:
+    rule: allow
+    direction: in
+    port: "60000:61000"
+    proto: udp
+  when: is_monolith
+
+- name: default to denying all incoming traffic
+  ufw: policy=deny direction=incoming
+  when: is_monolith
+
+- name: turn on firewall
+  ufw: state=enabled
+  when: is_monolith

@@ -14,7 +14,7 @@
 192.168.33.16
 
 [celery]
-192.168.33.16 newrelic_app_name=celery
+192.168.33.16 newrelic_app_name=celery datadog_integrations=celery
 
 [elasticsearch]
 192.168.33.16 elasticsearch_node_name=es0

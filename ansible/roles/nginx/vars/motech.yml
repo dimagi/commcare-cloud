@@ -4,16 +4,19 @@ nginx_sites:
    file_name: motech
    listen: "443 ssl"
    # Move these to a localsetting?
-   server_name: endos-motech.commcarehq.org
+   server_name: motech.commcarehq.org
    proxy_set_headers:
    - "Host $http_host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Proto $scheme"
    - "X-Forwarded-Host $host:443"
-   location1:
-    name: /
-    proxy_pass: http://motech.internal.commcarehq.org:8080/motech-platform-server/
-    proxy_redirect: "http://endos-motech.commcarehq.org/motech-platform-server/ https://endos-motech.commcarehq.org/"
-   location2:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
+   error_page: "502 503 /errors/50x.html"
+   locations:
+     - name: /errors
+       alias: "{{ errors_home }}/pages"
+     - name: /supply
+       proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply
+       proxy_read_timeout: 180s
+     - name: /supply-dhis
+       proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply-dhis
+       proxy_read_timeout: 180s

@@ -1,6 +1,0 @@
-[drivesrvr]
-name=drivesrvr
-baseurl=http://agentrepo.drivesrvr.com/redhat/
-gpgcheck=0
-metadata_expire=1
-enabled=1

@@ -1,4 +1,2 @@
-newrelic_agents_nginx: True
-newrelic_agents_apache: False
 datadog_integrations:
   - nginx

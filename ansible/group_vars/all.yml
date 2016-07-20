@@ -12,6 +12,7 @@ shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
 shared_mount_dir: "/mnt/{{ shared_dir_name }}"
+is_monolith: '{{ groups["all"]|length == 1 }}'
 transfer_payload_dir_name: "transfer_payloads"
 restore_payload_dir_name: "restore_payloads"
 shared_temp_dir_name: "temp"
@@ -27,17 +28,16 @@ riak_port: 8087
 riak_data_dir: "{{ encrypted_root }}/riak"
 stanchion_port: 8085
 stanchion_data_dir: "{{ encrypted_root }}/stanchion"
+zookeeper_client_port: 2181
+formplayer_port: 8181
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_port }}"
-s3_blob_db_access_key: "{{ hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '' }}"
-s3_blob_db_secret_key: "{{ hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '' }}"
 
-newrelic_agents_pgbouncer: False
-newrelic_agents_postgresql: False
-newrelic_agents_redis: False
-newrelic_agents_rabbitmq: False
-newrelic_agents_elastic: False
-newrelic_agents_nginx: False
-newrelic_agents_apache: False
+# To use these vars without deploying the riak control machine
+# add s3_access_key and s3_secret_key to the ansible secret config directory
+s3_blob_db_access_key: "{{ s3_access_key if s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
+s3_blob_db_secret_key:  "{{ s3_secret_key if s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
+
+datadog_integrations: []

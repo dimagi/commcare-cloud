@@ -60,7 +60,7 @@
   sudo: yes
   template:
     src: application.properties.j2
-    dest: "{{ code_home }}/submodules/formplayer/config/{{ deploy_env }}.properties"
+    dest: "{{ code_home }}/submodules/formplayer/config/application.properties"
     group: cchq
     owner: cchq
     mode: 0644

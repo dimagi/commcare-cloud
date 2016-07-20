@@ -13,10 +13,9 @@ nginx_sites:
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Proto $scheme"
    - "X-Forwarded-Host $host:443"
-   location1:
-    name: /
-    proxy_pass: http://tableau2.internal.commcarehq.org
-    proxy_read_timeout: 120s
-   location2:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
+   locations:
+     - name: /
+       proxy_pass: http://tableau2.internal.commcarehq.org
+       proxy_read_timeout: 120s
+     - name: /errors
+       alias: "{{ errors_home }}/pages"

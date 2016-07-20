@@ -1,6 +1,3 @@
-newrelic_agents_postgresql: True
-newrelic_agents_pgbouncer: True
-newrelic_agents_elastic: True
 # elastic included here since we only need one agent per cluster
 # redis and rabbit included here since group vars get overriden if a host matches multiple groups
 datadog_integrations:

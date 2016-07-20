@@ -1,3 +1,0 @@
-apache2_install: True
-apache2_http_user: www-data
-apache2_static_home: "{{ code_home }}/staticfiles"

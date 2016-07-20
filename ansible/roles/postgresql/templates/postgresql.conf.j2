@@ -157,8 +157,8 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 #------------------------------------------------------------------------------
 
 # - Settings -
-
-#wal_level = minimal            # minimal, archive, or hot_standby
+{% if groups["pg_standby"] %}
+wal_level = hot_standby           # minimal, archive, or hot_standby
                     # (change requires restart)
 #fsync = on             # turns forced synchronization on or off
 #synchronous_commit = on        # synchronization level; on, off, or local
@@ -185,14 +185,13 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 #checkpoint_warning = 30s       # 0 disables
 
 # - Archiving -
-
-#archive_mode = off     # allows archiving to be done
+archive_mode = on     # allows archiving to be done
                 # (change requires restart)
-#archive_command = ''       # command to use to archive a logfile segment
+archive_command = 'rsync -a %p postgres@{{ groups["pg_standby"][0] }}:{{ archive_dir }}/%f'   # command to use to archive a logfile segment, archive directory lives on first standby machine specified in the inventory file
 #archive_timeout = 0        # force a logfile segment switch after this
                 # number of seconds; 0 disables
 
-
+{% endif %}
 #------------------------------------------------------------------------------
 # REPLICATION
 #------------------------------------------------------------------------------
@@ -201,7 +200,7 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 
 # These settings are ignored on a standby server
 
-#max_wal_senders = 0        # max number of walsender processes
+max_wal_senders = 3        # max number of walsender processes
                 # (change requires restart)
 #wal_sender_delay = 1s      # walsender cycle time, 1-10000 milliseconds
 #wal_keep_segments = 0      # in logfile segments, 16MB each; 0 disables
@@ -215,7 +214,7 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 
 # These settings are ignored on a master server
 
-#hot_standby = off          # "on" allows queries during recovery
+hot_standby = on          # "on" allows queries during recovery
                     # (change requires restart)
 #max_standby_archive_delay = 30s    # max delay before canceling queries
                     # when reading WAL from archive;

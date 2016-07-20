@@ -7,6 +7,15 @@ cluster.name: "{{ elasticsearch_cluster_name }}"
 
 node.name: "{{ elasticsearch_node_name }}"
 
+{% if elasticsearch_node_zone is defined %}
+# Used for shard allocation awareness
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html
+node.zone: "{{ elasticsearch_node_zone }}"
+{% endif %}
+
+# disable multiple nodes starting from the same installation location
+node.max_local_storage_nodes: 1
+
 transport.tcp.port: {{ elasticsearch_tcp_port }}
 
 http.port: {{ elasticsearch_http_port }}
@@ -22,10 +31,20 @@ discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
 
 discovery.zen.ping.multicast.enabled: false
-{% if elasticsearch_endpoint|ipaddr %}
-discovery.zen.ping.unicast.hosts: ["{{ elasticsearch_endpoint }}:{{ elasticsearch_tcp_port }}"]
+discovery.zen.ping.unicast.hosts: [
+{% for endpoint in groups.elasticsearch %}
+  {% if endpoint|ipaddr %}
+    "{{ endpoint }}:{{ elasticsearch_tcp_port }}",
+  {% else %}
+    "{{ lookup('dig', endpoint, wantlist=True)[0] }}:{{ elasticsearch_tcp_port }}",
+  {% endif %}
+{% endfor %}
+]
+
+{% if inventory_hostname|ipaddr %}
+network.host: "{{ inventory_hostname }}"
 {% else %}
-discovery.zen.ping.unicast.hosts: ["{{ lookup('dig', elasticsearch_endpoint, wantlist=True)[0] }}:{{ elasticsearch_tcp_port }}"]
+network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
 {% endif %}
 
 index.search.slowlog.threshold.query.warn: 10s

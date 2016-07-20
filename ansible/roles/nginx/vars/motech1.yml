@@ -11,9 +11,9 @@ nginx_sites:
    - "X-Forwarded-Proto $scheme"
    - "X-Forwarded-Host $host:443"
    error_page: "502 503 /errors/50x.html"
-   location1:
-    name: /
-    proxy_pass: http://motech1.internal.commcarehq.org:8080
-   location2:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
+   locations:
+     - name: /
+       proxy_pass: http://motech1.internal.commcarehq.org:8080
+       proxy_read_timeout: 180s
+     - name: /errors
+       alias: "{{ errors_home }}/pages"

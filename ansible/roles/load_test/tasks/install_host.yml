@@ -11,8 +11,8 @@
   lineinfile:
     dest: "{{ postgresql_config_home }}/pg_hba.conf"
     state: present
-    line: "host bench {{ user }} {{ groups['load_test_runner'][0] }}/32 {{ method }}"
-    regexp: "{{ user }} {{ groups['load_test_runner'][0] }}/32 {{ method }}"
+    line: "host bench {{ item.user }} {{ groups['load_test_runner'][0] }}/32 {{ item.method }}"
+    regexp: "{{ item.user }} {{ groups['load_test_runner'][0] }}/32 {{ item.method }}"
   with_items:
     - { user: 'postgres', method: 'trust' }
     - { user: 'tsung', method: 'md5' }
