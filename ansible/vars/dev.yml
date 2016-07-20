@@ -153,6 +153,7 @@ postgresql_dbs:
     owner: "{{ localsettings.PG_DATABASE_USER }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
 
 # example setup for sharded database
 # also set localsettings.USE_PARTITIONED_DATABASE to True
