@@ -93,6 +93,7 @@
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
+  when: item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
@@ -138,23 +139,23 @@
 - name: Create plproxy extension
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
-  when: item.get('django_alias') == 'proxy'
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Create pghashlib extension
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
-  when: item.get('django_alias') == 'proxy'
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Make plproxy a trusted language
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
-  when: item.get('django_alias') == 'proxy'
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Grant usage on plproxy FDW
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
-  when: item.get('django_alias') == 'proxy'
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
