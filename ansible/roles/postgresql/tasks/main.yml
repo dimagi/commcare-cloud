@@ -58,6 +58,9 @@
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
 
+- name: assert hot standby config correct
+  assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
+
 - name: PostgreSQL app configuration
   sudo_user: postgres
   template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
