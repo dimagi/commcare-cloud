@@ -75,7 +75,7 @@ postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-  readonly:
+  devreadonly:
     username: "devreadonly"
     password: "devreadonly"
 
