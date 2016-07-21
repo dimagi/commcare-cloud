@@ -3,6 +3,7 @@
 
 [postgresql]
 192.168.33.16
+# 192.168.33.17 -- test multiple db machines
 
 [couchdb]
 192.168.33.16
