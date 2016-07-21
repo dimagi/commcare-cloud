@@ -81,6 +81,10 @@
     state: present
     port: "{{ postgresql_port }}"
 
+- name: check postgres database hosts
+  assert: { that: "item.host is not defined or item.host in groups.postgresql" }
+  with_items: "{{ postgresql_dbs }}"
+
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db:
