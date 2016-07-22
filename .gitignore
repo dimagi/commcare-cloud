@@ -1,5 +1,5 @@
 *.swp
-/config/
+/config
 .vagrant/
 DimagiKeyStore
 .idea/
