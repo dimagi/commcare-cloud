@@ -50,7 +50,6 @@ Once this is done, you may ssh into the control server and run a full deployment
 ```
 $ vagrant ssh control
 ...
-$ cd /vagrant/ansible
 $ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.yml
 ```
 
@@ -79,7 +78,6 @@ The one other change needed is to point to the proper inventory. Instead of usin
 ```
 $ vagrant ssh control
 ...
-$ cd /vagrant/ansible
 $ ansible-playbook -i inventories/monolith -e '@vars/dev.yml' deploy_stack.yml
 ```
 
@@ -145,3 +143,50 @@ ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.y
 ```bash
 ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
 ```
+
+### Setting up a dev account on ansible control machine
+
+Initial setup (after login as dev)
+
+```bash
+git clone git@github.com:dimagi/commcarehq-ansible
+. commcarehq-ansible/control/init.sh
+
+# optional: make subsequent logins a bit more convenient
+echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+```
+
+On subsequent logins if optional step was not done.
+
+```bash
+. init-ansible
+```
+
+
+### Simulate dev user setup on vagrant control machine
+
+The authorized key setup only works if the control machine was provisioned with
+`PUBKEY=... reset-vms`, which adds your public key to the VM. If you did not do
+that, then run the `useradd` command and then find some other way of getting
+your public key into the authorized_keys file.
+
+Login with `vagrant ssh control`
+
+```bash
+DEV=your-username
+sudo useradd $DEV --create-home --shell=/bin/bash
+sudo mkdir -m 700 /home/$DEV/.ssh
+grep $DEV ~/.ssh/authorized_keys | sudo tee /home/$DEV/.ssh/authorized_keys
+sudo chown $DEV:$DEV /home/$DEV/.ssh
+```
+
+Login as your user: `vagrant ssh control -- -l $USER -A
+
+```bash
+ln -s /vagrant ~/commcarehq-ansible
+. commcarehq-ansible/control/init.sh
+```
+
+NOTE: Ansible runs will only work from this account if you add your public key
+to `dev_users.present` in `ansible/var/dev.yml`.
+
