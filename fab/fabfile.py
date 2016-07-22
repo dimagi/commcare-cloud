@@ -435,7 +435,7 @@ def _deploy_without_asking():
             deploy_checkpoint(index, command.func_name, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
-            " You can't deploy yet",
+            " You can't deploy to {} yet. There's a preindex in process.".format(env.environment),
             ("Preindexing is taking a while, so hold tight "
              "and wait for an email saying it's done. "
              "Thank you for using AWESOME DEPLOY.")
