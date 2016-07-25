@@ -165,19 +165,12 @@ On subsequent logins if optional step was not done.
 
 ### Simulate dev user setup on vagrant control machine
 
-The authorized key setup only works if the control machine was provisioned with
-`PUBKEY=... reset-vms`, which adds your public key to the VM. If you did not do
-that, then run the `useradd` command and then find some other way of getting
-your public key into the authorized_keys file.
+Add a record for your user to `dev_users.present` in `ansible/var/dev.yml`.
 
 Login with `vagrant ssh control`
 
 ```bash
-DEV=your-username
-sudo useradd $DEV --create-home --shell=/bin/bash
-sudo mkdir -m 700 /home/$DEV/.ssh
-grep $DEV ~/.ssh/authorized_keys | sudo tee /home/$DEV/.ssh/authorized_keys
-sudo chown $DEV:$DEV /home/$DEV/.ssh
+ansible-playbook -u root -i inventories/development deploy_control.yml -e @vars/dev.yml --diff
 ```
 
 Login as your user: `vagrant ssh control -- -l $USER -A
@@ -185,8 +178,9 @@ Login as your user: `vagrant ssh control -- -l $USER -A
 ```bash
 ln -s /vagrant ~/commcarehq-ansible
 . commcarehq-ansible/control/init.sh
+echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+
+# run ansible
+ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
+  -e @vars/dev.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
 ```
-
-NOTE: Ansible runs will only work from this account if you add your public key
-to `dev_users.present` in `ansible/var/dev.yml`.
-
