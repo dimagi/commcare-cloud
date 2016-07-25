@@ -190,10 +190,10 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 #archive_timeout = 0        # force a logfile segment switch after this
                 # number of seconds; 0 disables
 
-{% if groups["pg_standby"] %}
+{% if hot_standby_server|default(None) %}
 wal_level = hot_standby
 archive_mode = on
-archive_command = 'rsync -a %p postgres@{{ groups["pg_standby"][0] }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
+archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
 
 max_wal_senders = 3
 {% endif %}

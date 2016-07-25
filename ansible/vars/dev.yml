@@ -75,7 +75,7 @@ postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-  readonly:
+  devreadonly:
     username: "devreadonly"
     password: "devreadonly"
 
@@ -99,6 +99,18 @@ supervisor_http_username: user
 supervisor_http_password: 123
 
 formplayer_db_name: formplayer
+
+# postgresql_dbs keys description
+#
+#postgresql_dbs:
+#  - name: "database_name"
+#    host: "db_host" # defaults to localsettings.PG_DATABASE_HOST
+#    port: "db_port" # defaults to  localsettings.get('PG_DATABASE_PORT', 5432))
+#    user: "db user for django" # defaults to localsettings.PG_DATABASE_USER
+#    password: "db user password for django" # defaults to localsettings.PG_DATABASE_PASSWORD
+#    options: "django db options dict" # defaults to localsettings.get('PG_DATABASE_OPTIONS', {})
+#    django_alias: "default" # if present this DB will be configured for django under this alias
+#    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
 
 postgresql_dbs:
   - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
@@ -180,6 +192,7 @@ localsettings:
 #  ES_CASE_CHECK_DIRECT_DOC_ID:
 #  ES_QUERY_CHUNKSIZE:
 #  ES_XFORM_CHECK_DIRECT_DOC_ID:
+  FULLSTORY_ID:
   GMAPS_API_KEY: ''
   GOOGLE_ANALYTICS_API_ID: ''
   HUBSPOT_API_ID: ''
