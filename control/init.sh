@@ -36,6 +36,7 @@ fi
 
 alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass'
 alias aps='ap deploy_stack.yml'
+alias update-code='~/commcarehq-ansible/control/update_code.sh'
 alias update_code='~/commcarehq-ansible/control/update_code.sh'
 
 function ansible-deploy-control() {
@@ -48,7 +49,7 @@ function ansible-control-banner() {
     NC='\033[0m' # No Color
     printf "\n${GREEN}Welcome to Ansible Control\n\n"
     printf "${GREEN}Available commands:\n"
-    printf "${BLUE}update_code${NC} - update the ansible repositories (safely)\n"
+    printf "${BLUE}update-code${NC} - update the ansible repositories (safely)\n"
     printf "${BLUE}workon ansible${NC} - activate the ansible virtual env\n"
     printf "${BLUE}ap${NC} - shortcut for ansible-playbook -u ansible -i ../../commcare-hq/fab/inventory/\$ENV -e \"@../config/\$ENV/\$ENV.yml\" --ask-sudo-pass\n"
     printf "${BLUE}aps${NC} - same as ap deploy_stack.yml\n"
