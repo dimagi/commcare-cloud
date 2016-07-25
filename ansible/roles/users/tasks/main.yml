@@ -25,6 +25,7 @@
 - name: Revoke devs ability to login as ansible
   sudo: yes
   authorized_key: user=ansible state=absent key="{{ item.key }}"
+  when: "'key' in item"
   with_items: '{{ dev_users.absent }}'
 
 - name: Add public keys
