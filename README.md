@@ -151,6 +151,7 @@ Initial setup (after login as dev)
 ```bash
 git clone git@github.com:dimagi/commcarehq-ansible
 . commcarehq-ansible/control/init.sh
+update-code
 
 # optional: make subsequent logins a bit more convenient
 echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile

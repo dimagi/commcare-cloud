@@ -29,6 +29,7 @@ function update_repo() {
     git fetch --prune
     git checkout master
     git reset --hard origin/master
+    git submodule update --init --recursive
 }
 
 for repo in "commcare-hq-deploy" "commcarehq-ansible/config" "commcarehq-ansible"
