@@ -31,7 +31,7 @@ active_sites:
 
 deploy_env: dev
 fake_ssl_cert: yes
-ansible_user_password_sha_512: 'YIN9OONyKqkxY' # blahblah
+ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:
   present:
@@ -53,18 +53,19 @@ elasticsearch_cluster_name: 'deves'
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
 
-ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
+ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
+
 KSPLICE_ACTIVE: no
-KSPLICE_ACTIVATION_KEY:
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
-DATADOG_API_KEY: null
-DATADOG_APP_KEY: null
+DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
 AMQP_USER: "{{ deploy_env }}_worker"
-AMQP_PASSWORD: '******'
+AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
@@ -74,10 +75,10 @@ keystore_file: 'DimagiKeyStore'
 postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+    password: "{{ secrets.pg_user_passwords.default }}"
   devreadonly:
     username: "devreadonly"
-    password: "devreadonly"
+    password: "{{ secrets.pg_user_passwords.devreadonly }}"
 
 postgresql_ssl_enabled: False
 postgres_config:
@@ -95,8 +96,8 @@ backup_postgres: False
 backup_blobdb: True
 
 supervisor_http_enabled: True
-supervisor_http_username: user
-supervisor_http_password: 123
+supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
+supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 formplayer_db_name: formplayer
 
@@ -149,16 +150,16 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-#  BANK_ACCOUNT_NUMBER:
+#  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
 #  BANK_ADDRESS:
 #  BANK_NAME:
 #  BANK_ROUTING_NUMBER:
 #  BANK_SWIFT_CODE:
-  BANK_ROUTING_NUMBER_ACH: ''
-  BANK_ROUTING_NUMBER_WIRE: ''
-  BITLY_APIKEY: ''
-  BITLY_LOGIN: ''
-#  BOOKKEEPER_CONTACT_EMAILS:
+  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
+  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
+  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
+#  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
   CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
@@ -169,21 +170,21 @@ localsettings:
 #  COUCHPULSE_DATABASE_URL:
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
-  COUCH_DATABASE_NAME: commcarehq
+  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
   COUCH_HTTPS: no
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}:5984"
-  COUCH_USERNAME: commcarehq
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   CTABLE_PREFIX: null
   DEFAULT_CACHE: redis
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  DROPBOX_APP_NAME: ''
-  DROPBOX_KEY: ''
-  DROPBOX_SECRET: ''
+  DROPBOX_APP_NAME: "{{ localsettings_private.DROPBOX_APP_NAME }}"
+  DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
+  DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_LOGIN: ''
-  EMAIL_PASSWORD: ''
+  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
+  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'
@@ -193,27 +194,27 @@ localsettings:
 #  ES_QUERY_CHUNKSIZE:
 #  ES_XFORM_CHECK_DIRECT_DOC_ID:
   FULLSTORY_ID:
-  GMAPS_API_KEY: ''
-  GOOGLE_ANALYTICS_API_ID: ''
-  HUBSPOT_API_ID: ''
-  HUBSPOT_API_KEY: ''
+  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
+  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
+  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_INSTANCE: 'dev'
 #  INVOICE_FROM_ADDRESS:
 #  INVOICE_PREFIX:
 #  INVOICE_STARTING_NUMBER:
   JAR_KEY_ALIAS: ''
-  JAR_KEY_PASS: ''
-  JAR_STORE_PASS: ''
+  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
+  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   J2ME_ADDRESS: ''
   KAFKA_URL: ''
-  KISSMETRICS_KEY: ''
+  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
 #  MANDRILL_APIKEY:
 #  MAPS_LAYERS:
 #  MEDIA_ROOT:
-  OPEN_EXCHANGE_RATES_API_ID:
+  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: commcarehq
+  PG_DATABASE_PASSWORD: "{{ secrets.pg_user_passwords.default }}"
   PG_DATABASE_USER: commcarehq
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
@@ -225,15 +226,15 @@ localsettings:
   REPORT_DATABASE_NAME: commcarehq_reporting
   UCR_DATABASE_NAME: commcarehq_ucr
   REPORT_OBJECT_OWNER: null
-  SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
+  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   STATIC_CDN: ""
-#  SIMPLE_API_KEYS:
+#  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
 #  SMS_QUEUE_ENABLED: ''
 #  STAGING_DOMAINS:
 #  STATIC_ROOT:
-#  STRIPE_PRIVATE_KEY:
-#  STRIPE_PUBLIC_KEY:
-  TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
+#  STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
+#  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: 'touchforms@example.com'
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
