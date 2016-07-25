@@ -29,13 +29,10 @@
     - libpq-dev
     - python-psycopg2
     - unzip
-  when:
-    pg_install == True
 
 - name: Check for original postgresql directory
   stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}"
   register: orig_path
-  when: pg_install == True
 
 - name: Make new postgresql directory
   sudo: yes
@@ -45,27 +42,24 @@
     group: postgres
     mode: 0755
     state: directory
-  when: pg_install == True
 
 - name: Check for new postgresql directory
   stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}"
   register: new_path
-  when: pg_install == True
 
 - name: Assert postgresql directory shows up in exactly one place
   fail: msg="postgresl directory must either be {{ postgresql_dir_path }} or {{ postgresql_dir_original_path }} (and not both)"
-  when: >
-    pg_install == True and
-    ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
+  when: ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
 
 - name: Move postgres to encrypted drive
   command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/{{ postgresql_version }}"
-  when: pg_install == True and orig_path.stat.exists
+  when: orig_path.stat.exists
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
-  when:
-    pg_install == True
+
+- name: assert hot standby config correct
+  assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
 - name: PostgreSQL app configuration
   sudo_user: postgres
@@ -89,8 +83,10 @@
     role_attr_flags: CREATEDB
     state: present
     port: "{{ postgresql_port }}"
-  when:
-    pg_install == True
+
+- name: check postgres database hosts
+  assert: { that: "item.host is not defined or item.host in groups.postgresql" }
+  with_items: "{{ postgresql_dbs }}"
 
 - name: Create PostgreSQL databases
   sudo_user: postgres
@@ -98,19 +94,16 @@
     name: "{{ item.name }}"
     state: present
     port: "{{ postgresql_port }}"
-    owner: "{{ localsettings.PG_DATABASE_USER }}"
+    owner: "{{ item.get('user', localsettings.PG_DATABASE_USER) }}"
     encoding: 'UTF-8'
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
-  when:
-    pg_install == True
+  when: item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
-  when:
-    pg_install == True
   notify: Start pgbouncer
   tags:
     - pgbouncer
@@ -152,24 +145,31 @@
 
 - name: Create plproxy extension
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
-  when: item.get('django_alias') == 'proxy'
+  postgresql_ext:
+    name: plproxy
+    db: "{{item.name}}"
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Create pghashlib extension
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
-  when: item.get('django_alias') == 'proxy'
+  postgresql_ext:
+    name: hashlib
+    db: "{{item.name}}"
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Make plproxy a trusted language
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
-  when: item.get('django_alias') == 'proxy'
+  postgresql_lang:
+    lang: plproxy
+    trust: True
+    db: "{{item.name}}"
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Grant usage on plproxy FDW
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
-  when: item.get('django_alias') == 'proxy'
+  when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
