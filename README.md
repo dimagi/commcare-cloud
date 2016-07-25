@@ -146,7 +146,11 @@ ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../con
 
 ### Setting up a dev account on ansible control machine
 
-Initial setup (after login as dev)
+Initial setup after login as dev with SSH `ForwardAgent` enabled.
+
+SSH `ForwardAgent` can be enabled with the `-A` flag on the command line or by
+specifying `ForwardAgent yes` in your SSH config. Be careful not to enable
+`ForwardAgent` for untrusted hosts.
 
 ```bash
 git clone git@github.com:dimagi/commcarehq-ansible
