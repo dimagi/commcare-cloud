@@ -11,7 +11,7 @@
 
 - name: Add public keys
   sudo: yes
-  authorized_key: user={{ item.name }} state=present key="{{ item.key }}" exclusive=yes
+  authorized_key: user={{ item }} state=present key="{{ lookup('file', 'vars/users/' ~ item.name ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
   when: item.name != 'ansible'
 
@@ -25,12 +25,12 @@
 
 - name: Authorize devs to login as ansible
   sudo: yes
-  authorized_key: user=ansible state=present key="{{ item.key }}"
+  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item.name ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
 - name: Revoke devs ability to login as ansible
   sudo: yes
-  authorized_key: user=ansible state=absent key="{{ item.key }}"
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.name ~ '.pub') }}"
   when: "'key' in item"
   with_items: '{{ dev_users.absent }}'
 
