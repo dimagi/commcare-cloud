@@ -47,6 +47,9 @@ hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes1
 [shared_dir_host]
 hqdb0.internal-va.commcarehq.org
 
+[shared_dir_host:vars]
+datadisk_device=/dev/xvde
+
 [riakcs]
 hqriak0.internal-va.commcarehq.org
 hqriak1.internal-va.commcarehq.org
