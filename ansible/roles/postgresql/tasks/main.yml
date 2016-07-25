@@ -145,13 +145,17 @@
 
 - name: Create plproxy extension
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
+  postgresql_ext:
+    name: plproxy
+    db: "{{item.name}}"
   when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
 - name: Create pghashlib extension
   sudo_user: postgres
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
+  postgresql_ext:
+    name: hashlib
+    db: "{{item.name}}"
   when: item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname
   with_items: postgresql_dbs
 
