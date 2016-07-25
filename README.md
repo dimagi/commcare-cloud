@@ -78,7 +78,7 @@ The one other change needed is to point to the proper inventory. Instead of usin
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/monolith -e -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
+$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
 
 ### Email setup
