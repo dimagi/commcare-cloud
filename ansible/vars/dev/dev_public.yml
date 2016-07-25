@@ -153,7 +153,6 @@ localsettings:
 #  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
 #  BANK_ADDRESS:
 #  BANK_NAME:
-#  BANK_ROUTING_NUMBER:
 #  BANK_SWIFT_CODE:
   BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
@@ -167,7 +166,6 @@ localsettings:
 #  CELERY_REMINDER_RULE_QUEUE:
 #  CELERY_REPEAT_RECORD_QUEUE:
   CELERY_RESULT_BACKEND: 'database'
-#  COUCHPULSE_DATABASE_URL:
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
@@ -175,7 +173,6 @@ localsettings:
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}:5984"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  CTABLE_PREFIX: null
   DEFAULT_CACHE: redis
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   DROPBOX_APP_NAME: "{{ localsettings_private.DROPBOX_APP_NAME }}"
@@ -190,9 +187,6 @@ localsettings:
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
-#  ES_CASE_CHECK_DIRECT_DOC_ID:
-#  ES_QUERY_CHUNKSIZE:
-#  ES_XFORM_CHECK_DIRECT_DOC_ID:
   FULLSTORY_ID:
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
@@ -208,7 +202,6 @@ localsettings:
   J2ME_ADDRESS: ''
   KAFKA_URL: ''
   KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
-#  MANDRILL_APIKEY:
 #  MAPS_LAYERS:
 #  MEDIA_ROOT:
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
@@ -218,14 +211,12 @@ localsettings:
   PG_DATABASE_USER: commcarehq
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
-#  PRODUCTION_COUCHDB_URI:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
 #  REMINDERS_QUEUE_ENABLED:
   REPORT_DATABASE_NAME: commcarehq_reporting
   UCR_DATABASE_NAME: commcarehq_ucr
-  REPORT_OBJECT_OWNER: null
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   STATIC_CDN: ""
 #  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
