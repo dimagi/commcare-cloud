@@ -17,10 +17,8 @@ else
     workon ansible
 fi
 
-if ! [ -L ~/commcarehq-ansible/config -o -d ~/commcarehq-ansible/config ]; then
-    # TODO setup permissions (add user to group?) to allow write to config repo
-    #su ansible -c "usermod -a -G ansible $USER"
-    ln -s /home/ansible/commcarehq-ansible/config ~/commcarehq-ansible/config
+if [ ! -d ~/commcarehq-ansible/config ]; then
+    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcarehq-ansible/config
 fi
 
 if [ ! -d ~/commcare-hq-deploy ]; then

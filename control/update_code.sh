@@ -26,13 +26,12 @@ function check_for_changes() {
 }
 
 function update_repo() {
-    git remote prune origin
-    git fetch
+    git fetch --prune
     git checkout master
     git reset --hard origin/master
 }
 
-for repo in "commcare-hq-deploy" "commcarehq-ansible"
+for repo in "commcare-hq-deploy" "commcarehq-ansible/config" "commcarehq-ansible"
 do
     cd ~/$repo
     pwd
