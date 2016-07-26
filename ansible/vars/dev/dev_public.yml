@@ -89,8 +89,6 @@ postgres_config:
   pgb_pool_timeout: 2
   pgb_pool_mode: session
 
-riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
-
 shared_drive_enabled: True
 backup_postgres: False
 backup_blobdb: True
