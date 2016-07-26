@@ -147,8 +147,9 @@ ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../con
 ### Use your ssh key to authenticate
 
 Ansible forwards SSH requests through your local machine to authenticate with
-remote servers.  This way commands originate from your machine and your
-credentials, and the ansible machine doesn't need its own auth.
+remote servers.  This way authentication originates from your machine and your
+credentials, and the ansible machine doesn't need its own auth to communicate
+with other servers managed with ansible.
 
 SSH `ForwardAgent` can be enabled by passing the `-A` flag on the command line:
 ```bash
