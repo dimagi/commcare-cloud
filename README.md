@@ -50,7 +50,6 @@ Once this is done, you may ssh into the control server and run a full deployment
 ```
 $ vagrant ssh control
 ...
-$ cd /vagrant/ansible
 $ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.yml
 ```
 
@@ -79,7 +78,6 @@ The one other change needed is to point to the proper inventory. Instead of usin
 ```
 $ vagrant ssh control
 ...
-$ cd /vagrant/ansible
 $ ansible-playbook -i inventories/monolith -e '@vars/dev.yml' deploy_stack.yml
 ```
 
@@ -144,4 +142,50 @@ ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.y
 
 ```bash
 ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
+```
+
+### Setting up a dev account on ansible control machine
+
+Initial setup after login as dev with SSH `ForwardAgent` enabled.
+
+SSH `ForwardAgent` can be enabled with the `-A` flag on the command line or by
+specifying `ForwardAgent yes` in your SSH config. Be careful not to enable
+`ForwardAgent` for untrusted hosts.
+
+```bash
+git clone git@github.com:dimagi/commcarehq-ansible
+. commcarehq-ansible/control/init.sh
+update-code
+
+# optional: make subsequent logins a bit more convenient
+echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+```
+
+On subsequent logins if optional step was not done.
+
+```bash
+. init-ansible
+```
+
+
+### Simulate dev user setup on vagrant control machine
+
+Add a record for your user to `dev_users.present` in `ansible/var/dev.yml`.
+
+Login with `vagrant ssh control`
+
+```bash
+ansible-playbook -u root -i inventories/development deploy_control.yml -e @vars/dev.yml --diff
+```
+
+Login as your user: `vagrant ssh control -- -l $USER -A
+
+```bash
+ln -s /vagrant ~/commcarehq-ansible
+. commcarehq-ansible/control/init.sh
+echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+
+# run ansible
+ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
+  -e @vars/dev.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
 ```

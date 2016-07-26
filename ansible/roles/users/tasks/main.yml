@@ -9,6 +9,12 @@
   user: name={{ item.name }} state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
 
+- name: Add public keys
+  sudo: yes
+  authorized_key: user={{ item.name }} state=present key="{{ item.key }}" exclusive=yes
+  with_items: '{{ dev_users.present }}'
+  when: item.name != 'ansible'
+
 - name: Remove dev users
   sudo: yes
   user: name={{ item.name }} state=absent
@@ -17,10 +23,16 @@
 - name: Add ansible user
   user: name=ansible state=present shell=/bin/bash groups="sudo" password={{ ansible_user_password_sha_512 }}
 
-- name: Add public keys
+- name: Authorize devs to login as ansible
   sudo: yes
-  authorized_key: user={{ item.name }} state=present key="{{ item.key }}" exclusive=yes
+  authorized_key: user=ansible state=present key="{{ item.key }}"
   with_items: '{{ dev_users.present }}'
+
+- name: Revoke devs ability to login as ansible
+  sudo: yes
+  authorized_key: user=ansible state=absent key="{{ item.key }}"
+  when: "'key' in item"
+  with_items: '{{ dev_users.absent }}'
 
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'
