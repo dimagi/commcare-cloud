@@ -144,13 +144,24 @@ ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.y
 ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
 ```
 
-### Setting up a dev account on ansible control machine
-
-Initial setup after login as dev with SSH `ForwardAgent` enabled.
+### Use SSH with `ForwardAgent` enabled.
 
 SSH `ForwardAgent` can be enabled with the `-A` flag on the command line or by
 specifying `ForwardAgent yes` in your SSH config. Be careful not to enable
 `ForwardAgent` for untrusted hosts.
+
+```
+# ~/.ssh/config
+Host control
+    Hostname control.internal-va.commcarehq.org
+    ForwardAgent yes
+```
+note that you then must `$ ssh control` for the settings to take effect, and this
+does not work with `mosh`
+
+### Setting up a dev account on ansible control machine
+
+You must ssh in as your dev user, with SSH `ForwardAgent` enabled (see above).
 
 ```bash
 git clone git@github.com:dimagi/commcarehq-ansible
