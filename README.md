@@ -144,20 +144,32 @@ ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.y
 ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
 ```
 
-### Use SSH with `ForwardAgent` enabled.
+### Use your ssh key to authenticate
 
-SSH `ForwardAgent` can be enabled with the `-A` flag on the command line or by
-specifying `ForwardAgent yes` in your SSH config. Be careful not to enable
-`ForwardAgent` for untrusted hosts.
+Ansible forwards SSH requests through your local machine to authenticate with
+remote servers.  This way authentication originates from your machine and your
+credentials, and the ansible machine doesn't need its own auth to communicate
+with other servers managed with ansible.
 
+SSH `ForwardAgent` can be enabled by passing the `-A` flag on the command line:
+```bash
+$ ssh -A control.internal-va.commcarehq.org
+```
+
+You can also enable it automatically for an alias in your ssh config (note that
+you then must use the alias `$ ssh control` for the settings to take effect)
 ```
 # ~/.ssh/config
 Host control
     Hostname control.internal-va.commcarehq.org
     ForwardAgent yes
 ```
-note that you then must `$ ssh control` for the settings to take effect, and this
-does not work with `mosh`
+
+Be careful not to enable `ForwardAgent` for untrusted hosts.
+
+You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
+
+[troubleshooting](https://developer.github.com/guides/using-ssh-agent-forwarding/)
 
 ### Setting up a dev account on ansible control machine
 
