@@ -9,7 +9,7 @@ encrypted_root: "/opt/data"
 
 shared_drive_enabled: true  # overridden in ../config/$ENV/$ENV.yml
 shared_dir_gid: 1500  # This GID cannot already be allocated
-shared_dir_name: "shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
 shared_mount_dir: "/mnt/{{ shared_dir_name }}"
 is_monolith: '{{ groups["all"]|length == 1 }}'
