@@ -3,13 +3,13 @@ import os
 from fabric.api import roles, env, sudo
 from fabric.contrib import files
 
-from ..const import ROLES_TOUCHFORMS
+from ..const import ROLES_TOUCHFORMS, FORMPLAYER_BUILD_DIR
 
 
 @roles(ROLES_TOUCHFORMS)
 def build_formplayer():
     build_dir = '{}/{}'.format(env.code_root, 'submodules/formplayer/build/libs')
-    new_build_dir = os.path.join(env.code_root, 'formplayer_build')
+    new_build_dir = os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
     if not files.exists(new_build_dir):
         sudo('mkdir {}'.format(new_build_dir))
 
