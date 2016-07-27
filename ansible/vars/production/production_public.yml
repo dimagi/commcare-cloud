@@ -131,7 +131,7 @@ postgresql_dbs:
   - django_alias: p5
     name: commcarehq_p5
     shards: [820, 1023]
-  - name: "{{loc alsettings.UCR_DATABASE_NAME}}"
+  - name: "{{localsettings.UCR_DATABASE_NAME}}"
   - name: "{{ formplayer_db_name }}"
 
 redis_max_memory: 4096mb
