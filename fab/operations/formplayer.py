@@ -15,5 +15,5 @@ def build_formplayer():
 
     jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
 
-    sudo('wget {} -P {}'.format(jenkins_formplayer_build_url, build_dir))
-    sudo('wget {} -P {}'.format(jenkins_formplayer_build_url, new_build_dir))
+    sudo('wget -nv {} -P {}'.format(jenkins_formplayer_build_url, build_dir))
+    sudo('wget -nv {} -P {}'.format(jenkins_formplayer_build_url, new_build_dir))
