@@ -34,8 +34,7 @@ fi
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
 
-alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/$ENV_private.yml" -e "@vars/$ENV/$ENV_public.yml" --vault-password-file ~/.vault_pass_$ENV.txt
- --ask-sudo-pass'
+alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/$ENV_private.yml" -e "@vars/$ENV/$ENV_public.yml" --vault-password-fil="~/.vault_pass_$ENV.txt" --ask-sudo-pass'
 alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh'
 alias update_code='~/commcarehq-ansible/control/update_code.sh'
