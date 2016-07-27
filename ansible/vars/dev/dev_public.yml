@@ -112,7 +112,6 @@ formplayer_db_name: formplayer
 #    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
 
 postgresql_dbs:
-  - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
   - name: "{{ localsettings.UCR_DATABASE_NAME }}"
   - name: "{{localsettings.PG_DATABASE_NAME}}"
     django_alias: default
@@ -213,7 +212,6 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
 #  REMINDERS_QUEUE_ENABLED:
-  REPORT_DATABASE_NAME: commcarehq_reporting
   UCR_DATABASE_NAME: commcarehq_ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   STATIC_CDN: ""
