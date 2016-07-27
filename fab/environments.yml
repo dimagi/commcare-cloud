@@ -130,6 +130,8 @@ production:
         concurrency: 2
       repeat_record_queue:
         concurrency: 50
+      ucr_queue:
+        concurrency: 4
     hqcelery1:
       reminder_queue:
         concurrency: 8
@@ -139,8 +141,6 @@ production:
         concurrency: 3
       sms_queue:
         concurrency: 8
-      ucr_queue:
-        concurrency: 4
       logistics_reminder_queue:
         concurrency: 2
       logistics_background_queue:
