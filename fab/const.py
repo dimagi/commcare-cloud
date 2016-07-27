@@ -43,3 +43,5 @@ RSYNC_EXCLUDE = (
 
 CACHED_DEPLOY_ENV_FILENAME = 'cached_deploy_env.pickle'
 CACHED_DEPLOY_CHECKPOINT_FILENAME = 'cached_deploy_checkpoint.pickle'
+
+FORMPLAYER_BUILD_DIR = 'formplayer_build'
