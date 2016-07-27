@@ -2,7 +2,7 @@
   sudo: yes
   copy:
     src: "{{ keystore_file }}"
-    dest: "{{ www_dir }}/DimagiKeyStore"
+    dest: "{{ www_dir }}/DimagiKeyStore_vault"
     group: cchq
     owner: cchq
     mode: 0644

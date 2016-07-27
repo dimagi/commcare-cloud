@@ -69,25 +69,25 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 
-apache2_cert_file: 'vars/{{ deploy_env }}/ssl/india.commcarehq.org.crt'
-apache2_key_file: 'vars/{{ deploy_env }}/ssl/india.commcarehq.org.key'
-apache2_ca_file: 'vars/{{ deploy_env }}/ssl/intermediate.crt'
+apache2_cert_file: 'vars/{{ deploy_env }}/ssl/india.commcarehq.org_vault.crt'
+apache2_key_file: 'vars/{{ deploy_env }}/ssl/india.commcarehq.org_vault.key'
+apache2_ca_file: 'vars/{{ deploy_env }}/ssl/intermediate_vault.crt'
 # Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
+# $ cat india.commcarehq.org_vault.crt intermediate_vault.crt > india.commcarehq.org.combined_vault.crt
+nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/india.commcarehq.org.combined_vault.crt'
 
 
-icds_nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
-icds_key_file: 'vars/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
+icds_nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/icds.commcarehq.org.combined_vault.crt'
+icds_key_file: 'vars/{{ deploy_env }}/ssl/icds.commcarehq.org_vault.key'
 
-cas_nginx_combined_cert_file: 'vars/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
-cas_key_file: 'vars/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+cas_nginx_combined_cert_file: 'vars/{{ deploy_env}}/ssl/cas.commcarehq.org.combined_vault.crt'
+cas_key_file: 'vars/{{ deploy_env }}/ssl/cas.commcarehq.org_vault.key'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
 supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
-keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore'
+keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore_vault'
 
 backup_blobdb: True
 backup_postgres: True

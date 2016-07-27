@@ -71,7 +71,7 @@ apache2_key_file: 'vars/{{ deploy_env }}/ssl/server.key'
 
 nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/server.crt'
 
-keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore'
+keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore_vault'
 
 backup_blobdb: False
 backup_postgres: False

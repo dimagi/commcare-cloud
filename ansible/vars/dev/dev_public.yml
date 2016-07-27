@@ -70,7 +70,7 @@ AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
-keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore'
+keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore_vault'
 
 postgres_users:
   commcare:
