@@ -106,11 +106,11 @@ DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
 DROPBOX_SECRET = '{{ localsettings.DROPBOX_SECRET }}'
 {% endif %}
 
-{% if 'S3_ACCESS_KEY' in localsettings %}
-S3_ACCESS_KEY = '{{ localsettings.S3_ACCESS_KEY }}'
+{% if 'AMAZON_S3_ACCESS_KEY' in localsettings %}
+S3_ACCESS_KEY = '{{ localsettings.AMAZON_S3_ACCESS_KEY }}'
 {% endif %}
 {% if 'S3_SECRET_KEY' in localsettings %}
-S3_SECRET_KEY = '{{ localsettings.S3_SECRET_KEY }}'
+S3_SECRET_KEY = '{{ localsettings.AMAZON_S3_SECRET_KEY }}'
 {% endif %}
 
 {% if s3_blob_db_enabled %}
