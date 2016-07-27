@@ -198,6 +198,8 @@ chmod 600 ~/.vault_pass_*
 ```
 
 ### Simulate dev user setup on vagrant control machine
+Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
+`ansible/vars/dev/users/{username}.pub`.
 
 Login with `vagrant ssh control`
 

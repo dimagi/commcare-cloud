@@ -35,31 +35,9 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:
   present:
-    - ansible
-    - biyeun
-    - brudolph
-    - cellowitz
-    - ctsims
-    - czue
     - dmiller
     - droberts
-    - esoergel
-    - frener
-    - gcapalbo
-    - jemord
-    - jschweers
-    - ncarnahan
-    - npellegrino
-    - nhooper
-    - skelly
-    - sravfeyn
-    - wpride
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
+  absent: []
 
 # use this value to switch between nginx and apache
 proxy_type: nginx
@@ -92,7 +70,7 @@ AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
-keystore_file: 'DimagiKeyStore'
+keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore'
 
 postgres_users:
   commcare:
