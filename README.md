@@ -190,7 +190,7 @@ On subsequent logins if optional step was not done.
 . init-ansible
 ```
 
-Create the vault password files for each environment:
+Create the vault password files for each environment (keys stored in CommCare Keepass):
 
 ```
 vi ~/.vault_pass_{ENV}.txt  # paste in the key
