@@ -190,15 +190,19 @@ On subsequent logins if optional step was not done.
 . init-ansible
 ```
 
+Create the vault password files for each environment:
+
+```
+vi ~/.vault_pass_{ENV}.txt  # paste in the key
+chmod 600 ~/.vault_pass_*
+```
 
 ### Simulate dev user setup on vagrant control machine
-
-Add a record for your user to `dev_users.present` in `ansible/var/dev.yml`.
 
 Login with `vagrant ssh control`
 
 ```bash
-ansible-playbook -u root -i inventories/development deploy_control.yml -e @vars/dev.yml --diff
+ansible-playbook -u root -i inventories/development deploy_control.yml -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' --diff
 ```
 
 Login as your user: `vagrant ssh control -- -l $USER -A
