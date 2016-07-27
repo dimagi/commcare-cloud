@@ -35,8 +35,8 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:
   present:
-    - {name: droberts, group: dev, state: present}
-    - {name: dmiller, group: dev, state: present}
+    - droberts
+    - dmiller
   absent: []
 
 # use this value to switch between nginx and apache

@@ -6,7 +6,7 @@
 
 - name: Add dev users
   sudo: yes
-  user: name={{ item.name }} state=present shell=/bin/bash groups={{ dev_group }}
+  user: name={{ item }} state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
 
 - name: Add public keys
@@ -17,7 +17,7 @@
 
 - name: Remove dev users
   sudo: yes
-  user: name={{ item.name }} state=absent
+  user: name={{ item }} state=absent
   with_items: '{{ dev_users.absent }}'
 
 - name: Add ansible user
@@ -25,7 +25,7 @@
 
 - name: Authorize devs to login as ansible
   sudo: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item.name ~ '.pub') }}"
+  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
 
 - name: Revoke devs ability to login as ansible
