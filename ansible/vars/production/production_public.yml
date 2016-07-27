@@ -1,0 +1,260 @@
+SITE_HOST: 'www.commcarehq.org'
+NO_WWW_SITE_HOST: 'commcarehq.org'
+COMMTRACK_SITE_HOST: 'commtrack.org'
+J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
+deploy_env: production
+
+active_sites:
+  cchq_ssl: True
+  cchq_redirect: True
+  cchq_http: True
+  cchq_http_redirect: True
+  cchq_http_j2me: True
+  commtrack_ssl: True
+  commtrack_http: True
+  hq_status: True
+  tableau: True
+  icds_tableau: False
+  dhis: True
+  wiki: True
+  wiki_http: True
+  motech: True
+  motech1: True
+  motech2: True
+  riakcs: True
+  cas_ssl: False
+
+riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
+riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
+
+proxy_type: nginx
+
+# This sets production_commcare as the default endpoint for ssl connections
+primary_ssl_env: "production"
+
+dev_group: 'dimagidev'
+dev_users:
+  present:
+    - ansible
+    - biyeun
+    - brudolph
+    - cellowitz
+    - ctsims
+    - czue
+    - dmiller
+    - droberts
+    - esoergel
+    - frener
+    - gcapalbo
+    - jemord
+    - jschweers
+    - ncarnahan
+    - npellegrino
+    - nhooper
+    - skelly
+    - sravfeyn
+    - wpride
+    - cchq
+  absent:
+    - preseed
+    - twymer
+    - tsheffels
+    - dmyung
+    - jenkins_slave
+
+ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+fake_ssl_cert: no
+
+NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
+run_newrelic_plugin_agent: True
+
+DATADOG_ENABLED: True
+DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
+CLOUDANT_CLUSTER_NAME: dimagi003
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_cluster_name: 'prodhqes-1.x'
+#elasticsearch_memory: '4096m'
+#elasticsearch_node_name: '???'
+
+# Source paths of certs
+apache2_key_file: 'vars/{{ deploy_env }}/ssl/commcarehq.org.key'
+apache2_ca_file: 'vars/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
+apache2_cert_file: 'vars/{{ deploy_env }}/ssl/commcarehq.org.crt'
+# Nginx only accepts on cert, so cat the site cert and chain:
+# $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
+nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
+
+# Commtrack Certs
+commtrack_nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/commtrack.org.combined.crt'
+commtrack_key_file: 'vars/{{ deploy_env }}/ssl/commtrack.org.key'
+
+supervisor_http_enabled: True
+supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
+supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
+
+keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore'
+
+backup_blobdb: True
+backup_postgres: True
+
+postgres_users: "{{ secrets.POSTGRES_USERS }}"
+
+postgres_config:
+  max_connections: 300
+  pgb_max_connections: 400
+  pgb_default_pool: 290
+  pgb_reserve_pool: 5
+  pgb_pool_timeout: 1
+  pgb_pool_mode: transaction
+
+formplayer_db_name: formplayer
+
+postgresql_dbs:
+  - django_alias: default
+    name: "{{localsettings.PG_DATABASE_NAME}}"
+  - django_alias: proxy
+    name: commcarehq_proxy
+  - django_alias: p1
+    name: commcarehq_p1
+    shards: [0, 204]
+  - django_alias: p2
+    name: commcarehq_p2
+    shards: [205, 409]
+  - django_alias: p3
+    name: commcarehq_p3
+    shards: [410, 614]
+  - django_alias: p4
+    name: commcarehq_p4
+    shards: [615, 819]
+  - django_alias: p5
+    name: commcarehq_p5
+    shards: [820, 1023]
+  - name: "{{loc alsettings.UCR_DATABASE_NAME}}"
+  - name: "{{ formplayer_db_name }}"
+
+redis_max_memory: 4096mb
+redis_logfile: '/var/log/redis/redis-server.log'
+redis_syslog_enabled: 'no'
+redis_database_save_times: []
+redis_max_clients: 10000
+redis_maxmemory_policy: allkeys-lru
+
+ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
+
+KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
+
+AMQP_USER: "{{ secrets.AMQP_USER }}"
+AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
+AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+AMQP_NAME: commcarehq
+
+etc_host_lines:
+
+localsettings:
+  ALLOWED_HOSTS:
+    - www.commcarehq.org
+    - www.commtrack.org
+    - localhost
+    - 127.0.0.1
+    - testserver
+    - proxytest.commcarehq.org
+    - "{{ J2ME_SITE_HOST }}"
+  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
+  BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: 'CTZIUS33'
+  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
+  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
+  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
+  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
+  BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
+  CELERY_PERIODIC_QUEUE: 'celery_periodic'
+  CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
+  CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
+  CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
+  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
+  COUCH_HTTPS: True
+  COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
+  COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  DROPBOX_APP_NAME: 'CommCareHQFiles'
+  DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
+  DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
+  ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
+  ELASTICSEARCH_PORT: '9200'
+  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
+  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  FORMPLAYER_URL: "/formplayer"
+  FULLSTORY_ID: "{{ localsettings_private.FULLSTORY_ID }}"
+  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
+  HQ_INSTANCE: 'www'
+  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
+  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
+  HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
+  INACTIVITY_TIMEOUT: 20160
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: INC-
+  INVOICE_STARTING_NUMBER: 5000
+  JAR_KEY_ALIAS: javarosakey
+  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
+  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
+  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
+  MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
+  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
+  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
+  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
+  PG_DATABASE_NAME: commcarehq
+  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+  PG_DATABASE_PORT: 6432
+  PILLOWTOP_MACHINE_ID: hqdb0
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: True
+  S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
+  S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
+  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
+  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
+  SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
+  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_QUEUE_ENABLED: True
+  STATIC_ROOT:
+  STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
+  STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
+  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
+  TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
+  TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
+  TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
+  UCR_DATABASE_NAME: commcarehq_ucr
+  USE_PARTITIONED_DATABASE: True
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
