@@ -25,7 +25,7 @@
 
 - name: Authorize devs to login as ansible
   sudo: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
 - name: check if key files exist
