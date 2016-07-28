@@ -212,3 +212,10 @@ echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
 ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
   -e @vars/dev.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
 ```
+
+### Running against Vagrant machines from localhost
+It is also possible to run tasks on the vagrant machines from you're local machine:
+
+```
+ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e "@vars/dev.yml" deploy_stack.yml
+```
