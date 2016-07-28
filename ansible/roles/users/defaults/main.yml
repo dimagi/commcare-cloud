@@ -1,2 +1,2 @@
 user_key_prefix: "{{ 'vars/' ~ deploy_env ~ '/users/' }}"
-user_key_suffix: "{{ dev_users.encrupted|default(False)|ternary('_vault.pub', '.pub') }}"
+user_key_suffix: "{{ dev_users.encrupted|default(True)|ternary('_vault.pub', '.pub') }}"
