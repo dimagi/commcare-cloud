@@ -56,7 +56,7 @@ Once this is done, you may ssh into the control server and run a full deployment
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/development -e '@vars/dev/dev_vault.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
+$ ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
 
 This will build a database server, a proxy server and a single web worker,
@@ -84,7 +84,7 @@ The one other change needed is to point to the proper inventory. Instead of usin
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_vault.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
+$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
 
 ### Email setup
@@ -116,11 +116,11 @@ For the Lenovo T440s:
 
 - Update localsettings:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_vault.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --tags=localsettings
+  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --tags=localsettings
   ```
 - Skip the common setup, including apt installs and updating the commcarehq code:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_vault.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --skip-tags=common
+  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --skip-tags=common
   ```
 
 Tags available:
