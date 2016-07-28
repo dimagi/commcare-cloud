@@ -29,6 +29,7 @@
   with_items: '{{ dev_users.present }}'
 
 - name: check if key files exist
+  sudo: false
   local_action: stat path="{{ 'vars/users/' ~ item ~ '.pub' }}"
   register: absent_user_keys
   with_items: '{{ dev_users.absent }}'
