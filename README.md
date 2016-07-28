@@ -17,7 +17,13 @@ Begin by checkout out the source for this repostiory:
 $ git clone https://github.com/dimagi/commcarehq-ansible
 ```
 
-Then, change directories into the new clone and set up submodules:
+Then install the git hooks:
+
+```
+./git-hooks/install.sh
+```
+
+Now you can change directories into the new clone and set up submodules:
 
 ```
 $ cd commcarehq-ansible
@@ -190,12 +196,8 @@ On subsequent logins if optional step was not done.
 . init-ansible
 ```
 
-Create the vault password files for each environment (keys stored in CommCare Keepass):
+Setup the vault password files as described below in [Managing secrets with Vault](#managing-secrets-with-vault)
 
-```
-vi ~/.vault_pass_{ENV}.txt  # paste in the key
-chmod 600 ~/.vault_pass_*
-```
 
 ### Simulate dev user setup on vagrant control machine
 Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
@@ -218,3 +220,47 @@ echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
 ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
   -e @vars/dev.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
 ```
+
+### Managing secrets with Vault
+**IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
+
+All the secret variables and private data required for the different environments is included
+in this repository as encrypted files (`*_vault.*`).
+
+To edit these files you need to either have the vault keys setup on your machine or be able 
+to provide them on the command line when prompted.
+
+To set up the key files create one file for each environment as shown below. Each file should contain
+just the Vault password for that environment on a single line (keys stored in CommCare Keepass):
+
+```
+vi ~/.vault_pass_{ENV}.txt  # paste in the key
+chmod 600 ~/.vault_pass_*
+```
+
+#### Viewing / Editing encrypted files
+You can use Vault's built in editing capability as follows:
+
+```
+ENV=production ansible-vault edit ansible/vars/$ENV/${ENV}_vault.yml --vault-password-file=~/.vault_pass_${ENV}.txt
+```
+
+This will decrypt the file for editing and re-encrypt it after. Note that even if no changes
+are made to the file the encrypted contents will have changed.
+
+If you just want to view the contents of the file you can use this command:
+
+```
+ENV=production ansible-vault view ansible/vars/$ENV/${ENV}_vault.yml --vault-password-file=~/.vault_pass_${ENV}.txt
+```
+
+#### Encrypting / Decrypting files
+**CAUTION**: Make sure that you re-encrypt any files with the correct key before committing them.
+
+The following command can be used to encrypt and decrypt files:
+
+```
+ENV=production && ansible-vault [encrypt|decrypt] --vault-password-file=~/.vault_pass_${ENV}.txt filename
+```
+
+For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
