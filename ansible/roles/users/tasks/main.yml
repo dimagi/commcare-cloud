@@ -13,7 +13,7 @@
   sudo: yes
   authorized_key: user={{ item }} state=present key="{{ lookup('file', user_key_prefix ~ item ~ user_key_suffix) }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
-  when: item.name != 'ansible'
+  when: item != 'ansible'
 
 - name: Remove dev users
   sudo: yes
