@@ -1,2 +1,3 @@
 touchforms_data_dir: "{{ www_home }}/data/touchforms"
+formplayer_build_dir: "{{ code_home }}/formplayer_build"
 # formplayer_db_name: ..defined in secret file

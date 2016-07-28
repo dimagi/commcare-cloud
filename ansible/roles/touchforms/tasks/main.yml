@@ -54,16 +54,29 @@
   tags:
     - tf-localsettings
 
+- name: Formplayer build dir
+  file:
+    path: "{{ formplayer_build_dir }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+  tags:
+    - tf-localsettings
+
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
 - name: Copy Spring application.properties
   sudo: yes
   template:
     src: application.properties.j2
-    dest: "{{ code_home }}/submodules/formplayer/config/application.properties"
+    dest: "{{ item }}"
     group: cchq
     owner: cchq
     mode: 0644
   tags:
     - tf-localsettings
+  with_items:
+    - "{{ code_home }}/submodules/formplayer/config/application.properties"
+    - "{{ formplayer_build_dir }}/application.properties"
   when: formplayer_path.stat.exists
