@@ -34,7 +34,6 @@ fake_ssl_cert: yes
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:
-  encrypted: False
   present:
     - dmiller
     - droberts
