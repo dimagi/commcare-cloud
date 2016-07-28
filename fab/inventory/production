@@ -64,4 +64,4 @@ datavol_device=/dev/xvdb
 hqriak0.internal-va.commcarehq.org
 
 [pg_standby]
-hqstandby0.internal-va.commcarehq.org
+hqstandby0.internal-va.commcarehq.org hot_standby_master=hqdb0.internal-va.commcarehq.org
