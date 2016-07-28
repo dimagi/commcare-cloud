@@ -69,22 +69,22 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
 # Source paths of certs
-apache2_key_file: 'vars/{{ deploy_env }}/ssl/commcarehq.org_vault.key'
-apache2_ca_file: 'vars/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
-apache2_cert_file: 'vars/{{ deploy_env }}/ssl/commcarehq.org_vault.crt'
+apache2_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
+apache2_ca_file: '../config/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
+apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.crt'
 # Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat commcarehq.org_vault.crt hq_thawtecabundle.crt > commcarehq.org.combined_vault.crt
-nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/commcarehq.org.combined_vault.crt'
+# $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
+nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
 
 # Commtrack Certs
-commtrack_nginx_combined_cert_file: 'vars/{{ deploy_env }}/ssl/commtrack.org.combined_vault.crt'
-commtrack_key_file: 'vars/{{ deploy_env }}/ssl/commtrack.org_vault.key'
+commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.org.combined.crt'
+commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
 supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
-keystore_file: 'vars/{{ deploy_env }}/DimagiKeyStore_vault'
+keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: False
