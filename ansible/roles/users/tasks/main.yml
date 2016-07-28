@@ -11,7 +11,7 @@
 
 - name: Add public keys
   sudo: yes
-  authorized_key: user={{ item }} state=present key="{{ lookup('file', 'var/users/' ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key: user={{ item }} state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
   when: item != 'ansible'
 
@@ -25,17 +25,17 @@
 
 - name: Authorize devs to login as ansible
   sudo: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', 'var/users/' ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
 
 - name: check if key files exist
-  local_action: stat path="{{ 'var/users/' ~ item ~ '.pub' }}"
+  local_action: stat path="{{ 'vars/users/' ~ item ~ '.pub' }}"
   register: absent_user_keys
   with_items: '{{ dev_users.absent }}'
 
 - name: Revoke devs ability to login as ansible
   sudo: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', 'var/users/' ~ item.0 ~ '.pub') }}"
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.0 ~ '.pub') }}"
   when: item.1.stat.exists
   with_together:
     - dev_users.absent
