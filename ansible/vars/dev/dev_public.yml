@@ -170,6 +170,8 @@ localsettings:
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}:5984"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_MONITORING_USERNAME: commcarehq
+  COUCH_MONITORING_PASSWORD: commcarehq
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   DROPBOX_APP_NAME: "{{ localsettings_private.DROPBOX_APP_NAME }}"
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
