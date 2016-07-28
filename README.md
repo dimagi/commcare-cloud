@@ -206,7 +206,7 @@ Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_publi
 Login with `vagrant ssh control`
 
 ```bash
-ansible-playbook -u root -i inventories/development deploy_control.yml -e '@vars/dev/dev_vault.yml' -e '@vars/dev/dev_public.yml' --diff
+ansible-playbook -u root -i inventories/development deploy_control.yml -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' --diff
 ```
 
 Login as your user: `vagrant ssh control -- -l $USER -A
