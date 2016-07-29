@@ -39,8 +39,11 @@ alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
+# It aint pretty, but it gets the job done
 function ansible-deploy-control() {
-  ANSIBLE_CONTROL_USER=`whoami` && sudo /home/$ANSIBLE_CONTROL_USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --diff
+    echo "You must be root to deploy the control machine"
+    echo "Run \`su\` to become the root user, then paste in this command to deploy:"
+    echo 'USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcarehq-ansible/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/production/production_vault.yml -e @$ANSIBLE_DIR/vars/production/production_public.yml --diff --ask-vault-pass'
 }
 
 function ansible-control-banner() {
