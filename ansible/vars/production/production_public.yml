@@ -97,7 +97,7 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 keystore_file: '../config/DimagiKeyStore'
 
-backup_blobdb: True
+backup_blobdb: False
 backup_postgres: True
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
