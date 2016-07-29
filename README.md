@@ -47,9 +47,9 @@ $ vagrant up
 
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-The `./reset-vms` command can be run at any time, possibly with a subset of the
+The `./scripts/reset-vms` command can be run at any time, possibly with a subset of the
 VM names, to reset the VMs to their initial state and provision them with your
-SSH key. Run `./reset-vms` without arguments for usage info.
+SSH key. Run `./scripts/reset-vms` without arguments for usage info.
 
 Once this is done, you may ssh into the control server and run a full deployment:
 
