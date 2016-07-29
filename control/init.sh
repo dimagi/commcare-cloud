@@ -36,8 +36,8 @@ fi
 
 alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-sudo-pass --ask-vault-pass'
 alias aps='ap deploy_stack.yml'
-alias update-code='~/commcarehq-ansible/control/update_code.sh'
-alias update_code='~/commcarehq-ansible/control/update_code.sh'
+alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
+alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
 function ansible-deploy-control() {
   ANSIBLE_CONTROL_USER=`whoami` && sudo /home/$ANSIBLE_CONTROL_USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --diff
