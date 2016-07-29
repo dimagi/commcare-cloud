@@ -1,0 +1,208 @@
+SITE_HOST: 'swiss.commcarehq.org'
+COMMTRACK_SITE_HOST: 'swiss.commcarehq.org'
+NO_WWW_SITE_HOST: 'swiss.commcarehq.org'
+deploy_env: swiss
+
+active_sites:
+  cchq_ssl: True
+  cchq_redirect: True
+  cchq_http: True
+  cchq_http_redirect: False
+  commtrack_ssl: False
+  commtrack_http: False
+  hq_status: False
+  tableau: False
+  icds_tableau: False
+  dhis: False
+  wiki: False
+  wiki_http: False
+  motech: False
+  motech1: False
+  motech2: False
+  riakcs: False
+
+proxy_type: nginx
+
+dev_group: 'dimagidev'
+dev_users:
+  present:
+    - ansible
+    - biyeun
+    - brudolph
+    - cellowitz
+    - ctsims
+    - czue
+    - dmiller
+    - droberts
+    - esoergel
+    - frener
+    - gcapalbo
+    - jemord
+    - jschweers
+    - ncarnahan
+    - npellegrino
+    - nhooper
+    - skelly
+    - sravfeyn
+    - wpride
+    - cchq
+  absent:
+    - preseed
+    - twymer
+    - tsheffels
+    - dmyung
+    - jenkins_slave
+
+ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+fake_ssl_cert: no
+
+NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
+run_newrelic_plugin_agent: False
+
+DATADOG_ENABLED: False
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '4096m'
+elasticsearch_cluster_name: 'deves'
+#elasticsearch_node_name: '??'
+
+apache2_cert_file: '../config/{{ deploy_env }}/ssl/server.crt'
+apache2_key_file: '../config/{{ deploy_env }}/ssl/server.key'
+
+nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/server.crt'
+
+keystore_file: '../config/DimagiKeyStore'
+
+backup_blobdb: False
+backup_postgres: False
+
+postgres_users: "{{ secrets.POSTGRES_USERS }}"
+
+postgres_config:
+  max_connections: 300
+  pgb_max_connections: 400
+  pgb_default_pool: 290
+  pgb_reserve_pool: 5
+  pgb_pool_timeout: 1
+  pgb_pool_mode: transaction
+
+formplayer_db_name: formplayer
+
+postgresql_dbs:
+  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+  - name: "{{ localsettings.PG_DATABASE_NAME }}"
+    django_alias: default
+  - name: "{{ formplayer_db_name }}"
+
+redis_max_memory: 4096mb
+redis_logfile: '/var/log/redis/redis-server.log'
+redis_syslog_enabled: 'no'
+redis_database_save_times: []
+redis_max_clients: 10000
+redis_maxmemory_policy: allkeys-lru
+
+ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
+
+KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
+
+AMQP_USER: "{{ secrets.AMQP_USER }}"
+AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
+AMQP_HOST: "185.12.7.167"
+AMQP_NAME: commcarehq
+
+shared_drive_enabled: false
+
+localsettings:
+  ALLOWED_HOSTS:
+    - swiss.commcarehq.org
+    - 185.12.7.167
+    - localhost
+    - 127.0.0.1
+    - testserver
+  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
+  BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: 'CTZIUS33'
+  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
+  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
+  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
+  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
+  BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
+  CELERY_PERIODIC_QUEUE: 'celery_periodic'
+  CELERY_REMINDER_CASE_UPDATE_QUEUE: reminder_case_update_queue
+  CELERY_REMINDER_RULE_QUEUE: reminder_rule_queue
+  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  CLOUDCARE_BASE_URL: http://localhost:9010
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
+  COUCH_HTTPS: false
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_SERVER_ROOT: "185.12.7.167:5984"
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+# swiss is not hosted by Cloudant
+  COUCH_STALE_QUERY: 'update_after'
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+#  DROPBOX_APP_NAME:
+#  DROPBOX_KEY:
+#  DROPBOX_SECRET:
+  ELASTICSEARCH_HOST: "localhost"
+  ELASTICSEARCH_PORT: '9200'
+  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
+  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181/"
+  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
+  HQ_INSTANCE: 'swiss'
+  HUBSPOT_API_ID:
+  HUBSPOT_API_KEY:
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: INC-
+  INVOICE_STARTING_NUMBER: 5000
+  JAR_KEY_ALIAS: javarosakey
+  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
+  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
+  J2ME_ADDRESS: ''
+#  KAFKA_HOST:
+  KISSMETRICS_KEY:
+  MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
+  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
+  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
+  PG_DATABASE_HOST: "127.0.0.1"
+  PG_DATABASE_NAME: commcarehq
+  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+  PG_DATABASE_PORT: 5432
+#  PILLOWTOP_MACHINE_ID:
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "localhost"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: False
+  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
+  SIMPLE_API_KEYS:
+  SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
+  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_QUEUE_ENABLED: False
+#  STATIC_ROOT:
+#  STRIPE_PRIVATE_KEY:
+#  STRIPE_PUBLIC_KEY:
+  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
+  TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
+  UCR_DATABASE_NAME: commcarehq_ucr
+  XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"
