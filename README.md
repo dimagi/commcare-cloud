@@ -225,24 +225,18 @@ ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
 
 All the secret variables and private data required for the different environments is included
-in this repository as encrypted files (`*_vault.*`).
+in this repository as encrypted files (`${ENV}_vault.yml`).
 
-To edit these files you need to either have the vault keys setup on your machine or be able 
-to provide them on the command line when prompted.
+To edit these files you need to provide them on the command line when prompted (keys stored in CommCare Keepass).
 
-To set up the key files create one file for each environment as shown below. Each file should contain
-just the Vault password for that environment on a single line (keys stored in CommCare Keepass):
-
-```
-vi ~/.vault_pass_{ENV}.txt  # paste in the key
-chmod 600 ~/.vault_pass_*
-```
+To use these files with `ansible-playbook` include the `--ask-vault-pass` param.
+(This is included for your convenience in the `ap` and `aps` aliases.)
 
 #### Viewing / Editing encrypted files
 You can use Vault's built in editing capability as follows:
 
 ```
-ENV=production ansible-vault edit ansible/vars/$ENV/${ENV}_vault.yml --vault-password-file=~/.vault_pass_${ENV}.txt
+ENV=production ansible-vault edit ansible/vars/$ENV/${ENV}_vault.yml
 ```
 
 This will decrypt the file for editing and re-encrypt it after. Note that even if no changes
@@ -251,7 +245,7 @@ are made to the file the encrypted contents will have changed.
 If you just want to view the contents of the file you can use this command:
 
 ```
-ENV=production ansible-vault view ansible/vars/$ENV/${ENV}_vault.yml --vault-password-file=~/.vault_pass_${ENV}.txt
+ENV=production ansible-vault view ansible/vars/$ENV/${ENV}_vault.yml
 ```
 
 #### Encrypting / Decrypting files
@@ -260,7 +254,7 @@ ENV=production ansible-vault view ansible/vars/$ENV/${ENV}_vault.yml --vault-pas
 The following command can be used to encrypt and decrypt files:
 
 ```
-ENV=production && ansible-vault [encrypt|decrypt] --vault-password-file=~/.vault_pass_${ENV}.txt filename
+ENV=production && ansible-vault [encrypt|decrypt] filename
 ```
 
 For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
