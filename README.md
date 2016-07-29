@@ -258,3 +258,10 @@ ENV=production && ansible-vault [encrypt|decrypt] filename
 ```
 
 For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
+
+### Running against Vagrant machines from localhost
+It is also possible to run tasks on the vagrant machines from you're local machine:
+
+```
+ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e "@vars/dev.yml" deploy_stack.yml
+```
