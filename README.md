@@ -139,7 +139,7 @@ Tags available:
 Note: to generate this list automatically, you can run something like
 
 ```bash
-ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
+ENV=production && ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
 /g' | xargs -I% echo - %
 ```
 
@@ -147,7 +147,7 @@ ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.y
 ### Setting up ansible control machine
 
 ```bash
-ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
+ansible-deploy-control  # see init.sh for the full command that this is an alias for
 ```
 
 ### Use your ssh key to authenticate
