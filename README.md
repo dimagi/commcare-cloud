@@ -146,9 +146,8 @@ ENV=production && ansible-playbook -u root -i ../../commcare-hq/fab/inventory/in
 
 ### Setting up ansible control machine
 
-```bash
-ansible-deploy-control  # see init.sh for the full command that this is an alias for
-```
+This must be done as the root user.  Run `ansible-deploy-control` to get the
+proper command.
 
 ### Use your ssh key to authenticate
 
