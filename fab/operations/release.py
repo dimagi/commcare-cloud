@@ -211,12 +211,11 @@ def copy_formplayer_properties():
         '{}/submodules/formplayer/config'.format(
             env.code_current, env.code_root
         ))
-    with settings(warn_only=True):
-        sudo(
-            'cp {} {}'.format(
-                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, 'application.properties'),
-                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-            ))
+    sudo(
+        'cp {} {}'.format(
+            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, 'application.properties'),
+            os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
+        ))
 
 
 @parallel
