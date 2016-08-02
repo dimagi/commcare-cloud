@@ -135,6 +135,8 @@ AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
+ufw_private_interface: eth1
+
 etc_host_lines:
 
 localsettings:
