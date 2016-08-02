@@ -60,7 +60,9 @@ fake_ssl_cert: no
 NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: False
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
+DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
