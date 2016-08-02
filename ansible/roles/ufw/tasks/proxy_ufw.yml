@@ -23,7 +23,7 @@
     direction: in
     port: 22
     proto: any
-    interface: {{ ufw_private_interface }}
+    interface: '{{ ufw_private_interface }}'
   when: not is_monolith
   
 - name: allow mosh traffic
@@ -40,7 +40,7 @@
     direction: in
     port: "60000:61000"
     proto: udp
-    interface: {{ ufw_private_interface }}
+    interface: '{{ ufw_private_interface }}'
   when: not is_monolith
   
 - name: default to denying all incoming traffic
