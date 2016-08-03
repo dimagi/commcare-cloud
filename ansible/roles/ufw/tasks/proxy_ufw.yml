@@ -24,7 +24,7 @@
     port: 22
     proto: any
     interface: '{{ ufw_private_interface }}'
-  when: not is_monolith
+  when: not is_monolith|bool
   
 - name: allow mosh traffic
   ufw:
@@ -41,7 +41,7 @@
     port: "60000:61000"
     proto: udp
     interface: '{{ ufw_private_interface }}'
-  when: not is_monolith
+  when: not is_monolith|bool
   
 - name: default to denying all incoming traffic
   ufw: policy=deny direction=incoming

@@ -15,7 +15,7 @@
   sudo: yes
   tasks:
     - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
-      when: ufw_private_interface is defined or is_monolith
+      when: ufw_private_interface is defined or is_monolith|bool
 
 - name: Datadog agent
   hosts: all
