@@ -26,3 +26,5 @@
   file:
     path: "{{ old_shared_data_dir }}"
     state: absent
+  tags:
+    - nfs-cleanup
