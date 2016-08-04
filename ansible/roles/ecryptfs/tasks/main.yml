@@ -4,9 +4,10 @@
   sudo: yes
   shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
   register: partition_check
+  when: datavol_device is defined
   changed_when: false
   failed_when: false
-  when: datavol_device is defined
+  always_run: true
 
 - name: Create partition on block storage volume
   sudo: yes
@@ -36,6 +37,7 @@
   register: mtab_contents
   failed_when: false
   changed_when: false
+  always_run: true
 
 - name: Install ecryptfs-utils
   sudo: yes
@@ -89,12 +91,14 @@
   register: fstab_contents
   failed_when: false
   changed_when: false
+  always_run: true
 
 - name: Register mount configuration
   sudo: yes
   shell: "grep '{{ encrypted_root }} ecryptfs' /etc/mtab"
   register: mount_conf
   changed_when: false
+  always_run: true
 
 - name: add user, noauto to mount conf
   shell: "echo {{ mount_conf.stdout }} | sed -e 's/rw/user,noauto,rw/'"

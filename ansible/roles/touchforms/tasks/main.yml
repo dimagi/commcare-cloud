@@ -47,10 +47,13 @@
     - sqlite3
     - libsqlite3-dev
 
-- name: Check formplayer existence
-  stat:
-    path: "{{ code_home }}/submodules/formplayer"
-  register: formplayer_path
+- name: Formplayer build dir
+  file:
+    path: "{{ formplayer_build_dir }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
   tags:
     - tf-localsettings
 
@@ -60,10 +63,9 @@
   sudo: yes
   template:
     src: application.properties.j2
-    dest: "{{ code_home }}/submodules/formplayer/config/application.properties"
+    dest: "{{ formplayer_build_dir }}/application.properties"
     group: cchq
     owner: cchq
     mode: 0644
   tags:
     - tf-localsettings
-  when: formplayer_path.stat.exists

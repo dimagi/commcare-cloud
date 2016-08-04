@@ -34,25 +34,29 @@ fi
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
 
-alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass'
+alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
 alias aps='ap deploy_stack.yml'
-alias update-code='~/commcarehq-ansible/control/update_code.sh'
-alias update_code='~/commcarehq-ansible/control/update_code.sh'
+alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
+alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
+# It aint pretty, but it gets the job done
 function ansible-deploy-control() {
-  ANSIBLE_CONTROL_USER=`whoami` && sudo /home/$ANSIBLE_CONTROL_USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i inventories/localhost deploy_control.yml -e @../config/$ENV/$ENV.yml --diff
+    echo "You must be root to deploy the control machine"
+    echo "Run \`su\` to become the root user, then paste in this command to deploy:"
+    echo 'USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcarehq-ansible/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/production/production_vault.yml -e @$ANSIBLE_DIR/vars/production/production_public.yml --diff --ask-vault-pass'
 }
 
 function ansible-control-banner() {
     GREEN='\033[0;32m'
     BLUE='\033[0;34m'
+
     NC='\033[0m' # No Color
     printf "\n${GREEN}Welcome to Ansible Control\n\n"
     printf "${GREEN}Available commands:\n"
     printf "${BLUE}update-code${NC} - update the ansible repositories (safely)\n"
     printf "${BLUE}workon ansible${NC} - activate the ansible virtual env\n"
-    printf "${BLUE}ap${NC} - shortcut for ansible-playbook -u ansible -i ../../commcare-hq/fab/inventory/\$ENV -e \"@../config/\$ENV/\$ENV.yml\" --ask-sudo-pass\n"
-    printf "${BLUE}aps${NC} - same as ap deploy_stack.yml\n"
+    printf "${BLUE}ap${NC} - shortcut for running an ansible playbook e.g. \"${YELLOW}ENV=production ap deploy_db.yml --diff --check${NC}\". Run \"${YELLOW}type ap${NC}\" for the full command.\n"
+    printf "${BLUE}aps${NC} - same as \"${YELLOW}ap deploy_stack.yml${NC}\"\n"
     printf "${BLUE}ansible-deploy-control${NC} - deploy changes to users on this control machine\n"
 }
 

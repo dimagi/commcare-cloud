@@ -3,7 +3,7 @@
 #
 
 User_Alias HIPAA_USERS = {% for user in dev_users.present -%}
-{{ user.name }}
+{{ user }}
 {%- if not loop.last %}, {% endif %}
 {%- endfor %}
 

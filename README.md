@@ -17,7 +17,13 @@ Begin by checkout out the source for this repostiory:
 $ git clone https://github.com/dimagi/commcarehq-ansible
 ```
 
-Then, change directories into the new clone and set up submodules:
+Then install the git hooks:
+
+```
+./git-hooks/install.sh
+```
+
+Now you can change directories into the new clone and set up submodules:
 
 ```
 $ cd commcarehq-ansible
@@ -41,16 +47,16 @@ $ vagrant up
 
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-The `./reset-vms` command can be run at any time, possibly with a subset of the
+The `./scripts/reset-vms` command can be run at any time, possibly with a subset of the
 VM names, to reset the VMs to their initial state and provision them with your
-SSH key. Run `./reset-vms` without arguments for usage info.
+SSH key. Run `./scripts/reset-vms` without arguments for usage info.
 
 Once this is done, you may ssh into the control server and run a full deployment:
 
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/development -e '@vars/dev.yml' deploy_stack.yml
+$ ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
 
 This will build a database server, a proxy server and a single web worker,
@@ -78,7 +84,7 @@ The one other change needed is to point to the proper inventory. Instead of usin
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/monolith -e '@vars/dev.yml' deploy_stack.yml
+$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
 
 ### Email setup
@@ -110,11 +116,11 @@ For the Lenovo T440s:
 
 - Update localsettings:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml --tags=localsettings
+  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --tags=localsettings
   ```
 - Skip the common setup, including apt installs and updating the commcarehq code:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev.yml'  deploy_stack.yml --skip-tags=common
+  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --skip-tags=common
   ```
 
 Tags available:
@@ -133,16 +139,15 @@ Tags available:
 Note: to generate this list automatically, you can run something like
 
 ```bash
-ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@../config/india/india.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
+ENV=production && ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
 /g' | xargs -I% echo - %
 ```
 
 
 ### Setting up ansible control machine
 
-```bash
-ansible-playbook -u root -i inventories/localhost deploy_control.yml -e "@../config/$ENV/$ENV.yml" --ask-sudo-pass
-```
+This must be done as the root user.  Run `ansible-deploy-control` to get the
+proper command.
 
 ### Use your ssh key to authenticate
 
@@ -190,15 +195,17 @@ On subsequent logins if optional step was not done.
 . init-ansible
 ```
 
+Setup the vault password files as described below in [Managing secrets with Vault](#managing-secrets-with-vault)
+
 
 ### Simulate dev user setup on vagrant control machine
-
-Add a record for your user to `dev_users.present` in `ansible/var/dev.yml`.
+Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
+`ansible/vars/dev/users/{username}.pub`.
 
 Login with `vagrant ssh control`
 
 ```bash
-ansible-playbook -u root -i inventories/development deploy_control.yml -e @vars/dev.yml --diff
+ansible-playbook -u root -i inventories/development deploy_control.yml -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' --diff
 ```
 
 Login as your user: `vagrant ssh control -- -l $USER -A
@@ -211,4 +218,49 @@ echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
 # run ansible
 ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
   -e @vars/dev.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
+```
+
+### Managing secrets with Vault
+**IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
+
+All the secret variables and private data required for the different environments is included
+in this repository as encrypted files (`${ENV}_vault.yml`).
+
+To edit these files you need to provide them on the command line when prompted (keys stored in CommCare Keepass).
+
+To use these files with `ansible-playbook` include the `--ask-vault-pass` param.
+(This is included for your convenience in the `ap` and `aps` aliases.)
+
+#### Viewing / Editing encrypted files
+You can use Vault's built in editing capability as follows:
+
+```
+ENV=production ansible-vault edit ansible/vars/$ENV/${ENV}_vault.yml
+```
+
+This will decrypt the file for editing and re-encrypt it after. Note that even if no changes
+are made to the file the encrypted contents will have changed.
+
+If you just want to view the contents of the file you can use this command:
+
+```
+ENV=production ansible-vault view ansible/vars/$ENV/${ENV}_vault.yml
+```
+
+#### Encrypting / Decrypting files
+**CAUTION**: Make sure that you re-encrypt any files with the correct key before committing them.
+
+The following command can be used to encrypt and decrypt files:
+
+```
+ENV=production && ansible-vault [encrypt|decrypt] filename
+```
+
+For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
+
+### Running against Vagrant machines from localhost
+It is also possible to run tasks on the vagrant machines from you're local machine:
+
+```
+ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e "@vars/dev.yml" deploy_stack.yml
 ```
