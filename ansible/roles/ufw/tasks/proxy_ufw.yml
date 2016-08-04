@@ -16,15 +16,6 @@
     port: 22
     proto: any
   when: is_monolith
-
-- name: allow only private ssh traffic
-  ufw:
-    rule: allow
-    direction: in
-    port: 22
-    proto: any
-    interface: '{{ ufw_private_interface }}'
-  when: not is_monolith|bool
   
 - name: allow mosh traffic
   ufw:
@@ -34,12 +25,10 @@
     proto: udp
   when: is_monolith
 
-- name: allow only private mosh traffic
+- name: allow all traffic on private interface
   ufw:
     rule: allow
     direction: in
-    port: "60000:61000"
-    proto: udp
     interface: '{{ ufw_private_interface }}'
   when: not is_monolith|bool
   
