@@ -2,7 +2,7 @@
   hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
   sudo: yes
   vars_files:
-    - shared_dir/vars/main.yml
+    - roles/shared_dir/vars/main.yml
   tasks:
     - include: shared_dir/tasks/cleanup_client.yml
 
@@ -10,6 +10,6 @@
   hosts: shared_dir_host
   sudo: yes
   vars_files:
-    - shared_dir/vars/main.yml
+    - roles/shared_dir/vars/main.yml
   tasks:
     - include: shared_dir/tasks/cleanup_host.yml
