@@ -8,3 +8,11 @@
     state: unmounted
   tags:
     - nfs-cleanup
+
+- name: Remove old mount point
+  sudo: yes
+  file:
+    path: "{{ old_shared_mount_dir }}"
+    state: absent
+  tags:
+    - nfs-cleanup
