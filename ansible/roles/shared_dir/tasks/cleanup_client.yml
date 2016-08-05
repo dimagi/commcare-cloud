@@ -1,0 +1,18 @@
+- name: Unmount directory from /etc/fstab
+  sudo: yes
+  when: shared_drive_enabled
+  mount:
+    name: "{{ old_shared_mount_dir }}"
+    src: "{{ groups.shared_dir_host[0] }}:{{ old_shared_data_dir }}"
+    fstype: nfs
+    state: unmounted
+  tags:
+    - nfs-cleanup
+
+- name: Remove old mount point
+  sudo: yes
+  file:
+    path: "{{ old_shared_mount_dir }}"
+    state: absent
+  tags:
+    - nfs-cleanup

@@ -1,0 +1,15 @@
+- name: Cleanup shared dir clients
+  hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
+  sudo: yes
+  vars_files:
+    - roles/shared_dir/vars/main.yml
+  tasks:
+    - include: roles/shared_dir/tasks/cleanup_client.yml
+
+- name: Cleanup shared dir host
+  hosts: shared_dir_host
+  sudo: yes
+  vars_files:
+    - roles/shared_dir/vars/main.yml
+  tasks:
+    - include: roles/shared_dir/tasks/cleanup_host.yml
