@@ -104,19 +104,19 @@ def create_code_dir():
 @roles(ROLES_DB_ONLY)
 def record_successful_deploy():
     start_time = datetime.strptime(env.deploy_metadata.timestamp, DATE_FMT)
-    delta = start_time - datetime.utcnow()
+    delta = datetime.utcnow() - start_time
     with cd(env.code_current):
         env.deploy_metadata.tag_commit()
         sudo((
             '%(virtualenv_current)s/bin/python manage.py '
             'record_deploy_success --user "%(user)s" --environment '
-            '"%(environment)s" --url %(url)s --minutes %(minutes) --mail_admins'
+            '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
         ) % {
             'virtualenv_current': env.virtualenv_current,
             'user': env.captain_user or env.user,
             'environment': env.environment,
             'url': env.deploy_metadata.diff_url,
-            'minutes': delta.total_seconds() / 60
+            'minutes': str(int(delta.total_seconds() // 60))
         })
 
 
