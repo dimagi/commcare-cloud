@@ -124,6 +124,10 @@ BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_
 {% endif %}
 {% endif %}{# s3_blob_db_enabled #}
 
+{% if 'MOBILE_INTEGRATION_TEST_TOKEN' in localsettings %}
+MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN }}'
+{% endif %}
+
 ####### For Constructing Global URLs ########
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
