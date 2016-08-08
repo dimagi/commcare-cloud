@@ -16,7 +16,7 @@ cr='
 '
 for f in $(git diff --cached --name-only | grep -E $FILES_PATTERN)
 do
-  MATCH=`grep --invert-match --no-messages $REQUIRED $f | head -n1`
+  MATCH=`grep -L $REQUIRED $f | head -n 1`
   if [ -n "${MATCH// }" ] ; then
     UNENCRYPTED_FILES="$f$cr$UNENCRYPTED_FILES"
     EXIT_STATUS=1
