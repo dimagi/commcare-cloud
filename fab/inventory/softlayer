@@ -22,20 +22,20 @@
 [proxy1]
 10.162.36.208
 
-[riak0]
-10.162.36.231
+[riak5]
+10.162.36.225
 
-[riak1]
-10.162.36.234
+[riak6]
+10.162.36.202
 
-[riak2]
-10.162.36.198
+[riak7]
+10.162.36.211
 
-[riak3]
-10.162.36.200
+[riak8]
+10.162.36.244
 
-[riak4]
-10.162.36.253
+[riak9]
+10.162.36.235
 
 [touch0]
 10.162.36.215
@@ -82,14 +82,14 @@ es2
 db0
 
 [riakcs:children]
-riak0
-riak1
-riak2
-riak3
-riak4
+riak5
+riak6
+riak7
+riak8
+riak9
 
 [riakcs:vars]
 datavol_device=/dev/xvdc
 
 [stanchion:children]
-riak0
+riak5
