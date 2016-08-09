@@ -93,3 +93,30 @@
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
   tags:
     - es_restart
+
+- name: Create snapshot directory
+  sudo: yes
+  file:
+    path: "{{ es_snapshot_dir }}"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0755
+    state: directory
+  when: backup_es
+
+- name: Create initial snapshot
+  uri:
+    url: '{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
+    method: PUT
+    body: '{"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true" }}'
+
+- name: Copy es backup script
+  sudo: yes
+  template:
+    src: "create_es_snapshot.py.j2"
+    dest: "/etc/cron.daily/create_es_snapshot"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+  when: backup_es
