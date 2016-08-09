@@ -205,6 +205,7 @@ localsettings:
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: ''
   HQ_INSTANCE: 'india'
+  HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   HUBSPOT_API_ID: ''
   HUBSPOT_API_KEY: ''
   INACTIVITY_TIMEOUT: 20160
