@@ -78,6 +78,7 @@ keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: False
+backup_es: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 

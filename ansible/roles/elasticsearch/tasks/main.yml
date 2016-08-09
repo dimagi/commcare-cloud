@@ -109,6 +109,7 @@
     url: '{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
     body: '{"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true" }}'
+  when: backup_es
 
 - name: Copy es backup script
   sudo: yes
