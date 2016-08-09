@@ -94,16 +94,6 @@
   tags:
     - es_restart
 
-- name: Create snapshot directory
-  sudo: yes
-  file:
-    path: "{{ es_snapshot_dir }}"
-    owner: elasticsearch
-    group: elasticsearch
-    mode: 0755
-    state: directory
-  when: backup_es
-
 - name: Create initial snapshot
   uri:
     url: '{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
