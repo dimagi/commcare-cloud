@@ -12,7 +12,7 @@ def get_snapshot_client():
 
 def create_snapshot(client):
     today = date.today()
-    client.create('{{ es_repository_name }}', '{{ es_snapshot_name }}_{year}_{month}_{day}'.format(today.year, today.month, today.day))
+    client.create('{{ es_repository_name }}', '{{ es_repository_name }}_{year}_{month}_{day}'.format(today.year, today.month, today.day))
 
 
 def delete_old_snapshots(client):
