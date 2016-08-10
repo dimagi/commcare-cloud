@@ -254,6 +254,9 @@ def restart_all_except_webworkers():
 def restart_webworkers():
     _services_restart()
 
+@roles(ROLES_TOUCHFORMS)
+def restart_formplayer():
+    _services_restart()
 
 def _services_restart():
     """Stop and restart all supervisord services"""

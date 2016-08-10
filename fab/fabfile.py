@@ -357,6 +357,12 @@ def _confirm_translated():
 
 
 @task
+def deploy_formplayer():
+    execute(formplayer.build_formplayer, True)
+    execute(supervisor.restart_formplayer)
+
+
+@task
 def setup_release(keep_days=0):
     """
     Setup a release in the releases directory with the most recent code.
