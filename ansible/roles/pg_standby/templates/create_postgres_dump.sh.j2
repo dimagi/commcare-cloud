@@ -5,7 +5,7 @@ DAYS_TO_RETAIN_BACKUPS=$2
 TODAY=$(date +"%Y_%m_%d")
 DIRECTORY="{{ postgresql_backup_dir }}/postgres_${BACKUP_TYPE}_${TODAY}"
 pg_basebackup -D $DIRECTORY -Xs
-tar -cjf "${DIRECTORY}.tar.bz" $DIRECTORY
+tar -cjf "${DIRECTORY}.tar.bz" -C "${DIRECTORY}" .
 rm -rf $DIRECTORY
 
 # Remove old backups of this backup type
