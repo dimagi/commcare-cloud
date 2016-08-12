@@ -30,7 +30,6 @@ primary_ssl_env: "staging"
 dev_group: 'dimagidev'
 dev_users:
   present:
-    - ansible
     - biyeun
     - brudolph
     - cellowitz
