@@ -27,36 +27,6 @@ proxy_type: nginx
 
 primary_ssl_env: "staging"
 
-dev_group: 'dimagidev'
-dev_users:
-  present:
-    - biyeun
-    - brudolph
-    - cellowitz
-    - ctsims
-    - czue
-    - dmiller
-    - droberts
-    - esoergel
-    - frener
-    - gcapalbo
-    - jemord
-    - jschweers
-    - mkangia
-    - ncarnahan
-    - npellegrino
-    - nhooper
-    - skelly
-    - sravfeyn
-    - wpride
-    - cchq
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
-
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
