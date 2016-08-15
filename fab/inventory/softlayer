@@ -42,7 +42,6 @@
 
 [proxy:children]
 proxy0
-proxy1
 
 [cas_proxy:children]
 proxy1
