@@ -45,17 +45,17 @@
     hour: 0
     weekday: "1,2,3,4,5,6"
     user: postgres
-    cron_file: ../crontab
+    cron_file: backup_postgres
   when: backup_postgres
 
 - name: Create Weekly Cron job
   sudo: yes
   cron:
     name: "Backup postgres weekly"
-    job: "/etc/cron.d/create_postgres_dump.sh weekly 28"
+    job: "/etc/cron.d/create_postgres_dump.sh weekly 21"
     minute: 0
     hour: 0
     weekday: 0
     user: postgres
-    cron_file: ../crontab
+    cron_file: backup_postgres
   when: backup_postgres
