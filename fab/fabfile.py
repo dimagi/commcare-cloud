@@ -427,7 +427,6 @@ def _deploy_without_asking():
         # Compute version statics while waiting for preindex
         staticfiles.prime_version_static,
         db.ensure_preindex_completion,
-        # handle static files
         db.ensure_checkpoints_safe,
         staticfiles.version_static,
         staticfiles.bower_install,
