@@ -42,6 +42,15 @@ def ensure_preindex_completion():
 
 
 @roles(ROLES_DB_ONLY)
+def ensure_checkpoints_safe():
+    extras = '--print-only' if env.force else ''
+    with cd(env.code_root):
+        sudo('{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
+            env=env, extras=extras
+        ))
+
+
+@roles(ROLES_DB_ONLY)
 def _is_preindex_complete():
     with settings(warn_only=True):
         return sudo(

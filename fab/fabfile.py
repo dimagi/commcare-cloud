@@ -87,6 +87,11 @@ if not hasattr(env, 'code_branch'):
            "You can set it with '--set code_branch=<branch>'")
     env.code_branch = 'master'
 
+
+if not hasattr(env, 'force'):
+    env.force = False  # --set force=true to override blocking warnings (e.g. stale pillow checkpoints)
+
+
 env.roledefs = {
     'django_celery': [],
     'django_app': [],
@@ -422,6 +427,7 @@ def _deploy_without_asking():
         staticfiles.prime_version_static,
         db.ensure_preindex_completion,
         # handle static files
+        db.ensure_checkpoints_safe,
         staticfiles.version_static,
         staticfiles.bower_install,
         staticfiles.npm_install,
