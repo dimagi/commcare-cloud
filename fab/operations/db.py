@@ -45,9 +45,21 @@ def ensure_preindex_completion():
 def ensure_checkpoints_safe():
     extras = '--print-only' if env.force else ''
     with cd(env.code_root):
-        sudo('{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
-            env=env, extras=extras
-        ))
+        try:
+            sudo('{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
+                env=env, extras=extras
+            ))
+        except Exception as e:
+            if not env.force:
+                message = (
+                    "Deploy failed, likely because kafka checkpoints weren't avaialable.\n"
+                    "Scroll up for more detailed information.\n"
+                    "You can rerun with --force=true to prevent this error from blocking the deploy."
+                ).format(e)
+                raise Exception(message)
+            else:
+                # if we were forcing and still got an error this is likely a bug so we should raise it
+                raise
 
 
 @roles(ROLES_DB_ONLY)
