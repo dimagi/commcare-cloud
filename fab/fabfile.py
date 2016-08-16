@@ -207,6 +207,7 @@ def staging():
         print ("using default branch of autostaging. you can override this "
                "with --set code_branch=<branch>")
 
+    env.force = True  # don't worry about kafka checkpoints on staging
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'staging')
     load_env('staging')
     execute(env_common)
