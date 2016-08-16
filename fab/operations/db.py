@@ -52,7 +52,7 @@ def ensure_checkpoints_safe():
         except Exception as e:
             if not env.force:
                 message = (
-                    "Deploy failed, likely because kafka checkpoints weren't avaialable.\n"
+                    "Deploy failed, likely because kafka checkpoints weren't available.\n"
                     "Scroll up for more detailed information.\n"
                     "You can rerun with --force=true to prevent this error from blocking the deploy."
                 ).format(e)
