@@ -175,8 +175,8 @@ localsettings:
   GOOGLE_ANALYTICS_API_ID: ''
   HQ_INSTANCE: 'india'
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
-  HUBSPOT_API_ID: ''
-  HUBSPOT_API_KEY: ''
+  HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
+  HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
