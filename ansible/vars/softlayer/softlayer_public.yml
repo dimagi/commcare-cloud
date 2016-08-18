@@ -172,7 +172,7 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: ''
+  GOOGLE_ANALYTICS_API_ID: '{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}'
   HQ_INSTANCE: 'india'
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
