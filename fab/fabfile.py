@@ -455,7 +455,7 @@ def _deploy_without_asking():
     except Exception:
         execute_with_timing(
             mail_admins,
-            "Deploy to {} failed".format(env.environment),
+            "Deploy to {environment} failed. Try resuming with `fab {environment} deploy:resume=yes`.".format(environment=env.environment),
             traceback_string()
         )
         # hopefully bring the server back to life
