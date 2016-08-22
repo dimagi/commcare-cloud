@@ -96,7 +96,7 @@ softlayer:
       reminder_queue:
         concurrency: 8
       reminder_rule_queue:
-        concurrency: 4
+        concurrency: 1
       saved_exports_queue:
         concurrency: 3
       sms_queue:
@@ -136,7 +136,7 @@ production:
       reminder_queue:
         concurrency: 8
       reminder_rule_queue:
-        concurrency: 4
+        concurrency: 1
       saved_exports_queue:
         concurrency: 3
       sms_queue:
@@ -188,7 +188,7 @@ zambia:
       reminder_queue:
         concurrency: 4
       reminder_rule_queue:
-        concurrency: 4
+        concurrency: 1
       saved_exports_queue:
         concurrency: 3
       sms_queue:
