@@ -17,7 +17,7 @@
 - name: Ensure challenge response access is disallowed
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regex: "^ChallengeResponseAuthentication"
+    regexp: "^ChallengeResponseAuthentication"
     line: "ChallengeResponseAuthentication no"
     state: absent
   notify: Restart ssh
