@@ -25,6 +25,7 @@ softlayer:
         concurrency: 4
       periodic:
         concurrency: 4
+        server_whitelist: 10.162.36.233
       pillow_retry_queue:
         concurrency: 1
       reminder_case_update_queue:
@@ -57,6 +58,7 @@ production:
       background_queue:
         concurrency: 4
       periodic:
+        server_whitelist: hqcelery0.internal-va.commcarehq.org
         concurrency: 4
       pillow_retry_queue:
         concurrency: 1
@@ -119,6 +121,7 @@ swiss:
         concurrency: 1
       periodic:
         concurrency: 1
+        server_whitelist: swiss.commcarehq.org
       repeat_record_queue:
         concurrency: 1
       email_queue:
