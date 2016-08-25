@@ -14,70 +14,6 @@ base:
   formplayer_memory: "3584m"
   keepalive: 60
 
-development:
-
-  # parameters for configuring the celery worker processes
-  celery_processes:
-    '*':
-      main:
-        concurrency: 1
-      background_queue:
-        concurrency: 1
-      periodic:
-        concurrency: 1
-      pillow_retry_queue:
-        concurrency: 1
-      reminder_case_update_queue:
-        concurrency: 1
-      reminder_queue:
-        concurrency: 1
-      reminder_rule_queue:
-        concurrency: 1
-      saved_exports_queue:
-        concurrency: 1
-      sms_queue:
-        concurrency: 1
-      ucr_queue:
-        concurrency: 1
-      email_queue:
-        concurrency: 1
-      async_restore_queue:
-        concurrency: 4
-      logistics_reminder_queue:
-        concurrency: 1
-      logistics_background_queue:
-        concurrency: 1
-      flower: {}
-
-india:
-  environment: india
-
-  celery_processes:
-    '*':
-      main:
-        concurrency: 8
-      background_queue:
-        concurrency: 4
-      periodic:
-        concurrency: 4
-      pillow_retry_queue:
-        concurrency: 1
-      reminder_case_update_queue:
-        concurrency: 4
-      reminder_queue:
-        concurrency: 8
-      reminder_rule_queue:
-        concurrency: 4
-      saved_exports_queue:
-        concurrency: 3
-      sms_queue:
-        concurrency: 8
-      ucr_queue:
-        concurrency: 4
-      email_queue:
-        concurrency: 2
-      flower: {}
-
 softlayer:
   environment: softlayer
 
@@ -165,39 +101,6 @@ staging:
       ucr_queue:
         concurrency: 1
       email_queue:
-        concurrency: 1
-      async_restore_queue:
-        concurrency: 1
-      flower: {}
-
-zambia:
-  environment: zambia
-
-  celery_processes:
-    '*':
-      main:
-        concurrency: 4
-      background_queue:
-        concurrency: 2
-      periodic:
-        concurrency: 4
-      pillow_retry_queue:
-        concurrency: 1
-      reminder_case_update_queue:
-        concurrency: 4
-      reminder_queue:
-        concurrency: 4
-      reminder_rule_queue:
-        concurrency: 1
-      saved_exports_queue:
-        concurrency: 3
-      sms_queue:
-        concurrency: 4
-      ucr_queue:
-        concurrency: 2
-      email_queue:
-        concurrency: 2
-      repeat_record_queue:
         concurrency: 1
       async_restore_queue:
         concurrency: 1
