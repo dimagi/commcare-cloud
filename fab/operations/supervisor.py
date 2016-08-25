@@ -19,6 +19,7 @@ from ..const import (
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
 )
+from fabric import utils
 from ..utils import execute_with_timing, get_pillow_env_config
 
 
@@ -72,12 +73,39 @@ def set_celery_supervisorconf():
         'logistics_background_queue':   ['supervisor_celery_logistics_background_queue.conf'],
         'async_restore_queue':          ['supervisor_celery_async_restore_queue.conf'],
         'flower':                       ['supervisor_celery_flower.conf'],
-        }
+    }
 
     queues = _get_celery_queues()
+    if 'periodic' in queues and env.host != queues['periodic'].get('server_whitelist'):
+        show_periodic_server_whitelist_message_and_abort(env)
     for queue, params in queues.items():
         for config_file in conf_files[queue]:
             _rebuild_supervisor_conf_file('make_supervisor_conf', config_file, {'celery_params': params})
+
+
+def show_periodic_server_whitelist_message_and_abort(env):
+    utils.abort(
+        "\n\n"
+        "You're seeing this message as part of an effort to reduce the chance of\n"
+        "deploying celery beat, which sends SMSes, fires off reminders,\n"
+        "and triggers forwarders, among other things, unintentionally.\n\n"
+        "For example, during a migration, you initially want to deploy everything\n"
+        "except for celery beat, because you don't want both the old and new servers\n"
+        "running celery beat; that screws up queuing, etc.\n\n"
+        "If you...\n\n"
+        '1. are really glad we caught this for you, just remove (or comment out)\n'
+        '   {environment}.celery_processes.{hostname}.periodic\n'
+        '   from fab/environments.yml\n'
+        "2. know what you're doing and want to deploy celery beat to {environment}\n"
+        "   set {environment}.celery_processes.{hostname}.periodic.server_whitelist\n"
+        '   to {host}\n'
+        '   in fab/environments.yml\n'
+        "3. are really confused, find someone who might know more about this\n"
+        "   and ask them."
+        .format(environment=env.environment,
+                hostname=env.get('host_string').split('.')[0],
+                host=env.host)
+        )
 
 
 @roles(ROLES_PILLOWTOP)
