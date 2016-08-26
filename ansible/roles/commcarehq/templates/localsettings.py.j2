@@ -131,7 +131,13 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 
 ####### For Constructing Global URLs ########
 
-LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+LOCAL_APPS = (
+    'dimagi.utils',
+    'gunicorn',
+    {% for app in localsettings.get('LOCAL_APPS', []) %}
+        '{{ app }}',
+    {% endfor %}
+)
 
 BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
