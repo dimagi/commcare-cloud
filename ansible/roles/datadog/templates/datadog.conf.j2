@@ -6,7 +6,9 @@
 [Main]
 dd_url: https://app.datadoghq.com
 api_key: {{ DATADOG_API_KEY }}
-tags: environment:{{ deploy_env }}
+tags: {% for group, group_hosts in groups.items() -%}
+    {%- if inventory_hostname in group_hosts %}group:{{ group }}, {% endif -%}
+{%- endfor %} environment:{{ deploy_env }}
 
 # use unique hostname for GCE hosts, see http://dtdg.co/1eAynZk
 gce_updated_hostname: yes
