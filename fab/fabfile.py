@@ -168,6 +168,7 @@ def tsung():
 def swiss():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'swiss')
     load_env('swiss')
+    env.force = True  # don't worry about kafka checkpoints on swiss
     execute(env_common)
 
 
