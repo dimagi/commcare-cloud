@@ -95,6 +95,8 @@ postgresql_dbs:
     name: commcarehq_p5
     shards: [820, 1023]
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
+    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
   - name: "{{ formplayer_db_name }}"
   - name: commcarehq_icds_testdata
 
@@ -177,6 +179,8 @@ localsettings:
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
   HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
+  ICDS_UCR_DATABASE_ALIAS: icds-ucr
+  ICDS_UCR_DATABASE_NAME: icds-ucr
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
