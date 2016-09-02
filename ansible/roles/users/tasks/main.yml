@@ -13,7 +13,6 @@
   sudo: yes
   authorized_key: user={{ item }} state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
-  when: item != 'ansible'
 
 - name: Remove dev users
   sudo: yes
@@ -41,6 +40,10 @@
   with_together:
     - dev_users.absent
     - absent_user_keys.results
+
+- name: De-authorize ansible pubkey
+  sudo: yes
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/ansible.pub') }}"
 
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'

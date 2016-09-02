@@ -191,12 +191,13 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
                 # number of seconds; 0 disables
 
 {% if hot_standby_server|default(None) %}
-wal_level = hot_standby
 archive_mode = on
 archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
 
-max_wal_senders = 3
 {% endif %}
+
+wal_level = hot_standby
+max_wal_senders = 3
 
 #------------------------------------------------------------------------------
 # REPLICATION

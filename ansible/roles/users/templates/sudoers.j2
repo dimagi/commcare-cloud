@@ -2,7 +2,7 @@
 # {{ ansible_managed }}
 #
 
-User_Alias HIPAA_USERS = {% for user in dev_users.present -%}
+User_Alias HIPAA_USERS = ansible, {% for user in dev_users.present -%}
 {{ user }}
 {%- if not loop.last %}, {% endif %}
 {%- endfor %}

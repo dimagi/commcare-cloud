@@ -27,37 +27,6 @@ proxy_type: 'nginx'
 
 primary_ssl_env: "softlayer"
 
-dev_group: 'dimagidev'
-dev_users:
-  present:
-    - ansible
-    - biyeun
-    - brudolph
-    - cellowitz
-    - ctsims
-    - czue
-    - dmiller
-    - droberts
-    - esoergel
-    - frener
-    - gcapalbo
-    - jemord
-    - jschweers
-    - mkangia
-    - ncarnahan
-    - npellegrino
-    - nhooper
-    - skelly
-    - sravfeyn
-    - wpride
-    - cchq
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
-
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
@@ -81,7 +50,7 @@ nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.c
 icds_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
 icds_key_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
 
-cas_nginx_combined_cert_file: 'vars/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
+cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
 cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
 
 supervisor_http_enabled: True
@@ -127,6 +96,8 @@ postgresql_dbs:
     name: commcarehq_p5
     shards: [820, 1023]
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
+    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
   - name: "{{ formplayer_db_name }}"
   - name: commcarehq_icds_testdata
 
@@ -204,10 +175,13 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: ''
+  GOOGLE_ANALYTICS_API_ID: '{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}'
   HQ_INSTANCE: 'india'
-  HUBSPOT_API_ID: ''
-  HUBSPOT_API_KEY: ''
+  HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
+  HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
+  HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
+  ICDS_UCR_DATABASE_ALIAS: icds-ucr
+  ICDS_UCR_DATABASE_NAME: icds-ucr
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."

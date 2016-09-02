@@ -52,6 +52,10 @@ PARTITION_DATABASE_CONFIG = {
 UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}:{{localsettings.get('PG_DATABASE_PORT')}}/{{ localsettings.UCR_DATABASE_NAME }}"
 {% endif %}
 
+{% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
+ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
+{% endif %}
+
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 
 LOG_HOME = '{{ log_home }}'
@@ -62,6 +66,7 @@ ANALYTICS_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME
 DATADOG_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
 FORMPLAYER_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
 FORMPLAYER_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
+EXPORT_MIGRATION_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-export_migration.log")
 
 # Email setup
 # email settings: these ones are the custom hq ones
@@ -341,7 +346,7 @@ INTERNAL_DATA = {
     "services": ["Basic", "Plus", "Full", "Custom", "Active Data Management", "Daily Contract", "Call Center"],
     "account_types": [	"Academic", "Alliance", "Competitor", "Funder", "Implementer - Local", "Implementer - Multinational",
                           "Investor", "Networking", "Other", "Partner", "Pharmaceutical", "Reseller", "Technology"],
-    "initiatives": ["CORE Group POC", "DIV 1 POC", "DIV 2 POC", "Senegal POC", "Workshop"],
+    "initiatives": ["CORE Group POC", "DIV 1 POC", "DIV 2 POC", "Senegal POC", "Workshop", "Partner Program Sandbox"],
     "contract_type": ["FFP", "T&M", "Cost Plus"],
     "area": [
         {
