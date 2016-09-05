@@ -5,7 +5,7 @@
 {% for balancer in item.server.get('balancers', []) %}
 upstream {{ balancer.name }} {
   {% if balancer.get('method') %}
-  {{ balancer.method }}
+  {{ balancer.method }};
   {% else %}
   least_conn;
   {% endif %}
