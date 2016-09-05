@@ -49,13 +49,16 @@
 
 - name: Formplayer build dir
   file:
-    path: "{{ formplayer_build_dir }}"
+    path: "{{ item }}"
     state: directory
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0755
   tags:
     - tf-localsettings
+  items:
+    - "{{ formplayer_build_dir }}"
+    - "{{ encrypted_root }}/formplayer"
 
 #- include_vars: "supervisor_tasks.yml"
 #- include: ../../supervisor/tasks/supervised_tasks.yml
