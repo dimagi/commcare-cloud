@@ -37,6 +37,9 @@ hqpillowtop0.internal-va.commcarehq.org
 [touchforms]
 hqtouch0.internal-va.commcarehq.org
 
+[formplayer]
+hqtouch0.internal-va.commcarehq.org
+
 [redis]
 hqdb0.internal-va.commcarehq.org
 

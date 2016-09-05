@@ -26,6 +26,9 @@ hqdb1-staging.internal-va.commcarehq.org
 [touchforms]
 hqtouch0-staging.internal-va.commcarehq.org
 
+[formplayer]
+hqtouch0-staging.internal-va.commcarehq.org
+
 [redis]
 hqdb1-staging.internal-va.commcarehq.org
 

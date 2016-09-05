@@ -71,6 +71,9 @@ pillow0
 [touchforms:children]
 touch0
 
+[formplayer:children]
+touch0
+
 [redis:children]
 db0
 
