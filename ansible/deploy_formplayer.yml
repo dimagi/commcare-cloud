@@ -1,0 +1,7 @@
+---
+- name: Formplayer
+  hosts: formplayer
+  sudo: yes
+  roles:
+    - {role: formplayer, tags: formplayer}
+

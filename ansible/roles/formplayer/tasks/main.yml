@@ -1,0 +1,30 @@
+- name: Install formplayer packages
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - sqlite3
+    - libsqlite3-dev
+
+- name: Formplayer build dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+  tags:
+    - fp-localsettings
+  with_items:
+    - "{{ formplayer_build_dir }}"
+    - "{{ formplayer_data_dir }}"
+
+- name: Copy Spring application.properties
+  sudo: yes
+  template:
+    src: application.properties.j2
+    dest: "{{ formplayer_build_dir }}/application.properties"
+    group: cchq
+    owner: cchq
+    mode: 0644
+  tags:
+    - fp-localsettings
