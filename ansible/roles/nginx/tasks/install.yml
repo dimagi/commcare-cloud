@@ -39,7 +39,7 @@
   sudo: yes
   file:
     path: /etc/nginx/sites-available
-    owner: "root"
+    owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: "u=rwx,g=rwx,o=r"
     state: directory
