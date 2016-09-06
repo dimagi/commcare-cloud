@@ -3,6 +3,7 @@ import json
 import yaml
 import time
 import posixpath
+from contextlib import contextmanager
 
 from ansible.inventory import InventoryParser
 from fabric.api import roles, parallel, env, sudo, serial, execute
@@ -304,13 +305,23 @@ def _check_and_reload_nginx():
     sudo('nginx -s reload', shell=False, user='root')
 
 
+@contextmanager
+def decommissioned_host(host):
+    is_monolith = len(env.roledefs['django_app']) > 1
+    if is_monolith:
+        execute(_decommission_host, host)
+
+    yield
+
+    if is_monolith:
+        execute(_recommission_host, host)
+
+
 @roles(ROLES_DJANGO)
 @serial
 def restart_webworkers():
-    host = env.host
-    execute(_decommission_host, host)
-    _services_restart()
-    execute(_recommission_host, host)
+    with decommissioned_host(env.host):
+        _services_restart()
 
 
 @roles(ROLES_TOUCHFORMS)
