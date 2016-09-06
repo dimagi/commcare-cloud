@@ -2,6 +2,7 @@ commcarehq.host=https://{{ SITE_HOST }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
 logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
+sqlite.dataDir={{ formplayer_data_dir }}/
 
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
