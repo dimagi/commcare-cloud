@@ -398,6 +398,9 @@ def setup_release(keep_days=0):
     if keep_days > 0:
         execute_with_timing(release.mark_keep_until, keep_days)
 
+    print blue("Your private release is located here: ")
+    print blue(env.code_root)
+
 
 def conditionally_stop_pillows_and_celery_during_migrate():
     """
