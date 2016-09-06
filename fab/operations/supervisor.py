@@ -5,9 +5,10 @@ import time
 import posixpath
 
 from ansible.inventory import InventoryParser
-from fabric.api import roles, parallel, env, sudo, serial
+from fabric.api import roles, parallel, env, sudo, serial, execute
+from fabric.colors import red
 from fabric.context_managers import cd
-from fabric.cotrib import files
+from fabric.contrib import files
 
 from ..const import (
     ROLES_CELERY,
@@ -282,9 +283,10 @@ def restart_all_except_webworkers():
 def _decommission_host(host):
     files.comment(
         '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
-        host,
+        '^[ ]*server {}'.format(host),
+        use_sudo=True,
     )
-    sudo('nginx -s reload')
+    _check_and_reload_nginx()
 
 
 @roles(ROLES_STATIC)
@@ -292,17 +294,23 @@ def _recommission_host(host):
     files.uncomment(
         '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
         host,
+        use_sudo=True,
     )
-    sudo('nginx -s reload')
+    _check_and_reload_nginx()
+
+
+def _check_and_reload_nginx():
+    sudo('nginx -t', shell=False, user='root')
+    sudo('nginx -s reload', shell=False, user='root')
 
 
 @roles(ROLES_DJANGO)
 @serial
 def restart_webworkers():
     host = env.host
-    _decommission_host(host)
+    execute(_decommission_host, host)
     _services_restart()
-    _recommission_host(host)
+    execute(_recommission_host, host)
 
 
 @roles(ROLES_TOUCHFORMS)
