@@ -10,7 +10,7 @@
     dest: /etc/nginx/sites-available/{{ item.server.file_name }}
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
-    mode: "u=rwx,g=rwx,o=r"
+    mode: "u=rw,g=rw,o=r"
   with_items: nginx_sites
 
 - name: Create the links to enable site configurations
