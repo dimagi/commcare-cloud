@@ -13,6 +13,7 @@ from ..const import (
     ROLES_DB_ONLY,
     RELEASE_RECORD,
     ROLES_TOUCHFORMS,
+    ROLES_FORMPLAYER,
     ROLES_STATIC,
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
@@ -207,7 +208,7 @@ def copy_tf_localsettings():
 
 
 @parallel
-@roles(ROLES_TOUCHFORMS)
+@roles(ROLES_FORMPLAYER)
 def copy_formplayer_properties():
     sudo('mkdir -p {}'.format(os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)))
     sudo(

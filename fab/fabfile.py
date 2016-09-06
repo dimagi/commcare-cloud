@@ -43,7 +43,6 @@ from const import (
     ROLES_CELERY,
     ROLES_PILLOWTOP,
     ROLES_DJANGO,
-    ROLES_TOUCHFORMS,
     ROLES_STATIC,
     ROLES_SMS_QUEUE,
     ROLES_REMINDER_QUEUE,
@@ -257,6 +256,7 @@ def env_common():
     webworkers = servers['webworkers']
     postgresql = servers['postgresql']
     touchforms = servers['touchforms']
+    formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']
     rabbitmq = servers['rabbitmq']
@@ -275,6 +275,7 @@ def env_common():
         'django_app': webworkers,
         'django_pillowtop': pillowtop,
         'formsplayer': touchforms,
+        'formplayer': formplayer,
         'staticfiles': proxy,
         'lb': [],
         # having deploy here makes it so that

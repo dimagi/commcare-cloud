@@ -3,10 +3,10 @@ import os
 from fabric.api import roles, env, sudo
 from fabric.contrib import files
 
-from ..const import ROLES_TOUCHFORMS, FORMPLAYER_BUILD_DIR
+from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR
 
 
-@roles(ROLES_TOUCHFORMS)
+@roles(ROLES_FORMPLAYER)
 def build_formplayer(use_current_release=False):
     code_dir = env.code_root if not use_current_release else env.code_current
     build_dir = os.path.join(code_dir, FORMPLAYER_BUILD_DIR)

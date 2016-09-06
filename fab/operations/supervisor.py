@@ -12,6 +12,7 @@ from ..const import (
     ROLES_CELERY,
     ROLES_DJANGO,
     ROLES_TOUCHFORMS,
+    ROLES_FORMPLAYER,
     ROLES_SMS_QUEUE,
     ROLES_REMINDER_QUEUE,
     ROLES_PILLOW_RETRY_QUEUE,
@@ -145,7 +146,7 @@ def set_formsplayer_supervisorconf():
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
 
 
-@roles(ROLES_TOUCHFORMS)
+@roles(ROLES_FORMPLAYER)
 def set_formplayer_spring_supervisorconf():
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
 
@@ -282,9 +283,11 @@ def restart_all_except_webworkers():
 def restart_webworkers():
     _services_restart()
 
-@roles(ROLES_TOUCHFORMS)
+
+@roles(ROLES_FORMPLAYER)
 def restart_formplayer():
     _services_restart()
+
 
 def _services_restart():
     """Stop and restart all supervisord services"""
