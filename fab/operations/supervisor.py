@@ -3,10 +3,13 @@ import json
 import yaml
 import time
 import posixpath
+from contextlib import contextmanager
 
 from ansible.inventory import InventoryParser
-from fabric.api import roles, parallel, env, sudo, serial
+from fabric.api import roles, parallel, env, sudo, serial, execute
+from fabric.colors import red
 from fabric.context_managers import cd
+from fabric.contrib import files
 
 from ..const import (
     ROLES_CELERY,
@@ -278,10 +281,49 @@ def restart_all_except_webworkers():
     _services_restart()
 
 
+@roles(ROLES_STATIC)
+def _decommission_host(host):
+    files.comment(
+        '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
+        '^[ ]*server[ ]+{}'.format(host),
+        use_sudo=True,
+    )
+    _check_and_reload_nginx()
+
+
+@roles(ROLES_STATIC)
+def _recommission_host(host):
+    files.uncomment(
+        '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
+        'server[ ]+{}'.format(host),
+        use_sudo=True,
+    )
+    _check_and_reload_nginx()
+
+
+def _check_and_reload_nginx():
+    sudo('nginx -t', shell=False, user='root')
+    sudo('nginx -s reload', shell=False, user='root')
+
+
+@contextmanager
+def decommissioned_host(host):
+    not_monolith = len(env.roledefs['django_app']) > 1
+    if not_monolith:
+        execute(_decommission_host, host)
+
+    yield
+
+    if not_monolith:
+        execute(_recommission_host, host)
+
+
 @roles(ROLES_DJANGO)
 @serial
 def restart_webworkers():
-    _services_restart()
+    with decommissioned_host(env.host):
+        _services_restart()
+
 
 
 @roles(ROLES_FORMPLAYER)
