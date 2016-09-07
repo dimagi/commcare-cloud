@@ -284,7 +284,7 @@ def restart_all_except_webworkers():
 def _decommission_host(host):
     files.comment(
         '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
-        '^[ ]*server {}'.format(host),
+        '^[ ]*server[ ]+{}'.format(host),
         use_sudo=True,
     )
     _check_and_reload_nginx()
@@ -294,7 +294,7 @@ def _decommission_host(host):
 def _recommission_host(host):
     files.uncomment(
         '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
-        host,
+        'server[ ]+{}'.format(host),
         use_sudo=True,
     )
     _check_and_reload_nginx()
