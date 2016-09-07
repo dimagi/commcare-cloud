@@ -58,6 +58,6 @@ script.engine.groovy.inline.search: true
 
 cloud:
   aws:
-    access_key: "{{ AMAZON_S3_ACCESS_KEY }}"
-    secret_key: "{{ AMAZON_S3_SECRET_KEY }}"
+    access_key: "{{ localsettings.AMAZON_S3_ACCESS_KEY }}"
+    secret_key: "{{ localsettings.AMAZON_S3_SECRET_KEY }}"
     region: "us-east"

@@ -58,7 +58,7 @@ keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: False
-backup_es: False
+backup_es: True
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
@@ -187,6 +187,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
+  AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"

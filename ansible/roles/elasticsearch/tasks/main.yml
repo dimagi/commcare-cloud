@@ -77,6 +77,15 @@
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
 
+- name: Check for installed plugins
+  shell: "{{ elasticsearch_home }}/bin/plugin --list"
+  register: installed_plugins
+
+- name: Install elasticsearch aws plugin
+  sudo: yes
+  shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
+  when: "'cloud-aws' not in installed_plugins.stdout"
+
 - name: Reload upstart
   sudo: yes
   shell: initctl reload-configuration
@@ -96,18 +105,28 @@
 
 - name: Create initial snapshot
   uri:
-    url: '{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
+    url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
-    body: '{"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true" }}'
-  when: backup_es
+    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true" }}'
+  when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"
 
 - name: Copy es backup script
   sudo: yes
   template:
     src: "create_es_snapshot.py.j2"
-    dest: "/etc/cron.daily/create_es_snapshot"
+    dest: "/etc/cron.d/create_es_snapshot.py"
     group: root
     owner: root
     mode: 0700
     backup: yes
-  when: backup_es
+  when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"
+
+- name: Create es backup cron job
+  sudo: yes
+  cron:
+    name: "Daily ES Snapshot"
+    job: "/etc/cron.d/create_es_snapshot.py"
+    special_time: daily
+    user: root
+    cron_file: create_es_snapshot
+  when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"

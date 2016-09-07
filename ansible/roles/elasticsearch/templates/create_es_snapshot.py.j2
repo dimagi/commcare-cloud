@@ -1,26 +1,27 @@
-#!{{ virtualenv_home }}/python
+#!/usr/bin/python
 from elasticsearch import Elasticsearch
 from elasticsearch.client import SnapshotClient
-from datetime import datetime
+from datetime import datetime, date
 from datetime import timedelta
 
+
 def get_snapshot_client():
-    es = Elasticsearch('{{ groups.elasticsearch.0 }}')
+    es = Elasticsearch('{{ groups.elasticsearch.0 }}', timeout=60)
     snapshot_client = SnapshotClient(es)
     return snapshot_client
 
 
 def create_snapshot(client):
     today = date.today()
-    client.create('{{ es_repository_name }}', '{{ es_repository_name }}_{year}_{month}_{day}'.format(today.year, today.month, today.day))
+    client.create('{{ es_repository_name }}', '{{ es_repository_name }}_{year}_{month}_{day}'.format(year=today.year, month=today.month, day=today.day))
 
 
 def delete_old_snapshots(client):
-    snaps = client.get('es_snapshot', '_all')
+    snaps = client.get('{{ es_repository_name }}', '_all')
     three_days_ago = (datetime.utcnow() - timedelta(days=3)).isoformat()
     old_snapshots = [s['snapshot'] for s in snaps['snapshots'] if s['start_time'] < three_days_ago]
     for snap in old_snapshots:
-        client.delete('es_snapshot', snap)
+        client.delete('{{ es_repository_name }}', snap)
 
 
 def main():
