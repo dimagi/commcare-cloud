@@ -307,13 +307,13 @@ def _check_and_reload_nginx():
 
 @contextmanager
 def decommissioned_host(host):
-    is_monolith = len(env.roledefs['django_app']) > 1
-    if is_monolith:
+    not_monolith = len(env.roledefs['django_app']) > 1
+    if not_monolith:
         execute(_decommission_host, host)
 
     yield
 
-    if is_monolith:
+    if not_monolith:
         execute(_recommission_host, host)
 
 
