@@ -6,7 +6,7 @@ nginx_sites:
       hosts: webworkers
       port: "{{ django_port }}"
     - name: "{{ deploy_env }}_formplayer"
-      hosts: touchforms
+      hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    file_name: "{{ deploy_env }}_commcare"

@@ -18,3 +18,4 @@
 - include: deploy_shared_dir.yml
 - include: deploy_webworker.yml
 - include: deploy_touchforms.yml
+- include: deploy_formplayer.yml
