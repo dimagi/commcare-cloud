@@ -4,6 +4,12 @@ user.suffix=commcarehq.org
 logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
 sqlite.dataDir={{ formplayer_data_dir }}/
 
+couch.username={{ localsettings.COUCH_USERNAME }}
+couch.password={{ localsettings.COUCH_PASSWORD }}
+couch.protocol=https
+couch.host={{ localsettings.COUCH_SERVER_ROOT }}
+couch.port=5984
+
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
 datasource.hq.url=jdbc:postgresql://{{ groups.postgresql.0 }}:6432/commcarehq?prepareThreshold=0
