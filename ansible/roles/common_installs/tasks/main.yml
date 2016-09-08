@@ -95,6 +95,13 @@
     - fabric
     - virtualenv
     - sh
+    - httplib2
+
+- name: Install elasticsearch python client
+  sudo: yes
+  pip: 
+    name: elasticsearch
+    version: 1.9.0
 
 - name: Install virtualenv-clone
   sudo: yes

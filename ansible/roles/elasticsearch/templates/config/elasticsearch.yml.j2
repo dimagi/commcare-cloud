@@ -55,3 +55,9 @@ index.search.slowlog.threshold.query.trace: 500ms
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
+
+cloud:
+  aws:
+    access_key: "{{ localsettings.AMAZON_S3_ACCESS_KEY }}"
+    secret_key: "{{ localsettings.AMAZON_S3_SECRET_KEY }}"
+    region: "us-east"
