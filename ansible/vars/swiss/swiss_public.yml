@@ -115,8 +115,9 @@ localsettings:
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
   COUCH_HTTPS: false
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "185.12.7.167:5984"
+  COUCH_SERVER_ROOT: "185.12.7.167"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_PORT: 5984
 # swiss is not hosted by Cloudant
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"

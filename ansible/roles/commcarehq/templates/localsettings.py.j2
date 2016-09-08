@@ -84,7 +84,7 @@ XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 #CLOUDANT SETUP
 COUCH_USERNAME = '{{ localsettings.COUCH_USERNAME }}'
 COUCH_PASSWORD = '{{ localsettings.COUCH_PASSWORD }}'
-COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}'
+COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}:{{ localsettings.COUCH_PORT }}'
 COUCH_DATABASE_NAME = '{{ localsettings.COUCH_DATABASE_NAME }}'
 COUCH_HTTPS = {{ localsettings.COUCH_HTTPS }}
 
