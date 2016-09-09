@@ -138,6 +138,7 @@ localsettings:
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_PORT: 443
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles - Staging'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"

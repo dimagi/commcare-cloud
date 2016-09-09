@@ -158,6 +158,7 @@ localsettings:
   COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_PORT: 443
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
