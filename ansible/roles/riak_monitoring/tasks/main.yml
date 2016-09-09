@@ -14,4 +14,4 @@
     name: "Reboot Riak"
     job: /root/riak-restarter.sh
     user: root
-    cron_file: riak-restart
+    cron_file: riak-restarter
