@@ -93,3 +93,9 @@
     - stanchion
   roles:
     - {role: riakcs/sync_keys, name: stanchion}
+
+- name: Riak Monitoring
+  hosts: riakcs
+  sudo: yes
+  roles:
+    - riak_monitoring
