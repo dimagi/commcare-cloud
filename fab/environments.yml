@@ -113,6 +113,11 @@ swiss:
   jython_memory: "1024m"
   formplayer_memory: "1024m"
 
+  service_blacklist:
+    - supervisor_websockets.conf
+    - supervisor_celery_flower.conf
+    - supervisor_formsplayer_spring.conf
+
   celery_processes:
     '*':
       main:
