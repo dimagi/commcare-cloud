@@ -116,7 +116,7 @@ swiss:
   service_blacklist:
     - supervisor_websockets.conf
     - supervisor_celery_flower.conf
-    - supervisor_formsplayer_spring.conf
+    - supervisor_formplayer_spring.conf
 
   celery_processes:
     '*':
