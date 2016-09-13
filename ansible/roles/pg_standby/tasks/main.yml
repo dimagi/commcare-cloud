@@ -36,6 +36,12 @@
     backup: yes
   when: backup_postgres
 
+- name: install tinys3
+  sudo: yes
+  pip:
+    name: tinys3
+    version: 0.1.11
+
 - name: Copy s3 upload script
   sudo: yes
   template:

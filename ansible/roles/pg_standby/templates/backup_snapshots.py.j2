@@ -1,10 +1,11 @@
-#!/bin/python
+#!/usr/bin/python
 import sys
+import tinys3
 
 if len(sys.argv) != 2:
-    raise Exception('Usage is backup_snapshots <filename>')
+    raise Exception('Usage is backup_snapshots.py <filename>')
 
 filename = sys.argv[1]
 s3_connection = tinys3.Connection('{{ localsettings.AMAZON_S3_ACCESS_KEY }}', '{{ localsettings.AMAZON_S3_SECRET_KEY }}', tls=True)
 f = open(filename, 'r')
-s3_connection.upload(filename, f, '{{ deploy_env }}-postgres-backups')
+s3_connection.upload(filename, f, 'dimagi-{{ deploy_env }}-postgres-backups')
