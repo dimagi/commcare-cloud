@@ -36,6 +36,17 @@
     backup: yes
   when: backup_postgres
 
+- name: Copy s3 upload script
+  sudo: yes
+  template:
+    src: "backup_snapshots.py.j2"
+    dest: "/etc/cron.d/backup_snapshots.py"
+    group: postgres
+    owner: postgres
+    mode: 0700
+    backup: yes
+  when: backup_postgres
+
 - name: Create Daily Cron job
   sudo: yes
   cron:
