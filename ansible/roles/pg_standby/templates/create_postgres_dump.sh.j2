@@ -11,4 +11,6 @@ rm -rf $DIRECTORY
 # Remove old backups of this backup type
 find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -exec rm {} \;
 
+{% if postgres_s3 %}
 /etc/cron.d/backup_snapshots.py "${DIRECTORY}.tar.bz"
+{% endif %}

@@ -45,7 +45,7 @@
     owner: postgres
     mode: 0700
     backup: yes
-  when: backup_postgres
+  when: postgres_s3
 
 - name: Create Daily Cron job
   sudo: yes
