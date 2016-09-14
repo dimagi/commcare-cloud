@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 from ansible.inventory import InventoryParser
 from fabric.api import roles, parallel, env, sudo, serial, execute
-from fabric.colors import red
+from fabric.colors import red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
 
@@ -183,6 +183,10 @@ def set_websocket_supervisorconf():
 
 def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
+
+    if filename in env.get('service_blacklist'):
+        print magenta('Skipping {} because the service has been blacklisted'.format(filename))
+        return
 
     with cd(env.code_root):
         sudo((
