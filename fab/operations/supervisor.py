@@ -184,7 +184,7 @@ def set_websocket_supervisorconf():
 def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
 
-    if filename in env.get('service_blacklist'):
+    if filename in env.get('service_blacklist', []):
         print magenta('Skipping {} because the service has been blacklisted'.format(filename))
         return
 
