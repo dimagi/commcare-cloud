@@ -92,6 +92,7 @@ postgres_config:
 shared_drive_enabled: True
 backup_postgres: False
 backup_blobdb: True
+postgres_s3: False
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
