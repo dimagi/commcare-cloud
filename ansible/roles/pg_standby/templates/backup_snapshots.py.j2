@@ -8,7 +8,8 @@ if len(sys.argv) != 2:
 filename = sys.argv[1]
 s3_connection = tinys3.Connection('{{ localsettings.AMAZON_S3_ACCESS_KEY }}',
                                   '{{ localsettings.AMAZON_S3_SECRET_KEY }}',
-                                  tls=True,
-                                  headers={'x-amz-server-side-encryption':'AES256'})
+                                  tls=True)
 f = open(filename, 'r')
-s3_connection.upload(filename, f, 'dimagi-{{ deploy_env }}-postgres-backups')
+s3_connection.upload(filename, f,
+                     'dimagi-{{ deploy_env }}-postgres-backups',
+                     headers={'x-amz-server-side-encryption':'AES256'})
