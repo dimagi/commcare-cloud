@@ -159,7 +159,7 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "swiss.commcarehq.org"
+  PG_DATABASE_HOST: "127.0.0.1"
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
   PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
