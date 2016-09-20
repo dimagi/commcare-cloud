@@ -316,11 +316,12 @@ def mail_admins(subject, message):
     with cd(env.code_root):
         sudo((
             '%(virtualenv_root)s/bin/python manage.py '
-            'mail_admins --subject "%(subject)s" "%(message)s" --slack'
+            'mail_admins --subject "%(subject)s" "%(message)s" --slack --environment %(environment)s'
         ) % {
             'virtualenv_root': env.virtualenv_root,
             'subject': subject,
             'message': message,
+            'environment': env.environment,
         })
 
 
@@ -605,6 +606,15 @@ def awesome_deploy(confirm="yes", resume='no'):
         env.resume = True
         env.checkpoint_index = checkpoint_index or 0
         print magenta('You are about to resume the deploy in {}'.format(env.code_root))
+    else:
+        execute_with_timing(
+            mail_admins,
+            "{user} has initiated a deploy to {environment}.".format(
+                user=env.user,
+                environment=env.environment,
+            ),
+            ''
+        )
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
