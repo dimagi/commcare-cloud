@@ -43,6 +43,16 @@
     version: 1.4.0
   when: postgres_s3
 
+- name: Create aws config directory
+  sudo: yes
+  file:
+    path: '{{ postgresql_dir_original_path }}/.aws'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+  when: postgres_s3
+    
 - name: copy boto3 credentials file
   sudo: yes
   template:
