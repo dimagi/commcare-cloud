@@ -36,12 +36,24 @@
     backup: yes
   when: backup_postgres
 
-- name: install tinys3
+- name: install boto3
   sudo: yes
   pip:
-    name: tinys3
-    version: 0.1.11
+    name: boto3
+    version: 1.4.0
+  when: postgres_s3
 
+- name: copy boto3 credentials file
+  sudo: yes
+  template:
+    src: "aws_credentials.j2"
+    dest: "{{ postgresql_dir_original_path }}/.aws/credentials"
+    group: postgres
+    owner: postgres
+    mode: 0700
+    backup: yes
+  when: postgres_s3
+  
 - name: Copy s3 upload script
   sudo: yes
   template:
