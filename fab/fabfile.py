@@ -426,9 +426,21 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     fn(*args, **kwargs)
 
 
+def announce_deploy_start():
+    execute_with_timing(
+        mail_admins,
+        "{user} has initiated a deploy to {environment}.".format(
+            user=env.user,
+            environment=env.environment,
+        ),
+        ''
+    )
+
+
 def _deploy_without_asking():
     commands = [
         setup_release,
+        announce_deploy_start,
         db.preindex_views,
         # Compute version statics while waiting for preindex
         staticfiles.prime_version_static,
@@ -606,15 +618,6 @@ def awesome_deploy(confirm="yes", resume='no'):
         env.resume = True
         env.checkpoint_index = checkpoint_index or 0
         print magenta('You are about to resume the deploy in {}'.format(env.code_root))
-    else:
-        execute_with_timing(
-            mail_admins,
-            "{user} has initiated a deploy to {environment}.".format(
-                user=env.user,
-                environment=env.environment,
-            ),
-            ''
-        )
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
