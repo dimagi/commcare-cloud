@@ -71,6 +71,8 @@ backup_postgres: True
 backup_es: True
 postgres_s3: True
 
+aws_region: 'us-east-1'
+
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgres_config:
