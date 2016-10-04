@@ -219,6 +219,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
+  AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
 #  SIMPLE_API_KEYS:
