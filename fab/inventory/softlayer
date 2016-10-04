@@ -95,3 +95,6 @@ datavol_device=/dev/xvdc
 
 [stanchion:children]
 riak5
+
+[pg_standby:children]
+db0
