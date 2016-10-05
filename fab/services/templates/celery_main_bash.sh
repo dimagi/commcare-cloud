@@ -11,7 +11,7 @@
 #
 # See Section 12.2.2 of http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
 #
-# Effectively we've no orphaned
+# Effectively we've orphaned
 # the Celery process to do a warm shutdown and we are
 # free to start another bash process under supervisor.
 trap 'kill -TERM $PID' TERM INT
