@@ -61,7 +61,7 @@ def _get_celery_queues():
 def set_celery_supervisorconf():
 
     conf_files = {
-        'main':                         ['supervisor_celery_main.conf'],
+        'main':                         ['supervisor_celery_main.conf', 'celery_main_bash.sh'],
         'periodic':                     ['supervisor_celery_beat.conf', 'supervisor_celery_periodic.conf'],
         'sms_queue':                    ['supervisor_celery_sms_queue.conf'],
         'reminder_queue':               ['supervisor_celery_reminder_queue.conf'],
