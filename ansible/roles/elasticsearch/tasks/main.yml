@@ -132,7 +132,8 @@
   cron:
     name: "Daily ES Snapshot"
     job: "/etc/cron.d/create_es_snapshot.py"
-    special_time: daily
+    hour: 4
+    minute: 0
     user: root
     cron_file: create_es_snapshot
   when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"

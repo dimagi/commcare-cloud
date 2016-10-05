@@ -6,7 +6,7 @@ from datetime import timedelta
 
 
 def get_snapshot_client():
-    es = Elasticsearch('{{ groups.elasticsearch.0 }}', timeout=60)
+    es = Elasticsearch('{{ groups.elasticsearch.0 }}', timeout=3600)
     snapshot_client = SnapshotClient(es)
     return snapshot_client
 
