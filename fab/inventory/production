@@ -10,7 +10,7 @@ hqdjango2.internal-va.commcarehq.org
 newrelic_app_name=django
 
 [postgresql]
-hqdb0.internal-va.commcarehq.org hot_standby_server=hqstandby0.internal-va.commcarehq.org
+hqdb0.internal-va.commcarehq.org hot_standby_server=hqstandby0.internal-va.commcarehq.org datavol_device=/dev/xvdb
 
 [rabbitmq]
 hqes0.internal-va.commcarehq.org
