@@ -235,4 +235,5 @@ localsettings:
   TRANSFER_SERVER: 'nginx'
   UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
