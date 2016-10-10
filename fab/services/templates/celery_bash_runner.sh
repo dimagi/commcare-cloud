@@ -35,7 +35,7 @@ esac
 done
 
 TIMESTAMP=`date +%s`
-HOSTNAME+="${TIMESTAMP}_timestamp"
+HOSTNAME+=".${TIMESTAMP}_timestamp"
 {{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker ${HOSTNAME} ${ARGS}  &
 PID=$!
 wait $PID
