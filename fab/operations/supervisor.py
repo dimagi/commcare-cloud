@@ -61,7 +61,7 @@ def _get_celery_queues():
 def set_celery_supervisorconf():
 
     conf_files = {
-        'main':                         ['supervisor_celery_main.conf', 'celery_main_bash.sh'],
+        'main':                         ['supervisor_celery_main.conf'],
         'periodic':                     ['supervisor_celery_beat.conf', 'supervisor_celery_periodic.conf'],
         'sms_queue':                    ['supervisor_celery_sms_queue.conf'],
         'reminder_queue':               ['supervisor_celery_reminder_queue.conf'],
@@ -82,6 +82,7 @@ def set_celery_supervisorconf():
     queues = _get_celery_queues()
     if 'periodic' in queues and env.host != queues['periodic'].get('server_whitelist'):
         show_periodic_server_whitelist_message_and_abort(env)
+    _rebuild_supervisor_conf_file('make_supervisor_conf', 'celery_bash_runner.sh')
     for queue, params in queues.items():
         for config_file in conf_files[queue]:
             _rebuild_supervisor_conf_file('make_supervisor_conf', config_file, {'celery_params': params})

@@ -15,7 +15,27 @@
 # the Celery process to do a warm shutdown and we are
 # free to start another bash process under supervisor.
 trap 'kill -TERM $PID' TERM INT
+
+HOSTNAME=""
+ARGS=""
+for i in "$@"
+do
+    case $i in
+        # Note this pattern will break if we use --hostname <hostname> (no = sign)
+        # because $@ space separates arguments
+        --hostname=*|-n=*)
+        HOSTNAME="$1"
+        shift 1
+        ;;
+        *)  # Default case
+        ARGS+=" $1"
+        shift 1
+        ;;
+esac
+done
+
 TIMESTAMP=`date +%s`
-{{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker --queues=celery --events --loglevel=INFO --hostname={{ host_string }}_main.${TIMESTAMP}_timestamp --maxtasksperchild=5 --autoscale={{ celery_params.concurrency }},0 -Ofair &
+HOSTNAME+=".${TIMESTAMP}_timestamp"
+{{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker ${HOSTNAME} ${ARGS}  &
 PID=$!
 wait $PID
