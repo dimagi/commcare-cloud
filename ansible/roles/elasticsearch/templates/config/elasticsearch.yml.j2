@@ -60,4 +60,4 @@ cloud:
   aws:
     access_key: "{{ localsettings.AMAZON_S3_ACCESS_KEY }}"
     secret_key: "{{ localsettings.AMAZON_S3_SECRET_KEY }}"
-    region: "us-east"
+    region: "{{ aws_region }}"
