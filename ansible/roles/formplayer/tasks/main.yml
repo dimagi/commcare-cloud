@@ -5,6 +5,17 @@
     - sqlite3
     - libsqlite3-dev
 
+- name: Create purging cron jobs
+  sudo: yes
+  cron:
+    name: "{{ item.name }}"
+    special_time: daily
+    job: "find {{ item.dir }} -maxdepth {{ item.maxdepth }} -type {{ item.type }}  -mtime +{{ item.max_age }} -delete"
+    user: root
+    cron_file: purge_formplayer_files
+  with_items:
+    - {name: 'Purge temp files', dir: "/tmp", max_age: 2, type: f, maxdepth: 1}
+
 - name: Formplayer build dir
   file:
     path: "{{ item }}"
