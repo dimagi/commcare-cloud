@@ -193,6 +193,7 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 {% if hot_standby_server|default(None) %}
 archive_mode = on
 archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
+archive_timeout = 60
 
 {% endif %}
 
