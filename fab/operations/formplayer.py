@@ -13,6 +13,9 @@ def build_formplayer(use_current_release=False):
     if not files.exists(build_dir):
         sudo('mkdir {}'.format(build_dir))
 
-    jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
+    if env.environment == 'staging':
+        jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer-staging/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
+    else:
+        jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
 
     sudo('wget -nv {} -O {}/formplayer.jar'.format(jenkins_formplayer_build_url, build_dir))
