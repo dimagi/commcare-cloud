@@ -1,2 +1,1 @@
-datadog_integrations:
-  - nginx
+datadog_integration_nginx: true
