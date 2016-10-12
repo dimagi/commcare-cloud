@@ -68,4 +68,17 @@ s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_port }}"
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
 
-datadog_integrations: []
+datadog_integration_celery: false
+datadog_integration_cloudant: false
+datadog_integration_elastic: false
+datadog_integration_gunicorn: false
+datadog_integration_kafka: false
+datadog_integration_kafka_consumer: false
+datadog_integration_nginx: false
+datadog_integration_pgbouncer: false
+datadog_integration_postgres: false
+datadog_integration_rabbitmq: false
+datadog_integration_redisdb: false
+datadog_integration_riak: false
+datadog_integration_riakcs: false
+datadog_integration_zk: false
