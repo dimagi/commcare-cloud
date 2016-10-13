@@ -23,3 +23,6 @@ nginx_sites:
      - name: /cdc-moz
        proxy_pass: http://motech3.internal-va.commcarehq.org:8080/cdc-moz
        proxy_read_timeout: 360s
+     - name: /pi-lad
+       proxy_pass: http://motech4.internal-va.commcarehq.org:8080/pi-lad
+       proxy_read_timeout: 360s
