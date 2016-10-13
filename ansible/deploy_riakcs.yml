@@ -16,6 +16,11 @@
       always_run: true
       tags: localsettings
 
+- name: Configure swap for riak hosts
+  hosts: riakcs
+  roles:
+    - {role: swap}
+
 - name: Load admin keys from Riak CS conf
   sudo: True
   hosts: riakcs_control_host
