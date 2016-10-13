@@ -1,3 +1,5 @@
+# run with --tags=mount-ecryptfs to mount encrypted volume after reboot
+
 - name: Common Setup
   hosts:
     - riakcs
