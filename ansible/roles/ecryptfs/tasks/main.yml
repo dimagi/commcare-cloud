@@ -29,7 +29,14 @@
 
 - name: Mount block storage volume
   sudo: yes
-  mount: name={{ encrypted_root }} src={{ datavol_device }}1 fstype=ext4 state=mounted opts=defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}
+  mount:
+    name: "{{ encrypted_root }}"
+    src: "{{ datavol_device }}1"
+    fstype: ext4
+    state: mounted
+    opts: "defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}"
+    dump: "0"
+    passno: "0"
   when: datavol_device is defined
 
 - name: Check for already mounted encrypted drive
