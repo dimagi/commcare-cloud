@@ -106,3 +106,17 @@
   sudo: yes
   roles:
     - riak_monitoring
+
+- name: Riak CS logs
+  hosts: riakcs
+  sudo: yes
+  tasks:
+    - name: Purge old Riak CS access logs
+      cron:
+        name: "riak-cs-access-logs"
+        user: root
+        special_time: daily
+        job: /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mmin +90 -exec gzip -q {} \; &&
+             /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mtime +31 -delete
+        cron_file: riak-cs-access-logs
+        state: present
