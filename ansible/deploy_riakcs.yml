@@ -1,3 +1,5 @@
+# run with --tags=mount-ecryptfs to mount encrypted volume after reboot
+
 - name: Common Setup
   hosts:
     - riakcs
@@ -15,6 +17,11 @@
       when: riakcs_control_host is undefined
       always_run: true
       tags: localsettings
+
+- name: Configure swap for riak hosts
+  hosts: riakcs
+  roles:
+    - {role: swap}
 
 - name: Load admin keys from Riak CS conf
   sudo: True
@@ -99,3 +106,17 @@
   sudo: yes
   roles:
     - riak_monitoring
+
+- name: Riak CS logs
+  hosts: riakcs
+  sudo: yes
+  tasks:
+    - name: Purge old Riak CS access logs
+      cron:
+        name: "riak-cs-access-logs"
+        user: root
+        special_time: daily
+        job: /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mmin +90 -exec gzip -q {} \; &&
+             /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mtime +31 -delete
+        cron_file: riak-cs-access-logs
+        state: present
