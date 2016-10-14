@@ -98,3 +98,25 @@
     user: postgres
     cron_file: backup_postgres
   when: backup_postgres
+
+- name: copy retrieve script
+  sudo: yes
+  template:
+    src: "retrieve_backup.py.j2"
+    dest: "/root/retrieve_backup.py"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+  when: postgres_s3
+
+- name: copy restore script
+  sudo: yes
+  template:
+    src: "restore_from_backup.sh.j2"
+    dest: "/root/restore_from_backup.sh"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+  when: postgres_s3
