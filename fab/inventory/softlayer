@@ -13,8 +13,8 @@
 [es2]
 10.162.36.221 elasticsearch_node_name=es2
 
-[pillow0]
-10.162.36.248
+[pillow1]
+10.162.36.253
 
 [proxy0]
 10.162.36.203
@@ -66,7 +66,7 @@ es2
 celery0
 
 [pillowtop:children]
-pillow0
+pillow1
 
 [touchforms:children]
 touch0
