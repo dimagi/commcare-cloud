@@ -1,0 +1,28 @@
+#!/bin/bash
+BACKUP=$1
+
+read -p 'Are you sure you want to restore postgres to a past state [y/N]: ' -r confirm
+if [ $confirm != 'y' ]; then
+    exit 1
+fi
+read -p 'This will delete the current db. Are you SURE you are sure [y/N]: ' -r confirm2
+if [ $confirm2 != 'y' ]; then
+    exit 1
+fi
+
+echo 'retrieving backup from amazon'
+/root/retrieve_backup.py "${BACKUP}" &&
+
+echo 'extracting backup' &&
+tar -xjf "${BACKUP}" -C "{{ postgresql_backup_dir }}" &&
+
+echo 'stopping postgresql' &&
+/etc/init.d/postgresql stop &&
+
+echo 'restoring from backup' &&
+rsync -avz --delete "{{ postgresql_backup_dir }}/${BACKUP}/" "{{ postgresql_home }}" &&
+
+echo 'starting postgresql' &&
+/etc/init.d/postgresql start &&
+
+echo 'restore complete'
