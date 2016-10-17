@@ -38,5 +38,6 @@
     accept_hostkey: yes
     update: yes
   sudo_user: "{{ cchq_user }}"
+  notify: restart datadog
 
 - include: integrations.yml
