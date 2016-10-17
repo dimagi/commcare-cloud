@@ -6,7 +6,6 @@
 - name: Check if swap file exists
   stat: path=/swapfile
   register: swapfile
-  when: swap_size is defined
   changed_when: false
   failed_when: false
   always_run: true
