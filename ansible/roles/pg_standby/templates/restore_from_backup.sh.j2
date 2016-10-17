@@ -16,10 +16,14 @@ echo 'retrieving backup from amazon'
 echo 'extracting backup' &&
 tar -xjf "${BACKUP}" -C "{{ postgresql_backup_dir }}" &&
 
-echo 'stopping postgresql' &&
-/etc/init.d/postgresql stop &&
+echo 'stopping postgresql. if this fails the script will exit' &&
+/etc/init.d/postgresql stop || exit 1
 
-echo 'restoring from backup' &&
+read -p 'continuing will overwrite the existing pg data directory. Are you sure? [y/N]: ' -r confirm3
+if [ $confirm3 != 'y' ]; then
+    exit 1
+fi
+echo 'copying backup to data directory' &&
 rsync -avz --delete "{{ postgresql_backup_dir }}/${BACKUP}/" "{{ postgresql_home }}" &&
 
 echo 'starting postgresql' &&
