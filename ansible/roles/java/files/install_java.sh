@@ -7,7 +7,7 @@ rm -rf /usr/lib/jvm/jdk1.7.0 || true
 rm -rf /usr/lib/jvm/jdk1.7.0_67 || true
 mv jdk1.7.0_67/ /usr/lib/jvm/
 ln -s /usr/lib/jvm/jdk1.7.0_67/ /usr/lib/jvm/jdk1.7.0
-chown cchq:cchq /usr/lib/jvm/*
+chown -R cchq:cchq /usr/lib/jvm/*
 update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.7.0/bin/java" 1
 update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.7.0/bin/javac" 1
 update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/lib/jvm/jdk1.7.0/bin/javaws" 1
