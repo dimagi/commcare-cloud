@@ -18,7 +18,6 @@ active_sites:
   wiki: False
   wiki_http: False
   motech: False
-  motech1: False
   motech2: False
   riakcs: False
 
