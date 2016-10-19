@@ -19,7 +19,6 @@ active_sites:
   wiki: True
   wiki_http: True
   motech: True
-  motech1: True
   motech2: True
   riakcs: True
   cas_ssl: False
