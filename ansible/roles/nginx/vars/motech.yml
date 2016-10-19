@@ -26,3 +26,9 @@ nginx_sites:
      - name: /pi-lad
        proxy_pass: http://motech4.internal-va.commcarehq.org:8080/pi-lad
        proxy_read_timeout: 360s
+     - name: /endos
+       proxy_pass: http://motech1.internal.commcarehq.org:8080/endos
+       proxy_read_timeout: 360s
+     - name: /endos-dhis
+       proxy_pass: http://motech1.internal.commcarehq.org:8080/endos-dhis
+       proxy_read_timeout: 360s
