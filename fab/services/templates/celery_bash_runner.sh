@@ -14,7 +14,7 @@
 # Effectively we've orphaned
 # the Celery process to do a warm shutdown and we are
 # free to start another bash process under supervisor.
-trap 'echo "Killing: $PID"; kill -TERM $PID; echo "Killed: $PID";' TERM INT QUIT
+trap 'echo "Killing: $PID"; kill -TERM $PID; echo "Killed: $PID";' TERM INT
 
 HOSTNAME=""
 ARGS=""
