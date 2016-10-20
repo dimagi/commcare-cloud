@@ -14,7 +14,7 @@
 # Effectively we've orphaned
 # the Celery process to do a warm shutdown and we are
 # free to start another bash process under supervisor.
-trap 'kill -TERM $PID' TERM INT
+trap 'echo "Killing: $PID"; kill -TERM $PID; echo "Killed: $PID";' TERM INT
 
 HOSTNAME=""
 ARGS=""
@@ -38,4 +38,7 @@ TIMESTAMP=`date +%s`
 HOSTNAME+=".${TIMESTAMP}_timestamp"
 {{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker ${HOSTNAME} ${ARGS}  &
 PID=$!
+BASH_PID=$$
+echo "Started ${HOSTNAME} on PID: ${PID}"
 wait $PID
+echo "Exiting Bash Process: ${BASH_PID}"
