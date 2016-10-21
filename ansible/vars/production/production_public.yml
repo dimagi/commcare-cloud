@@ -127,6 +127,7 @@ AMQP_NAME: commcarehq
 ufw_private_interface: eth1
 
 etc_host_lines:
+- "208.43.242.55   commcarehq.cloudant.com"
 
 localsettings:
   ALLOWED_HOSTS:
