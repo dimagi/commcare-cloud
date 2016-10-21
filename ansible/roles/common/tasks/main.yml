@@ -4,6 +4,12 @@
   tags:
     - etc_hosts
 
+- name: "Remove lines from hosts file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
+  with_items: etc_host_lines_removed
+  tags:
+    - etc_hosts
+
 # For 12.04 Ubuntu, upgrade OpenSSL version
 - name: "Install libssl1.0.0"
   apt: name="libssl1.0.0" state=present
