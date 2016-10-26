@@ -147,24 +147,3 @@ swiss:
       async_restore_queue:
         concurrency: 1
       flower: {}
-
-tsung:
-  environment: tsung
-  jython_memory: "1024m"
-  formplayer_memory: "1024m"
-
-  celery_processes:
-    '*':
-      main:
-        concurrency: 4
-      background_queue:
-        concurrency: 2
-      pillow_retry_queue:
-        concurrency: 1
-      saved_exports_queue:
-        concurrency: 3
-      ucr_queue:
-        concurrency: 1
-      email_queue:
-        concurrency: 1
-      flower: {}
