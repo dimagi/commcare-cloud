@@ -103,6 +103,14 @@ def create_code_dir():
 
 
 @roles(ROLES_DB_ONLY)
+def kill_stale_celery_workers():
+    with cd(env.code_current):
+        sudo(
+            '{}/bin/python manage.py kill_stale_celery_workers'.format(env.virtualenv_current)
+        )
+
+
+@roles(ROLES_DB_ONLY)
 def record_successful_deploy():
     start_time = datetime.strptime(env.deploy_metadata.timestamp, DATE_FMT)
     delta = datetime.utcnow() - start_time
