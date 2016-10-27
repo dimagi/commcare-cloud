@@ -359,6 +359,14 @@ def _confirm_translated():
 
 
 @task
+def kill_stale_celery_workers():
+    """
+    Kills celery workers that failed to properly go into warm shutdown
+    """
+    execute(release.kill_stale_celery_workers)
+
+
+@task
 def deploy_formplayer():
     execute(formplayer.build_formplayer, True)
     execute(supervisor.restart_formplayer)
@@ -451,6 +459,7 @@ def _deploy_without_asking():
         db.flip_es_aliases,
         staticfiles.update_manifest,
         release.clean_releases,
+        release.kill_stale_celery_workers,
     ]
 
     try:
