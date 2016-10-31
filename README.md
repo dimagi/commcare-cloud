@@ -262,5 +262,5 @@ For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/
 It is also possible to run tasks on the vagrant machines from you're local machine:
 
 ```
-ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e "@vars/dev.yml" deploy_stack.yml
+ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
