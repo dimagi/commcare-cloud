@@ -190,13 +190,15 @@ vacuum_cost_delay = 20ms        # 0-100 milliseconds
 #archive_timeout = 0        # force a logfile segment switch after this
                 # number of seconds; 0 disables
 
-{% if groups["pg_standby"] %}
-wal_level = hot_standby
+{% if hot_standby_server|default(None) %}
 archive_mode = on
-archive_command = 'rsync -a %p postgres@{{ groups["pg_standby"][0] }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
+archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
+archive_timeout = 60
 
-max_wal_senders = 3
 {% endif %}
+
+wal_level = hot_standby
+max_wal_senders = 3
 
 #------------------------------------------------------------------------------
 # REPLICATION
@@ -423,7 +425,7 @@ log_temp_files = 0            # log temporary files equal or larger
 
 #track_activities = on
 #track_counts = on
-#track_functions = none         # none, pl, all
+track_functions = all         # none, pl, all
 #track_activity_query_size = 1024   # (change requires restart)
 #update_process_title = on
 #stats_temp_directory = 'pg_stat_tmp'

@@ -2,6 +2,7 @@
   hosts:
    - webworkers
    - touchforms
+   - formplayer
    - celery
    - proxy
    - pillowtop

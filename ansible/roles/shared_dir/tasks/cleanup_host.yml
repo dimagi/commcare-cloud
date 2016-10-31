@@ -1,0 +1,28 @@
+- name: Remove shared dir from exports
+  sudo: yes
+  lineinfile:
+    dest: /etc/exports
+    regexp: "^{{ old_shared_data_dir }} {{ item }}"
+    state: absent
+  with_flattened:
+    - groups.webworkers
+    - groups.proxy
+    - groups.celery
+    - groups.pillowtop
+    - groups.shared_dir_host
+  tags:
+    - nfs-cleanup
+
+- name: Export directories
+  sudo: yes
+  command: "exportfs -r"
+  tags:
+    - nfs-cleanup
+
+- name: Remove old shared dir
+  sudo: yes
+  file:
+    path: "{{ old_shared_data_dir }}"
+    state: absent
+  tags:
+    - nfs-cleanup

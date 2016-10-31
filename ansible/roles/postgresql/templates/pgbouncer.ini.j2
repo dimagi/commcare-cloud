@@ -8,7 +8,9 @@
 ;;   pool_size= connect_query=
 [databases]
 {% for db in postgresql_dbs %}
+{% if db.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname or is_monolith %}
 {{ db.name }} = host=localhost port={{postgresql_port}}
+{% endif %}
 {% endfor %}
 
 ;; Configuration section

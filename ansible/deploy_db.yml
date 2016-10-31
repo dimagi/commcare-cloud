@@ -8,6 +8,7 @@
     - rabbitmq
     - zookeeper
     - riakcs
+    - formplayer
   sudo: yes
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}

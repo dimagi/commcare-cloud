@@ -1,0 +1,41 @@
+- name: Install formplayer packages
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - sqlite3
+    - libsqlite3-dev
+
+- name: Create purging cron jobs
+  sudo: yes
+  cron:
+    name: "{{ item.name }}"
+    special_time: daily
+    job: "find {{ item.dir }} -maxdepth {{ item.maxdepth }} -type {{ item.type }}  -mtime +{{ item.max_age }} -delete"
+    user: root
+    cron_file: purge_formplayer_files
+  with_items:
+    - {name: 'Purge temp files', dir: "/tmp", max_age: 2, type: f, maxdepth: 1}
+
+- name: Formplayer build dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+  tags:
+    - fp-localsettings
+  with_items:
+    - "{{ formplayer_build_dir }}"
+    - "{{ formplayer_data_dir }}"
+
+- name: Copy Spring application.properties
+  sudo: yes
+  template:
+    src: application.properties.j2
+    dest: "{{ formplayer_build_dir }}/application.properties"
+    group: cchq
+    owner: cchq
+    mode: 0644
+  tags:
+    - fp-localsettings

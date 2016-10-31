@@ -2,8 +2,11 @@
 # {{ ansible_managed }}
 #
 import os
-
+{% if is_monolith %}
+URL_HOST = "http://127.0.0.1:{{ django_port }}"
+{% else %}
 URL_HOST = "https://{{ SITE_HOST }}"
+{% endif %}
 {% raw %}
 URL_ROOT = "%s/a/{{DOMAIN}}" % URL_HOST
 {% endraw %}

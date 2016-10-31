@@ -1,0 +1,14 @@
+#!/bin/sh
+# set the path so that service can be found
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+result=`service riak status`
+date=`date`
+expected='pong
+riak is running'
+if [ "$result" = "$expected" ]; then
+    echo "riak is up as of $date" > status.txt
+else
+    service riak start > service-output.txt 2> service-stderr.txt
+    echo "server was restarted at $date" >> restart.txt
+    echo "riak had to be restarted at $date." | mail -s "riak was restarted" commcarehq-ops@dimagi.com
+fi

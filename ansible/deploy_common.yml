@@ -5,16 +5,17 @@
     - common
 
 - name: ufw (firewall)
-  hosts: '!proxy'
+  hosts: '!proxy:!cas_proxy'
   sudo: yes
   roles:
-    - {role: ufw, tags: ufw, when: ufw_private_interface is defined and control_machine_ip is defined }
+    - {role: ufw, tags: ufw, when: ufw_private_interface is defined}
 
 - name: ufw (proxy firewall)
-  hosts: 'proxy'
+  hosts: 'proxy:cas_proxy'
   sudo: yes
   tasks:
     - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
+      when: ufw_private_interface is defined or is_monolith|bool
 
 - name: Datadog agent
   hosts: all

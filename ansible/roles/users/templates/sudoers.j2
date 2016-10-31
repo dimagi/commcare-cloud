@@ -2,14 +2,15 @@
 # {{ ansible_managed }}
 #
 
-User_Alias HIPAA_USERS = {% for user in dev_users.present -%}
-{{ user.name }}
+User_Alias HIPAA_USERS = ansible, {% for user in dev_users.present -%}
+{{ user }}
 {%- if not loop.last %}, {% endif %}
 {%- endfor %}
 
 Runas_Alias HIPAA_ACTOR = {{ cchq_user }}
 
 Cmnd_Alias APACHE = /etc/init.d/apache2
+Cmnd_Alias NGINX = /usr/sbin/nginx
 Cmnd_Alias PACKAGES = /usr/bin/apt-get
 Cmnd_Alias GIT = /usr/bin/git
 Cmnd_Alias PYTHON = /home/{{ cchq_user }}/www/{{ deploy_env }}/python_env/bin/python,/home/{{ cchq_user }}/www/{{ deploy_env }}/python_env/bin/pip
@@ -21,7 +22,7 @@ Cmnd_Alias CHMOD_CONF = /bin/chmod -R g+w /tmp/supervisor*
 Cmnd_Alias MV_CONF = /bin/mv -f /tmp/supervisor*,/bin/rm -f /tmp/supervisor_*
 Cmnd_Alias UPSTART = /sbin/stop, /sbin/start, /sbin/initctl
 
-Cmnd_Alias HQCOMMANDS = PACKAGES, GIT, PYTHON, SUPERVISORD, CHOWN_CONF, CHMOD_CONF, MV_CONF, UPSTART
+Cmnd_Alias HQCOMMANDS = PACKAGES, GIT, PYTHON, SUPERVISORD, CHOWN_CONF, CHMOD_CONF, MV_CONF, UPSTART, NGINX
 
 HIPAA_USERS ALL = (root) ALL
 {{ cchq_user }}    ALL = (ALL) NOPASSWD: HQCOMMANDS

@@ -3,5 +3,8 @@
   gather_facts: no
   sudo: yes
   roles:
+    - {role: users, tags: users}
+    - {role: ssh, tags: ssh}
+    - role: edit
+    - {role: ksplice, tags: ksplice}
     - {role: ansible-control, tags: ansible-control}
-    - edit

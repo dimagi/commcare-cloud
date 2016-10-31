@@ -1,9 +1,6 @@
-# elastic included here since we only need one agent per cluster
 # redis and rabbit included here since group vars get overriden if a host matches multiple groups
-datadog_integrations:
-  - postgres
-  - pgbouncer
-  - elastic
-  - redisdb
-  - rabbitmq
-  - cloudant
+datadog_integration_cloudant: true
+datadog_integration_pgbouncer: true
+datadog_integration_postgres: true
+datadog_integration_rabbitmq: true
+datadog_integration_redisdb: true

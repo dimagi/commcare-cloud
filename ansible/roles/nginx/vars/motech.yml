@@ -16,7 +16,19 @@ nginx_sites:
        alias: "{{ errors_home }}/pages"
      - name: /supply
        proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply
-       proxy_read_timeout: 180s
+       proxy_read_timeout: 360s
      - name: /supply-dhis
        proxy_pass: http://motech-main.internal.commcarehq.org:8888/supply-dhis
-       proxy_read_timeout: 180s
+       proxy_read_timeout: 360s
+     - name: /cdc-moz
+       proxy_pass: http://motech3.internal-va.commcarehq.org:8080/cdc-moz
+       proxy_read_timeout: 360s
+     - name: /pi-lad
+       proxy_pass: http://motech4.internal-va.commcarehq.org:8080/pi-lad
+       proxy_read_timeout: 360s
+     - name: /endos
+       proxy_pass: http://motech1.internal.commcarehq.org:8080/endos
+       proxy_read_timeout: 360s
+     - name: /endos-dhis
+       proxy_pass: http://motech1.internal.commcarehq.org:8080/endos-dhis
+       proxy_read_timeout: 360s

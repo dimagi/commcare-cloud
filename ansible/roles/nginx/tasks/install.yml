@@ -35,6 +35,15 @@
   sudo: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
 
+- name: Allow cchq user to modify sites-availabled
+  sudo: yes
+  file:
+    path: /etc/nginx/sites-available
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: "u=rwx,g=rwx,o=r"
+    state: directory
+
 - name: Create directories for certificates
   sudo: yes
   file:

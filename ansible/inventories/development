@@ -2,7 +2,8 @@
 192.168.33.15 newrelic_app_name=django
 
 [postgresql]
-192.168.33.16
+192.168.33.16 # hot_standby_server=192.168.33.17 -- test hot standby
+# 192.168.33.17 -- test multiple db machines
 
 [couchdb]
 192.168.33.16
@@ -11,6 +12,9 @@
 192.168.33.16
 
 [touchforms]
+192.168.33.16
+
+[formplayer]
 192.168.33.16
 
 [celery]
@@ -41,7 +45,11 @@
 192.168.33.16
 192.168.33.17
 
+[riakcs:vars]
+swap_size=100M
+
 [shared_dir_host]
 192.168.33.16
 
 [pg_standby]
+#192.168.33.17 hot_standby_master=192.168.33.16

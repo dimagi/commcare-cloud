@@ -1,13 +1,13 @@
 # For testing the play that travis runs
 #
-# First run: ansible-playbook -i inventories/test-vagrant deploy_stack.yml -e '@vars/dev.yml' --tags=common,common_installs,commcarehq
+# First run: ansible-playbook -i inventories/test-vagrant deploy_stack.yml -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' --tags=common,common_installs,commcarehq
 #
 # This fails part way through due to lessc (and it's fine to stop there). The
 # extra tags (common and common_installs) are necessary to get git installed on
 # the VM (it's already installed on the travis machine, which is why the
 # vagrant run is slightly different).
 #
-# Then run: ansible-playbook -i inventories/test-vagrant deploy_stack.yml -e '@vars/dev.yml' --tags=commcarehq
+# Then run: ansible-playbook -i inventories/test-vagrant deploy_stack.yml -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' --tags=commcarehq
 #
 # This should complete without errors.
 

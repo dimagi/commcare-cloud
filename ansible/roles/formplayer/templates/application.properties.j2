@@ -2,6 +2,14 @@ commcarehq.host=https://{{ SITE_HOST }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
 logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
+sqlite.dataDir={{ formplayer_data_dir }}/
+
+couch.username={{ localsettings.COUCH_USERNAME }}
+couch.password={{ localsettings.COUCH_PASSWORD }}
+couch.protocol=http
+couch.host={{ localsettings.COUCH_SERVER_ROOT }}
+couch.port={{ localsettings.COUCH_PORT }}
+couch.databaseName={{ localsettings.COUCH_DATABASE_NAME }}
 
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
@@ -23,3 +31,14 @@ flyway.driverClassName=org.postgresql.Driver
 flyway.location=classpath:db/migration
 
 spring.jpa.hibernate.ddl-auto
+
+smtp.host={{ localsettings.EMAIL_SMTP_HOST }}
+smtp.port={{ localsettings.EMAIL_SMTP_PORT }}
+smtp.username={{ localsettings.EMAIL_LOGIN }}
+smtp.password={{ localsettings.EMAIL_PASSWORD }}
+
+smtp.from.address=commcarehq-noreply+{{ inventory_hostname_short }}@dimagi.com
+smtp.to.address=commcarehq-ops+formplayer@dimagi.com
+
+// Redis for locking
+redis.hostname={{ groups.redis.0 }}

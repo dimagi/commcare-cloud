@@ -6,21 +6,44 @@
 
 - name: Add dev users
   sudo: yes
-  user: name={{ item.name }} state=present shell=/bin/bash groups={{ dev_group }}
+  user: name={{ item }} state=present shell=/bin/bash groups={{ dev_group }}
+  with_items: '{{ dev_users.present }}'
+
+- name: Add public keys
+  sudo: yes
+  authorized_key: user={{ item }} state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
 
 - name: Remove dev users
   sudo: yes
-  user: name={{ item.name }} state=absent
+  user: name={{ item }} state=absent
   with_items: '{{ dev_users.absent }}'
 
 - name: Add ansible user
   user: name=ansible state=present shell=/bin/bash groups="sudo" password={{ ansible_user_password_sha_512 }}
 
-- name: Add public keys
+- name: Authorize devs to login as ansible
   sudo: yes
-  authorized_key: user={{ item.name }} state=present key="{{ item.key }}" exclusive=yes
+  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
+
+- name: check if key files exist
+  sudo: false
+  local_action: stat path="{{ 'vars/users/' ~ item ~ '.pub' }}"
+  register: absent_user_keys
+  with_items: '{{ dev_users.absent }}'
+
+- name: Revoke devs ability to login as ansible
+  sudo: yes
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.0 ~ '.pub') }}"
+  when: item.1.stat.exists
+  with_together:
+    - dev_users.absent
+    - absent_user_keys.results
+
+- name: De-authorize ansible pubkey
+  sudo: yes
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/ansible.pub') }}"
 
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'

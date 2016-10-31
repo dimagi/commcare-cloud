@@ -1,0 +1,17 @@
+- name: Copy Riak restart script
+  sudo: yes
+  template:
+    src: "riak-restarter.sh.j2"
+    dest: "/root/riak-restarter.sh"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+
+- name: Create Cron job
+  sudo: yes
+  cron:
+    name: "Reboot Riak"
+    job: /root/riak-restarter.sh
+    user: root
+    cron_file: riak-restarter
