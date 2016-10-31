@@ -1,0 +1,277 @@
+# For a real deployment
+# should be e.g. 'www.commcarehq.org'
+SITE_HOST: '{{ groups.proxy.0 }}'
+COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
+NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
+J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
+
+testing: True
+
+etc_host_lines: []
+# - "169.38.74.104   commcarehq-india.cloudant.com"
+
+# active sites defines the sites that will be configured with nginx
+# "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
+active_sites:
+  cchq_redirect: True
+  cchq_http: True
+  cchq_http_redirect: True
+  cchq_http_j2me: False
+  commtrack_ssl: True
+  commtrack_http: True
+  riakcs: True
+  hq_status: False
+  icds_tableau: False
+  dhis: False
+  motech: False
+  motech1: False
+  motech2: False
+  wiki: False
+
+
+deploy_env: dev
+fake_ssl_cert: yes
+ansible_user_password_sha_512: 'YIN9OONyKqkxY' # blahblah
+
+dev_users:
+  present:
+    - {name: droberts, group: dev, state: present, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcPH7f4OfZV8OEpISJiTxlIcx1J6HXjxG2END1t3RVgdAF6iYRBJYOnYzeAl1+bGMFZST9OrtWhiTQEy6L4fxgzOSYqmmvkvNbFMghiM41DUYIr9Gr9tlRpTDYg1WujlLLiq/TjpbatGapZzUjen992vpONGRWY7Qg1gVjjVM3Bb+kNB4UwK1IpJy0QJM9cOOeWbAEqov6nQdLirzyUtScrrF9P/B40tp6RcvNocC91z9x/5C4ovFduN+F8NClxoIvOf4vEp8BcG8CoiZeNHuYBkT8Nq2Tm/Zk/A5DJoIFs+pDf7Mw5G94s2/+YuKUZDDd9LjUufCBKijr9z+pnNTT droberts@dimagi.com'}
+    - {name: tsheffels, group: dev, state: present, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhIPGGCiVuZ3bWRNOegBk6va/dL9er5pGfV0GspmlNzMBDZ3lrYXTs//fEAraUY/1wQo7/Qyy4kwvUDhHD2aoGrTB+Da+Bb7xGDfjLm1wGUqJWEcWvjHq7YnfGKu443gEJYaUDGryxuEdNwMFxps0xRSRLjkEQOcduEK+MC6D359bXA+FLUUPH+rerQ7RauuVkCzSc49Bk25BRpr/NM7uqX8wz16Ke7Sn4pSZAIrLnXPrxY9GuD+C7OGyG1w4So1r9QV7tR+NjsPapqrQQcHRtGlnjhzD+HoqD3SkG8ulTlVVyXbZVAtq0FjPRYwicdbs3cCEwsgGqHMLwHHCIxbox tyler.sheffels@gmail.com'}
+  absent: []
+
+# use this value to switch between nginx and apache
+proxy_type: nginx
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '128m'
+elasticsearch_cluster_name: 'deves'
+
+# uncomment to only allow access to eth1
+#ufw_private_interface: eth1
+
+# uncomment and change to the control machine IP when using ufw
+# this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
+#control_machine_ip: 127.0.0.1
+
+ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
+KSPLICE_ACTIVE: no
+KSPLICE_ACTIVATION_KEY:
+
+DATADOG_ENABLED: False
+DATADOG_API_KEY: null
+DATADOG_APP_KEY: null
+
+CLOUDANT_CLUSTER_NAME: null
+
+AMQP_USER: "{{ deploy_env }}_worker"
+AMQP_PASSWORD: '******'
+AMQP_HOST: "{{ groups.celery.0 }}"
+AMQP_NAME: commcarehq
+
+# This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
+keystore_file: 'DimagiKeyStore'
+
+# postgres_users:
+#  <username>:
+#    username: <username>
+#    password: <password>
+#    role_attr_flags: see http://docs.ansible.com/ansible/postgresql_user_module.html
+#    privileges:
+#      db_name: <dabase name>
+#      db_priv: <privilege name CSV>
+#      readonly: <True or False>
+#      readonly_master: <username of user to run readonly SQL commands as (should be user who is going to create new tables etc.>
+
+postgres_users:
+  commcarehq:
+    username: "{{ localsettings.PG_DATABASE_USER }}"
+    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
+    role_attr_flags: CREATEDB
+  devreadonly:
+    username: "devreadonly"
+    password: "devreadonly"
+    privileges:
+      - db_name: "{{ localsettings.PG_DATABASE_NAME }}"
+        db_priv: CONNECT
+        readonly: True
+        readonly_master: "{{ localsettings.PG_DATABASE_USER }}"
+      - db_name: "{{ localsettings.UCR_DATABASE_NAME }}"
+        db_priv: CONNECT
+        readonly: True
+        readonly_master: "{{ localsettings.PG_DATABASE_USER }}"
+  icds_testdata_writer:
+    username: "icds_testdata_writer"
+    password: "icds_testdata_writer"
+    privileges:
+      - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
+        db_priv: ALL
+        readonly: False
+  icds_tableau_readonly:
+    username: "icds_tableau_readonly"
+    password: "icds_tableau_readonly"
+    privileges:
+      - db_name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
+        db_priv: CONNECT
+        readonly: True
+        readonly_master: icds_testdata_writer
+      - db_name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
+        db_priv: CONNECT
+        readonly: True
+        readonly_master: icds_testdata_writer
+
+postgresql_ssl_enabled: False
+postgres_config:
+  max_connections: 20
+  pgb_max_connections: 100
+  pgb_default_pool: 15
+  pgb_reserve_pool: 4
+  pgb_pool_timeout: 2
+  pgb_pool_mode: session
+
+riakcs_keys_dest: /vagrant/ansible/vars/dev.yml
+
+shared_drive_enabled: True
+backup_postgres: False
+backup_blobdb: True
+
+supervisor_http_enabled: True
+supervisor_http_username: user
+supervisor_http_password: 123
+
+formplayer_db_name: formplayer
+
+postgresql_dbs:
+  - name: "{{ localsettings.REPORT_DATABASE_NAME }}"
+    owner: "{{localsettings.PG_DATABASE_USER}}"
+  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+  - name: "{{ localsettings.PG_DATABASE_NAME }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+  - name: "{{ localsettings.COMMCAREHQ_ICDS_TESTDATA }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+  - name: "{{ localsettings.COMMCAREHQ_ICDS_AGGREGATEDATA }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+    django_alias: default
+  - name: "{{ formplayer_db_name }}"
+    owner: "{{ localsettings.PG_DATABASE_USER }}"
+
+# example setup for sharded database
+# also set localsettings.USE_PARTITIONED_DATABASE to True
+#
+#postgresql_dbs:
+#  - django_alias: default
+#    name: "{{localsettings.PG_DATABASE_NAME}}"
+#  - django_alias: proxy
+#    name: commcarehq_proxy
+#  - django_alias: p1
+#    name: commcarehq_p1
+#    shards: [0, 99]
+#  - django_alias: p2
+#    name: commcarehq_p2
+#    shards: [100, 199]
+#  - django_alias: p3
+#    name: commcarehq_p3
+#    shards: [200, 299]
+#  - django_alias: p4
+#    name: commcarehq_p4
+#    shards: [300, 399]
+#  - django_alias: p5
+#    name: commcarehq_p5
+#    shards: [400, 511]
+#  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+
+localsettings:
+  ALLOWED_HOSTS:
+    - localhost
+    - 127.0.0.1
+    - "{{ SITE_HOST }}"
+#  BANK_ACCOUNT_NUMBER:
+#  BANK_ADDRESS:
+#  BANK_NAME:
+#  BANK_ROUTING_NUMBER:
+#  BANK_SWIFT_CODE:
+  BANK_ROUTING_NUMBER_ACH: ''
+  BANK_ROUTING_NUMBER_WIRE: ''
+  BITLY_APIKEY: ''
+  BITLY_LOGIN: ''
+#  BOOKKEEPER_CONTACT_EMAILS:
+  BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
+  CELERY_PERIODIC_QUEUE: 'celery_periodic'
+#  CELERY_REMINDER_CASE_UPDATE_QUEUE:
+#  CELERY_REMINDER_RULE_QUEUE:
+#  CELERY_REPEAT_RECORD_QUEUE:
+  CELERY_RESULT_BACKEND: 'database'
+#  COUCHPULSE_DATABASE_URL:
+#  COUCH_CACHE_DOCS:
+#  COUCH_CACHE_VIEWS:
+  COUCH_DATABASE_NAME: commcarehq
+  COUCH_HTTPS: no
+  COUCH_PASSWORD: commcarehq
+  COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}:5984"
+  COUCH_USERNAME: commcarehq
+  CTABLE_PREFIX: null
+  DEFAULT_CACHE: redis
+  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  DROPBOX_APP_NAME: ''
+  DROPBOX_KEY: ''
+  DROPBOX_SECRET: ''
+  ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
+  ELASTICSEARCH_PORT: '9200'
+  EMAIL_LOGIN: ''
+  EMAIL_PASSWORD: ''
+  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
+  EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
+  EMAIL_SMTP_PORT: '1025'
+  # use True in prod!
+  EMAIL_USE_TLS: no
+#  ES_CASE_CHECK_DIRECT_DOC_ID:
+#  ES_QUERY_CHUNKSIZE:
+#  ES_XFORM_CHECK_DIRECT_DOC_ID:
+  GMAPS_API_KEY: ''
+  GOOGLE_ANALYTICS_API_ID: ''
+  HUBSPOT_API_ID: ''
+  HUBSPOT_API_KEY: ''
+  HQ_INSTANCE: 'dev'
+#  INVOICE_FROM_ADDRESS:
+#  INVOICE_PREFIX:
+#  INVOICE_STARTING_NUMBER:
+  JAR_KEY_ALIAS: ''
+  JAR_KEY_PASS: ''
+  JAR_STORE_PASS: ''
+  J2ME_ADDRESS: ''
+  KAFKA_URL: ''
+  KISSMETRICS_KEY: ''
+#  MANDRILL_APIKEY:
+#  MAPS_LAYERS:
+#  MEDIA_ROOT:
+  OPEN_EXCHANGE_RATES_API_ID:
+  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
+  PG_DATABASE_NAME: commcarehq
+  PG_DATABASE_PASSWORD: commcarehq
+  PG_DATABASE_USER: commcarehq
+#  PILLOWTOP_MACHINE_ID:
+#  PILLOW_RETRY_QUEUE_ENABLED:
+#  PRODUCTION_COUCHDB_URI:
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+#  REMINDERS_QUEUE_ENABLED:
+  REPORT_DATABASE_NAME: commcarehq_reporting
+  UCR_DATABASE_NAME: commcarehq_ucr
+  COMMCAREHQ_ICDS_TESTDATA: commcarehq_icds_testdata
+  COMMCAREHQ_ICDS_AGGREGATEDATA: commcarehq_icds_aggregatedata
+  REPORT_OBJECT_OWNER: null
+  SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
+  STATIC_CDN: ""
+#  SIMPLE_API_KEYS:
+#  SMS_QUEUE_ENABLED: ''
+#  STAGING_DOMAINS:
+#  STATIC_ROOT:
+#  STRIPE_PRIVATE_KEY:
+#  STRIPE_PUBLIC_KEY:
+  TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
+  TOUCHFORMS_API_USER: 'touchforms@example.com'
+  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
+  FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
+#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes

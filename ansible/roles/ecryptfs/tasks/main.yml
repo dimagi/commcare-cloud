@@ -4,10 +4,9 @@
   sudo: yes
   shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
   register: partition_check
-  when: datavol_device is defined
   changed_when: false
   failed_when: false
-  always_run: true
+  when: datavol_device is defined
 
 - name: Create partition on block storage volume
   sudo: yes
@@ -29,14 +28,7 @@
 
 - name: Mount block storage volume
   sudo: yes
-  mount:
-    name: "{{ encrypted_root }}"
-    src: "{{ datavol_device }}1"
-    fstype: ext4
-    state: mounted
-    opts: "defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}"
-    dump: "0"
-    passno: "0"
+  mount: name={{ encrypted_root }} src={{ datavol_device }}1 fstype=ext4 state=mounted opts=defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}
   when: datavol_device is defined
 
 - name: Check for already mounted encrypted drive
@@ -44,9 +36,6 @@
   register: mtab_contents
   failed_when: false
   changed_when: false
-  always_run: true
-  tags:
-    - mount-ecryptfs
 
 - name: Install ecryptfs-utils
   sudo: yes
@@ -59,23 +48,17 @@
 - name: Create encrypted drive root directory
   sudo: yes
   file: path="{{ encrypted_root }}" owner=root group=root mode=0755 state=directory
-  tags:
-    - mount-ecryptfs
 
 - name: Add encryption password to keyring
   sudo: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
   when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
-  tags:
-    - mount-ecryptfs
 
 - name: Mount data drive
   sudo: yes
   shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
   when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
-  tags:
-    - mount-ecryptfs
 
 - name: Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS
   sudo: yes
@@ -100,3 +83,35 @@
     owner: root
     group: root
     mode: 0770
+
+- name: Check for encrypted drive in fstab
+  shell: grep '{{ encrypted_root }} ecryptfs' /etc/fstab
+  register: fstab_contents
+  failed_when: false
+  changed_when: false
+
+- name: Register mount configuration
+  sudo: yes
+  shell: "grep '{{ encrypted_root }} ecryptfs' /etc/mtab"
+  register: mount_conf
+  changed_when: false
+
+- name: add user, noauto to mount conf
+  shell: "echo {{ mount_conf.stdout }} | sed -e 's/rw/user,noauto,rw/'"
+  when: "'noauto' not in mount_conf.stdout"
+  register: updated_mount_conf
+
+- name: Create entry in fstab
+  sudo: yes
+  lineinfile:
+    dest: "/etc/fstab"
+    regexp: "^{{ encrypted_root }}"
+    backup: yes
+    line: "{{ updated_mount_conf.stdout if not 'skipped' in updated_mount_conf else mount_conf.stdout }}"
+  when: "'{{ encrypted_root }}' not in fstab_contents.stdout"
+
+- name: Verify that entry is in fstab
+  sudo: yes
+  shell: "grep -q '^{{ encrypted_root }}\\s*{{ encrypted_root }}\\s*ecryptfs' /etc/fstab"
+  always_run: True
+  changed_when: False

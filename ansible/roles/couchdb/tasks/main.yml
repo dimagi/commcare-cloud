@@ -1,6 +1,6 @@
 # CouchDB
 - name: Install prequisites
-  apt: name={{ item }} state=present
+  apt: name={{ item }} state=present force=yes
   with_items:
     - build-essential
     - g++

@@ -1,5 +1,4 @@
-ansible==1.9.6
+ansible==1.9.0.1
 netaddr
 dnspython
 passlib
-cryptography==1.4

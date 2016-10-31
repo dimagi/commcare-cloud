@@ -13,9 +13,6 @@ localhost ansible_connection=local
 [touchforms]
 localhost ansible_connection=local
 
-[formplayer]
-localhost ansible_connection=local
-
 [celery]
 localhost ansible_connection=local
 

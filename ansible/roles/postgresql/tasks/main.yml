@@ -29,10 +29,13 @@
     - libpq-dev
     - python-psycopg2
     - unzip
+  when:
+    pg_install == True
 
 - name: Check for original postgresql directory
   stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}"
   register: orig_path
+  when: pg_install == True
 
 - name: Make new postgresql directory
   sudo: yes
@@ -42,24 +45,27 @@
     group: postgres
     mode: 0755
     state: directory
+  when: pg_install == True
 
 - name: Check for new postgresql directory
   stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}"
   register: new_path
+  when: pg_install == True
 
 - name: Assert postgresql directory shows up in exactly one place
   fail: msg="postgresl directory must either be {{ postgresql_dir_path }} or {{ postgresql_dir_original_path }} (and not both)"
-  when: ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
+  when: >
+    pg_install == True and
+    ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
 
 - name: Move postgres to encrypted drive
   command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/{{ postgresql_version }}"
-  when: orig_path.stat.exists
+  when: pg_install == True and orig_path.stat.exists
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
-
-- name: assert hot standby config correct
-  assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
+  when:
+    pg_install == True
 
 - name: PostgreSQL app configuration
   sudo_user: postgres
@@ -78,15 +84,14 @@
 - name: Create PostgreSQL users
   sudo_user: postgres
   postgresql_user:
-    name: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role_attr_flags: CREATEDB
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    role_attr_flags: "{{ item.role_attr_flags|default('LOGIN') }}"
     state: present
     port: "{{ postgresql_port }}"
-
-- name: check postgres database hosts
-  assert: { that: "item.host is not defined or item.host in groups.postgresql" }
-  with_items: "{{ postgresql_dbs }}"
+  with_items: "{{ postgres_users.values() }}"
+  when:
+    pg_install == True
 
 - name: Create PostgreSQL databases
   sudo_user: postgres
@@ -94,16 +99,43 @@
     name: "{{ item.name }}"
     state: present
     port: "{{ postgresql_port }}"
-    owner: "{{ item.get('user', localsettings.PG_DATABASE_USER) }}"
+    owner: "{{ item.owner }}"
     encoding: 'UTF-8'
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
-  when: (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith
+  when:
+    pg_install == True
+
+- name: Grant PostgreSQL privileges
+  sudo_user: postgres
+  postgresql_privs: type=database database="{{ item.1.db_name }}" roles="{{ item.0.username}}" privs="{{ item.1.db_priv}}"
+  with_subelements:
+    - "{{ postgres_users.values() }}"
+    - privileges
+    - flags:
+      skip_missing: True
+
+- name: Set readonly PostgreSQL roles
+  sudo_user: postgres
+  shell: "PGPASSWORD={{ postgres_users.get(item.1.readonly_master).get('password') }}
+    {{postgres_install_dir}}/bin/psql -U {{ item.1.readonly_master }} -h localhost {{item.1.db_name}} -c
+    'GRANT USAGE ON SCHEMA PUBLIC to {{ item.0.username }}; 
+    GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC to {{ item.0.username }}; 
+    ALTER DEFAULT PRIVILEGES IN SCHEMA PUBLIC GRANT SELECT ON TABLES TO {{ item.0.username }}'"
+  when:
+    item.1.readonly == True
+  with_subelements:
+    - "{{ postgres_users.values() }}"
+    - privileges
+    - flags:
+      skip_missing: True
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
+  when:
+    pg_install == True
   notify: Start pgbouncer
   tags:
     - pgbouncer
@@ -146,31 +178,24 @@
 
 - name: Create plproxy extension
   sudo_user: postgres
-  postgresql_ext:
-    name: plproxy
-    db: "{{item.name}}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS plproxy'"
+  when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
 - name: Create pghashlib extension
   sudo_user: postgres
-  postgresql_ext:
-    name: hashlib
-    db: "{{item.name}}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hashlib'"
+  when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
 - name: Make plproxy a trusted language
   sudo_user: postgres
-  postgresql_lang:
-    lang: plproxy
-    trust: True
-    db: "{{item.name}}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plproxy'\""
+  when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs
 
 - name: Grant usage on plproxy FDW
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
-  when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith
+  when: item.get('django_alias') == 'proxy'
   with_items: postgresql_dbs

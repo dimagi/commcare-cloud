@@ -4,6 +4,6 @@
 init_config:
 
 instances:
-  - url: http://{{ inventory_hostname }}:9200
+  - url: http://{{ elasticsearch_endpoint }}:9200
     tags:
       - environment:{{ deploy_env }}

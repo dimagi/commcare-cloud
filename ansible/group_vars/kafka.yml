@@ -1,3 +1,4 @@
-datadog_integration_kafka: true
-datadog_integration_kafka_consumer: true
-datadog_integration_zk: true
+datadog_integrations:
+  - kafka
+  - kafka_consumer
+  - zk

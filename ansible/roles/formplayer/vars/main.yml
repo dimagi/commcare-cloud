@@ -1,3 +1,0 @@
-formplayer_build_dir: "{{ code_home }}/formplayer_build"
-formplayer_data_dir: "{{ encrypted_root }}/formplayer"
-# formplayer_db_name: ..defined in secret file
