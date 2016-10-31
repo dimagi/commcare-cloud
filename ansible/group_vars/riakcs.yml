@@ -2,5 +2,6 @@
 # http://docs.basho.com/riak/latest/ops/tuning/linux/#Storage-and-File-System-Tuning
 datavol_opts: barrier=0,data=writeback
 
-datadog_integration_riak: true
-datadog_integration_riakcs: true
+datadog_integrations:
+  - riak
+  - riakcs

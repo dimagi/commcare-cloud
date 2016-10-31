@@ -105,15 +105,13 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly       
 
 # host all all 192.168.33.0/24 md5
 
-{% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql']) | unique %}
+{% for host in (groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql']) | unique %}
 # {{ host }}
 {% for db in postgresql_dbs %}
-{% if db.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname or db.get('host', localsettings.PG_DATABASE_HOST) == hot_standby_master|default(None) or is_monolith %}
 {% if host | ipaddr %}
-host   {{ db.name }}	{{ db.get('user', localsettings.PG_DATABASE_USER) }}	{{ host }}/32   md5
+host   {{ db.name }}	{{ localsettings.PG_DATABASE_USER }}	{{ host }}/32   md5
 {% else %}
-host   {{ db.name }}	{{ db.get('user', localsettings.PG_DATABASE_USER) }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
-{% endif %}
+host   {{ db.name }}	{{ localsettings.PG_DATABASE_USER }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {% endif %}
 {% endfor %}
 {% endfor %}

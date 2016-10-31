@@ -1,4 +1,4 @@
-# Rules for proxies
+# Rules for monoliths
 - name: allow web traffic
   ufw:
     rule: allow
@@ -8,6 +8,7 @@
   with_items:
     - 443  # https
     - 80   # http
+  when: is_monolith
 
 - name: allow ssh traffic
   ufw:
@@ -16,7 +17,7 @@
     port: 22
     proto: any
   when: is_monolith
-  
+
 - name: allow mosh traffic
   ufw:
     rule: allow
@@ -25,15 +26,10 @@
     proto: udp
   when: is_monolith
 
-- name: allow all traffic on private interface
-  ufw:
-    rule: allow
-    direction: in
-    interface: '{{ ufw_private_interface }}'
-  when: not is_monolith|bool
-  
 - name: default to denying all incoming traffic
   ufw: policy=deny direction=incoming
+  when: is_monolith
 
 - name: turn on firewall
   ufw: state=enabled
+  when: is_monolith

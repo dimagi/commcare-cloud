@@ -48,15 +48,19 @@ PARTITION_DATABASE_CONFIG = {
 }
 {% endif %}
 
+{% if localsettings.REPORT_OBJECT_OWNER %}
+SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
+{% endif %}
+
 {% if localsettings.get('UCR_DATABASE_NAME') %}
 UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}:{{localsettings.get('PG_DATABASE_PORT')}}/{{ localsettings.UCR_DATABASE_NAME }}"
 {% endif %}
 
-{% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
-ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
-{% endif %}
-
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
+
+{% if localsettings.CTABLE_PREFIX %}
+CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
+{% endif %}
 
 LOG_HOME = '{{ log_home }}'
 COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
@@ -66,7 +70,6 @@ ANALYTICS_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME
 DATADOG_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
 FORMPLAYER_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.timing.log")
 FORMPLAYER_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
-EXPORT_MIGRATION_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-export_migration.log")
 
 # Email setup
 # email settings: these ones are the custom hq ones
@@ -84,7 +87,7 @@ XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 #CLOUDANT SETUP
 COUCH_USERNAME = '{{ localsettings.COUCH_USERNAME }}'
 COUCH_PASSWORD = '{{ localsettings.COUCH_PASSWORD }}'
-COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}:{{ localsettings.COUCH_PORT }}'
+COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}'
 COUCH_DATABASE_NAME = '{{ localsettings.COUCH_DATABASE_NAME }}'
 COUCH_HTTPS = {{ localsettings.COUCH_HTTPS }}
 
@@ -99,6 +102,10 @@ COUCH_CACHE_VIEWS = '{{ localsettings.COUCH_CACHE_VIEWS }}'
 STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
 {% endif %}
 
+{% if 'PRODUCTION_COUCHDB_URI' in localsettings %}
+PRODUCTION_COUCHDB_URI = '{{ localsettings.PRODUCTION_COUCHDB_URI }}'
+{% endif %}
+
 {% if 'DROPBOX_APP_NAME' in localsettings %}
 DROPBOX_APP_NAME = '{{ localsettings.DROPBOX_APP_NAME }}'
 {% endif %}
@@ -111,11 +118,11 @@ DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
 DROPBOX_SECRET = '{{ localsettings.DROPBOX_SECRET }}'
 {% endif %}
 
-{% if 'AMAZON_S3_ACCESS_KEY' in localsettings %}
-S3_ACCESS_KEY = '{{ localsettings.AMAZON_S3_ACCESS_KEY }}'
+{% if 'S3_ACCESS_KEY' in localsettings %}
+S3_ACCESS_KEY = '{{ localsettings.S3_ACCESS_KEY }}'
 {% endif %}
-{% if 'AMAZON_S3_SECRET_KEY' in localsettings %}
-S3_SECRET_KEY = '{{ localsettings.AMAZON_S3_SECRET_KEY }}'
+{% if 'S3_SECRET_KEY' in localsettings %}
+S3_SECRET_KEY = '{{ localsettings.S3_SECRET_KEY }}'
 {% endif %}
 
 {% if s3_blob_db_enabled %}
@@ -129,8 +136,15 @@ BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_
 {% endif %}
 {% endif %}{# s3_blob_db_enabled #}
 
-{% if 'MOBILE_INTEGRATION_TEST_TOKEN' in localsettings %}
-MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN }}'
+{% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
+ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
+{% else %}
+ES_CASE_CHECK_DIRECT_DOC_ID = None
+{% endif %}
+{% if 'ES_XFORM_CHECK_DIRECT_DOC_ID' in localsettings %}
+ES_XFORM_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_XFORM_CHECK_DIRECT_DOC_ID }}'
+{% else %}
+ES_XFORM_CHECK_DIRECT_DOC_ID = None
 {% endif %}
 
 ####### For Constructing Global URLs ########
@@ -346,7 +360,7 @@ INTERNAL_DATA = {
     "services": ["Basic", "Plus", "Full", "Custom", "Active Data Management", "Daily Contract", "Call Center"],
     "account_types": [	"Academic", "Alliance", "Competitor", "Funder", "Implementer - Local", "Implementer - Multinational",
                           "Investor", "Networking", "Other", "Partner", "Pharmaceutical", "Reseller", "Technology"],
-    "initiatives": ["CORE Group POC", "DIV 1 POC", "DIV 2 POC", "Senegal POC", "Workshop", "Partner Program Sandbox"],
+    "initiatives": ["CORE Group POC", "DIV 1 POC", "DIV 2 POC", "Senegal POC", "Workshop"],
     "contract_type": ["FFP", "T&M", "Cost Plus"],
     "area": [
         {
@@ -473,6 +487,10 @@ SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_json }}
 KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
 {% endif %}
 
+{% if localsettings.get('COUCHPULSE_DATABASE_URL') %}
+COUCHPULSE_DATABASE_URL = '{{ localsettings.COUCHPULSE_DATABASE_URL }}'
+{% endif %}
+
 INVOICE_TERMS = "Net 30"
 
 {% if localsettings.get('BOOKKEEPER_CONTACT_EMAILS') %}
@@ -503,6 +521,10 @@ BANK_NAME = '{{ localsettings.BANK_NAME }}'
 BANK_ACCOUNT_NUMBER = '{{ localsettings.BANK_ACCOUNT_NUMBER }}'
 {% endif %}
 
+{% if localsettings.get('BANK_ROUTING_NUMBER') %}
+BANK_ROUTING_NUMBER = '{{ localsettings.BANK_ROUTING_NUMBER }}'
+{% endif %}
+
 {% if localsettings.get('BANK_SWIFT_CODE') %}
 BANK_SWIFT_CODE = '{{ localsettings.BANK_SWIFT_CODE }}'
 {% endif %}
@@ -510,6 +532,11 @@ BANK_SWIFT_CODE = '{{ localsettings.BANK_SWIFT_CODE }}'
 {% if localsettings.get('OPEN_EXCHANGE_RATES_API_ID') %}
 OPEN_EXCHANGE_RATES_API_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_API_ID }}'
 {% endif %}
+
+{% if localsettings.get('MANDRILL_APIKEY') %}
+MANDRILL_APIKEY = '{{ localsettings.MANDRILL_APIKEY }}'
+{% endif %}
+
 
 {% if localsettings.get('STRIPE_PRIVATE_KEY') %}
 STRIPE_PRIVATE_KEY = '{{ localsettings.STRIPE_PRIVATE_KEY }}'

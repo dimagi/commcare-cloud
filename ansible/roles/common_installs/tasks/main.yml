@@ -95,7 +95,6 @@
     - fabric
     - virtualenv
     - sh
-    - httplib2
 
 - name: Install virtualenv-clone
   sudo: yes
