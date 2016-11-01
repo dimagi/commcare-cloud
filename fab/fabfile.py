@@ -459,6 +459,7 @@ def _deploy_without_asking():
         db.flip_es_aliases,
         staticfiles.update_manifest,
         release.clean_releases,
+        release.delay_kill_stale_celery_workers,
     ]
 
     try:
