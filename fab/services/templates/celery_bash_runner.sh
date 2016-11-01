@@ -14,9 +14,11 @@
 # Effectively we've orphaned
 # the Celery process to do a warm shutdown and we are
 # free to start another bash process under supervisor.
-trap 'echo "Killing: $PID"; kill -TERM $PID; echo "Killed: $PID";' TERM INT
+trap 'echo "Killing: celery@${HOSTNAME} - $PID";
+    {{ virtualenv_current }}/bin/python {{ code_current }}/manage.py shutdown_celery_worker_by_hostname celery@${HOSTNAME};
+    echo "Killed: $PID";' TERM INT
 
-HOSTNAME=""
+HOSTNAME_ARG=""
 ARGS=""
 for i in "$@"
 do
@@ -24,7 +26,7 @@ do
         # Note this pattern will break if we use --hostname <hostname> (no = sign)
         # because $@ space separates arguments
         --hostname=*|-n=*)
-        HOSTNAME="$1"
+        HOSTNAME_ARG="$1"
         shift 1
         ;;
         *)  # Default case
@@ -35,8 +37,11 @@ esac
 done
 
 TIMESTAMP=`date +%s`
-HOSTNAME+=".${TIMESTAMP}_timestamp"
-{{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker ${HOSTNAME} ${ARGS}  &
+HOSTNAME_ARG+=".${TIMESTAMP}_timestamp"
+HOSTNAME_PARTS=(${HOSTNAME_ARG//=/ })
+HOSTNAME=${HOSTNAME_PARTS[1]}
+
+{{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker ${HOSTNAME_ARG} ${ARGS}  &
 PID=$!
 BASH_PID=$$
 echo "Started ${HOSTNAME} on PID: ${PID}"
