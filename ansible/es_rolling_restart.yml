@@ -16,3 +16,5 @@
           - "pillows_stopped == 'YES'"
           - "confirmation == 'YES'"
     - include: roles/elasticsearch/tasks/rolling_restart.yml
+      vars:
+         es_host: "{% if inventory_hostname|ipaddr %}{{ inventory_hostname }}{% else %}{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}{% endif %}"
