@@ -483,7 +483,6 @@ def _deploy_without_asking():
     else:
         execute_with_timing(release.update_current)
         silent_services_restart()
-        execute(release.delay_kill_stale_celery_workers)
         execute_with_timing(release.record_successful_release)
         execute_with_timing(release.record_successful_deploy)
         clear_cached_deploy()
@@ -679,6 +678,7 @@ def silent_services_restart(use_current_release=False):
     execute(db.set_in_progress_flag, use_current_release)
     execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
+    execute(release.delay_kill_stale_celery_workers)
 
 
 @task
