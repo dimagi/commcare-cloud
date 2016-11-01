@@ -38,6 +38,9 @@ done
 
 TIMESTAMP=`date +%s`
 HOSTNAME_ARG+=".${TIMESTAMP}_timestamp"
+# Replaces the = sign with space and then coerces into an array that is space separated
+# Example:
+# --hostname=myhost -> [hostname, myhost]
 HOSTNAME_PARTS=(${HOSTNAME_ARG//=/ })
 HOSTNAME=${HOSTNAME_PARTS[1]}
 
