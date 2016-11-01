@@ -36,6 +36,7 @@ dev_users:
   present:
     - dmiller
     - droberts
+    - npellegrino
   absent: []
 
 # use this value to switch between nginx and apache
