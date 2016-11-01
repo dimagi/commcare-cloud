@@ -113,7 +113,7 @@ localsettings:
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: false
+  COUCH_HTTPS: False
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "185.12.7.167"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
