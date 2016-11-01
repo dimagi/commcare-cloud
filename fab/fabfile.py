@@ -678,6 +678,7 @@ def silent_services_restart(use_current_release=False):
     execute(db.set_in_progress_flag, use_current_release)
     execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
+    execute(release.delay_kill_stale_celery_workers)
 
 
 @task

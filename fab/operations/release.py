@@ -103,11 +103,18 @@ def create_code_dir():
 
 
 @roles(ROLES_DB_ONLY)
-def kill_stale_celery_workers():
+def kill_stale_celery_workers(delay=0):
     with cd(env.code_current):
         sudo(
-            '{}/bin/python manage.py kill_stale_celery_workers'.format(env.virtualenv_current)
+            'echo "{}/bin/python manage.py '
+            'kill_stale_celery_workers" '
+            '| at now + {} minutes'.format(env.virtualenv_current, delay)
         )
+
+
+@roles(ROLES_DB_ONLY)
+def delay_kill_stale_celery_workers():
+    kill_stale_celery_workers(delay=1)
 
 
 @roles(ROLES_DB_ONLY)
