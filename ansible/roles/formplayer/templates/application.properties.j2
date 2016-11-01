@@ -7,7 +7,9 @@ sqlite.dataDir={{ formplayer_data_dir }}/
 
 couch.username={{ localsettings.COUCH_USERNAME }}
 couch.password={{ localsettings.COUCH_PASSWORD }}
+// Note: line break after setting is necessary because jinja eats the newline
 couch.protocol={% if localsettings.get('COUCH_HTTPS') %}https{% else %}http{% endif %}
+
 couch.host={{ localsettings.COUCH_SERVER_ROOT }}
 couch.port={{ localsettings.COUCH_PORT }}
 couch.databaseName={{ localsettings.COUCH_DATABASE_NAME }}
