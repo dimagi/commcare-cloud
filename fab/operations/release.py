@@ -114,7 +114,7 @@ def kill_stale_celery_workers(delay=0):
 
 @roles(ROLES_DB_ONLY)
 def delay_kill_stale_celery_workers():
-    kill_stale_celery_workers(delay=3)
+    kill_stale_celery_workers(delay=1)
 
 
 @roles(ROLES_DB_ONLY)
