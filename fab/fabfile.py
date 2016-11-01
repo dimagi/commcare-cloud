@@ -459,7 +459,6 @@ def _deploy_without_asking():
         db.flip_es_aliases,
         staticfiles.update_manifest,
         release.clean_releases,
-        release.delay_kill_stale_celery_workers,
     ]
 
     try:
@@ -484,6 +483,7 @@ def _deploy_without_asking():
     else:
         execute_with_timing(release.update_current)
         silent_services_restart()
+        execute(release.delay_kill_stale_celery_workers)
         execute_with_timing(release.record_successful_release)
         execute_with_timing(release.record_successful_deploy)
         clear_cached_deploy()
