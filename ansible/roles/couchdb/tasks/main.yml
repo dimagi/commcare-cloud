@@ -77,5 +77,5 @@
 - name: Add CouchDB databases
   shell: "{{ item }}"
   with_items:
-    - curl -X PUT "http://{{ localsettings.COUCH_SERVER_ROOT }}/{{ localsettings.COUCH_DATABASE_NAME }}"
-    - curl -X PUT "http://{{ localsettings.COUCH_SERVER_ROOT }}/_config/admins/{{ localsettings.COUCH_USERNAME }}" -d '"{{ localsettings.COUCH_PASSWORD }}"'
+    - curl -X PUT "http://{{ localsettings.COUCH_SERVER_ROOT }}:{{ localsettings.COUCH_PORT }}/{{ localsettings.COUCH_DATABASE_NAME }}"
+    - curl -X PUT "http://{{ localsettings.COUCH_SERVER_ROOT }}:{{ localsettings.COUCH_PORT }}/_config/admins/{{ localsettings.COUCH_USERNAME }}" -d '"{{ localsettings.COUCH_PASSWORD }}"'
