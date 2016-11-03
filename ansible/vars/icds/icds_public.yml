@@ -182,7 +182,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
-  SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
+  SMS_GATEWAY_PARAMS:
   SMS_GATEWAY_URL: 
   SMS_QUEUE_ENABLED: True
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
