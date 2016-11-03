@@ -14,13 +14,13 @@
 10.247.24.15
 
 [es0]
-10.247.24.16
+10.247.24.16 elasticsearch_node_name=es0
 
 [es1]
-10.247.24.17
+10.247.24.17 elasticsearch_node_name=es1
 
 [couch0]
-10.247.24.18 datavol_device=/dev/sdb
+10.247.24.18 datavol_device=/dev/sdb devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [celery0]
 10.247.24.19
@@ -71,11 +71,11 @@ pil0
 pil0
 
 [elasticsearch:children]
-es0 elasticsearch_node_name=es0
-es1 elasticsearch_node_name=es1
+es0
+es1
 
 [shared_dir_host:children]
-couch0 datadisk_device=/dev/sdb
+couch0 
 
 [riakcs:children]
 pg0
@@ -93,3 +93,5 @@ couch0
 [pg_standby:children]
 couch0
 
+[lvm:children]
+couch0
