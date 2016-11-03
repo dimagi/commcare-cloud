@@ -20,7 +20,9 @@
 10.247.24.17 elasticsearch_node_name=es1
 
 [couch0]
-10.247.24.18 datavol_device=/dev/sdb devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
+# The actual name of the device is /dev/mapper/consolidated-data1, ecryptfs role hard-codes adding a 1
+# not including the '1' below is a hack to get around that.
+10.247.24.18 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [celery0]
 10.247.24.19
