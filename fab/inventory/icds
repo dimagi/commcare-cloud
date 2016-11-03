@@ -1,23 +1,22 @@
-# ToDo update datavol_device vars
 # Prefix 'wc21casP-' to node name to get corresponding vm code given on NIC cloud
 
 [pg0]
-10.247.24.12 datavol_device=/dev/sdb
+10.247.24.12 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [pg1]
-10.247.24.14 datavol_device=/dev/sdb 
+10.247.24.14 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [web0]
-10.247.24.13
+10.247.24.13 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [web1]
-10.247.24.15
+10.247.24.15 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [es0]
-10.247.24.16 elasticsearch_node_name=es0
+10.247.24.16 elasticsearch_node_name=es0 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [es1]
-10.247.24.17 elasticsearch_node_name=es1
+10.247.24.17 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [couch0]
 # The actual name of the device is /dev/mapper/consolidated-data1, ecryptfs role hard-codes adding a 1
@@ -25,13 +24,13 @@
 10.247.24.18 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [celery0]
-10.247.24.19
+10.247.24.19 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [pil0]
-10.247.24.20
+10.247.24.20 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [kafka0]
-10.247.24.21
+10.247.24.21 devices='["/dev/sdb","/dev/sdc","/dev/sdd"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1"]' datavol_device='/dev/mapper/consolidated-data'
 
 
 [proxy:children]
