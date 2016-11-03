@@ -1,0 +1,41 @@
+---
+
+- name: Check for valid partition table on block storage device
+  sudo: yes
+  shell: fdisk -l 2>&1 | grep 'Disk {{ item }} doesn.t contain a valid partition table'
+  register: item.partition_check
+  when: item is defined
+  changed_when: false
+  failed_when: false
+  always_run: true
+  with_items: devices
+
+- name: Create partition on block storage volume
+  sudo: yes
+  shell: echo -e "o\nn\np\n1\n\n\nt\n1\n8e\nw" | fdisk {{ item }}
+  # http://superuser.com/a/739586/86694
+  # o  - clear in memory partition table
+  # n  - new partition
+  # p  - primary partition
+  # 1  - partition number 1
+  #    - default - start at beginning of disk 
+  #    - default - use entire disk
+  # t  - change type
+  # 1  - select partition 1
+  # 8e - lvm type
+  # w  - write the partition table
+  when: item is defined and item.partition_check.rc == 0
+  with_items: devices
+
+- name: Create volume group
+  lvg:
+    vg: vg.extended
+    pvs: '{{ items|map("format", "%s1")|join(",") }}'
+  with_items: devices
+
+
+- name: Create logical volume
+  lvol:
+    vg: firefly
+    lv: data
+    size: 100%FREE
