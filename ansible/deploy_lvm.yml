@@ -1,0 +1,5 @@
+- name: LVM
+  hosts: lvm
+  sudo: yes
+  roles:
+    - lvm
