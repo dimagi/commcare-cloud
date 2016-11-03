@@ -126,7 +126,7 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
   COUCH_HTTPS: True
-  COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
+  COUCH_SERVER_ROOT: "10.247.24.18"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_PORT: 443
@@ -140,14 +140,12 @@ localsettings:
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
   EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
-  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
-  EMAIL_SMTP_PORT: 587
+  EMAIL_SMTP_HOST: 
+  EMAIL_SMTP_PORT: 
   EMAIL_USE_TLS: yes
   FORMPLAYER_URL: "/formplayer"
-  FULLSTORY_ID: "{{ localsettings_private.FULLSTORY_ID }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
-  HQ_INSTANCE: 'www'
+  HQ_INSTANCE: 'icds'
   HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
   HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
@@ -167,33 +165,24 @@ localsettings:
   JAR_KEY_ALIAS: javarosakey
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
-  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
-  MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
-  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
-  MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST_TOKEN }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
   PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
   PG_DATABASE_PORT: 6432
-  PILLOWTOP_MACHINE_ID: hqdb0
+  PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
-  AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
-  AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
-  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_GATEWAY_URL: 
   SMS_QUEUE_ENABLED: True
-  STATIC_ROOT:
-  STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
