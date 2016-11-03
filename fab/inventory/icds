@@ -96,4 +96,13 @@ couch0
 couch0
 
 [lvm:children]
+pg0
+pg1
+web0
+web1
+es0
+es1
 couch0
+celery0
+pil0
+kafka0
