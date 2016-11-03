@@ -1,4 +1,7 @@
 # Prefix 'wc21casP-' to node name to get corresponding vm code given on NIC cloud
+# The actual name of the datavol_device is /dev/mapper/consolidated-data1
+# Since ecryptfs role hard-codes adding a 1, we're using just /dev/mapper/consolidated-data for the vars below
+
 
 [pg0]
 10.247.24.12 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
@@ -19,8 +22,6 @@
 10.247.24.17 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [couch0]
-# The actual name of the device is /dev/mapper/consolidated-data1, ecryptfs role hard-codes adding a 1
-# not including the '1' below is a hack to get around that.
 10.247.24.18 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [celery0]
