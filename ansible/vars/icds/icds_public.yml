@@ -148,8 +148,8 @@ localsettings:
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   HQ_INSTANCE: 'icds'
-  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
-  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
+#  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
+#  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
@@ -181,7 +181,7 @@ localsettings:
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
-  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
+#  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
   SMS_GATEWAY_PARAMS:
   SMS_GATEWAY_URL: 
   SMS_QUEUE_ENABLED: True
