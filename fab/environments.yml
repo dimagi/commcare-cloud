@@ -13,6 +13,7 @@ base:
   jython_memory: "3584m"
   formplayer_memory: "3584m"
   keepalive: 60
+  http_proxy: null
 
 softlayer:
   environment: softlayer
@@ -51,7 +52,7 @@ softlayer:
 
 icds:
   environment: icds
-
+  http_proxy: 169.38.84.79:3128
   celery_processes:
     '*':
       main:
