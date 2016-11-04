@@ -68,12 +68,29 @@ FORMPLAYER_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_
 FORMPLAYER_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-formplayer.diff.log")
 EXPORT_MIGRATION_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-export_migration.log")
 
+# Shared Drive Setup
+{% if shared_drive_enabled|default(true) %}
+SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
+{% else %}
+SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
+{% endif %}
+RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
+TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
+SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
+TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
+
+
 # Email setup
 # email settings: these ones are the custom hq ones
+{% if localsettings.EMAIL_LOGIN %}
 EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
 EMAIL_PASSWORD = "{{ localsettings.EMAIL_PASSWORD }}"
 EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
+{% else %}
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/django_email'
+{% endif %}
 
 SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
 EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
@@ -255,15 +272,6 @@ SOIL_DEFAULT_CACHE = "redis"
 
 REPORT_CACHE = 'redis'
 
-{% if shared_drive_enabled|default(true) %}
-SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
-{% else %}
-SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
-{% endif %}
-RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
-TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
-SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
-TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
 import imp
 try:
