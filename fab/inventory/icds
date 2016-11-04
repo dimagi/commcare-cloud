@@ -31,7 +31,7 @@
 10.247.24.20 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [kafka0]
-10.247.24.21 devices='["/dev/sdb","/dev/sdc","/dev/sdd"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1"]' datavol_device='/dev/mapper/consolidated-data'
+10.247.24.21 devices='["/dev/sdb","/dev/sdc","/dev/sdd"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1"]' datavol_device='/dev/mapper/consolidated-data' kafka_broker_id=0
 
 
 [proxy:children]
@@ -77,7 +77,7 @@ es0
 es1
 
 [shared_dir_host:children]
-couch0 
+kafka0
 
 [riakcs:children]
 pg0
