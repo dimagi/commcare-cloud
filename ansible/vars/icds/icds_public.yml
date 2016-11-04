@@ -1,12 +1,20 @@
 SITE_HOST: 'icds-cas.gov.in'
+CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
+# these 2 must be replaced with the real icds cert when we get it from NIC
+nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
+apache2_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+
+cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
+cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+
 active_sites:
-  cchq_ssl: True
+  cchq_ssl: False
   cchq_redirect: False
   cchq_http: True
   cchq_http_redirect: True
@@ -15,7 +23,7 @@ active_sites:
   commtrack_http: False
   hq_status: False
   tableau: False
-  icds_tableau: True
+  icds_tableau: False
   dhis: False
   wiki: False
   wiki_http: False
@@ -107,7 +115,8 @@ localsettings:
   ALLOWED_HOSTS:
     - localhost
     - 127.0.0.1
-    - icds-cas.gov.in
+    - '{{ SITE_HOST }}'
+    - '{{ CAS_SITE_HOST }}'
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
