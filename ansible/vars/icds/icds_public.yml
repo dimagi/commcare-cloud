@@ -136,11 +136,11 @@ localsettings:
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: True
+  COUCH_HTTPS: False
   COUCH_SERVER_ROOT: "10.247.24.18"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_PORT: 443
+  COUCH_PORT: 5984
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
