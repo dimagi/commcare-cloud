@@ -177,6 +177,13 @@ def softlayer():
 
 
 @task
+def icds():
+    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'icds')
+    load_env('icds')
+    execute(env_common)
+
+
+@task
 def production():
     """www.commcarehq.org"""
     if env.code_branch != 'master':
