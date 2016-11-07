@@ -1,6 +1,8 @@
-SITE_HOST: 'icds-cas.gov.in'
+#SITE_HOST: 'icds-cas.gov.in'
+SITE_HOST: 'cas.commcarehq.org'
 CAS_SITE_HOST: 'cas.commcarehq.org'
-NO_WWW_SITE_HOST: 'icds-cas.gov.in'
+NO_WWW_SITE_HOST: 'cas.commcarehq.org'
+#NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 
 # these 2 must be replaced with the real icds cert when we get it from NIC
@@ -108,6 +110,11 @@ ufw_private_interface: eth0
 
 shared_drive_enabled: true
 
+etc_host_lines: ['10.247.24.13		cas.commcarehq.org']
+etc_host_lines_removed: ['etc_host_lines']
+
+file_email: True
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -138,6 +145,7 @@ localsettings:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_PORT: 5984
+  COUCH_STALE_QUERY: 'update_after'
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
@@ -148,8 +156,8 @@ localsettings:
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
   EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
-  EMAIL_SMTP_HOST: 
-  EMAIL_SMTP_PORT: 
+  EMAIL_SMTP_HOST: none
+  EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: yes
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
