@@ -92,6 +92,7 @@ riak9
 
 [riakcs:vars]
 datavol_device=/dev/xvdc
+riak_ring_size=64
 
 [stanchion:children]
 riak5
