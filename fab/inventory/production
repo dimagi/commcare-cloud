@@ -67,7 +67,6 @@ hqriak9.internal-va.commcarehq.org
 [riakcs:vars]
 datavol_device=/dev/xvdb
 swap_size=4G
-riak_ring_size=64
 
 [stanchion]
 hqriak0.internal-va.commcarehq.org

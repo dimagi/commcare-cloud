@@ -88,7 +88,6 @@ couch0
 
 [riakcs:vars]
 datavol_device=/dev/sdb
-riak_ring_size=128
 
 [stanchion:children]
 couch0
