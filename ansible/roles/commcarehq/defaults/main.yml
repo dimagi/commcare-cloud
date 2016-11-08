@@ -3,3 +3,4 @@ commcarehq_version: master
 commcarehq_requirements:
   - requirements.txt
   - prod-requirements.txt
+file_email: false
