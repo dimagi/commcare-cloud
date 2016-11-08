@@ -22,6 +22,8 @@ active_sites:
   riakcs: True
   cas_ssl: True
 
+riak_ring_size: 64
+
 proxy_type: 'nginx'
 
 primary_ssl_env: "softlayer"
