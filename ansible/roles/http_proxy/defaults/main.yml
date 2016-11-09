@@ -1,2 +1,2 @@
 use_http_proxy: False
-http_proxy_address:
+http_proxy_address: '169.38.84.79:3128'

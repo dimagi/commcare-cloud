@@ -22,11 +22,18 @@
 
 - name: NPM proxy
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
-  sudo: yes
+  become: yes
+  become_user: "{{item.user}}"
   with_items:
-    - {'var': 'proxy', 'protocol': 'http'}
-    - {'var': 'http-proxy', 'protocol': 'http'}
-    - {'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
+    - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
+    - {'user': 'ansible', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'proxy', 'protocol': 'http'}
+    - {'user': 'root', 'var': 'http-proxy', 'protocol': 'http'}
+    - {'user': 'root', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': '{{ cchq_user }}', 'var': 'proxy', 'protocol': 'http'}
+    - {'user': '{{ cchq_user }}', 'var': 'http-proxy', 'protocol': 'http'}
+    - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'https'}
 
 - name: GIT proxy
   command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
