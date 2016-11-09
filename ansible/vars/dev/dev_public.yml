@@ -22,7 +22,6 @@ active_sites:
   riakcs: True
   hq_status: False
   icds_tableau: False
-  dhis: False
   motech: False
   motech2: False
   wiki: False
