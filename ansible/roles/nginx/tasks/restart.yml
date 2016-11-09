@@ -1,4 +1,11 @@
 ---
+- name: check nginx configuration
+  sudo: yes
+  shell: "nginx -t"
+  register: result
+  always_run: true
+  failed_when: "result.rc != 0"
+
 - name: start the nginx service
   sudo: yes
   service: name=nginx state=started enabled=yes
