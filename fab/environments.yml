@@ -59,9 +59,9 @@ icds:
         concurrency: 8
       background_queue:
         concurrency: 4
-#      periodic:
-#        concurrency: 4
-#        server_whitelist:
+      periodic:
+        concurrency: 4
+        server_whitelist: 10.247.24.19
       pillow_retry_queue:
         concurrency: 1
       reminder_case_update_queue:

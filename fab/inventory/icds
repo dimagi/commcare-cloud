@@ -107,3 +107,6 @@ couch0
 celery0
 pil0
 kafka0
+
+[zabbix:children]
+kafka0
