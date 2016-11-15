@@ -1,0 +1,19 @@
+import sys
+import os
+import boto3
+
+if len(sys.argv) != 1:
+    raise Exception('usage is s3_migration_logs.py')
+
+log_dir = os.path.abspath('/opt/data/migration-logs')
+log_files = os.listdir(log_dir)
+
+s3 = boto3.client('s3', region_name='{{ aws_region }}')
+for log_filename in log_files:
+    file_path = os.path.join(log_dir, log_filename)
+    s3.upload_file(
+        file_path,
+        'dimagi-production-migration-logs',
+        log_filename,
+        ExtraArgs={'ServerSideEncryption':'AES256'}
+    )
