@@ -1,0 +1,5 @@
+---
+zabbix3server_apache_daemon: apache2
+zabbix3server_apache_user: www-data
+zabbix3server_apache_group: www-data
+zabbix3server_php_ini_path: /etc/php5/apache2

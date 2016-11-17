@@ -1,0 +1,6 @@
+---
+- name: restart apache
+  service: name={{ zabbix3server_apache_daemon }} state=restarted enabled=yes
+
+- name: restart zabbix_server
+  service: name=zabbix_server state=restarted enabled=yes

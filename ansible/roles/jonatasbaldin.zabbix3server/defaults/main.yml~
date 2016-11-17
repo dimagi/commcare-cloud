@@ -1,0 +1,104 @@
+---
+# DB variables
+zabbix3server_db: mysql
+
+# If zabbix3server_db_install is False, make sure that info below connects 
+# to a working database loaded with the structure provided by Zabbix
+zabbix3server_db_install: True
+
+zabbix3server_dbhost: localhost
+zabbix3server_dbname: zabbix
+zabbix3server_dbschema:
+zabbix3server_dbsocket:
+zabbix3server_dbport:
+
+zabbix3server_dbrootpassword: "{{ ZABBIX_DB_ROOT_PASS }}"
+zabbix3server_dbuser: zabbix
+zabbix3server_dbuserpassword: "{{ ZABBIX_DB_USER_PASS }}"
+
+# Web variables
+zabbix3server_web: apache
+
+# If zabbix3server_web_install is False, make sure that you have
+# a working webserver and php, poiting to the directory below
+# with the right frontend files and permissions
+zabbix3server_web_install: True
+zabbix3server_web_dir: /var/www/html/zabbix
+
+# Download and compile variables
+zabbix3server_betaversion: 3.2.1
+zabbix3server_downloadurl: http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/{{ zabbix3server_betaversion }}/zabbix-{{ zabbix3server_betaversion }}.tar.gz
+zabbix3server_compile_options: "--enable-server --enable-ipv6 --with-net-snmp --with-libcurl --with-libxml2 --prefix={{ zabbix3server_install_path | quote }} --with-{{ zabbix3server_db | quote }}"
+
+# Misc variables
+zabbix3server_install_path: /usr/local/zabbix # do not use leading '/'
+zabbix3server_timezone: Asia/Delhi
+
+# zabbix_server.conf variables
+zabbix3server_listenport: 10051
+zabbix3server_sourceip:
+zabbix3server_logtype: file
+zabbix3server_logfile: /tmp/zabbix_server.log
+zabbix3server_logfilesize: 1
+zabbix3server_debuglevel:
+zabbix3server_pidfile: /tmp/zabbix_server.pid
+zabbix3server_startpollers: 5
+zabbix3server_startipmipollers: 0
+zabbix3server_startpollersunreachable: 1
+zabbix3server_starttrappers: 5
+zabbix3server_startpingers: 1
+zabbix3server_startdiscoverers: 1
+zabbix3server_starthttppollers: 1
+zabbix3server_starttimers: 1
+zabbix3server_startescalators: 1
+zabbix3server_javagateway:
+zabbix3server_javagatewayport:
+zabbix3server_startjavapollers: 0
+zabbix3server_startvmwarecollectors: 0
+zabbix3server_vmwarefrequency: 60
+zabbix3server_vmwareperffrequency: 60
+zabbix3server_vmwarecachesize: 8M
+zabbix3server_vmwaretimeout: 10
+zabbix3server_snmptrapperfile:
+zabbix3server_startsnmptrapper: 0
+zabbix3server_listenip: 
+zabbix3server_housekeepingfrequency: 1
+zabbix3server_maxhousekeeperdelete: 5000
+zabbix3server_senderfrequency: 30
+zabbix3server_cachesize: 8M
+zabbix3server_cacheupdatefrequency: 60
+zabbix3server_startdbsyncers: 4
+zabbix3server_historycachesize: 16M
+zabbix3server_historyindexcachesize: 4M
+zabbix3server_trendcachesize: 4M
+zabbix3server_valuecachesize: 8M
+zabbix3server_timeout: 4
+zabbix3server_trappertimeout: 300
+zabbix3server_unreachableperiod: 45
+zabbix3server_unavailabledelay: 60
+zabbix3server_unreachabledelay: 15
+zabbix3server_alertscriptspath: ${datadir}/zabbix/alertscripts
+zabbix3server_externalscripts: ${datadir}/zabbix/externalscripts
+zabbix3server_fpinglocation: /usr/sbin/fping
+zabbix3server_fping6location: /usr/sbin/fping6
+zabbix3server_sshkeylocation:
+zabbix3server_logslowqueries: 3000
+zabbix3server_tmpdir: /tmp
+zabbix3server_startproxypollers: 1
+zabbix3server_proxyconfigfrequency: 3600
+zabbix3server_proxydatafrequency: 1
+zabbix3server_allowroot: 0
+zabbix3server_user: zabbix
+zabbix3server_include:
+  - /usr/local/zabbix/etc/zabbix_server.conf.d
+zabbix3server_sslcertlocation:
+zabbix3server_sslkeylocation:
+zabbix3server_sslcalocation:
+zabbix3server_loadmodulepath: ${libdir}/modules
+zabbix3server_loadmodule:
+  #- module01
+  #- module02
+zabbix3server_tlscafile:
+zabbix3server_tlscrlfile:
+zabbix3server_tlscertfile:
+zabbix3server_tlskeyfile:

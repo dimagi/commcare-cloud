@@ -1,0 +1,17 @@
+---
+- name: Include OS-specifc vars
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Include OS-specifc tasks
+  include: "{{ ansible_os_family }}.yml"
+
+- name: Configure Zabbix3
+  include: zabbix3server.yml
+
+- name: Configure MySQL
+  include: mysql.yml
+  when: zabbix3server_db_install and zabbix3server_db == "mysql"
+
+- name: Configure Apache
+  include: apache.yml
+  when: zabbix3server_web_install and zabbix3server_web == "apache"

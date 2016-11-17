@@ -87,7 +87,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/django_email'
 {% else %}
 EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
+{% if 'EMAIL_PASSWORD' in localsettings %}
 EMAIL_PASSWORD = "{{ localsettings.EMAIL_PASSWORD }}"
+{% else %}
+# This prevents django from attempting smtp auth for servers where it is not configured
+EMAIL_PASSWORD = None
+{% endif %}
 EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 {% endif %}
@@ -560,7 +565,7 @@ EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 BANK_ROUTING_NUMBER_ACH = '{{ localsettings.BANK_ROUTING_NUMBER_ACH }}'
 BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
 
-ENABLE_PRELOGIN_SITE = True
+ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
 
 {% if localsettings.get('ENABLE_DRACONIAN_SECURITY_FEATURES') %}
 ENABLE_DRACONIAN_SECURITY_FEATURES = True
@@ -596,4 +601,12 @@ TWO_FACTOR_SMS_GATEWAY = '{{ localsettings.TWO_FACTOR_SMS_GATEWAY }}'
 
 {% if localsettings.get('TWO_FACTOR_CALL_GATEWAY') %}
 TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
+{% endif %}
+
+{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
+{% endif %}
+
+{% if localsettings.get('ENTERPRISE_MODE') %}
+ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 {% endif %}

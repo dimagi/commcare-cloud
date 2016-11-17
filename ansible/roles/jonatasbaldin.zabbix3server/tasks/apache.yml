@@ -1,0 +1,15 @@
+---
+- name: Create zabbix web directory
+  file: name={{ zabbix3server_web_dir }} state=directory mode=0755
+
+- name: Copy frontend files
+  shell: cp -a {{ zabbix3server_tar.dest | dirname }}/zabbix-{{ zabbix3server_betaversion }}/frontends/php/* {{ zabbix3server_web_dir }} && chown {{ zabbix3server_apache_user }}:{{zabbix3server_apache_group }} -R {{ zabbix3server_web_dir }}
+  args:
+    creates: "{{ zabbix3server_web_dir }}/index.html"
+
+- name: Copy configuration file
+  template: src=zabbix.conf.php.j2 dest={{ zabbix3server_web_dir }}/conf/zabbix.conf.php owner=www-data group=www-data mode=0644
+
+- name: Copy PHP files
+  template: src=php.ini.j2 dest={{ zabbix3server_php_ini_path }}/php.ini
+  notify: restart apache

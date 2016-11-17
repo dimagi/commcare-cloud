@@ -51,7 +51,7 @@ keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: True
-backup_es: False  # todo: should be True once Amazon set up
+backup_es: False
 postgres_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
@@ -106,7 +106,12 @@ AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
+ZABBIX_DB_ROOT_PASS: "{{ secrets.ZABBIX_DB_ROOT_PASS }}"
+ZABBIX_DB_USER_PASS: "{{ secrets.ZABBIX_DB_USER_PASS }}"
+
 DATADOG_ENABLED: False
+
+file_email: False
 
 ufw_private_interface: eth0
 
@@ -114,8 +119,6 @@ shared_drive_enabled: true
 
 etc_host_lines: ['10.247.24.13		cas.commcarehq.org']
 etc_host_lines_removed: ['etc_host_lines']
-
-file_email: True
 
 localsettings:
   ALLOWED_HOSTS:
@@ -157,10 +160,9 @@ localsettings:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
-  EMAIL_SMTP_HOST: none
+  EMAIL_SMTP_HOST: 'relay.nic.in'
   EMAIL_SMTP_PORT: 25
-  EMAIL_USE_TLS: yes
+  EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   HQ_INSTANCE: 'icds'
@@ -211,3 +213,8 @@ localsettings:
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  ENABLE_PRELOGIN_SITE: False
+  CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
+  ENTERPRISE_MODE: True
+  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+

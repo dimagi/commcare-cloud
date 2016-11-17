@@ -1,0 +1,11 @@
+---
+#- name: Include OS-specifc vars
+#  include_vars: "{{ ansible_os_family }}.yml"
+
+#- name: Include OS-specifc tasks
+#  include: "{{ ansible_os_family }}.yml"
+
+- name: Configure Zabbix3
+  include: zabbix3agent.yml
+
+- debug: msg="zabbix3agent_server is {{ zabbix3agent_server }}"

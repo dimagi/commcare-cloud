@@ -1,0 +1,32 @@
+---
+- name: Download Zabbix3
+  get_url: url={{ zabbix3agent_downloadurl }} dest=/usr/src
+  register: zabbix3agent_tar
+
+- name: Extract Zabbix3
+  unarchive: src={{ zabbix3agent_tar.dest }} dest={{ zabbix3agent_tar.dest | dirname }} copy=no
+  # {{ zabbix3agent.dest }} is the downloaded file
+  # {{ zabbix3agent.dest | dirname }} is the download dir
+
+- name: Create group account
+  group: name={{ zabbix3agent_user }} state=present
+
+- name: Create user account
+  user: name={{ zabbix3agent_user }} group={{ zabbix3agent_user }} createhome=no state=present
+
+- name: Ensure presence of install_path
+  file: name={{ zabbix3agent_install_path }} state=directory owner=root group=root mode=0751
+
+- name: Compile
+  shell: ./configure {{ zabbix3agent_compile_options }} && make install
+  args:
+    chdir: "{{ zabbix3agent_tar.dest | dirname }}/zabbix-{{ zabbix3agent_betaversion }}"
+    creates: "{{ zabbix3agent_install_path }}/sbin/zabbix_agentd"
+
+- name: Copy template zabbix_agentd.conf
+  template: src=zabbix_agentd.conf.j2 dest={{ zabbix3agent_install_path }}/etc/zabbix_agentd.conf
+  notify: restart zabbix_agentd
+
+- name: Copy zabbix_agentd service file
+  template: src=zabbix_agentd_tru64_init.j2 dest=/etc/init.d/zabbix_agentd owner=root group=root mode=0700
+  notify: restart zabbix_agentd
