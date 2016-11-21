@@ -32,3 +32,6 @@ nginx_sites:
      - name: /endos-dhis
        proxy_pass: http://motech1.internal.commcarehq.org:8080/endos-dhis
        proxy_read_timeout: 360s
+     - name: /possiblehealth
+       proxy_pass: http://motech1.internal.commcarehq.org:8080/possiblehealth
+       proxy_read_timeout: 360s
