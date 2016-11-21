@@ -103,6 +103,10 @@ local   replication     postgres                                peer
 #host    replication     postgres        ::1/128                 md5
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
 
+# For icds-tableau, applicable only for NIC cluster
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      testdata_writer            0.0.0.0/0       md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      tableau_readonly            0.0.0.0/0       md5
+
 # host all all 192.168.33.0/24 md5
 
 {% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql']) | unique %}
