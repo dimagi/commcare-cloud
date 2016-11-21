@@ -37,6 +37,9 @@
 [proxy:children]
 web0
 
+[cas_proxy:children]
+web0
+
 [webworkers:children]
 web0
 web1
