@@ -27,21 +27,6 @@
   apt: update_cache=yes
   when: add_nodejs_repo|changed or add_mosh_repo|changed or add_git_repo|changed or add_postgres_repo|changed or add_gradle_repo|changed
 
-- name: Add proxy to /etc/environment
-  lineinfile:
-    dest: /etc/environment
-    line: '{{ item }}'
-    state: absent
-  with_items:
-    - 'http_proxy=http://10.209.162.141:3128/'
-    - 'https_proxy=https://10.209.162.141:3128/'
-    - 'HTTP_PROXY=https://10.209.162.141:3128/'
-    - 'HTTPS_PROXY=https://10.209.162.141:3128/'
-    - 'http_proxy=http://169.38.84.79:3128/'
-    - 'https_proxy=https://169.38.84.79:3128/'
-    - 'HTTP_PROXY=https://169.38.84.79:3128/'
-    - 'HTTPS_PROXY=https://169.38.84.79:3128/'
-
 # Install base packages, common to all servers
 - name: Install common packages
   apt: name={{ item }} state=present

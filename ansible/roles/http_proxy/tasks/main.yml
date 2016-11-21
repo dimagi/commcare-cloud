@@ -1,18 +1,9 @@
-- name: APT proxy
-  lineinfile:
-    dest: "/etc/apt/apt.conf"
-    line: 'Acquire::{{item}}::proxy "{{item}}://{{http_proxy_address}}/"'
-    create: "yes"
-  sudo: yes
-  with_items:
-    - http
-    - https
-
 - name: Bash environment proxy
   lineinfile:
     dest: "/etc/environment"
     line: "{{item.var}}={{item.protocol}}://{{http_proxy_address}}/"
     create: yes
+    state: present
   sudo: yes
   with_items:
     - {'var': 'http_proxy', 'protocol': 'http'}

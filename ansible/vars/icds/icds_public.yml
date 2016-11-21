@@ -1,8 +1,8 @@
-#SITE_HOST: 'icds-cas.gov.in'
-SITE_HOST: 'cas.commcarehq.org'
+SITE_HOST: 'www.icds-cas.gov.in'
+#SITE_HOST: 'cas.commcarehq.org'
 CAS_SITE_HOST: 'cas.commcarehq.org'
-NO_WWW_SITE_HOST: 'cas.commcarehq.org'
-#NO_WWW_SITE_HOST: 'icds-cas.gov.in'
+#NO_WWW_SITE_HOST: 'cas.commcarehq.org'
+NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 
 # these 2 must be replaced with the real icds cert when we get it from NIC
@@ -13,8 +13,8 @@ cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.
 cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
 
 active_sites:
-  cchq_ssl: False
-  cchq_redirect: False
+  cchq_ssl: True
+  cchq_redirect: True
   cchq_http: True
   cchq_http_redirect: True
   cchq_http_j2me: False
@@ -30,7 +30,7 @@ active_sites:
   motech1: False
   motech2: False
   riakcs: True
-  cas_ssl: False
+  cas_ssl: True
 
 riak_ring_size: 128
 
@@ -41,7 +41,7 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_cluster_name: 'icds-hqes-1.x'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -69,25 +69,54 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: proxy
     name: commcarehq_proxy
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p1
     name: commcarehq_p1
-    shards: [0, 204]
+    shards: [0, 103]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p2
     name: commcarehq_p2
-    shards: [205, 409]
+    shards: [104, 205]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p3
     name: commcarehq_p3
-    shards: [410, 614]
+    shards: [206, 308]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p4
     name: commcarehq_p4
-    shards: [615, 819]
+    shards: [309, 411]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p5
     name: commcarehq_p5
-    shards: [820, 1023]
+    shards: [412, 514]
+    host: "{{ groups.postgresql.0 }}"
+  - django_alias: p6
+    name: commcarehq_p6
+    shards: [515, 617]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p7
+    name: commcarehq_p7
+    shards: [618, 720]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p8
+    name: commcarehq_p8
+    shards: [721, 823]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p9
+    name: commcarehq_p9
+    shards: [824, 926]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p10
+    name: commcarehq_p10
+    shards: [927, 1023]
+    host: "{{ groups.postgresql.1 }}"
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
+    host: "{{ groups.postgresql.0 }}"
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
