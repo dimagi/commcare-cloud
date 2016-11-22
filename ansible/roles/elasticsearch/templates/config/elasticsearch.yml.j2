@@ -63,3 +63,6 @@ cloud:
     secret_key: "{{ localsettings.AMAZON_S3_SECRET_KEY }}"
     region: "{{ aws_region }}"
 {% endif %}
+
+# Only allow indices to be created by an explicit "create" command
+action.auto_create_index: false

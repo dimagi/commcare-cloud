@@ -11,8 +11,6 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http == True, action: site, site_name: cchq_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_redirect == True, action: site, site_name: cchq_http_redirect }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech2 == True, action: site, site_name: motech2 }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech2 == True, action: site, site_name: motech2_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki }

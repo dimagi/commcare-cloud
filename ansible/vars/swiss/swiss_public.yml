@@ -14,7 +14,6 @@ active_sites:
   hq_status: False
   tableau: False
   icds_tableau: False
-  dhis: False
   wiki: False
   wiki_http: False
   motech: False
