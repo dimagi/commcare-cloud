@@ -11,6 +11,17 @@
     - {'var': 'HTTP_PROXY', 'protocol': 'http'}
     - {'var': 'HTTPS_PROXY', 'protocol': 'https'}
 
+- name: No proxy for local IPs
+  lineinfile:
+    dest: "/etc/environment"
+    line: "{{ item }}={{ groups['all']|join(',') }}"
+    create: yes
+    state: present
+  sudo: yes
+  with_items:
+    - 'no_proxy'
+    - 'NO_PROXY'
+
 - name: NPM proxy
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
   become: yes
