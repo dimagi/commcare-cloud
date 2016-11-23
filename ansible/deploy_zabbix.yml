@@ -15,3 +15,9 @@
   sudo: yes
   roles:
     - {role: zabbix_postgres, tags: 'zabbix_postgres'}
+
+- name: zabbix es deploy
+  hosts: elasticsearch
+  sudo: yes
+  roles:
+    - {role: zabbix_es, tags: 'zabbix_es'}
