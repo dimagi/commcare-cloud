@@ -19,6 +19,7 @@ from ..const import (
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
 )
+from fab.utils import pip_install
 
 
 @roles(ROLES_ALL_SRC)
@@ -89,11 +90,10 @@ def update_virtualenv():
         # but only the ones that are actually installed (checks pip freeze)
         sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
              user=env.sudo_user)
-        sudo('%s pip install --timeout 60 --quiet --requirement %s --requirement %s' % (
-            cmd_prefix,
+        pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
             posixpath.join(requirements, 'prod-requirements.txt'),
             posixpath.join(requirements, 'requirements.txt'),
-        ))
+        ])
 
 
 @roles(ROLES_ALL_SRC)

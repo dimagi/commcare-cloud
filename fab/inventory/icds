@@ -1,0 +1,115 @@
+# Prefix 'wc21casP-' to node name to get corresponding vm code given on NIC cloud
+# The actual name of the datavol_device is /dev/mapper/consolidated-data1
+# Since ecryptfs role hard-codes adding a 1, we're using just /dev/mapper/consolidated-data for the vars below
+
+
+[pg0]
+10.247.24.12 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data' hot_standby_server='10.247.24.16'
+
+[pg1]
+10.247.24.14 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data' hot_standby_server='10.247.24.17'
+
+[web0]
+10.247.24.13 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[web1]
+10.247.24.15 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[es0]
+10.247.24.16 elasticsearch_node_name=es0 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]' datavol_device='/dev/mapper/consolidated-data' hot_standby_master='10.247.24.12'
+
+[es1]
+10.247.24.17 elasticsearch_node_name=es1 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]' datavol_device='/dev/mapper/consolidated-data' hot_standby_master='10.247.24.17'
+
+[couch0]
+10.247.24.18 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[celery0]
+10.247.24.19 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[pil0]
+10.247.24.20 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[kafka0]
+10.247.24.21 devices='["/dev/sdb","/dev/sdc","/dev/sdd"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1"]' datavol_device='/dev/mapper/consolidated-data' kafka_broker_id=0
+
+
+[proxy:children]
+web0
+
+[cas_proxy:children]
+web0
+
+[webworkers:children]
+web0
+web1
+
+[postgresql:children]
+pg0
+pg1
+
+[couchdb:children]
+couch0
+
+[redis:children]
+couch0
+
+[zookeeper:children]
+kafka0
+
+[kafka:children]
+kafka0
+
+[rabbitmq:children]
+kafka0
+
+[celery:children]
+celery0
+
+[pillowtop:children]
+pil0
+
+[touchforms:children]
+pil0
+
+[formplayer:children]
+pil0
+
+[elasticsearch:children]
+es0
+es1
+
+[shared_dir_host:children]
+kafka0
+
+[riakcs:children]
+pg0
+pg1
+es0
+es1
+couch0
+
+[riakcs:vars]
+datavol_device=/dev/sdb
+
+[stanchion:children]
+couch0
+
+[pg_standby:children]
+es0
+es1
+
+[lvm:children]
+pg0
+pg1
+web0
+web1
+es0
+es1
+couch0
+celery0
+pil0
+kafka0
+
+[zabbix:children]
+kafka0

@@ -3,6 +3,7 @@ import os
 import pickle
 import sys
 import traceback
+from fabric.operations import sudo
 import yaml
 import re
 from getpass import getpass
@@ -179,3 +180,25 @@ def traceback_string():
         type=exc_type.__name__,
         exc=exc,
     )
+
+
+def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None):
+    parts = [cmd_prefix, 'pip install']
+    if timeout is not None:
+        parts.append('--timeout {}'.format(timeout))
+    if quiet:
+        parts.append('--quiet')
+    for requirement in requirements:
+        parts.append('--requirement {}'.format(requirement))
+    if proxy is not None:
+        parts.append('--proxy {}'.format(proxy))
+    sudo(' '.join(parts))
+
+def bower_command(command, production=True, config=None):
+    parts = ['bower', command]
+    if production:
+        parts.append('--production')
+    if config:
+        for key, value in config.items():
+            parts.append('--config.{}={}'.format(key,value))
+    sudo(' '.join(parts))

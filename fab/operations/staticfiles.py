@@ -1,5 +1,6 @@
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
+from fab.utils import bower_command
 
 from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY
 
@@ -40,8 +41,16 @@ def _version_static():
 @roles(ROLES_STATIC)
 def bower_install():
     with cd(env.code_root):
-        sudo('bower prune --production --config.interactive=false')
-        sudo('bower update --production --config.interactive=false')
+        config = {
+            'interactive': 'false',
+        }
+        if env.http_proxy:
+            config.update({
+                    'proxy': "http://{}".format(env.http_proxy),
+                    'https-proxy': "http://{}".format(env.http_proxy)
+            })
+        bower_command('prune', production=True, config=config)
+        bower_command('update', production=True, config=config)
 
 
 @parallel
