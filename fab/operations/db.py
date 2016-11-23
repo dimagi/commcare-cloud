@@ -3,12 +3,14 @@ import time
 
 from fabric.context_managers import cd, settings
 from fabric.api import roles, sudo, env, parallel
+from fabric.decorators import runs_once
 
 from ..exceptions import PreindexNotFinished
 from ..const import ROLES_DB_ONLY, ROLES_PILLOWTOP
 
 
 @roles(ROLES_PILLOWTOP)
+@runs_once
 def preindex_views():
     with cd(env.code_root):
         sudo((
@@ -42,6 +44,7 @@ def ensure_preindex_completion():
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def ensure_checkpoints_safe():
     extras = '--print-only' if env.force else ''
     with cd(env.code_root):
@@ -63,6 +66,7 @@ def ensure_checkpoints_safe():
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def _is_preindex_complete():
     with settings(warn_only=True):
         return sudo(
@@ -78,6 +82,7 @@ def _is_preindex_complete():
 
 @roles(ROLES_DB_ONLY)
 @parallel
+@runs_once
 def flip_es_aliases():
     """Flip elasticsearch aliases to the latest version"""
     with cd(env.code_root):
@@ -85,6 +90,7 @@ def flip_es_aliases():
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):
@@ -93,6 +99,7 @@ def migrate():
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def set_in_progress_flag(use_current_release=False):
     venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
@@ -100,6 +107,7 @@ def set_in_progress_flag(use_current_release=False):
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def migrations_exist():
     """
     Check if there exists database migrations to run
