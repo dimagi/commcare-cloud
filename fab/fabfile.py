@@ -704,6 +704,11 @@ def start_pillows():
 
 
 @task
+def stop_celery():
+    execute(supervisor.stop_celery_tasks, True)
+
+
+@task
 def reset_mvp_pillows():
     _require_target()
     setup_release()
