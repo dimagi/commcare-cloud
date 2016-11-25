@@ -1,20 +1,28 @@
 #
 # {{ ansible_managed }}
 #
-
 {% for balancer in item.server.get('balancers', []) %}
-upstream {{ balancer.name }} {
-  {% if balancer.get('method') %}
-  {{ balancer.method }};
-  {% else %}
-  least_conn;
-  {% endif %}
+  {% if balancer.enabled|default(True)|bool %}
+    upstream {{ balancer.name }} {
+        {% if balancer.get('method') %}
+          {{ balancer.method }};
+        {% else %}
+          least_conn;
+        {% endif %}
+      
+      {% if balancer.get('hosts', False) %}
+        {% for host in groups[balancer.hosts] %}
+          server {{ host }}:{{ balancer.port }};
+        {% endfor %}
+      {% endif %}
 
-{% for host in groups[balancer.hosts] %}
-  server {{ host }}:{{ balancer.port }};
+      {% for addr in balancer.get('host_addresses', []) %}
+        server {{ addr }};
+      {% endfor %}
+    }
+  {% endif %}
 {% endfor %}
-}
-{% endfor %}
+
 
 server {
 
@@ -51,14 +59,25 @@ server {
 {% endfor %}
 
 {% for location in item.server.get('locations', []) %}
+
+  {% if location.enabled|default(True)|bool %}
   location {{ location.name }} {
+
+    {% if location.get('tableau_url_modify', False)|bool %}
+    {% raw %}
+      if ($http_referer = https://$server_name/reports/) {
+          return 301 https://$server_name/reports$request_uri;
+      }
+    {% endraw %}
+    {% endif %}
+
     {% if location.get('balancer', None) %}
         proxy_pass http://{{ location.balancer }};
     {% endif %}
     {% if location.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
+    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'enabled', 'tableau_url_modify'] %}
         {{ x }} {{ y }};
     {% endfor %}
     {% if location.get('proxy_set_headers') %}
@@ -68,5 +87,6 @@ server {
     {% endif %}
 
   }
+  {% endif %}
 {% endfor %}
 }
