@@ -4,6 +4,7 @@ CAS_SITE_HOST: 'cas.commcarehq.org'
 #NO_WWW_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
+tableau_server: 10.247.24.11:80
 
 # these 2 must be replaced with the real icds cert when we get it from NIC
 nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
@@ -254,4 +255,5 @@ localsettings:
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  TABLEAU_URL_ROOT: 'https://www.icds-cas.gov.in/reports/'
 

@@ -610,3 +610,7 @@ CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
 {% if localsettings.get('ENTERPRISE_MODE') %}
 ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 {% endif %}
+
+{% if localsettings.get('TABLEAU_URL_ROOT') %}
+TABLEAU_URL_ROOT = {{ localsettings.TABLEAU_URL_ROOT }}
+{% endif %}
