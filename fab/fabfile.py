@@ -68,6 +68,7 @@ from utils import (
     retrieve_cached_deploy_env,
     retrieve_cached_deploy_checkpoint,
     traceback_string,
+    is_monolith,
 )
 
 
@@ -683,7 +684,8 @@ def silent_services_restart(use_current_release=False):
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
     execute(db.set_in_progress_flag, use_current_release)
-    execute(supervisor.restart_all_except_webworkers)
+    if not is_monolith():
+        execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
 
