@@ -82,3 +82,4 @@ datadog_integration_redisdb: false
 datadog_integration_riak: false
 datadog_integration_riakcs: false
 datadog_integration_zk: false
+datadog_integration_jmx: false
