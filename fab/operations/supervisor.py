@@ -24,7 +24,7 @@ from ..const import (
     ROLES_ALL_SERVICES,
 )
 from fabric import utils
-from ..utils import execute_with_timing, get_pillow_env_config
+from ..utils import execute_with_timing, get_pillow_env_config, is_monolith
 
 
 def set_supervisor_config():
@@ -313,7 +313,7 @@ def _check_and_reload_nginx():
 
 @contextmanager
 def decommissioned_host(host):
-    not_monolith = len(env.roledefs['django_app']) > 1
+    not_monolith = not is_monolith()
     if not_monolith:
         execute(_decommission_host, host)
 
@@ -328,7 +328,6 @@ def decommissioned_host(host):
 def restart_webworkers():
     with decommissioned_host(env.host):
         _services_restart()
-
 
 
 @roles(ROLES_FORMPLAYER)

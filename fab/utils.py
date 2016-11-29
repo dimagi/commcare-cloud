@@ -182,6 +182,10 @@ def traceback_string():
     )
 
 
+def is_monolith():
+    return len(env.roledefs['django_app']) == 1
+
+
 def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None):
     parts = [cmd_prefix, 'pip install']
     if timeout is not None:
