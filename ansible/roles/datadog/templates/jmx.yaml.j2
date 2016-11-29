@@ -1,0 +1,26 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+  custom_jar_paths: # optional
+    - {{ code_home }}/formplayer_build/formplayer.jar
+
+instances:
+  - host: localhost
+    port: 9999
+
+    name: jmx_instance  # optional
+      java_options: "-Xmx200m -Xms50m"
+
+    tags:
+      env: {{ deploy_env }}
+      newTag: formplayer
+
+    conf:
+      - include:
+          bean_regex:
+            - .*Controller.*
+            - .*Service.*
+            - .*Factory.*
+            - .*Aspect.*
+            - .*Filter.*

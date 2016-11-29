@@ -36,3 +36,4 @@
     - datadog_integration_riak
     - datadog_integration_riakcs
     - datadog_integration_zk
+    - datadog_integration_jmx
