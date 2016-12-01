@@ -376,6 +376,7 @@ def kill_stale_celery_workers():
 
 @task
 def deploy_formplayer():
+    execute(announce_formplayer_deploy_start)
     execute(formplayer.build_formplayer, True)
     execute(supervisor.restart_formplayer)
 
@@ -439,6 +440,17 @@ def announce_deploy_start():
     execute_with_timing(
         mail_admins,
         "{user} has initiated a deploy to {environment}.".format(
+            user=env.user,
+            environment=env.environment,
+        ),
+        ''
+    )
+
+
+def announce_formplayer_deploy_start():
+    execute_with_timing(
+        mail_admins,
+        "{user} has initiated a formplayer deploy to {environment}.".format(
             user=env.user,
             environment=env.environment,
         ),
