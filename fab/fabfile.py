@@ -476,6 +476,7 @@ def _deploy_without_asking():
         supervisor.set_supervisor_config,
         formplayer.build_formplayer,
         conditionally_stop_pillows_and_celery_during_migrate,
+        db.create_kafka_topics,
         db.flip_es_aliases,
         staticfiles.update_manifest,
         release.clean_releases,
