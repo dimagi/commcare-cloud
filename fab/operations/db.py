@@ -114,3 +114,11 @@ def migrations_exist():
             # failed to return a value python could parse into an int
             return True
         return n_migrations > 0
+
+
+@roles(ROLES_DB_ONLY)
+def create_kafka_topics():
+    """Create kafka topics if needed.  This is pretty fast."""
+    with cd(env.code_root):
+        sudo('%(virtualenv_root)s/bin/python manage.py create_kafka_topics' % env)
+
