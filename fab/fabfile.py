@@ -414,6 +414,22 @@ def setup_release(keep_days=0):
     print blue(env.code_root)
 
 
+@task
+def apply_patch(patchfile=None):
+    """
+    Used to apply a git patch created via `git format-patch`. Usage:
+
+        fab <env> apply_patch:patchfile=/path/to/patch
+
+    Note: Only use this when absolutely necessary.
+    """
+    if not patchfile:
+        print red("Must specify patch filepath")
+        exit()
+    execute(release.apply_patch, patchfile)
+    silent_services_restart(use_current_release=True)
+
+
 def conditionally_stop_pillows_and_celery_during_migrate():
     """
     Conditionally stops pillows and celery if any migrations exist
