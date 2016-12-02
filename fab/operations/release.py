@@ -286,7 +286,7 @@ def mark_keep_until(keep_days):
 @roles(ROLES_ALL_SRC)
 @parallel
 def apply_patch(filepath):
-    destination = '/home/{}/patch.patch'.format(env.user)
+    destination = '/home/{}/{}.patch'.format(env.user, env.deploy_metadata.timestamp)
     operations.put(
         filepath,
         destination,
