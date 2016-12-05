@@ -24,7 +24,7 @@ from ..const import (
     ROLES_ALL_SERVICES,
 )
 from fabric import utils
-from ..utils import execute_with_timing, get_pillow_env_config, is_monolith
+from ..utils import execute_with_timing, get_pillow_env_config
 
 
 def set_supervisor_config():
@@ -313,7 +313,7 @@ def _check_and_reload_nginx():
 
 @contextmanager
 def decommissioned_host(host):
-    not_monolith = not is_monolith()
+    not_monolith = not env.is_monolith
     if not_monolith:
         execute(_decommission_host, host)
 
