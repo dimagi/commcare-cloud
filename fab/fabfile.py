@@ -68,7 +68,6 @@ from utils import (
     retrieve_cached_deploy_env,
     retrieve_cached_deploy_checkpoint,
     traceback_string,
-    is_monolith,
 )
 
 
@@ -249,6 +248,8 @@ def development():
 def env_common():
     require('inventory', 'environment')
     servers = read_inventory_file(env.inventory)
+
+    env.is_monolith = len(servers['all']) == 1
 
     env.deploy_metadata = DeployMetadata(env.code_branch, env.environment)
     _setup_path()
@@ -713,7 +714,7 @@ def silent_services_restart(use_current_release=False):
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
     execute(db.set_in_progress_flag, use_current_release)
-    if not is_monolith():
+    if not env.is_monolith:
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
