@@ -589,5 +589,5 @@ TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
 {% endif %}
 
 {% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
-ONBOARDING_DOMAIN_TEST_DATE = '{{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}'
+ONBOARDING_DOMAIN_TEST_DATE = {{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}
 {% endif %}
