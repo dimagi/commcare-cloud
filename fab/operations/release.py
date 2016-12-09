@@ -7,6 +7,7 @@ from fabric.colors import red
 from fabric.context_managers import cd, settings
 from fabric.contrib import files
 from fabric import utils, operations
+from fabric.decorators import runs_once
 
 from ..const import (
     ROLES_ALL_SRC,
@@ -103,6 +104,7 @@ def create_code_dir():
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def kill_stale_celery_workers(delay=0):
     with cd(env.code_current):
         sudo(
@@ -113,6 +115,7 @@ def kill_stale_celery_workers(delay=0):
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def record_successful_deploy():
     start_time = datetime.strptime(env.deploy_metadata.timestamp, DATE_FMT)
     delta = datetime.utcnow() - start_time

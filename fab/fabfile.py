@@ -36,6 +36,7 @@ from fabric.api import run, roles, execute, task, sudo, env, parallel
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
+from fabric.decorators import runs_once
 from fabric.operations import require
 from const import (
     ROLES_ALL_SRC,
@@ -314,6 +315,7 @@ def preindex_views():
 
 
 @roles(ROLES_DB_ONLY)
+@runs_once
 def mail_admins(subject, message):
     with cd(env.code_root):
         sudo((
