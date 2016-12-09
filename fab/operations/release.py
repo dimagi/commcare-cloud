@@ -6,7 +6,7 @@ from fabric.api import roles, parallel, sudo, env
 from fabric.colors import red
 from fabric.context_managers import cd, settings
 from fabric.contrib import files
-from fabric import utils
+from fabric import utils, operations
 from fabric.decorators import runs_once
 
 from ..const import (
@@ -284,3 +284,16 @@ def mark_keep_until(keep_days):
     until_date = (datetime.utcnow() + timedelta(days=keep_days)).strftime(DATE_FMT)
     with cd(env.code_root):
         sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def apply_patch(filepath):
+    destination = '/home/{}/{}.patch'.format(env.user, env.deploy_metadata.timestamp)
+    operations.put(
+        filepath,
+        destination,
+    )
+
+    current_dir = sudo('readlink -f {}'.format(env.code_current))
+    sudo('git apply --unsafe-paths {} --directory={}'.format(destination, current_dir))

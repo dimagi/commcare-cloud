@@ -250,6 +250,8 @@ def env_common():
     require('inventory', 'environment')
     servers = read_inventory_file(env.inventory)
 
+    env.is_monolith = len(servers['all']) == 1
+
     env.deploy_metadata = DeployMetadata(env.code_branch, env.environment)
     _setup_path()
 
@@ -377,6 +379,7 @@ def kill_stale_celery_workers():
 
 @task
 def deploy_formplayer():
+    execute(announce_formplayer_deploy_start)
     execute(formplayer.build_formplayer, True)
     execute(supervisor.restart_formplayer)
 
@@ -414,6 +417,22 @@ def setup_release(keep_days=0):
     print blue(env.code_root)
 
 
+@task
+def apply_patch(patchfile=None):
+    """
+    Used to apply a git patch created via `git format-patch`. Usage:
+
+        fab <env> apply_patch:patchfile=/path/to/patch
+
+    Note: Only use this when absolutely necessary.
+    """
+    if not patchfile:
+        print red("Must specify patch filepath")
+        exit()
+    execute(release.apply_patch, patchfile)
+    silent_services_restart(use_current_release=True)
+
+
 def conditionally_stop_pillows_and_celery_during_migrate():
     """
     Conditionally stops pillows and celery if any migrations exist
@@ -447,6 +466,17 @@ def announce_deploy_start():
     )
 
 
+def announce_formplayer_deploy_start():
+    execute_with_timing(
+        mail_admins,
+        "{user} has initiated a formplayer deploy to {environment}.".format(
+            user=env.user,
+            environment=env.environment,
+        ),
+        ''
+    )
+
+
 def _deploy_without_asking():
     commands = [
         setup_release,
@@ -465,6 +495,7 @@ def _deploy_without_asking():
         supervisor.set_supervisor_config,
         formplayer.build_formplayer,
         conditionally_stop_pillows_and_celery_during_migrate,
+        db.create_kafka_topics,
         db.flip_es_aliases,
         staticfiles.update_manifest,
         release.clean_releases,
@@ -685,7 +716,8 @@ def silent_services_restart(use_current_release=False):
     Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
     """
     execute(db.set_in_progress_flag, use_current_release)
-    execute(supervisor.restart_all_except_webworkers)
+    if not env.is_monolith:
+        execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
 
@@ -703,11 +735,6 @@ def stop_pillows():
 @task
 def start_pillows():
     execute(supervisor.start_pillows, True)
-
-
-@task
-def stop_celery():
-    execute(supervisor.stop_celery_tasks, True)
 
 
 @task

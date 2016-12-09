@@ -275,9 +275,8 @@ def start_pillows(current=False):
 
 @roles(ROLES_CELERY)
 @parallel
-def stop_celery_tasks(current=False):
-    code_root = env.code_current if current else env.code_root
-    with cd(code_root):
+def stop_celery_tasks():
+    with cd(env.code_root):
         sudo('scripts/supervisor-group-ctl stop celery')
 
 
@@ -314,7 +313,7 @@ def _check_and_reload_nginx():
 
 @contextmanager
 def decommissioned_host(host):
-    not_monolith = len(env.roledefs['django_app']) > 1
+    not_monolith = not env.is_monolith
     if not_monolith:
         execute(_decommission_host, host)
 
@@ -329,7 +328,6 @@ def decommissioned_host(host):
 def restart_webworkers():
     with decommissioned_host(env.host):
         _services_restart()
-
 
 
 @roles(ROLES_FORMPLAYER)
