@@ -1,0 +1,164 @@
+From 3491b22d780f136e9dfac6697515bbae6ca4bf98 Mon Sep 17 00:00:00 2001
+From: Norman Hooper <nhooper@dimagi.com>
+Date: Fri, 2 Dec 2016 22:37:59 +0200
+Subject: [PATCH] Add device ID to user model (#14100)
+
+* add device id to user model when found during key request
+
+* Store last_used
+
+* Test
+
+* Fix
+
+* use a new property for devices
+
+* move function to user model
+
+* add test
+
+* [ci skip] unused imports
+
+* call with device_id
+
+* use correct datetime
+---
+ corehq/apps/mobile_auth/views.py           |  4 +++
+ corehq/apps/users/models.py                | 32 ++++++++++++++++++++
+ corehq/apps/users/tests/test_user_model.py | 48 +++++++++++++++++++++++++++++-
+ 3 files changed, 83 insertions(+), 1 deletion(-)
+
+diff --git a/corehq/apps/mobile_auth/views.py b/corehq/apps/mobile_auth/views.py
+index 61b151a..18a5081 100644
+--- a/corehq/apps/mobile_auth/views.py
++++ b/corehq/apps/mobile_auth/views.py
+@@ -64,6 +64,10 @@ def fetch_key_records(request, domain):
+         last_issued = string_to_datetime(last_issued).replace(tzinfo=None)
+     user_id = request.couch_user.user_id
+     payload = FetchKeyRecords(domain, user_id, last_issued).get_payload()
++    device_id = request.GET.get('device_id')
++    if device_id and isinstance(request.couch_user, CommCareUser):
++        request.couch_user.update_device_id_last_used(device_id)
++        request.couch_user.save()
+     return HttpResponse(payload)
+ 
+ 
+diff --git a/corehq/apps/users/models.py b/corehq/apps/users/models.py
+index 3331cf7..9357230 100644
+--- a/corehq/apps/users/models.py
++++ b/corehq/apps/users/models.py
+@@ -775,12 +775,27 @@ class EulaMixin(DocumentSchema):
+         return current_eula
+ 
+ 
++class DeviceIdLastUsed(DocumentSchema):
++    device_id = StringProperty()
++    last_used = DateTimeProperty()
++
++    def __eq__(self, other):
++        return all(getattr(self, p) == getattr(other, p) for p in self.properties())
++
++
+ class CouchUser(Document, DjangoUserMixin, IsMemberOfMixin, UnicodeMixIn, EulaMixin):
+     """
+     A user (for web and commcare)
+     """
+     base_doc = 'CouchUser'
++
++    # todo: it looks like this is only ever set to a useless string and we should probably just remove it
++    # https://github.com/dimagi/commcare-hq/pull/14087#discussion_r90423396
+     device_ids = ListProperty()
++
++    # this is the real list of devices
++    devices = SchemaListProperty(DeviceIdLastUsed)
++
+     phone_numbers = ListProperty()
+     created_on = DateTimeProperty(default=datetime(year=1900, month=1, day=1))
+     #    For now, 'status' is things like:
+@@ -1978,6 +1993,23 @@ class CommCareUser(CouchUser, SingleMembershipMixin, CommCareMobileContactMixin)
+         case = CaseAccessors(self.domain).get_case_by_domain_hq_user_id(self._id, USERCASE_TYPE)
+         return case.case_id if case else None
+ 
++    def update_device_id_last_used(self, device_id, when=None):
++        """
++        Sets the last_used date for the device to be the current time
++
++        Does NOT save the user object.
++        """
++        when = when or datetime.utcnow()
++        for user_device_id_last_used in self.devices:
++            if user_device_id_last_used.device_id == device_id:
++                user_device_id_last_used.last_used = when
++                break
++        else:
++            self.devices.append(DeviceIdLastUsed(
++                device_id=device_id,
++                last_used=when
++            ))
++
+ 
+ class WebUser(CouchUser, MultiMembershipMixin, CommCareMobileContactMixin):
+     program_id = StringProperty()
+diff --git a/corehq/apps/users/tests/test_user_model.py b/corehq/apps/users/tests/test_user_model.py
+index 9406674..2c67ddb 100644
+--- a/corehq/apps/users/tests/test_user_model.py
++++ b/corehq/apps/users/tests/test_user_model.py
+@@ -1,4 +1,5 @@
+-from django.test import TestCase
++from datetime import datetime, timedelta
++from django.test import TestCase, SimpleTestCase
+ 
+ from corehq.apps.domain.shortcuts import create_domain
+ from corehq.apps.users.models import CommCareUser
+@@ -35,3 +36,48 @@ class UserModelTest(TestCase):
+         form_ids = list(self.user._get_form_ids())
+         self.assertEqual(len(form_ids), 1)
+         self.assertEqual(form_ids[0], '123')
++
++
++class UserDeviceTest(SimpleTestCase):
++
++    def test_add_single_device(self):
++        user = CommCareUser()
++        now = datetime.utcnow()
++        device_id = 'my-new-cool-phone'
++        self.assertEqual([], user.devices)
++        user.update_device_id_last_used(device_id, now)
++        self.assertEqual(1, len(user.devices))
++        device = user.devices[0]
++        self.assertEqual(device_id, device.device_id)
++        self.assertEqual(now, device.last_used)
++
++    def test_add_second_device(self):
++        user = CommCareUser()
++        now = datetime.utcnow()
++        later = now + timedelta(seconds=1)
++        first_device = 'first-device'
++        second_device = 'second-device'
++        user.update_device_id_last_used(first_device, now)
++        user.update_device_id_last_used(second_device, later)
++        self.assertEqual(2, len(user.devices))
++        device_date_mapping = {device.device_id: device.last_used for device in user.devices}
++        self.assertEqual(set([first_device, second_device]), set(device_date_mapping.keys()))
++        self.assertEqual(now, device_date_mapping[first_device])
++        self.assertEqual(later, device_date_mapping[second_device])
++
++    def test_update_existing_devices(self):
++        user = CommCareUser()
++        now = datetime.utcnow()
++        later = now + timedelta(seconds=1)
++        way_later = now + timedelta(seconds=2)
++        first_device = 'first-device'
++        second_device = 'second-device'
++        user.update_device_id_last_used(first_device, now)
++        user.update_device_id_last_used(second_device, now)
++        user.update_device_id_last_used(first_device, later)
++        user.update_device_id_last_used(second_device, way_later)
++        self.assertEqual(2, len(user.devices))
++        device_date_mapping = {device.device_id: device.last_used for device in user.devices}
++        self.assertEqual(set([first_device, second_device]), set(device_date_mapping.keys()))
++        self.assertEqual(later, device_date_mapping[first_device])
++        self.assertEqual(way_later, device_date_mapping[second_device])
+-- 
+2.2.1
+
