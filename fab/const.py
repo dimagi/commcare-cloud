@@ -29,6 +29,7 @@ ROLES_SMS_QUEUE = ['django_monolith', 'sms_queue']
 ROLES_REMINDER_QUEUE = ['django_monolith', 'reminder_queue']
 ROLES_PILLOW_RETRY_QUEUE = ['django_monolith', 'pillow_retry_queue']
 ROLES_DB_ONLY = ['pg', 'django_monolith']
+ROLES_CONTROL = ['deploy', 'django_monolith']
 
 RELEASE_RECORD = 'RELEASES.txt'
 KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
