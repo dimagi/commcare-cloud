@@ -64,6 +64,7 @@
     - /usr/local/var/lib/couchdb
     - /usr/local/var/run/couchdb
     - /usr/local/etc/couchdb/
+    - {{ couch_data_dir }}
 
 - name: Configure CouchDB as service
   file: src=/usr/local/etc/init.d/couchdb dest=/etc/init.d/couchdb state=link

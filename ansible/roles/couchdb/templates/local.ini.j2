@@ -10,6 +10,8 @@
 
 [couchdb]
 ;max_document_size = 4294967296 ; bytes
+database_dir = {{ couch_data_dir }}
+view_index_dir = {{ couch_data_dir }}
 
 [httpd]
 port = 5984
