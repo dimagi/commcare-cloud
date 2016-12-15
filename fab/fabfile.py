@@ -49,6 +49,7 @@ from const import (
     ROLES_REMINDER_QUEUE,
     ROLES_PILLOW_RETRY_QUEUE,
     ROLES_DB_ONLY,
+    ROLES_CONTROL,
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
     PROJECT_ROOT,
@@ -314,8 +315,7 @@ def preindex_views():
     db.preindex_views()
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def mail_admins(subject, message):
     with cd(env.code_root):
         sudo((

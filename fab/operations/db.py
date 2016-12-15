@@ -6,7 +6,7 @@ from fabric.api import roles, sudo, env, parallel
 from fabric.decorators import runs_once
 
 from ..exceptions import PreindexNotFinished
-from ..const import ROLES_DB_ONLY, ROLES_PILLOWTOP
+from ..const import ROLES_DB_ONLY, ROLES_PILLOWTOP, ROLES_CONTROL
 
 
 @roles(ROLES_PILLOWTOP)
@@ -43,8 +43,7 @@ def ensure_preindex_completion():
         raise PreindexNotFinished()
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def ensure_checkpoints_safe():
     extras = '--print-only' if env.force else ''
     with cd(env.code_root):
@@ -65,8 +64,7 @@ def ensure_checkpoints_safe():
                 raise
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def _is_preindex_complete():
     with settings(warn_only=True):
         return sudo(
@@ -80,17 +78,14 @@ def _is_preindex_complete():
         ).succeeded
 
 
-@roles(ROLES_DB_ONLY)
-@parallel
-@runs_once
+@roles(ROLES_CONTROL)
 def flip_es_aliases():
     """Flip elasticsearch aliases to the latest version"""
     with cd(env.code_root):
         sudo('%(virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):
@@ -98,16 +93,14 @@ def migrate():
         sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def set_in_progress_flag(use_current_release=False):
     venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def migrations_exist():
     """
     Check if there exists database migrations to run

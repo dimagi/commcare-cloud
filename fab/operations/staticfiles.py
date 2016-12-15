@@ -1,10 +1,9 @@
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
-from fabric.decorators import runs_once
 
 from fab.utils import bower_command
 
-from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY
+from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY, ROLES_CONTROL
 
 
 @roles(set(ROLES_STATIC + ROLES_DJANGO))
@@ -19,8 +18,7 @@ def version_static():
     _version_static()
 
 
-@roles(ROLES_DB_ONLY)
-@runs_once
+@roles(ROLES_CONTROL)
 def prime_version_static():
     """
     Run version static on the DB machine to prime the version_static cache so
