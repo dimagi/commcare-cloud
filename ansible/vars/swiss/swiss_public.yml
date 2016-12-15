@@ -44,10 +44,13 @@ nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/server.crt'
 
 keystore_file: '../config/DimagiKeyStore'
 
-backup_blobdb: False
-backup_postgres: False
-backup_es: False
-postgres_s3: False
+backup_blobdb: True
+backup_postgres: True
+backup_es: True
+backup_couch: True
+postgres_s3: True
+blobdb_s3: True
+couch_s3: True
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 

@@ -13,7 +13,7 @@
   sudo: yes
   cron:
     name: "Backup blobdb daily"
-    job: "/etc/cron.d/create_blobdb_backup.sh daily 7"
+    job: "/etc/cron.d/create_blobdb_backup.sh daily 3"
     minute: 0
     hour: 0
     weekday: "1,2,3,4,5,6"
@@ -25,7 +25,7 @@
   sudo: yes
   cron:
     name: "Backup blobdb weekly"
-    job: "/etc/cron.d/create_blobdb_backup.sh weekly 28"
+    job: "/etc/cron.d/create_blobdb_backup.sh weekly 21"
     minute: 0
     hour: 0
     weekday: 0
@@ -48,11 +48,11 @@
   sudo: yes
   cron:
     name: "Backup blobdb daily"
-    job: "/etc/cron.d/create_couchdb_backup.sh daily 7"
+    job: "/etc/cron.d/create_couchdb_backup.sh daily 3"
     minute: 0
     hour: 0
     weekday: "1,2,3,4,5,6"
-    user: blobdb
+    user: couchdb
     cron_file: backup_couch
   when: backup_couch
 
@@ -60,10 +60,10 @@
   sudo: yes
   cron:
     name: "Backup blobdb weekly"
-    job: "/etc/cron.d/create_couchdb_backup.sh weekly 28"
+    job: "/etc/cron.d/create_couchdb_backup.sh weekly 21"
     minute: 0
     hour: 0
     weekday: 0
-    user: blobdb
+    user: couchdb
     cron_file: backup_couch
   when: backup_couch
