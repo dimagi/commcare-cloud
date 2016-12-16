@@ -1,0 +1,43 @@
+From f67e832b8d8d01e37f580c3f4456ef417dc5db2e Mon Sep 17 00:00:00 2001
+From: Norman Hooper <nhooper@dimagi.com>
+Date: Thu, 1 Dec 2016 16:56:59 +0200
+Subject: [PATCH] Fix ICDS SQL functions
+
+---
+ custom/icds_reports/migrations/sql_templates/create_functions.sql | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/custom/icds_reports/migrations/sql_templates/create_functions.sql b/custom/icds_reports/migrations/sql_templates/create_functions.sql
+index c82eaa3..b9f578e 100644
+--- a/custom/icds_reports/migrations/sql_templates/create_functions.sql
++++ b/custom/icds_reports/migrations/sql_templates/create_functions.sql
+@@ -204,14 +204,15 @@ BEGIN
+ 		'doc_id, ' ||
+ 		'awc_id, ' ||
+ 		'month, ' ||
+-		'submitted_on, ' ||
++		'submitted_on AS pse_date, ' ||
+ 		'awc_open_count, ' ||
++		'1, ' ||
+ 		'eligible_children, ' ||
+ 		'attended_children, ' ||
+ 		'attended_children_percent, ' ||
+ 		'form_location, ' ||
+ 		'form_location_lat, ' ||
+-		'form_location_long, ' ||
++		'form_location_long ' ||
+ 		'FROM ' || quote_ident(_daily_attendance_tablename) || ' WHERE month = ' || quote_literal(_start_date) || ')';
+ 
+ 	EXECUTE 'CREATE INDEX ' || quote_ident(_tablename || '_indx1') || ' ON ' || quote_ident(_tablename) || '(awc_id)';
+@@ -987,7 +988,7 @@ BEGIN
+ 	EXECUTE 'DELETE FROM ' || quote_ident(_tablename);
+ 	EXECUTE 'INSERT INTO ' || quote_ident(_tablename) ||
+ 		' (state_id, district_id, block_id, supervisor_id, awc_id, month, num_awcs, thr_score, thr_eligible_ccs, ' ||
+-		'thr_eligible_child, thr_rations_21_plus_distributed_ccs, thr_rations_21_plus_distributed_child wer_score, pse_score) ' ||
++		'thr_eligible_child, thr_rations_21_plus_distributed_ccs, thr_rations_21_plus_distributed_child, wer_score, pse_score) ' ||
+ 		'(SELECT ' ||
+ 			'state_id, ' ||
+ 			'district_id, ' ||
+-- 
+2.8.0
+
