@@ -161,6 +161,11 @@ def mark_last_release_unsuccessful():
         sudo("sed -i '$d' {}".format(RELEASE_RECORD))
 
 
+def git_gc_current():
+    with cd(env.code_current):
+        sudo('git gc')
+
+
 @roles(ROLES_ALL_SRC)
 @parallel
 def clean_releases(keep=3):
@@ -200,6 +205,9 @@ def clean_releases(keep=3):
 
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
+
+    # as part of the clean up step, run gc in the 'current' directory
+    git_gc_current()
 
 
 @parallel
