@@ -2,6 +2,7 @@ SITE_HOST: 'india.commcarehq.org'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
 deploy_env: softlayer
+tableau_server: 'http://tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 
 active_sites:
