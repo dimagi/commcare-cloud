@@ -1,0 +1,37 @@
+From ad056a9621f8782d31825b743457ef2da208629d Mon Sep 17 00:00:00 2001
+From: Sravan Reddy <sravfeyn@gmail.com>
+Date: Fri, 16 Dec 2016 10:57:41 +0530
+Subject: [PATCH] update tableau url
+
+---
+ custom/icds_reports/const.py | 2 +-
+ custom/icds_reports/views.py | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/custom/icds_reports/const.py b/custom/icds_reports/const.py
+index 71ef8df..d41d86d 100644
+--- a/custom/icds_reports/const.py
++++ b/custom/icds_reports/const.py
+@@ -1,4 +1,4 @@
+-TABLEAU_ROOT = "http://www.icds-cas.gov.in/reports/"
++TABLEAU_ROOT = "https://nic-tableau.commcarehq.org/"
+ TABLEU_TICKET_URL = TABLEAU_ROOT + "trusted/"
+ TABLEAU_VIEW_URL = TABLEAU_ROOT + "#/views/"
+ TABLEAU_USERNAME = "reportviewer"
+diff --git a/custom/icds_reports/views.py b/custom/icds_reports/views.py
+index d083ce6..2cf9a9e 100644
+--- a/custom/icds_reports/views.py
++++ b/custom/icds_reports/views.py
+@@ -80,7 +80,8 @@ def get_tableau_access_token(tableau_user, client_ip):
+     """
+     r = requests.post(
+         const.TABLEU_TICKET_URL,
+-        data={'username': tableau_user, 'client_ip': client_ip}
++        data={'username': tableau_user, 'client_ip': client_ip},
++        verify=False
+     )
+ 
+     if r.status_code == 200:
+-- 
+2.8.0
+
