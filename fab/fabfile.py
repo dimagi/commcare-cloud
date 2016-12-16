@@ -29,6 +29,7 @@ import datetime
 import os
 import posixpath
 import yaml
+import pipes
 from distutils.util import strtobool
 
 from fabric import utils
@@ -323,9 +324,9 @@ def mail_admins(subject, message):
             'mail_admins --subject "%(subject)s" "%(message)s" --slack --environment %(environment)s'
         ) % {
             'virtualenv_root': env.virtualenv_root,
-            'subject': subject,
-            'message': message,
-            'environment': env.environment,
+            'subject': pipes.quote(subject),
+            'message': pipes.quote(message),
+            'environment': pipes.quote(env.environment),
         })
 
 
@@ -514,7 +515,8 @@ def _deploy_without_asking():
     except Exception:
         execute_with_timing(
             mail_admins,
-            "Deploy to {environment} failed. Try resuming with 'fab {environment} deploy:resume=yes'.".format(environment=env.environment),
+            "Deploy to {environment} failed. Try resuming with "
+            "fab {environment} deploy:resume=yes.".format(environment=env.environment),
             traceback_string()
         )
         # hopefully bring the server back to life
