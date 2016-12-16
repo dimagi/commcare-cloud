@@ -179,7 +179,7 @@ def traceback_string():
         trace=trace,
         type=exc_type.__name__,
         exc=exc,
-    ).replace('"', '\\"')
+    )
 
 
 def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None):
