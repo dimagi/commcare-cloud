@@ -93,7 +93,6 @@
   pip: name={{ item }}
   sudo: yes
   with_items:
-    - fabric
     - virtualenv
     - sh
     - httplib2
