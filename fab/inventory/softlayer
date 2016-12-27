@@ -22,6 +22,12 @@
 [proxy1]
 10.162.36.208
 
+[formplayer0]
+10.162.36.248
+
+[formplayer1]
+10.162.36.231
+
 [riak5]
 10.162.36.225
 
@@ -72,7 +78,8 @@ pillow1
 touch0
 
 [formplayer:children]
-touch0
+formplayer0
+formplayer1
 
 [redis:children]
 db0
