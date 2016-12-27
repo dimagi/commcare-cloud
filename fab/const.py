@@ -9,6 +9,7 @@ ROLES_ALL_SRC = [
     'django_celery',
     'django_pillowtop',
     'formsplayer',
+    'formplayer',
     'staticfiles'
 ]
 ROLES_ALL_SERVICES = [
