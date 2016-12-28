@@ -17,9 +17,13 @@ instances:
 
     conf:
       - include:
-          bean_regex:
-            - .*Controller.*
-            - .*Service.*
-            - .*Factory.*
-            - .*Aspect.*
-            - .*Filter.*
+          attribute:
+            - maxActiveSessions
+            - sessionCreateRate
+            - sessionExpireRate
+            - sessionMaxAliveTime
+            - processingTime
+            - bytesSent
+            - bytesReceived
+            - errorCount
+            - requestCount
