@@ -17,17 +17,20 @@ instances:
 
     conf:
       - include:
+          bean:
+            - Tomcat:type=GlobalRequestProcessor
+            - Tomcat:type=RequestProcessor
+            - java.lang:type=Threading
+            - java.lang:type=OperatingSystem
           attribute:
             - bytesSent
             - bytesReceived
             - errorCount
-            - requestCount
             - processingTime
             - bytesSent
             - bytesReceived
             - errorCount
             - requestCount
-            - maxTime
             - requestProcessingTime
             - requestBytesReceived
             - errorCount
