@@ -17,7 +17,7 @@ base:
 
 softlayer:
   environment: softlayer
-
+  formplayer_memory: "7000m"
   celery_processes:
     '*':
       main:
