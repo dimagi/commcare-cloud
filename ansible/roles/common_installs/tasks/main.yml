@@ -59,6 +59,7 @@
     - gradle
     - ranger  # cmdline file browser
     - libffi-dev  # Required for installing github3py
+    - libssl-dev  # Required for pip setup tools
     - tmux
 
 - name: Set NPM registry
@@ -92,7 +93,6 @@
   pip: name={{ item }}
   sudo: yes
   with_items:
-    - fabric
     - virtualenv
     - sh
     - httplib2
