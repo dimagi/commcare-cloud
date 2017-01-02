@@ -204,6 +204,7 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST_TOKEN }}"
+  ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
