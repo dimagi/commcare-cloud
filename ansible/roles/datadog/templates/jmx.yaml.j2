@@ -17,9 +17,33 @@ instances:
 
     conf:
       - include:
-          bean_regex:
-            - .*Controller.*
-            - .*Service.*
-            - .*Factory.*
-            - .*Aspect.*
-            - .*Filter.*
+          bean:
+            - Tomcat:type=GlobalRequestProcessor
+            - Tomcat:type=RequestProcessor
+            - java.lang:type=Threading
+            - java.lang:type=OperatingSystem
+          attribute:
+            - bytesSent
+            - bytesReceived
+            - errorCount
+            - processingTime
+            - requestCount
+            - requestProcessingTime
+            - requestBytesReceived
+            - CurrentThreadCpuTime
+            - CurrentThreadUserTime
+            - TotalStartedThreadCount
+            - DaemonThreadCount
+            - PeakThreadCount
+            - MaxFileDescriptorCount
+            - OpenFileDescriptorCount
+            - CommittedVirtualMemorySize
+            - FreePhysicalMemorySize
+            - FreeSwapSpaceSize
+            - ProcessCpuLoad
+            - ProcessCpuTime
+            - SystemCpuLoad
+            - TotalPhysicalMemorySize
+            - TotalSwapSpaceSize
+            - SystemLoadAverage
+            - AvailableProcessors
