@@ -22,6 +22,9 @@
 [proxy1]
 10.162.36.208
 
+[proxy2]
+10.162.36.234
+
 [formplayer0]
 10.162.36.248
 
@@ -51,6 +54,9 @@ proxy0
 
 [cas_proxy:children]
 proxy1
+
+[enikshay_proxy:children]
+proxy2
 
 [webworkers:children]
 django0
