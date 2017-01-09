@@ -317,13 +317,15 @@ def preindex_views():
 
 
 @roles(ROLES_CONTROL)
-def mail_admins(subject, message):
-    with cd(env.code_root):
+def mail_admins(subject, message, use_current_release=False):
+    code_dir = env.code_current if use_current_release else env.code_root
+    virtualenv_dir = env.virtualenv_current if use_current_release else env.virtualenv_root
+    with cd(code_dir):
         sudo((
-            '%(virtualenv_root)s/bin/python manage.py '
+            '%(virtualenv_dir)s/bin/python manage.py '
             'mail_admins --subject "%(subject)s" "%(message)s" --slack --environment %(environment)s'
         ) % {
-            'virtualenv_root': env.virtualenv_root,
+            'virtualenv_dir': virtualenv_dir,
             'subject': pipes.quote(subject),
             'message': pipes.quote(message),
             'environment': pipes.quote(env.environment),
@@ -474,7 +476,8 @@ def announce_formplayer_deploy_start():
             user=env.user,
             environment=env.environment,
         ),
-        ''
+        '',
+        use_current_release=True,
     )
 
 
