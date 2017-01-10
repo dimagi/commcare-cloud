@@ -439,9 +439,9 @@ def apply_patch(patchfile=None):
 @task
 def reverse_patch(patchfile=None):
     """
-    Used to apply a git patch created via `git format-patch`. Usage:
+    Used to reverse a git patch created via `git format-patch`. Usage:
 
-        fab <env> apply_patch:patchfile=/path/to/patch
+        fab <env> reverse_patch:patchfile=/path/to/patch
 
     Note: Only use this when absolutely necessary.
     """
