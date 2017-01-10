@@ -303,3 +303,16 @@ def apply_patch(filepath):
 
     current_dir = sudo('readlink -f {}'.format(env.code_current))
     sudo('git apply --unsafe-paths {} --directory={}'.format(destination, current_dir))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def reverse_patch(filepath):
+    destination = '/home/{}/{}.patch'.format(env.user, env.deploy_metadata.timestamp)
+    operations.put(
+        filepath,
+        destination,
+    )
+
+    current_dir = sudo('readlink -f {}'.format(env.code_current))
+    sudo('git apply -R --unsafe-paths {} --directory={}'.format(destination, current_dir))
