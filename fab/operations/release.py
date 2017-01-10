@@ -6,6 +6,7 @@ from fabric.api import roles, parallel, sudo, env
 from fabric.colors import red
 from fabric.context_managers import cd, settings
 from fabric.contrib import files
+from fabric.operations import put
 from fabric import utils, operations
 
 from ..const import (
@@ -44,29 +45,33 @@ def update_code(git_tag, use_current_release=False):
 
 
 def _update_code_from_previous_release():
-    if files.exists(env.code_current):
-        with cd(env.code_current):
-            submodules = sudo("git submodule | awk '{ print $2 }'").split()
     with cd(env.code_root):
         if files.exists(env.code_current):
-            local_submodule_clone = []
-            for submodule in submodules:
-                local_submodule_clone.append('-c')
-                local_submodule_clone.append(
-                    'submodule.{submodule}.url={code_current}/.git/modules/{submodule}'.format(
-                        submodule=submodule,
-                        code_current=env.code_current
-                    )
-                )
-
-            sudo('git clone --recursive {} {}/.git {}'.format(
-                ' '.join(local_submodule_clone),
-                env.code_current,
-                env.code_root
-            ))
+            _update_code_from_local_path(env.code_current)
             sudo('git remote set-url origin {}'.format(env.code_repo))
         else:
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
+
+
+def _update_code_from_local_path(path):
+    if files.exists(env.code_current):
+        with cd(env.code_current):
+            submodules = sudo("git submodule | awk '{ print $2 }'").split()
+    local_submodule_clone = []
+    for submodule in submodules:
+        local_submodule_clone.append('-c')
+        local_submodule_clone.append(
+            'submodule.{submodule}.url={path}/.git/modules/{submodule}'.format(
+                submodule=submodule,
+                path=path
+            )
+        )
+
+    sudo('git clone --recursive {} {}/.git {}'.format(
+        ' '.join(local_submodule_clone),
+        env.code_current,
+        env.code_root
+    ))
 
 
 @roles(ROLES_ALL_SRC)
