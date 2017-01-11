@@ -15,7 +15,6 @@ def prepare_zipfiles():
         'git clone --depth 1 --recursive https://github.com/dimagi/commcare-hq.git {}/commcare-hq'
         .format(OFFLINE_STAGING_DIR)
     )
-    local('zip -r {} {}/commcare-hq'.format(HQ_ZIP_NAME, OFFLINE_STAGING_DIR))
 
     # After we've created our HQ code zip, let's get bower and npm
 
