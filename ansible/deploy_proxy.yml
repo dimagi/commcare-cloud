@@ -34,6 +34,14 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cas_ssl == True, action: site, site_name: cas_ssl }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
 
+- name: Enikshay Proxy
+  hosts: enikshay_proxy
+  roles:
+    - { role: shared_dir }
+    - { role: nginx, when: proxy_type == 'nginx', action: install }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.enikshay_ssl == True, action: site, site_name: enikshay_ssl }
+    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+
 - name: Nginx log rolling configurations
   hosts: proxy
   sudo: yes
