@@ -4,6 +4,7 @@ from fabric.api import env, local
 from fab.utils import generate_bower_command
 from fab.const import (
     OFFLINE_STAGING_DIR,
+    WHEELS_ZIP_NAME,
     HQ_ZIP_NAME,
     BOWER_ZIP_NAME,
     NPM_ZIP_NAME,
@@ -36,6 +37,10 @@ def prepare_zipfiles():
 
     prepare_pip_wheels(os.path.join('requirements', 'requirements.txt'))
     prepare_pip_wheels(os.path.join('requirements', 'prod_requirements.txt'))
+    zip_folder(
+        os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME),
+        os.path.join(OFFLINE_STAGING_DIR, 'wheelhouse')
+    )
 
 
 def zip_folder(destination, folder):
