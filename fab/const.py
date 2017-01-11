@@ -48,3 +48,8 @@ CACHED_DEPLOY_ENV_FILENAME = 'cached_deploy_env.pickle'
 CACHED_DEPLOY_CHECKPOINT_FILENAME = 'cached_deploy_checkpoint.pickle'
 
 FORMPLAYER_BUILD_DIR = 'formplayer_build'
+
+OFFLINE_STAGING_DIR = 'offline-staging'
+HQ_ZIP_NAME = 'hq.zip'
+BOWER_ZIP_NAME = 'bower.zip'
+NPM_ZIP_NAME = 'npm.zip'

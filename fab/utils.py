@@ -194,11 +194,17 @@ def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None)
         parts.append('--proxy {}'.format(proxy))
     sudo(' '.join(parts))
 
-def bower_command(command, production=True, config=None):
+
+def generate_bower_command(command, production=True, config=None):
     parts = ['bower', command]
     if production:
         parts.append('--production')
     if config:
         for key, value in config.items():
             parts.append('--config.{}={}'.format(key,value))
-    sudo(' '.join(parts))
+    return ' '.join(parts)
+
+
+def bower_command(command, production=True, config=None):
+    cmd = generate_bower_command(command, production, config)
+    sudo(cmd)
