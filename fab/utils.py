@@ -56,6 +56,9 @@ class DeployMetadata(object):
         self._environment = environment
 
     def tag_commit(self):
+        if env.offline:
+            return
+
         pattern = ".*-{}-.*".format(re.escape(self._environment))
         github = _get_github()
         repo = github.repository('dimagi', 'commcare-hq')
@@ -87,6 +90,9 @@ class DeployMetadata(object):
 
     @property
     def diff_url(self):
+        if env.offline:
+            return 'No diff url for offline deploy'
+
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
@@ -96,6 +102,9 @@ class DeployMetadata(object):
 
     @property
     def deploy_ref(self):
+        if env.offline:
+            return self._code_branch
+
         github = _get_github()
         repo = github.repository('dimagi', 'commcare-hq')
         if self._deploy_ref is None:
