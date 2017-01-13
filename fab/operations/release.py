@@ -161,6 +161,7 @@ def _clone_virtual_env():
     current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
     sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
 
+
 @roles(ROLES_ALL_SRC)
 @parallel
 def clone_virtualenv():
