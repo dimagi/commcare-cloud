@@ -182,7 +182,8 @@ def traceback_string():
     )
 
 
-def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None):
+def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None, no_index=False,
+        wheel_dir=None):
     parts = [cmd_prefix, 'pip install']
     if timeout is not None:
         parts.append('--timeout {}'.format(timeout))
@@ -192,6 +193,10 @@ def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None)
         parts.append('--requirement {}'.format(requirement))
     if proxy is not None:
         parts.append('--proxy {}'.format(proxy))
+    if no_index:
+        parts.append('--no-index')
+    if wheel_dir is not None:
+        parts.append('--find-links={}'.format(wheel_dir))
     sudo(' '.join(parts))
 
 

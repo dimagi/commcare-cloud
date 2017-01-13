@@ -90,6 +90,8 @@ def clone_home_directory_to_release():
     _clone_code_from_local_path(env.offline_code_dir, env.code_root, run_as=env.sudo_user)
 
 
+@roles(ROLES_ALL_SRC)
+@parallel
 def update_bower_offline():
     # Strip 2 components so we from offline-staging/commcare-hq structure
     _upload_and_extract(os.path.join(
@@ -98,6 +100,8 @@ def update_bower_offline():
     sudo('cp -r {}/bower_components {}'.format(env.offline_code_dir, env.code_root))
 
 
+@roles(ROLES_ALL_SRC)
+@parallel
 def update_npm_offline():
     # Strip 2 components so we from offline-staging/commcare-hq structure
     _upload_and_extract(os.path.join(
@@ -106,10 +110,27 @@ def update_npm_offline():
     sudo('cp -r {}/node_modules {}'.format(env.offline_code_dir, env.code_root))
 
 
+@roles(ROLES_ALL_SRC)
+@parallel
 def upload_pip_wheels():
     _upload_and_extract(os.path.join(
         OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME
-    ))
+    ), strip_components=2)
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def offline_pip_install():
+    wheel_dir = os.path.join(env.offline_code_dir, 'wheelhouse')
+    cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+        env.sudo_user, env.virtualenv_root
+    )
+    requirements = os.path.join(env.code_root, 'requirements')
+    with cd(env.code_root):
+        pip_install(cmd_prefix, timeout=60, quiet=True, wheel_dir=wheel_dir, no_index=True, requirements=[
+            os.path.join(requirements, 'prod-requirements.txt'),
+            os.path.join(requirements, 'requirements.txt'),
+        ])
 
 
 def _upload_and_extract(zippath, strip_components=0):
