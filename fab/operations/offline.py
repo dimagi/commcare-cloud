@@ -5,7 +5,6 @@ from fab.utils import generate_bower_command
 from fab.const import (
     OFFLINE_STAGING_DIR,
     WHEELS_ZIP_NAME,
-    HQ_ZIP_NAME,
     BOWER_ZIP_NAME,
     NPM_ZIP_NAME,
 )
@@ -17,7 +16,7 @@ def prepare_zipfiles():
         .format(OFFLINE_STAGING_DIR)
     )
 
-    # After we've created our HQ code zip, let's get bower and npm
+    # Let's create bower and npm zip files
 
     # Bower
     local('cd {}/commcare-hq && {}'.format(OFFLINE_STAGING_DIR, generate_bower_command('install', {
@@ -44,7 +43,7 @@ def prepare_zipfiles():
 
 
 def zip_folder(destination, folder):
-    local('zip -r {} {}'.format(destination, folder))
+    local('tar -czf {} {}'.format(destination, folder))
 
 
 def prepare_pip_wheels(requirements_file):
