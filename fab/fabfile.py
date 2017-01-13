@@ -813,7 +813,7 @@ OFFLINE_DEPLOY_COMMANDS = [
     staticfiles.compress,
     staticfiles.update_translations,
     supervisor.set_supervisor_config,
-    formplayer.build_formplayer,
+    formplayer.offline_build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
