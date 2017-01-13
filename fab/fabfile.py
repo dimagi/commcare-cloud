@@ -62,6 +62,7 @@ from operations import (
     supervisor,
     formplayer,
     release,
+    offline,
 )
 from utils import (
     clear_cached_deploy,
@@ -140,6 +141,7 @@ def _setup_path():
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.environment)
+    env.offline_code_dir = posixpath.join('/home/{}/{}'.format(env.user, env.deploy_metadata.timestamp))
 
 
 def load_env(env_name):
@@ -388,6 +390,12 @@ def deploy_formplayer():
 
 
 @task
+@task
+def prepare_offline_deploy():
+    offline.prepare_zipfiles()
+    offline.prepare_formplayer_build()
+
+
 def setup_release(keep_days=0):
     """
     Setup a release in the releases directory with the most recent code.
