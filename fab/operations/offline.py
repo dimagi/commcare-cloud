@@ -1,7 +1,9 @@
 import os
+from datetime import datetime
 
 from fabric.api import env, local
 from fab.utils import generate_bower_command
+from fabric.colors import blue, red
 from fab.const import (
     OFFLINE_STAGING_DIR,
     WHEELS_ZIP_NAME,
@@ -57,3 +59,23 @@ def prepare_formplayer_build():
     jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
 
     local('wget -nv {} -O {}/formplayer.jar'.format(jenkins_formplayer_build_url, OFFLINE_STAGING_DIR))
+
+
+def check_ready():
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq'))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, BOWER_ZIP_NAME))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, NPM_ZIP_NAME))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'formplayer.jar'))
+
+
+def _print_stats(filename):
+    try:
+        stat = os.stat(filename)
+    except OSError:
+        print red('Not found {}'.format(filename))
+        print red('Exiting.')
+        exit()
+
+    last_modified = str(datetime.fromtimestamp(stat.st_mtime))
+    print blue('Found {}, last modifed: {}'.format(filename, last_modified))

@@ -62,7 +62,7 @@ from operations import (
     supervisor,
     formplayer,
     release,
-    offline,
+    offline as offline_ops,
 )
 from utils import (
     clear_cached_deploy,
@@ -407,8 +407,8 @@ def offline_setup_release(keep_days=0):
 
 @task
 def prepare_offline_deploy():
-    offline.prepare_zipfiles()
-    offline.prepare_formplayer_build()
+    offline_ops.prepare_zipfiles()
+    offline_ops.prepare_formplayer_build()
 
 
 @task
@@ -645,10 +645,11 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no'):
+def awesome_deploy(confirm="yes", resume='no', offline='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
+    fab <env> deploy:offline=yes  # offline deploy
     """
     _require_target()
     if strtobool(confirm) and (
@@ -675,6 +676,17 @@ def awesome_deploy(confirm="yes", resume='no'):
         warning_message = 'Friday'
     else:
         warning_message = ''
+
+    env.offline = offline == 'yes'
+
+    if env.offline:
+        print magenta(
+            'You are about to run an offline deploy.'
+            'Ensure that you have run `fab prepare_offline_deploy`.'
+        )
+        offline_ops.check_ready()
+        if not console.confirm('Are you sure you want to do an offline deploy?'.format(default=False)):
+            utils.abort('Task aborted')
 
     if warning_message:
         print('')
