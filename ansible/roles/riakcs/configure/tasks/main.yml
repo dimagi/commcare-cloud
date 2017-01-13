@@ -43,13 +43,6 @@
   failed_when: false
   always_run: true
 
-- name: Stat {{ name }} {{ extra_conf }}
-  stat: path={{ _conf.stat.path | dirname }}/{{ extra_conf }}
-  register: _extra_conf
-  changed_when: false
-  failed_when: false
-  when: extra_conf != ""
-
 - name: Create {{ name }} conf dir
   file: >
     path="{{ conf_path | dirname }}"
@@ -67,16 +60,6 @@
     mode=0640
   notify: restart {{ name }}
   when: _force_riak_config or not _conf.stat.exists
-
-- name: Set {{ name }} extra conf
-  template: >
-    src={{ extra_conf }}.j2
-    dest={{ _extra_conf.stat.path }}
-    owner=root
-    group=riak
-    mode=0640
-  notify: restart {{ name }}
-  when: extra_conf != "" and (_force_riak_config or not _extra_conf.stat.exists)
 
 - name: Drop {{ name }} {{ drop_conf }}
   file: >

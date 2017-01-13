@@ -8,7 +8,6 @@
 #stanchion_port: ...
 
 riak_data_root_leveldb: "{{ riak_data_dir }}/leveldb"
-riak_data_root_bitcask: "{{ riak_data_dir }}/bitcask"
 riak_ring_dir: "{{ riak_data_dir }}/ring"
 riak_nodename: "riak-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
 
