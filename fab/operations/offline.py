@@ -51,3 +51,9 @@ def prepare_pip_wheels(requirements_file):
         'cd {}/commcare-hq && pip wheel --wheel-dir={}/wheelhouse -r {}'
         .format(OFFLINE_STAGING_DIR, OFFLINE_STAGING_DIR, requirements_file)
     )
+
+
+def prepare_formplayer_build():
+    jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/build/libs/formplayer.jar'
+
+    local('wget -nv {} -O {}/formplayer.jar'.format(jenkins_formplayer_build_url, OFFLINE_STAGING_DIR))
