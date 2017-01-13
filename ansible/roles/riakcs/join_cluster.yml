@@ -42,6 +42,8 @@
 
 #- debug: var=riak_cluster_plan_result
 
-- name: Commit the changes
-  command: "riak-admin cluster commit"
-  when: not node_in_cluster
+# Commented out because the plan should be verified before commit.
+# Do this manually (after checking the plan) on a Riak host.
+#- name: Commit the changes
+#  command: "riak-admin cluster commit"
+#  when: not node_in_cluster

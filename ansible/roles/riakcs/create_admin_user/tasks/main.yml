@@ -42,12 +42,14 @@
     riakcs_admin_user: "{{ riak_create_user_result.stdout
                            if riak_create_user_result.stdout.strip().startswith('{')
                            else '{}' | from_json }}"
+  when: not riak_create_user_result.get("skipped")
 
 - name: Check if Riak CS admin user creation failed
   fail:
     msg: Unable to create admin user
          {{ riak_create_user_result | to_nice_json }}
-  when: ('key_id' not in riakcs_admin_user or 'key_secret' not in riakcs_admin_user)
+  when: "not riak_create_user_result.get('skipped') and
+      ('key_id' not in riakcs_admin_user or 'key_secret' not in riakcs_admin_user)"
 
 # Set key facts last. Otherwise additional tasks in this file would be
 # skipped because of the `when` condition on the `include` of this file.
