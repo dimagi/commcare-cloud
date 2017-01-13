@@ -83,11 +83,11 @@ def update_code_offline():
 
 
 def clone_current_release_to_home_directory():
-    _clone_code_from_local_path(env.code_current, env.offline_code_dir, run_as=env.user)
+    _clone_code_from_local_path(env.code_current, env.offline_code_dir, run_as_sudo=False)
 
 
 def clone_home_directory_to_release():
-    _clone_code_from_local_path(env.offline_code_dir, env.code_root, run_as=env.sudo_user)
+    _clone_code_from_local_path(env.offline_code_dir, env.code_root, run_as_sudo=True)
 
 
 @roles(ROLES_ALL_SRC)
@@ -153,7 +153,7 @@ def _update_code_from_previous_release():
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
 
 
-def _clone_code_from_local_path(from_path, to_path, run_as=env.sudo_user):
+def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
     if files.exists(env.code_current):
         with cd(from_path):
             submodules = sudo("git submodule | awk '{ print $2 }'").split()
@@ -169,11 +169,12 @@ def _clone_code_from_local_path(from_path, to_path, run_as=env.sudo_user):
         )
 
     with cd(from_path):
-        sudo('git clone --recursive {} {}/.git {}'.format(
+        cmd_fn = sudo if run_as_sudo else run
+        cmd_fn('git clone --recursive {} {}/.git {}'.format(
             ' '.join(local_submodule_clone),
             from_path,
             to_path
-        ), user=run_as)
+        ))
 
 
 def _clone_virtual_env():
