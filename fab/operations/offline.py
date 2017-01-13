@@ -35,10 +35,10 @@ def prepare_zipfiles():
     )
 
     prepare_pip_wheels(os.path.join('requirements', 'requirements.txt'))
-    prepare_pip_wheels(os.path.join('requirements', 'prod_requirements.txt'))
+    prepare_pip_wheels(os.path.join('requirements', 'prod-requirements.txt'))
     zip_folder(
         os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME),
-        os.path.join(OFFLINE_STAGING_DIR, 'wheelhouse')
+        os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'wheelhouse')
     )
 
 
@@ -48,8 +48,8 @@ def zip_folder(destination, folder):
 
 def prepare_pip_wheels(requirements_file):
     local(
-        'cd {}/commcare-hq && pip wheel --wheel-dir={}/wheelhouse -r {}'
-        .format(OFFLINE_STAGING_DIR, OFFLINE_STAGING_DIR, requirements_file)
+        'cd {}/commcare-hq && pip wheel --wheel-dir=wheelhouse -r {}'
+        .format(OFFLINE_STAGING_DIR, requirements_file)
     )
 
 
