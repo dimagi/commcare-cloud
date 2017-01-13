@@ -490,28 +490,10 @@ def announce_formplayer_deploy_start():
 
 
 def _deploy_without_asking():
-    commands = [
-        setup_release,
-        announce_deploy_start,
-        db.preindex_views,
-        # Compute version statics while waiting for preindex
-        staticfiles.prime_version_static,
-        db.ensure_preindex_completion,
-        db.ensure_checkpoints_safe,
-        staticfiles.version_static,
-        staticfiles.bower_install,
-        staticfiles.npm_install,
-        staticfiles.collectstatic,
-        staticfiles.compress,
-        staticfiles.update_translations,
-        supervisor.set_supervisor_config,
-        formplayer.build_formplayer,
-        conditionally_stop_pillows_and_celery_during_migrate,
-        db.create_kafka_topics,
-        db.flip_es_aliases,
-        staticfiles.update_manifest,
-        release.clean_releases,
-    ]
+    if env.offline:
+        commands = OFFLINE_DEPLOY_COMMANDS
+    else:
+        commands = ONLINE_DEPLOY_COMMANDS
 
     try:
         for index, command in enumerate(commands):
@@ -770,6 +752,50 @@ def reset_pillow(pillow):
         prefix=prefix,
         pillow=pillow
     ))
+
+
+ONLINE_DEPLOY_COMMANDS = [
+    setup_release,
+    announce_deploy_start,
+    db.preindex_views,
+    # Compute version statics while waiting for preindex
+    staticfiles.prime_version_static,
+    db.ensure_preindex_completion,
+    db.ensure_checkpoints_safe,
+    staticfiles.version_static,
+    staticfiles.bower_install,
+    staticfiles.npm_install,
+    staticfiles.collectstatic,
+    staticfiles.compress,
+    staticfiles.update_translations,
+    supervisor.set_supervisor_config,
+    formplayer.build_formplayer,
+    conditionally_stop_pillows_and_celery_during_migrate,
+    db.create_kafka_topics,
+    db.flip_es_aliases,
+    staticfiles.update_manifest,
+    release.clean_releases,
+]
+
+OFFLINE_DEPLOY_COMMANDS = [
+    offline_setup_release,
+    db.preindex_views,
+    # Compute version statics while waiting for preindex
+    staticfiles.prime_version_static,
+    db.ensure_preindex_completion,
+    db.ensure_checkpoints_safe,
+    staticfiles.version_static,
+    staticfiles.collectstatic,
+    staticfiles.compress,
+    staticfiles.update_translations,
+    supervisor.set_supervisor_config,
+    formplayer.build_formplayer,
+    conditionally_stop_pillows_and_celery_during_migrate,
+    db.create_kafka_topics,
+    db.flip_es_aliases,
+    staticfiles.update_manifest,
+    release.clean_releases,
+]
     with cd(env.code_root):
         command = '{virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput'.format(
             virtualenv_root=env.virtualenv_root,
