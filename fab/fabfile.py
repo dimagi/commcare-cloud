@@ -390,12 +390,26 @@ def deploy_formplayer():
 
 
 @task
+def offline_setup_release(keep_days=0):
+    execute_with_timing(release.create_code_dir)
+    execute_with_timing(release.create_offline_dir)
+
+    execute_with_timing(release.update_code_offline)
+    execute_with_timing(release.update_bower_offline)
+    execute_with_timing(release.update_npm_offline)
+
+    execute_with_timing(release.clone_virtualenv)
+
+    execute_with_timing(copy_release_files)
+
+
 @task
 def prepare_offline_deploy():
     offline.prepare_zipfiles()
     offline.prepare_formplayer_build()
 
 
+@task
 def setup_release(keep_days=0):
     """
     Setup a release in the releases directory with the most recent code.
@@ -752,6 +766,16 @@ def reset_pillow(pillow):
         prefix=prefix,
         pillow=pillow
     ))
+    with cd(env.code_root):
+        command = '{virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput'.format(
+            virtualenv_root=env.virtualenv_root,
+            pillow=pillow,
+        )
+        sudo(command)
+    supervisor.supervisor_command('start {prefix}-{pillow}'.format(
+        prefix=prefix,
+        pillow=pillow
+    ))
 
 
 ONLINE_DEPLOY_COMMANDS = [
@@ -796,13 +820,3 @@ OFFLINE_DEPLOY_COMMANDS = [
     staticfiles.update_manifest,
     release.clean_releases,
 ]
-    with cd(env.code_root):
-        command = '{virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput'.format(
-            virtualenv_root=env.virtualenv_root,
-            pillow=pillow,
-        )
-        sudo(command)
-    supervisor.supervisor_command('start {prefix}-{pillow}'.format(
-        prefix=prefix,
-        pillow=pillow
-    ))
