@@ -618,6 +618,14 @@ def clean_releases(keep=3):
 
 
 @task
+def clean_offline_releases():
+    """
+    Cleans all releases in home directory
+    """
+    sudo('rm -rf /home/{}/releases/*'.format(env.user))
+
+
+@task
 def force_update_static():
     _require_target()
     execute(staticfiles.collectstatic, use_current_release=True)
