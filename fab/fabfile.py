@@ -141,7 +141,7 @@ def _setup_path():
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.environment)
-    env.offline_code_dir = posixpath.join('/home/{}/{}'.format(env.user, env.deploy_metadata.timestamp))
+    env.offline_code_dir = posixpath.join('/home/{}/releases/{}'.format(env.user, env.deploy_metadata.timestamp))
 
 
 def load_env(env_name):
