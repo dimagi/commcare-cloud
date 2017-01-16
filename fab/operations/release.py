@@ -68,17 +68,22 @@ def update_code_offline():
     '''
     clone_current_release_to_home_directory()
 
-    git_remote_url = 'ssh://{user}@{host}{code_dir}/.git'.format(
+    git_remote_url = 'ssh://{user}@{host}{code_dir}'.format(
         user=env.user,
         host=env.host,
         code_dir=env.offline_code_dir
     )
-    submodule_config = _overwrite_submodule_urls(env.offline_code_dir)
-    local('cd {}/commcare-hq && git {} push {} {} --recurse-submodules=on-demand'.format(
+
+    local('cd {}/commcare-hq && git push {}/.git {}'.format(
         OFFLINE_STAGING_DIR,
-        submodule_config,
         git_remote_url,
         env.deploy_metadata.deploy_ref,
+    ))
+
+    # Iterate through each submodule and push master
+    local("cd {}/commcare-hq && git submodule foreach 'git push {}/$path/.git --all'".format(
+        OFFLINE_STAGING_DIR,
+        git_remote_url,
     ))
 
     clone_home_directory_to_release()
