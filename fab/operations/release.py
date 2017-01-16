@@ -75,8 +75,8 @@ def update_code_offline():
     )
     submodule_config = _overwrite_submodule_urls(env.offline_code_dir)
     local('cd {}/commcare-hq && git {} push {} {} --recurse-submodules=on-demand'.format(
-        submodule_config,
         OFFLINE_STAGING_DIR,
+        submodule_config,
         git_remote_url,
         env.deploy_metadata.deploy_ref,
     ))
