@@ -18,7 +18,7 @@ def prepare_zipfiles():
 
     if not os.path.isdir(hq_dir):
         local(
-            'git clone --depth 1 --recursive https://github.com/dimagi/commcare-hq.git {}'
+            'git clone --recursive https://github.com/dimagi/commcare-hq.git {}'
             .format(hq_dir)
         )
     else:
