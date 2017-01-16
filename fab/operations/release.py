@@ -73,7 +73,7 @@ def update_code_offline():
         host=env.host,
         code_dir=env.offline_code_dir
     )
-    local('cd {}/commcare-hq && git push {} {}'.format(
+    local('cd {}/commcare-hq && git push {} {} --recurse-submodules=on-demand'.format(
         OFFLINE_STAGING_DIR,
         git_remote_url,
         env.deploy_metadata.deploy_ref,
@@ -81,6 +81,11 @@ def update_code_offline():
 
     clone_home_directory_to_release()
     with cd(env.code_root):
+        sudo('git checkout {}'.format(env.deploy_metadata.deploy_ref))
+        sudo('git reset --hard {}'.format(env.deploy_metadata.deploy_ref))
+        sudo('git submodule update --init --recursive')
+        # remove all untracked files, including submodules
+        sudo("git clean -ffd")
         sudo('git remote set-url origin {}'.format(env.code_repo))
 
 

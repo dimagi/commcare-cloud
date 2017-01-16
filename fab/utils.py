@@ -102,15 +102,19 @@ class DeployMetadata(object):
 
     @property
     def deploy_ref(self):
+        if self.deploy_ref is not None:
+            return self._deploy_ref
+
         if env.offline:
-            return self._code_branch
+            self._deploy_ref = env.code_branch
+            return self._deploy_ref
 
         github = _get_github()
         repo = github.repository('dimagi', 'commcare-hq')
-        if self._deploy_ref is None:
-            # turn whatever `code_branch` is into a commit hash
-            branch = repo.branch(self._code_branch)
-            self._deploy_ref = branch.commit.sha
+
+        # turn whatever `code_branch` is into a commit hash
+        branch = repo.branch(self._code_branch)
+        self._deploy_ref = branch.commit.sha
         return self._deploy_ref
 
 
