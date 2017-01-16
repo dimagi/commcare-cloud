@@ -4,6 +4,7 @@ from datetime import datetime
 from fabric.api import env, local
 from fab.utils import generate_bower_command
 from fabric.colors import blue, red
+from fabric.contrib import files
 from fab.const import (
     OFFLINE_STAGING_DIR,
     WHEELS_ZIP_NAME,
@@ -13,10 +14,15 @@ from fab.const import (
 
 
 def prepare_zipfiles():
-    local(
-        'git clone --depth 1 --recursive https://github.com/dimagi/commcare-hq.git {}/commcare-hq'
-        .format(OFFLINE_STAGING_DIR)
-    )
+    hq_dir = '{}/commcare-hq'.format(OFFLINE_STAGING_DIR)
+
+    if not os.path.isdir(hq_dir):
+        local(
+            'git clone --depth 1 --recursive https://github.com/dimagi/commcare-hq.git {}'
+            .format(hq_dir)
+        )
+    else:
+        print blue('Skipping clone stage because {} already exists'.format(hq_dir))
 
     # Let's create bower and npm zip files
 
