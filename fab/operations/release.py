@@ -127,7 +127,7 @@ def offline_pip_install():
     cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
         env.sudo_user, env.virtualenv_root
     )
-    requirements = os.path.join(env.code_root, 'requirements')
+    requirements = os.path.join(env.offline_code_dir, 'requirements')
     with cd(env.code_root):
         pip_install(cmd_prefix, timeout=60, quiet=True, wheel_dir=wheel_dir, no_index=True, requirements=[
             os.path.join(requirements, 'prod-requirements.txt'),
