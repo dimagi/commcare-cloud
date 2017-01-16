@@ -73,7 +73,9 @@ def update_code_offline():
         host=env.host,
         code_dir=env.offline_code_dir
     )
-    local('cd {}/commcare-hq && git push {} {} --recurse-submodules=on-demand'.format(
+    submodule_config = _overwrite_submodule_urls(env.offline_code_dir)
+    local('cd {}/commcare-hq && git {} push {} {} --recurse-submodules=on-demand'.format(
+        submodule_config,
         OFFLINE_STAGING_DIR,
         git_remote_url,
         env.deploy_metadata.deploy_ref,
@@ -161,25 +163,30 @@ def _update_code_from_previous_release():
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
 
 
-def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
+def _overwrite_submodule_urls(path):
     if files.exists(env.code_current):
-        with cd(from_path):
+        with cd(env.code_current):
             submodules = sudo("git submodule | awk '{ print $2 }'").split()
 
-    local_submodule_clone = []
+    local_submodule_config = []
     for submodule in submodules:
-        local_submodule_clone.append('-c')
-        local_submodule_clone.append(
+        local_submodule_config.append('-c')
+        local_submodule_config.append(
             'submodule.{submodule}.url={path}/.git/modules/{submodule}'.format(
                 submodule=submodule,
-                path=from_path
+                path=path
             )
         )
+    return ' '.join(local_submodule_config)
+
+
+def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
+    submodule_config = _overwrite_submodule_urls(from_path)
 
     with cd(from_path):
         cmd_fn = sudo if run_as_sudo else run
         cmd_fn('git clone --recursive {} {}/.git {}'.format(
-            ' '.join(local_submodule_clone),
+            submodule_config,
             from_path,
             to_path
         ))
