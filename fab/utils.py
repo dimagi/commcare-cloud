@@ -102,7 +102,7 @@ class DeployMetadata(object):
 
     @property
     def deploy_ref(self):
-        if self.deploy_ref is not None:
+        if self._deploy_ref is not None:
             return self._deploy_ref
 
         if env.offline:
