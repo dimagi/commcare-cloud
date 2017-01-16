@@ -840,4 +840,5 @@ OFFLINE_DEPLOY_COMMANDS = [
     db.flip_es_aliases,
     staticfiles.update_manifest,
     release.clean_releases,
+    release.clean_offline_releases,
 ]
