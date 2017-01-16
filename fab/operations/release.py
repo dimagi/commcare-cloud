@@ -289,6 +289,12 @@ def git_gc_current():
 
 @roles(ROLES_ALL_SRC)
 @parallel
+def clean_offline_releases():
+    run('rm -rf /home/{}/releases/*'.format(env.user))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
 def clean_releases(keep=3):
     releases = sudo('ls {}'.format(env.releases)).split()
     current_release = os.path.basename(sudo('readlink {}'.format(env.code_current)))

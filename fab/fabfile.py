@@ -622,7 +622,7 @@ def clean_offline_releases():
     """
     Cleans all releases in home directory
     """
-    run('rm -rf /home/{}/releases/*'.format(env.user))
+    execute(release.clean_offline_releases)
 
 
 @task
