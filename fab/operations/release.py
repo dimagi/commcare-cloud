@@ -80,6 +80,7 @@ def update_code_offline():
     ))
 
     clone_home_directory_to_release()
+    sudo('git remote set-url origin {}'.format(env.code_repo))
 
 
 def clone_current_release_to_home_directory():
