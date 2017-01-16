@@ -622,7 +622,7 @@ def clean_offline_releases():
     """
     Cleans all releases in home directory
     """
-    sudo('rm -rf /home/{}/releases/*'.format(env.user))
+    run('rm -rf /home/{}/releases/*'.format(env.user))
 
 
 @task
