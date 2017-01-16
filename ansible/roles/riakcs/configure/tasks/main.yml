@@ -3,11 +3,14 @@
 - include_vars: ../../install/defaults/main.yml
 
 # NOTE riak config files are only created/updated if they do not already exist
-# or if '-e force_riak_config=yes' is specified on the command line. This is
-# because it can be dangerous to change the configuration of a running node.
-# In some cases it will refuse to start with the new configuration.
-# HACK come on Ansible, make it easier to read a maybe undefined boolean variable!
-- set_fact: _force_riak_config="{{ 'yes' if force_riak_config | default(false) | bool else '' }}"
+# or if '-e force_riak_config=host1,host2,...' is specified on the command line
+# listing each node to force configure (use inventory_hostname_short host name).
+# This is because it can be dangerous to change the configuration of a running
+# node. In some cases it will refuse to start with the new configuration.
+- set_fact: _force_riak_config="{{ 'yes'
+    if inventory_hostname_short in (force_riak_config | default('')).split(',')
+        or force_riak_config | default('') == 'all'
+    else '' }}"
 
 # HACK set fact because defaults cannot be loaded from other hosts
 - set_fact: riak_nodename={{ riak_nodename }}

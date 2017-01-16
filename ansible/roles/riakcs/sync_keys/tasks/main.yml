@@ -5,7 +5,7 @@
     line: "admin.key = {{ hostvars[riakcs_control].get('riak_key', 'not-set') }}"
     state: present
   notify: "restart {{ name }}"
-  when: "force_riak_config | default(false) | bool and
+  when: "_force_riak_config and
     ('riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control])"
 
 - name: Update {{ name }} admin.secret
@@ -15,7 +15,7 @@
     line: "admin.secret = {{ hostvars[riakcs_control].get('riak_secret', 'not-set') }}"
     state: present
   notify: "restart {{ name }}"
-  when: "force_riak_config | default(false) | bool and
+  when: "_force_riak_config and
     ('riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control])"
 
 - name: Check for datadog-agent service
@@ -29,7 +29,7 @@
     regexp: "^    access_id: .*$"
     line: "    access_id: {{ hostvars[riakcs_control].get('riak_key', 'not-set') }}"
     backrefs: yes
-  when: "force_riak_config | default(false) | bool and
+  when: "_force_riak_config and
     (name == 'riakcs' and datadog_service.stat.exists and 'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control])"
   notify: restart datadog
 
@@ -39,6 +39,6 @@
     regexp: "^    access_secret: .*$"
     line: "    access_secret: {{ hostvars[riakcs_control].get('riak_secret', 'not-set') }}"
     backrefs: yes
-  when: "force_riak_config | default(false) | bool and
+  when: "_force_riak_config and
     (name == 'riakcs' and datadog_service.stat.exists and 'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control])"
   notify: restart datadog
