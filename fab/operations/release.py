@@ -80,7 +80,8 @@ def update_code_offline():
     ))
 
     clone_home_directory_to_release()
-    sudo('git remote set-url origin {}'.format(env.code_repo))
+    with cd(env.code_root):
+        sudo('git remote set-url origin {}'.format(env.code_repo))
 
 
 def clone_current_release_to_home_directory():
@@ -148,7 +149,8 @@ def _upload_and_extract(zippath, strip_components=0):
 def _update_code_from_previous_release():
     if files.exists(env.code_current):
         _clone_code_from_local_path(env.code_current, env.code_root)
-        sudo('git remote set-url origin {}'.format(env.code_repo))
+        with cd(env.code_root):
+            sudo('git remote set-url origin {}'.format(env.code_repo))
     else:
         with cd(env.code_root):
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
