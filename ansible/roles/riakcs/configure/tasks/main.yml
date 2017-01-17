@@ -3,14 +3,19 @@
 - include_vars: ../../install/defaults/main.yml
 
 # NOTE riak config files are only created/updated if they do not already exist
-# or if '-e force_riak_config=yes' is specified on the command line. This is
-# because it can be dangerous to change the configuration of a running node.
-# In some cases it will refuse to start with the new configuration.
-# HACK come on Ansible, make it easier to read a maybe undefined boolean variable!
-- set_fact: _force_riak_config="{{ 'yes' if force_riak_config | default(false) | bool else '' }}"
+# or if '-e force_riak_config=host1,host2,...' is specified on the command line
+# listing each node to force configure (use inventory_hostname_short host name).
+# This is because it can be dangerous to change the configuration of a running
+# node. In some cases it will refuse to start with the new configuration.
+- set_fact: _force_riak_config="{{ 'yes'
+    if inventory_hostname_short in (force_riak_config | default('')).split(',')
+        or force_riak_config | default('') == 'all'
+    else '' }}"
 
 # HACK set fact because defaults cannot be loaded from other hosts
 - set_fact: riak_nodename={{ riak_nodename }}
+
+- set_fact: conf_path={{ hostvars[inventory_hostname].get(name + '_conf', defaults[name + '_conf']) }}
 
 - name: Create {{ name }} data dirs
   file: >
@@ -32,7 +37,7 @@
     force=yes
 
 - name: Stat {{ name }} conf
-  stat: path={{hostvars[inventory_hostname].get(name + '_conf', defaults[name + '_conf'])}}
+  stat: path={{ conf_path }}
   register: _conf
   changed_when: false
   failed_when: false
@@ -47,15 +52,16 @@
 
 - name: Create {{ name }} conf dir
   file: >
-    path="{{ _conf.stat.path | dirname }}"
+    path="{{ conf_path | dirname }}"
     state=directory
     owner=root
     group=root
+  when: _force_riak_config or not _conf.stat.exists
 
 - name: Set {{ name }} conf
   template: >
     src={{ name }}.conf.j2
-    dest={{ _conf.stat.path }}
+    dest={{ conf_path }}
     owner=root
     group=riak
     mode=0640
@@ -74,10 +80,11 @@
 
 - name: Drop {{ name }} {{ drop_conf }}
   file: >
-    path={{ _conf.stat.path | dirname }}/{{ drop_conf }}
+    path={{ conf_path | dirname }}/{{ drop_conf }}
     state=absent
   notify: restart {{ name }}
   when: _force_riak_config and drop_conf != ""
 
 - name: Start {{ name }}
   service: name={{ service }} state=started enabled=yes
+  when: not riakcs_deb_check.get("skipped")
