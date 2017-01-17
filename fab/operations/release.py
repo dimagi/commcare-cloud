@@ -7,6 +7,7 @@ from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
 from fabric.context_managers import cd, settings
 from fabric.contrib import files
+from fabric.contrib.files import comment
 from fabric.operations import put
 from fabric import utils, operations
 
@@ -143,10 +144,14 @@ def offline_pip_install():
         env.sudo_user, env.virtualenv_root
     )
     requirements = os.path.join(env.code_root, 'requirements')
+    requirements_file = os.path.join(requirements, 'requirements.txt')
+    for offline_lib in ['pygooglechart', 'django-transfer', 'django-two-factor-auth', 'pyzxcvbn']:
+        # assume these libs are already installed - they can't be installed offline currently
+        comment(requirements_file, '.*{}.*'.format(offline_lib), use_sudo=True)
     with cd(env.code_root):
         pip_install(cmd_prefix, timeout=60, quiet=True, wheel_dir=wheel_dir, no_index=True, requirements=[
             os.path.join(requirements, 'prod-requirements.txt'),
-            os.path.join(requirements, 'requirements.txt'),
+            requirements_file,
         ])
 
 
