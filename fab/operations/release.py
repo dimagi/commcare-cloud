@@ -1,5 +1,6 @@
 import os
 import posixpath
+from collections import namedtuple
 from datetime import datetime, timedelta
 
 from fabric.api import roles, parallel, sudo, env, run, local
@@ -27,6 +28,8 @@ from ..const import (
 )
 from fab.utils import pip_install
 
+
+GitConfig = namedtuple('GitConfig', 'key value')
 
 @roles(ROLES_ALL_SRC)
 @parallel
@@ -168,33 +171,39 @@ def _update_code_from_previous_release():
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
 
 
-def _overwrite_submodule_urls(path):
+def _get_git_submodule_urls(path):
     if files.exists(env.code_current):
         with cd(env.code_current):
             submodules = sudo("git submodule | awk '{ print $2 }'").split()
 
     local_submodule_config = []
     for submodule in submodules:
-        local_submodule_config.append('-c')
         local_submodule_config.append(
-            'submodule.{submodule}.url={path}/.git/modules/{submodule}'.format(
-                submodule=submodule,
-                path=path
+            GitConfig(
+                key='submodule.{submodule}.url'.format(submodule=submodule),
+                value='{path}/.git/modules/{submodule}'.format(
+                    path=path,
+                    submodule=submodule,
+                )
             )
         )
-    return ' '.join(local_submodule_config)
+    return local_submodule_config
 
 
 def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
-    submodule_config = _overwrite_submodule_urls(from_path)
+    cmd_fn = sudo if run_as_sudo else run
+    submodule_configs = _get_git_submodule_urls(from_path)
+    git_config_cmd = []
+    for submodule_config in submodule_configs:
+        git_config_cmd.append('git config {} {}'.format(submodule_config.key, submodule_config.value))
 
     with cd(from_path):
-        cmd_fn = sudo if run_as_sudo else run
-        cmd_fn('git clone --recursive {} {}/.git {}'.format(
-            submodule_config,
+        cmd_fn('git clone {}/.git {}'.format(
             from_path,
             to_path
         ))
+        cmd_fn(' && '.join(git_config_cmd))
+        cmd_fn('git submodule update --init --recursive')
 
 
 def _clone_virtual_env():
