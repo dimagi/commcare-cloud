@@ -294,6 +294,7 @@ def env_common():
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
     env.resume = False
+    env.offline = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
