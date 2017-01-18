@@ -98,6 +98,7 @@ def update_code_offline():
         # remove all untracked files, including submodules
         sudo("git clean -ffd")
         sudo('git remote set-url origin {}'.format(env.code_repo))
+        sudo("find . -name '*.pyc' -delete")
 
 
 def clone_current_release_to_home_directory():
