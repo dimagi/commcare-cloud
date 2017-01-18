@@ -92,7 +92,7 @@ def update_code_offline():
 
     clone_home_directory_to_release()
     with cd(env.code_root):
-        sudo('git checkout {}'.format(env.deploy_metadata.deploy_ref))
+        sudo('git checkout `git rev-parse {}`'.format(env.deploy_metadata.deploy_ref))
         sudo('git reset --hard {}'.format(env.deploy_metadata.deploy_ref))
         sudo('git submodule update --init --recursive')
         # remove all untracked files, including submodules
