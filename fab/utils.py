@@ -91,7 +91,7 @@ class DeployMetadata(object):
     @property
     def diff_url(self):
         if env.offline:
-            return 'No diff url for offline deploy'
+            return '"No diff url for offline deploy"'
 
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
