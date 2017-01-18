@@ -210,6 +210,7 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
         ))
 
     with cd(to_path):
+        cmd_fn('git config receive.denyCurrentBranch updateInstead')
         cmd_fn(' && '.join(git_config_cmd))
         cmd_fn('git submodule update --init --recursive')
 
