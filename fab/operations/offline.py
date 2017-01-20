@@ -4,6 +4,7 @@ from datetime import datetime
 from fabric.api import env, local
 from fab.utils import generate_bower_command
 from fabric.colors import blue, red
+from fabric.context_managers import settings
 from fabric.contrib import files
 from fab.const import (
     OFFLINE_STAGING_DIR,
@@ -73,6 +74,13 @@ def check_ready():
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, NPM_ZIP_NAME))
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME))
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'formplayer.jar'))
+
+    print 'Preparing to deploy ref {} on commit:'.format(env.deploy_metadata.deploy_ref)
+    with settings(warn_only=True):
+        local('cd {}/commcare-hq && git show-ref --hash --heads {}'.format(
+            OFFLINE_STAGING_DIR,
+            env.deploy_metadata.deploy_ref,
+        ))
 
 
 def _print_stats(filename):
