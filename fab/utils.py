@@ -4,6 +4,8 @@ import pickle
 import sys
 import traceback
 from fabric.operations import sudo
+from fabric.context_managers import settings
+from fabric.api import local
 import yaml
 import re
 from getpass import getpass
@@ -17,6 +19,7 @@ from const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
     DATE_FMT,
+    OFFLINE_STAGING_DIR,
 )
 
 
@@ -57,6 +60,7 @@ class DeployMetadata(object):
 
     def tag_commit(self):
         if env.offline:
+            self._offline_tag_commit()
             return
 
         pattern = ".*-{}-.*".format(re.escape(self._environment))
@@ -87,6 +91,26 @@ class DeployMetadata(object):
             }
         )
         self._deploy_tag = tag_name
+
+    def _offline_tag_commit(self):
+        commit = local('cd {}/commcare-hq && git show-ref --hash --heads {}'.format(
+            OFFLINE_STAGING_DIR,
+            env.deploy_metadata.deploy_ref,
+        ), capture=True)
+
+        tag_name = '{}-{}-offline-deploy'.format(self.timestamp, self._environment)
+        local('cd {staging_dir}/commcare-hq && git tag -a -m "{message}" {tag} {commit}'.format(
+            staging_dir=OFFLINE_STAGING_DIR,
+            message='{} offline deploy at {}'.format(self._environment, self.timestamp),
+            tag=tag_name,
+            commit=commit,
+        ))
+
+        with settings(warn_only=True):
+            local('cd {staging_dir}/commcare-hq && git push origin {tag}'.format(
+                staging_dir=OFFLINE_STAGING_DIR,
+                tag=tag_name,
+            ))
 
     @property
     def diff_url(self):
