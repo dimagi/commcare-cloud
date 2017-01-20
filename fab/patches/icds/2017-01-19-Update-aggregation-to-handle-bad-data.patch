@@ -1,0 +1,34 @@
+From 709487339c33bf1e877bc05213e215dd2548e81a Mon Sep 17 00:00:00 2001
+From: sheelio <sshah@dimagi.com>
+Date: Thu, 19 Jan 2017 12:07:32 +0530
+Subject: [PATCH 1/2] Update aggregation to handle bad data
+
+---
+ custom/icds_reports/migrations/sql_templates/create_functions.sql | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/custom/icds_reports/migrations/sql_templates/create_functions.sql b/custom/icds_reports/migrations/sql_templates/create_functions.sql
+index 0f43e6d..8d09943 100644
+--- a/custom/icds_reports/migrations/sql_templates/create_functions.sql
++++ b/custom/icds_reports/migrations/sql_templates/create_functions.sql
+@@ -282,7 +282,7 @@ BEGIN
+ 		'sum(fully_immunized_eligible), ' ||
+ 		'sum(fully_immunized_on_time), ' ||
+ 		'sum(fully_immunized_late) ' ||
+-		'FROM ' || quote_ident(_ucr_child_monthly_table) || ' WHERE month = ' || quote_literal(_start_date) || ' ' ||
++		'FROM ' || quote_ident(_ucr_child_monthly_table) || ' WHERE state_id != '' AND month = ' || quote_literal(_start_date) || ' ' ||
+ 		'GROUP BY state_id, district_id, block_id, supervisor_id, awc_id, month, sex, age_tranche, caste, disabled, minority, resident)';
+ 
+ 	EXECUTE 'CREATE INDEX ' || quote_ident(_tablename || '_indx1') || ' ON ' || quote_ident(_tablename) || '(state_id, district_id, block_id, supervisor_id, awc_id)';
+@@ -601,7 +601,7 @@ BEGIN
+ 		'sum(counsel_fp_vid), ' ||
+ 		'sum(counsel_immediate_conception), ' ||
+ 		'sum(counsel_accessible_postpartum_fp) ' ||
+-		'FROM ' || quote_ident(_ucr_ccs_record_table) || ' WHERE month = ' || quote_literal(_start_date) || ' ' ||
++		'FROM ' || quote_ident(_ucr_ccs_record_table) || ' WHERE state_id != '' AND month = ' || quote_literal(_start_date) || ' ' ||
+ 		'GROUP BY state_id, district_id, block_id, supervisor_id, awc_id, month, ccs_status, trimester, caste, disabled, minority, resident)';
+ 
+ 	EXECUTE 'CREATE INDEX ' || quote_ident(_tablename || '_indx1') || ' ON ' || quote_ident(_tablename) || '(state_id, district_id, block_id, supervisor_id, awc_id)';
+-- 
+2.10.2
+
