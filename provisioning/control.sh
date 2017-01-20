@@ -8,6 +8,7 @@ sudo chmod 400 /home/vagrant/.ssh/id_rsa
 ssh-keyscan 192.168.33.15 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.16 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.17 >> /home/vagrant/.ssh/known_hosts
+sudo chown vagrant:vagrant /home/vagrant/.ssh/known_hosts
 
 ln -s /vagrant /home/vagrant/commcarehq-ansible
 mkdir /home/vagrant/commcare-hq-deploy
