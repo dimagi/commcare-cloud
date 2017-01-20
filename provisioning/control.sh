@@ -4,12 +4,18 @@ sudo apt-get install -y python-dev python-pip libffi-dev git
 sudo cp /vagrant/provisioning/id_rsa /home/vagrant/.ssh/id_rsa
 sudo chown vagrant:vagrant /home/vagrant/.ssh/id_rsa
 sudo chmod 400 /home/vagrant/.ssh/id_rsa
+sudo cp /vagrant/provisioning/id_rsa.pub /home/vagrant/.ssh/id_rsa.pub
+sudo chown vagrant:vagrant /home/vagrant/.ssh/id_rsa.pub
 
 ssh-keyscan 192.168.33.15 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.16 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.17 >> /home/vagrant/.ssh/known_hosts
+sudo chown vagrant:vagrant /home/vagrant/.ssh/known_hosts
 
 ln -s /vagrant /home/vagrant/commcarehq-ansible
+# Prevent control/init.sh from trying to clone (non-existent) /home/ansible/commcarehq-ansible-secrets.git
+mkdir /home/vagrant/commcarehq-ansible/config
+# Prevent control/init.sh from trying to clone commcare-hq-deploy
 mkdir /home/vagrant/commcare-hq-deploy
 sudo pip install virtualenv virtualenvwrapper
 sudo -H -u vagrant /vagrant/control/init.sh
