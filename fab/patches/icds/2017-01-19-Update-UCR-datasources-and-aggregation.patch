@@ -1,0 +1,147 @@
+From 78764ae6599461e99ff375f7d1e2eb0cf8f10fcd Mon Sep 17 00:00:00 2001
+From: sheelio <sshah@dimagi.com>
+Date: Thu, 19 Jan 2017 20:21:25 +0530
+Subject: [PATCH 2/2] Update UCR datasources and aggregation
+
+---
+ custom/icds_reports/migrations/0006_fix_functions.py  | 19 +++++++++++++++++++
+ .../migrations/sql_templates/create_functions.sql     | 11 ++++++++---
+ .../migrations/sql_templates/update_tables3.sql       |  1 +
+ .../ucr/data_sources/daily_feeding_forms.json         | 18 +++++++++++++++++-
+ 4 files changed, 45 insertions(+), 4 deletions(-)
+ create mode 100644 custom/icds_reports/migrations/0006_fix_functions.py
+ create mode 100644 custom/icds_reports/migrations/sql_templates/update_tables3.sql
+
+diff --git a/custom/icds_reports/migrations/0006_fix_functions.py b/custom/icds_reports/migrations/0006_fix_functions.py
+new file mode 100644
+index 0000000..85cac49
+--- /dev/null
++++ b/custom/icds_reports/migrations/0006_fix_functions.py
+@@ -0,0 +1,19 @@
++# -*- coding: utf-8 -*-
++from __future__ import unicode_literals
++
++from django.db import migrations, models
++from corehq.sql_db.operations import RawSQLMigration
++
++migrator = RawSQLMigration(('custom', 'icds_reports', 'migrations', 'sql_templates'))
++
++
++class Migration(migrations.Migration):
++
++    dependencies = [
++        ('icds_reports', '0005_add_columns'),
++    ]
++
++    operations = [
++        migrator.get_migration('create_functions.sql'),
++        migrator.get_migration('update_tables3.sql'),
++    ]
+diff --git a/custom/icds_reports/migrations/sql_templates/create_functions.sql b/custom/icds_reports/migrations/sql_templates/create_functions.sql
+index 8d09943..dd36d13 100644
+--- a/custom/icds_reports/migrations/sql_templates/create_functions.sql
++++ b/custom/icds_reports/migrations/sql_templates/create_functions.sql
+@@ -212,7 +212,8 @@ BEGIN
+ 		'attended_children_percent, ' ||
+ 		'form_location, ' ||
+ 		'form_location_lat, ' ||
+-		'form_location_long ' ||
++		'form_location_long, ' ||
++		'image_name ' ||
+ 		'FROM ' || quote_ident(_daily_attendance_tablename) || ' WHERE month = ' || quote_literal(_start_date) || ')';
+ 
+ 	EXECUTE 'CREATE INDEX ' || quote_ident(_tablename || '_indx1') || ' ON ' || quote_ident(_tablename) || '(awc_id)';
+@@ -230,12 +231,14 @@ DECLARE
+ 	_end_date date;
+ 	_all_text text;
+ 	_null_value text;
++	_blank_value text;
+ BEGIN
+ 	_start_date = date_trunc('MONTH', $1)::DATE;
+ 	_tablename := 'agg_child_health' || '_' || _start_date;
+ 	EXECUTE 'SELECT table_name FROM ucr_table_name_mapping WHERE table_type = ' || quote_literal('child_health_monthly') INTO _ucr_child_monthly_table;
+ 	_all_text = 'All';
+ 	_null_value = NULL;
++	_blank_value = '';
+ 
+ 	EXECUTE 'DELETE FROM ' || quote_ident(_tablename);
+ 	EXECUTE 'INSERT INTO ' || quote_ident(_tablename) || '(SELECT ' ||
+@@ -282,7 +285,7 @@ BEGIN
+ 		'sum(fully_immunized_eligible), ' ||
+ 		'sum(fully_immunized_on_time), ' ||
+ 		'sum(fully_immunized_late) ' ||
+-		'FROM ' || quote_ident(_ucr_child_monthly_table) || ' WHERE state_id != '' AND month = ' || quote_literal(_start_date) || ' ' ||
++		'FROM ' || quote_ident(_ucr_child_monthly_table) || ' WHERE state_id != ' || quote_literal(_blank_value) ||  ' AND month = ' || quote_literal(_start_date) || ' ' ||
+ 		'GROUP BY state_id, district_id, block_id, supervisor_id, awc_id, month, sex, age_tranche, caste, disabled, minority, resident)';
+ 
+ 	EXECUTE 'CREATE INDEX ' || quote_ident(_tablename || '_indx1') || ' ON ' || quote_ident(_tablename) || '(state_id, district_id, block_id, supervisor_id, awc_id)';
+@@ -547,11 +550,13 @@ DECLARE
+ 	_end_date date;
+ 	_all_text text;
+ 	_null_value text;
++	_blank_value text;
+ BEGIN
+ 	_start_date = date_trunc('MONTH', $1)::DATE;
+ 	_tablename := 'agg_ccs_record' || '_' || _start_date;
+ 	_all_text = 'All';
+ 	_null_value = NULL;
++	_blank_value = '';
+ 	EXECUTE 'SELECT table_name FROM ucr_table_name_mapping WHERE table_type = ' || quote_literal('ccs_record_monthly') INTO _ucr_ccs_record_table;
+ 
+ 	EXECUTE 'DELETE FROM ' || quote_ident(_tablename);
+@@ -601,7 +606,7 @@ BEGIN
+ 		'sum(counsel_fp_vid), ' ||
+ 		'sum(counsel_immediate_conception), ' ||
+ 		'sum(counsel_accessible_postpartum_fp) ' ||
+-		'FROM ' || quote_ident(_ucr_ccs_record_table) || ' WHERE state_id != '' AND month = ' || quote_literal(_start_date) || ' ' ||
++		'FROM ' || quote_ident(_ucr_ccs_record_table) || ' WHERE state_id != ' || quote_literal(_blank_value) ||  ' AND month = ' || quote_literal(_start_date) || ' ' ||
+ 		'GROUP BY state_id, district_id, block_id, supervisor_id, awc_id, month, ccs_status, trimester, caste, disabled, minority, resident)';
+ 
+ 	EXECUTE 'CREATE INDEX ' || quote_ident(_tablename || '_indx1') || ' ON ' || quote_ident(_tablename) || '(state_id, district_id, block_id, supervisor_id, awc_id)';
+diff --git a/custom/icds_reports/migrations/sql_templates/update_tables3.sql b/custom/icds_reports/migrations/sql_templates/update_tables3.sql
+new file mode 100644
+index 0000000..d0bb590
+--- /dev/null
++++ b/custom/icds_reports/migrations/sql_templates/update_tables3.sql
+@@ -0,0 +1 @@
++ALTER TABLE daily_attendance ADD COLUMN image_name text;
+\ No newline at end of file
+diff --git a/custom/icds_reports/ucr/data_sources/daily_feeding_forms.json b/custom/icds_reports/ucr/data_sources/daily_feeding_forms.json
+index e13532d..6f71316 100644
+--- a/custom/icds_reports/ucr/data_sources/daily_feeding_forms.json
++++ b/custom/icds_reports/ucr/data_sources/daily_feeding_forms.json
+@@ -655,7 +655,7 @@
+           },
+           "index_expression": {
+             "type": "constant",
+-            "constant": 0
++            "constant": 1
+           }
+         },
+         "is_primary_key": false,
+@@ -908,6 +908,22 @@
+             }
+           ]
+         }
++      },
++      {
++        "display_name": null,
++        "transform": {},
++        "datatype": "string",
++        "expression": {
++          "type": "property_path",
++          "property_path": [
++            "form",
++            "photo_children_present"
++          ]
++        },
++        "is_primary_key": false,
++        "is_nullable": true,
++        "column_id": "image_name",
++        "type": "expression"
+       }
+     ],
+     "named_expressions": {
+-- 
+2.10.2
+
