@@ -32,10 +32,6 @@ $ git submodule update
 ```
 
 Ensure you have downloaded Vagrant and virtual box
-If you needed to download virtual box, you should also download a box configuration:
-```
-vagrant box add precise64 http://files.vagrantup.com/precise64.box
-```
 
 ### Mutli-machine cluster setup
 
