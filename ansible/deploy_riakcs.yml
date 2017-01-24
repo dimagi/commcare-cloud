@@ -51,12 +51,11 @@
   roles:
     - role: riakcs/configure
       name: riak
-      extra_conf: advanced.config
+      drop_conf: advanced.config
       data_dirs:
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
-        - "{{ riak_data_root_bitcask }}"
 
 - name: Join Riak [CS] nodes to cluster
   sudo: True
