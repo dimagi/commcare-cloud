@@ -97,9 +97,6 @@ es2
 db0
 
 [riakcs:children]
-riak5
-riak6
-riak7
 riak8
 riak9
 
