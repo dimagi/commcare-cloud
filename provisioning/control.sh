@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get install -y python-dev python-pip libffi-dev git
+sudo apt-get install -y python-dev python-pip libffi-dev libssl-dev git
 
 sudo cp /vagrant/provisioning/id_rsa /home/vagrant/.ssh/id_rsa
 sudo chown vagrant:vagrant /home/vagrant/.ssh/id_rsa

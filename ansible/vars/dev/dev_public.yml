@@ -71,6 +71,8 @@ AMQP_NAME: commcarehq
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
 keystore_file: 'DimagiKeyStore'
 
+backup_es: False
+
 postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
