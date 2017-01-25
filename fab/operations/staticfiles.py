@@ -119,7 +119,7 @@ def update_translations():
         update_locale_command = '{virtualenv_root}/bin/python manage.py update_django_locales'.format(
             virtualenv_root=env.virtualenv_root,
         )
-        update_translations_command = '{virtualenv_root}/bin/python manage.py compilemessages'.format(
+        update_translations_command = '{virtualenv_root}/bin/python manage.py compilemessages -v 0'.format(
             virtualenv_root=env.virtualenv_root,
         )
         sudo(update_locale_command)
