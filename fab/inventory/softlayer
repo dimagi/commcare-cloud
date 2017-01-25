@@ -112,12 +112,9 @@ es2
 db0
 
 [riakcs:children]
-riak5
 riak10
 riak11
 riak12
-riak13
-riak14
 
 [riakcs:vars]
 datavol_device=/dev/xvdc
