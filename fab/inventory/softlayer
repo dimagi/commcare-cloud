@@ -31,20 +31,20 @@
 [formplayer1]
 10.162.36.231
 
-[riak5]
-10.162.36.225
+[riak10]
+10.162.36.218
 
-[riak6]
-10.162.36.202
+[riak11]
+10.162.36.207
 
-[riak7]
-10.162.36.211
+[riak12]
+10.162.36.198
 
-[riak8]
-10.162.36.244
+[riak13]
+10.162.36.220
 
-[riak9]
-10.162.36.235
+[riak14]
+10.162.36.200
 
 [touch0]
 10.162.36.215
@@ -97,17 +97,17 @@ es2
 db0
 
 [riakcs:children]
-riak5
-riak6
-riak7
-riak8
-riak9
+riak10
+riak11
+riak12
+riak13
+riak14
 
 [riakcs:vars]
 datavol_device=/dev/xvdc
 
 [stanchion:children]
-riak5
+riak10
 
 [pg_standby:children]
 db0
