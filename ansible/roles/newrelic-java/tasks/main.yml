@@ -1,0 +1,17 @@
+- name: Download Java New Relic Agent
+  get_url:
+    url: 'https://rpm.newrelic.com/accounts/366142/java_agent?include_yaml=true'
+    dest: '{{ newrelic_zip }}'
+
+- name: Unzip agent
+  unarchive:
+    src: '{{ newrelic_zip }}'
+    dest: '{{ newrelic_dest }}'
+    owner: '{{ cchq_user }}'
+    group: '{{ cchq_user }}'
+
+- name: Copy newrelic template
+  sudo_user: "{{ cchq_user }}"
+  template:
+    src: newrelic.yml.j2
+    dest: '{{ newrelic_dest }}/newrelic.yml'

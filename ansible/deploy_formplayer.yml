@@ -4,4 +4,4 @@
   sudo: yes
   roles:
     - {role: formplayer, tags: formplayer}
-
+    - {role: newrelic-java, tags: newrelic-java, when: NEW_RELIC_KEY is defined}
