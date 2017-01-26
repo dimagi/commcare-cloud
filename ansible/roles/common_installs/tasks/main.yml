@@ -60,6 +60,7 @@
     - ranger  # cmdline file browser
     - libffi-dev  # Required for installing github3py
     - tmux
+    - unzip
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
