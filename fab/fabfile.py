@@ -451,12 +451,30 @@ def apply_patch(patchfile=None):
 
         fab <env> apply_patch:patchfile=/path/to/patch
 
-    Note: Only use this when absolutely necessary.
+    Note: Only use this when absolutely necessary. Normally we should use regular
+    deploy. This is only used for patching when we do not have access to the Internet.
     """
     if not patchfile:
         print red("Must specify patch filepath")
         exit()
     execute(release.apply_patch, patchfile)
+    silent_services_restart(use_current_release=True)
+
+
+@task
+def reverse_patch(patchfile=None):
+    """
+    Used to reverse a git patch created via `git format-patch`. Usage:
+
+        fab <env> reverse_patch:patchfile=/path/to/patch
+
+    Note: Only use this when absolutely necessary. Normally we should use regular
+    deploy. This is only used for patching when we do not have access to the Internet.
+    """
+    if not patchfile:
+        print red("Must specify patch filepath")
+        exit()
+    execute(release.reverse_patch, patchfile)
     silent_services_restart(use_current_release=True)
 
 
