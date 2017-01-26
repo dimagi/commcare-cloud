@@ -12,7 +12,7 @@ For a system overview look [here](https://docs.google.com/document/d/1F5KjtyXmvG
 
 4. Run `deploy_riakcs` to deploy the Riak CS cluster. This will provision all machines and start the services. It will also setup a cluster plan to join new nodes to the cluser. However, it will not commit the plan (see next step).
 
-   NOTE that once a node has been deployed the config files for Riak/CS/Stanchion will not be automatically updated on subsequent ansible deploys. This is because it can be dangerous to change the configuration of a Riak node that contains data. For example, the Riak service may refuse to start or ignore some existing data if the storage backend configuration is changed. This behavior can be disabled by using an extra option on the command line (`-e force_riak_config=host1,host2,...|all`).
+   NOTE that once a node has been deployed the Riak config file will not be automatically updated on subsequent ansible deploys. This is because it can be dangerous to change the configuration of a Riak node that contains data. For example, the Riak service may refuse to start or ignore some existing data if the storage backend configuration is changed. This behavior can be disabled by using an extra option on the command line (`-e force_riak_config=host1,host2,...|all`).
 
 5. Use SSH to connect to one of the Riak machines and check the cluster plan:
 
