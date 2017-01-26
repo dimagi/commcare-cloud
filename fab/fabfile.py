@@ -62,6 +62,7 @@ from operations import (
     supervisor,
     formplayer,
     release,
+    offline as offline_ops,
 )
 from utils import (
     clear_cached_deploy,
@@ -140,6 +141,7 @@ def _setup_path():
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.environment)
+    env.offline_code_dir = posixpath.join('/home/{}/releases/{}'.format(env.user, env.deploy_metadata.timestamp))
 
 
 def load_env(env_name):
@@ -292,6 +294,7 @@ def env_common():
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
     env.resume = False
+    env.offline = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
@@ -385,6 +388,27 @@ def deploy_formplayer():
     execute(announce_formplayer_deploy_start)
     execute(formplayer.build_formplayer, True)
     execute(supervisor.restart_formplayer)
+
+
+@task
+def offline_setup_release(keep_days=0):
+    execute_with_timing(release.create_code_dir)
+    execute_with_timing(release.create_offline_dir)
+    execute_with_timing(release.update_code_offline)
+
+    execute_with_timing(release.clone_virtualenv)
+    execute_with_timing(release.upload_pip_wheels)
+    execute_with_timing(release.offline_pip_install)
+    execute_with_timing(copy_release_files)
+
+    execute_with_timing(release.update_bower_offline)
+    execute_with_timing(release.update_npm_offline)
+
+
+@task
+def prepare_offline_deploy():
+    offline_ops.prepare_zipfiles()
+    offline_ops.prepare_formplayer_build()
 
 
 @task
@@ -482,28 +506,10 @@ def announce_formplayer_deploy_start():
 
 
 def _deploy_without_asking():
-    commands = [
-        setup_release,
-        announce_deploy_start,
-        db.preindex_views,
-        # Compute version statics while waiting for preindex
-        staticfiles.prime_version_static,
-        db.ensure_preindex_completion,
-        db.ensure_checkpoints_safe,
-        staticfiles.version_static,
-        staticfiles.bower_install,
-        staticfiles.npm_install,
-        staticfiles.collectstatic,
-        staticfiles.compress,
-        staticfiles.update_translations,
-        supervisor.set_supervisor_config,
-        formplayer.build_formplayer,
-        conditionally_stop_pillows_and_celery_during_migrate,
-        db.create_kafka_topics,
-        db.flip_es_aliases,
-        staticfiles.update_manifest,
-        release.clean_releases,
-    ]
+    if env.offline:
+        commands = OFFLINE_DEPLOY_COMMANDS
+    else:
+        commands = ONLINE_DEPLOY_COMMANDS
 
     try:
         for index, command in enumerate(commands):
@@ -613,6 +619,14 @@ def clean_releases(keep=3):
 
 
 @task
+def clean_offline_releases():
+    """
+    Cleans all releases in home directory
+    """
+    execute(release.clean_offline_releases)
+
+
+@task
 def force_update_static():
     _require_target()
     execute(staticfiles.collectstatic, use_current_release=True)
@@ -639,10 +653,11 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no'):
+def awesome_deploy(confirm="yes", resume='no', offline='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
+    fab <env> deploy:offline=yes  # offline deploy
     """
     _require_target()
     if strtobool(confirm) and (
@@ -669,6 +684,17 @@ def awesome_deploy(confirm="yes", resume='no'):
         warning_message = 'Friday'
     else:
         warning_message = ''
+
+    env.offline = offline == 'yes'
+
+    if env.offline:
+        print magenta(
+            'You are about to run an offline deploy.'
+            'Ensure that you have run `fab prepare_offline_deploy`.'
+        )
+        offline_ops.check_ready()
+        if not console.confirm('Are you sure you want to do an offline deploy?'.format(default=False)):
+            utils.abort('Task aborted')
 
     if warning_message:
         print('')
@@ -772,3 +798,48 @@ def reset_pillow(pillow):
         prefix=prefix,
         pillow=pillow
     ))
+
+
+ONLINE_DEPLOY_COMMANDS = [
+    setup_release,
+    announce_deploy_start,
+    db.preindex_views,
+    # Compute version statics while waiting for preindex
+    staticfiles.prime_version_static,
+    db.ensure_preindex_completion,
+    db.ensure_checkpoints_safe,
+    staticfiles.version_static,
+    staticfiles.bower_install,
+    staticfiles.npm_install,
+    staticfiles.collectstatic,
+    staticfiles.compress,
+    staticfiles.update_translations,
+    supervisor.set_supervisor_config,
+    formplayer.build_formplayer,
+    conditionally_stop_pillows_and_celery_during_migrate,
+    db.create_kafka_topics,
+    db.flip_es_aliases,
+    staticfiles.update_manifest,
+    release.clean_releases,
+]
+
+OFFLINE_DEPLOY_COMMANDS = [
+    offline_setup_release,
+    db.preindex_views,
+    # Compute version statics while waiting for preindex
+    staticfiles.prime_version_static,
+    db.ensure_preindex_completion,
+    db.ensure_checkpoints_safe,
+    staticfiles.version_static,
+    staticfiles.collectstatic,
+    staticfiles.compress,
+    staticfiles.update_translations,
+    supervisor.set_supervisor_config,
+    formplayer.offline_build_formplayer,
+    conditionally_stop_pillows_and_celery_during_migrate,
+    db.create_kafka_topics,
+    db.flip_es_aliases,
+    staticfiles.update_manifest,
+    release.clean_releases,
+    release.clean_offline_releases,
+]

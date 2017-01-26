@@ -1,14 +1,21 @@
 import os
 import posixpath
+from collections import namedtuple
 from datetime import datetime, timedelta
 
-from fabric.api import roles, parallel, sudo, env
+from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
 from fabric.context_managers import cd, settings
 from fabric.contrib import files
+from fabric.contrib.files import comment
+from fabric.operations import put
 from fabric import utils, operations
 
 from ..const import (
+    OFFLINE_STAGING_DIR,
+    WHEELS_ZIP_NAME,
+    NPM_ZIP_NAME,
+    BOWER_ZIP_NAME,
     ROLES_ALL_SRC,
     ROLES_DB_ONLY,
     RELEASE_RECORD,
@@ -23,36 +30,15 @@ from ..const import (
 from fab.utils import pip_install
 
 
+GitConfig = namedtuple('GitConfig', 'key value')
+
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_code(git_tag, use_current_release=False):
     # If not updating current release,  we are making a new release and thus have to do cloning
     # we should only ever not make a new release when doing a hotfix deploy
     if not use_current_release:
-        if files.exists(env.code_current):
-            with cd(env.code_current):
-                submodules = sudo("git submodule | awk '{ print $2 }'").split()
-        with cd(env.code_root):
-            if files.exists(env.code_current):
-                local_submodule_clone = []
-                for submodule in submodules:
-                    local_submodule_clone.append('-c')
-                    local_submodule_clone.append(
-                        'submodule.{submodule}.url={code_current}/.git/modules/{submodule}'.format(
-                            submodule=submodule,
-                            code_current=env.code_current
-                        )
-                    )
-
-                sudo('git clone --recursive {} {}/.git {}'.format(
-                    ' '.join(local_submodule_clone),
-                    env.code_current,
-                    env.code_root
-                ))
-                sudo('git remote set-url origin {}'.format(env.code_repo))
-            else:
-                sudo('git clone {} {}'.format(env.code_repo, env.code_root))
-
+        _update_code_from_previous_release()
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('git remote prune origin')
         sudo('git fetch origin --tags -q')
@@ -68,6 +54,182 @@ def update_code(git_tag, use_current_release=False):
 
 @roles(ROLES_ALL_SRC)
 @parallel
+def create_offline_dir():
+    run('mkdir -p {}'.format(env.offline_code_dir))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def update_code_offline():
+    '''
+    An online release usually clones from the previous release then tops
+    off the new updates from the remote github. Since we can't access the remote
+    Github, we do this:
+
+        1. Clone the current release to the user's home directory
+        2. Update that repo with any changes from the user's local copy of HQ (in offline-staging)
+        3. Clone the user's home repo to the release that is being deployed (code_root)
+    '''
+    clone_current_release_to_home_directory()
+
+    git_remote_url = 'ssh://{user}@{host}{code_dir}'.format(
+        user=env.user,
+        host=env.host,
+        code_dir=env.offline_code_dir
+    )
+
+    local('cd {}/commcare-hq && git push {}/.git {}'.format(
+        OFFLINE_STAGING_DIR,
+        git_remote_url,
+        env.deploy_metadata.deploy_ref,
+    ))
+
+    # Iterate through each submodule and push master
+    local("cd {}/commcare-hq && git submodule foreach 'git push {}/$path/.git --all'".format(
+        OFFLINE_STAGING_DIR,
+        git_remote_url,
+    ))
+
+    clone_home_directory_to_release()
+    with cd(env.code_root):
+        sudo('git checkout `git rev-parse {}`'.format(env.deploy_metadata.deploy_ref))
+        sudo('git reset --hard {}'.format(env.deploy_metadata.deploy_ref))
+        sudo('git submodule update --init --recursive')
+        # remove all untracked files, including submodules
+        sudo("git clean -ffd")
+        sudo('git remote set-url origin {}'.format(env.code_repo))
+        sudo("find . -name '*.pyc' -delete")
+
+
+def clone_current_release_to_home_directory():
+    _clone_code_from_local_path(env.code_current, env.offline_code_dir, run_as_sudo=False)
+
+
+def clone_home_directory_to_release():
+    _clone_code_from_local_path(env.offline_code_dir, env.code_root, run_as_sudo=True)
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def update_bower_offline():
+    # Strip 2 components so we from offline-staging/commcare-hq structure
+    _upload_and_extract(os.path.join(
+        OFFLINE_STAGING_DIR, BOWER_ZIP_NAME
+    ), strip_components=2)
+    sudo('cp -r {}/bower_components {}'.format(env.offline_code_dir, env.code_root))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def update_npm_offline():
+    # Strip 2 components so we from offline-staging/commcare-hq structure
+    _upload_and_extract(os.path.join(
+        OFFLINE_STAGING_DIR, NPM_ZIP_NAME
+    ), strip_components=2)
+    sudo('cp -r {}/node_modules {}'.format(env.offline_code_dir, env.code_root))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def upload_pip_wheels():
+    _upload_and_extract(os.path.join(
+        OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME
+    ), strip_components=2)
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def offline_pip_install():
+    wheel_dir = os.path.join(env.offline_code_dir, 'wheelhouse')
+    cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+        env.sudo_user, env.virtualenv_root
+    )
+    requirements = os.path.join(env.code_root, 'requirements')
+    requirements_file = os.path.join(requirements, 'requirements.txt')
+    for offline_lib in ['pygooglechart', 'django-transfer', 'django-two-factor-auth', 'pyzxcvbn']:
+        # assume these libs are already installed - they can't be installed offline currently
+        comment(requirements_file, '.*{}.*'.format(offline_lib), use_sudo=True)
+    with cd(env.code_root):
+        pip_install(cmd_prefix, timeout=60, quiet=True, wheel_dir=wheel_dir, no_index=True, requirements=[
+            os.path.join(requirements, 'prod-requirements.txt'),
+            requirements_file,
+        ])
+
+
+def _upload_and_extract(zippath, strip_components=0):
+    zipname = os.path.basename(zippath)
+    put(zippath, env.offline_code_dir)
+
+    run('tar -xzf {code_dir}/{zipname} -C {code_dir} --strip-components {components}'.format(
+        code_dir=env.offline_code_dir,
+        zipname=zipname,
+        components=strip_components,
+    ))
+
+
+def _update_code_from_previous_release():
+    if files.exists(env.code_current):
+        _clone_code_from_local_path(env.code_current, env.code_root)
+        with cd(env.code_root):
+            sudo('git remote set-url origin {}'.format(env.code_repo))
+    else:
+        with cd(env.code_root):
+            sudo('git clone {} {}'.format(env.code_repo, env.code_root))
+
+
+def _get_git_submodule_urls(path):
+    if files.exists(env.code_current):
+        with cd(env.code_current):
+            submodules = sudo("git submodule | awk '{ print $2 }'").split()
+
+    local_submodule_config = []
+    for submodule in submodules:
+        local_submodule_config.append(
+            GitConfig(
+                key='submodule.{submodule}.url'.format(submodule=submodule),
+                value='{path}/.git/modules/{submodule}'.format(
+                    path=path,
+                    submodule=submodule,
+                )
+            )
+        )
+    return local_submodule_config
+
+
+def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
+    cmd_fn = sudo if run_as_sudo else run
+    submodule_configs = _get_git_submodule_urls(from_path)
+    git_config_cmd = []
+    for submodule_config in submodule_configs:
+        git_config_cmd.append('git config {} {}'.format(submodule_config.key, submodule_config.value))
+
+    with cd(from_path):
+        cmd_fn('git clone {}/.git {}'.format(
+            from_path,
+            to_path
+        ))
+
+    with cd(to_path):
+        cmd_fn('git config receive.denyCurrentBranch updateInstead')
+        cmd_fn(' && '.join(git_config_cmd))
+        cmd_fn('git submodule update --init --recursive')
+
+
+def _clone_virtual_env():
+    print 'Cloning virtual env'
+    # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
+    current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
+    sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def clone_virtualenv():
+    _clone_virtual_env()
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
 def update_virtualenv():
     """
     update external dependencies on remote host
@@ -79,10 +241,7 @@ def update_virtualenv():
 
     # Optimization if we have current setup (i.e. not the first deploy)
     if files.exists(env.virtualenv_current):
-        print 'Cloning virtual env'
-        # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
-        current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
-        sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
+        _clone_virtual_env()
 
     with cd(env.code_root):
         cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
@@ -164,6 +323,12 @@ def mark_last_release_unsuccessful():
 def git_gc_current():
     with cd(env.code_current):
         sudo('git gc')
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
+def clean_offline_releases():
+    run('rm -rf /home/{}/releases/*'.format(env.user))
 
 
 @roles(ROLES_ALL_SRC)

@@ -4,6 +4,8 @@ import pickle
 import sys
 import traceback
 from fabric.operations import sudo
+from fabric.context_managers import settings
+from fabric.api import local
 import yaml
 import re
 from getpass import getpass
@@ -17,6 +19,7 @@ from const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
     DATE_FMT,
+    OFFLINE_STAGING_DIR,
 )
 
 
@@ -56,6 +59,10 @@ class DeployMetadata(object):
         self._environment = environment
 
     def tag_commit(self):
+        if env.offline:
+            self._offline_tag_commit()
+            return
+
         pattern = ".*-{}-.*".format(re.escape(self._environment))
         github = _get_github()
         repo = github.repository('dimagi', 'commcare-hq')
@@ -85,8 +92,31 @@ class DeployMetadata(object):
         )
         self._deploy_tag = tag_name
 
+    def _offline_tag_commit(self):
+        commit = local('cd {}/commcare-hq && git show-ref --hash --heads {}'.format(
+            OFFLINE_STAGING_DIR,
+            env.deploy_metadata.deploy_ref,
+        ), capture=True)
+
+        tag_name = '{}-{}-offline-deploy'.format(self.timestamp, self._environment)
+        local('cd {staging_dir}/commcare-hq && git tag -a -m "{message}" {tag} {commit}'.format(
+            staging_dir=OFFLINE_STAGING_DIR,
+            message='{} offline deploy at {}'.format(self._environment, self.timestamp),
+            tag=tag_name,
+            commit=commit,
+        ))
+
+        with settings(warn_only=True):
+            local('cd {staging_dir}/commcare-hq && git push origin {tag}'.format(
+                staging_dir=OFFLINE_STAGING_DIR,
+                tag=tag_name,
+            ))
+
     @property
     def diff_url(self):
+        if env.offline:
+            return '"No diff url for offline deploy"'
+
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
@@ -96,12 +126,19 @@ class DeployMetadata(object):
 
     @property
     def deploy_ref(self):
+        if self._deploy_ref is not None:
+            return self._deploy_ref
+
+        if env.offline:
+            self._deploy_ref = env.code_branch
+            return self._deploy_ref
+
         github = _get_github()
         repo = github.repository('dimagi', 'commcare-hq')
-        if self._deploy_ref is None:
-            # turn whatever `code_branch` is into a commit hash
-            branch = repo.branch(self._code_branch)
-            self._deploy_ref = branch.commit.sha
+
+        # turn whatever `code_branch` is into a commit hash
+        branch = repo.branch(self._code_branch)
+        self._deploy_ref = branch.commit.sha
         return self._deploy_ref
 
 
@@ -182,7 +219,8 @@ def traceback_string():
     )
 
 
-def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None):
+def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None, no_index=False,
+        wheel_dir=None):
     parts = [cmd_prefix, 'pip install']
     if timeout is not None:
         parts.append('--timeout {}'.format(timeout))
@@ -192,13 +230,23 @@ def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None)
         parts.append('--requirement {}'.format(requirement))
     if proxy is not None:
         parts.append('--proxy {}'.format(proxy))
+    if no_index:
+        parts.append('--no-index')
+    if wheel_dir is not None:
+        parts.append('--find-links={}'.format(wheel_dir))
     sudo(' '.join(parts))
 
-def bower_command(command, production=True, config=None):
+
+def generate_bower_command(command, production=True, config=None):
     parts = ['bower', command]
     if production:
         parts.append('--production')
     if config:
         for key, value in config.items():
             parts.append('--config.{}={}'.format(key,value))
-    sudo(' '.join(parts))
+    return ' '.join(parts)
+
+
+def bower_command(command, production=True, config=None):
+    cmd = generate_bower_command(command, production, config)
+    sudo(cmd)
