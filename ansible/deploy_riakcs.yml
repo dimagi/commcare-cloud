@@ -125,11 +125,21 @@
   roles:
     - {role: riakcs/sync_keys, name: stanchion}
 
-- name: Riak Monitoring
+- name: Remove Riak Restarter
   hosts: riakcs
   sudo: yes
-  roles:
-    - riak_monitoring
+  tasks:
+    - name: Remove Riak restart script
+      sudo: yes
+      file: >
+        path=/root/riak-restarter.sh
+        state=absent
+    - name: Remove Cron job
+      sudo: yes
+      cron:
+        name: "Reboot Riak"
+        cron_file: riak-restarter
+        state: absent
 
 - name: Riak CS logs
   hosts: riakcs
