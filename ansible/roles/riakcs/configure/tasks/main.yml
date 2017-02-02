@@ -2,16 +2,6 @@
 
 - include_vars: ../../install/defaults/main.yml
 
-# NOTE riak config files are only created/updated if they do not already exist
-# or if '-e force_riak_config=host1,host2,...' is specified on the command line
-# listing each node to force configure (use inventory_hostname_short host name).
-# This is because it can be dangerous to change the configuration of a running
-# node. In some cases it will refuse to start with the new configuration.
-- set_fact: _force_riak_config="{{ 'yes'
-    if inventory_hostname_short in (force_riak_config | default('')).split(',')
-        or force_riak_config | default('') == 'all'
-    else '' }}"
-
 # HACK set fact because defaults cannot be loaded from other hosts
 - set_fact: riak_nodename={{ riak_nodename }}
 
@@ -36,20 +26,12 @@
     group=root
     force=yes
 
-- name: Stat {{ name }} conf
-  stat: path={{ conf_path }}
-  register: _conf
-  changed_when: false
-  failed_when: false
-  always_run: true
-
 - name: Create {{ name }} conf dir
   file: >
     path="{{ conf_path | dirname }}"
     state=directory
     owner=root
     group=root
-  when: _force_riak_config or not _conf.stat.exists
 
 - name: Set {{ name }} conf
   template: >
@@ -59,14 +41,13 @@
     group=riak
     mode=0640
   notify: restart {{ name }}
-  when: _force_riak_config or not _conf.stat.exists
 
 - name: Drop {{ name }} {{ drop_conf }}
   file: >
     path={{ conf_path | dirname }}/{{ drop_conf }}
     state=absent
   notify: restart {{ name }}
-  when: _force_riak_config and drop_conf != ""
+  when: drop_conf != ""
 
 - name: Start {{ name }}
   service: name={{ service }} state=started enabled=yes

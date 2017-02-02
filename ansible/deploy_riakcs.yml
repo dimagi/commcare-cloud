@@ -18,6 +18,30 @@
       always_run: true
       tags: localsettings
 
+- name: Register riak conf override fact
+  # NOTE riak config files are only created/updated if they do not already exist
+  # or if '-e force_riak_config=host1,host2,...' is specified on the command
+  # line listing each node to force configure (use inventory_hostname as host
+  # name). This is because it can be dangerous to change the riak.conf of a
+  # running node. The Riak service may refuse to start or ignore some data if
+  # the configuration is changed.
+  hosts:
+    - riakcs
+  vars_files:
+    - roles/riakcs/install/defaults/main.yml
+  tasks:
+    - name: Stat {{ riak_conf }}
+      stat: path={{ riak_conf }}
+      register: riak_conf_file
+      changed_when: false
+      failed_when: false
+      always_run: true
+    - set_fact: _force_riak_config="{{ 'yes'
+        if inventory_hostname in (force_riak_config | default('')).split(',')
+            or force_riak_config | default('') == 'all'
+            or not (riak_conf_file.stat.exists | default(True))
+        else '' }}"
+
 - name: Configure swap for riak hosts
   hosts: riakcs
   roles:
@@ -56,13 +80,14 @@
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
+      when: _force_riak_config | bool
 
 - name: Join Riak [CS] nodes to cluster
   sudo: True
   hosts: riakcs
   tasks:
     - include: roles/riakcs/join_cluster.yml
-      when: inventory_hostname != riakcs_control
+      when: inventory_hostname != riakcs_control and _force_riak_config
 
 - name: Configure and start Stanchion
   # Riak must be started before Stanchion can be started
@@ -100,11 +125,21 @@
   roles:
     - {role: riakcs/sync_keys, name: stanchion}
 
-- name: Riak Monitoring
+- name: Remove Riak Restarter
   hosts: riakcs
   sudo: yes
-  roles:
-    - riak_monitoring
+  tasks:
+    - name: Remove Riak restart script
+      sudo: yes
+      file: >
+        path=/root/riak-restarter.sh
+        state=absent
+    - name: Remove Cron job
+      sudo: yes
+      cron:
+        name: "Reboot Riak"
+        cron_file: riak-restarter
+        state: absent
 
 - name: Riak CS logs
   hosts: riakcs
