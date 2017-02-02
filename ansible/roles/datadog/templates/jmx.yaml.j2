@@ -19,7 +19,7 @@ instances:
       - include:
           domain: java.lang
           bean:
-            - 'java.lang:name=PS Perm Gen,type=MemoryPool'
+            - 'java.lang:type=MemoryPool,name=PS Perm Gen'
           attribute:
             Usage.committed:
               metric_type: gauge
