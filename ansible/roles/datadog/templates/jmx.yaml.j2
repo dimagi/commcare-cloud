@@ -17,6 +17,23 @@ instances:
 
     conf:
       - include:
+          domain: java.lang
+          bean:
+            - 'java.lang:name=PS Perm Gen,type=MemoryPool'
+          attribute:
+            Usage.committed:
+              metric_type: gauge
+              alias: jvm.perm_gen.committed
+            Usage.init:
+              metric_type: gauge
+              alias: jvm.perm_gen.init
+            Usage.max:
+              metric_type: gauge
+              alias: jvm.perm_gen.max
+            Usage.used:
+              metric_type: gauge
+              alias: jvm.perm_gen.used
+      - include:
           bean:
             - Tomcat:type=GlobalRequestProcessor
             - Tomcat:type=RequestProcessor
