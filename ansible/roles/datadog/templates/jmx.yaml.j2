@@ -16,6 +16,8 @@ instances:
       newTag: formplayer
 
     conf:
+      # Permanent Generation
+      # Java meta data about classes and other permanent objects are stored here.
       - include:
           domain: java.lang
           bean:
@@ -33,6 +35,63 @@ instances:
             Usage.used:
               metric_type: gauge
               alias: jvm.perm_gen.used
+      # Eden Space
+      # Most java allocations first happen in this space and then are moved to other spaces.
+      - include:
+          domain: java.lang
+          bean:
+            - 'java.lang:type=MemoryPool,name=PS Eden Space'
+          attribute:
+            Usage.committed:
+              metric_type: gauge
+              alias: jvm.eden_space.committed
+            Usage.init:
+              metric_type: gauge
+              alias: jvm.eden_space.init
+            Usage.max:
+              metric_type: gauge
+              alias: jvm.eden_space.max
+            Usage.used:
+              metric_type: gauge
+              alias: jvm.eden_space.used
+      # Survivor Space
+      # Objects that survive garbage collection in the Eden space end up here.
+      - include:
+          domain: java.lang
+          bean:
+            - 'java.lang:type=MemoryPool,name=PS Survivor Space'
+          attribute:
+            Usage.committed:
+              metric_type: gauge
+              alias: jvm.survivor_space.committed
+            Usage.init:
+              metric_type: gauge
+              alias: jvm.survivor_space.init
+            Usage.max:
+              metric_type: gauge
+              alias: jvm.survivor_space.max
+            Usage.used:
+              metric_type: gauge
+              alias: jvm.survivor_space.used
+      # Old Gen Space
+      # Objects that are in the survivor space for a long time end up here.
+      - include:
+          domain: java.lang
+          bean:
+            - 'java.lang:type=MemoryPool,name=PS Old Gen'
+          attribute:
+            Usage.committed:
+              metric_type: gauge
+              alias: jvm.old_gen.committed
+            Usage.init:
+              metric_type: gauge
+              alias: jvm.old_gen.init
+            Usage.max:
+              metric_type: gauge
+              alias: jvm.old_gen.max
+            Usage.used:
+              metric_type: gauge
+              alias: jvm.old_gen.used
       - include:
           bean:
             - Tomcat:type=GlobalRequestProcessor
