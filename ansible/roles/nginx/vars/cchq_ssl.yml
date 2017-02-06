@@ -9,10 +9,6 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
-    - name: "{{ deploy_env }}_tableau_server"
-      host_addresses:
-        - "{{ tableau_server }}"
-      enabled: '{{ deploy_env == "icds" }}'
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    server_name: "{{ SITE_HOST }}"
@@ -28,7 +24,6 @@ nginx_sites:
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
-      tableau_url_modify: '{{ deploy_env == "icds" }}'
     - name: "/static"
       alias: "{{ nginx_static_home }}"
       add_header: "Access-Control-Allow-Origin *"
@@ -49,12 +44,3 @@ nginx_sites:
       balancer: "{{ deploy_env }}_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
-    - name: /reports/
-      balancer: "{{ deploy_env }}_tableau_server"
-      proxy_set_headers:
-      - "X-Forwarded-Host $host/reports/"
-      - "X-Forwarded-Server $host/reports/"
-      - "X-Forwarded-For $remote_addr"
-      proxy_next_upstream_tries: 1
-      proxy_read_timeout: 900s
-      enabled: '{{ deploy_env == "icds" }}'
