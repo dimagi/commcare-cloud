@@ -5,7 +5,9 @@ CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 tableau_server: 10.247.24.11:80
-TABLEAU_HOST: 'nic-tableau.commcarehq.org'
+
+TABLEAU_HOST: 'reports.icds-cas.gov.in'
+
 
 # these 2 must be replaced with the real icds cert when we get it from NIC
 nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
@@ -153,7 +155,11 @@ ufw_private_interface: eth0
 
 shared_drive_enabled: true
 
-etc_host_lines: ['10.247.24.13		cas.commcarehq.org']
+# point hosts to the proxy machine
+etc_host_lines:
+  - '10.247.24.13		cas.commcarehq.org'
+  - '10.247.24.13		reports.icds-cas.gov.in'
+  - '10.247.24.13		www.icds-cas.gov.in'
 etc_host_lines_removed: ['etc_host_lines']
 
 localsettings:
