@@ -2,9 +2,6 @@
 
 - include_vars: ../../install/defaults/main.yml
 
-# HACK set fact because defaults cannot be loaded from other hosts
-- set_fact: riak_nodename={{ riak_nodename }}
-
 - set_fact: conf_path={{ hostvars[inventory_hostname].get(name + '_conf', defaults[name + '_conf']) }}
 
 - name: Create {{ name }} data dirs
