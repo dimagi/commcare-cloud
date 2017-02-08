@@ -33,7 +33,7 @@
     cron_file: backup_blobdb
   when: backup_blobdb
 
-  - name: Copy couch backup script
+- name: Copy couch backup script
   sudo: yes
   template:
     src: "create_couchdb_backup.sh.j2"
