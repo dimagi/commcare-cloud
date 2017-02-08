@@ -69,7 +69,7 @@ datavol_device=/dev/xvdb
 swap_size=4G
 
 [stanchion]
-hqriak0.internal-va.commcarehq.org
+hqriak15.internal-va.commcarehq.org
 
 [pg_standby]
 hqstandby0.internal-va.commcarehq.org hot_standby_master=hqdb0.internal-va.commcarehq.org
