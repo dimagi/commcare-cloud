@@ -35,3 +35,6 @@ nginx_sites:
      - name: /possiblehealth
        proxy_pass: http://motech5.internal-va.commcarehq.org:8080/possiblehealth
        proxy_read_timeout: 360s
+     - name: /mikolo-dhis
+       proxy_pass: http://motech6.internal-va.commcarehq.org:8080/mikolo-dhis
+       proxy_read_timeout: 360s
