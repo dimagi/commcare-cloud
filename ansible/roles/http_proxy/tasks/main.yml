@@ -14,7 +14,7 @@
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
-    line: "{{ item }}={{ groups['all']|join(',') }}"
+    line: "{{ item }}={{ groups['all']|join(',') }},relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
     create: yes
     state: present
   sudo: yes
