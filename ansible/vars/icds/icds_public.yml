@@ -24,7 +24,7 @@ active_sites:
   commtrack_http: False
   hq_status: False
   tableau: False
-  icds_tableau: False
+  icds_tableau: True
   dhis: False
   wiki: False
   wiki_http: False
