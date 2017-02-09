@@ -54,8 +54,6 @@ hqdb0.internal-va.commcarehq.org
 datadisk_device=/dev/xvde
 
 [riakcs]
-hqriak11.internal-va.commcarehq.org
-hqriak12.internal-va.commcarehq.org
 hqriak13.internal-va.commcarehq.org
 hqriak14.internal-va.commcarehq.org
 hqriak15.internal-va.commcarehq.org
