@@ -1,1 +1,6 @@
 blobdb_backup_dir: "{{ encrypted_root }}/backups/blobdb"
+couch_backup_dir: "{{ encrypted_root }}/backups/couchdb"
+backup_couch: False
+backup_blobdb: False
+blobdb_s3: False
+couch_s3: False

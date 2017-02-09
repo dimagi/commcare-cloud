@@ -2,10 +2,14 @@
 import sys
 import boto3
 
-if len(sys.argv) != 2:
-    raise Exception('Usage is backup_snapshots.py <filename>')
+if len(sys.argv) == 2:
+    bucket = 'dimagi-{{ deploy_env }}-postgres-backups'
+elif len(sys.argv) == 3:
+    bucket = sys.argv[2]
+else:
+    raise Exception('Usage is backup_snapshots.py filename <s3_bucket>')
 
 filename = sys.argv[1]
 s3 = boto3.client('s3', region_name='{{ aws_region }}')
-s3.upload_file(filename, 'dimagi-{{ deploy_env }}-postgres-backups',
+s3.upload_file(filename, bucket,
                filename, ExtraArgs={'ServerSideEncryption':'AES256'})
