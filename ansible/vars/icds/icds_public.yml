@@ -182,6 +182,8 @@ localsettings:
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  COMMCARE_HQ_NAME: 'ICDS-CAS Server'
+  COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
