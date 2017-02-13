@@ -29,6 +29,7 @@
     - riakcs
   vars_files:
     - roles/riakcs/install/defaults/main.yml
+    - roles/riakcs/configure/defaults/main.yml
   tasks:
     - name: Stat {{ riak_conf }}
       stat: path={{ riak_conf }}
@@ -41,6 +42,8 @@
             or force_riak_config | default('') == 'all'
             or not (riak_conf_file.stat.exists | default(True))
         else '' }}"
+    # HACK set fact because defaults cannot be loaded from other hosts
+    - set_fact: riak_nodename={{ riak_nodename }}
 
 - name: Configure swap for riak hosts
   hosts: riakcs
