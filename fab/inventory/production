@@ -54,23 +54,20 @@ hqdb0.internal-va.commcarehq.org
 datadisk_device=/dev/xvde
 
 [riakcs]
-hqriak0.internal-va.commcarehq.org
-hqriak1.internal-va.commcarehq.org
-hqriak3.internal-va.commcarehq.org
-hqriak4.internal-va.commcarehq.org
-hqriak5.internal-va.commcarehq.org
-hqriak6.internal-va.commcarehq.org
-hqriak7.internal-va.commcarehq.org
-hqriak8.internal-va.commcarehq.org
-hqriak9.internal-va.commcarehq.org
-hqriak10.internal-va.commcarehq.org
+hqriak13.internal-va.commcarehq.org
+hqriak14.internal-va.commcarehq.org
+hqriak15.internal-va.commcarehq.org
+hqriak16.internal-va.commcarehq.org
+hqriak17.internal-va.commcarehq.org
+hqriak18.internal-va.commcarehq.org
+hqriak19.internal-va.commcarehq.org
 
 [riakcs:vars]
 datavol_device=/dev/xvdb
 swap_size=4G
 
 [stanchion]
-hqriak0.internal-va.commcarehq.org
+hqriak15.internal-va.commcarehq.org
 
 [pg_standby]
 hqstandby0.internal-va.commcarehq.org hot_standby_master=hqdb0.internal-va.commcarehq.org
