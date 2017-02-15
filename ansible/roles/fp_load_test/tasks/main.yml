@@ -1,12 +1,3 @@
-- name: Install locustio
-  sudo: yes
-  pip:
-    - name: locustio
-      version: 0.7.5
-    - name: pyzmq
-      version: 16.0.2
-  tags: fp_load_test
-
 - name: Pull full load_test source
   git:
     repo: "{{ load_test_repository }}"
@@ -15,4 +6,10 @@
     accept_hostkey: yes
     update: yes
   sudo_user: "{{ cchq_user }}"
+  tags: fp_load_test
+
+- name: Install locustio
+  sudo: yes
+  pip:
+    requirements: '{{ load_test_src_dir }}/requirements.txt'
   tags: fp_load_test
