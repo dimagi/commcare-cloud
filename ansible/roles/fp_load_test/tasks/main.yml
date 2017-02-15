@@ -1,8 +1,10 @@
 - name: Install locustio
   sudo: yes
   pip:
-    name: locustio
-    version: 0.7.5
+    - name: locustio
+      version: 0.7.5
+    - name: pyzmq
+      version: 16.0.2
   tags: fp_load_test
 
 - name: Pull full load_test source
