@@ -85,7 +85,6 @@ touch0
 
 [formplayer:children]
 formplayer0
-formplayer1
 
 [redis:children]
 db0
