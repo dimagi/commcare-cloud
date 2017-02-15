@@ -1,0 +1,16 @@
+- name: Install locustio
+  sudo: yes
+  pip:
+    name: locustio
+    version: 0.7.5
+  tags: fp_load_test
+
+- name: Pull full load_test source
+  git:
+    repo: "{{ load_test_repository }}"
+    dest: "{{ load_test_src_dir }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
+  sudo_user: "{{ cchq_user }}"
+  tags: fp_load_test
