@@ -174,6 +174,10 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: False
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS:
+  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
+  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
+  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
+  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
