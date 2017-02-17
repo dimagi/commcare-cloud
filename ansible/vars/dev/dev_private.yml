@@ -42,5 +42,6 @@ localsettings_private:
 #  SENTRY_PRIVATE_KEY:
 #  SENTRY_PROJECT_ID:
 #  SENTRY_QUERY_URL:
+#  SENTRY_API_KEY:
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
