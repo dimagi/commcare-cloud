@@ -72,6 +72,14 @@
 
 - include: deploy_riakcs.yml
 
+- name: Configure swap
+  hosts:
+    - riakcs
+    - postgresql
+  sudo: yes
+  roles:
+    - {role: swap}
+
 # Note other machines also have java installed, but are initiated through the meta task
 - name: Java
   sudo: True

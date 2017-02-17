@@ -45,11 +45,6 @@
     # HACK set fact because defaults cannot be loaded from other hosts
     - set_fact: riak_nodename={{ riak_nodename }}
 
-- name: Configure swap for riak hosts
-  hosts: riakcs
-  roles:
-    - {role: swap}
-
 - name: Load admin keys from Riak CS conf
   sudo: True
   hosts: riakcs_control_host
