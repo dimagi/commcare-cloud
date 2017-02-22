@@ -1,9 +1,9 @@
 [proxy]
-proxy0-staging.internal-va.commcarehq.org
+proxy0-staging.internal-va.commcarehq.org swap_size=1G
 
 [webworkers]
-hqdjango0-staging.internal-va.commcarehq.org
-hqdjango1-staging.internal-va.commcarehq.org
+hqdjango0-staging.internal-va.commcarehq.org swap_size=1G
+hqdjango1-staging.internal-va.commcarehq.org swap_size=1G
 
 [postgresql]
 hqdb1-staging.internal-va.commcarehq.org swap_size=1G
@@ -12,7 +12,7 @@ hqdb1-staging.internal-va.commcarehq.org swap_size=1G
 hqdb1-staging.internal-va.commcarehq.org
 
 [zookeeper]
-hqkafka0-staging.internal-va.commcarehq.org
+hqkafka0-staging.internal-va.commcarehq.org swap_size=1G
 
 [kafka]
 hqkafka0-staging.internal-va.commcarehq.org kafka_broker_id=0
@@ -24,7 +24,7 @@ hqdb1-staging.internal-va.commcarehq.org
 hqdb1-staging.internal-va.commcarehq.org
 
 [touchforms]
-hqtouch0-staging.internal-va.commcarehq.org
+hqtouch0-staging.internal-va.commcarehq.org swap_size=1G
 
 [formplayer]
 hqtouch0-staging.internal-va.commcarehq.org
