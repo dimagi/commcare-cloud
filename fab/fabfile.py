@@ -185,6 +185,7 @@ def softlayer():
 def icds():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'icds')
     load_env('icds')
+    env.force = True  # don't worry about kafka checkpoints on icds
     execute(env_common)
 
 
