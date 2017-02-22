@@ -108,7 +108,7 @@ def migrations_exist():
     with cd(env.code_root):
         try:
             n_migrations = int(sudo(
-                '%(virtualenv_root)s/bin/python manage.py migrate --list | grep "\[ ]" | wc -l' % env)
+                '%(virtualenv_root)s/bin/python manage.py showmigrations | grep "\[ ]" | wc -l' % env)
             )
         except Exception:
             # If we fail on this, return True to be safe. It's most likely cause we lost connection and
