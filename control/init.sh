@@ -23,7 +23,7 @@ fi
 
 if [ ! -d ~/commcare-hq-deploy ]; then
     echo "Cloning commcare-hq-deploy..."
-    git clone git@github.com:dimagi/commcare-hq-deploy ~/commcare-hq-deploy
+    git clone https://github.com/dimagi/commcare-hq-deploy.git ~/commcare-hq-deploy
     if [ ! -d ~/commcare-hq ]; then
         # keep old commands working: create symlink to simulate cchq repo
         mkdir ~/commcare-hq
