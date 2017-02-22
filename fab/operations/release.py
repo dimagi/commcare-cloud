@@ -149,6 +149,11 @@ def offline_pip_install():
     for offline_lib in ['pygooglechart', 'django-transfer', 'django-two-factor-auth', 'pyzxcvbn']:
         # assume these libs are already installed - they can't be installed offline currently
         comment(requirements_file, '.*{}.*'.format(offline_lib), use_sudo=True)
+
+    prod_requirements_file = os.path.join(requirements, 'prod-requirements.txt')
+    for offline_lib in ['ipython']:
+        # assume these libs are already installed - they can't be installed offline currently
+        comment(prod_requirements_file, '.*{}.*'.format(offline_lib), use_sudo=True)
     with cd(env.code_root):
         pip_install(cmd_prefix, timeout=60, quiet=True, wheel_dir=wheel_dir, no_index=True, requirements=[
             os.path.join(requirements, 'prod-requirements.txt'),
