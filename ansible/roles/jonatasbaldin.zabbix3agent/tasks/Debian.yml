@@ -1,8 +1,0 @@
----
- - name: Install packages
-   apt: name={{ item }} state=present update_cache=yes
-   with_items:
-     - libxml2-dev
-     - libsnmp-dev
-     - libcurl4-gnutls-dev
-     - snmp-mibs-downloader
