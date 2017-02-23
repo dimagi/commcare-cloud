@@ -24,8 +24,13 @@ server {
 {% endif %}
 
 {% if 'ssl' in item.server.listen %}
+  {% if fake_ssl_cert %}
+  ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+  ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+  {% else %}
   ssl_certificate {{ ssl_certs_dir }}/{{ nginx_ssl_cert }};
   ssl_certificate_key {{ ssl_keys_dir }}/{{ nginx_ssl_key }};
+  {% endif %}
 {% if nginx_ssl_protocols|default('') %}
   ssl_protocols {{ nginx_ssl_protocols }};
 {% endif %}
