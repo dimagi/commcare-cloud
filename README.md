@@ -31,9 +31,13 @@ $ git submodule init
 $ git submodule update
 ```
 
+There is one file that is omitted from the commcarehq-ansible repository:
+DimagiKeyStore. You will need it to complete a full stack deployment. Obtain a
+copy of it, and place it in the ansible/roles/keystore/files/ directory.
+
 Ensure you have downloaded Vagrant and virtual box
 
-### Mutli-machine cluster setup
+### Multi-machine cluster setup
 
 Then start vagrant:
 
@@ -47,7 +51,8 @@ The `./scripts/reset-vms` command can be run at any time, possibly with a subset
 VM names, to reset the VMs to their initial state and provision them with your
 SSH key. Run `./scripts/reset-vms` without arguments for usage info.
 
-Once this is done, you may ssh into the control server and run a full deployment:
+Once vagrant is up, you may ssh into the control server and run a full
+deployment:
 
 ```
 $ vagrant ssh control
