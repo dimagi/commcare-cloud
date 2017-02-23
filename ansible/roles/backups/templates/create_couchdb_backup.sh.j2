@@ -3,12 +3,12 @@ BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
 
 TODAY=$(date +"%Y_%m_%d")
-BACKUP_FILE="{{ blobdb_backup_dir }}/blobdb_${BACKUP_TYPE}_${TODAY}.gz"
-tar -zcf "${BACKUP_FILE}" "{{ shared_data_dir}}/blobdb"
+BACKUP_FILE="{{ couch_backup_dir }}/blobdb_${BACKUP_TYPE}_${TODAY}.gz"
+tar -zcf "${BACKUP_FILE}" "{{ couch_data_dir }}"
 
 # Remove old backups of this backup type
 find {{ blobdb_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "blobdb_${BACKUP_TYPE}_*" -exec rm {} \;
 
-{% if blobdb_s3 %}
-/etc/cron.d/backup_snapshots.py "${BACKUP_FILE} dimagi-{{ deploy_env }}-blobdb-backups"
+{% if couch_s3 %}
+/etc/cron.d/backup_snapshots.py "${BACKUP_FILE} dimagi-{{ deploy_env }}-couch-backups"
 {% endif %}

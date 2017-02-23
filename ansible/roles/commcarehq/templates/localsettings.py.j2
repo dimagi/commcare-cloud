@@ -601,6 +601,7 @@ TWO_FACTOR_SMS_GATEWAY = '{{ localsettings.TWO_FACTOR_SMS_GATEWAY }}'
 TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
 {% endif %}
 
+
 {% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
 CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
 {% endif %}
@@ -619,4 +620,16 @@ COMMCARE_HQ_NAME = {{ localsettings.COMMCARE_HQ_NAME }}
 
 {% if localsettings.get('COMMCARE_NAME') %}
 COMMCARE_NAME = {{ localsettings.COMMCARE_NAME }}
+{% endif %}
+
+{% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
+ONBOARDING_DOMAIN_TEST_DATE = {{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}
+{% endif %}
+
+{% if localsettings.get('SENTRY_PUBLIC_KEY') %}
+SENTRY_PUBLIC_KEY = '{{ localsettings.SENTRY_PUBLIC_KEY }}'
+SENTRY_PRIVATE_KEY = '{{ localsettings.SENTRY_PRIVATE_KEY }}'
+SENTRY_PROJECT_ID = '{{ localsettings.SENTRY_PROJECT_ID }}'
+SENTRY_QUERY_URL = '{{ localsettings.SENTRY_QUERY_URL }}'
+SENTRY_API_KEY = '{{ localsettings.SENTRY_API_KEY }}'
 {% endif %}

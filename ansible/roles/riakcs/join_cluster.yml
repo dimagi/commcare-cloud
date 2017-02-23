@@ -23,7 +23,7 @@
 - set_fact: node_in_cluster="{{ riak_cluster_status.get('stdout', '') | search(riak_control_node_pattern) }}"
 
 - name: Wait for Riak service to become available
-  command: riak-admin wait-for-service riak_kv {{ riak_nodename }}
+  command: riak-admin wait-for-service riak_kv
   changed_when: false
 
 #- debug: var=riak_control_node_pattern
@@ -42,6 +42,8 @@
 
 #- debug: var=riak_cluster_plan_result
 
-- name: Commit the changes
-  command: "riak-admin cluster commit"
-  when: not node_in_cluster
+# Commented out because the plan should be verified before commit.
+# Do this manually (after checking the plan) on a Riak host.
+#- name: Commit the changes
+#  command: "riak-admin cluster commit"
+#  when: not node_in_cluster

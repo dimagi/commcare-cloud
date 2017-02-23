@@ -1,9 +1,12 @@
 ---
 - name: restart riak
   service: name=riak state=restarted
+  when: not riakcs_deb_check.get("skipped")
 
 - name: restart riakcs
   service: name=riak-cs state=restarted
+  when: not riakcs_deb_check.get("skipped")
 
 - name: restart stanchion
   service: name=stanchion state=restarted
+  when: not riakcs_deb_check.get("skipped")

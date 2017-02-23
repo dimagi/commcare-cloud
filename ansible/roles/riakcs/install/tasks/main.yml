@@ -9,7 +9,7 @@
   failed_when: false
   changed_when: false
 
-- set_fact: riakcs_package_installed="{{ riakcs_deb_check.rc == 0 }}"
+- set_fact: riakcs_package_installed="{{ riakcs_deb_check.rc | default(0) == 0 }}"
 
 - name: Fetch {{ name }} apt repo install script
   get_url: >
@@ -25,3 +25,4 @@
   apt: >
     name={{ hostvars[inventory_hostname].get(name + '_package', defaults[name + '_package']) }}
     state=present
+  when: not riakcs_deb_check.get("skipped")

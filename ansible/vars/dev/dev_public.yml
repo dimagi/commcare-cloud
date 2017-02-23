@@ -71,6 +71,8 @@ AMQP_NAME: commcarehq
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
 keystore_file: 'DimagiKeyStore'
 
+backup_es: False
+
 postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
@@ -216,6 +218,11 @@ localsettings:
 #  REMINDERS_QUEUE_ENABLED:
   UCR_DATABASE_NAME: commcarehq_ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
+#  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
+#  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
+#  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
+#  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
+#  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
   STATIC_CDN: ""
 #  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
 #  SMS_QUEUE_ENABLED: ''

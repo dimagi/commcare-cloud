@@ -1,4 +1,4 @@
 data_dirs: []
-extra_conf: ""
+drop_conf: ""
 service: "{{ name }}"
 ulimit_n: 65536

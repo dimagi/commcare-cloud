@@ -4,17 +4,17 @@
   sudo: yes
   group: name={{ dev_group }} state=present
 
-- name: Add dev users
+- name: Add users for current devs
   sudo: yes
   user: name={{ item }} state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
 
-- name: Add public keys
+- name: Add public keys for current devs
   sudo: yes
   authorized_key: user={{ item }} state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
 
-- name: Remove dev users
+- name: Remove users of former devs
   sudo: yes
   user: name={{ item }} state=absent
   with_items: '{{ dev_users.absent }}'
@@ -22,7 +22,7 @@
 - name: Add ansible user
   user: name=ansible state=present shell=/bin/bash groups="sudo" password={{ ansible_user_password_sha_512 }}
 
-- name: Authorize devs to login as ansible
+- name: Authorize current devs to login as ansible
   sudo: yes
   authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
@@ -33,13 +33,13 @@
   register: absent_user_keys
   with_items: '{{ dev_users.absent }}'
 
-- name: Revoke devs ability to login as ansible
+- name: Revoke former devs ability to login as ansible
   sudo: yes
   authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.0 ~ '.pub') }}"
   when: item.1.stat.exists
   with_together:
-    - dev_users.absent
-    - absent_user_keys.results
+    - "{{ dev_users.absent }}"
+    - "{{ absent_user_keys.results|default({}) }}"
 
 - name: De-authorize ansible pubkey
   sudo: yes

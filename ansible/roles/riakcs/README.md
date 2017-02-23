@@ -10,7 +10,25 @@ For a system overview look [here](https://docs.google.com/document/d/1F5KjtyXmvG
 
 3. Optional: run `deploy_stack --tags=datadog --limit=riakcs` to setup the datadog monitoring agent.
 
-4. Run `deploy_riakcs` to deploy the Riak CS cluster
+4. Run `deploy_riakcs` to deploy the Riak CS cluster. This will provision all machines and start the services. It will also setup a cluster plan to join new nodes to the cluser. However, it will not commit the plan (see next step).
+
+   NOTE that once a node has been deployed the Riak config file will not be automatically updated on subsequent ansible deploys. This is because it can be dangerous to change the configuration of a Riak node that contains data. For example, the Riak service may refuse to start or ignore some existing data if the storage backend configuration is changed. This behavior can be disabled by using an extra option on the command line (`-e force_riak_config=host1,host2,...|all`).
+
+5. Use SSH to connect to one of the Riak machines and check the cluster plan:
+
+```sh
+sudo riak-admin cluster plan
+
+# if unhappy with the plan, clear and try again
+sudo riak-admin cluster clear
+sudo riak-admin cluster join riak-hqriakX@hqriakX.internal-va.commcarehq.org
+sudo riak-admin cluster plan
+
+# once happy with the plan
+sudo riak-admin cluster commit
+```
+
+It may be necessary to clear the plan and re-add nodes to the cluster several times until the node/ring allocation is satisfactory (i.e., all nodes have as close as possible to equal ring allocations). Once you are happy with the plan, you can commit to put the plan into effect.
 
 ## Role layout
 

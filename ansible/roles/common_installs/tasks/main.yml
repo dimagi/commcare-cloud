@@ -59,7 +59,10 @@
     - gradle
     - ranger  # cmdline file browser
     - libffi-dev  # Required for installing github3py
+    - libssl-dev  # Required for pip setup tools
     - tmux
+    - unzip
+    - iotop
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
@@ -92,7 +95,6 @@
   pip: name={{ item }}
   sudo: yes
   with_items:
-    - fabric
     - virtualenv
     - sh
     - httplib2
