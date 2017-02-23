@@ -88,8 +88,6 @@
   assert: { that: "item.host is not defined or item.host in groups.postgresql" }
   with_items: "{{ postgresql_dbs }}"
 
-- debug: var=inventory_hostname
-
 - name: Create PostgreSQL databases
   sudo_user: postgres
   postgresql_db:

@@ -1,7 +1,5 @@
 SITE_HOST: 'www.icds-cas.gov.in'
-#SITE_HOST: 'cas.commcarehq.org'
 CAS_SITE_HOST: 'cas.commcarehq.org'
-#NO_WWW_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 tableau_server: 10.247.24.11:80
