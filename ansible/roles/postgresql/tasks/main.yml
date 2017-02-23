@@ -75,6 +75,13 @@
   sudo_user: postgres
   service: name=postgresql state=started
 
+# Run initdb so that Postgres is ready to create users immediately
+- name: Initialise PostgreSQL
+  sudo_user: postgres
+  command: {{ postgres_install_dir }}/bin/initdb {{ postgresql_home }}
+  args:
+    creates: {{ postgresql_home }}/global/pg_filenode.map
+
 - name: Create PostgreSQL users
   sudo_user: postgres
   postgresql_user:
