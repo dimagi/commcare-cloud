@@ -35,7 +35,7 @@ active_sites:
 riak_ring_size: 128
 
 proxy_type: 'nginx'
-primary_ssl_env: "icds"
+primary_ssl_env: "cas"
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
