@@ -15,7 +15,7 @@
     direction: in
     port: 22
     proto: any
-  when: is_monolith
+  when: is_monolith|bool
   
 - name: allow mosh traffic
   ufw:
@@ -23,7 +23,7 @@
     direction: in
     port: "60000:61000"
     proto: udp
-  when: is_monolith
+  when: is_monolith|bool
 
 - name: allow all traffic on private interface
   ufw:
