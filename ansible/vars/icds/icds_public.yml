@@ -12,6 +12,9 @@ apache2_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
 cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
 cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
 
+tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.crt'
+tableau_key_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.key'
+
 active_sites:
   cchq_ssl: True
   cchq_redirect: True

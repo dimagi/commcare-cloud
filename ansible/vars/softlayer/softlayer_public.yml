@@ -56,8 +56,8 @@ apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
 
 
-icds_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
-icds_key_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
+tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
+tableau_key_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
 
 cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
 cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
