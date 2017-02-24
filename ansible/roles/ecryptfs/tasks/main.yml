@@ -24,7 +24,7 @@
 
 - name: Format block storage volume
   sudo: yes
-  filesystem: fstype=ext4 dev={{ datavol_device }}1
+  filesystem: fstype=ext4 dev="{{ datavol_device }}1"
   when: datavol_device is defined
 
 - name: Mount block storage volume
@@ -77,17 +77,17 @@
   tags:
     - mount-ecryptfs
 
-- name: Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS
+- name: "Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS"
   sudo: yes
   when: not shared_drive_enabled
-  file: path={{ encrypted_root }}/blobdb owner=nobody group={{ shared_dir_gid }} mode=0775 state=directory
+  file: path="{{ encrypted_root }}/blobdb" owner=nobody group="{{ shared_dir_gid }}" mode=0775 state=directory
   tags:
     - ecryptfs-blobdb
 
 - name: Create blob DB symlink (cchq looks for it in the shared drive)
   sudo: yes
   when: not shared_drive_enabled
-  file: src={{ encrypted_root }}/blobdb dest={{ shared_data_dir }}/blobdb state=link
+  file: src="{{ encrypted_root }}/blobdb" dest="{{ shared_data_dir }}/blobdb" state=link
   tags:
     - ecryptfs-blobdb
 

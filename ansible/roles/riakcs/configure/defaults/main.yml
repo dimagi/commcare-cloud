@@ -11,4 +11,4 @@ riak_data_root_leveldb: "{{ riak_data_dir }}/leveldb"
 riak_ring_dir: "{{ riak_data_dir }}/ring"
 riak_nodename: "riak-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
 
-riakcs_ebin: /usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin
+riakcs_ebin: "/usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin"

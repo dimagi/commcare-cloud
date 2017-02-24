@@ -1,6 +1,6 @@
 - name: Add cchq user
   sudo: yes
-  user: name={{ cchq_user }} state=present shell=/bin/bash
+  user: name="{{ cchq_user }}" state=present shell=/bin/bash
 
 - name: create required directories
   sudo: yes
@@ -19,7 +19,7 @@
 - name: pull Prototype source
   stat: path="{{ prototype_code_home }}/.git"
   register: gitdir
-- git: repo={{ prototype_repository }} dest={{ prototype_code_home }} recursive=yes accept_hostkey=yes update={{ not gitdir.stat.exists }}
+- git: repo="{{ prototype_repository }}" dest="{{ prototype_code_home }}" recursive=yes accept_hostkey=yes update={{ not gitdir.stat.exists }}
   sudo_user: "{{ cchq_user }}"
 
 - name: install pip requirements
@@ -36,7 +36,7 @@
 
 - name: Create PostgreSQL database
   sudo_user: postgres
-  postgresql_db: name={{ localconfig.PG_DATABASE }} state=present
+  postgresql_db: name="{{ localconfig.PG_DATABASE }}" state=present
 
 - name: Create PostgreSQL users
   sudo_user: postgres

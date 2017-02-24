@@ -14,14 +14,14 @@
 
 - name: Format system data disk
   sudo: yes
-  filesystem: fstype=ext4 dev={{ datadisk_device }}1
+  filesystem: fstype=ext4 dev="{{ datadisk_device }}1"
   when: datadisk_device is defined
   tags:
     - shared_files
 
 - name: Mount system data disk
   sudo: yes
-  mount: name={{ shared_data_dir }} src={{ datadisk_device }}1 fstype=ext4 state=mounted opts=defaults,noatime,nofail
+  mount: name="{{ shared_data_dir }}" src="{{ datadisk_device }}1" fstype=ext4 state=mounted opts=defaults,noatime,nofail
   when: datadisk_device is defined
   tags:
     - shared_files

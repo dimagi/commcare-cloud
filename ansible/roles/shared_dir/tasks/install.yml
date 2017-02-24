@@ -3,7 +3,7 @@
 - name: Install NFS packages
   sudo: yes
   when: shared_drive_enabled
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   with_items:
     - nfs-kernel-server
     - portmap

@@ -2,25 +2,25 @@
 # cchq user is created in supervisor role
 - name: Add dev group
   sudo: yes
-  group: name={{ dev_group }} state=present
+  group: name="{{ dev_group }}" state=present
 
 - name: Add users for current devs
   sudo: yes
-  user: name={{ item }} state=present shell=/bin/bash groups={{ dev_group }}
+  user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
 
 - name: Add public keys for current devs
   sudo: yes
-  authorized_key: user={{ item }} state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key: user="{{ item }}" state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
 
 - name: Remove users of former devs
   sudo: yes
-  user: name={{ item }} state=absent
+  user: name="{{ item }}" state=absent
   with_items: '{{ dev_users.absent }}'
 
 - name: Add ansible user
-  user: name=ansible state=present shell=/bin/bash groups="sudo" password={{ ansible_user_password_sha_512 }}
+  user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_user_password_sha_512 }}"
 
 - name: Authorize current devs to login as ansible
   sudo: yes

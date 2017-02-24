@@ -3,7 +3,7 @@
 
 EXAMPLES = '''
 # Add the django user 'johnd'
-- django_user: name=johnd password={{ password }} virtualenv=/home/www/.virtualenvs/myvenv app_path=/var/www/mycode/
+- django_user: name=johnd password="{{ password }}" virtualenv=/home/www/.virtualenvs/myvenv app_path=/var/www/mycode/
 '''
 
 import sh

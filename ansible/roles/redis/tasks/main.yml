@@ -8,12 +8,12 @@
   when: add_redis_repo|changed
 
 - name: Install the Redis packages
-  apt: name={{ item }} state=present
-  with_items: redis_ubuntu_pkg
+  apt: name="{{ item }}" state=present
+  with_items: "{{ redis_ubuntu_pkg }}"
   environment: env
 
 - name: Copy the redis configuration file 
-  template: src=redis.conf.j2 dest={{ redis_conf_dest }}
+  template: src=redis.conf.j2 dest="{{ redis_conf_dest }}"
   notify: 
    - restart redis 
 
@@ -24,8 +24,8 @@
   - restart rsyslog
 
 - name: Set the kernel paramter for vm overcommit 
-  sysctl: name=vm.overcommit_memory value={{ redis_overcommit_memory }} state=present
+  sysctl: name=vm.overcommit_memory value="{{ redis_overcommit_memory }}" state=present
 
 - name: start the redis service
-  service: name={{ redis_service }} state=started enabled=yes
+  service: name="{{ redis_service }}" state=started enabled=yes
 

@@ -41,7 +41,7 @@
     cron_file: ../crontab
 
 - name: Install touchforms packages
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   sudo: yes
   with_items:
     - sqlite3
