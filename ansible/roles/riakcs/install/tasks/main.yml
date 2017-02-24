@@ -13,7 +13,7 @@
 
 - name: "Fetch {{ name }} apt repo install script"
   get_url: >
-    url={{ hostvars[inventory_hostname].get(name + '_script_url', defaults[name + '_script_url']) }}
+    url="{{ riak_script_url if name == 'riak' else riakcs_script_url if name == 'riakcs' else stanchion_script_url }}"
     dest="/tmp/{{ name }}-install.sh"
   when: not riakcs_package_installed
 
@@ -23,7 +23,7 @@
 
 - name: "Install {{ name }} from apt"
   apt: >
-    name={{ hostvars[inventory_hostname].get(name + '_package', defaults[name + '_package']) }}
+    name="{{ riak_package if name == 'riak' else riakcs_package if name == 'riakcs' else stanchion_package }}"
     state=present
   when: not riakcs_deb_check.get("skipped")
 

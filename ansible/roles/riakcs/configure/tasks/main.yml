@@ -2,7 +2,7 @@
 
 - include_vars: ../../install/defaults/main.yml
 
-- set_fact: conf_path={{ hostvars[inventory_hostname].get(name + '_conf', defaults[name + '_conf']) }}
+- set_fact: conf_path="{{ riak_conf if name == 'riak' else riakcs_conf if name == 'riakcs' else stanchion_conf }}"
 
 - name: "Create {{ name }} data dirs"
   file: >
