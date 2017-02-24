@@ -10,7 +10,7 @@ nginx_sites:
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    file_name: "{{ deploy_env }}_commcare"
-   listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env }}"
+   listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 500m
    proxy_set_headers:
@@ -44,3 +44,43 @@ nginx_sites:
       balancer: "{{ deploy_env }}_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
+    - name: /files
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: '/etc/nginx/.htpasswd;'
+    - name: /bihar_ls_files 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_bihar;"
+    - name: /maharashtra_icds-cas_files 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra;"
+    - name: /mp_ls_files
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_mp;"
+    - name: /ls_hindi 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_ls_hindi;"
+    - name: /ls_marathi 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_ls_marathi;"
+    - name: /ls_telugu 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_ls_telugu;"
+    - name: /hindi_files 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files;"
+    - name: /marathi_files 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_marathi_files;"
+    - name: /telugu_files 
+      try_files: "$uri $uri/index.html $uri/ =404;"
+      auth_basic: '"Restricted Content";'
+      auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files;"
