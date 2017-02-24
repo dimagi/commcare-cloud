@@ -1,0 +1,23 @@
+---
+# roles/zabbix_es/tasks/main.yml
+
+- name: Make zabbix external scripts directory
+  sudo: yes
+  file:
+    path: '{{ external_scripts_dir }}'
+    owner: zabbix
+    group: zabbix
+    mode: 0755
+    state: directory
+
+- name: Add es zabbix script
+  template:
+    src: ESzabbix.py.j2
+    dest: '{{ external_scripts_dir }}/ESzabbix.py'
+    mode: 0755
+
+- name: Add user parameter
+  template:
+    src: ESzabbix.userparm.j2
+    dest: '{{ user_parm_dir }}/ESzabbix.userparm'
+  notify: restart zabbix_agentd

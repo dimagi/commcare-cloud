@@ -21,6 +21,8 @@ active_sites:
   riak: True
   riak_http: True
 
+riak_ring_size: 64
+
 proxy_type: nginx
 
 primary_ssl_env: "staging"

@@ -104,22 +104,22 @@
 - name: Copy icds SSL cert
   sudo: yes
   copy:
-    src: "{{ icds_nginx_combined_cert_file }}"
-    dest: "{{ ssl_certs_dir }}/{{ icds_nginx_ssl_cert }}"
+    src: "{{ tableau_nginx_combined_cert_file }}"
+    dest: "{{ ssl_certs_dir }}/{{ tableau_nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and icds_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and tableau_nginx_combined_cert_file is defined
 
 - name: Copy icds  SSL Key
   sudo: yes
   copy:
-    src: "{{ icds_key_file }}"
-    dest: "{{ ssl_keys_dir }}/{{ icds_nginx_ssl_key }}"
+    src: "{{ tableau_key_file }}"
+    dest: "{{ ssl_keys_dir }}/{{ tableau_nginx_ssl_key }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and icds_key_file is defined
+  when: not fake_ssl_cert and tableau_key_file is defined
 
 - name: Copy CAS SSL cert
   sudo: yes
