@@ -56,7 +56,7 @@ index.search.slowlog.threshold.query.trace: 500ms
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
 
-{% if backup_es %}
+{% if backup_es and localsettings.get('AMAZON_S3_ACCESS_KEY', None) %}
 cloud:
   aws:
     access_key: "{{ localsettings.AMAZON_S3_ACCESS_KEY }}"

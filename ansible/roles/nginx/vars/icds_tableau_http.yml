@@ -4,7 +4,7 @@ nginx_sites:
 - server:
    file_name: "icds_tableau_http"
    listen: "80"
-   server_name: "icds.commcarehq.org"
+   server_name: "{{ TABLEAU_HOST }}"
    proxy_set_header: "Host $http_host"
    locations:
      - name: /

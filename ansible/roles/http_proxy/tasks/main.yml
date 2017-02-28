@@ -1,0 +1,50 @@
+- name: Bash environment proxy
+  lineinfile:
+    dest: "/etc/environment"
+    line: "{{item.var}}={{item.protocol}}://{{http_proxy_address}}/"
+    create: yes
+    state: present
+  sudo: yes
+  with_items:
+    - {'var': 'http_proxy', 'protocol': 'http'}
+    - {'var': 'https_proxy', 'protocol': 'https'}
+    - {'var': 'HTTP_PROXY', 'protocol': 'http'}
+    - {'var': 'HTTPS_PROXY', 'protocol': 'https'}
+
+- name: No proxy for local IPs
+  lineinfile:
+    dest: "/etc/environment"
+    line: "{{ item }}={{ groups['all']|join(',') }},relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
+    create: yes
+    state: present
+  sudo: yes
+  with_items:
+    - 'no_proxy'
+    - 'NO_PROXY'
+
+- name: NPM proxy
+  command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
+  become: yes
+  become_user: "{{item.user}}"
+  with_items:
+    - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
+    - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
+    - {'user': 'ansible', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'proxy', 'protocol': 'http'}
+    - {'user': 'root', 'var': 'http-proxy', 'protocol': 'http'}
+    - {'user': 'root', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': '{{ cchq_user }}', 'var': 'proxy', 'protocol': 'http'}
+    - {'user': '{{ cchq_user }}', 'var': 'http-proxy', 'protocol': 'http'}
+    - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'https'}
+
+- name: GIT proxy
+  command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
+  become: yes
+  become_user: "{{item.user}}"
+  with_items:
+    - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
+    - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'http.proxy', 'protocol': 'http'}
+    - {'user': 'root', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': '{{cchq_user}}', 'var': 'http.proxy', 'protocol': 'http'}
+    - {'user': '{{cchq_user}}', 'var': 'https.proxy', 'protocol': 'https'}

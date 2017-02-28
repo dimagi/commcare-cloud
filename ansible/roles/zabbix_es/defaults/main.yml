@@ -1,0 +1,2 @@
+external_scripts_dir: '/opt/zabbix/externalscripts'
+user_parm_dir: '/usr/local/zabbix/etc/zabbix_agentd.conf.d'

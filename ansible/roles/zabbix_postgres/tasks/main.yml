@@ -1,0 +1,11 @@
+---
+- name: Download Zabbix postgres package
+  get_url: url='http://s3.cavaliercoder.com/libzbxpgsql/apt/zabbix32/ubuntu/trusty/amd64/libzbxpgsql_1.0.0-1%2Btrusty_amd64.deb' dest=/usr/src
+  register: zbxpgsql
+
+- name: Install package
+  shell: 'dpkg --force-depends -i {{ zbxpgsql.dest | dirname }}/libzbxpgsql*.deb'
+  sudo: yes
+
+- name: restart zabbix_agentd
+  service: name=zabbix_agentd state=restarted enabled=yes

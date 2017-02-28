@@ -1,69 +1,50 @@
-SITE_HOST: 'india.commcarehq.org'
+SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
-ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
-J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
-deploy_env: softlayer
-tableau_server: 'http://tableau2.internal.commcarehq.org'
-TABLEAU_HOST: 'icds.commcarehq.org'
+NO_WWW_SITE_HOST: 'icds-cas.gov.in'
+deploy_env: icds
+tableau_server: 10.247.24.11:80
+
+TABLEAU_HOST: 'reports.icds-cas.gov.in'
+
+nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/icds-cas.gov.in.combined.crt'
+apache2_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
+
+cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
+cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+
+tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.crt'
+tableau_key_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.key'
 
 active_sites:
   cchq_ssl: True
-  cchq_redirect: False
+  cchq_redirect: True
   cchq_http: True
-  cchq_http_redirect: False
-  cchq_http_j2me: True
+  cchq_http_redirect: True
+  cchq_http_j2me: False
   commtrack_ssl: False
   commtrack_http: False
   hq_status: False
   tableau: False
   icds_tableau: True
+  dhis: False
   wiki: False
   wiki_http: False
   motech: False
+  motech1: False
   motech2: False
   riakcs: True
   cas_ssl: True
-  enikshay_ssl: True
 
-riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
-riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
-
-riak_ring_size: 64
+riak_ring_size: 128
 
 proxy_type: 'nginx'
-
-primary_ssl_env: "softlayer"
+primary_ssl_env: "cas"
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
-NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
-run_newrelic_plugin_agent: False
-
-DATADOG_ENABLED: True
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_memory: '4096m'
-elasticsearch_cluster_name: 'indiahqes-1.x'
-
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
-# Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
-
-
-tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
-tableau_key_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
-
-cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
-cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
-
-enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
-enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
+elasticsearch_cluster_name: 'icds-hqes-1.x'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -73,16 +54,14 @@ keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: True
-backup_es: True
-postgres_s3: True
-
-aws_region: 'ap-south-1'
+backup_es: False
+postgres_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgres_config:
   max_connections: 300
-  pgb_max_connections: 400
+  pgb_max_connections: 800
   pgb_default_pool: 290
   pgb_reserve_pool: 5
   pgb_pool_timeout: 1
@@ -93,30 +72,59 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.2 }}"
   - django_alias: proxy
     name: commcarehq_proxy
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p1
     name: commcarehq_p1
-    shards: [0, 204]
+    shards: [0, 103]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p2
     name: commcarehq_p2
-    shards: [205, 409]
+    shards: [104, 205]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p3
     name: commcarehq_p3
-    shards: [410, 614]
+    shards: [206, 308]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p4
     name: commcarehq_p4
-    shards: [615, 819]
+    shards: [309, 411]
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p5
     name: commcarehq_p5
-    shards: [820, 1023]
+    shards: [412, 514]
+    host: "{{ groups.postgresql.0 }}"
+  - django_alias: p6
+    name: commcarehq_p6
+    shards: [515, 617]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p7
+    name: commcarehq_p7
+    shards: [618, 720]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p8
+    name: commcarehq_p8
+    shards: [721, 823]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p9
+    name: commcarehq_p9
+    shards: [824, 926]
+    host: "{{ groups.postgresql.1 }}"
+  - django_alias: p10
+    name: commcarehq_p10
+    shards: [927, 1023]
+    host: "{{ groups.postgresql.1 }}"
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
     name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
+  - name: "{{localsettings.ICDS_TEST_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
-  - name: commcarehq_icds_testdata
-
-postgresql_ssl_enabled: False
+    host: "{{ groups.postgresql.0 }}"
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
@@ -127,7 +135,7 @@ redis_maxmemory_policy: allkeys-lru
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 
-KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
@@ -135,27 +143,32 @@ AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
-kafka_broker_id: 0
+ZABBIX_DB_ROOT_PASS: "{{ secrets.ZABBIX_DB_ROOT_PASS }}"
+ZABBIX_DB_USER_PASS: "{{ secrets.ZABBIX_DB_USER_PASS }}"
 
-encrypted_root: /opt/data/ecrypt
+DATADOG_ENABLED: False
+
+file_email: False
 
 ufw_private_interface: eth0
 
-control_machine_ip: 10.162.36.196
-
-etc_host_lines: []
-etc_host_lines_removed: []
-
 shared_drive_enabled: true
+
+# point hosts to the proxy machine
+etc_host_lines:
+  - '10.247.24.13		cas.commcarehq.org'
+  - '10.247.24.13		reports.icds-cas.gov.in'
+  - '10.247.24.13		www.icds-cas.gov.in'
+etc_host_lines_removed: ['etc_host_lines']
+
+http_proxy_address: '169.38.84.79:3128'
 
 localsettings:
   ALLOWED_HOSTS:
     - localhost
     - 127.0.0.1
-    - "{{ CAS_SITE_HOST }}"
-    - "{{ ENIKSHAY_SITE_HOST }}"
-    - "{{ SITE_HOST }}"
-    - "{{ J2ME_SITE_HOST }}"
+    - '{{ SITE_HOST }}'
+    - '{{ CAS_SITE_HOST }}'
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
@@ -166,41 +179,44 @@ localsettings:
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
+  CELERY_FLOWER_URL: "" #"http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
+  COMMCARE_HQ_NAME: 'ICDS-CAS Server'
+  COMMCARE_NAME: 'ICDS-CAS'
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: True
-  COUCH_SERVER_ROOT: "commcarehq-india.cloudant.com"
+  COUCH_HTTPS: False
+  COUCH_SERVER_ROOT: "10.247.24.18"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_PORT: 443
-  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  COUCH_PORT: 5984
+  COUCH_STALE_QUERY: 'update_after'
+  COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
+  COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
   DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
-  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
-  EMAIL_SMTP_PORT: 587
-  EMAIL_USE_TLS: yes
-  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  EMAIL_SMTP_HOST: 'relay.nic.in'
+  EMAIL_SMTP_PORT: 25
+  EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: '{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}'
-  HQ_INSTANCE: 'india'
+  HQ_INSTANCE: 'icds'
+#  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
+#  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
-  HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
-  HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
+  ICDS_TEST_DATABASE_NAME: commcarehq_icds_testdata
   ICDS_UCR_DATABASE_ALIAS: icds-ucr
-  ICDS_UCR_DATABASE_NAME: icds-ucr
+  ICDS_UCR_DATABASE_NAME: commcarehq_icds_aggregatedata
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -212,49 +228,42 @@ localsettings:
     'phone_number': "(617) 649-2214"
     'email': "accounts@dimagi.com"
     'website': "http://www.dimagi.com"
-  INVOICE_PREFIX: India-
+  INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   JAR_KEY_ALIAS: javarosakey
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  KAFKA_URL: "{{ groups.kafka.0 }}"
-  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
-#  MAPS_LAYERS:
-  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
-  ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
   PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
   PG_DATABASE_PORT: 6432
-  PILLOWTOP_MACHINE_ID: indiacloud
+  PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
-  AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
-  AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
-  SAVED_EXPORT_ACCESS_CUTOFF: 180
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
-  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
-  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
-  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
-  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
-  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
-#  SIMPLE_API_KEYS:
+#  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
   SMS_GATEWAY_PARAMS:
-  SMS_GATEWAY_URL: ''
+  SMS_GATEWAY_URL: 
   SMS_QUEUE_ENABLED: True
-#  STATIC_ROOT:
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
-  TRANSFER_SERVER: 'nginx'
+  TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
+  TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  ENABLE_PRELOGIN_SITE: False
+  CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
+  ENTERPRISE_MODE: True
+  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
+

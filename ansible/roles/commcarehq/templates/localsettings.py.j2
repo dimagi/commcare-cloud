@@ -69,12 +69,34 @@ UCR_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}
 UCR_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_diff.log")
 UCR_EXCEPTION_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_exception.log")
 
+# Shared Drive Setup
+{% if shared_drive_enabled|default(true) %}
+SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
+{% else %}
+SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
+{% endif %}
+RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
+TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
+SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
+TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
+
+
 # Email setup
 # email settings: these ones are the custom hq ones
+{% if file_email or not localsettings.EMAIL_LOGIN %}
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/django_email'
+{% else %}
 EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
+{% if 'EMAIL_PASSWORD' in localsettings %}
 EMAIL_PASSWORD = "{{ localsettings.EMAIL_PASSWORD }}"
+{% else %}
+# This prevents django from attempting smtp auth for servers where it is not configured
+EMAIL_PASSWORD = None
+{% endif %}
 EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
+{% endif %}
 
 SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
 EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
@@ -253,15 +275,6 @@ SOIL_DEFAULT_CACHE = "redis"
 
 REPORT_CACHE = 'redis'
 
-{% if shared_drive_enabled|default(true) %}
-SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
-{% else %}
-SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
-{% endif %}
-RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
-TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
-SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
-TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
 import imp
 try:
@@ -550,7 +563,7 @@ EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 BANK_ROUTING_NUMBER_ACH = '{{ localsettings.BANK_ROUTING_NUMBER_ACH }}'
 BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
 
-ENABLE_PRELOGIN_SITE = True
+ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
 
 {% if localsettings.get('ENABLE_DRACONIAN_SECURITY_FEATURES') %}
 ENABLE_DRACONIAN_SECURITY_FEATURES = True
@@ -588,6 +601,27 @@ TWO_FACTOR_SMS_GATEWAY = '{{ localsettings.TWO_FACTOR_SMS_GATEWAY }}'
 TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
 {% endif %}
 
+
+{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
+{% endif %}
+
+{% if localsettings.get('ENTERPRISE_MODE') %}
+ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
+{% endif %}
+
+{% if localsettings.get('TABLEAU_URL_ROOT') %}
+TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
+{% endif %}
+
+{% if localsettings.get('COMMCARE_HQ_NAME') %}
+COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
+{% endif %}
+
+{% if localsettings.get('COMMCARE_NAME') %}
+COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
+{% endif %}
+
 {% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
 ONBOARDING_DOMAIN_TEST_DATE = {{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}
 {% endif %}
@@ -597,4 +631,5 @@ SENTRY_PUBLIC_KEY = '{{ localsettings.SENTRY_PUBLIC_KEY }}'
 SENTRY_PRIVATE_KEY = '{{ localsettings.SENTRY_PRIVATE_KEY }}'
 SENTRY_PROJECT_ID = '{{ localsettings.SENTRY_PROJECT_ID }}'
 SENTRY_QUERY_URL = '{{ localsettings.SENTRY_QUERY_URL }}'
+SENTRY_API_KEY = '{{ localsettings.SENTRY_API_KEY }}'
 {% endif %}

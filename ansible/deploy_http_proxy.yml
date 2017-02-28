@@ -1,0 +1,5 @@
+- name: http proxy for external calls
+  hosts: all
+  sudo: yes
+  roles:
+    - http_proxy
