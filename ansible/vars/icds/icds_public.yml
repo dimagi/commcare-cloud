@@ -72,7 +72,7 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.2 }}"
   - django_alias: proxy
     name: commcarehq_proxy
     host: "{{ groups.postgresql.1 }}"
