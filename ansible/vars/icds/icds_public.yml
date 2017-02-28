@@ -265,5 +265,5 @@ localsettings:
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  TABLEAU_URL_ROOT: "'https://{{ TABLEAU_HOST }}/'"
+  TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
 

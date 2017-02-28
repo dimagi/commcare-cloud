@@ -611,15 +611,15 @@ ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 {% endif %}
 
 {% if localsettings.get('TABLEAU_URL_ROOT') %}
-TABLEAU_URL_ROOT = {{ localsettings.TABLEAU_URL_ROOT }}
+TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
 {% endif %}
 
 {% if localsettings.get('COMMCARE_HQ_NAME') %}
-COMMCARE_HQ_NAME = {{ localsettings.COMMCARE_HQ_NAME }}
+COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
 {% endif %}
 
 {% if localsettings.get('COMMCARE_NAME') %}
-COMMCARE_NAME = {{ localsettings.COMMCARE_NAME }}
+COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
 {% endif %}
 
 {% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
