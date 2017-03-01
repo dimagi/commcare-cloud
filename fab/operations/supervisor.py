@@ -138,7 +138,7 @@ def set_djangoapp_supervisorconf():
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
 
 
-@roles(ROLES_DJANGO, ROLES_CELERY)
+@roles(ROLES_DJANGO + ROLES_CELERY)
 @parallel
 def set_errand_boy_supervisorconf():
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
