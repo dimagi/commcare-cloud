@@ -90,8 +90,6 @@ production:
 
   celery_processes:
     hqcelery0:
-      main:
-        concurrency: 8
       background_queue:
         concurrency: 4
       periodic:
@@ -112,8 +110,6 @@ production:
         concurrency: 8
       reminder_rule_queue:
         concurrency: 1
-      saved_exports_queue:
-        concurrency: 3
       sms_queue:
         concurrency: 8
       logistics_reminder_queue:
@@ -123,6 +119,12 @@ production:
       async_restore_queue:
         concurrency: 4
       flower: {}
+    hqcelery2:
+      main:
+        concurrency: 8
+      saved_exports_queue:
+        concurrency: 3
+      
 
 staging:
   environment: staging

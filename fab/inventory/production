@@ -27,6 +27,7 @@ hqes1.internal-va.commcarehq.org kafka_broker_id=1
 # but ansible doesn't currently have access to that
 hqcelery1.internal-va.commcarehq.org datadog_integrations=celery
 hqcelery0.internal-va.commcarehq.org
+hqcelery2.internal-va.commcarehq.org
 
 [celery:vars]
 newrelic_app_name=celery
