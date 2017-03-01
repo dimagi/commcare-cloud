@@ -3,7 +3,7 @@ from fabric.context_managers import cd
 
 from fab.utils import bower_command
 
-from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY, ROLES_CONTROL
+from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY, ROLES_CONTROL, ROLES_CELERY
 
 
 @roles(set(ROLES_STATIC + ROLES_DJANGO))
@@ -55,7 +55,7 @@ def bower_install():
 
 
 @parallel
-@roles(ROLES_DJANGO)
+@roles(ROLES_DJANGO + ROLES_CELERY)
 def npm_install():
     with cd(env.code_root):
         sudo('npm prune --production')
