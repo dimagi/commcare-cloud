@@ -1,0 +1,14 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+  - name: celery
+    search_string: ['celeryd']
+    ignore_denied_access: True
+
+  - name: celery_main_queue
+    search_string: ['org_main']
+    exact_match: False
+    ignore_denied_access: True
