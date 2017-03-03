@@ -74,4 +74,23 @@ server {
 
   }
 {% endfor %}
+{% for location in item.server.get('extra_locations', []) %}
+  location {{ location.name }} {
+    {% if location.get('balancer', None) %}
+        proxy_pass http://{{ location.balancer }};
+    {% endif %}
+    {% if location.get('is_internal', False) == True %}
+        internal;
+    {% endif %}
+    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
+        {{ x }} {{ y }};
+    {% endfor %}
+    {% if location.get('proxy_set_headers') %}
+      {% for header in location.proxy_set_headers %}
+        proxy_set_header {{ header }};
+      {% endfor %}
+    {% endif %}
+
+  }
+{% endfor %}
 }
