@@ -9,8 +9,7 @@
 
 - name: Add zabbix user
   sudo: yes
-  user: name={{ item }} state=present system=yes
-  with_items: '{{ dev_users.present }}'
+  user: name=zabbix state=present system=yes
 
 - name: Zabbix pgpass
   sudo: yes
