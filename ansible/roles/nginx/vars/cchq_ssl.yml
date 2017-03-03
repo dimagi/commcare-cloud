@@ -45,4 +45,4 @@ nginx_sites:
       balancer: "{{ deploy_env }}_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
-    extra_locations: "{{ site_locations }}"
+   extra_locations: "{{ site_locations }}"
