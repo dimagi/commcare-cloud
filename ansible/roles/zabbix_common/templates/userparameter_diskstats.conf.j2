@@ -1,4 +1,4 @@
-UserParameter=custom.vfs.discover_disks,/usr/local/bin/lld-disks.py
+UserParameter=custom.vfs.discover_disks,{{external_scripts_dir}}/lld-disks.py
 
 UserParameter=custom.vfs.dev.read.ops[*],awk '{print $$1}' /sys/class/block/$1/stat
 UserParameter=custom.vfs.dev.read.merged[*],awk '{print $$2}' /sys/class/block/$1/stat

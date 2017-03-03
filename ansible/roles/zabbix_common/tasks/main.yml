@@ -21,8 +21,8 @@
 
 - name: Install diskstats conf
   sudo: yes
-  copy:
-    src: 'userparameter_diskstats.conf'
+  template:
+    src: userparameter_diskstats.conf.j2
     dest: '{{ user_parm_dir }}/userparameter_diskstats.conf'
     mode: 0644
   notify: restart zabbix_agentd
