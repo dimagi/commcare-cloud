@@ -1,18 +1,36 @@
 ---
 # tasks file for zabbix_common
 
-- name: Install diskstats conf
+- name: Make zabbix external scripts directory
   sudo: yes
-  copy:
-    src: 'userparameter_diskstats.conf'
-    dest: '/etc/zabbix/zabbix_agentd.d/userparameter_diskstats.conf'
-    mode: 0644
-  notify: restart zabbix_agentd
+  file:
+    path: '{{ external_scripts_dir }}'
+    owner: zabbix
+    group: zabbix
+    mode: 0755
+    state: directory
+
+- name: Make zabbix user param directory
+  sudo: yes
+  file:
+    path: '{{ user_parm_dir }}'
+    owner: zabbix
+    group: zabbix
+    mode: 0755
+    state: directory
 
 - name: Install diskstats conf
   sudo: yes
   copy:
+    src: 'userparameter_diskstats.conf'
+    dest: '{{ user_parm_dir }}/userparameter_diskstats.conf'
+    mode: 0644
+  notify: restart zabbix_agentd
+
+- name: Install lld-disks script
+  sudo: yes
+  copy:
     src: 'lld-disks.py'
-    dest: '/usr/local/bin/lld-disks.py'
+    dest: '{{ external_scripts_dir }}/lld-disks.py'
     mode: 0755
   notify: restart zabbix_agentd
