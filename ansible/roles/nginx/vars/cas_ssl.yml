@@ -13,6 +13,7 @@ nginx_sites:
       port: "{{ formplayer_port }}"
    limit_req_zones:
     - name: "server_name"
+      zone: "$server_name"
       size: "10m"
       rate: "50r/s"
    file_name: "{{ deploy_env }}_cas_commcare"
