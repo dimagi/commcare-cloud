@@ -16,6 +16,10 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% for zone in item.server.get('limit_req_zones', []) %}
+limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }}:{{ zone.size }} rate={{ zone.rate }};
+{% endfor %}
+
 server {
 
 {% if nginx_separate_logs_per_site == True %}
@@ -40,7 +44,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
@@ -63,7 +67,7 @@ server {
     {% if location.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers'] %}
+    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'limit_reqs'] %}
         {{ x }} {{ y }};
     {% endfor %}
     {% if location.get('proxy_set_headers') %}
@@ -71,7 +75,9 @@ server {
         proxy_set_header {{ header }};
       {% endfor %}
     {% endif %}
-
+    {% for limit in location.get('limit_reqs', []) %}
+        limit_req zone={{ limit.zone_name }}{% if limit.get('burst') %} burst={{limit.burst}}{% endif %}{% if limit.get('nodelay') %} nodelay{% endif %};
+    {% endfor %}
   }
 {% endfor %}
 }
