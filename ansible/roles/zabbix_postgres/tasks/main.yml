@@ -28,7 +28,7 @@
 
 - name: Add module to zabbix agent conf
   lineinfile:
-    path: /usr/local/zabbix/etc/zabbix_agentd.conf
+    dest: /usr/local/zabbix/etc/zabbix_agentd.conf
     regexp: '^LoadModule=libzbxpgsql.so'
     line: 'LoadModule=libzbxpgsql.so'
   notify: restart zabbix_agentd
