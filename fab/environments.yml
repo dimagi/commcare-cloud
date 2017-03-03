@@ -44,7 +44,7 @@ softlayer:
       email_queue:
         concurrency: 2
       repeat_record_queue:
-        concurrency: 3
+        concurrency: 10
       async_restore_queue:
         concurrency: 4
       flower: {}
@@ -100,7 +100,7 @@ production:
       email_queue:
         concurrency: 2
       repeat_record_queue:
-        concurrency: 50
+        concurrency: 100
       ucr_queue:
         concurrency: 4
     hqcelery1:
