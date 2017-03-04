@@ -1,5 +1,5 @@
 ---
-# roles/zabbix_es/tasks/main.yml
+- include_vars: ../../zabbix_common/defaults/main.yml
 
 - name: Add es zabbix script
   template:
