@@ -25,7 +25,7 @@
 - name: link module to zabbix modules
   file:
     src: /usr/lib/zabbix/modules/libzbxpgsql.so
-    dest: "{{ module_dir }}/libzbxpgsql.so"
+    dest: "{{ zabbix_module_dir }}/libzbxpgsql.so"
     state: link
 
 - name: Add module to zabbix agent conf
@@ -42,7 +42,7 @@
   sudo: yes
   template:
     src: pgbouncer.conf.j2
-    dest: "{{ user_parm_dir }}/pgbouncer.conf"
+    dest: "{{ zabbix_user_parm_dir }}/pgbouncer.conf"
     mode: 0644
   notify: restart zabbix_agentd
 
@@ -50,7 +50,7 @@
   sudo: yes
   copy:
     src: 'pgbouncer.pool.discovery.sh'
-    dest: "{{ external_scripts_dir }}/pgbouncer.pool.discovery.sh"
+    dest: "{{ zabbix_external_scripts_dir }}/pgbouncer.pool.discovery.sh"
     mode: 0755
   notify: restart zabbix_agentd
 
@@ -58,7 +58,7 @@
   sudo: yes
   copy:
     src: 'pgbouncer.stat.sh'
-    dest: "{{ external_scripts_dir }}/pgbouncer.stat.sh"
+    dest: "{{ zabbix_external_scripts_dir }}/pgbouncer.stat.sh"
     mode: 0755
   notify: restart zabbix_agentd
 

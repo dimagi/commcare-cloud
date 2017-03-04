@@ -4,7 +4,7 @@
 - name: Make zabbix external scripts directory
   sudo: yes
   file:
-    path: '{{ external_scripts_dir }}'
+    path: '{{ zabbix_external_scripts_dir }}'
     owner: zabbix
     group: zabbix
     mode: 0755
@@ -13,7 +13,7 @@
 - name: Make zabbix user param directory
   sudo: yes
   file:
-    path: '{{ user_parm_dir }}'
+    path: '{{ zabbix_user_parm_dir }}'
     owner: zabbix
     group: zabbix
     mode: 0755
@@ -23,7 +23,7 @@
   sudo: yes
   template:
     src: userparameter_diskstats.conf.j2
-    dest: '{{ user_parm_dir }}/userparameter_diskstats.conf'
+    dest: '{{ zabbix_user_parm_dir }}/userparameter_diskstats.conf'
     mode: 0644
   notify: restart zabbix_agentd
 
@@ -31,6 +31,6 @@
   sudo: yes
   copy:
     src: 'lld-disks.py'
-    dest: '{{ external_scripts_dir }}/lld-disks.py'
+    dest: '{{ zabbix_external_scripts_dir }}/lld-disks.py'
     mode: 0755
   notify: restart zabbix_agentd

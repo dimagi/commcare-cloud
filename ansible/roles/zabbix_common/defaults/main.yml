@@ -1,5 +1,5 @@
 zabbix_root: '/usr/local/zabbix'
-external_scripts_dir: '/opt/zabbix/externalscripts'
-user_parm_dir: '{{ zabbix_root }}/etc/zabbix_agentd.conf.d'
-zabbix_conf: '{{ zabbix_root }}/etc/zabbix_agentd.conf'
-module_dir: '{{ zabbix_root }}/lib/modules'
+zabbix_external_scripts_dir: '/opt/zabbix/externalscripts'
+zabbix_user_parm_dir: "{{ zabbix_root }}/etc/zabbix_agentd.conf.d"
+zabbix_conf: "{{ zabbix_root }}/etc/zabbix_agentd.conf"
+zabbix_module_dir: "{{ zabbix_root }}/lib/modules"
