@@ -1,3 +1,4 @@
+# https://github.com/grundic/zabbix-disk-performance/
 UserParameter=custom.vfs.discover_disks,{{external_scripts_dir}}/lld-disks.py
 
 UserParameter=custom.vfs.dev.read.ops[*],awk '{print $$1}' /sys/class/block/$1/stat
