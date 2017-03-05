@@ -9,9 +9,10 @@
   sudo: yes
   roles:
     - {role: jonatasbaldin.zabbix3agent, tags: 'zabbix_agent'}
+    - {role: zabbix_common, tags: 'zabbix_common'}
 
 - name: zabbix postgres deploy
-  hosts: postgresql:zabbix
+  hosts: postgresql
   sudo: yes
   roles:
     - {role: zabbix_postgres, tags: 'zabbix_postgres'}
