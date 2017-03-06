@@ -1,15 +1,6 @@
 ---
 # roles/zabbix_es/tasks/main.yml
 
-- name: Make zabbix external scripts directory
-  sudo: yes
-  file:
-    path: '{{ external_scripts_dir }}'
-    owner: zabbix
-    group: zabbix
-    mode: 0755
-    state: directory
-
 - name: Add es zabbix script
   template:
     src: ESzabbix.py.j2

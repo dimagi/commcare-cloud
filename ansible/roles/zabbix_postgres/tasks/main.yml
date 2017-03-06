@@ -7,5 +7,28 @@
   shell: 'dpkg --force-depends -i {{ zbxpgsql.dest | dirname }}/libzbxpgsql*.deb'
   sudo: yes
 
-- name: restart zabbix_agentd
-  service: name=zabbix_agentd state=restarted enabled=yes
+- name: Add zabbix user
+  sudo: yes
+  user: name=zabbix state=present system=yes
+
+- name: Zabbix pgpass
+  sudo: yes
+  template:
+    src: pgpass.j2
+    dest: '/home/zabbix/.pgpass'
+    owner: zabbix
+    group: zabbix
+    mode: 0600
+
+- name: link module to zabbix modules
+  file:
+    src: /usr/lib/zabbix/modules/libzbxpgsql.so
+    dest: /usr/local/zabbix/lib/modules/libzbxpgsql.so
+    state: link
+
+- name: Add module to zabbix agent conf
+  lineinfile:
+    dest: /usr/local/zabbix/etc/zabbix_agentd.conf
+    regexp: '^LoadModule=libzbxpgsql.so'
+    line: 'LoadModule=libzbxpgsql.so'
+  notify: restart zabbix_agentd
