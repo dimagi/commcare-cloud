@@ -1,0 +1,18 @@
+---
+
+- name: Install nginx conf
+  sudo: yes
+  template:
+    src: userparameter_nginx.conf.j2
+    dest: "{{ zabbix_user_parm_dir }}/nginx.conf"
+    mode: 0644
+  notify: restart zabbix_agentd
+
+- name: Install nginx stats script
+  sudo: yes
+  copy:
+    src: 'nginx.sh'
+    dest: "{{ zabbix_external_scripts_dir }}/nginx.sh"
+    mode: 0755
+  notify: restart zabbix_agentd
+

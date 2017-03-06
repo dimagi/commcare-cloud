@@ -29,3 +29,6 @@
 
 - include: pgbouncer.yml
   when: "'postgresql' in group_names"
+
+- include: pgbouncer.yml
+  when: "'proxy' in group_names"
