@@ -1,14 +1,13 @@
 ---
-- include_vars: ../../zabbix_common/defaults/main.yml
 
 - name: Add es zabbix script
-  template:
-    src: ESzabbix.py.j2
-    dest: '{{ zabbix_external_scripts_dir }}/ESzabbix.py'
+  copy:
+    src: 'ESzabbix.py'
+    dest: "{{ zabbix_external_scripts_dir }}/ESzabbix.py"
     mode: 0755
 
 - name: Add user parameter
   template:
-    src: ESzabbix.userparm.j2
+    src: userparameter_es.conf.j2
     dest: '{{ zabbix_user_parm_dir }}/ESzabbix.userparm'
   notify: restart zabbix_agentd

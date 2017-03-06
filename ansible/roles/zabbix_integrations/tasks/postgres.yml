@@ -1,5 +1,4 @@
 ---
-- include_vars: ../../zabbix_common/defaults/main.yml
 
 - name: Download Zabbix postgres package
   get_url: url='http://s3.cavaliercoder.com/libzbxpgsql/apt/zabbix32/ubuntu/trusty/amd64/libzbxpgsql_1.0.0-1%2Btrusty_amd64.deb' dest=/usr/src
@@ -34,31 +33,3 @@
     regexp: '^LoadModule=libzbxpgsql.so'
     line: 'LoadModule=libzbxpgsql.so'
   notify: restart zabbix_agentd
-
-
-# pgbouncer
-
-- name: Install pgbouncer conf
-  sudo: yes
-  template:
-    src: pgbouncer.conf.j2
-    dest: "{{ zabbix_user_parm_dir }}/pgbouncer.conf"
-    mode: 0644
-  notify: restart zabbix_agentd
-
-- name: Install pgbouncer discovery script
-  sudo: yes
-  copy:
-    src: 'pgbouncer.pool.discovery.sh'
-    dest: "{{ zabbix_external_scripts_dir }}/pgbouncer.pool.discovery.sh"
-    mode: 0755
-  notify: restart zabbix_agentd
-
-- name: Install pgbouncer stats script
-  sudo: yes
-  copy:
-    src: 'pgbouncer.stat.sh'
-    dest: "{{ zabbix_external_scripts_dir }}/pgbouncer.stat.sh"
-    mode: 0755
-  notify: restart zabbix_agentd
-

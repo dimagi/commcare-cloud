@@ -1,0 +1,26 @@
+---
+
+- name: Install pgbouncer conf
+  sudo: yes
+  template:
+    src: userparameter_pgbouncer.conf.j2
+    dest: "{{ zabbix_user_parm_dir }}/pgbouncer.conf"
+    mode: 0644
+  notify: restart zabbix_agentd
+
+- name: Install pgbouncer discovery script
+  sudo: yes
+  copy:
+    src: 'pgbouncer.pool.discovery.sh'
+    dest: "{{ zabbix_external_scripts_dir }}/pgbouncer.pool.discovery.sh"
+    mode: 0755
+  notify: restart zabbix_agentd
+
+- name: Install pgbouncer stats script
+  sudo: yes
+  copy:
+    src: 'pgbouncer.stat.sh'
+    dest: "{{ zabbix_external_scripts_dir }}/pgbouncer.stat.sh"
+    mode: 0755
+  notify: restart zabbix_agentd
+

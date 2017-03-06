@@ -1,5 +1,7 @@
 # Manual steps required
 
+## PostgreSQL
+
 In Zabbix UI:
 
   * Install the PostgreSQL template
@@ -9,3 +11,10 @@ In Zabbix UI:
     * {$PG_CONN} => host=localhost port=5432 user=devreadonly connect_timeout=10
   * Add the pgbouncer template
     * https://github.com/lesovsky/zabbix-extensions/blob/master/files/pgbouncer/pgbouncer-extended-template.xml
+
+## NGINX
+
+In Zabbix UI:
+
+  * Install the nginx template
+    * https://github.com/oscm/zabbix/blob/master/nginx/zbx_export_templates.xml
