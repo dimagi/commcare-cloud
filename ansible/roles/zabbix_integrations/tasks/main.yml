@@ -23,12 +23,20 @@
 
 - include: es.yml
   when: "'elasticsearch' in group_names"
+  tags:
+    zabbix_es
 
 - include: postgres.yml
   when: "'postgresql' in group_names"
+  tags:
+    zabbix_postgres
 
 - include: pgbouncer.yml
   when: "'postgresql' in group_names"
+  tags:
+    zabbix_pgbouncer
 
-- include: pgbouncer.yml
+- include: nginx.yml
   when: "'proxy' in group_names"
+  tags:
+    zabbix_nginx
