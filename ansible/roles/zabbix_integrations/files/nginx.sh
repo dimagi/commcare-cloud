@@ -10,7 +10,7 @@
 
 HOST="localhost"
 PORT="80"
-stub_status=stub_status
+stub_status=nginx_stub_status
 
 function check() {
 	/sbin/pidof nginx | wc -l
