@@ -1,4 +1,5 @@
 ---
+
 - name: Download Zabbix postgres package
   get_url: url='http://s3.cavaliercoder.com/libzbxpgsql/apt/zabbix32/ubuntu/trusty/amd64/libzbxpgsql_1.0.0-1%2Btrusty_amd64.deb' dest=/usr/src
   register: zbxpgsql
@@ -23,12 +24,12 @@
 - name: link module to zabbix modules
   file:
     src: /usr/lib/zabbix/modules/libzbxpgsql.so
-    dest: /usr/local/zabbix/lib/modules/libzbxpgsql.so
+    dest: "{{ zabbix_module_dir }}/libzbxpgsql.so"
     state: link
 
 - name: Add module to zabbix agent conf
   lineinfile:
-    dest: /usr/local/zabbix/etc/zabbix_agentd.conf
+    dest: "{{ zabbix_conf }}"
     regexp: '^LoadModule=libzbxpgsql.so'
     line: 'LoadModule=libzbxpgsql.so'
   notify: restart zabbix_agentd
