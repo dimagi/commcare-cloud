@@ -327,7 +327,7 @@ def mail_admins(subject, message, use_current_release=False):
     with cd(code_dir):
         sudo((
             '%(virtualenv_dir)s/bin/python manage.py '
-            'mail_admins --subject "%(subject)s" "%(message)s" --slack --environment %(environment)s'
+            'mail_admins --subject %(subject)s %(message)s --slack --environment %(environment)s'
         ) % {
             'virtualenv_dir': virtualenv_dir,
             'subject': pipes.quote(subject),
