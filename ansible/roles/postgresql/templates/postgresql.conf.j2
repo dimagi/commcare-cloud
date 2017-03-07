@@ -115,6 +115,8 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}             
 # - Memory -
 
 #shared_buffers = 1024MB           # min 128kB
+{% if 'shared_buffers' in postgres_config %}shared_buffers = {{ postgres_config.shared_buffers }}
+{% endif %}
                     # (change requires restart)
 #temp_buffers = 8MB         # min 800kB
 #max_prepared_transactions = 0      # zero disables the feature
@@ -124,6 +126,9 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}             
 # It is not advisable to set max_prepared_transactions nonzero unless you
 # actively intend to use prepared transactions.
 #work_mem = 1MB             # min 64kB
+{% if 'work_mem' in postgres_config %}work_mem = {{ postgres_config.work_mem }}
+{% endif %}
+
 #maintenance_work_mem = 16MB        # min 1MB
 #max_stack_depth = 2MB          # min 100kB
 
@@ -261,6 +266,8 @@ hot_standby = on          # "on" allows queries during recovery
 #cpu_index_tuple_cost = 0.005       # same scale as above
 #cpu_operator_cost = 0.0025     # same scale as above
 #effective_cache_size = 128MB
+{% if 'effective_cache_size' in postgres_config %}effective_cache_size = {{ postgres_config.effective_cache_size }}
+{% endif %}
 
 # - Genetic Query Optimizer -
 
