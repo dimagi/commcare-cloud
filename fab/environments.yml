@@ -100,7 +100,7 @@ production:
       email_queue:
         concurrency: 2
       repeat_record_queue:
-        concurrency: 100
+        concurrency: 200
       ucr_queue:
         concurrency: 4
     hqcelery1:
