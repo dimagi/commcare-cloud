@@ -230,6 +230,8 @@ def _format_env(current_env, extra=None):
         'virtualenv_current',
         'django_port',
         'django_bind',
+        'gunicorn_workers_factor',
+        'gunicorn_workers_static_factor',
         'flower_port',
         'jython_memory',
         'formplayer_memory'
