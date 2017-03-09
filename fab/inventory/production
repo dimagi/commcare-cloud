@@ -34,7 +34,6 @@ newrelic_app_name=celery
 
 [pillowtop]
 hqpillowtop0.internal-va.commcarehq.org
-hqpillowtop1.internal-va.commcarehq.org
 
 [touchforms]
 hqtouch0.internal-va.commcarehq.org
