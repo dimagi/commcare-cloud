@@ -6,6 +6,8 @@ base:
   django_bind: 0.0.0.0
   django_port: 9010
   flower_port: 5555
+  gunicorn_workers_factor: 1
+  gunicorn_workers_static_factor: 0
   home: "/home/cchq"
   project: commcare-hq
   code_repo: 'git://github.com/dimagi/commcare-hq.git'
@@ -53,6 +55,8 @@ softlayer:
 icds:
   environment: icds
   http_proxy: 169.38.84.79:3128
+  gunicorn_workers_factor: 2
+  gunicorn_workers_static_factor: 1
   celery_processes:
     '*':
       main:
