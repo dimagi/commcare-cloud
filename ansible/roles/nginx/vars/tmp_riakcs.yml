@@ -1,0 +1,27 @@
+---
+nginx_sites:
+- server:
+   balancers:
+    - name: "{{ deploy_env }}_tmp_riakcs"
+      hosts: tmp_riakcs
+      port: "{{ riakcs_port }}"
+   file_name: "{{ deploy_env }}_tmp_riakcs"
+   listen: "{{ riakcs_port }}"
+   # boto3 python library switches to multipart uploads for blobs > 8M
+   client_max_body_size: "9M"
+   upstream_port: "{{ tmp_riakcs_port }}"
+   proxy_set_headers:
+   - "Host $http_host"
+   - "X-Real-IP $remote_addr"
+   locations:
+     - name: /
+       balancer: "{{ deploy_env }}_tmp_riakcs"
+       proxy_redirect: ' off'
+       proxy_connect_timeout: 90
+       proxy_send_timeout: 90
+       proxy_read_timeout: 90
+       proxy_buffer_size: 64k
+       proxy_buffers: 8 64k
+       # http_403 from Riak CS is an indication that Riak is down
+       proxy_next_upstream: error timeout http_403
+       proxy_next_upstream_tries: 3

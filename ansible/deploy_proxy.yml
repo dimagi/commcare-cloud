@@ -19,6 +19,7 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_j2me == True, action: site, site_name: cchq_http_j2me }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.riakcs == True, action: site, site_name: riakcs }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.tmp_riakcs == True, action: site, site_name: tmp_riakcs }
     # Don't put any .commcarehq.org ssl configurations below commtrack, the ssl cert variable that gets loaded persists between roles
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_ssl == True, action: site, site_name: commtrack_ssl }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_http == True, action: site, site_name: commtrack_http }

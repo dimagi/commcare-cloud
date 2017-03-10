@@ -22,6 +22,7 @@ active_sites:
   motech: False
   motech2: False
   riakcs: True
+  tmp_riakcs: True
   cas_ssl: True
   enikshay_ssl: True
 
