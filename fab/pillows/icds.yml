@@ -1,0 +1,3 @@
+exclude_pillows:
+  - ReportCaseToElasticsearchPillow
+  - ReportXFormToElasticsearchPillow
