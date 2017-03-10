@@ -41,7 +41,8 @@ def get_pillow_env_config(environment):
     if os.path.exists(pillow_file):
         with open(pillow_file, 'r+') as f:
             yml = yaml.load(f)
-            pillow_conf.update(yml)
+            if yml:
+                pillow_conf.update(yml)
     else:
         return None
 
