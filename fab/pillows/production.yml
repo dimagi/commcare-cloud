@@ -2,13 +2,12 @@
 ---
 exclude_groups:
   - mvp_indicators
-  - fluff
 # include_groups:
 #   - mvp_indicators
-# include_pillows:
+include_pillows:
 #   - custom.bihar.models.CareBiharFluffPillow
-#   - custom.opm.models.OpmUserFluffPillow
-#   - custom.reports.mc.models.MalariaConsortiumFluffPillow
+  - custom.opm.models.OpmUserFluffPillow
+  - custom.reports.mc.models.MalariaConsortiumFluffPillow
 #   - custom.m4change.models.AncHmisCaseFluffPillow
 #   - custom.m4change.models.LdHmisCaseFluffPillow
 #   - custom.m4change.models.ImmunizationHmisCaseFluffPillow
@@ -29,4 +28,4 @@ exclude_groups:
 #   - custom.world_vision.models.WorldVisionHierarchyFluffPillow
 #   - custom.up_nrhm.models.UpNRHMLocationHierarchyFluffPillow
 #   - custom.up_nrhm.models.ASHAFacilitatorsFluffPillow
-#   - custom.succeed.models.UCLAPatientFluffPillow
+  - custom.succeed.models.UCLAPatientFluffPillow
