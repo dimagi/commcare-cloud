@@ -165,7 +165,7 @@ LOCAL_PILLOWTOPS = {
         {
             'name': '{{ pillow.name }}',
             'class': 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow',
-            'instance': '{{ pillow_function_name }}',
+            'instance': '{{ pillow.pillow_function_name }}',
         },
         {% endfor %}
     ]
