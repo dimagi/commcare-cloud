@@ -28,7 +28,7 @@ active_sites:
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
-riak_ring_size: 64
+riak_ring_size: 128
 
 proxy_type: 'nginx'
 

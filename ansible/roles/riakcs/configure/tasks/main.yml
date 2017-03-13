@@ -39,6 +39,16 @@
     mode=0640
   notify: restart {{ name }}
 
+- name: Set {{ name }} extra conf
+  template: >
+    src={{ extra_conf }}.j2
+    dest={{ conf_path | dirname }}/{{ extra_conf }}
+    owner=root
+    group=riak
+    mode=0640
+  notify: restart {{ name }}
+  when: extra_conf != ""
+
 - name: Drop {{ name }} {{ drop_conf }}
   file: >
     path={{ conf_path | dirname }}/{{ drop_conf }}

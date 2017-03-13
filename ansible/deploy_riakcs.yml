@@ -78,11 +78,12 @@
   roles:
     - role: riakcs/configure
       name: riak
-      drop_conf: advanced.config
+      extra_conf: advanced.config
       data_dirs:
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
+        - "{{ riak_data_root_blocks }}"
       when: _force_riak_config | bool
 
 - name: Join Riak [CS] nodes to cluster
