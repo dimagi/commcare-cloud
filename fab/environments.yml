@@ -94,8 +94,6 @@ production:
 
   celery_processes:
     hqcelery0:
-      background_queue:
-        concurrency: 4
       periodic:
         server_whitelist: hqcelery0.internal-va.commcarehq.org
         concurrency: 4
@@ -128,7 +126,8 @@ production:
         concurrency: 8
       saved_exports_queue:
         concurrency: 3
-      
+      background_queue:
+        concurrency: 4
 
 staging:
   environment: staging
