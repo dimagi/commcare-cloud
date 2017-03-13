@@ -9,8 +9,7 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-DATABASES = {
-{% for config in postgresql_dbs %}
+DATABASES = { {% for config in postgresql_dbs %}
 {%- if config.get('django_alias') %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -159,6 +158,20 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 ####### For Constructing Global URLs ########
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+
+{% if 'MAIN_UCR_PILLOWS' in localsettings %}
+LOCAL_PILLOWTOPS = {
+    'core_ext': [ {% for pillow in localsettings.MAIN_UCR_PILLOWS %}
+        {
+            'name': '{{ pillow.name }}',
+            'class': 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow',
+            'instance': '{{ pillow_function_name }}',
+        },
+        {% endfor %}
+    ]
+}
+{% endif %}
+
 
 BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
