@@ -1,19 +1,10 @@
 # fab/pillows/production.yml
 ---
-exclude_groups:
-  - mvp_indicators
-# include_groups:
-#   - mvp_indicators
 include_pillows:
   - custom.opm.models.OpmUserFluffPillow
   - custom.reports.mc.models.MalariaConsortiumFluffPillow
   - custom.m4change.models.M4ChangeFormFluffPillow
-#   - custom.intrahealth.models.CouvertureFluffPillow
-#   - custom.intrahealth.models.TauxDeSatisfactionFluffPillow
-#   - custom.intrahealth.models.IntraHealthFluffPillow
-#   - custom.intrahealth.models.RecapPassageFluffPillow
-#   - custom.intrahealth.models.TauxDeRuptureFluffPillow
-#   - custom.intrahealth.models.LivraisonFluffPillow
+  - custom.intrahealth.models.IntraHealthFormFluffPillow
   - custom.intrahealth.models.RecouvrementFluffPillow
   - custom.care_pathways.models.GeographyFluffPillow
   - custom.care_pathways.models.FarmerRecordFluffPillow
