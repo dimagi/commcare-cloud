@@ -337,7 +337,9 @@ anti_entropy = active
 ## 
 ## Acceptable values:
 ##   - one of: bitcask, leveldb, memory, multi
-storage_backend = leveldb
+# overridden by advance.config
+# http://lists.basho.com/pipermail/riak-users_lists.basho.com/2017-March/019156.html
+#storage_backend = leveldb
 
 ## Controls which binary representation of a riak value is stored
 ## on disk.
