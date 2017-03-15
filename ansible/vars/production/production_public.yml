@@ -205,9 +205,11 @@ localsettings:
   KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
   MAIN_UCR_PILLOWS:
     - name: 'kafka-ucr-main-08'
-      pillow_function_name: 'corehq.apps.userreports.pillow.get_kafka_ucr_pillow_08'
+      pillow_function_name: 'corehq.apps.userreports.pillow.get_kafka_ucr_pillow'
+      ucr_divison: '08'
     - name: 'kafka-ucr-main-9f'
-      pillow_function_name: 'corehq.apps.userreports.pillow.get_kafka_ucr_pillow_9f'
+      pillow_function_name: 'corehq.apps.userreports.pillow.get_kafka_ucr_pillow'
+      ucr_divison: '9f'
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST_TOKEN }}"

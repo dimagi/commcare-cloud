@@ -166,6 +166,11 @@ LOCAL_PILLOWTOPS = {
             'name': '{{ pillow.name }}',
             'class': 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow',
             'instance': '{{ pillow.pillow_function_name }}',
+            {% if pillow.get('ucr_division', None) %}
+            'params': {
+                'ucr_division': '{{ pillow.ucr_division }}'
+            }
+            {% endif %}
         },
         {% endfor %}
     ]
