@@ -421,7 +421,7 @@ platform_log_dir = /var/log/riak-cs
 ## 
 ## Acceptable values:
 ##   - text
-nodename = riakcs-{{ inventory_hostname_short }}@{{ inventory_hostname }}
+nodename = riakcs@{{ inventory_hostname }}
 
 ## Cookie for distributed node communication.  All nodes in the
 ## same cluster should use the same cookie or they will not be able to
