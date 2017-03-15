@@ -1,16 +1,16 @@
-riak_version: 2.1.1
+riak_version: 2.2.1
 riak_package_release: 1
 riak_package: riak={{ riak_version }}-{{ riak_package_release }}
 riak_script_url: https://packagecloud.io/install/repositories/basho/riak/script.deb.sh
 riak_conf: /etc/riak/riak.conf
 
-riakcs_version: 2.1.0
+riakcs_version: 2.1.1
 riakcs_package_release: 1
 riakcs_package: riak-cs={{ riakcs_version }}-{{ riakcs_package_release }}
 riakcs_script_url: https://packagecloud.io/install/repositories/basho/riak-cs/script.deb.sh
 riakcs_conf: /etc/riak-cs/riak-cs.conf
 
-stanchion_version: 2.1.0
+stanchion_version: 2.1.1
 stanchion_package_release: 1
 stanchion_package: stanchion={{ stanchion_version }}-{{ stanchion_package_release }}
 stanchion_script_url: https://packagecloud.io/install/repositories/basho/stanchion/script.deb.sh
