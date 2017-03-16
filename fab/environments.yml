@@ -16,10 +16,12 @@ base:
   formplayer_memory: "3584m"
   keepalive: 60
   http_proxy: null
+  newrelic_javaagent: False
 
 softlayer:
   environment: softlayer
   formplayer_memory: "7000m"
+  newrelic_javaagent: True
   celery_processes:
     '*':
       main:
@@ -95,6 +97,7 @@ icds:
 
 production:
   environment: production
+  newrelic_javaagent: True
 
   celery_processes:
     hqcelery0:

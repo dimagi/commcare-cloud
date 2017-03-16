@@ -23,3 +23,6 @@
 exclude_groups:
   - mvp_indicators
   - fluff
+exclude_pillows:
+  - kafka-ucr-main-08
+  - kafka-ucr-main-9f

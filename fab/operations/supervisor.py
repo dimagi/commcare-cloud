@@ -235,7 +235,8 @@ def _format_env(current_env, extra=None):
         'gunicorn_workers_static_factor',
         'flower_port',
         'jython_memory',
-        'formplayer_memory'
+        'formplayer_memory',
+        'newrelic_javaagent',
     ]
 
     host = current_env.get('host_string')
