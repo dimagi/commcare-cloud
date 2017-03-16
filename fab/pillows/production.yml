@@ -1,5 +1,7 @@
 # fab/pillows/production.yml
 ---
+exclude_pillows:
+  - kafka-ucr-main
 include_pillows:
   - custom.opm.models.OpmUserFluffPillow
   - custom.reports.mc.models.MalariaConsortiumFluffPillow
@@ -14,3 +16,5 @@ include_pillows:
   - custom.up_nrhm.models.UpNRHMLocationHierarchyFluffPillow
   - custom.up_nrhm.models.ASHAFacilitatorsFluffPillow
   - custom.succeed.models.UCLAPatientFluffPillow
+  - kafka-ucr-main-08
+  - kafka-ucr-main-9f
