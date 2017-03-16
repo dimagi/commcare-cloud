@@ -63,6 +63,7 @@ postgres_config:
   max_connections: 300
   work_mem: '8MB'
   shared_buffers: '512MB'
+  max_stack_depth: '6MB'
   effective_cache_size: '8GB'
   pgb_max_connections: 800
   pgb_default_pool: 290
