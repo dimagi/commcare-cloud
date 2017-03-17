@@ -26,3 +26,5 @@ exclude_groups:
 exclude_pillows:
   - kafka-ucr-main-08
   - kafka-ucr-main-9f
+  - kafka-ucr-static-08
+  - kafka-ucr-static-9f
