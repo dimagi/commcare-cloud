@@ -45,6 +45,8 @@ softlayer:
         concurrency: 8
       ucr_queue:
         concurrency: 4
+      ucr_indicator_queue:
+        concurrency: 10
       email_queue:
         concurrency: 2
       repeat_record_queue:
@@ -82,6 +84,8 @@ icds:
         concurrency: 8
       ucr_queue:
         concurrency: 4
+      ucr_indicator_queue:
+        concurrency: 4
       email_queue:
         concurrency: 2
       repeat_record_queue:
@@ -108,6 +112,8 @@ production:
         concurrency: 200
       ucr_queue:
         concurrency: 4
+      ucr_indicator_queue:
+        concurrency: 10
     hqcelery1:
       reminder_case_update_queue:
         concurrency: 4

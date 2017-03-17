@@ -71,6 +71,7 @@ def set_celery_supervisorconf():
         'background_queue':             ['supervisor_celery_background_queue.conf'],
         'saved_exports_queue':          ['supervisor_celery_saved_exports_queue.conf'],
         'ucr_queue':                    ['supervisor_celery_ucr_queue.conf'],
+        'ucr_indicator_queue':          ['supervisor_celery_ucr_inidicator_queue.conf'],
         'email_queue':                  ['supervisor_celery_email_queue.conf'],
         'repeat_record_queue':          ['supervisor_celery_repeat_record_queue.conf'],
         'logistics_reminder_queue':     ['supervisor_celery_logistics_reminder_queue.conf'],
