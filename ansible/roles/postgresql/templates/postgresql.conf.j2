@@ -131,6 +131,8 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}             
 
 #maintenance_work_mem = 16MB        # min 1MB
 #max_stack_depth = 2MB          # min 100kB
+{% if 'max_stack_depth' in postgres_config %}max_stack_depth = {{ postgres_config.max_stack_depth }}
+{% endif %}
 
 # - Kernel Resource Usage -
 
