@@ -24,10 +24,6 @@ def build_formplayer(use_current_release=False):
 
 @roles(ROLES_FORMPLAYER)
 def offline_build_formplayer():
-    put(os.path.join(
-        OFFLINE_STAGING_DIR, 'formplayer.jar'
-    ), env.offline_code_dir)
-
     build_dir = os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
 
     if not files.exists(build_dir):

@@ -395,12 +395,13 @@ def deploy_formplayer():
 
 @task
 def offline_setup_release(keep_days=0):
-    execute_with_timing(release.create_code_dir)
     execute_with_timing(release.create_offline_dir)
+    execute_with_timing(release.sync_offline_dir)
+
+    execute_with_timing(release.create_code_dir)
     execute_with_timing(release.update_code_offline)
 
     execute_with_timing(release.clone_virtualenv)
-    execute_with_timing(release.upload_pip_wheels)
     execute_with_timing(release.offline_pip_install)
     execute_with_timing(copy_release_files)
 
@@ -410,7 +411,7 @@ def offline_setup_release(keep_days=0):
 
 @task
 def prepare_offline_deploy():
-    offline_ops.prepare_zipfiles()
+    offline_ops.prepare_files()
     offline_ops.prepare_formplayer_build()
 
 
