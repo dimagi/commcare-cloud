@@ -110,7 +110,7 @@ def update_code_offline():
     git_remote_url = 'ssh://{user}@{host}{code_dir}'.format(
         user=env.user,
         host=env.host,
-        code_dir=env.offline_code_dir
+        code_dir=os.path.join(env.offline_code_dir, 'commcare-hq')
     )
 
     local('cd {}/commcare-hq && git push {}/.git {}'.format(
@@ -137,11 +137,13 @@ def update_code_offline():
 
 
 def clone_current_release_to_home_directory():
-    _clone_code_from_local_path(env.code_current, env.offline_code_dir, run_as_sudo=False)
+    offline_hq_root = os.path.join(env.offline_code_dir, 'commcare-hq')
+    if not files.exists(offline_hq_root):
+        _clone_code_from_local_path(env.code_current, offline_hq_root, run_as_sudo=False)
 
 
 def clone_home_directory_to_release():
-    _clone_code_from_local_path(env.offline_code_dir, env.code_root, run_as_sudo=True)
+    _clone_code_from_local_path(os.path.join(env.offline_code_dir, 'commcare-hq'), env.code_root, run_as_sudo=True)
 
 
 @roles(ROLES_ALL_SRC)
