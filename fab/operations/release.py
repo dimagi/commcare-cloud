@@ -22,7 +22,7 @@ from ..const import (
     ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
     ROLES_STATIC,
-    ROLES_CONTROL,
+    ROLES_DEPLOY,
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
@@ -267,7 +267,7 @@ def create_code_dir():
     sudo('mkdir -p {}'.format(env.code_root))
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
     with cd(env.code_current):
         sudo(
@@ -277,7 +277,7 @@ def kill_stale_celery_workers(delay=0):
         )
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def record_successful_deploy():
     start_time = datetime.strptime(env.deploy_metadata.timestamp, DATE_FMT)
     delta = datetime.utcnow() - start_time

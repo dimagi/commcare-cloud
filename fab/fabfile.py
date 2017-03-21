@@ -50,7 +50,7 @@ from const import (
     ROLES_REMINDER_QUEUE,
     ROLES_PILLOW_RETRY_QUEUE,
     ROLES_DB_ONLY,
-    ROLES_CONTROL,
+    ROLES_DEPLOY,
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
     PROJECT_ROOT,
@@ -292,6 +292,7 @@ def env_common():
         'deploy': deploy,
         # fab complains if this doesn't exist
         'django_monolith': [],
+        'control': servers.get('control')[:1]
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
@@ -321,7 +322,7 @@ def preindex_views():
     db.preindex_views()
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def mail_admins(subject, message, use_current_release=False):
     code_dir = env.code_current if use_current_release else env.code_root
     virtualenv_dir = env.virtualenv_current if use_current_release else env.virtualenv_root
