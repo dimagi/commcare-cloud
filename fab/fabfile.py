@@ -400,6 +400,7 @@ def deploy_formplayer():
 
 @task
 def offline_setup_release(keep_days=0):
+    env.offline = True
     execute_with_timing(release.create_offline_dir)
     execute_with_timing(release.sync_offline_dir)
 
