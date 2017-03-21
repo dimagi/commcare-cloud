@@ -191,7 +191,7 @@ def icds():
     env.force = True  # don't worry about kafka checkpoints on icds
     # Force ansible user and prompt for password
     env.user = 'ansible'
-    env.sudo_password = getpass('Enter the password for then ansbile user: ')
+    env.password = getpass('Enter the password for then ansbile user: ')
     execute(env_common)
 
 
