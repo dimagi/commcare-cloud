@@ -117,7 +117,7 @@ def migrations_exist():
         return n_migrations > 0
 
 
-@roles(ROLES_DB_ONLY)
+@roles(ROLES_DEPLOY)
 def create_kafka_topics():
     """Create kafka topics if needed.  This is pretty fast."""
     with cd(env.code_root):
