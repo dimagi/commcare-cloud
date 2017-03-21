@@ -9,8 +9,7 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-DATABASES = {
-{% for config in postgresql_dbs %}
+DATABASES = { {% for config in postgresql_dbs %}
 {%- if config.get('django_alias') %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -159,6 +158,12 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 ####### For Constructing Global URLs ########
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+
+{% if 'LOCAL_PILLOWS' in localsettings %}
+import json
+LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
+{% endif %}
+
 
 BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
