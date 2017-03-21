@@ -283,22 +283,22 @@ localsettings:
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   LOCAL_PILLOWS:
     icds:
-      - name: 'kafka-ucr-main-03'
+      - name: 'kafka-ucr-static-03'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
           ucr_division: '03'
-      - name: 'kafka-ucr-main-47'
+      - name: 'kafka-ucr-static-47'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
           ucr_division: '47'
-      - name: 'kafka-ucr-main-8a'
+      - name: 'kafka-ucr-static-8a'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
           ucr_division: '8a'
-      - name: 'kafka-ucr-main-cf'
+      - name: 'kafka-ucr-static-cf'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
