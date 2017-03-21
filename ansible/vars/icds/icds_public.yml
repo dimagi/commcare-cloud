@@ -335,4 +335,5 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
+  ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
 

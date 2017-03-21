@@ -184,6 +184,10 @@ GET_URL_BASE  = 'settings.get_url_base'
 EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 
 
+{% if 'ICDS_DOMAIN' in localsettings %}
+ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
+{% endif %}
+
 SMS_QUEUE_ENABLED = {{localsettings.get('SMS_QUEUE_ENABLED', False)}}
 REMINDERS_QUEUE_ENABLED = {{localsettings.get('REMINDERS_QUEUE_ENABLED', False)}}
 
