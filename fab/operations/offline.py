@@ -54,9 +54,9 @@ def prepare_formplayer_build():
 
 def check_ready():
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq'))
-    _print_stats(os.path.join(OFFLINE_STAGING_DIR, BOWER_ZIP_NAME))
-    _print_stats(os.path.join(OFFLINE_STAGING_DIR, NPM_ZIP_NAME))
-    _print_stats(os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'bower_components'))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'node_modules'))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'wheelhouse'))
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'formplayer.jar'))
 
     with settings(warn_only=True):
