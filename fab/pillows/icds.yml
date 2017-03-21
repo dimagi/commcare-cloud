@@ -1,6 +1,7 @@
 exclude_pillows:
   - ReportCaseToElasticsearchPillow
   - ReportXFormToElasticsearchPillow
+  - kafka-ucr-static
 include_pillows:
   - kafka-ucr-static-03
   - kafka-ucr-static-47
