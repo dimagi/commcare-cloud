@@ -28,6 +28,8 @@ Server layout:
 import datetime
 import os
 import posixpath
+from getpass import getpass
+
 import yaml
 import pipes
 from distutils.util import strtobool
@@ -187,6 +189,9 @@ def icds():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'icds')
     load_env('icds')
     env.force = True  # don't worry about kafka checkpoints on icds
+    # Force ansible user and prompt for password
+    env.user = 'ansible'
+    env.sudo_password = getpass('Enter the password for then ansbile user: ')
     execute(env_common)
 
 
