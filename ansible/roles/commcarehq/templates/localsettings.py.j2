@@ -159,22 +159,9 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 
-{% if 'MAIN_UCR_PILLOWS' in localsettings %}
-LOCAL_PILLOWTOPS = {
-    'core_ext': [ {% for pillow in localsettings.MAIN_UCR_PILLOWS %}
-        {
-            'name': '{{ pillow.name }}',
-            'class': 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow',
-            'instance': '{{ pillow.pillow_function_name }}',
-            {% if pillow.get('ucr_division', None) %}
-            'params': {
-                'ucr_division': '{{ pillow.ucr_division }}'
-            }
-            {% endif %}
-        },
-        {% endfor %}
-    ]
-}
+{% if 'LOCAL_PILLOWS' in localsettings %}
+import json
+LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
 {% endif %}
 
 

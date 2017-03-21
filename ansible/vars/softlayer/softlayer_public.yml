@@ -220,9 +220,6 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_URL: "{{ groups.kafka.0 }}"
   KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
-  MAIN_UCR_PILLOWS:
-    - name: 'kafka-ucr-main'
-      pillow_function_name: 'corehq.apps.userreports.pillow.get_kafka_ucr_pillow'
 #  MAPS_LAYERS:
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)

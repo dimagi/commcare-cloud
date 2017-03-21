@@ -204,6 +204,18 @@ localsettings:
   J2ME_ADDRESS: ''
   KAFKA_URL: ''
   KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
+  LOCAL_PILLOWS:
+    custom:
+      - name: 'kafka-ucr-main-custom-1'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          ucr_division: '09'
+      - name: 'kafka-ucr-main-custom-2'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          ucr_division: 'af'
 #  MAPS_LAYERS:
 #  MEDIA_ROOT:
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
