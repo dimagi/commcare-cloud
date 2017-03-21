@@ -33,6 +33,8 @@
 [kafka0]
 10.247.24.21 devices='["/dev/sdb","/dev/sdc","/dev/sdd"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1"]' datavol_device='/dev/mapper/consolidated-data' kafka_broker_id=0
 
+[control]
+10.247.24.20
 
 [proxy:children]
 web0
@@ -114,3 +116,6 @@ kafka0
 
 [zabbix:children]
 kafka0
+
+[control:children]
+pil0

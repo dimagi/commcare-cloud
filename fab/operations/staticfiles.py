@@ -3,7 +3,7 @@ from fabric.context_managers import cd
 
 from fab.utils import bower_command
 
-from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY, ROLES_CONTROL, ROLES_CELERY
+from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DB_ONLY, ROLES_DEPLOY, ROLES_CELERY
 
 
 @roles(set(ROLES_STATIC + ROLES_DJANGO))
@@ -18,7 +18,7 @@ def version_static():
     _version_static()
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def prime_version_static():
     """
     Run version static on the DB machine to prime the version_static cache so

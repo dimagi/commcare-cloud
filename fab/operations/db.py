@@ -6,7 +6,7 @@ from fabric.api import roles, sudo, env, parallel
 from fabric.decorators import runs_once
 
 from ..exceptions import PreindexNotFinished
-from ..const import ROLES_DB_ONLY, ROLES_PILLOWTOP, ROLES_CONTROL
+from ..const import ROLES_DB_ONLY, ROLES_PILLOWTOP, ROLES_DEPLOY
 
 
 @roles(ROLES_PILLOWTOP)
@@ -43,7 +43,7 @@ def ensure_preindex_completion():
         raise PreindexNotFinished()
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def ensure_checkpoints_safe():
     extras = '--print-only' if env.force else ''
     with cd(env.code_root):
@@ -64,7 +64,7 @@ def ensure_checkpoints_safe():
                 raise
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def _is_preindex_complete():
     with settings(warn_only=True):
         return sudo(
@@ -78,14 +78,14 @@ def _is_preindex_complete():
         ).succeeded
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def flip_es_aliases():
     """Flip elasticsearch aliases to the latest version"""
     with cd(env.code_root):
         sudo('%(virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):
@@ -93,14 +93,14 @@ def migrate():
         sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def set_in_progress_flag(use_current_release=False):
     venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def migrations_exist():
     """
     Check if there exists database migrations to run
@@ -117,7 +117,7 @@ def migrations_exist():
         return n_migrations > 0
 
 
-@roles(ROLES_DB_ONLY)
+@roles(ROLES_DEPLOY)
 def create_kafka_topics():
     """Create kafka topics if needed.  This is pretty fast."""
     with cd(env.code_root):

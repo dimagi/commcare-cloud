@@ -14,7 +14,7 @@ from fab.const import (
 )
 
 
-def prepare_zipfiles():
+def prepare_files():
     hq_dir = '{}/commcare-hq'.format(OFFLINE_STAGING_DIR)
 
     if not os.path.isdir(hq_dir):
@@ -31,28 +31,12 @@ def prepare_zipfiles():
     local('cd {}/commcare-hq && {}'.format(OFFLINE_STAGING_DIR, generate_bower_command('install', {
         'interactive': 'false',
     })))
-    zip_folder(
-        os.path.join(OFFLINE_STAGING_DIR, BOWER_ZIP_NAME),
-        os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'bower_components')
-    )
 
     # NPM
     local('cd {}/commcare-hq && npm install --production'.format(OFFLINE_STAGING_DIR))
-    zip_folder(
-        os.path.join(OFFLINE_STAGING_DIR, NPM_ZIP_NAME),
-        os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'node_modules')
-    )
 
     prepare_pip_wheels(os.path.join('requirements', 'requirements.txt'))
     prepare_pip_wheels(os.path.join('requirements', 'prod-requirements.txt'))
-    zip_folder(
-        os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME),
-        os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'wheelhouse')
-    )
-
-
-def zip_folder(destination, folder):
-    local('tar -czf {} {}'.format(destination, folder))
 
 
 def prepare_pip_wheels(requirements_file):
@@ -70,9 +54,9 @@ def prepare_formplayer_build():
 
 def check_ready():
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq'))
-    _print_stats(os.path.join(OFFLINE_STAGING_DIR, BOWER_ZIP_NAME))
-    _print_stats(os.path.join(OFFLINE_STAGING_DIR, NPM_ZIP_NAME))
-    _print_stats(os.path.join(OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'bower_components'))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'node_modules'))
+    _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', 'wheelhouse'))
     _print_stats(os.path.join(OFFLINE_STAGING_DIR, 'formplayer.jar'))
 
     with settings(warn_only=True):

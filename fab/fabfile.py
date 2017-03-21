@@ -28,6 +28,8 @@ Server layout:
 import datetime
 import os
 import posixpath
+from getpass import getpass
+
 import yaml
 import pipes
 from distutils.util import strtobool
@@ -50,7 +52,7 @@ from const import (
     ROLES_REMINDER_QUEUE,
     ROLES_PILLOW_RETRY_QUEUE,
     ROLES_DB_ONLY,
-    ROLES_CONTROL,
+    ROLES_DEPLOY,
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
     PROJECT_ROOT,
@@ -141,7 +143,8 @@ def _setup_path():
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.environment)
-    env.offline_code_dir = posixpath.join('/home/{}/releases/{}'.format(env.user, env.deploy_metadata.timestamp))
+    env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
+    env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
 
 
 def load_env(env_name):
@@ -186,6 +189,9 @@ def icds():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'icds')
     load_env('icds')
     env.force = True  # don't worry about kafka checkpoints on icds
+    # Force ansible user and prompt for password
+    env.user = 'ansible'
+    env.password = getpass('Enter the password for then ansbile user: ')
     execute(env_common)
 
 
@@ -291,6 +297,7 @@ def env_common():
         'deploy': deploy,
         # fab complains if this doesn't exist
         'django_monolith': [],
+        'control': servers.get('control')[:1]
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
@@ -320,7 +327,7 @@ def preindex_views():
     db.preindex_views()
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def mail_admins(subject, message, use_current_release=False):
     code_dir = env.code_current if use_current_release else env.code_root
     virtualenv_dir = env.virtualenv_current if use_current_release else env.virtualenv_root
@@ -393,12 +400,14 @@ def deploy_formplayer():
 
 @task
 def offline_setup_release(keep_days=0):
-    execute_with_timing(release.create_code_dir)
+    env.offline = True
     execute_with_timing(release.create_offline_dir)
+    execute_with_timing(release.sync_offline_dir)
+
+    execute_with_timing(release.create_code_dir)
     execute_with_timing(release.update_code_offline)
 
     execute_with_timing(release.clone_virtualenv)
-    execute_with_timing(release.upload_pip_wheels)
     execute_with_timing(release.offline_pip_install)
     execute_with_timing(copy_release_files)
 
@@ -408,7 +417,7 @@ def offline_setup_release(keep_days=0):
 
 @task
 def prepare_offline_deploy():
-    offline_ops.prepare_zipfiles()
+    offline_ops.prepare_files()
     offline_ops.prepare_formplayer_build()
 
 
@@ -860,5 +869,4 @@ OFFLINE_DEPLOY_COMMANDS = [
     db.flip_es_aliases,
     staticfiles.update_manifest,
     release.clean_releases,
-    release.clean_offline_releases,
 ]

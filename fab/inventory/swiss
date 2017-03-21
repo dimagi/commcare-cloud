@@ -43,3 +43,6 @@ swiss.commcarehq.org elasticsearch_node_name=hqes1
 
 [shared_dir_host]
 swiss.commcarehq.org
+
+[control]
+control.internal-va.commcarehq.org

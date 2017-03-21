@@ -5,32 +5,29 @@ from datetime import datetime, timedelta
 
 from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
-from fabric.context_managers import cd, settings
+from fabric.context_managers import cd
 from fabric.contrib import files
 from fabric.contrib.files import comment
+from fabric.contrib.project import rsync_project
 from fabric.operations import put
 from fabric import utils, operations
 
 from ..const import (
     OFFLINE_STAGING_DIR,
-    WHEELS_ZIP_NAME,
-    NPM_ZIP_NAME,
-    BOWER_ZIP_NAME,
     ROLES_ALL_SRC,
-    ROLES_DB_ONLY,
     RELEASE_RECORD,
     ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
     ROLES_STATIC,
-    ROLES_CONTROL,
+    ROLES_DEPLOY,
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
-)
+    ROLES_CONTROL)
 from fab.utils import pip_install
 
-
 GitConfig = namedtuple('GitConfig', 'key value')
+
 
 @roles(ROLES_ALL_SRC)
 @parallel
@@ -58,6 +55,44 @@ def create_offline_dir():
     run('mkdir -p {}'.format(env.offline_code_dir))
 
 
+@roles(ROLES_CONTROL)
+def sync_offline_dir():
+    sync_offline_to_control()
+    sync_offline_from_control()
+
+
+def sync_offline_to_control():
+    for sync_item in ['bower_components', 'node_modules', 'wheelhouse']:
+        rsync_project(
+            env.offline_code_dir,
+            os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', sync_item),
+            delete=True,
+        )
+    rsync_project(
+        env.offline_code_dir,
+        os.path.join(OFFLINE_STAGING_DIR, 'formplayer.jar'),
+    )
+
+
+def sync_offline_from_control():
+    for host in _hosts_in_roles(ROLES_ALL_SRC, exclude_roles=ROLES_DEPLOY):
+        run("rsync -rvz --exclude 'commcare-hq/*' {} {}".format(
+            env.offline_code_dir,
+            '{}@{}:{}'.format(env.user, host, env.offline_releases)
+        ))
+
+
+def _hosts_in_roles(roles, exclude_roles=None):
+    hosts = set()
+    for role, role_hosts in env.roledefs.items():
+        if role in roles:
+            hosts.update(role_hosts)
+
+    if exclude_roles:
+        hosts = hosts - _hosts_in_roles(exclude_roles)
+    return hosts
+
+
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_code_offline():
@@ -75,7 +110,7 @@ def update_code_offline():
     git_remote_url = 'ssh://{user}@{host}{code_dir}'.format(
         user=env.user,
         host=env.host,
-        code_dir=env.offline_code_dir
+        code_dir=os.path.join(env.offline_code_dir, 'commcare-hq')
     )
 
     local('cd {}/commcare-hq && git push {}/.git {}'.format(
@@ -102,39 +137,25 @@ def update_code_offline():
 
 
 def clone_current_release_to_home_directory():
-    _clone_code_from_local_path(env.code_current, env.offline_code_dir, run_as_sudo=False)
+    offline_hq_root = os.path.join(env.offline_code_dir, 'commcare-hq')
+    if not files.exists(offline_hq_root):
+        _clone_code_from_local_path(env.code_current, offline_hq_root, run_as_sudo=False)
 
 
 def clone_home_directory_to_release():
-    _clone_code_from_local_path(env.offline_code_dir, env.code_root, run_as_sudo=True)
+    _clone_code_from_local_path(os.path.join(env.offline_code_dir, 'commcare-hq'), env.code_root, run_as_sudo=True)
 
 
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_bower_offline():
-    # Strip 2 components so we from offline-staging/commcare-hq structure
-    _upload_and_extract(os.path.join(
-        OFFLINE_STAGING_DIR, BOWER_ZIP_NAME
-    ), strip_components=2)
     sudo('cp -r {}/bower_components {}'.format(env.offline_code_dir, env.code_root))
 
 
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_npm_offline():
-    # Strip 2 components so we from offline-staging/commcare-hq structure
-    _upload_and_extract(os.path.join(
-        OFFLINE_STAGING_DIR, NPM_ZIP_NAME
-    ), strip_components=2)
     sudo('cp -r {}/node_modules {}'.format(env.offline_code_dir, env.code_root))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def upload_pip_wheels():
-    _upload_and_extract(os.path.join(
-        OFFLINE_STAGING_DIR, WHEELS_ZIP_NAME
-    ), strip_components=2)
 
 
 @roles(ROLES_ALL_SRC)
@@ -267,7 +288,7 @@ def create_code_dir():
     sudo('mkdir -p {}'.format(env.code_root))
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
     with cd(env.code_current):
         sudo(
@@ -277,7 +298,7 @@ def kill_stale_celery_workers(delay=0):
         )
 
 
-@roles(ROLES_CONTROL)
+@roles(ROLES_DEPLOY)
 def record_successful_deploy():
     start_time = datetime.strptime(env.deploy_metadata.timestamp, DATE_FMT)
     delta = datetime.utcnow() - start_time
@@ -328,12 +349,6 @@ def mark_last_release_unsuccessful():
 def git_gc_current():
     with cd(env.code_current):
         sudo('git gc')
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def clean_offline_releases():
-    run('rm -rf /home/{}/releases/*'.format(env.user))
 
 
 @roles(ROLES_ALL_SRC)
