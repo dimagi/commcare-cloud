@@ -3,7 +3,7 @@ exclude_pillows:
   - ReportXFormToElasticsearchPillow
   - kafka-ucr-static
 include_pillows:
-  - kafka-ucr-static-03
-  - kafka-ucr-static-47
-  - kafka-ucr-static-8a
-  - kafka-ucr-static-cf
+  - kafka-ucr-static-usage-forms
+  - kafka-ucr-static-child_cases_monthly_tableau
+  - kafka-ucr-static-ccs_record_cases_monthly_tableau
+  - kafka-ucr-static-non-priority
