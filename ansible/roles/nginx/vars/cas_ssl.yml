@@ -37,10 +37,8 @@ nginx_sites:
        proxy_read_timeout: 900s
        limit_reqs:
          - zone_name: "server_name"
-           burst: "0"
            nodelay: True
          - zone_name: "remote_ip_addr"
-           burst: "0"
            nodelay: True
      - name: "/static"
        alias: "{{ nginx_static_home }}"
