@@ -291,14 +291,14 @@ localsettings:
             - 'location'
           include_ucrs:
             - 'static-awc_location'
-      - name: 'kafka-ucr-static-ccs_record_cases,'
+      - name: 'kafka-ucr-static-ccs_record_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
           topics:
             - 'case-sql'
           include_ucrs:
-            - 'static-ccs_record_cases,'
+            - 'static-ccs_record_cases'
       - name: 'kafka-ucr-static-ccs_record_cases_monthly'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
