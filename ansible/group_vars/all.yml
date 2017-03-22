@@ -52,6 +52,8 @@ dev_users:
 
 django_port: 9010
 riakcs_port: 8080
+temp_riakcs_proxy_port: 8081
+riakcs_proxy_port: "{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_port }}"
 riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 riak_port: 8087
 riak_data_dir: "{{ encrypted_root }}/riak"
@@ -62,23 +64,44 @@ formplayer_port: 8181
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
-s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_port }}"
+s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 
-# vars used when migrating to new riak cluster
-old_riakcs_proxy_port: 8081
+# Process for migrating from old to new riak cluster:
+#
+# - add [riakcs_new] hosts (of new riak cluster) to inventory
+# - add `localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3: True` in ansible/vars/$ENV/$ENV_public.yml
+# - add/update settings in ansible/vars/$ENV/$ENV_vault.yml
+#   - secrets.RIAKCS_S3_ACCESS_KEY        # new cluster
+#   - secrets.RIAKCS_S3_SECRET_KEY        # new cluster
+#   - secrets.OLD_S3_BLOB_DB_ACCESS_KEY   # old cluster
+#   - secrets.OLD_S3_BLOB_DB_SECRET_KEY   # old cluster
+# - deploy proxy (old=8080, new=8081)
+# - deploy localsettings
+#   during this deploy hosts with old localsettings will continue to talk
+#   to old riak cluster on port 8080
+#
+# - run migration
+#
+# - move [riakcs_new] hosts to [riakcs] (and delete old hosts) in inventory
+# - update ansible/vars/$ENV/$ENV_public.yml
+#   - remove `localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3: True`
+#   - add    `localsettings.TEMP_RIAKCS_PROXY: True`
+# - deploy proxy (new=8080, new=8081)
+# - deploy localsettings
+#   during this deploy hosts with old localsettings will continue to talk
+#   to new riak cluster on port 8081, and once updated will talk to new riak
+#   cluster proxied on port 8080. There is a slight chance of MigratingBlobDB
+#   failover from new to new, but this should be rare and benign.
+#
+# - remove `localsettings.TEMP_RIAKCS_PROXY: True` from ansible/vars/$ENV/$ENV_public.yml
+# - deploy proxy (new=8080)
+old_riakcs_proxy_port: "{{ riakcs_port }}"
 old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ old_riakcs_proxy_port }}"
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
-
-# temporary riakcs
-tmp_riackcs_port: 8081
-tmp_riakcs_control: "{{ groups.get('tmp_riakcs')[0] | default('riakcs-is-disabled') }}"
-tmp_stanchion_port: 8086
-tmp_s3_blob_db_enabled: "{{ 'true' if groups.get('tmp_riakcs') else '' }}"
-tmp_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ tmp_riakcs_port }}"
 
 datadog_integration_celery: false
 datadog_integration_cloudant: false

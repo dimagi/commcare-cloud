@@ -18,8 +18,6 @@ active_sites:
   motech: False
   motech2: False
   riakcs: True
-  riak: True
-  riak_http: True
 
 riak_ring_size: 64
 
