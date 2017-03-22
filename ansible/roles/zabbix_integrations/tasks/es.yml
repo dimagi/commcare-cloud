@@ -1,0 +1,13 @@
+---
+
+- name: Add es zabbix script
+  copy:
+    src: 'ESzabbix.py'
+    dest: "{{ zabbix_external_scripts_dir }}/ESzabbix.py"
+    mode: 0755
+
+- name: Add user parameter
+  template:
+    src: userparameter_es.conf.j2
+    dest: '{{ zabbix_user_parm_dir }}/ESzabbix.userparm'
+  notify: restart zabbix_agentd

@@ -55,7 +55,7 @@ server {
   error_page {{ value }};
 {% endfor %}
 
-{% for location in item.server.get('locations', []) %}
+{% for location in item.server.get('locations', []) + item.server.get('extra_locations', []) %}
   location {{ location.name }} {
     {% if location.get('balancer', None) %}
         proxy_pass http://{{ location.balancer }};

@@ -9,15 +9,4 @@
   sudo: yes
   roles:
     - {role: jonatasbaldin.zabbix3agent, tags: 'zabbix_agent'}
-
-- name: zabbix postgres deploy
-  hosts: postgresql:zabbix
-  sudo: yes
-  roles:
-    - {role: zabbix_postgres, tags: 'zabbix_postgres'}
-
-- name: zabbix es deploy
-  hosts: elasticsearch
-  sudo: yes
-  roles:
-    - {role: zabbix_es, tags: 'zabbix_es'}
+    - {role: zabbix_integrations, tags: 'zabbix_integrations'}

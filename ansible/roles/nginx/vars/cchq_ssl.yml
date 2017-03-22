@@ -10,7 +10,8 @@ nginx_sites:
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    file_name: "{{ deploy_env }}_commcare"
-   listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env }}"
+   listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
+   root: "/var/www/html"
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 500m
    proxy_set_headers:
@@ -44,3 +45,4 @@ nginx_sites:
       balancer: "{{ deploy_env }}_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
+   extra_locations: "{{ site_locations }}"

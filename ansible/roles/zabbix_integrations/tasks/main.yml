@@ -1,0 +1,42 @@
+---
+# tasks file for zabbix_common
+
+- name: Make zabbix external scripts directory
+  sudo: yes
+  file:
+    path: '{{ zabbix_external_scripts_dir }}'
+    owner: zabbix
+    group: zabbix
+    mode: 0755
+    state: directory
+
+- name: Make zabbix user param directory
+  sudo: yes
+  file:
+    path: '{{ zabbix_user_parm_dir }}'
+    owner: zabbix
+    group: zabbix
+    mode: 0755
+    state: directory
+
+- include: diskstats.yml
+
+- include: es.yml
+  when: "'elasticsearch' in group_names"
+  tags:
+    zabbix_es
+
+- include: postgres.yml
+  when: "'postgresql' in group_names"
+  tags:
+    zabbix_postgres
+
+- include: pgbouncer.yml
+  when: "'postgresql' in group_names"
+  tags:
+    zabbix_pgbouncer
+
+- include: nginx.yml
+  when: "'proxy' in group_names"
+  tags:
+    zabbix_nginx

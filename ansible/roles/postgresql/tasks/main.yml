@@ -18,6 +18,9 @@
   tags:
     - pgbouncer
 
+- name: generate en_US.UTF-8 locale
+  locale_gen: name='en_US.UTF-8' state=present
+
 - name: Install PostgreSQL & dependencies
   apt: name="{{ item }}" state=present
   with_items:
@@ -54,9 +57,6 @@
 - name: Move postgres to encrypted drive
   command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/{{ postgresql_version }}"
   when: orig_path.stat.exists
-
-- name: generate en_US.UTF-8 locale
-  locale_gen: name='en_US.UTF-8' state=present
 
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}

@@ -61,6 +61,10 @@ postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgres_config:
   max_connections: 300
+  work_mem: '8MB'
+  shared_buffers: '512MB'
+  max_stack_depth: '6MB'
+  effective_cache_size: '8GB'
   pgb_max_connections: 800
   pgb_default_pool: 290
   pgb_reserve_pool: 5
@@ -163,6 +167,49 @@ etc_host_lines_removed: ['etc_host_lines']
 
 http_proxy_address: '169.38.84.79:3128'
 
+site_locations:
+  - name: /files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd'
+  - name: /bihar_ls_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_bihar"
+  - name: /maharashtra_icds-cas_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
+  - name: /mp_ls_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_mp"
+  - name: /ls_hindi 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_ls_hindi"
+  - name: /ls_marathi 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_ls_marathi"
+  - name: /ls_telugu 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_ls_telugu"
+  - name: /hindi_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files"
+  - name: /marathi_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_marathi_files"
+  - name: /telugu_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
+
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -234,6 +281,28 @@ localsettings:
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+  LOCAL_PILLOWS:
+    icds:
+      - name: 'kafka-ucr-static-03'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          ucr_division: '03'
+      - name: 'kafka-ucr-static-47'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          ucr_division: '47'
+      - name: 'kafka-ucr-static-8a'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          ucr_division: '8a'
+      - name: 'kafka-ucr-static-cf'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          ucr_division: 'cf'
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
@@ -266,4 +335,5 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
+  ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
 

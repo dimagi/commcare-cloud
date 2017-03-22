@@ -154,6 +154,6 @@
         user: root
         special_time: daily
         job: /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mmin +90 -exec gzip -q {} \; &&
-             /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mtime +31 -delete
+             /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mtime +365 -delete
         cron_file: riak-cs-access-logs
         state: present
