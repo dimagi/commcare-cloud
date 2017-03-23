@@ -52,8 +52,8 @@ dev_users:
 
 django_port: 9010
 riakcs_port: 8080
+riakcs_proxy_port: "{{ riakcs_port }}"
 temp_riakcs_proxy_port: 8081
-riakcs_proxy_port: "{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_port }}"
 riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 riak_port: 8087
 riak_data_dir: "{{ encrypted_root }}/riak"
@@ -64,7 +64,7 @@ formplayer_port: 8181
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
-s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
+s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
 
 # Process for migrating from old to new riak cluster:
 #
@@ -95,8 +95,7 @@ s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 #
 # - remove `localsettings.TEMP_RIAKCS_PROXY: True` from ansible/vars/$ENV/$ENV_public.yml
 # - deploy proxy (new=8080)
-old_riakcs_proxy_port: "{{ riakcs_port }}"
-old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ old_riakcs_proxy_port }}"
+old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory

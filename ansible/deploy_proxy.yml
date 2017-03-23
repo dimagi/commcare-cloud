@@ -18,16 +18,12 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech}
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_j2me == True, action: site, site_name: cchq_http_j2me }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.riakcs == True, action: site, site_name: riakcs, hosts_group: riakcs }
     - role: nginx
       action: site
       site_name: riakcs
       hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
-      when: proxy_type == 'nginx' and active_sites.riakcs == True
-    - role: nginx
-      action: site
-      site_name: riakcs
-      hosts_group: riakcs
-      riakcs_proxy_port: "{{ old_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else temp_riakcs_proxy_port }}"
+      riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
       when: "proxy_type == 'nginx' and active_sites.riakcs == True 
         and ('BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings or 'TEMP_RIAKCS_PROXY' in localsettings)"
     - role: nginx
