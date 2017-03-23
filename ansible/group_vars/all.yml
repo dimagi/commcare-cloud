@@ -75,6 +75,11 @@ s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'B
 #   - secrets.RIAKCS_S3_SECRET_KEY        # new cluster
 #   - secrets.OLD_S3_BLOB_DB_ACCESS_KEY   # old cluster
 #   - secrets.OLD_S3_BLOB_DB_SECRET_KEY   # old cluster
+# - add settings (if absent) in ansible/vars/$ENV/$ENV_public.yml
+#   - riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
+#   - riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
+#   - old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
+#   - old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 # - deploy proxy (old=8080, new=8081)
 # - deploy localsettings
 #   during this deploy hosts with old localsettings will continue to talk
