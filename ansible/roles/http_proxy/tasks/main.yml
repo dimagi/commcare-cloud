@@ -26,6 +26,7 @@
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
   become: yes
   become_user: "{{item.user}}"
+  ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
@@ -41,6 +42,7 @@
   command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
   become: yes
   become_user: "{{item.user}}"
+  ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'https'}

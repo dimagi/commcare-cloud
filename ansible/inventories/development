@@ -53,3 +53,6 @@ swap_size=100M
 
 [pg_standby]
 #192.168.33.17 hot_standby_master=192.168.33.16
+
+[patch_clients]
+192.168.33.16
