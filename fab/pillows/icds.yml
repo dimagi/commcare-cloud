@@ -3,7 +3,21 @@ exclude_pillows:
   - ReportXFormToElasticsearchPillow
   - kafka-ucr-static
 include_pillows:
-  - kafka-ucr-static-03
-  - kafka-ucr-static-47
-  - kafka-ucr-static-8a
-  - kafka-ucr-static-cf
+  - kafka-ucr-static-awc-location
+  - kafka-ucr-static-ccs_record_cases
+  - kafka-ucr-static-ccs_record_cases_monthly
+  - kafka-ucr-static-ccs_record_cases_monthly_tableau
+  - kafka-ucr-static-child_cases_monthly
+  - kafka-ucr-static-child_cases_monthly_tableau
+  - kafka-ucr-static-child_health_cases
+  - kafka-ucr-static-other-cases
+  - kafka-ucr-static-child_delivery_forms
+  - kafka-ucr-static-daily_feeding_forms
+  - kafka-ucr-static-gm_forms
+  - kafka-ucr-static-home_visit_forms
+  - kafka-ucr-static-infrastructure_form
+  - kafka-ucr-static-ls_home_visit_forms_filled
+  - kafka-ucr-static-thr_forms
+  - kafka-ucr-static-usage_forms
+  - kafka-ucr-static-vhnd_form
+  - kafka-ucr-static-other-forms
