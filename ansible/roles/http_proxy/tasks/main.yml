@@ -8,11 +8,11 @@
   sudo: yes
   with_items:
     - {'var': 'http_proxy', 'protocol': 'http'}
-    - {'var': 'https_proxy', 'protocol': 'https'}
-    - {'var': 'ftp_proxy', 'protocol': 'ftp'}
+    - {'var': 'https_proxy', 'protocol': 'http'}
+    - {'var': 'ftp_proxy', 'protocol': 'http'}
     - {'var': 'HTTP_PROXY', 'protocol': 'http'}
-    - {'var': 'HTTPS_PROXY', 'protocol': 'https'}
-    - {'var': 'FTP_PROXY', 'protocol': 'ftp'}
+    - {'var': 'HTTPS_PROXY', 'protocol': 'http'}
+    - {'var': 'FTP_PROXY', 'protocol': 'http'}
 
 - name: No proxy for local IPs
   lineinfile:
@@ -61,11 +61,11 @@
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
-    - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'http'}
     - {'user': 'root', 'var': 'http.proxy', 'protocol': 'http'}
-    - {'user': 'root', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'https.proxy', 'protocol': 'http'}
     - {'user': '{{cchq_user}}', 'var': 'http.proxy', 'protocol': 'http'}
-    - {'user': '{{cchq_user}}', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': '{{cchq_user}}', 'var': 'https.proxy', 'protocol': 'http'}
 
 - name: Github https insteadOf ssh
   command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
