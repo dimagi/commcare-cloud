@@ -54,3 +54,16 @@
     - {'user': 'root', 'var': 'https.proxy', 'protocol': 'https'}
     - {'user': '{{cchq_user}}', 'var': 'http.proxy', 'protocol': 'http'}
     - {'user': '{{cchq_user}}', 'var': 'https.proxy', 'protocol': 'https'}
+
+- name: Github https insteadOf ssh
+  command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
+  become: yes
+  become_user: "{{item.user}}"
+  ignore_errors: True
+  with_items:
+    - {'user': 'ansible', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
+    - {'user': 'ansible', 'var': 'https://', 'insteadof': 'git://' }
+    - {'user': 'root', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
+    - {'user': 'root', 'var': 'https://', 'insteadof': 'git://' }
+    - {'user': '{{cchq_user}}', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
+    - {'user': '{{cchq_user}}', 'var': 'https://', 'insteadof': 'git://' }
