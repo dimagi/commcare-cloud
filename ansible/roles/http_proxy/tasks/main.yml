@@ -46,13 +46,13 @@
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
-    - {'user': 'ansible', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'ansible', 'var': 'https-proxy', 'protocol': 'http'}
     - {'user': 'root', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'root', 'var': 'http-proxy', 'protocol': 'http'}
-    - {'user': 'root', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'https-proxy', 'protocol': 'http'}
     - {'user': '{{ cchq_user }}', 'var': 'proxy', 'protocol': 'http'}
     - {'user': '{{ cchq_user }}', 'var': 'http-proxy', 'protocol': 'http'}
-    - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'http'}
 
 - name: GIT proxy
   command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
