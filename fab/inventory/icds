@@ -45,6 +45,7 @@ web0
 [webworkers:children]
 web0
 web1
+kafka0
 
 [postgresql:children]
 pg0
