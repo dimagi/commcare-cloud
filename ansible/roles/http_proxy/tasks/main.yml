@@ -8,8 +8,10 @@
   with_items:
     - {'var': 'http_proxy', 'protocol': 'http'}
     - {'var': 'https_proxy', 'protocol': 'https'}
+    - {'var': 'ftp_proxy', 'protocol': 'ftp'}
     - {'var': 'HTTP_PROXY', 'protocol': 'http'}
     - {'var': 'HTTPS_PROXY', 'protocol': 'https'}
+    - {'var': 'FTP_PROXY', 'protocol': 'ftp'}
 
 - name: No proxy for local IPs
   lineinfile:
