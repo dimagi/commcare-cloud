@@ -26,6 +26,18 @@
     - 'no_proxy'
     - 'NO_PROXY'
 
+- name: Bower proxy
+  template:
+    src: bowerrc.j2
+    dest: "{{ item.home }}/.bowerrc"
+  become: yes
+  become_user: "{{item.user}}"
+  ignore_errors: True
+  with_items:
+    - {'user': 'ansible', 'home': '/home/ansibale' }
+    - {'user': 'root', 'home': '/root' }
+    - {'user': '{{ cchq_user }}' , 'home': '{{ code_home }}'}
+
 - name: NPM proxy
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
   become: yes
