@@ -1,8 +1,16 @@
-- name: "Build hosts file"
+- name: "Custom host file lines"
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
   with_items: etc_host_lines
   tags:
     - etc_hosts
+
+- name: "Add host file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
+  with_items:
+    - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
+  tags:
+    - etc_hosts
+  when: not inventory_hostname|ipaddr
 
 - name: "Remove lines from hosts file"
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
