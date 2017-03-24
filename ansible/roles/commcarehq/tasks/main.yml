@@ -37,20 +37,20 @@
         recursive: yes
         accept_hostkey: yes
         update: yes
-      sudo_user: "{{ cchq_user }}"
+      become: true
       tags:
         - git
         - slow
 
     - name: Link source to code_home
-      sudo_user: "{{ cchq_user }}"
+      become: true
       file:
         state: link
         src: "{{ code_source }}"
         dest: "{{ code_home }}"
 
     - name: install pip requirements
-      sudo_user: "{{ cchq_user }}"
+      become: true
       with_items: commcarehq_requirements
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
@@ -58,6 +58,18 @@
       tags:
         - slow
       when: not testing|default(False)
+
+    - name: chown clone
+      become: true
+      file:
+        path: "{{ item }}"
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        recurse: yes
+      with_items:
+        - "{{ code_source }}"
+        - "{{ code_home }}"
+        - "{{ virtualenv_source }}"
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
@@ -67,11 +79,20 @@
     virtualenv: "{{ virtualenv_home }}"
 
 - name: copy localsettings
-  sudo_user: "{{ cchq_user }}"
+  become: true
   template:
     src: localsettings.py.j2
     dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
+  tags:
+    - localsettings
+
+- name: chown localsettings
+  become: true
+  file:
+    path: "{{ item.path }}/localsettings.py"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
   tags:
     - localsettings
