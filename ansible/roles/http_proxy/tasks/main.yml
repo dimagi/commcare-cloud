@@ -1,7 +1,7 @@
 - name: Bash environment proxy
   lineinfile:
     dest: "/etc/environment"
-    line: "{{item.var}}={{item.protocol}}://{{http_proxy_address}}/"
+    line: "{{item.var}}={{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/"
     create: yes
     state: present
   sudo: yes
@@ -23,7 +23,7 @@
     - 'NO_PROXY'
 
 - name: NPM proxy
-  command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
+  command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'
   become: yes
   become_user: "{{item.user}}"
   with_items:
@@ -38,7 +38,7 @@
     - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'https'}
 
 - name: GIT proxy
-  command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
+  command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'
   become: yes
   become_user: "{{item.user}}"
   with_items:

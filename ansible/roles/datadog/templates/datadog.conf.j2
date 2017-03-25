@@ -11,8 +11,8 @@ tags: {% for group, group_hosts in groups.items() -%}
 {%- endfor %} environment:{{ deploy_env }}
 
 {% if http_proxy_address is defined and http_proxy_address %}
-proxy_host: http_proxy_address
-proxy_port: 3128
+proxy_host: {{ http_proxy_address }}
+proxy_port: {{ http_proxy_port }}
 # proxy_user:
 # proxy_password:
 {% endif %}
