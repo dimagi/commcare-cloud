@@ -15,7 +15,7 @@ nginx_sites:
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
-      rate: "200r/s"
+      rate: "500r/s"
     - name: "remote_ip_addr"
       zone: "$binary_remote_addr"
       size: "10m"
