@@ -787,6 +787,16 @@ def set_supervisor_config():
 
 
 @task
+def stop_celery():
+    execute(supervisor.stop_celery_tasks, True)
+
+
+@task
+def start_celery():
+    execute(supervisor.start_celery_tasks, True)
+
+
+@task
 def stop_pillows():
     execute(supervisor.stop_pillows, True)
 

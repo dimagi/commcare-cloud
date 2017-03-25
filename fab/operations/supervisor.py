@@ -279,9 +279,18 @@ def start_pillows(current=False):
 
 @roles(ROLES_CELERY)
 @parallel
-def stop_celery_tasks():
-    with cd(env.code_root):
+def stop_celery_tasks(current=False):
+    code_root = env.code_current if current else env.code_root
+    with cd(code_root):
         sudo('scripts/supervisor-group-ctl stop celery')
+
+
+@roles(ROLES_CELERY)
+@parallel
+def start_celery_tasks(current=False):
+    code_root = env.code_current if current else env.code_root
+    with cd(code_root):
+        sudo('scripts/supervisor-group-ctl start celery')
 
 
 @roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
