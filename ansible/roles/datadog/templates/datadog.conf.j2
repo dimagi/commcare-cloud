@@ -10,6 +10,13 @@ tags: {% for group, group_hosts in groups.items() -%}
     {%- if inventory_hostname in group_hosts %}group:{{ group }}, {% endif -%}
 {%- endfor %} environment:{{ deploy_env }}
 
+{% if http_proxy_address is defined and http_proxy_address %}
+proxy_host: http_proxy_address
+proxy_port: 3128
+# proxy_user:
+# proxy_password:
+{% endif %}
+
 # use unique hostname for GCE hosts, see http://dtdg.co/1eAynZk
 gce_updated_hostname: yes
 
