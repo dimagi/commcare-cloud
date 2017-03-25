@@ -167,7 +167,8 @@ etc_host_lines:
   - '10.247.24.13		www.icds-cas.gov.in'
 etc_host_lines_removed: ['etc_host_lines']
 
-http_proxy_address: '10.247.63.132:3128'
+http_proxy_address: '10.247.63.132'
+http_proxy_port: '3128'
 
 site_locations:
   - name: /files
