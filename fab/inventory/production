@@ -13,7 +13,7 @@ newrelic_app_name=django
 hqdb0.internal-va.commcarehq.org hot_standby_server=hqstandby0.internal-va.commcarehq.org datavol_device=/dev/xvdb
 
 [rabbitmq]
-hqes0.internal-va.commcarehq.org
+hqdb0.internal-va.commcarehq.org
 
 [zookeeper]
 hqes1.internal-va.commcarehq.org
