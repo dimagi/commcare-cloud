@@ -1,5 +1,5 @@
 - name: http proxy for external calls
-  hosts: all
+  hosts: patch_clients
   sudo: yes
   roles:
     - http_proxy
