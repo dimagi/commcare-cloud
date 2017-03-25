@@ -2,19 +2,23 @@
   lineinfile:
     dest: "/etc/environment"
     line: "{{item.var}}={{item.protocol}}://{{http_proxy_address}}/"
+    regexp: "{{item.var}}="
     create: yes
     state: present
   sudo: yes
   with_items:
     - {'var': 'http_proxy', 'protocol': 'http'}
-    - {'var': 'https_proxy', 'protocol': 'https'}
+    - {'var': 'https_proxy', 'protocol': 'http'}
+    - {'var': 'ftp_proxy', 'protocol': 'http'}
     - {'var': 'HTTP_PROXY', 'protocol': 'http'}
-    - {'var': 'HTTPS_PROXY', 'protocol': 'https'}
+    - {'var': 'HTTPS_PROXY', 'protocol': 'http'}
+    - {'var': 'FTP_PROXY', 'protocol': 'http'}
 
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
     line: "{{ item }}={{ groups['all']|join(',') }},relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
+    regexp: "{{item }}="
     create: yes
     state: present
   sudo: yes
@@ -22,29 +26,56 @@
     - 'no_proxy'
     - 'NO_PROXY'
 
+- name: Bower proxy
+  template:
+    src: bowerrc.j2
+    dest: "{{ item.home }}/.bowerrc"
+  become: yes
+  become_user: "{{item.user}}"
+  ignore_errors: True
+  with_items:
+    - {'user': 'ansible', 'home': '/home/ansibale' }
+    - {'user': 'root', 'home': '/root' }
+    - {'user': '{{ cchq_user }}' , 'home': '{{ code_home }}'}
+
 - name: NPM proxy
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
   become: yes
   become_user: "{{item.user}}"
+  ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
-    - {'user': 'ansible', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'ansible', 'var': 'https-proxy', 'protocol': 'http'}
     - {'user': 'root', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'root', 'var': 'http-proxy', 'protocol': 'http'}
-    - {'user': 'root', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'https-proxy', 'protocol': 'http'}
     - {'user': '{{ cchq_user }}', 'var': 'proxy', 'protocol': 'http'}
     - {'user': '{{ cchq_user }}', 'var': 'http-proxy', 'protocol': 'http'}
-    - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'https'}
+    - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'http'}
 
 - name: GIT proxy
   command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}/'
   become: yes
   become_user: "{{item.user}}"
+  ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
-    - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'http'}
     - {'user': 'root', 'var': 'http.proxy', 'protocol': 'http'}
-    - {'user': 'root', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': 'root', 'var': 'https.proxy', 'protocol': 'http'}
     - {'user': '{{cchq_user}}', 'var': 'http.proxy', 'protocol': 'http'}
-    - {'user': '{{cchq_user}}', 'var': 'https.proxy', 'protocol': 'https'}
+    - {'user': '{{cchq_user}}', 'var': 'https.proxy', 'protocol': 'http'}
+
+- name: Github https insteadOf ssh
+  command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
+  become: yes
+  become_user: "{{item.user}}"
+  ignore_errors: True
+  with_items:
+    - {'user': 'ansible', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
+    - {'user': 'ansible', 'var': 'https://', 'insteadof': 'git://' }
+    - {'user': 'root', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
+    - {'user': 'root', 'var': 'https://', 'insteadof': 'git://' }
+    - {'user': '{{cchq_user}}', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
+    - {'user': '{{cchq_user}}', 'var': 'https://', 'insteadof': 'git://' }
