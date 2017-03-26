@@ -68,7 +68,6 @@
         recurse: yes
       with_items:
         - "{{ code_source }}"
-        - "{{ code_home }}"
         - "{{ virtualenv_source }}"
   when: not gitdir.stat.exists
 
