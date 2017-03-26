@@ -63,6 +63,7 @@
       become: true
       file:
         path: "{{ item }}"
+        state: directory
         owner: "{{ cchq_user }}"
         group: "{{ cchq_user }}"
         recurse: yes
@@ -91,6 +92,7 @@
   become: true
   file:
     path: "{{ item.path }}/localsettings.py"
+    state: file
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
   tags:
