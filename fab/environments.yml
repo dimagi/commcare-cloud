@@ -58,7 +58,7 @@ softlayer:
 
 icds:
   environment: icds
-  http_proxy: 169.38.84.79:3128
+  http_proxy: 10.247.63.132:3128
   gunicorn_workers_factor: 2
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
