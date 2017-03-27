@@ -16,10 +16,6 @@ nginx_sites:
       zone: "$server_name"
       size: "10m"
       rate: "500r/s"
-    - name: "remote_ip_addr"
-      zone: "$binary_remote_addr"
-      size: "10m"
-      rate: "5r/s"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
@@ -37,8 +33,6 @@ nginx_sites:
        proxy_read_timeout: 900s
        limit_reqs:
          - zone_name: "server_name"
-           nodelay: True
-         - zone_name: "remote_ip_addr"
            nodelay: True
      - name: "/static"
        alias: "{{ nginx_static_home }}"
