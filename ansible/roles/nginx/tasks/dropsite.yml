@@ -1,0 +1,9 @@
+---
+
+- name: Drop site configuration
+  sudo: yes
+  file: path=/etc/nginx/sites-available/{{ file_name }} state=absent
+
+- name: Drop link to enable site configuration
+  sudo: yes
+  file: path=/etc/nginx/sites-enabled/{{ file_name }} state=absent

@@ -200,13 +200,15 @@ Setup the vault password files as described below in [Managing secrets with Vaul
 
 
 ### Simulate dev user setup on vagrant control machine
+
 Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
 `ansible/vars/dev/users/{username}.pub`.
 
 Login with `vagrant ssh control`
 
 ```bash
-ansible-playbook -u root -i inventories/development deploy_control.yml -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' --diff
+ansible-playbook -u root -i inventories/development -e @vars/dev/dev_private.yml \
+  -e @vars/dev/dev_public.yml --diff deploy_control.yml
 ```
 
 Login as your user: `vagrant ssh control -- -l $USER -A
@@ -218,7 +220,15 @@ echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
 
 # run ansible
 ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
-  -e @vars/dev.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
+  -e @vars/dev/dev_private.yml -e @vars/dev/dev_public.yml \
+  --diff deploy_stack.yml --tags=users,ssh # or whatever
+```
+
+#### Alternately, deploy directly from your dev environment
+
+```bash
+ansible-playbook -u vagrant -i inventories/development -e @vars/dev/dev_private.yml \
+  -e @vars/dev/dev_public.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
 ```
 
 ### Managing secrets with Vault

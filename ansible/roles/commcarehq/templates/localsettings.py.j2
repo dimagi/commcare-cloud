@@ -146,6 +146,14 @@ S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ s3_blob_db_access_key }}',
     'secret_key': '{{ s3_blob_db_secret_key }}',
 }
+{% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
+OLD_S3_BLOB_DB_SETTINGS = {
+    'url': '{{ old_s3_blob_db_url }}',
+    'access_key': '{{ old_s3_blob_db_access_key }}',
+    'secret_key': '{{ old_s3_blob_db_secret_key }}',
+}
+BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
+{% endif %}
 {% if 'BLOB_DB_MIGRATING_FROM_FS_TO_S3' in localsettings %}
 BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_S3 }}
 {% endif %}
