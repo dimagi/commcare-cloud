@@ -7,6 +7,10 @@
   include: site.yml
   when: action == 'site'
 
+- name: Drop Site
+  include: dropsite.yml
+  when: action == 'dropsite'
+
 - name: restart Site
   include: restart.yml
   when: action == 'restart'
