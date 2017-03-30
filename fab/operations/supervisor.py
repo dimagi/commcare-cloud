@@ -244,15 +244,18 @@ def _format_env(current_env, extra=None):
     newrelic_machines = [machine.name
                          for group in inventory_groups for machine in group.hosts
                          if 'newrelic_app_name' in group.vars]
+
+    ret['new_relic_command'] = ''
+    ret['supervisor_env_vars'] = {}
+
     if host in newrelic_machines:
         ret['new_relic_command'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
-        ret['supervisor_env_vars'] = {
-            'NEW_RELIC_CONFIG_FILE': '%(root)s/newrelic.ini' % env,
-            'NEW_RELIC_ENVIRONMENT': '%(environment)s' % env
-        }
-    else:
-        ret['new_relic_command'] = ''
-        ret['supervisor_env_vars'] = []
+        ret['supervisor_env_vars']['NEW_RELIC_CONFIG_FILE'] = '%(root)s/newrelic.ini' % env
+        ret['supervisor_env_vars']['NEW_RELIC_ENVIRONMENT'] = '%(environment)s' % env
+
+    if env.http_proxy:
+        ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
+        ret['supervisor_env_vars']['https_proxy'] = 'https://{}'.format(env.http_proxy)
 
     for prop in important_props:
         ret[prop] = current_env.get(prop, '')
