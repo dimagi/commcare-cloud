@@ -64,6 +64,7 @@
 - name: PostgreSQL app configuration
   sudo_user: postgres
   template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
+  tags: postgresql_conf
   notify: Restart postgres
 
 - name: PostgreSQL access configuration
