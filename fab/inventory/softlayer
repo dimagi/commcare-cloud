@@ -108,6 +108,13 @@ datavol_device=/dev/xvdc
 [stanchion:children]
 riak10
 
+[riakcs_new]
+hqriak15.internal-in.commcarehq.org 
+hqriak16.internal-in.commcarehq.org 
+hqriak17.internal-in.commcarehq.org 
+hqriak18.internal-in.commcarehq.org 
+hqriak19.internal-in.commcarehq.org 
+
 [pg_standby:children]
 db0
 
