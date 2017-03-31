@@ -261,7 +261,7 @@ def env_common():
     require('inventory', 'environment')
     servers = read_inventory_file(env.inventory)
 
-    env.is_monolith = len(servers['all']) == 1
+    env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
     env.deploy_metadata = DeployMetadata(env.code_branch, env.environment)
     _setup_path()
