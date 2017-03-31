@@ -5,18 +5,18 @@
 
 - name: Install nginx
   sudo: yes
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=3600
   with_items: nginx_ubuntu_pkg
   when: nginx_install == True
 
 - name: Create nginx http user
   sudo: yes
-  user: name={{ nginx_user }} createhome=no password=no state=present groups="{{ cchq_user }}"
+  user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
   when: nginx_install == True
 
 - name: Create static files home
   sudo: yes
-  file: path={{ nginx_static_home }} owner={{ cchq_user }} group={{ cchq_user }} mode=0755 state=directory
+  file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
   when: nginx_install == True
 
 - name: Copy the nginx configuration file

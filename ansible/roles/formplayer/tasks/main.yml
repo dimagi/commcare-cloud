@@ -1,5 +1,5 @@
 - name: Install formplayer packages
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   sudo: yes
   with_items:
     - sqlite3

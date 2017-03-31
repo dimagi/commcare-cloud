@@ -12,7 +12,7 @@
 
 - name: PostgreSQL recovery configuration
   sudo_user: postgres
-  template: src=recovery.conf.j2 dest={{ postgresql_config_home }}/recovery.conf
+  template: src=recovery.conf.j2 dest="{{ postgresql_config_home }}/recovery.conf"
   notify: Restart postgres
 
 - name: create backup directory

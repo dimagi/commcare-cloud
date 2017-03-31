@@ -1,4 +1,4 @@
-- name: Update {{ name }} admin.key
+- name: "Update {{ name }} admin.key"
   lineinfile:
     dest: "{{ hostvars[inventory_hostname][name + '_conf'] }}"
     regexp: "^admin.key ?= ?.*$"
@@ -7,7 +7,7 @@
   notify: "restart {{ name }}"
   when: "'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
 
-- name: Update {{ name }} admin.secret
+- name: "Update {{ name }} admin.secret"
   lineinfile:
     dest: "{{ hostvars[inventory_hostname][name + '_conf'] }}"
     regexp: "^admin.secret ?= ?.*$"

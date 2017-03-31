@@ -17,7 +17,7 @@
 - name: Unarchive Elasticsearch
   sudo: yes
   unarchive:
-    src: /home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz
+    src: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: /opt/
     copy: no
 

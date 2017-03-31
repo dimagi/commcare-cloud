@@ -13,7 +13,7 @@
   hosts:
     - riakcs
   tasks:
-    - add_host: name={{ riakcs_control }} groups=riakcs_control_host
+    - add_host: name="{{ riakcs_control }}" groups=riakcs_control_host
       when: riakcs_control_host is undefined
       always_run: true
       tags: localsettings
@@ -31,8 +31,8 @@
     - roles/riakcs/install/defaults/main.yml
     - roles/riakcs/configure/defaults/main.yml
   tasks:
-    - name: Stat {{ riak_conf }}
-      stat: path={{ riak_conf }}
+    - name: "Stat {{ riak_conf }}"
+      stat: path="{{ riak_conf }}"
       register: riak_conf_file
       changed_when: false
       failed_when: false
@@ -43,7 +43,7 @@
             or not (riak_conf_file.stat.exists | default(True))
         else '' }}"
     # HACK set fact because defaults cannot be loaded from other hosts
-    - set_fact: riak_nodename={{ riak_nodename }}
+    - set_fact: riak_nodename="{{ riak_nodename }}"
 
 - name: Configure swap for riak hosts
   hosts: riakcs

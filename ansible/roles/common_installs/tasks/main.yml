@@ -29,7 +29,7 @@
 
 # Install base packages, common to all servers
 - name: Install common packages
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   sudo: yes
   with_items:
     - build-essential
@@ -69,7 +69,7 @@
   sudo: yes
 
 - name: Install npm items
-  npm: name={{ item }} state=present global=yes
+  npm: name="{{ item }}" state=present global=yes
   sudo: yes
   with_items:
     - npm@3.6.0
@@ -92,7 +92,7 @@
   when: not lessc_stat.stat.exists
 
 - name: Install pip packages
-  pip: name={{ item }}
+  pip: name="{{ item }}"
   sudo: yes
   with_items:
     - virtualenv

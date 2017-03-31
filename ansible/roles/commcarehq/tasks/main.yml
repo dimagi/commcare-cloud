@@ -28,37 +28,49 @@
   stat: path="{{ code_home }}/.git"
   register: gitdir
 
-- name: Pull full CommcareHQ source
-  git:
-    repo: "{{ commcarehq_repository }}"
-    dest: "{{ code_source }}"
-    version: "{{ commcarehq_version }}"
-    recursive: yes
-    accept_hostkey: yes
-    update: yes
-  sudo_user: "{{ cchq_user }}"
-  tags:
-    - git
-    - slow
-  when: not gitdir.stat.exists
+- block:
+    - name: Pull full CommcareHQ source
+      git:
+        repo: "{{ commcarehq_repository }}"
+        dest: "{{ code_source }}"
+        version: "{{ commcarehq_version }}"
+        recursive: yes
+        accept_hostkey: yes
+        update: yes
+      become: true
+      tags:
+        - git
+        - slow
 
-- name: Link source to code_home
-  sudo_user: "{{ cchq_user }}"
-  file:
-    state: link
-    src: "{{ code_source }}"
-    dest: "{{ code_home }}"
-  when: not gitdir.stat.exists
+    - name: Link source to code_home
+      become: true
+      file:
+        state: link
+        src: "{{ code_source }}"
+        dest: "{{ code_home }}"
 
-- name: install pip requirements
-  sudo_user: "{{ cchq_user }}"
-  with_items: commcarehq_requirements
-  pip:
-    requirements: "{{ code_home }}/requirements/{{ item }}"
-    virtualenv: "{{ virtualenv_source }}"
-  tags:
-    - slow
-  when: not gitdir.stat.exists and not testing|default(False)
+    - name: install pip requirements
+      become: true
+      with_items: commcarehq_requirements
+      pip:
+        requirements: "{{ code_home }}/requirements/{{ item }}"
+        virtualenv: "{{ virtualenv_source }}"
+      tags:
+        - slow
+      when: not testing|default(False)
+
+    - name: chown clone
+      become: true
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        recurse: yes
+      with_items:
+        - "{{ code_source }}"
+        - "{{ virtualenv_source }}"
+  when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
   easy_install:
@@ -67,11 +79,21 @@
     virtualenv: "{{ virtualenv_home }}"
 
 - name: copy localsettings
-  sudo_user: "{{ cchq_user }}"
+  become: true
   template:
     src: localsettings.py.j2
     dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
+  tags:
+    - localsettings
+
+- name: chown localsettings
+  become: true
+  file:
+    path: "{{ item.path }}/localsettings.py"
+    state: file
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
   tags:
     - localsettings

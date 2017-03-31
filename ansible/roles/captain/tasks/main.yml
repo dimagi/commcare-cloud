@@ -76,7 +76,7 @@
     - "rtail_server"
 
 - name: Install npm items
-  npm: name={{ item }} state=present global=yes
+  npm: name="{{ item }}" state=present global=yes
   sudo: yes
   with_items:
     - rtail@0.2.1

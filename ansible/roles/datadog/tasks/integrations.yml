@@ -18,7 +18,7 @@
   when: inventory_hostname == groups.celery[0]
 
 - name: add datadog integration configs
-  template: src={{ item.split('_', 2)[-1] }}.yaml.j2 dest=/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml
+  template: src="{{ item.split('_', 2)[-1] }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml"
   notify: restart datadog
   tags:
     - datadog_integrations

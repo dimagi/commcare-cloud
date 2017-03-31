@@ -1,4 +1,4 @@
-cchq_home: /home/{{ cchq_user }}
+cchq_home: "/home/{{ cchq_user }}"
 www_dir: "{{ cchq_home }}/www"
 www_home: "{{ www_dir }}/{{ deploy_env }}"
 code_home: "{{ www_home }}/current"
