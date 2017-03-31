@@ -37,6 +37,9 @@ active_sites:
 
 riak_ring_size: 128
 
+riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
+riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
+
 proxy_type: 'nginx'
 primary_ssl_env: "cas"
 
@@ -63,6 +66,7 @@ postgres_config:
   max_connections: 300
   work_mem: '8MB'
   shared_buffers: '512MB'
+  max_stack_depth: '6MB'
   effective_cache_size: '8GB'
   pgb_max_connections: 800
   pgb_default_pool: 290
@@ -136,6 +140,8 @@ redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
 
+kafka_log_dir: '/opt/data/kafka'
+
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 
 KSPLICE_ACTIVE: no
@@ -149,7 +155,9 @@ AMQP_NAME: commcarehq
 ZABBIX_DB_ROOT_PASS: "{{ secrets.ZABBIX_DB_ROOT_PASS }}"
 ZABBIX_DB_USER_PASS: "{{ secrets.ZABBIX_DB_USER_PASS }}"
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
+DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
 file_email: False
 
@@ -164,7 +172,8 @@ etc_host_lines:
   - '10.247.24.13		www.icds-cas.gov.in'
 etc_host_lines_removed: ['etc_host_lines']
 
-http_proxy_address: '169.38.84.79:3128'
+http_proxy_address: '10.247.63.132'
+http_proxy_port: '3128'
 
 site_locations:
   - name: /files
@@ -280,6 +289,156 @@ localsettings:
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+  LOCAL_PILLOWS:
+    icds:
+      - name: 'kafka-ucr-static-awc-location'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'location'
+          include_ucrs:
+            - 'static-awc_location'
+      - name: 'kafka-ucr-static-ccs_record_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-ccs_record_cases'
+      - name: 'kafka-ucr-static-ccs_record_cases_monthly'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-ccs_record_cases_monthly'
+      - name: 'kafka-ucr-static-ccs_record_cases_monthly_tableau'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-ccs_record_cases_monthly_tableau'
+      - name: 'kafka-ucr-static-child_cases_monthly'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-child_cases_monthly'
+      - name: 'kafka-ucr-static-child_health_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-child_health_cases'
+      - name: 'kafka-ucr-static-child_cases_monthly_tableau'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-child_cases_monthly_tableau'
+      - name: 'kafka-ucr-static-other-cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-household_cases'
+            - 'static-person_cases'
+            - 'static-tasks_cases'
+            - 'static-tech_issue_cases'
+      - name: 'kafka-ucr-static-child_delivery_forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-child_delivery_forms'
+      - name: 'kafka-ucr-static-daily_feeding_forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-daily_feeding_forms'
+      - name: 'kafka-ucr-static-gm_forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-gm_forms'
+      - name: 'kafka-ucr-static-home_visit_forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-home_visit_forms'
+      - name: 'kafka-ucr-static-infrastructure_form'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-infrastructure_form'
+      - name: 'kafka-ucr-static-ls_home_visit_forms_filled'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-ls_home_visit_forms_filled'
+      - name: 'kafka-ucr-static-thr_forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-thr_forms'
+      - name: 'kafka-ucr-static-usage_forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-usage_forms'
+      - name: 'kafka-ucr-static-vhnd_form'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-vhnd_form'
+      - name: 'kafka-ucr-static-other-forms'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-awc_mgt_forms'
+            - 'static-visitorbook_forms'
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
@@ -293,6 +452,11 @@ localsettings:
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
+  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
+  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
+  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
+  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
+  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
 #  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
   SMS_GATEWAY_PARAMS:
   SMS_GATEWAY_URL: 
@@ -312,4 +476,5 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
+  ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
 

@@ -5,7 +5,7 @@ postgresql_dir_original_path: /var/lib/postgresql
 postgresql_dir_path: "{{ encrypted_root }}/postgresql"
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
-postgresql_config_home: /etc/postgresql/{{ postgresql_version }}/main
+postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
 postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
 pg_bouncer_config_home: /etc/pgbouncer
 pg_bouncer_ini: "{{ pg_bouncer_config_home }}/pgbouncer.ini"

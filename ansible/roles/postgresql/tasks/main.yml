@@ -18,13 +18,16 @@
   tags:
     - pgbouncer
 
+- name: generate en_US.UTF-8 locale
+  locale_gen: name='en_US.UTF-8' state=present
+
 - name: Install PostgreSQL & dependencies
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   with_items:
-    - postgresql-{{ postgresql_version }}
-    - postgresql-{{ postgresql_version }}-plproxy
-    - postgresql-contrib-{{ postgresql_version }}
-    - postgresql-server-dev-{{ postgresql_version }}
+    - "postgresql-{{ postgresql_version }}"
+    - "postgresql-{{ postgresql_version }}-plproxy"
+    - "postgresql-contrib-{{ postgresql_version }}"
+    - "postgresql-server-dev-{{ postgresql_version }}"
     - python-docutils  # required for building pghashlib
     - libpq-dev
     - python-psycopg2
@@ -55,20 +58,18 @@
   command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/{{ postgresql_version }}"
   when: orig_path.stat.exists
 
-- name: generate en_US.UTF-8 locale
-  locale_gen: name='en_US.UTF-8' state=present
-
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
 - name: PostgreSQL app configuration
   sudo_user: postgres
-  template: src=postgresql.conf.j2 dest={{ postgresql_config_home }}/postgresql.conf
+  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf"
+  tags: postgresql_conf
   notify: Restart postgres
 
 - name: PostgreSQL access configuration
   sudo_user: postgres
-  template: src=pg_hba.conf.j2 dest={{ postgresql_config_home }}/pg_hba.conf
+  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf"
   notify: Reload postgres
 
 - name: start postgresql
@@ -109,13 +110,13 @@
     - pgbouncer
 
 - name: pgbouncer configuration
-  template: src=pgbouncer.ini.j2 dest={{ pg_bouncer_ini }}
+  template: src=pgbouncer.ini.j2 dest="{{ pg_bouncer_ini }}"
   notify: Reload pgbouncer
   tags:
     - pgbouncer
 
 - name: pgbouncer users
-  template: src=pgbouncer.users.j2 dest={{ pg_bouncer_users }}
+  template: src=pgbouncer.users.j2 dest="{{ pg_bouncer_users }}"
   notify: Reload pgbouncer
   tags:
     - pgbouncer
@@ -150,7 +151,7 @@
     name: plproxy
     db: "{{item.name}}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
-  with_items: postgresql_dbs
+  with_items: "{{ postgresql_dbs }}"
 
 - name: Create pghashlib extension
   sudo_user: postgres
@@ -158,7 +159,7 @@
     name: hashlib
     db: "{{item.name}}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
-  with_items: postgresql_dbs
+  with_items: "{{ postgresql_dbs }}"
 
 - name: Make plproxy a trusted language
   sudo_user: postgres
@@ -167,10 +168,10 @@
     trust: True
     db: "{{item.name}}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
-  with_items: postgresql_dbs
+  with_items: "{{ postgresql_dbs }}"
 
 - name: Grant usage on plproxy FDW
   sudo_user: postgres
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
-  with_items: postgresql_dbs
+  with_items: "{{ postgresql_dbs }}"

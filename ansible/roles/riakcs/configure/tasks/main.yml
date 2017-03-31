@@ -2,42 +2,42 @@
 
 - include_vars: ../../install/defaults/main.yml
 
-- set_fact: conf_path={{ hostvars[inventory_hostname].get(name + '_conf', defaults[name + '_conf']) }}
+- set_fact: conf_path="{{ riak_conf if name == 'riak' else riakcs_conf if name == 'riakcs' else stanchion_conf }}"
 
-- name: Create {{ name }} data dirs
+- name: "Create {{ name }} data dirs"
   file: >
     path="{{ item }}"
     state=directory
-    owner={{ name }}
+    owner="{{ name }}"
     group=riak
     mode=0770
-  notify: restart {{ name }}
+  notify: "restart {{ name }}"
   with_items: "{{ data_dirs }}"
 
-- name: Copy {{ name }} defaults
+- name: "Copy {{ name }} defaults"
   # works on ubuntu. may need to do other things for other platforms
   copy: >
     content="ulimit -n {{ ulimit_n }}"
-    dest=/etc/default/{{ service }}
+    dest="/etc/default/{{ service }}"
     owner=root
     group=root
     force=yes
 
-- name: Create {{ name }} conf dir
+- name: "Create {{ name }} conf dir"
   file: >
     path="{{ conf_path | dirname }}"
     state=directory
     owner=root
     group=root
 
-- name: Set {{ name }} conf
+- name: "Set {{ name }} conf"
   template: >
-    src={{ name }}.conf.j2
-    dest={{ conf_path }}
+    src="{{ name }}.conf.j2"
+    dest="{{ conf_path }}"
     owner=root
     group=riak
     mode=0640
-  notify: restart {{ name }}
+  notify: "restart {{ name }}"
 
 - name: Set {{ name }} extra conf
   template: >
@@ -49,13 +49,13 @@
   notify: restart {{ name }}
   when: extra_conf != ""
 
-- name: Drop {{ name }} {{ drop_conf }}
+- name: "Drop {{ name }} {{ drop_conf }}"
   file: >
-    path={{ conf_path | dirname }}/{{ drop_conf }}
+    path="{{ conf_path | dirname }}/{{ drop_conf }}"
     state=absent
-  notify: restart {{ name }}
+  notify: "restart {{ name }}"
   when: drop_conf != ""
 
-- name: Start {{ name }}
-  service: name={{ service }} state=started enabled=yes
+- name: "Start {{ name }}"
+  service: name="{{ service }}" state=started enabled=yes
   when: not riakcs_deb_check.get("skipped")

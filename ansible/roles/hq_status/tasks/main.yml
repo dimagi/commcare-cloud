@@ -6,13 +6,13 @@
 
 - name: Create hq status files home
   sudo: yes
-  file: path={{ hq_status_home }} owner={{ apache2_http_user }} group={{ apache2_http_user }} mode=0755 state=directory
+  file: path="{{ hq_status_home }}" owner="{{ apache2_http_user }}" group="{{ apache2_http_user }}" mode=0755 state=directory
   tags:
     - hq_status
 
 - name: Add hq status html
   sudo: yes
-  template: src=index.html dest={{ hq_status_home }}/index.html
+  template: src=index.html dest="{{ hq_status_home }}/index.html"
   tags:
     - hq_status
 

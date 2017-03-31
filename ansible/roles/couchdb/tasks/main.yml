@@ -1,6 +1,6 @@
 # CouchDB
 - name: Install prequisites
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   with_items:
     - build-essential
     - g++
@@ -14,14 +14,14 @@
     - libtool
 
 - name: Check CouchDB existence
-  stat: path={{ couchdb_install_path }}
+  stat: path="{{ couchdb_install_path }}"
   register: couchdb_path
 
 - name: Download CouchDB source
   sudo: no
   get_url:
     url: "{{ couchdb_source_mirror }}/{{ couchdb_version }}/{{ couchdb_distro_filename }}"
-    dest: ~/{{ couchdb_distro_filename }}
+    dest: "~/{{ couchdb_distro_filename }}"
   when: not couchdb_path.stat.exists
 
 # Note 'chdir: ~/' evaluates to /home/<ansible_user> or to /root/ depending on whether `sudo` is set to 'no' or 'yes'
@@ -58,7 +58,7 @@
   template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
 
 - name: CouchDB ownership permissions
-  file: path={{ item }} owner=couchdb group=couchdb recurse=yes state=directory
+  file: path="{{ item }}" owner=couchdb group=couchdb recurse=yes state=directory
   with_items:
     - /usr/local/var/log/couchdb
     - /usr/local/var/lib/couchdb
@@ -75,8 +75,21 @@
 - name: Start CouchDB service
   service: name=couchdb state=started
 
-- name: Add CouchDB databases
-  shell: "{{ item }}"
-  with_items:
-    - curl -X PUT "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
-    - curl -X PUT "{{ couchdb_base_url }}/_config/admins/{{ localsettings.COUCH_USERNAME }}" -d '"{{ localsettings.COUCH_PASSWORD }}"'
+- name: Check CouchDB database
+  uri:
+    url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
+  register: couch_response
+
+- block:
+    - name: Add CouchDB database
+      uri:
+        url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
+        method: PUT
+
+    - name: Set CouchDB username and password
+      uri:
+        url: "{{ couchdb_base_url }}/_config/admins/{{ localsettings.COUCH_USERNAME }}"
+        method: PUT
+        body: '"{{ localsettings.COUCH_PASSWORD }}"'
+        body_format: raw
+  when: couch_response.status == 404

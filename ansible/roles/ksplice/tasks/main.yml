@@ -17,7 +17,7 @@
 
 - name: Install ksplice
   sudo: yes
-  shell: /tmp/install-uptrack {{ KSPLICE_ACTIVATION_KEY }} --autoinstall
+  shell: /tmp/install-uptrack "{{ KSPLICE_ACTIVATION_KEY }}" --autoinstall
   when: command_result|failed
 
 - name: Run uptrack upgrade

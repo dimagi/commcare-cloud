@@ -2,7 +2,7 @@
 
 - name: Create PostgreSQL benchmark database
   sudo_user: postgres
-  postgresql_db: name={{ item }} state=present
+  postgresql_db: name="{{ item }}" state=present
   with_items:
     - '{{ bench_db_name }}'
 

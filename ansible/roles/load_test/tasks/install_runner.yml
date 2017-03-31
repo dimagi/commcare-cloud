@@ -1,7 +1,7 @@
 ---
 
 - name: Install packages to be used for load testing
-  apt: name={{ item }} state=present
+  apt: name="{{ item }}" state=present
   sudo: yes
   with_items:
     - postgresql-contrib
@@ -32,7 +32,7 @@
 
 - name: Create PostgreSQL results database
   sudo_user: postgres
-  postgresql_db: name={{ results_db_name }} state=present
+  postgresql_db: name="{{ results_db_name }}" state=present
 
 - name: Allow access to runner
   sudo_user: postgres
@@ -53,7 +53,7 @@
   apt: name=gnuplot state=present
 
 - name: Install tsung dependencies
-  apt: pkg={{ item }} state=present
+  apt: pkg="{{ item }}" state=present
   with_items: "{{ tsung_debian_pkgs }}"
   tags:
     - tsung

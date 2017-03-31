@@ -2,11 +2,11 @@
 nginx_sites:
 - server:
    balancers:
-    - name: "{{ deploy_env }}_riakcs"
-      hosts: riakcs
+    - name: "{{ deploy_env }}_riakcs_{{ riakcs_proxy_port }}"
+      hosts: "{{ hosts_group }}"
       port: "{{ riakcs_port }}"
-   file_name: "{{ deploy_env }}_riakcs"
-   listen: "{{ riakcs_port }}"
+   file_name: "{{ deploy_env }}_riakcs_{{ riakcs_proxy_port }}"
+   listen: "{{ riakcs_proxy_port }}"
    # boto3 python library switches to multipart uploads for blobs > 8M
    client_max_body_size: "9M"
    upstream_port: "{{ riakcs_port }}"
@@ -15,7 +15,7 @@ nginx_sites:
    - "X-Real-IP $remote_addr"
    locations:
      - name: /
-       balancer: "{{ deploy_env }}_riakcs"
+       balancer: "{{ deploy_env }}_riakcs_{{ riakcs_proxy_port }}"
        proxy_redirect: ' off'
        proxy_connect_timeout: 90
        proxy_send_timeout: 90

@@ -9,8 +9,7 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-DATABASES = {
-{% for config in postgresql_dbs %}
+DATABASES = { {% for config in postgresql_dbs %}
 {%- if config.get('django_alias') %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -147,6 +146,14 @@ S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ s3_blob_db_access_key }}',
     'secret_key': '{{ s3_blob_db_secret_key }}',
 }
+{% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
+OLD_S3_BLOB_DB_SETTINGS = {
+    'url': '{{ old_s3_blob_db_url }}',
+    'access_key': '{{ old_s3_blob_db_access_key }}',
+    'secret_key': '{{ old_s3_blob_db_secret_key }}',
+}
+BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
+{% endif %}
 {% if 'BLOB_DB_MIGRATING_FROM_FS_TO_S3' in localsettings %}
 BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_S3 }}
 {% endif %}
@@ -159,6 +166,12 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 ####### For Constructing Global URLs ########
 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+
+{% if 'LOCAL_PILLOWS' in localsettings %}
+import json
+LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
+{% endif %}
+
 
 BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
@@ -178,6 +191,10 @@ def get_url_base():
 GET_URL_BASE  = 'settings.get_url_base'
 EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 
+
+{% if 'ICDS_DOMAIN' in localsettings %}
+ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
+{% endif %}
 
 SMS_QUEUE_ENABLED = {{localsettings.get('SMS_QUEUE_ENABLED', False)}}
 REMINDERS_QUEUE_ENABLED = {{localsettings.get('REMINDERS_QUEUE_ENABLED', False)}}
