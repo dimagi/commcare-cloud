@@ -86,7 +86,7 @@ icds:
       ucr_queue:
         concurrency: 4
       ucr_indicator_queue:
-        concurrency: 4
+        concurrency: 10
       email_queue:
         concurrency: 2
       repeat_record_queue:
