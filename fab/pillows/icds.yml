@@ -5,11 +5,7 @@ exclude_pillows:
 include_pillows:
   - kafka-ucr-static-awc-location
   - kafka-ucr-static-ccs_record_cases
-  - kafka-ucr-static-ccs_record_cases_monthly
-  - kafka-ucr-static-ccs_record_cases_monthly_tableau
   - kafka-ucr-static-child_cases_monthly
-  - kafka-ucr-static-child_cases_monthly_tableau
-  - kafka-ucr-static-child_health_cases
   - kafka-ucr-static-other-cases
   - kafka-ucr-static-child_delivery_forms
   - kafka-ucr-static-daily_feeding_forms
