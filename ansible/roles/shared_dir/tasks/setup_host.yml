@@ -46,13 +46,13 @@
   cron:
     name: "{{ item.name }}"
     special_time: daily
-    job: "find {{ item.dir }} -type f -maxdepth 1 -mtime +{{ item.max_age }} -delete"
+    job: "find {{ item.dir }} -maxdepth 1 -type f -mmin +{{ item.max_age }} -delete"
     user: root
     cron_file: purge_cache_files
   with_items:
-    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 2}
-    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 2}
-    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 1}
+    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 480 } # 8 hours in minutes
+    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 2880 } # 2 days in minutes
+    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 1440 } # 1 day in minutes
   tags:
     - shared_files
 
