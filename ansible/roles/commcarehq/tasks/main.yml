@@ -82,7 +82,7 @@
   become: true
   template:
     src: localsettings.py.j2
-    dest: "{{ code_home }}/localsettings.py"
+    dest: "{{ item.path }}/localsettings.py"
   with_items:
     - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
   tags:
