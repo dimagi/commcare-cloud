@@ -315,13 +315,6 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-ccs_record_cases_monthly'
-      - name: 'kafka-ucr-static-ccs_record_cases_monthly_tableau'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
             - 'static-ccs_record_cases_monthly_tableau'
       - name: 'kafka-ucr-static-child_cases_monthly'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -331,6 +324,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_cases_monthly'
+            - 'static-child_cases_monthly_tableau'
       - name: 'kafka-ucr-static-child_health_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -339,15 +333,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_health_cases'
-      - name: 'kafka-ucr-static-child_cases_monthly_tableau'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-child_cases_monthly_tableau'
-      - name: 'kafka-ucr-static-other-cases'
+      - name: 'kafka-ucr-static-household_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -355,8 +341,29 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-household_cases'
-            - 'static-person_cases'
+      - name: 'kafka-ucr-static-tasks_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
             - 'static-tasks_cases'
+      - name: 'kafka-ucr-static-person_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-person_cases'
+      - name: 'kafka-ucr-static-tech_issue_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
             - 'static-tech_issue_cases'
       - name: 'kafka-ucr-static-child_delivery_forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
