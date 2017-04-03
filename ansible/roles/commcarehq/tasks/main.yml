@@ -82,16 +82,14 @@
   become: true
   template:
     src: localsettings.py.j2
-    dest: "{{ item.path }}/localsettings.py"
-  with_items:
-    - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
+    dest: "{{ code_home }}/localsettings.py"
   tags:
     - localsettings
 
 - name: chown localsettings
   become: true
   file:
-    path: "{{ item.path }}/localsettings.py"
+    path: "{{ code_home }}/localsettings.py"
     state: file
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
