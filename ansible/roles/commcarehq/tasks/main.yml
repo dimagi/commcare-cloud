@@ -95,5 +95,7 @@
     state: file
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+  with_items:
+    - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
   tags:
     - localsettings
