@@ -23,3 +23,35 @@
   apt: name="libssl1.0.0" state=present
   tags:
     - upgrade_openssl
+
+
+- name: Hard file limits
+  sudo: yes
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: hard
+    limit_item: nofile
+    value: "{{ nofile_limit|default(4096) }}"
+  tags:
+    - nofile_limits
+  with_items:
+    - 'rabbitmq'
+    - 'elasticsearch'
+    - '{{ cchq_user }}'
+    - 'root'
+
+
+- name: Soft file limits
+  sudo: yes
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: soft
+    limit_item: nofile
+    value: "{{ nofile_limit|default(4096) }}"
+  tags:
+    - nofile_limits
+  with_items:
+    - 'rabbitmq'
+    - 'elasticsearch'
+    - '{{ cchq_user }}'
+    - 'root'

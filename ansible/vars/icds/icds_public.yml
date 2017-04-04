@@ -76,6 +76,8 @@ postgres_config:
 
 formplayer_db_name: formplayer
 
+nofile_limit: 65536
+
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"

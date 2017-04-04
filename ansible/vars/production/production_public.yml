@@ -56,6 +56,8 @@ apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.crt'
 # $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
 
+nofile_limit: 65536
+
 # Commtrack Certs
 commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.org.combined.crt'
 commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
