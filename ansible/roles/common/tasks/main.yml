@@ -54,7 +54,7 @@
 
 - name: Ensure pam_limits.so
   lineinfile:
-    path: /etc/pam.d/common-session
+    dest: /etc/pam.d/common-session
     state: present
     regexp: "^session required pam_limits.so"
     line: "session required pam_limits.so"
