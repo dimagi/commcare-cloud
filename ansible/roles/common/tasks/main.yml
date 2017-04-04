@@ -35,9 +35,7 @@
   tags:
     - nofile_limits
   with_items:
-    - 'rabbitmq'
-    - 'elasticsearch'
-    - '{{ cchq_user }}'
+    - '*'
     - 'root'
 
 
@@ -51,7 +49,12 @@
   tags:
     - nofile_limits
   with_items:
-    - 'rabbitmq'
-    - 'elasticsearch'
-    - '{{ cchq_user }}'
+    - '*'
     - 'root'
+
+- name: Ensure pam_limits.so
+  lineinfile:
+    path: /etc/pam.d/common-session
+    state: present
+    regexp: "^session required pam_limits.so"
+    line: "session required pam_limits.so"
