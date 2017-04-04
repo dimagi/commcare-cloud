@@ -23,3 +23,40 @@
   apt: name="libssl1.0.0" state=present
   tags:
     - upgrade_openssl
+
+
+- name: Hard file limits
+  sudo: yes
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: hard
+    limit_item: nofile
+    value: "{{ nofile_limit|default(4096) }}"
+  tags:
+    - nofile_limits
+  with_items:
+    - '*'
+    - 'root'
+
+
+- name: Soft file limits
+  sudo: yes
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: soft
+    limit_item: nofile
+    value: "{{ nofile_limit|default(4096) }}"
+  tags:
+    - nofile_limits
+  with_items:
+    - '*'
+    - 'root'
+
+- name: Ensure pam_limits.so
+  lineinfile:
+    dest: /etc/pam.d/common-session
+    state: present
+    regexp: "^session required pam_limits.so"
+    line: "session required pam_limits.so"
+  tags:
+    - nofile_limits

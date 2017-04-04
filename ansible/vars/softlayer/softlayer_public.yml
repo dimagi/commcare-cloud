@@ -80,6 +80,8 @@ postgres_s3: True
 
 aws_region: 'ap-south-1'
 
+nofile_limit: 65536
+
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgres_config:
