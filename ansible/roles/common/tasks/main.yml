@@ -58,3 +58,5 @@
     state: present
     regexp: "^session required pam_limits.so"
     line: "session required pam_limits.so"
+  tags:
+    - nofile_limits
