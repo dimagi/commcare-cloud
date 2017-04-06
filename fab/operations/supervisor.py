@@ -258,7 +258,7 @@ def _format_env(current_env, extra=None):
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
         ret['supervisor_env_vars']['https_proxy'] = 'https://{}'.format(env.http_proxy)
-        ret['supervisor_env_vars']['no_proxy'] = '{},relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in'.format(','.join(all_hosts))
+        ret['supervisor_env_vars']['no_proxy'] = '{},{}'.format(','.join(all_hosts), env.get('additional_no_proxy_hosts',''))
 
     for prop in important_props:
         ret[prop] = current_env.get(prop, '')
