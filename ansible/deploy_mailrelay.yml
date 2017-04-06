@@ -1,0 +1,27 @@
+- name: "Install postfix"
+  hosts: all
+  sudo: yes
+  tasks:
+    - package: name=postfix state=present
+
+- name: "mail relay deploy"
+  hosts: mailrelay
+  sudo: yes
+  tasks:
+    - name: "sets our relayhost"
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        regexp: '^relayhost ='
+        line: "relayhost = {{ mailrelay }}"
+      when: groups['mailrelay'] is defined
+
+- name: "mail relay clients deploy"
+  hosts: all:!mailrelay
+  sudo: yes
+  tasks:
+    - name: "sets external relayhost"
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        regexp: '^relayhost ='
+        line: "relayhost = {{ groups['mailrelay'][0] }}"
+      when: groups['mailrelay'] is defined

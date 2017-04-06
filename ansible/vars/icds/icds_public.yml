@@ -220,6 +220,8 @@ site_locations:
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
 
 
+mailrelay: 'relay.nic.in'
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -262,7 +264,7 @@ localsettings:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_SMTP_HOST: 'relay.nic.in'
+  EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
