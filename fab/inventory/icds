@@ -138,3 +138,6 @@ kafka0
 
 [control:children]
 pil0
+
+[mairelay:children]
+web0
