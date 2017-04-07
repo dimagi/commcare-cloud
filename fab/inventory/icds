@@ -139,5 +139,5 @@ kafka0
 [control:children]
 pil0
 
-[mairelay:children]
+[mailrelay:children]
 web0
