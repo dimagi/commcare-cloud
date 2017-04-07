@@ -140,4 +140,4 @@ kafka0
 pil0
 
 [mailrelay:children]
-web0
+web0 parent_mailrelay='relay.nic.in'
