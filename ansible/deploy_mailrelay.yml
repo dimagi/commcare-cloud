@@ -13,7 +13,7 @@
         dest: /etc/postfix/main.cf
         regexp: '^relayhost ='
         line: "relayhost = {{ mailrelay }}"
-      when: groups['mailrelay'] is defined
+      when: groups['mailrelay'] is defined and mailrelay is defined
 
 - name: "mail relay clients deploy"
   hosts: all:!mailrelay
