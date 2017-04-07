@@ -219,9 +219,6 @@ site_locations:
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
 
-
-mailrelay: 'relay.nic.in'
-
 localsettings:
   ALLOWED_HOSTS:
     - localhost
