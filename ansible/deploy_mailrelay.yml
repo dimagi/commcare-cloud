@@ -2,7 +2,8 @@
   hosts: all
   sudo: yes
   tasks:
-    - package: name=postfix state=present
+    - debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+    - apt: name=postfix state=present force=yes
 
 - name: "mail relay deploy"
   hosts: mailrelay
