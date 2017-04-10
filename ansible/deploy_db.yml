@@ -32,6 +32,26 @@
   roles:
     - {role: couchdb, tags: 'couchdb'}
 
+- name: Couchdb log rolling configurations
+  hosts: couchdb
+  sudo: yes
+  roles:
+    - role: ansible-logrotate
+      tags: couchdb
+      logrotate_scripts:
+        - name: "{{ deploy_env }}_couchdb"
+          path: "{{ couch_log_dir }}/*.log"
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
+
 - name: Redis
   hosts: redis
   sudo: yes

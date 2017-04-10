@@ -60,7 +60,7 @@
 - name: CouchDB ownership permissions
   file: path="{{ item }}" owner=couchdb group=couchdb recurse=yes state=directory
   with_items:
-    - /usr/local/var/log/couchdb
+    - "{{ couch_log_dir }}"
     - /usr/local/var/lib/couchdb
     - /usr/local/var/run/couchdb
     - /usr/local/etc/couchdb/
