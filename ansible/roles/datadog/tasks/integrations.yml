@@ -14,7 +14,6 @@
     sha256sum: "{{ datadog_celery_sha256sum }}"
     force: yes
   notify: restart datadog
-  run_once: true
   when: inventory_hostname == groups.celery[0]
 
 - name: add datadog integration configs
