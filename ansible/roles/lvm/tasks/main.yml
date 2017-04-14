@@ -11,7 +11,7 @@
   changed_when: false
   failed_when: false
   always_run: true
-  with_items: devices
+  with_items: "{{ devices }}"
 
 - name: Create partition on block storage volume
   sudo: yes
@@ -28,7 +28,7 @@
   # 8e - lvm type
   # w  - write the partition table
   when: item is defined and item.rc == 0
-  with_items: partition_check.results
+  with_items: "{{ partition_check.results }}"
 
 - name: Create volume group
   lvg:
