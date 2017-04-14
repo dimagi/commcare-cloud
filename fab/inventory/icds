@@ -10,7 +10,7 @@
 10.247.24.14 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data' hot_standby_server='10.247.24.17'
 
 [web0]
-10.247.24.13 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+10.247.24.13 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' parent_mailrelay='relay.nic.in'
 
 [web1]
 10.247.24.15 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
@@ -140,4 +140,4 @@ kafka0
 pil0
 
 [mailrelay:children]
-web0 parent_mailrelay='relay.nic.in'
+web0
