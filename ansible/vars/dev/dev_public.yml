@@ -153,6 +153,8 @@ postgresql_dbs:
 #    shards: [400, 511]
 #  - name: "{{localsettings.UCR_DATABASE_NAME}}"
 
+mailrelay: 'relay.example.com'
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
