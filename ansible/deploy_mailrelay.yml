@@ -15,6 +15,12 @@
         regexp: '^relayhost ='
         line: "relayhost = {{ parent_mailrelay }}"
       when: groups['mailrelay'] is defined and parent_mailrelay is defined
+    - name: "grants relay access"
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        regexp: '^mynetworks ='
+        line: "mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ groups['all']|join('/32 ') }}"
+      when: groups['mailrelay'] is defined and parent_mailrelay is defined
 
 - name: "mail relay clients deploy"
   hosts: all:!mailrelay
