@@ -51,7 +51,7 @@
 
     - name: install pip requirements
       become: true
-      with_items: commcarehq_requirements
+      with_items: "{{ commcarehq_requirements }}"
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
         virtualenv: "{{ virtualenv_source }}"
