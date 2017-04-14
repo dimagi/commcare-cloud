@@ -2,7 +2,7 @@
   hosts: all
   sudo: yes
   tasks:
-    - debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+    - debconf: name=postfix question="postfix/main_mailer_type" value="Internet Site" vtype="string"
     - apt: name=postfix state=present force=yes
 
 - name: "mail relay deploy"
@@ -14,6 +14,12 @@
         dest: /etc/postfix/main.cf
         regexp: '^relayhost ='
         line: "relayhost = {{ parent_mailrelay }}"
+      when: groups['mailrelay'] is defined and parent_mailrelay is defined
+    - name: "grants relay access"
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        regexp: '^mynetworks ='
+        line: "mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ groups['all']|join('/32 ') }}"
       when: groups['mailrelay'] is defined and parent_mailrelay is defined
 
 - name: "mail relay clients deploy"
