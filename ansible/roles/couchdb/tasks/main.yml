@@ -56,6 +56,7 @@
 
 - name: Apply CouchDB config
   template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
+  register: update_config
 
 - name: CouchDB ownership permissions
   file: path="{{ item }}" owner=couchdb group=couchdb recurse=yes state=directory
@@ -80,16 +81,16 @@
     url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
   register: couch_response
 
-- block:
-    - name: Add CouchDB database
-      uri:
-        url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
-        method: PUT
-
-    - name: Set CouchDB username and password
-      uri:
-        url: "{{ couchdb_base_url }}/_config/admins/{{ localsettings.COUCH_USERNAME }}"
-        method: PUT
-        body: '"{{ localsettings.COUCH_PASSWORD }}"'
-        body_format: raw
+- name: Add CouchDB database
+  uri:
+    url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
+    method: PUT
   when: couch_response.status == 404
+
+- name: Set CouchDB username and password
+  uri:
+    url: "{{ couchdb_base_url }}/_config/admins/{{ localsettings.COUCH_USERNAME }}"
+    method: PUT
+    body: '"{{ localsettings.COUCH_PASSWORD }}"'
+    body_format: raw
+  when: update_config|changed
