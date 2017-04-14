@@ -32,6 +32,8 @@
     dest: "{{ item.home }}/.bowerrc"
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'home': '/home/ansibale' }
@@ -42,6 +44,8 @@
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
@@ -58,6 +62,8 @@
   command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
@@ -71,6 +77,8 @@
   command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
