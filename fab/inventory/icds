@@ -51,6 +51,9 @@
 [web5]
 10.247.24.27 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
+[pg2]
+10.247.24.22 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
 [proxy:children]
 web0
 
@@ -111,6 +114,7 @@ pg1
 es0
 es1
 couch0
+pg2
 
 [riakcs:vars]
 datavol_device=/dev/sdb
