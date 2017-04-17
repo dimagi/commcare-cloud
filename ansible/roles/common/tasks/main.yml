@@ -60,3 +60,22 @@
     line: "session required pam_limits.so"
   tags:
     - nofile_limits
+
+
+- name: "Sets hostname"
+  become: yes
+  hostname:
+    name: "{{ hostname }}"
+  when: hostname is defined
+  tags:
+    - hostname
+
+- name: "Sets /etc/hosts"
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^{{ ansible_default_ipv4.address }} '
+    line: '{{ ansible_default_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}'
+  when: hostname is defined and internal_domain_name is defined
+  tags:
+    - hostname
