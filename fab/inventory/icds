@@ -39,6 +39,18 @@
 [control]
 10.247.24.20
 
+[web2]
+10.247.24.24 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[web3]
+10.247.24.25 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[web4]
+10.247.24.26 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[web5]
+10.247.24.27 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
 [proxy:children]
 web0
 
@@ -48,6 +60,10 @@ web0
 [webworkers:children]
 web0
 web1
+web2
+web3
+web4
+web5
 kafka0
 
 [postgresql:children]
@@ -117,6 +133,10 @@ couch0
 celery0
 pil0
 kafka0
+web2
+web3
+web4
+web5
 
 [zabbix:children]
 kafka0
@@ -135,6 +155,10 @@ couch0
 celery0
 pil0
 kafka0
+web2
+web3
+web4
+web5
 
 [control:children]
 pil0
