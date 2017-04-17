@@ -1,6 +1,6 @@
 - name: "Custom host file lines"
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
-  with_items: etc_host_lines
+  with_items: "{{ etc_host_lines }}"
   tags:
     - etc_hosts
 
@@ -14,7 +14,7 @@
 
 - name: "Remove lines from hosts file"
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
-  with_items: etc_host_lines_removed
+  with_items: "{{ etc_host_lines_removed }}"
   tags:
     - etc_hosts
 
@@ -67,3 +67,21 @@
     name: Etc/UTC
   tags:
     - timezone
+
+- name: "Sets hostname"
+  become: yes
+  hostname:
+    name: "{{ hostname }}"
+  when: hostname is defined
+  tags:
+    - hostname
+
+- name: "Sets /etc/hosts"
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^{{ ansible_default_ipv4.address }} '
+    line: '{{ ansible_default_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}'
+  when: hostname is defined and internal_domain_name is defined
+  tags:
+    - hostname
