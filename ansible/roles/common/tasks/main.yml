@@ -61,6 +61,12 @@
   tags:
     - nofile_limits
 
+- name: set timezone to Etc/UTC
+  become: yes
+  timezone:
+    name: Etc/UTC
+  tags:
+    - timezone
 
 - name: "Sets hostname"
   become: yes
