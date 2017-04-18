@@ -39,3 +39,5 @@ errors_home: "{{ www_home }}/error_root"
 error_pages:
   - "502 503 /errors/50x.html"
   - "400 /errors/400.html"
+  # if Django is not able to handle 500, then it's an outage?
+  - "500 /errors/outage.html"
