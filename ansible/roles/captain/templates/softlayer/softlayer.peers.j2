@@ -1,0 +1,11 @@
+remotename softlayer
+linkname softlayer
+ipparam softlayer
+pty "pptp pptpvpn.che01.softlayer.com --nolaunchpppd "
+name {{ softlayer_vpn_username }}
+usepeerdns
+require-mppe
+refuse-eap
+noauth
+# adopt defaults from the pptp-linux package
+file /etc/ppp/options.pptp

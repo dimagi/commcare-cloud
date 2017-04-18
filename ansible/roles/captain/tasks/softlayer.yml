@@ -1,0 +1,42 @@
+# Sets up rackspace machine to have access to softlayer vpn
+#
+- name: Install pptp packages
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - pptp-linux
+  tags:
+    - softlayer-vpn
+
+- name: Configure ppp peers for softlayer
+  sudo: yes
+  template:
+    src: softlayer/softlayer.peers.j2
+    dest: "/etc/ppp/peers/softlayer"
+  tags:
+    - softlayer-vpn
+
+- name: Configure chap secrets
+  sudo: yes
+  template:
+    src: softlayer/chap_secrets.j2
+    dest: "/etc/ppp/chap-secrets"
+  tags:
+    - softlayer-vpn
+
+- name: Add subnet
+  sudo: yes
+  template:
+    src: softlayer/add_subnet.j2
+    dest: "/etc/ppp/ip-up.d/add-subnet"
+    mode: "a+x"
+  tags:
+    - softlayer-vpn
+
+- name: Add custom iptables rules
+  sudo: yes
+  template:
+    src: "softlayer/rackconnect-allow-custom-iptables.j2"
+    dest: "/etc/rackconnect-allow-custom-iptables"
+  tags:
+    - softlayer-vpn

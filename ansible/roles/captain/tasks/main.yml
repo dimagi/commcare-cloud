@@ -83,3 +83,6 @@
 
 - name: Igor Integration
   include: igor.yml
+
+- name: Configure Softlayer VPN
+  include: softlayer.yml
