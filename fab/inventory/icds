@@ -72,7 +72,6 @@ kafka0
 [postgresql:children]
 pg0
 pg1
-celery0
 pg2
 
 [couchdb:children]
