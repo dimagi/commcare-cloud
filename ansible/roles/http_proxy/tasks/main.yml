@@ -49,9 +49,8 @@
     ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
-    - {'user': 'ansible', 'home': '/home/ansibale' }
+    - {'user': 'ansible', 'home': '/home/ansible' }
     - {'user': 'root', 'home': '/root' }
-    - {'user': '{{ cchq_user }}' , 'home': '{{ code_home }}'}
 
 - name: NPM proxy
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'

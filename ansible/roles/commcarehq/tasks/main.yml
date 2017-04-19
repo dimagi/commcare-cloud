@@ -55,6 +55,7 @@
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
         virtualenv: "{{ virtualenv_source }}"
+        chdir: "{{ code_home }}"
       tags:
         - slow
       when: not testing|default(False)
