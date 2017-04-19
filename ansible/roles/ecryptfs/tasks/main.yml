@@ -54,7 +54,7 @@
   # Do not install ecryptfs utils if already mounted. This should trigger alarm
   # bells if something causes a false positive result on checking for encrypted
   # volume is already mounted.
-  when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
+  when: encrypted_root not in mtab_contents.stdout
 
 - name: Create encrypted drive root directory
   sudo: yes
@@ -66,14 +66,14 @@
   sudo: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
-  when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
+  when: encrypted_root  not in mtab_contents.stdout
   tags:
     - mount-ecryptfs
 
 - name: Mount data drive
   sudo: yes
   shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
-  when: "'{{ encrypted_root }}' not in mtab_contents.stdout"
+  when: encrypted_root not in mtab_contents.stdout
   tags:
     - mount-ecryptfs
 

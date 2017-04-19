@@ -4,13 +4,15 @@ SITE_HOST: '{{ groups.proxy.0 }}'
 COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
 NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
 J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
+internal_domain_name: 'localdomain'
 
 testing: True
 
 etc_host_lines: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
-http_proxy_address: '192.168.33.1:3128'
+http_proxy_address: '192.168.33.1'
+http_proxy_port: '3128'
 
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
@@ -151,6 +153,8 @@ postgresql_dbs:
 #    name: commcarehq_p5
 #    shards: [400, 511]
 #  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+
+mailrelay: 'relay.example.com'
 
 localsettings:
   ALLOWED_HOSTS:

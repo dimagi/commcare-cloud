@@ -65,11 +65,11 @@
     regexp: "^{{ shared_data_dir }} {{ item }}"
     state: present
   with_flattened:
-    - groups.webworkers
-    - groups.proxy
-    - groups.celery
-    - groups.pillowtop
-    - groups.shared_dir_host
+    - "{{ groups.webworkers }}"
+    - "{{ groups.proxy }}"
+    - "{{ groups.celery }}"
+    - "{{ groups.pillowtop }}"
+    - "{{ groups.shared_dir_host }}"
   tags:
     - nfs
 

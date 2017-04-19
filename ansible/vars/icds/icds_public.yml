@@ -2,6 +2,7 @@ SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
+internal_domain_name: 'internal-icds.commcarehq.org'
 tableau_server: 10.247.24.11:80
 
 TABLEAU_HOST: 'reports.icds-cas.gov.in'
@@ -219,7 +220,6 @@ site_locations:
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
 
-
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -262,7 +262,7 @@ localsettings:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_SMTP_HOST: 'relay.nic.in'
+  EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
