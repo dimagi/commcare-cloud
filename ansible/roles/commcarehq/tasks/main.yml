@@ -63,19 +63,6 @@
       tags:
         - slow
       when: not testing|default(False)
-
-    - name: chown clone
-      become: true
-      become_user: "{{ cchq_user }}"
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ cchq_user }}"
-        group: "{{ cchq_user }}"
-        recurse: yes
-      with_items:
-        - "{{ code_source }}"
-        - "{{ virtualenv_source }}"
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
