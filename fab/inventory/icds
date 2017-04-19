@@ -52,7 +52,7 @@
 10.247.24.27 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [pg2]
-10.247.24.22 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+10.247.24.22 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='pg2'
 
 [proxy:children]
 web0
@@ -72,7 +72,7 @@ kafka0
 [postgresql:children]
 pg0
 pg1
-celery0
+pg2
 
 [couchdb:children]
 couch0
