@@ -90,6 +90,19 @@
   assert: { that: "item.host is not defined or item.host in groups.postgresql" }
   with_items: "{{ postgresql_dbs }}"
 
+- name: Create PostgreSQL devreadonly user
+  sudo_user: postgres
+  postgresql_user:
+    name: "{{ postgres_users.devreadonly.username }}"
+    password: "{{ postgres_users.devreadonly.password }}"
+    role_attr_flags: LOGIN
+    encrypted: yes
+    state: present
+    priv: SELECT
+    port: "{{ postgresql_port }}"
+  when:
+    pg_install == True
+
 - name: Create PostgreSQL databases
   become: yes
   become_user: postgres
