@@ -85,3 +85,22 @@
   when: hostname is defined and internal_domain_name is defined
   tags:
     - hostname
+
+- name: "Checks if anti-virus service exists"
+  stat: path=/etc/init.d/nails
+  register: antivirus
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables anti-virus"
+  become: yes
+  service:
+    name: nails
+    state: stopped
+    enabled: no
+  when: antivirus.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
