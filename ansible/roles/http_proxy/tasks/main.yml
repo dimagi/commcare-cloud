@@ -49,7 +49,7 @@
     ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
-    - {'user': 'ansible', 'home': '/home/ansibale' }
+    - {'user': 'ansible', 'home': '/home/ansible' }
     - {'user': 'root', 'home': '/root' }
     - {'user': '{{ cchq_user }}' , 'home': '{{ code_home }}'}
 
