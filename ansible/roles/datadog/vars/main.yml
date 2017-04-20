@@ -14,6 +14,10 @@ datadog_parsers:
     python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
     python_function: parse_nginx_counter
     hosts: "{{ groups['proxy'] }}"
+  - input: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
+    python_function: parse_nginx_status
+    hosts: "{{ groups['proxy'] }}"
   - input: "{{ log_home }}/{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log"
     python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
     python_function: parse_couch_logs
