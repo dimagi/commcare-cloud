@@ -1,3 +1,7 @@
 formplayer_build_dir: "{{ code_home }}/formplayer_build"
 formplayer_data_dir: "{{ encrypted_root }}/formplayer"
 # formplayer_db_name: ..defined in secret file
+hq_main_db_host: {% for config in postgresql_dbs -%}
+  {%- if config.name == localsettings.PG_DATABASE_NAME -%}{{ config.host }}
+  {%- endif -%}
+  {%- endfor %}
