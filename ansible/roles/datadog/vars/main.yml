@@ -18,7 +18,7 @@ datadog_parsers:
     python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
     python_function: parse_couch_logs
     hosts: "{{ groups['webworkers'] + groups['pillowtop'] + groups['celery'] }}"
-  - input: "{{ log_home }}/datadog-formplayer-{{ inventory_hostname_short }}.log"
+  - input: "{{ log_home }}/datadog-formplayer-{{ localsettings.DEPLOY_MACHINE_NAME }}.log"
     hosts: "{{ groups['touchforms'] }}"
-  - input: "{{ log_home }}/{{ inventory_hostname_short }}-commcarehq.datadog.log"
+  - input: "{{ log_home }}/{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log"
     hosts: "{{ groups['webworkers'] }}"
