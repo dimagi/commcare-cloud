@@ -189,9 +189,6 @@ def icds():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'icds')
     load_env('icds')
     env.force = True  # don't worry about kafka checkpoints on icds
-    # Force ansible user and prompt for password
-    env.user = 'ansible'
-    env.password = getpass('Enter the password for then ansbile user: ')
     execute(env_common)
 
 
@@ -723,6 +720,10 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
         offline_ops.check_ready()
         if not console.confirm('Are you sure you want to do an offline deploy?'.format(default=False)):
             utils.abort('Task aborted')
+
+        # Force ansible user and prompt for password
+        env.user = 'ansible'
+        env.password = getpass('Enter the password for then ansbile user: ')
 
     if warning_message:
         print('')
