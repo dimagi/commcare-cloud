@@ -114,13 +114,13 @@
     - pgbouncer
 
 - name: pgbouncer configuration
-  template: src=pgbouncer.ini.j2 dest="{{ pg_bouncer_ini }}"
+  template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
   notify: Reload pgbouncer
   tags:
     - pgbouncer
 
 - name: pgbouncer users
-  template: src=pgbouncer.users.j2 dest="{{ pg_bouncer_users }}"
+  template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
   notify: Reload pgbouncer
   tags:
     - pgbouncer

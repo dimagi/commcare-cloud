@@ -57,7 +57,7 @@
 - name: Allow access to pgbouncer
   sudo: yes
   lineinfile:
-    dest: "{{ pg_bouncer_users }}"
+    dest: "{{ pgbouncer_users }}"
     state: present
     line: '"{{ localconfig.PG_USER }}" "{{ localconfig.PG_PASSWORD }}"'
   register: pgbouncer_config_updated
@@ -65,7 +65,7 @@
 - name: Tell pgbouncer about prototype DB
   sudo: yes
   lineinfile:
-    dest: "{{ pg_bouncer_ini }}"
+    dest: "{{ pgbouncer_ini }}"
     state: present
     line: '{{ localconfig.PG_DATABASE }} = host=localhost port=5432'
   register: pgbouncer_config_updated
