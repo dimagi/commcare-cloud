@@ -64,16 +64,23 @@ icds:
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
   celery_processes:
-    '*':
+    'celery0':
       main:
         concurrency: 8
-      background_queue:
-        concurrency: 4
       periodic:
         concurrency: 4
         server_whitelist: 10.247.24.19
       pillow_retry_queue:
         concurrency: 1
+      repeat_record_queue:
+        concurrency: 3
+      ucr_queue:
+        concurrency: 4
+      ucr_indicator_queue:
+        concurrency: 4
+    'celery1':
+      background_queue:
+        concurrency: 4
       reminder_case_update_queue:
         concurrency: 4
       reminder_queue:
@@ -84,14 +91,8 @@ icds:
         concurrency: 3
       sms_queue:
         concurrency: 8
-      ucr_queue:
-        concurrency: 4
-      ucr_indicator_queue:
-        concurrency: 4
       email_queue:
         concurrency: 2
-      repeat_record_queue:
-        concurrency: 3
       async_restore_queue:
         concurrency: 4
       flower: {}
