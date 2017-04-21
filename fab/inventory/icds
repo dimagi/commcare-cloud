@@ -34,7 +34,7 @@
 10.247.24.19 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [celery1]
-10.247.24.31 devices='["/dev/sdb"]' partitions='[]' datavol_device='/dev/mapper/consolidated-data' hostname='celery1'
+10.247.24.31 devices='["/dev/sdb"]' hostname='celery1'
 
 [pil0]
 10.247.24.20 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
