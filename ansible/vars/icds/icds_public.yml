@@ -2,6 +2,7 @@ SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
+internal_domain_name: 'internal-icds.commcarehq.org'
 tableau_server: 10.247.24.11:80
 
 TABLEAU_HOST: 'reports.icds-cas.gov.in'
@@ -68,13 +69,15 @@ postgres_config:
   shared_buffers: '512MB'
   max_stack_depth: '6MB'
   effective_cache_size: '8GB'
-  pgb_max_connections: 800
+  pgb_max_connections: 1500
   pgb_default_pool: 290
   pgb_reserve_pool: 5
   pgb_pool_timeout: 1
   pgb_pool_mode: transaction
 
 formplayer_db_name: formplayer
+
+nofile_limit: 65536
 
 postgresql_dbs:
   - django_alias: default
@@ -216,6 +219,10 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
+  - name: /adhaar_id_scanner_apk
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
 
 localsettings:
@@ -260,7 +267,7 @@ localsettings:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_SMTP_HOST: 'relay.nic.in'
+  EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
@@ -315,13 +322,6 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-ccs_record_cases_monthly'
-      - name: 'kafka-ucr-static-ccs_record_cases_monthly_tableau'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
             - 'static-ccs_record_cases_monthly_tableau'
       - name: 'kafka-ucr-static-child_cases_monthly'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -331,6 +331,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_cases_monthly'
+            - 'static-child_cases_monthly_tableau'
       - name: 'kafka-ucr-static-child_health_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -339,15 +340,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_health_cases'
-      - name: 'kafka-ucr-static-child_cases_monthly_tableau'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-child_cases_monthly_tableau'
-      - name: 'kafka-ucr-static-other-cases'
+      - name: 'kafka-ucr-static-household_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -355,8 +348,29 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-household_cases'
-            - 'static-person_cases'
+      - name: 'kafka-ucr-static-tasks_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
             - 'static-tasks_cases'
+      - name: 'kafka-ucr-static-person_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-person_cases'
+      - name: 'kafka-ucr-static-tech_issue_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
             - 'static-tech_issue_cases'
       - name: 'kafka-ucr-static-child_delivery_forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'

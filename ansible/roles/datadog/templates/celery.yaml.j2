@@ -1,4 +1,4 @@
 init_config:
 
 instances:
-  - flower_url: http://localhost:5555
+  - flower_url: "{{ localsettings.CELERY_FLOWER_URL }}"

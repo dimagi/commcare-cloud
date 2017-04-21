@@ -32,12 +32,15 @@
     path: "{{ datadog_custom_dir }}"
 
 - name: Pull datadog parsers
+  become: true
+  become_user: "{{ cchq_user }}"
+  vars:
+    ansible_ssh_pipelining: true
   git:
     repo: "{{ datadog_parsers_repo }}"
     dest: "{{ datadog_parsers_dest }}"
     accept_hostkey: yes
     update: yes
-  sudo_user: "{{ cchq_user }}"
   notify: restart datadog
 
 - include: integrations.yml

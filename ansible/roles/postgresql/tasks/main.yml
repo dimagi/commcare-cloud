@@ -62,22 +62,23 @@
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
 - name: PostgreSQL app configuration
-  sudo_user: postgres
-  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf"
+  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
   tags: postgresql_conf
   notify: Restart postgres
 
 - name: PostgreSQL access configuration
-  sudo_user: postgres
-  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf"
+  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
   notify: Reload postgres
 
 - name: start postgresql
-  sudo_user: postgres
+  become: true
   service: name=postgresql state=started
 
 - name: Create PostgreSQL users
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   postgresql_user:
     name: "{{ localsettings.PG_DATABASE_USER }}"
     password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
@@ -90,7 +91,10 @@
   with_items: "{{ postgresql_dbs }}"
 
 - name: Create PostgreSQL databases
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   postgresql_db:
     name: "{{ item.name }}"
     state: present
@@ -146,7 +150,10 @@
     - Restart postgres
 
 - name: Create plproxy extension
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   postgresql_ext:
     name: plproxy
     db: "{{item.name}}"
@@ -154,7 +161,10 @@
   with_items: "{{ postgresql_dbs }}"
 
 - name: Create pghashlib extension
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   postgresql_ext:
     name: hashlib
     db: "{{item.name}}"
@@ -162,7 +172,10 @@
   with_items: "{{ postgresql_dbs }}"
 
 - name: Make plproxy a trusted language
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   postgresql_lang:
     lang: plproxy
     trust: True
@@ -171,7 +184,10 @@
   with_items: "{{ postgresql_dbs }}"
 
 - name: Grant usage on plproxy FDW
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"

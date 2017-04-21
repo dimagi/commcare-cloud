@@ -14,10 +14,23 @@
     - {'var': 'HTTPS_PROXY', 'protocol': 'http'}
     - {'var': 'FTP_PROXY', 'protocol': 'http'}
 
+- name: Apt environment proxy
+  lineinfile:
+    dest: "/etc/apt/apt.conf"
+    line: 'Acquire::{{item.protocol}}::Proxy "http://{{http_proxy_address}}:{{http_proxy_port}}";'
+    regexp: "Acquire::{{item.protocol}}::Proxy"
+    create: yes
+    state: present
+  sudo: yes
+  with_items:
+    - {'protocol': 'http'}
+    - {'protocol': 'https'}
+    - {'protocol': 'ftp'}
+
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
-    line: "{{ item }}={{ groups['all']|join(',') }},relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
+    line: "{{ item }}={{ groups['all']|join(',') }},127.0.0.1,localhost,relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
     regexp: "{{item }}="
     create: yes
     state: present
@@ -32,16 +45,19 @@
     dest: "{{ item.home }}/.bowerrc"
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
-    - {'user': 'ansible', 'home': '/home/ansibale' }
+    - {'user': 'ansible', 'home': '/home/ansible' }
     - {'user': 'root', 'home': '/root' }
-    - {'user': '{{ cchq_user }}' , 'home': '{{ code_home }}'}
 
 - name: NPM proxy
   command: 'npm config set {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
@@ -58,6 +74,8 @@
   command: 'git config --global {{item.var}} {{item.protocol}}://{{http_proxy_address}}:{{http_proxy_port}}/'
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
@@ -71,6 +89,8 @@
   command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
   become: yes
   become_user: "{{item.user}}"
+  vars:
+    ansible_ssh_pipelining: true
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }

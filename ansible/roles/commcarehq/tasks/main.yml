@@ -51,10 +51,11 @@
 
     - name: install pip requirements
       become: true
-      with_items: commcarehq_requirements
+      with_items: "{{ commcarehq_requirements }}"
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
         virtualenv: "{{ virtualenv_source }}"
+        chdir: "{{ code_home }}"
       tags:
         - slow
       when: not testing|default(False)
@@ -95,5 +96,7 @@
     state: file
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+  with_items:
+    - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
   tags:
     - localsettings

@@ -56,6 +56,8 @@ apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.crt'
 # $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
 
+nofile_limit: 65536
+
 # Commtrack Certs
 commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.org.combined.crt'
 commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
@@ -178,6 +180,7 @@ localsettings:
   EMAIL_USE_TLS: yes
   FORMPLAYER_URL: "/formplayer"
   FULLSTORY_ID: "{{ localsettings_private.FULLSTORY_ID }}"
+  GREENHOUSE_API_KEY: "{{ localsettings_private.GREENHOUSE_API_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'www'

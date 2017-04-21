@@ -650,3 +650,7 @@ SENTRY_PROJECT_ID = '{{ localsettings.SENTRY_PROJECT_ID }}'
 SENTRY_QUERY_URL = '{{ localsettings.SENTRY_QUERY_URL }}'
 SENTRY_API_KEY = '{{ localsettings.SENTRY_API_KEY }}'
 {% endif %}
+
+{% if localsettings.get('GREENHOUSE_API_KEY') %}
+GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
+{% endif %}
