@@ -11,7 +11,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.24.16'
-pgbouncer_max_connections=1500
+pgbouncer_max_connections=2000
 
 [pg1]
 10.247.24.14
