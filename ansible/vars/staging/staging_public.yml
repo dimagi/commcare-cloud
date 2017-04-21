@@ -68,13 +68,12 @@ aws_region: 'us-east-1'
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgres_config:
-  max_connections: 20
-  pgb_max_connections: 100
-  pgb_default_pool: 15
-  pgb_reserve_pool: 4
-  pgb_pool_timeout: 2
-  pgb_pool_mode: transaction
+postgresql_max_connections: 20
+pgbouncer_max_connections: 100
+pgbouncer_default_pool: 15
+pgbouncer_reserve_pool: 4
+pgbouncer_pool_timeout: 2
+pgbouncer_pool_mode: transaction
 
 formplayer_db_name: formplayer
 

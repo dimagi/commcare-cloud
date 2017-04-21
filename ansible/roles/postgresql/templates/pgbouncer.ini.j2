@@ -64,7 +64,7 @@ admin_users = postgres,{{ localsettings.PG_DATABASE_USER }},{{ postgres_users.de
 ;   session      - after client disconnects
 ;   transaction  - after transaction finishes
 ;   statement    - after statement finishes
-pool_mode = {{ postgres_config.pgb_pool_mode }}
+pool_mode = {{ pgbouncer_pool_mode }}
 
 ;
 ; Query for cleaning connection immediately after releasing from client.
@@ -79,7 +79,7 @@ pool_mode = {{ postgres_config.pgb_pool_mode }}
 ;
 ; Empty if transaction pooling is in use.
 ;
-server_reset_query = {% if postgres_config.pgb_pool_mode == 'session' %}DISCARD ALL{% endif %}
+server_reset_query = {% if pgbouncer_pool_mode == 'session' %}DISCARD ALL{% endif %}
 
 ;
 ; Comma-separated list of parameters to ignore when given
@@ -104,18 +104,18 @@ ignore_startup_parameters = extra_float_digits, geqo
 ;;;
 
 ; total number of clients that can connect
-max_client_conn = {{ postgres_config.pgb_max_connections }}
+max_client_conn = {{ pgbouncer_max_connections }}
 
 ; default pool size.  20 is good number when transaction pooling
 ; is in use, in session pooling it needs to be the number of
 ; max clients you want to handle at any moment
-default_pool_size = {{ postgres_config.pgb_default_pool }}
+default_pool_size = {{ pgbouncer_default_pool }}
 
 ; how many additional connection to allow in case of trouble
-reserve_pool_size = {{ postgres_config.pgb_reserve_pool }}
+reserve_pool_size = {{ pgbouncer_reserve_pool }}
 
 ; if a clients needs to wait more than this many seconds, use reserve pool
-reserve_pool_timeout = {{ postgres_config.pgb_pool_timeout }}
+reserve_pool_timeout = {{ pgbouncer_pool_timeout }}
 
 ; log if client connects or server connection is made
 log_connections = 0

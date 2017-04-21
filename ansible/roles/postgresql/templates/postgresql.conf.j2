@@ -65,7 +65,7 @@ listen_addresses = '*'      # what IP address(es) to listen on;
                     # defaults to 'localhost', '*' = all
                     # (change requires restart)
 port = {{ postgresql_port }}             # (change requires restart)
-max_connections = {{ postgres_config.max_connections }}           # (change requires restart)
+max_connections = {{ postgresql_max_connections }}           # (change requires restart)
 # Note:  Increasing max_connections costs ~400 bytes of shared memory per
 # connection slot, plus lock space (see max_locks_per_transaction).
 #superuser_reserved_connections = 3 # (change requires restart)
@@ -115,8 +115,8 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}             
 # - Memory -
 
 #shared_buffers = 1024MB           # min 128kB
-{% if 'shared_buffers' in postgres_config %}shared_buffers = {{ postgres_config.shared_buffers }}
-{% endif %}
+shared_buffers = {{ postgresql_shared_buffers }}
+
                     # (change requires restart)
 #temp_buffers = 8MB         # min 800kB
 #max_prepared_transactions = 0      # zero disables the feature
@@ -126,13 +126,11 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}             
 # It is not advisable to set max_prepared_transactions nonzero unless you
 # actively intend to use prepared transactions.
 #work_mem = 1MB             # min 64kB
-{% if 'work_mem' in postgres_config %}work_mem = {{ postgres_config.work_mem }}
-{% endif %}
+work_mem = {{ postgresql_work_mem }}
 
 #maintenance_work_mem = 16MB        # min 1MB
 #max_stack_depth = 2MB          # min 100kB
-{% if 'max_stack_depth' in postgres_config %}max_stack_depth = {{ postgres_config.max_stack_depth }}
-{% endif %}
+max_stack_depth = {{ postgresql_max_stack_depth }}
 
 # - Kernel Resource Usage -
 
@@ -268,8 +266,7 @@ hot_standby = on          # "on" allows queries during recovery
 #cpu_index_tuple_cost = 0.005       # same scale as above
 #cpu_operator_cost = 0.0025     # same scale as above
 #effective_cache_size = 128MB
-{% if 'effective_cache_size' in postgres_config %}effective_cache_size = {{ postgres_config.effective_cache_size }}
-{% endif %}
+effective_cache_size = {{ postgresql_effective_cache_size }}
 
 # - Genetic Query Optimizer -
 
