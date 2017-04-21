@@ -338,7 +338,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_health_cases'
-      - name: 'kafka-ucr-static-hardware-cases'
+      - name: 'kafka-ucr-static-hardware_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
