@@ -21,11 +21,20 @@
 [es1]
 10.247.24.17 elasticsearch_node_name=es1 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]' datavol_device='/dev/mapper/consolidated-data' hot_standby_master='10.247.24.17'
 
+[es2]
+10.247.24.28 elasticsearch_node_name=es2 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es2'
+
+[es3]
+10.247.24.29 elasticsearch_node_name=es3 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es3' hot_standby_master='10.247.24.23'
+
 [couch0]
 10.247.24.18 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]' partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]' datavol_device='/dev/mapper/consolidated-data'
 
 [celery0]
 10.247.24.19 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
+
+[celery1]
+10.247.24.31 devices='["/dev/sdb"]' partitions='[]' datavol_device='/dev/mapper/consolidated-data'
 
 [pil0]
 10.247.24.20 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data'
@@ -54,6 +63,9 @@
 [pg2]
 10.247.24.22 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='pg2'
 
+[pg3]
+10.247.24.23 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='pg3' hot_standby_server='10.247.24.29'
+
 [proxy:children]
 web0
 
@@ -73,6 +85,7 @@ kafka0
 pg0
 pg1
 pg2
+pg3
 
 [couchdb:children]
 couch0
@@ -104,6 +117,8 @@ pil0
 [elasticsearch:children]
 es0
 es1
+es2
+es3
 
 [shared_dir_host:children]
 kafka0
@@ -114,6 +129,7 @@ pg1
 es0
 es1
 pg2
+pg3
 
 [riakcs:vars]
 datavol_device=/dev/sdb
@@ -141,6 +157,9 @@ web3
 web4
 web5
 pg2
+pg3
+es2
+es3
 
 [zabbix:children]
 kafka0
@@ -164,6 +183,10 @@ web3
 web4
 web5
 pg2
+pg3
+es2
+es3
+celery1
 
 [control:children]
 pil0
