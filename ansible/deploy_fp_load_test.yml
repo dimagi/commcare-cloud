@@ -1,0 +1,7 @@
+---
+- name: FP Load testing runner
+  hosts:
+    - load_test_runner
+  sudo: yes
+  roles:
+    - {role: fp_load_test, tags: 'fp_load_test'}
