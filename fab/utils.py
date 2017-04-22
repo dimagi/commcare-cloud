@@ -36,17 +36,9 @@ def execute_with_timing(fn, *args, **kwargs):
 
 
 def get_pillow_env_config(environment):
-    pillow_conf = {}
-    pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
-    if os.path.exists(pillow_file):
-        with open(pillow_file, 'r+') as f:
-            yml = yaml.load(f)
-            if yml:
-                pillow_conf.update(yml)
-    else:
-        return None
-
-    return pillow_conf
+    pillows = env.pillows.get('*', {})
+    pillows.update(env.pillows.get(environment, {}))
+    return pillows
 
 
 class DeployMetadata(object):
