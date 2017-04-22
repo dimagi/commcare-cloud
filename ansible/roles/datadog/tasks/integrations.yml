@@ -6,6 +6,8 @@
     force: yes
   notify: restart datadog
   when: datadog_integration_cloudant
+  tags:
+    - datadog_integrations
 
 - name: Install celery check
   get_url:
@@ -15,6 +17,8 @@
     force: yes
   notify: restart datadog
   when: inventory_hostname == groups.celery[0]
+  tags:
+    - datadog_integrations
 
 - name: add datadog integration configs
   template: src="{{ item.split('_', 2)[-1] }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml"
