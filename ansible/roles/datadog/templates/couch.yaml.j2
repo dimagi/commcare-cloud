@@ -1,0 +1,4 @@
+init_config:
+
+instances:
+    - server: "http{% if localsettings.COUCH_HTTPS %}s{% endif %}://{{ localsettings.COUCH_SERVER_ROOT }}:{{ localsettings.COUCH_PORT }}"

@@ -37,3 +37,4 @@
     - datadog_integration_zk
     - datadog_integration_jmx
     - datadog_integration_celery
+    - datadog_integration_couch
