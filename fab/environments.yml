@@ -64,9 +64,13 @@ softlayer:
         num_processes: 1
       BlobDeletionPillow:
         num_processes: 1
-      CaseToElasticsearchPillow:
+      CacheInvalidatePillow:
+        num_processes: 1
+      CareBiharFluffPillow:
         num_processes: 1
       CaseSearchToElasticsearchPillow:
+        num_processes: 1
+      CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
         num_processes: 1
@@ -78,11 +82,11 @@ softlayer:
         num_processes: 1
       GroupToUserPillow:
         num_processes: 1
-      KafkaDomainPillow:
-        num_processes: 1
       kafka-ucr-main:
         num_processes: 1
       kafka-ucr-static:
+        num_processes: 1
+      KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
         num_processes: 1
@@ -94,17 +98,13 @@ softlayer:
         num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
-      UserPillow:
+      UserCacheInvalidatePillow:
         num_processes: 1
       UserGroupsDbKafkaPillow:
         num_processes: 1
+      UserPillow:
+        num_processes: 1
       XFormToElasticsearchPillow:
-        num_processes: 1
-      CacheInvalidatePillow:
-        num_processes: 1
-      UserCacheInvalidatePillow:
-        num_processes: 1
-      CareBiharFluffPillow:
         num_processes: 1
 
 
@@ -157,9 +157,11 @@ icds:
         num_processes: 1
       BlobDeletionPillow:
         num_processes: 1
-      CaseToElasticsearchPillow:
+      CacheInvalidatePillow:
         num_processes: 1
       CaseSearchToElasticsearchPillow:
+        num_processes: 1
+      CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
         num_processes: 1
@@ -171,25 +173,7 @@ icds:
         num_processes: 1
       GroupToUserPillow:
         num_processes: 1
-      KafkaDomainPillow:
-        num_processes: 1
       kafka-ucr-main:
-        num_processes: 1
-      LedgerToElasticsearchPillow:
-        num_processes: 1
-      SqlSMSPillow:
-        num_processes: 1
-      UnknownUsersPillow:
-        num_processes: 1
-      UserPillow:
-        num_processes: 1
-      UserGroupsDbKafkaPillow:
-        num_processes: 1
-      XFormToElasticsearchPillow:
-        num_processes: 1
-      CacheInvalidatePillow:
-        num_processes: 1
-      UserCacheInvalidatePillow:
         num_processes: 1
       kafka-ucr-static-awc-location:
         num_processes: 1
@@ -199,17 +183,9 @@ icds:
         num_processes: 1
       kafka-ucr-static-child_cases_monthly:
         num_processes: 1
-      kafka-ucr-static-child_health_cases:
-        num_processes: 1
-      kafka-ucr-static-household_cases:
-        num_processes: 1
-      kafka-ucr-static-tasks_cases:
-        num_processes: 1
-      kafka-ucr-static-person_cases:
-        num_processes: 1
-      kafka-ucr-static-tech_issue_cases:
-        num_processes: 1
       kafka-ucr-static-child_delivery_forms:
+        num_processes: 1
+      kafka-ucr-static-child_health_cases:
         num_processes: 1
       kafka-ucr-static-daily_feeding_forms:
         num_processes: 1
@@ -217,9 +193,19 @@ icds:
         num_processes: 1
       kafka-ucr-static-home_visit_forms:
         num_processes: 1
+      kafka-ucr-static-household_cases:
+        num_processes: 1
       kafka-ucr-static-infrastructure_form:
         num_processes: 1
       kafka-ucr-static-ls_home_visit_forms_filled:
+        num_processes: 1
+      kafka-ucr-static-other-forms:
+        num_processes: 1
+      kafka-ucr-static-person_cases:
+        num_processes: 1
+      kafka-ucr-static-tasks_cases:
+        num_processes: 1
+      kafka-ucr-static-tech_issue_cases:
         num_processes: 1
       kafka-ucr-static-thr_forms:
         num_processes: 1
@@ -227,7 +213,21 @@ icds:
         num_processes: 1
       kafka-ucr-static-vhnd_form:
         num_processes: 1
-      kafka-ucr-static-other-forms:
+      KafkaDomainPillow:
+        num_processes: 1
+      LedgerToElasticsearchPillow:
+        num_processes: 1
+      SqlSMSPillow:
+        num_processes: 1
+      UnknownUsersPillow:
+        num_processes: 1
+      UserCacheInvalidatePillow:
+        num_processes: 1
+      UserGroupsDbKafkaPillow:
+        num_processes: 1
+      UserPillow:
+        num_processes: 1
+      XFormToElasticsearchPillow:
         num_processes: 1
 
 
@@ -283,21 +283,27 @@ production:
         num_processes: 1
       BlobDeletionPillow:
         num_processes: 1
-      CaseToElasticsearchPillow:
+      CacheInvalidatePillow:
         num_processes: 1
       CaseSearchToElasticsearchPillow:
+        num_processes: 1
+      CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
         num_processes: 1
       DomainDbKafkaPillow:
         num_processes: 1
+      FarmerRecordFluffPillow:
+        num_processes: 1
       FormSubmissionMetadataTrackerPillow:
+        num_processes: 1
+      GeographyFluffPillow:
         num_processes: 1
       GroupPillow:
         num_processes: 1
       GroupToUserPillow:
         num_processes: 1
-      KafkaDomainPillow:
+      IntraHealthFormFluffPillow:
         num_processes: 1
       kafka-ucr-main-08:
         num_processes: 1
@@ -305,31 +311,9 @@ production:
         num_processes: 1
       kafka-ucr-static:
         num_processes: 1
+      KafkaDomainPillow:
+        num_processes: 1
       LedgerToElasticsearchPillow:
-        num_processes: 1
-      ReportCaseToElasticsearchPillow:
-        num_processes: 1
-      ReportXFormToElasticsearchPillow:
-        num_processes: 1
-      SqlSMSPillow:
-        num_processes: 1
-      UnknownUsersPillow:
-        num_processes: 1
-      UserPillow:
-        num_processes: 1
-      UserGroupsDbKafkaPillow:
-        num_processes: 1
-      XFormToElasticsearchPillow:
-        num_processes: 1
-      CacheInvalidatePillow:
-        num_processes: 1
-      UserCacheInvalidatePillow:
-        num_processes: 1
-      FarmerRecordFluffPillow:
-        num_processes: 1
-      GeographyFluffPillow:
-        num_processes: 1
-      IntraHealthFormFluffPillow:
         num_processes: 1
       M4ChangeFormFluffPillow:
         num_processes: 1
@@ -337,13 +321,29 @@ production:
         num_processes: 1
       RecouvrementFluffPillow:
         num_processes: 1
+      ReportCaseToElasticsearchPillow:
+        num_processes: 1
+      ReportXFormToElasticsearchPillow:
+        num_processes: 1
+      SqlSMSPillow:
+        num_processes: 1
       UCLAPatientFluffPillow:
+        num_processes: 1
+      UnknownUsersPillow:
+        num_processes: 1
+      UserCacheInvalidatePillow:
+        num_processes: 1
+      UserGroupsDbKafkaPillow:
+        num_processes: 1
+      UserPillow:
         num_processes: 1
       WorldVisionChildFluffPillow:
         num_processes: 1
       WorldVisionHierarchyFluffPillow:
         num_processes: 1
       WorldVisionMotherFluffPillow:
+        num_processes: 1
+      XFormToElasticsearchPillow:
         num_processes: 1
 
 staging:
@@ -376,9 +376,11 @@ staging:
         num_processes: 1
       BlobDeletionPillow:
         num_processes: 1
-      CaseToElasticsearchPillow:
+      CacheInvalidatePillow:
         num_processes: 1
       CaseSearchToElasticsearchPillow:
+        num_processes: 1
+      CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
         num_processes: 1
@@ -390,11 +392,11 @@ staging:
         num_processes: 1
       GroupToUserPillow:
         num_processes: 1
-      KafkaDomainPillow:
-        num_processes: 1
       kafka-ucr-main:
         num_processes: 1
       kafka-ucr-static:
+        num_processes: 1
+      KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
         num_processes: 1
@@ -406,15 +408,13 @@ staging:
         num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
-      UserPillow:
+      UserCacheInvalidatePillow:
         num_processes: 1
       UserGroupsDbKafkaPillow:
         num_processes: 1
+      UserPillow:
+        num_processes: 1
       XFormToElasticsearchPillow:
-        num_processes: 1
-      CacheInvalidatePillow:
-        num_processes: 1
-      UserCacheInvalidatePillow:
         num_processes: 1
 
 swiss:
@@ -465,6 +465,8 @@ swiss:
         num_processes: 1
       BlobDeletionPillow:
         num_processes: 1
+      CacheInvalidatePillow:
+        num_processes: 1
       CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
@@ -483,13 +485,11 @@ swiss:
         num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
-      UserPillow:
+      UserCacheInvalidatePillow:
         num_processes: 1
       UserGroupsDbKafkaPillow:
         num_processes: 1
+      UserPillow:
+        num_processes: 1
       XFormToElasticsearchPillow:
-        num_processes: 1
-      CacheInvalidatePillow:
-        num_processes: 1
-      UserCacheInvalidatePillow:
         num_processes: 1
