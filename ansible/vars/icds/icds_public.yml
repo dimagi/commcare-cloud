@@ -87,23 +87,23 @@ postgresql_dbs:
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p4
     name: commcarehq_p4
     shards: [309, 411]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p5
     name: commcarehq_p5
     shards: [412, 514]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p6
     name: commcarehq_p6
     shards: [515, 617]
