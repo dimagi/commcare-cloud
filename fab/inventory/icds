@@ -60,6 +60,12 @@ partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/s
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.17'
 
+[es2]
+10.247.24.28 elasticsearch_node_name=es2 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es2'
+
+[es3]
+10.247.24.29 elasticsearch_node_name=es3 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es3' hot_standby_master='10.247.24.23'
+
 [couch0]
 10.247.24.18
 
@@ -76,6 +82,9 @@ devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 
+[celery1]
+10.247.24.31 devices='["/dev/sdb"]' hostname='celery1'
+
 [pil0]
 10.247.24.20
 
@@ -83,6 +92,9 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+
+[pil1]
+10.247.24.30 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='pillow1'
 
 [kafka0]
 10.247.24.21
@@ -141,6 +153,9 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='pg2'
 pgbouncer_max_connections=3500
 
+[pg3]
+10.247.24.23 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='pg3' hot_standby_server='10.247.24.29'
+
 [proxy:children]
 web0
 
@@ -160,6 +175,7 @@ kafka0
 pg0
 pg1
 pg2
+pg3
 
 [couchdb:children]
 couch0
@@ -178,12 +194,13 @@ kafka0
 
 [celery:children]
 celery0
+celery1
 
 [pillowtop:children]
 pil0
 
 [touchforms:children]
-pil0
+pil1
 
 [formplayer:children]
 pil0
@@ -191,6 +208,8 @@ pil0
 [elasticsearch:children]
 es0
 es1
+es2
+es3
 
 [shared_dir_host:children]
 kafka0
@@ -200,7 +219,10 @@ pg0
 pg1
 es0
 es1
+es2
+es3
 pg2
+pg3
 
 [riakcs:vars]
 datavol_device=/dev/sdb
@@ -222,12 +244,16 @@ es1
 couch0
 celery0
 pil0
+pil1
 kafka0
 web2
 web3
 web4
 web5
 pg2
+pg3
+es2
+es3
 
 [zabbix:children]
 kafka0
@@ -245,12 +271,17 @@ es1
 couch0
 celery0
 pil0
+pil1
 kafka0
 web2
 web3
 web4
 web5
 pg2
+pg3
+es2
+es3
+celery1
 
 [control:children]
 pil0
