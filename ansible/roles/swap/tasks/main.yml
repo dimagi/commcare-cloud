@@ -8,7 +8,7 @@
   register: swapfile
   changed_when: false
   failed_when: false
-  always_run: true
+  check_mode: no
   tags: swap
 
 - name: Create swap space

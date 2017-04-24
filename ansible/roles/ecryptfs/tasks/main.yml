@@ -7,7 +7,7 @@
   when: datavol_device is defined and ansible_hostname not in groups['lvm']
   changed_when: false
   failed_when: false
-  always_run: true
+  check_mode: no
 
 - name: Create partition on block storage volume
   sudo: yes
@@ -44,7 +44,7 @@
   register: mtab_contents
   failed_when: false
   changed_when: false
-  always_run: true
+  check_mode: no
   tags:
     - mount-ecryptfs
 
