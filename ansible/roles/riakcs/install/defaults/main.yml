@@ -1,4 +1,4 @@
-riak_version: 2.2.1
+riak_version: 2.1.1
 riak_package_release: 1
 riak_package: "riak={{ riak_version }}-{{ riak_package_release }}"
 riak_script_url: https://packagecloud.io/install/repositories/basho/riak/script.deb.sh
