@@ -22,3 +22,8 @@
   sudo: yes
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
+
+- name: Configure swap
+  hosts: all
+  roles:
+    - {role: swap}
