@@ -109,6 +109,7 @@ s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defi
 
 datadog_integration_celery: false
 datadog_integration_cloudant: false
+datadog_integration_couch: false
 datadog_integration_elastic: false
 datadog_integration_gunicorn: false
 datadog_integration_kafka: false

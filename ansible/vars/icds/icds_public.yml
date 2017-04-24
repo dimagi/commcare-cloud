@@ -36,7 +36,7 @@ active_sites:
   riakcs: True
   cas_ssl: True
 
-riak_ring_size: 128
+riak_ring_size: 64
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
@@ -48,7 +48,7 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'icds-hqes-1.x'
+elasticsearch_cluster_name: 'prodhqes-1.x'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -63,17 +63,15 @@ postgres_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgres_config:
-  max_connections: 300
-  work_mem: '8MB'
-  shared_buffers: '512MB'
-  max_stack_depth: '6MB'
-  effective_cache_size: '8GB'
-  pgb_max_connections: 1500
-  pgb_default_pool: 290
-  pgb_reserve_pool: 5
-  pgb_pool_timeout: 1
-  pgb_pool_mode: transaction
+postgresql_max_connections: 400
+postgresql_work_mem: '8MB'
+postgresql_shared_buffers: '512MB'
+postgresql_max_stack_depth: '6MB'
+postgresql_effective_cache_size: '8GB'
+pgbouncer_default_pool: 390
+pgbouncer_reserve_pool: 5
+pgbouncer_pool_timeout: 1
+pgbouncer_pool_mode: transaction
 
 formplayer_db_name: formplayer
 
@@ -175,7 +173,7 @@ etc_host_lines:
   - '10.247.24.13		www.icds-cas.gov.in'
 etc_host_lines_removed: ['etc_host_lines']
 
-http_proxy_address: '10.247.63.132'
+http_proxy_address: '10.247.24.16'
 http_proxy_port: '3128'
 
 site_locations:

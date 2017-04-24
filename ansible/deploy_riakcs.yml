@@ -15,7 +15,7 @@
   tasks:
     - add_host: name="{{ riakcs_control }}" groups=riakcs_control_host
       when: riakcs_control_host is undefined
-      always_run: true
+      check_mode: no
       tags: localsettings
 
 - name: Register riak conf override fact
@@ -36,7 +36,7 @@
       register: riak_conf_file
       changed_when: false
       failed_when: false
-      always_run: true
+      check_mode: no
     - set_fact: _force_riak_config="{{ 'yes'
         if inventory_hostname in (force_riak_config | default('')).split(',')
             or force_riak_config | default('') == 'all'

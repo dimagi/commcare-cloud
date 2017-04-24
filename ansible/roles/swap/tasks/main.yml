@@ -8,29 +8,29 @@
   register: swapfile
   changed_when: false
   failed_when: false
-  always_run: true
+  check_mode: no
   tags: swap
 
 - name: Create swap space
-  sudo: yes
+  become: true
   command: fallocate -l {{ swap_size }} /swapfile
   when: swap_size is defined and not swapfile.stat.exists
   tags: swap
 
 - name: Set swap file mode
-  sudo: yes
+  become: true
   file: path=/swapfile state=file mode=600
   when: swap_size is defined and not swapfile.stat.exists
   tags: swap
 
 - name: Make swap
-  sudo: yes
+  become: true
   command: mkswap /swapfile
   when: swap_size is defined and not swapfile.stat.exists
   tags: swap
 
 - name: Add swap to fstab
-  sudo: yes
+  become: true
   lineinfile:
     dest: /etc/fstab
     regexp: "^/swapfile"
@@ -40,21 +40,23 @@
   tags: swap
 
 - name: Turn on swap
-  sudo: yes
+  become: true
   command: swapon -a
   when: swap_size is defined and not swapfile.stat.exists
   tags: swap
 
-- name: Set swapiness
-  sudo: yes
-  shell: echo 0 | sudo tee /proc/sys/vm/swappiness
-  when: swap_size is defined and not swapfile.stat.exists
+- name: Set swappiness
+  sysctl:
+    name: vm.swappiness
+    value: 0
+    state: present
+  become: true
   tags: swap
 
 # below are commands to remove swap if swap_size is removed from the config
 
 - name: Remove swap from fstab
-  sudo: yes
+  become: true
   lineinfile:
     dest: /etc/fstab
     regexp: "^/swapfile "
@@ -63,13 +65,13 @@
   tags: swap
 
 - name: Turn swap off
-  sudo: yes
+  become: true
   shell: swapoff -a
   when: swap_size is not defined and swapfile.stat.exists
   tags: swap
 
 - name: Remove swap file
-  sudo: yes
+  become: true
   file: path=/swapfile state=absent
   when: swap_size is not defined and swapfile.stat.exists
   tags: swap

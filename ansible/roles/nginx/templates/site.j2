@@ -76,7 +76,7 @@ server {
       {% endfor %}
     {% endif %}
     {% for limit in location.get('limit_reqs', []) %}
-        limit_req zone={{ limit.zone_name }}{% if limit.get('burst') %} burst={{limit.burst}}{% endif %}{% if limit.get('nodelay') %} nodelay{% endif %};
+        limit_req zone={{ limit.zone_name }} burst={{limit.burst}}{% if limit.get('nodelay') %} nodelay{% endif %};
     {% endfor %}
   }
 {% endfor %}

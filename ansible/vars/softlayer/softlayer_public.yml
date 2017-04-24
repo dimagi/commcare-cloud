@@ -3,7 +3,7 @@ CAS_SITE_HOST: 'cas.commcarehq.org'
 ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
 J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
 deploy_env: softlayer
-tableau_server: 'http://tableau2.internal.commcarehq.org'
+tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 
 active_sites:
@@ -84,13 +84,12 @@ nofile_limit: 65536
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgres_config:
-  max_connections: 300
-  pgb_max_connections: 800
-  pgb_default_pool: 290
-  pgb_reserve_pool: 5
-  pgb_pool_timeout: 1
-  pgb_pool_mode: transaction
+postgresql_max_connections: 300
+pgbouncer_max_connections: 800
+pgbouncer_default_pool: 290
+pgbouncer_reserve_pool: 5
+pgbouncer_pool_timeout: 1
+pgbouncer_pool_mode: transaction
 
 formplayer_db_name: formplayer
 

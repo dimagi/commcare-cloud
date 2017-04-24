@@ -47,6 +47,10 @@
 - name: Configure Kafka server
   template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
 
+- name: Copies kafka log4j.properties
+  copy: src=log4j.properties dest=/opt/kafka/config owner=root group=root mode=644
+  tags: log4j
+
 - name: Install Kafka init script
   template: src=kafka-server.j2 dest=/etc/init.d/kafka-server mode=0755
 
