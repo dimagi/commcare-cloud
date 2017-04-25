@@ -83,7 +83,7 @@
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
-        - "{{ riak_data_root_blocks }}"
+        - "{{ riak_data_root_bitcask }}"
       when: _force_riak_config | bool
 
 - name: Join Riak [CS] nodes to cluster
