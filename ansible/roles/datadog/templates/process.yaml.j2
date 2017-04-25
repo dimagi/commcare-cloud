@@ -8,7 +8,29 @@ instances:
     search_string: ['celeryd']
     ignore_denied_access: True
 
-  - name: celery_main_queue
-    search_string: ['org_main']
+  - name: postgres
+    search_string: ['postgres']
+
+  - name: riak
     exact_match: False
-    ignore_denied_access: True
+    search_string: ['riak']
+
+  - name: gunicorn
+    exact_match: False
+    search_string: ['gunicorn']
+
+  - name: redis
+    exact_match: False
+    search_string: ['redis']
+
+  - name: elasticsearch
+    exact_match: False
+    search_string: ['elasticsearch']
+
+  - name: kafka
+    exact_match: False
+    search_string: ['kafka']
+
+  - name: pillowtop
+    exact_match: False
+    search_string: ['ptop']
