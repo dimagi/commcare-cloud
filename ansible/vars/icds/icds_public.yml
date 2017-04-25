@@ -490,3 +490,10 @@ localsettings:
     notify:
       handlers:
         - 'sentry'
+      level: 'ERROR'
+      propagate: True
+    django:
+      handlers:
+        - 'sentry'
+      level: 'ERROR'
+      propagate: True
