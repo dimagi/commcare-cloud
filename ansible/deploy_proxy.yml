@@ -66,7 +66,7 @@
           path: "{{ log_home }}/*.log"
           options:
             - monthly
-            - size 1G
+            - size 750M
             - rotate 14
             - missingok
             - compress
