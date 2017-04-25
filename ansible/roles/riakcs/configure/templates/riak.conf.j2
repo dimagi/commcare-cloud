@@ -449,7 +449,10 @@ riak_control.auth.mode = off
 ## 
 ## Acceptable values:
 ##   - an integer
-leveldb.maximum_memory.percent = 70
+##
+## Seems like the multi backend is allocating this percentage for each of
+## be_default and be_blocks when using leveldb for both backends.
+leveldb.maximum_memory.percent = 40
 
 ## To enable Search set this 'on'.
 ## 
