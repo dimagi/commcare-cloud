@@ -38,6 +38,7 @@ run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: False
 ENABLE_PASSWORD_HASHING: True
+ENABLE_USED_PASSWORDS_CHECK: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
