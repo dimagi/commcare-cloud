@@ -96,7 +96,7 @@
   uri:
     url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
     method: PUT
-    status_code: 201
+    status_code: 200
     body: '"{{ item.password }}"'
     body_format: raw
   when: update_config|changed and ((item.host == inventory_hostname) or is_monolith|bool)
