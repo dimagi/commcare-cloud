@@ -89,7 +89,7 @@
     url: "http{% if item.item.is_https %}s{% endif %}://{{ item.item.host }}:{{ item.item.port }}/{{ item.item.name }}"
     method: PUT
     status_code: 201
-  when: item.status == 404
+  when: not item.skipped|default(false) and item.status == 404
   with_items: "{{ couch_response.results }}"
 
 - name: Set CouchDB username and password
@@ -97,7 +97,7 @@
     url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
     method: PUT
     status_code: 201
-    body: '"{{ item.value.password }}"'
+    body: '"{{ item.password }}"'
     body_format: raw
+  when: update_config|changed and ((item.host == inventory_hostname) or is_monolith|bool)
   with_items: "{{ couch_dbs.values() }}"
-  when: update_config|changed
