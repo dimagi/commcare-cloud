@@ -55,7 +55,10 @@
   user: name=couchdb createhome=no password=no state=present
 
 - name: Apply CouchDB config
-  template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
+  template:
+    src: local.ini.j2
+    dest: /usr/local/etc/couchdb/local.ini
+  with_items: "{{ groups['couchdb'] }}"
   register: update_config
 
 - name: CouchDB ownership permissions
