@@ -1,5 +1,6 @@
 SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
+ALTERNATE_FORMPLAYER_HQ_HOST: "{{ CAS_SITE_HOST }}"
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 internal_domain_name: 'internal-icds.commcarehq.org'
