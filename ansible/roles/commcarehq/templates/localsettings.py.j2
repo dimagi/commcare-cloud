@@ -658,9 +658,9 @@ GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
 
 {% if localsettings.get('ENABLE_PASSWORD_HASHING') %}
-ENABLE_PASSWORD_HASHING = '{{ localsettings.ENABLE_PASSWORD_HASHING }}'
+ENABLE_PASSWORD_HASHING = True
 {% endif %}
 
 {% if localsettings.get('ENABLE_USED_PASSWORDS_CHECK') %}
-ENABLE_USED_PASSWORDS_CHECK = '{{ localsettings.ENABLE_USED_PASSWORDS_CHECK }}'
+ENABLE_USED_PASSWORDS_CHECK = True
 {% endif %}
