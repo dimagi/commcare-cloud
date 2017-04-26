@@ -78,19 +78,26 @@
 
 - name: Check CouchDB database
   uri:
-    url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
+    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/{{ item.name }}"
+    status_code: 200, 404
   register: couch_response
+  when: (item.host == inventory_hostname) or is_monolith|bool
+  with_items: "{{ couch_dbs.values() }}"
 
 - name: Add CouchDB database
   uri:
-    url: "{{ couchdb_base_url }}/{{ localsettings.COUCH_DATABASE_NAME }}"
+    url: "http{% if item.item.is_https %}s{% endif %}://{{ item.item.host }}:{{ item.item.port }}/{{ item.item.name }}"
     method: PUT
-  when: couch_response.status == 404
+    status_code: 201
+  when: item.status == 404
+  with_items: "{{ couch_response.results }}"
 
 - name: Set CouchDB username and password
   uri:
-    url: "{{ couchdb_base_url }}/_config/admins/{{ localsettings.COUCH_USERNAME }}"
+    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
     method: PUT
-    body: '"{{ localsettings.COUCH_PASSWORD }}"'
+    status_code: 201
+    body: '"{{ item.value.password }}"'
     body_format: raw
+  with_items: "{{ couch_dbs.values() }}"
   when: update_config|changed

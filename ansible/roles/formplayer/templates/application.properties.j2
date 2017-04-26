@@ -5,14 +5,14 @@ user.suffix=commcarehq.org
 logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
 sqlite.dataDir={{ formplayer_data_dir }}/
 
-couch.username={{ localsettings.COUCH_USERNAME }}
-couch.password={{ localsettings.COUCH_PASSWORD }}
+couch.username={{ couch_dbs.default.username }}
+couch.password={{ couch_dbs.default.password }}
 // Note: line break after setting is necessary because jinja eats the newline
-couch.protocol={% if localsettings.get('COUCH_HTTPS') %}https{% else %}http{% endif %}
+couch.protocol={% if couch_dbs.default.is_https %}https{% else %}http{% endif %}
 
-couch.host={{ localsettings.COUCH_SERVER_ROOT }}
-couch.port={{ localsettings.COUCH_PORT }}
-couch.databaseName={{ localsettings.COUCH_DATABASE_NAME }}
+couch.host={{ couch_dbs.default.host }}
+couch.port={{ couch_dbs.default.port }}
+couch.databaseName={{ couch_dbs.default.name }}
 
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
