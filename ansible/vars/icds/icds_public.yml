@@ -232,6 +232,13 @@ couch_dbs:
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
+  users:
+    host: 10.247.24.30
+    port: 5984
+    name: commcarehq__users
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
 
 localsettings:
   ALLOWED_HOSTS:
