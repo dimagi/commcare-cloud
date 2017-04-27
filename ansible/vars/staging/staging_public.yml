@@ -114,6 +114,16 @@ ufw_private_interface: eth1
 etc_host_lines: []
 etc_host_lines_removed: []
 
+
+couch_dbs:
+  default:
+    host: commcarehq.cloudant.com
+    port: 443
+    name: staging_commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: True
+
 localsettings:
   ALLOWED_HOSTS:
     - staging.commcarehq.org
@@ -139,12 +149,8 @@ localsettings:
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: yes
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PORT: 443
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles - Staging'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"

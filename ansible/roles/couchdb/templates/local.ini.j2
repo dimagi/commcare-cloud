@@ -15,7 +15,7 @@ view_index_dir = {{ couch_data_dir }}
 
 [httpd]
 port = 5984
-bind_address = {{ groups['couchdb'][0] }}
+bind_address = {{ inventory_hostname|ipaddr }}
 ; Options for the MochiWeb HTTP server.
 ;server_options = [{backlog, 128}, {acceptor_pool_size, 16}]
 ; For more socket options, consult Erlang's module 'inet' man page.

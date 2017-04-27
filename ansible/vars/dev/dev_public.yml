@@ -155,6 +155,22 @@ postgresql_dbs:
 
 mailrelay: 'relay.example.com'
 
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb.0 }}"
+    port: 5984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+  users:
+    host: "{{ groups.couchdb.0 }}"
+    port: 5984
+    name: commcarehq__users
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -178,12 +194,6 @@ localsettings:
   CELERY_RESULT_BACKEND: 'database'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: no
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PORT: 5984
   COUCH_MONITORING_USERNAME: commcarehq
   COUCH_MONITORING_PASSWORD: commcarehq
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"

@@ -18,7 +18,6 @@ localsettings_private:
   BANK_ROUTING_NUMBER_WIRE: ''
   BITLY_APIKEY: ''
   BITLY_LOGIN: ''
-  COUCH_DATABASE_NAME: commcarehq
   COUCH_PASSWORD: commcarehq
   COUCH_USERNAME: commcarehq
   DROPBOX_APP_NAME: ''

@@ -88,6 +88,15 @@ AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
 
+couch_dbs:
+  default:
+    host: 185.12.7.167
+    port: 5984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
 localsettings:
   ALLOWED_HOSTS:
     - swiss.commcarehq.org
@@ -113,12 +122,8 @@ localsettings:
   CLOUDCARE_BASE_URL: http://localhost:9010
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: False
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "185.12.7.167"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PORT: 5984
 # swiss is not hosted by Cloudant
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
