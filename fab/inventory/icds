@@ -179,6 +179,7 @@ pg3
 
 [couchdb:children]
 couch0
+pil1
 
 [redis:children]
 couch0
