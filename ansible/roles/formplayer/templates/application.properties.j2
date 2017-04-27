@@ -1,4 +1,8 @@
+{% if ALTERNATE_FORMPLAYER_HQ_HOST is defined %}
+commcarehq.host=https://{{ ALTERNATE_FORMPLAYER_HQ_HOST }}
+{% else %}
 commcarehq.host=https://{{ SITE_HOST }}
+{% endif %}
 commcarehq.environment={{ deploy_env }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
@@ -16,7 +20,7 @@ couch.databaseName={{ couch_dbs.default.name }}
 
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
-datasource.hq.url=jdbc:postgresql://{{ groups.postgresql.0 }}:6432/commcarehq?prepareThreshold=0
+datasource.hq.url=jdbc:postgresql://{{ hq_main_db_host }}:6432/commcarehq?prepareThreshold=0
 datasource.hq.username={{ postgres_users.commcare.username }}
 datasource.hq.password={{ postgres_users.commcare.password }}
 
