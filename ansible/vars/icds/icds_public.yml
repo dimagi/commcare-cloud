@@ -1,5 +1,6 @@
 SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
+ALTERNATE_FORMPLAYER_HQ_HOST: "{{ CAS_SITE_HOST }}"
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 internal_domain_name: 'internal-icds.commcarehq.org'
@@ -72,6 +73,7 @@ pgbouncer_default_pool: 390
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
+pgbouncer_max_connections: 1500
 
 formplayer_db_name: formplayer
 
@@ -87,23 +89,23 @@ postgresql_dbs:
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p4
     name: commcarehq_p4
     shards: [309, 411]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p5
     name: commcarehq_p5
     shards: [412, 514]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p6
     name: commcarehq_p6
     shards: [515, 617]
@@ -338,6 +340,14 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_health_cases'
+      - name: 'kafka-ucr-static-hardware_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-hardware_cases'
       - name: 'kafka-ucr-static-household_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -489,4 +499,14 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-
+  LOCAL_LOGGING_LOGGERS:
+    notify:
+      handlers:
+        - 'sentry'
+      level: 'ERROR'
+      propagate: True
+    django:
+      handlers:
+        - 'sentry'
+      level: 'ERROR'
+      propagate: True

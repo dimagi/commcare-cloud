@@ -37,7 +37,6 @@ NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: False
-ENABLE_PASSWORD_HASHING: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
@@ -157,6 +156,8 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  ENABLE_PASSWORD_HASHING: True
+  ENABLE_USED_PASSWORDS_CHECK: True
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"

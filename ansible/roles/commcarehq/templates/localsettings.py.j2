@@ -654,3 +654,13 @@ SENTRY_API_KEY = '{{ localsettings.SENTRY_API_KEY }}'
 {% if localsettings.get('GREENHOUSE_API_KEY') %}
 GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
 {% endif %}
+
+LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
+
+{% if localsettings.get('ENABLE_PASSWORD_HASHING') %}
+ENABLE_PASSWORD_HASHING = True
+{% endif %}
+
+{% if localsettings.get('ENABLE_USED_PASSWORDS_CHECK') %}
+ENABLE_USED_PASSWORDS_CHECK = True
+{% endif %}
