@@ -8,6 +8,7 @@ include_pillows:
   - kafka-ucr-static-ccs_record_cases_monthly
   - kafka-ucr-static-child_cases_monthly
   - kafka-ucr-static-child_health_cases
+  - kafka-ucr-static-hardware_cases
   - kafka-ucr-static-household_cases
   - kafka-ucr-static-tasks_cases
   - kafka-ucr-static-person_cases
