@@ -101,3 +101,21 @@
     body_format: raw
   when: update_config|changed and ((item.host == inventory_hostname) or is_monolith|bool)
   with_items: "{{ couch_dbs.values() }}"
+
+- name: Copy couch restart script
+  sudo: yes
+  template:
+    src: "couch-restarter.sh.j2"
+    dest: "/root/couch-restarter.sh"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+
+- name: Create Cron job
+  sudo: yes
+  cron:
+    name: "Reboot Couch"
+    job: /root/couch-restarter.sh
+    user: root
+    cron_file: couch-restarter
