@@ -8,7 +8,6 @@
     - name: "Checks if zabbix server service exists"
       stat: path=/etc/init.d/zabbix_server
       register: zabbix_server
-      when: zabbix_server.stat.exists
     - name: "Stops and disables zabbix service"
       service:
         name: zabbix_server
@@ -25,11 +24,15 @@
     - 'zabbix_integrations'
   tasks:
     - name: "Checks if zabbix agent service exists"
-      stat: path=/etc/init.d/zabbix_agent
+      stat: path=/etc/init.d/zabbix_agentd
       register: zabbix_agent
     - name: "removes zabbix agent"
       service:
-        name: zabbix_agent
+        name: zabbix_agentd
         state: stopped
         enabled: no
       when: zabbix_agent.stat.exists
+    - name: "removes zabbix agent (raw)"
+      raw: service zabbix_agentd stop
+      when: zabbix_agent.stat.exists
+
