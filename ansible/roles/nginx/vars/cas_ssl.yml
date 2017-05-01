@@ -12,10 +12,6 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
    limit_req_zones:
-    - name: "authentication"
-      zone: "$server_name"
-      size: "10m"
-      rate: "500r/s"
     - name: "restore"
       zone: "$server_name"
       size: "10m"
@@ -43,19 +39,11 @@ nginx_sites:
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
-       limit_reqs:
-         - zone_name: "authentication"
-           burst: 750
-           nodelay: True
      - name: "/a/icds-cas/phone/keys"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
-       limit_reqs:
-         - zone_name: "authentication"
-           burst: 750
-           nodelay: True
      - name: "/a/icds-cas/phone/restore"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
