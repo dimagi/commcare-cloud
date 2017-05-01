@@ -1,12 +1,35 @@
 - name: zabbix server deploy
   hosts: zabbix
   sudo: yes
-  roles:
-    - {role: jonatasbaldin.zabbix3server, tags: 'zabbix_server'}
+  tags:
+    - 'zabbix_server'
+    - 'zabbix'
+  tasks:
+    - name: "Checks if zabbix server service exists"
+      stat: path=/etc/init.d/zabbix_server
+      register: zabbix_server
+      when: zabbix_server.stat.exists
+    - name: "Stops and disables zabbix service"
+      service:
+        name: zabbix_server
+        state: stopped
+        enabled: no
+      when: zabbix_server.stat.exists
 
 - name: zabbix agent deploy
   hosts: all
   sudo: yes
-  roles:
-    - {role: jonatasbaldin.zabbix3agent, tags: 'zabbix_agent'}
-    - {role: zabbix_integrations, tags: 'zabbix_integrations'}
+  tags: 
+    - 'zabbix_agent'
+    - 'zabbix'
+    - 'zabbix_integrations'
+  tasks:
+    - name: "Checks if zabbix agent service exists"
+      stat: path=/etc/init.d/zabbix_agent
+      register: zabbix_agent
+    - name: "removes zabbix agent"
+      service:
+        name: zabbix_agent
+        state: stopped
+        enabled: no
+      when: zabbix_agent.stat.exists
