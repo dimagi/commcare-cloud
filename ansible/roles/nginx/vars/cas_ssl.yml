@@ -15,7 +15,19 @@ nginx_sites:
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
-      rate: "500r/s"
+      rate: "70r/s"
+    - name: "login"
+      zone: "$login"
+      size: "10m"
+      rate: "30r/s"
+    - name: "restore"
+      zone: "$restore"
+      size: "10m"
+      rate: "30r/s"
+    - name: "submissions"
+      zone: "$submissions"
+      size: "10m"
+      rate: "10r/s"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
@@ -35,6 +47,38 @@ nginx_sites:
          - zone_name: "server_name"
            burst: 750
            nodelay: True
+    - name: "/accounts/login"
+      balancer: "{{ deploy_env }}_cas_commcare"
+      proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      limit_reqs:
+        - zone_name: "login"
+          nodelay: True
+    - name: "/a/icds-cas/login"
+      balancer: "{{ deploy_env }}_cas_commcare"
+      proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      limit_reqs:
+        - zone_name: "login"
+          nodelay: True
+    - name: "/a/icds-cas/phone/restore"
+      balancer: "{{ deploy_env }}_cas_commcare"
+      proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      limit_reqs:
+        - zone_name: "restore"
+          nodelay: True
+    - name: "/a/icds-cas/phone/receiver"
+      balancer: "{{ deploy_env }}_cas_commcare"
+      proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      limit_reqs:
+        - zone_name: "submissions"
+          nodelay: True
      - name: "/static"
        alias: "{{ nginx_static_home }}"
        add_header: "Access-Control-Allow-Origin *"
