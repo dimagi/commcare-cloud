@@ -42,10 +42,6 @@ hqdb1-staging.internal-va.commcarehq.org
 hqdb1-staging.internal-va.commcarehq.org
 
 [riakcs]
-hqdjango0-staging.internal-va.commcarehq.org
-hqdjango1-staging.internal-va.commcarehq.org
-
-[riakcs_new]
 hqriak00-staging.internal-va.commcarehq.org
 hqriak01-staging.internal-va.commcarehq.org
 
