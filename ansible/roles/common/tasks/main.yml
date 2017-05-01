@@ -106,7 +106,7 @@
 
 - name: "Checks if other anti-virus services exists (cma)"
   stat: path=/etc/init.d/cma
-  register: antivirus_other
+  register: antivirus_cma
   tags:
     - antivirus
     - after-reboot
@@ -117,8 +117,27 @@
     name: cma
     state: stopped
     enabled: no
-  when: antivirus_other.stat.exists
+  when: antivirus_cma.stat.exists
   tags:
     - antivirus
     - after-reboot
 
+- name: "Checks if other anti-virus services exists (ma)"
+  stat: path=/etc/init.d/ma
+  register: antivirus_ma
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables other anti-virus services (ma)"
+  become: yes
+  service:
+    name: ma
+    state: stopped
+    enabled: no
+  when: antivirus_ma.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- include: antivirus.yml
