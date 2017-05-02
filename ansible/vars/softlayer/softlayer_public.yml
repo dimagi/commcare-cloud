@@ -151,6 +151,16 @@ etc_host_lines_removed: []
 
 shared_drive_enabled: true
 
+
+couch_dbs:
+  default:
+    host: commcarehq-india.cloudant.com
+    port: 443
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: True
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -178,12 +188,8 @@ localsettings:
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: True
-  COUCH_SERVER_ROOT: "commcarehq-india.cloudant.com"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_PORT: 443
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"

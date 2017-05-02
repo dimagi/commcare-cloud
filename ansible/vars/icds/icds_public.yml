@@ -1,5 +1,6 @@
 SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
+ALTERNATE_FORMPLAYER_HQ_HOST: "{{ CAS_SITE_HOST }}"
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 internal_domain_name: 'internal-icds.commcarehq.org'
@@ -72,6 +73,7 @@ pgbouncer_default_pool: 390
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
+pgbouncer_max_connections: 1500
 
 formplayer_db_name: formplayer
 
@@ -87,23 +89,23 @@ postgresql_dbs:
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p4
     name: commcarehq_p4
     shards: [309, 411]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p5
     name: commcarehq_p5
     shards: [412, 514]
-    host: "{{ groups.postgresql.0 }}"
+    host: "{{ groups.postgresql.3 }}"
   - django_alias: p6
     name: commcarehq_p6
     shards: [515, 617]
@@ -222,6 +224,21 @@ site_locations:
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
+couch_dbs:
+  default:
+    host: 10.247.24.18
+    port: 5984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+  users:
+    host: 10.247.24.30
+    port: 5984
+    name: commcarehq__users
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
 
 localsettings:
   ALLOWED_HOSTS:
@@ -249,12 +266,6 @@ localsettings:
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: False
-  COUCH_SERVER_ROOT: "10.247.24.18"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_PORT: 5984
   COUCH_STALE_QUERY: 'update_after'
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
@@ -338,6 +349,14 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_health_cases'
+      - name: 'kafka-ucr-static-hardware_cases'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+          include_ucrs:
+            - 'static-hardware_cases'
       - name: 'kafka-ucr-static-household_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -489,4 +508,15 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-
+  LOCAL_LOGGING_LOGGERS:
+    notify:
+      handlers:
+        - 'sentry'
+      level: 'ERROR'
+      propagate: True
+    django:
+      handlers:
+        - 'sentry'
+      level: 'ERROR'
+      propagate: True
+  CELERY_SEND_TASK_ERROR_EMAILS: False
