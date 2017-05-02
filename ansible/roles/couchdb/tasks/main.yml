@@ -58,6 +58,9 @@
   template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
   register: update_config
 
+- name: Apply CouchDB service config
+  template: src=couchdb.config.j2 dest=/usr/local/etc/default/couchdb
+
 - name: CouchDB ownership permissions
   file: path="{{ item }}" owner=couchdb group=couchdb recurse=yes state=directory
   with_items:
