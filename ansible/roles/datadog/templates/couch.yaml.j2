@@ -1,4 +1,8 @@
 init_config:
 
 instances:
-    - server: "http{% if localsettings.COUCH_HTTPS %}s{% endif %}://{{ localsettings.COUCH_SERVER_ROOT }}:{{ localsettings.COUCH_PORT }}"
+{% for couch_config in couch_dbs.values() %}
+{% if couch_config.host == inventory_hostname %}
+    - server: "http{% if couch_config.is_https %}s{% endif %}://{{ couch_config.host }}:{{ couch_config.port }}"
+{% endif %}
+{% endfor %}
