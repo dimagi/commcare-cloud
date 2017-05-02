@@ -45,12 +45,13 @@ def set_supervisor_config():
 
 
 def _get_celery_queues():
-    host = env.get('host_string')
-    if host and '.' in host:
-        host = host.split('.')[0]
+    full_host = env.get('host_string')
+    if full_host and '.' in full_host:
+        host = full_host.split('.')[0]
 
     queues = env.celery_processes.get('*', {})
     host_queues = env.celery_processes.get(host, {})
+    host_queues = env.celery_processes.get(full_host, {})
     queues.update(host_queues)
 
     return queues
