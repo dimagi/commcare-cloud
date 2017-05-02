@@ -69,7 +69,7 @@
   notify: restart datadog
   tags:
     - datadog_integrations
-  when: not item
+  when: not item|bool
   with_items:
     - datadog_integration_elastic
     - datadog_integration_gunicorn
