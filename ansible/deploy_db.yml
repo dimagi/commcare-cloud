@@ -112,11 +112,19 @@
     - zookeeper
     - riakcs
     - formplayer
-  tags: kernel_tuning
+  tags: 'kernel_tuning'
   tasks:
+    - stat:
+        path: /sys/kernel/mm/transparent_hugepage/enabled
+      register: thp_enabled
+    - stat:
+        path: /sys/kernel/mm/transparent_hugepage/defrag
+      register: thp_defrag
     - name: Sets THP enabled to never
       raw: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      when: thp_enabled.stat.exists
     - name: Sets THP defrag to never
       raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      when: thp_defrag.stat.exists
 
   
