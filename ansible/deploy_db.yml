@@ -126,5 +126,16 @@
     - name: Sets THP defrag to never
       raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
       when: thp_defrag.stat.exists
-
-  
+    - name: Adds transparent_hugepage=never to default grub config
+      lineinfile:
+        dest: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=""$'
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
+        backrefs: yes
+        state: present
+    - name: Adds transparent_hugepage=never to current grub config
+      replace:
+        dest: /boot/grub/grub.cfg
+        regexp: '(.*)linux(.*)/boot/vmlinuz(.*) ro$'
+        replace: '\1linux\2/boot/vmlinuz\3 ro transparent_hugepage=never'
+        backup: yes
