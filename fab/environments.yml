@@ -64,7 +64,7 @@ icds:
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
   celery_processes:
-    celery0:
+    '10.247.24.19': # celery0
       main:
         concurrency: 8
       periodic:
