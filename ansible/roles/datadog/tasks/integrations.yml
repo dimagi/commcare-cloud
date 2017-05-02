@@ -21,28 +21,28 @@
     - datadog_integrations
 
 - name: add datadog integration configs
-  template: src="{{ item.split('_', 2)[-1] }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml"
+  template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml"
   notify: restart datadog
   tags:
     - datadog_integrations
-  when: item
+  when: item.enabled
   with_items:
-    - datadog_integration_elastic
-    - datadog_integration_gunicorn
-    - datadog_integration_kafka
-    - datadog_integration_kafka_consumer
-    - datadog_integration_nginx
-    - datadog_integration_pgbouncer
-    - datadog_integration_postgres
-    - datadog_integration_rabbitmq
-    - datadog_integration_redisdb
-    - datadog_integration_riak
-    - datadog_integration_riakcs
-    - datadog_integration_zk
-    - datadog_integration_jmx
-    - datadog_integration_celery
-    - datadog_integration_couch
-    - datadog_integration_process
+    - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
+    - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
+    - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
+    - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
+    - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
+    - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+    - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+    - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
+    - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
+    - {"name": "riak", "enabled": "{{ datadog_integration_riak }}"}
+    - {"name": "riakcs", "enabled": "{{ datadog_integration_riakcs }}"}
+    - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
+    - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
+    - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
+    - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
 
 - name: remove cloudant check
   file:
@@ -64,27 +64,27 @@
 
 - name: remove datadog integration configs
   file:
-    path: "/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml"
+    path: "/etc/dd-agent/conf.d/{{ item.name }}.yaml"
     state: absent
   notify: restart datadog
   tags:
     - datadog_integrations
-  when: not item|bool
+  when: not item.enabled
   with_items:
-    - datadog_integration_elastic
-    - datadog_integration_gunicorn
-    - datadog_integration_kafka
-    - datadog_integration_kafka_consumer
-    - datadog_integration_nginx
-    - datadog_integration_pgbouncer
-    - datadog_integration_postgres
-    - datadog_integration_rabbitmq
-    - datadog_integration_redisdb
-    - datadog_integration_riak
-    - datadog_integration_riakcs
-    - datadog_integration_zk
-    - datadog_integration_jmx
-    - datadog_integration_celery
-    - datadog_integration_couch
-    - datadog_integration_process
+    - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
+    - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
+    - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
+    - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
+    - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
+    - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+    - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+    - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
+    - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
+    - {"name": "riak", "enabled": "{{ datadog_integration_riak }}"}
+    - {"name": "riakcs", "enabled": "{{ datadog_integration_riakcs }}"}
+    - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
+    - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
+    - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
+    - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
 
