@@ -50,9 +50,8 @@ def _get_celery_queues():
         host = full_host.split('.')[0]
 
     queues = env.celery_processes.get('*', {})
-    host_queues = env.celery_processes.get(host, {})
-    host_queues = env.celery_processes.get(full_host, {})
-    queues.update(host_queues)
+    queues.update(env.celery_processes.get(host, {}))
+    queues.update(env.celery_processes.get(full_host, {}))
 
     return queues
 
