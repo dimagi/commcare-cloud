@@ -21,7 +21,7 @@ ERL_OS_MON_OPTIONS="-os_mon \
     disk_space_check_interval 1 \
     disk_almost_full_threshold 1"
 ERL_START_OPTIONS="$ERL_OS_MON_OPTIONS -sasl errlog_type error +K true +A 4"
-HEART_BEAT_TIMEOUT=11
+HEART_BEAT_TIMEOUT=120
 HEART_COMMAND="/usr/local/bin/couchdb -k"
 INTERACTIVE=false
 KILL=false
