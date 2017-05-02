@@ -71,7 +71,7 @@
     - '{{ couch_data_dir }}'
 
 - name: Configure CouchDB as service
-  file: src=/usr/local/etc/init.d/couchdb dest=/etc/init.d/couchdb state=link
+  template: src=couchdb.init.j2 dest=/etc/init.d/couchdb
 
 - name: Update rc.d
   shell: update-rc.d couchdb defaults
