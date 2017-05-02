@@ -51,3 +51,9 @@ instances:
     exact_match: False
     search_string: ['ptop']
 {% endif %}
+
+{% if datadog_integration_couch %}
+  - name: couch
+    exact_match: False
+    search_string: ['couch']
+{% endif %}

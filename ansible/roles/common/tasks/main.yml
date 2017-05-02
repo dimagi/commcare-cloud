@@ -86,14 +86,14 @@
   tags:
     - hostname
 
-- name: "Checks if anti-virus service exists"
+- name: "Checks if anti-virus service exists (nails)"
   stat: path=/etc/init.d/nails
   register: antivirus
   tags:
     - antivirus
     - after-reboot
 
-- name: "Disables anti-virus"
+- name: "Disables anti-virus (nails)"
   become: yes
   service:
     name: nails
@@ -104,3 +104,40 @@
     - antivirus
     - after-reboot
 
+- name: "Checks if other anti-virus services exists (cma)"
+  stat: path=/etc/init.d/cma
+  register: antivirus_cma
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables other anti-virus services (cma)"
+  become: yes
+  service:
+    name: cma
+    state: stopped
+    enabled: no
+  when: antivirus_cma.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Checks if other anti-virus services exists (ma)"
+  stat: path=/etc/init.d/ma
+  register: antivirus_ma
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables other anti-virus services (ma)"
+  become: yes
+  service:
+    name: ma
+    state: stopped
+    enabled: no
+  when: antivirus_ma.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- include: antivirus.yml
