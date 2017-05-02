@@ -99,3 +99,24 @@
     - celery
   roles:
     - {role: java, tags: java}
+
+# Disables transparent huge pages (THP)
+- name: Disable THP
+  become: true
+  hosts:
+    - postgresql
+    - couchdb
+    - redis
+    - elasticsearch
+    - rabbitmq
+    - zookeeper
+    - riakcs
+    - formplayer
+  tags: kernel_tuning
+  tasks:
+    - name: Sets THP enabled to never
+      raw: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+    - name: Sets THP defrag to never
+      raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
+
+  
