@@ -6,6 +6,8 @@
     force: yes
   notify: restart datadog
   when: datadog_integration_cloudant
+  tags:
+    - datadog_integrations
 
 - name: Install celery check
   get_url:
@@ -15,6 +17,8 @@
     force: yes
   notify: restart datadog
   when: inventory_hostname == groups.celery[0]
+  tags:
+    - datadog_integrations
 
 - name: add datadog integration configs
   template: src="{{ item.split('_', 2)[-1] }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml"
@@ -39,3 +43,45 @@
     - datadog_integration_celery
     - datadog_integration_couch
     - datadog_integration_process
+
+- name: remove cloudant check
+  file:
+    path: /etc/dd-agent/checks.d/cloudant.py
+    state: absent
+  notify: restart datadog
+  when: not datadog_integration_cloudant
+  tags:
+    - datadog_integrations
+
+- name: remove celery check
+  file:
+    path: /etc/dd-agent/checks.d/celery.py
+    state: absent
+  notify: restart datadog
+  when: inventory_hostname != groups.celery[0]
+  tags:
+    - datadog_integrations
+
+- name: remove datadog integration configs
+  file:
+    path: "/etc/dd-agent/conf.d/{{ item.split('_', 2)[-1] }}.yaml"
+    state: absent
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+  when: not item
+  with_items:
+    - datadog_integration_elastic
+    - datadog_integration_gunicorn
+    - datadog_integration_kafka
+    - datadog_integration_kafka_consumer
+    - datadog_integration_nginx
+    - datadog_integration_pgbouncer
+    - datadog_integration_postgres
+    - datadog_integration_rabbitmq
+    - datadog_integration_redisdb
+    - datadog_integration_riak
+    - datadog_integration_riakcs
+    - datadog_integration_zk
+    - datadog_integration_jmx
+    - datadog_integration_celery
