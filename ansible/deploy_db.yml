@@ -136,6 +136,6 @@
     - name: Adds transparent_hugepage=never to current grub config
       replace:
         dest: /boot/grub/grub.cfg
-        regexp: '(.*)linux(.*)/boot/vmlinuz(.*) ro$'
+        regexp: '(.*)linux(.*)/boot/vmlinuz(.*) ro(\s*)$'
         replace: '\1linux\2/boot/vmlinuz\3 ro transparent_hugepage=never'
         backup: yes
