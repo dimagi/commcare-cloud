@@ -88,6 +88,9 @@ start_couchdb () {
         chown $COUCHDB_USER "$RUN_DIR"
     fi
     command="$COUCHDB -b"
+    if test -n "$ENV_ERL_FLAGS"; then
+        command="env ERL_FLAGS=\"$ENV_ERL_FLAGS\" $command"
+    fi
     if test -n "$COUCHDB_STDOUT_FILE"; then
         command="$command -o $COUCHDB_STDOUT_FILE"
     fi
