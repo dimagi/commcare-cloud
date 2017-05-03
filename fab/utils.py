@@ -35,18 +35,15 @@ def execute_with_timing(fn, *args, **kwargs):
             timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
 
 
-def get_pillow_env_config(environment):
-    pillow_conf = {}
-    pillow_file = os.path.join(PROJECT_ROOT, 'pillows', '{}.yml'.format(environment))
-    if os.path.exists(pillow_file):
-        with open(pillow_file, 'r+') as f:
-            yml = yaml.load(f)
-            if yml:
-                pillow_conf.update(yml)
-    else:
-        return None
+def get_pillow_env_config():
+    full_host = env.get('host_string')
+    if full_host and '.' in full_host:
+        host = full_host.split('.')[0]
 
-    return pillow_conf
+    pillows = env.pillows.get('*', {})
+    pillows.update(env.pillows.get(host, {}))
+    pillows.update(env.pillows.get(full_host, {}))
+    return pillows
 
 
 class DeployMetadata(object):

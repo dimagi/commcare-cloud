@@ -1,13 +1,11 @@
-import os
 import json
-import yaml
 import time
 import posixpath
 from contextlib import contextmanager
 
 from ansible.inventory import InventoryParser
 from fabric.api import roles, parallel, env, sudo, serial, execute
-from fabric.colors import red, magenta
+from fabric.colors import magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
 
@@ -125,11 +123,9 @@ def set_pillowtop_supervisorconf():
         _rebuild_supervisor_conf_file(
             'make_supervisor_pillowtop_conf',
             'supervisor_pillowtop.conf',
-            {'pillow_env_configs': filter(None, [
-                get_pillow_env_config(environment)
-                for environment in ['default', env.environment]
-            ])}
+            {'pillow_env_configs': get_pillow_env_config()}
         )
+
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
 
 
