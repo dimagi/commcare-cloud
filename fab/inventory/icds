@@ -158,6 +158,8 @@ postgresql_max_connections=400
 
 [pg3]
 10.247.24.23
+
+[pg3:vars]
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
