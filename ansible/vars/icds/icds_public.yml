@@ -64,7 +64,6 @@ postgres_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgresql_max_connections: 400
 postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '512MB'
 postgresql_max_stack_depth: '6MB'
