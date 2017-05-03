@@ -112,14 +112,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
         )
 
 
-def _get_pillows():
-    host = env.get('host_string')
-    if host and '.' in host:
-        host = host.split('.')[0]
-
-    return get_pillow_env_config(host)
-
-
 @roles(ROLES_PILLOWTOP)
 @parallel
 def set_pillowtop_supervisorconf():
@@ -131,7 +123,7 @@ def set_pillowtop_supervisorconf():
         _rebuild_supervisor_conf_file(
             'make_supervisor_pillowtop_conf',
             'supervisor_pillowtop.conf',
-            {'pillow_env_configs': _get_pillows()}
+            {'pillow_env_configs': get_pillow_env_config()}
         )
 
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')

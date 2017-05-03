@@ -35,9 +35,14 @@ def execute_with_timing(fn, *args, **kwargs):
             timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
 
 
-def get_pillow_env_config(environment):
+def get_pillow_env_config():
+    full_host = env.get('host_string')
+    if full_host and '.' in full_host:
+        host = full_host.split('.')[0]
+
     pillows = env.pillows.get('*', {})
-    pillows.update(env.pillows.get(environment, {}))
+    pillows.update(env.pillows.get(host, {}))
+    pillows.update(env.pillows.get(full_host, {}))
     return pillows
 
 
