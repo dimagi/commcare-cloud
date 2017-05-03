@@ -116,7 +116,7 @@ icds:
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
   celery_processes:
-    'celery0':
+    '10.247.24.19': # celery0
       main:
         concurrency: 8
       periodic:
@@ -190,6 +190,8 @@ icds:
       kafka-ucr-static-daily_feeding_forms:
         num_processes: 1
       kafka-ucr-static-gm_forms:
+        num_processes: 1
+      kafka-ucr-static-hardware_cases:
         num_processes: 1
       kafka-ucr-static-home_visit_forms:
         num_processes: 1
