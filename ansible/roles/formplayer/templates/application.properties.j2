@@ -16,7 +16,8 @@ couch.protocol={% if couch_dbs.users.is_https %}https{% else %}http{% endif %}
 
 couch.host={{ couch_dbs.users.host }}
 couch.port={{ couch_dbs.users.port }}
-couch.databaseName={{ couch_dbs.users.name }}
+// Formplayer appends `__users` to the db_name
+couch.databaseName={{ couch_dbs.default.name }}
 
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
