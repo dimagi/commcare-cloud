@@ -113,14 +113,19 @@ etc_host_lines: []
 etc_host_lines_removed: []
 
 
+default_couchdb:
+  host: commcarehq.cloudant.com
+  port: 443
+  name: staging_commcarehq
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  is_https: True
+
 couch_dbs:
   default:
-    host: commcarehq.cloudant.com
-    port: 443
-    name: staging_commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
+    "{{ default_couchdb }}"
+  users:
+    "{{ default_couchdb }}"
 
 localsettings:
   ALLOWED_HOSTS:

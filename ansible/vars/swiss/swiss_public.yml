@@ -88,14 +88,19 @@ AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
 
+default_couchdb:
+  host: 185.12.7.167
+  port: 5984
+  name: commcarehq
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  is_https: False
+
 couch_dbs:
   default:
-    host: 185.12.7.167
-    port: 5984
-    name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
+    "{{ default_couchdb }}"
+  users:
+    "{{ default_couchdb }}"
 
 localsettings:
   ALLOWED_HOSTS:
