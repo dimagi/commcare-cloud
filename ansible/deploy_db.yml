@@ -126,6 +126,7 @@
     - name: Sets THP defrag to never
       raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
       when: thp_defrag.stat.exists
+    # do use grub-mkconfig to generate current grub config is you need to
     - name: Adds transparent_hugepage=never to default grub config
       lineinfile:
         dest: /etc/default/grub
@@ -133,9 +134,3 @@
         line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
         backrefs: yes
         state: present
-    - name: Adds transparent_hugepage=never to current grub config
-      replace:
-        dest: /boot/grub/grub.cfg
-        regexp: '(.*)linux(.*)/boot/vmlinuz(.*) ro(\s*)$'
-        replace: '\1linux\2/boot/vmlinuz\3 ro transparent_hugepage=never'
-        backup: yes
