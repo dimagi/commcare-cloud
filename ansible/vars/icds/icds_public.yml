@@ -64,16 +64,13 @@ postgres_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgresql_max_connections: 400
 postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '512MB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '8GB'
-pgbouncer_default_pool: 390
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
-pgbouncer_max_connections: 1500
 
 formplayer_db_name: formplayer
 
@@ -161,6 +158,7 @@ ZABBIX_DB_USER_PASS: "{{ secrets.ZABBIX_DB_USER_PASS }}"
 DATADOG_ENABLED: True
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
+datadog_integration_cloudant: False
 
 file_email: False
 
