@@ -99,3 +99,38 @@
     - celery
   roles:
     - {role: java, tags: java}
+
+# Disables transparent huge pages (THP)
+- name: Disable THP
+  become: true
+  hosts:
+    - postgresql
+    - couchdb
+    - redis
+    - elasticsearch
+    - rabbitmq
+    - zookeeper
+    - riakcs
+    - formplayer
+  tags: 'kernel_tuning'
+  tasks:
+    - stat:
+        path: /sys/kernel/mm/transparent_hugepage/enabled
+      register: thp_enabled
+    - stat:
+        path: /sys/kernel/mm/transparent_hugepage/defrag
+      register: thp_defrag
+    - name: Sets THP enabled to never
+      raw: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      when: thp_enabled.stat.exists
+    - name: Sets THP defrag to never
+      raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      when: thp_defrag.stat.exists
+    # do use grub-mkconfig to generate current grub config is you need to
+    - name: Adds transparent_hugepage=never to default grub config
+      lineinfile:
+        dest: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=""$'
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
+        backrefs: yes
+        state: present
