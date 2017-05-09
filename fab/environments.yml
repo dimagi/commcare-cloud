@@ -128,8 +128,6 @@ icds:
         concurrency: 3
       ucr_queue:
         concurrency: 4
-      ucr_indicator_queue:
-        concurrency: 4
       background_queue:
         concurrency: 4
       reminder_case_update_queue:
@@ -147,6 +145,9 @@ icds:
       async_restore_queue:
         concurrency: 4
       flower: {}
+    '10.247.24.31': # celery1
+      ucr_indicator_queue:
+        concurrency: 8
   pillows:
     '10.247.24.20': # pillow0
       AppDbChangeFeedPillow:
