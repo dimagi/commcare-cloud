@@ -366,7 +366,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-person_cases'
-      - name: 'kafka-ucr-static-child_delivery_forms'
+      - name: 'kafka-ucr-static-forms-A'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -374,71 +374,11 @@ localsettings:
             - 'form-sql'
           include_ucrs:
             - 'static-child_delivery_forms'
-      - name: 'kafka-ucr-static-daily_feeding_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-daily_feeding_forms'
-      - name: 'kafka-ucr-static-gm_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-gm_forms'
-      - name: 'kafka-ucr-static-home_visit_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-home_visit_forms'
-      - name: 'kafka-ucr-static-infrastructure_form'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-infrastructure_form'
-      - name: 'kafka-ucr-static-ls_home_visit_forms_filled'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-ls_home_visit_forms_filled'
-      - name: 'kafka-ucr-static-thr_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-thr_forms'
-      - name: 'kafka-ucr-static-usage_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-usage_forms'
-      - name: 'kafka-ucr-static-vhnd_form'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-vhnd_form'
-      - name: 'kafka-ucr-static-other-forms'
+      - name: 'kafka-ucr-static-forms-B'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -446,6 +386,10 @@ localsettings:
             - 'form-sql'
           include_ucrs:
             - 'static-awc_mgt_forms'
+            - 'static-ls_home_visit_forms_filled'
+            - 'static-thr_forms'
+            - 'static-usage_forms'
+            - 'static-vhnd_form'
             - 'static-visitorbook_forms'
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
