@@ -179,36 +179,20 @@ icds:
         num_processes: 1
       kafka-ucr-static-cases:
         num_processes: 4
+      kafka-ucr-static-forms-A:
+        num_processes: 4
+      kafka-ucr-static-forms-B:
+        num_processes: 4
       kafka-ucr-static-ccs_record_cases:
         num_processes: 1
       kafka-ucr-static-ccs_record_cases_monthly:
         num_processes: 2
       kafka-ucr-static-child_cases_monthly:
         num_processes: 1
-      kafka-ucr-static-child_delivery_forms:
-        num_processes: 1
       kafka-ucr-static-child_health_cases:
         num_processes: 2
-      kafka-ucr-static-daily_feeding_forms:
-        num_processes: 1
-      kafka-ucr-static-gm_forms:
-        num_processes: 1
-      kafka-ucr-static-home_visit_forms:
-        num_processes: 1
-      kafka-ucr-static-infrastructure_form:
-        num_processes: 1
-      kafka-ucr-static-ls_home_visit_forms_filled:
-        num_processes: 1
-      kafka-ucr-static-other-forms:
-        num_processes: 1
       kafka-ucr-static-person_cases:
         num_processes: 2
-      kafka-ucr-static-thr_forms:
-        num_processes: 1
-      kafka-ucr-static-usage_forms:
-        num_processes: 1
-      kafka-ucr-static-vhnd_form:
-        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
