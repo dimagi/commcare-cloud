@@ -184,9 +184,9 @@ icds:
       kafka-ucr-static-forms-B:
         num_processes: 4
       kafka-ucr-static-ccs_record_cases:
-        num_processes: 1
+        num_processes: 4
       kafka-ucr-static-ccs_record_cases_monthly:
-        num_processes: 2
+        num_processes: 4
       kafka-ucr-static-child_cases_monthly:
         num_processes: 1
       kafka-ucr-static-child_health_cases:
