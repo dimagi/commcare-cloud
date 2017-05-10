@@ -63,6 +63,7 @@
     - tmux
     - unzip
     - iotop
+    - ncdu # 'du' improved
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
