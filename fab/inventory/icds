@@ -35,6 +35,7 @@ devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 parent_mailrelay='relay.nic.in'
+hostname='web0'
 
 [web1]
 10.247.24.15
@@ -43,6 +44,7 @@ parent_mailrelay='relay.nic.in'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web1'
 
 [es0]
 10.247.24.16
@@ -53,6 +55,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.12'
+hostname='es0'
 
 [es1]
 10.247.24.17
@@ -63,6 +66,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.17'
+hostname='es1'
 
 [es2]
 10.247.24.28 elasticsearch_node_name=es2 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es2'
@@ -122,6 +126,7 @@ kafka_broker_id=0
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web2'
 
 [web3]
 10.247.24.25
@@ -130,6 +135,7 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web3'
 
 [web4]
 10.247.24.26
@@ -138,6 +144,7 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web4'
 
 [web5]
 10.247.24.27
@@ -146,6 +153,7 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web5'
 
 [pg2]
 10.247.24.22
