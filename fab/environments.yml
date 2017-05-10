@@ -128,8 +128,6 @@ icds:
         concurrency: 3
       ucr_queue:
         concurrency: 4
-      ucr_indicator_queue:
-        concurrency: 4
       background_queue:
         concurrency: 4
       reminder_case_update_queue:
@@ -147,8 +145,11 @@ icds:
       async_restore_queue:
         concurrency: 4
       flower: {}
+    '10.247.24.31': # celery1
+      ucr_indicator_queue:
+        concurrency: 8
   pillows:
-    '*':
+    '10.247.24.20': # pillow0
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -177,44 +178,18 @@ icds:
         num_processes: 1
       kafka-ucr-static-awc-location:
         num_processes: 1
+      kafka-ucr-static-cases:
+        num_processes: 4
       kafka-ucr-static-ccs_record_cases:
-        num_processes: 1
+        num_processes: 4
       kafka-ucr-static-ccs_record_cases_monthly:
-        num_processes: 2
+        num_processes: 4
       kafka-ucr-static-child_cases_monthly:
         num_processes: 1
-      kafka-ucr-static-child_delivery_forms:
-        num_processes: 1
       kafka-ucr-static-child_health_cases:
-        num_processes: 2
-      kafka-ucr-static-daily_feeding_forms:
-        num_processes: 1
-      kafka-ucr-static-gm_forms:
-        num_processes: 1
-      kafka-ucr-static-hardware_cases:
-        num_processes: 1
-      kafka-ucr-static-home_visit_forms:
-        num_processes: 1
-      kafka-ucr-static-household_cases:
-        num_processes: 1
-      kafka-ucr-static-infrastructure_form:
-        num_processes: 1
-      kafka-ucr-static-ls_home_visit_forms_filled:
-        num_processes: 1
-      kafka-ucr-static-other-forms:
-        num_processes: 1
+        num_processes: 4
       kafka-ucr-static-person_cases:
         num_processes: 2
-      kafka-ucr-static-tasks_cases:
-        num_processes: 1
-      kafka-ucr-static-tech_issue_cases:
-        num_processes: 1
-      kafka-ucr-static-thr_forms:
-        num_processes: 1
-      kafka-ucr-static-usage_forms:
-        num_processes: 1
-      kafka-ucr-static-vhnd_form:
-        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
@@ -231,6 +206,11 @@ icds:
         num_processes: 1
       XFormToElasticsearchPillow:
         num_processes: 1
+    '10.247.24.30': # pillow1
+      kafka-ucr-static-forms-A:
+        num_processes: 4
+      kafka-ucr-static-forms-B:
+        num_processes: 4
 
 
 production:

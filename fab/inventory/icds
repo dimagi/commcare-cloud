@@ -215,6 +215,7 @@ celery1
 
 [pillowtop:children]
 pil0
+pil1
 
 [touchforms:children]
 pil1
