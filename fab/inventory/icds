@@ -14,6 +14,7 @@ hot_standby_server='10.247.24.16'
 pgbouncer_max_connections=3500
 postgresql_max_connections=400
 pgbouncer_default_pool=390
+hostname='pg0'
 
 [pg1]
 10.247.24.14
@@ -26,6 +27,7 @@ hot_standby_server='10.247.24.17'
 pgbouncer_max_connections=3500
 postgresql_max_connections=800
 pgbouncer_default_pool=790
+hostname='pg1'
 
 [web0]
 10.247.24.13
@@ -35,6 +37,7 @@ devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 parent_mailrelay='relay.nic.in'
+hostname='web0'
 
 [web1]
 10.247.24.15
@@ -43,6 +46,7 @@ parent_mailrelay='relay.nic.in'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web1'
 
 [es0]
 10.247.24.16
@@ -53,6 +57,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.12'
+hostname='es0'
 
 [es1]
 10.247.24.17
@@ -63,12 +68,28 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.17'
+hostname='es1'
 
 [es2]
-10.247.24.28 elasticsearch_node_name=es2 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es2'
+10.247.24.28
+
+[es2:vars]
+elasticsearch_node_name=es2
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='es2'
 
 [es3]
-10.247.24.29 elasticsearch_node_name=es3 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='es3' hot_standby_master='10.247.24.23'
+10.247.24.29
+
+[es3:vars]
+elasticsearch_node_name=es3
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hot_standby_master='10.247.24.23'
+hostname='es3'
 
 [couch0]
 10.247.24.18
@@ -77,6 +98,7 @@ hot_standby_master='10.247.24.17'
 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='couch0'
 
 [celery0]
 10.247.24.19
@@ -85,9 +107,14 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='celery0'
 
 [celery1]
-10.247.24.31 devices='["/dev/sdb"]' hostname='celery1'
+10.247.24.31
+
+[celery1:vars]
+devices='["/dev/sdb"]'
+hostname='celery1'
 
 [pil0]
 10.247.24.20
@@ -96,9 +123,16 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='pillow0'
 
 [pil1]
-10.247.24.30 devices='["/dev/sdb"]' partitions='["/dev/sdb1"]' datavol_device='/dev/mapper/consolidated-data' hostname='pillow1'
+10.247.24.30
+
+[pil1:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='pillow1'
 
 [kafka0]
 10.247.24.21
@@ -108,6 +142,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1"]'
 datavol_device='/dev/mapper/consolidated-data'
 kafka_broker_id=0
+hostname='kafka0'
 
 [patch0]
 10.247.63.132
@@ -122,6 +157,7 @@ kafka_broker_id=0
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web2'
 
 [web3]
 10.247.24.25
@@ -130,6 +166,7 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web3'
 
 [web4]
 10.247.24.26
@@ -138,6 +175,7 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web4'
 
 [web5]
 10.247.24.27
@@ -146,6 +184,7 @@ datavol_device='/dev/mapper/consolidated-data'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
+hostname='web5'
 
 [pg2]
 10.247.24.22
