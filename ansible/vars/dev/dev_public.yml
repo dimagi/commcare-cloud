@@ -159,6 +159,10 @@ postgresql_dbs:
 
 mailrelay: 'relay.example.com'
 
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb.0 }}"
