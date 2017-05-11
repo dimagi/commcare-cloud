@@ -44,3 +44,4 @@
   notify: restart datadog
 
 - include: integrations.yml
+  when: DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
