@@ -1,0 +1,44 @@
+- name: remove cloudant check
+  file:
+    path: /etc/dd-agent/checks.d/cloudant.py
+    state: absent
+  notify: restart datadog
+  when: not datadog_integration_cloudant or not DATADOG_INTEGRATIONS_ENABLED
+  tags:
+    - datadog_integrations
+
+- name: remove celery check
+  file:
+    path: /etc/dd-agent/checks.d/celery.py
+    state: absent
+  notify: restart datadog
+  when: inventory_hostname != groups.celery[0] or not DATADOG_INTEGRATIONS_ENABLED
+  tags:
+    - datadog_integrations
+
+- name: remove datadog integration configs
+  file:
+    path: "/etc/dd-agent/conf.d/{{ item.name }}.yaml"
+    state: absent
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+  when: not item.enabled or not DATADOG_INTEGRATIONS_ENABLED
+  with_items:
+    - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
+    - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
+    - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
+    - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
+    - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
+    - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+    - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+    - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
+    - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
+    - {"name": "riak", "enabled": "{{ datadog_integration_riak }}"}
+    - {"name": "riakcs", "enabled": "{{ datadog_integration_riakcs }}"}
+    - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
+    - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
+    - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
+    - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
+
