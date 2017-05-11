@@ -290,6 +290,7 @@ pg2
 [pg_standby:children]
 es0
 es1
+es3
 
 [lvm:children]
 pg0
