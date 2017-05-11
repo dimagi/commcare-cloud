@@ -1,0 +1,74 @@
+---
+- name: resolve platform specific vars
+  include_vars: "{{item}}"
+  with_first_found:
+    - "{{ansible_distribution}}-{{ansible_distribution_release}}.yml"
+    - "{{ansible_distribution}}.yml"
+    - "{{ansible_os_family}}.yml"
+
+- name: deps
+  become: yes
+  become_user: root
+  with_items: '{{couchdb_dep_pkgs}}'
+  package:
+    name: '{{item}}'
+    state: present
+
+- name: download...
+  become: yes
+  become_user: root
+  get_url:
+    url: '{{couchdb_url}}'
+    dest: /tmp/{{couchdb_tgz}}
+    mode: 0644
+
+- name: unarchive...
+  become: yes
+  become_user: root
+  unarchive:
+    copy: no
+    src: /tmp/{{couchdb_tgz}}
+    dest: '{{couchdb_parent_srcs_dir}}'
+    creates: '{{couchdb_src_dir}}'
+
+- name: configure build...
+  become: yes
+  become_user: root
+  command: ./configure
+  args:
+    chdir: '{{couchdb_src_dir}}'
+    creates: '{{couchdb_src_dir}}/rel/couchdb.config'
+    
+- name: build...
+  become: yes
+  become_user: root
+  command: make release
+  args:
+    chdir: '{{couchdb_src_dir}}'
+    creates: '{{couchdb_src_dir}}/rel/couchdb'
+
+- name: install...
+  become: yes
+  become_user: root
+  command: cp -R rel/couchdb {{couchdb_install_parent_dir}}/{{couchdb_name}}
+  args:
+    chdir: '{{couchdb_src_dir}}'
+    creates: '{{couchdb_install_dir}}'
+
+- name: link...
+  become: yes
+  become_user: root
+  file:
+    src: '{{couchdb_install_parent_dir}}/{{couchdb_name}}'
+    dest: '{{couchdb_install_parent_dir}}/couchdb'
+    state: link
+
+- name: cleanup...
+  become: yes
+  become_user: root
+  when: couchdb_cleanup
+  with_items:
+    - '{{couchdb_src_dir}}'
+  file:
+    path: '{{item}}'
+    state: absent

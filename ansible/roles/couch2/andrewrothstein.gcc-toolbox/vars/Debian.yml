@@ -1,0 +1,3 @@
+---
+gcc_toolbox_addl_os_pkgs:
+  - build-essential

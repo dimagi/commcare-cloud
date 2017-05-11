@@ -1,0 +1,6 @@
+{% if couchdb_httpd_global_handlers is defined %}
+[httpd_global_handlers]
+{% for h in couchdb_httpd_global_handlers %}
+{{h.endpoint}} = {couch_httpd_proxy, handle_proxy_req, <<"{{h.url}}">>}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,5 @@
+---
+- hosts: all
+  remote_user: vagrant
+  roles:
+    - role: "../ansible-epel"

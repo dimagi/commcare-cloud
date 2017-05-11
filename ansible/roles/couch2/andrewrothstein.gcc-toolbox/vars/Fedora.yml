@@ -1,0 +1,4 @@
+---
+gcc_toolbox_addl_os_pkgs:
+  - "@Development tools"
+  - gcc-c++

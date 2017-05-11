@@ -1,0 +1,15 @@
+[chttpd]
+{% if couchdb_conf_port is defined %}
+port = {{couchdb_conf_port}}
+{% else %}
+;port = 5984
+{% endif %}
+{% if couchdb_network_iface is defined %}
+bind_address = {{ hostvars[inventory_hostname]["ansible_" + couchdb_network_iface]["ipv4"]["address"] }}
+{% else %}
+;bind_address = 127.0.0.1
+{% endif %}
+; Options for the MochiWeb HTTP server.
+;server_options = [{backlog, 128}, {acceptor_pool_size, 16}]
+; For more socket options, consult Erlang's module 'inet' man page.
+;socket_options = [{recbuf, 262144}, {sndbuf, 262144}, {nodelay, true}]

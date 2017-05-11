@@ -1,0 +1,8 @@
+---
+# defaults file for gcc-toolbox
+gcc_toolbox_make_os_pkgs:
+  - make
+  - automake
+  - autoconf
+gcc_toolbox_cc_os_pkgs:
+  - gcc
