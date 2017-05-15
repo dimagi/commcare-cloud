@@ -40,5 +40,6 @@
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
     - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
 
