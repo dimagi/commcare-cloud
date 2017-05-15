@@ -18,6 +18,7 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech}
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_j2me == True, action: site, site_name: cchq_http_j2me }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.couch == True, action: site, site_name: couch }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.riakcs == True, action: site, site_name: riakcs, hosts_group: riakcs }
     - role: nginx
       action: site
