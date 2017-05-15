@@ -3,7 +3,7 @@
     path: /etc/dd-agent/checks.d/cloudant.py
     state: absent
   notify: restart datadog
-  when: not datadog_integration_cloudant or not DATADOG_INTEGRATIONS_ENABLED
+  when: not datadog_integration_cloudant or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
   tags:
     - datadog_integrations
 
@@ -12,7 +12,7 @@
     path: /etc/dd-agent/checks.d/celery.py
     state: absent
   notify: restart datadog
-  when: inventory_hostname != groups.celery[0] or not DATADOG_INTEGRATIONS_ENABLED
+  when: inventory_hostname != groups.celery[0] or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
   tags:
     - datadog_integrations
 
@@ -23,7 +23,7 @@
   notify: restart datadog
   tags:
     - datadog_integrations
-  when: not item.enabled or not DATADOG_INTEGRATIONS_ENABLED
+  when: not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
   with_items:
     - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
     - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
@@ -40,5 +40,6 @@
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
     - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
 
