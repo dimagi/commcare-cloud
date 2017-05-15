@@ -8,49 +8,24 @@ Vagrant.require_version ">= 1.7.0"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
-  cchq_proxy_port = ENV.fetch("VAGRANT_CCHQ_PROXY_PORT", 8080)
   config.ssh.insert_key = false
 
-  config.vm.define "app1" do |app1|
-    app1.vm.hostname = "app1"
-    app1.vm.network "private_network", ip: "192.168.33.15"
-    app1.vm.provider "virtualbox" do |v|
+  config.vm.define "monolith" do |monolith|
+    monolith.vm.hostname = "monolith"
+    monolith.vm.network "private_network", ip: "192.168.33.21"
+    monolith.vm.provider "virtualbox" do |v|
       v.memory = 768
       v.cpus = 1
     end
-    app1.vm.provision "shell", path: "provisioning/nodes.sh"
-  end
-
-  # config.vm.define "app2" do |app1|
-  #   app1.vm.hostname = "app2"
-  #   app1.vm.network "private_network", ip: "192.168.33.18"
-  #   app1.vm.provision "shell", path: "provisioning/nodes.sh"
-  #   db1.vm.provider "virtualbox" do |v|
-  #     v.memory = 768
-  #     v.cpus = 1
-  #   end
-  # end
-
-  config.vm.define "db1" do |db1|
-    db1.vm.hostname = "db1"
-    db1.vm.network "private_network", ip: "192.168.33.16"
-    db1.vm.provider "virtualbox" do |v|
-      v.memory = 768
-      v.cpus = 1
-    end
-    db1.vm.provision "shell", path: "provisioning/nodes.sh"
-  end
-
-  config.vm.define "proxy1" do |proxy1|
-    proxy1.vm.hostname = "proxy1"
-    proxy1.vm.network "private_network", ip: "192.168.33.17"
-    proxy1.vm.provision "shell", path: "provisioning/nodes.sh"
-    proxy1.vm.network "forwarded_port", guest: 80, host: cchq_proxy_port
+    monolith.vm.provision "shell", path: "provisioning/nodes.sh"
+    monolith.vm.network "forwarded_port", guest: 5000, host: 5000
+    monolith.vm.network "forwarded_port", guest: 5984, host: 5984
+    monolith.vm.network "forwarded_port", guest: 5986, host: 5986
   end
 
   config.vm.define "control" do |control|
     control.vm.hostname = "control"
-    control.vm.network "private_network", ip: "192.168.33.14"
+    control.vm.network "private_network", ip: "192.168.33.20"
     control.vm.provider "virtualbox" do |v|
       v.memory = 768
       v.cpus = 1
