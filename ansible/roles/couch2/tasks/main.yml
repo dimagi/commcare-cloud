@@ -1,14 +1,4 @@
 ---
-- name: Set CouchDB username and password
-  uri:
-    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
-    method: PUT
-    status_code: 200
-    body: '"{{ item.password }}"'
-    body_format: raw
-  when: update_config|changed and ((item.host == inventory_hostname) or is_monolith|bool)
-  with_items: "{{ couch_dbs.values() }}"
-
 - name: Check CouchDB database
   uri:
     url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/{{ item.name }}"
@@ -24,3 +14,14 @@
     status_code: 201
   when: not item.skipped|default(false) and item.status == 404
   with_items: "{{ couch_response.results }}"
+
+# todo hardcoded 5986 here
+- name: Set CouchDB username and password
+  uri:
+    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:5986/_config/admins/{{ item.username }}"
+    method: PUT
+    status_code: 200
+    body: '"{{ item.password }}"'
+    body_format: raw
+  when: (item.host == inventory_hostname) or is_monolith|bool
+  with_items: "{{ couch_dbs.values() }}"

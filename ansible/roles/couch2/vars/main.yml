@@ -5,3 +5,5 @@ couchdb_secure: False
 
 couchdb_install_parent_dir: /usr/local/couch2
 couchdb_parent_srcs_dir: /usr/local/couch2/src
+
+couchdb_init: 'sysv'
