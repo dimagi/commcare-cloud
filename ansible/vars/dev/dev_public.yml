@@ -161,6 +161,14 @@ postgresql_dbs:
 
 mailrelay: 'relay.example.com'
 
+couch2_db:
+  host: "{{ groups.couchdb2.0 }}"
+  port: 15984
+  name: commcarehq
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  is_https: False
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb.0 }}"

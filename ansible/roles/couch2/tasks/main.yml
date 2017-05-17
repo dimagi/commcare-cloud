@@ -1,27 +1,20 @@
 ---
-- name: Check CouchDB database
+- name: set couchdb username and password
   uri:
-    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/{{ item.name }}"
-    status_code: 200, 404
-  register: couch_response
-  when: (item.host == inventory_hostname) or is_monolith|bool
-  with_items: "{{ couch_dbs.values() }}"
-
-- name: Add CouchDB database
-  uri:
-    url: "http{% if item.item.is_https %}s{% endif %}://{{ item.item.host }}:{{ item.item.port }}/{{ item.item.name }}"
+    url: "http{% if couch2_db.is_https %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couch2_db.port }}/_node/couchdb@{{ inventory_hostname|ipaddr }}/_config/admins/{{ couch2_db.username }}"
     method: PUT
-    status_code: 201
-  when: not item.skipped|default(false) and item.status == 404
-  with_items: "{{ couch_response.results }}"
-
-# todo hardcoded 5986 here
-- name: Set CouchDB username and password
-  uri:
-    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:5986/_config/admins/{{ item.username }}"
-    method: PUT
-    status_code: 200
-    body: '"{{ item.password }}"'
+    status_code: 200, 401 # 401 means this is already set up
+    body: '"{{ couch2_db.password }}"'
     body_format: raw
-  when: (item.host == inventory_hostname) or is_monolith|bool
-  with_items: "{{ couch_dbs.values() }}"
+
+- name: Add nodes
+  uri:
+    url: "http{% if couch2_db.is_https %}s{% endif %}://{{ inventory_hostname|ipaddr }}:15986/_nodes/couchdb@{{ item|ipaddr }}"
+    method: PUT
+    user: "{{ couch2_db.username }}"
+    password: "{{ couch2_db.password }}"
+    force_basic_auth: true
+    status_code: 200, 409 # 409 means already set up (conflict)
+    body: '{}'
+  when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  with_items: "{{ groups.couchdb2 }}"

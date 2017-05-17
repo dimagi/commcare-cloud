@@ -3,5 +3,5 @@
   version: a10ed54
   name: emord.ansible-couchdb
 - src: git+https://github.com/emord/ansible-couchdb-cluster.git
-  version: 8a7b101
+  version: bb62afc
   name: emord.ansible-couchdb-cluster
