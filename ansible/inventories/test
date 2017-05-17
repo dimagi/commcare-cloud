@@ -7,6 +7,9 @@ localhost ansible_connection=local
 [couchdb]
 localhost ansible_connection=local
 
+[couch2]
+localhost ansible_connection=local
+
 [redis]
 localhost ansible_connection=local
 
