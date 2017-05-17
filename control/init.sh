@@ -31,6 +31,10 @@ if [ ! -d ~/commcare-hq-deploy ]; then
     fi
 fi
 
+echo "Downloading dependencies from galaxy"
+export ANSIBLE_ROLES_PATH=~/.ansible/roles
+ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml
+
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
 
