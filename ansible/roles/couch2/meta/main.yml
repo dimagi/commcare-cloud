@@ -1,0 +1,8 @@
+---
+dependencies:
+  - src: git+https://github.com/emord/ansible-couchdb.git
+    version: a10ed54
+    name: emord.couchdb
+  - src: git+https://github.com/emord/ansible-couchdb-cluster.git
+    version: cb9794e
+    name: emord.couchdb-cluster

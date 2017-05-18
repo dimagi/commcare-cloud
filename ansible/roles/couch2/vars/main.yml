@@ -1,0 +1,7 @@
+---
+couchdb_conf_port : 5000
+couchdb_dir: /usr/local/couch2/couchdb
+couchdb_secure: False
+
+couchdb_install_parent_dir: /usr/local/couch2
+couchdb_parent_srcs_dir: /usr/local/couch2/src

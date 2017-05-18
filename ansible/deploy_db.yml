@@ -52,6 +52,12 @@
             - nocreate
             - notifempty
 
+- name: Couchdb 2.0
+  hosts: couchdb2
+  sudo: yes
+  roles:
+    - {role: couch2, tags: 'couchdb2'}
+
 - name: Redis
   hosts: redis
   sudo: yes

@@ -1,8 +1,0 @@
----
-# vars file for ansible-couchdb
-couchdb_name : 'apache-couchdb-{{couchdb_ver}}'
-couchdb_tgz : '{{couchdb_name}}.tar.gz'
-couchdb_url : '{{couchdb_mirror}}/{{couchdb_ver}}/{{couchdb_tgz}}'
-
-couchdb_install_dir: '{{couchdb_install_parent_dir}}/{{couchdb_name}}'
-couchdb_src_dir : '{{couchdb_parent_srcs_dir}}/{{couchdb_name}}'
