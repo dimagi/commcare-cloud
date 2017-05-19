@@ -84,7 +84,7 @@ KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
-AMQP_HOST: "185.12.7.167"
+AMQP_HOST: "10.162.36.254"
 AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
@@ -92,7 +92,7 @@ shared_drive_enabled: false
 localsettings:
   ALLOWED_HOSTS:
     - l10k.commcarehq.org
-    - 185.12.7.167
+    - 10.162.36.254
     - localhost
     - 127.0.0.1
     - testserver
@@ -117,7 +117,7 @@ localsettings:
   COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
   COUCH_HTTPS: False
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "185.12.7.167"
+  COUCH_SERVER_ROOT: "10.162.36.254"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PORT: 5984
 # l10k is not hosted by Cloudant
