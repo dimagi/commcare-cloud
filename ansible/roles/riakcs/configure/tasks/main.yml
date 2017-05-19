@@ -3,6 +3,7 @@
 - include_vars: ../../install/defaults/main.yml
 
 - set_fact: conf_path="{{ riak_conf if name == 'riak' else riakcs_conf if name == 'riakcs' else stanchion_conf }}"
+- set_fact: log_path="{{ riak_log if name == 'riak' else riakcs_log if name == 'riakcs' else '' }}"
 
 - name: "Create {{ name }} data dirs"
   file: >
@@ -45,6 +46,14 @@
     state=absent
   notify: "restart {{ name }}"
   when: drop_conf != ""
+
+- name: "Create {{ name }} log dir"
+  file: >
+    path="{{ log_path | dirname }}"
+    state=directory
+    owner={{ name }}
+    group=riak
+  when: log_path != ''
 
 - name: "Start {{ name }}"
   service: name="{{ service }}" state=started enabled=yes

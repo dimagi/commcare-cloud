@@ -1,0 +1,59 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+{% if datadog_integration_celery %}
+  - name: celery
+    search_string: ['celeryd']
+    ignore_denied_access: True
+{% endif %}
+
+
+{% if datadog_integration_postgres %}
+  - name: postgres
+    search_string: ['postgres']
+{% endif %}
+
+{% if datadog_integration_riak %}
+  - name: riak
+    exact_match: False
+    search_string: ['riak']
+{% endif %}
+
+{% if datadog_integration_gunicorn %}
+  - name: gunicorn
+    exact_match: False
+    search_string: ['gunicorn']
+{% endif %}
+
+{% if datadog_integration_redisdb %}
+  - name: redis
+    exact_match: False
+    search_string: ['redis']
+{% endif %}
+
+{% if datadog_integration_elastic %}
+  - name: elasticsearch
+    exact_match: False
+    search_string: ['elasticsearch']
+{% endif %}
+
+{% if datadog_integration_kafka %}
+  - name: kafka
+    exact_match: False
+    search_string: ['kafka']
+{% endif %}
+
+{% if inventory_hostname in groups.pillowtop %}
+  - name: pillowtop
+    exact_match: False
+    search_string: ['ptop']
+{% endif %}
+
+{% if datadog_integration_couch %}
+  - name: couch
+    exact_match: False
+    search_string: ['couch']
+{% endif %}

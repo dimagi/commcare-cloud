@@ -29,6 +29,7 @@ NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
+DATADOG_INTEGRATIONS_ENABLED: False
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
@@ -54,13 +55,12 @@ couch_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgres_config:
-  max_connections: 300
-  pgb_max_connections: 400
-  pgb_default_pool: 290
-  pgb_reserve_pool: 5
-  pgb_pool_timeout: 1
-  pgb_pool_mode: transaction
+postgresql_max_connections: 300
+pgbouncer_max_connections: 400
+pgbouncer_default_pool: 290
+pgbouncer_reserve_pool: 5
+pgbouncer_pool_timeout: 1
+pgbouncer_pool_mode: transaction
 
 formplayer_db_name: formplayer
 
@@ -89,6 +89,15 @@ AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
 
+couch_dbs:
+  default:
+    host: 185.12.7.167
+    port: 5984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
 localsettings:
   ALLOWED_HOSTS:
     - swiss.commcarehq.org
@@ -114,12 +123,8 @@ localsettings:
   CLOUDCARE_BASE_URL: http://localhost:9010
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: False
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "185.12.7.167"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PORT: 5984
 # swiss is not hosted by Cloudant
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"

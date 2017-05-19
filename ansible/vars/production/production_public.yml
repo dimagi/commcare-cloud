@@ -77,13 +77,12 @@ aws_region: 'us-east-1'
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgres_config:
-  max_connections: 300
-  pgb_max_connections: 800
-  pgb_default_pool: 290
-  pgb_reserve_pool: 5
-  pgb_pool_timeout: 1
-  pgb_pool_mode: transaction
+postgresql_max_connections: 300
+pgbouncer_max_connections: 800
+pgbouncer_default_pool: 290
+pgbouncer_reserve_pool: 5
+pgbouncer_pool_timeout: 1
+pgbouncer_pool_mode: transaction
 
 formplayer_db_name: formplayer
 
@@ -132,6 +131,15 @@ ufw_private_interface: eth1
 etc_host_lines: []
 etc_host_lines_removed: []
 
+couch_dbs:
+  default:
+    host: commcarehq.cloudant.com
+    port: 443
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: True
+
 localsettings:
   ALLOWED_HOSTS:
     - www.commcarehq.org
@@ -159,12 +167,6 @@ localsettings:
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: True
-  COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_PORT: 443
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"

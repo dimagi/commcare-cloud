@@ -90,7 +90,7 @@
 - name: Install elasticsearch aws plugin
   sudo: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: "'cloud-aws' not in installed_plugins.stdout"
+  when: backup_es and "'cloud-aws' not in installed_plugins.stdout"
 
 - name: Reload upstart
   sudo: yes

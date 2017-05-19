@@ -12,10 +12,18 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
    limit_req_zones:
+    - name: "restore"
+      zone: "$server_name"
+      size: "10m"
+      rate: "100r/s"
+    - name: "submissions"
+      zone: "$server_name"
+      size: "10m"
+      rate: "200r/s"
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
-      rate: "500r/s"
+      rate: "100r/s"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
@@ -26,6 +34,44 @@ nginx_sites:
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
+     - name: "/hq/multimedia/file"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+     - name: "/a/icds-cas/apps/download"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+     - name: "/accounts/login"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+     - name: "/a/icds-cas/phone/keys"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+     - name: "/a/icds-cas/phone/restore"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       limit_reqs:
+         - zone_name: "restore"
+           burst: 100
+           nodelay: True
+     - name: "/a/icds-cas/receiver"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       limit_reqs:
+         - zone_name: "submissions"
+           burst: 100
+           nodelay: True
      - name: /
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
