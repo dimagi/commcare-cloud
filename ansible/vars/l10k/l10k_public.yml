@@ -138,10 +138,9 @@ localsettings:
   ELASTICSEARCH_HOST: "localhost"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
-  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
-  EMAIL_SMTP_PORT: 587
-  EMAIL_USE_TLS: yes
+  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_PORT: 25
+  EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
