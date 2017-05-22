@@ -6,7 +6,7 @@
     path: "{{ shared_data_dir }}"
     owner: "nobody"
     group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
+    mode: "u=rwx,g=rwx,o=rx"
     state: directory
   tags:
     - nfs
@@ -32,7 +32,7 @@
     path: "{{ item }}"
     owner: "nobody"
     group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
+    mode: "u=rwx,g=rwx,o=rx"
     state: directory
   with_items:
     - "{{ restore_payload_dir_host }}"

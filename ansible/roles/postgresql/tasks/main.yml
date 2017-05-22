@@ -118,6 +118,7 @@
   notify: Reload pgbouncer
   tags:
     - pgbouncer
+    - pgbouncer_conf
 
 - name: pgbouncer users
   template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"

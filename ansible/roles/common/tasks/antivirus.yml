@@ -1,0 +1,80 @@
+- name: "Checks if anti-virus service exists (nails)"
+  stat: path=/etc/init.d/nails
+  register: antivirus_nails
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables anti-virus (nails)"
+  become: yes
+  service:
+    name: nails
+    state: stopped
+    enabled: no
+  when: antivirus_nails.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Checks if other anti-virus services exists (cma)"
+  stat: path=/etc/init.d/cma
+  register: antivirus_cma
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables other anti-virus services (cma)"
+  become: yes
+  service:
+    name: cma
+    state: stopped
+    enabled: no
+  when: antivirus_cma.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Checks if other anti-virus services exists (ma)"
+  stat: path=/etc/init.d/ma
+  register: antivirus_ma
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Disables other anti-virus services (ma)"
+  become: yes
+  service:
+    name: ma
+    state: stopped
+    enabled: no
+  when: antivirus_ma.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Removes anti-virus check health cron (ma)"
+  become: yes
+  lineinfile:
+    dest: /var/spool/cron/crontabs/root
+    regexp: '(.*)/opt/McAfee/agent/scripts/ma checkhealth$'
+    line: '#\1/opt/McAfee/agent/scripts/ma checkhealth'
+    backrefs: yes
+    state: present
+  when: antivirus_ma.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+
+- name: "Removes anti-virus cron (nails)"
+  become: yes
+  lineinfile:
+    dest: /etc/crontab
+    regexp: '(.*)/opt/NAI/LinuxShield/bin/nails runsched 1$'
+    line: '#\1/opt/NAI/LinuxShield/bin/nails runsched 1'
+    backrefs: yes
+    state: present
+  when: antivirus_nails.stat.exists
+  tags:
+    - antivirus
+    - after-reboot
+

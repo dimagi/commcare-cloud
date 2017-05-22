@@ -1,6 +1,3 @@
-# redis and rabbit included here since group vars get overriden if a host matches multiple groups
 datadog_integration_cloudant: true
 datadog_integration_pgbouncer: true
 datadog_integration_postgres: true
-datadog_integration_rabbitmq: true
-datadog_integration_redisdb: true

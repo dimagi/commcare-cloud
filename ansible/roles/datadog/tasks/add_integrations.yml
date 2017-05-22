@@ -1,0 +1,46 @@
+- name: Install cloudant check
+  get_url:
+    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_cloudant_version }}/cloudant/cloudant.py"
+    dest: /etc/dd-agent/checks.d/cloudant.py
+    sha256sum: "{{ datadog_cloudant_sha256sum }}"
+    force: yes
+  notify: restart datadog
+  when: datadog_integration_cloudant
+  tags:
+    - datadog_integrations
+
+- name: Install celery check
+  get_url:
+    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_celery_version }}/celery/celery.py"
+    dest: /etc/dd-agent/checks.d/celery.py
+    sha256sum: "{{ datadog_celery_sha256sum }}"
+    force: yes
+  notify: restart datadog
+  when: inventory_hostname == groups.celery[0]
+  tags:
+    - datadog_integrations
+
+- name: add datadog integration configs
+  template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml"
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+  when: item.enabled
+  with_items:
+    - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
+    - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
+    - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
+    - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
+    - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
+    - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+    - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+    - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
+    - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
+    - {"name": "riak", "enabled": "{{ datadog_integration_riak }}"}
+    - {"name": "riakcs", "enabled": "{{ datadog_integration_riakcs }}"}
+    - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
+    - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
+    - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
+    - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
+    - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
