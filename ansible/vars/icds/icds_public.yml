@@ -429,14 +429,3 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  LOCAL_LOGGING_LOGGERS:
-    notify:
-      handlers:
-        - 'sentry'
-      level: 'ERROR'
-      propagate: True
-    django:
-      handlers:
-        - 'sentry'
-      level: 'ERROR'
-      propagate: True
