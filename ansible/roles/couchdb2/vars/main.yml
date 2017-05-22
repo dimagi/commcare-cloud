@@ -1,10 +1,12 @@
 ---
-couchdb_conf_port : 15984
-couchdb_node_conf_port : 15986
+couchdb_port : 15984
+couchdb_node_port : 15986
 couchdb_dir: /usr/local/couchdb2/couchdb
 couchdb_data_dir: '{{ encrypted_root }}/couchdb2'
 couchdb_secure: False
-couchdb_network_address: '{{ inventory_hostname|ipaddr }}'
+couchdb_bind:
+  ty: static
+  host: '{{ inventory_hostname|ipaddr }}'
 couchdb_socket_options: '[{recbuf, 262144}, {sndbuf, 262144}, {nodelay, true}]'
 
 couchdb_install_parent_dir: /usr/local/couchdb2
