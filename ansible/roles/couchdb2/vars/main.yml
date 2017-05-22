@@ -13,3 +13,7 @@ couchdb_install_parent_dir: /usr/local/couchdb2
 couchdb_parent_srcs_dir: /usr/local/couchdb2/src
 
 couchdb_init: 'sysv'
+
+couchdb_admins: "{
+  '{{ couchdb2.username }}': '{{ couchdb2.password }}'
+  }"
