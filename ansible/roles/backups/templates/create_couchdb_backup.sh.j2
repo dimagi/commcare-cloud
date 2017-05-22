@@ -10,7 +10,7 @@ rsync -avH {{ couch_backup_dir }}/ {{ remote_couch_backup }}:{{ couch_backup_dir
 {% endif %}
 
 # Remove old backups of this backup type
-find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "blobdb_${BACKUP_TYPE}_*" -exec rm {} \;
+find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" -exec rm {} \;
 
 {% if couch_s3 %}
 /etc/cron.d/backup_snapshots.py "${BACKUP_FILE} dimagi-{{ deploy_env }}-couch-backups"
