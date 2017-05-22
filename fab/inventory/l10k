@@ -56,3 +56,6 @@ l10kserver1
 
 [lvm:children]
 l10kserver1
+
+[control]
+10.162.36.196
