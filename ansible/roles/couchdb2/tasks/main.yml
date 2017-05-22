@@ -1,7 +1,7 @@
 ---
 - name: Add nodes
   uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_conf_port }}/_nodes/couchdb@{{ item|ipaddr }}"
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
     method: PUT
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"
