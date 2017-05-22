@@ -103,6 +103,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch0'
+remote_couch_backup='10.247.24.16'
 
 [celery0]
 10.247.24.19
@@ -128,6 +129,7 @@ devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='pillow0'
+remote_couch_backup='10.247.24.17'
 
 [pil1]
 10.247.24.30
