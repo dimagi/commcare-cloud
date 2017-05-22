@@ -70,6 +70,15 @@ postgresql_dbs:
     django_alias: default
   - name: "{{ formplayer_db_name }}"
 
+couch_dbs:
+  default:
+    host: 10.162.36.254
+    port: 5984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
 redis_syslog_enabled: 'no'
