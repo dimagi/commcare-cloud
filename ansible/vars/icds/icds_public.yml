@@ -278,6 +278,7 @@ localsettings:
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   HQ_INSTANCE: 'icds'
 #  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
