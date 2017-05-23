@@ -1,4 +1,3 @@
 ---
 dependencies:
-  - emord.ansible-couchdb
   - emord.ansible-couchdb-cluster

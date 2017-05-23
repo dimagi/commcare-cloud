@@ -1,7 +1,4 @@
 ---
-- src: git+https://github.com/emord/ansible-couchdb.git
-  version: 499d916
-  name: emord.ansible-couchdb
 - src: git+https://github.com/emord/ansible-couchdb-cluster.git
-  version: bcebc4b
+  version: d13b04e
   name: emord.ansible-couchdb-cluster
