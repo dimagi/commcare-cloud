@@ -64,6 +64,7 @@ backup_postgres: True
 backup_es: False
 postgres_s3: False
 backup_couch: True
+remote_couch_backup: True
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
