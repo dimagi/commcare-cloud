@@ -34,7 +34,7 @@ DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
-elasticsearch_cluster_name: 'deves'
+elasticsearch_cluster_name: 'l10k-es'
 #elasticsearch_node_name: '??'
 
 apache2_key_file: '../config/{{ deploy_env }}/ssl/l10k.commcarehq.org.key'
