@@ -19,6 +19,7 @@ active_sites:
   motech: False
   motech2: False
   riakcs: False
+  couchdb2: True
 
 proxy_type: nginx
 
@@ -69,6 +70,10 @@ postgresql_dbs:
   - name: "{{ localsettings.PG_DATABASE_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couch_dbs:
   default:
