@@ -1,7 +1,7 @@
 ---
 - name: set couchdb username and password
   uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_conf_port }}/_node/couchdb@{{ inventory_hostname|ipaddr }}/_config/admins/{{ couchdb2.username }}"
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/_node/couchdb@{{ inventory_hostname|ipaddr }}/_config/admins/{{ couchdb2.username }}"
     method: PUT
     status_code: 200, 401 # 401 means this is already set up
     body: '"{{ couchdb2.password }}"'
