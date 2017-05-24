@@ -32,3 +32,9 @@
         regexp: '^relayhost ='
         line: "relayhost = {{ groups['mailrelay'][0] }}"
       when: groups['mailrelay'] is defined
+
+- name: "reload postfix"
+  hosts: all
+  sudo: yes
+  tasks:
+    - service: name=postfix state=restarted enabled=yes

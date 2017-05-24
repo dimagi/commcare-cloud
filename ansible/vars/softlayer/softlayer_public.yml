@@ -67,6 +67,8 @@ cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
 enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
 enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
 
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
+
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
 supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
