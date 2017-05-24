@@ -20,7 +20,7 @@
 - name: Set swap file mode
   become: true
   file: path=/swapfile state=file mode=600
-  when: swap_size is defined and not swapfile.stat.exists
+  when: swap_size is defined and swapfile.stat.exists
   tags: swap
 
 - name: Make swap
