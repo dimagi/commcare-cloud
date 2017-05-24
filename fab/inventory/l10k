@@ -21,6 +21,9 @@ l10kserver1
 [couchdb:children]
 l10kserver1
 
+[couchdb2:children]
+l10kserver1
+
 [redis:children]
 l10kserver1
 
