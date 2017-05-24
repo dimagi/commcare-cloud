@@ -50,6 +50,8 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
+ 
 # Source paths of certs
 apache2_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
 apache2_ca_file: '../config/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
