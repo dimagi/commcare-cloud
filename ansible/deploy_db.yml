@@ -115,6 +115,9 @@
   tags: 'kernel_tuning'
   tasks:
     - stat:
+        path: /etc/default/grub
+      register: uses_grub
+    - stat:
         path: /sys/kernel/mm/transparent_hugepage/enabled
       register: thp_enabled
     - stat:
@@ -134,3 +137,4 @@
         line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
         backrefs: yes
         state: present
+      when: uses_grub.stat.exists
