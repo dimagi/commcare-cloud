@@ -71,6 +71,19 @@ swap_size=4G
 [stanchion]
 hqriak15.internal-va.commcarehq.org
 
+[riakcs_new]
+hqriak20.internal-va.commcarehq.org
+hqriak21.internal-va.commcarehq.org
+hqriak22.internal-va.commcarehq.org
+hqriak23.internal-va.commcarehq.org
+hqriak24.internal-va.commcarehq.org
+hqriak25.internal-va.commcarehq.org
+hqriak26.internal-va.commcarehq.org
+
+[riakcs_new:vars]
+datavol_device=/dev/xvdb
+swap_size=4G
+
 [pg_standby]
 hqstandby0.internal-va.commcarehq.org hot_standby_master=hqdb0.internal-va.commcarehq.org
 
