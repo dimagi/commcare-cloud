@@ -13,3 +13,7 @@ couchdb_install_parent_dir: /usr/local/couchdb2
 couchdb_parent_srcs_dir: /usr/local/couchdb2/src
 
 couchdb_init: 'sysv'
+
+couchdb_compaction_settings:
+  commcarehq__synclogs: '[{db_fragmentation, "50%"}, {view_fragmentation, "50%"}, {from, "17:00"}, {to, "22:30"}]'
+  _default: '[{db_fragmentation, "70%"}, {view_fragmentation, "60%"}, {from, "17:00"}, {to, "22:30"}]'
