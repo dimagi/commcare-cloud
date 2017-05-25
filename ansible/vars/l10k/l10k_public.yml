@@ -75,6 +75,12 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
 couch_dbs:
   default:
     host: 10.162.36.254
