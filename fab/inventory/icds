@@ -129,7 +129,6 @@ devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='pillow0'
-remote_couch_backup='10.247.24.17'
 
 [pil1]
 10.247.24.30
@@ -139,6 +138,7 @@ devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='pillow1'
+remote_couch_backup='10.247.24.17'
 
 [kafka0]
 10.247.24.21
