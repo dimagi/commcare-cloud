@@ -45,6 +45,7 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 proxy_type: 'nginx'
 primary_ssl_env: "cas"
+nginx_max_clients: 1024
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
