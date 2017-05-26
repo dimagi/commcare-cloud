@@ -31,20 +31,20 @@
 [formplayer1]
 10.162.36.231
 
-[riak10]
-10.162.36.218
+[riak15]
+hqriak15.internal-in.commcarehq.org
 
-[riak11]
-10.162.36.207
+[riak16]
+hqriak16.internal-in.commcarehq.org
 
-[riak12]
-10.162.36.198
+[riak17]
+hqriak17.internal-in.commcarehq.org
 
-[riak13]
-10.162.36.220
+[riak18]
+hqriak18.internal-in.commcarehq.org
 
-[riak14]
-10.162.36.200
+[riak19]
+hqriak19.internal-in.commcarehq.org
 
 [touch0]
 10.162.36.215
@@ -97,28 +97,21 @@ es2
 db0
 
 [riakcs:children]
-riak10
-riak11
-riak12
-riak13
-riak14
+riak15
+riak16
+riak17
+riak18
+riak19
+
 
 [riakcs:vars]
 datavol_device=/dev/xvdc
 
 [stanchion:children]
-riak10
+riak15
 
 [pg_standby:children]
 db0
 
 [control]
 10.162.36.196
-
-[riakcs_new]
-hqriak15.internal-in.commcarehq.org 
-hqriak16.internal-in.commcarehq.org 
-hqriak17.internal-in.commcarehq.org 
-hqriak18.internal-in.commcarehq.org 
-hqriak19.internal-in.commcarehq.org 
-
