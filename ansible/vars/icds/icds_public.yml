@@ -233,6 +233,10 @@ couchdb_cluster_settings:
   w: 2
   n: 2
 
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_USERNAME }}"
+
 couch_dbs:
   default:
     host: 10.247.24.18
