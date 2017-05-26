@@ -32,19 +32,19 @@
 10.162.36.231
 
 [riak15]
-hqriak15.internal-in.commcarehq.org
+10.162.36.235
 
 [riak16]
-hqriak16.internal-in.commcarehq.org
+10.162.36.225
 
 [riak17]
-hqriak17.internal-in.commcarehq.org
+10.162.36.244
 
 [riak18]
-hqriak18.internal-in.commcarehq.org
+10.162.36.211
 
 [riak19]
-hqriak19.internal-in.commcarehq.org
+10.162.36.202
 
 [touch0]
 10.162.36.215
