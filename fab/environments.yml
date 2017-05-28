@@ -98,6 +98,8 @@ softlayer:
         num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
+      UpdateUserSyncHistoryPillow:
+        num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1
       UserGroupsDbKafkaPillow:
@@ -199,6 +201,8 @@ icds:
       SqlSMSPillow:
         num_processes: 1
       UnknownUsersPillow:
+        num_processes: 1
+      UpdateUserSyncHistoryPillow:
         num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1
@@ -315,6 +319,8 @@ production:
         num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
+      UpdateUserSyncHistoryPillow:
+        num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1
       UserGroupsDbKafkaPillow:
@@ -392,6 +398,8 @@ staging:
         num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
+      UpdateUserSyncHistoryPillow:
+        num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1
       UserGroupsDbKafkaPillow:
@@ -468,6 +476,8 @@ swiss:
       SqlSMSPillow:
         num_processes: 1
       UnknownUsersPillow:
+        num_processes: 1
+      UpdateUserSyncHistoryPillow:
         num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1
