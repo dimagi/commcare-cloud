@@ -17,7 +17,7 @@ nginx_sites:
      - name: /
        balancer: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
        proxy_redirect: ' off'
-     - name: "^/(.*)/_changes"
+     - name: "~ ^/(.*)/_changes"
        balancer: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
        proxy_redirect: ' off'
-
+       proxy_buffering: ' off'

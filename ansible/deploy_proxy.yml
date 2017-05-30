@@ -57,6 +57,14 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.enikshay_ssl == True, action: site, site_name: enikshay_ssl }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
 
+- name: Couchdb 2.0 Proxy
+  hosts: couchdb2_proxy
+  roles:
+    - { role: shared_dir }
+    - { role: nginx, when: proxy_type == 'nginx', action: install }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
+    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+
 - name: Nginx log rolling configurations
   hosts: proxy
   sudo: yes

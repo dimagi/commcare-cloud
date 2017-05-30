@@ -66,6 +66,7 @@ backup_blobdb: False
 backup_postgres: True
 backup_es: False
 postgres_s3: False
+backup_couch: True
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
@@ -233,6 +234,10 @@ couchdb_cluster_settings:
   w: 2
   n: 2
 
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_USERNAME }}"
+
 couch_dbs:
   default:
     host: 10.247.24.18
@@ -265,7 +270,7 @@ localsettings:
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "" #"http://{{ groups.celery.0 }}:5555"
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
