@@ -36,6 +36,7 @@ active_sites:
   motech2: False
   riakcs: True
   cas_ssl: True
+  couchdb2: True
 
 riak_ring_size: 64
 
@@ -44,6 +45,8 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 proxy_type: 'nginx'
 primary_ssl_env: "cas"
+nginx_max_clients: 1024
+nginx_worker_rlimit_nofile : 16384
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
@@ -224,6 +227,16 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
+
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 2
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_USERNAME }}"
 
 couch_dbs:
   default:

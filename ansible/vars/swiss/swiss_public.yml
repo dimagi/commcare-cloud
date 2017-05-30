@@ -19,6 +19,7 @@ active_sites:
   motech: False
   motech2: False
   riakcs: False
+  couchdb2: False
 
 proxy_type: nginx
 
