@@ -24,7 +24,7 @@ server {
 
 {% if nginx_separate_logs_per_site == True %}
   access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }};
-  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }};
+  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }} warn;
 {% endif %}
 
 {% if 'ssl' in item.server.listen %}

@@ -36,6 +36,7 @@ active_sites:
   motech2: False
   riakcs: True
   cas_ssl: True
+  couchdb2: True
 
 riak_ring_size: 64
 
@@ -44,12 +45,16 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 proxy_type: 'nginx'
 primary_ssl_env: "cas"
+nginx_max_clients: 1024
+nginx_worker_rlimit_nofile : 16384
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
+
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -61,6 +66,7 @@ backup_blobdb: False
 backup_postgres: True
 backup_es: False
 postgres_s3: False
+backup_couch: True
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
@@ -222,6 +228,16 @@ site_locations:
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 2
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_USERNAME }}"
+
 couch_dbs:
   default:
     host: 10.247.24.18
@@ -254,7 +270,7 @@ localsettings:
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "" #"http://{{ groups.celery.0 }}:5555"
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
@@ -429,15 +445,3 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  LOCAL_LOGGING_LOGGERS:
-    notify:
-      handlers:
-        - 'sentry'
-      level: 'ERROR'
-      propagate: True
-    django:
-      handlers:
-        - 'sentry'
-      level: 'ERROR'
-      propagate: True
-  CELERY_SEND_TASK_ERROR_EMAILS: False

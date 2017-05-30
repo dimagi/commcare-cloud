@@ -1,0 +1,23 @@
+---
+nginx_sites:
+- server:
+   balancers:
+    - name: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
+      hosts: couchdb2
+      port: "{{ couchdb2_port }}"
+   file_name: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
+   listen: "'{{ couchdb2_proxy_port }}'"
+   client_max_body_size: "1M"
+   upstream_port: "{{ couchdb2_port }}"
+   proxy_set_headers:
+   - "Host $http_host"
+   - "X-Real-IP $remote_addr"
+   - "X-Forwarded-For $proxy_add_x_forwarded_for"
+   locations:
+     - name: /
+       balancer: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
+       proxy_redirect: ' off'
+     - name: "~ ^/(.*)/_changes"
+       balancer: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
+       proxy_redirect: ' off'
+       proxy_buffering: ' off'
