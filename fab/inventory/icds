@@ -246,6 +246,9 @@ pil1
 couch0
 pil1
 
+[couchdb2_proxy:children]
+couch0
+
 [redis:children]
 couch0
 
