@@ -66,8 +66,6 @@ softlayer:
         num_processes: 1
       CacheInvalidatePillow:
         num_processes: 1
-      CareBiharFluffPillow:
-        num_processes: 1
       CaseSearchToElasticsearchPillow:
         num_processes: 1
       CaseToElasticsearchPillow:
