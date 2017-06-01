@@ -295,6 +295,7 @@ localsettings:
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'icds'
 #  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
 #  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
