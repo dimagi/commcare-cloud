@@ -74,9 +74,14 @@
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
+  pip:
+    name: six
+    state: latest
+    virtualenv: "{{ virtualenv_home }}"
+- name: Upgrade setuptools
   easy_install:
-    # HACK: -U allows us to force update. In ansible 2.0 we can just use the state property
-    name: "-U setuptools"
+    name: setuptools
+    state: latest
     virtualenv: "{{ virtualenv_home }}"
 
 - name: copy localsettings
