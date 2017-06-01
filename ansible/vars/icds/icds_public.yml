@@ -240,16 +240,9 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: 10.247.24.18
-    port: 5984
+    host: 10.247.24.13
+    port: 25984
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  users:
-    host: 10.247.24.30
-    port: 5984
-    name: commcarehq__users
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
@@ -266,6 +259,8 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BIGCOUCH: True
+  BIGCOUCH_QUORUM_COUNT: 2
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"

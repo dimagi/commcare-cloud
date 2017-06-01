@@ -21,3 +21,4 @@ nginx_sites:
        balancer: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
        proxy_redirect: ' off'
        proxy_buffering: ' off'
+       proxy_read_timeout: ' 65s'
