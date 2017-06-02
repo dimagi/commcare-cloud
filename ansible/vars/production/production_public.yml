@@ -21,6 +21,7 @@ active_sites:
   motech2: True
   riakcs: True
   cas_ssl: False
+  couchdb2: False
 
 riak_ring_size: 128
 

@@ -116,6 +116,14 @@ COUCH_DATABASES = {
 {% endfor %}
 }
 
+{% if 'BIGCOUCH' in localsettings %}
+BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
+{% endif %}
+
+{% if 'BIGCOUCH_QUORUM_COUNT' in localsettings %}
+BIGCOUCH_QUORUM_COUNT = '{{ localsettings.BIGCOUCH_QUORUM_COUNT }}'
+{% endif %}
+
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
 COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% endif %}
