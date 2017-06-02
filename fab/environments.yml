@@ -50,10 +50,6 @@ softlayer:
         concurrency: 1
       sms_queue:
         concurrency: 8
-      logistics_reminder_queue:
-        concurrency: 2
-      logistics_background_queue:
-        concurrency: 2
       async_restore_queue:
         concurrency: 4
       background_queue:
