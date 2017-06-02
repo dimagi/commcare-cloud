@@ -1,6 +1,9 @@
 [celery0]
 10.162.36.233
 
+[celery1]
+10.162.36.194
+
 [django0]
 10.162.36.250
 
@@ -76,6 +79,7 @@ es2
 
 [celery:children]
 celery0
+celery1
 
 [pillowtop:children]
 pillow1
