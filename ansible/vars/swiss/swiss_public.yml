@@ -22,6 +22,7 @@ active_sites:
   couchdb2: False
 
 proxy_type: nginx
+supports_http2: False
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no

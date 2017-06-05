@@ -34,6 +34,7 @@ old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 
 proxy_type: 'nginx'
+supports_http2: True
 
 primary_ssl_env: "softlayer"
 
