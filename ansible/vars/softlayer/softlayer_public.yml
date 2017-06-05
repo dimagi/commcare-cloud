@@ -270,3 +270,5 @@ localsettings:
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
+  ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
