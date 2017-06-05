@@ -51,7 +51,7 @@ softlayer:
       sms_queue:
         concurrency: 8
       async_restore_queue:
-        concurrency: 4
+        concurrency: 8
       background_queue:
         concurrency: 4
       flower: {}
