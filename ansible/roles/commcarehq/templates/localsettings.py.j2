@@ -679,3 +679,11 @@ ENABLE_PASSWORD_HASHING = True
 {% if localsettings.get('ENABLE_USED_PASSWORDS_CHECK') %}
 ENABLE_USED_PASSWORDS_CHECK = True
 {% endif %}
+
+{% if localsettings.get('ENIKSHAY_PRIVATE_API_USERS') %}
+ENIKSHAY_PRIVATE_API_USERS = True
+{% endif %}
+
+{% if localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD') %}
+ENIKSHAY_PRIVATE_API_PASSWORD = True
+{% endif %}
