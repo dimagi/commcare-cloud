@@ -22,6 +22,7 @@
     mode: 0644
   tags:
     - tf-localsettings
+    - localsettings
 
 - name: create touchforms data directory
   sudo: yes
