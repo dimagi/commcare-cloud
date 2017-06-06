@@ -75,6 +75,10 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb_dir: /usr/local/couch2/couchdb
+couchdb_install_parent_dir: /usr/local/couch2
+couchdb_parent_srcs_dir: /usr/local/couch2/src
+
 couchdb_cluster_settings:
   q: 8
   r: 1
@@ -84,7 +88,7 @@ couchdb_cluster_settings:
 couch_dbs:
   default:
     host: 10.162.36.254
-    port: 15984
+    port: 25984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
