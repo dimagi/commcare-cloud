@@ -75,10 +75,6 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
-couchdb_dir: /usr/local/couch2/couchdb
-couchdb_install_parent_dir: /usr/local/couch2
-couchdb_parent_srcs_dir: /usr/local/couch2/src
-
 couchdb_cluster_settings:
   q: 8
   r: 1
