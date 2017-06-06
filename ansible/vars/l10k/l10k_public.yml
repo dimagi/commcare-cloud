@@ -84,7 +84,7 @@ couchdb_cluster_settings:
 couch_dbs:
   default:
     host: 10.162.36.254
-    port: 5984
+    port: 15984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
