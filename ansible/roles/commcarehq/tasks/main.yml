@@ -93,6 +93,7 @@
     - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
   tags:
     - localsettings
+    - hq-localsettings
 
 - name: chown localsettings
   become: true
@@ -105,3 +106,4 @@
     - { path: "{{ code_home }}", deploy_env_name: "{{ env_name|default(deploy_env) }}" }
   tags:
     - localsettings
+    - hq-localsettings
