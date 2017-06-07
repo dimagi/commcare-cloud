@@ -163,8 +163,6 @@ icds:
         num_processes: 1
       CacheInvalidatePillow:
         num_processes: 1
-      CaseSearchToElasticsearchPillow:
-        num_processes: 1
       DefaultChangeFeedPillow:
         num_processes: 1
       DomainDbKafkaPillow:
