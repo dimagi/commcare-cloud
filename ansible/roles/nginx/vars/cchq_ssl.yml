@@ -15,7 +15,7 @@ nginx_sites:
    server_name: "{{ SITE_HOST }}"
    client_max_body_size: 500m
    proxy_set_headers:
-   - "Host $http_host"
+   - "Host $host"
    - "X-Forwarded-For $remote_addr"
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"

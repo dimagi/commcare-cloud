@@ -672,18 +672,18 @@ GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
 
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
 
-{% if localsettings.get('ENABLE_PASSWORD_HASHING') %}
-ENABLE_PASSWORD_HASHING = True
-{% endif %}
-
-{% if localsettings.get('ENABLE_USED_PASSWORDS_CHECK') %}
-ENABLE_USED_PASSWORDS_CHECK = True
-{% endif %}
-
 {% if localsettings.get('ENIKSHAY_PRIVATE_API_USERS') %}
-ENIKSHAY_PRIVATE_API_USERS = localsettings.get('ENIKSHAY_PRIVATE_API_USERS')
+ENIKSHAY_PRIVATE_API_USERS = {{ localsettings.ENIKSHAY_PRIVATE_API_USERS }}
 {% endif %}
 
 {% if localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD') %}
-ENIKSHAY_PRIVATE_API_PASSWORD = localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD')
+ENIKSHAY_PRIVATE_API_PASSWORD = '{{ localsettings.ENIKSHAY_PRIVATE_API_PASSWORD }}'
+{% endif %}
+
+{% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
+OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE = True
+{% endif %}
+
+{% if localsettings.get('RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE') %}
+RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE = True
 {% endif %}
