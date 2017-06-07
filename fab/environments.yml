@@ -174,9 +174,9 @@ icds:
       GroupToUserPillow:
         num_processes: 1
       kafka-ucr-static-awc-location:
-        num_processes: 4
+        num_processes: 1
       kafka-ucr-static-cases:
-        num_processes: 8
+        num_processes: 4
       kafka-ucr-static-ccs_record_cases:
         num_processes: 8
       kafka-ucr-static-ccs_record_cases_monthly:
@@ -189,13 +189,13 @@ icds:
         num_processes: 8
     '10.247.24.30': # pillow1
       CaseToElasticsearchPillow:
-        num_processes: 4
+        num_processes: 1
       FormSubmissionMetadataTrackerPillow:
-        num_processes: 2
+        num_processes: 1
       kafka-ucr-static-forms-A:
-        num_processes: 8
+        num_processes: 4
       kafka-ucr-static-forms-B:
-        num_processes: 8
+        num_processes: 4
       kafka-ucr-main:
         num_processes: 2
       KafkaDomainPillow:
@@ -203,7 +203,7 @@ icds:
       LedgerToElasticsearchPillow:
         num_processes: 1
       SqlSMSPillow:
-        num_processes: 2
+        num_processes: 1
       UnknownUsersPillow:
         num_processes: 1
       UpdateUserSyncHistoryPillow:
@@ -215,7 +215,7 @@ icds:
       UserPillow:
         num_processes: 1
       XFormToElasticsearchPillow:
-        num_processes: 2
+        num_processes: 1
 
 
 production:
