@@ -4,7 +4,7 @@ nginx_sites:
    file_name: wiki
    listen: "443 ssl"
    server_name: "wiki.commcarehq.org help.commcarehq.org"
-   proxy_set_header: "Host $http_host"
+   proxy_set_header: "Host $host"
    locations:
      - name: /
        proxy_pass: https://confluence.internal.dimagi.com
