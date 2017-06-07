@@ -1,6 +1,9 @@
 - name: Touchforms user
   delegate_to: "{{ groups.webworkers.0 }}"
-  sudo_user: "{{ cchq_user }}"
+  become: yes
+  become_user: "{{ cchq_user }}"
+  vars:
+    ansible_ssh_pipelining: true
   django_user:
     app_path: "{{ code_home }}"
     virtualenv: "{{ virtualenv_home }}"
@@ -19,6 +22,7 @@
     mode: 0644
   tags:
     - tf-localsettings
+    - localsettings
 
 - name: create touchforms data directory
   sudo: yes

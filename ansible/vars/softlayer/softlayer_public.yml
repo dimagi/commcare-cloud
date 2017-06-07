@@ -24,6 +24,7 @@ active_sites:
   riakcs: True
   cas_ssl: True
   enikshay_ssl: True
+  couchdb2: False
 
 riak_ring_size: 64
 
@@ -66,6 +67,8 @@ cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
 
 enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
 enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
+
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -177,10 +180,9 @@ localsettings:
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
+  CELERY_FLOWER_URL: "http://{{ groups.celery.1 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
@@ -268,3 +270,7 @@ localsettings:
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
+  ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True

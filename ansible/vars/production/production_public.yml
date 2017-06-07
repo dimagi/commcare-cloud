@@ -21,11 +21,14 @@ active_sites:
   motech2: True
   riakcs: True
   cas_ssl: False
+  couchdb2: False
 
-riak_ring_size: 64
+riak_ring_size: 128
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
+old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
+old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 
 proxy_type: nginx
 
@@ -48,6 +51,8 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
+ 
 # Source paths of certs
 apache2_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
 apache2_ca_file: '../config/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
@@ -157,6 +162,7 @@ localsettings:
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
   CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"

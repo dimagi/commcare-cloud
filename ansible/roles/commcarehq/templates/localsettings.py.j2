@@ -116,6 +116,14 @@ COUCH_DATABASES = {
 {% endfor %}
 }
 
+{% if 'BIGCOUCH' in localsettings %}
+BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
+{% endif %}
+
+{% if 'BIGCOUCH_QUORUM_COUNT' in localsettings %}
+BIGCOUCH_QUORUM_COUNT = '{{ localsettings.BIGCOUCH_QUORUM_COUNT }}'
+{% endif %}
+
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
 COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% endif %}
@@ -262,7 +270,7 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMAILS', True) }}
+CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMAILS', False) }}
 
 CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
 CELERY_PERIODIC_QUEUE = '{{ localsettings.CELERY_PERIODIC_QUEUE }}'
@@ -664,10 +672,18 @@ GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
 
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
 
-{% if localsettings.get('ENABLE_PASSWORD_HASHING') %}
-ENABLE_PASSWORD_HASHING = True
+{% if localsettings.get('ENIKSHAY_PRIVATE_API_USERS') %}
+ENIKSHAY_PRIVATE_API_USERS = {{ localsettings.ENIKSHAY_PRIVATE_API_USERS }}
 {% endif %}
 
-{% if localsettings.get('ENABLE_USED_PASSWORDS_CHECK') %}
-ENABLE_USED_PASSWORDS_CHECK = True
+{% if localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD') %}
+ENIKSHAY_PRIVATE_API_PASSWORD = '{{ localsettings.ENIKSHAY_PRIVATE_API_PASSWORD }}'
+{% endif %}
+
+{% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
+OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE = True
+{% endif %}
+
+{% if localsettings.get('RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE') %}
+RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE = True
 {% endif %}
