@@ -97,7 +97,8 @@ postgresql_dbs:
     shards: [400, 511]
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
   - name: "{{ formplayer_db_name }}"
-  - name: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
+  - django_alias: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
+    name: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 
