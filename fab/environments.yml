@@ -255,7 +255,7 @@ production:
       main:
         concurrency: 8
       saved_exports_queue:
-        concurrency: 3
+        concurrency: 4
       background_queue:
         concurrency: 4
   pillows:
