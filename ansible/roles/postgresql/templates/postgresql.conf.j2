@@ -26,9 +26,11 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 # RESOURCE USAGE (except WAL)
 
+{% if not is_pg_standby|default(false) %}
 shared_buffers = {{ postgresql_shared_buffers }}
 work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
+{% endif %}
 vacuum_cost_delay = 20ms
 
 
@@ -51,7 +53,9 @@ hot_standby = on    # ignored on masters
 
 # QUERY TUNING
 
+{% if not is_pg_standby|default(false) %}
 effective_cache_size = {{ postgresql_effective_cache_size }}
+{% endif %}
 
 
 # ERROR REPORTING AND LOGGING
