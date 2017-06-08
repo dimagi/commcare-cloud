@@ -352,6 +352,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-ccs_record_cases_monthly'
+            - 'static-ccs_record_cases_monthly_v2'            
             - 'static-ccs_record_cases_monthly_tableau'
       - name: 'kafka-ucr-static-child_cases_monthly'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -361,6 +362,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-child_cases_monthly'
+            - 'static-child_cases_monthly_v2'            
             - 'static-child_cases_monthly_tableau'
       - name: 'kafka-ucr-static-child_health_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
