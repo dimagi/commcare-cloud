@@ -9,7 +9,7 @@
 #    state: absent
 
 - name: create required directories
-  sudo: yes
+  become: true
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -38,19 +38,23 @@
         accept_hostkey: yes
         update: yes
       become: true
+      become_user: "{{ cchq_user }}"
       tags:
         - git
         - slow
 
     - name: Link source to code_home
       become: true
+      become_user: "{{ cchq_user }}"
       file:
         state: link
         src: "{{ code_source }}"
         dest: "{{ code_home }}"
 
+
     - name: install pip requirements
       become: true
+      become_user: "{{ cchq_user }}"
       with_items: "{{ commcarehq_requirements }}"
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
@@ -59,18 +63,6 @@
       tags:
         - slow
       when: not testing|default(False)
-
-    - name: chown clone
-      become: true
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ cchq_user }}"
-        group: "{{ cchq_user }}"
-        recurse: yes
-      with_items:
-        - "{{ code_source }}"
-        - "{{ virtualenv_source }}"
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
