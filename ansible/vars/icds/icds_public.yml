@@ -379,7 +379,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-person_cases'
-      - name: 'kafka-ucr-static-forms-A'
+      - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -391,13 +391,6 @@ localsettings:
             - 'static-gm_forms'
             - 'static-home_visit_forms'
             - 'static-infrastructure_form'
-      - name: 'kafka-ucr-static-forms-B'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-thr_forms'
