@@ -80,7 +80,7 @@
     name: "Backup postgres daily"
     job: "/etc/cron.d/create_postgres_dump.sh daily 3"
     minute: 0
-    hour: 0
+    hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
@@ -92,7 +92,7 @@
     name: "Backup postgres weekly"
     job: "/etc/cron.d/create_postgres_dump.sh weekly 21"
     minute: 0
-    hour: 0
+    hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
     user: postgres
     cron_file: backup_postgres
