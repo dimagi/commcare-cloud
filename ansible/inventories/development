@@ -2,8 +2,10 @@
 192.168.33.15 newrelic_app_name=django
 
 [postgresql]
-192.168.33.16 # hot_standby_server=192.168.33.17 -- test hot standby
-# 192.168.33.17 -- test multiple db machines
+192.168.33.16 hot_standby_server=192.168.33.17
+
+[pg_standby]
+192.168.33.17 archive_dir="/var/data" hot_standby_master="192.168.33.16"
 
 [couchdb]
 192.168.33.16
@@ -50,9 +52,6 @@ swap_size=100M
 
 [shared_dir_host]
 192.168.33.16
-
-[pg_standby]
-#192.168.33.17 hot_standby_master=192.168.33.16
 
 [patch_clients]
 192.168.33.16
