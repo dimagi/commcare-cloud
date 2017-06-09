@@ -71,7 +71,15 @@
       with_items:
         - "{{ code_source }}"
         - "{{ virtualenv_source }}"
-        - "{{ code_home }}"
+
+    - name: chown current symlink
+      become: true
+      file:
+        path: "{{ code_home }}"
+        state: link
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        recurse: yes
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
