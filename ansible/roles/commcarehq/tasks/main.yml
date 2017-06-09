@@ -71,6 +71,7 @@
       with_items:
         - "{{ code_source }}"
         - "{{ virtualenv_source }}"
+        - "{{ code_home }}"
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
