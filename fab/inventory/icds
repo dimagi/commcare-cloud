@@ -33,9 +33,6 @@ hostname='pg1'
 10.247.24.13
 
 [web0:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
-datavol_device='/dev/mapper/consolidated-data'
 parent_mailrelay='relay.nic.in'
 hostname='web0'
 
@@ -43,9 +40,6 @@ hostname='web0'
 10.247.24.15
 
 [web1:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
-datavol_device='/dev/mapper/consolidated-data'
 hostname='web1'
 
 [es0]
@@ -160,36 +154,24 @@ hostname='kafka0'
 10.247.24.24
 
 [web2:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
-datavol_device='/dev/mapper/consolidated-data'
 hostname='web2'
 
 [web3]
 10.247.24.25
 
 [web3:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
-datavol_device='/dev/mapper/consolidated-data'
 hostname='web3'
 
 [web4]
 10.247.24.26
 
 [web4:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
-datavol_device='/dev/mapper/consolidated-data'
 hostname='web4'
 
 [web5]
 10.247.24.27
 
 [web5:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
-datavol_device='/dev/mapper/consolidated-data'
 hostname='web5'
 
 [pg2]
@@ -309,8 +291,6 @@ es3
 [lvm:children]
 pg0
 pg1
-web0
-web1
 es0
 es1
 couch0
@@ -318,10 +298,6 @@ celery0
 pil0
 pil1
 kafka0
-web2
-web3
-web4
-web5
 pg2
 pg3
 es2
