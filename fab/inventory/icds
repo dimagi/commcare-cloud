@@ -220,10 +220,6 @@ pg1
 pg2
 pg3
 
-[couchdb:children]
-couch0
-pil1
-
 [couchdb2:children]
 couch0
 pil1
