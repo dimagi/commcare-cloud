@@ -48,6 +48,8 @@
         state: link
         src: "{{ code_source }}"
         dest: "{{ code_home }}"
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
 
     - name: install pip requirements
       become: true
@@ -71,6 +73,7 @@
       with_items:
         - "{{ code_source }}"
         - "{{ virtualenv_source }}"
+
   when: not gitdir.stat.exists
 
 - name: Upgrade setuptools
