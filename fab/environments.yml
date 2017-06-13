@@ -1,5 +1,24 @@
 # Base env containing default values which get
 # overridden or added to in each of the specific envs below.
+#
+# Celery configuration should be broken out by queue. Example:
+#
+# celery_processes:
+#   host_name:                  # Required; the name of the host on which to put the workers ('*' means all identified celery hosts)
+#     queue_name:               # Required; the name of the queue from which each worker configured in this section will consume
+#       concurrency: 4          # Required; the concurrency configured on each worker
+#       pooling: prefork        # Optional, default prefork; specify prefork or gevent for the process pool type used on each worker in this section
+#       max_tasks_per_child: 5  # Optional, default 50; only applicable for prefork pooling (corresponds to maxtasksperchild worker command line arg)
+#       num_workers: 2          # Optional, default 1; the number of workers to create consuming from this queue on this host
+#
+# The above celery configuration would create 2 celery workers with max concurrency of 4
+# using prefork pooling and a max tasks per child setting of 5, which consume from the
+# 'queue_name' queue and both would reside on the 'host_name' machine.
+#
+# It's ok to create workers on multiple machines as well. For example, adding 'queue_name'
+# under a 'host_name_2' section would also create workers on the 'host_name_2' machine
+# consuming from the same 'queue_name' queue.
+
 ---
 base:
   sudo_user: cchq
