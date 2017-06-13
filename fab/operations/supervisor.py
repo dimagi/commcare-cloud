@@ -88,10 +88,13 @@ def set_celery_supervisorconf():
                 'worker_num': worker_num,
             })
 
+            conf_destination_filename = 'supervisor_celery_worker_%s_%s.conf' % (queue, worker_num)
+
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',
                 'supervisor_celery_worker.conf',
-                {'celery_params': params}
+                {'celery_params': params},
+                conf_destination_filename,
             )
 
         if queue == 'celery_periodic':
@@ -194,7 +197,7 @@ def set_websocket_supervisorconf():
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
 
 
-def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
+def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_destination_filename=None):
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
 
     if filename in env.get('service_blacklist', []):
@@ -202,7 +205,7 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
         return
 
     with cd(env.code_root):
-        sudo((
+        command = (
             '%(virtualenv_root)s/bin/python manage.py '
             '%(conf_command)s --traceback --conf_file "%(filename)s" '
             '--conf_destination "%(destination)s" --params \'%(params)s\''
@@ -213,7 +216,12 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
             'filename': filename,
             'destination': posixpath.join(env.services, 'supervisor'),
             'params': _format_env(env, params)
-        })
+        }
+
+        if conf_destination_filename:
+            command += ' --conf_destination_filename "%s"' % conf_destination_filename
+
+        sudo(command)
 
 
 def _format_env(current_env, extra=None):
