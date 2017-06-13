@@ -75,6 +75,7 @@ def set_celery_supervisorconf():
 
         pooling = params.get('pooling', 'prefork')
         max_tasks_per_child = params.get('max_tasks_per_child', 50)
+        num_workers = params.get('num_workers', 1)
 
         params.update({
             'queue': queue,
@@ -82,11 +83,16 @@ def set_celery_supervisorconf():
             'max_tasks_per_child': max_tasks_per_child,
         })
 
-        _rebuild_supervisor_conf_file(
-            'make_supervisor_conf',
-            'supervisor_celery_worker.conf',
-            {'celery_params': params}
-        )
+        for worker_num in range(num_workers):
+            params.update({
+                'worker_num': worker_num,
+            })
+
+            _rebuild_supervisor_conf_file(
+                'make_supervisor_conf',
+                'supervisor_celery_worker.conf',
+                {'celery_params': params}
+            )
 
         if queue == 'celery_periodic':
             _rebuild_supervisor_conf_file(
