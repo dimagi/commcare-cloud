@@ -193,7 +193,7 @@ icds:
         num_processes: 8
     '10.247.24.30': # pillow1
       CaseToElasticsearchPillow:
-        num_processes: 1
+        num_processes: 8
       FormSubmissionMetadataTrackerPillow:
         num_processes: 1
       kafka-ucr-static-forms:
@@ -219,7 +219,7 @@ icds:
       UserPillow:
         num_processes: 1
       XFormToElasticsearchPillow:
-        num_processes: 1
+        num_processes: 4
 
 
 production:
