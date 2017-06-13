@@ -24,7 +24,7 @@ softlayer:
   newrelic_javaagent: True
   celery_processes:
     '10.162.36.233':  # celery0
-      periodic:
+      celery_periodic:
         server_whitelist: '10.162.36.233'
         concurrency: 4
       pillow_retry_queue:
@@ -32,15 +32,19 @@ softlayer:
       email_queue:
         concurrency: 2
       repeat_record_queue:
+        pooling: gevent
         concurrency: 200
       ucr_queue:
         concurrency: 4
+        max_tasks_per_child: 5
       ucr_indicator_queue:
         concurrency: 1
-      main:
+      celery:
         concurrency: 8
+        max_tasks_per_child: 5
       saved_exports_queue:
         concurrency: 3
+        max_tasks_per_child: 1
     '10.162.36.194':  # celery1
       reminder_case_update_queue:
         concurrency: 4
@@ -48,12 +52,14 @@ softlayer:
         concurrency: 8
       reminder_rule_queue:
         concurrency: 1
+        max_tasks_per_child: 1
       sms_queue:
         concurrency: 8
       async_restore_queue:
         concurrency: 8
       background_queue:
         concurrency: 4
+        max_tasks_per_child: 1
       flower: {}
   pillows:
     '*':
@@ -118,27 +124,33 @@ icds:
   gunicorn_workers_static_factor: 1
   celery_processes:
     '10.247.24.19': # celery0
-      main:
+      celery:
         concurrency: 8
-      periodic:
+        max_tasks_per_child: 5
+      celery_periodic:
         concurrency: 4
         server_whitelist: 10.247.24.19
       pillow_retry_queue:
         concurrency: 1
       repeat_record_queue:
+        pooling: gevent
         concurrency: 3
       ucr_queue:
         concurrency: 4
+        max_tasks_per_child: 5
       background_queue:
         concurrency: 4
+        max_tasks_per_child: 1
       reminder_case_update_queue:
         concurrency: 10
       reminder_queue:
         concurrency: 8
       reminder_rule_queue:
         concurrency: 1
+        max_tasks_per_child: 1
       saved_exports_queue:
         concurrency: 3
+        max_tasks_per_child: 1
       sms_queue:
         concurrency: 8
       email_queue:
@@ -228,7 +240,7 @@ production:
 
   celery_processes:
     hqcelery0:
-      periodic:
+      celery_periodic:
         server_whitelist: hqcelery0.internal-va.commcarehq.org
         concurrency: 4
       pillow_retry_queue:
@@ -236,9 +248,11 @@ production:
       email_queue:
         concurrency: 2
       repeat_record_queue:
+        pooling: gevent
         concurrency: 200
       ucr_queue:
         concurrency: 4
+        max_tasks_per_child: 5
       ucr_indicator_queue:
         concurrency: 1
     hqcelery1:
@@ -248,22 +262,28 @@ production:
         concurrency: 8
       reminder_rule_queue:
         concurrency: 1
+        max_tasks_per_child: 1
       sms_queue:
         concurrency: 8
       logistics_reminder_queue:
         concurrency: 2
+        max_tasks_per_child: 5
       logistics_background_queue:
         concurrency: 2
+        max_tasks_per_child: 5
       async_restore_queue:
         concurrency: 4
       flower: {}
     hqcelery2:
-      main:
+      celery:
         concurrency: 8
+        max_tasks_per_child: 5
       saved_exports_queue:
         concurrency: 4
+        max_tasks_per_child: 1
       background_queue:
         concurrency: 4
+        max_tasks_per_child: 1
   pillows:
     '*':
       AppDbChangeFeedPillow:
@@ -344,16 +364,20 @@ staging:
 
   celery_processes:
     '*':
-      main:
+      celery:
         concurrency: 4
+        max_tasks_per_child: 5
       background_queue:
         concurrency: 2
+        max_tasks_per_child: 1
       pillow_retry_queue:
         concurrency: 1
       saved_exports_queue:
         concurrency: 3
+        max_tasks_per_child: 1
       ucr_queue:
         concurrency: 1
+        max_tasks_per_child: 5
       email_queue:
         concurrency: 1
       async_restore_queue:
@@ -422,29 +446,35 @@ swiss:
 
   celery_processes:
     '*':
-      main:
+      celery:
         concurrency: 1
+        max_tasks_per_child: 5
       background_queue:
         concurrency: 1
-      periodic:
+        max_tasks_per_child: 1
+      celery_periodic:
         concurrency: 1
         server_whitelist: swiss.commcarehq.org
       repeat_record_queue:
+        pooling: gevent
         concurrency: 1
       email_queue:
         concurrency: 1
       saved_exports_queue:
         concurrency: 1
+        max_tasks_per_child: 1
       pillow_retry_queue:
         concurrency: 1
       ucr_queue:
         concurrency: 1
+        max_tasks_per_child: 5
       reminder_case_update_queue:
         concurrency: 1
       reminder_queue:
         concurrency: 1
       reminder_rule_queue:
         concurrency: 1
+        max_tasks_per_child: 1
       sms_queue:
         concurrency: 1
       async_restore_queue:
