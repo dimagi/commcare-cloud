@@ -1,4 +1,4 @@
 ---
 - src: git+https://github.com/emord/ansible-couchdb-cluster.git
-  version: df205e7
+  version: 826df60
   name: emord.ansible-couchdb-cluster
