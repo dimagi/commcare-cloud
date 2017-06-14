@@ -230,9 +230,9 @@ icds:
       kafka-ucr-static-forms:
         num_processes: 8
       kafka-ucr-main:
-        num_processes: 4
+        num_processes: 2
       kafka-ucr-static-test:
-        num_processes: 8
+        num_processes: 2
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
