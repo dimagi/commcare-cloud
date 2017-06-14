@@ -2,3 +2,6 @@
 - src: git+https://github.com/emord/ansible-couchdb-cluster.git
   version: df205e7
   name: emord.ansible-couchdb-cluster
+- src: git+https://github.com/debops-contrib/ansible-etckeeper.git
+  version: 29c721d
+  name: debops-contrib.etckeeper
