@@ -184,10 +184,10 @@ icds:
         concurrency: 16
     '10.247.24.15': # web1
       ucr_indicator_queue:
-        concurrency: 12
+        concurrency: 16
     '10.247.24.24': # web2
       ucr_indicator_queue:
-        concurrency: 12
+        concurrency: 16
   pillows:
     '10.247.24.20': # pillow0
       AppDbChangeFeedPillow:
