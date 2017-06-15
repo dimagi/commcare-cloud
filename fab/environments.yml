@@ -214,11 +214,11 @@ icds:
       kafka-ucr-static-awc-location:
         num_processes: 1
       kafka-ucr-static-cases:
-        num_processes: 8
+        num_processes: 16
       kafka-ucr-static-ccs_record_cases_monthly:
         num_processes: 8
       kafka-ucr-static-child_health_cases:
-        num_processes: 8
+        num_processes: 16
       kafka-ucr-static-person_cases:
         num_processes: 8
     '10.247.24.30': # pillow1
