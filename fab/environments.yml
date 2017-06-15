@@ -161,9 +161,13 @@ icds:
         concurrency: 4
         max_tasks_per_child: 1
       reminder_case_update_queue:
-        concurrency: 10
+        pooling: gevent
+        concurrency: 5
+        num_workers: 4
       reminder_queue:
-        concurrency: 8
+        pooling: gevent
+        concurrency: 5
+        num_workers: 4
       reminder_rule_queue:
         concurrency: 1
         max_tasks_per_child: 1
@@ -171,7 +175,9 @@ icds:
         concurrency: 3
         max_tasks_per_child: 1
       sms_queue:
-        concurrency: 8
+        pooling: gevent
+        concurrency: 10
+        num_workers: 4
       email_queue:
         concurrency: 2
       async_restore_queue:
