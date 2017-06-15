@@ -279,7 +279,7 @@ CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMA
 CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
 CELERY_PERIODIC_QUEUE = '{{ localsettings.CELERY_PERIODIC_QUEUE }}'
 CELERY_FLOWER_URL = '{{ localsettings.CELERY_FLOWER_URL }}'
-{% if CELERY_TIMEZONE in localsettings and localsettings.CELERY_TIMEZONE %}
+{% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
 {% endif %}
 
