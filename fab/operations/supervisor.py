@@ -182,6 +182,7 @@ def set_sms_queue_supervisorconf():
 def set_reminder_queue_supervisorconf():
     if 'reminder_queue' in _get_celery_queues():
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_queue_schedule_instances.conf')
 
 
 @roles(ROLES_PILLOW_RETRY_QUEUE)
