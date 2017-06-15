@@ -208,6 +208,7 @@ web0
 
 [webworkers:children]
 web0
+web1
 web3
 web4
 web5
@@ -238,7 +239,6 @@ kafka0
 kafka0
 
 [celery:children]
-web1
 web2
 celery0
 celery1
