@@ -215,11 +215,7 @@ icds:
         num_processes: 1
       kafka-ucr-static-cases:
         num_processes: 8
-      kafka-ucr-static-ccs_record_cases:
-        num_processes: 8
       kafka-ucr-static-ccs_record_cases_monthly:
-        num_processes: 8
-      kafka-ucr-static-child_cases_monthly:
         num_processes: 8
       kafka-ucr-static-child_health_cases:
         num_processes: 8
