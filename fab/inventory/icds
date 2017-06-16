@@ -239,9 +239,9 @@ kafka0
 kafka0
 
 [celery:children]
-web2
 celery0
 celery1
+web2
 
 [pillowtop:children]
 pil0
