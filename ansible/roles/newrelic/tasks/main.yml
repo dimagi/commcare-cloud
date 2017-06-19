@@ -17,6 +17,7 @@
 
 - name: Make sure newrelic-sysmond has started
   service: name=newrelic-sysmond state=started
+  tags: after-reboot
 
 - name: copy newrelic ini file
   sudo_user: "{{ cchq_user }}"

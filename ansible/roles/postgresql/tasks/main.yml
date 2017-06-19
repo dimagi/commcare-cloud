@@ -73,6 +73,7 @@
 - name: start postgresql
   become: true
   service: name=postgresql state=started
+  tags: after-reboot
 
 - name: Create PostgreSQL users
   become: yes

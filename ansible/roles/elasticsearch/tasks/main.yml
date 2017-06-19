@@ -101,12 +101,14 @@
   service: name=elasticsearch state=started
   register: result
   failed_when: result.state != "started"
+  tags: after-reboot
 
 - name: Restart Elasticsearch
   sudo: yes
   service: name=elasticsearch state=restarted
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
   tags:
+    - after-reboot
     - es_restart
 
 - name: Create initial snapshot
