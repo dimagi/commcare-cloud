@@ -93,7 +93,7 @@ softlayer:
       CacheInvalidatePillow:
         num_processes: 1
       CaseSearchToElasticsearchPillow:
-        num_processes: 1
+        num_processes: 4
       CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
