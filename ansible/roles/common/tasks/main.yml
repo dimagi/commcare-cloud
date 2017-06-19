@@ -67,6 +67,7 @@
     name: Etc/UTC
   tags:
     - timezone
+    - after-reboot
 
 - name: "Sets hostname"
   become: yes
@@ -75,6 +76,7 @@
   when: hostname is defined
   tags:
     - hostname
+    - after-reboot
 
 - name: "Sets /etc/hosts"
   become: yes
@@ -85,5 +87,6 @@
   when: hostname is defined and internal_domain_name is defined
   tags:
     - hostname
+    - after-reboot
 
 - include: antivirus.yml
