@@ -3,6 +3,7 @@
   hosts:
     - postgresql
     - couchdb
+    - couchdb2
     - redis
     - elasticsearch
     - rabbitmq
