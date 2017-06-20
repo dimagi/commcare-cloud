@@ -81,7 +81,7 @@ softlayer:
         max_tasks_per_child: 1
       flower: {}
   pillows:
-    'pillow1':
+    '10.162.36.253':
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -112,7 +112,7 @@ softlayer:
         num_processes: 1
       ReportXFormToElasticsearchPillow:
         num_processes: 1
-    'pillow3':
+    '10.162.36.212':
       CaseSearchToElasticsearchPillow:
         num_processes: 4
       kafka-ucr-static:
