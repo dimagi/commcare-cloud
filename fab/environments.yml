@@ -81,7 +81,7 @@ softlayer:
         max_tasks_per_child: 1
       flower: {}
   pillows:
-    '*':
+    '10.162.36.253':
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -92,8 +92,6 @@ softlayer:
         num_processes: 1
       CacheInvalidatePillow:
         num_processes: 1
-      CaseSearchToElasticsearchPillow:
-        num_processes: 4
       CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
@@ -108,15 +106,18 @@ softlayer:
         num_processes: 1
       kafka-ucr-main:
         num_processes: 1
-      kafka-ucr-static:
-        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
         num_processes: 1
-      ReportCaseToElasticsearchPillow:
-        num_processes: 1
       ReportXFormToElasticsearchPillow:
+        num_processes: 1
+    '10.162.36.212':
+      CaseSearchToElasticsearchPillow:
+        num_processes: 4
+      kafka-ucr-static:
+        num_processes: 1
+      ReportCaseToElasticsearchPillow:
         num_processes: 1
       SqlSMSPillow:
         num_processes: 1
