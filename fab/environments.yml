@@ -92,8 +92,6 @@ softlayer:
         num_processes: 1
       CacheInvalidatePillow:
         num_processes: 1
-      CaseSearchToElasticsearchPillow:
-        num_processes: 4
       CaseToElasticsearchPillow:
         num_processes: 1
       DefaultChangeFeedPillow:
@@ -108,15 +106,18 @@ softlayer:
         num_processes: 1
       kafka-ucr-main:
         num_processes: 1
-      kafka-ucr-static:
-        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
         num_processes: 1
-      ReportCaseToElasticsearchPillow:
-        num_processes: 1
       ReportXFormToElasticsearchPillow:
+        num_processes: 1
+    'pillow3':
+      CaseSearchToElasticsearchPillow:
+        num_processes: 4
+      kafka-ucr-static:
+        num_processes: 1
+      ReportCaseToElasticsearchPillow:
         num_processes: 1
       SqlSMSPillow:
         num_processes: 1
@@ -132,9 +133,6 @@ softlayer:
         num_processes: 1
       XFormToElasticsearchPillow:
         num_processes: 1
-    'pillow3':
-      CaseSearchToElasticsearchPillow:
-        num_processes: 4
 
 
 icds:
