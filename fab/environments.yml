@@ -81,7 +81,7 @@ softlayer:
         max_tasks_per_child: 1
       flower: {}
   pillows:
-    '*':
+    'pillow1':
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -132,6 +132,9 @@ softlayer:
         num_processes: 1
       XFormToElasticsearchPillow:
         num_processes: 1
+    'pillow3':
+      CaseSearchToElasticsearchPillow:
+        num_processes: 4
 
 
 icds:
