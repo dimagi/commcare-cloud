@@ -19,7 +19,7 @@
 [pillow1]
 10.162.36.253
 
-[pillow2]
+[pillow3]
 10.162.36.212
 
 [proxy0]
@@ -86,7 +86,7 @@ celery1
 
 [pillowtop:children]
 pillow1
-pillow2
+pillow3
 
 [touchforms:children]
 touch0
