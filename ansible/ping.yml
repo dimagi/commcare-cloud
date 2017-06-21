@@ -1,0 +1,147 @@
+- hosts:
+  - all
+  tasks:
+  - action: ping
+
+- hosts:
+  - proxy
+  tasks:
+  - command: service nginx status
+    name: Check nginx status
+    args:
+      warn: False
+
+- hosts:
+  - webworkers
+  tasks:
+  - command: supervisorctl status
+    become: True
+    name: Check supervisor processes status
+    args:
+      warn: False
+
+- hosts:
+  - postgresql
+  - pg_standby
+  tasks:
+  - command: service pgbouncer status
+    name: Check pgbouncer status
+    args:
+      warn: False
+  - command: service postgresql status
+    name: Check postgresql status
+    args:
+      warn: False
+
+- hosts:
+  - couchdb2
+  tasks:
+  - command: service couchdb2 status
+    name: Check couchdb status
+    args:
+      warn: False
+
+- hosts:
+  - redis
+  tasks:
+  - command: service redis-server status
+    name: Check redis status
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - zookeper
+  tasks:
+  - command: service zookeper status
+    name: Check zookeper status
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - kafka
+  tasks:
+  - command: service kafka-server status
+    name: Check kafka status
+    args:
+      warn: False
+
+- hosts:
+  - rabbitmq
+  tasks:
+  - command: service rabbitmq-server status
+    name: Check rabbitmq status
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - all
+  - mailrelay
+  tasks:
+  - command: service postfix status
+    name: Check postfix status
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - pillowtop
+  - celery
+  tasks:
+  - command: supervisorctl status
+    become: True
+    name: Check supervisor processes status
+    args:
+      warn: False
+
+- hosts:
+  - formplayer
+  - touchforms
+  tasks:
+  - command: supervisorctl status
+    become: True
+    name: Check supervisor processes status
+    args:
+      warn: False
+
+- hosts:
+  - elasticsearch
+  tasks:
+  - command: service elasticsearch status
+    name: Check elasticsearch status
+    args:
+      warn: False
+
+- hosts:
+  - shared_dir_host
+  tasks:
+  - command: service nfs-kernel-server status
+    name: Check NFS status
+    args:
+      warn: False
+
+- hosts:
+  - riakcs
+  tasks:
+  - command: service riak status
+    name: Check riak status
+    become: True
+    args:
+      warn: False
+  - command: service riak-cs status
+    name: Check riak-cs status
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - stanchion
+  tasks:
+  - command: service stanchion status
+    name: Check stanchion status
+    become: True
+    args:
+      warn: False
+
