@@ -47,6 +47,7 @@
   check_mode: no
   tags:
     - mount-ecryptfs
+    - after-reboot
 
 - name: Install ecryptfs-utils
   sudo: yes
@@ -61,6 +62,7 @@
   file: path="{{ encrypted_root }}" owner=root group=root mode=0755 state=directory
   tags:
     - mount-ecryptfs
+    - after-reboot
 
 - name: Add encryption password to keyring
   sudo: yes
@@ -69,6 +71,7 @@
   when: encrypted_root  not in mtab_contents.stdout
   tags:
     - mount-ecryptfs
+    - after-reboot
 
 - name: Mount data drive
   sudo: yes
@@ -76,6 +79,7 @@
   when: encrypted_root not in mtab_contents.stdout
   tags:
     - mount-ecryptfs
+    - after-reboot
 
 - name: "Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS"
   sudo: yes

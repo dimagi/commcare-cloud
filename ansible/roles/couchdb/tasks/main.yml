@@ -75,6 +75,7 @@
 
 - name: Start CouchDB service
   service: name=couchdb state=started
+  tags: after-reboot
 
 - name: Check CouchDB database
   uri:

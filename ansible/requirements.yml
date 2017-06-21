@@ -5,3 +5,6 @@
 - src: git+https://github.com/debops-contrib/ansible-etckeeper.git
   version: 29c721d
   name: debops-contrib.etckeeper
+- src: ANXS.tmpreaper
+  version: v1.0.1
+  name: tmpreaper
