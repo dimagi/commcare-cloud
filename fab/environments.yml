@@ -66,14 +66,19 @@ softlayer:
         max_tasks_per_child: 1
     '10.162.36.194':  # celery1
       reminder_case_update_queue:
-        concurrency: 4
+        pooling: gevent
+        concurrency: 5
+        num_workers: 2
       reminder_queue:
-        concurrency: 8
+        pooling: gevent
+        concurrency: 5
+        num_workers: 2
       reminder_rule_queue:
         concurrency: 1
         max_tasks_per_child: 1
       sms_queue:
-        concurrency: 8
+        pooling: gevent
+        concurrency: 10
       async_restore_queue:
         concurrency: 8
       background_queue:
@@ -273,13 +278,18 @@ production:
         concurrency: 1
     hqcelery1:
       reminder_case_update_queue:
-        concurrency: 4
+        pooling: gevent
+        concurrency: 5
+        num_workers: 2
       reminder_queue:
-        concurrency: 8
+        pooling: gevent
+        concurrency: 5
+        num_workers: 2
       reminder_rule_queue:
         concurrency: 1
         max_tasks_per_child: 1
       sms_queue:
+        pooling: gevent
         concurrency: 8
       logistics_reminder_queue:
         concurrency: 2
