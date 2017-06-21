@@ -98,7 +98,7 @@ softlayer:
       CacheInvalidatePillow:
         num_processes: 1
       CaseToElasticsearchPillow:
-        num_processes: 1
+        num_processes: 4
       DefaultChangeFeedPillow:
         num_processes: 1
       DomainDbKafkaPillow:
