@@ -51,10 +51,10 @@
       warn: False
 
 - hosts:
-  - zookeper
+  - zookeeper
   tasks:
-  - command: service zookeper status
-    name: Check zookeper status
+  - command: service zookeeper status
+    name: Check zookeeper status
     become: True
     args:
       warn: False
