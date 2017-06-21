@@ -85,6 +85,9 @@ softlayer:
         concurrency: 4
         max_tasks_per_child: 1
       flower: {}
+    '10.162.36.x':  # celery2
+      ucr_indicator_queue:
+        concurrency: 16
   pillows:
     '10.162.36.253':
       AppDbChangeFeedPillow:
