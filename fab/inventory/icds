@@ -71,7 +71,7 @@ hostname='es1'
 
 [es2:vars]
 elasticsearch_node_name=es2
-devices='["/dev/sdb", "/dev/sde"]'
+devices='["/dev/sdb", "/dev/sdc", "/dev/sde"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
