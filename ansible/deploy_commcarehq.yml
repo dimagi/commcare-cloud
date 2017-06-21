@@ -16,4 +16,6 @@
     - celery
   sudo: yes
   roles:
-    - {role: celery_hq, tags: celery_hq}
+    - role: tmpreaper
+      tags: commcarehq, celery_hq, tmpreaper, cron
+      tmpreaper_time: '2d'
