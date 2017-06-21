@@ -117,6 +117,7 @@ softlayer:
         num_processes: 1
       ReportXFormToElasticsearchPillow:
         num_processes: 1
+    '10.162.36.212':
       CaseSearchToElasticsearchPillow:
         num_processes: 4
       kafka-ucr-static:
