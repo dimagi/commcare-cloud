@@ -53,8 +53,5 @@ swap_size=100M
 [shared_dir_host]
 192.168.33.16
 
-[patch_clients]
-192.168.33.16
-
 [mailrelay]
 192.168.33.14 parent_mailrelay='mail.example.org'
