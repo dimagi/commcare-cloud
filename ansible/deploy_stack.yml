@@ -22,3 +22,4 @@
 - include: deploy_formplayer.yml
 - include: deploy_mailrelay.yml
 - include: deploy_tmpreaper.yml
+- include: deploy_etckeeper.yml
