@@ -132,7 +132,7 @@
   cron:
     name: "Daily ES Snapshot"
     job: "/etc/cron.d/create_es_snapshot.py"
-    hour: 4
+    hour: "{{ nadir_hour+4|default(4) }}"
     minute: 0
     user: root
     cron_file: create_es_snapshot

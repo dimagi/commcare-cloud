@@ -22,6 +22,7 @@ cchq_user: cchq
 dev_group: dimagidev
 dev_users:
   present:
+    - astone
     - biyeun
     - brudolph
     - cellowitz
@@ -39,6 +40,7 @@ dev_users:
     - ncarnahan
     - npellegrino
     - nhooper
+    - sgoyal
     - skelly
     - sravfeyn
     - wpride

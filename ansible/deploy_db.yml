@@ -3,6 +3,7 @@
   hosts:
     - postgresql
     - couchdb
+    - couchdb2
     - redis
     - elasticsearch
     - rabbitmq
@@ -57,6 +58,26 @@
   sudo: yes
   roles:
     - {role: couchdb2, tags: 'couchdb2'}
+
+- name: Couchdb2 log rolling configurations
+  hosts: couchdb2
+  sudo: yes
+  roles:
+    - role: ansible-logrotate
+      tags: couchdb2
+      logrotate_scripts:
+        - name: "{{ deploy_env }}_couchdb2"
+          path: "{{ couchdb_dir }}/var/log/*.stderr"
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
 
 - name: Redis
   hosts: redis

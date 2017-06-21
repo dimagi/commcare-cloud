@@ -272,6 +272,7 @@ localsettings:
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  CELERY_TIMEZONE: 'Asia/Kolkata'
   COMMCARE_HQ_NAME: 'ICDS-CAS Server'
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
@@ -337,14 +338,11 @@ localsettings:
             - 'static-household_cases'
             - 'static-tasks_cases'
             - 'static-tech_issue_cases'
-      - name: 'kafka-ucr-static-ccs_record_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
             - 'static-ccs_record_cases'
+            - 'static-child_health_cases'
+            - 'static-child_cases_monthly'
+            - 'static-child_cases_monthly_tableau'
+            - 'static-child_cases_monthly_tableau_v2'
       - name: 'kafka-ucr-static-ccs_record_cases_monthly'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -354,23 +352,7 @@ localsettings:
           include_ucrs:
             - 'static-ccs_record_cases_monthly'
             - 'static-ccs_record_cases_monthly_tableau'
-      - name: 'kafka-ucr-static-child_cases_monthly'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-child_cases_monthly'
-            - 'static-child_cases_monthly_tableau'
-      - name: 'kafka-ucr-static-child_health_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-child_health_cases'
+            - 'static-ccs_record_cases_monthly_tableau_v2'
       - name: 'kafka-ucr-static-test'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -388,6 +370,7 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-person_cases'
+            - 'static-person_cases_v2'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
