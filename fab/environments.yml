@@ -113,7 +113,7 @@ softlayer:
       GroupToUserPillow:
         num_processes: 1
       kafka-ucr-main:
-        num_processes: 1
+        num_processes: 4
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
@@ -124,7 +124,7 @@ softlayer:
       CaseSearchToElasticsearchPillow:
         num_processes: 4
       kafka-ucr-static:
-        num_processes: 1
+        num_processes: 4
       ReportCaseToElasticsearchPillow:
         num_processes: 1
       SqlSMSPillow:
