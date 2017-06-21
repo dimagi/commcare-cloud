@@ -1,5 +1,10 @@
 ---
 
+- name: Update the apt cache
+  when: shared_drive_enabled
+  apt:
+    update_cache: yes
+
 - name: Install NFS packages
   sudo: yes
   when: shared_drive_enabled
