@@ -13,10 +13,17 @@
   # run in check mode
   always_run: yes
 
-- name: install supervisor
-  apt: name=supervisor state=present
+- name: install supervisord
   sudo: yes
-  when: not which_supervisord.stdout
+  pip:
+    name: supervisor
+    version: 3.2.3
+
+- name: remove apt supervisor
+  sudo: yes
+  apt:
+    name: supervisor
+    state: absent
 
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
