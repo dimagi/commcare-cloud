@@ -1,0 +1,18 @@
+info: root
+marketing: root
+sales: root
+support: root
+abuse: root
+noc: root
+security: root
+postmaster: root
+hostmaster: root
+usenet: root
+news: root
+webmaster: root
+www: root
+uucp: root
+ftp: root
+{% if root_email is defined %}
+root: {{ root_email }}
+{% endif %}
