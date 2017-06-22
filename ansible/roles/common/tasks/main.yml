@@ -89,4 +89,24 @@
     - hostname
     - after-reboot
 
+- name: "RFC 2142 email aliases and forwarding"
+  become: yes
+  template:
+    src: etc_aliases.j2
+    dest: /etc/aliases
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  register: aliases
+  tags:
+    - postfix
+
+- name: "RFC 2142 email aliases and forwarding (update)"
+  become: yes
+  command: postalias /etc/aliases
+  when: aliases.changed
+  tags:
+    - postfix
+
 - include: antivirus.yml

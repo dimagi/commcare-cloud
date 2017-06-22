@@ -128,3 +128,5 @@ datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_process: true
+
+root_email: commcarehq-ops+root@dimagi.com
