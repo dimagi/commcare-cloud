@@ -76,7 +76,7 @@
           options:
             - monthly
             - size 750M
-            - rotate 14
+            - rotate 5
             - missingok
             - compress
             - delaycompress
