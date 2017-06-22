@@ -305,28 +305,6 @@ kafka0
 [patch:children]
 patch0
 
-[patch_clients:children]
-pg0
-pg1
-web0
-web1
-es0
-es1
-couch0
-celery0
-pil0
-pil1
-kafka0
-web2
-web3
-web4
-web5
-pg2
-pg3
-es2
-es3
-celery1
-
 [control:children]
 pil0
 
