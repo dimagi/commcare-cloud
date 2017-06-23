@@ -172,11 +172,11 @@ icds:
       reminder_case_update_queue:
         pooling: gevent
         concurrency: 5
-        num_workers: 4
+        num_workers: 8
       reminder_queue:
         pooling: gevent
         concurrency: 5
-        num_workers: 4
+        num_workers: 6
       reminder_rule_queue:
         concurrency: 1
         max_tasks_per_child: 1
