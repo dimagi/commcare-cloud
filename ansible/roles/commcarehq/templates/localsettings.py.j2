@@ -700,3 +700,7 @@ RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE = True
 {% if localsettings.get('DAYS_TO_KEEP_DEVICE_LOGS') %}
 DAYS_TO_KEEP_DEVICE_LOGS = {{ localsettings.DAYS_TO_KEEP_DEVICE_LOGS }}
 {% endif %}
+
+{% if localsettings.get('ASYNC_INDICATORS_TO_QUEUE') %}
+ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
+{% endif %}
