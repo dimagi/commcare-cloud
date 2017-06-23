@@ -48,7 +48,7 @@ DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_memory: '4096m'
+elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 
 apache2_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.crt'
