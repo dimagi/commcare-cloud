@@ -19,6 +19,9 @@
 [es2]
 10.162.36.221 elasticsearch_node_name=es2
 
+[es3]
+10.162.36.200 elasticsearch_node_name=es3 datavol_device=/dev/xvdc
+
 [pillow1]
 10.162.36.253
 
@@ -104,6 +107,7 @@ db0
 
 [elasticsearch:children]
 es2
+es3
 
 [shared_dir_host:children]
 db0
