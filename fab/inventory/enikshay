@@ -1,0 +1,110 @@
+# enikshay - ctrls inventory
+
+[db0] # postgresql, riak
+172.25.3.5
+
+[es0] # es, riak
+172.25.2.5
+
+[web0] # django, pillow
+172.25.2.6
+
+[formplayer0] # formplayer, riak
+172.25.2.7
+
+[formplayer1] # formplayer
+172.25.2.8
+
+[couch0] # couch, stanchion
+172.25.2.9
+
+[proxy0] # riak, nginx, control
+172.25.1.5
+
+[kafka0] # kafka, zookeeper, celery
+172.25.2.10
+
+[pgstandby0] # postgresql, riak
+172.25.3.6
+
+[pg0:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hot_standby_server='172.25.3.6'
+hostname='db0'
+
+[es0:vars]
+elasticsearch_node_name=es0
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='es0'
+
+[web0:vars]
+parent_mailrelay='relay.ctrls.in'
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='web0'
+
+[formplayer0:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='formplayer0'
+
+[formplayer1:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='formplayer1'
+
+[couch0:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+remote_couch_backup='172.25.2.6'
+hostname='couch0'
+
+[proxy0:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='proxy0'
+
+[kafka0:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hostname='kafka0'
+
+[pgstandby0:vars]
+devices='["/dev/sdb"]'
+partitions='["/dev/sdb1"]'
+datavol_device='/dev/mapper/consolidated-data'
+hot_standby_master='172.25.3.5'
+hostname='pgstandby0'
+
+#[patch0]
+#127.0.0.1
+
+[control:children]
+proxy0
+
+[lvm:children]
+web0
+db0
+proxy0
+pgstandby0
+couch0
+formplayer0
+formplayer1
+es0
+kafka0
+
+#[patch:children]
+#patch0
+
+#[mailrelay:children]
+#web0
