@@ -22,7 +22,7 @@
 
 - name: Install shell check
   get_url:
-    url: "https://raw.githubusercontent.com/DataDog/dd-agent/{{ datadog_shell_version }}/checks.d/shell.py"
+    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_shell_version }}/shell/shell.py"
     dest: /etc/dd-agent/checks.d/shell.py
     sha256sum: "{{ datadog_shell_sha256sum }}"
     force: yes
