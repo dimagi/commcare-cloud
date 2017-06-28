@@ -166,6 +166,7 @@ DATADOG_ENABLED: True
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 datadog_integration_cloudant: False
+datadog_integration_vmware: True
 
 file_email: False
 

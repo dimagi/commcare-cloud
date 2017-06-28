@@ -20,6 +20,16 @@
   tags:
     - datadog_integrations
 
+- name: Install shell check
+  get_url:
+    url: "https://raw.githubusercontent.com/DataDog/dd-agent/{{ datadog_shell_version }}/checks.d/shell.py"
+    dest: /etc/dd-agent/checks.d/shell.py
+    sha256sum: "{{ datadog_shell_sha256sum }}"
+    force: yes
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+
 - name: add datadog integration configs
   template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml"
   notify: restart datadog
@@ -44,3 +54,4 @@
     - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
+    - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
