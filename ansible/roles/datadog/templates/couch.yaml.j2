@@ -4,5 +4,7 @@ instances:
 {% for couch_config in couch_dbs.values() %}
 {% if couch_config.host == inventory_hostname %}
     - server: "http{% if couch_config.is_https %}s{% endif %}://{{ couch_config.host }}:{{ couch_config.port }}"
+      user: {{ couch_config.username }}
+      password: {{ couch_config.password }}
 {% endif %}
 {% endfor %}
