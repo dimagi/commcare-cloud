@@ -43,6 +43,10 @@ server {
 {% endif %}
 {% endif %}
 
+{% if server_tokens|default('off') %}
+  server_tokens {{ server_tokens }};
+{% endif %}
+
 {% for k,v in item.server.iteritems() %}
   {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones'] %}
   {{ k }} {{ v }};
