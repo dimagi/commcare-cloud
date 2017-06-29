@@ -68,3 +68,4 @@
 - name: "Start {{ name }}"
   service: name="{{ service }}" state=started enabled=yes
   when: not riakcs_deb_check.get("skipped")
+  tags: after-reboot

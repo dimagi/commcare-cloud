@@ -18,6 +18,7 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech}
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech_http }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_j2me == True, action: site, site_name: cchq_http_j2me }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.riakcs == True, action: site, site_name: riakcs, hosts_group: riakcs }
     - role: nginx
       action: site
@@ -54,6 +55,14 @@
     - { role: shared_dir }
     - { role: nginx, when: proxy_type == 'nginx', action: install }
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.enikshay_ssl == True, action: site, site_name: enikshay_ssl }
+    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+
+- name: Couchdb 2.0 Proxy
+  hosts: couchdb2_proxy
+  roles:
+    - { role: shared_dir }
+    - { role: nginx, when: proxy_type == 'nginx', action: install }
+    - { role: nginx, when: proxy_type == 'nginx' and active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
 
 - name: Nginx log rolling configurations

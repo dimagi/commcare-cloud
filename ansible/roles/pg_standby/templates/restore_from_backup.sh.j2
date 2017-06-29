@@ -11,7 +11,7 @@ if [ $confirm2 != 'y' ]; then
 fi
 
 echo 'retrieving backup from amazon'
-/root/retrieve_backup.py "${BACKUP}" &&
+/usr/local/sbin/retrieve_backup.py "${BACKUP}" &&
 
 echo 'extracting backup' &&
 tar -xjf "${BACKUP}" -C "{{ postgresql_backup_dir }}" &&

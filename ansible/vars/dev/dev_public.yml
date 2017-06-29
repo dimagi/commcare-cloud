@@ -9,6 +9,7 @@ internal_domain_name: 'localdomain'
 testing: True
 
 etc_host_lines: []
+etc_host_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
 http_proxy_address: '192.168.33.1'
@@ -17,19 +18,23 @@ http_proxy_port: '3128'
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
+  cchq_ssl: True
   cchq_redirect: True
   cchq_http: True
   cchq_http_redirect: True
   cchq_http_j2me: False
   commtrack_ssl: True
   commtrack_http: True
-  riakcs: True
+  riakcs: False
+  couchdb2: True
   hq_status: False
   icds_tableau: False
   motech: False
   motech2: False
   wiki: False
-
+  wiki_http: False
+  tableau: False
+  cas_ssl: False
 
 deploy_env: dev
 fake_ssl_cert: yes
@@ -100,9 +105,10 @@ pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
 
 shared_drive_enabled: True
-backup_postgres: False
+backup_postgres: True
 backup_blobdb: True
 postgres_s3: False
+nadir_hour: 18
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -154,6 +160,10 @@ postgresql_dbs:
 #  - name: "{{localsettings.UCR_DATABASE_NAME}}"
 
 mailrelay: 'relay.example.com'
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couch_dbs:
   default:

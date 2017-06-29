@@ -2,5 +2,4 @@
 # roles/webworker/meta/main.yml
 
 dependencies:
-  - role: java
   - role: shared_dir

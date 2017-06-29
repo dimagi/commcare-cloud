@@ -23,6 +23,7 @@
   service: name=datadog-agent state=started
   tags:
     - datadog
+    - after-reboot
 
 - name: Add datadog custom dir
   file:

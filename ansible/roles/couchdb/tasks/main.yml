@@ -75,6 +75,7 @@
 
 - name: Start CouchDB service
   service: name=couchdb state=started
+  tags: after-reboot
 
 - name: Check CouchDB database
   uri:
@@ -137,7 +138,7 @@
     name: "Backup blobdb daily"
     job: "/etc/cron.d/create_couchdb_backup.sh daily 3"
     minute: 0
-    hour: 0
+    hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
@@ -149,7 +150,7 @@
     name: "Backup blobdb weekly"
     job: "/etc/cron.d/create_couchdb_backup.sh weekly 21"
     minute: 0
-    hour: 0
+    hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
     user: couchdb
     cron_file: backup_couch

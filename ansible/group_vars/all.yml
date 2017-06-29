@@ -22,6 +22,7 @@ cchq_user: cchq
 dev_group: dimagidev
 dev_users:
   present:
+    - astone
     - biyeun
     - brudolph
     - cellowitz
@@ -39,6 +40,7 @@ dev_users:
     - ncarnahan
     - npellegrino
     - nhooper
+    - sgoyal
     - skelly
     - sravfeyn
     - wpride
@@ -61,6 +63,8 @@ stanchion_port: 8085
 stanchion_data_dir: "{{ encrypted_root }}/stanchion"
 zookeeper_client_port: 2181
 formplayer_port: 8181
+couchdb2_port: 15984
+couchdb2_proxy_port: 25984
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
@@ -124,3 +128,5 @@ datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_process: true
+
+root_email: commcarehq-ops+root@dimagi.com

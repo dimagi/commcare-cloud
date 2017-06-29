@@ -73,6 +73,7 @@
 - name: start postgresql
   become: true
   service: name=postgresql state=started
+  tags: after-reboot
 
 - name: Create PostgreSQL users
   become: yes
@@ -85,6 +86,7 @@
     role_attr_flags: CREATEDB
     state: present
     port: "{{ postgresql_port }}"
+  when: not is_pg_standby|default(False)
 
 - name: check postgres database hosts
   assert: { that: "item.host is not defined or item.host in groups.postgresql" }
