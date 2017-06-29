@@ -223,9 +223,7 @@ icds:
       kafka-ucr-static-awc-location:
         num_processes: 1
       kafka-ucr-static-cases:
-        num_processes: 16
-      kafka-ucr-static-ccs_record_cases_monthly:
-        num_processes: 8
+        num_processes: 24
       kafka-ucr-static-person_cases:
         num_processes: 8
     '10.247.24.30': # pillow1
@@ -236,9 +234,7 @@ icds:
       kafka-ucr-static-forms:
         num_processes: 8
       kafka-ucr-main:
-        num_processes: 2
-      kafka-ucr-static-test:
-        num_processes: 4
+        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
