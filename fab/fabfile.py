@@ -35,7 +35,7 @@ import pipes
 from distutils.util import strtobool
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel
+from fabric.api import run, roles, execute, task, sudo, env, parallel, local
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
@@ -75,7 +75,9 @@ from utils import (
     retrieve_cached_deploy_checkpoint,
     traceback_string,
 )
-
+from checks import (
+    check_servers,
+)
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
@@ -263,9 +265,13 @@ def env_common():
     env.deploy_metadata = DeployMetadata(env.code_branch, env.environment)
     _setup_path()
 
+    all = servers['all']
+    print all
     proxy = servers['proxy']
     webworkers = servers['webworkers']
+    riakcs = servers['riakcs']
     postgresql = servers['postgresql']
+    pg_standby = servers['pg_standby']
     touchforms = servers['touchforms']
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
@@ -277,7 +283,11 @@ def env_common():
     deploy = servers.get('deploy', servers['postgresql'])[:1]
 
     env.roledefs = {
+        'all': all,
         'pg': postgresql,
+        'pgstandby': pg_standby,
+        'elasticsearch': elasticsearch,
+        'riakcs': riakcs,
         'rabbitmq': rabbitmq,
         'django_celery': celery,
         'sms_queue': celery,
@@ -881,3 +891,19 @@ OFFLINE_DEPLOY_COMMANDS = [
     staticfiles.update_manifest,
     release.clean_releases,
 ]
+
+ELASTICSEARCH_CHECKED = False
+@task
+def check_status():
+    env.user = 'ansible'
+    env.sudo_user = 'root'
+    env.password = getpass('Enter the password for then ansbile user: ')
+
+    RIAKCS_CHECKED = False
+
+    execute(check_servers.ping)
+    execute(check_servers.postgresql)
+    execute(check_servers.elasticsearch)
+    execute(check_servers.riakcs)
+
+
