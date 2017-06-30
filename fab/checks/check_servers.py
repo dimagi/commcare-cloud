@@ -4,7 +4,7 @@ import posixpath
 from contextlib import contextmanager
 
 from ansible.inventory import InventoryParser
-from fabric.api import roles, parallel, env, sudo, serial, execute run, hide, get
+from fabric.api import roles, parallel, env, sudo, serial, execute, run, hide, get
 from fabric.colors import magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
