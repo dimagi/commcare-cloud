@@ -733,7 +733,7 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
 
         # Force ansible user and prompt for password
         env.user = 'ansible'
-        env.password = getpass('Enter the password for then ansbile user: ')
+        env.password = getpass('Enter the password for the ansbile user: ')
 
     if warning_message:
         print('')
@@ -896,11 +896,9 @@ OFFLINE_DEPLOY_COMMANDS = [
 def check_status():
     env.user = 'ansible'
     env.sudo_user = 'root'
-    env.password = getpass('Enter the password for then ansbile user: ')
+    env.password = getpass('Enter the password for the ansbile user: ')
 
     execute(check_servers.ping)
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
     execute(check_servers.riakcs)
-
-
