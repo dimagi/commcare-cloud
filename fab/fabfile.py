@@ -892,14 +892,11 @@ OFFLINE_DEPLOY_COMMANDS = [
     release.clean_releases,
 ]
 
-ELASTICSEARCH_CHECKED = False
 @task
 def check_status():
     env.user = 'ansible'
     env.sudo_user = 'root'
     env.password = getpass('Enter the password for then ansbile user: ')
-
-    RIAKCS_CHECKED = False
 
     execute(check_servers.ping)
     execute(check_servers.postgresql)
