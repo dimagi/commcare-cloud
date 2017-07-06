@@ -311,7 +311,14 @@ production:
         concurrency: 4
         max_tasks_per_child: 1
   pillows:
-    '*':
+    '172.24.32.50':
+      kafka-ucr-main-08:
+        num_processes: 1
+      kafka-ucr-main-9f:
+        num_processes: 1
+      kafka-ucr-static:
+        num_processes: 1
+    '172.24.32.27':
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -341,12 +348,6 @@ production:
       GroupToUserPillow:
         num_processes: 1
       IntraHealthFormFluffPillow:
-        num_processes: 1
-      kafka-ucr-main-08:
-        num_processes: 1
-      kafka-ucr-main-9f:
-        num_processes: 1
-      kafka-ucr-static:
         num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
