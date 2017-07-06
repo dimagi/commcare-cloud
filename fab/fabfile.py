@@ -269,9 +269,9 @@ def env_common():
     print all
     proxy = servers['proxy']
     webworkers = servers['webworkers']
-    riakcs = servers['riakcs']
+    riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
-    pg_standby = servers['pg_standby']
+    pg_standby = servers.get('pg_standby', [])
     touchforms = servers['touchforms']
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
