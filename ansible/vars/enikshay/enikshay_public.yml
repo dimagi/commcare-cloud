@@ -1,0 +1,279 @@
+SITE_HOST: 'enikshay.in'
+#CAS_SITE_HOST: 'cas.commcarehq.org'
+#ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
+J2ME_SITE_HOST: 'j2me-enikshay.in'
+deploy_env: enikshay
+#tableau_server: 'tableau2.internal.commcarehq.org'
+#TABLEAU_HOST: 'icds.commcarehq.org'
+
+active_sites:
+  cchq_ssl: True
+  cchq_redirect: False
+  cchq_http: True
+  cchq_http_redirect: False
+  cchq_http_j2me: True
+  commtrack_ssl: False
+  commtrack_http: False
+  hq_status: False
+  tableau: False
+  icds_tableau: False
+  wiki: False
+  wiki_http: False
+  motech: False
+  motech2: False
+  riakcs: True
+#  cas_ssl: True
+#  enikshay_ssl: True
+  couchdb2: False
+
+riak_ring_size: 64
+
+riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
+riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
+old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
+old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
+
+proxy_type: 'nginx'
+
+primary_ssl_env: "enikshay"
+
+ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+fake_ssl_cert: no
+
+NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
+run_newrelic_plugin_agent: False
+
+DATADOG_ENABLED: True
+DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '8192m'
+elasticsearch_cluster_name: 'enikshayes-1.x'
+
+apache2_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.crt'
+apache2_key_file: '../config/{{ deploy_env }}/ssl/enikshay.in.key'
+apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
+# Nginx only accepts on cert, so cat the site cert and chain:
+# $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
+nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.combined.crt'
+
+
+#tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
+#tableau_key_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
+
+#cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
+#cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+
+enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
+enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
+
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
+
+supervisor_http_enabled: True
+supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
+supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
+
+keystore_file: '../config/DimagiKeyStore'
+
+backup_blobdb: False
+backup_postgres: True
+backup_es: False
+postgres_s3: False
+backup_couch: True
+nadir_hour: 16
+
+#aws_region: 'ap-south-1'
+
+nofile_limit: 65536
+
+postgres_users: "{{ secrets.POSTGRES_USERS }}"
+
+postgresql_max_connections: 300
+pgbouncer_max_connections: 800
+pgbouncer_default_pool: 290
+pgbouncer_reserve_pool: 5
+pgbouncer_pool_timeout: 1
+pgbouncer_pool_mode: transaction
+
+formplayer_db_name: formplayer
+
+postgresql_dbs:
+  - django_alias: default
+    name: "{{localsettings.PG_DATABASE_NAME}}"
+#  - django_alias: proxy
+#    name: commcarehq_proxy
+#  - django_alias: p1
+#    name: commcarehq_p1
+#    shards: [0, 204]
+#  - django_alias: p2
+#    name: commcarehq_p2
+#    shards: [205, 409]
+#  - django_alias: p3
+#    name: commcarehq_p3
+#    shards: [410, 614]
+#  - django_alias: p4
+#    name: commcarehq_p4
+#    shards: [615, 819]
+#  - django_alias: p5
+#    name: commcarehq_p5
+#    shards: [820, 1023]
+  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+#  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
+#    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
+  - name: "{{ formplayer_db_name }}"
+#  - name: commcarehq_icds_testdata
+
+postgresql_ssl_enabled: False
+
+redis_max_memory: 4096mb
+redis_logfile: '/var/log/redis/redis-server.log'
+redis_syslog_enabled: 'no'
+redis_database_save_times: []
+redis_max_clients: 10000
+redis_maxmemory_policy: allkeys-lru
+
+ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
+
+KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
+
+AMQP_USER: "{{ secrets.AMQP_USER }}"
+AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
+AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+AMQP_NAME: commcarehq
+
+kafka_broker_id: 0
+
+encrypted_root: /opt/data/ecrypt
+
+ufw_private_interface: eth0
+
+control_machine_ip: 172.25.1.5
+
+etc_host_lines: []
+etc_host_lines_removed: []
+
+shared_drive_enabled: true
+
+
+couch_dbs:
+  default:
+    host: 172.25.2.9
+    port: 25984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+localsettings:
+  ALLOWED_HOSTS:
+    - localhost
+    - 127.0.0.1
+#    - "{{ CAS_SITE_HOST }}"
+    - "{{ ENIKSHAY_SITE_HOST }}"
+    - "{{ SITE_HOST }}"
+    - "{{ J2ME_SITE_HOST }}"
+  ASYNC_INDICATORS_TO_QUEUE: 30000
+  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
+  BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: 'CTZIUS33'
+  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
+  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
+  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
+  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
+  BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+  CELERY_FLOWER_URL: "http://{{ groups.celery.1 }}:5555"
+  CELERY_PERIODIC_QUEUE: 'celery_periodic'
+  CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
+  CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
+  CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
+  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+#  COUCH_CACHE_DOCS:
+#  COUCH_CACHE_VIEWS:
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  DROPBOX_APP_NAME: 'CommCareHQFiles'
+  DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
+  DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
+  ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
+  ELASTICSEARCH_PORT: '9200'
+  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
+  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
+  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_PORT: 25
+  EMAIL_USE_TLS: no
+  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  FORMPLAYER_URL: "/formplayer"
+  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: '{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}'
+  HQ_INSTANCE: 'enikshay'
+  HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
+  HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
+  HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
+#  ICDS_UCR_DATABASE_ALIAS: icds-ucr
+#  ICDS_UCR_DATABASE_NAME: icds-ucr
+  INACTIVITY_TIMEOUT: 20160
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: Enikshay-
+  INVOICE_STARTING_NUMBER: 5000
+  JAR_KEY_ALIAS: javarosakey
+  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
+  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
+  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  KAFKA_URL: "{{ groups.kafka.0 }}"
+  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
+#  MAPS_LAYERS:
+  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
+  ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
+  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
+  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
+  PG_DATABASE_NAME: commcarehq
+  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+  PG_DATABASE_PORT: 6432
+  PILLOWTOP_MACHINE_ID: enikshaycloud
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: True
+  AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
+  AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
+  SAVED_EXPORT_ACCESS_CUTOFF: 180
+  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
+  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
+  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
+  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
+  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
+  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
+#  SIMPLE_API_KEYS:
+  SMS_GATEWAY_PARAMS:
+  SMS_GATEWAY_URL: ''
+  SMS_QUEUE_ENABLED: True
+#  STATIC_ROOT:
+  STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
+  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
+  TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
+  TRANSFER_SERVER: 'nginx'
+  UCR_DATABASE_NAME: commcarehq_ucr
+  USE_PARTITIONED_DATABASE: False
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
+  ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True
