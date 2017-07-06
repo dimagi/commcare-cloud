@@ -242,7 +242,7 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: 10.247.24.13
+    host: 10.247.24.18
     port: 25984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
