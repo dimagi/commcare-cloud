@@ -197,9 +197,21 @@ icds:
     '10.247.24.31': # celery1
       ucr_indicator_queue:
         concurrency: 16
+    '10.247.24.15': # web1
+      ucr_indicator_queue:
+        concurrency: 8
     '10.247.24.24': # web2
       ucr_indicator_queue:
         concurrency: 16
+    '10.247.24.25': # web3
+      ucr_indicator_queue:
+        concurrency: 8
+    '10.247.24.26': # web4
+      ucr_indicator_queue:
+        concurrency: 8
+    '10.247.24.27': # web5
+      ucr_indicator_queue:
+        concurrency: 8
   pillows:
     '10.247.24.20': # pillow0
       AppDbChangeFeedPillow:
