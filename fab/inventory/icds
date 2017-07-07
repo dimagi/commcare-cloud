@@ -246,6 +246,8 @@ web1
 web3
 web4
 web5
+web0
+kafka0
 
 [pillowtop:children]
 pil0
