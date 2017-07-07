@@ -325,9 +325,9 @@ production:
   pillows:
     hqpillowtop1:
       kafka-ucr-main-08:
-        num_processes: 1
+        num_processes: 4
       kafka-ucr-main-9f:
-        num_processes: 1
+        num_processes: 4
       kafka-ucr-static:
         num_processes: 1
     hqpillowtop0:
