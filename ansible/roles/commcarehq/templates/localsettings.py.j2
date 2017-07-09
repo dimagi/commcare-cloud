@@ -4,6 +4,7 @@
 
 import os
 import sys
+import hashlib
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
@@ -686,7 +687,7 @@ ENIKSHAY_PRIVATE_API_USERS = {{ localsettings.ENIKSHAY_PRIVATE_API_USERS }}
 {% endif %}
 
 {% if localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD') %}
-ENIKSHAY_PRIVATE_API_PASSWORD = '{{ localsettings.ENIKSHAY_PRIVATE_API_PASSWORD }}'
+ENIKSHAY_PRIVATE_API_PASSWORD = hashlib.md5('{{ localsettings.ENIKSHAY_PRIVATE_API_PASSWORD }}').hexdigest()
 {% endif %}
 
 {% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
