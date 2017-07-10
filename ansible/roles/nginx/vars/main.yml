@@ -37,6 +37,7 @@ nginx_http_params:
 nginx_separate_logs_per_site: True
 primary_ssl_env: ""
 commcarehq_errors_repository: "https://github.com/dimagi/commcare-hq-errorpages.git"
+commcare_errors_branch: "master"
 errors_home: "{{ www_home }}/error_root"
 error_pages:
   - "502 503 /errors/50x.html"
