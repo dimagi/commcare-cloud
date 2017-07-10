@@ -19,6 +19,7 @@ active_sites:
   motech: False
   motech2: False
   riakcs: False
+  couchdb2: True
 
 proxy_type: nginx
 
@@ -70,10 +71,20 @@ postgresql_dbs:
     django_alias: default
   - name: "{{ formplayer_db_name }}"
 
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
 couch_dbs:
   default:
     host: 10.162.36.254
-    port: 5984
+    port: 25984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
