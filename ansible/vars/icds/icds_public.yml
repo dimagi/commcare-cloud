@@ -184,6 +184,7 @@ etc_host_lines_removed: ['etc_host_lines']
 http_proxy_address: '10.247.24.16'
 http_proxy_port: '3128'
 
+commcare_errors_branch: "master-icds"
 site_locations:
   - name: /files
     try_files: "$uri $uri/index.html $uri/ =404"
