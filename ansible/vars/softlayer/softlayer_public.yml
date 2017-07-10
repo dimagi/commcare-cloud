@@ -142,6 +142,7 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
 kafka_broker_id: 0
+kafka_log_dir: '/opt/data/kafka'
 
 encrypted_root: /opt/data/ecrypt
 
