@@ -1,6 +1,6 @@
 # enikshay - ctrls inventory
 
-[db0] # postgresql, riak
+[db0] # postgresql, riak, control
 172.25.3.5
 
 [es0] # es, riak
@@ -18,7 +18,7 @@
 [couch0] # couch, stanchion
 172.25.2.9
 
-[proxy0] # riak, nginx, control
+[proxy0] # riak, nginx
 172.25.1.5
 
 [kafka0] # kafka, zookeeper, celery
@@ -90,7 +90,7 @@ hostname='pgstandby0'
 #127.0.0.1
 
 [control:children]
-proxy0
+db0
 
 [lvm:children]
 web0
