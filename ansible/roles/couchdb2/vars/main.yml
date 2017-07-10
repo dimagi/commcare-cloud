@@ -1,0 +1,21 @@
+---
+couchdb_port : 15984
+couchdb_node_port : 15986
+couchdb_dir: /usr/local/couchdb2/couchdb
+couchdb_data_dir: '{{ encrypted_root }}/couchdb2'
+couchdb_secure: False
+couchdb_bind:
+  ty: static
+  host: '{{ inventory_hostname|ipaddr }}'
+couchdb_socket_options: '[{recbuf, 262144}, {sndbuf, 262144}, {nodelay, true}]'
+
+couchdb_install_parent_dir: /usr/local/couchdb2
+couchdb_parent_srcs_dir: /usr/local/couchdb2/src
+
+couchdb_init: 'sysv'
+
+couchdb_compaction_settings:
+  commcarehq__synclogs: '[{db_fragmentation, "25%"}, {view_fragmentation, "25%"}, {from, "17:00"}, {to, "22:30"}]'
+  _default: '[{db_fragmentation, "70%"}, {view_fragmentation, "60%"}, {from, "17:00"}, {to, "22:30"}]'
+
+couchdb_async_io_threads: 64

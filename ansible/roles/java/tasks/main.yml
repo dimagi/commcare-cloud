@@ -1,7 +1,7 @@
 ---
 - name: Install Java
   sudo: yes
-  script: ../files/install_java.sh creates=/usr/lib/jvm/success.txt
+  apt: name=openjdk-7-jdk state=present
 
 - name: Verify Java
   sudo: no

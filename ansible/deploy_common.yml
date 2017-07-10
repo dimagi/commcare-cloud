@@ -5,13 +5,13 @@
     - common
 
 - name: ufw (firewall)
-  hosts: '!proxy:!cas_proxy:!enikshay_proxy'
+  hosts: '!proxy:!cas_proxy:!enikshay_proxy:!couchdb2_proxy'
   sudo: yes
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined}
 
 - name: ufw (proxy firewall)
-  hosts: 'proxy:cas_proxy:enikshay_proxy'
+  hosts: 'proxy:cas_proxy:enikshay_proxy:couchdb2_proxy'
   sudo: yes
   tasks:
     - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy

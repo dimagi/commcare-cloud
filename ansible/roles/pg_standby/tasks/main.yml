@@ -28,7 +28,7 @@
   sudo: yes
   template:
     src: "create_postgres_dump.sh.j2"
-    dest: "/etc/cron.d/create_postgres_dump.sh"
+    dest: "/usr/local/sbin/create_postgres_dump.sh"
     group: postgres
     owner: postgres
     mode: 0700
@@ -67,7 +67,7 @@
   sudo: yes
   template:
     src: "backup_snapshots.py.j2"
-    dest: "/etc/cron.d/backup_snapshots.py"
+    dest: "/usr/local/sbin/backup_snapshots.py"
     group: postgres
     owner: postgres
     mode: 0700
@@ -78,9 +78,9 @@
   sudo: yes
   cron:
     name: "Backup postgres daily"
-    job: "/etc/cron.d/create_postgres_dump.sh daily 3"
+    job: "/usr/local/sbin/create_postgres_dump.sh daily 3"
     minute: 0
-    hour: 0
+    hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
@@ -90,9 +90,9 @@
   sudo: yes
   cron:
     name: "Backup postgres weekly"
-    job: "/etc/cron.d/create_postgres_dump.sh weekly 21"
+    job: "/usr/local/sbin/create_postgres_dump.sh weekly 21"
     minute: 0
-    hour: 0
+    hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
     user: postgres
     cron_file: backup_postgres
@@ -102,7 +102,7 @@
   sudo: yes
   template:
     src: "retrieve_backup.py.j2"
-    dest: "/root/retrieve_backup.py"
+    dest: "/usr/local/sbin/retrieve_backup.py"
     group: root
     owner: root
     mode: 0700
@@ -113,7 +113,7 @@
   sudo: yes
   template:
     src: "restore_from_backup.sh.j2"
-    dest: "/root/restore_from_backup.sh"
+    dest: "/usr/local/sbin/restore_from_backup.sh"
     group: root
     owner: root
     mode: 0700

@@ -24,7 +24,7 @@ server {
 
 {% if nginx_separate_logs_per_site == True %}
   access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }};
-  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }};
+  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }} warn;
 {% endif %}
 
 {% if 'ssl' in item.server.listen %}
@@ -41,6 +41,10 @@ server {
 {% if nginx_ssl_ciphers|default('') %}
   ssl_ciphers {{ nginx_ssl_ciphers }};
 {% endif %}
+{% endif %}
+
+{% if server_tokens|default('off') %}
+  server_tokens {{ server_tokens }};
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}

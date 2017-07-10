@@ -101,6 +101,7 @@
   service: name=elasticsearch state=started
   register: result
   failed_when: result.state != "started"
+  tags: after-reboot
 
 - name: Restart Elasticsearch
   sudo: yes
@@ -132,7 +133,7 @@
   cron:
     name: "Daily ES Snapshot"
     job: "/etc/cron.d/create_es_snapshot.py"
-    hour: 4
+    hour: "{{ nadir_hour|default(0)+4 }}"
     minute: 0
     user: root
     cron_file: create_es_snapshot

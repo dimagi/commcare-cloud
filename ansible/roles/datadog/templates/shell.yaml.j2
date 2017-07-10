@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - command: "vmware-toolbox-cmd stat swap | cut -d ' ' -f 1"
+    metric_name: vmware.swap
+    metric_type: gauge
+
+  - command: "vmware-toolbox-cmd stat balloon | cut -d ' ' -f 1"
+    metric_name: vmware.balloon
+    metric_type: gauge

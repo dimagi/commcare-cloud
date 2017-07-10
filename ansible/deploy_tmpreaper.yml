@@ -1,0 +1,8 @@
+---
+
+- name: Deploys tmpreaper - removes files which haven't been accessed for a period of time
+  hosts: all
+  become: True
+  roles:
+    - role: tmpreaper
+      tags: 'tmpreaper'

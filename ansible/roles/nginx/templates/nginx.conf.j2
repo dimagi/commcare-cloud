@@ -3,6 +3,10 @@ user {{ nginx_user }};
 worker_processes  {{ ansible_processor_count }};
 pid        /var/run/nginx.pid;
 
+{% if nginx_worker_rlimit_nofile is defined%}
+worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
+{% endif %}
+
 
 events {
     worker_connections  {{ nginx_max_clients }};

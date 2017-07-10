@@ -56,8 +56,8 @@
   become: yes
   lineinfile:
     dest: /var/spool/cron/crontabs/root
-    regexp: '(.*)/opt/McAfee/agent/scripts/ma checkhealth$'
-    line: '#\1/opt/McAfee/agent/scripts/ma checkhealth'
+    regexp: '^([^#])(.*)/opt/McAfee/agent/scripts/ma checkhealth$'
+    line: '#\1\2/opt/McAfee/agent/scripts/ma checkhealth'
     backrefs: yes
     state: present
   when: antivirus_ma.stat.exists
@@ -69,8 +69,8 @@
   become: yes
   lineinfile:
     dest: /etc/crontab
-    regexp: '(.*)/opt/NAI/LinuxShield/bin/nails runsched 1$'
-    line: '#\1/opt/NAI/LinuxShield/bin/nails runsched 1'
+    regexp: '^([^#])(.*)/opt/NAI/LinuxShield/bin/nails runsched 1$'
+    line: '#\1\2/opt/NAI/LinuxShield/bin/nails runsched 1'
     backrefs: yes
     state: present
   when: antivirus_nails.stat.exists
