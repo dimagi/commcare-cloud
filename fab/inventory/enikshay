@@ -27,7 +27,7 @@
 [pgstandby0] # postgresql, riak
 172.25.3.6
 
-[pg0:vars]
+[db0:vars]
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
