@@ -285,6 +285,8 @@ def _format_env(current_env, extra=None):
 
     if extra:
         ret.update(extra)
+        if extra.get('celery_params') and extra['celery_params'].get('celery_loader'):
+            ret['supervisor_env_vars']['CELERY_LOADER'] = extra['celery_params']['celery_loader']
 
     return json.dumps(ret)
 
