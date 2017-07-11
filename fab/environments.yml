@@ -193,31 +193,40 @@ icds:
         concurrency: 4
       ucr_indicator_queue:
         concurrency: 8
+        celery_loader: 'corehq.util.celery_utils.LoadBasedLoader'
       flower: {}
     '10.247.24.31': # celery1
       ucr_indicator_queue:
         concurrency: 16
+        celery_loader: 'corehq.util.celery_utils.LoadBasedLoader'
     '10.247.24.15': # web1
       ucr_indicator_queue:
         concurrency: 12
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.24': # web2
       ucr_indicator_queue:
         concurrency: 16
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.25': # web3
       ucr_indicator_queue:
         concurrency: 12
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.26': # web4
       ucr_indicator_queue:
         concurrency: 12
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.27': # web5
       ucr_indicator_queue:
         concurrency: 12
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.13': # web0
       ucr_indicator_queue:
         concurrency: 8
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.21': # kafka0
       ucr_indicator_queue:
         concurrency: 12
+        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
   pillows:
     '10.247.24.20': # pillow0
       AppDbChangeFeedPillow:
