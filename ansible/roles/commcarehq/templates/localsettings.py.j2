@@ -704,3 +704,8 @@ DAYS_TO_KEEP_DEVICE_LOGS = {{ localsettings.DAYS_TO_KEEP_DEVICE_LOGS }}
 {% if localsettings.get('ASYNC_INDICATORS_TO_QUEUE') %}
 ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
 {% endif %}
+
+{% if localsettings.get('OFF_PEAK_TIME') %}
+from datetime import time
+OFF_PEAK_TIME = (time(localsettings.OFF_PEAK_TIME[0]), time(localsettings.OFF_PEAK_TIME[1]))
+{% endif %}
