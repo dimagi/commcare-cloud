@@ -57,34 +57,52 @@ def _get_celery_queues():
 @roles(ROLES_CELERY)
 @parallel
 def set_celery_supervisorconf():
-
-    conf_files = {
-        'main':                         ['supervisor_celery_main.conf'],
-        'periodic':                     ['supervisor_celery_beat.conf', 'supervisor_celery_periodic.conf'],
-        'sms_queue':                    ['supervisor_celery_sms_queue.conf'],
-        'reminder_queue':               ['supervisor_celery_reminder_queue.conf'],
-        'reminder_rule_queue':          ['supervisor_celery_reminder_rule_queue.conf'],
-        'reminder_case_update_queue':   ['supervisor_celery_reminder_case_update_queue.conf'],
-        'pillow_retry_queue':           ['supervisor_celery_pillow_retry_queue.conf'],
-        'background_queue':             ['supervisor_celery_background_queue.conf'],
-        'saved_exports_queue':          ['supervisor_celery_saved_exports_queue.conf'],
-        'ucr_queue':                    ['supervisor_celery_ucr_queue.conf'],
-        'ucr_indicator_queue':          ['supervisor_celery_ucr_indicator_queue.conf'],
-        'email_queue':                  ['supervisor_celery_email_queue.conf'],
-        'repeat_record_queue':          ['supervisor_celery_repeat_record_queue.conf'],
-        'logistics_reminder_queue':     ['supervisor_celery_logistics_reminder_queue.conf'],
-        'logistics_background_queue':   ['supervisor_celery_logistics_background_queue.conf'],
-        'async_restore_queue':          ['supervisor_celery_async_restore_queue.conf'],
-        'flower':                       ['supervisor_celery_flower.conf'],
-    }
-
     queues = _get_celery_queues()
-    if 'periodic' in queues and env.host != queues['periodic'].get('server_whitelist'):
+
+    if 'celery_periodic' in queues and env.host != queues['celery_periodic'].get('server_whitelist'):
         show_periodic_server_whitelist_message_and_abort(env)
+
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'celery_bash_runner.sh')
+
     for queue, params in queues.items():
-        for config_file in conf_files[queue]:
-            _rebuild_supervisor_conf_file('make_supervisor_conf', config_file, {'celery_params': params})
+        if queue == 'flower':
+            _rebuild_supervisor_conf_file(
+                'make_supervisor_conf',
+                'supervisor_celery_flower.conf',
+                {'celery_params': params}
+            )
+            continue
+
+        pooling = params.get('pooling', 'prefork')
+        max_tasks_per_child = params.get('max_tasks_per_child', 50)
+        num_workers = params.get('num_workers', 1)
+
+        params.update({
+            'queue': queue,
+            'pooling': pooling,
+            'max_tasks_per_child': max_tasks_per_child,
+        })
+
+        for worker_num in range(num_workers):
+            params.update({
+                'worker_num': worker_num,
+            })
+
+            conf_destination_filename = 'supervisor_celery_worker_%s_%s.conf' % (queue, worker_num)
+
+            _rebuild_supervisor_conf_file(
+                'make_supervisor_conf',
+                'supervisor_celery_worker.conf',
+                {'celery_params': params},
+                conf_destination_filename,
+            )
+
+        if queue == 'celery_periodic':
+            _rebuild_supervisor_conf_file(
+                'make_supervisor_conf',
+                'supervisor_celery_beat.conf',
+                {'celery_params': params}
+            )
 
 
 def show_periodic_server_whitelist_message_and_abort(env):
@@ -98,10 +116,10 @@ def show_periodic_server_whitelist_message_and_abort(env):
         "running celery beat; that screws up queuing, etc.\n\n"
         "If you...\n\n"
         '1. are really glad we caught this for you, just remove (or comment out)\n'
-        '   {environment}.celery_processes.{hostname}.periodic\n'
+        '   {environment}.celery_processes.{hostname}.celery_periodic\n'
         '   from fab/environments.yml\n'
         "2. know what you're doing and want to deploy celery beat to {environment}\n"
-        "   set {environment}.celery_processes.{hostname}.periodic.server_whitelist\n"
+        "   set {environment}.celery_processes.{hostname}.celery_periodic.server_whitelist\n"
         '   to {host}\n'
         '   in fab/environments.yml\n'
         "3. are really confused, find someone who might know more about this\n"
@@ -164,6 +182,7 @@ def set_sms_queue_supervisorconf():
 def set_reminder_queue_supervisorconf():
     if 'reminder_queue' in _get_celery_queues():
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_queue_schedule_instances.conf')
 
 
 @roles(ROLES_PILLOW_RETRY_QUEUE)
@@ -179,7 +198,7 @@ def set_websocket_supervisorconf():
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
 
 
-def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
+def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_destination_filename=None):
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
 
     if filename in env.get('service_blacklist', []):
@@ -187,7 +206,7 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
         return
 
     with cd(env.code_root):
-        sudo((
+        command = (
             '%(virtualenv_root)s/bin/python manage.py '
             '%(conf_command)s --traceback --conf_file "%(filename)s" '
             '--conf_destination "%(destination)s" --params \'%(params)s\''
@@ -198,7 +217,12 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None):
             'filename': filename,
             'destination': posixpath.join(env.services, 'supervisor'),
             'params': _format_env(env, params)
-        })
+        }
+
+        if conf_destination_filename:
+            command += ' --conf_destination_filename "%s"' % conf_destination_filename
+
+        sudo(command)
 
 
 def _format_env(current_env, extra=None):
@@ -261,6 +285,8 @@ def _format_env(current_env, extra=None):
 
     if extra:
         ret.update(extra)
+        if extra.get('celery_params') and extra['celery_params'].get('celery_loader'):
+            ret['supervisor_env_vars']['CELERY_LOADER'] = extra['celery_params']['celery_loader']
 
     return json.dumps(ret)
 

@@ -1,6 +1,12 @@
 [celery0]
 10.162.36.233
 
+[celery1]
+10.162.36.194
+
+[celery2]
+10.162.36.198
+
 [django0]
 10.162.36.250
 
@@ -13,8 +19,14 @@
 [es2]
 10.162.36.221 elasticsearch_node_name=es2
 
+[es3]
+10.162.36.200 elasticsearch_node_name=es3 datavol_device=/dev/xvdc
+
 [pillow1]
 10.162.36.253
+
+[pillow3]
+10.162.36.212
 
 [proxy0]
 10.162.36.203
@@ -31,20 +43,20 @@
 [formplayer1]
 10.162.36.231
 
-[riak10]
-10.162.36.218
+[riak15]
+10.162.36.235
 
-[riak11]
-10.162.36.207
+[riak16]
+10.162.36.225
 
-[riak12]
-10.162.36.198
+[riak17]
+10.162.36.244
 
-[riak13]
-10.162.36.220
+[riak18]
+10.162.36.211
 
-[riak14]
-10.162.36.200
+[riak19]
+10.162.36.202
 
 [touch0]
 10.162.36.215
@@ -76,48 +88,46 @@ es2
 
 [celery:children]
 celery0
+celery1
+celery2
 
 [pillowtop:children]
 pillow1
+pillow3
 
 [touchforms:children]
 touch0
 
 [formplayer:children]
 formplayer0
+formplayer1
 
 [redis:children]
 db0
 
 [elasticsearch:children]
 es2
+es3
 
 [shared_dir_host:children]
 db0
 
 [riakcs:children]
-riak10
-riak11
-riak12
-riak13
-riak14
+riak15
+riak16
+riak17
+riak18
+riak19
+
 
 [riakcs:vars]
 datavol_device=/dev/xvdc
 
 [stanchion:children]
-riak10
+riak15
 
 [pg_standby:children]
 db0
 
 [control]
 10.162.36.196
-
-[riakcs_new]
-hqriak15.internal-in.commcarehq.org 
-hqriak16.internal-in.commcarehq.org 
-hqriak17.internal-in.commcarehq.org 
-hqriak18.internal-in.commcarehq.org 
-hqriak19.internal-in.commcarehq.org 
-
