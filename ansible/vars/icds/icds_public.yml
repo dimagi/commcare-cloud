@@ -344,12 +344,10 @@ localsettings:
             - 'static-child_health_cases'
             - 'static-child_cases_monthly'
             - 'static-child_cases_monthly_v2'
-            - 'static-child_cases_monthly_tableau'
             - 'static-child_cases_monthly_tableau_v2'
             - 'static-ccs_record_cases'
             - 'static-ccs_record_cases_monthly'
             - 'static-ccs_record_cases_monthly_v2'
-            - 'static-ccs_record_cases_monthly_tableau'
             - 'static-ccs_record_cases_monthly_tableau_v2'
       - name: 'kafka-ucr-static-person_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -358,7 +356,6 @@ localsettings:
           topics:
             - 'case-sql'
           include_ucrs:
-            - 'static-person_cases'
             - 'static-person_cases_v2'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -378,6 +375,9 @@ localsettings:
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
+  OFF_PEAK_TIME:
+    - 18
+    - 8
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
