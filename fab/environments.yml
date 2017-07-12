@@ -301,6 +301,9 @@ production:
         max_tasks_per_child: 5
       ucr_indicator_queue:
         concurrency: 1
+      async_restore_queue:
+        concurrency: 2
+        max_tasks_per_child: 5
     hqcelery1:
       reminder_case_update_queue:
         pooling: gevent
@@ -323,7 +326,8 @@ production:
         concurrency: 2
         max_tasks_per_child: 5
       async_restore_queue:
-        concurrency: 4
+        concurrency: 2
+        max_tasks_per_child: 5
       flower: {}
     hqcelery2:
       celery:
