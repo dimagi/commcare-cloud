@@ -62,7 +62,7 @@ elasticsearch_node_name=es1
 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
-postgresql_max_connections=400
+postgresql_max_connections=800
 hot_standby_master='10.247.24.17'
 hostname='es1'
 
