@@ -12,8 +12,8 @@ partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.24.16'
 pgbouncer_max_connections=3500
-postgresql_max_connections=400
-pgbouncer_default_pool=390
+postgresql_max_connections=800
+pgbouncer_default_pool=400
 hostname='pg0'
 
 [pg1]
@@ -62,7 +62,7 @@ elasticsearch_node_name=es1
 devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
-postgresql_max_connections=800
+postgresql_max_connections=400
 hot_standby_master='10.247.24.17'
 hostname='es1'
 
@@ -197,8 +197,8 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='pg3'
 hot_standby_server='10.247.24.29'
 pgbouncer_max_connections=3500
-postgresql_max_connections=400
-pgbouncer_default_pool=390
+postgresql_max_connections=800
+pgbouncer_default_pool=790
 
 [proxy:children]
 web0
