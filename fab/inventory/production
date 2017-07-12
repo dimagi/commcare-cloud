@@ -31,6 +31,7 @@ hqcelery2.internal-va.commcarehq.org
 
 [celery:vars]
 newrelic_app_name=celery
+swap_size=8G
 
 [pillowtop]
 hqpillowtop0.internal-va.commcarehq.org
