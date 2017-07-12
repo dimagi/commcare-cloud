@@ -707,5 +707,5 @@ ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
 
 {% if localsettings.get('OFF_PEAK_TIME') %}
 from datetime import time
-OFF_PEAK_TIME = (time(localsettings.OFF_PEAK_TIME[0]), time(localsettings.OFF_PEAK_TIME[1]))
+OFF_PEAK_TIME = (time({{ localsettings.OFF_PEAK_TIME[0] }}), time({{ localsettings.OFF_PEAK_TIME[1] }}))
 {% endif %}
