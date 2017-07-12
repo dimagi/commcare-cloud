@@ -301,6 +301,7 @@ localsettings:
 #  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   ICDS_TEST_DATABASE_NAME: commcarehq_icds_testdata
+  ICDS_UCR_TEST_DATABASE_ALIAS : icds-ucr
   ICDS_UCR_DATABASE_ALIAS: icds-ucr
   ICDS_UCR_DATABASE_NAME: commcarehq_icds_aggregatedata
   INACTIVITY_TIMEOUT: 20160
