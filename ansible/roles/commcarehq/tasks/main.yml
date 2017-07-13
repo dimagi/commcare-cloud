@@ -130,6 +130,6 @@
     job: /root/restart_celery.sh
     user: root
     cron_file: restart_celery
-    minute: "*/20"
+    minute: "20"
   tags:
     - hq-cronjob
