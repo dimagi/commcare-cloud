@@ -1,11 +1,3 @@
-[hqdb0]
-hqdb0.internal-va.commcarehq.org
-
-[hqdb0:vars]
-hot_standby_server=hqstandby0.internal-va.commcarehq.org
-datavol_device=/dev/xvdb
-datadog_integration_cloudant=true
-
 [proxy]
 hqproxy0.internal-va.commcarehq.org
 
@@ -18,7 +10,7 @@ hqdjango2.internal-va.commcarehq.org
 newrelic_app_name=django
 
 [postgresql]
-hqdb0
+hqdb0.internal-va.commcarehq.org hot_standby_server=hqstandby0.internal-va.commcarehq.org datavol_device=/dev/xvdb datadog_integration_cloudant=true
 hqdb1.internal-va.commcarehq.org datavol_device=/dev/xvdb
 
 [rabbitmq]
@@ -53,7 +45,7 @@ hqtouch0.internal-va.commcarehq.org
 hqformplayer1.internal-va.commcarehq.org
 
 [redis]
-hqb0
+hqdb0.internal-va.commcarehq.org
 hqdb1.internal-va.commcarehq.org
 
 [elasticsearch]
@@ -62,7 +54,7 @@ hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes1
 hqes2.internal-va.commcarehq.org elasticsearch_node_name=hqes2
 
 [shared_dir_host]
-hqb0
+hqdb0.internal-va.commcarehq.org
 
 [shared_dir_host:vars]
 datadisk_device=/dev/xvde
@@ -97,7 +89,7 @@ datavol_device=/dev/xvdb
 swap_size=4G
 
 [pg_standby]
-hqstandby0.internal-va.commcarehq.org hot_standby_master=hqb0
+hqstandby0.internal-va.commcarehq.org hot_standby_master=hqdb0.internal-va.commcarehq.org
 
 [control]
 control.internal-va.commcarehq.org
