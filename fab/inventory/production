@@ -46,7 +46,6 @@ hqformplayer1.internal-va.commcarehq.org
 
 [redis]
 hqdb0.internal-va.commcarehq.org
-hqdb1.internal-va.commcarehq.org
 
 [elasticsearch]
 hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes0
