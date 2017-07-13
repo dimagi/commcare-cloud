@@ -11,6 +11,7 @@ newrelic_app_name=django
 
 [postgresql]
 hqdb0.internal-va.commcarehq.org hot_standby_server=hqstandby0.internal-va.commcarehq.org datavol_device=/dev/xvdb
+hqdb1.internal-va.commcarehq.org datavol_device=/dev/xvdb
 
 [rabbitmq]
 hqtouch0.internal-va.commcarehq.org
@@ -45,6 +46,7 @@ hqformplayer1.internal-va.commcarehq.org
 
 [redis]
 hqdb0.internal-va.commcarehq.org
+hqdb1.internal-va.commcarehq.org
 
 [elasticsearch]
 hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes0
