@@ -110,3 +110,26 @@
   tags:
     - localsettings
     - hq-localsettings
+
+- name: Copy celery restart script
+  sudo: yes
+  template:
+    src: "restart_celery.sh.j2"
+    dest: "/root/restart_celery.sh"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+  tags:
+    - hq-cronjob
+
+- name: Create Cron job
+  sudo: yes
+  cron:
+    name: "Restart celery ucr indicator"
+    job: /root/restart_celery.sh
+    user: root
+    cron_file: restart_celery
+    minute: "*/20"
+  tags:
+    - hq-cronjob
