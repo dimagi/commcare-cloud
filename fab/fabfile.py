@@ -195,6 +195,14 @@ def icds():
 
 
 @task
+def l10k():
+    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'l10k')
+    load_env('l10k')
+    env.force = True  # don't worry about kafka checkpoints on l10k
+    execute(env_common)
+
+
+@task
 def production():
     """www.commcarehq.org"""
     if env.code_branch != 'master':
