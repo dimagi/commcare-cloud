@@ -1,10 +1,10 @@
 ---
-- src: git+https://github.com/emord/ansible-couchdb-cluster.git
-  version: 826df60
+- src: git+https://github.com/andrewrothstein/ansible-couchdb.git
+  version: 04cea8ce977a3b3477574ced23749655579611b9
   name: emord.ansible-couchdb-cluster
 - src: git+https://github.com/debops-contrib/ansible-etckeeper.git
-  version: 29c721d
+  version: 29c721de3df965ff355cbed242db813f70b811a2
   name: debops-contrib.etckeeper
-- src: ANXS.tmpreaper
-  version: v1.0.1
+- src: git+https://github.com/ANXS/tmpreaper.git
+  version: 46f8e0b8b8f5732eecc68b08b5e0c392c418e3f3
   name: tmpreaper
