@@ -184,6 +184,7 @@ etc_host_lines_removed: ['etc_host_lines']
 http_proxy_address: '10.247.24.16'
 http_proxy_port: '3128'
 
+commcare_errors_branch: "master-icds"
 site_locations:
   - name: /files
     try_files: "$uri $uri/index.html $uri/ =404"
@@ -242,7 +243,7 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: 10.247.24.13
+    host: 10.247.24.18
     port: 25984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -255,6 +256,7 @@ localsettings:
     - 127.0.0.1
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
+  ASYNC_INDICATORS_TO_QUEUE: 30000
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
@@ -300,6 +302,7 @@ localsettings:
 #  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   ICDS_TEST_DATABASE_NAME: commcarehq_icds_testdata
+  ICDS_UCR_TEST_DATABASE_ALIAS : icds-ucr
   ICDS_UCR_DATABASE_ALIAS: icds-ucr
   ICDS_UCR_DATABASE_NAME: commcarehq_icds_aggregatedata
   INACTIVITY_TIMEOUT: 20160
@@ -343,12 +346,10 @@ localsettings:
             - 'static-child_health_cases'
             - 'static-child_cases_monthly'
             - 'static-child_cases_monthly_v2'
-            - 'static-child_cases_monthly_tableau'
             - 'static-child_cases_monthly_tableau_v2'
             - 'static-ccs_record_cases'
             - 'static-ccs_record_cases_monthly'
             - 'static-ccs_record_cases_monthly_v2'
-            - 'static-ccs_record_cases_monthly_tableau'
             - 'static-ccs_record_cases_monthly_tableau_v2'
       - name: 'kafka-ucr-static-person_cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -357,7 +358,6 @@ localsettings:
           topics:
             - 'case-sql'
           include_ucrs:
-            - 'static-person_cases'
             - 'static-person_cases_v2'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
@@ -377,6 +377,9 @@ localsettings:
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
+  OFF_PEAK_TIME:
+    - 12
+    - 3
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq

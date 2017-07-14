@@ -88,7 +88,7 @@ nofile_limit: 65536
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 300
-pgbouncer_max_connections: 800
+pgbouncer_max_connections: 1000
 pgbouncer_default_pool: 290
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
@@ -142,6 +142,7 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
 kafka_broker_id: 0
+kafka_log_dir: '/opt/data/kafka'
 
 encrypted_root: /opt/data/ecrypt
 

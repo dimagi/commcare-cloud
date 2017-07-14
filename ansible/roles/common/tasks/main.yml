@@ -1,6 +1,7 @@
 - name: "Custom host file lines"
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
   with_items: "{{ etc_host_lines }}"
+  when: etc_host_lines is defined
   tags:
     - etc_hosts
 
@@ -15,6 +16,7 @@
 - name: "Remove lines from hosts file"
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
   with_items: "{{ etc_host_lines_removed }}"
+  when: etc_host_lines_removed is defined
   tags:
     - etc_hosts
 
