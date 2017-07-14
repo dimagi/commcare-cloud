@@ -1,3 +1,2 @@
-datadog_integration_cloudant: true
 datadog_integration_pgbouncer: true
 datadog_integration_postgres: true
