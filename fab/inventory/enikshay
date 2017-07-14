@@ -29,7 +29,7 @@
 
 [db0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='172.25.3.6'
 hostname='db0'
@@ -37,51 +37,51 @@ hostname='db0'
 [es0:vars]
 elasticsearch_node_name=es0
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es0'
 
 [web0:vars]
 parent_mailrelay='relay.ctrls.in'
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='web0'
 
 [formplayer0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer0'
 
 [formplayer1:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer1'
 
 [couch0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 remote_couch_backup='172.25.2.6'
 hostname='couch0'
 
 [proxy0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='proxy0'
 
 [kafka0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='kafka0'
 
 [pgstandby0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='172.25.3.5'
 hostname='pgstandby0'
