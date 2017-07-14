@@ -94,25 +94,34 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: proxy
     name: commcarehq_proxy
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 204]
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [205, 409]
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [410, 614]
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p4
     name: commcarehq_p4
     shards: [615, 819]
+    host: "{{ groups.postgresql.1 }}"
   - django_alias: p5
     name: commcarehq_p5
     shards: [820, 1023]
+    host: "{{ groups.postgresql.1 }}"
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+    host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
+    host: "{{ groups.postgresql.0 }}"
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
