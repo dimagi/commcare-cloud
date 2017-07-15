@@ -120,8 +120,7 @@ formplayer0
 pgstandby0
 
 [riakcs:vars]
-datavol_device=/dev/sdb
-
+datavol_device=/dev/mapper/consolidated-data
 
 [elasticsearch:children]
 es0
