@@ -2,7 +2,7 @@
   sudo: yes
   template:
     src: "redis-restart.sh.j2"
-    dest: "/etc/cron.d/redis-restart.sh"
+    dest: "/usr/local/sbin/redis-restart.sh"
     group: root
     owner: root
     mode: 0700
@@ -12,6 +12,6 @@
   sudo: yes
   cron:
     name: "Reboot Redis"
-    job: /etc/cron.d/redis-restart.sh
+    job: "/usr/local/sbin/redis-restart.sh > /dev/null"
     user: root
     cron_file: ../crontab
