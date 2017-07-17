@@ -242,8 +242,6 @@ icds:
         num_processes: 1
       kafka-ucr-static-cases:
         num_processes: 24
-      kafka-ucr-static-person_cases:
-        num_processes: 8
     '10.247.24.30': # pillow1
       CaseToElasticsearchPillow:
         num_processes: 8
