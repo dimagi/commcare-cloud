@@ -1,8 +1,11 @@
 [l10kserver1]
-10.162.36.254
+192.168.0.10
 
-#[l10kbackup1]
-#ip_backup_server
+[l10kbackup1]
+192.168.0.11
+
+[l10kbackup1:vars]
+hostname='l10kbackup1'
 
 [l10kserver1:vars]
 elasticsearch_node_name=es0
@@ -54,11 +57,11 @@ l10kserver1
 [shared_dir_host:children]
 l10kserver1
 
-#[pg_standby:children]
-#l10kbackup1
+[pg_standby:children]
+l10kbackup1
 
 #[lvm:children]
 #l10kserver1
 
-[control]
-10.162.36.196
+[control:children]
+l10kbackup1
