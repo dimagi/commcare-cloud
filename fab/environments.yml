@@ -192,41 +192,32 @@ icds:
       async_restore_queue:
         concurrency: 4
       ucr_indicator_queue:
-        concurrency: 8
-        celery_loader: 'corehq.util.celery_utils.LoadBasedLoader'
+        concurrency: 12
       flower: {}
     '10.247.24.31': # celery1
       ucr_indicator_queue:
         concurrency: 16
-        celery_loader: 'corehq.util.celery_utils.LoadBasedLoader'
     '10.247.24.15': # web1
       ucr_indicator_queue:
         concurrency: 12
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.24': # web2
       ucr_indicator_queue:
         concurrency: 16
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.25': # web3
       ucr_indicator_queue:
         concurrency: 12
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.26': # web4
       ucr_indicator_queue:
         concurrency: 12
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.27': # web5
       ucr_indicator_queue:
         concurrency: 12
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
     '10.247.24.13': # web0
       ucr_indicator_queue:
-        concurrency: 8
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
+        concurrency: 10
     '10.247.24.21': # kafka0
       ucr_indicator_queue:
-        concurrency: 12
-        celery_loader: 'corehq.util.celery_utils.OffPeakLoadBasedLoader'
+        concurrency: 10
   pillows:
     '10.247.24.20': # pillow0
       AppDbChangeFeedPillow:
@@ -268,8 +259,6 @@ icds:
         num_processes: 1
       SqlSMSPillow:
         num_processes: 1
-      UnknownUsersPillow:
-        num_processes: 1
       UpdateUserSyncHistoryPillow:
         num_processes: 1
       UserCacheInvalidatePillow:
@@ -303,6 +292,9 @@ production:
         max_tasks_per_child: 5
       ucr_indicator_queue:
         concurrency: 1
+      async_restore_queue:
+        concurrency: 2
+        max_tasks_per_child: 5
     hqcelery1:
       reminder_case_update_queue:
         pooling: gevent
@@ -325,7 +317,8 @@ production:
         concurrency: 2
         max_tasks_per_child: 5
       async_restore_queue:
-        concurrency: 4
+        concurrency: 2
+        max_tasks_per_child: 5
       flower: {}
     hqcelery2:
       celery:
