@@ -72,33 +72,42 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: transaction
+pg_query_stats: True
 
 formplayer_db_name: formplayer
 
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
+    query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 99]
+    query_stats: True
   - django_alias: p2
     name: commcarehq_p2
     shards: [100, 199]
+    query_stats: True
   - django_alias: p3
     name: commcarehq_p3
     shards: [200, 299]
+    query_stats: True
   - django_alias: p4
     name: commcarehq_p4
     shards: [300, 399]
+    query_stats: True
   - django_alias: p5
     name: commcarehq_p5
     shards: [400, 511]
+    query_stats: True
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+    query_stats: True
   - name: "{{ formplayer_db_name }}"
   - django_alias: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
     name: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
+    query_stats: True
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 

@@ -85,6 +85,12 @@ log_temp_files = 0
 
 track_functions = all
 
+{% if not is_pg_standby|default(false) and pg_query_stats|default(false) %}
+shared_preload_libraries = 'pg_stat_statements'
+pg_stat_statements.track = all
+pg_stat_statements.max = 10000
+track_activity_query_size = 2048
+{% endif %}
 
 # AUTOVACUUM PARAMETERS
 
