@@ -269,7 +269,6 @@ es3
 kafka0
 
 [riakcs:children]
-pg0
 pg1
 es0
 es1
