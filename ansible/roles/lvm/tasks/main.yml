@@ -40,6 +40,7 @@
   lvol:
     vg: consolidated
     lv: data1
+    shrink: False
     size: 100%FREE
 
 - name: Format block storage volume
