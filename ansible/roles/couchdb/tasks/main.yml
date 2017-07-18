@@ -107,7 +107,7 @@
   sudo: yes
   template:
     src: "couch-restarter.sh.j2"
-    dest: "/root/couch-restarter.sh"
+    dest: "/usr/local/sbin/couch-restarter.sh"
     group: root
     owner: root
     mode: 0700
@@ -117,7 +117,7 @@
   sudo: yes
   cron:
     name: "Reboot Couch"
-    job: /root/couch-restarter.sh
+    job: "/usr/local/sbin/couch-restarter.sh > /dev/null"
     user: root
     cron_file: couch-restarter
 
