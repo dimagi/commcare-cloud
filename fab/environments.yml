@@ -172,7 +172,7 @@ icds:
       reminder_case_update_queue:
         pooling: gevent
         concurrency: 5
-        num_workers: 8
+        num_workers: 4
       reminder_queue:
         pooling: gevent
         concurrency: 5
