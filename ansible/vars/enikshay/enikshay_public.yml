@@ -5,6 +5,7 @@ J2ME_SITE_HOST: 'j2me-enikshay.in'
 deploy_env: enikshay
 #tableau_server: 'tableau2.internal.commcarehq.org'
 #TABLEAU_HOST: 'icds.commcarehq.org'
+internal_domain_name: 'enikshay.in'
 
 active_sites:
   cchq_ssl: True
