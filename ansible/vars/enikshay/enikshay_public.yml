@@ -1,6 +1,6 @@
 SITE_HOST: 'enikshay.in'
 #CAS_SITE_HOST: 'cas.commcarehq.org'
-#ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
+ENIKSHAY_SITE_HOST: 'enikshay.in'
 J2ME_SITE_HOST: 'j2me-enikshay.in'
 deploy_env: enikshay
 #tableau_server: 'tableau2.internal.commcarehq.org'
@@ -23,9 +23,13 @@ active_sites:
   motech: False
   motech2: False
   riakcs: True
-#  cas_ssl: True
-#  enikshay_ssl: True
-  couchdb2: False
+  couchdb2: True
+  #cas_ssl: True
+  #enikshay_ssl: True
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_USERNAME }}"
 
 riak_ring_size: 64
 
@@ -195,7 +199,7 @@ localsettings:
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "http://{{ groups.celery.1 }}:5555"
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
