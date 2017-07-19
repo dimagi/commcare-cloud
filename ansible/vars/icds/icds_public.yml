@@ -78,6 +78,7 @@ postgresql_effective_cache_size: '16GB'
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
+pg_query_stats: True
 
 formplayer_db_name: formplayer
 
@@ -135,6 +136,7 @@ postgresql_dbs:
   - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
     name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
     host: "{{ groups.postgresql.0 }}"
+    query_stats: True
   - name: "{{localsettings.ICDS_TEST_DATABASE_NAME}}"
     host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
