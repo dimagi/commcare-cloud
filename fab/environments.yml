@@ -373,8 +373,6 @@ production:
         num_processes: 1
       M4ChangeFormFluffPillow:
         num_processes: 1
-      OpmUserFluffPillow:
-        num_processes: 1
       RecouvrementFluffPillow:
         num_processes: 1
       ReportCaseToElasticsearchPillow:
