@@ -63,6 +63,15 @@
   tags:
     - nofile_limits
 
+- name: Ensure pam_limits.so non-interactive
+  lineinfile:
+    dest: /etc/pam.d/common-session-noninteractive
+    state: present
+    regexp: "^session required pam_limits.so"
+    line: "session required pam_limits.so"
+  tags:
+    - nofile_limits
+
 - name: set timezone to Etc/UTC
   become: yes
   timezone:
