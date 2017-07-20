@@ -194,3 +194,12 @@
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
+
+- name: Enable query stat collection
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
+  when: pg_query_stats|default(False) and item.query_stats|default(False)
+  with_items: "{{ postgresql_dbs }}"

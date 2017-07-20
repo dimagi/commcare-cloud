@@ -1,7 +1,10 @@
 ---
-- src: git+https://github.com/andrewrothstein/ansible-couchdb.git
-  version: 04cea8ce977a3b3477574ced23749655579611b9
+- src: git+https://github.com/andrewrothstein/ansible-couchdb-cluster.git
+  version: b7253a9f980a0a9a86f68881047775dff8aa554d
   name: emord.ansible-couchdb-cluster
+- src: git+https://github.com/andrewrothstein/ansible-couchdb.git
+  version: 91d3d046b13f76d07cc1416f01c2db7c878ecd1b
+  name: andrewrothstein.couchdb
 - src: git+https://github.com/debops-contrib/ansible-etckeeper.git
   version: 29c721de3df965ff355cbed242db813f70b811a2
   name: debops-contrib.etckeeper
