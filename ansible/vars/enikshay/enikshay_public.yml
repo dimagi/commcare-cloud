@@ -1,7 +1,7 @@
 SITE_HOST: 'enikshay.in'
 #CAS_SITE_HOST: 'cas.commcarehq.org'
-ENIKSHAY_SITE_HOST: 'enikshay.in'
-J2ME_SITE_HOST: 'j2me-enikshay.in'
+ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
+J2ME_SITE_HOST: 'j2me.enikshay.in'
 deploy_env: enikshay
 #tableau_server: 'tableau2.internal.commcarehq.org'
 #TABLEAU_HOST: 'icds.commcarehq.org'
