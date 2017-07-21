@@ -298,6 +298,10 @@ CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDAT
 CELERY_REPEAT_RECORD_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_QUEUE }}'
 {% endif %}
 
+{% if localsettings.get('ENIKSHAY_QUEUE') %}
+ENIKSHAY_QUEUE = '{{ localsettings.ENIKSHAY_QUEUE }}'
+{% endif %}
+
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
