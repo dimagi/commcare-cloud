@@ -1,13 +1,13 @@
 #!/bin/bash
 # set the path so that service can be found
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-result=`service couchdb status`
+result=`service couchdb2 status`
 date=`date`
-expected='time to relax'
+expected='is running'
 if [[ "$result" == *"$expected"* ]]; then
     echo "couch is up as of $date" > status.txt
 else
-    service couchdb start > service-output.txt 2> service-stderr.txt
+    service couchdb2 start > service-output.txt 2> service-stderr.txt
     echo "server was restarted at $date" >> restart.txt
     echo "couch had to be restarted at $date." | mail -s "CouchDB was restarted" commcarehq-ops@dimagi.com
 fi
