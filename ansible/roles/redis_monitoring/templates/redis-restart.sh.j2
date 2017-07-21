@@ -2,10 +2,8 @@
 # Taken from http://www.akamaras.com/linux/linux-script-to-check-if-a-service-is-running-and-start-it-if-its-stopped/
 
 {% if alert_email %}
-###edit the following
 service=redis-server
 email={{ alert_email }}
-###stop editing
 
 host=`hostname -f`
 if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 ))
