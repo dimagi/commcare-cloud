@@ -42,6 +42,7 @@ alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/
 alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
+alias ae='ansible -m shell "$1" $2 -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV'
 
 # It aint pretty, but it gets the job done
 function ansible-deploy-control() {
