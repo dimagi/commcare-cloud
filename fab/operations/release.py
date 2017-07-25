@@ -348,7 +348,7 @@ def mark_last_release_unsuccessful():
 
 def git_gc_current():
     with cd(env.code_current):
-        sudo('git gc')
+        sudo('git gc &')
 
 
 @roles(ROLES_ALL_SRC)
