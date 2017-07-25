@@ -3,10 +3,10 @@
 [db0] # postgresql, riak, control
 172.25.3.5
 
-[es0] # es, riak
+[es0] # es, riak, redis
 172.25.2.5
 
-[web0] # django, pillow
+[web0] # django, pillow, touchform
 172.25.2.6
 
 [formplayer0] # formplayer, riak
@@ -21,7 +21,7 @@
 [proxy0] # riak, nginx
 172.25.1.5
 
-[kafka0] # kafka, zookeeper, celery
+[kafka0] # kafka, zookeeper, celery, rabbitmq
 172.25.2.10
 
 [pgstandby0] # postgresql, riak
@@ -29,7 +29,7 @@
 
 [db0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='172.25.3.6'
 hostname='db0'
@@ -37,51 +37,51 @@ hostname='db0'
 [es0:vars]
 elasticsearch_node_name=es0
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es0'
 
 [web0:vars]
 parent_mailrelay='relay.ctrls.in'
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='web0'
 
 [formplayer0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer0'
 
 [formplayer1:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer1'
 
 [couch0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 remote_couch_backup='172.25.2.6'
 hostname='couch0'
 
 [proxy0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='proxy0'
 
 [kafka0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='kafka0'
 
 [pgstandby0:vars]
 devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='172.25.3.5'
 hostname='pgstandby0'
@@ -102,6 +102,68 @@ formplayer0
 formplayer1
 es0
 kafka0
+
+[pg_standby:children]
+pgstandby0
+
+[stanchion:children]
+couch0
+
+[shared_dir_host:children]
+db0
+
+[riakcs:children]
+db0
+es0
+proxy0
+formplayer0
+pgstandby0
+
+[riakcs:vars]
+datavol_device=/dev/mapper/consolidated-data
+
+[elasticsearch:children]
+es0
+
+[formplayer:children]
+formplayer0
+formplayer1
+
+[touchforms:children]
+web0
+
+[pillowtop:children]
+web0
+
+[celery:children]
+kafka0
+
+[rabbitmq:children]
+kafka0
+
+[kafka:children]
+kafka0
+
+[zookeeper:children]
+kafka0
+
+[redis:children]
+es0
+
+[couchdb2:children]
+couch0
+
+[couchdb2_proxy:children]
+couch0
+
+[postgresql:children]
+db0
+
+[webworkers:children]
+web0
+
+[proxy:children]
+proxy0
 
 #[patch:children]
 #patch0
