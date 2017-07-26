@@ -380,8 +380,8 @@ def _services_restart():
     """Stop and restart all supervisord services"""
     supervisor_command('stop all')
 
+    supervisor_command('reread')
     supervisor_command('update')
-    supervisor_command('reload')
     time.sleep(5)
     supervisor_command('start all')
 
