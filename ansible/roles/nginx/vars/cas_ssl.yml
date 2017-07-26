@@ -28,6 +28,7 @@ nginx_sites:
     - name: "app_cache"
       path: "{{ www_home }}/app_downloads/cache"
       max_size: "3g"
+      inactive_time: "24h"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
