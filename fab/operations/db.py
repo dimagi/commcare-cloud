@@ -106,10 +106,11 @@ def migrations_exist():
     Check if there exists database migrations to run
     """
     with cd(env.code_root):
+        result = sudo('%(virtualenv_root)s/bin/python manage.py showmigrations | grep "\[ ]" | wc -l' % env)
         try:
-            n_migrations = int(sudo(
-                '%(virtualenv_root)s/bin/python manage.py showmigrations | grep "\[ ]" | wc -l' % env)
-            )
+            # This command usually returns some logging and then then number of migrations
+            result = result.splitlines()
+            n_migrations = int(result[-1])
         except Exception:
             # If we fail on this, return True to be safe. It's most likely cause we lost connection and
             # failed to return a value python could parse into an int
