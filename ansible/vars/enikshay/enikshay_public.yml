@@ -124,6 +124,7 @@ postgresql_dbs:
     name: commcarehq_p5
     shards: [820, 1023]
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
+    query_stats: True
   - name: "{{ formplayer_db_name }}"
 
 postgresql_ssl_enabled: False
