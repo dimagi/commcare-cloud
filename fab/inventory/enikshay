@@ -12,13 +12,13 @@
 [formplayer0] # formplayer, riak
 172.25.2.7
 
-[formplayer1] # formplayer
+[formplayer1] # formplayer, riak
 172.25.2.8
 
 [couch0] # couch, stanchion
 172.25.2.9
 
-[proxy0] # riak, nginx
+[proxy0] # nginx
 172.25.1.5
 
 [kafka0] # kafka, zookeeper, celery, rabbitmq
@@ -115,8 +115,8 @@ db0
 [riakcs:children]
 db0
 es0
-proxy0
 formplayer0
+formplayer1
 pgstandby0
 
 [riakcs:vars]
