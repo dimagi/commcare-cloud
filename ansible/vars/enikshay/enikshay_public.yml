@@ -106,28 +106,25 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
-#  - django_alias: proxy
-#    name: commcarehq_proxy
-#  - django_alias: p1
-#    name: commcarehq_p1
-#    shards: [0, 204]
-#  - django_alias: p2
-#    name: commcarehq_p2
-#    shards: [205, 409]
-#  - django_alias: p3
-#    name: commcarehq_p3
-#    shards: [410, 614]
-#  - django_alias: p4
-#    name: commcarehq_p4
-#    shards: [615, 819]
-#  - django_alias: p5
-#    name: commcarehq_p5
-#    shards: [820, 1023]
+  - django_alias: proxy
+    name: commcarehq_proxy
+  - django_alias: p1
+    name: commcarehq_p1
+    shards: [0, 204]
+  - django_alias: p2
+    name: commcarehq_p2
+    shards: [205, 409]
+  - django_alias: p3
+    name: commcarehq_p3
+    shards: [410, 614]
+  - django_alias: p4
+    name: commcarehq_p4
+    shards: [615, 819]
+  - django_alias: p5
+    name: commcarehq_p5
+    shards: [820, 1023]
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
-#  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
-#    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
   - name: "{{ formplayer_db_name }}"
-#  - name: commcarehq_icds_testdata
 
 postgresql_ssl_enabled: False
 
@@ -281,7 +278,7 @@ localsettings:
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'
   UCR_DATABASE_NAME: commcarehq_ucr
-  USE_PARTITIONED_DATABASE: False
+  USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
