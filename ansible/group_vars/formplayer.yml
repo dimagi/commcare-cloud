@@ -1,1 +1,4 @@
 datadog_integration_jmx: true
+
+tmpreaper_dirs: "{{ encrypted_root }}/formplayer" "/tmp/."
+tmpreaper_time: 7d
