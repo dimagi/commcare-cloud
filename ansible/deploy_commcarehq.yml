@@ -7,6 +7,7 @@
    - proxy
    - pillowtop
    - postgresql
+   - couchdb2_proxy
   sudo: yes
   roles:
     - {role: commcarehq, tags: commcarehq}
