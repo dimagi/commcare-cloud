@@ -199,6 +199,9 @@ icds:
     '10.247.24.31': # celery1
       ucr_indicator_queue:
         concurrency: 16
+      background_queue:
+        concurrency: 4
+        max_tasks_per_child: 1
     '10.247.24.15': # web1
       ucr_indicator_queue:
         concurrency: 12
