@@ -100,6 +100,7 @@ pgbouncer_default_pool: 290
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
+pg_query_stats: True
 
 formplayer_db_name: formplayer
 
