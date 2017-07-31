@@ -16,6 +16,9 @@
 [db0]
 10.162.36.205
 
+[db0:vars]
+datadog_integration_cloudant=true
+
 [es2]
 10.162.36.221 elasticsearch_node_name=es2
 
