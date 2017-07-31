@@ -51,7 +51,7 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.12'
-postgresql_max_connections=400
+postgresql_max_connections=800
 hostname='es0'
 
 [es1]
