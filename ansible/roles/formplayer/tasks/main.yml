@@ -10,11 +10,12 @@
   cron:
     name: "{{ item.name }}"
     special_time: daily
-    job: "find {{ item.dir }} -maxdepth {{ item.maxdepth }} -type {{ item.type }}  -mtime +{{ item.max_age }} -delete"
+    job: "tmpreaper {{ item.dir }} {{ time_spec }}"
     user: root
     cron_file: purge_formplayer_files
   with_items:
-    - {name: 'Purge temp files', dir: "/tmp", max_age: 2, type: f, maxdepth: 1}
+    - {name: 'Purge temp files', dir: '/tmp', time_spec: '2d'}
+    - {name: 'Purge sqlite db files', dir: '{{ formplayer_data_dir }}', time_spec: '2d'}
 
 - name: Formplayer build dir
   file:
