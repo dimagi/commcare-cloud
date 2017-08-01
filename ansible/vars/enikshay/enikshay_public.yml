@@ -107,50 +107,50 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ groups.postgresql.2 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: proxy
     name: commcarehq_proxy
-    host: "{{ groups.postgresql.1 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
-    host: "{{ groups.postgresql.3 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: "{{ groups.postgresql.3 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
-    host: "{{ groups.postgresql.3 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p4
     name: commcarehq_p4
     shards: [309, 411]
-    host: "{{ groups.postgresql.3 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p5
     name: commcarehq_p5
     shards: [412, 514]
-    host: "{{ groups.postgresql.3 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p6
     name: commcarehq_p6
     shards: [515, 617]
-    host: "{{ groups.postgresql.1 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p7
     name: commcarehq_p7
     shards: [618, 720]
-    host: "{{ groups.postgresql.1 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p8
     name: commcarehq_p8
     shards: [721, 823]
-    host: "{{ groups.postgresql.1 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p9
     name: commcarehq_p9
     shards: [824, 926]
-    host: "{{ groups.postgresql.1 }}"
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p10
     name: commcarehq_p10
     shards: [927, 1023]
-    host: "{{ groups.postgresql.1 }}"
+    host: "{{ groups.postgresql.0 }}"
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
     query_stats: True
     host: "{{ groups.postgresql.0 }}"
