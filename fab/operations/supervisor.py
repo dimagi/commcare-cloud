@@ -292,6 +292,7 @@ def _format_env(current_env, extra=None):
 
 
 @roles(ROLES_PILLOWTOP)
+@parallel
 def stop_pillows(current=False):
     code_root = env.code_current if current else env.code_root
     with cd(code_root):
@@ -299,6 +300,7 @@ def stop_pillows(current=False):
 
 
 @roles(ROLES_PILLOWTOP)
+@parallel
 def start_pillows(current=False):
     code_root = env.code_current if current else env.code_root
     with cd(code_root):
