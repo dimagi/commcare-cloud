@@ -18,3 +18,21 @@
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
+
+- name: Copy couch restart script
+  sudo: yes
+  template:
+    src: "couch2-restarter.sh.j2"
+    dest: "/usr/local/sbin/couch2-restarter.sh"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+
+- name: Create Cron job
+  sudo: yes
+  cron:
+    name: "Reboot Couch"
+    job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
+    user: root
+    cron_file: couch2-restarter
