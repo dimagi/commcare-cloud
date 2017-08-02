@@ -802,7 +802,7 @@ def silent_services_restart(use_current_release=False):
 @task
 def set_supervisor_config():
     setup_release()
-    supervisor.set_supervisor_config()
+    execute_with_timing(supervisor.set_supervisor_config)
 
 
 @task

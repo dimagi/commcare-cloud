@@ -25,18 +25,20 @@ from fabric import utils
 from ..utils import execute_with_timing, get_pillow_env_config
 
 
+@roles(ROLES_ALL_SERVICES)
+@parallel
 def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
-    execute_with_timing(set_celery_supervisorconf)
-    execute_with_timing(set_djangoapp_supervisorconf)
-    execute_with_timing(set_errand_boy_supervisorconf)
-    execute_with_timing(set_formsplayer_supervisorconf)
-    execute_with_timing(set_formplayer_spring_supervisorconf)
-    execute_with_timing(set_pillowtop_supervisorconf)
-    execute_with_timing(set_sms_queue_supervisorconf)
-    execute_with_timing(set_reminder_queue_supervisorconf)
-    execute_with_timing(set_pillow_retry_queue_supervisorconf)
-    execute_with_timing(set_websocket_supervisorconf)
+    set_celery_supervisorconf()
+    set_djangoapp_supervisorconf()
+    set_errand_boy_supervisorconf()
+    set_formsplayer_supervisorconf()
+    set_formplayer_spring_supervisorconf()
+    set_pillowtop_supervisorconf()
+    set_sms_queue_supervisorconf()
+    set_reminder_queue_supervisorconf()
+    set_pillow_retry_queue_supervisorconf()
+    set_websocket_supervisorconf()
 
     # if needing tunneled ES setup, comment this back in
     # execute(set_elasticsearch_supervisorconf)
@@ -54,9 +56,14 @@ def _get_celery_queues():
     return queues
 
 
-@roles(ROLES_CELERY)
-@parallel
+def _check_in_roles(roles):
+    return any(env.get('host_string') in env.roledefs[role] for role in roles)
+
+
 def set_celery_supervisorconf():
+    if not _check_in_roles(ROLES_CELERY):
+        return
+
     queues = _get_celery_queues()
 
     if 'celery_periodic' in queues and env.host != queues['celery_periodic'].get('server_whitelist'):
@@ -130,14 +137,12 @@ def show_periodic_server_whitelist_message_and_abort(env):
         )
 
 
-@roles(ROLES_PILLOWTOP)
-@parallel
 def set_pillowtop_supervisorconf():
     # Don't run if there are no hosts for the 'django_pillowtop' role.
     # If there are no matching roles, it's still run once
     # on the 'deploy' machine, db!
     # So you need to explicitly test to see if all_hosts is empty.
-    if env.all_hosts:
+    if env.all_hosts and _check_in_roles(ROLES_PILLOWTOP):
         _rebuild_supervisor_conf_file(
             'make_supervisor_pillowtop_conf',
             'supervisor_pillowtop.conf',
@@ -147,55 +152,45 @@ def set_pillowtop_supervisorconf():
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
 
 
-@roles(ROLES_DJANGO)
-@parallel
 def set_djangoapp_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
+    if _check_in_roles(ROLES_DJANGO):
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
 
 
-@roles(ROLES_DJANGO + ROLES_CELERY)
-@parallel
 def set_errand_boy_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
+    if _check_in_roles(ROLES_DJANGO + ROLES_CELERY):
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
 
 
-@roles(ROLES_TOUCHFORMS)
-@parallel
 def set_formsplayer_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
+    if _check_in_roles(ROLES_TOUCHFORMS):
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
 
 
-@roles(ROLES_FORMPLAYER)
 def set_formplayer_spring_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
+    if _check_in_roles(ROLES_FORMPLAYER):
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
 
 
-@roles(ROLES_SMS_QUEUE)
-@parallel
 def set_sms_queue_supervisorconf():
-    if 'sms_queue' in _get_celery_queues():
+    if 'sms_queue' in _get_celery_queues() and _check_in_roles(ROLES_SMS_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_sms_queue.conf')
 
 
-@roles(ROLES_REMINDER_QUEUE)
-@parallel
 def set_reminder_queue_supervisorconf():
-    if 'reminder_queue' in _get_celery_queues():
+    if 'reminder_queue' in _get_celery_queues() and _check_in_roles(ROLES_REMINDER_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_queue_schedule_instances.conf')
 
 
-@roles(ROLES_PILLOW_RETRY_QUEUE)
-@parallel
 def set_pillow_retry_queue_supervisorconf():
-    if 'pillow_retry_queue' in _get_celery_queues():
+    if 'pillow_retry_queue' in _get_celery_queues() and _check_in_roles(ROLES_PILLOW_RETRY_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
 
 
-@roles(ROLES_STATIC)
-@parallel
 def set_websocket_supervisorconf():
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
+    if _check_in_roles(ROLES_STATIC):
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
 
 
 def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_destination_filename=None):
