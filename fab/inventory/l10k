@@ -21,9 +21,6 @@ l10kserver1
 [postgresql:children]
 l10kserver1
 
-[couchdb:children]
-l10kserver1
-
 [couchdb2:children]
 l10kserver1
 
@@ -59,9 +56,6 @@ l10kserver1
 
 [pg_standby:children]
 l10kbackup1
-
-#[lvm:children]
-#l10kserver1
 
 [control:children]
 l10kbackup1
