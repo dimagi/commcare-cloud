@@ -241,7 +241,6 @@ localsettings:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
   EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
