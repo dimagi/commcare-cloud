@@ -29,7 +29,7 @@ active_sites:
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 riak_ring_size: 128
 
