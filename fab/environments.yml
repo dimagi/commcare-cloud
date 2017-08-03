@@ -37,6 +37,110 @@ base:
   http_proxy: null
   newrelic_javaagent: False
 
+enikshay:
+  environment: softlayer
+  formplayer_memory: "7000m"
+  newrelic_javaagent: True
+  celery_processes:
+    '*':
+      celery_periodic:
+        server_whitelist: '172.25.2.10'
+        concurrency: 4
+      pillow_retry_queue:
+        concurrency: 1
+      email_queue:
+        concurrency: 2
+      repeat_record_queue:
+        pooling: gevent
+        concurrency: 200
+      ucr_queue:
+        concurrency: 4
+        max_tasks_per_child: 5
+      ucr_indicator_queue:
+        concurrency: 1
+      celery:
+        concurrency: 8
+        max_tasks_per_child: 5
+      saved_exports_queue:
+        concurrency: 3
+        max_tasks_per_child: 1
+      reminder_case_update_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 2
+      reminder_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 2
+      reminder_rule_queue:
+        concurrency: 1
+        max_tasks_per_child: 1
+      sms_queue:
+        pooling: gevent
+        concurrency: 10
+      async_restore_queue:
+        concurrency: 8
+      background_queue:
+        concurrency: 4
+        max_tasks_per_child: 1
+      flower: {}
+      ucr_indicator_queue:
+        concurrency: 16
+  pillows:
+    '*':
+      AppDbChangeFeedPillow:
+        num_processes: 1
+      ApplicationBlobDeletionPillow:
+        num_processes: 1
+      ApplicationToElasticsearchPillow:
+        num_processes: 1
+      BlobDeletionPillow:
+        num_processes: 1
+      CacheInvalidatePillow:
+        num_processes: 1
+      CaseToElasticsearchPillow:
+        num_processes: 4
+      DefaultChangeFeedPillow:
+        num_processes: 1
+      DomainDbKafkaPillow:
+        num_processes: 1
+      FormSubmissionMetadataTrackerPillow:
+        num_processes: 1
+      GroupPillow:
+        num_processes: 1
+      GroupToUserPillow:
+        num_processes: 1
+      kafka-ucr-main:
+        num_processes: 4
+      KafkaDomainPillow:
+        num_processes: 1
+      LedgerToElasticsearchPillow:
+        num_processes: 1
+      ReportXFormToElasticsearchPillow:
+        num_processes: 1
+      CaseSearchToElasticsearchPillow:
+        num_processes: 4
+      kafka-ucr-static:
+        num_processes: 4
+      ReportCaseToElasticsearchPillow:
+        num_processes: 1
+      SqlSMSPillow:
+        num_processes: 1
+      UnknownUsersPillow:
+        num_processes: 1
+      UpdateUserSyncHistoryPillow:
+        num_processes: 1
+      UserCacheInvalidatePillow:
+        num_processes: 1
+      UserGroupsDbKafkaPillow:
+        num_processes: 1
+      UserPillow:
+        num_processes: 1
+      XFormToElasticsearchPillow:
+        num_processes: 1
+
+
+
 softlayer:
   environment: softlayer
   formplayer_memory: "7000m"
