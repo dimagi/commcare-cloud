@@ -20,7 +20,7 @@ from ..const import (
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
-)
+    ROLES_SUBMISSION_REPROCESSING_QUEUE)
 from fabric import utils
 from ..utils import execute_with_timing, get_pillow_env_config
 
@@ -38,6 +38,7 @@ def set_supervisor_config():
     set_sms_queue_supervisorconf()
     set_reminder_queue_supervisorconf()
     set_pillow_retry_queue_supervisorconf()
+    set_submissions_reprocessing_queue_supervisorconf()
     set_websocket_supervisorconf()
 
     # if needing tunneled ES setup, comment this back in
@@ -186,6 +187,11 @@ def set_reminder_queue_supervisorconf():
 def set_pillow_retry_queue_supervisorconf():
     if 'pillow_retry_queue' in _get_celery_queues() and _check_in_roles(ROLES_PILLOW_RETRY_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
+
+
+def set_submissions_reprocessing_queue_supervisorconf():
+    if 'submission_reprocessing_queue' in _get_celery_queues():
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_submission_reprocessing_queue.conf')
 
 
 def set_websocket_supervisorconf():

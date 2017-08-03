@@ -162,6 +162,8 @@ icds:
         server_whitelist: 10.247.24.19
       pillow_retry_queue:
         concurrency: 1
+      submission_reprocessing_queue:
+        concurrency: 1
       repeat_record_queue:
         pooling: gevent
         concurrency: 3
