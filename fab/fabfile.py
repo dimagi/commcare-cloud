@@ -203,7 +203,6 @@ def l10k():
 
 
 @task
-@task
 def enikshay():
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'enikshay')
     load_env('enikshay')
