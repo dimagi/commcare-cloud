@@ -38,7 +38,7 @@ base:
   newrelic_javaagent: False
 
 enikshay:
-  environment: softlayer
+  environment: enikshay
   formplayer_memory: "7000m"
   newrelic_javaagent: True
   celery_processes:
