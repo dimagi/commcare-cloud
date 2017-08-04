@@ -201,5 +201,5 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
-  when: pg_query_stats|default(False) and item.query_stats|default(False)
+  when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False)
   with_items: "{{ postgresql_dbs }}"

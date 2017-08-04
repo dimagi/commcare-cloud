@@ -370,6 +370,7 @@ localsettings:
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
+  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OFF_PEAK_TIME:
     - 12
     - 3
