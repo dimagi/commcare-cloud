@@ -10,7 +10,7 @@
   cron:
     name: "{{ item.name }}"
     special_time: daily
-    job: "tmpreaper {{ item.time_spec }} {{ item.dir }}"
+    job: "/usr/sbin/tmpreaper {{ item.time_spec }} {{ item.dir }}"
     user: root
     cron_file: purge_formplayer_files
   with_items:
