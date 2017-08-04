@@ -48,6 +48,8 @@ softlayer:
         concurrency: 4
       pillow_retry_queue:
         concurrency: 1
+      submission_reprocessing_queue:
+        concurrency: 1
       email_queue:
         concurrency: 2
       repeat_record_queue:
@@ -287,6 +289,8 @@ production:
         concurrency: 4
       pillow_retry_queue:
         concurrency: 1
+      submission_reprocessing_queue:
+        concurrency: 1
       email_queue:
         concurrency: 2
       repeat_record_queue:
@@ -515,6 +519,8 @@ swiss:
         max_tasks_per_child: 1
       pillow_retry_queue:
         concurrency: 1
+      submission_reprocessing_queue:
+        concurrency: 1
       ucr_queue:
         concurrency: 1
         max_tasks_per_child: 5
@@ -590,6 +596,8 @@ l10k:
       saved_exports_queue:
         concurrency: 1
       pillow_retry_queue:
+        concurrency: 1
+      submission_reprocessing_queue:
         concurrency: 1
       ucr_queue:
         concurrency: 1

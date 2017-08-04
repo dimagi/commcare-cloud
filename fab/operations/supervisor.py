@@ -190,7 +190,7 @@ def set_pillow_retry_queue_supervisorconf():
 
 
 def set_submissions_reprocessing_queue_supervisorconf():
-    if 'submission_reprocessing_queue' in _get_celery_queues():
+    if 'submission_reprocessing_queue' in _get_celery_queues() and _check_in_roles(ROLES_SUBMISSION_REPROCESSING_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_submission_reprocessing_queue.conf')
 
 
