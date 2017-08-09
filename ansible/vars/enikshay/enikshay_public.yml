@@ -1,10 +1,7 @@
 SITE_HOST: 'enikshay.in'
-#CAS_SITE_HOST: 'cas.commcarehq.org'
 ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
 J2ME_SITE_HOST: 'j2me.enikshay.in'
 deploy_env: enikshay
-#tableau_server: 'tableau2.internal.commcarehq.org'
-#TABLEAU_HOST: 'icds.commcarehq.org'
 internal_domain_name: 'enikshay.in'
 
 active_sites:
@@ -24,8 +21,6 @@ active_sites:
   motech2: False
   riakcs: True
   couchdb2: True
-  #cas_ssl: True
-  #enikshay_ssl: True
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -43,7 +38,6 @@ primary_ssl_env: "enikshay"
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
-NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
@@ -63,13 +57,6 @@ apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.combined.crt'
 
-
-#tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.combined.crt'
-#tableau_key_file: '../config/{{ deploy_env }}/ssl/icds.commcarehq.org.key'
-
-#cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
-#cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
-
 enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
 enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
 
@@ -87,8 +74,6 @@ backup_es: False
 postgres_s3: False
 backup_couch: True
 nadir_hour: 16
-
-#aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
@@ -209,7 +194,6 @@ localsettings:
   ALLOWED_HOSTS:
     - localhost
     - 127.0.0.1
-#    - "{{ CAS_SITE_HOST }}"
     - "{{ ENIKSHAY_SITE_HOST }}"
     - "{{ SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
@@ -230,8 +214,6 @@ localsettings:
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
@@ -250,10 +232,6 @@ localsettings:
   GOOGLE_ANALYTICS_API_ID: '{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}'
   HQ_INSTANCE: 'enikshay'
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
-  HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
-  HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
-#  ICDS_UCR_DATABASE_ALIAS: icds-ucr
-#  ICDS_UCR_DATABASE_NAME: icds-ucr
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -272,7 +250,6 @@ localsettings:
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_URL: "{{ groups.kafka.0 }}"
-  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
 #  MAPS_LAYERS:
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
