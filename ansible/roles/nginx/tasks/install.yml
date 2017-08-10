@@ -3,13 +3,7 @@
   become: yes
   apt_repository: repo='ppa:nginx/stable' state=absent
 
-- name: Remove nginx-common
-  become: yes
-  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=3600
-  with_items: "nginx-common"
-  when: nginx_install == True
-
-- name: Add official nginx repository
+- name: Add http2 nginx repository
   become: yes
   apt_repository: repo='ppa:ondrej/nginx' state=present
 
