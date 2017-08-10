@@ -93,7 +93,6 @@ pgbouncer_default_pool: 290
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
-pg_query_stats: True
 
 formplayer_db_name: formplayer
 
@@ -120,7 +119,6 @@ postgresql_dbs:
   - name: "{{localsettings.UCR_DATABASE_NAME}}"
   - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
     name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
-    query_stats: True
   - name: "{{ formplayer_db_name }}"
   - name: commcarehq_icds_testdata
 
