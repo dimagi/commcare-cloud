@@ -10,7 +10,7 @@ tar -zcf "${BACKUP_FILE}" "{{ couch_data_dir }}"
 find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" -exec rm {} \;
 
 {% if remote_couch_backup|default(None) %}
-rsync -avH --delete {{ couch_backup_dir }}/ {{ remote_couch_backup }}:{{ couch_backup_dir }} 
+rsync -avH --delete --exclude="commcarehq__synclogs.*.couch" {{ couch_backup_dir }}/ {{ remote_couch_backup }}:{{ couch_backup_dir }} 
 {% endif %}
 
 {% if couch_s3 %}
