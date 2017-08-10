@@ -178,7 +178,7 @@ icds:
       reminder_case_update_queue:
         pooling: gevent
         concurrency: 5
-        num_workers: 8
+        num_workers: 10
       reminder_queue:
         pooling: gevent
         concurrency: 5
@@ -206,6 +206,10 @@ icds:
       background_queue:
         concurrency: 4
         max_tasks_per_child: 1
+      reminder_case_update_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 10
     '10.247.24.15': # web1
       ucr_indicator_queue:
         concurrency: 12
