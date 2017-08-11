@@ -5,9 +5,9 @@ result=`service couchdb2 status`
 date=`date`
 expected='is running'
 if [[ "$result" == *"$expected"* ]]; then
-    echo "couch is up as of $date" > status.txt
+    echo "couch2 is up as of $date" > status.txt
 else
     service couchdb2 start > service-output.txt 2> service-stderr.txt
     echo "server was restarted at $date" >> restart.txt
-    echo "couch had to be restarted at $date." | mail -s "CouchDB was restarted" commcarehq-ops@dimagi.com
+    echo "couch2 had to be restarted at $date." | mail -s "CouchDB2 was restarted" commcarehq-ops@dimagi.com
 fi
