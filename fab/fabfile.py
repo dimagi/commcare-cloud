@@ -204,6 +204,14 @@ def l10k():
 
 
 @task
+def enikshay():
+    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'enikshay')
+    load_env('enikshay')
+    env.force = True  # don't worry about kafka checkpoints on enikshay
+    execute(env_common)
+
+
+@task
 def production():
     """www.commcarehq.org"""
     if env.code_branch != 'master':
