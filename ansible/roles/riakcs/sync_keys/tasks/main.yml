@@ -20,6 +20,8 @@
   stat: path=/etc/init.d/datadog-agent
   register: datadog_service
   when: "name == 'riakcs'"
+  tags:
+    - datadog
 
 - name: Update access_id in riakcs datadog agent config
   lineinfile:
