@@ -6,3 +6,11 @@
   roles:
     - role: tmpreaper
       tags: 'tmpreaper'
+  tasks:
+    - name: "Remove cron"
+      cron:
+        name: tmpreaper
+        hour: "{{tmpreaper_cron_hour}}"
+        minute: "{{tmpreaper_cron_minute}}"
+        job: /usr/sbin/tmpreaper
+        state: absent

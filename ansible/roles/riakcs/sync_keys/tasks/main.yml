@@ -29,6 +29,8 @@
     backrefs: yes
   when: "name == 'riakcs' and datadog_service.stat.exists and 'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
   notify: restart datadog
+  tags:
+    - datadog
 
 - name: Update access_secret in riakcs datadog agent config
   lineinfile:
@@ -38,3 +40,5 @@
     backrefs: yes
   when: "name == 'riakcs' and datadog_service.stat.exists and 'riak_key' in hostvars[riakcs_control] and 'riak_secret' in hostvars[riakcs_control]"
   notify: restart datadog
+  tags:
+    - datadog
