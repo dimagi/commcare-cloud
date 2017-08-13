@@ -175,8 +175,8 @@ etc_host_lines_removed: []
 shared_drive_enabled: true
 
 # adding missing variables compared to icds 
-http_proxy_address: '172.25.3.6' # use pg_standby as the patch server
-http_proxy_port: '3128'
+#http_proxy_address: '172.25.3.6' # use pg_standby as the patch server
+#http_proxy_port: '3128'
 ufw_private_interface: eth0
 
 
