@@ -8,7 +8,7 @@
         type: parent
         proxy_port: "{{ http_proxy_parent_port }}"
         icp_port: 0
-        options: ''
+        options: 'no-query no-digest'
     pri_domain_name: "{{ internal_domain_name }}"
   roles:
     - role: squid
