@@ -1,5 +1,24 @@
-- name: http proxy for external calls
-  hosts: all
-  sudo: yes
+- name: Configure squid proxy
+  hosts: squid
+  vars:
+    squid_cache_peering: True
+    squid_cache_peer:
+      - name: parent
+        host: "{{ http_proxy_parent_address }}"
+        type: parent
+        proxy_port: "{{ http_proxy_parent_port }}"
+        icp_port: 0
+        options: ''
+    pri_domain_name: "{{ internal_domain_name }}"
   roles:
-    - http_proxy
+    - role: squid
+      tags:
+        - 'squid'
+
+- name: HTTP proxy for external calls
+  hosts: all
+  become: yes
+  roles:
+    - role: http_proxy
+      tags:
+        - 'http_proxy'

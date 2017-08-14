@@ -1,3 +1,6 @@
+[squid]
+192.168.33.14
+
 [webworkers]
 192.168.33.15 newrelic_app_name=django
 

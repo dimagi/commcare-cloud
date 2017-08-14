@@ -12,8 +12,10 @@ etc_host_lines: []
 etc_host_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
-http_proxy_address: '192.168.33.1'
+http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
+http_proxy_parent_address: '192.168.33.1'
+http_proxy_parent_port: '3128'
 
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
