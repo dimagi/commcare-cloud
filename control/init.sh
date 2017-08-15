@@ -44,7 +44,7 @@ alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansib
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
 function ae() {
-    ansible -m shell "$1" $2 -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV
+    ansible $1 -m shell -a "$2" -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV
 }
 
 # It aint pretty, but it gets the job done
@@ -66,6 +66,7 @@ function ansible-control-banner() {
     printf "${BLUE}ap${NC} - shortcut for running an ansible playbook e.g. \"${YELLOW}ENV=production ap deploy_db.yml --diff --check${NC}\". Run \"${YELLOW}type ap${NC}\" for the full command.\n"
     printf "${BLUE}aps${NC} - same as \"${YELLOW}ap deploy_stack.yml${NC}\"\n"
     printf "${BLUE}ansible-deploy-control${NC} - deploy changes to users on this control machine\n"
+    printf "${BLUE}ae${NC} - allows running ad hoc commands on specified machines e.g. ae riakcs 'grep OOM /var/log/riak/console.log'"
 }
 
 [ -t 1 ] && ansible-control-banner
