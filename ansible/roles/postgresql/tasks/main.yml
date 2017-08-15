@@ -87,6 +87,8 @@
     state: present
     port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
 
 - name: Create PostgreSQL read-only user
   become: yes
@@ -100,6 +102,8 @@
     state: present
     port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
 
 - name: Add SELECT privs for read-only user
   become: yes
@@ -112,6 +116,9 @@
     privs: SELECT
     objs: ALL_IN_SCHEMA
     roles: "{{ postgres_users.devreadonly.username }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
 
 - name: check postgres database hosts
   assert: { that: "item.host is not defined or item.host in groups.postgresql" }
