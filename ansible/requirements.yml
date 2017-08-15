@@ -11,3 +11,6 @@
 - src: git+https://github.com/ANXS/tmpreaper.git
   version: 46f8e0b8b8f5732eecc68b08b5e0c392c418e3f3
   name: tmpreaper
+- src: git+https://github.com/mrlesmithjr/ansible-squid.git
+  version: 2d015170b7e4f28e4bc782af829f340974efaf2d
+  name: squid
