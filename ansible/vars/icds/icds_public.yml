@@ -115,6 +115,7 @@ postgresql_dbs:
     name: commcarehq_p6
     shards: [515, 617]
     host: "{{ groups.postgresql.1 }}"
+    query_stats: True
   - django_alias: p7
     name: commcarehq_p7
     shards: [618, 720]
