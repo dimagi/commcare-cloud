@@ -206,7 +206,7 @@ softlayer:
       CacheInvalidatePillow:
         num_processes: 1
       CaseToElasticsearchPillow:
-        num_processes: 4
+        num_processes: 1
       DefaultChangeFeedPillow:
         num_processes: 1
       DomainDbKafkaPillow:
@@ -218,7 +218,7 @@ softlayer:
       GroupToUserPillow:
         num_processes: 1
       kafka-ucr-main:
-        num_processes: 4
+        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
@@ -227,9 +227,9 @@ softlayer:
         num_processes: 1
     '10.162.36.212':
       CaseSearchToElasticsearchPillow:
-        num_processes: 4
+        num_processes: 1
       kafka-ucr-static:
-        num_processes: 4
+        num_processes: 1
       ReportCaseToElasticsearchPillow:
         num_processes: 1
       SqlSMSPillow:
