@@ -190,12 +190,9 @@ softlayer:
       background_queue:
         concurrency: 4
         max_tasks_per_child: 1
-      flower: {}
-    '10.162.36.198':  # celery2
-      ucr_indicator_queue:
-        concurrency: 16
       enikshay_queue:
-        concurrency: 4
+        concurrency: 1
+      flower: {}
   pillows:
     '10.162.36.253':
       AppDbChangeFeedPillow:

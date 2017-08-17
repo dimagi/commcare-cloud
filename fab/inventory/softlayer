@@ -4,9 +4,6 @@
 [celery1]
 10.162.36.194
 
-[celery2]
-10.162.36.198
-
 [django0]
 10.162.36.250
 
@@ -95,7 +92,6 @@ kafka0
 [celery:children]
 celery0
 celery1
-celery2
 
 [pillowtop:children]
 pillow1
