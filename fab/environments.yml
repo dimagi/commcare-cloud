@@ -190,6 +190,8 @@ softlayer:
       background_queue:
         concurrency: 4
         max_tasks_per_child: 1
+      enikshay_queue:
+        concurrency: 1
       flower: {}
   pillows:
     '10.162.36.253':
@@ -244,8 +246,6 @@ softlayer:
         num_processes: 1
       XFormToElasticsearchPillow:
         num_processes: 1
-      enikshay_queue:
-        concurrency: 1
 
 
 icds:
