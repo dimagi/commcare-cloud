@@ -42,6 +42,7 @@
     - libxml2-dev
     - libxslt1-dev
     - git
+    - tig # git browser
     - libpq-dev
     - curl
     - htop
@@ -62,6 +63,7 @@
     - libssl-dev  # Required for pip setup tools
     - tmux
     - unzip
+    - zip
     - iotop
     - ncdu # 'du' improved
 
