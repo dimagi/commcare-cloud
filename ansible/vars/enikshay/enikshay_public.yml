@@ -216,6 +216,7 @@ localsettings:
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
