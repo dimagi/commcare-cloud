@@ -167,9 +167,9 @@ encrypted_root: '/opt/data'
 
 ufw_private_interface: eth0
 
-control_machine_ip: 172.25.1.5
+control_machine_ip: 172.25.3.5
 
-etc_host_lines: []
+etc_host_lines: ['172.25.1.5 proxy0.enikshay.in proxy0 enikshay.in enikshay.commcarehq.org']
 etc_host_lines_removed: []
 
 shared_drive_enabled: true
