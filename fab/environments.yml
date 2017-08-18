@@ -446,9 +446,7 @@ production:
         max_tasks_per_child: 1
   pillows:
     hqpillowtop1:
-      kafka-ucr-main-08:
-        num_processes: 4
-      kafka-ucr-main-9f:
+      kafka-ucr-main:
         num_processes: 4
       kafka-ucr-static:
         num_processes: 1
