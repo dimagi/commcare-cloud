@@ -87,6 +87,38 @@
     state: present
     port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
+
+- name: Create PostgreSQL read-only user
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_user:
+    name: "{{ postgres_users.devreadonly.username }}"
+    password: "{{ postgres_users.devreadonly.password }}"
+    role_attr_flags: NOSUPERUSER,NOCREATEROLE,NOCREATEDB
+    state: present
+    port: "{{ postgresql_port }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
+
+- name: Add SELECT privs for read-only user
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_privs:
+    db: postgres
+    state: present
+    privs: SELECT
+    objs: ALL_IN_SCHEMA
+    roles: "{{ postgres_users.devreadonly.username }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
 
 - name: check postgres database hosts
   assert: { that: "item.host is not defined or item.host in groups.postgresql" }
@@ -201,5 +233,5 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
-  when: pg_query_stats|default(False) and item.query_stats|default(False)
+  when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False)
   with_items: "{{ postgresql_dbs }}"

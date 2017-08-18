@@ -7,7 +7,6 @@ pid        /var/run/nginx.pid;
 worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
 {% endif %}
 
-
 events {
     worker_connections  {{ nginx_max_clients }};
 }
@@ -30,7 +29,6 @@ http {
         gzip on;
         gzip_disable "msie6";
         gzip_types
-            text/html
             text/css
             text/javascript
             text/xml

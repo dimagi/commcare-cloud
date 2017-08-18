@@ -24,6 +24,11 @@ nginx_sites:
       zone: "$server_name"
       size: "10m"
       rate: "100r/s"
+   proxy_cache_path:
+    - name: "app_cache"
+      path: "{{ www_home }}/app_downloads/cache"
+      max_size: "3g"
+      inactive_time: "24h"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl default_server"
    server_name: "{{ CAS_SITE_HOST }}"
@@ -39,11 +44,19 @@ nginx_sites:
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
+       proxy_cache: app_cache
+     - name: "/a/icds-test/apps/download"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       proxy_cache: app_cache
      - name: "/a/icds-cas/apps/download"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
+       proxy_cache: app_cache
      - name: "/accounts/login"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"

@@ -24,7 +24,6 @@ dev_users:
   present:
     - astone
     - biyeun
-    - brudolph
     - cellowitz
     - ctsims
     - czue
@@ -51,6 +50,7 @@ dev_users:
     - tsheffels
     - dmyung
     - jenkins_slave
+    - brudolph
 
 django_port: 9010
 riakcs_port: 8080

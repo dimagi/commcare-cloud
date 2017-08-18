@@ -20,10 +20,15 @@ upstream {{ balancer.name }} {
 limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }}:{{ zone.size }} rate={{ zone.rate }};
 {% endfor %}
 
+{% for cache in item.server.get('proxy_cache_path', []) %}
+proxy_cache_path {{ cache.path }} levels=1:2 keys_zone={{ cache.name }}:10m
+                 max_size={{ cache.max_size}} inactive={{ cache.inactive_time }} use_temp_path=off;
+{% endfor %}
+
 server {
 
 {% if nginx_separate_logs_per_site == True %}
-  access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }};
+  access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }} rt_cache;
   error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }} warn;
 {% endif %}
 
@@ -48,7 +53,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}

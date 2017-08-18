@@ -112,6 +112,8 @@
     owner: root
     mode: 0700
     backup: yes
+  tags:
+    - cron
 
 - name: Create Cron job
   sudo: yes
@@ -120,38 +122,48 @@
     job: "/usr/local/sbin/couch-restarter.sh > /dev/null"
     user: root
     cron_file: couch-restarter
+  tags:
+    - cron
 
 - name: Copy couch backup script
   sudo: yes
   template:
     src: "create_couchdb_backup.sh.j2"
-    dest: "/etc/cron.d/create_couchdb_backup.sh"
-    group: root
-    owner: root
+    dest: "/usr/local/sbin/create_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
     mode: 0700
     backup: yes
   when: backup_couch
+  tags:
+    - cron
+    - backup
 
 - name: Create Daily Cron job
   sudo: yes
   cron:
     name: "Backup blobdb daily"
-    job: "/etc/cron.d/create_couchdb_backup.sh daily 3"
+    job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
   when: backup_couch
+  tags:
+    - cron
 
 - name: Create Weekly Cron job
   sudo: yes
   cron:
     name: "Backup blobdb weekly"
-    job: "/etc/cron.d/create_couchdb_backup.sh weekly 21"
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
     user: couchdb
     cron_file: backup_couch
   when: backup_couch
+  tags:
+    - cron
+    - backup
