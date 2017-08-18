@@ -6,3 +6,11 @@
   roles:
     - role: debops-contrib.etckeeper
       tags: 'etckeeper'
+  tasks:
+    - name: Config git for /etc
+      git_config:
+        name: user.email
+        repo: /etc
+        scope: local
+        value: 'root@{{ ansible_fqdn }}'
+      tags: 'etckeeper'
