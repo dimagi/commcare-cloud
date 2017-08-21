@@ -4,6 +4,7 @@ commcarehq.host=https://{{ ALTERNATE_FORMPLAYER_HQ_HOST }}
 commcarehq.host=https://{{ SITE_HOST }}
 {% endif %}
 commcarehq.environment={{ deploy_env }}
+commcarehq.formplayerAuthKey={{ localsettings.FORMPLAYER_INTERNAL_AUTH_KEY }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
 logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
