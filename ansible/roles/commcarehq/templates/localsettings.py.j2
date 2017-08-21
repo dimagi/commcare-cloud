@@ -316,6 +316,10 @@ XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
 FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
 {% endif %}
 
+{% if 'FORMPLAYER_INTERNAL_AUTH_KEY' in localsettings %}
+FORMPLAYER_INTERNAL_AUTH_KEY = "{{ localsettings.FORMPLAYER_INTERNAL_AUTH_KEY }}"
+{% endif %}
+
 SOIL_BACKEND = "soil.CachedDownload"
 SOIL_DEFAULT_CACHE = "redis"
 
