@@ -333,7 +333,9 @@ redis_cache = {
 {% else %}
     'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
 {% endif %}
-    'OPTIONS': {},
+    'OPTIONS': {
+        'PARSER_CLASS': 'redis.connection.HiredisParser',
+    },
 }
 
 CACHES = {
