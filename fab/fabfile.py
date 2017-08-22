@@ -771,6 +771,7 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
 
 
 @task
+@parallel
 def supervisorctl(command):
     require('supervisor_roles',
             provided_by=('staging', 'production', 'softlayer'))
