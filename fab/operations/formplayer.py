@@ -46,11 +46,14 @@ def offline_build_formplayer():
 def rollback_formplayer():
     build_dir = os.path.join(env.code_current, FORMPLAYER_BUILD_DIR)
     with cd(build_dir):
+        current_build = sudo('readlink -f formplayer.jar').split('/')[-1]
+
         previous_build_paths = sudo('find . -name "{}*"'.format('formplayer__')).strip()
         if not previous_build_paths:
             utils.abort('No formplayer builds to rollback to.')
 
         builds = sorted(_get_builds(previous_build_paths.split('\n')), reverse=True)
+        builds.remove(current_build)
         if not builds:
             utils.abort('No formplayer builds to rollback to.')
 
