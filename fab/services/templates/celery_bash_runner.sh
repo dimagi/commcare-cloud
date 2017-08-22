@@ -44,7 +44,7 @@ HOSTNAME_ARG+=".${TIMESTAMP}_timestamp"
 HOSTNAME_PARTS=(${HOSTNAME_ARG//=/ })
 HOSTNAME=${HOSTNAME_PARTS[1]}
 
-{{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ code_current }}/manage.py celery worker ${HOSTNAME_ARG} ${ARGS}  &
+{{ new_relic_command }}{{ virtualenv_current }}/bin/python {{ python_options }} {{ code_current }}/manage.py celery worker ${HOSTNAME_ARG} ${ARGS}  &
 PID=$!
 BASH_PID=$$
 echo "Started ${HOSTNAME} on PID: ${PID}"

@@ -71,6 +71,10 @@ def set_celery_supervisorconf():
         show_periodic_server_whitelist_message_and_abort(env)
 
     _rebuild_supervisor_conf_file('make_supervisor_conf', 'celery_bash_runner.sh')
+    _rebuild_supervisor_conf_file(
+        'make_supervisor_conf', 'celery_bash_runner.sh',
+        params={'python_options': '-O'}, conf_destination_filename='celery_bash_runner_optimized.sh'
+    )
 
     for queue, params in queues.items():
         if queue == 'flower':
