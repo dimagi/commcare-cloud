@@ -1,2 +1,4 @@
 formplayer_sentry_dsn: ''
-formplayer_archive_time_spec: ''
+# define this to turn on archiving
+# (you can't use s for seconds, but m, h, d work for minute, hour, day)
+# formplayer_archive_time_spec: '10m'
