@@ -424,6 +424,12 @@ def deploy_formplayer():
 
 
 @task
+def rollback_formplayer():
+    execute(formplayer.rollback_formplayer)
+    execute(supervisor.restart_formplayer)
+
+
+@task
 def offline_setup_release(keep_days=0):
     env.offline = True
     execute_with_timing(release.create_offline_dir)
