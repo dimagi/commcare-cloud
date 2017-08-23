@@ -221,7 +221,7 @@ localsettings:
   SIMPLE_API_KEYS:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
-  SMS_QUEUE_ENABLED: False
+  SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
