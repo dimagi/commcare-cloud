@@ -44,8 +44,9 @@ def build_formplayer(use_current_release=False):
         # (not because it's the name we chose for the zip file)
         sudo("unzip archive.zip".format(build_dir, release_name))
         sudo("mv archive/build {}".format(release_name))
-        sudo('ln -sf {} current'.format(release_name))
+        sudo('ln -sfn {} current'.format(release_name))
         sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
+        sudo('chmod 755 current/scripts/archive_dbs.sh')
         sudo('rm -r archive/ archive.zip')
 
 
@@ -80,7 +81,7 @@ def rollback_formplayer():
         if not console.confirm('Confirm rollback to "{}"'.format(rollback_build), default=False):
             utils.abort('Action aborted.')
 
-        sudo('ln -sf {build_dir}/{rollback} {build_dir}/current'.format(
+        sudo('ln -sfn {build_dir}/{rollback} {build_dir}/current'.format(
             build_dir=build_dir,
             rollback=rollback_build
         ))
