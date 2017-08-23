@@ -537,6 +537,9 @@ staging:
         concurrency: 1
       async_restore_queue:
         concurrency: 1
+      sms_queue:
+        pooling: gevent
+        concurrency: 4
       flower: {}
   pillows:
     '*':
