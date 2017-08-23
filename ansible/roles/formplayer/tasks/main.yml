@@ -17,6 +17,14 @@
     - {name: 'Purge temp files', dir: '/tmp', time_spec: '2d'}
     - {name: 'Purge sqlite db files', dir: '{{ formplayer_data_dir }}', time_spec: '2d'}
 
+- name: Create cron job to archive sqlite db files
+  sudo: yes
+  cron:
+    # should run every minute by default
+    name: 'Archive sqlite db files'
+    job: '{{ code_home }}/formplayer_build/current/scripts/archive_dbs.sh {{ formplayer_data_dir }} +{{ formplayer_archive_time_spec }}'
+  when: formplayer_archive_time_spec
+
 - name: Formplayer build dir
   file:
     path: "{{ item }}"
