@@ -23,6 +23,7 @@
     # should run every minute by default
     name: 'Archive sqlite db files'
     job: '{{ code_home }}/formplayer_build/current/scripts/archive_dbs.sh {{ formplayer_data_dir }} +{{ formplayer_archive_time_spec }}'
+    user: '{{ cchq_user }}'
   when: formplayer_archive_time_spec is defined
 
 - name: Formplayer build dir
