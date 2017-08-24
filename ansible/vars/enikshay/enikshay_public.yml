@@ -253,6 +253,7 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_URL: "{{ groups.kafka.0 }}"
 #  MAPS_LAYERS:
+  MAX_RULE_UPDATES_IN_ONE_RUN: 500000
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
