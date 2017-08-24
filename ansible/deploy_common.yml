@@ -27,3 +27,8 @@
   hosts: all
   roles:
     - {role: swap}
+
+- name: Configure monit
+  hosts: all
+  roles:
+    - {role: monit, tags: monit}

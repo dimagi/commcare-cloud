@@ -7,6 +7,7 @@
     owner: root
     mode: 0700
     backup: yes
+    state: absent
 
 - name: Create Cron job
   sudo: yes
@@ -15,3 +16,4 @@
     job: "/usr/local/sbin/redis-restart.sh > /dev/null"
     user: root
     cron_file: ../crontab
+    state: absent
