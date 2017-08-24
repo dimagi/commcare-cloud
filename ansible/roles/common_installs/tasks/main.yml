@@ -64,6 +64,7 @@
     - unzip
     - iotop
     - ncdu # 'du' improved
+    - monit # service restarter
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
