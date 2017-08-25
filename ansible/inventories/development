@@ -10,7 +10,7 @@
 [pg_standby]
 192.168.33.17 archive_dir="/var/data" hot_standby_master="192.168.33.16"
 
-[couchdb]
+[couchdb2]
 192.168.33.16
 
 [redis]
