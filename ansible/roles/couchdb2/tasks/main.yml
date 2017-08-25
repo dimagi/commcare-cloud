@@ -28,6 +28,7 @@
     owner: root
     mode: 0700
     backup: yes
+    state: absent
   tags:
     - cron
 
@@ -38,6 +39,7 @@
     job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
     user: root
     cron_file: couch2-restarter
+    state: absent
   tags:
     - cron
 
@@ -83,3 +85,26 @@
   tags:
     - cron
     - backup
+
+- name: start the couchdb2 service
+  service: name="couchdb2" state=started enabled=yes
+  tags: after-reboot
+
+- name: couchdb2 monit config
+  sudo: yes
+  template:
+    src: "monit.couchdb2.j2"
+    dest: "/etc/monit/conf.d/couchdb2"
+    group: root
+    owner: root
+    mode: 0640
+  tags: monit
+
+- name: restart monit
+  service: name="monit" state=reloaded
+  tags: monit
+
+- monit:
+    name: couchdb2
+    state: monitored
+  tags: monit
