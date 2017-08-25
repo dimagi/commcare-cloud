@@ -326,29 +326,17 @@ SOIL_DEFAULT_CACHE = "redis"
 REPORT_CACHE = 'redis'
 
 
-import imp
-try:
-    imp.find_module('django_redis')
-except ImportError:
-    redis_cache = {
-        'BACKEND': 'redis_cache.cache.RedisCache',
-    {% if 'REDIS_DB' in localsettings %}
-        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
-    {% else %}
-        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
-    {% endif %}
-        'OPTIONS': {},
-    }
-else:
-    redis_cache = {
-        'BACKEND': 'django_redis.cache.RedisCache',
-    {% if 'REDIS_DB' in localsettings %}
-        'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
-    {% else %}
-        'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
-    {% endif %}
-        'OPTIONS': {},
-    }
+redis_cache = {
+    'BACKEND': 'django_redis.cache.RedisCache',
+{% if 'REDIS_DB' in localsettings %}
+    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
+{% else %}
+    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+{% endif %}
+    'OPTIONS': {
+        'PARSER_CLASS': 'redis.connection.HiredisParser',
+    },
+}
 
 CACHES = {
     'default': redis_cache,
