@@ -64,6 +64,7 @@ enikshay:
       saved_exports_queue:
         concurrency: 3
         max_tasks_per_child: 1
+        optimize: True
       reminder_case_update_queue:
         pooling: gevent
         concurrency: 5
@@ -530,6 +531,7 @@ staging:
       saved_exports_queue:
         concurrency: 3
         max_tasks_per_child: 1
+        optimize: True
       ucr_queue:
         concurrency: 1
         max_tasks_per_child: 5
@@ -621,6 +623,7 @@ swiss:
       saved_exports_queue:
         concurrency: 1
         max_tasks_per_child: 1
+        optimize: True
       pillow_retry_queue:
         concurrency: 1
       submission_reprocessing_queue:
@@ -699,6 +702,7 @@ l10k:
         concurrency: 1
       saved_exports_queue:
         concurrency: 1
+        optimize: True
       pillow_retry_queue:
         concurrency: 1
       submission_reprocessing_queue:
