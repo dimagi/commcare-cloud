@@ -182,7 +182,7 @@ def softlayer():
 @task
 def icds():
     """www.icds-cas.gov.in"""
-    _setup_env('icds', force=True)
+    _setup_env('icds')
 
 
 @task
