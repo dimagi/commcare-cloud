@@ -169,76 +169,66 @@ def load_env(env_name):
 
 @task
 def swiss():
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'swiss')
-    load_env('swiss')
-    env.force = True  # don't worry about kafka checkpoints on swiss
-    execute(env_common)
+    """swiss.commcarehq.org"""
+    _setup_env('swiss', force=True)
 
 
-@task
-def india():
-    softlayer()
-
-
-@task
+@task(alias='india')
 def softlayer():
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'softlayer')
-    load_env('softlayer')
-    execute(env_common)
+    """india.commcarehq.org"""
+    _setup_env('softlayer')
 
 
 @task
 def icds():
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'icds')
-    load_env('icds')
-    env.force = True  # don't worry about kafka checkpoints on icds
-    execute(env_common)
+    """www.icds-cas.gov.in"""
+    _setup_env('icds')
 
 
 @task
 def l10k():
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'l10k')
-    load_env('l10k')
-    env.force = True  # don't worry about kafka checkpoints on l10k
-    execute(env_common)
+    _setup_env('l10k', force=True)
 
 
 @task
 def enikshay():
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'enikshay')
-    load_env('enikshay')
-    env.force = True  # don't worry about kafka checkpoints on enikshay
-    execute(env_common)
+    """enikshay.in"""
+    _setup_env('enikshay', force=True)
 
 
 @task
 def production():
     """www.commcarehq.org"""
-    if env.code_branch != 'master':
-        branch_message = (
-            "Woah there bud! You're using branch {env.code_branch}. "
-            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        ).format(env=env)
-        if not console.confirm(branch_message, default=False):
-            utils.abort('Action aborted.')
-
-    load_env('production')
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'production')
-    execute(env_common)
+    _setup_env('production')
 
 
 @task
 def staging():
     """staging.commcarehq.org"""
-    if env.code_branch == 'master':
-        env.code_branch = 'autostaging'
-        print ("using default branch of autostaging. you can override this "
-               "with --set code_branch=<branch>")
+    _setup_env('staging', force=True, default_branch='autostaging')
 
-    env.force = True  # don't worry about kafka checkpoints on staging
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', 'staging')
-    load_env('staging')
+
+def _setup_env(env_name, force=False, default_branch=None):
+    _confirm_branch(default_branch)
+    env.force = force  # don't worry about kafka checkpoints if True
+    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', env_name)
+    load_env(env_name)
     execute(env_common)
+
+
+def _confirm_branch(default_branch=None):
+    if env.code_branch != 'master':
+        if default_branch:
+            env.code_branch = default_branch
+            print ("using default branch of {}. you can override this "
+                   "with --set code_branch=<branch>".format(default_branch))
+        else:
+            branch_message = (
+                "Woah there bud! You're using branch {env.code_branch}. "
+                "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
+            ).format(env=env)
+            if not console.confirm(branch_message, default=False):
+                utils.abort('Action aborted.')
 
 
 def read_inventory_file(filename):
