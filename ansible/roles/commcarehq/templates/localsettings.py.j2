@@ -5,6 +5,8 @@
 import os
 import sys
 import hashlib
+import json
+from datetime import time
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
@@ -177,7 +179,6 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
-import json
 LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
 {% endif %}
 
@@ -494,7 +495,6 @@ SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
 {% endif %}
 
 {% if 'MAPS_LAYERS' in localsettings %}
-import json
 MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_json }}')
 {% endif %}
 
@@ -691,7 +691,6 @@ ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
 {% endif %}
 
 {% if localsettings.get('OFF_PEAK_TIME') %}
-from datetime import time
 OFF_PEAK_TIME = (time({{ localsettings.OFF_PEAK_TIME[0] }}), time({{ localsettings.OFF_PEAK_TIME[1] }}))
 {% endif %}
 
