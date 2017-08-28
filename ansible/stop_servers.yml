@@ -1,0 +1,113 @@
+- hosts:
+  - webworkers
+  tasks:
+  - command: supervisorctl stop all
+    become: True
+    name: Stop supervisor serives
+    args:
+      warn: False
+
+- hosts:
+  - postgresql
+  tasks:
+  - command: service postgresql stop
+    become: True
+    name: Stop PostgreSQL
+    args:
+      warn: False
+
+- hosts:
+  - pg_standby
+  tasks:
+  - command: service postgresql stop
+    become: True
+    name: Stop PostgreSQL (hotstandby)
+    args:
+      warn: False
+
+- hosts:
+  - couchdb
+  tasks:
+  - command: service couchdb stop
+    become: True
+    name: Stop couchdb
+    args:
+      warn: False
+
+- hosts:
+  - couchdb2
+  tasks:
+  - command: service couchdb2 stop
+    become: True
+    name: Stop couchdb2
+    args:
+      warn: False
+
+- hosts:
+  - redis
+  tasks:
+  - command: service redis-server stop
+    name: Stop redis
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - zookeeper
+  tasks:
+  - command: service zookeeper stop
+    name: Stop zookeeper
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - kafka
+  tasks:
+  - command: service kafka-server stop
+    become: True
+    name: Stop kafka
+    args:
+      warn: False
+
+- hosts:
+  - rabbitmq
+  tasks:
+  - command: service rabbitmq-server stop
+    name: Stop rabbitmq
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - elasticsearch
+  tasks:
+  - command: service elasticsearch stop
+    become: True
+    name: Stop elasticsearch
+    args:
+      warn: False
+
+- hosts:
+  - riakcs
+  tasks:
+  - command: service riak stop
+    name: Stop riak
+    become: True
+    args:
+      warn: False
+  - command: service riak-cs stop
+    name: Stop riak-cs
+    become: True
+    args:
+      warn: False
+
+- hosts:
+  - stanchion
+  tasks:
+  - command: service stanchion stop
+    name: Stop stanchion
+    become: True
+    args:
+      warn: False
+
