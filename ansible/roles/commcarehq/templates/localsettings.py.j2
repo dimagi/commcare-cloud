@@ -48,17 +48,7 @@ PARTITION_DATABASE_CONFIG = {
 }
 {% endif %}
 
-{% if localsettings.get('UCR_DATABASE_NAME') %}
-UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}:{{localsettings.get('PG_DATABASE_PORT')}}/{{ localsettings.UCR_DATABASE_NAME }}"
-{% endif %}
-
-{% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
-ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
-{% endif %}
-
-{% if localsettings.get('ICDS_UCR_TEST_DATABASE_ALIAS') %}
-ICDS_UCR_TEST_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
-{% endif %}
+REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
 
 CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 

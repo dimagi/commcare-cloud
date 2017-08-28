@@ -66,7 +66,8 @@ pgbouncer_pool_mode: transaction
 formplayer_db_name: formplayer
 
 postgresql_dbs:
-  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+  - name: commcarehq_ucr
+    django_alias: ucr
   - name: "{{ localsettings.PG_DATABASE_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
@@ -179,6 +180,8 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  REPORTING_DATABASES:
+    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS:
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
@@ -194,5 +197,4 @@ localsettings:
 #  STRIPE_PUBLIC_KEY:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
-  UCR_DATABASE_NAME: commcarehq_ucr
   XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"

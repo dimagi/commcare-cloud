@@ -120,9 +120,10 @@ postgresql_dbs:
     name: commcarehq_p5
     shards: [820, 1023]
     host: "{{ groups.postgresql.1 }}"
-  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+  - name: commcarehq_ucr
     host: "{{ groups.postgresql.0 }}"
     query_stats: True
+    django_alias: ucr
   - name: "{{ formplayer_db_name }}"
     host: "{{ groups.postgresql.0 }}"
 
@@ -243,6 +244,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REPORTING_DATABASES:
+    ucr: ucr
   AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
   AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
@@ -263,7 +266,6 @@ localsettings:
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-  UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"

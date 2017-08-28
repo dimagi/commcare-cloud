@@ -131,7 +131,8 @@ formplayer_db_name: formplayer
 #    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
 
 postgresql_dbs:
-  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+  - name: commcare_ucr
+    django_alias: ucr
   - name: "{{localsettings.PG_DATABASE_NAME}}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
@@ -159,7 +160,8 @@ postgresql_dbs:
 #  - django_alias: p5
 #    name: commcarehq_p5
 #    shards: [400, 511]
-#  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+#  - name: commcarehq_ucr
+#    django_alias: ucr
 
 mailrelay: 'relay.example.com'
 
@@ -261,7 +263,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
 #  REMINDERS_QUEUE_ENABLED:
-  UCR_DATABASE_NAME: commcarehq_ucr
+  REPORTING_DATABASES:
+    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
 #  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
 #  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
