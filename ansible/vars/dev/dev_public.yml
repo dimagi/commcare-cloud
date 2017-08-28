@@ -131,7 +131,7 @@ formplayer_db_name: formplayer
 #    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
 
 postgresql_dbs:
-  - name: commcare_ucr
+  - name: commcarehq_ucr
     django_alias: ucr
   - name: "{{localsettings.PG_DATABASE_NAME}}"
     django_alias: default
