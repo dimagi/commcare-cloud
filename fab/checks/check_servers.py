@@ -1,25 +1,6 @@
-import json
-import time
-import posixpath
-from contextlib import contextmanager
-
-from ansible.inventory import InventoryParser
-from fabric.api import roles, parallel, env, sudo, serial, execute, run, hide, get
-from fabric.colors import magenta
-from fabric.context_managers import cd
-from fabric.contrib import files
+from fabric.api import roles, env, sudo, run, hide
 
 from ..const import (
-    ROLES_CELERY,
-    ROLES_DJANGO,
-    ROLES_TOUCHFORMS,
-    ROLES_FORMPLAYER,
-    ROLES_SMS_QUEUE,
-    ROLES_REMINDER_QUEUE,
-    ROLES_PILLOW_RETRY_QUEUE,
-    ROLES_PILLOWTOP,
-    ROLES_STATIC,
-    ROLES_ALL_SERVICES,
     ROLES_ALL,
     ROLES_POSTGRESQL,
     ROLES_ELASTICSEARCH,

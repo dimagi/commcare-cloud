@@ -3,7 +3,6 @@ import time
 import posixpath
 from contextlib import contextmanager
 
-from ansible.inventory import InventoryParser
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
@@ -22,7 +21,7 @@ from ..const import (
     ROLES_ALL_SERVICES,
     ROLES_SUBMISSION_REPROCESSING_QUEUE)
 from fabric import utils
-from ..utils import execute_with_timing, get_pillow_env_config
+from ..utils import get_pillow_env_config, get_inventory
 
 
 @roles(ROLES_ALL_SERVICES)
@@ -265,7 +264,8 @@ def _format_env(current_env, extra=None):
     ]
 
     host = current_env.get('host_string')
-    inventory_groups = InventoryParser(current_env.inventory).groups.values()
+    inventory = get_inventory(current_env.inventory)
+    inventory_groups = inventory.groups.values()
     newrelic_machines = [machine.name
                          for group in inventory_groups for machine in group.hosts
                          if 'newrelic_app_name' in group.vars]
@@ -278,7 +278,7 @@ def _format_env(current_env, extra=None):
         ret['supervisor_env_vars']['NEW_RELIC_CONFIG_FILE'] = '%(root)s/newrelic.ini' % env
         ret['supervisor_env_vars']['NEW_RELIC_ENVIRONMENT'] = '%(environment)s' % env
 
-    all_hosts = [host.name for host in InventoryParser(env.inventory).groups['all'].get_hosts()]
+    all_hosts = [host.name for host in inventory.groups['all'].hosts]
 
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)

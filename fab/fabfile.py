@@ -58,6 +58,7 @@ from const import (
     PROJECT_ROOT,
 )
 from exceptions import PreindexNotFinished
+from fab.utils import get_inventory
 from operations import (
     db,
     staticfiles,
@@ -239,10 +240,7 @@ def read_inventory_file(filename):
     to lists of hosts (ip addresses)
 
     """
-    from ansible.inventory import InventoryParser
-
-    return {name: [host.name for host in group.get_hosts()]
-            for name, group in InventoryParser(filename).groups.items()}
+    return get_inventory(filename).get_group_dict()
 
 
 @task
