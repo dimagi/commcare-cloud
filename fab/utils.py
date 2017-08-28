@@ -6,7 +6,6 @@ import traceback
 from fabric.operations import sudo
 from fabric.context_managers import settings
 from fabric.api import local
-import yaml
 import re
 from getpass import getpass
 
@@ -21,6 +20,10 @@ from const import (
     DATE_FMT,
     OFFLINE_STAGING_DIR,
 )
+
+from ansible.inventory import Inventory
+from ansible.parsing.dataloader import DataLoader
+from ansible.vars import VariableManager
 
 
 global_github = None
@@ -248,3 +251,7 @@ def generate_bower_command(command, production=True, config=None):
 def bower_command(command, production=True, config=None):
     cmd = generate_bower_command(command, production, config)
     sudo(cmd)
+
+
+def get_inventory(inventory_path):
+    return Inventory(loader=DataLoader(), variable_manager=VariableManager(), host_list=inventory_path)
