@@ -11,9 +11,9 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.24.16'
-pgbouncer_max_connections=3500
 postgresql_max_connections=800
-pgbouncer_default_pool=400
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=790
 hostname='pg0'
 
 [pg1]
@@ -24,8 +24,8 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.24.17'
-pgbouncer_max_connections=3500
 postgresql_max_connections=800
+pgbouncer_max_connections=3500
 pgbouncer_default_pool=790
 hostname='pg1'
 
@@ -52,6 +52,8 @@ partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/s
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.12'
 postgresql_max_connections=800
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=400
 hostname='es0'
 
 [es1]
@@ -63,6 +65,8 @@ devices='["/dev/sdb","/dev/sdc","/dev/sdd","/dev/sde","/dev/sdf","/dev/sdg"]'
 partitions='["/dev/sdb1","/dev/sdc1","/dev/sdd1","/dev/sde1","/dev/sdf1","/dev/sdg1"]'
 datavol_device='/dev/mapper/consolidated-data'
 postgresql_max_connections=800
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=790
 hot_standby_master='10.247.24.17'
 hostname='es1'
 
@@ -76,6 +80,8 @@ partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
 postgresql_max_connections=400
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=390
 
 [es3]
 10.247.24.29
@@ -87,6 +93,8 @@ partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.24.23'
 postgresql_max_connections=400
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=790
 hostname='es3'
 
 [couch0]
@@ -183,8 +191,8 @@ partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='pg2'
 hot_standby_server='10.247.24.28'
-pgbouncer_max_connections=3500
 postgresql_max_connections=400
+pgbouncer_max_connections=3500
 pgbouncer_default_pool=390
 
 [pg3]
@@ -196,8 +204,8 @@ partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='pg3'
 hot_standby_server='10.247.24.29'
-pgbouncer_max_connections=3500
 postgresql_max_connections=800
+pgbouncer_max_connections=3500
 pgbouncer_default_pool=790
 
 [proxy:children]
