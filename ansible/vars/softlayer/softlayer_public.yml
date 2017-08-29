@@ -116,9 +116,10 @@ postgresql_dbs:
   - django_alias: p5
     name: commcarehq_p5
     shards: [820, 1023]
-  - name: "{{localsettings.UCR_DATABASE_NAME}}"
-  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
-    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
+  - name: commcarehq_ucr
+    django_alias: ucr
+  - django_alias: icds-ucr
+    name: icds-ucr
   - name: "{{ formplayer_db_name }}"
   - name: commcarehq_icds_testdata
 
@@ -215,9 +216,6 @@ localsettings:
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
   HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
-  ICDS_UCR_TEST_DATABASE_ALIAS : icds-ucr
-  ICDS_UCR_DATABASE_ALIAS: icds-ucr
-  ICDS_UCR_DATABASE_NAME: icds-ucr
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -252,6 +250,10 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REPORTING_DATABASES:
+    ucr: ucr
+    icds-ucr: icds-ucr
+    icds-test-ucr: icds-ucr
   AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
   AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SAVED_EXPORT_ACCESS_CUTOFF: 180
@@ -271,7 +273,6 @@ localsettings:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'
-  UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"

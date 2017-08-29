@@ -5,6 +5,8 @@
 import os
 import sys
 import hashlib
+import json
+from datetime import time
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
@@ -48,9 +50,7 @@ PARTITION_DATABASE_CONFIG = {
 }
 {% endif %}
 
-{% if localsettings.get('UCR_DATABASE_NAME') %}
-UCR_DATABASE_URL = "postgresql://{{ localsettings.PG_DATABASE_USER }}:{{ localsettings.PG_DATABASE_PASSWORD }}@{{ localsettings.PG_DATABASE_HOST }}:{{localsettings.get('PG_DATABASE_PORT')}}/{{ localsettings.UCR_DATABASE_NAME }}"
-{% endif %}
+REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
 
 {% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
 ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
@@ -59,8 +59,6 @@ ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
 {% if localsettings.get('ICDS_UCR_TEST_DATABASE_ALIAS') %}
 ICDS_UCR_TEST_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
 {% endif %}
-
-CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
 
 LOG_HOME = '{{ log_home }}'
 COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
@@ -189,7 +187,6 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
-import json
 LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
 {% endif %}
 
@@ -506,7 +503,6 @@ SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
 {% endif %}
 
 {% if 'MAPS_LAYERS' in localsettings %}
-import json
 MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_json }}')
 {% endif %}
 
@@ -703,7 +699,6 @@ ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
 {% endif %}
 
 {% if localsettings.get('OFF_PEAK_TIME') %}
-from datetime import time
 OFF_PEAK_TIME = (time({{ localsettings.OFF_PEAK_TIME[0] }}), time({{ localsettings.OFF_PEAK_TIME[1] }}))
 {% endif %}
 

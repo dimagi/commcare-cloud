@@ -103,11 +103,12 @@ postgresql_dbs:
     name: commcarehq_p5
     shards: [400, 511]
     query_stats: True
-  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+  - name: commcarehq_ucr
     query_stats: True
+    django_alias: ucr
   - name: "{{ formplayer_db_name }}"
-  - django_alias: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
-    name: "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
+  - django_alias: icds-ucr
+    name: commcarehq_icds_testdata
     query_stats: True
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
@@ -213,6 +214,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  REPORTING_DATABASES:
+    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
   SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
@@ -229,8 +232,6 @@ localsettings:
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
-  UCR_DATABASE_NAME: commcarehq_ucr
-  ICDS_UCR_TEST_DATABASE_ALIAS : commcarehq_icds_testdata
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
