@@ -89,6 +89,7 @@ pg_query_stats: True
 
 formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
+formplayer_purge_time_spec: '8d'
 
 postgresql_dbs:
   - django_alias: default
@@ -170,8 +171,8 @@ ufw_private_interface: eth0
 
 control_machine_ip: 172.25.3.5
 
-etc_host_lines: ['172.25.1.5 proxy0.enikshay.in proxy0 enikshay.in enikshay.commcarehq.org']
-etc_host_lines_removed: []
+etc_hosts_lines: ['172.25.1.5 enikshay.in enikshay.commcarehq.org']
+etc_hosts_lines_removed: []
 
 shared_drive_enabled: true
 

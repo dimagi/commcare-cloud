@@ -92,6 +92,7 @@ pg_query_stats: True
 
 formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
+formplayer_purge_time_spec: '8d'
 
 postgresql_dbs:
   - django_alias: default
@@ -145,8 +146,8 @@ AMQP_NAME: commcarehq
 
 ufw_private_interface: eth1
 
-etc_host_lines: []
-etc_host_lines_removed: []
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
 
 couch_dbs:
   default:

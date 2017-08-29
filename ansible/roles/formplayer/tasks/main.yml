@@ -15,7 +15,7 @@
     cron_file: purge_formplayer_files
   with_items:
     - {name: 'Purge temp files', dir: '/tmp', time_spec: '2d'}
-    - {name: 'Purge sqlite db files', dir: '{{ formplayer_data_dir }}', time_spec: '2d'}
+    - {name: 'Purge sqlite db files', dir: '{{ formplayer_data_dir }}', time_spec: '{{ formplayer_purge_time_spec }}'}
 
 - name: Create cron job to archive sqlite db files
   sudo: yes

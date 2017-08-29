@@ -8,8 +8,8 @@ internal_domain_name: 'localdomain'
 
 testing: True
 
-etc_host_lines: []
-etc_host_lines_removed: []
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
 http_proxy_address: '192.168.33.14'
