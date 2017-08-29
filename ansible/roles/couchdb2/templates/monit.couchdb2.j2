@@ -1,6 +1,6 @@
  check process couchdb2 with pidfile /usr/local/couchdb2/couchdb/var/run/couchdb2.pid
    group database
-   group redis
+   group couchdb2
    start program = "/etc/init.d/couchdb2 start"
    stop program = "/etc/init.d/couchdb2 stop"
-   if failed port 15984 then restart
+   if failed host {{ inventory_hostname|ipaddr }} port 15984 then restart

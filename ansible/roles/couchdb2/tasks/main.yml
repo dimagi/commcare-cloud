@@ -21,13 +21,8 @@
 
 - name: Copy couch restart script
   sudo: yes
-  template:
-    src: "couch2-restarter.sh.j2"
+  file:
     dest: "/usr/local/sbin/couch2-restarter.sh"
-    group: root
-    owner: root
-    mode: 0700
-    backup: yes
     state: absent
   tags:
     - cron
