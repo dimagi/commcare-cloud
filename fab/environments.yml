@@ -57,7 +57,7 @@ enikshay:
         concurrency: 4
         max_tasks_per_child: 5
       ucr_indicator_queue:
-        concurrency: 8
+        concurrency: 16
       celery:
         concurrency: 8
         max_tasks_per_child: 5
