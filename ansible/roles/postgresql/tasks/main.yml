@@ -139,7 +139,7 @@
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
-  when: item.create|default(True) and (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
+  when: item.create|default(True) and (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
