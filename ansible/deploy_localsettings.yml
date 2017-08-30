@@ -1,0 +1,7 @@
+---
+# deploy-stack.yml
+
+- include: deploy_riakcs.yml
+- include: deploy_commcarehq.yml
+- include: deploy_touchforms.yml
+- include: deploy_formplayer.yml
