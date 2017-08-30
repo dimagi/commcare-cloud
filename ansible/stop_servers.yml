@@ -9,19 +9,11 @@
 
 - hosts:
   - postgresql
-  tasks:
-  - command: service postgresql stop
-    become: True
-    name: Stop PostgreSQL
-    args:
-      warn: False
-
-- hosts:
   - pg_standby
   tasks:
   - command: service postgresql stop
     become: True
-    name: Stop PostgreSQL (hotstandby)
+    name: Stop PostgreSQL
     args:
       warn: False
 
