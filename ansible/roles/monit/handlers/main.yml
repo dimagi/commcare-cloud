@@ -1,0 +1,16 @@
+---
+- name: start monit
+  sudo: yes
+  service: name=monit state=started
+
+- name: restart monit
+  sudo: yes
+  service: name=monit state=restarted
+
+- name: reload monit
+  sudo: yes
+  service: name=monit state=reloaded
+
+- name: stop monit
+  sudo: yes
+  service: name=monit state=stopped
