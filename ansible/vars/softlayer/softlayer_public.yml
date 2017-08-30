@@ -216,6 +216,8 @@ localsettings:
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
   HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
+  ICDS_UCR_DATABASE_ALIAS: icds-ucr
+  ICDS_UCR_TEST_DATABASE_ALIAS : icds-ucr
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
