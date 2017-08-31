@@ -140,7 +140,6 @@ postgresql_dbs:
     name: commcarehq_icds_aggregatedata
     host: "{{ groups.postgresql.0 }}"
     query_stats: True
-    django_migrate: False
   - name: commcarehq_icds_testdata
     host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
