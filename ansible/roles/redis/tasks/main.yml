@@ -38,10 +38,7 @@
     group: root
     owner: root
     mode: 0640
-  tags: monit
-
-- name: restart monit
-  service: name="monit" state=reloaded
+  notify: reload monit
   tags: monit
 
 - monit:
