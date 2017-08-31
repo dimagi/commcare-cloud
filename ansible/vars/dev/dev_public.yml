@@ -172,14 +172,14 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb.0 }}"
+    host: "{{ groups.couchdb2.0 }}"
     port: 5984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
   users:
-    host: "{{ groups.couchdb.0 }}"
+    host: "{{ groups.couchdb2.0 }}"
     port: 5984
     name: commcarehq__users
     username: "{{ localsettings_private.COUCH_USERNAME }}"
