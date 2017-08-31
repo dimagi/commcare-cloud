@@ -22,6 +22,9 @@ DATABASES = { {% for config in postgresql_dbs %}
         'HOST': '{{ config.get('host', localsettings.PG_DATABASE_HOST) }}',
         'PORT': {{ config.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }},
         'OPTIONS': {{ config.get('options', localsettings.get('PG_DATABASE_OPTIONS', {}))|to_json }},
+        {% if 'django_migrate' in config -%}
+        'MIGRATE': {{ config.django_migrate }},
+        {% endif -%}
     },
 {% endif -%}
 {% endfor %}

@@ -68,6 +68,7 @@ formplayer_db_name: formplayer
 postgresql_dbs:
   - name: commcarehq_ucr
     django_alias: ucr
+    django_migrate: False
   - name: "{{ localsettings.PG_DATABASE_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"

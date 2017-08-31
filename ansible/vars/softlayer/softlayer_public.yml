@@ -120,6 +120,7 @@ postgresql_dbs:
     django_alias: ucr
   - django_alias: icds-ucr
     name: icds-ucr
+    django_migrate: False
   - name: "{{ formplayer_db_name }}"
   - name: commcarehq_icds_testdata
 
