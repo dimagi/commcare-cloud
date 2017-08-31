@@ -111,6 +111,7 @@ postgresql_dbs:
   - django_alias: icds-ucr
     name: commcarehq_icds_testdata
     query_stats: True
+    django_migrate: False
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 
