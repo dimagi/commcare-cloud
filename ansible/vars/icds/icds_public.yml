@@ -135,10 +135,12 @@ postgresql_dbs:
   - name: commcarehq_ucr
     host: "{{ groups.postgresql.0 }}"
     django_alias: ucr
+    django_migrate: False
   - django_alias: icds-ucr
     name: commcarehq_icds_aggregatedata
     host: "{{ groups.postgresql.0 }}"
     query_stats: True
+    django_migrate: False
   - name: commcarehq_icds_testdata
     host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
@@ -147,6 +149,7 @@ postgresql_dbs:
     name: commcarehq_icds_aggregatedata
     host: "{{ hostvars[groups.postgresql.0].hot_standby_server }}"
     create: False
+    django_migrate: False
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'

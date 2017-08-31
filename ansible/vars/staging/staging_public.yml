@@ -106,10 +106,12 @@ postgresql_dbs:
   - name: commcarehq_ucr
     query_stats: True
     django_alias: ucr
+    django_migrate: False
   - name: "{{ formplayer_db_name }}"
   - django_alias: icds-ucr
     name: commcarehq_icds_testdata
     query_stats: True
+    django_migrate: False
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 

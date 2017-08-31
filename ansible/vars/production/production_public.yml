@@ -125,6 +125,7 @@ postgresql_dbs:
     host: "{{ groups.postgresql.0 }}"
     query_stats: True
     django_alias: ucr
+    django_migrate: False
   - name: "{{ formplayer_db_name }}"
     host: "{{ groups.postgresql.0 }}"
 
