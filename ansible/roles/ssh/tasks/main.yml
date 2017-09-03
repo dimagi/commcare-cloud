@@ -4,7 +4,7 @@
     regexp: "^PermitRootLogin"
     line: "PermitRootLogin {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
-  #notify: Restart ssh
+  notify: Restart ssh
 
 - name: Disable password SSH access
   lineinfile:
@@ -12,7 +12,7 @@
     regexp: "^PasswordAuthentication"
     line: "PasswordAuthentication {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
-  #notify: Restart ssh
+  notify: Restart ssh
 
 - name: Ensure challenge response access is disallowed
   lineinfile:
@@ -20,7 +20,7 @@
     regexp: "^ChallengeResponseAuthentication"
     line: "ChallengeResponseAuthentication {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
-  #notify: Restart ssh
+  notify: Restart ssh
 
 - name: Set SSH logging level to VERBOSE
   lineinfile:
@@ -28,4 +28,4 @@
     regexp: "^LogLevel"
     line: "LogLevel VERBOSE"
     state: present
-  #notify: Restart ssh
+  notify: Restart ssh
