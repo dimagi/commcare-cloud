@@ -2,25 +2,25 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PermitRootLogin"
-    line: "PermitRootLogin no"
+    line: "PermitRootLogin {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
-  notify: Restart ssh
+  #notify: Restart ssh
 
 - name: Disable password SSH access
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication no"
+    line: "PasswordAuthentication {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
-  notify: Restart ssh
+  #notify: Restart ssh
 
 - name: Ensure challenge response access is disallowed
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^ChallengeResponseAuthentication"
-    line: "ChallengeResponseAuthentication no"
+    line: "ChallengeResponseAuthentication {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
-  notify: Restart ssh
+  #notify: Restart ssh
 
 - name: Set SSH logging level to VERBOSE
   lineinfile:
@@ -28,4 +28,4 @@
     regexp: "^LogLevel"
     line: "LogLevel VERBOSE"
     state: present
-  notify: Restart ssh
+  #notify: Restart ssh
