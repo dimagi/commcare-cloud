@@ -121,3 +121,8 @@
     - postfix
 
 - include: antivirus.yml
+  tags:
+    - antivirus
+    - after-reboot
+- include: cron.yml 
+  tags: cron
