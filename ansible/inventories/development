@@ -8,7 +8,7 @@
 192.168.33.16 hot_standby_server=192.168.33.17
 
 [pg_standby]
-192.168.33.17 archive_dir="/var/data" hot_standby_master="192.168.33.16"
+192.168.33.17 hot_standby_master=192.168.33.16
 
 [couchdb2]
 192.168.33.16

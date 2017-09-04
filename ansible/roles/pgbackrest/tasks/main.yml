@@ -1,0 +1,33 @@
+- include_vars: ../../postgresql/defaults/main.yml
+
+- name: Install pgBackRest and requirements
+  apt: name={{item}} state=installed
+  with_items:
+     - pgbackrest
+
+- name: Editing postgresql.conf file
+  become: True
+  blockinfile:
+    dest: "{{ postgresql_config_home }}/postgresql.conf"
+    block: |
+      archive_command = 'pgbackrest --stanza=backup archive-push %p'
+      archive_mode = on
+      max_wal_senders = 3
+      wal_level = hot_standby
+  notify: Restart postgres
+  
+- name: Creating pgbackrest.conf file
+  become: True
+  template:
+    src=pgbackrest.conf.j2
+    dest=/etc/pgbackrest.conf
+    owner=postgres
+    group=postgres
+    mode=640
+
+- name: Creating postgres stanza
+  become: True
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: True
+  shell: pgbackrest --stanza=backup --log-level-console=info stanza-create

@@ -10,32 +10,40 @@
     - zookeeper
     - riakcs
     - formplayer
-  sudo: yes
+  become: True
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
 - name: Postgresql
   hosts: postgresql
-  sudo: yes
+  become: True
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
 - name: Posgres Standby
   hosts: pg_standby
-  sudo: yes
+  become: True
   roles:
     - {role: pg_standby, tags: 'pg_standby'}
 
+- name: Postgresql Backup PgBackRest
+  hosts:
+    - postgresql
+    - pg_standby
+  become: True
+  roles:
+    - {role: pgbackrest, tags: 'postgresql'}
+
 - name: Couchdb
   hosts: couchdb
-  sudo: yes
+  become: True
   roles:
     - {role: couchdb, tags: 'couchdb'}
 
 - name: Couchdb log rolling configurations
   hosts: couchdb
-  sudo: yes
+  become: True
   roles:
     - role: ansible-logrotate
       tags: couchdb
@@ -55,13 +63,13 @@
 
 - name: Couchdb 2.0
   hosts: couchdb2
-  sudo: yes
+  become: True
   roles:
     - {role: couchdb2, tags: 'couchdb2'}
 
 - name: Couchdb2 log rolling configurations
   hosts: couchdb2
-  sudo: yes
+  become: True
   roles:
     - role: ansible-logrotate
       tags: couchdb2
@@ -81,37 +89,37 @@
 
 - name: Redis
   hosts: redis
-  sudo: yes
+  become: True
   roles:
     - {role: redis, tags: 'redis'}
 
 - name: Elasticsearch
   hosts: elasticsearch
-  sudo: yes
+  become: True
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
 
 - name: Redis Monitoring
   hosts: redis
-  sudo: yes
+  become: True
   roles:
     - redis_monitoring
 
 - name: RabbitMQ
   hosts: rabbitmq
-  sudo: yes
+  become: True
   roles:
     - {role: rabbitmq, tags: 'rabbitmq'}
 
 - name: Zookeeper
   hosts: zookeeper
-  sudo: yes
+  become: True
   roles:
     - {role: zookeeper, tags: 'zookeeper'}
 
 - name: Kafka
   hosts: kafka
-  sudo: yes
+  become: True
   environment:
     JMX_PORT: 9999
   roles:
