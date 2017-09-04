@@ -15,6 +15,7 @@
       max_wal_senders = 3
       wal_level = hot_standby
   notify: Restart postgres
+  when: not is_pg_standby
   
 - name: Creating pgbackrest.conf file
   become: True
@@ -31,3 +32,28 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backup --log-level-console=info stanza-create
+  when: is_pg_standby
+
+- name: Create Daily Cron job
+  sudo: yes
+  cron:
+    name: "Backup postgres daily (incremental)"
+    job: "/usr/bin/pgbackrest --type=incr --stanza=backup backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: postgres
+    cron_file: backup_postgres
+  when: backup_postgres and is_pg_standby
+
+- name: Create Weekly Cron job
+  sudo: yes
+  cron:
+    name: "Backup postgres weekly (full backup)"
+    job: "/usr/bin/pgbackrest --type=full --stanza=backup backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: postgres
+    cron_file: backup_postgres
+  when: backup_postgres and is_pg_standby

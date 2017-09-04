@@ -84,6 +84,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
+    state: absent
   when: backup_postgres
 
 - name: Create Weekly Cron job
@@ -96,6 +97,7 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
+    state: absent
   when: backup_postgres
 
 - name: copy retrieve script

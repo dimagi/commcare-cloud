@@ -1,9 +1,16 @@
 [backup]
-db1-host={{ hot_standby_master|default(hot_standby_server|default('localhost')) }}
 db1-path={{ postgresql_home }}
+{% if hot_standby_server|default(False) or hot_standby_master|default(False) %}
+db2-host={{ hot_standby_master|default(hot_standby_server) }}
 db2-path={{ postgresql_home }}
+{% endif %}
 
 [global]
+{% if hot_standby_server|default(False) %}
+backup-standby=y
+backup-host={{ hot_standby_server }}
+backup-user=postgres
+{% endif %}
 repo-path={{ postgresql_backup_dir }}
 retention-full=1
 start-fast=y
