@@ -118,8 +118,10 @@
   when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"
 
 - name: Remove old backup script
-  file: "/etc/cron.d/create_es_snapshot.py"
-  state: absent
+  file:
+    dest: "/etc/cron.d/create_es_snapshot.py"
+    state: absent
+  tags: cron
 
 - name: Copy es backup script
   sudo: yes
