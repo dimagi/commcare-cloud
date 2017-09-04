@@ -5,15 +5,25 @@
   with_items:
      - pgbackrest
 
-- name: Editing postgresql.conf file
+# FIXME: only if no other standby config is in place
+#- name: Editing postgresql.conf file
+#  become: True
+#  blockinfile:
+#    dest: "{{ postgresql_config_home }}/postgresql.conf"
+#    block: |
+#      archive_command = 'pgbackrest --stanza=backup archive-push %p'
+#      archive_mode = on
+#      max_wal_senders = 3
+#      wal_level = hot_standby
+#  notify: Restart postgres
+#  when: not is_pg_standby
+
+- name: Editing archive_command postgresql.conf file
   become: True
-  blockinfile:
+  lineinfile:
     dest: "{{ postgresql_config_home }}/postgresql.conf"
-    block: |
-      archive_command = 'pgbackrest --stanza=backup archive-push %p'
-      archive_mode = on
-      max_wal_senders = 3
-      wal_level = hot_standby
+    regexp: '^archive_command ='
+    line: "archive_command = 'rsync -a %p postgres@192.168.33.17:/opt/data/postgresql/wal_archive/%f; pgbackrest --stanza=backup archive-push %p'"
   notify: Restart postgres
   when: not is_pg_standby
   
