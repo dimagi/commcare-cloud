@@ -158,30 +158,6 @@ def update_npm_offline():
     sudo('cp -r {}/node_modules {}'.format(env.offline_code_dir, env.code_root))
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def offline_pip_install():
-    wheel_dir = os.path.join(env.offline_code_dir, 'wheelhouse')
-    cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
-        env.sudo_user, env.virtualenv_root
-    )
-    requirements = os.path.join(env.code_root, 'requirements')
-    requirements_file = os.path.join(requirements, 'requirements.txt')
-    for offline_lib in ['pygooglechart', 'django-transfer', 'django-two-factor-auth', 'pyzxcvbn']:
-        # assume these libs are already installed - they can't be installed offline currently
-        comment(requirements_file, '.*{}.*'.format(offline_lib), use_sudo=True)
-
-    prod_requirements_file = os.path.join(requirements, 'prod-requirements.txt')
-    for offline_lib in ['ipython']:
-        # assume these libs are already installed - they can't be installed offline currently
-        comment(prod_requirements_file, '.*{}.*'.format(offline_lib), use_sudo=True)
-    with cd(env.code_root):
-        pip_install(cmd_prefix, timeout=60, quiet=True, wheel_dir=wheel_dir, no_index=True, requirements=[
-            os.path.join(requirements, 'prod-requirements.txt'),
-            requirements_file,
-        ])
-
-
 def _upload_and_extract(zippath, strip_components=0):
     zipname = os.path.basename(zippath)
     put(zippath, env.offline_code_dir)
