@@ -35,13 +35,16 @@
     group=postgres
     mode=640
 
+- stat: path="{{postgresql_backup_dir}}/archive/backup"
+  register: stanza
+
 - name: Creating postgres stanza
   become: True
   become_user: postgres
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backup --log-level-console=info stanza-create
-  when: is_pg_standby
+  when: is_pg_standby and not stanza.stat.exists
 
 - name: Create Daily Cron job
   sudo: yes
