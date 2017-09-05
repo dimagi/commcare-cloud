@@ -189,8 +189,6 @@ softlayer:
       background_queue:
         concurrency: 4
         max_tasks_per_child: 1
-      enikshay_queue:
-        concurrency: 1
       flower: {}
   pillows:
     '10.162.36.253':
