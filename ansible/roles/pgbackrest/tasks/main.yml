@@ -23,7 +23,7 @@
   lineinfile:
     dest: "{{ postgresql_config_home }}/postgresql.conf"
     regexp: '^archive_command ='
-    line: "archive_command = 'rsync -a %p postgres@192.168.33.17:/opt/data/postgresql/wal_archive/%f; pgbackrest --stanza=backup archive-push %p'"
+    line: "archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:/opt/data/postgresql/wal_archive/%f; pgbackrest --stanza=backup archive-push %p'"
   notify: Restart postgres
   when: not is_pg_standby
   
