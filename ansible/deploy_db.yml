@@ -33,7 +33,7 @@
     - pg_standby
   become: True
   roles:
-    - {role: pgbackrest, tags: 'postgresql'}
+    - {role: pgbackrest, tags: 'postgresql', 'pg_standby'}
 
 - name: Couchdb
   hosts: couchdb
