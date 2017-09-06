@@ -9,6 +9,11 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
+   proxy_cache_path:
+    - name: "prelogin_cache"
+      path: "{{ www_home }}/prelogin_cache"
+      max_size: "3g"
+      inactive_time: "24h"
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    root: "/var/www/html"
@@ -20,6 +25,24 @@ nginx_sites:
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
+    - name: "^~ /(home|impact|pricing|services|software|solutions|askdemo)$"
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      proxy_cache: prelogin_cache
+      proxy_cache_use_stale: "error timeout updating http_500 http_502 http_503 http_504"
+      proxy_cache_methods: GET
+      add_header: X-Cache-Status $upstream_cache_status
+    - name: "/lang/"
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      proxy_cache: prelogin_cache
+      proxy_cache_use_stale: "error timeout updating http_500 http_502 http_503 http_504"
+      proxy_cache_methods: GET
+      add_header: X-Cache-Status $upstream_cache_status
     - name: /
       balancer: "{{ deploy_env }}_commcare"
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
