@@ -1,0 +1,213 @@
+SITE_HOST: 'pna.commcarehq.org'
+COMMTRACK_SITE_HOST: 'pna.commcarehq.org'
+NO_WWW_SITE_HOST: 'pna.commcarehq.org'
+deploy_env: pna
+
+active_sites:
+  cchq_ssl: True
+  cchq_redirect: True
+  cchq_http: True
+  cchq_http_j2me: False
+  cchq_http_redirect: False
+  commtrack_ssl: False
+  commtrack_http: False
+  hq_status: False
+  tableau: False
+  icds_tableau: False
+  wiki: False
+  wiki_http: False
+  motech: False
+  motech2: False
+  riakcs: False
+  couchdb2: True
+
+proxy_type: nginx
+
+ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+fake_ssl_cert: no
+
+#NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
+#run_newrelic_plugin_agent: False
+
+DATADOG_ENABLED: False
+DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '4096m'
+elasticsearch_cluster_name: 'pna-es'
+#elasticsearch_node_name: '??'
+
+apache2_key_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.key'
+apache2_cert_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.crt'
+
+nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.combined.crt'
+
+keystore_file: '../config/DimagiKeyStore'
+
+backup_blobdb: False
+backup_postgres: False
+backup_es: False
+backup_couch: False
+postgres_s3: False
+blobdb_s3: False
+couch_s3: False
+
+postgres_users: "{{ secrets.POSTGRES_USERS }}"
+
+postgres_config:
+  max_connections: 300
+  pgb_max_connections: 400
+  pgb_default_pool: 290
+  pgb_reserve_pool: 5
+  pgb_pool_timeout: 1
+  pgb_pool_mode: transaction
+
+formplayer_db_name: formplayer
+
+postgresql_dbs:
+  - name: commcarehq_ucr
+    django_alias: ucr
+  - name: "{{ localsettings.PG_DATABASE_NAME }}"
+    django_alias: default
+  - name: "{{ formplayer_db_name }}"
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+couch_dbs:
+  default:
+    host: 127.0.0.1
+    port: 25984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+redis_max_memory: 4096mb
+redis_logfile: '/var/log/redis/redis-server.log'
+redis_syslog_enabled: 'no'
+redis_database_save_times: []
+redis_max_clients: 10000
+redis_maxmemory_policy: allkeys-lru
+
+ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
+
+KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
+
+AMQP_USER: "{{ secrets.AMQP_USER }}"
+AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
+AMQP_HOST: "127.0.0.1"
+AMQP_NAME: commcarehq
+
+shared_drive_enabled: false
+
+localsettings:
+  ALLOWED_HOSTS:
+    - pna.commcarehq.org
+    - 127.0.0.1
+    - localhost
+    - 127.0.0.1
+    - testserver
+  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
+  BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: 'CTZIUS33'
+  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
+  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
+  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
+  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
+  BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
+  CELERY_PERIODIC_QUEUE: 'celery_periodic'
+  CELERY_REMINDER_CASE_UPDATE_QUEUE: reminder_case_update_queue
+  CELERY_REMINDER_RULE_QUEUE: reminder_rule_queue
+  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  CLOUDCARE_BASE_URL: http://localhost:9010
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
+  COUCH_HTTPS: False
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_SERVER_ROOT: "127.0.0.1"
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_PORT: 5984
+# pna is not hosted by Cloudant
+  COUCH_STALE_QUERY: 'update_after'
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+#  DROPBOX_APP_NAME:
+#  DROPBOX_KEY:
+#  DROPBOX_SECRET:
+  ELASTICSEARCH_HOST: "localhost"
+  ELASTICSEARCH_PORT: '9200'
+  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
+  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_PORT: 25
+  EMAIL_USE_TLS: no
+  FORMPLAYER_URL: "/formplayer"
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
+  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
+  HQ_INSTANCE: 'pna'
+  HUBSPOT_API_ID:
+  HUBSPOT_API_KEY:
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: INC-
+  INVOICE_STARTING_NUMBER: 5000
+  JAR_KEY_ALIAS: javarosakey
+  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
+  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
+  J2ME_ADDRESS: ''
+#  KAFKA_HOST:
+  KISSMETRICS_KEY:
+  MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
+  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
+  ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
+  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
+  PG_DATABASE_HOST: "127.0.0.1"
+  PG_DATABASE_NAME: commcarehq
+  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+  PG_DATABASE_PORT: 6432
+#  PILLOWTOP_MACHINE_ID:
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "localhost"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: False
+  REPORTING_DATABASES:
+    ucr: ucr
+  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
+  SIMPLE_API_KEYS:
+  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
+  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
+  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
+  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
+  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
+  SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
+  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_QUEUE_ENABLED: False
+#  STATIC_ROOT:
+#  STRIPE_PRIVATE_KEY:
+#  STRIPE_PUBLIC_KEY:
+  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
+  TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
+  XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"
