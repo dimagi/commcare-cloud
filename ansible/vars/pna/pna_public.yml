@@ -1,6 +1,6 @@
-SITE_HOST: 'pna.commcarehq.org'
-COMMTRACK_SITE_HOST: 'pna.commcarehq.org'
-NO_WWW_SITE_HOST: 'pna.commcarehq.org'
+SITE_HOST: 'commcare.pna.sn'
+COMMTRACK_SITE_HOST: 'commcare.pna.sn'
+NO_WWW_SITE_HOST: 'commcare.pna.sn'
 deploy_env: pna
 
 active_sites:
@@ -38,10 +38,10 @@ elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'pna-es'
 #elasticsearch_node_name: '??'
 
-apache2_key_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.key'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.crt'
+apache2_key_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.key'
+apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.crt'
 
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.combined.crt'
+nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.combined.crt'
 
 keystore_file: '../config/DimagiKeyStore'
 
@@ -112,7 +112,7 @@ shared_drive_enabled: false
 
 localsettings:
   ALLOWED_HOSTS:
-    - pna.commcarehq.org
+    - commcare.pna.sn
     - 127.0.0.1
     - localhost
     - 127.0.0.1
