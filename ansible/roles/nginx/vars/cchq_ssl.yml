@@ -25,7 +25,7 @@ nginx_sites:
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
-    - name: "~ ^(\/lang\/(\w+))?/(home|impact|pricing|services|software|solutions|askdemo)/$"
+    - name: "~* ^(\/lang\/(\w+))?/(home|impact|pricing|services|software|solutions|askdemo)/$"
       balancer: "{{ deploy_env }}_commcare"
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
       proxy_next_upstream_tries: 1
