@@ -1,6 +1,7 @@
 ---
 nginx_sites:
 - server:
+   use_purge_method: True
    balancers:
     - name: "{{ deploy_env }}_commcare"
       hosts: webworkers
@@ -34,6 +35,7 @@ nginx_sites:
       proxy_cache_use_stale: "error timeout updating http_500 http_502 http_503 http_504"
       proxy_cache_methods: GET
       add_header: X-Cache-Status $upstream_cache_status
+      proxy_cache_purge: "$purge_method"
     - name: /
       balancer: "{{ deploy_env }}_commcare"
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
