@@ -12,6 +12,6 @@ backup-host={{ hot_standby_server }}
 backup-user=postgres
 {% endif %}
 repo-path={{ postgresql_backup_dir }}
-retention-full=1
+retention-full={{ postgresql_backup_weeks|default(4) }}
 start-fast=y
 stop-auto=y
