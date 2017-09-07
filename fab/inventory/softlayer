@@ -15,6 +15,7 @@
 
 [db0:vars]
 datadog_integration_cloudant=true
+encrypted_root=/opt/data
 
 [es2]
 10.162.36.221 elasticsearch_node_name=es2
@@ -127,9 +128,6 @@ datavol_device=/dev/xvdc
 
 [stanchion:children]
 riak15
-
-[pg_standby:children]
-db0
 
 [control]
 10.162.36.196
