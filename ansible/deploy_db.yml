@@ -10,34 +10,34 @@
     - zookeeper
     - riakcs
     - formplayer
-  become: True
+  become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
 - name: Postgresql
   hosts: postgresql
-  become: True
+  become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
     - {role: pgbackrest, tags: ['postgresql', 'pgbackrest']}
 
 - name: Posgres Standby
   hosts: pg_standby
-  become: True
+  become: true
   roles:
     - {role: pg_standby, tags: 'pg_standby'}
     - {role: pgbackrest, tags: ['pg_standby', 'pgbackrest']}
 
 - name: Couchdb
   hosts: couchdb
-  become: True
+  become: true
   roles:
     - {role: couchdb, tags: 'couchdb'}
 
 - name: Couchdb log rolling configurations
   hosts: couchdb
-  become: True
+  become: true
   roles:
     - role: ansible-logrotate
       tags: couchdb
@@ -57,13 +57,13 @@
 
 - name: Couchdb 2.0
   hosts: couchdb2
-  become: True
+  become: true
   roles:
     - {role: couchdb2, tags: 'couchdb2'}
 
 - name: Couchdb2 log rolling configurations
   hosts: couchdb2
-  become: True
+  become: true
   roles:
     - role: ansible-logrotate
       tags: couchdb2
@@ -83,37 +83,37 @@
 
 - name: Redis
   hosts: redis
-  become: True
+  become: true
   roles:
     - {role: redis, tags: 'redis'}
 
 - name: Elasticsearch
   hosts: elasticsearch
-  become: True
+  become: true
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
 
 - name: Redis Monitoring
   hosts: redis
-  become: True
+  become: true
   roles:
     - redis_monitoring
 
 - name: RabbitMQ
   hosts: rabbitmq
-  become: True
+  become: true
   roles:
     - {role: rabbitmq, tags: 'rabbitmq'}
 
 - name: Zookeeper
   hosts: zookeeper
-  become: True
+  become: true
   roles:
     - {role: zookeeper, tags: 'zookeeper'}
 
 - name: Kafka
   hosts: kafka
-  become: True
+  become: true
   environment:
     JMX_PORT: 9999
   roles:
@@ -124,7 +124,7 @@
 
 # Note other machines also have java installed, but are initiated through the meta task
 - name: Java
-  sudo: True
+  become: true
   hosts:
     - celery
   roles:

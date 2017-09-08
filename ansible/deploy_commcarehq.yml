@@ -8,15 +8,15 @@
    - pillowtop
    - postgresql
    - couchdb2_proxy
-  sudo: yes
+  become: true
   roles:
     - {role: commcarehq, tags: commcarehq}
 
 - name: Celery cron jobs for HQ
   hosts:
     - celery
-  sudo: yes
+  become: true
   roles:
     - role: tmpreaper
-      tags: commcarehq, celery_hq, tmpreaper, cron
+      tags: ['commcarehq', 'celery_hq', 'tmpreaper', 'cron']
       tmpreaper_time: '2d'
