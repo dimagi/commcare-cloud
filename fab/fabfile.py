@@ -218,18 +218,18 @@ def _setup_env(env_name, force=False, default_branch=None):
 
 
 def _confirm_branch(default_branch=None):
-    if env.code_branch != 'master':
+    if env.code_branch == 'master':
         if default_branch:
             env.code_branch = default_branch
             print ("using default branch of {}. you can override this "
                    "with --set code_branch=<branch>".format(default_branch))
-        else:
-            branch_message = (
-                "Woah there bud! You're using branch {env.code_branch}. "
-                "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-            ).format(env=env)
-            if not console.confirm(branch_message, default=False):
-                utils.abort('Action aborted.')
+    else:
+        branch_message = (
+            "Woah there bud! You're using branch {env.code_branch}. "
+            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
+        ).format(env=env)
+        if not console.confirm(branch_message, default=False):
+            utils.abort('Action aborted.')
 
 
 def read_inventory_file(filename):
