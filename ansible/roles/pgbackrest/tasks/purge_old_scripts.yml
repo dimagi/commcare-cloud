@@ -1,0 +1,37 @@
+# Removing old tasks
+- name: Remove old Daily Cron job
+  become: true
+  cron:
+    name: "Backup postgres daily"
+    job: "/usr/local/sbin/create_postgres_dump.sh daily 3"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: postgres
+    cron_file: backup_postgres
+    state: absent
+
+- name: Remove old Weekly Cron job
+  become: true
+  cron:
+    name: "Backup postgres weekly"
+    job: "/usr/local/sbin/create_postgres_dump.sh weekly 21"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: postgres
+    cron_file: backup_postgres
+    state: absent
+
+- name: Remove postgres backup script
+  become: true
+  file:
+    dest: "/usr/local/sbin/create_postgres_dump.sh"
+    state: absent
+
+- name: Remove postgres backup script
+  become: true
+  file:
+    dest: "/etc/cron.d/create_postgres_dump.sh"
+    state: absent
+

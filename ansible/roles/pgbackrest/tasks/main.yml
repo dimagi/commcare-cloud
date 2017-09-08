@@ -70,3 +70,5 @@
     user: postgres
     cron_file: backup_postgres
   when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and backup_postgres
+
+- include: purge_old_scripts.yml
