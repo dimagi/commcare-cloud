@@ -18,5 +18,5 @@
   become: true
   roles:
     - role: tmpreaper
-      tags: commcarehq, celery_hq, tmpreaper, cron
+      tags: ['commcarehq', 'celery_hq', 'tmpreaper', 'cron']
       tmpreaper_time: '2d'
