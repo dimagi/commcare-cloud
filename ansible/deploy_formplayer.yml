@@ -1,7 +1,7 @@
 ---
 - name: Formplayer
   hosts: formplayer
-  sudo: yes
+  become: true
   roles:
     - {role: formplayer, tags: formplayer}
     - {role: newrelic-java, tags: newrelic-java, when: NEW_RELIC_KEY is defined}

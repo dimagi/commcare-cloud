@@ -1,6 +1,6 @@
 - name: Cleanup shared dir clients
   hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
-  sudo: yes
+  become: true
   vars_files:
     - roles/shared_dir/vars/main.yml
   tasks:
@@ -8,7 +8,7 @@
 
 - name: Cleanup shared dir host
   hosts: shared_dir_host
-  sudo: yes
+  become: true
   vars_files:
     - roles/shared_dir/vars/main.yml
   tasks:
