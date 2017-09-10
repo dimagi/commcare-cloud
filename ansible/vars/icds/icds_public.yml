@@ -72,9 +72,9 @@ nadir_hour: 16
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_work_mem: '16MB'
-postgresql_shared_buffers: '8GB'
+postgresql_shared_buffers: '16GB'
 postgresql_max_stack_depth: '6MB'
-postgresql_effective_cache_size: '16GB'
+postgresql_effective_cache_size: '32GB'
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
