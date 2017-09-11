@@ -70,6 +70,7 @@ keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: True
+postgresql_backup_weeks: 1
 backup_es: False
 postgres_s3: False
 backup_couch: True
