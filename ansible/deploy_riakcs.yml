@@ -83,7 +83,14 @@
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
-      when: _force_riak_config | bool
+      when: _force_riak_config|default(false) | bool
+
+- name: Start Riak
+  become: true
+  hosts: riakcs
+  tasks:
+    - service: name="riak" state=started enabled=yes
+      tags: after-reboot
 
 - name: Join Riak [CS] nodes to cluster
   become: true

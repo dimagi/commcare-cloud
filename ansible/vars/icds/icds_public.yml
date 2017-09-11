@@ -397,11 +397,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   REPORTING_DATABASES:
     ucr: ucr
-    icds-ucr:
-      WRITE: icds-ucr
-      READ:
-        - [icds-ucr, 9]
-        - [icds-ucr-standby, 1]
+    icds-ucr: icds-ucr
     icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
