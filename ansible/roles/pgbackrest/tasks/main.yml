@@ -4,6 +4,8 @@
   apt: name={{item}} state=installed
   with_items:
      - pgbackrest
+     - libio-socket-ssl-perl
+     - libxml-libxml-perl
 
 - name: Adding configuration to postgresql.conf
   become: True
