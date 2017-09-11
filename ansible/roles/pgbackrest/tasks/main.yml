@@ -47,6 +47,15 @@
   # play when it's a standby or it's a master with no standby (and stanza does not already exist)
   when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and not stanza.stat.exists
 
+- name: Creating postgres S3 stanza
+  become: True
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: True
+  shell: pgbackrest --stanza=backups3 --log-level-console=info stanza-create
+  # play when it's a standby or it's a master with no standby (and s3 backups enabled)
+  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
+
 - name: Create Daily Cron job
   sudo: yes
   cron:
@@ -59,6 +68,18 @@
     cron_file: backup_postgres
   when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and backup_postgres
 
+- name: Create Daily Cron job S3
+  sudo: yes
+  cron:
+    name: "Backup postgres daily (incremental)"
+    job: "/usr/bin/pgbackrest --type=incr --stanza=backups3 backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: postgres
+    cron_file: backup_postgres
+  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
+
 - name: Create Weekly Cron job
   sudo: yes
   cron:
@@ -70,5 +91,17 @@
     user: postgres
     cron_file: backup_postgres
   when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and backup_postgres
+
+- name: Create Weekly Cron job S3
+  sudo: yes
+  cron:
+    name: "Backup postgres weekly (full backup)"
+    job: "/usr/bin/pgbackrest --type=full --stanza=backups3 backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: postgres
+    cron_file: backup_postgres
+  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
 
 - include: purge_old_scripts.yml
