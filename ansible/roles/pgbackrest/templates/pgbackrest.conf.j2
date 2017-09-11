@@ -1,8 +1,25 @@
+# {{ ansible_managed }}
+
 [backup]
 db1-path={{ postgresql_home }}
 {% if hot_standby_server|default(False) or hot_standby_master|default(False) %}
 db2-host={{ hot_standby_master|default(hot_standby_server) }}
 db2-path={{ postgresql_home }}
+{% endif %}
+
+{% if postgres_s3|default(false) %}
+[backups3]
+db1-path={{ postgresql_home }}
+{% if hot_standby_server|default(False) or hot_standby_master|default(False) %}
+db2-host={{ hot_standby_master|default(hot_standby_server) }}
+db2-path={{ postgresql_home }}
+{% endif %}a
+repo-path=/{{ deploy_env }}
+repo-s3-bucket=postgresql-{{ deploy_env }}
+repo-s3-endpoint=s3.amazonaws.com
+repo-s3-key={{ localsettings.AMAZON_S3_ACCESS_KEY }}
+repo-s3-key-secret={{ localsettings.AMAZON_S3_SECRET_KEY }}
+repo-s3-region={{ aws_region }}
 {% endif %}
 
 [global]
