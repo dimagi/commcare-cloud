@@ -27,7 +27,7 @@
     sha256sum: "{{ datadog_couchdb2_sha256sum }}"
     force: yes
   notify: restart datadog
-  when: datadog_integration_couch
+  when: datadog_integration_couchdb2
   tags:
     - datadog_integrations
 
@@ -62,7 +62,8 @@
     - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
-    - {"name": "couchdb2", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "couchdb2", "enabled": "{{ datadog_integration_couchdb2 }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
