@@ -7,6 +7,15 @@
   tags:
     - datadog_integrations
 
+- name: remove couchdb2 check
+  file:
+    path: /etc/dd-agent/checks.d/couchdb2.py
+    state: absent
+  notify: restart datadog
+  when: not datadog_integration_couch or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  tags:
+    - datadog_integrations
+
 - name: remove celery check
   file:
     path: /etc/dd-agent/checks.d/celery.py
@@ -39,7 +48,7 @@
     - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
-    - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "couchdb2", "enabled": "{{ datadog_integration_couch }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
 
