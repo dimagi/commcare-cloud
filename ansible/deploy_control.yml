@@ -1,7 +1,7 @@
 - name: Bootstrap Control
   hosts: localhost
   gather_facts: no
-  sudo: yes
+  become: true
   roles:
     - {role: users, tags: users}
     - {role: ssh, tags: ssh}

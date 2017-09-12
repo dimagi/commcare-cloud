@@ -11,7 +11,7 @@
     state: directory
 
 - name: PostgreSQL recovery configuration
-  template: src=recovery.conf.j2 dest="{{ postgresql_config_home }}/recovery.conf" owner="postgres"
+  template: src=recovery.conf.j2 dest="{{ postgresql_home }}/recovery.conf" owner="postgres" group="postgres"
   notify: Restart postgres
 
 - name: create backup directory

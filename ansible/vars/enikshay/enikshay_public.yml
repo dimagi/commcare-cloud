@@ -181,9 +181,6 @@ shared_drive_enabled: true
 # adding missing variables compared to icds 
 #http_proxy_address: '172.25.3.6' # use pg_standby as the patch server
 #http_proxy_port: '3128'
-ufw_private_interface: eth0
-
-
 
 couch_dbs:
   default:
@@ -218,6 +215,7 @@ localsettings:
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  CELERY_TIMEZONE: 'Asia/Kolkata'
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_STALE_QUERY: 'update_after'

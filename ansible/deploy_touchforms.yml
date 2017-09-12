@@ -1,6 +1,6 @@
 ---
 - name: Touchforms
   hosts: touchforms
-  sudo: yes
+  become: true
   roles:
     - touchforms

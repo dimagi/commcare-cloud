@@ -192,21 +192,22 @@ log_disconnections = 0
 ;; In-kernel buffer size (Linux default: 4096)
 ;tcp_socket_buffer = 0
 
+;; On Linux, the system defaults are tcp_keepidle=7200, tcp_keepintvl=75, tcp_keepcnt=9
 ;; whether tcp keepalive should be turned on (0/1)
-;tcp_keepalive = 1
+tcp_keepalive = 1
 
 ;; following options are Linux-specific.
 ;; they also require tcp_keepalive=1
 
 ;; count of keepaliva packets
-;tcp_keepcnt = 0
+tcp_keepcnt = 9
 
 ;; how long the connection can be idle,
 ;; before sending keepalive packets
-;tcp_keepidle = 0
+tcp_keepidle = 900
 
 ;; The time between individual keepalive probes.
-;tcp_keepintvl = 0
+tcp_keepintvl = 30
 
 ;; DNS lookup caching time
 ;dns_max_ttl = 15
