@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# {{ ansible_managed }}
+{% if  not is_pg_standby and hot_standby_server|default(false) %}
+rsync -a $1 postgres@{{ hot_standby_server }}:/opt/data/postgresql/wal_archive/$2 
+{% endif %}
+pgbackrest --stanza=backup archive-push $1
+{% if postgres_s3|default(false) %}
+pgbackrest --stanza=backups3 archive-push $1
+{% endif %}

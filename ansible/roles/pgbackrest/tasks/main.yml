@@ -7,26 +7,36 @@
      - libio-socket-ssl-perl
      - libxml-libxml-perl
 
-- name: Adding configuration to postgresql.conf
+- name: Make sure postgresql.conf supports pgbackrest
   become: True
-  blockinfile:
+  lineinfile:
     dest: "{{ postgresql_config_home }}/postgresql.conf"
-    block: |
-      archive_command = 'pgbackrest --stanza=backup archive-push %p'
-      archive_mode = on
-      max_wal_senders = 3
-      wal_level = hot_standby
+    regexp: '^{{ item.name }} ='
+    line: "{{ item.name }} = {{ item.value }}"
+  with_items:
+      - { name: 'archive_mode', value: 'on' }
+      - { name: 'max_wal_senders', value: '3' }
+      - { name: 'wal_level', value: 'hot_standby' }
   notify: Restart postgres
-  when: not is_pg_standby and not hot_standby_server|default(False)
+  when: not is_pg_standby
 
-- name: Editing archive_command in postgresql.conf
+- name: Creating archive_command.sh file
+  become: True
+  template:
+    src=archive_command.sh.j2
+    dest=/usr/local/sbin/pgbackrest_archive_command.sh
+    owner=postgres
+    group=postgres
+    mode=750
+
+- name: Editing archive_command for postgresql.conf
   become: True
   lineinfile:
     dest: "{{ postgresql_config_home }}/postgresql.conf"
     regexp: '^archive_command ='
-    line: "archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:/opt/data/postgresql/wal_archive/%f; pgbackrest --stanza=backup archive-push %p'"
+    line: "archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'"
   notify: Restart postgres
-  when: not is_pg_standby and hot_standby_server|default(False)
+  when: not is_pg_standby
   
 - name: Creating pgbackrest.conf file
   become: True
@@ -73,7 +83,7 @@
 - name: Create Daily Cron job S3
   sudo: yes
   cron:
-    name: "Backup postgres daily (incremental)"
+    name: "Backup postgres daily (incremental) S3"
     job: "/usr/bin/pgbackrest --type=incr --stanza=backups3 backup"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
@@ -97,7 +107,7 @@
 - name: Create Weekly Cron job S3
   sudo: yes
   cron:
-    name: "Backup postgres weekly (full backup)"
+    name: "Backup postgres weekly (full backup) S3"
     job: "/usr/bin/pgbackrest --type=full --stanza=backups3 backup"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"

@@ -20,14 +20,14 @@
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
-    - {role: pgbackrest, tags: ['postgresql', 'pgbackrest']}
+    - {role: pgbackrest, tags: ['postgresql', 'pgbackrest'], when: backup_postgres or postgres_s3}
 
 - name: Posgres Standby
   hosts: pg_standby
   become: true
   roles:
     - {role: pg_standby, tags: 'pg_standby'}
-    - {role: pgbackrest, tags: ['pg_standby', 'pgbackrest']}
+    - {role: pgbackrest, tags: ['pg_standby', 'pgbackrest'], when: backup_postgres or postgres_s3}
 
 - name: Couchdb
   hosts: couchdb
