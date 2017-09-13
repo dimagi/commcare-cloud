@@ -126,8 +126,8 @@ datavol_device=/dev/mapper/consolidated-data
 es0
 
 [formplayer:children]
-formplayer0
-formplayer1
+proxy0
+kafka0
 
 [touchforms:children]
 web0
