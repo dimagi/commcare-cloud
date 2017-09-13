@@ -65,5 +65,4 @@
     - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
     - {"name": "couchdb2", "enabled": "{{ datadog_integration_couchdb2 }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
-    - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
