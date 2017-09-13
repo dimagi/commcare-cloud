@@ -21,6 +21,7 @@ active_sites:
   motech2: False
   riakcs: True
   couchdb2: True
+  enikshay_ssl: True
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
