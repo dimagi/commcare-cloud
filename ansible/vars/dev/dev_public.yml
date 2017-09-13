@@ -94,6 +94,8 @@ postgres_users:
     username: "devreadonly"
     password: "{{ secrets.pg_user_passwords.devreadonly }}"
 
+encrypted_root: '/opt/data'
+postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 postgresql_ssl_enabled: False
 postgresql_max_connections: 20
 postgresql_work_mem: '8MB'

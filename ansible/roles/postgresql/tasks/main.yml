@@ -61,6 +61,15 @@
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
+
+- name: Create postgresql_log_directory
+  file:
+    dest: "{{ postgresql_log_directory }}"
+    state: directory
+    owner: postgres
+    group: postgres
+  when: postgresql_log_directory|default(false)
+
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
   tags: postgresql_conf
