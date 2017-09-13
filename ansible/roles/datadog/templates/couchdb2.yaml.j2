@@ -1,10 +1,6 @@
 init_config:
 
 instances:
-{% for couch_config in couch_dbs.values() %}
-{% if couch_config.host == inventory_hostname %}
-    - server: "http{% if couch_config.is_https %}s{% endif %}://{{ couch_config.host }}:{{ couch_config.port }}"
-      user: {{ couch_config.username }}
-      password: {{ couch_config.password }}
-{% endif %}
-{% endfor %}
+    - server: "http://{{ inventory_hostname|ipaddr }}:{{ couchdb2_port }}"
+      user: {{ couch_dbs.default.username }}
+      password: {{ couch_dbs.default.password }}
