@@ -111,7 +111,6 @@ old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
 
-datadog_integration_celery: false
 datadog_integration_cloudant: false
 datadog_integration_couch: false
 datadog_integration_elastic: false
