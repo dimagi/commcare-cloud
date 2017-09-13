@@ -16,14 +16,14 @@ active_sites:
   commtrack_http: False
   hq_status: False
   tableau: False
-  icds_tableau: True
+  icds_tableau: False
   wiki: False
   wiki_http: False
   motech: False
   motech2: False
   riakcs: True
-  cas_ssl: True
-  enikshay_ssl: True
+  cas_ssl: False
+  enikshay_ssl: False
   couchdb2: False
 
 riak_ring_size: 64
