@@ -40,7 +40,7 @@ base:
 enikshay:
   environment: enikshay
   formplayer_memory: "7000m"
-  newrelic_javaagent: True
+  newrelic_javaagent: False
   celery_processes:
     '*':
       celery_periodic:
