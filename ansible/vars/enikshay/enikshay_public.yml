@@ -36,6 +36,8 @@ proxy_type: 'nginx'
 primary_ssl_env: "enikshay"
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+msp_user: true
+msp_user_password_sha_512: "{{ secrets.MSP_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False
