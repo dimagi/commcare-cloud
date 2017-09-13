@@ -23,7 +23,7 @@ active_sites:
   motech2: False
   riakcs: True
   cas_ssl: False
-  enikshay_ssl: True
+  enikshay_ssl: False
   couchdb2: False
 
 riak_ring_size: 64
