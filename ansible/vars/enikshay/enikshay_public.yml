@@ -34,7 +34,7 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 proxy_type: 'nginx'
 
-primary_ssl_env: "enikshay"
+primary_ssl_env: "enikshay.in"
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
