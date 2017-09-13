@@ -20,7 +20,7 @@ http {
         access_log /var/log/{{ nginx_access_log_name }};
         error_log /var/log/{{ nginx_error_log_name }} warn;
 
-        log_format timing '[$time_local] $request $status $request_time';
+        log_format timing '[$time_local] $upstream_cache_status $request $status $request_time';
 
 {% for k,v in nginx_http_params.iteritems() %}
         {{ k }}  {{ v }};
