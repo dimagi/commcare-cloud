@@ -4,4 +4,3 @@ instances:
     - server: "http://{{ inventory_hostname|ipaddr }}:{{ couchdb2_proxy_port }}"
       user: {{ couch_dbs.default.username }}
       password: {{ couch_dbs.default.password }}
-{% endfor %}
