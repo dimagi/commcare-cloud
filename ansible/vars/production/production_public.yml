@@ -207,6 +207,7 @@ localsettings:
   GREENHOUSE_API_KEY: "{{ localsettings_private.GREENHOUSE_API_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
+  GTM_ID: "{{ localsettings_private.GTM_ID }}"
   HQ_INSTANCE: 'www'
   HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
   HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
