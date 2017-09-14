@@ -1,42 +1,42 @@
 ---
 - name: Add nginx repository
-  sudo: yes
+  become: yes
   apt_repository: repo='ppa:nginx/stable' state=present
 
 - name: Install nginx
-  sudo: yes
+  become: yes
   apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=3600
   with_items: "{{ nginx_ubuntu_pkg }}"
   when: nginx_install == True
 
 - name: Create nginx http user
-  sudo: yes
+  become: yes
   user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
   when: nginx_install == True
 
 - name: Create static files home
-  sudo: yes
+  become: yes
   file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
   when: nginx_install == True
 
 - name: Copy the nginx configuration file
-  sudo: yes
+  become: yes
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
 
 - name: Copy the nginx default configuration file
-  sudo: yes
+  become: yes
   template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf
 
 - name: Copy the nginx default site configuration file
-  sudo: yes
+  become: yes
   template: src=default.j2 dest=/etc/nginx/sites-available/default
 
 - name: Create the link for site enabled specific configurations
-  sudo: yes
+  become: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
 
 - name: Allow cchq user to modify sites-availabled
-  sudo: yes
+  become: yes
   file:
     path: /etc/nginx/sites-available
     owner: "{{ cchq_user }}"
@@ -45,7 +45,7 @@
     state: directory
 
 - name: Create directories for certificates
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "root"
@@ -56,33 +56,58 @@
     - "{{ ssl_certs_dir }}"
     - "{{ ssl_keys_dir }}"
 
+- name: Copy cchq SSL cert (from vault)
+  become: yes
+  copy:
+    content: '{{ nginx_combined_cert_value }}'
+    dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and nginx_combined_cert_value is defined
+  tags:
+    - update-cert
 
 - name: Copy cchq SSL cert
-  sudo: yes
+  become: yes
   copy:
     src: "{{ nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert
+  when: not fake_ssl_cert and nginx_combined_cert_value is undefined
+  tags:
+    - update-cert
+
+- name: Copy cchq SSL Key (from vault)
+  become: yes
+  copy:
+    content: "{{ apache2_key_value }}"
+    dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
+    mode: 0400
+    owner: root
+    group: root
+  no_log: true
+  when: not fake_ssl_cert and apache2_key_value is defined
   tags:
     - update-cert
 
 - name: Copy cchq SSL Key
-  sudo: yes
+  become: yes
   copy:
     src: "{{ apache2_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert
+  no_log: true
+  when: not fake_ssl_cert and apache2_key_value is undefined
   tags:
     - update-cert
 
 - name: Copy commtrack SSL cert
-  sudo: yes
+  become: yes
   copy:
     src: "{{ commtrack_nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ commtrack_nginx_ssl_cert }}"
@@ -92,7 +117,7 @@
   when: not fake_ssl_cert and commtrack_nginx_combined_cert_file is defined
 
 - name: Copy commtrack SSL Key
-  sudo: yes
+  become: yes
   copy:
     src: "{{ commtrack_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"
@@ -102,7 +127,7 @@
   when: not fake_ssl_cert and commtrack_key_file is defined
 
 - name: Copy icds SSL cert
-  sudo: yes
+  become: yes
   copy:
     src: "{{ tableau_nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ tableau_nginx_ssl_cert }}"
@@ -111,8 +136,8 @@
     group: root
   when: not fake_ssl_cert and tableau_nginx_combined_cert_file is defined
 
-- name: Copy icds  SSL Key
-  sudo: yes
+- name: Copy icds SSL Key
+  become: yes
   copy:
     src: "{{ tableau_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ tableau_nginx_ssl_key }}"
@@ -122,7 +147,7 @@
   when: not fake_ssl_cert and tableau_key_file is defined
 
 - name: Copy CAS SSL cert
-  sudo: yes
+  become: yes
   copy:
     src: "{{ cas_nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
@@ -131,8 +156,8 @@
     group: root
   when: not fake_ssl_cert and cas_nginx_combined_cert_file is defined
 
-- name: Copy CAS  SSL Key
-  sudo: yes
+- name: Copy CAS SSL Key
+  become: yes
   copy:
     src: "{{ cas_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
@@ -141,22 +166,42 @@
     group: root
   when: not fake_ssl_cert and cas_key_file is defined
 
+- name: Copy Enikshay SSL cert (from vault)
+  become: yes
+  copy:
+    content: "{{ enikshay_nginx_combined_cert_value }}"
+    dest: "{{ ssl_certs_dir }}/{{ enikshay_nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and enikshay_nginx_combined_cert_file is defined and enikshay_nginx_combined_cert_value is defined
+
 - name: Copy Enikshay SSL cert
-  sudo: yes
+  become: yes
   copy:
     src: "{{ enikshay_nginx_combined_cert_file }}"
     dest: "{{ ssl_certs_dir }}/{{ enikshay_nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and enikshay_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and enikshay_nginx_combined_cert_file is defined and enikshay_nginx_combined_cert_value is undefined
+
+- name: Copy Enikshay SSL Key (from vault)
+  become: yes
+  copy:
+    src: "{{ enikshay_key_value }}"
+    dest: "{{ ssl_keys_dir }}/{{ enikshay_nginx_ssl_key  }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is defined
 
 - name: Copy Enikshay SSL Key
-  sudo: yes
+  become: yes
   copy:
     src: "{{ enikshay_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ enikshay_nginx_ssl_key  }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and enikshay_key_file is defined
+  when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is undefined
