@@ -2,7 +2,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PermitRootLogin"
-    line: "PermitRootLogin no"
+    line: "PermitRootLogin {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
   notify: Restart ssh
 
@@ -10,7 +10,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication no"
+    line: "PasswordAuthentication {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
   notify: Restart ssh
 
@@ -18,7 +18,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^ChallengeResponseAuthentication"
-    line: "ChallengeResponseAuthentication no"
+    line: "ChallengeResponseAuthentication {{ 'yes' if ssh_password|default('False')|bool else 'no' }}"
     state: present
   notify: Restart ssh
 
