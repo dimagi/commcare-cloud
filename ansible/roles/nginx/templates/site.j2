@@ -25,6 +25,13 @@ proxy_cache_path {{ cache.path }} levels=1:2 keys_zone={{ cache.name }}:10m
                  max_size={{ cache.max_size}} inactive={{ cache.inactive_time }} use_temp_path=off;
 {% endfor %}
 
+{% if item.server.get('use_purge_method', False) == True %}
+map $request_method $purge_method {
+    PURGE 1;
+    default 0;
+}
+{% endif %}
+
 server {
 
 {% if nginx_separate_logs_per_site == True %}
