@@ -83,26 +83,26 @@
 - name: Copy cchq SSL Key (from vault)
   become: yes
   copy:
-    content: "{{ apache2_key_value }}"
+    content: "{{ nginx_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
     mode: 0400
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and apache2_key_value is defined
+  when: not fake_ssl_cert and nginx_key_value is defined
   tags:
     - update-cert
 
 - name: Copy cchq SSL Key
   become: yes
   copy:
-    src: "{{ apache2_key_file }}"
+    src: "{{ nginx_key_file }}"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
     mode: 0400
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and apache2_key_value is undefined
+  when: not fake_ssl_cert and nginx_key_value is undefined
   tags:
     - update-cert
 
