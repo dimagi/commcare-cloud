@@ -83,8 +83,8 @@ nofile_limit: 65536
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 600
-pgbouncer_max_connections: 800
-pgbouncer_default_pool: 290
+pgbouncer_max_connections: 1600
+pgbouncer_default_pool: 500
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
