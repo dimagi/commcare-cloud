@@ -189,7 +189,7 @@
 - name: Copy Enikshay SSL Key (from vault)
   become: yes
   copy:
-    src: "{{ enikshay_key_value }}"
+    content: "{{ enikshay_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ enikshay_nginx_ssl_key  }}"
     mode: 0400
     owner: root
