@@ -187,8 +187,8 @@ shared_drive_enabled: true
 
 couch_dbs:
   default:
-    host: 172.25.2.9
-    port: 25984
+    host: "{{ groups.couchdb2[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
