@@ -40,9 +40,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
 # Source paths of certs
-apache2_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
