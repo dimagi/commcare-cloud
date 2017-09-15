@@ -74,7 +74,7 @@
     - role: logrotate
 
 - name: Nginx log rolling configurations
-  hosts: 
+  hosts:
    - proxy
    - couchdb2_proxy
   become: true
@@ -90,6 +90,8 @@
             - missingok
             - compress
             - delaycompress
-            - copytruncate
             - nocreate
             - notifempty
+            - sharedscripts
+          scripts:
+            postrotate: "[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`"
