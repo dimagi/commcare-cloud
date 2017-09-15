@@ -66,7 +66,7 @@ nginx_sites:
        proxy_cache: app_cache
        client_body_buffer_size: 5m
        proxy_ignore_headers: Set-Cookie
-       limit_req:
+       limit_reqs:
         - zone_name: app_downloads
           burst: 10
           nodelay: True
