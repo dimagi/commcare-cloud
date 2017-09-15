@@ -8,3 +8,17 @@
     - role: edit
     - {role: ksplice, tags: ksplice}
     - {role: ansible-control, tags: ansible-control}
+    - role: ansible-logrotate
+      logrotate_scripts:
+        - name: control_ansible
+          path: /var/log/ansible.log
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
