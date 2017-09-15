@@ -14,12 +14,11 @@
         - name: control_ansible
           path: /var/log/ansible.log
           options:
-            - daily
-            - size 100M
-            - rotate 10
+            - size 10M
+            - rotate 5
             - missingok
             - compress
             - delaycompress
             - copytruncate
-            - nocreate
+            - create
             - notifempty
