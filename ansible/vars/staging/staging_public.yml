@@ -173,8 +173,6 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True
   FORMPLAYER_URL: "/formplayer"
   FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"

@@ -65,8 +65,16 @@
     - { role: nginx, when: proxy_type == 'nginx' and active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
     - { role: nginx, when: proxy_type == 'nginx', action: restart }
 
+- name: Move logrotate to hourly
+  hosts:
+    - proxy
+    - couchdb2_proxy
+  become: true
+  roles:
+    - role: logrotate
+
 - name: Nginx log rolling configurations
-  hosts: 
+  hosts:
    - proxy
    - couchdb2_proxy
   become: true
@@ -82,6 +90,8 @@
             - missingok
             - compress
             - delaycompress
-            - copytruncate
             - nocreate
             - notifempty
+            - sharedscripts
+          scripts:
+            postrotate: "[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`"
