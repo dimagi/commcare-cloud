@@ -39,9 +39,7 @@ elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'deves'
 #elasticsearch_node_name: '??'
 
-apache2_key_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.key'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.crt'
-
+nginx_key_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.key'
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.combined.crt'
 
 keystore_file: '../config/DimagiKeyStore'
