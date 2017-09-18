@@ -110,3 +110,37 @@
   tags:
     - localsettings
     - hq-localsettings
+
+- name: Copy celery time script
+  become: true
+  template:
+    src: "ucr_indicator_celery_queue.sh.j2"
+    dest: "{{ cchq_home }}/bin/{{ item.action }}_celery.sh"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0700
+    backup: yes
+  with_items:
+    - { action: start}
+    - { action: stop}
+  tags:
+    - ucr-indicator-celery
+
+- name: Create Cron jobs
+  sudo: yes
+  cron:
+    name: "{{ item.action }} celery ucr indicator"
+    job: "{{ cchq_home }}/bin/{{ item.action }}_celery.sh"
+    user: cchq
+    cron_file: ucr-indicator-celery
+    hour: "{{ item.hour }}"
+    minute: "{{ item.minute }}"
+  with_items:
+    - action: start
+      hour: 12
+      minute: 30
+    - action: stop
+      hour: 2
+      minute: 30
+  tags:
+    - ucr-indicator-celery
