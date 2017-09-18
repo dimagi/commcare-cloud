@@ -2,11 +2,13 @@
 # {{ ansible_managed }}
 #
 
-import os
-import sys
+from datetime import time
 import hashlib
 import json
-from datetime import time
+import os
+import sys
+
+from celery.schedules import crontab
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
@@ -699,6 +701,10 @@ DAYS_TO_KEEP_DEVICE_LOGS = {{ localsettings.DAYS_TO_KEEP_DEVICE_LOGS }}
 
 {% if localsettings.get('ASYNC_INDICATORS_TO_QUEUE') %}
 ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
+{% endif %}
+
+{% if localsettings.get('ASYNC_INDICATOR_QUEUE_CRONTAB') %}
+ASYNC_INDICATOR_QUEUE_CRONTAB = crontab(**{{ localsettings.get('ASYNC_INDICATOR_QUEUE_CRONTAB') }})
 {% endif %}
 
 {% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
