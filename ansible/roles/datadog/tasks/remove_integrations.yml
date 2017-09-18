@@ -12,7 +12,7 @@
     path: /etc/dd-agent/checks.d/couchdb2.py
     state: absent
   notify: restart datadog
-  when: inventory_hostname != groups.couchdb2[0] or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  when: "'couchdb2' in groups and inventory_hostname != groups.couchdb2[0] or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)"
   tags:
     - datadog_integrations
 
@@ -32,7 +32,7 @@
   notify: restart datadog
   tags:
     - datadog_integrations
-  when: not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  when: item is defined and not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
   with_items:
     - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
     - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
