@@ -380,9 +380,6 @@ localsettings:
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
-  OFF_PEAK_TIME:
-    - 12
-    - 3
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq

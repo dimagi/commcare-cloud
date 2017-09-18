@@ -701,11 +701,6 @@ DAYS_TO_KEEP_DEVICE_LOGS = {{ localsettings.DAYS_TO_KEEP_DEVICE_LOGS }}
 ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
 {% endif %}
 
-{% if localsettings.get('OFF_PEAK_TIME') %}
-OFF_PEAK_TIME = (time({{ localsettings.OFF_PEAK_TIME[0] }}), time({{ localsettings.OFF_PEAK_TIME[1] }}))
-{% endif %}
-
-
 {% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
 MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
 {% endif %}
