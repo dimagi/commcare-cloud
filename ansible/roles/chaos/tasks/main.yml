@@ -10,21 +10,18 @@
     - start
 
 - name: Install chaos scripts
-  sudo: yes
   template:
-    src: "{{ item }}.j2"
-    dest: "{{ chaos_dir }}/start/{{ item }}"
+    src: "{{ strategy }}.j2"
+    dest: "{{ chaos_dir }}/start/{{ strategy }}"
     group: root
     owner: root
     mode: 0755
     backup: yes
-  with_items: "{{ enable.split(',') }}"
   tags:
     - start
 
 - name: Start chaos
-  shell: "{{ chaos_dir }}/start/{{ item }}"
-  with_items: "{{ enable.split(',') }}"
+  shell: "{{ chaos_dir }}/start/{{ strategy }}"
   tags:
     - start
 

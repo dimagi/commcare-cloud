@@ -4,8 +4,8 @@ chaos_dir: /var/chaos
 # comma-delimited list of hosts for chaos (command line: -e hosts=webworkers)
 hosts: ''
 
-# comma-delimited list of enabled chaos strategies
-enable: "burnio"
+# the chosen chaos strategy (see templates dir; currently this is the only one)
+strategy: "burnio"
 
 # wait time in seconds after each loop of burnio chaos
 burnio_wait: 0
