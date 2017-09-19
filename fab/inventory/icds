@@ -14,7 +14,7 @@ hot_standby_server='10.247.24.16'
 postgresql_max_connections=800
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=790
-pg_work_mem=32MB
+postgresql_work_mem=32MB
 hostname='pg0'
 
 [pg1]
@@ -28,7 +28,7 @@ hot_standby_server='10.247.24.17'
 postgresql_max_connections=800
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=790
-pg_work_mem=16MB
+postgresql_work_mem=16MB
 hostname='pg1'
 
 [pg2:vars]
@@ -40,7 +40,7 @@ hot_standby_server='10.247.24.28'
 postgresql_max_connections=400
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=390
-pg_work_mem=16MB
+postgresql_work_mem=16MB
 
 [pg3]
 10.247.24.23
@@ -54,7 +54,7 @@ hot_standby_server='10.247.24.29'
 postgresql_max_connections=800
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=790
-pg_work_mem=16MB
+postgresql_work_mem=16MB
 
 [web0]
 10.247.24.13
