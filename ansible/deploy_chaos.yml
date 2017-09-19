@@ -10,8 +10,8 @@
 #
 # Variables can be set to tweak chaos settings. Examples:
 #
-#   Choose which chaos to install (currently only burnio)
-#   $ ap deploy_chaos.yml -e "hosts=webworkers enable=burnio" --tags=start
+#   Choose the chaos strategy (currently only burnio)
+#   $ ap deploy_chaos.yml -e "hosts=webworkers strategy=burnio" --tags=start
 #
 #   BurnIO wait 5s between burns
 #   $ ap deploy_chaos.yml -e "hosts=webworkers burnio_wait=5" --tags=start
