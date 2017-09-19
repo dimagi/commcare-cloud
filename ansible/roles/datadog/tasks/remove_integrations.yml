@@ -7,6 +7,15 @@
   tags:
     - datadog_integrations
 
+- name: remove couchdb2 check
+  file:
+    path: /etc/dd-agent/checks.d/couchdb2.py
+    state: absent
+  notify: restart datadog
+  when: "'couchdb2' in groups and inventory_hostname != groups.couchdb2[0] or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)"
+  tags:
+    - datadog_integrations
+
 - name: remove celery check
   file:
     path: /etc/dd-agent/checks.d/celery.py
@@ -23,7 +32,7 @@
   notify: restart datadog
   tags:
     - datadog_integrations
-  when: not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  when: item is defined and not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
   with_items:
     - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
     - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
@@ -38,8 +47,8 @@
     - {"name": "riakcs", "enabled": "{{ datadog_integration_riakcs }}"}
     - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
-    - {"name": "celery", "enabled": "{{ datadog_integration_celery }}"}
+    - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
     - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
+    - {"name": "couchdb2", "enabled": "{{ inventory_hostname == groups.couchdb2[0] }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
-    - {"name": "process", "enabled": "{{ datadog_integration_process }}"}
 

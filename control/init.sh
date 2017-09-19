@@ -43,11 +43,21 @@ alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
+function ae() {
+    ansible $1 -m shell -a "$2" -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV
+}
+
 # It aint pretty, but it gets the job done
 function ansible-deploy-control() {
+    if [ -z "$1" ]; then
+        echo "Usage:"
+        echo "  ansible-deploy-control [environment]"
+        exit 1
+    fi
+    env="$1"
     echo "You must be root to deploy the control machine"
     echo "Run \`su\` to become the root user, then paste in this command to deploy:"
-    echo 'USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcarehq-ansible/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/production/production_vault.yml -e @$ANSIBLE_DIR/vars/production/production_public.yml --diff --ask-vault-pass'
+    echo 'ENV='$env' && USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcarehq-ansible/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_vault.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_public.yml --diff --ask-vault-pass'
 }
 
 function ansible-control-banner() {
@@ -61,7 +71,8 @@ function ansible-control-banner() {
     printf "${BLUE}workon ansible${NC} - activate the ansible virtual env\n"
     printf "${BLUE}ap${NC} - shortcut for running an ansible playbook e.g. \"${YELLOW}ENV=production ap deploy_db.yml --diff --check${NC}\". Run \"${YELLOW}type ap${NC}\" for the full command.\n"
     printf "${BLUE}aps${NC} - same as \"${YELLOW}ap deploy_stack.yml${NC}\"\n"
-    printf "${BLUE}ansible-deploy-control${NC} - deploy changes to users on this control machine\n"
+    printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
+    printf "${BLUE}ae${NC} - allows running ad hoc commands on specified machines e.g. ae riakcs 'grep OOM /var/log/riak/console.log'\n"
 }
 
 [ -t 1 ] && ansible-control-banner

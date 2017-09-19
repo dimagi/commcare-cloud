@@ -18,3 +18,85 @@
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
+
+- name: Copy couch restart script
+  sudo: yes
+  file:
+    dest: "/usr/local/sbin/couch2-restarter.sh"
+    state: absent
+  tags:
+    - cron
+
+- name: Create Cron job
+  sudo: yes
+  cron:
+    name: "Reboot Couch"
+    job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
+    user: root
+    cron_file: couch2-restarter
+    state: absent
+  tags:
+    - cron
+
+- name: Copy couch backup script
+  sudo: yes
+  template:
+    src: "create_couchdb_backup.sh.j2"
+    dest: "/usr/local/sbin/create_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: backup_couch
+  tags:
+    - cron
+    - backup
+
+- name: Create Daily Cron job
+  sudo: yes
+  cron:
+    name: "Backup blobdb daily"
+    job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: couchdb
+    cron_file: backup_couch
+  when: backup_couch
+  tags:
+    - cron
+
+- name: Create Weekly Cron job
+  sudo: yes
+  cron:
+    name: "Backup blobdb weekly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: couchdb
+    cron_file: backup_couch
+  when: backup_couch
+  tags:
+    - cron
+    - backup
+
+- name: start the couchdb2 service
+  service: name="couchdb2" state=started enabled=yes
+  tags: after-reboot
+
+- name: couchdb2 monit config
+  sudo: yes
+  template:
+    src: "monit.couchdb2.j2"
+    dest: "/etc/monit/conf.d/couchdb2"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- monit:
+    name: couchdb2
+    state: monitored
+  tags: monit

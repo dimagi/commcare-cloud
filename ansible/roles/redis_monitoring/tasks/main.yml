@@ -1,17 +1,14 @@
 - name: Copy Redis restart script
   sudo: yes
-  template:
-    src: "redis-restart.sh.j2"
-    dest: "/etc/cron.d/redis-restart.sh"
-    group: root
-    owner: root
-    mode: 0700
-    backup: yes
+  file:
+    dest: "/usr/local/sbin/redis-restart.sh"
+    state: absent
 
 - name: Create Cron job
   sudo: yes
   cron:
     name: "Reboot Redis"
-    job: /etc/cron.d/redis-restart.sh
+    job: "/usr/local/sbin/redis-restart.sh > /dev/null"
     user: root
     cron_file: ../crontab
+    state: absent

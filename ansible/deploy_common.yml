@@ -1,25 +1,25 @@
 - name: Common
   hosts: all
-  sudo: yes
+  become: true
   roles:
     - common
 
 - name: ufw (firewall)
   hosts: '!proxy:!cas_proxy:!enikshay_proxy:!couchdb2_proxy'
-  sudo: yes
+  become: true
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined}
 
 - name: ufw (proxy firewall)
   hosts: 'proxy:cas_proxy:enikshay_proxy:couchdb2_proxy'
-  sudo: yes
+  become: true
   tasks:
     - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
       when: ufw_private_interface is defined or is_monolith|bool
 
 - name: Datadog agent
   hosts: all
-  sudo: yes
+  become: true
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
 
@@ -27,3 +27,8 @@
   hosts: all
   roles:
     - {role: swap}
+
+- name: Configure monit
+  hosts: all
+  roles:
+    - {role: monit, tags: monit}

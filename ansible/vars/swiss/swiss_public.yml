@@ -39,9 +39,7 @@ elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'deves'
 #elasticsearch_node_name: '??'
 
-apache2_key_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.key'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.crt'
-
+nginx_key_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.key'
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.combined.crt'
 
 keystore_file: '../config/DimagiKeyStore'
@@ -66,7 +64,9 @@ pgbouncer_pool_mode: transaction
 formplayer_db_name: formplayer
 
 postgresql_dbs:
-  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+  - name: commcarehq_ucr
+    django_alias: ucr
+    django_migrate: False
   - name: "{{ localsettings.PG_DATABASE_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
@@ -140,6 +140,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   FORMPLAYER_URL: "/formplayer"
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'swiss'
@@ -178,6 +179,8 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  REPORTING_DATABASES:
+    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS:
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
@@ -193,5 +196,4 @@ localsettings:
 #  STRIPE_PUBLIC_KEY:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
-  UCR_DATABASE_NAME: commcarehq_ucr
   XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"

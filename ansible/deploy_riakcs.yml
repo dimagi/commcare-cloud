@@ -4,7 +4,7 @@
   hosts:
     - riakcs
     - stanchion
-  sudo: yes
+  become: true
   roles:
     - {role: ecryptfs}
 
@@ -51,7 +51,7 @@
     - {role: swap}
 
 - name: Load admin keys from Riak CS conf
-  sudo: True
+  become: true
   hosts: riakcs_control_host
   vars_files:
     - roles/riakcs/install/defaults/main.yml
@@ -59,21 +59,21 @@
     - include: roles/riakcs/get_admin_keys.yml tags=localsettings
 
 - name: Install Riak and Riak CS
-  sudo: True
+  become: true
   hosts: riakcs
   roles:
     - {role: riakcs/install, name: riak}
     - {role: riakcs/install, name: riakcs, service: riak-cs}
 
 - name: Install Stanchion
-  sudo: True
+  become: true
   hosts: stanchion
   roles:
     - {role: riakcs/install, name: stanchion}
 
 - name: Configure and start Riak
   # Riak CS must be installed before Riak can be started
-  sudo: True
+  become: true
   hosts: riakcs
   roles:
     - role: riakcs/configure
@@ -86,8 +86,15 @@
         - "{{ riak_data_root_blocks }}"
       when: _force_riak_config | bool
 
+- name: Start Riak
+  become: true
+  hosts: riakcs
+  tasks:
+    - service: name="riak" state=started enabled=yes
+      tags: after-reboot
+
 - name: Join Riak [CS] nodes to cluster
-  sudo: True
+  become: true
   hosts: riakcs
   tasks:
     - include: roles/riakcs/join_cluster.yml
@@ -95,7 +102,7 @@
 
 - name: Configure and start Stanchion
   # Riak must be started before Stanchion can be started
-  sudo: True
+  become: true
   hosts: stanchion
   roles:
     - role: riakcs/configure
@@ -104,26 +111,26 @@
       data_dirs: [ "{{ stanchion_data_dir }}" ]
 
 - name: Configure and start Riak CS
-  sudo: True
+  become: true
   hosts: riakcs
   roles:
     - {role: riakcs/configure, name: riakcs, service: riak-cs}
 
 - name: Create admin user
-  sudo: True
+  become: true
   hosts: riakcs_control_host
   roles:
     - role: riakcs/create_admin_user
       when: riak_key is undefined or riak_secret is undefined
 
 - name: Sync admin user keys to Riak CS cluster
-  sudo: True
+  become: true
   hosts: riakcs
   roles:
     - {role: riakcs/sync_keys, name: riakcs}
 
 - name: Sync admin user keys to Stanchion
-  sudo: True
+  become: true
   hosts:
     - stanchion
   roles:
@@ -131,15 +138,15 @@
 
 - name: Remove Riak Restarter
   hosts: riakcs
-  sudo: yes
+  become: true
   tasks:
     - name: Remove Riak restart script
-      sudo: yes
+      become: true
       file: >
         path=/root/riak-restarter.sh
         state=absent
     - name: Remove Cron job
-      sudo: yes
+      become: true
       cron:
         name: "Reboot Riak"
         cron_file: riak-restarter
@@ -147,7 +154,7 @@
 
 - name: Riak CS logs
   hosts: riakcs
-  sudo: yes
+  become: true
   tasks:
     - name: Purge old Riak CS access logs
       cron:

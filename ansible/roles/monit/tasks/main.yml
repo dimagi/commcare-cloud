@@ -1,0 +1,14 @@
+- name: monit config
+  sudo: yes
+  template:
+    src: "monitrc.j2"
+    dest: "/etc/monit/monitrc"
+    group: root
+    owner: root
+    mode: 0600
+  tags: monit
+
+- name: start monit
+  sudo: yes
+  service: name="monit" state=started enabled=yes
+  tags: monit

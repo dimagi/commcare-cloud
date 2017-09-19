@@ -1,29 +1,8 @@
-- name: "Custom host file lines"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
-  with_items: "{{ etc_host_lines }}"
-  tags:
-    - etc_hosts
-
-- name: "Add host file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
-  with_items:
-    - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
-  tags:
-    - etc_hosts
-  when: not inventory_hostname|ipaddr
-
-- name: "Remove lines from hosts file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
-  with_items: "{{ etc_host_lines_removed }}"
-  tags:
-    - etc_hosts
-
 # For 12.04 Ubuntu, upgrade OpenSSL version
 - name: "Install libssl1.0.0"
   apt: name="libssl1.0.0" state=present
   tags:
     - upgrade_openssl
-
 
 - name: Hard file limits
   sudo: yes
@@ -37,7 +16,6 @@
   with_items:
     - '*'
     - 'root'
-
 
 - name: Soft file limits
   sudo: yes
@@ -55,6 +33,15 @@
 - name: Ensure pam_limits.so
   lineinfile:
     dest: /etc/pam.d/common-session
+    state: present
+    regexp: "^session required pam_limits.so"
+    line: "session required pam_limits.so"
+  tags:
+    - nofile_limits
+
+- name: Ensure pam_limits.so non-interactive
+  lineinfile:
+    dest: /etc/pam.d/common-session-noninteractive
     state: present
     regexp: "^session required pam_limits.so"
     line: "session required pam_limits.so"
@@ -84,9 +71,33 @@
     dest: /etc/hosts
     regexp: '^{{ ansible_default_ipv4.address }}\s'
     line: '{{ ansible_default_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}'
-  when: hostname is defined and internal_domain_name is defined
+  when: hostname is defined and internal_domain_name is defined and not etc_hosts_lines|join(',')|search(ansible_default_ipv4.address)
   tags:
     - hostname
+    - after-reboot
+
+- name: "Custom host file lines"
+  lineinfile: dest=/etc/hosts regexp='^{{ item }}.*' line="{{item}}" state=present
+  with_items: "{{ etc_hosts_lines }}"
+  when: etc_hosts_lines is defined
+  tags:
+    - etc_hosts
+
+- name: "Add host file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
+  with_items:
+    - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
+  tags:
+    - etc_hosts
+    - after-reboot
+  when: not inventory_hostname|ipaddr
+
+- name: "Remove lines from hosts file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
+  with_items: "{{ etc_hosts_lines_removed }}"
+  when: etc_hosts_lines_removed is defined
+  tags:
+    - etc_hosts
     - after-reboot
 
 - name: "RFC 2142 email aliases and forwarding"
@@ -110,3 +121,8 @@
     - postfix
 
 - include: antivirus.yml
+  tags:
+    - antivirus
+    - after-reboot
+- include: cron.yml 
+  tags: cron

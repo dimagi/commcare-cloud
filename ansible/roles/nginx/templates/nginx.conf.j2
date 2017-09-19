@@ -7,7 +7,6 @@ pid        /var/run/nginx.pid;
 worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
 {% endif %}
 
-
 events {
     worker_connections  {{ nginx_max_clients }};
 }
@@ -21,7 +20,10 @@ http {
         access_log /var/log/{{ nginx_access_log_name }};
         error_log /var/log/{{ nginx_error_log_name }} warn;
 
-        log_format timing '[$time_local] $request $status $request_time';
+        log_format timing '[$time_local] $upstream_cache_status $request $status $request_time';
+        log_format rt_cache '$remote_addr - $remote_user - $upstream_cache_status - [$time_local] '
+                    '"$request" $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent"';
 
 {% for k,v in nginx_http_params.iteritems() %}
         {{ k }}  {{ v }};
@@ -30,7 +32,6 @@ http {
         gzip on;
         gzip_disable "msie6";
         gzip_types
-            text/html
             text/css
             text/javascript
             text/xml

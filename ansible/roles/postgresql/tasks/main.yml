@@ -87,9 +87,41 @@
     state: present
     port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
+
+- name: Create PostgreSQL read-only user
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_user:
+    name: "{{ postgres_users.devreadonly.username }}"
+    password: "{{ postgres_users.devreadonly.password }}"
+    role_attr_flags: NOSUPERUSER,NOCREATEROLE,NOCREATEDB
+    state: present
+    port: "{{ postgresql_port }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
+
+- name: Add SELECT privs for read-only user
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_privs:
+    db: postgres
+    state: present
+    privs: SELECT
+    objs: ALL_IN_SCHEMA
+    roles: "{{ postgres_users.devreadonly.username }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - postgres_users
 
 - name: check postgres database hosts
-  assert: { that: "item.host is not defined or item.host in groups.postgresql" }
+  assert: { that: "item.host is not defined or item.host in groups.postgresql or item.host in groups.pg_standby" }
   with_items: "{{ postgresql_dbs }}"
 
 - name: Create PostgreSQL databases
@@ -107,7 +139,7 @@
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
-  when: (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
+  when: item.create|default(True) and ((item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
@@ -193,4 +225,13 @@
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', localsettings.PG_DATABASE_USER)}}\""
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
+  with_items: "{{ postgresql_dbs }}"
+
+- name: Enable query stat collection
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
+  when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False) and (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"

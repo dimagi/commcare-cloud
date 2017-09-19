@@ -136,6 +136,12 @@ erlang.async_threads = 64
 ##   - an integer
 erlang.max_ports = 65536
 
+## To make configuring firewalls easier, you can instruct the Erlang VM
+## to use either a limited range of TCP ports or a single TCP port. 
+## The following would set the range to ports between 6000 and 7999:
+erlang.distribution.port_range.minimum = 6000
+erlang.distribution.port_range.maximum = 7999
+
 ## Set scheduler forced wakeup interval. All run queues will be
 ## scanned each Interval milliseconds. While there are sleeping
 ## schedulers in the system, one scheduler will be woken for each

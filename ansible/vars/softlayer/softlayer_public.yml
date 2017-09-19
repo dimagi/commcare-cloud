@@ -16,14 +16,14 @@ active_sites:
   commtrack_http: False
   hq_status: False
   tableau: False
-  icds_tableau: True
+  icds_tableau: False
   wiki: False
   wiki_http: False
   motech: False
   motech2: False
   riakcs: True
-  cas_ssl: True
-  enikshay_ssl: True
+  cas_ssl: False
+  enikshay_ssl: False
   couchdb2: False
 
 riak_ring_size: 128
@@ -51,9 +51,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
@@ -88,7 +86,7 @@ nofile_limit: 65536
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 300
-pgbouncer_max_connections: 800
+pgbouncer_max_connections: 1000
 pgbouncer_default_pool: 290
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
@@ -116,9 +114,11 @@ postgresql_dbs:
   - django_alias: p5
     name: commcarehq_p5
     shards: [820, 1023]
-  - name: "{{localsettings.UCR_DATABASE_NAME}}"
-  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
-    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
+  - name: commcarehq_ucr
+    django_alias: ucr
+  - django_alias: icds-ucr
+    name: icds-ucr
+    django_migrate: False
   - name: "{{ formplayer_db_name }}"
   - name: commcarehq_icds_testdata
 
@@ -142,6 +142,7 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
 kafka_broker_id: 0
+kafka_log_dir: '/opt/data/kafka'
 
 encrypted_root: /opt/data/ecrypt
 
@@ -149,8 +150,8 @@ ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
-etc_host_lines: []
-etc_host_lines_removed: []
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
 
 shared_drive_enabled: true
 
@@ -206,6 +207,7 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   FORMPLAYER_URL: "/formplayer"
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: '{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}'
   HQ_INSTANCE: 'india'
@@ -213,7 +215,7 @@ localsettings:
   HUBSPOT_API_ID: '{{ localsettings_private.HUBSPOT_API_ID }}'
   HUBSPOT_API_KEY: '{{ localsettings_private.HUBSPOT_API_KEY }}'
   ICDS_UCR_DATABASE_ALIAS: icds-ucr
-  ICDS_UCR_DATABASE_NAME: icds-ucr
+  ICDS_UCR_TEST_DATABASE_ALIAS : icds-ucr
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -248,6 +250,10 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REPORTING_DATABASES:
+    ucr: ucr
+    icds-ucr: icds-ucr
+    icds-test-ucr: icds-ucr
   AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
   AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SAVED_EXPORT_ACCESS_CUTOFF: 180
@@ -267,11 +273,8 @@ localsettings:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'
-  UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
   ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True

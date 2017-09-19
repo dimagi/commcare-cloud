@@ -15,6 +15,11 @@
   vars:
     ansible_ssh_pipelining: true
   git:
-    repo={{ commcarehq_errors_repository }} dest={{ errors_home }} version=master recursive=yes accept_hostkey=yes depth=1
+    repo: "{{ commcarehq_errors_repository }}"
+    dest: "{{ errors_home }}"
+    version: "{{ commcare_errors_branch }}"
+    recursive: yes
+    accept_hostkey: yes
+    depth: 1
   tags:
     - git
