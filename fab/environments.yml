@@ -292,7 +292,7 @@ icds:
       async_restore_queue:
         concurrency: 4
       ucr_indicator_queue:
-        concurrency: 12
+        concurrency: 4
       flower: {}
     '10.247.24.31': # celery1
       ucr_indicator_queue:
