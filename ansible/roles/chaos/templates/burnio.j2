@@ -1,0 +1,28 @@
+#!/bin/bash
+# Script for BurnIO Chaos
+#
+# based on https://github.com/Netflix/SimianArmy/blob/v2.5.0/src/main/resources/scripts/burnio.sh
+# see also https://github.com/Netflix/SimianArmy/wiki/The-Chaos-Monkey-Army#burn-io-simius-occupatus
+
+BURNFILE="{{ burnio_dir }}/burnio"
+
+cat << EOF > {{ chaos_dir }}/burnioloop
+#!/bin/bash
+# do burnio chaos
+while true;
+do
+    dd if=/dev/urandom of=$BURNFILE bs=1M count=128 iflag=fullblock
+    sleep {{ burnio_wait }}
+done
+EOF
+
+cat << EOF > {{ chaos_dir }}/stop/burnio
+#!/bin/bash
+# stop burnio chaos
+killall -g burnioloop
+rm $BURNFILE
+EOF
+
+chmod +x {{ chaos_dir }}/burnioloop {{ chaos_dir }}/stop/burnio
+
+nohup {{ chaos_dir }}/burnioloop &

@@ -1,0 +1,47 @@
+# Chaos
+
+- name: Setup chaos directories
+  file: path="{{ item }}" owner=root group=root mode=0755 state=directory
+  with_items:
+    - "{{ chaos_dir }}"
+    - "{{ chaos_dir }}/start"
+    - "{{ chaos_dir }}/stop"
+  tags:
+    - start
+
+- name: Install chaos scripts
+  template:
+    src: "{{ strategy }}.j2"
+    dest: "{{ chaos_dir }}/start/{{ strategy }}"
+    group: root
+    owner: root
+    mode: 0755
+    backup: yes
+  tags:
+    - start
+
+- name: Start chaos
+  shell: "{{ chaos_dir }}/start/{{ strategy }}"
+  tags:
+    - start
+
+- name: "Find stop scripts"
+  shell: "find {{ chaos_dir }}/stop -executable -type f"
+  register: stop_scripts
+  changed_when: false
+  failed_when: false
+  tags:
+    - debug_stop
+    - stop
+
+- name: Stop chaos
+  shell: "{{ item }}"
+  with_items: "{{ stop_scripts.stdout_lines }}"
+  tags:
+    - debug_stop
+    - stop
+
+- name: Remove chaos scripts
+  file: path="{{ chaos_dir }}" state=absent
+  tags:
+    - stop
