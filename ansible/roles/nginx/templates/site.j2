@@ -16,6 +16,13 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% for var_map in mappings %}
+map {{ var_map.variable }} {{ var_map.name }} {
+  ""     $binary_remote_addr;
+  default     ""; 
+}
+{% endfor %}
+
 {% for zone in item.server.get('limit_req_zones', []) %}
 limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }}:{{ zone.size }} rate={{ zone.rate }};
 {% endfor %}
