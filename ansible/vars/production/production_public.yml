@@ -199,6 +199,7 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  FACEBOOK_PIXEL_ID: "{{ localsettings_private.FACEBOOK_PIXEL_ID }}"
   FORMPLAYER_URL: "/formplayer"
   FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   FULLSTORY_ID: "{{ localsettings_private.FULLSTORY_ID }}"
