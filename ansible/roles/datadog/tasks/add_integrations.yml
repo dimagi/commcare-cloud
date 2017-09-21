@@ -27,7 +27,7 @@
     sha256sum: "{{ datadog_couchdb2_sha256sum }}"
     force: yes
   notify: restart datadog
-  when: "'couchdb2' in groups and inventory_hostname == groups.couchdb2[0]"
+  when: inventory_hostname == couchdb2_first_host
   tags:
     - datadog_integrations
 
@@ -63,6 +63,6 @@
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
     - {"name": "couch", "enabled": "{{ datadog_integration_couch }}"}
-    - {"name": "couchdb2", "enabled": "{{ inventory_hostname == groups.couchdb2[0] }}"}
+    - {"name": "couchdb2", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
