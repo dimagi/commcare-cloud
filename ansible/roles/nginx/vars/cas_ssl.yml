@@ -23,7 +23,7 @@ nginx_sites:
     - name: "submissions"
       zone: "$digest_submission"
       size: "10m"
-      rate: "20r/s"
+      rate: "10r/s"
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
