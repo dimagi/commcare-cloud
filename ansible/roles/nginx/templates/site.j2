@@ -19,7 +19,7 @@ upstream {{ balancer.name }} {
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
   ""     $binary_remote_addr;
-  default     ""; 
+  default     "";
 }
 {% endfor %}
 
@@ -60,7 +60,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
