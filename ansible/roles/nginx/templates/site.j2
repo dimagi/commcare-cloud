@@ -16,7 +16,7 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
-{% for var_map in mappings %}
+{% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
   ""     $binary_remote_addr;
   default     ""; 
