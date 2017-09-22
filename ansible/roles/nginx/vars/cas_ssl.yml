@@ -15,6 +15,7 @@ nginx_sites:
    mappings:
     - name: "$digest_submission"
       variable: "$http_authorization"
+      value: "$server_name"
    limit_req_zones:
     - name: "restore"
       zone: "$server_name"
