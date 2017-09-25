@@ -1,3 +1,5 @@
+couchdb2_first_host: "{{ groups['couchdb'][0] if 'couchdb' in groups else 'NO HOST SHOULD MATCH THIS' }}"
+
 # git commit to download
 datadog_cloudant_version: 638521b89c7cae89f4f804bb71c3480a08bb81fa
 # checksum of file
