@@ -393,7 +393,8 @@ production:
         concurrency: 2
       repeat_record_queue:
         pooling: gevent
-        concurrency: 200
+        concurrency: 50
+        num_workers: 4
       ucr_queue:
         concurrency: 4
         max_tasks_per_child: 5
