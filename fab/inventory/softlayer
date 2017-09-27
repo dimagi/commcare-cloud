@@ -138,5 +138,8 @@ couch1
 [couchdb2_proxy:children]
 couch1
 
+[lvm:children]
+couch1
+
 [control]
 10.162.36.196
