@@ -65,6 +65,9 @@ encrypted_root=/opt/data
 [touch0]
 10.162.36.215
 
+[couch1]
+10.162.36.218
+
 [proxy:children]
 proxy0
 
@@ -128,6 +131,12 @@ datavol_device=/dev/xvdc
 
 [stanchion:children]
 riak15
+
+[couchdb2:children]
+couch1
+
+[couchdb2_proxy:children]
+couch1
 
 [control]
 10.162.36.196
