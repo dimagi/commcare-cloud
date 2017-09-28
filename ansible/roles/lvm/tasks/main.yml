@@ -15,7 +15,7 @@
 
 - name: Create partition on block storage volume
   sudo: yes
-  shell: echo -e "o\nn\np\n1\n\n\nt\n1\n8e\nw" | fdisk {{ item.item }}
+  shell: echo -e "o\nn\np\n1\n\n\nt\n8e\nw" | fdisk {{ item.item }}
   # http://superuser.com/a/739586/86694
   # o  - clear in memory partition table
   # n  - new partition
@@ -24,7 +24,7 @@
   #    - default - start at beginning of disk 
   #    - default - use entire disk
   # t  - change type
-  # 1  - select partition 1
+  #      (select partition 1 is autoselected without giving you an choice)
   # 8e - lvm type
   # w  - write the partition table
   when: item is defined and item.rc == 0
