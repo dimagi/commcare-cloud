@@ -20,8 +20,6 @@ nginx_sites:
       mappings:
         - key: '"~^1:"'
           value: "$server_name"
-        - key: '"~^1:.+"'
-          value: '""'
         - key: "default"
           value: '""'
    limit_req_zones:
