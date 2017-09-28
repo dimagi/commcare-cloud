@@ -169,6 +169,14 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: True
 
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
