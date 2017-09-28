@@ -26,6 +26,10 @@ active_sites:
   enikshay_ssl: False
   couchdb2: False
 
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
 riak_ring_size: 64
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"

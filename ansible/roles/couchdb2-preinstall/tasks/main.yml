@@ -1,0 +1,15 @@
+- name: Install ndg-httpsclient so we can download couch
+  pip: name="{{ item }}"
+  sudo: yes
+  with_items:
+    - ndg-httpsclient
+
+- name: Create couchdb2 dirs
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ couchdb_parent_srcs_dir }}"
+    - "{{ couch_data_dir }}"
