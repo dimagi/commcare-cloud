@@ -101,6 +101,10 @@ host    all             all             ::1/128                 md5
 local   replication     postgres                                peer
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
+{% if postgres_users.get('replication') %}
+host    replication     {{ postgres_users.replication.username }}   0.0.0.0/0       md5
+{% endif %}
+
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
 
 # For icds-tableau, applicable only for NIC cluster

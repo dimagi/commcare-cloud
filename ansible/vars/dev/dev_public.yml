@@ -98,7 +98,7 @@ postgres_users:
       -
         privs: SELECT
         objs: ALL_IN_SCHEMA
-  hqreplication:
+  replication:
       username: 'hqrepl'
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
