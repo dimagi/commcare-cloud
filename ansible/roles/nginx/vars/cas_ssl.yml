@@ -12,6 +12,8 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
+   local_ips:
+    - '10.247.24.0/24'
    mappings:
     - name: "$digest_submission"
       variable: "$http_authorization"

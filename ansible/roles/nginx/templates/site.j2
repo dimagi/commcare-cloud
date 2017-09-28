@@ -16,6 +16,13 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+geo $is_remote {
+  default 1;
+  {% for local_ips in item.server.get('local_ips', []) %}
+    {{ local_ips }} 0;
+  {% endfor %}
+}
+
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
   {% for mapping in var_map.mappings %}
@@ -61,7 +68,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings', 'local_ips'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
