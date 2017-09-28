@@ -10,6 +10,8 @@
     path: "{{ item }}"
     state: directory
     mode: 0755
+    owner: "{{ couchdb_user }}"
+    group: "{{ couchdb_group }}"
   with_items:
     - "{{ couchdb_parent_srcs_dir }}"
     - "{{ couch_data_dir }}"
