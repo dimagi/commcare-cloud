@@ -98,6 +98,10 @@ postgres_users:
       -
         privs: SELECT
         objs: ALL_IN_SCHEMA
+  hqreplication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
 
 postgresql_ssl_enabled: False
 postgresql_max_connections: 20
