@@ -25,4 +25,6 @@ EOF
 
 chmod +x {{ chaos_dir }}/burnioloop {{ chaos_dir }}/stop/burnio
 
+{% for x in range(burnio_scale | int) %}
 nohup {{ chaos_dir }}/burnioloop &
+{% endfor %}
