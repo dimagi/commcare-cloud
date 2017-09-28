@@ -16,10 +16,12 @@ nginx_sites:
     - '10.247.24.0/24'
    mappings:
     - name: "$digest_submission"
-      variable: "$http_authorization"
+      variable: '"$is_remote:$http_authorization"'
       mappings:
-        - key: '""'
+        - key: '"^1:"'
           value: "$server_name"
+        - key: '"~^1:.+"'
+          value: '""'
         - key: "default"
           value: '""'
    limit_req_zones:
