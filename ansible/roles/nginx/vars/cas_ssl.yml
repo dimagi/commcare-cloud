@@ -18,7 +18,7 @@ nginx_sites:
     - name: "$digest_submission"
       variable: '"$is_remote:$http_authorization"'
       mappings:
-        - key: '"^1:"'
+        - key: '"~^1:"'
           value: "$server_name"
         - key: '"~^1:.+"'
           value: '""'
