@@ -16,12 +16,14 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% if item.server.get('local_ips') %}
 geo $is_remote {
   default 1;
   {% for local_ips in item.server.get('local_ips', []) %}
     {{ local_ips }} 0;
   {% endfor %}
 }
+{% endif %}
 
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
