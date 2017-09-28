@@ -89,10 +89,15 @@ backup_es: False
 postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ secrets.pg_user_passwords.default }}"
+    password: commcarehq
   devreadonly:
     username: "devreadonly"
-    password: "{{ secrets.pg_user_passwords.devreadonly }}"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
 
 postgresql_ssl_enabled: False
 postgresql_max_connections: 20
@@ -256,7 +261,7 @@ localsettings:
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.pg_user_passwords.default }}"
+  PG_DATABASE_PASSWORD: commcarehq
   PG_DATABASE_USER: commcarehq
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:

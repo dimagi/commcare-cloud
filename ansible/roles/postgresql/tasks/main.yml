@@ -81,31 +81,17 @@
   vars:
     ansible_ssh_pipelining: true
   postgresql_user:
-    name: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role_attr_flags: CREATEDB
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    role_attr_flags: "{{ item.role_attr_flags|default('CREATEDB') }}"
     state: present
     port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
+  with_items: "{{ postgres_users.values() }}"
   tags:
     - postgres_users
 
-- name: Create PostgreSQL read-only user
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_user:
-    name: "{{ postgres_users.devreadonly.username }}"
-    password: "{{ postgres_users.devreadonly.password }}"
-    role_attr_flags: NOSUPERUSER,NOCREATEROLE,NOCREATEDB
-    state: present
-    port: "{{ postgresql_port }}"
-  when: not is_pg_standby|default(False)
-  tags:
-    - postgres_users
-
-- name: Add SELECT privs for read-only user
+- name: Add user privs
   become: yes
   become_user: postgres
   vars:
@@ -113,10 +99,15 @@
   postgresql_privs:
     db: postgres
     state: present
-    privs: SELECT
-    objs: ALL_IN_SCHEMA
-    roles: "{{ postgres_users.devreadonly.username }}"
+    privs: "{{ item.1.privs }}"
+    objs: "{{ item.1.objs }}"
+    roles: "{{ item.0.username }}"
   when: not is_pg_standby|default(False)
+  with_subelements:
+    - "{{ postgres_users.values() }}"
+    - privs
+    - flags:
+      skip_missing: True
   tags:
     - postgres_users
 
