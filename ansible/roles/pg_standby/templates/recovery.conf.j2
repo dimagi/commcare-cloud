@@ -118,14 +118,14 @@ standby_mode = on
 # If set, the PostgreSQL server will try to connect to the primary using this
 # connection string and receive XLOG records continuously.
 #
-#primary_conninfo = ''		# e.g. 'host=localhost port=5432'
+primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ postgresql_port }}'
 #
 # If set, the PostgreSQL server will use the specified replication slot when
 # connecting to the primary via streaming replication to control resource
 # removal on the upstream node. This setting has no effect if primary_conninfo
 # is not set.
 #
-#primary_slot_name = ''
+primary_slot_name = '{{ replication_slot }}'
 #
 # By default, a standby server keeps restoring XLOG records from the
 # primary indefinitely. If you want to stop the standby mode, finish recovery
