@@ -109,6 +109,11 @@ nginx_sites:
          - zone_name: "submissions"
            burst: 100
            nodelay: True
+     - name: "/hq/admin/session_details"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
      - name: /
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
