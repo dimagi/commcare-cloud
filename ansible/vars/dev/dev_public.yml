@@ -103,6 +103,10 @@ postgres_users:
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
 
+pg_replication_slots:
+ 192.168.33.16:
+   - standby1
+
 postgresql_ssl_enabled: False
 postgresql_max_connections: 20
 postgresql_work_mem: '8MB'

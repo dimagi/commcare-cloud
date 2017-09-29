@@ -61,10 +61,14 @@
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
+- name: assert replication slot config correct
+  assert: { that: "replication_slot is not defined or replication_slot in pg_replication_slots[hot_standby_master]"}
+
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
   tags: postgresql_conf
   notify: Restart postgres
+  register: pg_config_changed
 
 - name: PostgreSQL access configuration
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
@@ -74,6 +78,12 @@
   become: true
   service: name=postgresql state=started
   tags: after-reboot
+  register: pg_started
+
+- name: restart postgresql if necessary
+  become: true
+  service: name=postgresql state=restarted
+  when: pg_config_changed.changed and not pg_started.changed
 
 - name: Create PostgreSQL users
   become: yes
@@ -131,6 +141,15 @@
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
   when: item.create|default(True) and ((item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
+
+- name: Create replication slots
+  pg_replication_slot: name={{ item }} state=present
+  become: yes
+  become_user: postgres
+  with_items: "{{ pg_replication_slots.get(inventory_hostname) }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - replication
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
