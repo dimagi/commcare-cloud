@@ -113,7 +113,7 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      tableau_readonly  
 
 # host all all 192.168.33.0/24 md5
 
-{% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql']) | unique %}
+{% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups['pg_standby']) | unique %}
 # {{ host }}
 {% for db in postgresql_dbs %}
 {% if db.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname or db.get('host', localsettings.PG_DATABASE_HOST) == hot_standby_master|default(None) or is_monolith|bool %}
