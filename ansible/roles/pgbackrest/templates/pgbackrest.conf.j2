@@ -31,6 +31,8 @@ backup-user=postgres
 {% endif %}
 repo-path={{ postgresql_backup_dir }}
 retention-full={{ postgresql_backup_weeks|default(4) }}
+retention-archive=1
+retention-archive-type=incr
 start-fast=y
 stop-auto=y
 compress-level=9
