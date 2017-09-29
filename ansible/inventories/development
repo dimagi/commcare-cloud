@@ -11,7 +11,6 @@
 192.168.33.17
 
 [pg_standby:vars]
-archive_dir="/var/data"
 hot_standby_master="192.168.33.16"
 replication_slot=standby1
 

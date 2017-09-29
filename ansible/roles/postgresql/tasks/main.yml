@@ -64,6 +64,15 @@
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in pg_replication_slots[hot_standby_master]"}
 
+- name: Create wal archive directory
+  sudo: yes
+  file:
+    path: '{{ postgresql_archive_dir }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
   tags: postgresql_conf
