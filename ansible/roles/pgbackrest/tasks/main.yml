@@ -71,8 +71,8 @@
 - name: Create Daily Cron job
   sudo: yes
   cron:
-    name: "Backup postgres daily (incremental)"
-    job: "/usr/bin/pgbackrest --type=incr --stanza=backup backup"
+    name: "Backup postgres daily (differential)"
+    job: "/usr/bin/pgbackrest --type=diff --stanza=backup backup"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
@@ -83,8 +83,8 @@
 - name: Create Daily Cron job S3
   sudo: yes
   cron:
-    name: "Backup postgres daily (incremental) S3"
-    job: "/usr/bin/pgbackrest --type=incr --stanza=backups3 backup"
+    name: "Backup postgres daily (differential) S3"
+    job: "/usr/bin/pgbackrest --type=diff --stanza=backups3 backup"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
