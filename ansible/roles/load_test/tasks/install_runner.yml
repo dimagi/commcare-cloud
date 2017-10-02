@@ -2,12 +2,12 @@
 
 - name: Install packages to be used for load testing
   apt: name="{{ item }}" state=present
-  sudo: yes
+  become: yes
   with_items:
     - postgresql-contrib
 
 - name: Symlink pgbench to PATH
-  sudo: yes
+  become: yes
   file:
     src: '/usr/lib/postgresql/{{ postgresql_version }}/bin/pgbench'
     dest: '/usr/local/bin/pgbench{{ postgresql_version }}'
@@ -22,7 +22,7 @@
        version=dimagi-tweaks
 
 - name: Copy pgbench tools config
-  sudo: yes
+  become: yes
   template:
     src: 'pgbench_tools_config.j2'
     dest: '{{ pgbench_home }}/local_config'
@@ -31,11 +31,11 @@
     mode: "u=rw,g=rw,o=r"
 
 - name: Create PostgreSQL results database
-  sudo_user: postgres
+  become_user: postgres
   postgresql_db: name="{{ results_db_name }}" state=present
 
 - name: Allow access to runner
-  sudo_user: postgres
+  become_user: postgres
   lineinfile:
     dest: "{{ postgresql_config_home }}/pg_hba.conf"
     state: present
@@ -45,7 +45,7 @@
   register: postgresql_access_updated
 
 - name: Apply PostgreSQL configuration changes
-  sudo_user: postgres
+  become_user: postgres
   service: name=postgresql state=restarted
   when: postgresql_access_updated.changed
 
@@ -95,7 +95,7 @@
   when: tsung_install == True
 
 - name: Setup tsung configuration directory
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   file:
     path: "{{ tsung_home_dir }}"
     owner: "{{ cchq_user }}"
@@ -112,7 +112,7 @@
     - tsung
 
 - name: Chown mobile-endpoint dir
-  sudo: yes
+  become: yes
   file:
     state: directory
     owner: "{{ cchq_user }}"
@@ -123,7 +123,7 @@
     - tsung
 
 - name: Copy mobile-endpoint localsettings
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: localsettings.py.j2
     dest: "{{ tsung_home_dir }}/mobile-endpoint/localsettings.py"
@@ -131,7 +131,7 @@
     - tsung
 
 - name: Chown tsung src dir
-  sudo: yes
+  become: yes
   file:
     state: directory
     owner: "{{ cchq_user }}"

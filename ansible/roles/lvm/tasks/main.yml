@@ -1,10 +1,10 @@
 ---
 - name: Install lvm tools
-  sudo: yes
+  become: yes
   apt: name=lvm2 state=present
 
 - name: Check for valid partition table on block storage device
-  sudo: yes
+  become: yes
   shell: fdisk -l 2>&1 | grep 'Disk {{ item }} doesn.t contain a valid partition table'
   register: partition_check
   when: item is defined
@@ -14,7 +14,7 @@
   with_items: "{{ devices }}"
 
 - name: Create partition on block storage volume
-  sudo: yes
+  become: yes
   shell: echo -e "o\nn\np\n1\n\n\nt\n8e\nw" | fdisk {{ item.item }}
   # http://superuser.com/a/739586/86694
   # o  - clear in memory partition table
@@ -44,12 +44,12 @@
     size: 100%FREE
 
 - name: Format block storage volume
-  sudo: yes
+  become: yes
   filesystem: fstype=ext4 dev={{ datavol_device }}1
   when: datavol_device is defined
 
 - name: Mount block storage volume
-  sudo: yes
+  become: yes
   mount:
     name: "{{ encrypted_root }}"
     src: "{{ datavol_device }}1"

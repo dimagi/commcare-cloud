@@ -38,7 +38,7 @@
   register: orig_path
 
 - name: Make new postgresql directory
-  sudo: yes
+  become: yes
   file:
     path: '{{ postgresql_dir_path }}'
     owner: postgres
@@ -175,7 +175,7 @@
      creates: /tmp/pghashlib-master
 
 - name: Install pghashlib
-  sudo: yes
+  become: yes
   shell: "PG_CONFIG={{postgres_install_dir}}/bin/pg_config make install"
   args:
     chdir: /tmp/pghashlib-master

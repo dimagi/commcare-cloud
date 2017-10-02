@@ -6,7 +6,7 @@
   when: KSPLICE_ACTIVE
 
 - name: Download install-uptrack
-  sudo: yes
+  become: yes
   get_url:
     url: https://www.ksplice.com/uptrack/install-uptrack
     dest: /tmp/install-uptrack
@@ -16,11 +16,11 @@
   when: command_result|failed
 
 - name: Install ksplice
-  sudo: yes
+  become: yes
   shell: /tmp/install-uptrack "{{ KSPLICE_ACTIVATION_KEY }}" --autoinstall
   when: command_result|failed
 
 - name: Run uptrack upgrade
-  sudo: yes
+  become: yes
   shell: uptrack-upgrade -y
   when: command_result|failed
