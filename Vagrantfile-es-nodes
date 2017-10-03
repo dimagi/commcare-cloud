@@ -49,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         v.memory = 768
         v.cpus = 1
       end
-      es_vm.vm.provision "shell", path: "provisioning/control.sh"
+      es_vm.vm.provision "shell", path: "provisioning/nodes.sh"
     end
   end
 end
