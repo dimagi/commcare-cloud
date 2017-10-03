@@ -3,10 +3,10 @@
 
 # sets up 1 monolith, 1 control and 6 elasticsearch nodes
 es_vms = [
-  {:name => "es00", :ip => "192.168.33.24"},
+  {:name => "es00", :ip => "192.168.33.24", :is_primary => true},
   {:name => "es01", :ip => "192.168.33.25"},
   {:name => "es02", :ip => "192.168.33.26"},
-  {:name => "es10", :ip => "192.168.33.27"},
+  {:name => "es10", :ip => "192.168.33.27", :is_primary => true},
   {:name => "es11", :ip => "192.168.33.28"},
   {:name => "es12", :ip => "192.168.33.29"}
 ]
@@ -41,14 +41,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   es_vms.each do |es_opts|
-    config.vm.define es_opts["name"] do |config|
-      config.vm.hostname = es_opts["name"]
-      config.vm.network "private_network", ip: es_opts["ip"]
-      config.vm.provider "virtualbox" do |v|
+    config.vm.define es_opts[:name] do |es_vm|
+      es_vm.vm.hostname = es_opts[:name]
+      es_vm.vm.network "private_network", ip: es_opts[:ip]
+      es_vm.vm.network "forwarded_port", guest: 9200, host: 8200 if es_opts.fetch("is_primary", false)
+      es_vm.vm.provider "virtualbox" do |v|
         v.memory = 768
         v.cpus = 1
       end
-      config.vm.provision "shell", path: "provisioning/control.sh"
+      es_vm.vm.provision "shell", path: "provisioning/control.sh"
     end
   end
 end
