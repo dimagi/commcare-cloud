@@ -337,8 +337,6 @@ localsettings:
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   LOCAL_APPS:
-    - 'dimagi.utils'
-    - 'gunicorn'
     - 'ddtrace.contrib.django'
   LOCAL_PILLOWS:
     icds:
