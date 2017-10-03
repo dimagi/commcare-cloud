@@ -1,0 +1,54 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# sets up 1 monolith, 1 control and 6 elasticsearch nodes
+es_vms = [
+  {:name => "es00", :ip => "192.168.33.24"},
+  {:name => "es01", :ip => "192.168.33.25"},
+  {:name => "es02", :ip => "192.168.33.26"},
+  {:name => "es10", :ip => "192.168.33.27"},
+  {:name => "es11", :ip => "192.168.33.28"},
+  {:name => "es12", :ip => "192.168.33.29"}
+]
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.require_version ">= 1.7.0"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.ssh.insert_key = false
+
+  config.vm.define "monolith" do |monolith|
+    monolith.vm.hostname = "monolith"
+    monolith.vm.network "private_network", ip: "192.168.33.21"
+    monolith.vm.provider "virtualbox" do |v|
+      v.memory = 768
+      v.cpus = 1
+    end
+    monolith.vm.provision "shell", path: "provisioning/nodes.sh"
+  end
+
+  config.vm.define "control" do |control|
+    control.vm.hostname = "control"
+    control.vm.network "private_network", ip: "192.168.33.20"
+    control.vm.provider "virtualbox" do |v|
+      v.memory = 768
+      v.cpus = 1
+    end
+    control.vm.provision "shell", path: "provisioning/control.sh"
+  end
+
+  es_vms.each do |es_opts|
+    config.vm.define es_opts["name"] do |config|
+      config.vm.hostname = es_opts["name"]
+      config.vm.network "private_network", ip: es_opts["ip"]
+      config.vm.provider "virtualbox" do |v|
+        v.memory = 768
+        v.cpus = 1
+      end
+      config.vm.provision "shell", path: "provisioning/control.sh"
+    end
+  end
+end
