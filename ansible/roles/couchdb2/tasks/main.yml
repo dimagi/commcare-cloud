@@ -14,7 +14,7 @@
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"
     force_basic_auth: true
-    status_code: 200, 409 # 409 means already set up (conflict)
+    status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
