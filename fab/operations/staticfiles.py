@@ -73,7 +73,7 @@ def collectstatic(use_current_release=False):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
-        sudo('node bower_components/r.js/dist/r.js -o build.js')
+        sudo('{}/bin/python manage.py build_requirejs'.format(venv))
 
 
 @parallel
