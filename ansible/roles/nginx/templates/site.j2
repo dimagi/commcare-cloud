@@ -16,6 +16,13 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% for var_map in item.server.get('mappings', []) %}
+map {{ var_map.variable }} {{ var_map.name }} {
+  ""     {{ var_map.value }};
+  default     "";
+}
+{% endfor %}
+
 {% for zone in item.server.get('limit_req_zones', []) %}
 limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }}:{{ zone.size }} rate={{ zone.rate }};
 {% endfor %}
@@ -53,7 +60,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}

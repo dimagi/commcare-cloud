@@ -42,6 +42,8 @@ archive_timeout = 60
 
 wal_level = hot_standby
 max_wal_senders = 3
+checkpoint_segments = {{ postgresql_checkpoint_segments|default(16) }}
+checkpoint_warning = 120s
 wal_keep_segments = 8
 
 
