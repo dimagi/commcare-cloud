@@ -11,3 +11,5 @@ strategy: "burnio"
 burnio_wait: 0
 # directory in which to perform burnio chaos
 burnio_dir: /tmp
+# how many burnio processes to run
+burnio_scale: 1
