@@ -111,6 +111,8 @@
   notify: reload monit
   tags: monit
 
+- meta: flush_handlers
+
 - monit:
     name: couchdb2
     state: monitored
