@@ -162,12 +162,12 @@ shared_drive_enabled: true
 
 couch_dbs:
   default:
-    host: commcarehq-india.cloudant.com
-    port: 443
+    host: "{{ groups.couchdb2[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
+    is_https: False
 
 
 couchdb_cluster_settings:
