@@ -1,6 +1,8 @@
 ---
 # roles/pg_standby/tasks/main.yml
 
+- include: setup_keys.yml
+
 - name: Create wal archive directory
   sudo: yes
   file:
