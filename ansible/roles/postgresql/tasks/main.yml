@@ -62,7 +62,7 @@
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
 - name: assert replication slot config correct
-  assert: { that: "replication_slot is not defined or replication_slot in pg_replication_slots[hot_standby_master]"}
+  assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
 
 - name: Create wal archive directory
   sudo: yes
@@ -151,7 +151,7 @@
   pg_replication_slot: name={{ item }} state=present
   become: yes
   become_user: postgres
-  with_items: "{{ pg_replication_slots.get(inventory_hostname) }}"
+  with_items: "{{ postgresql_replication_slots|default([]) }}"
   when: not is_pg_standby|default(False)
   tags:
     - replication

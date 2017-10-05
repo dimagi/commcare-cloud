@@ -5,7 +5,7 @@
 192.168.33.15 newrelic_app_name=django
 
 [postgresql]
-192.168.33.16 hot_standby_server=192.168.33.17
+192.168.33.16 hot_standby_server=192.168.33.17 postgresql_replication_slots=['standby1']
 
 [pg_standby]
 192.168.33.17
