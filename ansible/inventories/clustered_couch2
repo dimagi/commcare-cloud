@@ -4,6 +4,10 @@
 [postgresql]
 192.168.33.21 hot_standby_server='192.168.33.22'
 
+[postgresql:vars]
+hot_standby_server='192.168.33.22'
+postgresql_replication_slots=['standby1']
+
 [couchdb]
 192.168.33.21
 
@@ -55,4 +59,4 @@
 192.168.33.21
 
 [pg_standby]
-192.168.33.22 hot_standby_master='192.168.33.21'
+192.168.33.22 hot_standby_master='192.168.33.21' replication_slot='standby1'
