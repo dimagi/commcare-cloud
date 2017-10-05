@@ -9,9 +9,25 @@ hqdjango2.internal-va.commcarehq.org
 [webworkers:vars]
 newrelic_app_name=django
 
+[hqdb0]
+hqdb0.internal-va.commcarehq.org
+
+[hqdb0:vars]
+hot_standby_server=hqstandby0.internal-va.commcarehq.org
+postgresql_replication_slots=['hqstandby0','spare']
+datavol_device=/dev/xvdb datadog_integration_cloudant=true
+
+[hqdb1]
+hqdb0.internal-va.commcarehq.org
+
+[hqdb1:vars]
+#hot_standby_server=hqstandby1.internal-va.commcarehq.org
+postgresql_replication_slots=['hqstandby1','spare']
+datavol_device=/dev/xvdb
+
 [postgresql]
-hqdb0.internal-va.commcarehq.org hot_standby_server=hqstandby0.internal-va.commcarehq.org datavol_device=/dev/xvdb datadog_integration_cloudant=true
-hqdb1.internal-va.commcarehq.org datavol_device=/dev/xvdb
+hqdb0.internal-va.commcarehq.org
+hqdb1.internal-va.commcarehq.org
 
 [rabbitmq]
 hqtouch0.internal-va.commcarehq.org
@@ -89,8 +105,23 @@ hqriak27.internal-va.commcarehq.org
 datavol_device=/dev/xvdb
 swap_size=4G
 
+[hqstandby0]
+hqstandby0.internal-va.commcarehq.org
+
+[hqstandby0:vars]
+hot_standby_master=hqdb0.internal-va.commcarehq.org
+replication_slot=hqstandby0
+
+#[hqstandby1]
+#hqstandby0.internal-va.commcarehq.org
+#
+#[hqstandby1:vars]
+#hot_standby_master=hqdb1.internal-va.commcarehq.org
+#replication_slot=hqstandby1
+
 [pg_standby]
-hqstandby0.internal-va.commcarehq.org hot_standby_master=hqdb0.internal-va.commcarehq.org
+hqstandby0.internal-va.commcarehq.org
+#hqstandby1.internal-va.commcarehq.org
 
 [control]
 control.internal-va.commcarehq.org
