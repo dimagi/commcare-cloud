@@ -1,4 +1,4 @@
-- name: Generating RSA key for user on {{ hostFrom }}
+- name: Generating RSA key for user on {{ inventory_hostname }}
   become: true
   user:
     name: "{{ username }}"
@@ -9,7 +9,7 @@
   become: true
   register: user_home
 
-- name: Downloading pub key from {{ hostFrom }}
+- name: Downloading pub key from {{ inventory_hostname }}
   become: true
   fetch:
     src: "{{ user_home.stdout }}/.ssh/id_rsa.pub"

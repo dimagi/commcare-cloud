@@ -26,7 +26,6 @@
     - postgresql
   vars:
     - username: postgres
-    - hostFrom: "{{ inventory_hostname }}"
     - hostTo: "{{ hot_standby_server }}"
     - state: 'present'
   tasks:

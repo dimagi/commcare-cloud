@@ -13,7 +13,6 @@
   hosts:
     - "{{ hostA }}"
   vars:
-    - hostFrom: "{{ hostA }}"
     - hostTo: "{{ hostB }}"
     - state: "{{ 'present' if action == 'add' else 'absent' }}"
   tasks:
@@ -24,7 +23,6 @@
   hosts:
     - "{{ hostB }}"
   vars:
-    - hostFrom: "{{ hostB }}"
     - hostTo: "{{ hostA }}"
     - state: "{{ 'present' if action == 'add' else 'absent' }}"
   tasks:
