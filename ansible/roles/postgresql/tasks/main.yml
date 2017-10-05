@@ -65,7 +65,7 @@
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
 
 - name: Create wal archive directory
-  sudo: yes
+  become: true
   file:
     path: '{{ postgresql_archive_dir }}'
     owner: postgres
