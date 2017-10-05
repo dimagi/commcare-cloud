@@ -21,10 +21,6 @@ active_sites:
   riakcs: False
   couchdb2: False
 
-couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
-
 proxy_type: nginx
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
