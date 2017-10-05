@@ -13,13 +13,14 @@ sqlite.dataDir={{ formplayer_data_dir }}/
 // More info on the DSN can be found here: https://docs.sentry.io/quickstart/#configure-the-dsn
 sentry.dsn={{ formplayer_sentry_dsn }}
 
-couch.username={{ couch_dbs.default.username }}
-couch.password={{ couch_dbs.default.password }}
+couch.username={{ couch_dbs.users.username }}
+couch.password={{ couch_dbs.users.password }}
 // Note: line break after setting is necessary because jinja eats the newline
-couch.protocol={% if couch_dbs.default.is_https %}https{% else %}http{% endif %}
+couch.protocol={% if couch_dbs.users.is_https %}https{% else %}http{% endif %}
 
-couch.host={{ couch_dbs.default.host }}
-couch.port={{ couch_dbs.default.port }}
+couch.host={{ couch_dbs.users.host }}
+couch.port={{ couch_dbs.users.port }}
+// Formplayer appends `__users` to the db_name
 couch.databaseName={{ couch_dbs.default.name }}
 
 // Properties for HQ db

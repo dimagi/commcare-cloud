@@ -156,14 +156,19 @@ etc_hosts_lines_removed: []
 shared_drive_enabled: true
 
 
+default_couchdb:
+  host: commcarehq-india.cloudant.com
+  port: 443
+  name: commcarehq
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  is_https: True
+
 couch_dbs:
   default:
-    host: commcarehq-india.cloudant.com
-    port: 443
-    name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
+    "{{ default_couchdb }}"
+  users:
+    "{{ default_couchdb }}"
 
 localsettings:
   ALLOWED_HOSTS:
