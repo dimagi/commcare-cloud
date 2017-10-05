@@ -1,14 +1,7 @@
 ---
 # roles/pg_standby/tasks/main.yml
 
-- name: Create wal archive directory
-  become: yes
-  file:
-    path: '{{ archive_dir }}'
-    owner: postgres
-    group: postgres
-    mode: 0755
-    state: directory
+- include: setup_keys.yml
 
 - name: PostgreSQL recovery configuration
   template: src=recovery.conf.j2 dest="{{ postgresql_home }}/recovery.conf" owner="postgres" group="postgres"

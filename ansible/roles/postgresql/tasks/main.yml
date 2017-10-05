@@ -61,6 +61,18 @@
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
+- name: assert replication slot config correct
+  assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
+
+- name: Create wal archive directory
+  sudo: yes
+  file:
+    path: '{{ postgresql_archive_dir }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
   tags: postgresql_conf
@@ -81,31 +93,17 @@
   vars:
     ansible_ssh_pipelining: true
   postgresql_user:
-    name: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ localsettings.PG_DATABASE_PASSWORD }}"
-    role_attr_flags: CREATEDB
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    role_attr_flags: "{{ item.role_attr_flags|default('CREATEDB') }}"
     state: present
     port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
+  with_items: "{{ postgres_users.values() }}"
   tags:
     - postgres_users
 
-- name: Create PostgreSQL read-only user
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_user:
-    name: "{{ postgres_users.devreadonly.username }}"
-    password: "{{ postgres_users.devreadonly.password }}"
-    role_attr_flags: NOSUPERUSER,NOCREATEROLE,NOCREATEDB
-    state: present
-    port: "{{ postgresql_port }}"
-  when: not is_pg_standby|default(False)
-  tags:
-    - postgres_users
-
-- name: Add SELECT privs for read-only user
+- name: Add user privs
   become: yes
   become_user: postgres
   vars:
@@ -113,10 +111,15 @@
   postgresql_privs:
     db: postgres
     state: present
-    privs: SELECT
-    objs: ALL_IN_SCHEMA
-    roles: "{{ postgres_users.devreadonly.username }}"
+    privs: "{{ item.1.privs }}"
+    objs: "{{ item.1.objs }}"
+    roles: "{{ item.0.username }}"
   when: not is_pg_standby|default(False)
+  with_subelements:
+    - "{{ postgres_users.values() }}"
+    - privs
+    - flags:
+      skip_missing: True
   tags:
     - postgres_users
 
@@ -140,6 +143,18 @@
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
   when: item.create|default(True) and ((item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
+
+# restart / reload if necessary to make sure replication slot config updated
+- meta: flush_handlers
+
+- name: Create replication slots
+  pg_replication_slot: name={{ item }} state=present
+  become: yes
+  become_user: postgres
+  with_items: "{{ postgresql_replication_slots|default([]) }}"
+  when: not is_pg_standby|default(False)
+  tags:
+    - replication
 
 - name: Install pgbouncer
   apt: name=pgbouncer state=present

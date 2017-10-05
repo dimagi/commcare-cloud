@@ -36,21 +36,21 @@ vacuum_cost_delay = 20ms
 
 # WRITE AHEAD LOG
 
-{% if hot_standby_server|default(None) %}
 archive_mode = on
-archive_command = 'rsync -a %p postgres@{{ hot_standby_server }}:{{ archive_dir }}/%f'   # archive directory lives on first standby machine specified in the inventory file
+archive_command = 'test ! -f {{ postgresql_archive_dir }}/%f && cp %p {{ postgresql_archive_dir }}/%f'
 archive_timeout = 60
-{% endif %}
 
 wal_level = hot_standby
 max_wal_senders = 3
 checkpoint_segments = {{ postgresql_checkpoint_segments|default(16) }}
 checkpoint_warning = 120s
+wal_keep_segments = 8
 
 
 # REPLICATION
 
 hot_standby = on    # ignored on masters
+max_replication_slots = 8
 
 
 # QUERY TUNING
