@@ -32,6 +32,7 @@ devices='["/dev/sdb"]'
 partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='172.25.3.6'
+postgresql_replication_slots=['standby','spare']
 hostname='db0'
 
 [es0:vars]
@@ -84,6 +85,7 @@ devices='["/dev/sdb"]'
 partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='172.25.3.5'
+replication_slot='standby'
 hostname='pgstandby0'
 
 #[patch0]
