@@ -13,7 +13,7 @@
   delegate_to: "{{ hot_standby_master }}"
 
 - name: Add public key for postgres
-  sudo: yes
+  become: true
   authorized_key: user=postgres state=present key="{{ lookup('file', '/tmp/id_rsa.tmp') }}" exclusive=yes
 
 - name: Deleting temp files
