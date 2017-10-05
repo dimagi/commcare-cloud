@@ -20,7 +20,7 @@
   tags: after-reboot
 
 - name: copy newrelic ini file
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: newrelic.ini.j2
     dest: "{{ item }}/newrelic.ini"

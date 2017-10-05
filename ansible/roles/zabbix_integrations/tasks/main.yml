@@ -2,7 +2,7 @@
 # tasks file for zabbix_common
 
 - name: Make zabbix external scripts directory
-  sudo: yes
+  become: yes
   file:
     path: '{{ zabbix_external_scripts_dir }}'
     owner: zabbix
@@ -11,7 +11,7 @@
     state: directory
 
 - name: Make zabbix user param directory
-  sudo: yes
+  become: yes
   file:
     path: '{{ zabbix_user_parm_dir }}'
     owner: zabbix

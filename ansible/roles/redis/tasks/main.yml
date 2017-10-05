@@ -31,7 +31,7 @@
   tags: after-reboot
 
 - name: redis monit config
-  sudo: yes
+  become: yes
   template:
     src: "monit.redis.j2"
     dest: "/etc/monit/conf.d/redis"

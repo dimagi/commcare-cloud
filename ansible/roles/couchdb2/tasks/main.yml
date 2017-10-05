@@ -35,7 +35,7 @@
    - _global_changes
 
 - name: Copy couch restart script
-  sudo: yes
+  become: yes
   file:
     dest: "/usr/local/sbin/couch2-restarter.sh"
     state: absent
@@ -43,7 +43,7 @@
     - cron
 
 - name: Create Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Reboot Couch"
     job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
@@ -54,7 +54,7 @@
     - cron
 
 - name: Copy couch backup script
-  sudo: yes
+  become: yes
   template:
     src: "create_couchdb_backup.sh.j2"
     dest: "/usr/local/sbin/create_couchdb_backup.sh"
@@ -68,7 +68,7 @@
     - backup
 
 - name: Create Daily Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup blobdb daily"
     job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
@@ -82,7 +82,7 @@
     - cron
 
 - name: Create Weekly Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup blobdb weekly"
     job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
@@ -101,7 +101,7 @@
   tags: after-reboot
 
 - name: couchdb2 monit config
-  sudo: yes
+  become: yes
   template:
     src: "monit.couchdb2.j2"
     dest: "/etc/monit/conf.d/couchdb2"
