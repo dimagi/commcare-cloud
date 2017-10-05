@@ -1,0 +1,20 @@
+- name: Generating RSA key for postgres user
+  user:
+    name: postgres
+    generate_ssh_key: yes
+  delegate_to: "{{ hot_standby_master }}"
+
+- name: Downloading pub key
+  fetch:
+    src: /var/lib/postgresql/.ssh/id_rsa.pub
+    dest: /tmp/id_rsa.tmp
+    flat: yes
+    fail_on_missing: yes
+  delegate_to: "{{ hot_standby_master }}"
+
+- name: Add public key for postgres
+  sudo: yes
+  authorized_key: user=postgres state=present key="{{ lookup('file', '/tmp/id_rsa.tmp') }}" exclusive=yes
+
+- name: Deleting temp files
+  local_action: file  path=/tmp/id_rsa.tmp state=absent
