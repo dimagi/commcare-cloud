@@ -21,6 +21,19 @@
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
+- name: Setup auth for standby
+  hosts:
+    - postgresql
+  vars:
+    - username: postgres
+    - hostFrom: "{{ inventory_hostname }}"
+    - hostTo: "{{ hot_standby_server }}"
+    - state: 'present'
+  tasks:
+    - include: roles/setup_auth_keys.yml
+  tags:
+    - pg_standby
+
 - name: Posgres Standby
   hosts: pg_standby
   become: true

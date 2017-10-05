@@ -1,0 +1,31 @@
+---
+# Setups up passwordless auth between to machines for the given username
+# Usage:
+#   ansible-playbook ./setup_bidirectional_auth.yml \
+#       -i /path/to/inventory \
+#       -e username=username \
+#       -e action=[add|remove] \
+#       -e hostA=first_host
+#       -e hostB=second_host
+#
+- name: Setup auth from {{ hostA }} to {{ hostB }}
+  gather_facts: True
+  hosts:
+    - "{{ hostA }}"
+  vars:
+    - hostFrom: "{{ hostA }}"
+    - hostTo: "{{ hostB }}"
+    - state: "{{ 'present' if action == 'add' else 'absent' }}"
+  tasks:
+    - include: roles/setup_auth_keys.yml
+
+- name: Setup auth from {{ hostB }} to {{ hostA }}
+  gather_facts: True
+  hosts:
+    - "{{ hostB }}"
+  vars:
+    - hostFrom: "{{ hostB }}"
+    - hostTo: "{{ hostA }}"
+    - state: "{{ 'present' if action == 'add' else 'absent' }}"
+  tasks:
+    - include: roles/setup_auth_keys.yml
