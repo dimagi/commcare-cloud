@@ -14,10 +14,25 @@
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"
     force_basic_auth: true
-    status_code: 200, 409 # 409 means already set up (conflict)
+    status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
+
+- name: Create system databases
+  uri:
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/{{ item }}"
+    method: PUT
+    user: "{{ couchdb2.username }}"
+    password: "{{ couchdb2.password }}"
+    force_basic_auth: true
+    status_code: 201, 412 # 412 means already set up (conflict)
+    body: '{}'
+  when: inventory_hostname == groups.couchdb2.0
+  with_items:
+   - _users
+   - _replicator
+   - _global_changes
 
 - name: Copy couch restart script
   sudo: yes
@@ -95,6 +110,8 @@
     mode: 0640
   notify: reload monit
   tags: monit
+
+- meta: flush_handlers
 
 - monit:
     name: couchdb2

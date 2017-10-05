@@ -8,9 +8,6 @@
 hot_standby_server='192.168.33.22'
 postgresql_replication_slots=['standby1']
 
-[couchdb]
-192.168.33.21
-
 [couchdb2]
 192.168.33.21
 192.168.33.22
