@@ -9,7 +9,7 @@ tableau_server: 10.247.24.11:80
 TABLEAU_HOST: 'reports.icds-cas.gov.in'
 
 nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/icds-cas.gov.in.combined.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
 
 cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
 cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
@@ -71,7 +71,6 @@ nadir_hour: 16
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgresql_work_mem: '16MB'
 postgresql_shared_buffers: '8GB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '16GB'
@@ -253,8 +252,8 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: 10.247.24.18
-    port: 25984
+    host: "{{ groups.couchdb2[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -267,6 +266,9 @@ localsettings:
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
   ASYNC_INDICATORS_TO_QUEUE: 30000
+  ASYNC_INDICATOR_QUEUE_CRONTAB:
+    minute: '*/5'
+    hour: '0-7,18-23'
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
@@ -293,6 +295,9 @@ localsettings:
   COUCH_STALE_QUERY: 'update_after'
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
+  DATADOG_TRACE:
+    TAGS:
+      env: icds
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
@@ -331,6 +336,8 @@ localsettings:
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+  LOCAL_APPS:
+    - 'ddtrace.contrib.django'
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'
@@ -380,9 +387,6 @@ localsettings:
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
-  OFF_PEAK_TIME:
-    - 12
-    - 3
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
@@ -397,11 +401,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   REPORTING_DATABASES:
     ucr: ucr
-    icds-ucr:
-      WRITE: icds-ucr
-      READ:
-        - [icds-ucr, 9]
-        - [icds-ucr-standby, 1]
+    icds-ucr: icds-ucr
     icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"

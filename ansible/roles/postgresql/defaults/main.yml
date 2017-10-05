@@ -11,7 +11,7 @@ pgbouncer_config_home: /etc/pgbouncer
 pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
 pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
-archive_dir: "{{ postgresql_dir_path }}/wal_archive"
+postgresql_archive_dir: "{{ postgresql_dir_path }}/wal_archive"
 
 postgresql_max_connections: 20
 postgresql_work_mem: '1MB'

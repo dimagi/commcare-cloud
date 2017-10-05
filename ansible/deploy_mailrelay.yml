@@ -1,6 +1,6 @@
 - name: "Install postfix"
   hosts: all
-  sudo: yes
+  become: true
   tasks:
     - debconf: name=postfix question="postfix/main_mailer_type" value="Internet Site" vtype="string"
     - apt: name=postfix state=present force=yes
@@ -9,7 +9,7 @@
 
 - name: "mail relay deploy"
   hosts: mailrelay
-  sudo: yes
+  become: true
   tasks:
     - name: "sets our relayhost"
       lineinfile:
@@ -28,7 +28,7 @@
 
 - name: "mail relay clients deploy"
   hosts: all:!mailrelay
-  sudo: yes
+  become: true
   tasks:
     - name: "sets external relayhost"
       lineinfile:
@@ -41,7 +41,7 @@
 
 - name: "reload postfix"
   hosts: all
-  sudo: yes
+  become: true
   tasks:
     - service: name=postfix state=restarted enabled=yes
   tags:

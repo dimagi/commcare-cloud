@@ -10,32 +10,32 @@
     - zookeeper
     - riakcs
     - formplayer
-  sudo: yes
+  become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
 - name: Postgresql
   hosts: postgresql
-  sudo: yes
+  become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
 - name: Posgres Standby
   hosts: pg_standby
-  sudo: yes
+  become: true
   roles:
     - {role: pg_standby, tags: 'pg_standby'}
 
 - name: Couchdb
   hosts: couchdb
-  sudo: yes
+  become: true
   roles:
     - {role: couchdb, tags: 'couchdb'}
 
 - name: Couchdb log rolling configurations
   hosts: couchdb
-  sudo: yes
+  become: true
   roles:
     - role: ansible-logrotate
       tags: couchdb
@@ -55,13 +55,13 @@
 
 - name: Couchdb 2.0
   hosts: couchdb2
-  sudo: yes
+  become: true
   roles:
     - {role: couchdb2, tags: 'couchdb2'}
 
 - name: Couchdb2 log rolling configurations
   hosts: couchdb2
-  sudo: yes
+  become: true
   roles:
     - role: ansible-logrotate
       tags: couchdb2
@@ -81,37 +81,37 @@
 
 - name: Redis
   hosts: redis
-  sudo: yes
+  become: true
   roles:
     - {role: redis, tags: 'redis'}
 
 - name: Elasticsearch
   hosts: elasticsearch
-  sudo: yes
+  become: true
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
 
 - name: Redis Monitoring
   hosts: redis
-  sudo: yes
+  become: true
   roles:
     - redis_monitoring
 
 - name: RabbitMQ
   hosts: rabbitmq
-  sudo: yes
+  become: true
   roles:
     - {role: rabbitmq, tags: 'rabbitmq'}
 
 - name: Zookeeper
   hosts: zookeeper
-  sudo: yes
+  become: true
   roles:
     - {role: zookeeper, tags: 'zookeeper'}
 
 - name: Kafka
   hosts: kafka
-  sudo: yes
+  become: true
   environment:
     JMX_PORT: 9999
   roles:
@@ -122,7 +122,7 @@
 
 # Note other machines also have java installed, but are initiated through the meta task
 - name: Java
-  sudo: True
+  become: true
   hosts:
     - celery
   roles:
@@ -166,3 +166,11 @@
         backrefs: yes
         state: present
       when: uses_grub.stat.exists
+
+- name: Move logrotate to hourly
+  hosts:
+    - proxy
+    - couchdb2_proxy
+  become: true
+  roles:
+    - role: logrotate

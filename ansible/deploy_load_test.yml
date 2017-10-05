@@ -4,7 +4,7 @@
     - load_test_runner
   vars_files:
     - roles/postgresql/defaults/main.yml
-  sudo: yes
+  become: true
   tasks:
     - include: roles/load_test/tasks/install_runner.yml
   roles:
@@ -15,7 +15,7 @@
     - load_test_host
   vars_files:
     - roles/postgresql/defaults/main.yml
-  sudo: yes
+  become: true
   tasks:
     - include: roles/load_test/tasks/install_host.yml
   roles:

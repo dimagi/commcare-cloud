@@ -16,14 +16,14 @@ active_sites:
   commtrack_http: False
   hq_status: False
   tableau: False
-  icds_tableau: True
+  icds_tableau: False
   wiki: False
   wiki_http: False
   motech: False
   motech2: False
   riakcs: True
-  cas_ssl: True
-  enikshay_ssl: True
+  cas_ssl: False
+  enikshay_ssl: False
   couchdb2: False
 
 riak_ring_size: 64
@@ -51,9 +51,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
@@ -191,7 +189,6 @@ localsettings:
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
-  ENIKSHAY_QUEUE: 'enikshay_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
@@ -281,5 +278,3 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
   ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True

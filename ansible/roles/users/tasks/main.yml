@@ -19,6 +19,15 @@
   user: name="{{ item }}" state=absent
   with_items: '{{ dev_users.absent }}'
 
+- name: Add MSP user sudo user
+  user: name=msp state=present shell=/bin/bash groups="sudo" password="{{ msp_user_password_sha_512 }}"
+  when: msp_user|default(false)
+
+- name: Add public key for MSP
+  sudo: yes
+  authorized_key: user=msp state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/msp.pub') }}"
+  when: msp_user|default(false)
+
 - name: Add ansible user
   user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_user_password_sha_512 }}"
 
@@ -49,8 +58,7 @@
   shell: 'dirname "$(which supervisorctl)"'
   register: dirname_which_supervisorctl
   changed_when: false
-  # run in check mode
-  always_run: yes
+  check_mode: no
 
 
 - name: Copy sudoers file
