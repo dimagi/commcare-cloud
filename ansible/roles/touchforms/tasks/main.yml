@@ -13,7 +13,7 @@
     superuser: yes
 
 - name: Copy Jython localsettings.py
-  sudo: yes
+  become: yes
   template:
     src: localsettings.py.j2
     dest: "{{ code_home }}/submodules/touchforms-src/touchforms/backend/localsettings.py"
@@ -25,7 +25,7 @@
     - localsettings
 
 - name: create touchforms data directory
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -36,7 +36,7 @@
     - "{{ touchforms_data_dir }}"
 
 - name: Create session purging cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Purge old touchforms sessions"
     special_time: daily
@@ -46,7 +46,7 @@
 
 - name: Install touchforms packages
   apt: name="{{ item }}" state=present
-  sudo: yes
+  become: yes
   with_items:
     - sqlite3
     - libsqlite3-dev

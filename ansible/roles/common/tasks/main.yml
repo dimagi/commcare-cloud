@@ -5,7 +5,7 @@
     - upgrade_openssl
 
 - name: Hard file limits
-  sudo: yes
+  become: yes
   pam_limits:
     domain: "{{ item }}"
     limit_type: hard
@@ -18,7 +18,7 @@
     - 'root'
 
 - name: Soft file limits
-  sudo: yes
+  become: yes
   pam_limits:
     domain: "{{ item }}"
     limit_type: soft

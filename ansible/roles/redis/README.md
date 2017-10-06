@@ -46,14 +46,14 @@ Examples
 The following example sets up a master Redis server.
 
 	- hosts: all
-	  sudo: true
+	  become: true
 	  roles:
 	  - {role: redis, redis_port: 11244}
 
 The following example sets up a slave Redis server.
 
 	- hosts: all
-	  sudo: true
+	  become: true
 	  roles:
 	  - {role: redis,
 	     redis_role: 'slave',

@@ -5,9 +5,6 @@ secrets:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
   AMQP_PASSWORD: '******'
-  pg_user_passwords:
-    default: commcarehq
-    devreadonly: devreadonly
   SUPERVISOR_HTTP_USERNAME: user
   SUPERVISOR_HTTP_PASSWORD: 123
 

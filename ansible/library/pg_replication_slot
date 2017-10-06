@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright 2014 William H. St. Clair
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# https://github.com/wsc/ec2_postgres_cluster/blob/5a3ada7e8d808b2f0d3cc546af9657007ed7d6de/ansible/library/pg_replication_slot
+
+import psycopg2
+import psycopg2.extras
+import psycopg2.errorcodes
+
+
+def slot_exists(cursor, slot):
+    query = "SELECT * FROM pg_catalog.pg_replication_slots WHERE slot_name = %(slot)s"
+    cursor.execute(query, {'slot': slot})
+    return cursor.rowcount == 1
+
+
+def create_slot(cursor, slot):
+    query = "SELECT * FROM pg_create_physical_replication_slot(%(slot)s)"
+    try:
+        cursor.execute(query, {'slot': slot})
+    except psycopg2.ProgrammingError as e:
+        if e.pgcode == psycopg2.errorcodes.DUPLICATE_OBJECT:
+            return False
+        raise e
+
+    return True
+
+
+def drop_slot(cursor, slot):
+    query = "SELECT * FROM pg_drop_replication_slot(%(slot)s)"
+    try:
+        cursor.execute(query, {'slot': slot})
+    except psycopg2.ProgrammingError as e:
+        if e.pgcode == psycopg2.errorcodes.UNDEFINED_OBJECT:
+            return False
+        raise e
+    return True
+
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            login_user=dict(default="postgres"),
+            login_password=dict(default=""),
+            login_host=dict(default=""),
+            name=dict(),
+            state=dict(default='present', choices=['absent', 'present'])
+        ),
+        supports_check_mode=True
+    )
+
+
+    slot = module.params['name']
+    state = module.params['state']
+    changed = False
+
+    # To use defaults values, keyword arguments must be absent, so
+    # check which values are empty and don't include in the **kw
+    # dictionary
+    params_map = {
+        "login_host":"host",
+        "login_user":"user",
+        "login_password":"password",
+        "port":"port"
+    }
+    kw = dict( (params_map[k], v) for (k, v) in module.params.iteritems()
+              if k in params_map and v != '' )
+
+    try:
+        db_connection = psycopg2.connect(database="template1", **kw)
+        # Enable autocommit so we can create databases
+        if psycopg2.__version__ >= '2.4.2':
+            db_connection.autocommit = True
+        else:
+            db_connection.set_isolation_level(psycopg2
+                                              .extensions
+                                              .ISOLATION_LEVEL_AUTOCOMMIT)
+        cursor = db_connection.cursor(
+                cursor_factory=psycopg2.extras.DictCursor)
+    except psycopg2.Error as e:
+        module.fail_json(msg="Error %s: %s" % (e.pgcode, e.pgerror))
+
+    try:
+        if module.check_mode:
+            if state == "absent":
+                changed = slot_exists(cursor, slot)
+            elif state == "present":
+                changed = not slot_exists(cursor, slot)
+        else:
+            if state == "absent":
+                changed = drop_slot(cursor, slot)
+            elif state == "present":
+                changed = create_slot(cursor, slot)
+
+    except psycopg2.Error as e:
+        module.fail_json(msg="Error %s: %s" % (e.pgcode, e.pgerror))
+
+    module.exit_json(changed=changed, slot=slot)
+
+# import module snippets
+from ansible.module_utils.basic import *
+main()

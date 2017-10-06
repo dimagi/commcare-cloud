@@ -3,13 +3,13 @@
 # - /home/cchq/www/dev/code_root/.git: Permission denied
 # Uncomment these lines
 #- name: delete staticfiles
-#  sudo: yes
+#  become: yes
 #  file:
 #    path: "{{ code_home }}"
 #    state: absent
 
 - name: create required directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"

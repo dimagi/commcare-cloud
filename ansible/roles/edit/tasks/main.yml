@@ -1,14 +1,14 @@
 ---
 - name: Install Vim
-  sudo: yes
+  become: yes
   apt: name=vim state=present
 
 - name: Install Emacs
-  sudo: yes
+  become: yes
   apt: name=emacs23 state=present
 
 - name: Include vimrc
-  sudo: yes
+  become: yes
   copy:
     src: vimrc
     dest: /etc/vimrc

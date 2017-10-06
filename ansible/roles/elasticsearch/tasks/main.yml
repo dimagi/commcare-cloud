@@ -8,21 +8,21 @@
   user: name=elasticsearch state=present
 
 - name: Download Elasticsearch
-  sudo: yes
+  become: yes
   get_url:
     url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     sha256sum: "{{ elasticsearch_download_sha256 }}"
 
 - name: Unarchive Elasticsearch
-  sudo: yes
+  become: yes
   unarchive:
     src: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: /opt/
     copy: no
 
 - name: Chown Elasticsearch
-  sudo: yes
+  become: yes
   file:
     state: directory
     owner: elasticsearch
@@ -31,11 +31,11 @@
     path: "{{ elasticsearch_home }}"
 
 - name: Create /etc/elasticsearch
-  sudo: yes
+  become: yes
   file: path="{{ elasticsearch_conf_dir }}" state=directory
 
 - name: Copy Elasticsearch Config
-  sudo: yes
+  become: yes
   template:
     src: config/elasticsearch.yml.j2
     dest: "{{ elasticsearch_conf_dir }}/elasticsearch.yml"
@@ -44,7 +44,7 @@
     - es_conf
 
 - name: Copy Elasticsearch logging config
-  sudo: yes
+  become: yes
   template:
     src: config/logging.yml.j2
     dest: "{{ elasticsearch_conf_dir }}/logging.yml"
@@ -53,7 +53,7 @@
     - es_conf
 
 - name: Copy Elasticsearch Upstart Conf
-  sudo: yes
+  become: yes
   template:
     src: upstart/elasticsearch.conf.j2
     dest: "/etc/init/elasticsearch.conf"
@@ -65,7 +65,7 @@
   when: copy_elasticsearch_conf_result.changed
 
 - name: Create Elasticsearch data directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     state: directory
@@ -78,7 +78,7 @@
     - "{{ elasticsearch_data_dir }}/logs"
 
 - name: Install elasticsearch python client
-  sudo: yes
+  become: yes
   pip: 
     name: elasticsearch
     version: 1.9.0
@@ -88,23 +88,23 @@
   register: installed_plugins
 
 - name: Install elasticsearch aws plugin
-  sudo: yes
+  become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
   when: backup_es and "'cloud-aws' not in installed_plugins.stdout"
 
 - name: Reload upstart
-  sudo: yes
+  become: yes
   shell: initctl reload-configuration
 
 - name: Start Elasticsearch
-  sudo: yes
+  become: yes
   service: name=elasticsearch state=started
   register: result
   failed_when: result.state != "started"
   tags: after-reboot
 
 - name: Restart Elasticsearch
-  sudo: yes
+  become: yes
   service: name=elasticsearch state=restarted
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
   tags:
@@ -124,7 +124,7 @@
   tags: cron
 
 - name: Copy es backup script
-  sudo: yes
+  become: yes
   template:
     src: "create_es_snapshot.py.j2"
     dest: "/usr/local/sbin/create_es_snapshot.py"
@@ -136,7 +136,7 @@
   tags: cron
 
 - name: Create es backup cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Daily ES Snapshot"
     job: "/usr/local/sbin/create_es_snapshot.py"

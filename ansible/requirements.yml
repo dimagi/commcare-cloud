@@ -1,7 +1,7 @@
 ---
 - src: git+https://github.com/andrewrothstein/ansible-couchdb-cluster.git
-  version: b7253a9f980a0a9a86f68881047775dff8aa554d
-  name: emord.ansible-couchdb-cluster
+  version: a2801a4654e2d1305f0e652b370ee4573ba3456d
+  name: andrewrothstein.ansible-couchdb-cluster
 - src: git+https://github.com/andrewrothstein/ansible-couchdb.git
   version: 91d3d046b13f76d07cc1416f01c2db7c878ecd1b
   name: andrewrothstein.couchdb
