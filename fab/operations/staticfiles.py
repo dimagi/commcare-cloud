@@ -73,7 +73,7 @@ def collectstatic(use_current_release=False):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
-        sudo('{}/bin/python manage.py build_requirejs'.format(venv))
+        sudo('rm -f tmp.sh resource_versions.py; {}/bin/python manage.py build_requirejs'.format(venv))
 
 
 @parallel
