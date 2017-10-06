@@ -91,6 +91,11 @@ datavol_device=/dev/xvdb
 swap_size=4G
 
 [lvm]
+hqriak20.internal-va.commcarehq.org
+hqriak21.internal-va.commcarehq.org
+hqriak22.internal-va.commcarehq.org
+hqriak23.internal-va.commcarehq.org
+hqriak24.internal-va.commcarehq.org
 hqriak28.internal-va.commcarehq.org
 
 [lvm:vars]
