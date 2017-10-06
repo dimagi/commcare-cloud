@@ -676,7 +676,6 @@ def clean_offline_releases():
 def force_update_static():
     _require_target()
     execute(staticfiles.collectstatic, use_current_release=True)
-    execute(staticfiles.build_requirejs, use_current_release=True)
     execute(staticfiles.compress, use_current_release=True)
     execute(staticfiles.update_manifest, use_current_release=True)
     silent_services_restart(use_current_release=True)
@@ -874,7 +873,6 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.bower_install,
     staticfiles.npm_install,
     staticfiles.collectstatic,
-    staticfiles.build_requirejs,
     staticfiles.compress,
     staticfiles.update_translations,
     supervisor.set_supervisor_config,
@@ -895,7 +893,6 @@ OFFLINE_DEPLOY_COMMANDS = [
     db.ensure_checkpoints_safe,
     staticfiles.version_static,
     staticfiles.collectstatic,
-    staticfiles.build_requirejs,
     staticfiles.compress,
     staticfiles.update_translations,
     supervisor.set_supervisor_config,
