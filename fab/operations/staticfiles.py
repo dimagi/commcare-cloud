@@ -73,6 +73,16 @@ def collectstatic(use_current_release=False):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
+
+@parallel
+@roles(set(ROLES_STATIC + ROLES_DJANGO))
+def build_requirejs(use_current_release=False):
+    """
+    Minify and concatenate JavaScript files for use with RequireJS
+    Must run on web worker for same reasons as version_static.
+    """
+    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
+    with cd(env.code_root if not use_current_release else env.code_current):
         sudo('rm -f tmp.sh resource_versions.py; {}/bin/python manage.py build_requirejs'.format(venv))
 
 
