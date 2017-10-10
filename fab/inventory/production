@@ -97,13 +97,24 @@ hqriak21.internal-va.commcarehq.org
 hqriak22.internal-va.commcarehq.org
 hqriak23.internal-va.commcarehq.org
 hqriak24.internal-va.commcarehq.org
-hqriak25.internal-va.commcarehq.org
-hqriak26.internal-va.commcarehq.org
-hqriak27.internal-va.commcarehq.org
+hqriak28.internal-va.commcarehq.org
 
 [riakcs_new:vars]
-datavol_device=/dev/xvdb
+datavol_device=/dev/mapper/consolidated-data
 swap_size=4G
+
+[lvm]
+hqriak20.internal-va.commcarehq.org
+hqriak21.internal-va.commcarehq.org
+hqriak22.internal-va.commcarehq.org
+hqriak23.internal-va.commcarehq.org
+hqriak24.internal-va.commcarehq.org
+hqriak28.internal-va.commcarehq.org
+
+[lvm:vars]
+devices=["/dev/xvdc"]
+partitions=["/dev/xvdc1"]
+datavol_device=/dev/mapper/consolidated-data
 
 [hqstandby0]
 hqstandby0.internal-va.commcarehq.org
