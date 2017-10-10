@@ -1,7 +1,7 @@
 import datetime
 import time
 
-from fabric.context_managers import cd, settings
+from fabric.context_managers import cd, settings, hide
 from fabric.api import roles, sudo, env, parallel
 from fabric.decorators import runs_once
 
@@ -66,7 +66,7 @@ def ensure_checkpoints_safe():
 
 @roles(ROLES_DEPLOY)
 def _is_preindex_complete():
-    with settings(warn_only=True):
+    with settings(warn_only=True), hide('warnings'):
         return sudo(
             ('{virtualenv_root}/bin/python '
             '{code_root}/manage.py preindex_everything '
