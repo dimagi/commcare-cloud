@@ -1,0 +1,5 @@
+sentry.dsn={{ formplayer_sentry_dsn }}
+{% if http_proxy_address is defined %}
+http.proxy.host={{ http_proxy_address }}
+http.proxy.port={{ http_proxy_port }}
+{% endif %}
