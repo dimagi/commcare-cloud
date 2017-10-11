@@ -41,6 +41,8 @@
   notify: reload monit
   tags: monit
 
+- meta: flush_handlers
+
 - monit:
     name: redis
     state: monitored
