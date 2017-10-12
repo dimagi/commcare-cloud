@@ -40,17 +40,14 @@
     - "{{ formplayer_build_dir }}"
     - "{{ formplayer_data_dir }}"
 
-- name: Copy Spring properties
+- name: Copy Spring application.properties
   become: yes
   template:
-    src: "{{ item.src }}"
-    dest: "{{ formplayer_build_dir }}/{{ item.dest }}"
+    src: application.properties.j2
+    dest: "{{ formplayer_build_dir }}/application.properties"
     group: cchq
     owner: cchq
     mode: 0644
   tags:
     - fp-localsettings
     - localsettings
-  with_items:
-    - {'src': 'application.properties.j2', 'dest': 'application.properties'}
-    - {'src': 'sentry.properties.j2', 'dest': 'sentry.properties'}
