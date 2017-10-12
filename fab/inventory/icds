@@ -101,7 +101,7 @@ datavol_device='/dev/mapper/consolidated-data'
 postgresql_max_connections=800
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=790
-hot_standby_master='10.247.24.17'
+hot_standby_master='10.247.24.14'
 replication_slot='standby'
 hostname='es1'
 
