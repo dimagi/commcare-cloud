@@ -16,6 +16,7 @@
     dest: /tmp/id_rsa.tmp
     flat: yes
     fail_on_missing: yes
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "{{ 'Add' if state == 'present' else 'Remove' }} public key on {{ hostTo }}"
   become: true
@@ -25,6 +26,7 @@
     key: "{{ lookup('file', '/tmp/id_rsa.tmp') }}"
     exclusive: yes
   delegate_to: "{{ hostTo }}"
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Deleting temp files
   local_action: file  path=/tmp/id_rsa.tmp state=absent
