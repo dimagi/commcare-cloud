@@ -44,7 +44,7 @@
   become: yes
   template:
     src: "{{ item.src }}"
-    dest: "{{ formplayer_build_dir }}/{{ item.dest}} "
+    dest: "{{ formplayer_build_dir }}/{{ item.dest }}"
     group: cchq
     owner: cchq
     mode: 0644
