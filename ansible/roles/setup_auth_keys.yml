@@ -8,6 +8,7 @@
 - shell: "getent passwd {{ username }} | cut -d: -f6"
   become: true
   register: user_home
+  check_mode: no
 
 - name: Downloading pub key from {{ inventory_hostname }}
   become: true
