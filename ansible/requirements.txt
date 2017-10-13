@@ -4,4 +4,4 @@ git+git://github.com/dimagi/ansible@2.4.0+#egg=ansible
 netaddr
 dnspython
 passlib
-cryptography==1.4
+cryptography==2.1.1
