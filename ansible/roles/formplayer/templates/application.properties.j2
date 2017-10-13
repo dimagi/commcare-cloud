@@ -11,10 +11,10 @@ logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
 sqlite.dataDir={{ formplayer_data_dir }}/
 // Takes the format of https://<key>@sentry.io/<project>
 // More info on the DSN can be found here: https://docs.sentry.io/quickstart/#configure-the-dsn
-sentry.dsn={{ formplayer_sentry_dsn }}
 {% if http_proxy_address is defined %}
-http.proxy.host={{ http_proxy_address }}
-http.proxy.port={{ http_proxy_port }}
+sentry.dsn={{ formplayer_sentry_dsn }}?http.proxy.host={{ http_proxy_address }}&http.proxy.port={{ http_proxy_port }}
+{% else %}
+sentry.dsn={{ formplayer_sentry_dsn }}
 {% endif %}
 
 couch.username={{ couch_dbs.default.username }}
