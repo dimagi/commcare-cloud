@@ -1,5 +1,26 @@
 ---
 
+- name: Get running processes
+  shell: "ps aux | grep -v grep | grep -Ew \"{{ dev_users.absent|join('|') }}\" | awk '{print $2}'"
+  register: running_processes
+
+- name: Kill running processes
+  become: yes
+  shell: "kill {{ item }}"
+  with_items: "{{ running_processes.stdout_lines|default([]) }}"
+
+- wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ running_processes.stdout_lines|default([]) }}"
+  ignore_errors: yes
+  register: killed_processes
+
+- name: Force kill stuck processes
+  become: yes
+  shell: "kill -9 {{ item }}"
+  with_items: "{{ killed_processes.results|default([]) | select('failed') | map(attribute='item') | list }}"
+
 - name: Remove users of former devs
   become: yes
   user: name="{{ item }}" state=absent
