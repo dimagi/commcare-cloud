@@ -12,6 +12,7 @@
 - wait_for:
     path: "/proc/{{ item }}/status"
     state: absent
+    timeout: 15
   with_items: "{{ running_processes.stdout_lines|default([]) }}"
   ignore_errors: yes
   register: killed_processes
