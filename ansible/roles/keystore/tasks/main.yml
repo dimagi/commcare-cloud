@@ -7,3 +7,4 @@
     owner: cchq
     mode: 0644
     backup: yes
+  when: keystore_file is defined
