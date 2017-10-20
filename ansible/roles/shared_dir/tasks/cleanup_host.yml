@@ -1,5 +1,5 @@
 - name: Remove shared dir from exports
-  sudo: yes
+  become: yes
   lineinfile:
     dest: /etc/exports
     regexp: "^{{ old_shared_data_dir }} {{ item }}"
@@ -14,13 +14,13 @@
     - nfs-cleanup
 
 - name: Export directories
-  sudo: yes
+  become: yes
   command: "exportfs -r"
   tags:
     - nfs-cleanup
 
 - name: Remove old shared dir
-  sudo: yes
+  become: yes
   file:
     path: "{{ old_shared_data_dir }}"
     state: absent

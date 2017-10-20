@@ -16,15 +16,19 @@ active_sites:
   commtrack_http: False
   hq_status: False
   tableau: False
-  icds_tableau: True
+  icds_tableau: False
   wiki: False
   wiki_http: False
   motech: False
   motech2: False
   riakcs: True
-  cas_ssl: True
-  enikshay_ssl: True
-  couchdb2: False
+  cas_ssl: False
+  enikshay_ssl: False
+  couchdb2: True
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 riak_ring_size: 64
 
@@ -51,9 +55,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
@@ -160,12 +162,20 @@ shared_drive_enabled: true
 
 couch_dbs:
   default:
-    host: commcarehq-india.cloudant.com
-    port: 443
+    host: "{{ groups.couchdb2[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
+    is_https: False
+
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
 
 localsettings:
   ALLOWED_HOSTS:
@@ -280,5 +290,3 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
   ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True

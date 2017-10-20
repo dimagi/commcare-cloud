@@ -22,6 +22,18 @@
     - {role: postgresql, tags: 'postgresql'}
     - {role: pgbackrest, tags: ['postgresql', 'pgbackrest'], when: backup_postgres or postgres_s3}
 
+- name: Setup auth for standby
+  hosts:
+    - postgresql
+  vars:
+    - username: postgres
+    - hostTo: "{{ hot_standby_server }}"
+    - state: 'present'
+  tasks:
+    - include: roles/setup_auth_keys.yml
+  tags:
+    - pg_standby
+
 - name: Posgres Standby
   hosts: pg_standby
   become: true
@@ -168,3 +180,11 @@
         backrefs: yes
         state: present
       when: uses_grub.stat.exists
+
+- name: Move logrotate to hourly
+  hosts:
+    - proxy
+    - couchdb2_proxy
+  become: true
+  roles:
+    - role: logrotate

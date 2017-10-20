@@ -40,9 +40,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
 # Source paths of certs
-apache2_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
@@ -175,8 +173,6 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True
   FORMPLAYER_URL: "/formplayer"
   FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"

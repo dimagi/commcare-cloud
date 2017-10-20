@@ -33,6 +33,7 @@ dev_users:
     - frener
     - gcapalbo
     - jemord
+    - jhoffman
     - jschweers
     - jwilson
     - mkangia
@@ -111,7 +112,6 @@ old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
 
-datadog_integration_celery: false
 datadog_integration_cloudant: false
 datadog_integration_couch: false
 datadog_integration_elastic: false
@@ -127,7 +127,6 @@ datadog_integration_riak: false
 datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
-datadog_integration_process: true
 datadog_integration_vmware: false
 
 root_email: commcarehq-ops+root@dimagi.com

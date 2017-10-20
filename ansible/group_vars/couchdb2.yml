@@ -1,2 +1,1 @@
 couchdb_dir: "/usr/local/couchdb2/couchdb"
-datadog_integration_couch: true

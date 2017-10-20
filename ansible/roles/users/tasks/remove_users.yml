@@ -1,0 +1,42 @@
+---
+
+- name: Get running processes
+  shell: "ps aux | grep -v grep | grep -Ew \"{{ dev_users.absent|join('|') }}\" | awk '{print $2}'"
+  register: running_processes
+
+- name: Kill running processes
+  become: yes
+  shell: "kill {{ item }}"
+  with_items: "{{ running_processes.stdout_lines|default([]) }}"
+
+- wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+    timeout: 15
+  with_items: "{{ running_processes.stdout_lines|default([]) }}"
+  ignore_errors: yes
+  register: killed_processes
+
+- name: Force kill stuck processes
+  become: yes
+  shell: "kill -9 {{ item }}"
+  with_items: "{{ killed_processes.results|default([]) | select('failed') | map(attribute='item') | list }}"
+
+- name: Remove users of former devs
+  become: yes
+  user: name="{{ item }}" state=absent
+  with_items: '{{ dev_users.absent }}'
+
+- name: check if key files exist
+  become: false
+  local_action: stat path="{{ 'vars/users/' ~ item ~ '.pub' }}"
+  register: absent_user_keys
+  with_items: '{{ dev_users.absent }}'
+
+- name: Revoke former devs ability to login as ansible
+  become: yes
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.0 ~ '.pub') }}"
+  when: item.1.stat.exists
+  with_together:
+    - "{{ dev_users.absent }}"
+    - "{{ absent_user_keys.results|default({}) }}"

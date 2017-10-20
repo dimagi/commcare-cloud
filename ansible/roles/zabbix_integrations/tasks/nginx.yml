@@ -1,7 +1,7 @@
 ---
 
 - name: Install nginx conf
-  sudo: yes
+  become: yes
   template:
     src: userparameter_nginx.conf.j2
     dest: "{{ zabbix_user_parm_dir }}/nginx.conf"
@@ -9,7 +9,7 @@
   notify: restart zabbix_agentd
 
 - name: Install nginx stats script
-  sudo: yes
+  become: yes
   copy:
     src: 'nginx.sh'
     dest: "{{ zabbix_external_scripts_dir }}/nginx.sh"

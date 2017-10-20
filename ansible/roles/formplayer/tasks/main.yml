@@ -1,12 +1,12 @@
 - name: Install formplayer packages
   apt: name="{{ item }}" state=present
-  sudo: yes
+  become: yes
   with_items:
     - sqlite3
     - libsqlite3-dev
 
 - name: Create purging cron jobs
-  sudo: yes
+  become: yes
   cron:
     name: "{{ item.name }}"
     special_time: daily
@@ -18,7 +18,7 @@
     - {name: 'Purge sqlite db files', dir: '{{ formplayer_data_dir }}', time_spec: '{{ formplayer_purge_time_spec }}'}
 
 - name: Create cron job to archive sqlite db files
-  sudo: yes
+  become: yes
   cron:
     # should run every minute by default
     name: 'Archive sqlite db files'
@@ -41,7 +41,7 @@
     - "{{ formplayer_data_dir }}"
 
 - name: Copy Spring application.properties
-  sudo: yes
+  become: yes
   template:
     src: application.properties.j2
     dest: "{{ formplayer_build_dir }}/application.properties"

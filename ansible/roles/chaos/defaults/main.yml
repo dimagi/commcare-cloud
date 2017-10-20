@@ -1,0 +1,15 @@
+---
+chaos_dir: /var/chaos
+
+# comma-delimited list of hosts for chaos (command line: -e hosts=webworkers)
+hosts: ''
+
+# the chosen chaos strategy (see templates dir; currently this is the only one)
+strategy: "burnio"
+
+# wait time in seconds after each loop of burnio chaos
+burnio_wait: 0
+# directory in which to perform burnio chaos
+burnio_dir: /tmp
+# how many burnio processes to run
+burnio_scale: 1

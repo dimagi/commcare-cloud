@@ -21,6 +21,7 @@ active_sites:
   motech2: False
   riakcs: True
   couchdb2: True
+  enikshay_ssl: True
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -33,9 +34,11 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 proxy_type: 'nginx'
 
-primary_ssl_env: "enikshay"
+primary_ssl_env: "enikshay.in"
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+msp_user: true
+msp_user_password_sha_512: "{{ secrets.MSP_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False
@@ -50,15 +53,17 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'enikshayes-1.x'
 
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/enikshay.in.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/intermediate.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/enikshay.in.key'
+nginx_key_value: '{{ ssl_secrets.private_keys.enikshay_in }}'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.combined.crt'
+nginx_combined_cert_value: "{{ ssl_secrets.certs.enikshay_in }}"
 
 enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
+enikshay_nginx_combined_cert_value: '{{ ssl_secrets.certs.enikshay_commcarehq_org }}'
 enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
+enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
 
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
@@ -85,8 +90,9 @@ nofile_limit: 65536
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 600
-pgbouncer_max_connections: 800
-pgbouncer_default_pool: 290
+postgresql_checkpoint_segments: 32
+pgbouncer_max_connections: 1600
+pgbouncer_default_pool: 500
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
@@ -187,8 +193,8 @@ shared_drive_enabled: true
 
 couch_dbs:
   default:
-    host: 172.25.2.9
-    port: 25984
+    host: "{{ groups.couchdb2[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -297,7 +303,11 @@ localsettings:
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  ENABLE_PRELOGIN_SITE: False
   ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
   ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE: True
+  ENTERPRISE_MODE: True
+  COMMCARE_HQ_NAME: 'eNikshay'
+  COMMCARE_NAME: 'eNikshay'

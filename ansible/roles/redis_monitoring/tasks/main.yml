@@ -1,11 +1,11 @@
 - name: Copy Redis restart script
-  sudo: yes
+  become: yes
   file:
     dest: "/usr/local/sbin/redis-restart.sh"
     state: absent
 
 - name: Create Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Reboot Redis"
     job: "/usr/local/sbin/redis-restart.sh > /dev/null"

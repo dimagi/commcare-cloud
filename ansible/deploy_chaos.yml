@@ -1,0 +1,26 @@
+# Deploy Chaos
+#
+# Usage:
+#
+#   Start chaos
+#   $ ap deploy_chaos.yml -e hosts=webworkers --tags=start
+#
+#   Stop chaos
+#   $ ap deploy_chaos.yml -e hosts=webworkers --tags=stop
+#
+# Variables can be set to tweak chaos settings. Examples:
+#
+#   Choose the chaos strategy (currently only burnio)
+#   $ ap deploy_chaos.yml -e "hosts=webworkers strategy=burnio" --tags=start
+#
+#   BurnIO wait 5s between burns
+#   $ ap deploy_chaos.yml -e "hosts=webworkers burnio_wait=5" --tags=start
+#
+#   BurnIO scale to increase IO load
+#   $ ap deploy_chaos.yml -e "hosts=webworkers burnio_scale=8" --tags=start
+
+- name: chaos
+  hosts: "{{ hosts.split(',') }}"
+  become: true
+  roles:
+    - {role: chaos}

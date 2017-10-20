@@ -13,7 +13,7 @@ nginx_sites:
    listen: "443 ssl{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    root: "/var/www/html"
    server_name: "{{ SITE_HOST }}"
-   client_max_body_size: 500m
+   client_max_body_size: 600m
    proxy_set_headers:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
