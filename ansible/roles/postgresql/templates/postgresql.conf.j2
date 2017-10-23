@@ -36,10 +36,6 @@ vacuum_cost_delay = 20ms
 
 # WRITE AHEAD LOG
 
-archive_mode = on
-archive_command = 'test ! -f {{ postgresql_archive_dir }}/%f && cp %p {{ postgresql_archive_dir }}/%f'
-archive_timeout = 60
-
 wal_level = hot_standby
 max_wal_senders = 3
 checkpoint_segments = {{ postgresql_checkpoint_segments|default(16) }}
