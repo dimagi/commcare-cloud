@@ -39,10 +39,11 @@ elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'pna-es'
 #elasticsearch_node_name: '??'
 
-apache2_key_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.key'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.key'
+nginx_key_value: '{{ ssl_secrets.private_keys.commcare.pna.sn }}'
 
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.combined.crt'
+nginx_combined_cert_value: "{{ ssl_secrets.certs.commcare.pna.sn }}"
 
 keystore_file: '../config/DimagiKeyStore'
 
