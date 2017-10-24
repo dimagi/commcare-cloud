@@ -1,7 +1,7 @@
 ---
 
 - name: Create shared data dir
-  sudo: yes
+  become: yes
   file:
     path: "{{ shared_data_dir }}"
     owner: "nobody"
@@ -13,21 +13,21 @@
     - shared_files
 
 - name: Format system data disk
-  sudo: yes
+  become: yes
   filesystem: fstype=ext4 dev="{{ datadisk_device }}1"
   when: datadisk_device is defined
   tags:
     - shared_files
 
 - name: Mount system data disk
-  sudo: yes
+  become: yes
   mount: name="{{ shared_data_dir }}" src="{{ datadisk_device }}1" fstype=ext4 state=mounted opts=defaults,noatime,nofail
   when: datadisk_device is defined
   tags:
     - shared_files
 
 - name: Create shared directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "nobody"
@@ -42,7 +42,7 @@
     - shared_files
 
 - name: Create purging cron jobs
-  sudo: yes
+  become: yes
   cron:
     name: "{{ item.name }}"
     special_time: hourly
@@ -57,7 +57,7 @@
     - shared_files
 
 - name: Add shared dir to exports
-  sudo: yes
+  become: yes
   when: shared_drive_enabled
   lineinfile:
     dest: /etc/exports
@@ -74,7 +74,7 @@
     - nfs
 
 - name: Export directories
-  sudo: yes
+  become: yes
   when: shared_drive_enabled
   command: "exportfs -a"
   tags:

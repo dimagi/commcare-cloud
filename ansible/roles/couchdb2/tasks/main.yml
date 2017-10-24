@@ -14,13 +14,28 @@
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"
     force_basic_auth: true
-    status_code: 200, 409 # 409 means already set up (conflict)
+    status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
 
+- name: Create system databases
+  uri:
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/{{ item }}"
+    method: PUT
+    user: "{{ couchdb2.username }}"
+    password: "{{ couchdb2.password }}"
+    force_basic_auth: true
+    status_code: 201, 412 # 412 means already set up (conflict)
+    body: '{}'
+  when: inventory_hostname == groups.couchdb2.0
+  with_items:
+   - _users
+   - _replicator
+   - _global_changes
+
 - name: Copy couch restart script
-  sudo: yes
+  become: yes
   file:
     dest: "/usr/local/sbin/couch2-restarter.sh"
     state: absent
@@ -28,7 +43,7 @@
     - cron
 
 - name: Create Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Reboot Couch"
     job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
@@ -39,7 +54,7 @@
     - cron
 
 - name: Copy couch backup script
-  sudo: yes
+  become: yes
   template:
     src: "create_couchdb_backup.sh.j2"
     dest: "/usr/local/sbin/create_couchdb_backup.sh"
@@ -53,7 +68,7 @@
     - backup
 
 - name: Create Daily Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup blobdb daily"
     job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
@@ -67,7 +82,7 @@
     - cron
 
 - name: Create Weekly Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup blobdb weekly"
     job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
@@ -86,7 +101,7 @@
   tags: after-reboot
 
 - name: couchdb2 monit config
-  sudo: yes
+  become: yes
   template:
     src: "monit.couchdb2.j2"
     dest: "/etc/monit/conf.d/couchdb2"
@@ -95,6 +110,8 @@
     mode: 0640
   notify: reload monit
   tags: monit
+
+- meta: flush_handlers
 
 - monit:
     name: couchdb2

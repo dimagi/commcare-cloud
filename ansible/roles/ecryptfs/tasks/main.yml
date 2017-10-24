@@ -1,7 +1,7 @@
 ---
 
 - name: Check for valid partition table on block storage device
-  become: true
+  become: yes
   shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
   register: partition_check
   when: datavol_device is defined and ansible_hostname not in groups['lvm']
@@ -10,7 +10,7 @@
   check_mode: no
 
 - name: Create partition on block storage volume
-  become: true
+  become: yes
   shell: echo -e "o\nn\np\n1\n\n\nw" | fdisk {{ datavol_device }}
   # http://superuser.com/a/739586/86694
   # o - clear in memory partition table
@@ -23,12 +23,12 @@
   when: datavol_device is defined and partition_check.rc == 0 and ansible_hostname not in groups['lvm']
 
 - name: Format block storage volume
-  become: true
+  become: yes
   filesystem: fstype=ext4 dev="{{ datavol_device }}1"
   when: datavol_device is defined
 
 - name: Mount block storage volume
-  become: true
+  become: yes
   mount:
     name: "{{ encrypted_root }}"
     src: "{{ datavol_device }}1"
@@ -50,7 +50,7 @@
     - after-reboot
 
 - name: Install ecryptfs-utils
-  become: true
+  become: yes
   apt: name=ecryptfs-utils state=present
   # Do not install ecryptfs utils if already mounted. This should trigger alarm
   # bells if something causes a false positive result on checking for encrypted
@@ -58,14 +58,14 @@
   when: encrypted_root not in mtab_contents.stdout
 
 - name: Create encrypted drive root directory
-  become: true
+  become: yes
   file: path="{{ encrypted_root }}" owner=root group=root mode=0755 state=directory
   tags:
     - mount-ecryptfs
     - after-reboot
 
 - name: Add encryption password to keyring
-  become: true
+  become: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
   when: encrypted_root  not in mtab_contents.stdout
@@ -74,7 +74,7 @@
     - after-reboot
 
 - name: Mount data drive
-  become: true
+  become: yes
   shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
   when: encrypted_root not in mtab_contents.stdout
   tags:
@@ -82,14 +82,14 @@
     - after-reboot
 
 - name: "Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS"
-  become: true
+  become: yes
   when: not shared_drive_enabled
   file: path="{{ encrypted_root }}/blobdb" owner=nobody group="{{ shared_dir_gid }}" mode=0775 state=directory
   tags:
     - ecryptfs-blobdb
 
 - name: Create shared data dir
-  become: true
+  become: yes
   file:
     path: "{{ shared_data_dir }}"
     owner: "nobody"
@@ -101,14 +101,14 @@
     - ecryptfs-blobdb
 
 - name: Create blob DB symlink (cchq looks for it in the shared drive)
-  become: true
+  become: yes
   when: not shared_drive_enabled
   file: src="{{ encrypted_root }}/blobdb" dest="{{ shared_data_dir }}/blobdb" state=link
   tags:
     - ecryptfs-blobdb
 
 - name: Drop unencrypted readme in directory
-  become: true
+  become: yes
   lineinfile:
     dest: '{{ encrypted_root }}/README'
     line: 'If you can read this file the directory is unencrypted'

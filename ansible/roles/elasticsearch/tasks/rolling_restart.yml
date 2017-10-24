@@ -8,14 +8,14 @@
   changed_when: result.stdout.find('"acknowledged":true') != -1
 
 - name: stop node
-  sudo: true
+  become: true
   service: name=elasticsearch state=stopped
 
 - name: wait for a few seconds for ES to stop
   pause: seconds=10
 
 - name: start node
-  sudo: true
+  become: true
   service: name=elasticsearch state=started
 
 - debug: msg="Sometimes we try to start the node too soon. If hung start node manually"

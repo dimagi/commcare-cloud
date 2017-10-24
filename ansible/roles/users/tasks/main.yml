@@ -1,30 +1,25 @@
 ---
 # cchq user is created in supervisor role
 - name: Add dev group
-  sudo: yes
+  become: yes
   group: name="{{ dev_group }}" state=present
 
 - name: Add users for current devs
-  sudo: yes
+  become: yes
   user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
 
 - name: Add public keys for current devs
-  sudo: yes
+  become: yes
   authorized_key: user="{{ item }}" state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
-
-- name: Remove users of former devs
-  sudo: yes
-  user: name="{{ item }}" state=absent
-  with_items: '{{ dev_users.absent }}'
 
 - name: Add MSP user sudo user
   user: name=msp state=present shell=/bin/bash groups="sudo" password="{{ msp_user_password_sha_512 }}"
   when: msp_user|default(false)
 
 - name: Add public key for MSP
-  sudo: yes
+  become: yes
   authorized_key: user=msp state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/msp.pub') }}"
   when: msp_user|default(false)
 
@@ -32,26 +27,12 @@
   user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_user_password_sha_512 }}"
 
 - name: Authorize current devs to login as ansible
-  sudo: yes
+  become: yes
   authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
-- name: check if key files exist
-  sudo: false
-  local_action: stat path="{{ 'vars/users/' ~ item ~ '.pub' }}"
-  register: absent_user_keys
-  with_items: '{{ dev_users.absent }}'
-
-- name: Revoke former devs ability to login as ansible
-  sudo: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.0 ~ '.pub') }}"
-  when: item.1.stat.exists
-  with_together:
-    - "{{ dev_users.absent }}"
-    - "{{ absent_user_keys.results|default({}) }}"
-
 - name: De-authorize ansible pubkey
-  sudo: yes
+  become: yes
   authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/ansible.pub') }}"
 
 - name: find supervisorctl path
@@ -60,12 +41,13 @@
   changed_when: false
   check_mode: no
 
-
 - name: Copy sudoers file
-  sudo: yes
+  become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
 
 # ansible used to create this file
 # but for consistency with prod machines, we changed to 'cchq'
 - name: remove cchq_sudoers
   file: state=absent path=/etc/sudoers.d/cchq_sudoers
+
+- import_tasks: remove_users.yml

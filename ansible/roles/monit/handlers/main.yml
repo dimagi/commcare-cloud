@@ -1,16 +1,16 @@
 ---
 - name: start monit
-  sudo: yes
+  become: yes
   service: name=monit state=started
 
 - name: restart monit
-  sudo: yes
+  become: yes
   service: name=monit state=restarted
 
 - name: reload monit
-  sudo: yes
+  become: yes
   service: name=monit state=reloaded
 
 - name: stop monit
-  sudo: yes
+  become: yes
   service: name=monit state=stopped

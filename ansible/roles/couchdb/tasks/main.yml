@@ -18,7 +18,7 @@
   register: couchdb_path
 
 - name: Download CouchDB source
-  sudo: no
+  become: no
   get_url:
     url: "{{ couchdb_source_mirror }}/{{ couchdb_version }}/{{ couchdb_distro_filename }}"
     dest: "~/{{ couchdb_distro_filename }}"
@@ -29,7 +29,7 @@
   shell: "{{ item }}"
   args:
     chdir: ~/
-  sudo: no
+  become: no
   with_items:
     - tar xvf ~/{{ couchdb_distro_filename }}
     - cd apache-couchdb-{{ couchdb_version }} && ./configure
@@ -38,14 +38,14 @@
   register: couchdb_compile
 
 - stat: path=~/
-  sudo: no
+  become: no
   register: ansible_home_path
 
 - name: Install CouchDB
   shell: "{{ item }}"
   args:
     chdir: "{{ ansible_home_path.stat.path }}"
-  sudo: yes
+  become: yes
   with_items:
     - make install -C ./apache-couchdb-{{ couchdb_version }}
     - rm -rf ./apache-couchdb-{{ couchdb_version }}*
@@ -104,7 +104,7 @@
   with_items: "{{ couch_dbs.values() }}"
 
 - name: Copy couch restart script
-  sudo: yes
+  become: yes
   template:
     src: "couch-restarter.sh.j2"
     dest: "/usr/local/sbin/couch-restarter.sh"
@@ -116,7 +116,7 @@
     - cron
 
 - name: Create Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Reboot Couch"
     job: "/usr/local/sbin/couch-restarter.sh > /dev/null"
@@ -126,7 +126,7 @@
     - cron
 
 - name: Copy couch backup script
-  sudo: yes
+  become: yes
   template:
     src: "create_couchdb_backup.sh.j2"
     dest: "/usr/local/sbin/create_couchdb_backup.sh"
@@ -140,7 +140,7 @@
     - backup
 
 - name: Create Daily Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup blobdb daily"
     job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
@@ -154,7 +154,7 @@
     - cron
 
 - name: Create Weekly Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup blobdb weekly"
     job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"

@@ -30,7 +30,7 @@
 # Install base packages, common to all servers
 - name: Install common packages
   apt: name="{{ item }}" state=present
-  sudo: yes
+  become: yes
   with_items:
     - build-essential
     - python-pip
@@ -70,11 +70,11 @@
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'
-  sudo: yes
+  become: yes
 
 - name: Install npm items
   npm: name="{{ item }}" state=present global=yes
-  sudo: yes
+  become: yes
   with_items:
     - npm@3.6.0
     - less@1.3.1
@@ -86,27 +86,27 @@
 
 - name: Update Node
   command: 'n 0.10.29'
-  sudo: yes
+  become: yes
 
 - stat: path=/opt/lessc
   register: lessc_stat
 
 - name: Install lessc from source
-  sudo: yes
+  become: yes
   # this is lessc 1.7.3
   git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes
   when: not lessc_stat.stat.exists
 
 - name: Install pip packages
   pip: name="{{ item }}"
-  sudo: yes
+  become: yes
   with_items:
     - virtualenv
     - sh
     - httplib2
 
 - name: Install virtualenv-clone
-  sudo: yes
+  become: yes
   pip:
     name: virtualenv-clone
     version: 0.2.6

@@ -1,4 +1,5 @@
 ---
 dependencies:
-  - emord.ansible-couchdb-cluster
+  - couchdb2-preinstall
+  - andrewrothstein.ansible-couchdb-cluster
   - role: monit
