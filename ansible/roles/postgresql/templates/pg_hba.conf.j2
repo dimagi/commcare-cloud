@@ -106,6 +106,7 @@ host    replication     {{ postgres_users.replication.username }}   0.0.0.0/0   
 {% endif %}
 
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      ucrreadonly            0.0.0.0/0       md5
 
 # For icds-tableau, applicable only for NIC cluster
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      testdata_writer            0.0.0.0/0       md5
