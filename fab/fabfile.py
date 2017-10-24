@@ -32,6 +32,7 @@ from getpass import getpass
 
 import yaml
 import pipes
+import pytz
 from distutils.util import strtobool
 
 from fabric import utils
@@ -211,6 +212,7 @@ def staging():
 
 def _setup_env(env_name, force=False, default_branch=None):
     _confirm_branch(default_branch)
+    _confirm_environment_time(env_name)
     env.force = force  # don't worry about kafka checkpoints if True
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', env_name)
     load_env(env_name)
@@ -229,6 +231,20 @@ def _confirm_branch(default_branch=None):
             "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
         ).format(env=env)
         if not console.confirm(branch_message, default=False):
+            utils.abort('Action aborted.')
+
+
+def _confirm_environment_time(env_name):
+    if env_name == 'enikshay':
+        d = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+        if 0 > d > 6:
+            return
+
+        message = (
+            "Woah there bud! You're deploying enikshay during the day. "
+            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
+        )
+        if not console.confirm(message, default=False):
             utils.abort('Action aborted.')
 
 
