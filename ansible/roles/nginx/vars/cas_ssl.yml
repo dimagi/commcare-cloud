@@ -18,7 +18,7 @@ nginx_sites:
       value: "$server_name"
    limit_req_zones:
     - name: "restore"
-      zone: "$server_name"
+      zone: "$digest_submission"
       size: "10m"
       rate: "25r/s"
     - name: "submissions"
