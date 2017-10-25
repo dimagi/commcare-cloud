@@ -237,7 +237,7 @@ def _confirm_branch(default_branch=None):
 def _confirm_environment_time(env_name):
     if env_name == 'enikshay':
         d = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
-        if 0 > d > 6:
+        if 0 < d.hour < 6:
             return
 
         message = (
