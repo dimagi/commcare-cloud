@@ -745,3 +745,70 @@ l10k:
         num_processes: 1
       XFormToElasticsearchPillow:
         num_processes: 1
+
+pna:
+  environment: pna
+  jython_memory: "1024m"
+  formplayer_memory: "1024m"
+
+  service_blacklist:
+    - supervisor_websockets.conf
+
+  celery_processes:
+    '*':
+      main:
+        concurrency: 1
+      background_queue:
+        concurrency: 1
+      email_queue:
+        concurrency: 1
+      saved_exports_queue:
+        concurrency: 1
+        optimize: True
+      pillow_retry_queue:
+        concurrency: 1
+      submission_reprocessing_queue:
+        concurrency: 1
+      ucr_queue:
+        concurrency: 1
+      async_restore_queue:
+        concurrency: 1
+      flower: {}
+  pillows:
+    '*':
+      AppDbChangeFeedPillow:
+        num_processes: 1
+      ApplicationBlobDeletionPillow:
+        num_processes: 1
+      ApplicationToElasticsearchPillow:
+        num_processes: 1
+      BlobDeletionPillow:
+        num_processes: 1
+      CacheInvalidatePillow:
+        num_processes: 1
+      CaseToElasticsearchPillow:
+        num_processes: 1
+      DefaultChangeFeedPillow:
+        num_processes: 1
+      DomainDbKafkaPillow:
+        num_processes: 1
+      FormSubmissionMetadataTrackerPillow:
+        num_processes: 1
+      GroupPillow:
+        num_processes: 1
+      GroupToUserPillow:
+        num_processes: 1
+      KafkaDomainPillow:
+        num_processes: 1
+      SqlSMSPillow:
+        num_processes: 1
+      UnknownUsersPillow:
+        num_processes: 1
+      UserCacheInvalidatePillow:
+        num_processes: 1
+      UserGroupsDbKafkaPillow:
+        num_processes: 1
+      UserPillow:
+        num_processes: 1
+      XFormToElasticsearchPillow:
+        num_processes: 1

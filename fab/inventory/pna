@@ -1,5 +1,5 @@
 [pnaserver1]
-pnaserver1:1337
+196.207.230.171:1337
 
 [pnaserver1:vars]
 elasticsearch_node_name=es0

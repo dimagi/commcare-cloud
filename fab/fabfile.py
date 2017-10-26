@@ -188,14 +188,21 @@ def icds():
 
 
 @task
-def l10k():
-    _setup_env('l10k', force=True)
-
-
-@task
 def enikshay():
     """enikshay.in"""
     _setup_env('enikshay', force=True)
+
+
+@task
+def pna():
+    """commcare.pna.sn"""
+    _setup_env('pna', force=True)
+
+
+@task
+def l10k():
+    """l10k.commcare.org"""
+    _setup_env('l10k', force=True)
 
 
 @task
