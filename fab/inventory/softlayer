@@ -68,19 +68,19 @@ encrypted_root=/opt/data
 [couch1]
 10.162.36.218
 
-[couch2]
-10.162.36.254
-
-[couch3]
-10.162.36.198
-
-[couch4]
-10.162.36.220
-
 [couch1:vars]
 devices='["/dev/xvde","/dev/xvdc"]'
 partitions=["/dev/xvde1","/dev/xvdc1"]
 datavol_device='/dev/mapper/consolidated-data'
+
+[couch2]
+10.162.36.254 datavol_device=/dev/xvdc
+
+[couch3]
+10.162.36.198 datavol_device=/dev/xvdc
+
+[couch4]
+10.162.36.220 datavol_device=/dev/xvdc
 
 [proxy:children]
 proxy0
