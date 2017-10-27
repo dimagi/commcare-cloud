@@ -148,6 +148,9 @@ riak15
 
 [couchdb2:children]
 couch1
+couch2
+couch3
+couch4
 
 [couchdb2_proxy:children]
 couch1
