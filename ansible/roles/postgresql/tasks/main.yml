@@ -180,6 +180,16 @@
   tags:
     - pgbouncer
 
+- shell: /bin/true
+  register: no_tags
+
+- name: Restarts pgbouncer (affect max open files limit)
+  command: /bin/true
+  notify: Restart pgbouncer
+  when: no_tags is not defined
+  tags: after-reboot
+
+
 - name: Download pghashlib
   get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
 
