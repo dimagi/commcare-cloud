@@ -116,7 +116,7 @@ enikshay:
       LedgerToElasticsearchPillow:
         num_processes: 1
       CaseSearchToElasticsearchPillow:
-        num_processes: 4
+        num_processes: 8
       kafka-ucr-static:
         num_processes: 2
       SqlSMSPillow:
