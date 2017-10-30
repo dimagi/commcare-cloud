@@ -1,0 +1,24 @@
+- name: "Install Netvault Client"
+  hosts: pg_standby
+  become: true
+  tasks:
+    - name: "Download Netvault"
+      get_url:
+        url: "{{ netvault_url }}"
+        dest: /tmp/netvault.tar.gz
+    - name: "Unarchive Netvault"
+      unarchive:
+        src: /tmp/netvault.tar.gz
+        dest: /tmp/netvault/
+    - name: "Create symlink for lib64"
+      file:
+        src: /usr/lib
+        dest: /usr/lilb/64
+        state: link
+    # FIXME: deal with prompt for options
+    - name: "Runs install script"
+      #command: /tmp/netvault/install
+      command: /bin/true
+      when: false
+  tags:
+    - netvault
