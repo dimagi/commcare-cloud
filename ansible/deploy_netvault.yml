@@ -13,7 +13,7 @@
     - name: "Create symlink for lib64"
       file:
         src: /usr/lib
-        dest: /usr/lilb/64
+        dest: /usr/lib64
         state: link
     # FIXME: deal with prompt for options
     - name: "Runs install script"
