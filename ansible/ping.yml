@@ -117,11 +117,15 @@
 - hosts:
   - elasticsearch
   tasks:
-  - command: curl http://{{ inventory_hostname }}:9200/
-    name: Check ES cluster status
+  - uri: url="http://{{ inventory_hostname }}:9200/_cluster/health" return_content=yes
+    name: Get ES status
+    register: es_status
     when: inventory_hostname == groups.elasticsearch.0
-    args:
-      warn: False
+  - assert:
+      that: "es_status.json.status == 'green'"
+      msg: "ES health is {{ es_status.json.status }}"
+    name: Check ES status
+    when: inventory_hostname == groups.elasticsearch.0
 
 - hosts:
   - shared_dir_host
