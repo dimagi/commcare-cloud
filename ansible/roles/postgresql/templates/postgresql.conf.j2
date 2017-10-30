@@ -61,10 +61,10 @@ effective_cache_size = {{ postgresql_effective_cache_size }}
 log_destination = 'csvlog'
 logging_collector = on
 log_directory = 'pg_log'
-log_filename = 'postgresql-%a.log'
+log_filename = 'postgresql-%x-%r.log'
 log_truncate_on_rotation = on
-log_rotation_age = 1d
-log_rotation_size = 0
+log_rotation_age = 0
+log_rotation_size = 100000
 
 client_min_messages = notice
 log_min_messages = warning
