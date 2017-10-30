@@ -180,6 +180,7 @@
   tags:
     - pgbouncer
 
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
   register: no_tags
 
