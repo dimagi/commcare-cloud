@@ -137,6 +137,7 @@ web0
 
 [celery:children]
 kafka0
+web0
 
 [rabbitmq:children]
 kafka0
