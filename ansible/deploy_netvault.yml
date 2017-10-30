@@ -9,7 +9,7 @@
     - name: "Unarchive Netvault"
       unarchive:
         src: /tmp/netvault.tar.gz
-        dest: /tmp/netvault/
+        dest: /tmp/
         remote_src: yes
     - name: "Create symlink for lib64"
       file:
