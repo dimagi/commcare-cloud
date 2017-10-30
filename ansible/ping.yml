@@ -115,6 +115,15 @@
       warn: False
 
 - hosts:
+  - elasticsearch
+  tasks:
+  - command: curl http://{{ inventory_hostname }}:9200/
+    name: Check ES cluster status
+    when: inventory_hostname == groups.elasticsearch.0
+    args:
+      warn: False
+
+- hosts:
   - shared_dir_host
   tasks:
   - command: service nfs-kernel-server status
