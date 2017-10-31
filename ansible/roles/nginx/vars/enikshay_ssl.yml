@@ -13,7 +13,7 @@ nginx_sites:
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    file_name: "{{ deploy_env }}_enikshay_commcare"
-   listen: "443 ssl default_server"
+   listen: "443 ssl http2 default_server"
    server_name: "{{ ENIKSHAY_SITE_HOST }}"
    client_max_body_size: 100m
    proxy_set_headers:
