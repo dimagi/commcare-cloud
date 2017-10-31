@@ -2,6 +2,7 @@ SITE_HOST: 'swiss.commcarehq.org'
 COMMTRACK_SITE_HOST: 'swiss.commcarehq.org'
 NO_WWW_SITE_HOST: 'swiss.commcarehq.org'
 deploy_env: swiss
+ubuntu_version: "12.04"
 
 active_sites:
   cchq_ssl: True
