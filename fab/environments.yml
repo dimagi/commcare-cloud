@@ -113,7 +113,7 @@ enikshay:
       GroupToUserPillow:
         num_processes: 1
       kafka-ucr-main:
-        num_processes: 2
+        num_processes: 4
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
@@ -121,7 +121,7 @@ enikshay:
       CaseSearchToElasticsearchPillow:
         num_processes: 4
       kafka-ucr-static:
-        num_processes: 2
+        num_processes: 4
       SqlSMSPillow:
         num_processes: 1
       UnknownUsersPillow:
