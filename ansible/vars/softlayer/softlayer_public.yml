@@ -5,6 +5,7 @@ J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
 deploy_env: softlayer
 tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
+ubuntu_version: "14.04"
 
 active_sites:
   cchq_ssl: True
