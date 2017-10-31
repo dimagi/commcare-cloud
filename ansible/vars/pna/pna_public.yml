@@ -261,4 +261,5 @@ localsettings:
 #  STRIPE_PUBLIC_KEY:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
+  USE_PARTITIONED_DATABASE: True
   XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"
