@@ -2,6 +2,7 @@ SITE_HOST: 'commcare.pna.sn'
 COMMTRACK_SITE_HOST: 'commcare.pna.sn'
 NO_WWW_SITE_HOST: 'commcare.pna.sn'
 deploy_env: pna
+ubuntu_version: "14.04"
 
 active_sites:
   cchq_ssl: True
