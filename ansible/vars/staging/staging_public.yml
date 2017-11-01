@@ -3,7 +3,6 @@ NO_WWW_SITE_HOST: 'staging.commcarehq.org'
 COMMTRACK_SITE_HOST: 'test.commtrack.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 deploy_env: staging
-ubuntu_version: "14.04"
 
 active_sites:
   cchq_redirect: True

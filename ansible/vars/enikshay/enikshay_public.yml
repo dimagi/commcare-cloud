@@ -3,7 +3,6 @@ ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
 J2ME_SITE_HOST: 'j2me.enikshay.in'
 deploy_env: enikshay
 internal_domain_name: 'enikshay.in'
-ubuntu_version: "14.04"
 
 active_sites:
   cchq_ssl: True
