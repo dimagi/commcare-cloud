@@ -1,11 +1,17 @@
 ---
+- name: Remove official nginx repository
+  become: yes
+  apt_repository: repo='ppa:nginx/stable' state=absent
+  when: ansible_distribution_version == '14.04'
+
 - name: Add nginx repository
   become: yes
-  apt_repository: repo='ppa:nginx/stable' state=present
+  apt_repository: repo='ppa:ondrej/nginx' state=present
+  with_items: "{{ 'ppa:ondrej/nginx' if ansible_distribution_version == '14.04' else 'ppa:nginx/stable' }}"
 
 - name: Install nginx
   become: yes
-  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=3600
+  apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
   with_items: "{{ nginx_ubuntu_pkg }}"
   when: nginx_install == True
 
