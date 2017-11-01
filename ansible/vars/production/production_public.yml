@@ -3,7 +3,6 @@ NO_WWW_SITE_HOST: 'commcarehq.org'
 COMMTRACK_SITE_HOST: 'commtrack.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 deploy_env: production
-ubuntu_version: "14.04"
 
 active_sites:
   cchq_ssl: True
