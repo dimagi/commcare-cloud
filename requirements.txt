@@ -1,4 +1,4 @@
 Fabric==1.10.2
-ansible==2.3.2
+ansible==2.4.1
 github3.py==1.0.0a4
 pytz==2017.2
