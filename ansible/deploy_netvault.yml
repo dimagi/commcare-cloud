@@ -28,15 +28,23 @@
 
     - name: "Grants PostgreSQL access to netvault user"
       blockinfile:
+        insertbefore: "local   all             postgres                                peer"
         path: "{{ postgresql_config_home }}/pg_hba.conf"
         block: |
           host    all             netvault        127.0.0.1/32            md5
           local   all             netvault                                md5
+      notify:
+        - Restart postgresql
       tags:
       - netvault-postgresql
 
   tags:
     - netvault
+
+  handlers:
+    - name: Restart postgresql
+      become: yes
+      action: service name=postgresql state=restarted
 
 
 - name: "Configure Netvault PostgreSQL access"
