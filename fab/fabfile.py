@@ -25,6 +25,7 @@ Server layout:
         /etc/supervisor configurations.
 
 """
+from __future__ import absolute_import
 import datetime
 import os
 import posixpath
@@ -42,7 +43,7 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
-from const import (
+from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
     ROLES_CELERY,
@@ -58,9 +59,9 @@ from const import (
     RSYNC_EXCLUDE,
     PROJECT_ROOT,
 )
-from exceptions import PreindexNotFinished
+from .exceptions import PreindexNotFinished
 from fab.utils import get_inventory
-from operations import (
+from .operations import (
     db,
     staticfiles,
     supervisor,
@@ -68,7 +69,7 @@ from operations import (
     release,
     offline as offline_ops,
 )
-from utils import (
+from .utils import (
     clear_cached_deploy,
     execute_with_timing,
     DeployMetadata,
@@ -77,7 +78,7 @@ from utils import (
     retrieve_cached_deploy_checkpoint,
     traceback_string,
 )
-from checks import (
+from .checks import (
     check_servers,
 )
 

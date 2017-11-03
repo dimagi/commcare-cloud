@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import datetime
 import os
 import pickle
@@ -13,7 +14,7 @@ from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
 
-from const import (
+from .const import (
     PROJECT_ROOT,
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
