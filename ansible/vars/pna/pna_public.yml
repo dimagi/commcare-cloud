@@ -1,4 +1,5 @@
 SITE_HOST: 'commcare.pna.sn'
+PNA_SITE_HOST: 'pna.commcarehq.org'
 COMMTRACK_SITE_HOST: 'commcare.pna.sn'
 NO_WWW_SITE_HOST: 'commcare.pna.sn'
 deploy_env: pna
@@ -163,11 +164,10 @@ shared_drive_enabled: false
 
 localsettings:
   ALLOWED_HOSTS:
-    - commcare.pna.sn
-    - 127.0.0.1
+    - "{{ PNA_SITE_HOST }}"
+    - "{{ SITE_HOST }}"
     - localhost
     - 127.0.0.1
-    - testserver
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
