@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from fabric.api import roles, env, sudo, run, hide
 
 from ..const import (
