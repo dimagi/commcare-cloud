@@ -50,3 +50,6 @@ pnaserver1
 
 [control:children]
 pnaserver1
+
+[pna_proxy:children]
+pnaserver1
