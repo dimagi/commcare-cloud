@@ -184,12 +184,14 @@ def softlayer():
 @task
 def icds():
     """www.icds-cas.gov.in"""
+    _confirm_environment_time('icds', 'Asia/Kolkata')
     _setup_env('icds')
 
 
 @task
 def enikshay():
     """enikshay.in"""
+    _confirm_environment_time('enikshay', 'Asia/Kolkata')
     _setup_env('enikshay', force=True)
 
 
@@ -219,7 +221,6 @@ def staging():
 
 def _setup_env(env_name, force=False, default_branch=None):
     _confirm_branch(default_branch)
-    _confirm_environment_time(env_name)
     env.force = force  # don't worry about kafka checkpoints if True
     env.inventory = os.path.join(PROJECT_ROOT, 'inventory', env_name)
     load_env(env_name)
@@ -241,18 +242,17 @@ def _confirm_branch(default_branch=None):
             utils.abort('Action aborted.')
 
 
-def _confirm_environment_time(env_name):
-    if env_name == 'enikshay':
-        d = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
-        if 0 < d.hour < 6:
-            return
+def _confirm_environment_time(env_name, env_tz):
+    d = datetime.datetime.now(pytz.timezone(env_tz))
+    if 0 < d.hour < 6:
+        return
 
-        message = (
-            "Woah there bud! You're deploying enikshay during the day. "
-            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        )
-        if not console.confirm(message, default=False):
-            utils.abort('Action aborted.')
+    message = (
+        "Woah there bud! You're deploying '%s' during the day. "
+        "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
+    ) % env_name
+    if not console.confirm(message, default=False):
+        utils.abort('Action aborted.')
 
 
 def read_inventory_file(filename):
