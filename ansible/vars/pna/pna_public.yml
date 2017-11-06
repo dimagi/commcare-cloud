@@ -21,6 +21,7 @@ active_sites:
   motech2: False
   riakcs: False
   couchdb2: True
+  pna_ssl: True
 
 proxy_type: nginx
 
