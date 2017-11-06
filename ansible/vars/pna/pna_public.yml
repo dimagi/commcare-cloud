@@ -21,6 +21,7 @@ active_sites:
   motech2: False
   riakcs: False
   couchdb2: True
+  pna_ssl: True
 
 proxy_type: nginx
 
@@ -41,10 +42,14 @@ elasticsearch_cluster_name: 'pna-es'
 #elasticsearch_node_name: '??'
 
 nginx_key_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.key'
-nginx_key_value: '{{ ssl_secrets.private_keys.commcare.pna.sn }}'
-
+nginx_key_value: '{{ ssl_secrets.private_keys.commcare_pna_sn }}'
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcare.pna.sn.combined.crt'
-nginx_combined_cert_value: "{{ ssl_secrets.certs.commcare.pna.sn }}"
+nginx_combined_cert_value: "{{ ssl_secrets.certs.commcare_pna_sn }}"
+
+pna_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/pna.commcarehq.org.combined.crt'
+pna_nginx_combined_cert_value: '{{ ssl_secrets.certs.pna_commcarehq_org }}'
+pna_key_file: '../config/{{ deploy_env }}/ssl/pna.commcarehq.org.key'
+pna_key_value: '{{ ssl_secrets.private_keys.pna_commcarehq_org }}'
 
 keystore_file: '../config/DimagiKeyStore'
 
