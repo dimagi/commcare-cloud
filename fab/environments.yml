@@ -212,7 +212,7 @@ softlayer:
       GroupPillow:
         num_processes: 1
       GroupToUserPillow:
-        num_processes: 1
+        num_processes: 1 
       kafka-ucr-main:
         num_processes: 1
       KafkaDomainPillow:
@@ -354,7 +354,7 @@ icds:
         num_processes: 24
     '10.247.24.30': # pillow1
       CaseToElasticsearchPillow:
-        num_processes: 8
+        num_processes: 12
       FormSubmissionMetadataTrackerPillow:
         num_processes: 4
       kafka-ucr-static-forms:
