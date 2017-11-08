@@ -801,6 +801,8 @@ pna:
         num_processes: 1
       GroupToUserPillow:
         num_processes: 1
+      IntraHealthFormFluffPillow:
+        num_processes: 1
       KafkaDomainPillow:
         num_processes: 1
       LedgerToElasticsearchPillow:
