@@ -87,7 +87,7 @@ enikshay:
       flower: {}
     '172.25.2.6':
       ucr_indicator_queue:
-        concurrency: 4
+        concurrency: 8
   pillows:
     '*':
       AppDbChangeFeedPillow:
