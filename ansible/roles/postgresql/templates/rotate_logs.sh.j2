@@ -1,6 +1,6 @@
 #!/bin/bash
 # keep latest 20 log files 
-find {{ postgresql_home }}/pg_log -type f -name '*.csv' -printf '%T@\t%p\n' | sort -t $'\t' -g | head -n -20 | cut -d $'\t' -f 2- | xargs -d '\n' rm --
+find {{ postgresql_home }}/pg_log -type f -name '*.csv' -printf '%T@\t%p\n' | sort -t $'\t' -g | head -n -20 | cut -d $'\t' -f 2- | xargs --no-run-if-empty -d '\n' rm --
 
 # gzip all files except for the most recent 3
-find {{ postgresql_home }}/pg_log -type f -name '*.csv' -printf '%T@\t%p\n' | sort -t $'\t' -g | head -n -3 | cut -d $'\t' -f 2- | xargs -d '\n' gzip --
+find {{ postgresql_home }}/pg_log -type f -name '*.csv' -printf '%T@\t%p\n' | sort -t $'\t' -g | head -n -3 | cut -d $'\t' -f 2- | xargs --no-run-if-empty -d '\n' gzip --
