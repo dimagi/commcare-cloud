@@ -110,3 +110,21 @@
     mode: 0700
     backup: yes
   when: postgres_s3
+
+- name: PostgreSQL monit config
+  become: yes
+  template:
+    src: "../../postgresql/templates/monit.postgresql.j2"
+    dest: "/etc/monit/conf.d/postgresql"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: postgresql
+    state: monitored
+  tags: monit
