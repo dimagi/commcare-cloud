@@ -36,10 +36,6 @@ vacuum_cost_delay = 20ms
 
 # WRITE AHEAD LOG
 
-archive_mode = on
-archive_command = 'test ! -f {{ postgresql_archive_dir }}/%f && cp %p {{ postgresql_archive_dir }}/%f'
-archive_timeout = 60
-
 wal_level = hot_standby
 max_wal_senders = 3
 checkpoint_segments = {{ postgresql_checkpoint_segments|default(16) }}
@@ -65,10 +61,10 @@ effective_cache_size = {{ postgresql_effective_cache_size }}
 log_destination = 'csvlog'
 logging_collector = on
 log_directory = '{{ postgresql_log_directory|default('pg_log') }}'
-log_filename = 'postgresql-%a.log'
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
 log_truncate_on_rotation = on
-log_rotation_age = 1d
-log_rotation_size = 0
+log_rotation_age = 0
+log_rotation_size = 100000
 
 client_min_messages = notice
 log_min_messages = warning
@@ -80,7 +76,7 @@ log_connections = on
 log_disconnections = on
 log_line_prefix = '%t '
 log_lock_waits = on
-log_temp_files = 0
+log_temp_files = -1
 
 
 # RUNTIME STATISTICS

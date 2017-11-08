@@ -20,7 +20,6 @@
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
-
 - name: Install PostgreSQL & dependencies
   apt: name="{{ item }}" state=present
   with_items:
@@ -159,6 +158,8 @@
   pg_replication_slot: name={{ item }} state=present
   become: yes
   become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   with_items: "{{ postgresql_replication_slots|default([]) }}"
   when: not is_pg_standby|default(False)
   tags:
@@ -187,6 +188,17 @@
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
   tags:
     - pgbouncer
+
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  register: no_tags
+
+- name: Restarts pgbouncer (affect max open files limit)
+  command: /bin/true
+  notify: Restart pgbouncer
+  when: no_tags is not defined
+  tags: after-reboot
+
 
 - name: Download pghashlib
   get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
@@ -258,3 +270,60 @@
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
   when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False) and (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
+
+- name: Copy log rotation script
+  become: yes
+  template:
+    src: "rotate_logs.sh.j2"
+    dest: "/usr/local/sbin/rotate_postgres_logs.sh"
+    group: postgres
+    owner: postgres
+    mode: 0700
+    backup: yes
+  tags:
+    - cron
+
+- name: Create log rotation cron
+  become: yes
+  cron:
+    name: "Rotate postgres logs"
+    job: "/usr/local/sbin/rotate_postgres_logs.sh"
+    minute: "*/15"
+    user: postgres
+    cron_file: rotate_postgres
+  tags:
+    - cron
+
+- name: PostgreSQL monit config
+  become: yes
+  template:
+    src: "monit.postgresql.j2"
+    dest: "/etc/monit/conf.d/postgresql"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- name: pgbouncer monit config
+  become: yes
+  template:
+    src: "monit.pgbouncer.j2"
+    dest: "/etc/monit/conf.d/pgbouncer"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: pgbouncer
+    state: monitored
+  tags: monit
+
+- monit:
+    name: postgresql
+    state: monitored
+  tags: monit

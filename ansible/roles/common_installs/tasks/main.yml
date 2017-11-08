@@ -52,6 +52,7 @@
     - nodejs
     - at
     - screen
+    - sysstat
     - gettext
     - python-software-properties
     - mosh
