@@ -67,6 +67,15 @@ devices='["/dev/xvde","/dev/xvdc"]'
 partitions=["/dev/xvde1","/dev/xvdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 
+[couch2]
+10.162.36.254 datavol_device=/dev/xvdc
+
+[couch3]
+10.162.36.198 datavol_device=/dev/xvdc
+
+[couch4]
+10.162.36.220 datavol_device=/dev/xvdc
+
 [proxy:children]
 proxy0
 
@@ -127,6 +136,9 @@ riak15
 
 [couchdb2:children]
 couch1
+couch2
+couch3
+couch4
 
 [couchdb2_proxy:children]
 couch1
