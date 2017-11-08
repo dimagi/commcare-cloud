@@ -150,6 +150,8 @@
   pg_replication_slot: name={{ item }} state=present
   become: yes
   become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   with_items: "{{ postgresql_replication_slots|default([]) }}"
   when: not is_pg_standby|default(False)
   tags:
@@ -283,3 +285,21 @@
     cron_file: rotate_postgres
   tags:
     - cron
+
+- name: PostgreSQL monit config
+  become: yes
+  template:
+    src: "monit.postgresql.j2"
+    dest: "/etc/monit/conf.d/postgresql"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: postgresql
+    state: monitored
+  tags: monit
