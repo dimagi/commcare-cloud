@@ -1,0 +1,67 @@
+- name: "Install Netvault Client"
+  hosts: pg_standby
+  become: true
+  tasks:
+
+    - name: "Download Netvault"
+      get_url:
+        url: "{{ netvault_url }}"
+        dest: /tmp/netvault.tar.gz
+
+    - name: "Unarchive Netvault"
+      unarchive:
+        src: /tmp/netvault.tar.gz
+        dest: /tmp/
+        remote_src: yes
+
+    - name: "Create symlink for lib64"
+      file:
+        src: /usr/lib
+        dest: /usr/lib64
+        state: link
+
+    # FIXME: deal with prompt for options
+    - name: "Runs install script"
+      #command: /tmp/netvault/install
+      command: /bin/true
+      when: false
+
+    - name: "Grants PostgreSQL access to netvault user"
+      blockinfile:
+        insertbefore: "local   all             postgres                                peer"
+        path: "{{ postgresql_config_home }}/pg_hba.conf"
+        block: |
+          host    all             netvault        127.0.0.1/32            md5
+          local   all             netvault                                md5
+      notify:
+        - Restart postgresql
+      tags:
+      - netvault-postgresql
+
+  tags:
+    - netvault
+
+  handlers:
+    - name: Restart postgresql
+      become: yes
+      action: service name=postgresql state=restarted
+
+
+- name: "Configure Netvault PostgreSQL access"
+  hosts: postgresql
+  become: true
+  tasks:
+
+    - name: "Create PostgreSQL netvault user"
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+      postgresql_user:
+        name: "{{ netvault_username }}"
+        password: "{{ netvault_password }}"
+        role_attr_flags: SUPERUSER
+      tags:
+      - netvault-postgresql
+
+  tags:
+    - netvault

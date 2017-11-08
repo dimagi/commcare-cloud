@@ -1,20 +1,20 @@
 ---
-nginx_ssl_cert: "{{ enikshay_nginx_ssl_cert }}"
-nginx_ssl_key:  "{{ enikshay_nginx_ssl_key }}"
+nginx_ssl_cert: "{{ pna_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ pna_nginx_ssl_key }}"
 
 nginx_sites:
 - server:
    balancers:
-    - name: "{{ deploy_env }}_enikshay_commcare"
+    - name: "{{ deploy_env }}_pna_commcare"
       hosts: webworkers
       port: "{{ django_port }}"
-    - name: "{{ deploy_env }}_enikshay_formplayer"
+    - name: "{{ deploy_env }}_pna_formplayer"
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
-   file_name: "{{ deploy_env }}_enikshay_commcare"
+   file_name: "{{ deploy_env }}_pna_commcare"
    listen: "443 ssl http2 default_server"
-   server_name: "{{ ENIKSHAY_SITE_HOST }}"
+   server_name: "{{ PNA_SITE_HOST }}"
    client_max_body_size: 100m
    proxy_set_headers:
    - "Host $host"
@@ -23,8 +23,8 @@ nginx_sites:
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
      - name: /
-       balancer: "{{ deploy_env }}_enikshay_commcare"
-       proxy_redirect: "http://{{ ENIKSHAY_SITE_HOST }} https://{{ ENIKSHAY_SITE_HOST }}"
+       balancer: "{{ deploy_env }}_pna_commcare"
+       proxy_redirect: "http://{{ PNA_SITE_HOST }} https://{{ PNA_SITE_HOST }}"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
      - name: "/static"
@@ -44,6 +44,6 @@ nginx_sites:
        - "Upgrade $http_upgrade"
        - "Connection \"upgrade\""
      - name: /formplayer
-       balancer: "{{ deploy_env }}_enikshay_formplayer/"
+       balancer: "{{ deploy_env }}_pna_formplayer/"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
