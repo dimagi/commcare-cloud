@@ -85,6 +85,10 @@
   tags:
     - npm
 
+- name: Remove lessc directory
+  path: /opt/lessc
+  state: absent
+
 - name: Update Node
   command: 'n 0.10.29'
   become: yes
