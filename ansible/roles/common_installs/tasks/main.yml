@@ -92,12 +92,6 @@
 - stat: path=/opt/lessc
   register: lessc_stat
 
-- name: Install lessc from source
-  become: yes
-  # this is lessc 1.7.3
-  git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes
-  when: not lessc_stat.stat.exists
-
 - name: Install pip packages
   pip: name="{{ item }}"
   become: yes
