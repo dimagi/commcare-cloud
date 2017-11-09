@@ -99,9 +99,6 @@ host    all             all             ::1/128                 md5
 # Allow replication connections from localhost, by a user with the
 # replication privilege.
 local   replication     postgres                                peer
-{% if hot_standby_server|default(False) %}
-host    replication     postgres        {{ hot_standby_server }}/32 trust
-{% endif %}
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
 {% if postgres_users.get('replication') %}
