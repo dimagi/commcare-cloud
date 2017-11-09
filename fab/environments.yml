@@ -807,6 +807,8 @@ pna:
         num_processes: 1
       LedgerToElasticsearchPillow:
         num_processes: 1
+      RecouvrementFluffPillow:
+        num_processes: 1
       SqlSMSPillow:
         num_processes: 1
       UnknownUsersPillow:
