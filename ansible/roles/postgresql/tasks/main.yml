@@ -338,3 +338,4 @@
   tags: monit
 
 - import_tasks: backup.yml
+  when: is_pg_standby
