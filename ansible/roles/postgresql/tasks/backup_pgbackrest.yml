@@ -5,19 +5,6 @@
      - libio-socket-ssl-perl
      - libxml-libxml-perl
 
-- name: Make sure postgresql.conf supports pgbackrest
-  become: True
-  lineinfile:
-    dest: "{{ postgresql_config_home }}/postgresql.conf"
-    regexp: '^{{ item.name }} ='
-    line: "{{ item.name }} = {{ item.value }}"
-  with_items:
-      - { name: 'archive_mode', value: 'on' }
-      - { name: 'max_wal_senders', value: '3' }
-      - { name: 'wal_level', value: 'hot_standby' }
-  notify: Restart postgres
-  when: not is_pg_standby
-
 - name: Creating archive_command.sh file
   become: True
   template:
@@ -27,15 +14,6 @@
     group: postgres
     mode: 750
 
-- name: Editing archive_command for postgresql.conf
-  become: True
-  lineinfile:
-    dest: "{{ postgresql_config_home }}/postgresql.conf"
-    regexp: '^archive_command ='
-    line: "archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'"
-  notify: Restart postgres
-  when: not is_pg_standby
-  
 - name: Creating pgbackrest.conf file
   become: True
   template:
@@ -55,7 +33,7 @@
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backup --log-level-console=info stanza-create
   # play when it's a standby or it's a master with no standby (and stanza does not already exist)
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and not stanza.stat.exists
+  when: not stanza.stat.exists
 
 - name: Creating postgres S3 stanza
   become: True
@@ -64,7 +42,7 @@
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backups3 --log-level-console=info stanza-create
   # play when it's a standby or it's a master with no standby (and s3 backups enabled)
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
+  when: postgres_s3|default(false)
 
 - name: Create Daily Cron job
   sudo: yes
@@ -76,7 +54,6 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False)))
 
 - name: Create Daily Cron job S3
   sudo: yes
@@ -88,7 +65,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
+  when: postgres_s3|default(false)
 
 - name: Create Weekly Cron job
   sudo: yes
@@ -100,7 +77,6 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False)))
 
 - name: Create Weekly Cron job S3
   sudo: yes
@@ -112,4 +88,4 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
+  when: postgres_s3|default(false)
