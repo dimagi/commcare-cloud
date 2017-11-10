@@ -1,13 +1,4 @@
 ---
-- name: create backup directory
-  become: yes
-  file:
-    path: '{{ postgresql_backup_dir }}'
-    owner: postgres
-    group: postgres
-    mode: 0755
-    state: directory
-
 - name: Copy postgres backup script
   become: yes
   template:
@@ -67,7 +58,6 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-    state: absent
 
 - name: Create Weekly Cron job
   become: yes
@@ -79,7 +69,6 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-    state: absent
 
 - name: copy retrieve script
   become: yes
