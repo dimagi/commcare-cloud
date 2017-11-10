@@ -1,10 +1,4 @@
 ---
-# roles/pg_standby/tasks/main.yml
-
-- name: PostgreSQL recovery configuration
-  template: src=recovery.conf.j2 dest="{{ postgresql_home }}/recovery.conf" owner="postgres" group="postgres"
-  notify: Restart postgres
-
 - name: create backup directory
   become: yes
   file:
@@ -13,18 +7,16 @@
     group: postgres
     mode: 0755
     state: directory
-  when: backup_postgres
 
 - name: Copy postgres backup script
   become: yes
   template:
-    src: "create_postgres_dump.sh.j2"
+    src: "backup/plain/create_postgres_dump.sh.j2"
     dest: "/usr/local/sbin/create_postgres_dump.sh"
     group: postgres
     owner: postgres
     mode: 0700
     backup: yes
-  when: backup_postgres
 
 - name: install boto3
   become: yes
@@ -46,7 +38,7 @@
 - name: copy boto3 credentials file
   become: yes
   template:
-    src: "aws_credentials.j2"
+    src: "backup/plain/aws_credentials.j2"
     dest: "{{ postgresql_dir_original_path }}/.aws/credentials"
     group: postgres
     owner: postgres
@@ -57,7 +49,7 @@
 - name: Copy s3 upload script
   become: yes
   template:
-    src: "backup_snapshots.py.j2"
+    src: "backup/plain/backup_snapshots.py.j2"
     dest: "/usr/local/sbin/backup_snapshots.py"
     group: postgres
     owner: postgres
@@ -76,7 +68,6 @@
     user: postgres
     cron_file: backup_postgres
     state: absent
-  when: backup_postgres
 
 - name: Create Weekly Cron job
   become: yes
@@ -89,12 +80,11 @@
     user: postgres
     cron_file: backup_postgres
     state: absent
-  when: backup_postgres
 
 - name: copy retrieve script
   become: yes
   template:
-    src: "retrieve_backup.py.j2"
+    src: "backup/plain/retrieve_backup.py.j2"
     dest: "/usr/local/sbin/retrieve_backup.py"
     group: root
     owner: root
@@ -105,28 +95,10 @@
 - name: copy restore script
   become: yes
   template:
-    src: "restore_from_backup.sh.j2"
+    src: "backup/plain/restore_from_backup.sh.j2"
     dest: "/usr/local/sbin/restore_from_backup.sh"
     group: root
     owner: root
     mode: 0700
     backup: yes
   when: postgres_s3
-
-- name: PostgreSQL monit config
-  become: yes
-  template:
-    src: "../../postgresql/templates/monit.postgresql.j2"
-    dest: "/etc/monit/conf.d/postgresql"
-    group: root
-    owner: root
-    mode: 0640
-  notify: reload monit
-  tags: monit
-
-- meta: flush_handlers
-
-- monit:
-    name: postgresql
-    state: monitored
-  tags: monit
