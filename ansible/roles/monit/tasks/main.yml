@@ -1,3 +1,7 @@
+- name: install monit
+  apt: name=monit state=present
+  become: yes
+
 - name: monit config
   become: yes
   template:
