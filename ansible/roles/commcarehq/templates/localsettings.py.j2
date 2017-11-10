@@ -727,4 +727,6 @@ REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
 EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
 CONTACT_EMAIL = '{{ contact_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
-DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
+{% if localsettings.get('DAILY_DEPLOY_EMAIL') %}
+DAILY_DEPLOY_EMAIL = {{ localsettings.DAILY_DEPLOY_EMAIL }}
+{% endif %}
