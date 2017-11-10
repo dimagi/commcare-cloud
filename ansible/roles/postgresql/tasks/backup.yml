@@ -15,3 +15,6 @@
 
 - include_tasks: backup_pgbackrest.yml
   when: backup_postgres == 'pgbackrest'
+
+- include_tasks: backup_pgbackrest_clean.yml
+  when: backup_postgres != 'pgbackrest'
