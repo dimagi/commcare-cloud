@@ -84,6 +84,7 @@ nofile_limit: 65536
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
+postgresql_num_logs_to_keep: 100
 postgresql_shared_buffers: '10GB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '32GB'
