@@ -13,7 +13,7 @@
     dest: /usr/local/sbin/pgbackrest_archive_command.sh
     owner: postgres
     group: postgres
-    mode: 750
+    mode: 0750
   when: not is_pg_standby
 
 - name: Creating pgbackrest.conf file
