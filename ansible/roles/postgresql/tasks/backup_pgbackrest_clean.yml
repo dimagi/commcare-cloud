@@ -8,7 +8,7 @@
     - "/usr/local/sbin/pgbackrest_archive_command.sh"
 
 - name: Create Daily Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres daily (differential)"
     job: "/usr/bin/pgbackrest --type=diff --stanza=backup backup"
@@ -20,7 +20,7 @@
     state: absent
 
 - name: Create Daily Cron job S3
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres daily (differential) S3"
     job: "/usr/bin/pgbackrest --type=diff --stanza=backups3 backup"
@@ -32,7 +32,7 @@
     state: absent
 
 - name: Create Weekly Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres weekly (full backup)"
     job: "/usr/bin/pgbackrest --type=full --stanza=backup backup"
@@ -44,7 +44,7 @@
     state: absent
 
 - name: Create Weekly Cron job S3
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres weekly (full backup) S3"
     job: "/usr/bin/pgbackrest --type=full --stanza=backups3 backup"

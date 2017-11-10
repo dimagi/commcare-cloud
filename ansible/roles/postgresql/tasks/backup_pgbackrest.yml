@@ -46,7 +46,7 @@
   when: postgres_s3|default(false)
 
 - name: Create Daily Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres daily (differential)"
     job: "/usr/bin/pgbackrest --type=diff --stanza=backup backup"
@@ -57,7 +57,7 @@
     cron_file: backup_postgres
 
 - name: Create Daily Cron job S3
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres daily (differential) S3"
     job: "/usr/bin/pgbackrest --type=diff --stanza=backups3 backup"
@@ -69,7 +69,7 @@
   when: postgres_s3|default(false)
 
 - name: Create Weekly Cron job
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres weekly (full backup)"
     job: "/usr/bin/pgbackrest --type=full --stanza=backup backup"
@@ -80,7 +80,7 @@
     cron_file: backup_postgres
 
 - name: Create Weekly Cron job S3
-  sudo: yes
+  become: yes
   cron:
     name: "Backup postgres weekly (full backup) S3"
     job: "/usr/bin/pgbackrest --type=full --stanza=backups3 backup"
