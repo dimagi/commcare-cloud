@@ -16,7 +16,7 @@
     - {role: backups, tags: 'backups'}
 
 - name: Postgresql
-  hosts: postgresql
+  hosts: postgresql,pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
@@ -38,7 +38,6 @@
   hosts: pg_standby
   become: true
   roles:
-    - {role: pg_standby, tags: 'pg_standby'}
     - {role: pgbackrest, tags: ['pg_standby', 'pgbackrest'], when: backup_postgres or postgres_s3}
 
 - name: Couchdb

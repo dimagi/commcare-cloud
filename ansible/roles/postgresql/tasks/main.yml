@@ -89,6 +89,15 @@
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
   notify: Reload postgres
 
+- name: PostgreSQL recovery configuration
+  template:
+    src: "recovery.conf.j2"
+    dest: "{{ postgresql_home }}/recovery.conf"
+    owner: "postgres"
+    group: "postgres"
+  notify: Restart postgres
+  when: is_pg_standby
+
 - name: start postgresql
   become: true
   service: name=postgresql state=started
@@ -327,3 +336,5 @@
     name: postgresql
     state: monitored
   tags: monit
+
+- import_tasks: backup.yml
