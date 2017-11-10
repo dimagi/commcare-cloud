@@ -1,5 +1,3 @@
-- include_vars: ../../postgresql/defaults/main.yml
-
 - name: Install pgBackRest and requirements
   apt: name={{item}} state=installed
   with_items:
@@ -23,11 +21,11 @@
 - name: Creating archive_command.sh file
   become: True
   template:
-    src=archive_command.sh.j2
-    dest=/usr/local/sbin/pgbackrest_archive_command.sh
-    owner=postgres
-    group=postgres
-    mode=750
+    src: backup/pgbackrest/archive_command.sh.j2
+    dest: /usr/local/sbin/pgbackrest_archive_command.sh
+    owner: postgres
+    group: postgres
+    mode: 750
 
 - name: Editing archive_command for postgresql.conf
   become: True
@@ -41,11 +39,11 @@
 - name: Creating pgbackrest.conf file
   become: True
   template:
-    src=pgbackrest.conf.j2
-    dest=/etc/pgbackrest.conf
-    owner=postgres
-    group=postgres
-    mode=640
+    src: backup/pgbackrest/pgbackrest.conf.j2
+    dest: /etc/pgbackrest.conf
+    owner: postgres
+    group: postgres
+    mode: 640
 
 - stat: path="{{postgresql_backup_dir}}/archive/backup"
   register: stanza
@@ -78,7 +76,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and backup_postgres
+  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False)))
 
 - name: Create Daily Cron job S3
   sudo: yes
@@ -102,7 +100,7 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and backup_postgres
+  when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False)))
 
 - name: Create Weekly Cron job S3
   sudo: yes
@@ -115,5 +113,3 @@
     user: postgres
     cron_file: backup_postgres
   when: (is_pg_standby or (not is_pg_standby and not hot_standby_server|default(False))) and postgres_s3|default(false)
-
-- include: purge_old_scripts.yml

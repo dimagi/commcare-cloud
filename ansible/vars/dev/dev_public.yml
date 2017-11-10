@@ -122,7 +122,7 @@ pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
 
 shared_drive_enabled: True
-backup_postgres: True
+backup_postgres: plain
 backup_blobdb: True
 postgres_s3: False
 nadir_hour: 18

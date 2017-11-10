@@ -8,4 +8,7 @@
     state: directory
 
 - include_tasks: backup_plain.yml
-  when: backup_postgres or postgres_s3
+  when: backup_postgres == 'plain'
+
+- include_tasks: backup_pgbackrest.yml
+  when: backup_postgres == 'pgbackrest'
