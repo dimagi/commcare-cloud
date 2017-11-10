@@ -338,4 +338,4 @@
   tags: monit
 
 - import_tasks: backup.yml
-  when: backup_postgres and is_pg_standby or not hot_standby_server|default(False)
+  when: backup_postgres | bool

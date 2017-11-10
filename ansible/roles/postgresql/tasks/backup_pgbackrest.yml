@@ -14,6 +14,7 @@
     owner: postgres
     group: postgres
     mode: 750
+  when: not is_pg_standby
 
 - name: Creating pgbackrest.conf file
   become: True
@@ -33,8 +34,7 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backup --log-level-console=info stanza-create
-  # play when it's a standby or it's a master with no standby (and stanza does not already exist)
-  when: not stanza.stat.exists
+  when: not stanza.stat.exists and (is_pg_standby or not hot_standby_server|default(False))
 
 - name: Creating postgres S3 stanza
   become: True
@@ -42,8 +42,7 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backups3 --log-level-console=info stanza-create
-  # play when it's a standby or it's a master with no standby (and s3 backups enabled)
-  when: postgres_s3|default(false)
+  when: postgres_s3|default(false) and (is_pg_standby or not hot_standby_server|default(False))
 
 - name: Create Daily Cron job
   become: yes
@@ -55,6 +54,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
+  when: is_pg_standby or not hot_standby_server|default(False)
 
 - name: Create Daily Cron job S3
   become: yes
@@ -66,7 +66,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: postgres_s3|default(false)
+  when: postgres_s3|default(false) and (is_pg_standby or not hot_standby_server|default(False))
 
 - name: Create Weekly Cron job
   become: yes
@@ -78,6 +78,7 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
+  when: is_pg_standby or not hot_standby_server|default(False)
 
 - name: Create Weekly Cron job S3
   become: yes
@@ -89,4 +90,4 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: postgres_s3|default(false)
+  when: postgres_s3|default(false) and (is_pg_standby or not hot_standby_server|default(False))
