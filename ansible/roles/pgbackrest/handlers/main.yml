@@ -1,8 +1,0 @@
----
-- name: Restart postgres
-  sudo: yes
-  action: service name=postgresql state=restarted
-
-- name: Reload postgres
-  sudo: yes
-  action: service name=postgresql state=reloaded

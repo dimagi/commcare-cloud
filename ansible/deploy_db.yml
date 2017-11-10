@@ -20,7 +20,6 @@
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
-    - {role: pgbackrest, tags: ['postgresql', 'pgbackrest'], when: backup_postgres or postgres_s3}
 
 - name: Setup auth for standby
   hosts:
@@ -33,12 +32,6 @@
     - include: roles/setup_auth_keys.yml
   tags:
     - pg_standby
-
-- name: Posgres Standby
-  hosts: pg_standby
-  become: true
-  roles:
-    - {role: pgbackrest, tags: ['pg_standby', 'pgbackrest'], when: backup_postgres or postgres_s3}
 
 - name: Couchdb
   hosts: couchdb
