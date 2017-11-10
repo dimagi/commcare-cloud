@@ -23,7 +23,7 @@
     dest: /etc/pgbackrest.conf
     owner: postgres
     group: postgres
-    mode: 640
+    mode: 0640
 
 - stat: path="{{postgresql_backup_dir}}/archive/backup"
   register: stanza
