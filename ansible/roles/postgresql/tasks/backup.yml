@@ -1,2 +1,11 @@
+- name: create backup directory
+  become: yes
+  file:
+    path: '{{ postgresql_backup_dir }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+
 - include_tasks: backup_plain.yml
   when: is_pg_standby and (backup_postgres or postgres_s3)
