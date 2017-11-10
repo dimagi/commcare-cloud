@@ -8,4 +8,4 @@
     state: directory
 
 - include_tasks: backup_plain.yml
-  when: is_pg_standby and (backup_postgres or postgres_s3)
+  when: backup_postgres or postgres_s3
