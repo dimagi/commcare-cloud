@@ -1,8 +1,8 @@
 #!/bin/bash
-# keep latest 20 log files 
+# keep latest {{ postgresql_num_logs_to_keep }} log files
 find {{ postgresql_home }}/pg_log -type f -name '*.csv' -printf '%T@\t%p\n' \
     | sort -t $'\t' -g \
-    | head -n -20 \
+    | head -n -{{ postgresql_num_logs_to_keep }} \
     | cut -d $'\t' -f 2- \
     | xargs --no-run-if-empty -d '\n' rm --
 
