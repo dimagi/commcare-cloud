@@ -60,6 +60,14 @@
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
 
+- name: Create postgresql_log_directory
+  file:
+    dest: "{{ postgresql_log_directory }}"
+    state: directory
+    owner: postgres
+    group: postgres
+  when: postgresql_log_directory|default(false)
+
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
 
@@ -80,6 +88,15 @@
 - name: PostgreSQL access configuration
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
   notify: Reload postgres
+
+- name: PostgreSQL recovery configuration
+  template:
+    src: "recovery.conf.j2"
+    dest: "{{ postgresql_home }}/recovery.conf"
+    owner: "postgres"
+    group: "postgres"
+  notify: Restart postgres
+  when: is_pg_standby
 
 - name: start postgresql
   become: true
@@ -326,3 +343,6 @@
     name: postgresql
     state: monitored
   tags: monit
+
+- import_tasks: backup.yml
+  when: backup_postgres | bool

@@ -73,8 +73,13 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 keystore_file: '../config/DimagiKeyStore'
 
+encrypted_root: '/opt/data'
+
 backup_blobdb: False
-backup_postgres: True
+backup_postgres: pgbackrest
+postgresql_backup_days: 2
+postgresql_backup_weeks: 2
+postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 backup_es: False
 postgres_s3: False
 backup_couch: True
@@ -176,8 +181,6 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
 kafka_broker_id: 0
-
-encrypted_root: '/opt/data'
 
 ufw_private_interface: eth0
 
