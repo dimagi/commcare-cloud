@@ -1,0 +1,20 @@
+- name: create backup directory
+  become: yes
+  file:
+    path: '{{ postgresql_backup_dir }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+
+- include_tasks: backup_plain.yml
+  when: backup_postgres == 'plain' and (is_pg_standby or not hot_standby_server|default(False))
+
+- include_tasks: backup_plain_clean.yml
+  when: backup_postgres != 'plain' and (is_pg_standby or not hot_standby_server|default(False))
+
+- include_tasks: backup_pgbackrest.yml
+  when: backup_postgres == 'pgbackrest'
+
+- include_tasks: backup_pgbackrest_clean.yml
+  when: backup_postgres != 'pgbackrest'

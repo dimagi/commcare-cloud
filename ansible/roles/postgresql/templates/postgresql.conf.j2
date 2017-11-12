@@ -35,6 +35,11 @@ vacuum_cost_delay = 20ms
 
 
 # WRITE AHEAD LOG
+{% if backup_postgres == 'pgbackrest' and not is_pg_standby %}
+archive_mode = on
+archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'
+archive_timeout = 60
+{% endif %}
 
 wal_level = hot_standby
 max_wal_senders = 3
@@ -60,7 +65,7 @@ effective_cache_size = {{ postgresql_effective_cache_size }}
 
 log_destination = 'csvlog'
 logging_collector = on
-log_directory = 'pg_log'
+log_directory = '{{ postgresql_log_directory|default('pg_log') }}'
 log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
 log_truncate_on_rotation = on
 log_rotation_age = 0
