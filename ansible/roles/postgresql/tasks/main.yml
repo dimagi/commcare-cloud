@@ -208,15 +208,21 @@
   when: no_tags is not defined
   tags: after-reboot
 
+- name: check if pghashlib installed
+  stat:
+    path: "{{postgres_install_dir}}/lib/hashlib.so"
+  register: hashlib_stat
 
 - name: Download pghashlib
   get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
+  when: hashlib_stat.stat.exists == False
 
 - name: Unzip pghashlib
   command: unzip pghashlib.zip
   args:
      chdir: /tmp
      creates: /tmp/pghashlib-master
+  when: hashlib_stat.stat.exists == False
 
 - name: Install pghashlib
   become: yes
@@ -227,6 +233,7 @@
   notify:
     - Run ldconfig
     - Restart postgres
+  when: hashlib_stat.stat.exists == False
 
 - name: Create plproxy extension
   become: yes
