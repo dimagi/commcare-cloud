@@ -38,6 +38,7 @@ vacuum_cost_delay = 20ms
 {% if backup_postgres == 'pgbackrest' and not is_pg_standby %}
 archive_mode = on
 archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'
+archive_timeout = 60
 {% endif %}
 
 wal_level = hot_standby
