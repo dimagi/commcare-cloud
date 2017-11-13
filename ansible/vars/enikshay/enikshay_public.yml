@@ -3,6 +3,7 @@ ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
 J2ME_SITE_HOST: 'j2me.enikshay.in'
 deploy_env: enikshay
 internal_domain_name: 'enikshay.in'
+daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
   cchq_ssl: True
@@ -228,7 +229,6 @@ localsettings:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_STALE_QUERY: 'update_after'
-  DAILY_DEPLOY_EMAIL: 'tech-announce-daily@dimagi.com'
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
