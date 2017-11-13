@@ -14,6 +14,8 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
+LANGUAGE_CODE = '{{ localsettings.LANGUAGE_CODE|default("en-us") }}'
+
 DATABASES = { {% for config in postgresql_dbs %}
 {%- if config.get('django_alias') %}
     '{{config.django_alias}}': {
