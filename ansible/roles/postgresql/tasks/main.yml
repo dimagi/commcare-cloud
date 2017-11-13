@@ -66,7 +66,6 @@
     state: directory
     owner: postgres
     group: postgres
-  when: postgresql_log_directory|default(false)
 
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}

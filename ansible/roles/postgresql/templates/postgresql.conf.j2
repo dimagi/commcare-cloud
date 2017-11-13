@@ -65,7 +65,7 @@ effective_cache_size = {{ postgresql_effective_cache_size }}
 
 log_destination = 'csvlog'
 logging_collector = on
-log_directory = '{{ postgresql_log_directory|default('pg_log') }}'
+log_directory = '{{ postgresql_log_directory }}'
 log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
 log_truncate_on_rotation = on
 log_rotation_age = 0
