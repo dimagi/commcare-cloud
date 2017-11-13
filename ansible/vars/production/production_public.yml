@@ -3,6 +3,7 @@ NO_WWW_SITE_HOST: 'commcarehq.org'
 COMMTRACK_SITE_HOST: 'commtrack.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 deploy_env: production
+daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
   cchq_ssl: True
@@ -188,7 +189,6 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
-  DAILY_DEPLOY_EMAIL: 'tech-announce-daily@dimagi.com'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
