@@ -15,6 +15,13 @@
   with_items: "{{ nginx_ubuntu_pkg }}"
   when: nginx_install == True
 
+- name: Make sure nofile ulimit is high
+  become: yes
+  lineinfile:
+    path: /etc/default/nginx
+    regexp: '^ULIMIT='
+    line: 'ULIMIT="-n 65536"'
+
 - name: Create nginx http user
   become: yes
   user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
