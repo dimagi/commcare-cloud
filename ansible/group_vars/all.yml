@@ -146,4 +146,4 @@ report_builder_add_on_email: sales@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-daily_deploy_email: tech-announce-daily@dimagi.com
+daily_deploy_email: null
