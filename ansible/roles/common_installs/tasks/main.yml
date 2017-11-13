@@ -78,7 +78,7 @@
   become: yes
   with_items:
     - npm@3.6.0
-    - less@1.3.1
+    - less@2.7.2
     - n@1.3.0
     - bower@1.5.3
     - uglify-js@2.6.1
@@ -89,14 +89,10 @@
   command: 'n 0.10.29'
   become: yes
 
-- stat: path=/opt/lessc
-  register: lessc_stat
-
-- name: Install lessc from source
-  become: yes
-  # this is lessc 1.7.3
-  git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes
-  when: not lessc_stat.stat.exists
+- name: Remove lessc directory
+  file:
+    path: /opt/lessc
+    state: absent
 
 - name: Install pip packages
   pip: name="{{ item }}"
