@@ -12,6 +12,14 @@
   with_items: "{{ redis_ubuntu_pkg }}"
   environment: env
 
+- name: Make sure nofile ulimit is high
+  lineinfile:
+    path: /etc/default/redis-server
+    regexp: '^ULIMIT='
+    line: 'ULIMIT=65536'
+  notify: 
+   - restart redis 
+
 - name: Copy the redis configuration file 
   template: src=redis.conf.j2 dest="{{ redis_conf_dest }}"
   notify: 
