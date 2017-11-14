@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import print_function
 import getpass
+import os
 from six.moves import input
 from argparse import ArgumentParser
 import subprocess
@@ -21,15 +22,15 @@ class AnsiblePlaybook(object):
         def anisible_playbook(environment, vault_password, *cmd_args):
             cmd = (
                 'ansible-playbook',
-                '-u', '~/.commcare-cloud/ansible',
-                '-i', '~/.commcare-cloud/inventory/{env}'.format(env=environment),
-                '-e', '"@~/.commcare-cloud/vars/{env}/{env}_vault.yml"'.format(env=environment),
-                '-e', '"@~/.commcare-cloud/vars/{env}/{env}_public.yml"'.format(env=environment),
-                '--ask-vault-pass',
+                '-u', os.path.expanduser('~/.commcare-cloud/ansible'),
+                '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=environment)),
+                '-e', '"@{}"'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=environment))),
+                '-e', '"@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml"'.format(env=environment))),
+                '--vault-password-file=/bin/cat',
                 '--diff',
             ) + cmd_args
             print(' '.join(cmd))
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
+            p = subprocess.Popen(' '.join(cmd), stdin=subprocess.PIPE, shell=True)
             p.communicate(input='{}\n'.format(vault_password))
             return p.returncode
 
