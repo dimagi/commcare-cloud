@@ -16,9 +16,12 @@ class AnsiblePlaybook(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('--skip-check', action='store_true', default=False)
+        parser.add_argument('--branch', default='master')
 
     @staticmethod
     def run(args, unknown_args):
+        check_branch(args)
+
         def anisible_playbook(environment, vault_password, *cmd_args):
             cmd = (
                 'ansible-playbook',
@@ -73,6 +76,20 @@ class AnsiblePlaybook(object):
         exit(exit_code)
 
 
+def git_branch():
+    return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2", shell=True).strip()
+
+
+def check_branch(args):
+    branch = git_branch()
+    if args.branch != branch:
+        if branch != 'master':
+            puts(colored.red("You are not on branch master. To deploy anyway, use --branch={}".format(branch)))
+        else:
+            puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(branch)))
+        exit(-1)
+
+
 def main():
     parser = ArgumentParser()
     parser.add_argument('environment')
@@ -81,7 +98,6 @@ def main():
     AnsiblePlaybook.make_parser(subparsers.add_parser('ansible-playbook'))
 
     args, unknown_args = parser.parse_known_args()
-    print(args, unknown_args)
     if args.command == 'ansible-playbook':
         AnsiblePlaybook.run(args, unknown_args)
 
