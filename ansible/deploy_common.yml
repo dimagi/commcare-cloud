@@ -42,4 +42,6 @@
     become: True
     register: route_show
     changed_when: '"already_exists" not in route_show.stdout'
-    tags: static_routes
+    tags:
+      - static-routes
+      - after-reboot
