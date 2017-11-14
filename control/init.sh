@@ -40,6 +40,7 @@ pip install -e ~/commcarehq-ansible/commcare-cloud
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
 [ ! -d ~/.commcare-cloud ] && mkdir ~/.commcare-cloud
+[ ! -d ~/.commcare-cloud/ansible ] && ln -s ~/commcarehq-ansible/ansible ~/.commcare-cloud/
 [ ! -d ~/.commcare-cloud/vars ] && ln -s ~/commcarehq-ansible/ansible/vars ~/.commcare-cloud/
 [ ! -d ~/.commcare-cloud/inventory ] && ln -s ~/commcare-hq-deploy/fab/inventory ~/.commcare-cloud/
 
