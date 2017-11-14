@@ -12,7 +12,6 @@ source virtualenvwrapper.sh
 if [ ! -d ~/.virtualenvs/ansible ]; then
     echo "Creating ansible virtualenv..."
     mkvirtualenv ansible
-    pip install -r ~/commcarehq-ansible/ansible/requirements.txt
 else
     workon ansible
 fi
@@ -35,8 +34,15 @@ echo "Downloading dependencies from galaxy"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml
 
+pip install -r ~/commcarehq-ansible/ansible/requirements.txt
+pip install -e ~/commcarehq-ansible/ansible/commcare-cloud
+
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
+[ ! -f ~/.commcare-cloud ] && mkdir ~/.commcare-cloud
+[ ! -f ~/.commcare-cloud/ansible ] && ln -s ~/commcarehq-ansible/ansible ~/.commcare-cloud/
+[ ! -f ~/.commcare-cloud/vars ] && ln -s ~/commcarehq-ansible/ansible/vars ~/.commcare-cloud/
+[ ! -f ~/.commcare-cloud/inventory ] && ln -s ~/commcare-hq-deploy/fab/inventory ~/.commcare-cloud/
 
 alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
 alias aps='ap deploy_stack.yml'
