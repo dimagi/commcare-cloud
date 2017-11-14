@@ -35,7 +35,7 @@ export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml
 
 pip install -r ~/commcarehq-ansible/ansible/requirements.txt
-pip install -e ~/commcarehq-ansible/ansible/commcare-cloud
+pip install -e ~/commcarehq-ansible/commcare-cloud
 
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
