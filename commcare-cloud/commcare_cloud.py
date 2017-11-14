@@ -79,6 +79,19 @@ class AnsiblePlaybook(object):
         exit(exit_code)
 
 
+class UpdateConfig(object):
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('--skip-check', action='store_true', default=False)
+        parser.add_argument('--branch', default='master')
+
+    @staticmethod
+    def run(args, unknown_args):
+        args.playbook = 'deploy_localsettings.yml'
+        unknown_args += ('--tags=localsettings',)
+        AnsiblePlaybook.run(args, unknown_args)
+
+
 def git_branch():
     return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2", shell=True,
                                    cwd=os.path.expanduser('~/.commcare-cloud/ansible')).strip()
@@ -100,10 +113,13 @@ def main():
     subparsers = parser.add_subparsers(dest='command')
 
     AnsiblePlaybook.make_parser(subparsers.add_parser('ansible-playbook'))
+    UpdateConfig.make_parser(subparsers.add_parser('update-config'))
 
     args, unknown_args = parser.parse_known_args()
     if args.command == 'ansible-playbook':
         AnsiblePlaybook.run(args, unknown_args)
+    if args.command == 'update-config':
+        UpdateConfig.run(args, unknown_args)
 
 if __name__ == '__main__':
     main()
