@@ -32,3 +32,14 @@
   hosts: all
   roles:
     - {role: monit, tags: monit}
+
+- name: Configure static routes
+  hosts: all
+  tasks:
+  - name: Adds static routes
+    shell: 'if [ `ip route show {{ item.prefix }} | wc -l` -eq "0" ];  then route add -net {{ item.prefix }} gw {{ item.gateway }}; else echo "already_exists"; fi'
+    with_items: "{{ static_routes }}"
+    become: True
+    register: route_show
+    changed_when: '"already_exists" not in route_show.stdout'
+    tags: static_routes
