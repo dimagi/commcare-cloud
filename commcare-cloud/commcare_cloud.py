@@ -17,14 +17,17 @@ class AnsiblePlaybook(object):
     def make_parser(parser):
         parser.add_argument('--skip-check', action='store_true', default=False)
         parser.add_argument('--branch', default='master')
+        parser.add_argument('playbook')
 
     @staticmethod
     def run(args, unknown_args):
         check_branch(args)
 
-        def anisible_playbook(environment, vault_password, *cmd_args):
+        def anisible_playbook(environment, playbook, vault_password, *cmd_args):
             cmd = (
+                'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
                 'ansible-playbook',
+                os.path.expanduser('~/.commcare-cloud/ansible/{playbook}'.format(playbook=playbook)),
                 '-u', 'ansible',
                 '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=environment)),
                 '-e', '"@{}"'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=environment))),
@@ -38,10 +41,10 @@ class AnsiblePlaybook(object):
             return p.returncode
 
         def run_check():
-            return anisible_playbook(args.environment, get_ansible_vault_password(), '--check', *unknown_args)
+            return anisible_playbook(args.environment, args.playbook, get_ansible_vault_password(), '--check', *unknown_args)
 
         def run_apply():
-            return anisible_playbook(args.environment, get_ansible_vault_password(), *unknown_args)
+            return anisible_playbook(args.environment, args.playbook, get_ansible_vault_password(), *unknown_args)
 
         def get_ansible_vault_password():
             if not get_ansible_vault_password.value:
@@ -77,7 +80,8 @@ class AnsiblePlaybook(object):
 
 
 def git_branch():
-    return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2", shell=True).strip()
+    return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2", shell=True,
+                                   cwd=os.path.expanduser('~/.commcare-cloud/ansible')).strip()
 
 
 def check_branch(args):
