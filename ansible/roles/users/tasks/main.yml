@@ -6,12 +6,12 @@
 
 - name: Add users for current devs
   become: yes
-  user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
+  user: name="{{ item.name }}" state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
 
 - name: Add public keys for current devs
   become: yes
-  authorized_key: user="{{ item }}" state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key: user="{{ item.name }}" state=present key="{{ lookup('file', 'vars/users/' ~ item.name ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
 
 - name: Add MSP user sudo user
@@ -28,7 +28,7 @@
 
 - name: Authorize current devs to login as ansible
   become: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
+  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item.name ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
 - name: De-authorize ansible pubkey
@@ -43,7 +43,13 @@
 
 - name: Copy sudoers file
   become: yes
-  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/cchq
+    validate: 'visudo -cf %s'
+    owner: root
+    group: root
+    mode: 0440
 
 # ansible used to create this file
 # but for consistency with prod machines, we changed to 'cchq'
