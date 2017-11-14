@@ -22,7 +22,7 @@ class AnsiblePlaybook(object):
         def anisible_playbook(environment, vault_password, *cmd_args):
             cmd = (
                 'ansible-playbook',
-                '-u', os.path.expanduser('~/.commcare-cloud/ansible'),
+                '-u', 'ansible',
                 '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=environment)),
                 '-e', '"@{}"'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=environment))),
                 '-e', '"@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml"'.format(env=environment))),
