@@ -197,6 +197,21 @@
   tags:
     - pgbouncer
 
+- name: Make sure nofile ulimit is high
+  lineinfile:
+    path: /etc/default/pgbouncer
+    regexp: '^ULIMIT='
+    line: 'ULIMIT="-n 65536"'
+  notify: Restart pgbouncer
+  tags:
+    - pgbouncer
+
+- name: pgbouncer init script
+  template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
+  notify: Restart pgbouncer
+  tags:
+    - pgbouncer
+
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
   register: no_tags
