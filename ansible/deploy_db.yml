@@ -30,6 +30,7 @@
     - state: 'present'
   tasks:
     - include: roles/setup_auth_keys.yml
+      when: hot_standby_server is defined
   tags:
     - pg_standby
 
