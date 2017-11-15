@@ -51,3 +51,4 @@
   file: state=absent path=/etc/sudoers.d/cchq_sudoers
 
 - import_tasks: remove_users.yml
+  when: dev_users.absent
