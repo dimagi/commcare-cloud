@@ -14,8 +14,14 @@ etc_hosts_lines_removed: []
 
 static_routes:
   - name: docker
+    cmd: add
     interface: eth1
     prefix: "172.17.0.0/16"
+    gateway: "192.168.121.1"
+  - name: local
+    cmd: del
+    interface: eth1
+    prefix: "10.0.0.0/8"
     gateway: "192.168.121.1"
 
 http_proxy_address: '192.168.33.14'
