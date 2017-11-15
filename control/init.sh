@@ -69,7 +69,7 @@ function ansible-deploy-control() {
 function ansible-control-banner() {
     GREEN='\033[0;32m'
     BLUE='\033[0;34m'
-
+    YELLOW='\033[0;33m'
     NC='\033[0m' # No Color
     printf "\n${GREEN}Welcome to Ansible Control\n\n"
     printf "${GREEN}Available commands:\n"
@@ -79,6 +79,7 @@ function ansible-control-banner() {
     printf "${BLUE}aps${NC} - same as \"${YELLOW}ap deploy_stack.yml${NC}\"\n"
     printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
     printf "${BLUE}ae${NC} - allows running ad hoc commands on specified machines e.g. ae riakcs 'grep OOM /var/log/riak/console.log'\n"
+    printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible. See ${YELLOW}commcare-cloud -h${NC} for more details."
 }
 
 [ -t 1 ] && ansible-control-banner
