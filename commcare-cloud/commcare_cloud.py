@@ -2,7 +2,7 @@
 from __future__ import print_function
 import getpass
 import os
-from six.moves import input
+from six.moves import input, shlex_quote
 from argparse import ArgumentParser
 import subprocess
 from clint.textui import puts, colored
@@ -45,19 +45,20 @@ class AnsiblePlaybook(object):
         check_branch(args)
 
         def ansible_playbook(environment, playbook, vault_password, *cmd_args):
-            cmd = (
+            cmd_parts = (
                 'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
                 'ansible-playbook',
                 os.path.expanduser('~/.commcare-cloud/ansible/{playbook}'.format(playbook=playbook)),
                 '-u', 'ansible',
                 '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=environment)),
-                '-e', '"@{}"'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=environment))),
-                '-e', '"@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml"'.format(env=environment))),
+                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=environment))),
+                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=environment))),
                 '--vault-password-file=/bin/cat',
                 '--diff',
             ) + cmd_args
-            print(' '.join(cmd))
-            p = subprocess.Popen(' '.join(cmd), stdin=subprocess.PIPE, shell=True)
+            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            print(cmd)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
             p.communicate(input='{}\n'.format(vault_password))
             return p.returncode
 
@@ -68,7 +69,7 @@ class AnsiblePlaybook(object):
             return ansible_playbook(args.environment, args.playbook, get_ansible_vault_password(), *unknown_args)
 
         def get_ansible_vault_password():
-            if not get_ansible_vault_password.value:
+            if get_ansible_vault_password.value is None:
                 get_ansible_vault_password.value = getpass.getpass("Vault Password: ")
             return get_ansible_vault_password.value
         get_ansible_vault_password.value = None
