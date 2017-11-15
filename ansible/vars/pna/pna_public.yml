@@ -54,10 +54,10 @@ pna_key_value: '{{ ssl_secrets.private_keys.pna_commcarehq_org }}'
 keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
-backup_postgres: False
+backup_postgres: pgbackrest
 backup_es: False
 backup_couch: False
-postgres_s3: False
+postgres_s3: True
 blobdb_s3: False
 couch_s3: False
 
