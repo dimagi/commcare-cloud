@@ -54,10 +54,10 @@ pna_key_value: '{{ ssl_secrets.private_keys.pna_commcarehq_org }}'
 keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
-backup_postgres: False
+backup_postgres: pgbackrest
 backup_es: False
 backup_couch: False
-postgres_s3: False
+postgres_s3: True
 blobdb_s3: False
 couch_s3: False
 
@@ -176,6 +176,8 @@ localsettings:
     - "{{ SITE_HOST }}"
     - localhost
     - 127.0.0.1
+  AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
+  AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
