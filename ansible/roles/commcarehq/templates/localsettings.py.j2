@@ -661,10 +661,6 @@ COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
 COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
 {% endif %}
 
-{% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
-ONBOARDING_DOMAIN_TEST_DATE = {{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}
-{% endif %}
-
 {% if localsettings.get('SENTRY_PUBLIC_KEY') %}
 SENTRY_PUBLIC_KEY = '{{ localsettings.SENTRY_PUBLIC_KEY }}'
 SENTRY_PRIVATE_KEY = '{{ localsettings.SENTRY_PRIVATE_KEY }}'
