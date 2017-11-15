@@ -32,6 +32,7 @@ function update_repo() {
     git submodule update --init --recursive
 }
 
+[ ! -d 'commcarehq-ansible/config' ] && mkdir commcarehq-ansible/config
 for repo in "commcare-hq-deploy" "commcarehq-ansible/config" "commcarehq-ansible"
 do
     cd ~/$repo
