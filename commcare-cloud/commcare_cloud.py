@@ -12,12 +12,33 @@ def ask(message):
     return 'y' == input('{} [y/N]'.format(message))
 
 
+def arg_skip_check(parser):
+    parser.add_argument('--skip-check', action='store_true', default=False, help=(
+        "skip the default of viewing --check output first"
+    ))
+
+
+def arg_branch(parser):
+    parser.add_argument('--branch', default='master', help=(
+        "the name of the commcarehq-ansible git branch to run against, if not master"
+    ))
+
+
 class AnsiblePlaybook(object):
+    help = (
+        "Run a playbook as you would with ansible-playbook, "
+        "but with boilerplate settings already set based on your <environment>. "
+        "By default, you will see --check output and then asked whether to apply. "
+        "All arguments not specified here will be passed on to ansible-playbook."
+    )
+
     @staticmethod
     def make_parser(parser):
-        parser.add_argument('--skip-check', action='store_true', default=False)
-        parser.add_argument('--branch', default='master')
-        parser.add_argument('playbook')
+        arg_skip_check(parser)
+        arg_branch(parser)
+        parser.add_argument('playbook', help=(
+            "The ansible playbook .yml file to run."
+        ))
 
     @staticmethod
     def run(args, unknown_args):
@@ -80,10 +101,15 @@ class AnsiblePlaybook(object):
 
 
 class UpdateConfig(object):
+    help = (
+        "Run the ansible playbook for updating app config "
+        "such as django localsettings.py and formplayer application.properties."
+    )
+
     @staticmethod
     def make_parser(parser):
-        parser.add_argument('--skip-check', action='store_true', default=False)
-        parser.add_argument('--branch', default='master')
+        arg_skip_check(parser)
+        arg_branch(parser)
 
     @staticmethod
     def run(args, unknown_args):
@@ -109,11 +135,19 @@ def check_branch(args):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('environment')
+    inventory_dir = os.path.expanduser('~/.commcare-cloud/inventory/')
+    vars_dir = os.path.expanduser('~/.commcare-cloud/vars/')
+    if os.path.isdir(inventory_dir) and os.path.isdir(vars_dir):
+        available_envs = sorted(set(os.listdir(inventory_dir)) & set(os.listdir(vars_dir)))
+    else:
+        available_envs = []
+    parser.add_argument('environment', choices=available_envs, help=(
+        "server environment to run against"
+    ))
     subparsers = parser.add_subparsers(dest='command')
 
-    AnsiblePlaybook.make_parser(subparsers.add_parser('ansible-playbook'))
-    UpdateConfig.make_parser(subparsers.add_parser('update-config'))
+    AnsiblePlaybook.make_parser(subparsers.add_parser('ansible-playbook', help=AnsiblePlaybook.help))
+    UpdateConfig.make_parser(subparsers.add_parser('update-config', help=UpdateConfig.help))
 
     args, unknown_args = parser.parse_known_args()
     if args.command == 'ansible-playbook':
