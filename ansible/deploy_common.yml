@@ -32,3 +32,26 @@
   hosts: all
   roles:
     - {role: monit, tags: monit}
+
+- name: Configure static routes
+  hosts: all
+  tasks:
+
+  - name: Checks existing static routes
+    shell: 'ip route show {{ item.prefix }} | wc -l'
+    with_items: "{{ static_routes }}"
+    become: True
+    register: static_routes_status
+    changed_when: false
+    tags:
+      - static-routes
+      - after-reboot
+
+  - name: Adds static routes
+    shell: "route {{ item.item.cmd }} -net {{ item.item.prefix }} gw {{ item.item.gateway }}"
+    become: true
+    with_items: "{{ static_routes_status.results }}"
+    when: (item.stdout == "0" and item.item.cmd == "add") or (item.stdout == "1" and item.item.cmd == "del")
+    tags:
+      - static-routes
+      - after-reboot
