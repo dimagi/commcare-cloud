@@ -68,7 +68,7 @@ class AnsiblePlaybook(object):
             return ansible_playbook(args.environment, args.playbook, get_ansible_vault_password(), *unknown_args)
 
         def get_ansible_vault_password():
-            if not get_ansible_vault_password.value:
+            if get_ansible_vault_password.value is None:
                 get_ansible_vault_password.value = getpass.getpass("Vault Password: ")
             return get_ansible_vault_password.value
         get_ansible_vault_password.value = None
