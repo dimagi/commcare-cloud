@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 import json
 import time
 import posixpath
@@ -207,7 +208,7 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_dest
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
 
     if filename in env.get('service_blacklist', []):
-        print magenta('Skipping {} because the service has been blacklisted'.format(filename))
+        print(magenta('Skipping {} because the service has been blacklisted'.format(filename)))
         return
 
     with cd(env.code_root):
