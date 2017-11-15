@@ -23,7 +23,7 @@ class AnsiblePlaybook(object):
     def run(args, unknown_args):
         check_branch(args)
 
-        def anisible_playbook(environment, playbook, vault_password, *cmd_args):
+        def ansible_playbook(environment, playbook, vault_password, *cmd_args):
             cmd = (
                 'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
                 'ansible-playbook',
@@ -41,10 +41,10 @@ class AnsiblePlaybook(object):
             return p.returncode
 
         def run_check():
-            return anisible_playbook(args.environment, args.playbook, get_ansible_vault_password(), '--check', *unknown_args)
+            return ansible_playbook(args.environment, args.playbook, get_ansible_vault_password(), '--check', *unknown_args)
 
         def run_apply():
-            return anisible_playbook(args.environment, args.playbook, get_ansible_vault_password(), *unknown_args)
+            return ansible_playbook(args.environment, args.playbook, get_ansible_vault_password(), *unknown_args)
 
         def get_ansible_vault_password():
             if not get_ansible_vault_password.value:
