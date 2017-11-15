@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 from fabric.api import roles, env, sudo, run, hide
 
 from ..const import (
