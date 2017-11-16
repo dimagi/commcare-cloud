@@ -359,4 +359,4 @@
   tags: monit
 
 - import_tasks: backup.yml
-  when: backup_postgres | bool
+  when: backup_postgres in ["plain", "pgbackrest"]
