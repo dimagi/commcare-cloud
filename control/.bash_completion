@@ -23,7 +23,7 @@ _commcare_cloud()
         fi
         ;;
     3)
-        IFS=$'\n' tmp=( $(compgen -W "$(ls $FILE_EXCHANGE_DIR)" -- "${COMP_WORDS[$COMP_CWORD]}" ))
+        IFS=$'\n' tmp=( $(compgen -W "$(ls $FILE_EXCHANGE_DIR)" -- ${cur}) )
         COMPREPLY=( "${tmp[@]// /\ }" )
         ;;
     esac
