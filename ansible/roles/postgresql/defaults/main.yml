@@ -19,7 +19,7 @@ pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
 pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
 
 postgresql_max_connections: 20
-postgresql_work_mem: '1MB'
+postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '1024MB'
 postgresql_max_stack_depth: '2MB'
 postgresql_effective_cache_size: '128MB'
