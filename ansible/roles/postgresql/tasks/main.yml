@@ -86,6 +86,7 @@
 
 - name: PostgreSQL access configuration
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
+  tags: postgresql_conf
   notify: Reload postgres
 
 - name: PostgreSQL recovery configuration
