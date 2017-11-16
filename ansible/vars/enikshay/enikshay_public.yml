@@ -94,6 +94,7 @@ postgresql_num_logs_to_keep: 100
 postgresql_shared_buffers: '10GB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '32GB'
+postgresql_work_mem: '16MB'
 postgresql_max_connections: 600
 postgresql_checkpoint_segments: 32
 pgbouncer_max_connections: 1600
