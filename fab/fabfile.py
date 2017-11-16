@@ -60,7 +60,6 @@ from .const import (
     PROJECT_ROOT,
 )
 from .exceptions import PreindexNotFinished
-from fab.utils import get_inventory
 from .operations import (
     db,
     staticfiles,
@@ -70,12 +69,13 @@ from .operations import (
     offline as offline_ops,
 )
 from .utils import (
-    clear_cached_deploy,
-    execute_with_timing,
     DeployMetadata,
     cache_deploy_state,
-    retrieve_cached_deploy_env,
+    clear_cached_deploy,
+    execute_with_timing,
+    read_inventory_file,
     retrieve_cached_deploy_checkpoint,
+    retrieve_cached_deploy_env,
     traceback_string,
 )
 from .checks import (
@@ -254,26 +254,6 @@ def _confirm_environment_time(env_name, env_tz):
     ) % env_name
     if not console.confirm(message, default=False):
         utils.abort('Action aborted.')
-
-
-def read_inventory_file(filename):
-    """
-    filename is a path to an ansible inventory file
-
-    returns a mapping of group names ("webworker", "proxy", etc.)
-    to lists of hostnames as listed in the inventory file.
-    ("Hostnames" can also be IP addresses.)
-    If the hostname in the file includes :<port>, that will be included here as well.
-
-    """
-    inventory = get_inventory(filename)
-    port_map = {host.name: inventory.get_vars(hostname=host.name).get('ansible_port')
-                for host in inventory.get_hosts()}
-    return {group: [
-        '{}:{}'.format(host, port_map[host])
-        if port_map[host] is not None else host
-        for host in hosts
-    ] for group, hosts in get_inventory(filename).get_group_dict().items()}
 
 
 @task
