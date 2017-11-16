@@ -261,10 +261,19 @@ def read_inventory_file(filename):
     filename is a path to an ansible inventory file
 
     returns a mapping of group names ("webworker", "proxy", etc.)
-    to lists of hosts (ip addresses)
+    to lists of hostnames as listed in the inventory file.
+    ("Hostnames" can also be IP addresses.)
+    If the hostname in the file includes :<port>, that will be included here as well.
 
     """
-    return get_inventory(filename).get_group_dict()
+    inventory = get_inventory(filename)
+    port_map = {host.name: inventory.get_vars(hostname=host.name).get('ansible_port')
+                for host in inventory.get_hosts()}
+    return {group: [
+        '{}:{}'.format(host, port_map[host])
+        if port_map[host] is not None else host
+        for host in hosts
+    ] for group, hosts in get_inventory(filename).get_group_dict().items()}
 
 
 @task
