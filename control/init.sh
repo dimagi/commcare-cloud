@@ -30,12 +30,12 @@ if [ ! -d ~/commcare-hq-deploy ]; then
     fi
 fi
 
-echo "Downloading dependencies from galaxy"
+echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml
-
-pip install -r ~/commcarehq-ansible/ansible/requirements.txt
-pip install -e ~/commcarehq-ansible/commcare-cloud
+ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml &
+pip install -r ~/commcarehq-ansible/ansible/requirements.txt &
+pip install -e ~/commcarehq-ansible/commcare-cloud &
+wait
 
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
