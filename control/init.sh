@@ -49,6 +49,9 @@ alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
+[ ! -f ~/.bash_completion ] source  ~/commcarehq-ansible/control/.bash_completion
+cp ~/commcarehq-ansible/control/.bash_completion ~/
+
 function ae() {
     ansible $1 -m shell -a "$2" -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV
 }

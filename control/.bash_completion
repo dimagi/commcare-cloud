@@ -1,0 +1,31 @@
+_commcare_cloud() 
+{
+    local cur prev opts
+    COMPREPLY=()
+    FILE_EXCHANGE_DIR=~/commcarehq-ansible/ansible
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="--help --version"
+    envs="enikshay icds l10k pna production softlayer staging swiss"
+    cmds="ansible-playbook update-config"
+
+    case $COMP_CWORD in
+    1)
+        if [[ ${cur} == -* ]] ; then
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        else
+            COMPREPLY=( $(compgen -W "${envs}" -- ${cur}) )
+        fi
+        ;;
+    2)
+        if [[ ${cur} == * ]] ; then
+            COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
+        fi
+        ;;
+    3)
+        IFS=$'\n' tmp=( $(compgen -W "$(ls $FILE_EXCHANGE_DIR)" -- "${COMP_WORDS[$COMP_CWORD]}" ))
+        COMPREPLY=( "${tmp[@]// /\ }" )
+        ;;
+    esac
+}
+complete -F _commcare_cloud commcare-cloud
