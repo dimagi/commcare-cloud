@@ -266,7 +266,7 @@ def _format_env(current_env, extra=None):
 
     host = current_env.get('host_string')
     inventory = get_inventory(current_env.inventory)
-    inventory_groups = inventory.groups.values()
+    inventory_groups = list(inventory.groups.values())
     newrelic_machines = [machine.name
                          for group in inventory_groups for machine in group.hosts
                          if 'newrelic_app_name' in group.vars]
