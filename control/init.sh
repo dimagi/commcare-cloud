@@ -17,7 +17,7 @@ else
 fi
 
 if [ ! -d ~/commcarehq-ansible/config ]; then
-    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcarehq-ansible/config
+    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcarehq-ansible/config || mkdir ~/commcarehq-ansible/config
 fi
 
 if [ ! -d ~/commcare-hq-deploy ]; then
@@ -49,7 +49,7 @@ alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
-[ ! -f ~/.bash_completion ] source  ~/commcarehq-ansible/control/.bash_completion
+[ ! -f ~/.bash_completion ] && source  ~/commcarehq-ansible/control/.bash_completion
 cp ~/commcarehq-ansible/control/.bash_completion ~/
 
 function ae() {
