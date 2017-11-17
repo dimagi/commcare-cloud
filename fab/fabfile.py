@@ -593,7 +593,7 @@ def _deploy_without_asking():
 
     try:
         for index, command in enumerate(commands):
-            deploy_checkpoint(index, command.func_name, execute_with_timing, command)
+            deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy to {} yet. There's a preindex in process.".format(env.environment),
