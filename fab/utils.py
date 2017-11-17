@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 import datetime
 import os
 import pickle
@@ -74,10 +75,10 @@ class DeployMetadata(object):
                 break
 
         if not self._last_tag:
-            print magenta('Warning: No previous tag found in last {} tags for {}'.format(
+            print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
                 self._max_tags,
                 self._environment
-            ))
+            )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
         msg = "{} deploy at {}".format(self._environment, self.timestamp)
         user = github.me()
@@ -157,11 +158,11 @@ def _get_github():
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
-        print (
+        print((
             "You can add a GitHub API key to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
-        ).format(project_root=PROJECT_ROOT)
+        ).format(project_root=PROJECT_ROOT))
         username = raw_input('Github username: ')
         password = getpass('Github password: ')
         global_github = login(
