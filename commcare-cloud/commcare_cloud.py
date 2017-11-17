@@ -25,6 +25,7 @@ def arg_branch(parser):
 
 
 class AnsiblePlaybook(object):
+    command = 'ansible-playbook'
     help = (
         "Run a playbook as you would with ansible-playbook, "
         "but with boilerplate settings already set based on your <environment>. "
@@ -102,6 +103,7 @@ class AnsiblePlaybook(object):
 
 
 class UpdateConfig(object):
+    command = 'update-config'
     help = (
         "Run the ansible playbook for updating app config "
         "such as django localsettings.py and formplayer application.properties."
@@ -133,6 +135,11 @@ def check_branch(args):
             puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(branch)))
         exit(-1)
 
+STANDARD_ARGS = [
+    AnsiblePlaybook,
+    UpdateConfig,
+]
+
 
 def main():
     parser = ArgumentParser()
@@ -147,14 +154,13 @@ def main():
     ))
     subparsers = parser.add_subparsers(dest='command')
 
-    AnsiblePlaybook.make_parser(subparsers.add_parser('ansible-playbook', help=AnsiblePlaybook.help))
-    UpdateConfig.make_parser(subparsers.add_parser('update-config', help=UpdateConfig.help))
+    for standard_arg in STANDARD_ARGS:
+        standard_arg.make_parser(subparsers.add_parser(subparsers.command, help=standard_arg.help))
 
     args, unknown_args = parser.parse_known_args()
-    if args.command == 'ansible-playbook':
-        AnsiblePlaybook.run(args, unknown_args)
-    if args.command == 'update-config':
-        UpdateConfig.run(args, unknown_args)
+    for standard_arg in STANDARD_ARGS:
+        if args.command == standard_arg.command:
+            standard_arg.run(args, unknown_args)
 
 if __name__ == '__main__':
     main()
