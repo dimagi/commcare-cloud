@@ -130,7 +130,7 @@ def check_branch(args):
         if branch != 'master':
             puts(colored.red("You are not on branch master. To deploy anyway, use --branch={}".format(branch)))
         else:
-            puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(branch)))
+            puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(args.branch)))
         exit(-1)
 
 
