@@ -68,7 +68,7 @@ class AnsiblePlaybook(object):
             ) + cmd_args
 
             if '-u' not in unknown_args:
-                cmd_args += ('-u', 'ansible')
+                cmd_parts += ('-u', 'ansible')
 
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
