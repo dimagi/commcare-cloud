@@ -26,6 +26,7 @@ from .const import (
 from ansible.inventory import Inventory
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars import VariableManager
+from six.moves import input
 
 
 global_github = None
@@ -163,7 +164,7 @@ def _get_github():
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = raw_input('Github username: ')
+        username = input('Github username: ')
         password = getpass('Github password: ')
         global_github = login(
             username=username,
