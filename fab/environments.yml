@@ -87,7 +87,7 @@ enikshay:
       flower: {}
     '172.25.2.6':
       ucr_indicator_queue:
-        concurrency: 4
+        concurrency: 8
   pillows:
     '*':
       AppDbChangeFeedPillow:
@@ -801,11 +801,19 @@ pna:
         num_processes: 1
       GroupToUserPillow:
         num_processes: 1
+      IntraHealthFormFluffPillow:
+        num_processes: 1
       KafkaDomainPillow:
+        num_processes: 1
+      LedgerToElasticsearchPillow:
+        num_processes: 1
+      RecouvrementFluffPillow:
         num_processes: 1
       SqlSMSPillow:
         num_processes: 1
       UnknownUsersPillow:
+        num_processes: 1
+      UpdateUserSyncHistoryPillow:
         num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1

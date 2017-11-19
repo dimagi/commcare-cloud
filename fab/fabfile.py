@@ -26,6 +26,7 @@ Server layout:
 
 """
 from __future__ import absolute_import
+from __future__ import print_function
 import datetime
 import os
 import posixpath
@@ -160,7 +161,7 @@ def load_env(env_name):
                 try:
                     return yaml.load(f)
                 except Exception:
-                    print 'Error in file {}'.format(path)
+                    print('Error in file {}'.format(path))
                     raise
         else:
             raise Exception("Environment file not found: {}".format(path))
@@ -261,10 +262,19 @@ def read_inventory_file(filename):
     filename is a path to an ansible inventory file
 
     returns a mapping of group names ("webworker", "proxy", etc.)
-    to lists of hosts (ip addresses)
+    to lists of hostnames as listed in the inventory file.
+    ("Hostnames" can also be IP addresses.)
+    If the hostname in the file includes :<port>, that will be included here as well.
 
     """
-    return get_inventory(filename).get_group_dict()
+    inventory = get_inventory(filename)
+    port_map = {host.name: inventory.get_vars(hostname=host.name).get('ansible_port')
+                for host in inventory.get_hosts()}
+    return {group: [
+        '{}:{}'.format(host, port_map[host])
+        if port_map[host] is not None else host
+        for host in hosts
+    ] for group, hosts in get_inventory(filename).get_group_dict().items()}
 
 
 @task
@@ -295,7 +305,7 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    print all
+    print(all)
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     riakcs = servers.get('riakcs', [])
@@ -479,7 +489,7 @@ def setup_release(keep_days=0):
     try:
         keep_days = int(keep_days)
     except ValueError:
-        print red("Unable to parse '{}' into an integer".format(keep_days))
+        print(red("Unable to parse '{}' into an integer".format(keep_days)))
         exit()
 
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
@@ -492,8 +502,8 @@ def setup_release(keep_days=0):
     if keep_days > 0:
         execute_with_timing(release.mark_keep_until, keep_days)
 
-    print blue("Your private release is located here: ")
-    print blue(env.code_root)
+    print(blue("Your private release is located here: "))
+    print(blue(env.code_root))
 
 
 @task
@@ -507,7 +517,7 @@ def apply_patch(patchfile=None):
     deploy. This is only used for patching when we do not have access to the Internet.
     """
     if not patchfile:
-        print red("Must specify patch filepath")
+        print(red("Must specify patch filepath"))
         exit()
     execute(release.apply_patch, patchfile)
     silent_services_restart(use_current_release=True)
@@ -524,7 +534,7 @@ def reverse_patch(patchfile=None):
     deploy. This is only used for patching when we do not have access to the Internet.
     """
     if not patchfile:
-        print red("Must specify patch filepath")
+        print(red("Must specify patch filepath"))
         exit()
     execute(release.reverse_patch, patchfile)
     silent_services_restart(use_current_release=True)
@@ -546,7 +556,7 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     Stores fabric env in redis and then runs the function if it shouldn't be skipped
     """
     if env.resume and command_index < env.checkpoint_index:
-        print blue("Skipping command: '{}'".format(command_name))
+        print(blue("Skipping command: '{}'".format(command_name)))
         return
     cache_deploy_state(command_index)
     fn(*args, **kwargs)
@@ -583,7 +593,7 @@ def _deploy_without_asking():
 
     try:
         for index, command in enumerate(commands):
-            deploy_checkpoint(index, command.func_name, execute_with_timing, command)
+            deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy to {} yet. There's a preindex in process.".format(env.environment),
@@ -647,36 +657,36 @@ def rollback():
     """
     number_of_releases = execute(release.get_number_of_releases)
     if not all(map(lambda n: n > 1, number_of_releases)):
-        print red('Aborting because there are not enough previous releases.')
+        print(red('Aborting because there are not enough previous releases.'))
         exit()
 
     releases = execute(release.get_previous_release)
 
     unique_releases = set(releases.values())
     if len(unique_releases) != 1:
-        print red('Aborting because not all hosts would rollback to same release')
+        print(red('Aborting because not all hosts would rollback to same release'))
         exit()
 
     unique_release = unique_releases.pop()
 
     if not unique_release:
-        print red('Aborting because release path is empty. '
-                  'This probably means there are no releases to rollback to.')
+        print(red('Aborting because release path is empty. '
+                  'This probably means there are no releases to rollback to.'))
         exit()
 
     if not console.confirm('Do you wish to rollback to release: {}'.format(unique_release), default=False):
-        print blue('Exiting.')
+        print(blue('Exiting.'))
         exit()
 
     exists = execute(release.ensure_release_exists, unique_release)
 
     if all(exists.values()):
-        print blue('Updating current and restarting services')
+        print(blue('Updating current and restarting services'))
         execute(release.update_current, unique_release)
         silent_services_restart(use_current_release=True)
         execute(release.mark_last_release_unsuccessful)
     else:
-        print red('Aborting because not all hosts have release')
+        print(red('Aborting because not all hosts have release'))
         exit()
 
 
@@ -743,12 +753,12 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
             cached_payload = retrieve_cached_deploy_env()
             checkpoint_index = retrieve_cached_deploy_checkpoint()
         except Exception:
-            print red('Unable to resume deploy, please start anew')
+            print(red('Unable to resume deploy, please start anew'))
             raise
         env.update(cached_payload)
         env.resume = True
         env.checkpoint_index = checkpoint_index or 0
-        print magenta('You are about to resume the deploy in {}'.format(env.code_root))
+        print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
@@ -758,10 +768,10 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
     env.offline = offline == 'yes'
 
     if env.offline:
-        print magenta(
+        print(magenta(
             'You are about to run an offline deploy.'
             'Ensure that you have run `fab prepare_offline_deploy`.'
-        )
+        ))
         offline_ops.check_ready()
         if not console.confirm('Are you sure you want to do an offline deploy?'.format(default=False)):
             utils.abort('Task aborted')
