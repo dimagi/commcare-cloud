@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 import json
 import time
 import posixpath
@@ -207,7 +208,7 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_dest
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
 
     if filename in env.get('service_blacklist', []):
-        print magenta('Skipping {} because the service has been blacklisted'.format(filename))
+        print(magenta('Skipping {} because the service has been blacklisted'.format(filename)))
         return
 
     with cd(env.code_root):
@@ -266,7 +267,7 @@ def _format_env(current_env, extra=None):
 
     host = current_env.get('host_string')
     inventory = get_inventory(current_env.inventory)
-    inventory_groups = inventory.groups.values()
+    inventory_groups = list(inventory.groups.values())
     newrelic_machines = [machine.name
                          for group in inventory_groups for machine in group.hosts
                          if 'newrelic_app_name' in group.vars]
