@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github import Github
+from github import Github, InputGitAuthor
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -85,16 +85,16 @@ class DeployMetadata(object):
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
         msg = "{} deploy at {}".format(self._environment, self.timestamp)
         user = github.get_user()
-        repo.create_tag(
+        repo.create_git_tag(
             tag=tag_name,
             message=msg,
-            sha=self.deploy_ref,
-            obj_type='commit',
-            tagger={
-                'name': user.login,
-                'email': user.email or '{}@dimagi.com'.format(user.login),
-                'date': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            }
+            obj=self.deploy_ref,
+            type='commit',
+            tagger=InputGitAuthor(
+                name=user.login,
+                email=user.email or '{}@dimagi.com'.format(user.login),
+                date=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+            )
         )
         self._deploy_tag = tag_name
 
