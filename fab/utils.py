@@ -69,8 +69,10 @@ class DeployMetadata(object):
 
         pattern = ".*-{}-.*".format(re.escape(self._environment))
         github = _get_github()
-        repo = github.repository('dimagi', 'commcare-hq')
-        for tag in repo.tags(self._max_tags):
+        repo = github.get_organization('dimagi').get_repo('commcare-hq')
+        tags_paginated_list = repo.get_tags()
+        tags_paginated_list.reversed = True
+        for tag in tags_paginated_list[:self._max_tags]:
             if re.match(pattern, tag.name):
                 self._last_tag = tag.name
                 break
@@ -82,7 +84,7 @@ class DeployMetadata(object):
             )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
         msg = "{} deploy at {}".format(self._environment, self.timestamp)
-        user = github.me()
+        user = github.get_user()
         repo.create_tag(
             tag=tag_name,
             message=msg,
