@@ -121,7 +121,7 @@ enikshay:
       CaseSearchToElasticsearchPillow:
         num_processes: 4
       kafka-ucr-static:
-        num_processes: 4
+        num_processes: 6
       SqlSMSPillow:
         num_processes: 1
       UnknownUsersPillow:
