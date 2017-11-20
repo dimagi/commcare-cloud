@@ -43,6 +43,7 @@
     become: True
     register: static_routes_status
     changed_when: false
+    when: static_routes|default(false)
     tags:
       - static-routes
       - after-reboot
@@ -51,7 +52,7 @@
     shell: "route {{ item.item.cmd }} -net {{ item.item.prefix }} gw {{ item.item.gateway }}"
     become: true
     with_items: "{{ static_routes_status.results }}"
-    when: (item.stdout == "0" and item.item.cmd == "add") or (item.stdout == "1" and item.item.cmd == "del")
+    when: static_routes|default(false) and ((item.stdout == "0" and item.item.cmd == "add") or (item.stdout == "1" and item.item.cmd == "del"))
     tags:
       - static-routes
       - after-reboot
