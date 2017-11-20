@@ -47,3 +47,5 @@ hqriak01-staging.internal-va.commcarehq.org
 
 [control]
 control.internal-va.commcarehq.org
+
+[pg_standby]
