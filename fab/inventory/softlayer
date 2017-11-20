@@ -148,3 +148,5 @@ couch1
 
 [control]
 10.162.36.196
+
+[pg_standby]
