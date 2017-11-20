@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github3 import login
+from github import Github
 from fabric.api import execute, env
 from fabric.colors import magenta
 
