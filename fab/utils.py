@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github3 import login
+from github import Github
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -141,7 +141,7 @@ class DeployMetadata(object):
         repo = github.get_organization('dimagi').get_repo('commcare-hq')
 
         # turn whatever `code_branch` is into a commit hash
-        branch = repo.branch(self._code_branch)
+        branch = repo.get_branch(self._code_branch)
         self._deploy_ref = branch.commit.sha
         return self._deploy_ref
 
