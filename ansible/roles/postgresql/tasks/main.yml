@@ -269,7 +269,6 @@
   postgresql_ext:
     name: hashlib
     db: "{{item.name}}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Make plproxy a trusted language
