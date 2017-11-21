@@ -244,7 +244,7 @@ def generate_bower_command(command, production=True, config=None):
         parts.append('--production')
     if config:
         for key, value in config.items():
-            parts.append('--config.{}={}'.format(key,value))
+            parts.append('--config.{}={}'.format(key, value))
     return ' '.join(parts)
 
 
