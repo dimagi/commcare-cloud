@@ -88,7 +88,7 @@ class DeployMetadata(object):
         repo.create_git_tag(
             tag=tag_name,
             message=msg,
-            object=self.deploy_ref,
+            obj=self.deploy_ref,
             type='commit',
             tagger=InputGitAuthor(
                 name=user.login,
