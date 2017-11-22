@@ -274,6 +274,7 @@
     name: hashlib
     db: "{{item.name}}"
   with_items: "{{ postgresql_dbs }}"
+  when: not is_pg_standby|default(False)
   tags: pghashlib
 
 - name: Make plproxy a trusted language
