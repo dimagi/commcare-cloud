@@ -138,7 +138,7 @@ class DeployMetadata(object):
             return self._deploy_ref
 
         github = _get_github()
-        repo = github.get_organization('dimagi').get_repo('commcare-hq')
+        repo = github.repository('dimagi', 'commcare-hq')
 
         # turn whatever `code_branch` is into a commit hash
         branch = repo.branch(self._code_branch)
@@ -166,9 +166,14 @@ def _get_github():
         ).format(project_root=PROJECT_ROOT))
         username = input('Github username: ')
         password = getpass('Github password: ')
-        global_github = Github(username, password)
+        global_github = login(
+            username=username,
+            password=password,
+        )
     else:
-        global_github = Github(GITHUB_APIKEY)
+        global_github = login(
+            token=GITHUB_APIKEY,
+        )
 
     return global_github
 
