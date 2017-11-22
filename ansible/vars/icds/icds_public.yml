@@ -186,7 +186,7 @@ etc_hosts_lines:
   - 'web0__ip		www.icds-cas.gov.in'
 etc_hosts_lines_removed: []
 
-http_proxy_address: '?' # TODO
+http_proxy_address: '10.247.63.132'
 http_proxy_port: '3128'
 
 commcare_errors_branch: "master-icds"
