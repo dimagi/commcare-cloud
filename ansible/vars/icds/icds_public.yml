@@ -3,10 +3,10 @@ CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 internal_domain_name: 'internal-icds.commcarehq.org'
-tableau_server: 10.247.24.11:80
+# is tableau necessary? tableau_server: 10.247.24.11:80
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-TABLEAU_HOST: 'reports.icds-cas.gov.in'
+# is tableau necessary? TABLEAU_HOST: 'reports.icds-cas.gov.in'
 
 nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/icds-cas.gov.in.combined.crt'
 nginx_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
@@ -14,8 +14,8 @@ nginx_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
 cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
 cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
 
-tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.crt'
-tableau_key_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.key'
+# is tableau necessary? tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.crt'
+# is tableau necessary? tableau_key_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.key'
 
 active_sites:
   cchq_ssl: True
@@ -414,5 +414,5 @@ localsettings:
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
+# is tableau necessary?   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
