@@ -529,29 +529,11 @@ pg_shard1_standby
 pg_shard2_standby
 
 [lvm:children]
-pg_ucr
-pg_ucr_standby
-pg_main
-pg_main_standby
-pg_shard1
-pg_shard1_standby
-pg_shard2
-pg_shard2_standby
-es0
-es1
-es2
-es3
-couch0
-couch1
-couch2
-riak0
-riak1
-riak2
-riak3
-riak4
-riak5
-riak6
-riak7
+postgresql
+pg_standby
+elasticsearch
+couchdb2
+riakcs
 kafka0
 formplayer0
 
