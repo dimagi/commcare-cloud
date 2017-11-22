@@ -12,17 +12,17 @@ from ..const import (
 
 @roles(ROLES_ALL)
 def ping():
-    with hide('running','output'):
+    with hide('running', 'output'):
         hostname = run('hostname')
         vmballoon = run('vmware-toolbox-cmd stat balloon')
         vmswap = run('vmware-toolbox-cmd stat swap')
         uptime = run('uptime')
         free = run('free -h')
         print("===== Hello from %s =====" % hostname)
-        print("[%s] %s" % (hostname,uptime))
-        print("[%s] %s" % (hostname,free))
-        print("[%s] vmware balloon: %s" % (hostname,vmballoon))
-        print("[%s] vmware swap: %s" % (hostname,vmswap))
+        print("[%s] %s" % (hostname, uptime))
+        print("[%s] %s" % (hostname, free))
+        print("[%s] vmware balloon: %s" % (hostname, vmballoon))
+        print("[%s] vmware swap: %s" % (hostname, vmswap))
     #with hide('running'):
 
 ELASTICSEARCH_CHECKED = False
