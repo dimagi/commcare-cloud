@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github import Github, InputGitAuthor
+from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -69,10 +69,8 @@ class DeployMetadata(object):
 
         pattern = ".*-{}-.*".format(re.escape(self._environment))
         github = _get_github()
-        repo = github.get_organization('dimagi').get_repo('commcare-hq')
-        tags_paginated_list = repo.get_tags()
-        tags_paginated_list.reversed = True
-        for tag in tags_paginated_list[:self._max_tags]:
+        repo = github.repository('dimagi', 'commcare-hq')
+        for tag in repo.tags(self._max_tags):
             if re.match(pattern, tag.name):
                 self._last_tag = tag.name
                 break
@@ -84,17 +82,17 @@ class DeployMetadata(object):
             )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
         msg = "{} deploy at {}".format(self._environment, self.timestamp)
-        user = github.get_user()
-        repo.create_git_tag(
+        user = github.me()
+        repo.create_tag(
             tag=tag_name,
             message=msg,
-            object=self.deploy_ref,
-            type='commit',
-            tagger=InputGitAuthor(
-                name=user.login,
-                email=user.email or '{}@dimagi.com'.format(user.login),
-                date=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            )
+            sha=self.deploy_ref,
+            obj_type='commit',
+            tagger={
+                'name': user.login,
+                'email': user.email or '{}@dimagi.com'.format(user.login),
+                'date': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+            }
         )
         self._deploy_tag = tag_name
 
@@ -140,10 +138,10 @@ class DeployMetadata(object):
             return self._deploy_ref
 
         github = _get_github()
-        repo = github.get_organization('dimagi').get_repo('commcare-hq')
+        repo = github.repository('dimagi', 'commcare-hq')
 
         # turn whatever `code_branch` is into a commit hash
-        branch = repo.get_branch(self._code_branch)
+        branch = repo.branch(self._code_branch)
         self._deploy_ref = branch.commit.sha
         return self._deploy_ref
 
@@ -168,9 +166,14 @@ def _get_github():
         ).format(project_root=PROJECT_ROOT))
         username = input('Github username: ')
         password = getpass('Github password: ')
-        global_github = Github(username, password)
+        global_github = login(
+            username=username,
+            password=password,
+        )
     else:
-        global_github = Github(GITHUB_APIKEY)
+        global_github = login(
+            token=GITHUB_APIKEY,
+        )
 
     return global_github
 
