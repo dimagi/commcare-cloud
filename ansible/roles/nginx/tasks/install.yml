@@ -89,7 +89,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and nginx_combined_cert_file is undefined
+  when: not fake_ssl_cert and nginx_combined_cert_value is undefined
   tags:
     - update-cert
 
@@ -115,7 +115,7 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and nginx_key_file is undefined
+  when: not fake_ssl_cert and nginx_key_value is undefined
   tags:
     - update-cert
 
