@@ -3,14 +3,14 @@
 # Since ecryptfs role hard-codes adding a 1, we're using just /dev/mapper/consolidated-data for the vars below
 
 [pgucr]
-pgucr__ip
+10.247.164.24
 
 [pgucr:vars]
 hostname='pgucr'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgucrstandby__ip'
+hot_standby_server='10.247.164.25'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -25,14 +25,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 500
 
 [pgucrstandby]
-pgucrstandby__ip
+10.247.164.25
 
 [pgucrstandby:vars]
 hostname='pgucrstandby'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgucr__ip'
+hot_standby_master='10.247.164.24'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -47,14 +47,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 500
 
 [pgmain]
-pgmain__ip
+10.247.164.26
 
 [pgmain:vars]
 hostname='pgmain'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgmainstandby__ip'
+hot_standby_server='10.247.164.27'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -69,14 +69,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
 [pgmainstandby]
-pgmainstandby__ip
+10.247.164.27
 
 [pgucrstandby:vars]
 hostname='pgmainstandby'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgmain__ip'
+hot_standby_master='10.247.164.26'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -91,14 +91,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
 [pgshard1]
-pgshard1__ip
+10.247.164.20
 
 [pgshard1:vars]
 hostname='pgshard1'
 devices='["/dev/sdb", "/dev/sdc"]'
 partitions='["/dev/sdb1", "/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgshard1standby__ip'
+hot_standby_server='10.247.164.22'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -113,14 +113,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
 [pgshard1standby]
-pgshard1standby__ip
+10.247.164.22
 
 [pgshard1standby:vars]
 hostname='pgshard1standby'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgshard1__ip'
+hot_standby_master='10.247.164.20'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -135,14 +135,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
 [pgshard2]
-pgshard2__ip
+10.247.164.21
 
 [pgshard2:vars]
 hostname='pgshard2'
 devices='["/dev/sdb", "/dev/sdc"]'
 partitions='["/dev/sdb1", "/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgshard2standby__ip'
+hot_standby_server='10.247.164.23'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -158,14 +158,14 @@ postgresql_default_statistics_target = 100
 
 
 [pgshard2standby]
-pgshard2standby__ip
+10.247.164.23
 
 [pgshard2standby:vars]
 hostname='pgshard2standby'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgshard2__ip'
+hot_standby_master='10.247.164.21'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -180,68 +180,68 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
 [web0]
-web0__ip
+10.247.164.31
 
 [web0:vars]
 parent_mailrelay='relay.nic.in'
 hostname='web0'
 
 [web1]
-web1__ip
+10.247.164.32
 
 [web1:vars]
 hostname='web1'
 
 [web2]
-web2__ip
+10.247.164.30
 
 [web2:vars]
 hostname='web2'
 
 [web3]
-web3__ip
+10.247.164.11
 
 [web3:vars]
 hostname='web3'
 
 [web4]
-web4__ip
+10.247.164.29
 
 [web4:vars]
 hostname='web4'
 
 [web5]
-web5__ip
+10.247.164.28
 
 [web5:vars]
 hostname='web5'
 
 [web6]
-web6__ip
+10.247.164.10
 
 [web6:vars]
 hostname='web6'
 
 [web7]
-web7__ip
+10.247.164.6
 
 [web7:vars]
 hostname='web7'
 
 [web8]
-web8__ip
+10.247.164.8
 
 [web8:vars]
 hostname='web8'
 
 [web9]
-web9__ip
+10.247.164.9
 
 [web9:vars]
 hostname='web9'
 
 [es0]
-es0__ip
+10.247.164.15
 
 [es0:vars]
 devices='["/dev/sdb"]'
@@ -251,7 +251,7 @@ elasticsearch_node_name=es0
 hostname='es0'
 
 [es1]
-es1__ip
+10.247.164.16
 
 [es1:vars]
 devices='["/dev/sdb"]'
@@ -261,7 +261,7 @@ elasticsearch_node_name=es1
 hostname='es1'
 
 [es2]
-es2__ip
+10.247.164.17
 
 [es2:vars]
 elasticsearch_node_name=es2
@@ -271,7 +271,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
 
 [es3]
-es3__ip
+10.247.164.18
 
 [es3:vars]
 devices='["/dev/sdb"]'
@@ -281,7 +281,7 @@ elasticsearch_node_name=es3
 hostname='es3'
 
 [couch0]
-couch0__ip
+10.247.164.12
 
 [couch0:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -291,7 +291,7 @@ hostname='couch0'
 #remote_couch_backup='es0'
 
 [couch1]
-couch1__ip
+10.247.164.13
 
 [couch1:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -301,7 +301,7 @@ hostname='couch1'
 #remote_couch_backup='es0'
 
 [couch2]
-couch2__ip
+10.247.164.14
 
 [couch2:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -383,79 +383,79 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak7'
 
 [celery0]
-celery0__ip
+10.247.164.40
 
 [celery0:vars]
 hostname='celery0'
 
 [celery1]
-celery1__ip
+10.247.164.41
 
 [celery1:vars]
 hostname='celery1'
 
 [celery2]
-celery2__ip
+10.247.164.42
 
 [celery2:vars]
 hostname='celery2'
 
 [celery3]
-celery3__ip
+10.247.164.43
 
 [celery3:vars]
 hostname='celery3'
 
 [celery4]
-celery4__ip
+10.247.164.44
 
 [celery4:vars]
 hostname='celery4'
 
 [pillow0]
-pillow0__ip
+10.247.164.37
 
 [pillow0:vars]
 hostname='pillow0'
 
 [pillow1]
-pillow1__ip
+10.247.164.38
 
 [pillow1:vars]
 hostname='pillow1'
 
 [pillow2]
-pillow2__ip
+10.247.164.39
 
 [pillow2:vars]
 hostname='pillow2'
 
 [pillow3]
-pillow3__ip
+10.247.164.35
 
 [pillow3:vars]
 hostname='pillow3'
 
 [pillow4]
-pillow4__ip
+10.247.164.33
 
 [pillow4:vars]
 hostname='pillow4'
 
 [pillow5]
-pillow5__ip
+10.247.164.36
 
 [pillow5:vars]
 hostname='pillow5'
 
 [pillow6]
-pillow6__ip
+10.247.164.34
 
 [pillow6:vars]
 hostname='pillow6'
 
 [kafka0]
-kafka0__ip
+10.247.164.46
 
 [kafka0:vars]
 devices='["/dev/sdb"]'
@@ -465,13 +465,13 @@ kafka_broker_id=0
 hostname='kafka0'
 
 [rabbit0]
-rabbit0__ip
+10.247.164.45
 
 [rabbit0:vars]
 hostname='rabbit0'
 
 [formplayer0]
-formplayer0__ip
+10.247.164.47
 
 [formplayer0:vars]
 hostname='formplayer0'
