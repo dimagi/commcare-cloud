@@ -8,14 +8,14 @@ daily_deploy_email: tech-announce-daily@dimagi.com
 
 TABLEAU_HOST: 'reports.icds-cas.gov.in'
 
-nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/icds-cas.gov.in.combined.crt'
-nginx_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
+nginx_combined_cert_value: "{{ ssl_secrets.certs.icds_cas_gov_in }}"
+nginx_key_value: '{{ ssl_secrets.private_keys.icds_cas_gov_in }}'
 
-cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
-cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+cas_nginx_combined_cert_value: "{{ ssl_secrets.certs.cas_commcarehq_org }}"
+cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
 
-tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.crt'
-tableau_key_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.key'
+tableau_nginx_combined_cert_value: "{{ ssl_secrets.certs.reports_icds_cas_gov_in }}"
+tableau_key_value: '{{ ssl_secrets.private_keys.reports_icds_cas_gov_in }}'
 
 active_sites:
   cchq_ssl: True
