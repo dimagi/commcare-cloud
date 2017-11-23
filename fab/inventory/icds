@@ -420,8 +420,7 @@ fplay0__ip
 hostname='fplay0'
 
 [patch0]
-# 10.247.63.132
-patch0__ip
+10.247.63.132
 
 [proxy:children]
 web0
