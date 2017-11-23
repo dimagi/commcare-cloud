@@ -6,121 +6,178 @@
 pgdw__ip
 
 [pgdw:vars]
+hostname='pgdw'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='pgdwb__ip'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=32MB
-hostname='pgdw'
+postgresql_max_connections=200
+postgresql_work_mem=20971kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_checkpoint_segments=128
+postgresql_checkpoint_completion_target=0.9
+postgresql_maintenance_work_mem = 2GB
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 500
 
 [pgdwb]
 pgdwb__ip
 
 [pgdwb:vars]
+hostname='pgdwb'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='pgdw__ip'
 replication_slot='standby'
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=32MB
-hostname='pgdwb'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
+postgresql_max_connections=200
+postgresql_work_mem=20971kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_checkpoint_segments=128
+postgresql_checkpoint_completion_target=0.9
+postgresql_maintenance_work_mem = 2GB
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 500
 
 [pgmain]
 pgmain__ip
 
 [pgmain:vars]
+hostname='pgmain'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='pgmainb__ip'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=16MB
-hostname='pgmain'
+postgresql_max_connections=200
+postgresql_work_mem=41943kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_maintenance_work_mem = 2GB
+postgresql_checkpoint_segments=32
+postgresql_checkpoint_completion_target=0.7
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 100
 
 [pgmainb]
 pgmainb__ip
 
 [pgdwb:vars]
+hostname='pgmainb'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='pgmain__ip'
 replication_slot='standby'
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=32MB
-hostname='pgmainb'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
+postgresql_max_connections=200
+postgresql_work_mem=41943kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_maintenance_work_mem = 2GB
+postgresql_checkpoint_segments=32
+postgresql_checkpoint_completion_target=0.7
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 100
 
 [pgpt1]
 pgpt1__ip
 
 [pgpt1:vars]
+hostname='pgpt1'
 devices='["/dev/sdb", "/dev/sdc"]'
 partitions='["/dev/sdb1", "/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='pgpt1b__ip'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
-#postgresql_max_connections=400
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=390
-#postgresql_work_mem=16MB
-hostname='pgpt1'
+postgresql_max_connections=200
+postgresql_work_mem=41943kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_maintenance_work_mem = 2GB
+postgresql_checkpoint_segments=64
+postgresql_checkpoint_completion_target=0.9
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 100
 
 [pgpt1b]
 pgpt1b__ip
 
-[pgdwb:vars]
+[pgpt1b:vars]
+hostname='pgpt1b'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='pgpt1__ip'
 replication_slot='standby'
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=32MB
-hostname='pgpt1b'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
+postgresql_max_connections=200
+postgresql_work_mem=41943kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_maintenance_work_mem = 2GB
+postgresql_checkpoint_segments=64
+postgresql_checkpoint_completion_target=0.9
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 100
 
 [pgpt2]
 pgpt2__ip
 
 [pgpt2:vars]
+hostname='pgpt2'
 devices='["/dev/sdb", "/dev/sdc"]'
 partitions='["/dev/sdb1", "/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hostname='pgpt2'
 hot_standby_server='pgpt2b__ip'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=16MB
+postgresql_max_connections=200
+postgresql_work_mem=41943kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_maintenance_work_mem = 2GB
+postgresql_checkpoint_segments=64
+postgresql_checkpoint_completion_target=0.9
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 100
+
 
 [pgpt2b]
 pgpt2b__ip
 
-[pgdwb:vars]
+[pgpt2b:vars]
+hostname='pgpt2b'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='pgpt2__ip'
 replication_slot='standby'
-#postgresql_max_connections=800
-#pgbouncer_max_connections=3500
-#pgbouncer_default_pool=790
-#postgresql_work_mem=32MB
-hostname='pgpt2b'
+pgbouncer_max_connections=3500
+pgbouncer_default_pool=190
+postgresql_max_connections=200
+postgresql_work_mem=41943kB
+postgresql_shared_buffers=8GB
+postgresql_effective_cache_size=24GB
+postgresql_maintenance_work_mem = 2GB
+postgresql_checkpoint_segments=64
+postgresql_checkpoint_completion_target=0.9
+postgresql_wal_buffers=16MB
+postgresql_default_statistics_target = 100
 
 [web0]
 web0__ip
