@@ -246,13 +246,14 @@ softlayer:
 
 icds:
   environment: icds
-  http_proxy: 10.247.24.16:3128
+  http_proxy: 10.247.63.132:3128
   additional_no_proxy_hosts: "relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
   gunicorn_workers_factor: 2
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
   celery_processes:
-    '10.247.24.19': # celery0
+    'celery0__ip':
+      flower: {}
       celery:
         concurrency: 8
         max_tasks_per_child: 5
@@ -263,9 +264,9 @@ icds:
         concurrency: 1
       submission_reprocessing_queue:
         concurrency: 1
-      repeat_record_queue:
-        pooling: gevent
-        concurrency: 3
+      email_queue:
+        concurrency: 2
+    'celery1__ip':
       ucr_queue:
         concurrency: 4
         max_tasks_per_child: 5
@@ -276,6 +277,7 @@ icds:
         pooling: gevent
         concurrency: 5
         num_workers: 10
+    'celery2__ip':
       reminder_queue:
         pooling: gevent
         concurrency: 5
@@ -286,18 +288,16 @@ icds:
       saved_exports_queue:
         concurrency: 3
         max_tasks_per_child: 1
+    'celery3__ip':
       sms_queue:
         pooling: gevent
         concurrency: 10
         num_workers: 4
-      email_queue:
-        concurrency: 2
       async_restore_queue:
         concurrency: 4
       ucr_indicator_queue:
         concurrency: 4
-      flower: {}
-    '10.247.24.31': # celery1
+    'celery4__ip':
       ucr_indicator_queue:
         concurrency: 16
       background_queue:
@@ -307,29 +307,38 @@ icds:
         pooling: gevent
         concurrency: 5
         num_workers: 10
-    '10.247.24.15': # web1
+    'web0__ip': # web0
       ucr_indicator_queue:
-        concurrency: 12
-    '10.247.24.24': # web2
+        concurrency: 3
+    'web1__ip': # web1
       ucr_indicator_queue:
-        concurrency: 16
-    '10.247.24.25': # web3
+        concurrency: 4
+    'web2__ip': # web2
       ucr_indicator_queue:
-        concurrency: 12
-    '10.247.24.26': # web4
+        concurrency: 4
+    'web3__ip': # web3
       ucr_indicator_queue:
-        concurrency: 12
-    '10.247.24.27': # web5
+        concurrency: 4
+    'web4__ip': # web4
       ucr_indicator_queue:
-        concurrency: 12
-    '10.247.24.13': # web0
+        concurrency: 4
+    'web5__ip': # web5
       ucr_indicator_queue:
-        concurrency: 10
-    '10.247.24.21': # kafka0
+        concurrency: 4
+    'web6__ip': # web6
       ucr_indicator_queue:
-        concurrency: 10
+        concurrency: 4
+    'web7__ip': # web7
+      ucr_indicator_queue:
+        concurrency: 4
+    'web8__ip': # web9
+      ucr_indicator_queue:
+        concurrency: 4
+    'web9__ip': # web9
+      ucr_indicator_queue:
+        concurrency: 4
   pillows:
-    '10.247.24.20': # pillow0
+    'pillow0__ip': # pillow0
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -340,6 +349,11 @@ icds:
         num_processes: 1
       CacheInvalidatePillow:
         num_processes: 1
+      UserGroupsDbKafkaPillow:
+        num_processes: 1
+      UserPillow:
+        num_processes: 1
+    'pillow1__ip': # pillow1
       DefaultChangeFeedPillow:
         num_processes: 1
       DomainDbKafkaPillow:
@@ -350,13 +364,31 @@ icds:
         num_processes: 1
       kafka-ucr-static-awc-location:
         num_processes: 1
+      UpdateUserSyncHistoryPillow:
+        num_processes: 1
+      UserCacheInvalidatePillow:
+        num_processes: 1
+    'pillow2__ip': # pillow2
       kafka-ucr-static-cases:
-        num_processes: 24
-    '10.247.24.30': # pillow1
+        num_processes: 6
       CaseToElasticsearchPillow:
-        num_processes: 12
+        num_processes: 4
+    'pillow3__ip': # pillow3
+      kafka-ucr-static-cases:
+        num_processes: 6
+      CaseToElasticsearchPillow:
+        num_processes: 4
+    'pillow4__ip': # pillow4
+      kafka-ucr-static-cases:
+        num_processes: 6
+      CaseToElasticsearchPillow:
+        num_processes: 4
+    'pillow5__ip': # pillow5
+      kafka-ucr-static-cases:
+        num_processes: 6
       FormSubmissionMetadataTrackerPillow:
         num_processes: 4
+    'pillow6__ip': # pillow6
       kafka-ucr-static-forms:
         num_processes: 8
       kafka-ucr-main:
@@ -367,17 +399,8 @@ icds:
         num_processes: 1
       SqlSMSPillow:
         num_processes: 1
-      UpdateUserSyncHistoryPillow:
-        num_processes: 1
-      UserCacheInvalidatePillow:
-        num_processes: 1
-      UserGroupsDbKafkaPillow:
-        num_processes: 1
-      UserPillow:
-        num_processes: 1
       XFormToElasticsearchPillow:
         num_processes: 4
-
 
 production:
   environment: production
