@@ -179,7 +179,7 @@ ufw_private_interface: eth0
 
 shared_drive_enabled: true
 
-# point hosts to the proxy machine
+# TODO point hosts to the proxy machine
 etc_hosts_lines:
   - 'web0__ip		cas.commcarehq.org'
   - 'web0__ip		reports.icds-cas.gov.in'
