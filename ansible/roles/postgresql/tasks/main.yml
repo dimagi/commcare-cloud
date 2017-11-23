@@ -274,7 +274,7 @@
     name: hashlib
     db: "{{item.name}}"
   with_items: "{{ postgresql_dbs }}"
-  when: not is_pg_standby|default(False)
+  when: item.create|default(True) and not is_pg_standby|default(False) and ((item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
   tags: pghashlib
 
 - name: Make plproxy a trusted language
