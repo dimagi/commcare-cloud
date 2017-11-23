@@ -139,45 +139,45 @@
     group: root
   when: not fake_ssl_cert and commtrack_key_file is defined
 
-- name: Copy icds SSL cert
+- name: Copy icds tableau SSL cert (from vault)
   become: yes
   copy:
-    src: "{{ tableau_nginx_combined_cert_file }}"
+    content: "{{ tableau_nginx_combined_cert_value }}"
     dest: "{{ ssl_certs_dir }}/{{ tableau_nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and tableau_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and tableau_nginx_combined_cert_value is defined
 
-- name: Copy icds SSL Key
+- name: Copy icds tableau SSL Key (from vault)
   become: yes
   copy:
-    src: "{{ tableau_key_file }}"
+    content: "{{ tableau_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ tableau_nginx_ssl_key }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and tableau_key_file is defined
+  when: not fake_ssl_cert and tableau_key_value is defined
 
 - name: Copy CAS SSL cert
   become: yes
   copy:
-    src: "{{ cas_nginx_combined_cert_file }}"
+    content: "{{ cas_nginx_combined_cert_value }}"
     dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and cas_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and cas_nginx_combined_cert_value is defined
 
-- name: Copy CAS SSL Key
+- name: Copy CAS SSL Key (from vault)
   become: yes
   copy:
-    src: "{{ cas_key_file }}"
+    content: "{{ cas_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and cas_key_file is defined
+  when: not fake_ssl_cert and cas_key_value is defined
 
 - name: Copy Enikshay SSL cert (from vault)
   become: yes
