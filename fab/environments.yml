@@ -252,7 +252,7 @@ icds:
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
   celery_processes:
-    'celery0__ip':
+    '10.247.164.40':
       flower: {}
       celery:
         concurrency: 8
@@ -266,7 +266,7 @@ icds:
         concurrency: 1
       email_queue:
         concurrency: 2
-    'celery1__ip':
+    '10.247.164.41':
       ucr_queue:
         concurrency: 4
         max_tasks_per_child: 5
@@ -277,7 +277,7 @@ icds:
         pooling: gevent
         concurrency: 5
         num_workers: 10
-    'celery2__ip':
+    '10.247.164.42':
       reminder_queue:
         pooling: gevent
         concurrency: 5
@@ -288,7 +288,7 @@ icds:
       saved_exports_queue:
         concurrency: 3
         max_tasks_per_child: 1
-    'celery3__ip':
+    '10.247.164.43':
       sms_queue:
         pooling: gevent
         concurrency: 10
@@ -297,7 +297,7 @@ icds:
         concurrency: 4
       ucr_indicator_queue:
         concurrency: 4
-    'celery4__ip':
+    '10.247.164.44':
       ucr_indicator_queue:
         concurrency: 16
       background_queue:
@@ -307,38 +307,38 @@ icds:
         pooling: gevent
         concurrency: 5
         num_workers: 10
-    'web0__ip': # web0
+    '10.247.164.31': # web0
       ucr_indicator_queue:
         concurrency: 3
-    'web1__ip': # web1
+    '10.247.164.32': # web1
       ucr_indicator_queue:
         concurrency: 4
-    'web2__ip': # web2
+    '10.247.164.30': # web2
       ucr_indicator_queue:
         concurrency: 4
-    'web3__ip': # web3
+    '10.247.164.11': # web3
       ucr_indicator_queue:
         concurrency: 4
-    'web4__ip': # web4
+    '10.247.164.29': # web4
       ucr_indicator_queue:
         concurrency: 4
-    'web5__ip': # web5
+    '10.247.164.28': # web5
       ucr_indicator_queue:
         concurrency: 4
-    'web6__ip': # web6
+    '10.247.164.10': # web6
       ucr_indicator_queue:
         concurrency: 4
-    'web7__ip': # web7
+    '10.247.164.6': # web7
       ucr_indicator_queue:
         concurrency: 4
-    'web8__ip': # web9
+    '10.247.164.8': # web9
       ucr_indicator_queue:
         concurrency: 4
-    'web9__ip': # web9
+    '10.247.164.9': # web9
       ucr_indicator_queue:
         concurrency: 4
   pillows:
-    'pillow0__ip': # pillow0
+    '10.247.164.37': # pillow0
       AppDbChangeFeedPillow:
         num_processes: 1
       ApplicationBlobDeletionPillow:
@@ -353,7 +353,7 @@ icds:
         num_processes: 1
       UserPillow:
         num_processes: 1
-    'pillow1__ip': # pillow1
+    '10.247.164.38': # pillow1
       DefaultChangeFeedPillow:
         num_processes: 1
       DomainDbKafkaPillow:
@@ -368,27 +368,27 @@ icds:
         num_processes: 1
       UserCacheInvalidatePillow:
         num_processes: 1
-    'pillow2__ip': # pillow2
+    '10.247.164.39': # pillow2
       kafka-ucr-static-cases:
         num_processes: 6
       CaseToElasticsearchPillow:
         num_processes: 4
-    'pillow3__ip': # pillow3
+    '10.247.164.35': # pillow3
       kafka-ucr-static-cases:
         num_processes: 6
       CaseToElasticsearchPillow:
         num_processes: 4
-    'pillow4__ip': # pillow4
+    '10.247.164.33': # pillow4
       kafka-ucr-static-cases:
         num_processes: 6
       CaseToElasticsearchPillow:
         num_processes: 4
-    'pillow5__ip': # pillow5
+    '10.247.164.36': # pillow5
       kafka-ucr-static-cases:
         num_processes: 6
       FormSubmissionMetadataTrackerPillow:
         num_processes: 4
-    'pillow6__ip': # pillow6
+    '10.247.164.34': # pillow6
       kafka-ucr-static-forms:
         num_processes: 8
       kafka-ucr-main:
