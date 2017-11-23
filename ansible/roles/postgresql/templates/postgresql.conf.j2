@@ -53,6 +53,10 @@ wal_keep_segments = 8
 hot_standby = on    # ignored on masters
 max_replication_slots = 8
 
+{% if is_pg_standby|default(false) and postgresql_max_standby_delay|default(false) %}
+max_standby_archive_delay = {{ postgresql_max_standby_delay }}
+max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
+{% endif %}
 
 # QUERY TUNING
 
