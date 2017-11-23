@@ -116,8 +116,8 @@ postgres_users:
       role_attr_flags: 'LOGIN,REPLICATION'
 
 pg_replication_slots:
- 192.168.33.16:
-   - standby1
+  192.168.33.16:
+    - standby1
 
 encrypted_root: '/opt/data'
 postgresql_log_directory: "{{ encrypted_root }}/pg_log"
@@ -127,6 +127,7 @@ postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '128MB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '4GB'
+postgresql_max_standby_delay: '-1'
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
