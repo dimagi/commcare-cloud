@@ -51,7 +51,7 @@ nginx_worker_rlimit_nofile : 16384
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
-elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
@@ -164,7 +164,7 @@ KSPLICE_ACTIVE: no
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+AMQP_HOST: "{{ groups.rabbit0.0 }}"
 AMQP_NAME: commcarehq
 
 DATADOG_ENABLED: True
@@ -296,7 +296,7 @@ localsettings:
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
   DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
-  ELASTICSEARCH_HOST: "{{ groups.elasticsearch0.0 }}"
+  ELASTICSEARCH_HOST: "{{ groups.es0.0 }}"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
   EMAIL_SMTP_HOST: 'localhost'
