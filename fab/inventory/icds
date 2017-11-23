@@ -2,15 +2,15 @@
 # The actual name of the datavol_device is /dev/mapper/consolidated-data1
 # Since ecryptfs role hard-codes adding a 1, we're using just /dev/mapper/consolidated-data for the vars below
 
-[pgdw]
-pgdw__ip
+[pgucr]
+pgucr__ip
 
-[pgdw:vars]
-hostname='pgdw'
+[pgucr:vars]
+hostname='pgucr'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgdwb__ip'
+hot_standby_server='pgucrstandby__ip'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -24,15 +24,15 @@ postgresql_maintenance_work_mem = 2GB
 postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 500
 
-[pgdwb]
-pgdwb__ip
+[pgucrstandby]
+pgucrstandby__ip
 
-[pgdwb:vars]
-hostname='pgdwb'
+[pgucrstandby:vars]
+hostname='pgucrstandby'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgdw__ip'
+hot_standby_master='pgucr__ip'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -54,7 +54,7 @@ hostname='pgmain'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgmainb__ip'
+hot_standby_server='pgmainstandby__ip'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -68,11 +68,11 @@ postgresql_checkpoint_completion_target=0.7
 postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
-[pgmainb]
-pgmainb__ip
+[pgmainstandby]
+pgmainstandby__ip
 
-[pgdwb:vars]
-hostname='pgmainb'
+[pgucrstandby:vars]
+hostname='pgmainstandby'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
 datavol_device='/dev/mapper/consolidated-data'
@@ -90,15 +90,15 @@ postgresql_checkpoint_completion_target=0.7
 postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
-[pgpt1]
-pgpt1__ip
+[pgshard1]
+pgshard1__ip
 
-[pgpt1:vars]
-hostname='pgpt1'
+[pgshard1:vars]
+hostname='pgshard1'
 devices='["/dev/sdb", "/dev/sdc"]'
 partitions='["/dev/sdb1", "/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgpt1b__ip'
+hot_standby_server='pgshard1standby__ip'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -112,15 +112,15 @@ postgresql_checkpoint_completion_target=0.9
 postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
-[pgpt1b]
-pgpt1b__ip
+[pgshard1standby]
+pgshard1standby__ip
 
-[pgpt1b:vars]
-hostname='pgpt1b'
+[pgshard1standby:vars]
+hostname='pgshard1standby'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgpt1__ip'
+hot_standby_master='pgshard1__ip'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -134,15 +134,15 @@ postgresql_checkpoint_completion_target=0.9
 postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
-[pgpt2]
-pgpt2__ip
+[pgshard2]
+pgshard2__ip
 
-[pgpt2:vars]
-hostname='pgpt2'
+[pgshard2:vars]
+hostname='pgshard2'
 devices='["/dev/sdb", "/dev/sdc"]'
 partitions='["/dev/sdb1", "/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='pgpt2b__ip'
+hot_standby_server='pgshard2standby__ip'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
 postgresql_replication_slots=['standby','spare']
@@ -157,15 +157,15 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 100
 
 
-[pgpt2b]
-pgpt2b__ip
+[pgshard2standby]
+pgshard2standby__ip
 
-[pgpt2b:vars]
-hostname='pgpt2b'
+[pgshard2standby:vars]
+hostname='pgshard2standby'
 devices='["/dev/sdb","/dev/sdc"]'
 partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='pgpt2__ip'
+hot_standby_master='pgshard2__ip'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=190
@@ -382,77 +382,77 @@ partitions='["/dev/sdb1","/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak7'
 
-[task0]
-task0__ip
+[celery0]
+celery0__ip
 
-[task0:vars]
-hostname='task0'
+[celery0:vars]
+hostname='celery0'
 
-[task1]
-task1__ip
+[celery1]
+celery1__ip
 
-[task1:vars]
-hostname='task1'
+[celery1:vars]
+hostname='celery1'
 
-[task2]
-task2__ip
+[celery2]
+celery2__ip
 
-[task2:vars]
-hostname='task2'
+[celery2:vars]
+hostname='celery2'
 
-[task3]
-task3__ip
+[celery3]
+celery3__ip
 
-[task3:vars]
-hostname='task3'
+[celery3:vars]
+hostname='celery3'
 
-[task4]
-task4__ip
+[celery4]
+celery4__ip
 
-[task4:vars]
-hostname='task4'
+[celery4:vars]
+hostname='celery4'
 
-[pil0]
-pil0__ip
+[pillow0]
+pillow0__ip
 
-[pil0:vars]
-hostname='pil0'
+[pillow0:vars]
+hostname='pillow0'
 
-[pil1]
-pil1__ip
+[pillow1]
+pillow1__ip
 
-[pil1:vars]
-hostname='pil1'
+[pillow1:vars]
+hostname='pillow1'
 
-[pil2]
-pil2__ip
+[pillow2]
+pillow2__ip
 
-[pil2:vars]
-hostname='pil2'
+[pillow2:vars]
+hostname='pillow2'
 
-[pil3]
-pil3__ip
+[pillow3]
+pillow3__ip
 
-[pil3:vars]
-hostname='pil3'
+[pillow3:vars]
+hostname='pillow3'
 
-[pil4]
-pil4__ip
+[pillow4]
+pillow4__ip
 
-[pil4:vars]
-hostname='pil4'
+[pillow4:vars]
+hostname='pillow4'
 
-[pil5]
-pil5__ip
+[pillow5]
+pillow5__ip
 
-[pil5:vars]
-hostname='pil5'
+[pillow5:vars]
+hostname='pillow5'
 
-[pil6]
-pil6__ip
+[pillow6]
+pillow6__ip
 
-[pil6:vars]
-hostname='pil6'
+[pillow6:vars]
+hostname='pillow6'
 
 [kafka0]
 kafka0__ip
@@ -470,11 +470,11 @@ rabbit0__ip
 [rabbit0:vars]
 hostname='rabbit0'
 
-[fplay0]
-fplay0__ip
+[formplayer0]
+formplayer0__ip
 
-[fplay0:vars]
-hostname='fplay0'
+[formplayer0:vars]
+hostname='formplayer0'
 
 [patch0]
 10.247.63.132
@@ -498,10 +498,10 @@ web8
 web9
 
 [postgresql:children]
-pgdw
+pgucr
 pgmain
-pgpt1
-pgpt2
+pgshard1
+pgshard2
 
 [couchdb2:children]
 couch0
@@ -524,11 +524,11 @@ kafka0
 rabbit0
 
 [celery:children]
-task0
-task1
-task2
-task3
-task4
+celery0
+celery1
+celery2
+celery3
+celery4
 web0
 web1
 web2
@@ -541,19 +541,19 @@ web8
 web9
 
 [pillowtop:children]
-pil0
-pil1
-pil2
-pil3
-pil4
-pil5
-pil6
+pillow0
+pillow1
+pillow2
+pillow3
+pillow4
+pillow5
+pillow6
 
 [touchforms:children]
-fplay0
+formplayer0
 
 [formplayer:children]
-fplay0
+formplayer0
 
 [elasticsearch:children]
 es0
@@ -578,10 +578,10 @@ riak7
 rabbit0
 
 [pg_standby:children]
-pgdwb
-pgmainb
-pgpt1b
-pgpt2b
+pgucrstandby
+pgmainstandby
+pgshard1standby
+pgshard2standby
 
 [lvm:children]
 postgresql
@@ -590,7 +590,7 @@ elasticsearch
 couchdb2
 riakcs
 kafka0
-fplay0
+formplayer0
 
 [patch:children]
 patch0
