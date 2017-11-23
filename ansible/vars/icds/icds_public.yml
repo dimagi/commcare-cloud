@@ -74,6 +74,7 @@ postgres_users: "{{ secrets.POSTGRES_USERS }}"
 postgresql_shared_buffers: '8GB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '16GB'
+postgresql_max_standby_delay: '-1'
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
