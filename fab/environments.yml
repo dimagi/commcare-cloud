@@ -378,7 +378,7 @@ icds:
         num_processes: 4
 
 icds-new:
-  environment: icds
+  environment: icds-new
   http_proxy: 10.247.63.132:3128
   additional_no_proxy_hosts: "relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
   gunicorn_workers_factor: 2
