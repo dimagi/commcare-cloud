@@ -205,7 +205,7 @@ class RunShellCommand(object):
             '-m', 'shell',
             '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
             '-u', args.user,
-            '-a', shlex_quote(args.shell_command)
+            '-a', args.shell_command
         )
 
         cmd_parts += get_common_ssh_args(public_vars)
