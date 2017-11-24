@@ -90,6 +90,12 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
+{% if postgres_users.get('netvault') %}
+# Netvault required configuration
+host    all             netvault        127.0.0.1/32            md5
+local   all             netvault                                md5
+{% endif %}
+
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
 # IPv4 local connections:
@@ -103,11 +109,6 @@ local   replication     postgres                                peer
 #host    replication     postgres        ::1/128                 md5
 {% if postgres_users.get('replication') %}
 host    replication     {{ postgres_users.replication.username }}   0.0.0.0/0       md5
-{% endif %}
-
-{% if postgres_users.get('netvault') %}
-host    all             netvault        127.0.0.1/32            md5
-local   all             netvault                                md5
 {% endif %}
 
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
