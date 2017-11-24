@@ -186,10 +186,10 @@ class RunShellCommand(object):
 
     @staticmethod
     def make_parser(parser):
-        parser.add_argument('inventory-group', help=(
+        parser.add_argument('inventory_group', help=(
             "The inventory group to run the command on. Use '*' for all hosts."
         ))
-        parser.add_argument('shell-command', help=(
+        parser.add_argument('shell_command', help=(
             "The shell command you want to run."
         ))
         parser.add_argument('-u', '--user', default='ansible', help=(
