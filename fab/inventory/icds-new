@@ -71,7 +71,7 @@ postgresql_default_statistics_target = 100
 [pgmainstandby]
 10.247.164.27
 
-[pgucrstandby:vars]
+[pgmainstandby:vars]
 hostname='pgmainstandby'
 devices='["/dev/sdb"]'
 partitions='["/dev/sdb1"]'
