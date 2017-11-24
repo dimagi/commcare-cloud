@@ -184,7 +184,10 @@ etc_hosts_lines:
   - '10.247.164.31		cas.commcarehq.org'
   - '10.247.164.31		reports.icds-cas.gov.in'
   - '10.247.164.31		www.icds-cas.gov.in'
-etc_hosts_lines_removed: []
+etc_hosts_lines_removed:
+  - 'web0__ip   		cas.commcarehq.org'
+  - 'web0__ip   		reports.icds-cas.gov.in'
+  - 'web0__ip   		www.icds-cas.gov.in'
 
 http_proxy_address: '10.247.63.132'
 http_proxy_port: '3128'
