@@ -54,7 +54,7 @@ class AnsiblePlaybook(object):
         public_vars = get_public_vars(args.environment)
         pem = public_vars.get('commcare_cloud_pem', None)
         strict_host_key_checking = public_vars.get('commcare_cloud_strict_host_key_checking', True)
-        ask_vault_pass = public_vars.get('commcare_cloud_use_value', True)
+        ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
 
         def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
