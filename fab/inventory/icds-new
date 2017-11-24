@@ -271,7 +271,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
 
 [es3]
-10.247.164.18
+10.247.164.19
 
 [es3:vars]
 devices='["/dev/sdb"]'
