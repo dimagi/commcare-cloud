@@ -311,7 +311,7 @@ hostname='couch2'
 #remote_couch_backup='es0'
 
 [riak0]
-riak0__ip
+10.247.164.48
 
 [riak0:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -320,7 +320,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak0'
 
 [riak1]
-riak1__ip
+10.247.164.49
 
 [riak1:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -329,7 +329,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak1'
 
 [riak2]
-riak2__ip
+10.247.164.50
 
 [riak2:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -338,7 +338,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak2'
 
 [riak3]
-riak3__ip
+10.247.164.51
 
 [riak3:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -347,7 +347,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak3'
 
 [riak4]
-riak4__ip
+10.247.164.18
 
 [riak4:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -356,7 +356,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak4'
 
 [riak5]
-riak5__ip
+10.247.164.53
 
 [riak5:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -365,7 +365,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak5'
 
 [riak6]
-riak6__ip
+10.247.164.54
 
 [riak6:vars]
 devices='["/dev/sdb","/dev/sdc"]'
@@ -374,7 +374,7 @@ datavol_device='/dev/mapper/consolidated-data'
 hostname='riak6'
 
 [riak7]
-riak7__ip
+10.247.164.55
 
 [riak7:vars]
 devices='["/dev/sdb","/dev/sdc"]'
