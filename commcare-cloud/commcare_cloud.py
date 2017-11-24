@@ -189,7 +189,7 @@ class RunShellCommand(object):
         parser.add_argument('inventory-group', help=(
             "The inventory group to run the command on. Use '*' for all hosts."
         ))
-        parser.add_argument('command', help=(
+        parser.add_argument('shell-command', help=(
             "The shell command you want to run."
         ))
         parser.add_argument('-u', '--user', default='ansible', help=(
@@ -205,7 +205,7 @@ class RunShellCommand(object):
             '-m', 'shell',
             '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
             '-u', args.user,
-            '-a', shlex_quote(args.command)
+            '-a', shlex_quote(args.shell_command)
         )
 
         cmd_parts += get_common_ssh_args(public_vars)
