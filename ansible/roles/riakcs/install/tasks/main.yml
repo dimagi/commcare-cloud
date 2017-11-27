@@ -8,6 +8,7 @@
   register: riakcs_deb_check
   failed_when: false
   changed_when: false
+  tags: after-reboot
 
 - set_fact: riakcs_package_installed="{{ riakcs_deb_check.rc | default(0) == 0 }}"
 

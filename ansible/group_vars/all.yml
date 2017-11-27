@@ -22,8 +22,8 @@ cchq_user: cchq
 dev_group: dimagidev
 dev_users:
   present:
+    - astone
     - biyeun
-    - brudolph
     - cellowitz
     - ctsims
     - czue
@@ -33,12 +33,13 @@ dev_users:
     - frener
     - gcapalbo
     - jemord
+    - jhoffman
     - jschweers
     - jwilson
     - mkangia
-    - ncarnahan
     - npellegrino
     - nhooper
+    - sgoyal
     - skelly
     - sravfeyn
     - wpride
@@ -49,6 +50,8 @@ dev_users:
     - tsheffels
     - dmyung
     - jenkins_slave
+    - brudolph
+    - ncarnahan
 
 django_port: 9010
 riakcs_port: 8080
@@ -61,6 +64,8 @@ stanchion_port: 8085
 stanchion_data_dir: "{{ encrypted_root }}/stanchion"
 zookeeper_client_port: 2181
 formplayer_port: 8181
+couchdb2_port: 15984
+couchdb2_proxy_port: 25984
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
@@ -107,7 +112,6 @@ old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
 
-datadog_integration_celery: false
 datadog_integration_cloudant: false
 datadog_integration_couch: false
 datadog_integration_elastic: false
@@ -123,4 +127,23 @@ datadog_integration_riak: false
 datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
-datadog_integration_process: true
+datadog_integration_vmware: false
+
+root_email: commcarehq-ops+root@dimagi.com
+server_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply@dimagi.com
+support_email: support@dimagi.com
+probono_support_email: pro-bono@dimagi.com
+cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
+accounts_email: accounts@dimagi.com
+data_email: datatree@dimagi.com
+subscription_change_email: accounts+subchange@dimagi.com
+internal_subscription_change_email: accounts+subchange+internal@dimagi.com
+billing_email: billing-comm@dimagi.com
+invoicing_contact_email: billing-support@dimagi.com
+master_list_email: master-list@dimagi.com
+report_builder_add_on_email: sales@dimagi.com
+eula_change_email: eula-notifications@dimagi.com
+contact_email: info@dimagi.com
+soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+daily_deploy_email: null

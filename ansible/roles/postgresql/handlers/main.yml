@@ -1,20 +1,24 @@
 ---
 - name: Restart postgres
-  sudo: yes
+  become: yes
   action: service name=postgresql state=restarted
 
 - name: Reload postgres
-  sudo: yes
+  become: yes
   action: service name=postgresql state=reloaded
 
 - name: Start pgbouncer
-  sudo: yes
+  become: yes
   action: service name=pgbouncer state=started
 
+- name: Restart pgbouncer
+  become: yes
+  action: service name=pgbouncer state=restarted
+
 - name: Reload pgbouncer
-  sudo: yes
+  become: yes
   action: service name=pgbouncer state=reloaded
 
 - name: Run ldconfig
-  sudo: yes
+  become: yes
   action: command ldconfig

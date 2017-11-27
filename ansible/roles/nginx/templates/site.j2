@@ -4,6 +4,8 @@
 
 {% for balancer in item.server.get('balancers', []) %}
 upstream {{ balancer.name }} {
+  zone {{ balancer.name }} {{ balancer.zone|default('64k') }};
+
   {% if balancer.get('method') %}
   {{ balancer.method }};
   {% else %}
@@ -16,15 +18,27 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% for var_map in item.server.get('mappings', []) %}
+map {{ var_map.variable }} {{ var_map.name }} {
+  ""     {{ var_map.value }};
+  default     "";
+}
+{% endfor %}
+
 {% for zone in item.server.get('limit_req_zones', []) %}
 limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }}:{{ zone.size }} rate={{ zone.rate }};
+{% endfor %}
+
+{% for cache in item.server.get('proxy_cache_path', []) %}
+proxy_cache_path {{ cache.path }} levels=1:2 keys_zone={{ cache.name }}:10m
+                 max_size={{ cache.max_size}} inactive={{ cache.inactive_time }} use_temp_path=off;
 {% endfor %}
 
 server {
 
 {% if nginx_separate_logs_per_site == True %}
-  access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }};
-  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }};
+  access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }} rt_cache;
+  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }} warn;
 {% endif %}
 
 {% if 'ssl' in item.server.listen %}
@@ -43,8 +57,12 @@ server {
 {% endif %}
 {% endif %}
 
+{% if server_tokens|default('off') %}
+  server_tokens {{ server_tokens }};
+{% endif %}
+
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
@@ -76,7 +94,7 @@ server {
       {% endfor %}
     {% endif %}
     {% for limit in location.get('limit_reqs', []) %}
-        limit_req zone={{ limit.zone_name }} burst={{limit.burst}}{% if limit.get('nodelay') %} nodelay{% endif %};
+        limit_req zone={{ limit.zone_name }}{% if limit.get('burst') %} burst={{limit.burst}}{% endif %}{% if limit.get('nodelay') %} nodelay{% endif %};
     {% endfor %}
   }
 {% endfor %}

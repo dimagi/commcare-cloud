@@ -1,9 +1,9 @@
 - name: Add cchq user
-  sudo: yes
+  become: yes
   user: name="{{ cchq_user }}" state=present shell=/bin/bash
 
 - name: create required directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -20,26 +20,26 @@
   stat: path="{{ prototype_code_home }}/.git"
   register: gitdir
 - git: repo="{{ prototype_repository }}" dest="{{ prototype_code_home }}" recursive=yes accept_hostkey=yes update={{ not gitdir.stat.exists }}
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
 
 - name: install pip requirements
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   pip:
     requirements: "{{ prototype_code_home }}/prototype/requirements.txt"
     virtualenv: "{{ prototype_virtualenv_home }}"
 
 - name: copy localconfig
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: prototype_localconfig.py.j2
     dest: "{{ prototype_code_home }}/prototype/localconfig.py"
 
 - name: Create PostgreSQL database
-  sudo_user: postgres
+  become_user: postgres
   postgresql_db: name="{{ localconfig.PG_DATABASE }}" state=present
 
 - name: Create PostgreSQL users
-  sudo_user: postgres
+  become_user: postgres
   postgresql_user:
     name: "{{ localconfig.PG_USER }}"
     password: "{{ localconfig.PG_PASSWORD }}"
@@ -47,7 +47,7 @@
     state: present
 
 - name: Allow access to postgres
-  sudo_user: postgres
+  become_user: postgres
   lineinfile:
     dest: "{{ postgresql_config_home }}/pg_hba.conf"
     state: present
@@ -55,7 +55,7 @@
   register: postgresql_access_updated
 
 - name: Allow access to pgbouncer
-  sudo: yes
+  become: yes
   lineinfile:
     dest: "{{ pgbouncer_users }}"
     state: present
@@ -63,7 +63,7 @@
   register: pgbouncer_config_updated
 
 - name: Tell pgbouncer about prototype DB
-  sudo: yes
+  become: yes
   lineinfile:
     dest: "{{ pgbouncer_ini }}"
     state: present
@@ -71,12 +71,12 @@
   register: pgbouncer_config_updated
 
 - name: Apply PostgreSQL configuration changes
-  sudo_user: postgres
+  become_user: postgres
   service: name=postgresql state=restarted
   when: postgresql_access_updated.changed
 
 - name: Apply Pgbouncer configuration changes
-  sudo: yes
+  become: yes
   service: name=pgbouncer state=restarted
   when: pgbouncer_config_updated.changed
 

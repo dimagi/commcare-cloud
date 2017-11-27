@@ -1,0 +1,3 @@
+standby_mode = on
+primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ postgresql_port }}'
+primary_slot_name = '{{ replication_slot }}'

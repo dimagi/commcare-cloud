@@ -1,5 +1,5 @@
 - name: LVM
   hosts: lvm
-  sudo: yes
+  become: true
   roles:
     - lvm

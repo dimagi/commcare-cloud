@@ -2,13 +2,13 @@
 
 - name: Keystore
   hosts: webworkers
-  sudo: yes
+  become: true
   roles:
     - {role: keystore, tags: keystore}
 
 - name: Webworkers
   hosts: webworkers
-  sudo: yes
+  become: true
   roles:
     - webworker
 

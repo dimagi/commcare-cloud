@@ -1,13 +1,15 @@
 - name: "Install postfix"
   hosts: all
-  sudo: yes
+  become: true
   tasks:
     - debconf: name=postfix question="postfix/main_mailer_type" value="Internet Site" vtype="string"
     - apt: name=postfix state=present force=yes
+  tags:
+    - postfix
 
 - name: "mail relay deploy"
   hosts: mailrelay
-  sudo: yes
+  become: true
   tasks:
     - name: "sets our relayhost"
       lineinfile:
@@ -21,10 +23,12 @@
         regexp: '^mynetworks ='
         line: "mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ groups['all']|join('/32 ') }}"
       when: groups['mailrelay'] is defined and parent_mailrelay is defined
+  tags:
+    - postfix
 
 - name: "mail relay clients deploy"
   hosts: all:!mailrelay
-  sudo: yes
+  become: true
   tasks:
     - name: "sets external relayhost"
       lineinfile:
@@ -32,3 +36,13 @@
         regexp: '^relayhost ='
         line: "relayhost = {{ groups['mailrelay'][0] }}"
       when: groups['mailrelay'] is defined
+  tags:
+    - postfix
+
+- name: "reload postfix"
+  hosts: all
+  become: true
+  tasks:
+    - service: name=postfix state=restarted enabled=yes
+  tags:
+    - postfix

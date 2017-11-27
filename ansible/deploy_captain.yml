@@ -2,7 +2,7 @@
 
 - name: Captain
   hosts: captain
-  sudo: yes
+  become: true
   roles:
     - { role: supervisor, tags: 'supervisor' }
     - { role: redis, tags: 'redis' }

@@ -1,3 +1,12 @@
 - name: Copy sudoers file
-  sudo: yes
+  become: true
   template: src=sudoers.j2 dest="/etc/sudoers.d/{{ ansible_control_user }}" validate='visudo -cf %s' owner=root group=root mode=0440
+
+- name: create log file
+  become: true
+  file:
+    path: /var/log/ansible.log
+    mode: 0775
+    owner: ansible
+    group: "{{ dev_group }}"
+    state: touch

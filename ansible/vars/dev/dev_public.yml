@@ -8,28 +8,47 @@ internal_domain_name: 'localdomain'
 
 testing: True
 
-etc_host_lines: []
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
-http_proxy_address: '192.168.33.1'
+static_routes:
+  - name: docker
+    cmd: add
+    interface: eth1
+    prefix: "172.17.0.0/16"
+    gateway: "192.168.121.1"
+  - name: local
+    cmd: del
+    interface: eth1
+    prefix: "10.0.0.0/8"
+    gateway: "192.168.121.1"
+
+http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
+http_proxy_parent_address: '192.168.33.1'
+http_proxy_parent_port: '3128'
 
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
+  cchq_ssl: True
   cchq_redirect: True
   cchq_http: True
   cchq_http_redirect: True
   cchq_http_j2me: False
   commtrack_ssl: True
   commtrack_http: True
-  riakcs: True
+  riakcs: False
+  couchdb2: True
   hq_status: False
   icds_tableau: False
   motech: False
   motech2: False
   wiki: False
-
+  wiki_http: False
+  tableau: False
+  cas_ssl: False
 
 deploy_env: dev
 fake_ssl_cert: yes
@@ -75,24 +94,40 @@ AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
-keystore_file: 'DimagiKeyStore'
+#keystore_file: 'DimagiKeyStore'
 
 backup_es: False
 
 postgres_users:
   commcare:
     username: "{{ localsettings.PG_DATABASE_USER }}"
-    password: "{{ secrets.pg_user_passwords.default }}"
+    password: commcarehq
   devreadonly:
     username: "devreadonly"
-    password: "{{ secrets.pg_user_passwords.devreadonly }}"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+  replication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
 
+pg_replication_slots:
+  192.168.33.16:
+    - standby1
+
+encrypted_root: '/opt/data'
+postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 postgresql_ssl_enabled: False
 postgresql_max_connections: 20
 postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '128MB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '4GB'
+postgresql_max_standby_delay: '-1'
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
@@ -100,9 +135,13 @@ pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
 
 shared_drive_enabled: True
-backup_postgres: False
+backup_postgres: plain
 backup_blobdb: True
 postgres_s3: False
+nadir_hour: 18
+
+nofile_limit: 65536
+nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -123,7 +162,9 @@ formplayer_db_name: formplayer
 #    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
 
 postgresql_dbs:
-  - name: "{{ localsettings.UCR_DATABASE_NAME }}"
+  - name: commcarehq_ucr
+    django_alias: ucr
+    django_migrate: False
   - name: "{{localsettings.PG_DATABASE_NAME}}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
@@ -151,9 +192,30 @@ postgresql_dbs:
 #  - django_alias: p5
 #    name: commcarehq_p5
 #    shards: [400, 511]
-#  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+#  - name: commcarehq_ucr
+#    django_alias: ucr
 
 mailrelay: 'relay.example.com'
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2.0 }}"
+    port: 15984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+  users:
+    host: "{{ groups.couchdb2.0 }}"
+    port: 15984
+    name: commcarehq__users
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
 
 localsettings:
   ALLOWED_HOSTS:
@@ -178,12 +240,6 @@ localsettings:
   CELERY_RESULT_BACKEND: 'database'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: no
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "{{ groups.couchdb.0 }}"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PORT: 5984
   COUCH_MONITORING_USERNAME: commcarehq
   COUCH_MONITORING_PASSWORD: commcarehq
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
@@ -231,7 +287,7 @@ localsettings:
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.pg_user_passwords.default }}"
+  PG_DATABASE_PASSWORD: commcarehq
   PG_DATABASE_USER: commcarehq
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
@@ -239,7 +295,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
 #  REMINDERS_QUEUE_ENABLED:
-  UCR_DATABASE_NAME: commcarehq_ucr
+  REPORTING_DATABASES:
+    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
 #  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
 #  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"

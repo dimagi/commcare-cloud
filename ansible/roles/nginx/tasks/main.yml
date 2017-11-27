@@ -16,6 +16,7 @@
   when: action == 'restart'
   tags:
     - update-cert
+    - after-reboot
 
 - name: Configure Static Error pages
   include: errorpages.yml

@@ -1,5 +1,5 @@
 - name: create required igor directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -20,12 +20,12 @@
     recursive: yes
     accept_hostkey: yes
     update: yes
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   tags:
     - igor
 
 - name: Set igor supervisor confs
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: "supervisor/{{ item }}.conf.j2"
     dest: "{{ supervisor_task_conf }}/{{ item }}.conf"
@@ -35,7 +35,7 @@
     - igor
 
 - name: Set igor config settings
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: "igor/config.json.j2"
     dest: "{{ igor_src_dir }}/config/production.json"

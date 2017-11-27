@@ -11,7 +11,7 @@ nginx_sites:
    client_max_body_size: "9M"
    upstream_port: "{{ riakcs_port }}"
    proxy_set_headers:
-   - "Host $http_host"
+   - "Host $host"
    - "X-Real-IP $remote_addr"
    locations:
      - name: /

@@ -1,5 +1,5 @@
 - name: create required directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -14,7 +14,7 @@
     - "{{ supervisor_task_conf }}"
 
 - name: Touch database file
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   file:
     path: "{{ captain_database }}"
     owner: "{{ cchq_user }}"
@@ -29,13 +29,13 @@
     recursive: yes
     accept_hostkey: yes
     update: yes
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   tags:
     - git
     - slow
 
 - name: install pip requirements
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   pip:
     requirements: "{{ captain_src_dir }}/requirements.txt"
     virtualenv: "{{ captain_virtualenv_dir }}"
@@ -49,7 +49,7 @@
     virtualenv: "{{ captain_virtualenv_dir }}"
 
 - name: copy localsettings
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: localsettings.py.j2
     dest: "{{ captain_src_dir }}/captain/localsettings.py"
@@ -57,7 +57,7 @@
     - localsettings
 
 - name: copy fab config
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: config.py.j2
     dest: "{{ captain_src_dir }}/submodules/commcare-hq-deploy/fab/config.py"
@@ -65,7 +65,7 @@
     - localsettings
 
 - name: Set captain supervisor confs
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: "supervisor/{{ item }}.conf.j2"
     dest: "{{ supervisor_task_conf }}/{{ item }}.conf"
@@ -77,7 +77,7 @@
 
 - name: Install npm items
   npm: name="{{ item }}" state=present global=yes
-  sudo: yes
+  become: yes
   with_items:
     - rtail@0.2.1
 

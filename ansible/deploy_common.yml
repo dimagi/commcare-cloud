@@ -1,25 +1,25 @@
 - name: Common
   hosts: all
-  sudo: yes
+  become: true
   roles:
     - common
 
 - name: ufw (firewall)
-  hosts: '!proxy:!cas_proxy:!enikshay_proxy'
-  sudo: yes
+  hosts: '!proxy:!cas_proxy:!enikshay_proxy:!pna_proxy:!couchdb2_proxy'
+  become: true
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined}
 
 - name: ufw (proxy firewall)
-  hosts: 'proxy:cas_proxy:enikshay_proxy'
-  sudo: yes
+  hosts: 'proxy:cas_proxy:enikshay_proxy:pna_proxy:couchdb2_proxy'
+  become: true
   tasks:
     - include: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
       when: ufw_private_interface is defined or is_monolith|bool
 
 - name: Datadog agent
   hosts: all
-  sudo: yes
+  become: true
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
 
@@ -27,3 +27,32 @@
   hosts: all
   roles:
     - {role: swap}
+
+- name: Configure monit
+  hosts: all
+  roles:
+    - {role: monit, tags: monit}
+
+- name: Configure static routes
+  hosts: all
+  tasks:
+
+  - name: Checks existing static routes
+    shell: 'ip route show {{ item.prefix }} | wc -l'
+    with_items: "{{ static_routes }}"
+    become: True
+    register: static_routes_status
+    changed_when: false
+    when: static_routes|default(false)
+    tags:
+      - static-routes
+      - after-reboot
+
+  - name: Adds static routes
+    shell: "route {{ item.item.cmd }} -net {{ item.item.prefix }} gw {{ item.item.gateway }}"
+    become: true
+    with_items: "{{ static_routes_status.results }}"
+    when: static_routes|default(false) and ((item.stdout == "0" and item.item.cmd == "add") or (item.stdout == "1" and item.item.cmd == "del"))
+    tags:
+      - static-routes
+      - after-reboot

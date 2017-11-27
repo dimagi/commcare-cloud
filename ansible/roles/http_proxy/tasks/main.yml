@@ -5,7 +5,7 @@
     regexp: "{{item.var}}="
     create: yes
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - {'var': 'http_proxy', 'protocol': 'http'}
     - {'var': 'https_proxy', 'protocol': 'http'}
@@ -21,7 +21,7 @@
     regexp: "Acquire::{{item.protocol}}::Proxy"
     create: yes
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - {'protocol': 'http'}
     - {'protocol': 'https'}
@@ -30,11 +30,11 @@
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
-    line: "{{ item }}={{ groups['all']|join(',') }},127.0.0.1,localhost,relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
+    line: "{{ item }}={{ groups['all']|join(',') }},127.0.0.1,localhost,relay.nic.in,smsgw.sms.gov.in,{{ NO_WWW_SITE_HOST|default(SITE_HOST) }},{{ internal_domain_name }}"
     regexp: "{{item }}="
     create: yes
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - 'no_proxy'
     - 'NO_PROXY'
@@ -43,10 +43,8 @@
   template:
     src: bowerrc.j2
     dest: "{{ item.home }}/.bowerrc"
-  become: yes
-  become_user: "{{item.user}}"
-  vars:
-    ansible_ssh_pipelining: true
+    owner: "{{item.user}}"
+    group: "{{item.user}}"
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'home': '/home/ansible' }

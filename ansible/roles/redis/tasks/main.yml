@@ -12,6 +12,14 @@
   with_items: "{{ redis_ubuntu_pkg }}"
   environment: env
 
+- name: Make sure nofile ulimit is high
+  lineinfile:
+    path: /etc/default/redis-server
+    regexp: '^ULIMIT='
+    line: 'ULIMIT=65536'
+  notify: 
+   - restart redis 
+
 - name: Copy the redis configuration file 
   template: src=redis.conf.j2 dest="{{ redis_conf_dest }}"
   notify: 
@@ -28,4 +36,22 @@
 
 - name: start the redis service
   service: name="{{ redis_service }}" state=started enabled=yes
+  tags: after-reboot
 
+- name: redis monit config
+  become: yes
+  template:
+    src: "monit.redis.j2"
+    dest: "/etc/monit/conf.d/redis"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: redis
+    state: monitored
+  tags: monit

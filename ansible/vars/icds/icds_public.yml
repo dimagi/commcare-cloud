@@ -1,21 +1,21 @@
 SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
-ALTERNATE_FORMPLAYER_HQ_HOST: "{{ CAS_SITE_HOST }}"
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 internal_domain_name: 'internal-icds.commcarehq.org'
 tableau_server: 10.247.24.11:80
+daily_deploy_email: tech-announce-daily@dimagi.com
 
 TABLEAU_HOST: 'reports.icds-cas.gov.in'
 
-nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/icds-cas.gov.in.combined.crt'
-apache2_key_file: '../config/{{ deploy_env }}/ssl/icds-cas.gov.in.key'
+nginx_combined_cert_value: "{{ ssl_secrets.certs.icds_cas_gov_in }}"
+nginx_key_value: '{{ ssl_secrets.private_keys.icds_cas_gov_in }}'
 
-cas_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/cas.commcarehq.org.combined.crt'
-cas_key_file: '../config/{{ deploy_env }}/ssl/cas.commcarehq.org.key'
+cas_nginx_combined_cert_value: "{{ ssl_secrets.certs.cas_commcarehq_org }}"
+cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
 
-tableau_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.crt'
-tableau_key_file: '../config/{{ deploy_env }}/ssl/reports.icds-cas.gov.in.key'
+tableau_nginx_combined_cert_value: "{{ ssl_secrets.certs.reports_icds_cas_gov_in }}"
+tableau_key_value: '{{ ssl_secrets.private_keys.reports_icds_cas_gov_in }}'
 
 active_sites:
   cchq_ssl: True
@@ -36,6 +36,7 @@ active_sites:
   motech2: False
   riakcs: True
   cas_ssl: True
+  couchdb2: True
 
 riak_ring_size: 64
 
@@ -44,12 +45,16 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 proxy_type: 'nginx'
 primary_ssl_env: "cas"
+nginx_max_clients: 1024
+nginx_worker_rlimit_nofile : 16384
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
+
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
@@ -58,22 +63,22 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
-backup_postgres: True
+backup_postgres: plain
 backup_es: False
 postgres_s3: False
+backup_couch: True
+nadir_hour: 16
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgresql_max_connections: 400
-postgresql_work_mem: '8MB'
-postgresql_shared_buffers: '512MB'
+postgresql_shared_buffers: '8GB'
 postgresql_max_stack_depth: '6MB'
-postgresql_effective_cache_size: '8GB'
-pgbouncer_default_pool: 390
+postgresql_effective_cache_size: '16GB'
+postgresql_max_standby_delay: '-1'
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
-pgbouncer_max_connections: 1500
+pg_query_stats: True
 
 formplayer_db_name: formplayer
 
@@ -110,6 +115,7 @@ postgresql_dbs:
     name: commcarehq_p6
     shards: [515, 617]
     host: "{{ groups.postgresql.1 }}"
+    query_stats: True
   - django_alias: p7
     name: commcarehq_p7
     shards: [618, 720]
@@ -126,15 +132,23 @@ postgresql_dbs:
     name: commcarehq_p10
     shards: [927, 1023]
     host: "{{ groups.postgresql.1 }}"
-  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+  - name: commcarehq_ucr
     host: "{{ groups.postgresql.0 }}"
-  - django_alias: "{{localsettings.ICDS_UCR_DATABASE_ALIAS}}"
-    name: "{{localsettings.ICDS_UCR_DATABASE_NAME}}"
+    django_alias: ucr
+    django_migrate: False
+  - django_alias: icds-ucr
+    name: commcarehq_icds_aggregatedata
     host: "{{ groups.postgresql.0 }}"
-  - name: "{{localsettings.ICDS_TEST_DATABASE_NAME}}"
+    query_stats: True
+  - name: commcarehq_icds_testdata
     host: "{{ groups.postgresql.0 }}"
   - name: "{{ formplayer_db_name }}"
     host: "{{ groups.postgresql.0 }}"
+  - django_alias: icds-ucr-standby
+    name: commcarehq_icds_aggregatedata
+    host: "{{ hostvars[groups.postgresql.0].hot_standby_server }}"
+    create: False
+    django_migrate: False
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
@@ -161,6 +175,8 @@ ZABBIX_DB_USER_PASS: "{{ secrets.ZABBIX_DB_USER_PASS }}"
 DATADOG_ENABLED: True
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
+datadog_integration_cloudant: False
+datadog_integration_vmware: True
 
 file_email: False
 
@@ -169,15 +185,16 @@ ufw_private_interface: eth0
 shared_drive_enabled: true
 
 # point hosts to the proxy machine
-etc_host_lines:
+etc_hosts_lines:
   - '10.247.24.13		cas.commcarehq.org'
   - '10.247.24.13		reports.icds-cas.gov.in'
   - '10.247.24.13		www.icds-cas.gov.in'
-etc_host_lines_removed: ['etc_host_lines']
+etc_hosts_lines_removed: []
 
 http_proxy_address: '10.247.24.16'
 http_proxy_port: '3128'
 
+commcare_errors_branch: "master-icds"
 site_locations:
   - name: /files
     try_files: "$uri $uri/index.html $uri/ =404"
@@ -224,6 +241,24 @@ site_locations:
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 2
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_USERNAME }}"
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
 
 localsettings:
   ALLOWED_HOSTS:
@@ -231,35 +266,37 @@ localsettings:
     - 127.0.0.1
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
+  ASYNC_INDICATORS_TO_QUEUE: 30000
+  ASYNC_INDICATOR_QUEUE_CRONTAB:
+    minute: '*/5'
+    hour: '0-7,18-23'
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
+  BIGCOUCH: True
+  BIGCOUCH_QUORUM_COUNT: 2
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "" #"http://{{ groups.celery.0 }}:5555"
+  CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
   CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
+  CELERY_TIMEZONE: 'Asia/Kolkata'
   COMMCARE_HQ_NAME: 'ICDS-CAS Server'
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: False
-  COUCH_SERVER_ROOT: "10.247.24.18"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_PORT: 5984
   COUCH_STALE_QUERY: 'update_after'
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
+  DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
@@ -271,14 +308,15 @@ localsettings:
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
+  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'icds'
 #  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
 #  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
-  ICDS_TEST_DATABASE_NAME: commcarehq_icds_testdata
+  ICDS_UCR_TEST_DATABASE_ALIAS : icds-ucr
   ICDS_UCR_DATABASE_ALIAS: icds-ucr
-  ICDS_UCR_DATABASE_NAME: commcarehq_icds_aggregatedata
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -306,41 +344,7 @@ localsettings:
             - 'location'
           include_ucrs:
             - 'static-awc_location'
-      - name: 'kafka-ucr-static-ccs_record_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-ccs_record_cases'
-      - name: 'kafka-ucr-static-ccs_record_cases_monthly'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-ccs_record_cases_monthly'
-            - 'static-ccs_record_cases_monthly_tableau'
-      - name: 'kafka-ucr-static-child_cases_monthly'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-child_cases_monthly'
-            - 'static-child_cases_monthly_tableau'
-      - name: 'kafka-ucr-static-child_health_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-child_health_cases'
-      - name: 'kafka-ucr-static-hardware_cases'
+      - name: 'kafka-ucr-static-cases'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -348,39 +352,19 @@ localsettings:
             - 'case-sql'
           include_ucrs:
             - 'static-hardware_cases'
-      - name: 'kafka-ucr-static-household_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
             - 'static-household_cases'
-      - name: 'kafka-ucr-static-tasks_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
             - 'static-tasks_cases'
-      - name: 'kafka-ucr-static-person_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
-            - 'static-person_cases'
-      - name: 'kafka-ucr-static-tech_issue_cases'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'case-sql'
-          include_ucrs:
             - 'static-tech_issue_cases'
-      - name: 'kafka-ucr-static-child_delivery_forms'
+            - 'static-child_health_cases'
+            - 'static-child_cases_monthly'
+            - 'static-child_cases_monthly_v2'
+            - 'static-child_cases_monthly_tableau_v2'
+            - 'static-ccs_record_cases'
+            - 'static-ccs_record_cases_monthly'
+            - 'static-ccs_record_cases_monthly_v2'
+            - 'static-ccs_record_cases_monthly_tableau_v2'
+            - 'static-person_cases_v2'
+      - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
@@ -388,79 +372,17 @@ localsettings:
             - 'form-sql'
           include_ucrs:
             - 'static-child_delivery_forms'
-      - name: 'kafka-ucr-static-daily_feeding_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-daily_feeding_forms'
-      - name: 'kafka-ucr-static-gm_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-gm_forms'
-      - name: 'kafka-ucr-static-home_visit_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-home_visit_forms'
-      - name: 'kafka-ucr-static-infrastructure_form'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-infrastructure_form'
-      - name: 'kafka-ucr-static-ls_home_visit_forms_filled'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-ls_home_visit_forms_filled'
-      - name: 'kafka-ucr-static-thr_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-thr_forms'
-      - name: 'kafka-ucr-static-usage_forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-usage_forms'
-      - name: 'kafka-ucr-static-vhnd_form'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
-            - 'static-vhnd_form'
-      - name: 'kafka-ucr-static-other-forms'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          topics:
-            - 'form-sql'
-          include_ucrs:
             - 'static-awc_mgt_forms'
+            - 'static-ls_home_visit_forms_filled'
+            - 'static-thr_forms'
+            - 'static-usage_forms'
+            - 'static-vhnd_form'
             - 'static-visitorbook_forms'
+  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
@@ -473,6 +395,10 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REPORTING_DATABASES:
+    ucr: ucr
+    icds-ucr: icds-ucr
+    icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
   SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
@@ -489,7 +415,6 @@ localsettings:
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-  UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
@@ -499,14 +424,3 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  LOCAL_LOGGING_LOGGERS:
-    notify:
-      handlers:
-        - 'sentry'
-      level: 'ERROR'
-      propagate: True
-    django:
-      handlers:
-        - 'sentry'
-      level: 'ERROR'
-      propagate: True

@@ -1,0 +1,15 @@
+---
+# tasks file for logrotate
+
+- name: stat cron.hourly/logrotate
+  stat: path=/etc/cron.hourly/logrotate
+  register: hourly_file
+
+- name: stat cron.daily/logrotate
+  stat: path=/etc/cron.daily/logrotate
+  register: daily_file
+
+- name: Move logrotate to hourly
+  command: mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+  when: not hourly_file.stat.exists and daily_file.stat.exists
+

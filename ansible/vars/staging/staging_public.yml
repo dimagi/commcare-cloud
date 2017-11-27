@@ -18,13 +18,12 @@ active_sites:
   motech: False
   motech2: False
   riakcs: True
+  couchdb2: False
 
 riak_ring_size: 64
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
-old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
-old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 
 proxy_type: nginx
 
@@ -41,9 +40,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
 # Source paths of certs
-apache2_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
-apache2_ca_file: '../config/{{ deploy_env }}/ssl/hq_thawtecabundle.crt'
-apache2_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
@@ -59,7 +56,7 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
-backup_postgres: False
+backup_postgres: plain
 backup_es: False
 postgres_s3: False
 
@@ -73,31 +70,46 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: transaction
+pg_query_stats: True
 
 formplayer_db_name: formplayer
+formplayer_archive_time_spec: '10m'
 
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
+    query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 99]
+    query_stats: True
   - django_alias: p2
     name: commcarehq_p2
     shards: [100, 199]
+    query_stats: True
   - django_alias: p3
     name: commcarehq_p3
     shards: [200, 299]
+    query_stats: True
   - django_alias: p4
     name: commcarehq_p4
     shards: [300, 399]
+    query_stats: True
   - django_alias: p5
     name: commcarehq_p5
     shards: [400, 511]
-  - name: "{{localsettings.UCR_DATABASE_NAME}}"
+    query_stats: True
+  - name: commcarehq_ucr
+    query_stats: True
+    django_alias: ucr
+    django_migrate: False
   - name: "{{ formplayer_db_name }}"
+  - django_alias: icds-ucr
+    name: commcarehq_icds_testdata
+    query_stats: True
+    django_migrate: False
 
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 
@@ -111,8 +123,18 @@ AMQP_NAME: commcarehq
 
 ufw_private_interface: eth1
 
-etc_host_lines: []
-etc_host_lines_removed: []
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
+
+
+couch_dbs:
+  default:
+    host: commcarehq.cloudant.com
+    port: 443
+    name: staging_commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: True
 
 localsettings:
   ALLOWED_HOSTS:
@@ -129,7 +151,6 @@ localsettings:
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
   CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
@@ -139,12 +160,8 @@ localsettings:
   CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
-  COUCH_HTTPS: yes
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_SERVER_ROOT: "commcarehq.cloudant.com"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PORT: 443
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles - Staging'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
@@ -156,9 +173,8 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
-  ENABLE_PASSWORD_HASHING: True
-  ENABLE_USED_PASSWORDS_CHECK: True
   FORMPLAYER_URL: "/formplayer"
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'staging'
@@ -196,6 +212,8 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  REPORTING_DATABASES:
+    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
   SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
@@ -205,14 +223,13 @@ localsettings:
   SIMPLE_API_KEYS:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
-  SMS_QUEUE_ENABLED: False
+  SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
-  UCR_DATABASE_NAME: commcarehq_ucr
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"

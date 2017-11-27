@@ -3,7 +3,7 @@
 # https://github.com/rackerlabs/ansible-kafka/blob/master/playbooks/roles/zookeeper/tasks/main.yml
 - name: install zookeeper
   apt: name="{{ item }}" state=present
-  sudo: yes
+  become: yes
   with_items:
     - zookeeper
     - zookeeperd

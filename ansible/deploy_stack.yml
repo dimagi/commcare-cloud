@@ -4,7 +4,7 @@
 - name: update apt cache
   hosts: all
   gather_facts: no
-  sudo: yes
+  become: true
   tasks:
     - apt: update_cache=true cache_valid_time=3600
   tags:
@@ -20,3 +20,6 @@
 - include: deploy_webworker.yml
 - include: deploy_touchforms.yml
 - include: deploy_formplayer.yml
+- include: deploy_mailrelay.yml
+- include: deploy_tmpreaper.yml
+- include: deploy_etckeeper.yml

@@ -1,0 +1,56 @@
+
+- name: Remove pgbackrest files
+  become: true
+  file:
+    dest: "{{ item }}"
+    state: absent
+  with_items:
+    - "/usr/local/sbin/pgbackrest_archive_command.sh"
+
+- name: Create Daily Cron job
+  become: yes
+  cron:
+    name: "Backup postgres daily (differential)"
+    job: "/usr/bin/pgbackrest --type=diff --stanza=backup backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: postgres
+    cron_file: backup_postgres
+    state: absent
+
+- name: Create Daily Cron job S3
+  become: yes
+  cron:
+    name: "Backup postgres daily (differential) S3"
+    job: "/usr/bin/pgbackrest --type=diff --stanza=backups3 backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: postgres
+    cron_file: backup_postgres
+    state: absent
+
+- name: Create Weekly Cron job
+  become: yes
+  cron:
+    name: "Backup postgres weekly (full backup)"
+    job: "/usr/bin/pgbackrest --type=full --stanza=backup backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: postgres
+    cron_file: backup_postgres
+    state: absent
+
+- name: Create Weekly Cron job S3
+  become: yes
+  cron:
+    name: "Backup postgres weekly (full backup) S3"
+    job: "/usr/bin/pgbackrest --type=full --stanza=backups3 backup"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: postgres
+    cron_file: backup_postgres
+    state: absent

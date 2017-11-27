@@ -12,7 +12,7 @@
     group: '{{ cchq_user }}'
 
 - name: Copy newrelic template
-  sudo_user: "{{ cchq_user }}"
+  become_user: "{{ cchq_user }}"
   template:
     src: newrelic.yml.j2
     dest: '{{ newrelic_dest }}/newrelic/newrelic.yml'

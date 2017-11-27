@@ -1,32 +1,11 @@
-- name: "Custom host file lines"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
-  with_items: "{{ etc_host_lines }}"
-  tags:
-    - etc_hosts
-
-- name: "Add host file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
-  with_items:
-    - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
-  tags:
-    - etc_hosts
-  when: not inventory_hostname|ipaddr
-
-- name: "Remove lines from hosts file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
-  with_items: "{{ etc_host_lines_removed }}"
-  tags:
-    - etc_hosts
-
 # For 12.04 Ubuntu, upgrade OpenSSL version
 - name: "Install libssl1.0.0"
   apt: name="libssl1.0.0" state=present
   tags:
     - upgrade_openssl
 
-
 - name: Hard file limits
-  sudo: yes
+  become: yes
   pam_limits:
     domain: "{{ item }}"
     limit_type: hard
@@ -38,9 +17,8 @@
     - '*'
     - 'root'
 
-
 - name: Soft file limits
-  sudo: yes
+  become: yes
   pam_limits:
     domain: "{{ item }}"
     limit_type: soft
@@ -61,12 +39,22 @@
   tags:
     - nofile_limits
 
+- name: Ensure pam_limits.so non-interactive
+  lineinfile:
+    dest: /etc/pam.d/common-session-noninteractive
+    state: present
+    regexp: "^session required pam_limits.so"
+    line: "session required pam_limits.so"
+  tags:
+    - nofile_limits
+
 - name: set timezone to Etc/UTC
   become: yes
   timezone:
     name: Etc/UTC
   tags:
     - timezone
+    - after-reboot
 
 - name: "Sets hostname"
   become: yes
@@ -75,32 +63,66 @@
   when: hostname is defined
   tags:
     - hostname
+    - after-reboot
 
 - name: "Sets /etc/hosts"
   become: yes
   lineinfile:
     dest: /etc/hosts
-    regexp: '^{{ ansible_default_ipv4.address }} '
+    regexp: '^{{ ansible_default_ipv4.address }}\s'
     line: '{{ ansible_default_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}'
-  when: hostname is defined and internal_domain_name is defined
+  when: hostname is defined and internal_domain_name is defined and not etc_hosts_lines|join(',')|search(ansible_default_ipv4.address)
   tags:
     - hostname
-
-- name: "Checks if anti-virus service exists"
-  stat: path=/etc/init.d/nails
-  register: antivirus
-  tags:
-    - antivirus
     - after-reboot
 
-- name: "Disables anti-virus"
+- name: "Custom host file lines"
+  lineinfile: dest=/etc/hosts regexp='^{{ item }}.*' line="{{item}}" state=present
+  with_items: "{{ etc_hosts_lines }}"
+  when: etc_hosts_lines is defined
+  tags:
+    - etc_hosts
+
+- name: "Add host file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
+  with_items:
+    - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
+  tags:
+    - etc_hosts
+    - after-reboot
+  when: not inventory_hostname|ipaddr
+
+- name: "Remove lines from hosts file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
+  with_items: "{{ etc_hosts_lines_removed }}"
+  when: etc_hosts_lines_removed is defined
+  tags:
+    - etc_hosts
+    - after-reboot
+
+- name: "RFC 2142 email aliases and forwarding"
   become: yes
-  service:
-    name: nails
-    state: stopped
-    enabled: no
-  when: antivirus.stat.exists
+  template:
+    src: etc_aliases.j2
+    dest: /etc/aliases
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  register: aliases
+  tags:
+    - postfix
+
+- name: "RFC 2142 email aliases and forwarding (update)"
+  become: yes
+  command: postalias /etc/aliases
+  when: aliases.changed
+  tags:
+    - postfix
+
+- include: antivirus.yml
   tags:
     - antivirus
     - after-reboot
-
+- include: cron.yml 
+  tags: cron

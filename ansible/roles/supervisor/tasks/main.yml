@@ -1,7 +1,7 @@
 ---
 
 - name: Add cchq user
-  sudo: yes
+  become: yes
   user: name="{{ cchq_user }}" state=present shell=/bin/bash generate_ssh_key=yes
   tags: commcarehq
 
@@ -10,12 +10,11 @@
   register: which_supervisord
   changed_when: false
   failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
-  # run in check mode
-  always_run: yes
+  check_mode: no
 
 - name: install supervisor
   apt: name=supervisor state=present
-  sudo: yes
+  become: yes
   when: not which_supervisord.stdout
 
 - name: check for sysvinit conf
@@ -23,7 +22,7 @@
   register: init_d_conf
 
 - name: service stop supervisor
-  sudo: yes
+  become: yes
   service: name=supervisor state=stopped
   when: init_d_conf.stat.exists
 
@@ -42,16 +41,16 @@
 
 - name: configure supervisor
   template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
-  sudo: yes
+  become: yes
 
 - name: Add Upstart Conf
-  sudo: yes
+  become: yes
   template:
     src: supervisord.upstart.conf.j2
     dest: /etc/init/supervisord.conf
 
 - name: stop supervisor to pick up configuration changes
-  sudo: yes
+  become: yes
   command: stop supervisord
   failed_when: no
 
@@ -61,6 +60,6 @@
   register: result
   failed_when: result.rc != 0 and (result.stderr or result.stdout)
 
-- sudo: yes
+- become: yes
   command: start supervisord
   failed_when: no

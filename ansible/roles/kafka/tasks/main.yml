@@ -25,7 +25,7 @@
   file: path=/opt/kafka/ owner=root group=root recurse=yes
 
 - name: Create Kafka data directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     state: directory
@@ -56,6 +56,7 @@
 
 - name: Enable and start Kafka service
   service: name=kafka-server enabled=yes state=restarted
+  tags: after-reboot
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
@@ -74,7 +75,7 @@
 
 - name: Install ruby
   apt: name="{{ item }}" state=present
-  sudo: yes
+  become: yes
   with_items:
     - ruby2.3
     - ruby2.3-dev
@@ -83,12 +84,12 @@
 
 - name: Install kafkat
   command: 'gem install kafkat'
-  sudo: yes
+  become: yes
   tags:
     - kafkat
 
 - name: Create kafkat config file
   template: src=kafkatcfg.j2 dest="/etc/kafkatcfg"
-  sudo: yes
+  become: yes
   tags:
     - kafkat

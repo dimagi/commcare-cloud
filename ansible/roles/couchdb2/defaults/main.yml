@@ -1,0 +1,9 @@
+---
+# /roles/couchdb/defaults/main.yml
+couchdb_version: 2.0.0
+couch_data_dir: '{{ encrypted_root }}/couchdb2'
+couch_backup_dir: "{{ encrypted_root }}/backups/couchdb2"
+backup_couch: False
+couch_s3: False
+couchdb_user: couchdb
+couchdb_group: couchdb

@@ -1,0 +1,5 @@
+---
+dependencies:
+  - couchdb2-preinstall
+  - andrewrothstein.ansible-couchdb-cluster
+  - role: monit

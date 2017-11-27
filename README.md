@@ -117,7 +117,7 @@ For the Lenovo T440s:
 
 - Update localsettings:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --tags=localsettings
+  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_localsettings.yml --tags=localsettings
   ```
 - Skip the common setup, including apt installs and updating the commcarehq code:
   ```bash
@@ -195,9 +195,6 @@ On subsequent logins if optional step was not done.
 ```bash
 . init-ansible
 ```
-
-Setup the vault password files as described below in [Managing secrets with Vault](#managing-secrets-with-vault)
-
 
 ### Simulate dev user setup on vagrant control machine
 

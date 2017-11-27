@@ -6,8 +6,9 @@ init_config:
     - {{ code_home }}/formplayer_build/formplayer.jar
 
 instances:
+{% for port in ['9999', '9998'] %}
   - host: localhost
-    port: 9999
+    port: {{ port }}
 
     name: jmx_formplayer_instance
 
@@ -123,3 +124,4 @@ instances:
             - TotalSwapSpaceSize
             - SystemLoadAverage
             - AvailableProcessors
+{% endfor %}

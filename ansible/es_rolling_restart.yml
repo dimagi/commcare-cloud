@@ -1,7 +1,7 @@
 ---
 - name: Elasticsearch
   hosts: elasticsearch
-  sudo: yes
+  become: true
   serial: 1
   vars_prompt:
     - name: "pillows_stopped"

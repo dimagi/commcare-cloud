@@ -10,7 +10,7 @@ nginx_sites:
    server_name: "{{ TABLEAU_HOST }}"
    client_max_body_size: 100m
    proxy_set_headers:
-   - "Host $http_host"
+   - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Proto $scheme"
    - "X-Forwarded-Host $host:443"
