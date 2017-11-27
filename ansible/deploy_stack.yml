@@ -24,4 +24,4 @@
 - import_playbook: deploy_etckeeper.yml
 
 - import_playbook: deploy_formplayer.yml
-  when: touchforms_enabled
+  when: touchforms_enabled|default(False)
