@@ -228,8 +228,9 @@ hostname='web6'
 [web7:vars]
 hostname='web7'
 
-[web8]
-10.247.164.8
+# remove for now till we sort out the ssh issue
+#[web8]
+#10.247.164.8
 
 [web8:vars]
 hostname='web8'
@@ -497,7 +498,7 @@ web4
 web5
 web6
 web7
-web8
+#web8
 web9
 
 [postgresql:children]
@@ -540,7 +541,7 @@ web4
 web5
 web6
 web7
-web8
+#web8
 web9
 
 [pillowtop:children]
