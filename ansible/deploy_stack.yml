@@ -11,15 +11,15 @@
     - common
     - aptcache
 
-- include: deploy_common.yml tags=common
-- include: deploy_lvm.yml
-- include: deploy_db.yml
-- include: deploy_commcarehq.yml
-- include: deploy_proxy.yml
-- include: deploy_shared_dir.yml
-- include: deploy_webworker.yml
-- include: deploy_touchforms.yml
-- include: deploy_formplayer.yml
-- include: deploy_mailrelay.yml
-- include: deploy_tmpreaper.yml
-- include: deploy_etckeeper.yml
+- import_playbook: deploy_common.yml tags=common
+- import_playbook: deploy_lvm.yml
+- import_playbook: deploy_db.yml
+- import_playbook: deploy_commcarehq.yml
+- import_playbook: deploy_proxy.yml
+- import_playbook: deploy_shared_dir.yml
+- import_playbook: deploy_webworker.yml
+- import_playbook: deploy_touchforms.yml
+- import_playbook: deploy_formplayer.yml
+- import_playbook: deploy_mailrelay.yml
+- import_playbook: deploy_tmpreaper.yml
+- import_playbook: deploy_etckeeper.yml
