@@ -7,8 +7,8 @@
 
 [pgucr:vars]
 hostname='pgucr'
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.25'
 pgbouncer_max_connections=3500
@@ -29,8 +29,8 @@ postgresql_default_statistics_target = 500
 
 [pgucrstandby:vars]
 hostname='pgucrstandby'
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.24'
 replication_slot='standby'
@@ -51,8 +51,8 @@ postgresql_default_statistics_target = 500
 
 [pgmain:vars]
 hostname='pgmain'
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.27'
 pgbouncer_max_connections=3500
@@ -73,8 +73,8 @@ postgresql_default_statistics_target = 100
 
 [pgmainstandby:vars]
 hostname='pgmainstandby'
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.26'
 replication_slot='standby'
@@ -95,8 +95,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard1:vars]
 hostname='pgshard1'
-devices='["/dev/sdb", "/dev/sdc"]'
-partitions='["/dev/sdb1", "/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.22'
 pgbouncer_max_connections=3500
@@ -117,8 +117,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard1standby:vars]
 hostname='pgshard1standby'
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.20'
 replication_slot='standby'
@@ -139,8 +139,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard2:vars]
 hostname='pgshard2'
-devices='["/dev/sdb", "/dev/sdc"]'
-partitions='["/dev/sdb1", "/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.23'
 pgbouncer_max_connections=3500
@@ -162,8 +162,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard2standby:vars]
 hostname='pgshard2standby'
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.21'
 replication_slot='standby'
@@ -244,8 +244,8 @@ hostname='web9'
 10.247.164.15
 
 [es0:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es0
 hostname='es0'
@@ -254,8 +254,8 @@ hostname='es0'
 10.247.164.16
 
 [es1:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es1
 hostname='es1'
@@ -265,8 +265,8 @@ hostname='es1'
 
 [es2:vars]
 elasticsearch_node_name=es2
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
 
@@ -274,8 +274,8 @@ hostname='es2'
 10.247.164.19
 
 [es3:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es3
 hostname='es3'
@@ -284,8 +284,8 @@ hostname='es3'
 10.247.164.12
 
 [couch0:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch0'
 #remote_couch_backup='es0'
@@ -294,8 +294,8 @@ hostname='couch0'
 10.247.164.13
 
 [couch1:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch1'
 #remote_couch_backup='es0'
@@ -304,8 +304,8 @@ hostname='couch1'
 10.247.164.14
 
 [couch2:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch2'
 #remote_couch_backup='es0'
@@ -314,8 +314,8 @@ hostname='couch2'
 10.247.164.48
 
 [riak0:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak0'
 
@@ -323,8 +323,8 @@ hostname='riak0'
 10.247.164.49
 
 [riak1:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak1'
 
@@ -332,8 +332,8 @@ hostname='riak1'
 10.247.164.50
 
 [riak2:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak2'
 
@@ -341,8 +341,8 @@ hostname='riak2'
 10.247.164.51
 
 [riak3:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak3'
 
@@ -350,8 +350,8 @@ hostname='riak3'
 10.247.164.18
 
 [riak4:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak4'
 
@@ -359,8 +359,8 @@ hostname='riak4'
 10.247.164.53
 
 [riak5:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak5'
 
@@ -368,8 +368,8 @@ hostname='riak5'
 10.247.164.54
 
 [riak6:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak6'
 
@@ -377,8 +377,8 @@ hostname='riak6'
 10.247.164.55
 
 [riak7:vars]
-devices='["/dev/sdb","/dev/sdc"]'
-partitions='["/dev/sdb1","/dev/sdc1"]'
+devices='["/dev/sdc","/dev/sdd"]'
+partitions='["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak7'
 
@@ -458,8 +458,8 @@ hostname='pillow6'
 10.247.164.46
 
 [kafka0:vars]
-devices='["/dev/sdb"]'
-partitions='["/dev/sdb1"]'
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
 datavol_device='/dev/mapper/consolidated-data'
 kafka_broker_id=0
 hostname='kafka0'
@@ -474,6 +474,9 @@ hostname='rabbit0'
 10.247.164.47
 
 [formplayer0:vars]
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
+datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer0'
 
 [patch0]
