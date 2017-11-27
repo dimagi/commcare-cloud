@@ -120,6 +120,7 @@ es0
 formplayer0
 formplayer1
 pgstandby0
+couch0
 
 [riakcs:vars]
 datavol_device=/dev/mapper/consolidated-data
