@@ -232,8 +232,8 @@ hostname='web7'
 #[web8]
 #10.247.164.8
 
-[web8:vars]
-hostname='web8'
+#[web8:vars]
+#hostname='web8'
 
 [web9]
 10.247.164.9
