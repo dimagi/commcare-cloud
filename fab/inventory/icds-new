@@ -292,7 +292,7 @@ hostname='couch0'
 #remote_couch_backup='es0'
 
 [couch1]
-10.247.164.13
+10.247.164.5
 
 [couch1:vars]
 devices=["/dev/sdc","/dev/sdd"]
@@ -426,7 +426,7 @@ hostname='pillow0'
 hostname='pillow1'
 
 [pillow2]
-10.247.164.39
+10.247.164.7
 
 [pillow2:vars]
 hostname='pillow2'
