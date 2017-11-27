@@ -474,6 +474,9 @@ hostname='rabbit0'
 10.247.164.47
 
 [formplayer0:vars]
+devices='["/dev/sdc"]'
+partitions='["/dev/sdc1"]'
+datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer0'
 
 [patch0]
