@@ -18,10 +18,10 @@
 - import_playbook: deploy_proxy.yml
 - import_playbook: deploy_shared_dir.yml
 - import_playbook: deploy_webworker.yml
-- import_playbook: deploy_touchforms.yml
+- import_playbook: deploy_formplayer.yml
 - import_playbook: deploy_mailrelay.yml
 - import_playbook: deploy_tmpreaper.yml
 - import_playbook: deploy_etckeeper.yml
 
-- import_playbook: deploy_formplayer.yml
-  when: touchforms_enabled|default(False)
+- import_playbook: deploy_touchforms.yml
+  when: touchforms_enabled|default(true)
