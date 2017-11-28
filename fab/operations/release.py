@@ -382,11 +382,13 @@ def copy_localsettings():
 @parallel
 @roles(ROLES_TOUCHFORMS)
 def copy_tf_localsettings():
-    sudo(
-        'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
-        '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
-            env.code_current, env.code_root
-        ))
+    hosts_defined = _hosts_in_roles(ROLES_TOUCHFORMS)
+    if hosts_defined:
+        sudo(
+            'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
+            '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
+                env.code_current, env.code_root
+            ))
 
 
 @parallel
