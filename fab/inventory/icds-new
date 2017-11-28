@@ -552,6 +552,9 @@ pillow4
 pillow5
 pillow6
 
+[touchforms:children]
+# no touchforms here, keep it so it works with fab deploy
+
 [formplayer:children]
 formplayer0
 
