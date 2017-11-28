@@ -642,7 +642,7 @@ def rollback():
     across servers.
     """
     number_of_releases = execute(release.get_number_of_releases)
-    if not all(map(lambda n: n > 1, number_of_releases)):
+    if not all(n > 1 for n in number_of_releases):
         print(red('Aborting because there are not enough previous releases.'))
         exit()
 
