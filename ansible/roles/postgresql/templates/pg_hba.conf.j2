@@ -108,14 +108,14 @@ local   replication     postgres                                peer
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
 {% if postgres_users.get('replication') %}
-host    replication     {{ postgres_users.replication.username }}   0.0.0.0/0       md5
+host    replication     {{ postgres_users.replication.username }}   {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
 {% endif %}
 
-host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly            0.0.0.0/0       md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly    {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
 
 # For icds-tableau, applicable only for NIC cluster
-host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      testdata_writer            0.0.0.0/0       md5
-host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      tableau_readonly            0.0.0.0/0       md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      testdata_writer    {{ cluster_ip_range|default('0.0.0.0/0') }}   md5
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      tableau_readonly    {{ cluster_ip_range|default('0.0.0.0/0') }}   md5
 
 # host all all 192.168.33.0/24 md5
 
