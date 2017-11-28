@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import datetime
 import os
 import pickle
@@ -13,7 +15,7 @@ from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
 
-from const import (
+from .const import (
     PROJECT_ROOT,
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
@@ -21,9 +23,10 @@ from const import (
     OFFLINE_STAGING_DIR,
 )
 
-from ansible.inventory import Inventory
+from ansible.inventory.manager import InventoryManager
+from ansible.vars.manager import VariableManager
 from ansible.parsing.dataloader import DataLoader
-from ansible.vars import VariableManager
+from six.moves import input
 
 
 global_github = None
@@ -73,10 +76,10 @@ class DeployMetadata(object):
                 break
 
         if not self._last_tag:
-            print magenta('Warning: No previous tag found in last {} tags for {}'.format(
+            print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
                 self._max_tags,
                 self._environment
-            ))
+            )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
         msg = "{} deploy at {}".format(self._environment, self.timestamp)
         user = github.me()
@@ -156,12 +159,12 @@ def _get_github():
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
-        print (
+        print((
             "You can add a GitHub API key to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
-        ).format(project_root=PROJECT_ROOT)
-        username = raw_input('Github username: ')
+        ).format(project_root=PROJECT_ROOT))
+        username = input('Github username: ')
         password = getpass('Github password: ')
         global_github = login(
             username=username,
@@ -244,7 +247,7 @@ def generate_bower_command(command, production=True, config=None):
         parts.append('--production')
     if config:
         for key, value in config.items():
-            parts.append('--config.{}={}'.format(key,value))
+            parts.append('--config.{}={}'.format(key, value))
     return ' '.join(parts)
 
 
@@ -253,5 +256,28 @@ def bower_command(command, production=True, config=None):
     sudo(cmd)
 
 
-def get_inventory(inventory_path):
-    return Inventory(loader=DataLoader(), variable_manager=VariableManager(), host_list=inventory_path)
+def get_inventory(inventory_path, data_loader=None):
+    data_loader = data_loader or DataLoader()
+    return InventoryManager(loader=data_loader, sources=inventory_path)
+
+
+def read_inventory_file(filename):
+    """
+    filename is a path to an ansible inventory file
+
+    returns a mapping of group names ("webworker", "proxy", etc.)
+    to lists of hostnames as listed in the inventory file.
+    ("Hostnames" can also be IP addresses.)
+    If the hostname in the file includes :<port>, that will be included here as well.
+
+    """
+    data_loader = DataLoader()
+    inventory = get_inventory(filename, data_loader=data_loader)
+    var_manager = VariableManager(data_loader, inventory)
+    port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
+                for host in inventory.get_hosts()}
+    return {group: [
+        '{}:{}'.format(host, port_map[host])
+        if port_map[host] is not None else host
+        for host in hosts
+    ] for group, hosts in get_inventory(filename).get_group_dict().items()}

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 from datetime import datetime
 
@@ -23,7 +25,7 @@ def prepare_files():
             .format(hq_dir)
         )
     else:
-        print blue('Skipping clone stage because {} already exists'.format(hq_dir))
+        print(blue('Skipping clone stage because {} already exists'.format(hq_dir)))
 
     # Let's create bower and npm zip files
 
@@ -64,16 +66,16 @@ def check_ready():
             OFFLINE_STAGING_DIR,
             env.deploy_metadata.deploy_ref,
         ), capture=True)
-    print 'Preparing to deploy ref {} on commit {}'.format(env.deploy_metadata.deploy_ref, commit)
+    print('Preparing to deploy ref {} on commit {}'.format(env.deploy_metadata.deploy_ref, commit))
 
 
 def _print_stats(filename):
     try:
         stat = os.stat(filename)
     except OSError:
-        print red('Not found {}'.format(filename))
-        print red('Exiting.')
+        print(red('Not found {}'.format(filename)))
+        print(red('Exiting.'))
         exit()
 
     last_modified = str(datetime.fromtimestamp(stat.st_mtime))
-    print blue('Found {}, last modifed: {}'.format(filename, last_modified))
+    print(blue('Found {}, last modifed: {}'.format(filename, last_modified)))
