@@ -24,6 +24,7 @@ from ..const import (
     ROLES_SUBMISSION_REPROCESSING_QUEUE)
 from fabric import utils
 from ..utils import get_pillow_env_config, get_inventory
+from six.moves import range
 
 
 @roles(ROLES_ALL_SERVICES)
