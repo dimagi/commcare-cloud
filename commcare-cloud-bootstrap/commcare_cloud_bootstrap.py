@@ -186,7 +186,7 @@ def copy_default_vars(env, aws_config):
             f.write('commcare_cloud_root_user: ubuntu\n')
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
             f.write('commcare_cloud_strict_host_key_checking: no\n')
-            f.write('commcare_cloud_use_value: no\n')
+            f.write('commcare_cloud_use_vault: no\n')
         print('template vars dir copied to {}'.format(new_dir),
               file=sys.stderr)
 

@@ -26,11 +26,10 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 # RESOURCE USAGE (except WAL)
 
-{% if not is_pg_standby|default(false) %}
 shared_buffers = {{ postgresql_shared_buffers }}
 work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
-{% endif %}
+maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
 vacuum_cost_delay = 20ms
 
 
@@ -43,7 +42,9 @@ archive_timeout = 60
 
 wal_level = hot_standby
 max_wal_senders = 3
-checkpoint_segments = {{ postgresql_checkpoint_segments|default(16) }}
+checkpoint_segments = {{ postgresql_checkpoint_segments }}
+checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
+wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
 wal_keep_segments = 8
 
@@ -53,12 +54,13 @@ wal_keep_segments = 8
 hot_standby = on    # ignored on masters
 max_replication_slots = 8
 
+{% if is_pg_standby|default(false) and postgresql_max_standby_delay|default(false) %}
+max_standby_archive_delay = {{ postgresql_max_standby_delay }}
+max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
+{% endif %}
 
 # QUERY TUNING
-
-{% if not is_pg_standby|default(false) %}
 effective_cache_size = {{ postgresql_effective_cache_size }}
-{% endif %}
 
 
 # ERROR REPORTING AND LOGGING
@@ -81,12 +83,13 @@ log_connections = on
 log_disconnections = on
 log_line_prefix = '%t '
 log_lock_waits = on
-log_temp_files = -1
+log_temp_files = 0
 
 
 # RUNTIME STATISTICS
 
 track_functions = all
+default_statistics_target = {{ postgresql_default_statistics_target }}
 
 {% if not is_pg_standby|default(false) and pg_query_stats|default(false) %}
 shared_preload_libraries = 'pg_stat_statements'
