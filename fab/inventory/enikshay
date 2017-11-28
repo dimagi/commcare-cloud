@@ -115,7 +115,7 @@ couch0
 db0
 
 [riakcs:children]
-proxy0
+db0
 es0
 couch0
 kafka0
