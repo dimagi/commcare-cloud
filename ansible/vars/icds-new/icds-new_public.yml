@@ -4,6 +4,8 @@ NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
 env_name: icds-new
 internal_domain_name: 'internal-icds.commcarehq.org'
+cluster_ip_range: '10.247.164.0/23'
+
 # is tableau necessary? tableau_server: 10.247.24.11:80
 daily_deploy_email: tech-announce-daily@dimagi.com
 
