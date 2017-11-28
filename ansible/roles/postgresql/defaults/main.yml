@@ -18,11 +18,18 @@ pgbouncer_config_home: /etc/pgbouncer
 pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
 pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
 
+# defaults should match the postgresql defaults
 postgresql_max_connections: 20
-postgresql_work_mem: '1MB'
+postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '1024MB'
 postgresql_max_stack_depth: '2MB'
 postgresql_effective_cache_size: '128MB'
+postgresql_maintenance_work_mem: '64MB'
+postgresql_checkpoint_completion_target: '0.5'
+postgresql_wal_buffers: '-1'
+postgresql_default_statistics_target: '100'
+postgresql_checkpoint_segments: '16'
+
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4

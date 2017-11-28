@@ -4,6 +4,7 @@
   hosts: shared_dir_host  # Should be one
   become: yes
   vars_files:
+    - ../group_vars/all.yml
     - shared_dir/vars/main.yml
   tasks:
     - include: shared_dir/tasks/install.yml
@@ -13,6 +14,7 @@
   hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
   become: yes
   vars_files:
+    - ../group_vars/all.yml
     - shared_dir/vars/main.yml
   tasks:
     - include: shared_dir/tasks/install.yml

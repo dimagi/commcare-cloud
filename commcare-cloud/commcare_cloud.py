@@ -31,6 +31,22 @@ def get_public_vars(environment):
         return yaml.load(f)
 
 
+def get_common_ssh_args(public_vars):
+    pem = public_vars.get('commcare_cloud_pem', None)
+    strict_host_key_checking = public_vars.get('commcare_cloud_strict_host_key_checking', True)
+
+    common_ssh_args = []
+    if pem:
+        common_ssh_args.extend(['-i', pem])
+    if not strict_host_key_checking:
+        common_ssh_args.append('-o StrictHostKeyChecking=no')
+
+    cmd_parts = tuple()
+    if common_ssh_args:
+        cmd_parts += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
+    return cmd_parts
+
+
 class AnsiblePlaybook(object):
     command = 'ansible-playbook'
     help = (
@@ -52,9 +68,7 @@ class AnsiblePlaybook(object):
     def run(args, unknown_args):
         check_branch(args)
         public_vars = get_public_vars(args.environment)
-        pem = public_vars.get('commcare_cloud_pem', None)
-        strict_host_key_checking = public_vars.get('commcare_cloud_strict_host_key_checking', True)
-        ask_vault_pass = public_vars.get('commcare_cloud_use_value', True)
+        ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
 
         def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
@@ -73,14 +87,7 @@ class AnsiblePlaybook(object):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            common_ssh_args = []
-            if pem:
-                common_ssh_args.extend(['-i', pem])
-            if not strict_host_key_checking:
-                common_ssh_args.append('-o StrictHostKeyChecking=no')
-
-            if common_ssh_args:
-                cmd_parts += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
+            cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
@@ -171,6 +178,44 @@ class BootstrapUsers(object):
         AnsiblePlaybook.run(args, unknown_args)
 
 
+class RunShellCommand(object):
+    command = 'run-shell-command'
+    help = (
+        'Run an arbitrary command via the shell module.'
+    )
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('inventory_group', help=(
+            "The inventory group to run the command on. Use '*' for all hosts."
+        ))
+        parser.add_argument('shell_command', help=(
+            "The shell command you want to run."
+        ))
+        parser.add_argument('-u', '--user', default='ansible', help=(
+            "The user to run the commands as."
+        ))
+
+    @staticmethod
+    def run(args, unknown_args):
+        public_vars = get_public_vars(args.environment)
+        cmd_parts = (
+            'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
+            'ansible', args.inventory_group,
+            '-m', 'shell',
+            '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
+            '-u', args.user,
+            '-a', args.shell_command
+        )
+
+        cmd_parts += get_common_ssh_args(public_vars)
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print(cmd)
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
+        p.communicate()
+        return p.returncode
+
+
 def git_branch():
     return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2", shell=True,
                                    cwd=os.path.expanduser('~/.commcare-cloud/ansible')).strip()
@@ -182,13 +227,15 @@ def check_branch(args):
         if branch != 'master':
             puts(colored.red("You are not on branch master. To deploy anyway, use --branch={}".format(branch)))
         else:
-            puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(branch)))
+            puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(args.branch)))
         exit(-1)
+
 
 STANDARD_ARGS = [
     AnsiblePlaybook,
     UpdateConfig,
     BootstrapUsers,
+    RunShellCommand,
 ]
 
 
