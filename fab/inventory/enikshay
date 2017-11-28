@@ -115,10 +115,10 @@ couch0
 db0
 
 [riakcs:children]
-db0
+proxy0
 es0
-formplayer0
-formplayer1
+couch0
+kafka0
 pgstandby0
 
 [riakcs:vars]
