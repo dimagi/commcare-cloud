@@ -1,6 +1,9 @@
 #!/bin/bash
 # keep latest {{ postgresql_num_logs_to_keep }} log files
-find {{ postgresql_log_directory }} -type f -name '*.csv' -printf '%T@\t%p\n' \
+find {{ postgresql_log_directory }} \
+    -type f \
+    \( -name '*.csv' -o -name '*.csv.gz' -o -name '*.log' \) \
+    -printf '%T@\t%p\n' \
     | sort -t $'\t' -g \
     | head -n -{{ postgresql_num_logs_to_keep }} \
     | cut -d $'\t' -f 2- \
