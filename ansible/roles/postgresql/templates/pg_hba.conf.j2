@@ -122,6 +122,7 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      tableau_readonly  
 {% if cluster_ip_range is defined %}
 {% for user in postgresql_dbs | json_query('[*].user') + [localsettings.PG_DATABASE_USER] | unique %}
 host all {{ user }} {{ cluster_ip_range }} md5
+{% endfor %}
 {%  else %}
 {% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups['pg_standby']) | unique %}
 # {{ host }}
