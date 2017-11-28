@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import posixpath
 from collections import namedtuple
@@ -218,7 +220,7 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
 
 
 def _clone_virtual_env():
-    print 'Cloning virtual env'
+    print('Cloning virtual env')
     # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
     current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
     sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
@@ -357,11 +359,11 @@ def clean_releases(keep=3):
                 to_remove.append(release)
 
     if len(to_remove) == len(releases):
-        print red('Aborting clean_releases, about to remove every release')
+        print(red('Aborting clean_releases, about to remove every release'))
         return
 
     if os.path.basename(env.code_root) in to_remove:
-        print red('Aborting clean_releases, about to remove current release')
+        print(red('Aborting clean_releases, about to remove current release'))
         return
 
     for release in to_remove:
@@ -380,11 +382,13 @@ def copy_localsettings():
 @parallel
 @roles(ROLES_TOUCHFORMS)
 def copy_tf_localsettings():
-    sudo(
-        'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
-        '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
-            env.code_current, env.code_root
-        ))
+    hosts_defined = _hosts_in_roles(ROLES_TOUCHFORMS)
+    if hosts_defined:
+        sudo(
+            'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
+            '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
+                env.code_current, env.code_root
+            ))
 
 
 @parallel

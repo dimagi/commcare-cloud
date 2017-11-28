@@ -35,12 +35,6 @@ encrypted_root=/opt/data
 [proxy0]
 10.162.36.203
 
-[proxy1]
-10.162.36.208
-
-[proxy2]
-10.162.36.234
-
 [formplayer0]
 10.162.36.248
 
@@ -65,14 +59,25 @@ encrypted_root=/opt/data
 [touch0]
 10.162.36.215
 
+[couch1]
+10.162.36.218
+
+[couch1:vars]
+devices='["/dev/xvde","/dev/xvdc"]'
+partitions=["/dev/xvde1","/dev/xvdc1"]
+datavol_device='/dev/mapper/consolidated-data'
+
+[couch2]
+10.162.36.254 datavol_device=/dev/xvdc
+
+[couch3]
+10.162.36.198 datavol_device=/dev/xvdc
+
+[couch4]
+10.162.36.220 datavol_device=/dev/xvdc
+
 [proxy:children]
 proxy0
-
-[cas_proxy:children]
-proxy1
-
-[enikshay_proxy:children]
-proxy2
 
 [webworkers:children]
 django0
@@ -129,5 +134,19 @@ datavol_device=/dev/xvdc
 [stanchion:children]
 riak15
 
+[couchdb2:children]
+couch1
+couch2
+couch3
+couch4
+
+[couchdb2_proxy:children]
+couch1
+
+[lvm:children]
+couch1
+
 [control]
 10.162.36.196
+
+[pg_standby]

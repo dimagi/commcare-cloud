@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
 from fabric.contrib import files

@@ -25,6 +25,8 @@ Server layout:
         /etc/supervisor configurations.
 
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import datetime
 import os
 import posixpath
@@ -32,6 +34,7 @@ from getpass import getpass
 
 import yaml
 import pipes
+import pytz
 from distutils.util import strtobool
 
 from fabric import utils
@@ -41,7 +44,7 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
-from const import (
+from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
     ROLES_CELERY,
@@ -57,9 +60,8 @@ from const import (
     RSYNC_EXCLUDE,
     PROJECT_ROOT,
 )
-from exceptions import PreindexNotFinished
-from fab.utils import get_inventory
-from operations import (
+from .exceptions import PreindexNotFinished
+from .operations import (
     db,
     staticfiles,
     supervisor,
@@ -67,16 +69,17 @@ from operations import (
     release,
     offline as offline_ops,
 )
-from utils import (
-    clear_cached_deploy,
-    execute_with_timing,
+from .utils import (
     DeployMetadata,
     cache_deploy_state,
-    retrieve_cached_deploy_env,
+    clear_cached_deploy,
+    execute_with_timing,
+    read_inventory_file,
     retrieve_cached_deploy_checkpoint,
+    retrieve_cached_deploy_env,
     traceback_string,
 )
-from checks import (
+from .checks import (
     check_servers,
 )
 
@@ -158,7 +161,7 @@ def load_env(env_name):
                 try:
                     return yaml.load(f)
                 except Exception:
-                    print 'Error in file {}'.format(path)
+                    print('Error in file {}'.format(path))
                     raise
         else:
             raise Exception("Environment file not found: {}".format(path))
@@ -183,18 +186,33 @@ def softlayer():
 @task
 def icds():
     """www.icds-cas.gov.in"""
+    _confirm_environment_time('icds', 'Asia/Kolkata')
     _setup_env('icds')
 
-
 @task
-def l10k():
-    _setup_env('l10k', force=True)
+def icds_new():
+    """www.icds-cas.gov.in"""
+    _confirm_environment_time('icds-new', 'Asia/Kolkata')
+    _setup_env('icds-new')
 
 
 @task
 def enikshay():
     """enikshay.in"""
+    _confirm_environment_time('enikshay', 'Asia/Kolkata')
     _setup_env('enikshay', force=True)
+
+
+@task
+def pna():
+    """commcare.pna.sn"""
+    _setup_env('pna', force=True)
+
+
+@task
+def l10k():
+    """l10k.commcare.org"""
+    _setup_env('l10k', force=True)
 
 
 @task
@@ -232,15 +250,17 @@ def _confirm_branch(default_branch=None):
             utils.abort('Action aborted.')
 
 
-def read_inventory_file(filename):
-    """
-    filename is a path to an ansible inventory file
+def _confirm_environment_time(env_name, env_tz):
+    d = datetime.datetime.now(pytz.timezone(env_tz))
+    if 0 < d.hour < 6:
+        return
 
-    returns a mapping of group names ("webworker", "proxy", etc.)
-    to lists of hosts (ip addresses)
-
-    """
-    return get_inventory(filename).get_group_dict()
+    message = (
+        "Woah there bud! You're deploying '%s' during the day. "
+        "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
+    ) % env_name
+    if not console.confirm(message, default=False):
+        utils.abort('Action aborted.')
 
 
 @task
@@ -271,7 +291,7 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    print all
+    print(all)
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     riakcs = servers.get('riakcs', [])
@@ -455,7 +475,7 @@ def setup_release(keep_days=0):
     try:
         keep_days = int(keep_days)
     except ValueError:
-        print red("Unable to parse '{}' into an integer".format(keep_days))
+        print(red("Unable to parse '{}' into an integer".format(keep_days)))
         exit()
 
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
@@ -468,8 +488,8 @@ def setup_release(keep_days=0):
     if keep_days > 0:
         execute_with_timing(release.mark_keep_until, keep_days)
 
-    print blue("Your private release is located here: ")
-    print blue(env.code_root)
+    print(blue("Your private release is located here: "))
+    print(blue(env.code_root))
 
 
 @task
@@ -483,7 +503,7 @@ def apply_patch(patchfile=None):
     deploy. This is only used for patching when we do not have access to the Internet.
     """
     if not patchfile:
-        print red("Must specify patch filepath")
+        print(red("Must specify patch filepath"))
         exit()
     execute(release.apply_patch, patchfile)
     silent_services_restart(use_current_release=True)
@@ -500,7 +520,7 @@ def reverse_patch(patchfile=None):
     deploy. This is only used for patching when we do not have access to the Internet.
     """
     if not patchfile:
-        print red("Must specify patch filepath")
+        print(red("Must specify patch filepath"))
         exit()
     execute(release.reverse_patch, patchfile)
     silent_services_restart(use_current_release=True)
@@ -522,7 +542,7 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     Stores fabric env in redis and then runs the function if it shouldn't be skipped
     """
     if env.resume and command_index < env.checkpoint_index:
-        print blue("Skipping command: '{}'".format(command_name))
+        print(blue("Skipping command: '{}'".format(command_name)))
         return
     cache_deploy_state(command_index)
     fn(*args, **kwargs)
@@ -559,7 +579,7 @@ def _deploy_without_asking():
 
     try:
         for index, command in enumerate(commands):
-            deploy_checkpoint(index, command.func_name, execute_with_timing, command)
+            deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
             " You can't deploy to {} yet. There's a preindex in process.".format(env.environment),
@@ -622,37 +642,37 @@ def rollback():
     across servers.
     """
     number_of_releases = execute(release.get_number_of_releases)
-    if not all(map(lambda n: n > 1, number_of_releases)):
-        print red('Aborting because there are not enough previous releases.')
+    if not all(n > 1 for n in number_of_releases):
+        print(red('Aborting because there are not enough previous releases.'))
         exit()
 
     releases = execute(release.get_previous_release)
 
     unique_releases = set(releases.values())
     if len(unique_releases) != 1:
-        print red('Aborting because not all hosts would rollback to same release')
+        print(red('Aborting because not all hosts would rollback to same release'))
         exit()
 
     unique_release = unique_releases.pop()
 
     if not unique_release:
-        print red('Aborting because release path is empty. '
-                  'This probably means there are no releases to rollback to.')
+        print(red('Aborting because release path is empty. '
+                  'This probably means there are no releases to rollback to.'))
         exit()
 
     if not console.confirm('Do you wish to rollback to release: {}'.format(unique_release), default=False):
-        print blue('Exiting.')
+        print(blue('Exiting.'))
         exit()
 
     exists = execute(release.ensure_release_exists, unique_release)
 
     if all(exists.values()):
-        print blue('Updating current and restarting services')
+        print(blue('Updating current and restarting services'))
         execute(release.update_current, unique_release)
         silent_services_restart(use_current_release=True)
         execute(release.mark_last_release_unsuccessful)
     else:
-        print red('Aborting because not all hosts have release')
+        print(red('Aborting because not all hosts have release'))
         exit()
 
 
@@ -719,12 +739,12 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
             cached_payload = retrieve_cached_deploy_env()
             checkpoint_index = retrieve_cached_deploy_checkpoint()
         except Exception:
-            print red('Unable to resume deploy, please start anew')
+            print(red('Unable to resume deploy, please start anew'))
             raise
         env.update(cached_payload)
         env.resume = True
         env.checkpoint_index = checkpoint_index or 0
-        print magenta('You are about to resume the deploy in {}'.format(env.code_root))
+        print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
     if datetime.datetime.now().isoweekday() == 5:
         warning_message = 'Friday'
@@ -734,10 +754,10 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
     env.offline = offline == 'yes'
 
     if env.offline:
-        print magenta(
+        print(magenta(
             'You are about to run an offline deploy.'
             'Ensure that you have run `fab prepare_offline_deploy`.'
-        )
+        ))
         offline_ops.check_ready()
         if not console.confirm('Are you sure you want to do an offline deploy?'.format(default=False)):
             utils.abort('Task aborted')
