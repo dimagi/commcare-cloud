@@ -23,9 +23,9 @@ from .const import (
     OFFLINE_STAGING_DIR,
 )
 
-from ansible.inventory import Inventory
+from ansible.inventory.manager import InventoryManager
+from ansible.vars.manager import VariableManager
 from ansible.parsing.dataloader import DataLoader
-from ansible.vars import VariableManager
 from six.moves import input
 
 
@@ -256,8 +256,9 @@ def bower_command(command, production=True, config=None):
     sudo(cmd)
 
 
-def get_inventory(inventory_path):
-    return Inventory(loader=DataLoader(), variable_manager=VariableManager(), host_list=inventory_path)
+def get_inventory(inventory_path, data_loader=None):
+    data_loader = data_loader or DataLoader()
+    return InventoryManager(loader=data_loader, sources=inventory_path)
 
 
 def read_inventory_file(filename):
@@ -270,8 +271,10 @@ def read_inventory_file(filename):
     If the hostname in the file includes :<port>, that will be included here as well.
 
     """
-    inventory = get_inventory(filename)
-    port_map = {host.name: inventory.get_vars(hostname=host.name).get('ansible_port')
+    data_loader = DataLoader()
+    inventory = get_inventory(filename, data_loader=data_loader)
+    var_manager = VariableManager(data_loader, inventory)
+    port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
                 for host in inventory.get_hosts()}
     return {group: [
         '{}:{}'.format(host, port_map[host])
