@@ -23,9 +23,8 @@ from .const import (
     OFFLINE_STAGING_DIR,
 )
 
-from ansible.inventory import Inventory
+from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
-from ansible.vars import VariableManager
 from six.moves import input
 
 
@@ -257,7 +256,7 @@ def bower_command(command, production=True, config=None):
 
 
 def get_inventory(inventory_path):
-    return Inventory(loader=DataLoader(), variable_manager=VariableManager(), host_list=inventory_path)
+    return InventoryManager(loader=DataLoader(), sources=inventory_path)
 
 
 def read_inventory_file(filename):
