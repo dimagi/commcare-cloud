@@ -4,6 +4,7 @@
   when: shared_drive_enabled
   apt:
     update_cache: yes
+    cache_valid_time: 7200
 
 - name: Install NFS packages
   become: yes
