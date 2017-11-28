@@ -9,19 +9,19 @@
 [web0] # django, pillow, touchform
 172.25.2.6
 
-[formplayer0] # riak
+[formplayer0] #
 172.25.2.7
 
-[formplayer1] # riak
+[formplayer1] #
 172.25.2.8
 
-[couch0] # couch, stanchion
+[couch0] # couch, stanchion, riak
 172.25.2.9
 
 [proxy0] # nginx, formplayer
 172.25.1.5
 
-[kafka0] # kafka, zookeeper, celery, rabbitmq, formplayer
+[kafka0] # kafka, zookeeper, celery, rabbitmq, formplayer, riak
 172.25.2.10
 
 [pgstandby0] # postgresql, riak
