@@ -308,12 +308,13 @@ PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
+TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER|default('') }}"
+TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD|default('') }}"
 
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
+
 {% if 'FORMPLAYER_URL' in localsettings %}
 FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
 {% endif %}

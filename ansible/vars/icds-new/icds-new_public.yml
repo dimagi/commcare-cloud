@@ -180,6 +180,8 @@ ufw_private_interface: eth0
 
 shared_drive_enabled: true
 
+touchforms_enabled: false
+
 etc_hosts_lines:
   - '10.247.164.31		cas.commcarehq.org'
   - '10.247.164.31		reports.icds-cas.gov.in'
@@ -403,13 +405,10 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
-  TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
