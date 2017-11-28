@@ -9,19 +9,19 @@
 [web0] # django, pillow, touchform
 172.25.2.6
 
-[formplayer0] #
+[formplayer0] # formplayer
 172.25.2.7
 
-[formplayer1] #
+[formplayer1] # formplayer
 172.25.2.8
 
 [couch0] # couch, stanchion, riak
 172.25.2.9
 
-[proxy0] # nginx, formplayer
+[proxy0] # nginx
 172.25.1.5
 
-[kafka0] # kafka, zookeeper, celery, rabbitmq, formplayer, riak
+[kafka0] # kafka, zookeeper, celery, rabbitmq, riak
 172.25.2.10
 
 [pgstandby0] # postgresql, riak
@@ -128,8 +128,8 @@ datavol_device=/dev/mapper/consolidated-data
 es0
 
 [formplayer:children]
-proxy0
-kafka0
+formplayer0
+formplayer1
 
 [touchforms:children]
 web0
