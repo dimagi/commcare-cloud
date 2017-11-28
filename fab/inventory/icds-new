@@ -552,9 +552,6 @@ pillow4
 pillow5
 pillow6
 
-[touchforms:children]
-formplayer0
-
 [formplayer:children]
 formplayer0
 
