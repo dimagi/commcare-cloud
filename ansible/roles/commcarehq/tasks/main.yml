@@ -76,16 +76,15 @@
 
   when: not gitdir.stat.exists
 
-- name: Upgrade setuptools
+- name: Upgrade python packages
   pip:
-    name: six
+    name: "{{ item }}"
     state: latest
     virtualenv: "{{ virtualenv_home }}"
-- name: Upgrade setuptools
-  easy_install:
-    name: setuptools
-    state: latest
-    virtualenv: "{{ virtualenv_home }}"
+  with_items:
+    - six
+    - pip
+    - setuptools
 
 - name: copy localsettings
   become: true

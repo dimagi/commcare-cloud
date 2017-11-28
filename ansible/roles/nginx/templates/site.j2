@@ -4,6 +4,8 @@
 
 {% for balancer in item.server.get('balancers', []) %}
 upstream {{ balancer.name }} {
+  zone {{ balancer.name }} {{ balancer.zone|default('64k') }};
+
   {% if balancer.get('method') %}
   {{ balancer.method }};
   {% else %}
