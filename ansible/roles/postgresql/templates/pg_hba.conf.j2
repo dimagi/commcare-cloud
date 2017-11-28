@@ -27,17 +27,16 @@ local   replication     postgres                                peer
 host    replication     {{ postgres_users.replication.username }}   {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
 {% endif %}
 
-host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      devreadonly    {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
-
-# For icds-tableau, applicable only for NIC cluster
-host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      testdata_writer    {{ cluster_ip_range|default('0.0.0.0/0') }}   md5
-host{% if postgresql_ssl_enabled %}ssl{% endif %}    all      tableau_readonly    {{ cluster_ip_range|default('0.0.0.0/0') }}   md5
-
-# host all all 192.168.33.0/24 md5
-
 {% if cluster_ip_range is defined %}
-{% for user in postgresql_dbs | json_query('[*].user') + [localsettings.PG_DATABASE_USER] | unique %}
-host all {{ user }} {{ cluster_ip_range }} md5
+{% for db_name, db_list in postgresql_dbs|groupby('name') %}
+{% set db = db_list[0] %}
+{% if db.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname or db.get('host', localsettings.PG_DATABASE_HOST) == hot_standby_master|default(None) or is_monolith|bool %}
+{% for user_key in postgres_users | reject('in', ['netvault', 'replication'])  %}
+{% set user = postgres_users[user_key] %}
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.username }}    {{ cluster_ip_range }}    md5
+{% endfor %}
+
+{% endif %}
 {% endfor %}
 {%  else %}
 {% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups['pg_standby']) | unique %}

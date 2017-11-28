@@ -3,4 +3,3 @@ netaddr
 dnspython
 passlib
 cryptography==2.1.1
-jmespath==0.9.3
