@@ -2,7 +2,6 @@ SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 deploy_env: icds
-env_name: icds-new
 internal_domain_name: 'internal-icds.commcarehq.org'
 cluster_ip_range: '10.247.164.0/23'
 
