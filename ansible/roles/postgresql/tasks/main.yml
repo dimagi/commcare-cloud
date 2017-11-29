@@ -89,15 +89,6 @@
   tags: postgresql_conf
   notify: Reload postgres
 
-- name: PostgreSQL recovery configuration
-  template:
-    src: "recovery.conf.j2"
-    dest: "{{ postgresql_home }}/recovery.conf"
-    owner: "postgres"
-    group: "postgres"
-  notify: Restart postgres
-  when: is_pg_standby
-
 - name: start postgresql
   become: true
   service: name=postgresql state=started
