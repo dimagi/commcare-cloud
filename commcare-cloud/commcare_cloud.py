@@ -2,6 +2,7 @@
 from __future__ import print_function
 import getpass
 import os
+import re
 from six.moves import input, shlex_quote
 from argparse import ArgumentParser
 import subprocess
@@ -47,6 +48,26 @@ def get_common_ssh_args(public_vars):
     return cmd_parts
 
 
+def has_arg(unknown_args, short_form, long_form):
+    """
+    check whether a conceptual arg is present in a list of command line tokens
+
+    :param unknown_args: list of command line tokens
+    :param short_form: dash followed by single letter, e.g. '-f'
+    :param long_form: double dash followed by work, e.g. '--forks'
+    :return: boolean
+    """
+
+    assert re.match(r'^-[a-zA-Z0-9]$', short_form)
+    assert re.match(r'^--\w+$', long_form)
+    if long_form in unknown_args:
+        return True
+    for arg in unknown_args:
+        if arg.startswith(short_form):
+            return True
+    return False
+
+
 class AnsiblePlaybook(object):
     command = 'ansible-playbook'
     help = (
@@ -81,10 +102,10 @@ class AnsiblePlaybook(object):
                 '--diff',
             ) + cmd_args
 
-            if '-u' not in unknown_args:
+            if not has_arg(unknown_args, '-u', '--user'):
                 cmd_parts += ('-u', 'ansible')
 
-            if '-f' not in unknown_args and '--forks' not in unknown_args:
+            if not has_arg(unknown_args, '-f', '--forks'):
                 cmd_parts += ('--forks', '15')
 
             if ask_vault_pass:
