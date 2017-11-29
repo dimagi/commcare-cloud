@@ -68,6 +68,16 @@ def has_arg(unknown_args, short_form, long_form):
     return False
 
 
+class AnsibleContext(object):
+    def __init__(self):
+        self._ansible_vault_password = None
+
+    def get_ansible_vault_password(self):
+        if self._ansible_vault_password is None:
+            self._ansible_vault_password = getpass.getpass("Vault Password: ")
+        return self._ansible_vault_password
+
+
 class AnsiblePlaybook(object):
     command = 'ansible-playbook'
     help = (
@@ -87,6 +97,7 @@ class AnsiblePlaybook(object):
 
     @staticmethod
     def run(args, unknown_args):
+        ansible_context = AnsibleContext()
         check_branch(args)
         public_vars = get_public_vars(args.environment)
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
@@ -121,7 +132,7 @@ class AnsiblePlaybook(object):
             print(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
             if ask_vault_pass:
-                p.communicate(input='{}\n'.format(get_ansible_vault_password()))
+                p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
             else:
                 p.communicate()
             return p.returncode
@@ -131,12 +142,6 @@ class AnsiblePlaybook(object):
 
         def run_apply():
             return ansible_playbook(args.environment, args.playbook, *unknown_args)
-
-        def get_ansible_vault_password():
-            if get_ansible_vault_password.value is None:
-                get_ansible_vault_password.value = getpass.getpass("Vault Password: ")
-            return get_ansible_vault_password.value
-        get_ansible_vault_password.value = None
 
         exit_code = 0
 
@@ -224,9 +229,13 @@ class RunShellCommand(object):
         parser.add_argument('-u', '--user', default='ansible', help=(
             "The user to run the commands as."
         ))
+        parser.add_argument('--include-vars', action='store_true', help=(
+            "Include the envs var files"
+        ))
 
     @staticmethod
     def run(args, unknown_args):
+        ansible_context = AnsibleContext()
         public_vars = get_public_vars(args.environment)
         cmd_parts = (
             'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
@@ -234,14 +243,27 @@ class RunShellCommand(object):
             '-m', 'shell',
             '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
             '-u', args.user,
-            '-a', args.shell_command
+            '-a', args.shell_command,
         ) + tuple(unknown_args)
+
+        if args.include_vars:
+            cmd_parts += (
+                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
+                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
+            )
+
+        ask_vault_pass = args.include_vars and public_vars.get('commcare_cloud_use_vault', True)
+        if ask_vault_pass:
+            cmd_parts += ('--vault-password-file=/bin/cat',)
 
         cmd_parts += get_common_ssh_args(public_vars)
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
-        p.communicate()
+        if ask_vault_pass:
+            p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
+        else:
+            p.communicate()
         return p.returncode
 
 
