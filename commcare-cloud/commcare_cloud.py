@@ -108,6 +108,11 @@ class AnsiblePlaybook(object):
             if not has_arg(unknown_args, '-f', '--forks'):
                 cmd_parts += ('--forks', '15')
 
+            if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
+                puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
+                puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
+                exit(2)
+
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
