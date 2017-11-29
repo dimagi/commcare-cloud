@@ -14,5 +14,5 @@
 
 - name: start monit
   become: yes
-  service: name="monit" state=started enabled=yes
+  service: name="monit" state={{ monit_state|default("started") }} enabled=yes
   tags: monit
