@@ -251,8 +251,14 @@ def _confirm_branch(default_branch=None):
 
 
 def _confirm_environment_time(env_name, env_tz):
+    env_hours_start_end = {
+        'enikshay': (2, 8),  # call center is offline 2am-8am IST
+        'icds': (1, 6),
+        'icds-new': (1, 6),
+    }
+    hour_start, hour_end = env_hours_start_end[env_name]
     d = datetime.datetime.now(pytz.timezone(env_tz))
-    if 0 < d.hour < 6:
+    if hour_start <= d.hour < hour_end:
         return
 
     message = (
