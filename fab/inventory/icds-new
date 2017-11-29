@@ -373,14 +373,14 @@ partitions=["/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak6'
 
-[riak7]
-10.247.164.55
-
-[riak7:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
-datavol_device='/dev/mapper/consolidated-data'
-hostname='riak7'
+#[riak7]
+#10.247.164.55
+#
+#[riak7:vars]
+#devices=["/dev/sdc","/dev/sdd"]
+#partitions=["/dev/sdc1","/dev/sdd1"]
+#datavol_device='/dev/mapper/consolidated-data'
+#hostname='riak7'
 
 [celery0]
 10.247.164.40
