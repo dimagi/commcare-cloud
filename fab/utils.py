@@ -280,4 +280,4 @@ def read_inventory_file(filename):
         '{}:{}'.format(host, port_map[host])
         if port_map[host] is not None else host
         for host in hosts
-    ] for group, hosts in get_inventory(filename).get_group_dict().items()}
+    ] for group, hosts in get_inventory(filename).get_groups_dict().items()}

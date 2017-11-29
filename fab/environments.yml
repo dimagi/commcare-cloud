@@ -137,8 +137,6 @@ enikshay:
       XFormToElasticsearchPillow:
         num_processes: 1
 
-
-
 softlayer:
   environment: softlayer
   formplayer_memory: "7000m"
@@ -390,13 +388,13 @@ icds-new:
       celery:
         concurrency: 8
         max_tasks_per_child: 5
-#      celery_periodic:
-#        concurrency: 4
-#        server_whitelist: 10.247.164.40
-      pillow_retry_queue:
-        concurrency: 1
-      submission_reprocessing_queue:
-        concurrency: 1
+      # celery_periodic:
+      #   concurrency: 4
+      #   server_whitelist: 10.247.164.40
+      # pillow_retry_queue:
+      #   concurrency: 1
+      # submission_reprocessing_queue:
+      #   concurrency: 1
       email_queue:
         concurrency: 2
     '10.247.164.41':
@@ -411,10 +409,10 @@ icds-new:
         concurrency: 5
         num_workers: 10
     '10.247.164.42':
-      reminder_queue:
-        pooling: gevent
-        concurrency: 5
-        num_workers: 6
+      # reminder_queue:
+      #   pooling: gevent
+      #   concurrency: 5
+      #   num_workers: 6
       reminder_rule_queue:
         concurrency: 1
         max_tasks_per_child: 1
@@ -422,10 +420,10 @@ icds-new:
         concurrency: 3
         max_tasks_per_child: 1
     '10.247.164.43':
-      sms_queue:
-        pooling: gevent
-        concurrency: 10
-        num_workers: 4
+      # sms_queue:
+      #   pooling: gevent
+      #   concurrency: 10
+      #   num_workers: 4
       async_restore_queue:
         concurrency: 4
       ucr_indicator_queue:
