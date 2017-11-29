@@ -1,0 +1,67 @@
+---
+# Sets up a PostrgeSQL standby node
+# Usage:
+#   commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]
+#
+- hosts:
+    - "{{ standby }}"
+  become: yes
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  tasks:
+    - assert:
+        that:
+          - "hot_standby_master is defined"
+        msg: "Standby node ('{{ standby }}') provided does not have 'host_standby_master var set. Are you sure it's the right node?"
+
+    - stat:
+        path: "{{ postgresql_home }}/recovery.conf"
+      register: recovery_file
+
+    - assert:
+        that:
+          - "force|default('no') == 'yes' or recovery_file.stat.exists == False"
+        msg: "Standby node ('{{ standby }}') already has a 'recovery.conf' file. Run with '-e force=yes' to proceed anyway"
+
+    - service:
+        name: postgresql
+        state: stopped
+
+    - file:
+       path:  "{{ postgresql_home }}"
+       state: absent
+
+    - file:
+       path:  "{{ postgresql_home }}"
+       owner: postgres
+       group: postgres
+       mode:  0700
+       state: directory
+
+- hosts:
+    - "{{ standby }}"
+  become: yes
+  become_user: postgres
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  tasks:
+    - name: execute base backup
+      shell: export PGPASSWORD="{{ postgres_users.replication.password }}" && pg_basebackup -h {{ hot_standby_master }} -U {{ postgres_users.replication.username }} -D {{ postgresql_home }} -P -v --xlog-method=stream 2>&1
+
+    - name: add new configuration "recovery.conf"
+      blockinfile:
+        create: yes
+        dest: "{{ postgresql_home }}/recovery.conf"
+        block: |
+          standby_mode = 'on'
+          primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ postgresql_port }} sslmode=prefer'
+          primary_slot_name = '{{ replication_slot }}'
+          recovery_target_timeline = 'latest'
+
+- hosts:
+    - "{{ standby }}"
+  become: yes
+  tasks:
+    - service:
+        name: postgresql
+        state: started
