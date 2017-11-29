@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
+from fabric.contrib import files
 
 from fab.utils import bower_command
 
@@ -65,14 +66,19 @@ def npm_install():
 
 
 @parallel
-@roles(ROLES_STATIC)
+@roles(set(ROLES_STATIC + ROLES_DJANGO))
 def collectstatic(use_current_release=False):
-    """Collect static after a code update"""
+    """
+    Collect static after a code update
+    Must run on web workers for same reasons as version_static.
+    """
     venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
+        if files.exists('{}/staticfiles/r.js'.format(env.code_current)):
+            sudo('rm -f tmp.sh resource_versions.py; {}/bin/python manage.py build_requirejs'.format(venv))
 
 
 @parallel
