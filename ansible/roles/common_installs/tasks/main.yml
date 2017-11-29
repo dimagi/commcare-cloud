@@ -46,7 +46,7 @@
     - libpq-dev
     - curl
     - htop
-    - tmpreaper
+    - tmpreaper # remove files older than x days
     - mailutils
     - ntp
     - nodejs
@@ -63,6 +63,7 @@
     - libffi-dev  # Required for installing github3py
     - libssl-dev  # Required for pip setup tools
     - tmux
+    - reptyr # move process into tmux session
     - unzip
     - zip
     - iotop
