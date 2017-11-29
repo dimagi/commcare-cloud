@@ -46,7 +46,13 @@
     - roles/postgresql/defaults/main.yml
   tasks:
     - name: execute base backup
-      shell: export PGPASSWORD="{{ postgres_users.replication.password }}" && pg_basebackup -h {{ hot_standby_master }} -U {{ postgres_users.replication.username }} -D {{ postgresql_home }} -P -v --xlog-method=stream 2>&1
+      shell: |
+        export PGPASSWORD="{{ postgres_users.replication.password }}" && \
+        pg_basebackup \
+          -h {{ hot_standby_master }} \
+          -U {{ postgres_users.replication.username }} \
+          -D {{ postgresql_home }} \
+          -P -v --xlog-method=stream 2>&1
 
     - name: add new configuration "recovery.conf"
       blockinfile:
