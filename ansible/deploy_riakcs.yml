@@ -29,7 +29,7 @@
     - riakcs
   vars_files:
     - roles/riakcs/install/defaults/main.yml
-    - roles/riakcs/configure/defaults/main.yml
+    - roles/riakcs/configure/vars/main.yml
   tasks:
     - name: "Stat {{ riak_conf }}"
       stat: path="{{ riak_conf }}"
@@ -43,7 +43,7 @@
             or not (riak_conf_file.stat.exists | default(True))
         else '' }}"
     # HACK set fact because defaults cannot be loaded from other hosts
-    - set_fact: riak_nodename="{{ riak_nodename }}"
+    - set_fact: riak_nodename="{{ backend_vars[riak_backend]['riak_nodename'] }}"
 
 - name: Configure swap for riak hosts
   hosts: riakcs
@@ -61,6 +61,9 @@
 - name: Install Riak and Riak CS
   become: true
   hosts: riakcs
+  vars_files:
+    # for backend_vars[riak_backend]['riak_version']
+    - roles/riakcs/configure/vars/main.yml
   roles:
     - {role: riakcs/install, name: riak}
     - {role: riakcs/install, name: riakcs, service: riak-cs}
@@ -68,6 +71,9 @@
 - name: Install Stanchion
   become: true
   hosts: stanchion
+  vars_files:
+    # for backend_vars[riak_backend]['riak_version']
+    - roles/riakcs/configure/vars/main.yml
   roles:
     - {role: riakcs/install, name: stanchion}
 
@@ -78,12 +84,14 @@
   roles:
     - role: riakcs/configure
       name: riak
-      extra_conf: advanced.config
+      drop_conf: "{{ backend_vars[riak_backend]['drop_conf'] }}"
+      advanced_conf: "{{ backend_vars[riak_backend]['advanced_conf'] }}"
       data_dirs:
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
-        - "{{ riak_data_root_blocks }}"
+        - "{{ riak_data_root_bitcask if riak_backend == 'bitcask' else '' }}"
+        - "{{ riak_data_root_blocks if riak_backend == 'leveldb' else '' }}"
       when: _force_riak_config | bool
 
 - name: Start Riak

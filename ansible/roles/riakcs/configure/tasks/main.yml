@@ -18,6 +18,7 @@
     group=riak
     mode=0770
   notify: "restart {{ name }}"
+  when: item != ""
   with_items: "{{ data_dirs }}"
 
 - name: "Copy {{ name }} defaults"
@@ -45,15 +46,15 @@
     mode=0640
   notify: "restart {{ name }}"
 
-- name: Set {{ name }} extra conf
+- name: Set {{ name }} advanced.config
   template: >
-    src={{ extra_conf }}.j2
-    dest={{ conf_path | dirname }}/{{ extra_conf }}
+    src={{ advanced_conf }}
+    dest={{ conf_path | dirname }}/advanced.config
     owner=root
     group=riak
     mode=0640
   notify: restart {{ name }}
-  when: extra_conf != ""
+  when: advanced_conf != ""
 
 - name: "Drop {{ name }} {{ drop_conf }}"
   file: >
