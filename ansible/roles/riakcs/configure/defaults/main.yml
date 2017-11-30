@@ -1,4 +1,20 @@
-# variables used in conf files
+# Possible values for riak_backend
+#
+# - "leveldb"
+#   The default, use this unless you know you need something different.
+#   Requires less RAM, lower performance.
+#
+# - "bitcask"
+#   Keeps all keys in RAM, higher performance, but crashes if it does not have
+#   enough RAM.
+#
+# - "leveldb-bad-config"
+#   Bad leveldb configuration. We're slowly migrating away from this, but the
+#   migration requires reading each object from the old cluster and saving
+#   it in a new cluster.
+#   http://lists.basho.com/pipermail/riak-users_lists.basho.com/2017-March/019142.html
+#
+riak_backend: "leveldb"
 
 # the following are defined in group_vars/all.yml
 #riak_data_dir: ...

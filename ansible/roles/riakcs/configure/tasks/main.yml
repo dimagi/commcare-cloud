@@ -2,6 +2,11 @@
 
 - include_vars: ../../install/defaults/main.yml
 
+- name: "Check riak backend"
+  fail:
+    msg: "Unknown riak backend: {{ riak_backend }}"
+  when: riak_backend not in ["leveldb", "bitcask", "leveldb-bad-config"]
+
 - set_fact: conf_path="{{ riak_conf if name == 'riak' else riakcs_conf if name == 'riakcs' else stanchion_conf }}"
 - set_fact: log_path="{{ riak_log if name == 'riak' else riakcs_log if name == 'riakcs' else '' }}"
 
