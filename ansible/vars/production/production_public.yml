@@ -24,6 +24,7 @@ active_sites:
   cas_ssl: False
   couchdb2: False
 
+riak_backend: "leveldb-bad-config"
 riak_ring_size: 128
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
