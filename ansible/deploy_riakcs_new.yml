@@ -4,21 +4,24 @@
 # This is a copy of deploy_riakcs.yml with replacements:
 # - hosts:
 #   riakcs -> riakcs_new
+#   stanchion -> stanchion_new
 #   riakcs_control_host -> riakcs_new_control_host
+#
+# Also added one task: "Set riakcs_control"
 #
 # run with --tags=mount-ecryptfs to mount encrypted volume after reboot
 
 - name: Set riakcs_control
   hosts:
     - riakcs_new
-    - stanchion
+    - stanchion_new
   tasks:
     - set_fact: riakcs_control="{{ groups.get('riakcs_new')[0] }}"
 
 - name: Common Setup
   hosts:
     - riakcs_new
-    - stanchion
+    - stanchion_new
   become: true
   roles:
     - {role: ecryptfs}
@@ -85,7 +88,7 @@
 
 - name: Install Stanchion
   become: true
-  hosts: stanchion
+  hosts: stanchion_new
   vars_files:
     # for backend_vars[riak_backend]['riak_version']
     - roles/riakcs/configure/vars/main.yml
@@ -126,7 +129,7 @@
 - name: Configure and start Stanchion
   # Riak must be started before Stanchion can be started
   become: true
-  hosts: stanchion
+  hosts: stanchion_new
   roles:
     - role: riakcs/configure
       name: stanchion
@@ -155,7 +158,7 @@
 - name: Sync admin user keys to Stanchion
   become: true
   hosts:
-    - stanchion
+    - stanchion_new
   roles:
     - {role: riakcs/sync_keys, name: stanchion}
 
