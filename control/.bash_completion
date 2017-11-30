@@ -7,7 +7,7 @@ _commcare_cloud()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="--help --version"
     envs="enikshay icds l10k pna production softlayer staging swiss"
-    cmds="ansible-playbook update-config"
+    cmds="ansible-playbook update-config run-shell-command"
 
     case $COMP_CWORD in
     1)
