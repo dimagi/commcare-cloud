@@ -1,5 +1,5 @@
 ---
-apache_mirror: apache.mirror.anlx.net
+apache_mirror: archive.apache.org/dist
 kafka_version: 0.8.2.2
 kafka_user: kafka
 kafka_group: kafka

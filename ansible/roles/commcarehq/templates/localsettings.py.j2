@@ -189,17 +189,7 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN 
 
 ####### For Constructing Global URLs ########
 
-LOCAL_APPS = (
-    'dimagi.utils',
-    'gunicorn',
-    {% for app in localsettings.get('LOCAL_APPS', []) %}
-    '{{ app }}',
-    {% endfor %}
-)
-
-{% if 'DATADOG_TRACE' in localsettings %}
-DATADOG_TRACE = json.loads('{{ localsettings.DATADOG_TRACE|to_json }}')
-{% endif %}
+LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
 LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
@@ -318,12 +308,13 @@ PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
+TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER|default('') }}"
+TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD|default('') }}"
 
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
+
 {% if 'FORMPLAYER_URL' in localsettings %}
 FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
 {% endif %}
@@ -671,10 +662,6 @@ COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
 COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
 {% endif %}
 
-{% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
-ONBOARDING_DOMAIN_TEST_DATE = {{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}
-{% endif %}
-
 {% if localsettings.get('SENTRY_PUBLIC_KEY') %}
 SENTRY_PUBLIC_KEY = '{{ localsettings.SENTRY_PUBLIC_KEY }}'
 SENTRY_PRIVATE_KEY = '{{ localsettings.SENTRY_PRIVATE_KEY }}'
@@ -720,3 +707,21 @@ ASYNC_INDICATOR_QUEUE_CRONTAB = crontab(**{{ localsettings.get('ASYNC_INDICATOR_
 {% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
 MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
 {% endif %}
+
+SERVER_EMAIL = '{{ server_email }}'
+DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
+SUPPORT_EMAIL = '{{ support_email }}'
+PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
+CCHQ_BUG_REPORT_EMAIL = '{{ cchq_bug_report_email }}'
+ACCOUNTS_EMAIL = '{{ accounts_email }}'
+DATA_EMAIL = '{{ data_email }}'
+SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'
+INTERNAL_SUBSCRIPTION_CHANGE_EMAIL = '{{ internal_subscription_change_email }}'
+BILLING_EMAIL = '{{ billing_email }}'
+INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
+MASTER_LIST_EMAIL = '{{ master_list_email }}'
+REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
+EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
+CONTACT_EMAIL = '{{ contact_email }}'
+SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
+DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'

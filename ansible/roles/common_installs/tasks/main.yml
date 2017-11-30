@@ -46,12 +46,13 @@
     - libpq-dev
     - curl
     - htop
-    - tmpreaper
+    - tmpreaper # remove files older than x days
     - mailutils
     - ntp
     - nodejs
     - at
     - screen
+    - sysstat
     - gettext
     - python-software-properties
     - mosh
@@ -62,6 +63,7 @@
     - libffi-dev  # Required for installing github3py
     - libssl-dev  # Required for pip setup tools
     - tmux
+    - reptyr # move process into tmux session
     - unzip
     - zip
     - iotop
@@ -73,29 +75,20 @@
   become: yes
 
 - name: Install npm items
-  npm: name="{{ item }}" state=present global=yes
+  npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
   with_items:
-    - npm@3.6.0
-    - less@1.3.1
-    - n@1.3.0
-    - bower@1.5.3
-    - uglify-js@2.6.1
+    - {name: 'npm', version: '3.6.0'}
+    - {name: 'less', version: '2.7.2'}
+    - {name: 'n', version: '1.3.0'}
+    - {name: 'bower', version: '1.5.3'}
+    - {name: 'uglify-js', version: '2.6.1'}
   tags:
     - npm
 
 - name: Update Node
   command: 'n 0.10.29'
   become: yes
-
-- stat: path=/opt/lessc
-  register: lessc_stat
-
-- name: Install lessc from source
-  become: yes
-  # this is lessc 1.7.3
-  git: repo='https://github.com/less/less.js.git' dest='/opt/lessc' version='546bedd' recursive=yes accept_hostkey=yes
-  when: not lessc_stat.stat.exists
 
 - name: Install pip packages
   pip: name="{{ item }}"
