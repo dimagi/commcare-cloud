@@ -3,6 +3,20 @@
 - name: load configuration
   include_vars: "{{ site_name }}.yml"
 
+- name: create paths
+  become: yes
+  file:
+    path: "{{ item.1.path }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_subelements:
+    - "{{ nginx_sites|default([]) }}"
+    - server.proxy_cache_path
+    - flags:
+      skip_missing: True
+
 - name: Create the site configurations
   become: yes
   template:

@@ -3,6 +3,7 @@ NO_WWW_SITE_HOST: 'commcarehq.org'
 COMMTRACK_SITE_HOST: 'commtrack.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 deploy_env: production
+daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
   cchq_ssl: True
@@ -72,7 +73,7 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
-backup_postgres: True
+backup_postgres: plain
 backup_es: True
 postgres_s3: True
 
@@ -231,7 +232,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST_TOKEN }}"
-  ONBOARDING_DOMAIN_TEST_DATE: (2017, 1, 2)
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq

@@ -24,7 +24,7 @@
 ;;;
 
 logfile = /var/log/postgresql/pgbouncer.log
-pidfile = /var/run/postgresql/pgbouncer.pid
+pidfile = {{ pgbouncer_pid_file }}
 
 ;;;
 ;;; Where to wait for clients
@@ -32,7 +32,7 @@ pidfile = /var/run/postgresql/pgbouncer.pid
 
 ; ip address or * which means all ip-s
 listen_addr = *
-listen_port = 6432
+listen_port = {{ pgbouncer_port }}
 
 ; unix socket is also used for -R.
 ; On debian it should be /var/run/postgresql

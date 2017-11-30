@@ -1,12 +1,6 @@
 sudo apt-get update
 sudo apt-get install -y python-dev python-pip libffi-dev libssl-dev git
 
-sudo cp /vagrant/provisioning/id_rsa /home/vagrant/.ssh/id_rsa
-sudo chown vagrant:vagrant /home/vagrant/.ssh/id_rsa
-sudo chmod 400 /home/vagrant/.ssh/id_rsa
-sudo cp /vagrant/provisioning/id_rsa.pub /home/vagrant/.ssh/id_rsa.pub
-sudo chown vagrant:vagrant /home/vagrant/.ssh/id_rsa.pub
-
 ssh-keyscan 192.168.33.15 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.16 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.17 >> /home/vagrant/.ssh/known_hosts

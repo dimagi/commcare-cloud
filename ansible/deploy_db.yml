@@ -16,7 +16,7 @@
     - {role: backups, tags: 'backups'}
 
 - name: Postgresql
-  hosts: postgresql
+  hosts: postgresql,pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
@@ -30,14 +30,9 @@
     - state: 'present'
   tasks:
     - include: roles/setup_auth_keys.yml
+      when: hot_standby_server is defined
   tags:
     - pg_standby
-
-- name: Posgres Standby
-  hosts: pg_standby
-  become: true
-  roles:
-    - {role: pg_standby, tags: 'pg_standby'}
 
 - name: Couchdb
   hosts: couchdb
