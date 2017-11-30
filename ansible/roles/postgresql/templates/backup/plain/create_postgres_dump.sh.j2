@@ -8,7 +8,7 @@ DIRECTORY="{{ postgresql_backup_dir }}/postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
 
 {% if postgresql_backup_master|default(false) and hot_standby_master|default(false) %}
 MASTER="{{ hot_standby_master }}"
-basebackup -h $MASTER -Ft -D "${DIRECTORY}" -Z9 -Xf
+pg_basebackup -h $MASTER -Ft -D "${DIRECTORY}" -Z9 -Xf
 mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
 {% else %}
 pg_basebackup -D $DIRECTORY -Xs
