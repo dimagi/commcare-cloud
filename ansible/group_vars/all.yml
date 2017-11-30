@@ -141,6 +141,7 @@ subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: billing-comm@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
+growth_email: growth@dimagi.com
 master_list_email: master-list@dimagi.com
 report_builder_add_on_email: sales@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
