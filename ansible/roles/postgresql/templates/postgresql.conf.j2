@@ -46,8 +46,11 @@ checkpoint_segments = {{ postgresql_checkpoint_segments }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
+{% if is_pg_standby %}
+wal_keep_segments = {{ pgstandby_wal_keep_segments|default(8) }}
+{% else %}
 wal_keep_segments = {{ postgresql_wal_keep_segments|default(8) }}
-
+{% endif %}
 
 # REPLICATION
 
