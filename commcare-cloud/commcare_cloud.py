@@ -229,8 +229,11 @@ class RunShellCommand(object):
         parser.add_argument('-u', '--user', default='ansible', help=(
             "The user to run the commands as."
         ))
-        parser.add_argument('--include-vars', action='store_true', help=(
-            "Include the envs var files"
+        parser.add_argument('--become', action='store_true', help=(
+            "Run command as root"
+        ))
+        parser.add_argument('--become-user', help=(
+            "Run command as user"
         ))
 
     @staticmethod
@@ -246,13 +249,27 @@ class RunShellCommand(object):
             '-a', args.shell_command,
         ) + tuple(unknown_args)
 
-        if args.include_vars:
+        become = args.become or bool(args.become_user)
+        become_user = args.become_user
+        include_vars = False
+        if become:
+            if become_user not in ('cchq',):
+                # ansible user can do things as cchq without a password,
+                # but needs the ansible user password in order to do things as other users.
+                # In that case, we need to pull in the vault variable containing this password
+                include_vars = True
+            if become_user:
+                cmd_parts += ('--become-user', args.become_user)
+            else:
+                cmd_parts += ('--become',)
+
+        if include_vars:
             cmd_parts += (
                 '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
                 '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
             )
 
-        ask_vault_pass = args.include_vars and public_vars.get('commcare_cloud_use_vault', True)
+        ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
         if ask_vault_pass:
             cmd_parts += ('--vault-password-file=/bin/cat',)
 
