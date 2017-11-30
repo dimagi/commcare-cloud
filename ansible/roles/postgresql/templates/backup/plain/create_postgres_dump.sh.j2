@@ -1,12 +1,20 @@
 #!/bin/bash
 BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
+ENV="{{ deploy_env }}"
 
 TODAY=$(date +"%Y_%m_%d")
-DIRECTORY="{{ postgresql_backup_dir }}/postgres_${BACKUP_TYPE}_${TODAY}"
+DIRECTORY="{{ postgresql_backup_dir }}/postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
+
+{% if postgresql_backup_master|default(false) and hot_standby_master|default(false) %}
+MASTER="{{ hot_standby_master }}"
+basebackup -h $MASTER -Ft -D "${DIRECTORY}" -Z9 -Xf
+mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
+{% else %}
 pg_basebackup -D $DIRECTORY -Xs
 tar -czf "${DIRECTORY}.tar.gz" -C "${DIRECTORY}" .
 rm -rf $DIRECTORY
+{% endif %}
 
 # Remove old backups of this backup type
 find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -exec rm {} \;
