@@ -20,10 +20,10 @@ riak_backend: "leveldb"
 
 riak_port: 8087
 riak_data_root_leveldb: "{{ riak_data_dir }}/leveldb"
+riak_data_root_bitcask: "{{ riak_data_dir }}/bitcask"
 riak_data_root_blocks: "{{ riak_data_dir }}/blocks"
 riak_data_dir: "{{ encrypted_root }}/riak"
 riak_ring_dir: "{{ riak_data_dir }}/ring"
-riak_nodename: "riak@{{ inventory_hostname }}"
 riak_ring_size: 128
 
 riakcs_ebin: "/usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin"

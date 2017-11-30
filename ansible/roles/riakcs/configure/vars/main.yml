@@ -1,5 +1,25 @@
 data_dirs: []
+advanced_conf: ""
 drop_conf: ""
-extra_conf: ""
 service: "{{ name }}"
 ulimit_n: 65536
+
+backend_vars:
+  leveldb:
+    drop_conf: ""
+    advanced_conf: "advanced-leveldb.config.j2"
+    riak_version: "2.2.1"
+    riak_nodename: "riak@{{ inventory_hostname }}"
+    riakcs_nodename: "riakcs@{{ inventory_hostname }}"
+  bitcask:
+    drop_conf: ""
+    advanced_conf: "advanced-bitcask.config.j2"
+    riak_version: "2.1.1"
+    riak_nodename: "riak-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
+    riakcs_nodename: "riakcs-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
+  "leveldb-bad-config":
+    drop_conf: "advanced.config"
+    advanced_conf:  ""
+    riak_version: "2.1.1"
+    riak_nodename: "riak-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
+    riakcs_nodename: "riakcs-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
