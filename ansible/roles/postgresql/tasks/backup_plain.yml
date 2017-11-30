@@ -1,4 +1,14 @@
 ---
+- name: Copy replication credentials
+  become: yes
+  template:
+    src: "backup/plain/pgpass.j2"
+    dest: "{{ postgresql_dir_original_path }}/.pgpass"
+    group: postgres
+    owner: postgres
+    mode: 0600
+    backup: yes
+
 - name: Copy postgres backup script
   become: yes
   template:

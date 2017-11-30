@@ -77,9 +77,10 @@ keystore_file: '../config/DimagiKeyStore'
 encrypted_root: '/opt/data'
 
 backup_blobdb: False
-backup_postgres: pgbackrest
+backup_postgres: plain
 postgresql_backup_days: 2
 postgresql_backup_weeks: 2
+postgresql_backup_master: False
 postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 backup_es: False
 postgres_s3: False
@@ -97,6 +98,8 @@ postgresql_effective_cache_size: '32GB'
 postgresql_work_mem: '16MB'
 postgresql_max_connections: 600
 postgresql_checkpoint_segments: 32
+postgresql_wal_keep_segments: 8
+pgstandby_wal_keep_segments: 500
 pgbouncer_max_connections: 1600
 pgbouncer_default_pool: 500
 pgbouncer_reserve_pool: 5
