@@ -58,10 +58,6 @@ riakcs_port: 8080
 riakcs_proxy_port: "{{ riakcs_port }}"
 temp_riakcs_proxy_port: 8081
 riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
-riak_port: 8087
-riak_data_dir: "{{ encrypted_root }}/riak"
-stanchion_port: 8085
-stanchion_data_dir: "{{ encrypted_root }}/stanchion"
 zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb2_port: 15984
