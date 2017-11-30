@@ -133,10 +133,12 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
+postgresql_wal_keep_segments: 500
 
 shared_drive_enabled: True
 backup_postgres: plain
 backup_blobdb: True
+postgresql_backup_master: True
 postgres_s3: False
 nadir_hour: 18
 
