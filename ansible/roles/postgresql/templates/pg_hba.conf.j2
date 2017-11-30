@@ -11,15 +11,6 @@ host    all             netvault        127.0.0.1/32            md5
 local   all             netvault                                md5
 {% endif %}
 
-# "local" is for Unix domain socket connections only
-local   all             all                                     peer
-
-# IPv4 local connections:
-host    all             all             127.0.0.1/32            md5
-
-# IPv6 local connections:
-host    all             all             ::1/128                 md5
-
 # Allow replication connections from localhost, by a user with the replication privilege.
 local   replication     postgres                                peer
 
@@ -53,3 +44,12 @@ host   {{ db.name }}	{{ db.get('user', localsettings.PG_DATABASE_USER) }}	{{ loo
 {% endfor %}
 {% endfor %}
 {% endif %}
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+
+# IPv6 local connections:
+host    all             all             ::1/128                 md5
