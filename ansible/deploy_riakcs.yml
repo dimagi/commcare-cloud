@@ -16,6 +16,7 @@
     - add_host: name="{{ riakcs_control }}" groups=riakcs_control_host
       when: riakcs_control_host is undefined
       check_mode: no
+      changed_when: false
       tags: localsettings
 
 - name: Register riak conf override fact
