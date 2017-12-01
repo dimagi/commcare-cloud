@@ -1,4 +1,14 @@
-_commcare_cloud() 
+
+_cmds()
+{
+    if [[ -z "$COMMCARE_CLOUD_CMDS" ]]
+    then
+        COMMCARE_CLOUD_CMDS=$(commcare-cloud -h | head -n3 | tail -n1 | cut -d'{' -f2 | cut -d'}' -f1 | sed 's/,/ /g')
+    fi
+    echo $COMMCARE_CLOUD_CMDS
+}
+
+_commcare_cloud()
 {
     local cur prev opts
     COMPREPLY=()
@@ -7,7 +17,8 @@ _commcare_cloud()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="--help --version"
     envs="enikshay icds l10k pna production softlayer staging swiss"
-    cmds="ansible-playbook update-config run-shell-command"
+    export COMMCARE_CLOUD_CMDS=$(_cmds)
+    cmds=$COMMCARE_CLOUD_CMDS
 
     case $COMP_CWORD in
     1)
