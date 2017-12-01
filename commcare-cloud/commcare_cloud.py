@@ -247,23 +247,14 @@ class RunShellCommand(object):
 
 def git_branch():
     cwd = os.path.expanduser('~/.commcare-cloud/ansible')
-
-    def get_detached_ref():
-        """
-        :return None if on a local branch, commit or remote branch name otherwise
-        """
-        return subprocess.check_output(
-            "git branch | grep '\* (HEAD detached at .*)' | cut -d' ' -f5 | cut -d')' -f1",
-            shell=True, cwd=cwd).strip() or None
-
-    def get_branch_name():
-        """
-        :return local branch name if on a local branch, otherwise behavior is not defined
-        """
-        return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2",
-                                       shell=True, cwd=cwd).strip()
-
-    return get_detached_ref() or get_branch_name()
+    git_branch_output = subprocess.check_output("git branch", cwd=cwd, shell=True).strip().split('\n')
+    starred_line, = [line for line in git_branch_output if line.startswith('*')]
+    if re.search(r'\* \(HEAD detached at .*\)', starred_line):
+        return starred_line.split(' ')[4][:-1]
+    elif re.search(r'\* \w+', starred_line):
+        return starred_line.split(' ')[1]
+    else:
+        assert False, "Unable to parse branch name or commit: {}".format(starred_line)
 
 
 def check_branch(args):
