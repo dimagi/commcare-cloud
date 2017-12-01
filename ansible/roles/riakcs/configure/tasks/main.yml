@@ -65,7 +65,7 @@
 
 - name: "Create {{ name }} log dir"
   file: >
-    path="{{ log_path | dirname }}"
+    path="{{ log_path }}"
     state=directory
     owner={{ name }}
     group=riak
