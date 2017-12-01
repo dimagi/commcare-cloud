@@ -12,12 +12,15 @@ pg_basebackup -h $MASTER -Ft -D $DIRECTORY -Z9 -Xf -U{{ postgres_users['replicat
 {% else %}
 pg_basebackup -Ft -D $DIRECTORY -Z9 -Xf
 {% endif %}
+EXITCODE=$?
 mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
 rmdir $DIRECTORY
 
-# Remove old backups of this backup type
-find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
-find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
+# Remove old backups of this backup type, if backup succeded
+if [[ $EXITCODE -eq 0 ]] ; then
+    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
+    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
+fi
 
 {% if postgres_s3 %}
 /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.tar.gz"
