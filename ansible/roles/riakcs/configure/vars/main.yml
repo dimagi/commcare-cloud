@@ -4,7 +4,7 @@ drop_conf: ""
 service: "{{ name }}"
 ulimit_n: 65536
 
-backend_vars:
+_backend_vars:
   leveldb:
     drop_conf: ""
     advanced_conf: "advanced-leveldb.config.j2"
@@ -23,3 +23,5 @@ backend_vars:
     riak_version: "2.1.1"
     riak_nodename: "riak-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
     riakcs_nodename: "riakcs-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
+
+backend_vars: "{{ _backend_vars[_riak_backend] }}"

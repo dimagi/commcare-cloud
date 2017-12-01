@@ -13,7 +13,7 @@
 - meta: flush_handlers  # restart services if needed
 
 - name: Wait for Riak service to become available
-  command: riak-admin wait-for-service riak_kv "{{ backend_vars[riak_backend]['riak_nodename'] }}"
+  command: riak-admin wait-for-service riak_kv "{{ backend_vars.riak_nodename }}"
   changed_when: false
 
 # Random email address because a given email can only be used once. It

@@ -1,5 +1,18 @@
 # run with --tags=mount-ecryptfs to mount encrypted volume after reboot
 
+- name: Set variables
+  hosts:
+    - riakcs
+    - stanchion
+  tasks:
+    # Assign to new variable names so these values, which normally come from
+    # vars files specified on the command line (having the higest variable
+    # precedence), can be changed in deploy_riakcs_new.yml. The underscore-
+    # prefixed versions should be used everywhere except when assigning a
+    # concrete value (e.g., in defaults or inventory vars files).
+    - set_fact: _riak_backend="{{ riak_backend }}"
+    - set_fact: _riak_ring_size="{{ riak_ring_size }}"
+
 - name: Common Setup
   hosts:
     - riakcs
@@ -44,7 +57,7 @@
             or not (riak_conf_file.stat.exists | default(True))
         else '' }}"
     # HACK set fact because defaults cannot be loaded from other hosts
-    - set_fact: riak_nodename="{{ backend_vars[riak_backend]['riak_nodename'] }}"
+    - set_fact: riak_nodename="{{ backend_vars.riak_nodename }}"
 
 - name: Configure swap for riak hosts
   hosts: riakcs
@@ -63,7 +76,7 @@
   become: true
   hosts: riakcs
   vars_files:
-    # for backend_vars[riak_backend]['riak_version']
+    # for backend_vars.riak_version
     - roles/riakcs/configure/vars/main.yml
   roles:
     - {role: riakcs/install, name: riak}
@@ -73,7 +86,7 @@
   become: true
   hosts: stanchion
   vars_files:
-    # for backend_vars[riak_backend]['riak_version']
+    # for backend_vars.riak_version
     - roles/riakcs/configure/vars/main.yml
   roles:
     - {role: riakcs/install, name: stanchion}
@@ -85,14 +98,14 @@
   roles:
     - role: riakcs/configure
       name: riak
-      drop_conf: "{{ backend_vars[riak_backend]['drop_conf'] }}"
-      advanced_conf: "{{ backend_vars[riak_backend]['advanced_conf'] }}"
+      drop_conf: "{{ backend_vars.drop_conf }}"
+      advanced_conf: "{{ backend_vars.advanced_conf }}"
       data_dirs:
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
-        - "{{ riak_data_root_bitcask if riak_backend == 'bitcask' else '' }}"
-        - "{{ riak_data_root_blocks if riak_backend == 'leveldb' else '' }}"
+        - "{{ riak_data_root_bitcask if _riak_backend == 'bitcask' else '' }}"
+        - "{{ riak_data_root_blocks if _riak_backend == 'leveldb' else '' }}"
       when: _force_riak_config | bool
 
 - name: Start Riak
