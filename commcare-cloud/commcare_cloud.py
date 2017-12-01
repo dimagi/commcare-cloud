@@ -224,20 +224,38 @@ class RunShellCommand(object):
         parser.add_argument('-u', '--user', default='ansible', help=(
             "The user to run the commands as."
         ))
+        parser.add_argument('--raw', action='store_true', help=(
+            "Run the raw shell command as given rather than trying to be smart "
+            "about interpreting intent. Currently only 'smart' behavior is replacing sudo "
+            "with --become --ask-become-pass."
+        ))
 
     @staticmethod
     def run(args, unknown_args):
         public_vars = get_public_vars(args.environment)
+        shell_command = args.shell_command
+        become_root = False
+        if shell_command.strip().startswith('sudo '):
+            puts(colored.blue("Using `--become --ask-become-pass` rather than `sudo`. "))
+            puts(colored.blue("If you want to run the raw command as written, use --raw."))
+            if ask("Run command as root?"):
+                shell_command = shell_command.strip()[len('sudo '):]
+                become_root = True
+            else:
+                exit(0)
+
         cmd_parts = (
             'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
             'ansible', args.inventory_group,
             '-m', 'shell',
             '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
             '-u', args.user,
-            '-a', args.shell_command
+            '-a', shell_command
         ) + tuple(unknown_args)
 
         cmd_parts += get_common_ssh_args(public_vars)
+        if become_root:
+            cmd_parts += ('--become', '--ask-become-pass')
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
