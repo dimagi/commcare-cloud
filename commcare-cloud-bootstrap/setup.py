@@ -8,7 +8,7 @@ setup(
     },
     install_requires=(
         'six',
-        'jsonobject'
-        'awscli'
+        'jsonobject',
+        'awscli',
     ),
 )
