@@ -246,8 +246,24 @@ class RunShellCommand(object):
 
 
 def git_branch():
-    return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2", shell=True,
-                                   cwd=os.path.expanduser('~/.commcare-cloud/ansible')).strip()
+    cwd = os.path.expanduser('~/.commcare-cloud/ansible')
+
+    def get_detached_ref():
+        """
+        :return None if on a local branch, commit or remote branch name otherwise
+        """
+        return subprocess.check_output(
+            "git branch | grep '\* (HEAD detached at .*)' | cut -d' ' -f5 | cut -d')' -f1",
+            shell=True, cwd=cwd).strip() or None
+
+    def get_branch_name():
+        """
+        :return local branch name if on a local branch, otherwise behavior is not defined
+        """
+        return subprocess.check_output("git branch | grep '^*' | cut -d' ' -f2",
+                                       shell=True, cwd=cwd).strip()
+
+    return get_detached_ref() or get_branch_name()
 
 
 def check_branch(args):
