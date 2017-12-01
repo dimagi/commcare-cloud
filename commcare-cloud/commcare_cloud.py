@@ -234,13 +234,34 @@ class RunShellCommand(object):
     def run(args, unknown_args):
         public_vars = get_public_vars(args.environment)
         shell_command = args.shell_command
-        become_root = False
+        become = False
+        become_user = None
+        ask_become_pass = False
         if shell_command.strip().startswith('sudo '):
-            puts(colored.blue("Using `--become --ask-become-pass` rather than `sudo`. "))
+            parts = shell_command.strip().split()
+            if len(parts) > 2 and parts[1] == '-u':
+                become_user = parts[2]
+                cmd_parts = parts[3:]
+            else:
+                become_user = None
+                cmd_parts = parts[1:]
+            ask_become_pass = become_user not in ('cchq',)
+            if become_user:
+                if ask_become_pass:
+                    puts(colored.blue(
+                        "Using `--become-user {}` --ask-become-pass rather than `sudo`. "
+                        .format(become_user)))
+                else:
+                    puts(colored.blue(
+                        "Using `--become-user {}` rather than `sudo`. ".format(become_user)))
+            else:
+                puts(colored.blue("Using `--become --ask-become-pass` rather than `sudo`. "))
+
             puts(colored.blue("If you want to run the raw command as written, use --raw."))
-            if ask("Run command as root?"):
-                shell_command = shell_command.strip()[len('sudo '):]
-                become_root = True
+
+            if ask("Run command as {}?".format('root' if not become_user else become_user)):
+                shell_command = ' '.join(cmd_parts)
+                become = True
             else:
                 exit(0)
 
@@ -254,8 +275,13 @@ class RunShellCommand(object):
         ) + tuple(unknown_args)
 
         cmd_parts += get_common_ssh_args(public_vars)
-        if become_root:
-            cmd_parts += ('--become', '--ask-become-pass')
+        if become:
+            if become_user:
+                cmd_parts += ('--become-user', become_user)
+            else:
+                cmd_parts += ('--become',)
+            if ask_become_pass:
+                cmd_parts += ('--ask-become-pass',)
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
