@@ -31,6 +31,9 @@ _commcare_cloud()
     export COMMCARE_CLOUD_CMDS=$(_cmds)
     cmds=$COMMCARE_CLOUD_CMDS
 
+    # only include .yml files that don't contain a space
+    files=$(echo $(ls $FILE_EXCHANGE_DIR | grep -v ' ' | grep '.*.yml$'))
+
     case $COMP_CWORD in
     1)
         if [[ ${cur} == -* ]] ; then
@@ -45,8 +48,7 @@ _commcare_cloud()
         fi
         ;;
     3)
-        IFS=$'\n' tmp=( $(compgen -W "$(ls $FILE_EXCHANGE_DIR)" -- ${cur}) )
-        COMPREPLY=( "${tmp[@]// /\ }" )
+        COMPREPLY=( $(compgen -W "${files}" -- ${cur}) )
         ;;
     esac
 }
