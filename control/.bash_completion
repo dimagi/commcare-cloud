@@ -1,4 +1,22 @@
-_commcare_cloud() 
+_envs()
+{
+    if [[ -z "$COMMCARE_CLOUD_ENVS" ]]
+    then
+        COMMCARE_CLOUD_ENVS=$(commcare-cloud -h | head -n2 | tail -n1 | cut -d'{' -f2 | cut -d'}' -f1 | sed 's/,/ /g')
+    fi
+    echo $COMMCARE_CLOUD_ENVS
+}
+
+_cmds()
+{
+    if [[ -z "$COMMCARE_CLOUD_CMDS" ]]
+    then
+        COMMCARE_CLOUD_CMDS=$(commcare-cloud -h | head -n3 | tail -n1 | cut -d'{' -f2 | cut -d'}' -f1 | sed 's/,/ /g')
+    fi
+    echo $COMMCARE_CLOUD_CMDS
+}
+
+_commcare_cloud()
 {
     local cur prev opts
     COMPREPLY=()
@@ -6,8 +24,15 @@ _commcare_cloud()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="--help --version"
-    envs="enikshay icds l10k pna production softlayer staging swiss"
-    cmds="ansible-playbook update-config run-shell-command"
+
+    export COMMCARE_CLOUD_ENVS=$(_envs)
+    envs=$COMMCARE_CLOUD_ENVS
+
+    export COMMCARE_CLOUD_CMDS=$(_cmds)
+    cmds=$COMMCARE_CLOUD_CMDS
+
+    # only include .yml files that don't contain a space
+    files=$(echo $(ls $FILE_EXCHANGE_DIR | grep -v ' ' | grep '.*.yml$'))
 
     case $COMP_CWORD in
     1)
@@ -23,8 +48,7 @@ _commcare_cloud()
         fi
         ;;
     3)
-        IFS=$'\n' tmp=( $(compgen -W "$(ls $FILE_EXCHANGE_DIR)" -- ${cur}) )
-        COMPREPLY=( "${tmp[@]// /\ }" )
+        COMPREPLY=( $(compgen -W "${files}" -- ${cur}) )
         ;;
     esac
 }
