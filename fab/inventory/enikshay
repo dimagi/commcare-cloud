@@ -1,6 +1,6 @@
 # enikshay - ctrls inventory
 
-[db0] # postgresql, riak, control
+[db0] # postgresql, control
 172.25.3.5
 
 [es0] # es, riak, redis
@@ -18,7 +18,7 @@
 [couch0] # couch, stanchion, riak
 172.25.2.9
 
-[proxy0] # nginx
+[proxy0] # nginx, riak
 172.25.1.5
 
 [kafka0] # kafka, zookeeper, celery, rabbitmq, riak
@@ -115,7 +115,7 @@ couch0
 db0
 
 [riakcs:children]
-db0
+proxy0
 es0
 couch0
 kafka0
