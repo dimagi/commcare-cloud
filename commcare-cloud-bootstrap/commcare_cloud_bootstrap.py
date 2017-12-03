@@ -199,5 +199,4 @@ def main():
     with open(args.spec) as f:
         spec = yaml.load(f)
     spec = Spec.wrap(spec)
-    # provision_machines(spec, args.env)
-    copy_default_vars(args.env, spec.aws_config)
+    provision_machines(spec, args.env)
