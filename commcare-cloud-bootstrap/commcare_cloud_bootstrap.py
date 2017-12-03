@@ -124,8 +124,6 @@ def ask_aws_for_instances(env, aws_config, count):
             '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env + '}]',
         ]
         aws_response = subprocess.check_output(cmd_parts)
-        with open('ask_aws_for_instances.json', 'w') as f:
-            f.write(aws_response)
 
     aws_response = json.loads(aws_response)
     return {instance['InstanceId'] for instance in aws_response["Instances"]}
