@@ -18,7 +18,8 @@
   tasks:
     - set_fact: _riak_backend="{{ riak_new_backend }}"
     - set_fact: _riak_ring_size="{{ riak_new_ring_size }}"
-    - set_fact: riakcs_control="{{ groups.get('riakcs_new')[0] }}"
+    - set_fact: riakcs_control="{{ groups.riakcs_new[0] }}"
+    - set_fact: stanchion_host="{{ groups.stanchion_new[0] }}"
 
 - name: Common Setup
   hosts:
