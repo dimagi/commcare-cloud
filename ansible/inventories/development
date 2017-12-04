@@ -18,6 +18,12 @@ postgresql_replication_slots="['standby1']"
 hot_standby_master="192.168.33.16"
 replication_slot=standby1
 
+[pg_backup]
+192.168.33.15
+
+[pg_backup:vars]
+pg_backup_from="192.168.33.17"
+
 [couchdb2]
 192.168.33.16
 

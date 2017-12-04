@@ -21,6 +21,12 @@
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
+- name: Simple PostgreSQL install
+  hosts: pg_backup
+  become: true
+  roles:
+    - {role: pg_backup, tags: 'postgresql', 'backups'}
+
 - name: Setup auth for standby
   hosts:
     - postgresql

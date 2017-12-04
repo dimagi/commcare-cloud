@@ -2,7 +2,7 @@
 - name: Copy replication credentials
   become: yes
   template:
-    src: "backup/plain/pgpass.j2"
+    src: "plain/pgpass.j2"
     dest: "{{ postgresql_dir_original_path }}/.pgpass"
     group: postgres
     owner: postgres
@@ -12,7 +12,7 @@
 - name: Copy postgres backup script
   become: yes
   template:
-    src: "backup/plain/create_postgres_dump.sh.j2"
+    src: "plain/create_postgres_dump.sh.j2"
     dest: "/usr/local/sbin/create_postgres_dump.sh"
     group: postgres
     owner: postgres
@@ -39,7 +39,7 @@
 - name: copy boto3 credentials file
   become: yes
   template:
-    src: "backup/plain/aws_credentials.j2"
+    src: "plain/aws_credentials.j2"
     dest: "{{ postgresql_dir_original_path }}/.aws/credentials"
     group: postgres
     owner: postgres
@@ -50,7 +50,7 @@
 - name: Copy s3 upload script
   become: yes
   template:
-    src: "backup/plain/backup_snapshots.py.j2"
+    src: "plain/backup_snapshots.py.j2"
     dest: "/usr/local/sbin/backup_snapshots.py"
     group: postgres
     owner: postgres
@@ -83,7 +83,7 @@
 - name: copy retrieve script
   become: yes
   template:
-    src: "backup/plain/retrieve_backup.py.j2"
+    src: "plain/retrieve_backup.py.j2"
     dest: "/usr/local/sbin/retrieve_backup.py"
     group: root
     owner: root
@@ -94,7 +94,7 @@
 - name: copy restore script
   become: yes
   template:
-    src: "backup/plain/restore_from_backup.sh.j2"
+    src: "plain/restore_from_backup.sh.j2"
     dest: "/usr/local/sbin/restore_from_backup.sh"
     group: root
     owner: root
