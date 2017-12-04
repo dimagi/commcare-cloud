@@ -27,6 +27,10 @@ riak_data_root_bitcask: "{{ riak_data_dir }}/bitcask"
 riak_data_root_blocks: "{{ riak_data_dir }}/blocks"
 riak_data_dir: "{{ encrypted_root }}/riak"
 riak_ring_dir: "{{ riak_data_dir }}/ring"
+
+# This parameter cannot be changed once the cluster has been configured and
+# has data in it. Use a lower ring size (64) in envs where RAM is very limited
+# since higher ring size requires more RAM, even for leveldb-only backend.
 riak_ring_size: 128
 
 riakcs_ebin: "/usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin"
