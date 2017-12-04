@@ -272,6 +272,13 @@ class RunShellCommand(object):
             '-a', args.shell_command,
         ) + tuple(unknown_args)
 
+        if args.shell_command.strip().startswith('sudo '):
+            puts(colored.yellow(
+                "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
+                "Using 'sudo' directly in the command is non-standard practice."))
+            if not ask("Do you know what you're doing and want to run this anyway?"):
+                exit(0)
+
         become = args.become or bool(args.become_user)
         become_user = args.become_user
         include_vars = False
