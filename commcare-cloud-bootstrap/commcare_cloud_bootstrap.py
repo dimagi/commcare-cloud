@@ -71,6 +71,8 @@ def provision_machines(spec, env=None):
     for group_name, group in inventory.all.children.items():
         for host_name, host_vars in group.hosts.items():
             host_vars['ansible_host'] = str(ip_addresses_by_host[host_name])
+            if group_name == 'elasticsearch':
+                host_vars['elasticsearch_node_name'] = host_name
 
     save_inventory(env, inventory)
     copy_default_vars(env, spec.aws_config)
