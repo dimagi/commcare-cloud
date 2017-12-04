@@ -364,6 +364,3 @@
     name: postgresql
     state: monitored
   tags: monit
-
-- import_tasks: backup.yml
-  when: backup_postgres in ["plain", "pgbackrest"]

@@ -9,7 +9,7 @@
   become: True
   delegate_to: "{{ hot_standby_master|default(inventory_hostname) }}"
   template:
-    src: backup/pgbackrest/archive_command.sh.j2
+    src: pgbackrest/archive_command.sh.j2
     dest: /usr/local/sbin/pgbackrest_archive_command.sh
     owner: postgres
     group: postgres
@@ -19,7 +19,7 @@
 - name: Creating pgbackrest.conf file
   become: True
   template:
-    src: backup/pgbackrest/pgbackrest.conf.j2
+    src: pgbackrest/pgbackrest.conf.j2
     dest: /etc/pgbackrest.conf
     owner: postgres
     group: postgres
