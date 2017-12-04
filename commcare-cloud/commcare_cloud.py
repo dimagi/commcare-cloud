@@ -14,6 +14,13 @@ def ask(message):
     return 'y' == input('{} [y/N]'.format(message))
 
 
+def ask_YES(message):
+    r = input('{} [YES/NO]'.format(message))
+    while r not in ('YES', 'NO', 'N', 'n', 'no', ''):
+        r = input('YES or NO? '.format(message))
+    return 'YES' == r
+
+
 def arg_skip_check(parser):
     parser.add_argument('--skip-check', action='store_true', default=False, help=(
         "skip the default of viewing --check output first"
@@ -165,17 +172,19 @@ class AnsiblePlaybook(object):
         exit(exit_code)
 
 
-class UpdateConfig(object):
+class _AnsiblePlaybookAlias(object):
+    @staticmethod
+    def make_parser(parser):
+        arg_skip_check(parser)
+        arg_branch(parser)
+
+
+class UpdateConfig(_AnsiblePlaybookAlias):
     command = 'update-config'
     help = (
         "Run the ansible playbook for updating app config "
         "such as django localsettings.py and formplayer application.properties."
     )
-
-    @staticmethod
-    def make_parser(parser):
-        arg_skip_check(parser)
-        arg_branch(parser)
 
     @staticmethod
     def run(args, unknown_args):
@@ -184,17 +193,31 @@ class UpdateConfig(object):
         AnsiblePlaybook.run(args, unknown_args)
 
 
-class BootstrapUsers(object):
+class RestartElasticsearch(_AnsiblePlaybookAlias):
+    command = 'restart-elasticsearch'
+    help = (
+        "Do a rolling restart of elasticsearch."
+    )
+
+    @staticmethod
+    def run(args, unknown_args):
+        args.playbook = 'es_rolling_restart.yml'
+        if not ask_YES('Have you stopped all the elastic pillows?'):
+            exit(0)
+        puts(colored.yellow(
+            "This will cause downtime on the order of seconds to minutes,\n"
+            "except in a few cases where an index is replicated across multiple nodes."))
+        if not ask_YES('Do a rolling restart of the ES cluster?'):
+            exit(0)
+        AnsiblePlaybook.run(args, unknown_args)
+
+
+class BootstrapUsers(_AnsiblePlaybookAlias):
     command = 'bootstrap-users'
     help = (
         "Add users to a set of new machines as root. "
         "This must be done before any other user can log in."
     )
-
-    @staticmethod
-    def make_parser(parser):
-        arg_skip_check(parser)
-        arg_branch(parser)
 
     @staticmethod
     def run(args, unknown_args):
@@ -270,6 +293,7 @@ def check_branch(args):
 STANDARD_ARGS = [
     AnsiblePlaybook,
     UpdateConfig,
+    RestartElasticsearch,
     BootstrapUsers,
     RunShellCommand,
 ]
