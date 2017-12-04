@@ -12,6 +12,7 @@
     # concrete value (e.g., in defaults or inventory vars files).
     - set_fact: _riak_backend="{{ riak_backend }}"
     - set_fact: _riak_ring_size="{{ riak_ring_size }}"
+    - set_fact: stanchion_host="{{ groups.stanchion[0] }}"
 
 - name: Common Setup
   hosts:
