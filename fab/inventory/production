@@ -104,6 +104,9 @@ hqriak28.internal-va.commcarehq.org
 datavol_device=/dev/mapper/consolidated-data
 swap_size=4G
 
+[stanchion_new]
+hqriak20.internal-va.commcarehq.org
+
 [lvm]
 hqriak20.internal-va.commcarehq.org
 hqriak21.internal-va.commcarehq.org
