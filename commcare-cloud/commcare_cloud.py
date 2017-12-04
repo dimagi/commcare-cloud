@@ -204,8 +204,9 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
         args.playbook = 'es_rolling_restart.yml'
         if not ask_YES('Have you stopped all the elastic pillows?'):
             exit(0)
-        puts(colored.yellow("For ES clusters without data redundancy, "
-                            "this will cause downtime on the order of seconds to minutes."))
+        puts(colored.yellow(
+            "This will cause downtime on the order of seconds to minutes,\n"
+            "except in a few cases where an index is replicated across multiple nodes."))
         if not ask_YES('Do a rolling restart of the ES cluster?'):
             exit(0)
         AnsiblePlaybook.run(args, unknown_args)
