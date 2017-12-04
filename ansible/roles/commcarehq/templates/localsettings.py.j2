@@ -105,7 +105,6 @@ EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 {% endif %}
 
-SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
 EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
 SERVER_ENVIRONMENT = '{{ item.deploy_env_name }}'
 
@@ -719,6 +718,7 @@ SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'
 INTERNAL_SUBSCRIPTION_CHANGE_EMAIL = '{{ internal_subscription_change_email }}'
 BILLING_EMAIL = '{{ billing_email }}'
 INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
+GROWTH_EMAIL = '{{ growth_email }}'
 MASTER_LIST_EMAIL = '{{ master_list_email }}'
 REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
 EULA_CHANGE_EMAIL = '{{ eula_change_email }}'

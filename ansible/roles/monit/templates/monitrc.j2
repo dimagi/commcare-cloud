@@ -1,15 +1,15 @@
-  set daemon 120            # check services at 2-minute intervals
-  set logfile /var/log/monit.log
-  set idfile /var/lib/monit/id
-  set statefile /var/lib/monit/state
+set daemon 120            # check services at 2-minute intervals
+set logfile /var/log/monit.log
+set idfile /var/lib/monit/id
+set statefile /var/lib/monit/state
 
-# set mailserver mail.bar.baz,               # primary mailserver
+set mailserver localhost,               # primary mailserver
 #                backup.bar.baz port 10025,  # backup mailserver on port 10025
 #                localhost                   # fallback relay
 
-  set eventqueue
-      basedir /var/lib/monit/events # set the base directory where events will be stored
-      slots 100                     # optionally limit the queue size
+set eventqueue
+    basedir /var/lib/monit/events # set the base directory where events will be stored
+    slots 100                     # optionally limit the queue size
 
 ## --8<--
 ## set mail-format {
@@ -28,7 +28,7 @@
 ##
 # set mail-format { from: monit@foo.bar }
 
-# set alert sysadm@foo.bar                       # receive all alerts
+set alert root@localhost                       # receive all alerts
 # set alert manager@foo.bar not on { instance, action } 
 
 ## Monit has an embedded web server which can be used to view status of 
