@@ -5,14 +5,17 @@
 #   Requires less RAM, lower performance.
 #
 # - "bitcask"
-#   Keeps all keys in RAM, higher performance, but crashes if it does not have
-#   enough RAM.
+#   All keys must fit in RAM. Higher performance, but requires more RAM. Uses
+#   a LOT more disk space possibly due to bitcask not using compression.
 #
 # - "leveldb-bad-config"
 #   Bad leveldb configuration. We're slowly migrating away from this, but the
 #   migration requires reading each object from the old cluster and saving
 #   it in a new cluster.
 #   http://lists.basho.com/pipermail/riak-users_lists.basho.com/2017-March/019142.html
+#   This configuration uses by far the least disk space. Would be cool if a
+#   change could be made to riak to support this configuration and eliminate
+#   the (low) chance of data loss that it apparently has.
 #
 riak_backend: "leveldb"
 
