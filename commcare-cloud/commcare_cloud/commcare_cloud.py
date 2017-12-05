@@ -104,6 +104,16 @@ class AnsiblePlaybook(object):
         parser.add_argument('playbook', help=(
             "The ansible playbook .yml file to run."
         ))
+        add_to_help_text(parser, "\n{}\n{}".format(
+            "The ansible-playbook options below are available as well",
+            filtered_help_message(
+                "ansible-playbook -h",
+                below_line='Options:',
+                above_line=None,
+                exclude_args=['--help', '--diff', '--check', '-i',
+                              '--ask-vault-pass', '--vault-password-file']
+            )
+        ))
 
     @staticmethod
     def run(args, unknown_args):
@@ -267,7 +277,8 @@ class RunShellCommand(object):
                 "ansible -h",
                 below_line='Options:',
                 above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
-                exclude_args=['--user', '--become', '--become-user', '-i', '-m', '-a']
+                exclude_args=['--help', '--user', '--become', '--become-user', '-i', '-m', '-a',
+                              '--ask-vault-pass', '--vault-password-file']
             )
         ))
 
