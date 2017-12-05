@@ -20,6 +20,7 @@
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
+
 - name: Install PostgreSQL & dependencies
   apt: name="{{ item }}" state=present
   with_items:

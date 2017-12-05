@@ -5,3 +5,4 @@ postgresql_dir_original_path: /var/lib/postgresql
 
 postgresql_backup_days: 3
 postgresql_backup_weeks: 4
+backup_postgres: plain
