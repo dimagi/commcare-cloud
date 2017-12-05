@@ -51,3 +51,14 @@
   tags:
     - fp-localsettings
     - localsettings
+
+- name: Copy sentry.properties
+  become: yes
+  template:
+    src: sentry.properties.j2
+    dest: "{{ formplayer_build_dir }}/sentry.properties"
+    group: cchq
+    owner: cchq
+    mode: 0644
+  tags:
+    - sentry-localsettings
