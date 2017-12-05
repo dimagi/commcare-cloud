@@ -6,7 +6,7 @@ ENV="{{ deploy_env }}"
 TODAY=$(date +"%Y_%m_%d")
 DIRECTORY="{{ postgresql_backup_dir }}/postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
 
-{% if pg_backup_from|default(false) %}
+{% if pg_backup_from %}
 BACKUP_FROM="{{ pg_backup_from }}"
 pg_basebackup -h $BACKUP_FROM -Ft -D $DIRECTORY -Z9 -Xf -U{{ postgres_users['replication']['username'] }} -w
 {% else %}

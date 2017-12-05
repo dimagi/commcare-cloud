@@ -22,7 +22,7 @@
     - {role: postgresql, tags: 'postgresql'}
 
 - name: PostgreSQL Backup
-  hosts: pg_backup
+  hosts: all
   become: true
   roles:
     - {role: pg_backup, tags: 'postgresql', 'backups'}

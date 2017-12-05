@@ -3,6 +3,16 @@ postgresql_port: 5432
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_dir_original_path: /var/lib/postgresql
 
+nadir_hour: 0
 postgresql_backup_days: 3
 postgresql_backup_weeks: 4
 backup_postgres: plain
+postgres_s3: false
+hot_standby_server: false
+pg_backup_from: false
+pg_backup_to: false
+
+# default to false (must be set to true by group vars)
+is_pg_backup: false
+is_pg_master: false
+is_pg_standby: false

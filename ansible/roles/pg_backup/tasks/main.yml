@@ -4,22 +4,27 @@
 - name: Add PosgreSQL apt repo
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main' state=present
   register: add_postgresql_repo
+  when: is_pg_backup
 
 - name: Add PosgreSQL apt key
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+  when: is_pg_backup
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_postgresql_repo|changed
+  when: is_pg_backup and add_postgresql_repo|changed
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
+  when: is_pg_backup
 
 - name: Install PostgreSQL server
   apt: name="postgresql-server-dev-{{ postgresql_version }}" state=present
+  when: is_pg_backup
 
 - name: Install PostgreSQL client
   apt: name="postgresql-{{ postgresql_version }}" state=present
+  when: is_pg_backup
 
 - import_tasks: backup.yml
   when: backup_postgres in ["plain", "pgbackrest"]
