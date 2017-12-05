@@ -13,6 +13,16 @@ import yaml
 from .parse_help import filtered_help_message, add_to_help_text
 
 
+DEPRECATED_ANSIBLE_ARGS = [
+    '--sudo',
+    '--sudo-user',
+    '--su',
+    '--su-user',
+    '--ask-sudo-pass',
+    '--ask-su-pass',
+]
+
+
 def ask(message):
     return 'y' == input('{} [y/N]'.format(message))
 
@@ -77,7 +87,6 @@ def has_arg(unknown_args, short_form, long_form):
             return True
     return False
 
-
 class AnsibleContext(object):
     def __init__(self):
         self._ansible_vault_password = None
@@ -94,7 +103,6 @@ class AnsiblePlaybook(object):
         "Run a playbook as you would with ansible-playbook, "
         "but with boilerplate settings already set based on your <environment>. "
         "By default, you will see --check output and then asked whether to apply. "
-        "All arguments not specified here will be passed on to ansible-playbook."
     )
 
     @staticmethod
@@ -110,8 +118,14 @@ class AnsiblePlaybook(object):
                 "ansible-playbook -h",
                 below_line='Options:',
                 above_line=None,
-                exclude_args=['--help', '--diff', '--check', '-i',
-                              '--ask-vault-pass', '--vault-password-file']
+                exclude_args=DEPRECATED_ANSIBLE_ARGS + [
+                    '--help',
+                    '--diff',
+                    '--check',
+                    '-i',
+                    '--ask-vault-pass',
+                    '--vault-password-file',
+                ],
             )
         ))
 
@@ -277,8 +291,17 @@ class RunShellCommand(object):
                 "ansible -h",
                 below_line='Options:',
                 above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
-                exclude_args=['--help', '--user', '--become', '--become-user', '-i', '-m', '-a',
-                              '--ask-vault-pass', '--vault-password-file']
+                exclude_args=DEPRECATED_ANSIBLE_ARGS + [
+                    '--help',
+                    '--user',
+                    '--become',
+                    '--become-user',
+                    '-i',
+                    '-m',
+                    '-a',
+                    '--ask-vault-pass',
+                    '--vault-password-file',
+                ],
             )
         ))
 
