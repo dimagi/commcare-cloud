@@ -249,14 +249,14 @@ class RunShellCommand(object):
         parser.add_argument('shell_command', help=(
             "The shell command you want to run."
         ))
-        parser.add_argument('-u', '--user', default='ansible', help=(
-            "The user to run the commands as."
+        parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
+            "connect as this user (default=ansible)"
         ))
-        parser.add_argument('--become', action='store_true', help=(
-            "Run command as root"
+        parser.add_argument('-b', '--become', action='store_true', help=(
+            "run operations with become (implies vault password prompting if necessary)"
         ))
         parser.add_argument('--become-user', help=(
-            "Run command as user"
+            "run operations as this user (default=root)"
         ))
 
     @staticmethod
@@ -268,7 +268,7 @@ class RunShellCommand(object):
             'ansible', args.inventory_group,
             '-m', 'shell',
             '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
-            '-u', args.user,
+            '-u', args.remote_user,
             '-a', args.shell_command,
         ) + tuple(unknown_args)
 
