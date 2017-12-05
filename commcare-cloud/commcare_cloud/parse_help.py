@@ -14,7 +14,7 @@ available_help_caches = {
 def get_help_text(command):
     if command in available_help_caches:
         with open(available_help_caches[command]) as f:
-            return f.read()
+            return f.read().replace("/home/travis", os.path.expanduser('~'))
     else:
         return subprocess.check_output(command, shell=True)
 
