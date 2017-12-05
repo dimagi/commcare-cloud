@@ -252,6 +252,7 @@ SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
 DEFAULT_PROTOCOL = "https"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 ANALYTICS_IDS = {
     'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID|default('', true) }}',
