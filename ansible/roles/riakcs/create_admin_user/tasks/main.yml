@@ -1,5 +1,7 @@
 # Create new admin user and set riak_key and riak_secret facts
 
+- include_vars: configure/vars/main.yml
+
 - name: Turn on anonymous user creation
   lineinfile:
     dest: "{{ riakcs_conf }}"
@@ -11,7 +13,7 @@
 - meta: flush_handlers  # restart services if needed
 
 - name: Wait for Riak service to become available
-  command: riak-admin wait-for-service riak_kv "{{ riak_nodename }}"
+  command: riak-admin wait-for-service riak_kv "{{ backend_vars.riak_nodename }}"
   changed_when: false
 
 # Random email address because a given email can only be used once. It

@@ -1,4 +1,5 @@
 # {{ ansible_managed }}
+# riak version: {{ backend_vars.riak_version }}
 
 ## Where to emit the default log messages (typically at 'info'
 ## severity):
@@ -105,7 +106,7 @@ log.crash.rotation.keep = 5
 ## 
 ## Acceptable values:
 ##   - text
-nodename = {{ riak_nodename }}
+nodename = {{ backend_vars.riak_nodename }}
 
 ## Cookie for distributed node communication.  All nodes in the
 ## same cluster should use the same cookie or they will not be able to
@@ -196,7 +197,7 @@ erlang.schedulers.compaction_of_load = false
 ## 
 ## Acceptable values:
 ##   - an integer
-ring_size = {{ riak_ring_size }}
+ring_size = {{ _riak_ring_size }}
 
 ## Number of concurrent node-to-node transfers allowed.
 ## 
@@ -343,7 +344,13 @@ anti_entropy = active
 ## 
 ## Acceptable values:
 ##   - one of: bitcask, leveldb, memory, multi
+{% if _riak_backend == "leveldb-bad-config" %}
 storage_backend = leveldb
+{% else %}
+# overridden by advance.config
+# http://lists.basho.com/pipermail/riak-users_lists.basho.com/2017-March/019156.html
+#storage_backend = leveldb
+{% endif %}
 
 ## Controls which binary representation of a riak value is stored
 ## on disk.
@@ -453,7 +460,12 @@ riak_control.auth.mode = off
 ## 
 ## Acceptable values:
 ##   - an integer
+{% if _riak_backend == "leveldb-bad-config" %}
 leveldb.maximum_memory.percent = 70
+{% else %}
+## Overridden by total_leveldb_mem_percent in advanced.config
+#leveldb.maximum_memory.percent = 70
+{% endif %}
 
 ## To enable Search set this 'on'.
 ## 
@@ -507,3 +519,10 @@ buckets.default.allow_mult = true
 javascript.map_pool_size = 0
 javascript.reduce_pool_size = 0
 javascript.hook_pool_size = 0
+
+{% if _riak_backend == "leveldb" %}
+leveldb.compression = on
+leveldb.compression.algorithm = lz4
+multi_backend.name.leveldb.compression = on
+multi_backend.name.leveldb.compression.algorithm = lz4
+{% endif %}
