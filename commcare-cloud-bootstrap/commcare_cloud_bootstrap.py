@@ -56,7 +56,7 @@ class AnsibleInventoryGroup(jsonobject.JsonObject):
 def provision_machines(spec, env=None):
     if env is None:
         env = u'hq-{}'.format(
-            ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(7))
+            ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
     all_hosts, inventory = bootstrap_inventory(spec, env)
     instance_ids = ask_aws_for_instances(env, spec.aws_config, len(all_hosts))
@@ -66,11 +66,18 @@ def provision_machines(spec, env=None):
         if instance_ip_addresses:
             break
 
+    host_vars_by_host_name = {}
+
     for host_name, ip_address in zip(all_hosts.keys(), instance_ip_addresses.values()):
         host_vars = {}
-        if 'elasticsearch' in all_hosts[host_name]:
-            host_vars['elasticsearch_node_name'] = host_name
+        host_vars_by_host_name[host_name] = host_vars
         inventory.all.children[host_name] = AnsibleInventoryGroup(hosts={ip_address: host_vars})
+
+    for i, host_name in enumerate(sorted(inventory.all.children['kakfa'])):
+        host_vars_by_host_name[host_name]['kafka_broker_id'] = 1
+
+    for host_name in inventory.all.children['elasticsearch']:
+        host_vars_by_host_name[host_name]['elasticsearch_node_name'] = host_name
 
     save_inventory(env, inventory)
     copy_default_vars(env, spec.aws_config)
@@ -83,31 +90,35 @@ def bootstrap_inventory(spec, env):
     all_hosts = {}
 
     while incomplete:
-        for name, allocation in incomplete.items():
+        for role, allocation in incomplete.items():
             if allocation.from_:
                 if allocation.from_ not in spec.allocations:
                     raise KeyError('You specified an unknown group in the from field of {}: {}'
-                                   .format(name, allocation.from_))
+                                   .format(role, allocation.from_))
                 if allocation.from_ in incomplete:
                     continue
+                # This is kind of hacky because it does a string sort
+                # on strings containing integers.
+                # Once we have more than 10 it'll start sorting wrong
                 host_names = sorted(inventory.all.children[allocation.from_].children.keys())[:allocation.count]
-                inventory.all.children[name] = AnsibleInventoryGroup(children={
+                inventory.all.children[role] = AnsibleInventoryGroup(children={
                     host_names: AnsibleInventoryGroup()
                     for host_names in host_names
                 })
                 for host_name in host_names:
-                    all_hosts[host_name].append(name)
+                    all_hosts[host_name].append(role)
 
             else:
-                new_host_names = {
-                    '{env}-{group}-{i}'.format(env=env, group=name, i=i)
-                    for i in range(allocation.count)
-                }
-                inventory.all.children[name] = AnsibleInventoryGroup(children={
+                new_host_names = set()
+                for i in range(allocation.count):
+                    host_name = '{env}-{group}-{i}'.format(env=env, group=role, i=i)
+                    new_host_names.add(host_name)
+                    all_hosts[host_name] = [role]
+                inventory.all.children[role] = AnsibleInventoryGroup(children={
                     host_name: AnsibleInventoryGroup() for host_name in new_host_names
                 })
-                all_hosts.update({host_name: [name] for host_name in new_host_names})
-            del incomplete[name]
+
+            del incomplete[role]
     return all_hosts, inventory
 
 
