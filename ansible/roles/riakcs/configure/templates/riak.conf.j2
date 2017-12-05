@@ -343,7 +343,9 @@ anti_entropy = active
 ## 
 ## Acceptable values:
 ##   - one of: bitcask, leveldb, memory, multi
-storage_backend = leveldb
+# overridden by advance.config
+# http://lists.basho.com/pipermail/riak-users_lists.basho.com/2017-March/019156.html
+#storage_backend = leveldb
 
 ## Controls which binary representation of a riak value is stored
 ## on disk.
@@ -507,3 +509,8 @@ buckets.default.allow_mult = true
 javascript.map_pool_size = 0
 javascript.reduce_pool_size = 0
 javascript.hook_pool_size = 0
+
+# leveldb.compression = on
+# leveldb.compression.algorithm = lz4
+# multi_backend.name.leveldb.compression = on
+# multi_backend.name.leveldb.compression.algorithm = lz4
