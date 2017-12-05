@@ -87,6 +87,7 @@ def has_arg(unknown_args, short_form, long_form):
             return True
     return False
 
+
 class AnsibleContext(object):
     def __init__(self):
         self._ansible_vault_password = None
