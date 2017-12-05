@@ -1,5 +1,19 @@
 from collections import namedtuple
+import os
 import subprocess
+
+help_cache = os.path.join(os.path.dirname(__file__), 'help_cache')
+available_help_caches = {
+    'ansible -h': os.path.join(help_cache, 'ansible.txt')
+}
+
+
+def get_help_text(command):
+    if command in available_help_caches:
+        with open(available_help_caches[command]) as f:
+            return f.read()
+    else:
+        return subprocess.check_output(command, shell=True)
 
 
 def filtered_help_message(command, below_line, exclude_args, above_line=None):
@@ -15,7 +29,7 @@ def filtered_help_message(command, below_line, exclude_args, above_line=None):
     """
     large_indent = '                        '
     not_started, looking_for_arg, found_arg, traversing_arg_lines, eof = range(5)
-    output = subprocess.check_output(command, shell=True)
+    output = get_help_text(command)
     Section = namedtuple('Section', 'arg_names lines')
 
     class FSA(object):
