@@ -66,13 +66,11 @@ def provision_machines(spec, env=None):
         if instance_ip_addresses:
             break
 
-    ip_addresses_by_host = dict(zip(all_hosts, instance_ip_addresses.values()))
-
-    for group_name, group in inventory.all.children.items():
-        for host_name, host_vars in group.hosts.items():
-            host_vars['ansible_host'] = str(ip_addresses_by_host[host_name])
-            if group_name == 'elasticsearch':
-                host_vars['elasticsearch_node_name'] = host_name
+    for host_name, ip_address in zip(all_hosts.keys(), instance_ip_addresses.values()):
+        host_vars = {}
+        if 'elasticsearch' in all_hosts[host_name]:
+            host_vars['elasticsearch_node_name'] = host_name
+        inventory.all.children[host_name] = AnsibleInventoryGroup(hosts={ip_address: host_vars})
 
     save_inventory(env, inventory)
     copy_default_vars(env, spec.aws_config)
@@ -82,7 +80,7 @@ def bootstrap_inventory(spec, env):
     inventory = AnsibleInventory()
     incomplete = dict(spec.allocations.items())
 
-    all_hosts = set()
+    all_hosts = {}
 
     while incomplete:
         for name, allocation in incomplete.items():
@@ -92,19 +90,23 @@ def bootstrap_inventory(spec, env):
                                    .format(name, allocation.from_))
                 if allocation.from_ in incomplete:
                     continue
-                inventory.all.children[name] = AnsibleInventoryGroup(hosts={
-                    host: {}
-                    for host in inventory.all.children[allocation.from_].hosts.keys()[:allocation.count]
+                host_names = sorted(inventory.all.children[allocation.from_].children.keys())[:allocation.count]
+                inventory.all.children[name] = AnsibleInventoryGroup(children={
+                    host_names: AnsibleInventoryGroup()
+                    for host_names in host_names
                 })
+                for host_name in host_names:
+                    all_hosts[host_name].append(name)
+
             else:
-                new_hosts = {
+                new_host_names = {
                     '{env}-{group}-{i}'.format(env=env, group=name, i=i)
                     for i in range(allocation.count)
                 }
-                inventory.all.children[name] = AnsibleInventoryGroup(hosts={
-                    host: {} for host in new_hosts
+                inventory.all.children[name] = AnsibleInventoryGroup(children={
+                    host_name: AnsibleInventoryGroup() for host_name in new_host_names
                 })
-                all_hosts.update(new_hosts)
+                all_hosts.update({host_name: [name] for host_name in new_host_names})
             del incomplete[name]
     return all_hosts, inventory
 
