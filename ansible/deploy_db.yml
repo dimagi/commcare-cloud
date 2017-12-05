@@ -15,13 +15,13 @@
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
-- name: Postgresql
+- name: PostgreSQL
   hosts: postgresql,pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
-- name: Simple PostgreSQL install
+- name: PostgreSQL Backup
   hosts: pg_backup
   become: true
   roles:
