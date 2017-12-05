@@ -29,7 +29,7 @@ Options:
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
+                        (default=[u'/home/travis/.ansible/plugins/modules',
                         u'/usr/share/ansible/plugins/modules'])
   --new-vault-id=NEW_VAULT_ID
                         the new vault identity to use for rekey
