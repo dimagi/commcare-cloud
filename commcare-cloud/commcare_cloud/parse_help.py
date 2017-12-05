@@ -6,7 +6,8 @@ import sys
 
 help_cache = os.path.join(os.path.dirname(__file__), 'help_cache')
 available_help_caches = {
-    'ansible -h': os.path.join(help_cache, 'ansible.txt')
+    'ansible -h': os.path.join(help_cache, 'ansible.txt'),
+    'ansible-playbook -h': os.path.join(help_cache, 'ansible-playbook.txt'),
 }
 
 
