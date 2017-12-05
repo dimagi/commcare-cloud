@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
-from fabric.contrib import files
 
 from fab.utils import bower_command
 
@@ -77,8 +76,7 @@ def collectstatic(use_current_release=False):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
-        if files.exists('{}/staticfiles/r.js'.format(env.code_current)):
-            sudo('rm -f tmp.sh resource_versions.py; {}/bin/python manage.py build_requirejs'.format(venv))
+        sudo('rm -f tmp.sh resource_versions.py; {}/bin/python manage.py build_requirejs'.format(venv))
 
 
 @parallel
