@@ -1,7 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
 from __future__ import absolute_import
-from functools import partial
 import getpass
 import os
 import re
@@ -9,10 +8,9 @@ from six.moves import input, shlex_quote
 from argparse import ArgumentParser
 import subprocess
 from clint.textui import puts, colored
-import sys
 import yaml
 
-from .parse_help import filtered_help_message
+from .parse_help import filtered_help_message, add_to_help_text
 
 
 def ask(message):
@@ -263,21 +261,15 @@ class RunShellCommand(object):
         parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
         ))
-        super_print_help = parser.print_help
-
-        def print_help(file=None):
-            if file is None:
-                file = sys.stdout
-            super_print_help(file)
-            print_ = partial(print, file=file)
-            print_("\nThe ansible options below are available as well\n")
-            print_(
-                filtered_help_message(
-                    "ansible -h",
-                    below_line='Options:',
-                    above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
-                    exclude_args=['--user', '--become', '--become-user', '-i', '-m', '-a']))
-        parser.print_help = print_help
+        add_to_help_text(parser, "\n{}\n{}".format(
+            "The ansible options below are available as well",
+            filtered_help_message(
+                "ansible -h",
+                below_line='Options:',
+                above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
+                exclude_args=['--user', '--become', '--become-user', '-i', '-m', '-a']
+            )
+        ))
 
     @staticmethod
     def run(args, unknown_args):
