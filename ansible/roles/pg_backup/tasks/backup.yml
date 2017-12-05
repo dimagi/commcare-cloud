@@ -6,15 +6,16 @@
     group: postgres
     mode: 0755
     state: directory
+  when: is_pg_backup
 
 - include_tasks: backup_plain.yml
-  when: backup_postgres == 'plain'
+  when: is_pg_backup and backup_postgres == 'plain'
 
 - include_tasks: backup_plain_clean.yml
-  when: backup_postgres != 'plain'
+  when: not is_pg_backup or backup_postgres != 'plain'
 
 - include_tasks: backup_pgbackrest.yml
-  when: backup_postgres == 'pgbackrest'
+  when: (is_pg_backup or is_pg_master) and backup_postgres == 'pgbackrest'
 
 - include_tasks: backup_pgbackrest_clean.yml
-  when: backup_postgres != 'pgbackrest'
+  when: (not (is_pg_backup or is_pg_master)) or backup_postgres != 'pgbackrest'
