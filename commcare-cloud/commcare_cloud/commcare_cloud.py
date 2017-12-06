@@ -114,6 +114,7 @@ class AnsibleContext(object):
         and add them to the env dict with appropriate naming
         """
         env = os.environ.copy()
+        env['ANSIBLE_CONFIG'] = os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')
         for arg, value in vars(args).items():
             if arg.startswith(ENV_ARG_PREFIX) and value:
                 ansible_setting = arg[len(ENV_ARG_PREFIX):]
@@ -163,7 +164,6 @@ class AnsiblePlaybook(object):
 
         def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
-                'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
                 'ansible-playbook',
                 os.path.expanduser('~/.commcare-cloud/ansible/{playbook}'.format(playbook=playbook)),
                 '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=environment)),
