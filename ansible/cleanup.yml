@@ -1,7 +1,0 @@
----
-- name: Cleanup cron jobs
-  hosts:
-    - all:!formplayer
-  become: true
-  tasks:
-    - {include: 'roles/formplayer/tasks/cleanup.yml', tags: ['formplayer', 'cleanup']}
