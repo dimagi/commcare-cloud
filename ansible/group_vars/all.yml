@@ -55,7 +55,8 @@ dev_users:
 
 django_port: 9010
 riakcs_port: 8080
-riakcs_proxy_port: "{{ riakcs_port }}"
+riakcs_proxy_port_override: "{{ riakcs_port }}"  # use this to override in env vars
+riakcs_proxy_port: "{{ riakcs_proxy_port_override }}"
 temp_riakcs_proxy_port: 8081
 riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 zookeeper_client_port: 2181
