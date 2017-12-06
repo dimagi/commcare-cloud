@@ -383,6 +383,7 @@ localsettings:
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
+            - 'static-it_report_follow_issue'
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
