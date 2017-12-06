@@ -22,9 +22,9 @@ cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
 
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
-  cchq_http_redirect: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: False
   commtrack_ssl: False
   commtrack_http: False

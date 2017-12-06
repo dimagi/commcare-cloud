@@ -5,9 +5,9 @@ J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 deploy_env: staging
 
 active_sites:
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
-  cchq_http_redirect: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False

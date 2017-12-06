@@ -5,10 +5,10 @@ deploy_env: swiss
 
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
   cchq_http_j2me: False
-  cchq_http_redirect: False
+  cchq_www_redirect_insecure: False
   commtrack_ssl: False
   commtrack_http: False
   tableau: False
