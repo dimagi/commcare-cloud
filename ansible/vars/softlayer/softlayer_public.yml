@@ -23,7 +23,6 @@ active_sites:
   riakcs: True
   cas_ssl: False
   enikshay_ssl: False
-  couchdb2: True
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -160,7 +159,7 @@ shared_drive_enabled: true
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2[0] }}"
+    host: "{{ groups.couchdb2_proxy[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"

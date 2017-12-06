@@ -38,7 +38,6 @@ active_sites:
   motech2: False
   riakcs: True
   cas_ssl: True
-  couchdb2: True
 
 riak_backend: "bitcask"
 riak_ring_size: 64
@@ -251,7 +250,7 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: "{{ groups.couch0.0 }}"
+    host: "{{ groups.couchdb2_proxy.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
