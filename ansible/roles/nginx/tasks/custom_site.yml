@@ -18,6 +18,7 @@
   include_role:
     name: nginx
     tasks_from: install
+  when: not nginx_installed|default(False)
 
 - name: "{{site_config.name}} site"
   include_role:
