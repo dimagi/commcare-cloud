@@ -1,12 +1,11 @@
 SITE_HOST: 'commcare.pna.sn'
 PNA_SITE_HOST: 'pna.commcarehq.org'
 COMMTRACK_SITE_HOST: 'commcare.pna.sn'
-NO_WWW_SITE_HOST: 'commcare.pna.sn'
 deploy_env: pna
 
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_redirect: False
   cchq_http: True
   cchq_http_j2me: False
   cchq_http_redirect: False
