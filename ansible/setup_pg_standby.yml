@@ -12,7 +12,7 @@
     - assert:
         that:
           - "hot_standby_master is defined"
-        msg: "Standby node ('{{ standby }}') provided does not have 'host_standby_master var set. Are you sure it's the right node?"
+        msg: "Standby node ('{{ standby }}') provided does not have 'hot_standby_master var set. Are you sure it's the right node?"
 
     - stat:
         path: "{{ postgresql_home }}/recovery.conf"
