@@ -1,3 +1,4 @@
+---
 - name: Cleanup shared dir clients
   hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
   become: true
@@ -13,3 +14,10 @@
     - roles/shared_dir/vars/main.yml
   tasks:
     - include: roles/shared_dir/tasks/cleanup_host.yml
+
+- name: Cleanup Formplayer cron jobs
+  hosts:
+    - all:!formplayer
+  become: true
+  tasks:
+    - {include: 'roles/formplayer/tasks/cleanup.yml', tags: ['formplayer', 'cleanup']}
