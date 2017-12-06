@@ -18,7 +18,6 @@ active_sites:
   motech: False
   motech2: False
   riakcs: False
-  couchdb2: True
   pna_ssl: True
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"

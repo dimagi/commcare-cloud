@@ -47,7 +47,6 @@
         - {name: wiki, vars_file: wiki}
         - {name: wiki, vars_file: wiki_http}
         - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
-        - {name: couchdb2, vars_file: couchdb2}
         - {name: commtrack_ssl, vars_file: commtrack_ssl}
         - {name: commtrack_http, vars_file: commtrack_http}
         - {name: icds_tableau, vars_file: icds_tableau}
