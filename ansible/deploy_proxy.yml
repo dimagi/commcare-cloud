@@ -90,35 +90,43 @@
 
 - name: CAS Proxy
   hosts: cas_proxy
-  roles:
-    - { role: shared_dir }
-    - { role: nginx, action: install }
-    - { role: nginx, when: active_sites.cas_ssl == True, action: site, site_name: cas_ssl }
-    - { role: nginx, action: restart }
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: cas_ssl, vars_file: cas_ssl}
+      when: active_sites.cas_ssl == True
 
 - name: Enikshay Proxy
   hosts: enikshay_proxy
-  roles:
-    - { role: shared_dir }
-    - { role: nginx, action: install }
-    - { role: nginx, when: active_sites.enikshay_ssl == True, action: site, site_name: enikshay_ssl }
-    - { role: nginx, action: restart }
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: enikshay_ssl, vars_file: enikshay_ssl}
+      when: active_sites.enikshay_ssl == True
 
 - name: PNA Proxy
   hosts: pna_proxy
-  roles:
-    - { role: shared_dir }
-    - { role: nginx, action: install }
-    - { role: nginx, when: active_sites.pna_ssl == True, action: site, site_name: pna_ssl }
-    - { role: nginx, action: restart }
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: pna_ssl, vars_file: pna_ssl}
+      when: active_sites.pna_ssl == True
 
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
-  roles:
-    - { role: shared_dir }
-    - { role: nginx, action: install }
-    - { role: nginx, when: active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
-    - { role: nginx, action: restart }
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: couchdb2, vars_file: couchdb2}
+      when: active_sites.enikshay_ssl == True
 
 - name: Move logrotate to hourly
   hosts:
