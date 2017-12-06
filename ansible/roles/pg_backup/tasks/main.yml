@@ -11,7 +11,7 @@
   when: is_pg_backup
 
 - name: Update package list
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=7200
   when: is_pg_backup and add_postgresql_repo|changed
 
 - name: generate en_US.UTF-8 locale
