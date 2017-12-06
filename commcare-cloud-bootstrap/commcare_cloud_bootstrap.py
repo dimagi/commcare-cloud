@@ -69,14 +69,13 @@ def provision_machines(spec, env=None):
     host_vars_by_host_name = {}
 
     for host_name, ip_address in zip(all_hosts.keys(), instance_ip_addresses.values()):
-        host_vars = {}
-        host_vars_by_host_name[host_name] = host_vars
-        inventory.all.children[host_name] = AnsibleInventoryGroup(hosts={ip_address: host_vars})
+        inventory.all.children[host_name] = AnsibleInventoryGroup(hosts={ip_address: {}})
+        host_vars_by_host_name[host_name] = inventory.all.children[host_name].hosts[ip_address]
 
-    for i, host_name in enumerate(sorted(inventory.all.children['kakfa'])):
-        host_vars_by_host_name[host_name]['kafka_broker_id'] = 1
+    for i, host_name in enumerate(sorted(inventory.all.children['kafka'].children)):
+        host_vars_by_host_name[host_name]['kafka_broker_id'] = i
 
-    for host_name in inventory.all.children['elasticsearch']:
+    for host_name in inventory.all.children['elasticsearch'].children:
         host_vars_by_host_name[host_name]['elasticsearch_node_name'] = host_name
 
     save_inventory(env, inventory)
