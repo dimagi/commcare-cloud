@@ -62,9 +62,6 @@ dev_users:
     - npellegrino
   absent: []
 
-# use this value to switch between nginx and apache
-proxy_type: nginx
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'

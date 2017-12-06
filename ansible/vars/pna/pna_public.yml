@@ -21,8 +21,6 @@ active_sites:
   couchdb2: True
   pna_ssl: True
 
-proxy_type: nginx
-
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 ssh_port: 1337
 fake_ssl_cert: no

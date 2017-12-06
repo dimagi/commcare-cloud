@@ -33,8 +33,6 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 
-proxy_type: nginx
-
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
 

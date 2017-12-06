@@ -4,73 +4,73 @@
   hosts: proxy
   roles:
     - { role: shared_dir }
-    - { role: nginx, when: proxy_type == 'nginx', action: install }
-    - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq_ssl }
-    - { role: nginx, when: proxy_type == 'nginx', action: errorpages }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_redirect == True, action: site, site_name: cchq_redirect }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http == True, action: site, site_name: cchq_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_redirect == True, action: site, site_name: cchq_http_redirect }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech2 == True, action: site, site_name: motech2 }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech2 == True, action: site, site_name: motech2_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech}
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_j2me == True, action: site, site_name: cchq_http_j2me }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.riakcs == True, action: site, site_name: riakcs, hosts_group: riakcs }
+    - { role: nginx, action: install }
+    - { role: nginx, action: site, site_name: cchq_ssl }
+    - { role: nginx, action: errorpages }
+    - { role: nginx, when: active_sites.cchq_redirect == True, action: site, site_name: cchq_redirect }
+    - { role: nginx, when: active_sites.cchq_http == True, action: site, site_name: cchq_http }
+    - { role: nginx, when: active_sites.cchq_http_redirect == True, action: site, site_name: cchq_http_redirect }
+    - { role: nginx, when: active_sites.motech2 == True, action: site, site_name: motech2 }
+    - { role: nginx, when: active_sites.motech2 == True, action: site, site_name: motech2_http }
+    - { role: nginx, when: active_sites.wiki == True, action: site, site_name: wiki }
+    - { role: nginx, when: active_sites.wiki == True, action: site, site_name: wiki_http }
+    - { role: nginx, when: active_sites.motech == True, action: site, site_name: motech}
+    - { role: nginx, when: active_sites.motech == True, action: site, site_name: motech_http }
+    - { role: nginx, when: active_sites.cchq_http_j2me == True, action: site, site_name: cchq_http_j2me }
+    - { role: nginx, when: active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
+    - { role: nginx, when: active_sites.riakcs == True, action: site, site_name: riakcs, hosts_group: riakcs }
     - role: nginx
       action: site
       site_name: riakcs
       hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
       riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
-      when: "proxy_type == 'nginx' and active_sites.riakcs == True 
+      when: "active_sites.riakcs == True
         and ('BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings or 'TEMP_RIAKCS_PROXY' in localsettings)"
     - role: nginx
       action: dropsite
       file_name: "{{ deploy_env }}_riakcs_{{ temp_riakcs_proxy_port }}"
-      when: "proxy_type == 'nginx' and active_sites.riakcs == True 
+      when: "active_sites.riakcs == True
         and 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' not in localsettings
         and 'TEMP_RIAKCS_PROXY' not in localsettings"
-    - { role: nginx, when: proxy_type == 'nginx', action: dropsite, file_name: "{{ deploy_env }}_riakcs" }
+    - { role: nginx, action: dropsite, file_name: "{{ deploy_env }}_riakcs" }
     # Don't put any .commcarehq.org ssl configurations below commtrack, the ssl cert variable that gets loaded persists between roles
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_ssl == True, action: site, site_name: commtrack_ssl }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_http == True, action: site, site_name: commtrack_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.icds_tableau == True, action: site, site_name: icds_tableau }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.icds_tableau == True, action: site, site_name: icds_tableau_http }
-    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+    - { role: nginx, when: active_sites.commtrack_ssl == True, action: site, site_name: commtrack_ssl }
+    - { role: nginx, when: active_sites.commtrack_http == True, action: site, site_name: commtrack_http }
+    - { role: nginx, when: active_sites.icds_tableau == True, action: site, site_name: icds_tableau }
+    - { role: nginx, when: active_sites.icds_tableau == True, action: site, site_name: icds_tableau_http }
+    - { role: nginx, action: restart }
 
 - name: CAS Proxy
   hosts: cas_proxy
   roles:
     - { role: shared_dir }
-    - { role: nginx, when: proxy_type == 'nginx', action: install }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cas_ssl == True, action: site, site_name: cas_ssl }
-    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+    - { role: nginx, action: install }
+    - { role: nginx, when: active_sites.cas_ssl == True, action: site, site_name: cas_ssl }
+    - { role: nginx, action: restart }
 
 - name: Enikshay Proxy
   hosts: enikshay_proxy
   roles:
     - { role: shared_dir }
-    - { role: nginx, when: proxy_type == 'nginx', action: install }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.enikshay_ssl == True, action: site, site_name: enikshay_ssl }
-    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+    - { role: nginx, action: install }
+    - { role: nginx, when: active_sites.enikshay_ssl == True, action: site, site_name: enikshay_ssl }
+    - { role: nginx, action: restart }
 
 - name: PNA Proxy
   hosts: pna_proxy
   roles:
     - { role: shared_dir }
-    - { role: nginx, when: proxy_type == 'nginx', action: install }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.pna_ssl == True, action: site, site_name: pna_ssl }
-    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+    - { role: nginx, action: install }
+    - { role: nginx, when: active_sites.pna_ssl == True, action: site, site_name: pna_ssl }
+    - { role: nginx, action: restart }
 
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
   roles:
     - { role: shared_dir }
-    - { role: nginx, when: proxy_type == 'nginx', action: install }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
-    - { role: nginx, when: proxy_type == 'nginx', action: restart }
+    - { role: nginx, action: install }
+    - { role: nginx, when: active_sites.couchdb2 == True, action: site, site_name: couchdb2 }
+    - { role: nginx, action: restart }
 
 - name: Move logrotate to hourly
   hosts:
