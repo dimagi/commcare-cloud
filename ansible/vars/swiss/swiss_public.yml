@@ -11,7 +11,6 @@ active_sites:
   cchq_http_redirect: False
   commtrack_ssl: False
   commtrack_http: False
-  hq_status: False
   tableau: False
   icds_tableau: False
   wiki: False

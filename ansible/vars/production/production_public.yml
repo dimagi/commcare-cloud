@@ -13,7 +13,6 @@ active_sites:
   cchq_http_j2me: True
   commtrack_ssl: True
   commtrack_http: True
-  hq_status: True
   tableau: True
   icds_tableau: False
   wiki: True
