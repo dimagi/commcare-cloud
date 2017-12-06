@@ -11,11 +11,5 @@
 - include_tasks: backup_plain.yml
   when: is_pg_backup and backup_postgres == 'plain'
 
-- include_tasks: backup_plain_clean.yml
-  when: not is_pg_backup or backup_postgres != 'plain'
-
 - include_tasks: backup_pgbackrest.yml
   when: (is_pg_backup or is_pg_master) and backup_postgres == 'pgbackrest'
-
-- include_tasks: backup_pgbackrest_clean.yml
-  when: (not (is_pg_backup or is_pg_master)) or backup_postgres != 'pgbackrest'
