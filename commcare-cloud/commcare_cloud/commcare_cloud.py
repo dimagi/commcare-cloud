@@ -113,7 +113,7 @@ class AnsibleContext(object):
         """Look for args that have been flagged as environment variables
         and add them to the env dict with appropriate naming
         """
-        env = {}
+        env = os.environ.copy()
         for arg, value in vars(args).items():
             if arg.startswith(ENV_ARG_PREFIX) and value:
                 ansible_setting = arg[len(ENV_ARG_PREFIX):]
