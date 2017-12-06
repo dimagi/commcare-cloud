@@ -74,6 +74,7 @@ def provision_machines(spec, env=None):
 
     for i, host_name in enumerate(sorted(inventory.all.children['kafka'].children)):
         host_vars_by_host_name[host_name]['kafka_broker_id'] = i
+        host_vars_by_host_name[host_name]['swap_size'] = '2G'
 
     for host_name in inventory.all.children['elasticsearch'].children:
         host_vars_by_host_name[host_name]['elasticsearch_node_name'] = host_name
