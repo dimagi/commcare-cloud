@@ -1,0 +1,20 @@
+- name: Create purging cron jobs (cleanup)
+  become: yes
+  cron:
+    name: "{{ item.name }}"
+    special_time: daily
+    user: root
+    cron_file: purge_formplayer_files
+    state: absent
+  with_items:
+    - {name: 'Purge temp files' }
+    - {name: 'Purge sqlite db files' }
+  when: "'formplayer' not in group_names"
+
+- name: Create cron job to archive sqlite db files (cleanup)
+  become: yes
+  cron:
+    name: 'Archive sqlite db files'
+    user: '{{ cchq_user }}'
+    state: absent
+  when: "'formplayer' not in group_names"

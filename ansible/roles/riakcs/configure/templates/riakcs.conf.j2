@@ -34,10 +34,10 @@ riak_host = {{ lookup('dig', inventory_hostname, wantlist=True)[0] }}:{{ riak_po
 ## 
 ## Acceptable values:
 ##   - an IP/port pair, e.g. 127.0.0.1:10011
-{% if groups['stanchion'][0]|ipaddr %}
-stanchion_host = {{ groups['stanchion'][0] }}:{{ stanchion_port }}
+{% if stanchion_host|ipaddr %}
+stanchion_host = {{ stanchion_host }}:{{ stanchion_port }}
 {% else %}
-stanchion_host = {{ lookup('dig', groups['stanchion'][0], wantlist=True)[0] }}:{{ stanchion_port }}
+stanchion_host = {{ lookup('dig', stanchion_host, wantlist=True)[0] }}:{{ stanchion_port }}
 {% endif %}
 
 ## SSL configuration for access to request serialization
@@ -421,7 +421,7 @@ platform_log_dir = /var/log/riak-cs
 ## 
 ## Acceptable values:
 ##   - text
-nodename = riakcs-{{ inventory_hostname_short }}@{{ inventory_hostname }}
+nodename = {{ backend_vars.riakcs_nodename }}
 
 ## Cookie for distributed node communication.  All nodes in the
 ## same cluster should use the same cookie or they will not be able to
