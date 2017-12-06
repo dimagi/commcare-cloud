@@ -18,6 +18,9 @@ pnaserver1
 [couchdb2:children]
 pnaserver1
 
+[couchdb2_proxy:children]
+pnaserver1
+
 [redis:children]
 pnaserver1
 
