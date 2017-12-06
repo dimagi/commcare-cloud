@@ -66,3 +66,6 @@ swap_size=100M
 
 [mailrelay]
 192.168.33.14 parent_mailrelay='mail.example.org'
+
+[couchdb2_proxy]
+192.168.33.17
