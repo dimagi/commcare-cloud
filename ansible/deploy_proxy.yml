@@ -1,9 +1,6 @@
 ---
-# deploy_proxy.yml
 - name: Proxy
   hosts: proxy
-  roles:
-
   tasks:
     - name: setup shared dir
       include_role:
