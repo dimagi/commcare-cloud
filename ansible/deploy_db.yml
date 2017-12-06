@@ -16,13 +16,13 @@
     - {role: backups, tags: 'backups'}
 
 - name: PostgreSQL
-  hosts: postgresql,pg_standby
+  hosts: postgresql:pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
 - name: PostgreSQL Backup
-  hosts: all
+  hosts: postgresql:pg_backup
   become: true
   roles:
     - {role: pg_backup, tags: 'postgresql', 'backups'}
