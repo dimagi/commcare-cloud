@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
+from __future__ import absolute_import
 import getpass
 import os
 import re
@@ -8,6 +9,18 @@ from argparse import ArgumentParser
 import subprocess
 from clint.textui import puts, colored
 import yaml
+
+from .parse_help import filtered_help_message, add_to_help_text
+
+
+DEPRECATED_ANSIBLE_ARGS = [
+    '--sudo',
+    '--sudo-user',
+    '--su',
+    '--su-user',
+    '--ask-sudo-pass',
+    '--ask-su-pass',
+]
 
 
 def ask(message):
@@ -91,7 +104,6 @@ class AnsiblePlaybook(object):
         "Run a playbook as you would with ansible-playbook, "
         "but with boilerplate settings already set based on your <environment>. "
         "By default, you will see --check output and then asked whether to apply. "
-        "All arguments not specified here will be passed on to ansible-playbook."
     )
 
     @staticmethod
@@ -100,6 +112,22 @@ class AnsiblePlaybook(object):
         arg_branch(parser)
         parser.add_argument('playbook', help=(
             "The ansible playbook .yml file to run."
+        ))
+        add_to_help_text(parser, "\n{}\n{}".format(
+            "The ansible-playbook options below are available as well",
+            filtered_help_message(
+                "ansible-playbook -h",
+                below_line='Options:',
+                above_line=None,
+                exclude_args=DEPRECATED_ANSIBLE_ARGS + [
+                    '--help',
+                    '--diff',
+                    '--check',
+                    '-i',
+                    '--ask-vault-pass',
+                    '--vault-password-file',
+                ],
+            )
         ))
 
     @staticmethod
@@ -257,6 +285,25 @@ class RunShellCommand(object):
         ))
         parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
+        ))
+        add_to_help_text(parser, "\n{}\n{}".format(
+            "The ansible options below are available as well",
+            filtered_help_message(
+                "ansible -h",
+                below_line='Options:',
+                above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
+                exclude_args=DEPRECATED_ANSIBLE_ARGS + [
+                    '--help',
+                    '--user',
+                    '--become',
+                    '--become-user',
+                    '-i',
+                    '-m',
+                    '-a',
+                    '--ask-vault-pass',
+                    '--vault-password-file',
+                ],
+            )
         ))
 
     @staticmethod
