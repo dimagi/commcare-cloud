@@ -126,7 +126,6 @@ For the Lenovo T440s:
 
 Tags available:
 
-- apache2
 - aptcache
 - common
 - deploy
