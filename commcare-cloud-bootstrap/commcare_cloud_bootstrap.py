@@ -204,14 +204,38 @@ def copy_default_vars(env, aws_config):
               file=sys.stderr)
 
 
+class Provision(object):
+    command = 'provision'
+    help = """Provision a new environment based on a spec yaml file. (See example_spec.yml.)"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('spec')
+        parser.add_argument('--env')
+
+    @staticmethod
+    def run(args):
+        with open(args.spec) as f:
+            spec = yaml.load(f)
+
+        spec = Spec.wrap(spec)
+        provision_machines(spec, args.env)
+
+
+STANDARD_ARGS = [
+    Provision,
+]
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('spec')
-    parser.add_argument('--env')
+    subparsers = parser.add_subparsers(dest='command')
+
+    for standard_arg in STANDARD_ARGS:
+        standard_arg.make_parser(subparsers.add_parser(standard_arg.command, help=standard_arg.help))
 
     args = parser.parse_args()
 
-    with open(args.spec) as f:
-        spec = yaml.load(f)
-    spec = Spec.wrap(spec)
-    provision_machines(spec, args.env)
+    for standard_arg in STANDARD_ARGS:
+        if args.command == standard_arg.command:
+            standard_arg.run(args)
