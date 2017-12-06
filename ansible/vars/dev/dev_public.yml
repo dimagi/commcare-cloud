@@ -199,6 +199,7 @@ postgresql_dbs:
 #    django_alias: ucr
 
 mailrelay: 'relay.example.com'
+root_email: 'root@example.com'
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
