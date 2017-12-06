@@ -12,6 +12,7 @@ import yaml
 
 from .parse_help import filtered_help_message, add_to_help_text
 
+ENV_ARG_PREFIX = 'env_'
 
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
@@ -43,6 +44,13 @@ def arg_skip_check(parser):
 def arg_branch(parser):
     parser.add_argument('--branch', default='master', help=(
         "the name of the commcarehq-ansible git branch to run against, if not master"
+    ))
+
+
+def arg_stdout_callback(parser, default='default'):
+    parser.add_argument(
+        '--output', dest='%sstdout_callback' % ENV_ARG_PREFIX, default=default, choices=['actionable', 'minimal'],
+        help=("The callback plugin to use for generating output."
     ))
 
 
@@ -89,13 +97,28 @@ def has_arg(unknown_args, short_form, long_form):
 
 
 class AnsibleContext(object):
-    def __init__(self):
+    def __init__(self, args):
         self._ansible_vault_password = None
+        self.env = self._build_env(args)
 
     def get_ansible_vault_password(self):
         if self._ansible_vault_password is None:
             self._ansible_vault_password = getpass.getpass("Vault Password: ")
         return self._ansible_vault_password
+
+    def get_environment(self):
+        return self.env
+
+    def _build_env(self, args):
+        """Look for args that have been flagged as environment variables
+        and add them to the env dict with appropriate naming
+        """
+        env = {}
+        for arg, value in vars(args).items():
+            if arg.startswith(ENV_ARG_PREFIX) and value:
+                ansible_setting = arg[len(ENV_ARG_PREFIX):]
+                env['ANSIBLE_%s' % ansible_setting.upper()] = value
+        return env
 
 
 class AnsiblePlaybook(object):
@@ -110,6 +133,7 @@ class AnsiblePlaybook(object):
     def make_parser(parser):
         arg_skip_check(parser)
         arg_branch(parser)
+        arg_stdout_callback(parser)
         parser.add_argument('playbook', help=(
             "The ansible playbook .yml file to run."
         ))
@@ -132,7 +156,7 @@ class AnsiblePlaybook(object):
 
     @staticmethod
     def run(args, unknown_args):
-        ansible_context = AnsibleContext()
+        ansible_context = AnsibleContext(args)
         check_branch(args)
         public_vars = get_public_vars(args.environment)
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
@@ -165,7 +189,7 @@ class AnsiblePlaybook(object):
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.get_environment())
             if ask_vault_pass:
                 p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
             else:
@@ -210,6 +234,7 @@ class _AnsiblePlaybookAlias(object):
     def make_parser(parser):
         arg_skip_check(parser)
         arg_branch(parser)
+        arg_stdout_callback(parser)
 
 
 class UpdateConfig(_AnsiblePlaybookAlias):
@@ -286,6 +311,7 @@ class RunShellCommand(object):
         parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
         ))
+        arg_stdout_callback(parser)
         add_to_help_text(parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
             filtered_help_message(
@@ -308,7 +334,7 @@ class RunShellCommand(object):
 
     @staticmethod
     def run(args, unknown_args):
-        ansible_context = AnsibleContext()
+        ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
         cmd_parts = (
             'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
@@ -353,7 +379,7 @@ class RunShellCommand(object):
         cmd_parts += get_common_ssh_args(public_vars)
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.get_environment())
         if ask_vault_pass:
             p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
         else:
