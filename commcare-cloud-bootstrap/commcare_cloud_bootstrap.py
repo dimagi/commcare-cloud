@@ -152,13 +152,17 @@ def print_describe_instances(describe_instances):
                   file=sys.stderr)
 
 
-def poll_for_aws_state(env, instance_ids):
+def raw_describe_instances(env):
     cmd_parts = [
         'aws', 'ec2', 'describe-instances', '--filters',
         'Name=instance-state-code,Values=16',
         'Name=tag:env,Values=' + env
     ]
-    describe_instances = json.loads(subprocess.check_output(cmd_parts))
+    return json.loads(subprocess.check_output(cmd_parts))
+
+
+def poll_for_aws_state(env, instance_ids):
+    describe_instances = raw_describe_instances(env)
     print_describe_instances(describe_instances)
 
     instances = [instance
@@ -222,8 +226,23 @@ class Provision(object):
         provision_machines(spec, args.env)
 
 
+class Show(object):
+    command = 'show'
+    help = """Show provisioned instances for a given env"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        print_describe_instances(describe_instances)
+
+
 STANDARD_ARGS = [
     Provision,
+    Show,
 ]
 
 
