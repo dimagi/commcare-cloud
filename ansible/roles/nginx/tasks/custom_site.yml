@@ -19,7 +19,7 @@
     name: nginx
     tasks_from: install
 
-- name: {{site_config.name}} site
+- name: "{{site_config.name}} site"
   include_role:
     name: nginx
     tasks_from: site
