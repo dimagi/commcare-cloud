@@ -5,13 +5,12 @@ J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 deploy_env: staging
 
 active_sites:
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
-  cchq_http_redirect: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False
-  hq_status: False
   tableau: False
   icds_tableau: False
   wiki: False
@@ -25,8 +24,6 @@ riak_ring_size: 64
 
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
-
-proxy_type: nginx
 
 primary_ssl_env: "staging"
 

@@ -33,15 +33,13 @@ http_proxy_parent_port: '3128'
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
-  cchq_http_redirect: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: False
   commtrack_ssl: True
   commtrack_http: True
   riakcs: False
-  couchdb2: True
-  hq_status: False
   icds_tableau: False
   motech: False
   motech2: False
@@ -62,9 +60,6 @@ dev_users:
     - jwilson
     - npellegrino
   absent: []
-
-# use this value to switch between nginx and apache
-proxy_type: nginx
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'

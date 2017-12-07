@@ -8,13 +8,12 @@ TABLEAU_HOST: 'icds.commcarehq.org'
 
 active_sites:
   cchq_ssl: True
-  cchq_redirect: False
+  cchq_www_redirect_secure: False
   cchq_http: True
-  cchq_http_redirect: False
+  cchq_www_redirect_insecure: False
   cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False
-  hq_status: False
   tableau: False
   icds_tableau: False
   wiki: False
@@ -24,7 +23,6 @@ active_sites:
   riakcs: True
   cas_ssl: False
   enikshay_ssl: False
-  couchdb2: True
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -37,8 +35,6 @@ riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
-
-proxy_type: 'nginx'
 
 primary_ssl_env: "softlayer"
 
@@ -163,7 +159,7 @@ shared_drive_enabled: true
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2[0] }}"
+    host: "{{ groups.couchdb2_proxy[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
