@@ -27,7 +27,7 @@
     mode: "u=rw,g=rw,o=r"
   with_items: "{{ nginx_sites|default([]) }}"
   loop_control:
-    label: "{{item.server.filename}}"
+    label: "{{item.server.file_name}}"
 
 - name: Create the links to enable site configurations
   become: yes
@@ -35,4 +35,4 @@
   with_items: "{{ nginx_sites|default([]) }}"
   when: not ansible_check_mode
   loop_control:
-    label: "{{item.server.filename}}"
+    label: "{{item.server.file_name}}"
