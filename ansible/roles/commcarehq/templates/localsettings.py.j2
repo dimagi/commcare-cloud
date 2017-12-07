@@ -85,7 +85,7 @@ SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
 RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
 TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
-TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
+TRANSFER_SERVER = 'nginx'
 
 
 # Email setup

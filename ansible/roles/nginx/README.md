@@ -1,14 +1,9 @@
-## Choosing between nginx and Apache
-
-Add change this setting in the config yaml file:
-`proxy_type: (apache2|nginx)`
-
 ## Adding new nginx sites
 
 * Add a new file in vars/<site_name>
   * Each file here corresponds to an nginx site that will listen on a port/subdomain combination, e.g. slow.commcarehq.com:80
 * Add a new line in ../../deploy_proxy.yml
-  * `- { role: nginx, when: proxy_type == 'nginx' and active_sites.<site_name> == True, action: site, site_name: <site_name> }`
+  * `- { role: nginx, when: active_sites.<site_name> == True, action: site, site_name: <site_name> }`
 * Add to the active sites list in the all the config yaml files
   * `<site_name>: True`
 

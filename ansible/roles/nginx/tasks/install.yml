@@ -258,3 +258,5 @@
     owner: root
     group: root
   when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is undefined
+
+- set_fact: nginx_installed=True
