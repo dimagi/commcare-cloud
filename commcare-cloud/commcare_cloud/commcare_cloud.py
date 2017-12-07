@@ -97,15 +97,12 @@ def has_arg(unknown_args, short_form, long_form):
 class AnsibleContext(object):
     def __init__(self, args):
         self._ansible_vault_password = None
-        self.env = self._build_env(args)
+        self.env_vars = self._build_env(args)
 
     def get_ansible_vault_password(self):
         if self._ansible_vault_password is None:
             self._ansible_vault_password = getpass.getpass("Vault Password: ")
         return self._ansible_vault_password
-
-    def get_environment(self):
-        return self.env
 
     def _build_env(self, args):
         """Look for args that have been flagged as environment variables
@@ -185,7 +182,7 @@ class AnsiblePlaybook(object):
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.get_environment())
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
                 p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
             else:
@@ -375,7 +372,7 @@ class RunShellCommand(object):
         cmd_parts += get_common_ssh_args(public_vars)
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.get_environment())
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
         if ask_vault_pass:
             p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
         else:
