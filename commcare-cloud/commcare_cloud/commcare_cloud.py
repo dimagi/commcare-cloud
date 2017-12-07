@@ -12,8 +12,6 @@ import yaml
 
 from .parse_help import filtered_help_message, add_to_help_text
 
-ENV_ARG_PREFIX = 'env_'
-
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
     '--sudo-user',
@@ -49,7 +47,7 @@ def arg_branch(parser):
 
 def arg_stdout_callback(parser, default='default'):
     parser.add_argument(
-        '--output', dest='%sstdout_callback' % ENV_ARG_PREFIX, default=default, choices=['actionable', 'minimal'],
+        '--output', dest='stdout_callback', default=default, choices=['actionable', 'minimal'],
         help=("The callback plugin to use for generating output."
     ))
 
@@ -115,10 +113,8 @@ class AnsibleContext(object):
         """
         env = os.environ.copy()
         env['ANSIBLE_CONFIG'] = os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')
-        for arg, value in vars(args).items():
-            if arg.startswith(ENV_ARG_PREFIX) and value:
-                ansible_setting = arg[len(ENV_ARG_PREFIX):]
-                env['ANSIBLE_%s' % ansible_setting.upper()] = value
+        if hasattr(args, 'stdout_callback'):
+            env['ANSIBLE_STDOUT_CALLBACK'] = args.stdout_callback
         return env
 
 
