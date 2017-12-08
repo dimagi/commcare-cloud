@@ -7,7 +7,6 @@
 
 - name: Creating archive_command.sh file
   become: True
-  delegate_to: "{{ hot_standby_master|default(inventory_hostname) }}"
   template:
     src: pgbackrest/archive_command.sh.j2
     dest: /usr/local/sbin/pgbackrest_archive_command.sh
