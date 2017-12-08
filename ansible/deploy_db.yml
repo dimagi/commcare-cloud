@@ -25,7 +25,7 @@
   hosts: postgresql:pg_backup
   become: true
   roles:
-    - {role: pg_backup, tags: 'postgresql', 'backups'}
+    - {role: pg_backup, tags: ['postgresql', 'backups', 'pg_backup']}
 
 - name: Setup auth for standby
   hosts:
