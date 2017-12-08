@@ -137,7 +137,7 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
 
 - name: Create Daily Cron job
   become: yes
@@ -166,4 +166,4 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
