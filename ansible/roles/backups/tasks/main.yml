@@ -2,33 +2,64 @@
   become: yes
   template:
     src: "create_blobdb_backup.sh.j2"
-    dest: "/etc/cron.d/create_blobdb_backup.sh"
+    dest: "/usr/local/sbin/create_blobdb_backup.sh"
     group: root
     owner: root
     mode: 0700
     backup: yes
-  when: backup_blobdb
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
 
 - name: Create Daily Cron job
   become: yes
   cron:
     name: "Backup blobdb daily"
-    job: "/etc/cron.d/create_blobdb_backup.sh daily 3"
+    job: "/usr/local/sbin/create_blobdb_backup.sh daily 3"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: blobdb
     cron_file: backup_blobdb
-  when: backup_blobdb
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
 
 - name: Create Weekly Cron job
   become: yes
   cron:
     name: "Backup blobdb weekly"
-    job: "/etc/cron.d/create_blobdb_backup.sh weekly 21"
+    job: "/usr/local/sbin/create_blobdb_backup.sh weekly 21"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
     user: blobdb
     cron_file: backup_blobdb
-  when: backup_blobdb
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
+
+# cleanp ols scripts and jobs
+- name: Cleanup old script
+  become: yes
+  file:
+    path: "/etc/cron.d/create_blobdb_backup.sh"
+    state: absent
+
+- name: Create Daily Cron job
+  become: yes
+  cron:
+    name: "Backup blobdb daily"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: blobdb
+    cron_file: backup_blobdb
+    state: absent
+  when: "'shared_dir_host' not in group_names"
+
+- name: Create Weekly Cron job
+  become: yes
+  cron:
+    name: "Backup blobdb weekly"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: blobdb
+    cron_file: backup_blobdb
+    state: absent
+  when: "'shared_dir_host' not in group_names"
