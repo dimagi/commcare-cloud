@@ -65,7 +65,7 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
 
 - name: Create Daily Cron job
   become: yes
@@ -80,6 +80,7 @@
   when: backup_couch
   tags:
     - cron
+    - backups
 
 - name: Create Weekly Cron job
   become: yes
@@ -94,7 +95,7 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
 
 - name: start the couchdb2 service
   service: name="couchdb2" state=started enabled=yes
