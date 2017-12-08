@@ -17,6 +17,13 @@ cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
 tableau_nginx_combined_cert_value: "{{ ssl_secrets.certs.reports_icds_cas_gov_in }}"
 tableau_key_value: '{{ ssl_secrets.private_keys.reports_icds_cas_gov_in }}'
 
+static_routes:
+  - name: fastcnx
+    cmd: add
+    interface: eth0
+    prefix: "10.247.164.0/23"
+    gateway: "10.247.24.4"
+
 active_sites:
   cchq_ssl: True
   cchq_www_redirect_secure: True
