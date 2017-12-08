@@ -11,8 +11,3 @@ postgres_s3: false
 hot_standby_server: false
 pg_backup_from: false
 pg_backup_to: false
-
-# default to false (must be set to true by group vars)
-is_pg_backup: false
-is_pg_master: false
-is_pg_standby: false

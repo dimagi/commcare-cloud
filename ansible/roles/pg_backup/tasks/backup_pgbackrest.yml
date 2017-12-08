@@ -14,7 +14,7 @@
     owner: postgres
     group: postgres
     mode: 0750
-  when: is_pg_master
+  when: "'postgresql' in group_names"
 
 - name: Creating pgbackrest.conf file
   become: True
@@ -34,7 +34,7 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backup --log-level-console=info stanza-create
-  when: not stanza.stat.exists and is_pg_backup
+  when: "not stanza.stat.exists and 'pg_backup' in group_names"
 
 - name: Creating postgres S3 stanza
   become: True
@@ -42,7 +42,7 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backups3 --log-level-console=info stanza-create
-  when: postgres_s3 and is_pg_backup
+  when: "postgres_s3 and 'pg_backup' in group_names"
 
 - name: Create Daily Cron job
   become: yes
@@ -54,7 +54,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: is_pg_backup
+  when: "'pg_backup' in group_names"
 
 - name: Create Daily Cron job S3
   become: yes
@@ -66,7 +66,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: postgres_s3 and is_pg_backup
+  when: postgres_s3 and "'pg_backup' in group_names"
 
 - name: Create Weekly Cron job
   become: yes
@@ -78,7 +78,7 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: is_pg_backup
+  when: "'pg_backup' in group_names"
 
 - name: Create Weekly Cron job S3
   become: yes
@@ -90,4 +90,4 @@
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: postgres_s3 and is_pg_backup
+  when: postgres_s3 and "'pg_backup' in group_names"
