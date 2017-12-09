@@ -5,7 +5,6 @@ DAYS_TO_RETAIN_BACKUPS=$2
 TODAY=$(date +"%Y_%m_%d")
 BACKUP_FILE="{{ couch_backup_dir }}/couchdb_${BACKUP_TYPE}_${TODAY}.gz"
 
-mkdir -p "{{ couch_backup_dir }}"
 tar -zcf "${BACKUP_FILE}" "{{ couch_data_dir }}"
 
 # Remove old backups of this backup type
