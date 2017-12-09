@@ -263,6 +263,8 @@ ANALYTICS_IDS = {
 
 ANALYTICS_CONFIG = {
     'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}'
+    'DEBUG': '{{ localsettings.ANALYTICS_DEBUG|default(False) }}',
+    'LOG_LEVEL': '{{ localsettings.ANALYTICS_LOG_LEVEL|default('') }}',
 }
 
 AXES_LOCK_OUT_AT_FAILURE = False
