@@ -1,3 +1,16 @@
+- name: Create blobdb backup dir
+  become: yes
+  file:
+    path: "{{ blobdb_backup_dir }}"
+    state: directory
+    mode: 0700
+    group: "{{ blobdb_user }}"
+    owner: "{{ blobdb_user }}"
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
+  tags:
+    - cron
+    - backups
+
 - name: Copy blobdb backup script
   become: yes
   template:
@@ -17,7 +30,7 @@
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
-    user: blobdb
+    user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
   when: "backup_blobdb and 'shared_dir_host' in group_names"
 
@@ -29,7 +42,7 @@
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
-    user: blobdb
+    user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
   when: "backup_blobdb and 'shared_dir_host' in group_names"
 
@@ -40,26 +53,24 @@
     path: "/etc/cron.d/create_blobdb_backup.sh"
     state: absent
 
-- name: Create Daily Cron job
+- name: Create Daily Cron job (cleanup)
   become: yes
   cron:
     name: "Backup blobdb daily"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
-    user: blobdb
     cron_file: backup_blobdb
     state: absent
   when: "'shared_dir_host' not in group_names"
 
-- name: Create Weekly Cron job
+- name: Create Weekly Cron job (cleanup)
   become: yes
   cron:
     name: "Backup blobdb weekly"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
-    user: blobdb
     cron_file: backup_blobdb
     state: absent
   when: "'shared_dir_host' not in group_names"
