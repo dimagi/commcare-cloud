@@ -12,7 +12,7 @@
   when: "'pg_backup' not in group_names and backup_dir.stat.exists"
 
 - include_tasks: backup_plain_clean.yml
-  when: "('pg_backup' not in group_names) or (backup_postgres != 'plain')"
+  when: "('pg_backup' not in group_names) or (backup_postgres not in ['plain', 'dump'])"
 
 - include_tasks: backup_pgbackrest_clean.yml
   when: "(not ('pg_backup' in group_names or 'postgresql' in group_names)) or (backup_postgres != 'pgbackrest')"
