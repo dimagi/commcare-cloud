@@ -3,8 +3,8 @@ BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
 
 TODAY=$(date +"%Y_%m_%d")
-BACKUP_FILE="{{ blobdb_backup_dir }}/blobdb_${BACKUP_TYPE}_${TODAY}.gz"
-tar -zcf "${BACKUP_FILE}" "{{ shared_data_dir}}/blobdb"
+BACKUP_FILE="{{ blobdb_backup_dir }}/blobdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
+tar -zcf "${BACKUP_FILE}" "{{ blobdb_dir_path }}"
 
 # Remove old backups of this backup type
 find {{ blobdb_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "blobdb_${BACKUP_TYPE}_*" -exec rm {} \;
