@@ -262,7 +262,7 @@ ANALYTICS_IDS = {
 }
 
 ANALYTICS_CONFIG = {
-    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}'
+    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}',
     'DEBUG': '{{ localsettings.ANALYTICS_DEBUG|default(False) }}',
     'LOG_LEVEL': '{{ localsettings.ANALYTICS_LOG_LEVEL|default('') }}',
 }
