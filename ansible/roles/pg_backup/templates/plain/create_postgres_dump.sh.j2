@@ -37,5 +37,10 @@ if [[ $EXITCODE -eq 0 ]] ; then
 fi
 
 {% if postgres_s3 %}
-/usr/local/sbin/backup_snapshots.py "${DIRECTORY}.tar.gz"
+if [ -f "${DIRECTORY}.gz" ]; then
+    /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.gz"
+fi
+if [ -f "${DIRECTORY}.tar.gz" ]; then
+    /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.tar.gz"
+fi
 {% endif %}
