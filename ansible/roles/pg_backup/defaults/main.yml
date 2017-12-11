@@ -5,7 +5,7 @@ postgresql_dir_original_path: /var/lib/postgresql
 
 nadir_hour: 0
 postgresql_backup_days: 3
-postgresql_backup_weeks: 4
+postgresql_backup_weeks: 3
 backup_postgres: plain
 postgres_s3: false
 hot_standby_server: false

@@ -22,7 +22,7 @@
   tasks:
     - {include: 'roles/formplayer/tasks/cleanup.yml', tags: ['formplayer', 'cleanup']}
 
-- name: Cleanup Formplayer cron jobs
+- name: Cleanup PostgreSQL backup tasks
   hosts:
     - all:!pg_backup
   become: true
