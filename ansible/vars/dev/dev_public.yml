@@ -114,6 +114,10 @@ postgres_users:
       username: 'hqrepl'
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
+  backup:
+      username: 'hqbackup'
+      password: 'hqbackup'
+      role_attr_flags: 'SUPERUSER'
 
 pg_replication_slots:
   192.168.33.16:
@@ -137,7 +141,7 @@ postgresql_wal_keep_segments: 8
 pgstandby_wal_keep_segments: 8
 
 shared_drive_enabled: True
-backup_postgres: plain
+backup_postgres: dump
 backup_blobdb: True
 postgresql_backup_master: True
 postgres_s3: False
