@@ -53,6 +53,19 @@
   tags:
     - cron
 
+- name: Create couch backup dir
+  become: yes
+  file:
+    path: "{{  couch_backup_dir }}"
+    state: directory
+    mode: 0700
+    group: couchdb
+    owner: couchdb
+  when: backup_couch
+  tags:
+    - cron
+    - backups
+
 - name: Copy couch backup script
   become: yes
   template:
