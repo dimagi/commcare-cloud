@@ -2,6 +2,8 @@ postgresql_version: '9.4'
 postgresql_port: 5432
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_dir_original_path: /var/lib/postgresql
+postgresql_dir_path: "{{ encrypted_root }}/postgresql"
+postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 
 nadir_hour: 0
 postgresql_backup_days: 3
