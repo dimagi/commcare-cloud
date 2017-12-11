@@ -24,7 +24,7 @@
 
 - name: Cleanup PostgreSQL backup tasks
   hosts:
-    - all:!pg_backup
+    - all
   become: true
   tasks:
     - {include: 'roles/pg_backup/tasks/cleanup.yml', tags: ['postgresql', 'pg_backup', 'cleanup']}
