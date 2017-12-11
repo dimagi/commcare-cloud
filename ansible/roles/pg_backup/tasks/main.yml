@@ -23,4 +23,5 @@
   when: "'pg_backup' in group_names"
 
 - import_tasks: backup.yml
-  when: backup_postgres in ["plain", "pgbackrest"]
+  when: backup_postgres in ["plain", "dump", "pgbackrest"]
+  tags: once

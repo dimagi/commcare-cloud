@@ -9,7 +9,7 @@
   when: "'pg_backup' in group_names"
 
 - include_tasks: backup_plain.yml
-  when: "'pg_backup' in group_names and backup_postgres == 'plain'"
+  when: "'pg_backup' in group_names and (backup_postgres == 'plain' or backup_postgres == 'dump')"
 
 - include_tasks: backup_pgbackrest.yml
   when: "('pg_backup' in group_names or 'postgresql' in group_names) and backup_postgres == 'pgbackrest'"

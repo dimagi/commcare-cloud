@@ -5,16 +5,30 @@ ENV="{{ deploy_env }}"
 
 TODAY=$(date +"%Y_%m_%d")
 DIRECTORY="{{ postgresql_backup_dir }}/postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
+ARGS=""
 
+{% if backup_postgres=='plain' %}
+CMD="pg_basebackup"
+ARGS="-Ft -Z9 -Xf -D $DIRECTORY"
 {% if pg_backup_from %}
-BACKUP_FROM="{{ pg_backup_from }}"
-pg_basebackup -h $BACKUP_FROM -Ft -D $DIRECTORY -Z9 -Xf -U{{ postgres_users['replication']['username'] }} -w
-{% else %}
-pg_basebackup -Ft -D $DIRECTORY -Z9 -Xf
+ARGS="$ARGS -h {{ pg_backup_from }} -w -U{{ postgres_users['replication']['username'] }}"
 {% endif %}
+
+{% elif backup_postgres=='dump' %}
+CMD="pg_dumpall"
+{% if pg_backup_from %}
+ARGS="$ARGS -h {{ pg_backup_from }} -w -U{{ postgres_users['backup']['username'] }}"
+{% endif %}
+ARGS="$ARGS | gzip > $DIRECTORY.gz"
+{% endif %}
+
+sh -c "$CMD $ARGS"
 EXITCODE=$?
-mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
-rmdir $DIRECTORY
+
+if [ -d "$DIRECTORY" ]; then
+    mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
+    rmdir $DIRECTORY
+fi
 
 # Remove old backups of this backup type, if backup succeded
 if [[ $EXITCODE -eq 0 ]] ; then
