@@ -16,8 +16,8 @@
   template:
     src: "create_blobdb_backup.sh.j2"
     dest: "/usr/local/sbin/create_blobdb_backup.sh"
-    group: root
-    owner: root
+    group: {{ blobdb_user }}
+    owner: {{ blobdb_user }}
     mode: 0700
     backup: yes
   when: "backup_blobdb and 'shared_dir_host' in group_names"
