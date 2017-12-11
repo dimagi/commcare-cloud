@@ -7,19 +7,18 @@
 
 - name: Creating archive_command.sh file
   become: True
-  delegate_to: "{{ hot_standby_master|default(inventory_hostname) }}"
   template:
-    src: backup/pgbackrest/archive_command.sh.j2
+    src: pgbackrest/archive_command.sh.j2
     dest: /usr/local/sbin/pgbackrest_archive_command.sh
     owner: postgres
     group: postgres
     mode: 0750
-  when: not is_pg_standby
+  when: "'postgresql' in group_names"
 
 - name: Creating pgbackrest.conf file
   become: True
   template:
-    src: backup/pgbackrest/pgbackrest.conf.j2
+    src: pgbackrest/pgbackrest.conf.j2
     dest: /etc/pgbackrest.conf
     owner: postgres
     group: postgres
@@ -34,7 +33,7 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backup --log-level-console=info stanza-create
-  when: not stanza.stat.exists and (is_pg_standby or not hot_standby_server|default(False))
+  when: "not stanza.stat.exists and 'pg_backup' in group_names"
 
 - name: Creating postgres S3 stanza
   become: True
@@ -42,7 +41,7 @@
   vars:
     ansible_ssh_pipelining: True
   shell: pgbackrest --stanza=backups3 --log-level-console=info stanza-create
-  when: postgres_s3|default(false) and (is_pg_standby or not hot_standby_server|default(False))
+  when: "postgres_s3 and 'pg_backup' in group_names"
 
 - name: Create Daily Cron job
   become: yes
@@ -50,11 +49,11 @@
     name: "Backup postgres daily (differential)"
     job: "/usr/bin/pgbackrest --type=diff --stanza=backup backup"
     minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
+    hour: "{{ nadir_hour }}"
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: is_pg_standby or not hot_standby_server|default(False)
+  when: "'pg_backup' in group_names"
 
 - name: Create Daily Cron job S3
   become: yes
@@ -62,11 +61,11 @@
     name: "Backup postgres daily (differential) S3"
     job: "/usr/bin/pgbackrest --type=diff --stanza=backups3 backup"
     minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
+    hour: "{{ nadir_hour }}"
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: postgres_s3|default(false) and (is_pg_standby or not hot_standby_server|default(False))
+  when: postgres_s3 and "'pg_backup' in group_names"
 
 - name: Create Weekly Cron job
   become: yes
@@ -74,11 +73,11 @@
     name: "Backup postgres weekly (full backup)"
     job: "/usr/bin/pgbackrest --type=full --stanza=backup backup"
     minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
+    hour: "{{ nadir_hour }}"
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: is_pg_standby or not hot_standby_server|default(False)
+  when: "'pg_backup' in group_names"
 
 - name: Create Weekly Cron job S3
   become: yes
@@ -86,8 +85,8 @@
     name: "Backup postgres weekly (full backup) S3"
     job: "/usr/bin/pgbackrest --type=full --stanza=backups3 backup"
     minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
+    hour: "{{ nadir_hour }}"
     weekday: 0
     user: postgres
     cron_file: backup_postgres
-  when: postgres_s3|default(false) and (is_pg_standby or not hot_standby_server|default(False))
+  when: postgres_s3 and "'pg_backup' in group_names"

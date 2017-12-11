@@ -15,11 +15,17 @@
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
-- name: Postgresql
-  hosts: postgresql,pg_standby
+- name: PostgreSQL
+  hosts: postgresql:pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
+
+- name: PostgreSQL Backup
+  hosts: postgresql:pg_backup
+  become: true
+  roles:
+    - {role: pg_backup, tags: ['postgresql', 'backups', 'pg_backup']}
 
 - name: Setup auth for standby
   hosts:
