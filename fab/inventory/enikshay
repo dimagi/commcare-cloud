@@ -112,7 +112,7 @@ pgstandby0
 es0
 
 [pg_backup:vars]
-backup_from=172.25.3.6
+pg_backup_from=172.25.3.6
 
 [stanchion:children]
 couch0
