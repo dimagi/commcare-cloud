@@ -351,8 +351,10 @@
     name: pgbouncer
     state: monitored
   tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - monit:
     name: postgresql
     state: monitored
   tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
