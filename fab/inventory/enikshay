@@ -3,7 +3,7 @@
 [db0] # postgresql, riak, control
 172.25.3.5
 
-[es0] # es, riak, redis
+[es0] # es, riak, redis, pg_backup
 172.25.2.5
 
 [web0] # django, pillow, touchform
@@ -107,6 +107,12 @@ kafka0
 
 [pg_standby:children]
 pgstandby0
+
+[pg_backup:children]
+es0
+
+[pg_backup:vars]
+backup_from=172.25.3.6
 
 [stanchion:children]
 couch0
