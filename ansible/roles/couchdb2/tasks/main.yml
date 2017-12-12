@@ -56,7 +56,7 @@
 - name: Create couch backup dir
   become: yes
   file:
-    path: "{{  couch_backup_dir }}"
+    path: "{{ couch_backup_dir }}"
     state: directory
     mode: 0700
     group: couchdb
@@ -83,7 +83,7 @@
 - name: Create Daily Cron job
   become: yes
   cron:
-    name: "Backup blobdb daily"
+    name: "Backup couchdb daily"
     job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
@@ -98,7 +98,7 @@
 - name: Create Weekly Cron job
   become: yes
   cron:
-    name: "Backup blobdb weekly"
+    name: "Backup coudhdb weekly"
     job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
