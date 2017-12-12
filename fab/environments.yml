@@ -430,7 +430,7 @@ icds-new:
         concurrency: 4
     '10.247.164.44':
       ucr_indicator_queue:
-        concurrency: 16
+        concurrency: 4
       background_queue:
         concurrency: 4
         max_tasks_per_child: 1
