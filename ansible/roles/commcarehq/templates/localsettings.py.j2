@@ -123,6 +123,10 @@ COUCH_DATABASES = {
 {% endfor %}
 }
 
+{% if 'CUSTOM_SYNCLOGS_DB' in localsettings %}
+CUSTOM_SYNCLOGS_DB = '{{ localsettings.CUSTOM_SYNCLOGS_DB }}'
+{% endif %}
+
 {% if 'BIGCOUCH' in localsettings %}
 BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
 {% endif %}

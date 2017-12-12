@@ -189,6 +189,7 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
+  CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
