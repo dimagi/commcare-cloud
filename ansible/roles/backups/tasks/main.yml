@@ -46,31 +46,13 @@
     cron_file: backup_blobdb
   when: "backup_blobdb and 'shared_dir_host' in group_names"
 
-# cleanp ols scripts and jobs
-- name: Cleanup old script
+- name: Copy s3 upload script
   become: yes
-  file:
-    path: "/etc/cron.d/create_blobdb_backup.sh"
-    state: absent
-
-- name: Create Daily Cron job (cleanup)
-  become: yes
-  cron:
-    name: "Backup blobdb daily"
-    minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
-    weekday: "1,2,3,4,5,6"
-    cron_file: backup_blobdb
-    state: absent
-  when: "'shared_dir_host' not in group_names"
-
-- name: Create Weekly Cron job (cleanup)
-  become: yes
-  cron:
-    name: "Backup blobdb weekly"
-    minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
-    weekday: 0
-    cron_file: backup_blobdb
-    state: absent
-  when: "'shared_dir_host' not in group_names"
+  template:
+    src: "backup_snapshots.py.j2"
+    dest: "/usr/local/sbin/backup_snapshots.py"
+    group: root
+    owner: root
+    mode: 0755
+    backup: yes
+  when: postgres_s3|default(false) or couch_s3|default(false) or blobdb_s3|default(false)
