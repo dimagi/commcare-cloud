@@ -131,3 +131,4 @@
     name: couchdb2
     state: monitored
   tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
