@@ -15,6 +15,11 @@ pnaserver1
 [postgresql:children]
 pnaserver1
 
+[pg_backup:children]
+pnaserver1
+
+[pg_standby]
+
 [couchdb2:children]
 pnaserver1
 
