@@ -263,8 +263,9 @@ def _confirm_environment_time(env_name, env_tz):
 
     message = (
         "Woah there bud! You're deploying '%s' during the day. "
+        "The time is currently %s.\n"
         "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-    ) % env_name
+    ) % (env_name, d)
     if not console.confirm(message, default=False):
         utils.abort('Action aborted.')
 
