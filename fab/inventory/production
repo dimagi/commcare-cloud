@@ -6,9 +6,6 @@ hqdjango0.internal-va.commcarehq.org
 hqdjango1.internal-va.commcarehq.org
 hqdjango2.internal-va.commcarehq.org
 
-[webworkers:vars]
-newrelic_app_name=django
-
 [hqdb0]
 hqdb0.internal-va.commcarehq.org
 
@@ -47,7 +44,6 @@ hqcelery0.internal-va.commcarehq.org
 hqcelery2.internal-va.commcarehq.org
 
 [celery:vars]
-newrelic_app_name=celery
 swap_size=8G
 
 [pillowtop]
