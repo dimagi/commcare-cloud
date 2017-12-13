@@ -266,23 +266,10 @@ def _format_env(current_env, extra=None):
         'newrelic_javaagent',
     ]
 
-    host = current_env.get('host_string')
     inventory = get_inventory(current_env.inventory)
-    inventory_groups = list(inventory.groups.values())
-    newrelic_machines = [machine.name
-                         for group in inventory_groups for machine in group.hosts
-                         if 'newrelic_app_name' in group.vars]
-
-    ret['new_relic_command'] = ''
-    ret['supervisor_env_vars'] = {}
-
-    if host in newrelic_machines:
-        ret['new_relic_command'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
-        ret['supervisor_env_vars']['NEW_RELIC_CONFIG_FILE'] = '%(root)s/newrelic.ini' % env
-        ret['supervisor_env_vars']['NEW_RELIC_ENVIRONMENT'] = '%(environment)s' % env
-
     all_hosts = [host.name for host in inventory.groups['all'].hosts]
 
+    ret['supervisor_env_vars'] = {}
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
         ret['supervisor_env_vars']['https_proxy'] = 'https://{}'.format(env.http_proxy)
