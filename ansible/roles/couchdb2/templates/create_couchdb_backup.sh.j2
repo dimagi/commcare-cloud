@@ -15,5 +15,5 @@ rsync -avH --delete --exclude="commcarehq__synclogs.*.couch" {{ couch_backup_dir
 {% endif %}
 
 {% if couch_s3 %}
-/usr/local/sbin/backup_snapshots.py "${BACKUP_FILE} dimagi-{{ deploy_env }}-couch-backups"
+/usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "dimagi-{{ deploy_env }}-couch-backups"
 {% endif %}
