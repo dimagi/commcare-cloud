@@ -48,7 +48,8 @@ def arg_branch(parser):
 def arg_stdout_callback(parser, default='default'):
     parser.add_argument(
         '--output', dest='stdout_callback', default=default, choices=['actionable', 'minimal'],
-        help=("The callback plugin to use for generating output."
+        help=("The callback plugin to use for generating output. "
+              "See ansible-doc -t callback -l and ansible-doc -t callback [ansible|minimal]"
     ))
 
 
