@@ -137,12 +137,12 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
 
 - name: Create Daily Cron job
   become: yes
   cron:
-    name: "Backup blobdb daily"
+    name: "Backup couchdb daily"
     job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
@@ -156,7 +156,7 @@
 - name: Create Weekly Cron job
   become: yes
   cron:
-    name: "Backup blobdb weekly"
+    name: "Backup couchdb weekly"
     job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
@@ -166,4 +166,4 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups

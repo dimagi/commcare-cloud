@@ -85,7 +85,7 @@ SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
 RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
 TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
-TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
+TRANSFER_SERVER = 'nginx'
 
 
 # Email setup
@@ -122,6 +122,10 @@ COUCH_DATABASES = {
     },
 {% endfor %}
 }
+
+{% if 'CUSTOM_SYNCLOGS_DB' in localsettings %}
+CUSTOM_SYNCLOGS_DB = '{{ localsettings.CUSTOM_SYNCLOGS_DB }}'
+{% endif %}
 
 {% if 'BIGCOUCH' in localsettings %}
 BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
@@ -262,7 +266,9 @@ ANALYTICS_IDS = {
 }
 
 ANALYTICS_CONFIG = {
-    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}'
+    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}',
+    'DEBUG': '{{ localsettings.ANALYTICS_DEBUG|default(False) }}',
+    'LOG_LEVEL': '{{ localsettings.ANALYTICS_LOG_LEVEL|default('') }}',
 }
 
 AXES_LOCK_OUT_AT_FAILURE = False

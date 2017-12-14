@@ -1,34 +1,58 @@
+- name: Create blobdb backup dir
+  become: yes
+  file:
+    path: "{{ blobdb_backup_dir }}"
+    state: directory
+    mode: 0700
+    group: "{{ blobdb_user }}"
+    owner: "{{ blobdb_user }}"
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
+  tags:
+    - cron
+    - backups
+
 - name: Copy blobdb backup script
   become: yes
   template:
     src: "create_blobdb_backup.sh.j2"
-    dest: "/etc/cron.d/create_blobdb_backup.sh"
-    group: root
-    owner: root
+    dest: "/usr/local/sbin/create_blobdb_backup.sh"
+    group: "{{ blobdb_user }}"
+    owner: "{{ blobdb_user }}"
     mode: 0700
     backup: yes
-  when: backup_blobdb
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
 
 - name: Create Daily Cron job
   become: yes
   cron:
     name: "Backup blobdb daily"
-    job: "/etc/cron.d/create_blobdb_backup.sh daily 3"
+    job: "/usr/local/sbin/create_blobdb_backup.sh daily 3"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
-    user: blobdb
+    user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
-  when: backup_blobdb
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
 
 - name: Create Weekly Cron job
   become: yes
   cron:
     name: "Backup blobdb weekly"
-    job: "/etc/cron.d/create_blobdb_backup.sh weekly 21"
+    job: "/usr/local/sbin/create_blobdb_backup.sh weekly 21"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
-    user: blobdb
+    user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
-  when: backup_blobdb
+  when: "backup_blobdb and 'shared_dir_host' in group_names"
+
+- name: Copy s3 upload script
+  become: yes
+  template:
+    src: "backup_snapshots.py.j2"
+    dest: "/usr/local/sbin/backup_snapshots.py"
+    group: root
+    owner: root
+    mode: 0755
+    backup: yes
+  when: postgres_s3|default(false) or couch_s3|default(false) or blobdb_s3|default(false)

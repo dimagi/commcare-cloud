@@ -1,0 +1,46 @@
+#!/bin/bash
+BACKUP_TYPE=$1
+DAYS_TO_RETAIN_BACKUPS=$2
+ENV="{{ deploy_env }}"
+
+TODAY=$(date +"%Y_%m_%d")
+DIRECTORY="{{ postgresql_backup_dir }}/postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
+ARGS=""
+
+{% if backup_postgres=='plain' %}
+CMD="pg_basebackup"
+ARGS="-Ft -Z9 -Xf -D $DIRECTORY"
+{% if pg_backup_from %}
+ARGS="$ARGS -h {{ pg_backup_from }} -w -U{{ postgres_users['replication']['username'] }}"
+{% endif %}
+
+{% elif backup_postgres=='dump' %}
+CMD="pg_dumpall"
+{% if pg_backup_from %}
+ARGS="$ARGS -h {{ pg_backup_from }} -w -U{{ postgres_users['backup']['username'] }}"
+{% endif %}
+ARGS="$ARGS | gzip > $DIRECTORY.gz"
+{% endif %}
+
+sh -c "$CMD $ARGS"
+EXITCODE=$?
+
+if [ -d "$DIRECTORY" ]; then
+    mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
+    rmdir $DIRECTORY
+fi
+
+# Remove old backups of this backup type, if backup succeded
+if [[ $EXITCODE -eq 0 ]] ; then
+    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
+    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
+fi
+
+{% if postgres_s3 %}
+if [ -f "${DIRECTORY}.gz" ]; then
+    /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.gz"
+fi
+if [ -f "${DIRECTORY}.tar.gz" ]; then
+    /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.tar.gz"
+fi
+{% endif %}

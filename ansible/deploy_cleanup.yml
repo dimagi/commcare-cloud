@@ -21,3 +21,17 @@
   become: true
   tasks:
     - {include: 'roles/formplayer/tasks/cleanup.yml', tags: ['formplayer', 'cleanup']}
+
+- name: Cleanup PostgreSQL backup tasks
+  hosts:
+    - all
+  become: true
+  tasks:
+    - {include: 'roles/pg_backup/tasks/cleanup.yml', tags: ['postgresql', 'pg_backup', 'cleanup']}
+
+- name: Cleanup blobdb backup tasks
+  hosts:
+    - all
+  become: true
+  tasks:
+    - {include: 'roles/backups/tasks/cleanup.yml', tags: ['backups', 'cleanup']}

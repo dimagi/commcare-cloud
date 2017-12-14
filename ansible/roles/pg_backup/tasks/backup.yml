@@ -1,0 +1,15 @@
+- name: create backup directory
+  become: yes
+  file:
+    path: '{{ postgresql_backup_dir }}'
+    owner: postgres
+    group: postgres
+    mode: 0755
+    state: directory
+  when: "'pg_backup' in group_names"
+
+- include_tasks: backup_plain.yml
+  when: "'pg_backup' in group_names and (backup_postgres == 'plain' or backup_postgres == 'dump')"
+
+- include_tasks: backup_pgbackrest.yml
+  when: "('pg_backup' in group_names or 'postgresql' in group_names) and backup_postgres == 'pgbackrest'"

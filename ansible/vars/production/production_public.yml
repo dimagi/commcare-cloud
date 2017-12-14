@@ -7,13 +7,12 @@ daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
-  cchq_http_redirect: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: True
   commtrack_ssl: True
   commtrack_http: True
-  hq_status: True
   tableau: True
   icds_tableau: False
   wiki: True
@@ -33,8 +32,6 @@ riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
-
-proxy_type: nginx
 
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
@@ -171,6 +168,8 @@ localsettings:
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
+  ANALYTICS_DEBUG: False
+  ANALYTICS_LOG_LEVEL: "warning"
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
@@ -192,6 +191,7 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
   COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
+  CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DROPBOX_APP_NAME: 'CommCareHQFiles'
   DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
