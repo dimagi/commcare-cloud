@@ -10,5 +10,5 @@ tar -zcf "${BACKUP_FILE}" "{{ blobdb_dir_path }}"
 find {{ blobdb_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "blobdb_${BACKUP_TYPE}_*" -exec rm {} \;
 
 {% if blobdb_s3 %}
-/usr/local/sbin/backup_snapshots.py "${BACKUP_FILE} dimagi-{{ deploy_env }}-blobdb-backups"
+/usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "dimagi-{{ deploy_env }}-blobdb-backups"
 {% endif %}
