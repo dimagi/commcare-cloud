@@ -229,7 +229,7 @@ web0
 [webworkers:children]
 web0
 web1
-web2
+# web2 SK removed to use for export building
 web3
 web4
 web5
@@ -262,7 +262,7 @@ kafka0
 [celery:children]
 celery0
 celery1
-web2
+# web2 SK removed to use for export building
 web1
 web3
 web4
