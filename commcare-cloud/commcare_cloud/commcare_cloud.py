@@ -45,7 +45,8 @@ def arg_branch(parser):
     ))
 
 
-def arg_stdout_callback(parser, default='default'):
+def arg_stdout_callback(parser):
+    default = os.environ.get('ANSIBLE_STDOUT_CALLBACK') or 'default'
     parser.add_argument(
         '--output', dest='stdout_callback', default=default, choices=['actionable', 'minimal'],
         help=("The callback plugin to use for generating output. "
