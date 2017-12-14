@@ -95,6 +95,7 @@ hqriak22.internal-va.commcarehq.org
 hqriak23.internal-va.commcarehq.org
 hqriak24.internal-va.commcarehq.org
 hqriak28.internal-va.commcarehq.org
+hqriak29.internal-va.commcarehq.org
 
 [riakcs_new:vars]
 datavol_device=/dev/mapper/consolidated-data
@@ -110,6 +111,7 @@ hqriak22.internal-va.commcarehq.org
 hqriak23.internal-va.commcarehq.org
 hqriak24.internal-va.commcarehq.org
 hqriak28.internal-va.commcarehq.org
+hqriak29.internal-va.commcarehq.org
 
 [lvm:vars]
 devices=["/dev/xvdc"]
