@@ -41,7 +41,7 @@ archive_timeout = 60
 {% endif %}
 
 wal_level = hot_standby
-max_wal_senders = 3
+max_wal_senders = 8
 checkpoint_segments = {{ postgresql_checkpoint_segments }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
