@@ -144,9 +144,19 @@ postgresql_dbs:
     host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
   - name: "{{ formplayer_db_name }}"
     host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-  - django_alias: icds-ucr-standby
+  - django_alias: icds-ucr-standby1
     name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgucr.0].hot_standby_server }}"
+    host: "{{ hostvars[groups.pgucrstandby.0].inventory_hostname }}"
+    create: False
+    django_migrate: False
+  - django_alias: icds-ucr-standby2
+    name: commcarehq_icds_aggregatedata
+    host: "{{ hostvars[groups.pgmainstandby.0].inventory_hostname }}"
+    create: False
+    django_migrate: False
+  - django_alias: icds-ucr-standby3
+    name: commcarehq_icds_aggregatedata
+    host: "{{ hostvars[groups.pgshard1standby.0].inventory_hostname }}"
     create: False
     django_migrate: False
 
@@ -394,7 +404,13 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   REPORTING_DATABASES:
     ucr: ucr
-    icds-ucr: icds-ucr
+    icds-ucr:
+      WRITE: icds-ucr
+      READ:
+        - [icds-ucr, 5]
+        - [icds-ucr-standby1, 5]
+        - [icds-ucr-standby2, 5]
+        - [icds-ucr-standby3, 5]
     icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
