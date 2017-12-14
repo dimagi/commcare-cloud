@@ -41,3 +41,8 @@
   rabbitmq_user: user=guest state=absent
   notify:
   - restart rabbitmq
+
+- name: Enable and start RabbitMQ service
+  become: yes
+  service: name=rabbitmq-server state=started
+  tags: after-reboot
