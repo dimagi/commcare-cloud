@@ -53,16 +53,14 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_node_name: '???'
 
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
- 
-# Source paths of certs
-nginx_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
-# Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
 
 nofile_limit: 65536
 
-# Commtrack Certs
+# commcarehq.org of certs
+nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
+nginx_key_value: '{{ ssl_secrets.private_keys.commcarehq_org }}'
+
+# commtrack.org
 commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.org.combined.crt'
 commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
 
