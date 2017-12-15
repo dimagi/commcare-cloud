@@ -1,4 +1,4 @@
-- name: Touchforms user
+- name: Touchforms user (cleanup)
   delegate_to: "{{ groups.webworkers.0 }}"
   become: yes
   become_user: "{{ cchq_user }}"
@@ -13,7 +13,7 @@
     superuser: yes
   when: not touchforms_enabled
 
-- name: Copy Jython localsettings.py
+- name: Copy Jython localsettings.py (cleanup)
   become: yes
   file:
     dest: "{{ code_home }}/submodules/touchforms-src/touchforms/backend/localsettings.py"
@@ -23,7 +23,7 @@
     - localsettings
   when: not touchforms_enabled or 'touchforms' not in group_names
 
-- name: create touchforms data directory
+- name: create touchforms data directory (cleanup)
   become: yes
   file:
     path: "{{ item }}"
@@ -34,7 +34,7 @@
     - "{{ touchforms_data_dir }}"
   when: not touchforms_enabled or 'touchforms' not in group_names
 
-- name: Create session purging cron job
+- name: Create session purging cron job (cleanup)
   become: yes
   cron:
     name: "Purge old touchforms sessions"
