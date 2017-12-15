@@ -206,7 +206,7 @@
     group: couchdb
     mode: 0700
     state: directory
-  when: couchdb_s3
+  when: couch_s3
   tags:
     - cron
     - backups
@@ -220,7 +220,7 @@
     owner: couchdb
     mode: 0700
     backup: yes
-  when: couchdb_s3
+  when: couch_s3
   tags:
     - cron
     - backups
