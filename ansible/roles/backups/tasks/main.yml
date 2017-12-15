@@ -1,7 +1,7 @@
 - name: Create aws config directory
   become: yes
   file:
-    path: '{{ blobdb_dir }}/.aws'
+    path: '{{ blobdb_dir_path }}/.aws'
     owner: "{{ blobdb_user }}"
     group: "{{ blobdb_user }}"
     mode: 0700
@@ -15,7 +15,7 @@
   become: yes
   template:
     src: "aws_credentials.j2"
-    dest: "{{ blobdb_dir }}/.aws/credentials"
+    dest: "{{ blobdb_dir_path }}/.aws/credentials"
     group: "{{ blobdb_user }}"
     owner: "{{ blobdb_user }}"
     mode: 0700
@@ -91,7 +91,7 @@
     owner: root
     mode: 0755
     backup: yes
-  when: postgres_s3|default(false) or couch_s3|default(false) or blobdb_s3|default(false)
+  when: postgres_s3 or couch_s3 or blobdb_s3
   tags:
     - cron
     - backups
