@@ -106,7 +106,7 @@
 - name: Copy couch restart script
   become: yes
   file:
-    dest: "/usr/local/sbin/couch2-restarter.sh"
+    dest: "/usr/local/sbin/couch-restarter.sh"
     state: absent
   tags:
     - cron
@@ -115,7 +115,7 @@
   become: yes
   cron:
     name: "Reboot Couch"
-    job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
+    job: "/usr/local/sbin/couch-restarter.sh > /dev/null"
     user: root
     cron_file: couch-restarter
     state: absent
