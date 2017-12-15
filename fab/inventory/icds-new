@@ -117,8 +117,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard1standby:vars]
 hostname='pgshard1standby'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.24'
 replication_slot='standby2'
@@ -162,8 +162,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard2standby:vars]
 hostname='pgshard2standby'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.21'
 replication_slot='standby'
