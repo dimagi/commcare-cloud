@@ -142,6 +142,33 @@
     - cron
     - backups
 
+- name: Create aws config directory
+  become: yes
+  file:
+    path: '{{ couchdb_dir }}/.aws'
+    owner: couchdb
+    group: couchdb
+    mode: 0700
+    state: directory
+  when: couchdb_s3
+  tags:
+    - cron
+    - backups
+
+- name: copy boto3 credentials file
+  become: yes
+  template:
+    src: "aws_credentials.j2"
+    dest: "{{ couchdb_dir }}/.aws/credentials"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: couchdb_s3
+  tags:
+    - cron
+    - backups
+
 - name: start the couchdb2 service
   service: name="couchdb2" state=started enabled=yes
   tags: after-reboot
@@ -164,3 +191,4 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
+

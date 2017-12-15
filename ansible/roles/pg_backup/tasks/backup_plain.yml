@@ -32,7 +32,7 @@
     path: '{{ postgresql_dir_original_path }}/.aws'
     owner: postgres
     group: postgres
-    mode: 0755
+    mode: 0700
     state: directory
   when: postgres_s3
     
