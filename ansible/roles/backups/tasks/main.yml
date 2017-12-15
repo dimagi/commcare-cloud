@@ -1,3 +1,30 @@
+- name: Create aws config directory
+  become: yes
+  file:
+    path: '{{ blobdb_dir }}/.aws'
+    owner: "{{ blobdb_user }}"
+    group: "{{ blobdb_user }}"
+    mode: 0700
+    state: directory
+  when: blobdb_s3
+  tags:
+    - cron
+    - backups
+
+- name: copy boto3 credentials file
+  become: yes
+  template:
+    src: "aws_credentials.j2"
+    dest: "{{ blobdb_dir }}/.aws/credentials"
+    group: "{{ blobdb_user }}"
+    owner: "{{ blobdb_user }}"
+    mode: 0700
+    backup: yes
+  when: blobdb_s3
+  tags:
+    - cron
+    - backups
+
 - name: Create blobdb backup dir
   become: yes
   file:
@@ -21,6 +48,9 @@
     mode: 0700
     backup: yes
   when: "backup_blobdb and 'shared_dir_host' in group_names"
+  tags:
+    - cron
+    - backups
 
 - name: Create Daily Cron job
   become: yes
@@ -33,6 +63,9 @@
     user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
   when: "backup_blobdb and 'shared_dir_host' in group_names"
+  tags:
+    - cron
+    - backups
 
 - name: Create Weekly Cron job
   become: yes
@@ -45,6 +78,9 @@
     user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
   when: "backup_blobdb and 'shared_dir_host' in group_names"
+  tags:
+    - cron
+    - backups
 
 - name: Copy s3 upload script
   become: yes
@@ -56,3 +92,6 @@
     mode: 0755
     backup: yes
   when: postgres_s3|default(false) or couch_s3|default(false) or blobdb_s3|default(false)
+  tags:
+    - cron
+    - backups
