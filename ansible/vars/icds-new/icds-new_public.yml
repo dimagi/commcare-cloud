@@ -149,11 +149,6 @@ postgresql_dbs:
     host: "{{ hostvars[groups.pgucrstandby.0].inventory_hostname }}"
     create: False
     django_migrate: False
-  - django_alias: icds-ucr-standby2
-    name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgmainstandby.0].inventory_hostname }}"
-    create: False
-    django_migrate: False
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
@@ -404,7 +399,6 @@ localsettings:
       READ:
         - [icds-ucr, 5]
         - [icds-ucr-standby1, 5]
-        - [icds-ucr-standby2, 5]
     icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
