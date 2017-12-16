@@ -3,17 +3,17 @@
 # Since ecryptfs role hard-codes adding a 1, we're using just /dev/mapper/consolidated-data for the vars below
 
 [pgucr]
-10.247.164.24
+10.247.164.25
 
 [pgucr:vars]
 hostname='pgucr'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_server='10.247.164.25'
+hot_standby_server='10.247.164.24'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=775
-postgresql_replication_slots=['standby','spare', 'standby1', 'standby2']
+postgresql_replication_slots=['standby','spare']
 postgresql_max_connections=800
 postgresql_work_mem=32MB
 postgresql_shared_buffers=8GB
@@ -25,14 +25,14 @@ postgresql_wal_buffers=16MB
 postgresql_default_statistics_target = 500
 
 [pgucrstandby]
-10.247.164.25
+10.247.164.24
 
 [pgucrstandby:vars]
 hostname='pgucrstandby'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
-hot_standby_master='10.247.164.24'
+hot_standby_master='10.247.164.25'
 replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=775
@@ -51,8 +51,8 @@ postgresql_default_statistics_target = 500
 
 [pgmain:vars]
 hostname='pgmain'
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.27'
 pgbouncer_max_connections=3500
@@ -73,11 +73,11 @@ postgresql_default_statistics_target = 100
 
 [pgmainstandby:vars]
 hostname='pgmainstandby'
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.26'
-replication_slot='standby1'
+replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=775
 postgresql_max_connections=800
@@ -95,8 +95,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard1:vars]
 hostname='pgshard1'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.22'
 pgbouncer_max_connections=3500
@@ -121,7 +121,7 @@ devices=["/dev/sdb"]
 partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.20'
-replication_slot='standby2'
+replication_slot='standby'
 pgbouncer_max_connections=3500
 pgbouncer_default_pool=775
 postgresql_max_connections=800
@@ -139,8 +139,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard2:vars]
 hostname='pgshard2'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.23'
 pgbouncer_max_connections=3500
@@ -244,8 +244,8 @@ hostname='web9'
 10.247.164.15
 
 [es0:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es0
 hostname='es0'
@@ -254,8 +254,8 @@ hostname='es0'
 10.247.164.16
 
 [es1:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es1
 hostname='es1'
@@ -265,8 +265,8 @@ hostname='es1'
 
 [es2:vars]
 elasticsearch_node_name=es2
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
 
@@ -274,8 +274,8 @@ hostname='es2'
 10.247.164.19
 
 [es3:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es3
 hostname='es3'
@@ -284,8 +284,8 @@ hostname='es3'
 10.247.164.12
 
 [couch0:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch0'
 #remote_couch_backup='es0'
@@ -294,8 +294,8 @@ hostname='couch0'
 10.247.164.5
 
 [couch1:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch1'
 #remote_couch_backup='es0'
@@ -304,8 +304,8 @@ hostname='couch1'
 10.247.164.14
 
 [couch2:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch2'
 #remote_couch_backup='es0'
