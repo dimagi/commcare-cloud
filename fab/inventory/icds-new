@@ -7,8 +7,8 @@
 
 [pgucr:vars]
 hostname='pgucr'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.25'
 pgbouncer_max_connections=3500
@@ -29,8 +29,8 @@ postgresql_default_statistics_target = 500
 
 [pgucrstandby:vars]
 hostname='pgucrstandby'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.24'
 replication_slot='standby'
@@ -51,8 +51,8 @@ postgresql_default_statistics_target = 500
 
 [pgmain:vars]
 hostname='pgmain'
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.27'
 pgbouncer_max_connections=3500
@@ -73,8 +73,8 @@ postgresql_default_statistics_target = 100
 
 [pgmainstandby:vars]
 hostname='pgmainstandby'
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_master='10.247.164.26'
 replication_slot='standby1'
@@ -95,8 +95,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard1:vars]
 hostname='pgshard1'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.22'
 pgbouncer_max_connections=3500
@@ -139,8 +139,8 @@ postgresql_default_statistics_target = 100
 
 [pgshard2:vars]
 hostname='pgshard2'
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hot_standby_server='10.247.164.23'
 pgbouncer_max_connections=3500
