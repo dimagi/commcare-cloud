@@ -65,8 +65,6 @@
       state: stopped
     become: yes
     name: Stop couchdb
-    args:
-      warn: False
 
 - hosts:
   - couchdb2
@@ -76,8 +74,6 @@
       state: stopped
     become: yes
     name: Stop couchdb2
-    args:
-      warn: False
 
 - hosts:
   - redis
