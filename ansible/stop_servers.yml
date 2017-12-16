@@ -1,105 +1,146 @@
 - hosts:
+  - all
+  tasks:
+  - service:
+      name: monit
+      state: stopped
+    become: yes
+    name: Stop Monit
+  - service:
+      name: crond
+      state: stopped
+    become: yes
+    name: Stop Cron
+
+- hosts:
+  - shared_dir_host
+  tasks:
+  - service:
+      name: portmap
+      state: stopped
+    become: yes
+    name: Stop Portmap
+  - service:
+      name: nfs-kernel-server
+      state: stopped
+    become: yes
+    name: Stop NFS
+
+- hosts:
+  - proxy
+  - cas_proxy
+  - couchdb2_proxy
+  tasks:
+  - service:
+      name: nginx
+      state: stopped
+    become: yes
+    name: Stop Nginx
+
+- hosts:
   - webworkers
+  - touchforms
+  - pillowtop
+  - formplayer
   tasks:
   - command: supervisorctl stop all
-    become: True
-    name: Stop supervisor serives
-    args:
-      warn: False
+    become: yes
+    name: Stop supervisor services
 
 - hosts:
   - postgresql
   - pg_standby
   tasks:
-  - command: service postgresql stop
-    become: True
+  - service:
+      name: postgresql
+      state: stopped
+    become: yes
     name: Stop PostgreSQL
-    args:
-      warn: False
 
 - hosts:
   - couchdb
   tasks:
-  - command: service couchdb stop
-    become: True
+  - service:
+      name: couchdb
+      state: stopped
+    become: yes
     name: Stop couchdb
-    args:
-      warn: False
 
 - hosts:
   - couchdb2
   tasks:
-  - command: service couchdb2 stop
-    become: True
+  - service:
+      name: couchdb2
+      state: stopped
+    become: yes
     name: Stop couchdb2
-    args:
-      warn: False
 
 - hosts:
   - redis
   tasks:
-  - command: service redis-server stop
+  - service:
+      name: redis-server
+      state: stopped
     name: Stop redis
-    become: True
-    args:
-      warn: False
+    become: yes
 
 - hosts:
   - zookeeper
   tasks:
-  - command: service zookeeper stop
+  - service:
+      name: zookeeper
+      state: stopped
     name: Stop zookeeper
-    become: True
-    args:
-      warn: False
+    become: yes
 
 - hosts:
   - kafka
   tasks:
-  - command: service kafka-server stop
-    become: True
+  - service:
+      name: kafka-server
+      state: stopped
+    become: yes
     name: Stop kafka
-    args:
-      warn: False
 
 - hosts:
   - rabbitmq
   tasks:
-  - command: service rabbitmq-server stop
+  - service:
+      name: rabbitmq-server
+      state: stopped
     name: Stop rabbitmq
-    become: True
-    args:
-      warn: False
+    become: yes
 
 - hosts:
   - elasticsearch
   tasks:
+  - service:
+      name: elasticsearch
+      state: stopped
   - command: service elasticsearch stop
-    become: True
+    become: yes
     name: Stop elasticsearch
-    args:
-      warn: False
 
 - hosts:
   - riakcs
   tasks:
+  - service:
+      name: riak
+      state: stopped
   - command: service riak stop
     name: Stop riak
-    become: True
-    args:
-      warn: False
-  - command: service riak-cs stop
+    become: yes
+  - service:
+      name: riak-cs
+      state: stopped
     name: Stop riak-cs
-    become: True
-    args:
-      warn: False
+    become: yes
 
 - hosts:
   - stanchion
   tasks:
-  - command: service stanchion stop
+  - service:
+      name: stanchion
+      state: stopped
     name: Stop stanchion
-    become: True
-    args:
-      warn: False
-
+    become: yes
