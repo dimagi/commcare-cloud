@@ -1,7 +1,7 @@
 - name: Create aws config directory
   become: yes
   file:
-    path: '{{ blobdb_dir_path }}/.aws'
+    path: '~{{ blobdb_user }}/.aws'
     owner: "{{ blobdb_user }}"
     group: "{{ blobdb_user }}"
     mode: 0700
@@ -15,7 +15,7 @@
   become: yes
   template:
     src: "aws_credentials.j2"
-    dest: "{{ blobdb_dir_path }}/.aws/credentials"
+    dest: "~{{ blobdb_user }}/.aws/credentials"
     group: "{{ blobdb_user }}"
     owner: "{{ blobdb_user }}"
     mode: 0700
