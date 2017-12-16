@@ -16,11 +16,6 @@
   - shared_dir_host
   tasks:
   - service:
-      name: portmap
-      state: stopped
-    become: yes
-    name: Stop Portmap
-  - service:
       name: nfs-kernel-server
       state: stopped
     become: yes
