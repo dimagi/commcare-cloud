@@ -244,8 +244,8 @@ hostname='web9'
 10.247.164.15
 
 [es0:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es0
 hostname='es0'
@@ -254,8 +254,8 @@ hostname='es0'
 10.247.164.16
 
 [es1:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es1
 hostname='es1'
@@ -265,8 +265,8 @@ hostname='es1'
 
 [es2:vars]
 elasticsearch_node_name=es2
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='es2'
 
@@ -274,8 +274,8 @@ hostname='es2'
 10.247.164.19
 
 [es3:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 elasticsearch_node_name=es3
 hostname='es3'
