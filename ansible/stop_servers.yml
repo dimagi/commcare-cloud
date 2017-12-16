@@ -112,7 +112,6 @@
   - service:
       name: elasticsearch
       state: stopped
-  - command: service elasticsearch stop
     become: yes
     name: Stop elasticsearch
 
@@ -122,7 +121,6 @@
   - service:
       name: riak
       state: stopped
-  - command: service riak stop
     name: Stop riak
     become: yes
   - service:
