@@ -321,6 +321,7 @@ class RunAnsibleModule(object):
         parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
         ))
+        arg_skip_check(parser)
         arg_stdout_callback(parser)
         add_to_help_text(parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
@@ -338,6 +339,8 @@ class RunAnsibleModule(object):
                     '-a',
                     '--ask-vault-pass',
                     '--vault-password-file',
+                    '--check',
+                    '--diff'
                 ],
             )
         ))
@@ -346,48 +349,83 @@ class RunAnsibleModule(object):
     def run(args, unknown_args):
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
-        cmd_parts = (
-            'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
-            'ansible', args.inventory_group,
-            '-m', args.module,
-            '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
-            '-u', args.remote_user,
-            '-a', args.module_args,
-        ) + tuple(unknown_args)
 
-        become = args.become or bool(args.become_user)
-        become_user = args.become_user
-        include_vars = False
-        if become:
-            if become_user not in ('cchq',):
-                # ansible user can do things as cchq without a password,
-                # but needs the ansible user password in order to do things as other users.
-                # In that case, we need to pull in the vault variable containing this password
-                include_vars = True
-            if become_user:
-                cmd_parts += ('--become-user', args.become_user)
+        def _run_ansible(args, *unknown_args):
+            cmd_parts = (
+                'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
+                'ansible', args.inventory_group,
+                '-m', args.module,
+                '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
+                '-u', args.remote_user,
+                '-a', args.module_args,
+                '--diff',
+            ) + tuple(unknown_args)
+
+            become = args.become or bool(args.become_user)
+            become_user = args.become_user
+            include_vars = False
+            if become:
+                if become_user not in ('cchq',):
+                    # ansible user can do things as cchq without a password,
+                    # but needs the ansible user password in order to do things as other users.
+                    # In that case, we need to pull in the vault variable containing this password
+                    include_vars = True
+                if become_user:
+                    cmd_parts += ('--become-user', args.become_user)
+                else:
+                    cmd_parts += ('--become',)
+
+            if include_vars:
+                cmd_parts += (
+                    '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
+                    '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
+                )
+
+            ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
+            if ask_vault_pass:
+                cmd_parts += ('--vault-password-file=/bin/cat',)
+
+            cmd_parts += get_common_ssh_args(public_vars)
+            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            print(cmd)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
+            if ask_vault_pass:
+                p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
             else:
-                cmd_parts += ('--become',)
+                p.communicate()
+            return p.returncode
 
-        if include_vars:
-            cmd_parts += (
-                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
-                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
-            )
+        def run_check():
+            return _run_ansible(args, '--check', *unknown_args)
 
-        ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
-        if ask_vault_pass:
-            cmd_parts += ('--vault-password-file=/bin/cat',)
+        def run_apply():
+            return _run_ansible(args, *unknown_args)
 
-        cmd_parts += get_common_ssh_args(public_vars)
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print(cmd)
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
-        if ask_vault_pass:
-            p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
+        exit_code = 0
+
+        if args.skip_check:
+            user_wants_to_apply = ask('Do you want to apply without running the check first?')
         else:
-            p.communicate()
-        return p.returncode
+            exit_code = run_check()
+            if exit_code == 1:
+                # this means there was an error before ansible was able to start running
+                exit(exit_code)
+                return  # for IDE
+            elif exit_code == 0:
+                puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
+                user_wants_to_apply = ask('Do you want to apply these changes?')
+            else:
+                puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
+                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?')
+
+        if user_wants_to_apply:
+            exit_code = run_apply()
+            if exit_code == 0:
+                puts(colored.green(u"✓ Apply completed with status code {}".format(exit_code)))
+            else:
+                puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
+
+        exit(exit_code)
 
 
 class RunShellCommand(RunAnsibleModule):
