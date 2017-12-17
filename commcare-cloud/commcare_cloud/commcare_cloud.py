@@ -307,11 +307,14 @@ class RunAnsibleModule(object):
                                           the arguments for the module.
         :param module_args_argument_help: The help string to give the the argument that contains
                                           the arguments for the module.
+        :param include_module_arg: Set to True to include the 'module' argument. This should only by used
+                                   by the generic ``RunAnsibleModule`` command.
         """
         parser.add_argument('inventory_group', help=(
             "The inventory group to run the command on. Use 'all' for all hosts."
         ))
-        parser.add_argument('module', help="The module to run")
+        if include_module_arg:
+            parser.add_argument('module', help="The module to run")
         parser.add_argument(module_args_argument_name, help=module_args_argument_help)
         parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
             "connect as this user (default=ansible)"
@@ -348,6 +351,10 @@ class RunAnsibleModule(object):
 
     @staticmethod
     def run(args, unknown_args):
+        RunAnsibleModule._run(args, args.module, args.module_args, unknown_args)
+
+    @staticmethod
+    def _run(args, module, module_args, unknown_args):
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
 
@@ -355,10 +362,10 @@ class RunAnsibleModule(object):
             cmd_parts = (
                 'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
                 'ansible', args.inventory_group,
-                '-m', args.module,
+                '-m', module,
                 '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
                 '-u', args.remote_user,
-                '-a', args.module_args,
+                '-a', module_args,
                 '--diff',
             ) + tuple(unknown_args)
 
@@ -441,7 +448,8 @@ class RunShellCommand(RunAnsibleModule):
             module_args_argument_help="The shell command you want to run"
         )
 
-    def run(self, args, unknown_args):
+    @staticmethod
+    def run(args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
@@ -449,8 +457,7 @@ class RunShellCommand(RunAnsibleModule):
             if not ask("Do you know what you're doing and want to run this anyway?"):
                 exit(0)
 
-        args.module = 'shell'
-        RunAnsibleModule.run(args, unknown_args)
+        RunAnsibleModule._run(args, 'shell', args.shell_command, unknown_args)
 
 
 def git_branch():
