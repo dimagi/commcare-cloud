@@ -103,6 +103,7 @@
       file:
         dest: "{{ postgresql_home }}"
         state: directory
+        recurse: yes
         owner: postgres
         group: postgres
 
