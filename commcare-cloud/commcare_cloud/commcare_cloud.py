@@ -283,20 +283,35 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         AnsiblePlaybook.run(args, unknown_args)
 
 
-class RunShellCommand(object):
-    command = 'run-shell-command'
+class RunAnsibleModule(object):
+    command = 'run-module'
     help = (
-        'Run an arbitrary command via the shell module.'
+        'Run an arbitrary Ansible module.'
     )
 
     @staticmethod
     def make_parser(parser):
+        RunAnsibleModule._make_parser(
+            parser,
+            module_args_argument_name='module_args',
+            module_args_argument_help="The arguments to pass to the module",
+            include_module_arg=True
+        )
+
+    @staticmethod
+    def _make_parser(parser, module_args_argument_name, module_args_argument_help, include_module_arg=False):
+        """
+        :param parser: The Argparser parser
+        :param module_args_argument_name: The name to give the the argument that contains
+                                          the arguments for the module.
+        :param module_args_argument_help: The help string to give the the argument that contains
+                                          the arguments for the module.
+        """
         parser.add_argument('inventory_group', help=(
             "The inventory group to run the command on. Use 'all' for all hosts."
         ))
-        parser.add_argument('shell_command', help=(
-            "The shell command you want to run."
-        ))
+        parser.add_argument('module', help="The module to run")
+        parser.add_argument(module_args_argument_name, help=module_args_argument_help)
         parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
             "connect as this user (default=ansible)"
         ))
@@ -334,18 +349,11 @@ class RunShellCommand(object):
         cmd_parts = (
             'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
             'ansible', args.inventory_group,
-            '-m', 'shell',
+            '-m', args.module,
             '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
             '-u', args.remote_user,
-            '-a', args.shell_command,
+            '-a', args.module_args,
         ) + tuple(unknown_args)
-
-        if args.shell_command.strip().startswith('sudo '):
-            puts(colored.yellow(
-                "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
-                "Using 'sudo' directly in the command is non-standard practice."))
-            if not ask("Do you know what you're doing and want to run this anyway?"):
-                exit(0)
 
         become = args.become or bool(args.become_user)
         become_user = args.become_user
@@ -382,6 +390,30 @@ class RunShellCommand(object):
         return p.returncode
 
 
+class RunShellCommand(RunAnsibleModule):
+    command = 'run-shell-command'
+    help = 'Run an arbitrary command via the shell module.'
+
+    @staticmethod
+    def make_parser(parser):
+        RunAnsibleModule._make_parser(
+            parser,
+            module_args_argument_name='shell_command',
+            module_args_argument_help="The shell command you want to run"
+        )
+
+    def run(self, args, unknown_args):
+        if args.shell_command.strip().startswith('sudo '):
+            puts(colored.yellow(
+                "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
+                "Using 'sudo' directly in the command is non-standard practice."))
+            if not ask("Do you know what you're doing and want to run this anyway?"):
+                exit(0)
+
+        args.module = 'shell'
+        RunAnsibleModule.run(args, unknown_args)
+
+
 def git_branch():
     cwd = os.path.expanduser('~/.commcare-cloud/ansible')
     git_branch_output = subprocess.check_output("git branch", cwd=cwd, shell=True).strip().split('\n')
@@ -410,6 +442,7 @@ STANDARD_ARGS = [
     RestartElasticsearch,
     BootstrapUsers,
     RunShellCommand,
+    RunAnsibleModule,
 ]
 
 
