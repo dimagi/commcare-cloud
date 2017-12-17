@@ -398,7 +398,7 @@ localsettings:
       WRITE: icds-ucr
       READ:
         - [icds-ucr, 5]
-#        - [icds-ucr-standby1, 5]
+        - [icds-ucr-standby1, 5]
     icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
