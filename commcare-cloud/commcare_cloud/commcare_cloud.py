@@ -22,15 +22,16 @@ DEPRECATED_ANSIBLE_ARGS = [
 ]
 
 
-def ask(message):
-    return 'y' == input('{} [y/N]'.format(message))
+def ask(message, strict=False):
+    yesno = 'YES/NO' if strict else 'y/N'
+    negatives = ('NO', 'N', 'n', 'no', '')
+    affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
+    acceptable_options = affirmatives + negatives
 
-
-def ask_YES(message):
-    r = input('{} [YES/NO]'.format(message))
-    while r not in ('YES', 'NO', 'N', 'n', 'no', ''):
-        r = input('YES or NO? '.format(message))
-    return 'YES' == r
+    r = input('{} [{}]'.format(message, yesno))
+    while r not in acceptable_options:
+        r = input('{} or {}? '.format(*yesno.split('/')))
+    return r in affirmatives
 
 
 def arg_skip_check(parser):
@@ -255,12 +256,12 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
     @staticmethod
     def run(args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
-        if not ask_YES('Have you stopped all the elastic pillows?'):
+        if not ask('Have you stopped all the elastic pillows?', strict=True):
             exit(0)
         puts(colored.yellow(
             "This will cause downtime on the order of seconds to minutes,\n"
             "except in a few cases where an index is replicated across multiple nodes."))
-        if not ask_YES('Do a rolling restart of the ES cluster?'):
+        if not ask('Do a rolling restart of the ES cluster?', strict=True):
             exit(0)
         AnsiblePlaybook.run(args, unknown_args)
 
