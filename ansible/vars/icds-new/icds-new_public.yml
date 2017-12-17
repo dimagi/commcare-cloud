@@ -53,7 +53,7 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_cluster_name: 'icds-2.0'
 
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
