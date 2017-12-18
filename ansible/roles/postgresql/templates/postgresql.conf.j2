@@ -31,6 +31,7 @@ work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
 maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
 vacuum_cost_delay = 20ms
+dynamic_shared_memory_type = posix
 
 
 # WRITE AHEAD LOG
@@ -42,7 +43,11 @@ archive_timeout = 60
 
 wal_level = hot_standby
 max_wal_senders = 8
+{% if postgresql_version == '9.4' %}
 checkpoint_segments = {{ postgresql_checkpoint_segments }}
+{%  elif postgresql_version == '9.6' %}
+max_wal_size = {{ postgresql_max_wal_size }}
+{% endif %}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
