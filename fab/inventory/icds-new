@@ -323,8 +323,8 @@ hostname='riak0'
 10.247.164.49
 
 [riak1:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak1'
 
@@ -332,8 +332,8 @@ hostname='riak1'
 10.247.164.50
 
 [riak2:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak2'
 
@@ -341,8 +341,8 @@ hostname='riak2'
 10.247.164.51
 
 [riak3:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak3'
 
@@ -350,8 +350,8 @@ hostname='riak3'
 10.247.164.18
 
 [riak4:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak4'
 
@@ -359,8 +359,8 @@ hostname='riak4'
 10.247.164.53
 
 [riak5:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak5'
 
@@ -368,8 +368,8 @@ hostname='riak5'
 10.247.164.54
 
 [riak6:vars]
-devices=["/dev/sdc","/dev/sdd"]
-partitions=["/dev/sdc1","/dev/sdd1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak6'
 
@@ -377,8 +377,8 @@ hostname='riak6'
 #10.247.164.55
 #
 #[riak7:vars]
-#devices=["/dev/sdc","/dev/sdd"]
-#partitions=["/dev/sdc1","/dev/sdd1"]
+#devices=["/dev/sdb","/dev/sdc"]
+#partitions=["/dev/sdb1","/dev/sdc1"]
 #datavol_device='/dev/mapper/consolidated-data'
 #hostname='riak7'
 
@@ -458,8 +458,8 @@ hostname='pillow6'
 10.247.164.46
 
 [kafka0:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 kafka_broker_id=0
 hostname='kafka0'
@@ -474,8 +474,8 @@ hostname='rabbit0'
 10.247.164.47
 
 [formplayer0:vars]
-devices=["/dev/sdc"]
-partitions=["/dev/sdc1"]
+devices=["/dev/sdb"]
+partitions=["/dev/sdb1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='formplayer0'
 
