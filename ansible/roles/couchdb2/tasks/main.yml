@@ -34,7 +34,7 @@
    - _replicator
    - _global_changes
 
-- name: Copy couch restart script
+- name: Copy couch restart script (cleanup)
   become: yes
   file:
     dest: "/usr/local/sbin/couch2-restarter.sh"
@@ -42,7 +42,7 @@
   tags:
     - cron
 
-- name: Create Cron job
+- name: Create Cron job (cleanup)
   become: yes
   cron:
     name: "Reboot Couch"
