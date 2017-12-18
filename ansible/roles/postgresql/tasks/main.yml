@@ -122,6 +122,7 @@
     privs: "{{ item.1.privs }}"
     objs: "{{ item.1.objs }}"
     roles: "{{ item.0.username }}"
+    port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
   with_subelements:
     - "{{ postgres_users.values() }}"
@@ -156,7 +157,10 @@
 - meta: flush_handlers
 
 - name: Create replication slots
-  pg_replication_slot: name={{ item }} state=present
+  pg_replication_slot:
+    name: "{{ item }}"
+    port: "{{ postgresql_port }}"
+    state: present
   become: yes
   become_user: postgres
   vars:
@@ -255,6 +259,7 @@
   postgresql_ext:
     name: plproxy
     db: "{{item.name}}"
+    port: "{{ postgresql_port }}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
@@ -266,6 +271,7 @@
   postgresql_ext:
     name: hashlib
     db: "{{item.name}}"
+    port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs }}"
   when: item.create|default(True) and not is_pg_standby|default(False) and ((item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
   tags: pghashlib
@@ -279,6 +285,7 @@
     lang: plproxy
     trust: True
     db: "{{item.name}}"
+    port: "{{ postgresql_port }}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 

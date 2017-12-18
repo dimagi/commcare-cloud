@@ -56,6 +56,7 @@ def main():
             login_user=dict(default="postgres"),
             login_password=dict(default="", no_log=True),
             login_host=dict(default=""),
+            port=dict(default="5432"),
             name=dict(),
             state=dict(default='present', choices=['absent', 'present'])
         ),
