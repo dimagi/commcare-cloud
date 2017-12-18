@@ -22,15 +22,16 @@ DEPRECATED_ANSIBLE_ARGS = [
 ]
 
 
-def ask(message):
-    return 'y' == input('{} [y/N]'.format(message))
+def ask(message, strict=False):
+    yesno = 'YES/NO' if strict else 'y/N'
+    negatives = ('NO', 'N', 'n', 'no')
+    affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
+    acceptable_options = affirmatives + negatives
 
-
-def ask_YES(message):
-    r = input('{} [YES/NO]'.format(message))
-    while r not in ('YES', 'NO', 'N', 'n', 'no', ''):
-        r = input('YES or NO? '.format(message))
-    return 'YES' == r
+    r = input('{} [{}]'.format(message, yesno))
+    while r not in acceptable_options:
+        r = input('{} or {}? '.format(*yesno.split('/')))
+    return r in affirmatives
 
 
 def arg_skip_check(parser):
@@ -255,12 +256,12 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
     @staticmethod
     def run(args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
-        if not ask_YES('Have you stopped all the elastic pillows?'):
+        if not ask('Have you stopped all the elastic pillows?', strict=True):
             exit(0)
         puts(colored.yellow(
             "This will cause downtime on the order of seconds to minutes,\n"
             "except in a few cases where an index is replicated across multiple nodes."))
-        if not ask_YES('Do a rolling restart of the ES cluster?'):
+        if not ask('Do a rolling restart of the ES cluster?', strict=True):
             exit(0)
         AnsiblePlaybook.run(args, unknown_args)
 
@@ -283,20 +284,27 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         AnsiblePlaybook.run(args, unknown_args)
 
 
-class RunShellCommand(object):
-    command = 'run-shell-command'
+def arg_inventory_group(parser):
+    parser.add_argument('inventory_group', help=(
+        "The inventory group to run the command on. Use 'all' for all hosts."
+    ))
+
+
+class RunAnsibleModule(object):
+    command = 'run-module'
     help = (
-        'Run an arbitrary command via the shell module.'
+        'Run an arbitrary Ansible module.'
     )
 
     @staticmethod
     def make_parser(parser):
-        parser.add_argument('inventory_group', help=(
-            "The inventory group to run the command on. Use 'all' for all hosts."
-        ))
-        parser.add_argument('shell_command', help=(
-            "The shell command you want to run."
-        ))
+        arg_inventory_group(parser)
+        parser.add_argument('module', help="The module to run")
+        parser.add_argument('module_args', help="The arguments to pass to the module")
+        RunAnsibleModule.add_non_positional_arguments(parser)
+
+    @staticmethod
+    def add_non_positional_arguments(parser):
         parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
             "connect as this user (default=ansible)"
         ))
@@ -306,6 +314,7 @@ class RunShellCommand(object):
         parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
         ))
+        arg_skip_check(parser)
         arg_stdout_callback(parser)
         add_to_help_text(parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
@@ -323,6 +332,8 @@ class RunShellCommand(object):
                     '-a',
                     '--ask-vault-pass',
                     '--vault-password-file',
+                    '--check',
+                    '--diff'
                 ],
             )
         ))
@@ -331,15 +342,97 @@ class RunShellCommand(object):
     def run(args, unknown_args):
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
-        cmd_parts = (
-            'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
-            'ansible', args.inventory_group,
-            '-m', 'shell',
-            '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
-            '-u', args.remote_user,
-            '-a', args.shell_command,
-        ) + tuple(unknown_args)
 
+        def _run_ansible(args, *unknown_args):
+            cmd_parts = (
+                'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
+                'ansible', args.inventory_group,
+                '-m', args.module,
+                '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
+                '-u', args.remote_user,
+                '-a', args.module_args,
+                '--diff',
+            ) + tuple(unknown_args)
+
+            become = args.become or bool(args.become_user)
+            become_user = args.become_user
+            include_vars = False
+            if become:
+                if become_user not in ('cchq',):
+                    # ansible user can do things as cchq without a password,
+                    # but needs the ansible user password in order to do things as other users.
+                    # In that case, we need to pull in the vault variable containing this password
+                    include_vars = True
+                if become_user:
+                    cmd_parts += ('--become-user', args.become_user)
+                else:
+                    cmd_parts += ('--become',)
+
+            if include_vars:
+                cmd_parts += (
+                    '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
+                    '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
+                )
+
+            ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
+            if ask_vault_pass:
+                cmd_parts += ('--vault-password-file=/bin/cat',)
+
+            cmd_parts += get_common_ssh_args(public_vars)
+            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            print(cmd)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
+            if ask_vault_pass:
+                p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
+            else:
+                p.communicate()
+            return p.returncode
+
+        def run_check():
+            return _run_ansible(args, '--check', *unknown_args)
+
+        def run_apply():
+            return _run_ansible(args, *unknown_args)
+
+        exit_code = 0
+
+        if args.skip_check:
+            user_wants_to_apply = ask('Do you want to apply without running the check first?')
+        else:
+            exit_code = run_check()
+            if exit_code == 1:
+                # this means there was an error before ansible was able to start running
+                exit(exit_code)
+                return  # for IDE
+            elif exit_code == 0:
+                puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
+                user_wants_to_apply = ask('Do you want to apply these changes?')
+            else:
+                puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
+                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?')
+
+        if user_wants_to_apply:
+            exit_code = run_apply()
+            if exit_code == 0:
+                puts(colored.green(u"✓ Apply completed with status code {}".format(exit_code)))
+            else:
+                puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
+
+        exit(exit_code)
+
+
+class RunShellCommand(object):
+    command = 'run-shell-command'
+    help = 'Run an arbitrary command via the shell module.'
+
+    @staticmethod
+    def make_parser(parser):
+        arg_inventory_group(parser)
+        parser.add_argument('shell_command', help="The shell command you want to run")
+        RunAnsibleModule.add_non_positional_arguments(parser)
+
+    @staticmethod
+    def run(args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
@@ -347,39 +440,11 @@ class RunShellCommand(object):
             if not ask("Do you know what you're doing and want to run this anyway?"):
                 exit(0)
 
-        become = args.become or bool(args.become_user)
-        become_user = args.become_user
-        include_vars = False
-        if become:
-            if become_user not in ('cchq',):
-                # ansible user can do things as cchq without a password,
-                # but needs the ansible user password in order to do things as other users.
-                # In that case, we need to pull in the vault variable containing this password
-                include_vars = True
-            if become_user:
-                cmd_parts += ('--become-user', args.become_user)
-            else:
-                cmd_parts += ('--become',)
-
-        if include_vars:
-            cmd_parts += (
-                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
-                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
-            )
-
-        ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
-        if ask_vault_pass:
-            cmd_parts += ('--vault-password-file=/bin/cat',)
-
-        cmd_parts += get_common_ssh_args(public_vars)
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print(cmd)
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
-        if ask_vault_pass:
-            p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
-        else:
-            p.communicate()
-        return p.returncode
+        args.module = 'shell'
+        args.module_args = args.shell_command
+        args.skip_check = True
+        del args.shell_command
+        RunAnsibleModule.run(args, unknown_args)
 
 
 def git_branch():
@@ -410,6 +475,7 @@ STANDARD_ARGS = [
     RestartElasticsearch,
     BootstrapUsers,
     RunShellCommand,
+    RunAnsibleModule,
 ]
 
 
