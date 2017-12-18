@@ -44,6 +44,8 @@ wal_level = hot_standby
 max_wal_senders = 8
 {% if postgresql_version == '9.4' %}
 checkpoint_segments = {{ postgresql_checkpoint_segments }}
+{%  elif postgresql_version == '9.6' %}
+max_wal_size = {{ postgresql_max_wal_size }}
 {% endif %}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}

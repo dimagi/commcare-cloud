@@ -29,7 +29,8 @@ postgresql_maintenance_work_mem: '64MB'
 postgresql_checkpoint_completion_target: '0.5'
 postgresql_wal_buffers: '-1'
 postgresql_default_statistics_target: '100'
-postgresql_checkpoint_segments: '16'
+postgresql_checkpoint_segments: '16'  # V <= 9.4
+postgresql_max_wal_size: '256MB'  # V >= 9.6
 
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
