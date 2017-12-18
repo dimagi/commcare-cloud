@@ -11,8 +11,11 @@
     # prefixed versions should be used everywhere except when assigning a
     # concrete value (e.g., in defaults or inventory vars files).
     - set_fact: _riak_backend="{{ riak_backend }}"
+      tags: always
     - set_fact: _riak_ring_size="{{ riak_ring_size }}"
+      tags: always
     - set_fact: stanchion_host="{{ groups.stanchion[0] }}"
+      tags: always
 
 - name: Common Setup
   hosts:
@@ -31,7 +34,7 @@
       when: riakcs_control_host is undefined
       check_mode: no
       changed_when: false
-      tags: localsettings
+      tags: always
 
 - name: Register riak conf override fact
   # NOTE riak config files are only created/updated if they do not already exist
@@ -52,13 +55,16 @@
       changed_when: false
       failed_when: false
       check_mode: no
+      tags: always
     - set_fact: _force_riak_config="{{ 'yes'
         if inventory_hostname in (force_riak_config | default('')).split(',')
             or force_riak_config | default('') == 'all'
             or not (riak_conf_file.stat.exists | default(True))
         else '' }}"
+      tags: always
     # HACK set fact because defaults cannot be loaded from other hosts
     - set_fact: riak_nodename="{{ backend_vars.riak_nodename }}"
+      tags: always
 
 - name: Configure swap for riak hosts
   hosts: riakcs
