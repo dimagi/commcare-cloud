@@ -100,7 +100,7 @@
   become: yes
   cron:
     name: "Backup blobdb weekly"
-    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}""
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
