@@ -72,6 +72,7 @@ nadir_hour: 16
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
+postgresql_version: '9.6'
 postgresql_shared_buffers: '8GB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '16GB'
