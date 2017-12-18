@@ -284,6 +284,12 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         AnsiblePlaybook.run(args, unknown_args)
 
 
+def arg_inventory_group(parser):
+    parser.add_argument('inventory_group', help=(
+        "The inventory group to run the command on. Use 'all' for all hosts."
+    ))
+
+
 class RunAnsibleModule(object):
     command = 'run-module'
     help = (
@@ -292,9 +298,7 @@ class RunAnsibleModule(object):
 
     @staticmethod
     def make_parser(parser):
-        parser.add_argument('inventory_group', help=(
-            "The inventory group to run the command on. Use 'all' for all hosts."
-        ))
+        arg_inventory_group(parser)
         parser.add_argument('module', help="The module to run")
         parser.add_argument('module_args', help="The arguments to pass to the module")
         RunAnsibleModule.add_non_positional_arguments(parser)
@@ -423,9 +427,7 @@ class RunShellCommand(object):
 
     @staticmethod
     def make_parser(parser):
-        parser.add_argument('inventory_group', help=(
-            "The inventory group to run the command on. Use 'all' for all hosts."
-        ))
+        arg_inventory_group(parser)
         parser.add_argument('shell_command', help="The shell command you want to run")
         RunAnsibleModule.add_non_positional_arguments(parser)
 
