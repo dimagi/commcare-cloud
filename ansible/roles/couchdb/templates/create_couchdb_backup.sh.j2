@@ -3,10 +3,9 @@ BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
 
 TODAY=$(date +"%Y_%m_%d")
-BACKUP_FILE="{{ couch_backup_dir }}/couchdb_${BACKUP_TYPE}_${TODAY}.gz"
+BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
 
-mkdir -p "{{ couch_backup_dir }}"
-tar -zcf "${BACKUP_FILE}" "{{ couch_data_dir }}"
+tar -Pzcf "{{ couch_backup_dir }}/${BACKUP_FILE}" "{{ couch_data_dir }}"
 
 # Remove old backups of this backup type
 find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" -delete
@@ -16,5 +15,5 @@ rsync -avH --delete {{ couch_backup_dir }}/ {{ remote_couch_backup }}:{{ couch_b
 {% endif %}
 
 {% if couch_s3 %}
-/usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "dimagi-{{ deploy_env }}-couch-backups"
+( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "dimagi-{{ deploy_env }}-couch-backups" )
 {% endif %}
