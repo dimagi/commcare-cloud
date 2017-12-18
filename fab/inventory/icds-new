@@ -304,8 +304,8 @@ hostname='couch1'
 10.247.164.14
 
 [couch2:vars]
-devices=["/dev/sdb"]
-partitions=["/dev/sdb1"]
+devices=["/dev/sdb","/dev/sdc"]
+partitions=["/dev/sdb1","/dev/sdc1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='couch2'
 #remote_couch_backup='es0'
