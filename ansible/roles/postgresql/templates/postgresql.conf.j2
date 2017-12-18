@@ -42,7 +42,9 @@ archive_timeout = 60
 
 wal_level = hot_standby
 max_wal_senders = 8
+{% if postgresql_version == '9.4' %}
 checkpoint_segments = {{ postgresql_checkpoint_segments }}
+{% endif %}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
