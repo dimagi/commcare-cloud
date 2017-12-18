@@ -10,6 +10,7 @@
     - zookeeper
     - riakcs
     - formplayer
+    - pg_standby
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}

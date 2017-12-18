@@ -53,7 +53,7 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_cluster_name: 'icds-2.0'
 
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
@@ -147,11 +147,6 @@ postgresql_dbs:
   - django_alias: icds-ucr-standby1
     name: commcarehq_icds_aggregatedata
     host: "{{ hostvars[groups.pgucrstandby.0].inventory_hostname }}"
-    create: False
-    django_migrate: False
-  - django_alias: icds-ucr-standby2
-    name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgmainstandby.0].inventory_hostname }}"
     create: False
     django_migrate: False
 
@@ -404,7 +399,6 @@ localsettings:
       READ:
         - [icds-ucr, 5]
         - [icds-ucr-standby1, 5]
-        - [icds-ucr-standby2, 5]
     icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
