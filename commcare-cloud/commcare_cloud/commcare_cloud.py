@@ -292,30 +292,15 @@ class RunAnsibleModule(object):
 
     @staticmethod
     def make_parser(parser):
-        RunAnsibleModule._make_parser(
-            parser,
-            module_args_argument_name='module_args',
-            module_args_argument_help="The arguments to pass to the module",
-            include_module_arg=True
-        )
-
-    @staticmethod
-    def _make_parser(parser, module_args_argument_name, module_args_argument_help, include_module_arg=False):
-        """
-        :param parser: The Argparser parser
-        :param module_args_argument_name: The name to give the the argument that contains
-                                          the arguments for the module.
-        :param module_args_argument_help: The help string to give the the argument that contains
-                                          the arguments for the module.
-        :param include_module_arg: Set to True to include the 'module' argument. This should only by used
-                                   by the generic ``RunAnsibleModule`` command.
-        """
         parser.add_argument('inventory_group', help=(
             "The inventory group to run the command on. Use 'all' for all hosts."
         ))
-        if include_module_arg:
-            parser.add_argument('module', help="The module to run")
-        parser.add_argument(module_args_argument_name, help=module_args_argument_help)
+        parser.add_argument('module', help="The module to run")
+        parser.add_argument('module_args', help="The arguments to pass to the module")
+        RunAnsibleModule.add_non_positional_arguments(parser)
+
+    @staticmethod
+    def add_non_positional_arguments(parser):
         parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
             "connect as this user (default=ansible)"
         ))
@@ -351,10 +336,8 @@ class RunAnsibleModule(object):
 
     @staticmethod
     def run(args, unknown_args):
-        RunAnsibleModule._run(args, args.module, args.module_args, unknown_args)
-
-    @staticmethod
-    def _run(args, module, module_args, unknown_args):
+        module = args.module
+        module_args = args.module_args
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
 
@@ -436,17 +419,17 @@ class RunAnsibleModule(object):
         exit(exit_code)
 
 
-class RunShellCommand(RunAnsibleModule):
+class RunShellCommand(object):
     command = 'run-shell-command'
     help = 'Run an arbitrary command via the shell module.'
 
     @staticmethod
     def make_parser(parser):
-        RunAnsibleModule._make_parser(
-            parser,
-            module_args_argument_name='shell_command',
-            module_args_argument_help="The shell command you want to run"
-        )
+        parser.add_argument('inventory_group', help=(
+            "The inventory group to run the command on. Use 'all' for all hosts."
+        ))
+        parser.add_argument('shell_command', help="The shell command you want to run")
+        RunAnsibleModule.add_non_positional_arguments(parser)
 
     @staticmethod
     def run(args, unknown_args):
@@ -457,7 +440,10 @@ class RunShellCommand(RunAnsibleModule):
             if not ask("Do you know what you're doing and want to run this anyway?"):
                 exit(0)
 
-        RunAnsibleModule._run(args, 'shell', args.shell_command, unknown_args)
+        args.module = 'shell'
+        args.module_args = args.shell_command
+        del args.shell_command
+        RunAnsibleModule.run(args, unknown_args)
 
 
 def git_branch():
