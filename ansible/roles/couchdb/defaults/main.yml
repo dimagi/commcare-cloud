@@ -9,3 +9,5 @@ couch_backup_dir: "{{ encrypted_root }}/backups/couchdb"
 backup_couch: False
 remote_couch_backup: False
 couch_s3: False
+couchdb_backup_days: 3
+couchdb_backup_weeks: 3

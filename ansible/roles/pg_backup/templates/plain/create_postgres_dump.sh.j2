@@ -4,7 +4,8 @@ DAYS_TO_RETAIN_BACKUPS=$2
 ENV="{{ deploy_env }}"
 
 TODAY=$(date +"%Y_%m_%d")
-DIRECTORY="{{ postgresql_backup_dir }}/postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
+FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
+DIRECTORY="{{ postgresql_backup_dir }}/${FILENAME}"
 ARGS=""
 
 {% if backup_postgres=='plain' %}
@@ -38,9 +39,9 @@ fi
 
 {% if postgres_s3 %}
 if [ -f "${DIRECTORY}.gz" ]; then
-    /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.gz"
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "dimagi-{{ deploy_env }}-postgres-backups" )
 fi
 if [ -f "${DIRECTORY}.tar.gz" ]; then
-    /usr/local/sbin/backup_snapshots.py "${DIRECTORY}.tar.gz"
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "dimagi-{{ deploy_env }}-postgres-backups" )
 fi
 {% endif %}
