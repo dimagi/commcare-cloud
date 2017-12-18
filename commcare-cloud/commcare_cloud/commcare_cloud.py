@@ -336,8 +336,6 @@ class RunAnsibleModule(object):
 
     @staticmethod
     def run(args, unknown_args):
-        module = args.module
-        module_args = args.module_args
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
 
@@ -345,10 +343,10 @@ class RunAnsibleModule(object):
             cmd_parts = (
                 'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
                 'ansible', args.inventory_group,
-                '-m', module,
+                '-m', args.module,
                 '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
                 '-u', args.remote_user,
-                '-a', module_args,
+                '-a', args.module_args,
                 '--diff',
             ) + tuple(unknown_args)
 
