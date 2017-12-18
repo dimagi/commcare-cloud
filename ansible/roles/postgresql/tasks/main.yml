@@ -92,7 +92,7 @@
 
 - name: start postgresql
   become: true
-  service: name=postgresql state=started
+  service: name=postgresql state=started args="{{ postgresql_version }}"
   tags: after-reboot
 
 - name: Create PostgreSQL users

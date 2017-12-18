@@ -1,11 +1,11 @@
 ---
 - name: Restart postgres
   become: yes
-  action: service name=postgresql state=restarted
+  action: service name=postgresql args="{{ postgresql_version }}" state=restarted
 
 - name: Reload postgres
   become: yes
-  action: service name=postgresql state=reloaded
+  action: service name=postgresql args="{{ postgresql_version }}" state=reloaded
 
 - name: Start pgbouncer
   become: yes
