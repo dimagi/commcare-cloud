@@ -9,6 +9,7 @@ nginx_sites:
    listen: "{{ riakcs_proxy_port }}"
    # boto3 python library switches to multipart uploads for blobs > 8M
    client_max_body_size: "9M"
+   client_body_buffer_size: "128k"
    upstream_port: "{{ riakcs_port }}"
    proxy_set_headers:
    - "Host $host"
