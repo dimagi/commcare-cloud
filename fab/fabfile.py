@@ -189,7 +189,8 @@ def icds():
     _confirm_environment_time('icds', 'Asia/Kolkata')
     _setup_env('icds')
 
-@task
+
+@task(alias='icds-new')
 def icds_new():
     """www.icds-cas.gov.in"""
     _confirm_environment_time('icds-new', 'Asia/Kolkata')
