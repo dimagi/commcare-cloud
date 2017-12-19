@@ -61,4 +61,4 @@
     owner: cchq
     mode: 0644
   tags:
-    - sentry-localsettings
+    - fp-localsettings
