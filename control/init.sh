@@ -35,12 +35,7 @@ wait
 
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
-[ ! -d ~/.commcare-cloud ] && mkdir ~/.commcare-cloud
-[ ! -d ~/.commcare-cloud/ansible ] && ln -s ~/commcarehq-ansible/ansible ~/.commcare-cloud/
-[ ! -d ~/.commcare-cloud/vars ] && ln -s ~/commcarehq-ansible/ansible/vars ~/.commcare-cloud/
-[ ! -d ~/.commcare-cloud/inventory ] && ln -s ~/commcare-hq-deploy/fab/inventory ~/.commcare-cloud/
-[ ! -d ~/.commcare-cloud/config ] && ln -s ~/commcarehq-ansible/config ~/.commcare-cloud/
-
+source  ~/commcarehq-ansible/control/check_install.sh
 alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
 alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
