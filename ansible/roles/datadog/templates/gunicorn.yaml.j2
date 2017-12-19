@@ -6,4 +6,4 @@ init_config:
 instances:
   - proc_name: deployment.gunicorn.commcarehq_wsgi:application
     tags:
-      - environment:{{ deploy_env }}
+      - environment:{{ env_name|default(deploy_env) }}
