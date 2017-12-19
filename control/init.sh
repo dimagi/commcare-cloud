@@ -23,11 +23,6 @@ fi
 if [ ! -d ~/commcare-hq-deploy ]; then
     echo "Cloning commcare-hq-deploy..."
     git clone https://github.com/dimagi/commcare-hq-deploy.git ~/commcare-hq-deploy
-    if [ ! -d ~/commcare-hq ]; then
-        # keep old commands working: create symlink to simulate cchq repo
-        mkdir ~/commcare-hq
-        ln -s ~/commcare-hq-deploy/fab ~/commcare-hq/fab
-    fi
 fi
 
 echo "Downloading dependencies from galaxy and pip"
@@ -35,6 +30,7 @@ export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml &
 pip install -r ~/commcarehq-ansible/ansible/requirements.txt &
 pip install -e ~/commcarehq-ansible/commcare-cloud &
+pip install -r ~/commcare-hq-deploy/requirements.txt &
 wait
 
 # convenience: . init-ansible
