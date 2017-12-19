@@ -136,5 +136,9 @@ replication_slot=standby
 hqstandby0.internal-va.commcarehq.org
 #hqstandby1.internal-va.commcarehq.org
 
+[pg_backup]
+hqstandby0.internal-va.commcarehq.org pg_backup_from=hqdb0.internal-va.commcarehq.org
+#hqstandby1.internal-va.commcarehq.org pg_backup_from=hqdb1.internal-va.commcarehq.org
+
 [control]
 control.internal-va.commcarehq.org
