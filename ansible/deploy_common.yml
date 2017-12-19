@@ -56,3 +56,16 @@
     tags:
       - static-routes
       - after-reboot
+
+- name: DNS configuration
+  hosts: all
+  tasks:
+  - name: setting namserver
+    become: True
+    lineinfile:
+      dest: /etc/resolv.conf
+      line: 'nameserver {{ item }}'
+    with_items: "{{ nameservers }}"
+    when: nameservers is defined
+    tags:
+      - dns
