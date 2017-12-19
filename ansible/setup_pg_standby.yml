@@ -56,7 +56,7 @@
     - name: execute base backup
       shell: |
         export PGPASSWORD="{{ postgres_users.replication.password }}" && \
-        pg_basebackup \
+        {{ postgres_install_dir }}/bin/pg_basebackup \
           -h {{ hot_standby_master }} \
           -U {{ postgres_users.replication.username }} \
           -D {{ postgresql_home }} \
