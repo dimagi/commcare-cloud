@@ -12,6 +12,10 @@ etc_hosts_lines: []
 etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
 static_routes:
   - name: docker
     cmd: add

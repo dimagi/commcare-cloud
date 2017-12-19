@@ -189,6 +189,10 @@ etc_hosts_lines:
   - '10.247.164.31		www.icds-cas.gov.in'
 etc_hosts_lines_removed: []
 
+nameservers:
+  - 164.100.17.3
+  - 164.100.3.1
+
 http_proxy_address: '10.247.63.132'
 http_proxy_port: '3128'
 
