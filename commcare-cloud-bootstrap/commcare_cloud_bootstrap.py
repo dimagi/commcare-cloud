@@ -11,6 +11,10 @@ import yaml
 import jsonobject
 from six.moves import shlex_quote
 
+REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
+VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
+INVENTORY_DIR = os.path.join(REPO_BASE, 'fab', 'fab', 'inventory')
+
 
 class Spec(jsonobject.JsonObject):
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
@@ -161,9 +165,8 @@ def poll_for_aws_state(env, instance_ids):
 
 def save_inventory(env, inventory):
     inventory_file_contents = yaml.safe_dump(inventory.to_json(), default_flow_style=False)
-    inventory_dir = os.path.expanduser('~/.commcare-cloud/inventory')
-    if os.path.exists(inventory_dir):
-        inventory_file = '{}/{}'.format(inventory_dir, env)
+    if os.path.exists(INVENTORY_DIR):
+        inventory_file = '{}/{}'.format(INVENTORY_DIR, env)
         with open(inventory_file, 'w') as f:
             f.write(inventory_file_contents)
         print('inventory file saved to {}'.format(inventory_file),
@@ -173,10 +176,9 @@ def save_inventory(env, inventory):
 
 
 def copy_default_vars(env, aws_config):
-    vars_dir = os.path.expanduser('~/.commcare-cloud/vars')
-    template_dir = os.path.join(vars_dir, 'dev')
-    new_dir = os.path.join(vars_dir, env)
-    if os.path.exists(vars_dir) and os.path.exists(template_dir) and not os.path.exists(new_dir):
+    template_dir = os.path.join(VARS_DIR, 'dev')
+    new_dir = os.path.join(VARS_DIR, env)
+    if os.path.exists(VARS_DIR) and os.path.exists(template_dir) and not os.path.exists(new_dir):
         os.makedirs(new_dir)
         shutil.copyfile(os.path.join(template_dir, 'dev_private.yml'),
                         os.path.join(new_dir, '{env}_vault.yml'.format(env=env)))
