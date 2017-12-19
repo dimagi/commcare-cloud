@@ -1,0 +1,25 @@
+From 33e8d418a54889f991749eb19e055337fa954ce6 Mon Sep 17 00:00:00 2001
+From: Cal Ellowitz <calellowitz@gmail.com>
+Date: Thu, 19 Jan 2017 21:26:29 -0500
+Subject: [PATCH] slower rebuilds
+
+---
+ corehq/apps/userreports/pillow.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/corehq/apps/userreports/pillow.py b/corehq/apps/userreports/pillow.py
+index b9165fe..e5d4306 100644
+--- a/corehq/apps/userreports/pillow.py
++++ b/corehq/apps/userreports/pillow.py
+@@ -18,7 +18,7 @@ from pillowtop.processors import PillowProcessor
+ from pillowtop.utils import ensure_matched_revisions, ensure_document_exists
+ 
+ 
+-REBUILD_CHECK_INTERVAL = 10 * 60  # in seconds
++REBUILD_CHECK_INTERVAL = 60 * 60 * 12  # in seconds, 12 hours for the icds demo
+ UCR_CHECKPOINT_ID = 'pillow-checkpoint-ucr-main'
+ UCR_STATIC_CHECKPOINT_ID = 'pillow-checkpoint-ucr-static'
+ 
+-- 
+2.10.2
+

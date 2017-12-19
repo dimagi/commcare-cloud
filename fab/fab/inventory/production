@@ -1,0 +1,144 @@
+[proxy]
+hqproxy0.internal-va.commcarehq.org
+
+[webworkers]
+hqdjango0.internal-va.commcarehq.org
+hqdjango1.internal-va.commcarehq.org
+hqdjango2.internal-va.commcarehq.org
+
+[hqdb0]
+hqdb0.internal-va.commcarehq.org
+
+[hqdb0:vars]
+hot_standby_server=hqstandby0.internal-va.commcarehq.org
+postgresql_replication_slots=['standby','spare']
+datavol_device=/dev/xvdb datadog_integration_cloudant=true
+
+[hqdb1]
+hqdb1.internal-va.commcarehq.org
+
+[hqdb1:vars]
+#hot_standby_server=hqstandby1.internal-va.commcarehq.org
+postgresql_replication_slots=['standby','spare']
+datavol_device=/dev/xvdb
+
+[postgresql]
+hqdb0.internal-va.commcarehq.org
+hqdb1.internal-va.commcarehq.org
+
+[rabbitmq]
+hqtouch0.internal-va.commcarehq.org
+
+[zookeeper]
+hqes1.internal-va.commcarehq.org
+
+[kafka]
+hqes1.internal-va.commcarehq.org kafka_broker_id=1
+
+[celery]
+# ansible makes the first thing in this list the flower url
+# a little bit redundant with with more explicit settings in environments.yml
+# but ansible doesn't currently have access to that
+hqcelery1.internal-va.commcarehq.org datadog_integrations=celery
+hqcelery0.internal-va.commcarehq.org
+hqcelery2.internal-va.commcarehq.org
+
+[celery:vars]
+swap_size=8G
+
+[pillowtop]
+hqpillowtop0.internal-va.commcarehq.org
+hqpillowtop1.internal-va.commcarehq.org
+
+[touchforms]
+hqtouch0.internal-va.commcarehq.org
+
+[formplayer]
+hqformplayer0.internal-va.commcarehq.org
+
+[redis]
+hqdb0.internal-va.commcarehq.org
+
+[elasticsearch]
+hqes0.internal-va.commcarehq.org elasticsearch_node_name=hqes0
+hqes1.internal-va.commcarehq.org elasticsearch_node_name=hqes1
+hqes2.internal-va.commcarehq.org elasticsearch_node_name=hqes2
+hqes3.internal-va.commcarehq.org elasticsearch_node_name=hqes3
+hqes4.internal-va.commcarehq.org elasticsearch_node_name=hqes4
+
+[shared_dir_host]
+hqdb0.internal-va.commcarehq.org
+
+[shared_dir_host:vars]
+datadisk_device=/dev/xvde
+
+[riakcs]
+hqriak13.internal-va.commcarehq.org
+hqriak14.internal-va.commcarehq.org
+hqriak15.internal-va.commcarehq.org
+hqriak16.internal-va.commcarehq.org
+hqriak17.internal-va.commcarehq.org
+hqriak18.internal-va.commcarehq.org
+hqriak19.internal-va.commcarehq.org
+
+[riakcs:vars]
+datavol_device=/dev/xvdb
+swap_size=4G
+
+[stanchion]
+hqriak15.internal-va.commcarehq.org
+
+[riakcs_new]
+hqriak20.internal-va.commcarehq.org
+hqriak21.internal-va.commcarehq.org
+hqriak22.internal-va.commcarehq.org
+hqriak23.internal-va.commcarehq.org
+hqriak24.internal-va.commcarehq.org
+hqriak28.internal-va.commcarehq.org
+hqriak29.internal-va.commcarehq.org
+
+[riakcs_new:vars]
+datavol_device=/dev/mapper/consolidated-data
+swap_size=4G
+
+[stanchion_new]
+hqriak20.internal-va.commcarehq.org
+
+[lvm]
+hqriak20.internal-va.commcarehq.org
+hqriak21.internal-va.commcarehq.org
+hqriak22.internal-va.commcarehq.org
+hqriak23.internal-va.commcarehq.org
+hqriak24.internal-va.commcarehq.org
+hqriak28.internal-va.commcarehq.org
+hqriak29.internal-va.commcarehq.org
+
+[lvm:vars]
+devices=["/dev/xvdc"]
+partitions=["/dev/xvdc1"]
+datavol_device=/dev/mapper/consolidated-data
+
+[hqstandby0]
+hqstandby0.internal-va.commcarehq.org
+
+[hqstandby0:vars]
+hot_standby_master=hqdb0.internal-va.commcarehq.org
+replication_slot=standby
+
+#[hqstandby1]
+#hqstandby1.internal-va.commcarehq.org
+#
+#[hqstandby1:vars]
+#hot_standby_master=hqdb1.internal-va.commcarehq.org
+#replication_slot=standby
+
+[pg_standby]
+hqstandby0.internal-va.commcarehq.org
+#hqstandby1.internal-va.commcarehq.org
+
+[pg_backup]
+hqstandby0.internal-va.commcarehq.org pg_backup_from=hqdb0.internal-va.commcarehq.org
+#hqstandby1.internal-va.commcarehq.org pg_backup_from=hqdb1.internal-va.commcarehq.org
+
+[control]
+control.internal-va.commcarehq.org
