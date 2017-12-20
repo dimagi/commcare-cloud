@@ -60,10 +60,21 @@
 - name: DNS configuration
   hosts: all
   tasks:
-  - name: setting namserver
-    become: True
+
+  - name: set running configuration
+    become: yes
     lineinfile:
       dest: /etc/resolv.conf
+      line: 'nameserver {{ item }}'
+    with_items: "{{ nameservers }}"
+    when: nameservers is defined
+    tags:
+      - dns
+
+  - name: set resolvconf base configuration
+    become: yes
+    lineinfile:
+      dest: /etc/resolvconf/resolv.conf.d/base
       line: 'nameserver {{ item }}'
     with_items: "{{ nameservers }}"
     when: nameservers is defined
