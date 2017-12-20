@@ -388,13 +388,13 @@ icds-new:
       celery:
         concurrency: 8
         max_tasks_per_child: 5
-      # celery_periodic:
-      #   concurrency: 4
-      #   server_whitelist: 10.247.164.40
-      # pillow_retry_queue:
-      #   concurrency: 1
-      # submission_reprocessing_queue:
-      #   concurrency: 1
+      celery_periodic:
+         concurrency: 4
+         server_whitelist: 10.247.164.40
+      pillow_retry_queue:
+         concurrency: 1
+      submission_reprocessing_queue:
+         concurrency: 1
       email_queue:
         concurrency: 2
     '10.247.164.41':
