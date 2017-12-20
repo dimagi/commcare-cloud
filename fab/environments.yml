@@ -391,10 +391,10 @@ icds-new:
       celery_periodic:
          concurrency: 4
          server_whitelist: 10.247.164.40
-      # pillow_retry_queue:
-      #   concurrency: 1
-      # submission_reprocessing_queue:
-      #   concurrency: 1
+      pillow_retry_queue:
+         concurrency: 1
+      submission_reprocessing_queue:
+         concurrency: 1
       email_queue:
         concurrency: 2
     '10.247.164.41':
