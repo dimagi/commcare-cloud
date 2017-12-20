@@ -67,6 +67,7 @@ backup_blobdb: False
 backup_postgres: plain
 backup_es: False
 postgres_s3: False
+couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
