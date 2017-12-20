@@ -21,6 +21,10 @@ host    replication     {{ postgres_users.replication.username }}   {{ cluster_i
 host    all             {{ postgres_users.backup.username }}   {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
 {% endif %}
 
+{% if postgres_users.get('tableau_server') %}
+host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_server.split(':')[0] }}    md5
+{% endif %}
+
 {% if cluster_ip_range is defined %}
 {% for db_name, db_list in postgresql_dbs|groupby('name') %}
 {% set db = db_list[0] %}
