@@ -17,12 +17,13 @@ def preindex_views():
         sudo((
             'echo "{virtualenv_root}/bin/python '
             '{code_root}/manage.py preindex_everything '
-            '8 {user}" --mail | at -t `date -d "5 seconds" '
+            '8 {user}" {mail_flag} | at -t `date -d "5 seconds" '
             '+%m%d%H%M.%S`'
         ).format(
             virtualenv_root=env.virtualenv_root,
             code_root=env.code_root,
             user=env.user,
+            mail_flag='--mail' if env.email_enabled else ''
         ))
 
 
