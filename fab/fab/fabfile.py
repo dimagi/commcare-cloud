@@ -90,6 +90,7 @@ env.abort_exception = Exception
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None
+env.email_enabled = True
 env.always_use_pty = False
 env['sudo_prefix'] += '-H '
 
@@ -195,6 +196,7 @@ def icds_new():
     """www.icds-cas.gov.in"""
     _confirm_environment_time('icds-new', 'Asia/Kolkata')
     _setup_env('icds-new')
+    env.email_enabled = False
 
 
 @task
