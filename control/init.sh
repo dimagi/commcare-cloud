@@ -20,37 +20,29 @@ if [ ! -d ~/commcarehq-ansible/config ]; then
     git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcarehq-ansible/config || mkdir ~/commcarehq-ansible/config
 fi
 
-if [ ! -d ~/commcare-hq-deploy ]; then
-    echo "Cloning commcare-hq-deploy..."
-    git clone https://github.com/dimagi/commcare-hq-deploy.git ~/commcare-hq-deploy
-fi
-
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml &
 pip install -r ~/commcarehq-ansible/ansible/requirements.txt &
 pip install -e ~/commcarehq-ansible/commcare-cloud &
-pip install -r ~/commcare-hq-deploy/requirements.txt &
+pip install -r ~/commcarehq-ansible/fab/requirements.txt &
 wait
 
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
-[ ! -d ~/.commcare-cloud ] && mkdir ~/.commcare-cloud
-[ ! -d ~/.commcare-cloud/ansible ] && ln -s ~/commcarehq-ansible/ansible ~/.commcare-cloud/
-[ ! -d ~/.commcare-cloud/vars ] && ln -s ~/commcarehq-ansible/ansible/vars ~/.commcare-cloud/
-[ ! -d ~/.commcare-cloud/inventory ] && ln -s ~/commcare-hq-deploy/fab/inventory ~/.commcare-cloud/
-[ ! -d ~/.commcare-cloud/config ] && ln -s ~/commcarehq-ansible/config ~/.commcare-cloud/
-
-alias ap='ansible-playbook -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
+~/commcarehq-ansible/control/check_install.sh
+alias ap='ansible-playbook -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
 alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
+# so that you can run fab from any directory
+alias fab="fab -f ~/commcarehq-ansible/fab/fabfile.py"
 
 [ ! -f ~/.bash_completion ] && source  ~/commcarehq-ansible/control/.bash_completion
 cp ~/commcarehq-ansible/control/.bash_completion ~/
 
 function ae() {
-    ansible $1 -m shell -a "$2" -u ansible -i ../../commcare-hq-deploy/fab/inventory/$ENV
+    ansible $1 -m shell -a "$2" -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV
 }
 
 # It aint pretty, but it gets the job done

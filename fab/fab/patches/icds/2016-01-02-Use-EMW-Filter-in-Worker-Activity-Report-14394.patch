@@ -1,0 +1,204 @@
+From e036db14d516ae8a207a784203103631be7dd827 Mon Sep 17 00:00:00 2001
+From: Ethan Soergel <esoergel@users.noreply.github.com>
+Date: Tue, 3 Jan 2017 03:07:18 -0500
+Subject: [PATCH] Use EMW Filter in Worker Activity Report (#14394)
+
+* Add toggle to display EMWF in WAR
+
+* Update EMWF method to include users at selected locations
+
+* Show WAR by users selected in EMWF
+
+* Reuse utility to get report users from ESQuery
+
+* lint [ci skip]
+---
+ corehq/apps/reports/filters/users.py       |  5 ++++
+ corehq/apps/reports/standard/monitoring.py | 37 +++++++++++++++++++-----------
+ corehq/apps/reports/util.py                | 11 +++++++++
+ corehq/apps/users/views/mobile/groups.py   |  9 ++++----
+ corehq/toggles.py                          | 12 ++++++++++
+ 5 files changed, 56 insertions(+), 18 deletions(-)
+
+diff --git a/corehq/apps/reports/filters/users.py b/corehq/apps/reports/filters/users.py
+index 37b5e88..328bcd8 100644
+--- a/corehq/apps/reports/filters/users.py
++++ b/corehq/apps/reports/filters/users.py
+@@ -278,6 +278,7 @@ class ExpandedMobileWorkerFilter(BaseMultipleOptionFilter):
+         user_ids = cls.selected_user_ids(mobile_user_and_group_slugs)
+         user_types = cls.selected_user_types(mobile_user_and_group_slugs)
+         group_ids = cls.selected_group_ids(mobile_user_and_group_slugs)
++        location_ids = cls.selected_location_ids(mobile_user_and_group_slugs)
+ 
+         user_type_filters = []
+         if HQUserType.ADMIN in user_types:
+@@ -295,9 +296,13 @@ class ExpandedMobileWorkerFilter(BaseMultipleOptionFilter):
+             return q.OR(*user_type_filters)
+         else:
+             # return matching user types and exact matches
++            location_ids = list(SQLLocation.active_objects
++                                .get_locations_and_children(location_ids)
++                                .location_ids())
+             id_filter = filters.OR(
+                 filters.term("_id", user_ids),
+                 filters.term("__group_ids", group_ids),
++                user_es.location(location_ids),
+             )
+             if user_type_filters:
+                 return q.OR(
+diff --git a/corehq/apps/reports/standard/monitoring.py b/corehq/apps/reports/standard/monitoring.py
+index daccf93..ede6d9f 100644
+--- a/corehq/apps/reports/standard/monitoring.py
++++ b/corehq/apps/reports/standard/monitoring.py
+@@ -6,6 +6,7 @@ import operator
+ from pygooglechart import ScatterChart
+ import pytz
+ 
++from corehq import toggles
+ from corehq.apps.es import filters
+ from corehq.apps.es import cases as case_es
+ from corehq.apps.es.aggregations import (
+@@ -820,12 +821,8 @@ class DailyFormStatsReport(WorkerMonitoringCaseReportTableBase, CompletionOrSubm
+     @property
+     @memoized
+     def all_users(self):
+-        fields = ['_id', 'username', 'first_name', 'last_name', 'doc_type', 'is_active', 'email']
+-        mobile_user_and_group_slugs = self.request.GET.getlist(EMWF.slug)
+-        users = EMWF.user_es_query(self.domain, mobile_user_and_group_slugs).fields(fields)\
+-                .run().hits
+-        users = map(util._report_user_dict, users)
+-        return sorted(users, key=lambda u: u['username_in_report'])
++        user_query = EMWF.user_es_query(self.domain, self.request.GET.getlist(EMWF.slug))
++        return util.get_simplified_users(user_query)
+ 
+     def paginate_list(self, data_list):
+         if self.pagination:
+@@ -1336,17 +1333,26 @@ class WorkerActivityReport(WorkerMonitoringCaseReportTableBase, DatespanMixin):
+     num_avg_intervals = 3  # how many duration intervals we go back to calculate averages
+     is_cacheable = True
+ 
+-    fields = [
+-        'corehq.apps.reports.filters.select.MultiGroupFilter',
+-        'corehq.apps.reports.filters.users.UserOrGroupFilter',
+-        'corehq.apps.reports.filters.select.MultiCaseTypeFilter',
+-        'corehq.apps.reports.filters.dates.DatespanFilter',
+-    ]
+     fix_left_col = True
+     emailable = True
+ 
+     NO_FORMS_TEXT = ugettext_noop('None')
+ 
++    @property
++    def fields(self):
++        if toggles.EMWF_WORKER_ACTIVITY_REPORT.enabled(self.request.domain):
++            return [
++                'corehq.apps.reports.filters.users.ExpandedMobileWorkerFilter',
++                'corehq.apps.reports.filters.select.MultiCaseTypeFilter',
++                'corehq.apps.reports.filters.dates.DatespanFilter',
++            ]
++        return [
++            'corehq.apps.reports.filters.select.MultiGroupFilter',
++            'corehq.apps.reports.filters.users.UserOrGroupFilter',
++            'corehq.apps.reports.filters.select.MultiCaseTypeFilter',
++            'corehq.apps.reports.filters.dates.DatespanFilter',
++        ]
++
+     @classmethod
+     def display_in_dropdown(cls, domain=None, project=None, user=None):
+         return True
+@@ -1357,6 +1363,8 @@ class WorkerActivityReport(WorkerMonitoringCaseReportTableBase, DatespanMixin):
+ 
+     @property
+     def view_by_groups(self):
++        if toggles.EMWF_WORKER_ACTIVITY_REPORT.enabled(self.request.domain):
++            return False
+         return self.request.GET.get('view_by', None) == 'groups'
+ 
+     @property
+@@ -1433,7 +1441,10 @@ class WorkerActivityReport(WorkerMonitoringCaseReportTableBase, DatespanMixin):
+ 
+     @property
+     def users_to_iterate(self):
+-        if not self.group_ids:
++        if toggles.EMWF_WORKER_ACTIVITY_REPORT.enabled(self.request.domain):
++            user_query = EMWF.user_es_query(self.domain, self.request.GET.getlist(EMWF.slug))
++            return util.get_simplified_users(user_query)
++        elif not self.group_ids:
+             ret = [util._report_user_dict(u) for u in list(CommCareUser.by_domain(self.domain))]
+             return ret
+         else:
+diff --git a/corehq/apps/reports/util.py b/corehq/apps/reports/util.py
+index 976bce9..545f0e6 100644
+--- a/corehq/apps/reports/util.py
++++ b/corehq/apps/reports/util.py
+@@ -236,6 +236,17 @@ def _report_user_dict(user):
+         )
+ 
+ 
++def get_simplified_users(user_es_query):
++    """
++    Accepts an instance of UserES and returns SimplifiedUserInfo dicts for the
++    matching users, sorted by username.
++    """
++    fields = ['_id', 'username', 'first_name', 'last_name', 'doc_type', 'is_active', 'email']
++    users = user_es_query.fields(fields).run().hits
++    users = map(_report_user_dict, users)
++    return sorted(users, key=lambda u: u['username_in_report'])
++
++
+ def format_datatables_data(text, sort_key, raw=None):
+     # todo: this is redundant with report.table_cell()
+     # should remove/refactor one of them away
+diff --git a/corehq/apps/users/views/mobile/groups.py b/corehq/apps/users/views/mobile/groups.py
+index f759fa2..36b3616 100644
+--- a/corehq/apps/users/views/mobile/groups.py
++++ b/corehq/apps/users/views/mobile/groups.py
+@@ -16,7 +16,7 @@ from corehq.apps.es.users import UserES
+ from corehq.apps.groups.models import Group
+ from corehq.apps.locations.analytics import users_have_locations
+ from corehq.apps.reminders.models import CaseReminderHandler, SurveyKeyword
+-from corehq.apps.reports.util import _report_user_dict
++from corehq.apps.reports.util import get_simplified_users
+ from corehq.apps.sms.verify import (
+     initiate_sms_verification_workflow,
+     VERIFICATION__ALREADY_IN_USE,
+@@ -183,10 +183,9 @@ class EditGroupMembersView(BaseGroupsView):
+     @property
+     @memoized
+     def all_users(self):
+-        return map(_report_user_dict, sorted(
+-            UserES().mobile_users().domain(self.domain).run().hits,
+-            key=lambda user: user['username']
+-        ))
++        return get_simplified_users(
++            UserES().mobile_users().domain(self.domain)
++        )
+ 
+     @property
+     @memoized
+diff --git a/corehq/toggles.py b/corehq/toggles.py
+index 4eb4b9d..15b66d0 100644
+--- a/corehq/toggles.py
++++ b/corehq/toggles.py
+@@ -959,6 +959,18 @@ DATA_MIGRATION = StaticToggle(
+     [NAMESPACE_DOMAIN]
+ )
+ 
++EMWF_WORKER_ACTIVITY_REPORT = StaticToggle(
++    'emwf_worker_activity_report',
++    'Make the Worker Activity Report use the Groups or Users (EMWF) filter',
++    TAG_ONE_OFF,
++    namespaces=[NAMESPACE_DOMAIN],
++    description=(
++        "This flag allows you filter the users to display in the same way as the "
++        "other reports - by individual user, group, or location.  Note that this "
++        "will also force the report to always display by user."
++    ),
++)
++
+ DATA_DICTIONARY = StaticToggle(
+     'data_dictionary',
+     'Domain level data dictionary of cases',
+-- 
+2.2.1
+
