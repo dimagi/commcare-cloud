@@ -192,6 +192,10 @@ control_machine_ip: 172.25.3.5
 etc_hosts_lines: ['172.25.1.5 enikshay.in enikshay.commcarehq.org']
 etc_hosts_lines_removed: []
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
 shared_drive_enabled: true
 
 # adding missing variables compared to icds 
