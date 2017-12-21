@@ -12,6 +12,10 @@ etc_hosts_lines: []
 etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
 static_routes:
   - name: docker
     cmd: add
@@ -51,7 +55,10 @@ active_sites:
 riak_backend: "leveldb"
 riak_ring_size: 64
 
+# This is used for creating all physical resources e.g. /home/cchq/www/{{deploy_env}}
 deploy_env: dev
+# This is the name used for datadog and in settings.SERVER_ENVIRONMENT
+# env_name: dev1
 fake_ssl_cert: yes
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
