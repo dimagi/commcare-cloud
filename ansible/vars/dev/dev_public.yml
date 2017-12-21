@@ -52,6 +52,9 @@ active_sites:
   tableau: False
   cas_ssl: False
 
+riak_backend: "leveldb"
+riak_ring_size: 64
+
 # This is used for creating all physical resources e.g. /home/cchq/www/{{deploy_env}}
 deploy_env: dev
 # This is the name used for datadog and in settings.SERVER_ENVIRONMENT
@@ -99,6 +102,8 @@ AMQP_NAME: commcarehq
 #keystore_file: 'DimagiKeyStore'
 
 backup_es: False
+
+postgresql_version: 9.6
 
 postgres_users:
   commcare:
