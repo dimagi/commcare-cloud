@@ -26,6 +26,7 @@ ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml &
 pip install -r ~/commcarehq-ansible/ansible/requirements.txt &
 pip install -e ~/commcarehq-ansible/commcare-cloud &
 pip install -r ~/commcarehq-ansible/fab/requirements.txt &
+pip install pip --upgrade &
 wait
 
 # convenience: . init-ansible
