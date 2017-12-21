@@ -1,6 +1,6 @@
 # Create new admin user and set riak_key and riak_secret facts
 
-- include_vars: configure/vars/main.yml
+- include_vars: ../configure/vars/main.yml
 
 - name: Turn on anonymous user creation
   lineinfile:
