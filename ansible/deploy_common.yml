@@ -70,6 +70,7 @@
     when: nameservers is defined
     tags:
       - dns
+      - after-reboot
 
   - name: set resolvconf base configuration
     become: yes
@@ -80,3 +81,4 @@
     when: nameservers is defined
     tags:
       - dns
+      - after-reboot
