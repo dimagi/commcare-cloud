@@ -20,7 +20,7 @@ _commcare_cloud()
 {
     local cur prev opts
     COMPREPLY=()
-    FILE_EXCHANGE_DIR=~/.commcare-cloud/ansible
+    FILE_EXCHANGE_DIR=~/.commcare-cloud/repo/ansible
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="--help --version"

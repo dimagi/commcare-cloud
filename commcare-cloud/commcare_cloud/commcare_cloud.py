@@ -12,6 +12,12 @@ import yaml
 
 from .parse_help import filtered_help_message, add_to_help_text
 
+REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
+ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
+VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
+FAB_DIR = os.path.join(REPO_BASE, 'fab')
+INVENTORY_DIR = os.path.join(REPO_BASE, 'fab', 'fab', 'inventory')
+
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
     '--sudo-user',
@@ -56,7 +62,7 @@ def arg_stdout_callback(parser):
 
 
 def get_public_vars(environment):
-    filename = os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=environment))
+    filename = os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=environment))
     with open(filename) as f:
         return yaml.load(f)
 
@@ -112,7 +118,7 @@ class AnsibleContext(object):
         and add them to the env dict with appropriate naming
         """
         env = os.environ.copy()
-        env['ANSIBLE_CONFIG'] = os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')
+        env['ANSIBLE_CONFIG'] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
         if hasattr(args, 'stdout_callback'):
             env['ANSIBLE_STDOUT_CALLBACK'] = args.stdout_callback
         return env
@@ -161,10 +167,10 @@ class AnsiblePlaybook(object):
         def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
                 'ansible-playbook',
-                os.path.expanduser('~/.commcare-cloud/ansible/{playbook}'.format(playbook=playbook)),
-                '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=environment)),
-                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=environment))),
-                '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=environment))),
+                os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
+                '-i', os.path.join(INVENTORY_DIR, '{env}'.format(env=environment)),
+                '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_vault.yml'.format(env=environment))),
+                '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=environment))),
                 '--diff',
             ) + cmd_args
 
@@ -345,10 +351,10 @@ class RunAnsibleModule(object):
 
         def _run_ansible(args, *unknown_args):
             cmd_parts = (
-                'ANSIBLE_CONFIG={}'.format(os.path.expanduser('~/.commcare-cloud/ansible/ansible.cfg')),
+                'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
                 'ansible', args.inventory_group,
                 '-m', args.module,
-                '-i', os.path.expanduser('~/.commcare-cloud/inventory/{env}'.format(env=args.environment)),
+                '-i', os.path.join(INVENTORY_DIR, '{env}'.format(env=args.environment)),
                 '-u', args.remote_user,
                 '-a', args.module_args,
                 '--diff',
@@ -370,8 +376,8 @@ class RunAnsibleModule(object):
 
             if include_vars:
                 cmd_parts += (
-                    '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_vault.yml'.format(env=args.environment))),
-                    '-e', '@{}'.format(os.path.expanduser('~/.commcare-cloud/vars/{env}/{env}_public.yml'.format(env=args.environment))),
+                    '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_vault.yml'.format(env=args.environment))),
+                    '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=args.environment))),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
@@ -448,7 +454,7 @@ class RunShellCommand(object):
 
 
 def git_branch():
-    cwd = os.path.expanduser('~/.commcare-cloud/ansible')
+    cwd = ANSIBLE_DIR
     git_branch_output = subprocess.check_output("git branch", cwd=cwd, shell=True).strip().split('\n')
     starred_line, = [line for line in git_branch_output if line.startswith('*')]
     if re.search(r'\* \(.*detached .*\)', starred_line):
@@ -481,8 +487,8 @@ STANDARD_ARGS = [
 
 def main():
     parser = ArgumentParser()
-    inventory_dir = os.path.expanduser('~/.commcare-cloud/inventory/')
-    vars_dir = os.path.expanduser('~/.commcare-cloud/vars/')
+    inventory_dir = os.path.join(INVENTORY_DIR, '')
+    vars_dir = os.path.join(VARS_DIR, '')
     if os.path.isdir(inventory_dir) and os.path.isdir(vars_dir):
         available_envs = sorted(set(os.listdir(inventory_dir)) & set(os.listdir(vars_dir)))
     else:
