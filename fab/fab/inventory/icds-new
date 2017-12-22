@@ -341,8 +341,8 @@ hostname='riak2'
 10.247.164.51
 
 [riak3:vars]
-devices=["/dev/sdb","/dev/sdc"]
-partitions=["/dev/sdb1","/dev/sdc1"]
+devices=["/dev/sdb","/dev/sdc","/dev/sdd"]
+partitions=["/dev/sdb1","/dev/sdc1","/dev/sdd1"]
 datavol_device='/dev/mapper/consolidated-data'
 hostname='riak3'
 
