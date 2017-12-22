@@ -270,7 +270,7 @@ localsettings:
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
     - '164.100.59.184'
-  ASYNC_INDICATORS_TO_QUEUE: 30000
+  ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_CRONTAB:
     minute: '*/5'
     hour: '0-7,18-23'
