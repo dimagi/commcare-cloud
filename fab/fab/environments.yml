@@ -397,6 +397,10 @@ icds-new:
          concurrency: 1
       email_queue:
         concurrency: 2
+      reminder_case_update_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 5
     '10.247.164.41':
       ucr_queue:
         concurrency: 4
@@ -409,10 +413,14 @@ icds-new:
         concurrency: 5
         num_workers: 10
     '10.247.164.42':
-      # reminder_queue:
-      #   pooling: gevent
-      #   concurrency: 5
-      #   num_workers: 6
+      reminder_case_update_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 10
+      reminder_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 6
       reminder_rule_queue:
         concurrency: 1
         max_tasks_per_child: 1
@@ -420,10 +428,15 @@ icds-new:
         concurrency: 3
         max_tasks_per_child: 1
     '10.247.164.43':
+      # Still waiting on whitelisting from celery3
       # sms_queue:
       #   pooling: gevent
       #   concurrency: 10
       #   num_workers: 4
+      reminder_case_update_queue:
+        pooling: gevent
+        concurrency: 5
+        num_workers: 10
       async_restore_queue:
         concurrency: 4
       ucr_indicator_queue:
@@ -441,6 +454,11 @@ icds-new:
     '10.247.164.31': # web0
       ucr_indicator_queue:
         concurrency: 3
+      # Temporarily run the sms_queue worker here as web0 is whitelisted
+      sms_queue:
+        pooling: gevent
+        concurrency: 20
+        num_workers: 1
     '10.247.164.32': # web1
       ucr_indicator_queue:
         concurrency: 4
