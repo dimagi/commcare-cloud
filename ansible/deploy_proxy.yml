@@ -58,6 +58,7 @@
       vars:
         site_config: {name: riakcs, vars_file: riakcs}
         hosts_group: riakcs
+      when: active_sites.riakcs
 
     - name: riakcs new
       include_role:
