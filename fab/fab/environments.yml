@@ -515,7 +515,7 @@ icds-new:
         start_process: 6
         num_processes: 6
         total_processes: 36
-    '10.247.164.39': # pillow2
+    '10.247.164.7': # pillow2
       kafka-ucr-static-cases:
         start_process: 12
         num_processes: 6
