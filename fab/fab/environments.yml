@@ -383,7 +383,7 @@ icds-new:
   formplayer_memory: "16000m"
   gunicorn_workers_static_factor: 1
   celery_processes:
-    '10.247.164.40':
+    '10.247.164.40':  # celery0
       flower: {}
       celery:
         concurrency: 8
@@ -401,7 +401,9 @@ icds-new:
         pooling: gevent
         concurrency: 5
         num_workers: 5
-    '10.247.164.41':
+      ucr_indicator_queue:
+        concurrency: 4
+    '10.247.164.41':  # celery1
       ucr_queue:
         concurrency: 4
         max_tasks_per_child: 5
@@ -412,7 +414,9 @@ icds-new:
         pooling: gevent
         concurrency: 5
         num_workers: 10
-    '10.247.164.42':
+      ucr_indicator_queue:
+        concurrency: 4
+    '10.247.164.42':  # celery2
       reminder_case_update_queue:
         pooling: gevent
         concurrency: 5
@@ -427,7 +431,9 @@ icds-new:
       saved_exports_queue:
         concurrency: 3
         max_tasks_per_child: 1
-    '10.247.164.43':
+      ucr_indicator_queue:
+        concurrency: 4
+    '10.247.164.43':  # celery3
       # Still waiting on whitelisting from celery3
       # sms_queue:
       #   pooling: gevent
@@ -440,10 +446,10 @@ icds-new:
       async_restore_queue:
         concurrency: 4
       ucr_indicator_queue:
-        concurrency: 4
-    '10.247.164.44':
+        concurrency: 8
+    '10.247.164.44':  # celery4
       ucr_indicator_queue:
-        concurrency: 4
+        concurrency: 10
       background_queue:
         concurrency: 4
         max_tasks_per_child: 1
