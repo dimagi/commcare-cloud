@@ -21,7 +21,7 @@
       lineinfile:
         dest: /etc/postfix/main.cf
         regexp: '^mynetworks ='
-        line: "mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ groups['all']|join('/32 ') }}"
+        line: "mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ groups['all']|sort|join('/32 ') }}"
       when: groups['mailrelay'] is defined and parent_mailrelay is defined
     - name: "unbinds from localhost"
       lineinfile:
@@ -29,6 +29,10 @@
         line: "inet_interfaces = loopback-only"
         state: absent
       when: groups['mailrelay'] is defined and parent_mailrelay is defined
+      notify: restart postfix
+  handlers:
+    - name: restart postfix
+      service: name=postfix state=restarted
   tags:
     - postfix
 
@@ -42,13 +46,9 @@
         regexp: '^relayhost ='
         line: "relayhost = {{ groups['mailrelay'][0] }}"
       when: groups['mailrelay'] is defined
-  tags:
-    - postfix
-
-- name: "reload postfix"
-  hosts: all
-  become: true
-  tasks:
-    - service: name=postfix state=restarted enabled=yes
+      notify: restart postfix
+  handlers:
+    - name: restart postfix
+      service: name=postfix state=restarted
   tags:
     - postfix
