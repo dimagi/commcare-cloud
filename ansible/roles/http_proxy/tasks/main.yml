@@ -30,7 +30,7 @@
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
-    line: "{{ item }}={{ groups['all']|join(',') }},127.0.0.1,localhost,relay.nic.in,smsgw.sms.gov.in,{{ NO_WWW_SITE_HOST|default(SITE_HOST) }},{{ internal_domain_name }}"
+    line: "{{ item }}={{ groups['all']|sort|join(',') }},127.0.0.1,localhost,relay.nic.in,smsgw.sms.gov.in,{{ NO_WWW_SITE_HOST|default(SITE_HOST) }},{{ internal_domain_name }}"
     regexp: "{{item }}="
     create: yes
     state: present
