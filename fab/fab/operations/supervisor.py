@@ -10,6 +10,7 @@ from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
+from fabric.decorators import task
 from fabric.operations import put
 
 from ..const import (
@@ -29,6 +30,7 @@ from ..utils import get_pillow_env_config, get_inventory
 from six.moves import range
 
 
+@task
 @roles(ROLES_ALL_SERVICES)
 @parallel
 def set_supervisor_config():
