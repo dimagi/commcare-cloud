@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import json
+import os
 import time
 import posixpath
 from contextlib import contextmanager
@@ -9,6 +10,7 @@ from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
+from fabric.operations import put
 
 from ..const import (
     ROLES_CELERY,
@@ -206,8 +208,15 @@ def set_websocket_supervisorconf():
 
 
 def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_destination_filename=None):
-    sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
+    remote_service_template_dir = os.path.join(env.code_root, 'deployment', 'commcare-hq-deploy', 'fab', 'services', 'templates')
+    local_service_template_dir = os.path.join(os.path.dirname(__file__), '..', 'services', 'templates')
 
+    sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
+    sudo('mkdir -p {}'.format(remote_service_template_dir))
+    # put the commcarehq-ansible/fab/fab/services/templates directory
+    # in the legacy commcare-hq-deploy location
+    # so that the make_supervisor*_conf management commands know where to find it
+    put(local_service_template_dir, remote_service_template_dir, use_sudo=True)
     if filename in env.get('service_blacklist', []):
         print(magenta('Skipping {} because the service has been blacklisted'.format(filename)))
         return
