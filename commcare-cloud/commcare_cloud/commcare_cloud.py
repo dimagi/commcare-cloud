@@ -466,6 +466,7 @@ class RunShellCommand(object):
         args.module = 'shell'
         args.module_args = args.shell_command
         args.skip_check = True
+        args.quiet = True
         del args.shell_command
         RunAnsibleModule.run(args, unknown_args)
 
