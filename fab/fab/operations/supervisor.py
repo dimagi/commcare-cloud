@@ -215,6 +215,8 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_dest
 
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
     sudo('mkdir -p {}'.format(remote_service_template_dir))
+    # useful in interim where commcare-hq-deploy still exists
+    sudo('rm {}/*'.format(remote_service_template_dir))
     # put the commcarehq-ansible/fab/fab/services/templates directory
     # in the legacy commcare-hq-deploy location
     # so that the make_supervisor*_conf management commands know where to find it
