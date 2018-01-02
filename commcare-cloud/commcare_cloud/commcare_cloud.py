@@ -28,7 +28,9 @@ DEPRECATED_ANSIBLE_ARGS = [
 ]
 
 
-def ask(message, strict=False):
+def ask(message, strict=False, quiet=False):
+    if quiet:
+        return True
     yesno = 'YES/NO' if strict else 'y/N'
     negatives = ('NO', 'N', 'n', 'no')
     affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
@@ -43,6 +45,12 @@ def ask(message, strict=False):
 def arg_skip_check(parser):
     parser.add_argument('--skip-check', action='store_true', default=False, help=(
         "skip the default of viewing --check output first"
+    ))
+
+
+def arg_quiet(parser):
+    parser.add_argument('--quiet', action='store_true', default=False, help=(
+        "skip all user prompts and proceed as if answered in the affirmative"
     ))
 
 
@@ -135,6 +143,7 @@ class AnsiblePlaybook(object):
     @staticmethod
     def make_parser(parser):
         arg_skip_check(parser)
+        arg_quiet(parser)
         arg_branch(parser)
         arg_stdout_callback(parser)
         parser.add_argument('playbook', help=(
@@ -207,7 +216,8 @@ class AnsiblePlaybook(object):
         exit_code = 0
 
         if args.skip_check:
-            user_wants_to_apply = ask('Do you want to apply without running the check first?')
+            user_wants_to_apply = ask('Do you want to apply without running the check first?',
+                                      quiet=args.quiet)
         else:
             exit_code = run_check()
             if exit_code == 1:
@@ -216,10 +226,12 @@ class AnsiblePlaybook(object):
                 return  # for IDE
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to apply these changes?')
+                user_wants_to_apply = ask('Do you want to apply these changes?',
+                                          quiet=args.quiet)
             else:
                 puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?')
+                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
+                                          quiet=args.quiet)
 
         if user_wants_to_apply:
             exit_code = run_apply()
@@ -235,6 +247,7 @@ class _AnsiblePlaybookAlias(object):
     @staticmethod
     def make_parser(parser):
         arg_skip_check(parser)
+        arg_quiet(parser)
         arg_branch(parser)
         arg_stdout_callback(parser)
 
@@ -262,12 +275,12 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
     @staticmethod
     def run(args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
-        if not ask('Have you stopped all the elastic pillows?', strict=True):
+        if not ask('Have you stopped all the elastic pillows?', strict=True, quiet=args.quiet):
             exit(0)
         puts(colored.yellow(
             "This will cause downtime on the order of seconds to minutes,\n"
             "except in a few cases where an index is replicated across multiple nodes."))
-        if not ask('Do a rolling restart of the ES cluster?', strict=True):
+        if not ask('Do a rolling restart of the ES cluster?', strict=True, quiet=args.quiet):
             exit(0)
         AnsiblePlaybook.run(args, unknown_args)
 
@@ -321,6 +334,7 @@ class RunAnsibleModule(object):
             "run operations as this user (default=root)"
         ))
         arg_skip_check(parser)
+        arg_quiet(parser)
         arg_stdout_callback(parser)
         add_to_help_text(parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
@@ -403,7 +417,8 @@ class RunAnsibleModule(object):
         exit_code = 0
 
         if args.skip_check:
-            user_wants_to_apply = ask('Do you want to apply without running the check first?')
+            user_wants_to_apply = ask('Do you want to apply without running the check first?',
+                                      quiet=args.quiet)
         else:
             exit_code = run_check()
             if exit_code == 1:
@@ -412,10 +427,12 @@ class RunAnsibleModule(object):
                 return  # for IDE
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to apply these changes?')
+                user_wants_to_apply = ask('Do you want to apply these changes?',
+                                          quiet=args.quiet)
             else:
                 puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?')
+                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
+                                          quiet=args.quiet)
 
         if user_wants_to_apply:
             exit_code = run_apply()
@@ -443,7 +460,7 @@ class RunShellCommand(object):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
                 "Using 'sudo' directly in the command is non-standard practice."))
-            if not ask("Do you know what you're doing and want to run this anyway?"):
+            if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):
                 exit(0)
 
         args.module = 'shell'
