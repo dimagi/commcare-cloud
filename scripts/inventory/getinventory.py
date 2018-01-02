@@ -11,6 +11,7 @@ import os
 import sys
 import argparse
 from os.path import dirname
+import traceback
 
 ROOT = dirname(dirname(dirname(os.path.abspath(__file__))))
 
@@ -34,11 +35,12 @@ def import_read_inventory_file():
     try:
         from fab.utils import read_inventory_file
     except ImportError:
-        print('Ooops. It looks like the commcare-hq-deploy repo is no longer '
-              'at "{}". Please update this script with its new location, or '
-              'resolve the dependency.'
+        traceback.print_exc()
+        print('\nOoops. It looks like the commcare-hq-deploy repo is no longer '
+              'at "{}".\nPlease update this script with its new location, or '
+              'resolve the dependency.\n'
               .format(os.path.join(ROOT, 'deployment', 'commcare-hq-deploy')))
-        raise
+        exit(1)
     sys.path.remove(os.path.join(ROOT, 'deployment', 'commcare-hq-deploy'))
     return read_inventory_file
 
