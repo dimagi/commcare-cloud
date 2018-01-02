@@ -32,7 +32,7 @@ then
             if [ -f "${OLD_FAB_CONFIG}" ]
             then
                 cp "${OLD_FAB_CONFIG}" "${FAB_CONFIG}"
-                echo "→ Copied ${OLD_FAB_CONFIG} to ${FAB_CONFIG}"
+                echo "→ Copied $(realpath ${OLD_FAB_CONFIG}) to ${FAB_CONFIG}"
                 break
             fi
         fi
