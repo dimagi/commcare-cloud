@@ -31,17 +31,17 @@ def import_read_inventory_file():
     feel free to copy and paste read_inventory_file from there, which is how it was before.
 
     """
-    sys.path.append(os.path.join(ROOT, 'deployment', 'commcare-hq-deploy'))
+    fab_root = os.path.join(ROOT, 'deployment', 'commcare-hq-deploy')
+    sys.path.append(fab_root)
     try:
         from fab.utils import read_inventory_file
     except ImportError:
         traceback.print_exc()
         print('\nOoops. It looks like the commcare-hq-deploy repo is no longer '
               'at "{}".\nPlease update this script with its new location, or '
-              'resolve the dependency.\n'
-              .format(os.path.join(ROOT, 'deployment', 'commcare-hq-deploy')))
+              'resolve the dependency.\n'.format(fab_root))
         exit(1)
-    sys.path.remove(os.path.join(ROOT, 'deployment', 'commcare-hq-deploy'))
+    sys.path.remove(fab_root)
     return read_inventory_file
 
 
