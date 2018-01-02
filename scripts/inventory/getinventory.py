@@ -25,13 +25,13 @@ class ArgParser(argparse.ArgumentParser):
 
 def import_read_inventory_file():
     """
-    This is a hack that makes this script dependent on commcare-hq-deploy
+    This is a hack that makes this script dependent on commcarehq-ansible/fab
 
     Not sure this is a great idea. If you ever find its brittleness breaks something,
     feel free to copy and paste read_inventory_file from there, which is how it was before.
 
     """
-    fab_root = os.path.join(ROOT, 'deployment', 'commcare-hq-deploy')
+    fab_root = os.path.join(ROOT, 'fab')
     sys.path.append(fab_root)
     try:
         from fab.utils import read_inventory_file
@@ -48,7 +48,7 @@ def import_read_inventory_file():
 def get_instance_group(instance, group):
     read_inventory_file = import_read_inventory_file()
     servers = read_inventory_file(
-        os.path.join(ROOT, 'fab', 'inventory', instance))
+        os.path.join(ROOT, 'fab', 'fab', 'inventory', instance))
     return servers[group]
 
 
