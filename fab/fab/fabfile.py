@@ -59,7 +59,7 @@ from .const import (
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
     PROJECT_ROOT,
-)
+    REPO_BASE)
 from .exceptions import PreindexNotFinished
 from .operations import (
     db,
@@ -167,9 +167,10 @@ def load_env(env_name):
         else:
             raise Exception("Environment file not found: {}".format(path))
 
-    env_dict = get_env_dict(os.path.join(PROJECT_ROOT, 'environments.yml'))
-    env.update(env_dict['base'])
-    env.update(env_dict[env_name])
+    env_dict = get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml'))
+    base_dict = get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml'))
+    env.update(env_dict)
+    env.update(base_dict)
 
 
 @task
@@ -232,8 +233,9 @@ def staging():
 
 def _setup_env(env_name, force=False, default_branch=None):
     _confirm_branch(default_branch)
+    env.env_name = env_name
     env.force = force  # don't worry about kafka checkpoints if True
-    env.inventory = os.path.join(PROJECT_ROOT, 'inventory', env_name)
+    env.inventory = os.path.join(REPO_BASE, 'environments', env_name, 'inventory.ini')
     load_env(env_name)
     execute(env_common)
 
@@ -294,6 +296,7 @@ def development():
 def env_common():
     require('inventory', 'environment')
     servers = read_inventory_file(env.inventory)
+    print(servers)
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
