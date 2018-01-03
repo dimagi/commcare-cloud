@@ -628,7 +628,8 @@ production:
         max_tasks_per_child: 1
       sms_queue:
         pooling: gevent
-        concurrency: 8
+        concurrency: 10
+        num_workers: 4
       logistics_reminder_queue:
         concurrency: 2
         max_tasks_per_child: 5
