@@ -15,7 +15,7 @@ from .parse_help import filtered_help_message, add_to_help_text
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
-FAB_DIR = os.path.join(REPO_BASE, 'fab')
+FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
 INVENTORY_DIR = os.path.join(REPO_BASE, 'fab', 'fab', 'inventory')
 
 DEPRECATED_ANSIBLE_ARGS = [
@@ -471,6 +471,39 @@ class RunShellCommand(object):
         RunAnsibleModule.run(args, unknown_args)
 
 
+class Fab(object):
+    command = 'fab'
+    help = (
+        "Run a fab command as you would with fab"
+    )
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument(dest='fab_command', help="fab command", default=None)
+
+    @staticmethod
+    def run(args, unknown_args):
+        def run_fab(args, unknown_args):
+            cmd_parts = (
+                'fab', '-f', FABFILE,
+                args.environment,
+            ) + (
+                (args.fab_command,) if args.fab_command else ()
+            ) + tuple(unknown_args)
+
+            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            print(cmd)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
+            p.communicate()
+            return p.returncode
+
+        exit_code = run_fab(args, unknown_args)
+        if exit_code == 0:
+            puts(colored.green(u"✓ Fab completed with status code {}".format(exit_code)))
+        else:
+            puts(colored.red(u"✗ Fab failed with status code {}".format(exit_code)))
+
+
 def git_branch():
     cwd = ANSIBLE_DIR
     git_branch_output = subprocess.check_output("git branch", cwd=cwd, shell=True).strip().split('\n')
@@ -500,6 +533,7 @@ STANDARD_ARGS = [
     BootstrapUsers,
     RunShellCommand,
     RunAnsibleModule,
+    Fab,
 ]
 
 
