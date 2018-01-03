@@ -10,10 +10,10 @@ import shutil
 import yaml
 import jsonobject
 from six.moves import shlex_quote
+from commcare_cloud.commcare_cloud import get_inventory_filepath, \
+    get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, REPO_BASE
 
-REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
-INVENTORY_DIR = os.path.join(REPO_BASE, 'fab', 'fab', 'inventory')
 
 
 class Spec(jsonobject.JsonObject):
@@ -165,26 +165,23 @@ def poll_for_aws_state(env, instance_ids):
 
 def save_inventory(env, inventory):
     inventory_file_contents = yaml.safe_dump(inventory.to_json(), default_flow_style=False)
-    if os.path.exists(INVENTORY_DIR):
-        inventory_file = '{}/{}'.format(INVENTORY_DIR, env)
-        with open(inventory_file, 'w') as f:
-            f.write(inventory_file_contents)
-        print('inventory file saved to {}'.format(inventory_file),
-              file=sys.stderr)
-    else:
-        print(inventory_file_contents)
+    inventory_file = get_inventory_filepath(env)
+    with open(inventory_file, 'w') as f:
+        f.write(inventory_file_contents)
+    print('inventory file saved to {}'.format(inventory_file),
+          file=sys.stderr)
 
 
 def copy_default_vars(env, aws_config):
     template_dir = os.path.join(VARS_DIR, 'dev')
-    new_dir = os.path.join(VARS_DIR, env)
+    new_dir = ENVIRONMENTS_DIR
     if os.path.exists(VARS_DIR) and os.path.exists(template_dir) and not os.path.exists(new_dir):
         os.makedirs(new_dir)
         shutil.copyfile(os.path.join(template_dir, 'dev_private.yml'),
-                        os.path.join(new_dir, '{env}_vault.yml'.format(env=env)))
+                        get_vault_vars_filepath(env))
         shutil.copyfile(os.path.join(template_dir, 'dev_public.yml'),
-                        os.path.join(new_dir, '{env}_public.yml'.format(env=env)))
-        with open(os.path.join(new_dir, '{env}_public.yml'.format(env=env)), 'a') as f:
+                        get_public_vars_filepath(env))
+        with open(get_public_vars_filepath(env), 'a') as f:
             f.write('commcare_cloud_root_user: ubuntu\n')
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
             f.write('commcare_cloud_strict_host_key_checking: no\n')

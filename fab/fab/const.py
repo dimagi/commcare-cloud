@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import os
 
 PROJECT_ROOT = os.path.dirname(__file__)
+REPO_BASE = os.path.realpath(os.path.join(PROJECT_ROOT, '..', '..'))
 
 
 ROLES_ALL = ['all']
