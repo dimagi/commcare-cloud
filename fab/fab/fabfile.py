@@ -169,8 +169,8 @@ def load_env(env_name):
 
     env_dict = get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml'))
     base_dict = get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml'))
-    env.update(env_dict)
     env.update(base_dict)
+    env.update(env_dict)
 
 
 @task
