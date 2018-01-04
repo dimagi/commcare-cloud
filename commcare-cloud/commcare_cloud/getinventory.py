@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Utilities to get server hostname or IP address from an inventory file and group.
 """
