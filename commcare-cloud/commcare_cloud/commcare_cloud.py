@@ -517,9 +517,9 @@ class Lookup(object):
     @classmethod
     def make_parser(cls, parser):
         cls.parser = parser
-        parser.add_argument("group",
-            help="Server group: postgresql, proxy, webworkers, ... The server "
-                 "group may be prefixed with 'username@' to login as a specific "
+        parser.add_argument("server",
+            help="Server name/group: postgresql, proxy, webworkers, ... The server "
+                 "name/group may be prefixed with 'username@' to login as a specific "
                  "user and may be terminated with ':<n>' to choose one of "
                  "multiple servers if there is more than one in the group. "
                  "For example: webworkers:0 will pick the first webworker.")
