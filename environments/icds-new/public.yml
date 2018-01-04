@@ -194,7 +194,7 @@ nameservers:
   - 164.100.17.3
   - 164.100.3.1
 
-http_proxy_address: '10.247.24.16'
+http_proxy_address: '10.247.63.132'
 http_proxy_port: '3128'
 
 commcare_errors_branch: "master-icds"
@@ -270,10 +270,10 @@ localsettings:
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
     - '164.100.59.184'
-  ASYNC_INDICATORS_TO_QUEUE: 60000
+  ASYNC_INDICATORS_TO_QUEUE: 120000
   ASYNC_INDICATOR_QUEUE_CRONTAB:
     minute: '*/5'
-    hour: '0-7,18-23'
+    hour: '0-9,16-23'
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
