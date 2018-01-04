@@ -53,3 +53,4 @@ _commcare_cloud()
     esac
 }
 complete -F _commcare_cloud commcare-cloud
+complete -F _commcare_cloud cchq
