@@ -4,18 +4,19 @@ from __future__ import absolute_import
 import getpass
 import os
 import re
+import sys
 from six.moves import input, shlex_quote
 from argparse import ArgumentParser
 import subprocess
 from clint.textui import puts, colored
 import yaml
 
+from .getinventory import get_server_address
 from .parse_help import filtered_help_message, add_to_help_text
+from .paths import REPO_BASE, ENVIRONMENTS_DIR
 
-REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
-ENVIRONMENTS_DIR = os.path.join(REPO_BASE, 'environments')
 
 
 def get_public_vars_filepath(environment):
@@ -516,6 +517,36 @@ class Fab(object):
             puts(colored.red(u"✗ Fab failed with status code {}".format(exit_code)))
 
 
+class Ssh(object):
+    command = 'ssh'
+    help = "Connect to a remote host with ssh"
+
+    @classmethod
+    def make_parser(cls, parser):
+        cls.parser = parser
+        parser.add_argument("group",
+            help="Server group: postgresql, proxy, webworkers, ... The server "
+                 "group may be prefixed with 'username@' to login as a specific "
+                 "user and may be terminated with ':<n>' to choose one of "
+                 "multiple servers if there is more than one in the group. "
+                 "For example: webworkers:0 will pick the first webworker.")
+
+    @classmethod
+    def run(cls, args, ssh_args):
+        def exit(message):
+            cls.parser.error("\n" + message)
+        address = get_server_address(args.environment, args.group, exit)
+        cmd_parts = [cls.command, address] + ssh_args
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print(cmd)
+        os.execvp(cls.command, cmd_parts)
+
+
+class Mosh(Ssh):
+    command = 'mosh'
+    help = "Connect to a remote host with mosh"
+
+
 def git_branch():
     cwd = ANSIBLE_DIR
     git_branch_output = subprocess.check_output("git branch", cwd=cwd, shell=True).strip().split('\n')
@@ -546,6 +577,8 @@ STANDARD_ARGS = [
     RunShellCommand,
     RunAnsibleModule,
     Fab,
+    Ssh,
+    Mosh,
 ]
 
 
