@@ -14,9 +14,21 @@ from .parse_help import filtered_help_message, add_to_help_text
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
-FAB_DIR = os.path.join(REPO_BASE, 'fab')
-INVENTORY_DIR = os.path.join(REPO_BASE, 'fab', 'fab', 'inventory')
+FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
+ENVIRONMENTS_DIR = os.path.join(REPO_BASE, 'environments')
+
+
+def get_public_vars_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
+
+
+def get_vault_vars_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
+
+
+def get_inventory_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
+
 
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
@@ -28,7 +40,9 @@ DEPRECATED_ANSIBLE_ARGS = [
 ]
 
 
-def ask(message, strict=False):
+def ask(message, strict=False, quiet=False):
+    if quiet:
+        return True
     yesno = 'YES/NO' if strict else 'y/N'
     negatives = ('NO', 'N', 'n', 'no')
     affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
@@ -43,6 +57,12 @@ def ask(message, strict=False):
 def arg_skip_check(parser):
     parser.add_argument('--skip-check', action='store_true', default=False, help=(
         "skip the default of viewing --check output first"
+    ))
+
+
+def arg_quiet(parser):
+    parser.add_argument('--quiet', action='store_true', default=False, help=(
+        "skip all user prompts and proceed as if answered in the affirmative"
     ))
 
 
@@ -62,7 +82,7 @@ def arg_stdout_callback(parser):
 
 
 def get_public_vars(environment):
-    filename = os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=environment))
+    filename = get_public_vars_filepath(environment)
     with open(filename) as f:
         return yaml.load(f)
 
@@ -135,6 +155,7 @@ class AnsiblePlaybook(object):
     @staticmethod
     def make_parser(parser):
         arg_skip_check(parser)
+        arg_quiet(parser)
         arg_branch(parser)
         arg_stdout_callback(parser)
         parser.add_argument('playbook', help=(
@@ -168,9 +189,9 @@ class AnsiblePlaybook(object):
             cmd_parts = (
                 'ansible-playbook',
                 os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
-                '-i', os.path.join(INVENTORY_DIR, '{env}'.format(env=environment)),
-                '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_vault.yml'.format(env=environment))),
-                '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=environment))),
+                '-i', get_inventory_filepath(environment),
+                '-e', '@{}'.format(get_vault_vars_filepath(environment)),
+                '-e', '@{}'.format(get_public_vars_filepath(environment)),
                 '--diff',
             ) + cmd_args
 
@@ -207,7 +228,8 @@ class AnsiblePlaybook(object):
         exit_code = 0
 
         if args.skip_check:
-            user_wants_to_apply = ask('Do you want to apply without running the check first?')
+            user_wants_to_apply = ask('Do you want to apply without running the check first?',
+                                      quiet=args.quiet)
         else:
             exit_code = run_check()
             if exit_code == 1:
@@ -216,10 +238,12 @@ class AnsiblePlaybook(object):
                 return  # for IDE
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to apply these changes?')
+                user_wants_to_apply = ask('Do you want to apply these changes?',
+                                          quiet=args.quiet)
             else:
                 puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?')
+                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
+                                          quiet=args.quiet)
 
         if user_wants_to_apply:
             exit_code = run_apply()
@@ -235,6 +259,7 @@ class _AnsiblePlaybookAlias(object):
     @staticmethod
     def make_parser(parser):
         arg_skip_check(parser)
+        arg_quiet(parser)
         arg_branch(parser)
         arg_stdout_callback(parser)
 
@@ -262,12 +287,12 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
     @staticmethod
     def run(args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
-        if not ask('Have you stopped all the elastic pillows?', strict=True):
+        if not ask('Have you stopped all the elastic pillows?', strict=True, quiet=args.quiet):
             exit(0)
         puts(colored.yellow(
             "This will cause downtime on the order of seconds to minutes,\n"
             "except in a few cases where an index is replicated across multiple nodes."))
-        if not ask('Do a rolling restart of the ES cluster?', strict=True):
+        if not ask('Do a rolling restart of the ES cluster?', strict=True, quiet=args.quiet):
             exit(0)
         AnsiblePlaybook.run(args, unknown_args)
 
@@ -321,6 +346,7 @@ class RunAnsibleModule(object):
             "run operations as this user (default=root)"
         ))
         arg_skip_check(parser)
+        arg_quiet(parser)
         arg_stdout_callback(parser)
         add_to_help_text(parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
@@ -354,7 +380,7 @@ class RunAnsibleModule(object):
                 'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
                 'ansible', args.inventory_group,
                 '-m', args.module,
-                '-i', os.path.join(INVENTORY_DIR, '{env}'.format(env=args.environment)),
+                '-i', get_inventory_filepath(args.environment),
                 '-u', args.remote_user,
                 '-a', args.module_args,
                 '--diff',
@@ -376,8 +402,8 @@ class RunAnsibleModule(object):
 
             if include_vars:
                 cmd_parts += (
-                    '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_vault.yml'.format(env=args.environment))),
-                    '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=args.environment))),
+                    '-e', '@{}'.format(get_vault_vars_filepath(args.environment)),
+                    '-e', '@{}'.format(get_public_vars_filepath(args.environment)),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
@@ -403,7 +429,8 @@ class RunAnsibleModule(object):
         exit_code = 0
 
         if args.skip_check:
-            user_wants_to_apply = ask('Do you want to apply without running the check first?')
+            user_wants_to_apply = ask('Do you want to apply without running the check first?',
+                                      quiet=args.quiet)
         else:
             exit_code = run_check()
             if exit_code == 1:
@@ -412,10 +439,12 @@ class RunAnsibleModule(object):
                 return  # for IDE
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to apply these changes?')
+                user_wants_to_apply = ask('Do you want to apply these changes?',
+                                          quiet=args.quiet)
             else:
                 puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?')
+                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
+                                          quiet=args.quiet)
 
         if user_wants_to_apply:
             exit_code = run_apply()
@@ -443,14 +472,48 @@ class RunShellCommand(object):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
                 "Using 'sudo' directly in the command is non-standard practice."))
-            if not ask("Do you know what you're doing and want to run this anyway?"):
+            if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):
                 exit(0)
 
         args.module = 'shell'
         args.module_args = args.shell_command
         args.skip_check = True
+        args.quiet = True
         del args.shell_command
         RunAnsibleModule.run(args, unknown_args)
+
+
+class Fab(object):
+    command = 'fab'
+    help = (
+        "Run a fab command as you would with fab"
+    )
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument(dest='fab_command', help="fab command", default=None)
+
+    @staticmethod
+    def run(args, unknown_args):
+        def run_fab(args, unknown_args):
+            cmd_parts = (
+                'fab', '-f', FABFILE,
+                args.environment,
+            ) + (
+                (args.fab_command,) if args.fab_command else ()
+            ) + tuple(unknown_args)
+
+            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            print(cmd)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
+            p.communicate()
+            return p.returncode
+
+        exit_code = run_fab(args, unknown_args)
+        if exit_code == 0:
+            puts(colored.green(u"✓ Fab completed with status code {}".format(exit_code)))
+        else:
+            puts(colored.red(u"✗ Fab failed with status code {}".format(exit_code)))
 
 
 def git_branch():
@@ -482,17 +545,17 @@ STANDARD_ARGS = [
     BootstrapUsers,
     RunShellCommand,
     RunAnsibleModule,
+    Fab,
 ]
 
 
 def main():
     parser = ArgumentParser()
-    inventory_dir = os.path.join(INVENTORY_DIR, '')
-    vars_dir = os.path.join(VARS_DIR, '')
-    if os.path.isdir(inventory_dir) and os.path.isdir(vars_dir):
-        available_envs = sorted(set(os.listdir(inventory_dir)) & set(os.listdir(vars_dir)))
-    else:
-        available_envs = []
+    available_envs = sorted(
+        env for env in os.listdir(ENVIRONMENTS_DIR)
+        if os.path.exists(get_public_vars_filepath(env))
+        and os.path.exists(get_inventory_filepath(env))
+    )
     parser.add_argument('environment', choices=available_envs, help=(
         "server environment to run against"
     ))

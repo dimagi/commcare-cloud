@@ -1,14 +1,18 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import json
+import os
 import time
 import posixpath
 from contextlib import contextmanager
+import uuid
 
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
+from fabric.decorators import task
+from fabric.operations import put, run
 
 from ..const import (
     ROLES_CELERY,
@@ -27,6 +31,7 @@ from ..utils import get_pillow_env_config, get_inventory
 from six.moves import range
 
 
+@task
 @roles(ROLES_ALL_SERVICES)
 @parallel
 def set_supervisor_config():
@@ -131,17 +136,18 @@ def show_periodic_server_whitelist_message_and_abort(env):
         "If you...\n\n"
         '1. are really glad we caught this for you, just remove (or comment out)\n'
         '   {environment}.celery_processes.{hostname}.celery_periodic\n'
-        '   from fab/environments.yml\n'
+        '   from environments/{env_name}/app-processes.yml\n'
         "2. know what you're doing and want to deploy celery beat to {environment}\n"
         "   set {environment}.celery_processes.{hostname}.celery_periodic.server_whitelist\n"
         '   to {host}\n'
-        '   in fab/environments.yml\n'
+        '   in environments/{env_name}/app-processes.yml\n'
         "3. are really confused, find someone who might know more about this\n"
         "   and ask them."
         .format(environment=env.environment,
                 hostname=env.get('host_string').split('.')[0],
-                host=env.host)
-        )
+                host=env.host,
+                env_name=env.env_name)
+    )
 
 
 def set_pillowtop_supervisorconf():
@@ -205,7 +211,31 @@ def set_websocket_supervisorconf():
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
 
 
+def please_put(local_dir, remote_dir, temp_dir='/tmp'):
+    remote_temp_dir = os.path.join(temp_dir, 'please-put-{}'.format(uuid.uuid4().hex))
+
+    sudo('rm -rf {}'.format(remote_dir))
+    sudo('mkdir -p {}'.format(os.path.dirname(remote_dir)))
+
+    run('rm -rf {}'.format(remote_temp_dir))
+    run('mkdir -p {}'.format(remote_temp_dir))
+
+    put(local_dir, remote_temp_dir)
+
+    sudo('cp -r {} {}'.format(os.path.join(remote_temp_dir, os.path.basename(local_dir)), remote_dir))
+
+    run('rm -rf {}'.format(remote_temp_dir))
+
+
 def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_destination_filename=None):
+    remote_service_template_dir = os.path.join(env.code_root, 'deployment', 'commcare-hq-deploy', 'fab', 'services', 'templates')
+    local_service_template_dir = os.path.join(os.path.dirname(__file__), '..', 'services', 'templates')
+
+    # put the commcarehq-ansible/fab/fab/services/templates directory
+    # in the legacy commcare-hq-deploy location
+    # so that the make_supervisor*_conf management commands know where to find it
+    please_put(local_service_template_dir, remote_service_template_dir)
+
     sudo('mkdir -p {}'.format(posixpath.join(env.services, 'supervisor')))
 
     if filename in env.get('service_blacklist', []):
