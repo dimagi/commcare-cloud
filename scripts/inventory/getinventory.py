@@ -48,7 +48,7 @@ def import_read_inventory_file():
 def get_instance_group(instance, group):
     read_inventory_file = import_read_inventory_file()
     servers = read_inventory_file(
-        os.path.join(ROOT, 'fab', 'fab', 'inventory', instance))
+        os.path.join(ROOT, 'environments', instance, 'inventory.ini'))
     return servers[group]
 
 
