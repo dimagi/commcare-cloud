@@ -1,0 +1,85 @@
+- name: create required directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ captain_dir }}"
+    - "{{ captain_log_dir }}"
+    - "{{ captain_src_dir }}"
+    - "{{ captain_database_dir }}"
+    - "{{ supervisor_task_conf }}"
+
+- name: Touch database file
+  become_user: "{{ cchq_user }}"
+  file:
+    path: "{{ captain_database }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: touch
+
+- name: Pull full Captain source
+  git:
+    repo: "{{ captain_repository }}"
+    dest: "{{ captain_src_dir }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
+  become_user: "{{ cchq_user }}"
+  tags:
+    - git
+    - slow
+
+- name: install pip requirements
+  become_user: "{{ cchq_user }}"
+  pip:
+    requirements: "{{ captain_src_dir }}/requirements.txt"
+    virtualenv: "{{ captain_virtualenv_dir }}"
+  tags:
+    - slow
+
+- name: Upgrade setuptools
+  easy_install:
+    name: "setuptools"
+    state: "latest"
+    virtualenv: "{{ captain_virtualenv_dir }}"
+
+- name: copy localsettings
+  become_user: "{{ cchq_user }}"
+  template:
+    src: localsettings.py.j2
+    dest: "{{ captain_src_dir }}/captain/localsettings.py"
+  tags:
+    - localsettings
+
+- name: copy fab config
+  become_user: "{{ cchq_user }}"
+  template:
+    src: config.py.j2
+    dest: "{{ captain_src_dir }}/submodules/commcare-hq-deploy/fab/config.py"
+  tags:
+    - localsettings
+
+- name: Set captain supervisor confs
+  become_user: "{{ cchq_user }}"
+  template:
+    src: "supervisor/{{ item }}.conf.j2"
+    dest: "{{ supervisor_task_conf }}/{{ item }}.conf"
+  with_items:
+    - "rq"
+    - "django"
+    - "rtail"
+    - "rtail_server"
+
+- name: Install npm items
+  npm: name="{{ item }}" state=present global=yes
+  become: yes
+  with_items:
+    - rtail@0.2.1
+
+- name: Igor Integration
+  include: igor.yml

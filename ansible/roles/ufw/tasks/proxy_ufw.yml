@@ -1,0 +1,39 @@
+# Rules for proxies
+- name: allow web traffic
+  ufw:
+    rule: allow
+    direction: in
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - 443  # https
+    - 80   # http
+
+- name: allow ssh traffic
+  ufw:
+    rule: allow
+    direction: in
+    port: "{{ ssh_port|default(22) }}"
+    proto: any
+  when: is_monolith|bool
+  
+- name: allow mosh traffic
+  ufw:
+    rule: allow
+    direction: in
+    port: "60000:61000"
+    proto: udp
+  when: is_monolith|bool
+
+- name: allow all traffic on private interface
+  ufw:
+    rule: allow
+    direction: in
+    interface: '{{ ufw_private_interface }}'
+  when: not is_monolith|bool
+  
+- name: default to denying all incoming traffic
+  ufw: policy=deny direction=incoming
+
+- name: turn on firewall
+  ufw: state=enabled

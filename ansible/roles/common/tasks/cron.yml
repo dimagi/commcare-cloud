@@ -1,0 +1,17 @@
+# original content is:
+#25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+#47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+#52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+
+- name: "Change time for crontab tasks"
+  become: yes
+  replace:
+    dest: /etc/crontab
+    regexp: '[0-9]{1,2}\s[0-9]{1,2}\s.*cron.{{ item.name }} \)'
+    replace: '{{ item.minutes }} {{ (nadir_hour|default(0)+item.offset) % 24 }}     {{ item.frequency }}   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.{{ item.name }} )'
+  with_items:
+    - { name: 'daily', frequency: '* * *', minutes: 25, offset: 5 }
+    - { name: 'weekly', frequency: '* * 7', minutes: 47, offset: 5 }
+    - { name: 'monthly', frequency: '1 * *', minutes: 52, offset: 5 }
+  tags:
+    - cron

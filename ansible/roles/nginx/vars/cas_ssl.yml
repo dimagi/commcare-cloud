@@ -1,0 +1,134 @@
+---
+nginx_ssl_cert: "{{ cas_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ cas_nginx_ssl_key }}"
+
+nginx_sites:
+- server:
+   balancers:
+    - name: "{{ deploy_env }}_cas_commcare"
+      hosts: webworkers
+      port: "{{ django_port }}"
+    - name: "{{ deploy_env }}_cas_formplayer"
+      hosts: formplayer
+      port: "{{ formplayer_port }}"
+      method: "hash $cookie_sessionid consistent"
+   mappings:
+    - name: "$digest_submission"
+      variable: "$http_authorization"
+      value: "$server_name"
+   limit_req_zones:
+    - name: "restore"
+      zone: "$digest_submission"
+      size: "10m"
+      rate: "4r/s"
+    - name: "submissions"
+      zone: "$digest_submission"
+      size: "10m"
+      rate: "50r/s"
+    - name: "server_name"
+      zone: "$server_name"
+      size: "10m"
+      rate: "25r/s"
+    - name: "app_downloads"
+      zone: "$server_name"
+      size: "10m"
+      rate: "50r/s"
+   proxy_cache_path:
+    - name: "app_cache"
+      path: "{{ www_home }}/app_downloads/cache"
+      max_size: "3g"
+      inactive_time: "24h"
+   file_name: "{{ deploy_env }}_cas_commcare"
+   listen: "443 ssl http2 default_server"
+   server_name: "{{ CAS_SITE_HOST }}"
+   client_max_body_size: 100m
+   proxy_set_headers:
+   - "Host $host"
+   - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-Protocol  $scheme"
+   add_header: "X-Frame-Options SAMEORIGIN"
+   access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
+   locations:
+     - name: "/hq/multimedia/file"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       proxy_cache: app_cache
+     - name: "/a/icds-test/apps/download"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       proxy_cache: app_cache
+       client_body_buffer_size: 5m
+       proxy_ignore_headers: Set-Cookie
+     - name: "/a/icds-cas/apps/download"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       proxy_cache: app_cache
+       client_body_buffer_size: 5m
+       proxy_ignore_headers: Set-Cookie
+       limit_reqs:
+        - zone_name: app_downloads
+          burst: 10
+          nodelay: True
+     - name: "/accounts/login"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+     - name: "/a/icds-cas/phone/keys"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+     - name: "/a/icds-cas/phone/restore"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       limit_reqs:
+         - zone_name: "restore"
+           burst: 100
+           nodelay: True
+     - name: "/a/icds-cas/receiver"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       client_body_buffer_size: 512k
+       limit_reqs:
+         - zone_name: "submissions"
+           burst: 100
+           nodelay: True
+     - name: /
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       limit_reqs:
+         - zone_name: "server_name"
+           nodelay: True
+     - name: "/static"
+       alias: "{{ nginx_static_home }}"
+       add_header: "Access-Control-Allow-Origin *"
+       expires: "1M"
+       try_files: "$uri $uri/index.html $uri/ =404"
+     - name: "/{{ transfer_payload_dir_name }}"
+       alias: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}/{{ transfer_payload_dir_name }}"
+       is_internal: True
+     - name: /errors
+       alias: "{{ errors_home }}/pages"
+     - name: /ws
+       proxy_pass: "http://unix:{{ www_home }}/web.socket"
+       proxy_http_version: "1.1"
+       proxy_set_headers:
+       - "Upgrade $http_upgrade"
+       - "Connection \"upgrade\""
+     - name: /formplayer
+       balancer: "{{ deploy_env }}_cas_formplayer/"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s

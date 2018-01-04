@@ -1,0 +1,5 @@
+*.pyc
+fab/config.py
+*.pickle
+*.swp
+*.swo

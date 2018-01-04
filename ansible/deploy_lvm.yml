@@ -1,0 +1,5 @@
+- name: LVM
+  hosts: lvm
+  become: true
+  roles:
+    - lvm

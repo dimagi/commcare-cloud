@@ -1,5 +1,9 @@
 *.swp
-/config/
+/config
 .vagrant/
 DimagiKeyStore
 .idea/
+.DS_Store
+ansible/*.retry
+*.pyc
+*.egg-info

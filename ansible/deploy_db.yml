@@ -3,56 +3,188 @@
   hosts:
     - postgresql
     - couchdb
+    - couchdb2
     - redis
     - elasticsearch
     - rabbitmq
-  sudo: yes
+    - zookeeper
+    - riakcs
+    - formplayer
+    - pg_standby
+  become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
+    - {role: backups, tags: 'backups'}
 
-- name: Postgresql
-  hosts: postgresql
-  sudo: yes
+- name: PostgreSQL
+  hosts: postgresql:pg_standby
+  become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
+- name: PostgreSQL Backup
+  hosts: postgresql:pg_backup
+  become: true
+  roles:
+    - {role: pg_backup, tags: ['postgresql', 'backups', 'pg_backup']}
+
+- name: Setup auth for standby
+  hosts:
+    - postgresql
+  vars:
+    - username: postgres
+    - hostTo: "{{ hot_standby_server }}"
+    - state: 'present'
+  tasks:
+    - include: roles/setup_auth_keys.yml
+      when: hot_standby_server is defined
+  tags:
+    - pg_standby
+
 - name: Couchdb
   hosts: couchdb
-  sudo: yes
+  become: true
   roles:
     - {role: couchdb, tags: 'couchdb'}
 
+- name: Couchdb log rolling configurations
+  hosts: couchdb
+  become: true
+  roles:
+    - role: ansible-logrotate
+      tags: couchdb
+      logrotate_scripts:
+        - name: "{{ deploy_env }}_couchdb"
+          path: "{{ couch_log_dir }}/*.log"
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
+
+- name: Couchdb 2.0
+  hosts: couchdb2
+  become: true
+  roles:
+    - {role: couchdb2, tags: 'couchdb2'}
+
+- name: Couchdb2 log rolling configurations
+  hosts: couchdb2
+  become: true
+  roles:
+    - role: ansible-logrotate
+      tags: couchdb2
+      logrotate_scripts:
+        - name: "{{ deploy_env }}_couchdb2"
+          path: "{{ couchdb_dir }}/var/log/*.stderr"
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
+
 - name: Redis
   hosts: redis
-  sudo: yes
+  become: true
   roles:
     - {role: redis, tags: 'redis'}
 
 - name: Elasticsearch
   hosts: elasticsearch
-  sudo: yes
+  become: true
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
 
 - name: Redis Monitoring
   hosts: redis
-  sudo: yes
+  become: true
   roles:
     - redis_monitoring
 
 - name: RabbitMQ
   hosts: rabbitmq
-  sudo: yes
+  become: true
   roles:
-    - rabbitmq
+    - {role: rabbitmq, tags: 'rabbitmq'}
 
-- name: Newrelic Plugin Agent for DB
+- name: Zookeeper
+  hosts: zookeeper
+  become: true
+  roles:
+    - {role: zookeeper, tags: 'zookeeper'}
+
+- name: Kafka
+  hosts: kafka
+  become: true
+  environment:
+    JMX_PORT: 9999
+  roles:
+    - {role: kafka, tags: 'kafka'}
+
+- include: deploy_riakcs.yml
+  tags: riakcs
+
+# Note other machines also have java installed, but are initiated through the meta task
+- name: Java
+  become: true
+  hosts:
+    - celery
+  roles:
+    - {role: java, tags: java}
+
+# Disables transparent huge pages (THP)
+- name: Disable THP
+  become: true
   hosts:
     - postgresql
+    - couchdb
     - redis
+    - elasticsearch
     - rabbitmq
+    - zookeeper
+    - riakcs
+    - formplayer
+  tags: 'kernel_tuning'
   tasks:
-    - include: roles/newrelic/tasks/plugin-agent.yml
-      when: run_newrelic_plugin_agent
-  tags:
-    - newrelic-plugin-agent
+    - stat:
+        path: /etc/default/grub
+      register: uses_grub
+    - stat:
+        path: /sys/kernel/mm/transparent_hugepage/enabled
+      register: thp_enabled
+    - stat:
+        path: /sys/kernel/mm/transparent_hugepage/defrag
+      register: thp_defrag
+    - name: Sets THP enabled to never
+      raw: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      when: thp_enabled.stat.exists
+    - name: Sets THP defrag to never
+      raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      when: thp_defrag.stat.exists
+    # do use grub-mkconfig to generate current grub config is you need to
+    - name: Adds transparent_hugepage=never to default grub config
+      lineinfile:
+        dest: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=""$'
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
+        backrefs: yes
+        state: present
+      when: uses_grub.stat.exists
+
+- name: Move logrotate to hourly
+  hosts:
+    - proxy
+    - couchdb2_proxy
+  become: true
+  roles:
+    - role: logrotate

@@ -1,0 +1,9 @@
+blobdb_backup_dir: "{{ encrypted_root }}/backups/blobdb"
+blobdb_dir_path: "{{ encrypted_root }}/blobdb"
+backup_blobdb: False
+blobdb_user: root
+blobdb_backup_days: 3
+blobdb_backup_weeks: 3
+blobdb_s3: False
+postgres_s3: False
+couch_s3: False

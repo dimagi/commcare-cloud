@@ -1,0 +1,12 @@
+---
+# /roles/couchdb/defaults/main.yml
+couchdb_version: 2.0.0
+couch_data_dir: '{{ encrypted_root }}/couchdb2'
+couch_backup_dir: "{{ encrypted_root }}/backups/couchdb2"
+backup_couch: False
+remote_couch_backup: False
+couch_s3: False
+couchdb_user: couchdb
+couchdb_group: couchdb
+couchdb_backup_days: 3
+couchdb_backup_weeks: 3

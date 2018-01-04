@@ -9,16 +9,27 @@ nginx_error_log_name: nginx_error.log
 ssl_base_dir: "/etc/pki/tls"
 ssl_certs_dir: "{{ ssl_base_dir }}/certs"
 ssl_keys_dir: "{{ ssl_base_dir }}/private"
-nginx_hsts_max_age: 5184000 # 2 months
-nginx_ssl_cert: "nginx_hq_combined.crt"
-nginx_ssl_key: "commcarehq.org.key"
-commtrack_nginx_ssl_cert: "nginx_commtrack_combined.crt"
-commtrack_nginx_ssl_key: "commtrack.org.key"
+
+nginx_ssl_cert: "{{ deploy_env }}_nginx_combined.crt"
+nginx_ssl_key: "{{ deploy_env }}_nginx_commcarehq.org.key"
+commtrack_nginx_ssl_cert: "{{ deploy_env }}_nginx_commtrack_combined.crt"
+commtrack_nginx_ssl_key: "{{ deploy_env }}_nginx_commtrack.org.key"
+tableau_nginx_ssl_cert: "{{ deploy_env }}_nginx_tableau_combined.crt"
+tableau_nginx_ssl_key: "{{ deploy_env }}_nginx_tableau.org.key"
+cas_nginx_ssl_cert: "{{ deploy_env }}_nginx_cas_combined.crt"
+cas_nginx_ssl_key: "{{ deploy_env }}_nginx_cas.org.key"
+enikshay_nginx_ssl_cert: "{{ deploy_env }}_nginx_enikshay_combined.crt"
+enikshay_nginx_ssl_key: "{{ deploy_env }}_nginx_enikshay.org.key"
+pna_nginx_ssl_cert: "{{ deploy_env }}_nginx_pna_combined.crt"
+pna_nginx_ssl_key: "{{ deploy_env }}_nginx_pna.org.key"
+
 # providing this will ensure that the poodle vulnerability is closed
 nginx_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
-# you can also provide a cipher suite to prevent browsers using old, vulnerable
-# ciphers for encryption.  This is the "intermediate" suite:
+# RC4 is needed for J2ME so we have to have it enabled here.
+# Otherwise, this matches the recommendation given at https://weakdh.org/sysadmin.html
 nginx_ssl_ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA"
+# disable emitting nginx version in error pages and HTTP server header
+server_tokens: "off"
 
 nginx_http_params:
   sendfile: "on"
@@ -28,6 +39,10 @@ nginx_http_params:
   types_hash_max_size: 2048
 
 nginx_separate_logs_per_site: True
-nginx_set_default_server: ""
+primary_ssl_env: ""
 commcarehq_errors_repository: "https://github.com/dimagi/commcare-hq-errorpages.git"
+commcare_errors_branch: "master"
 errors_home: "{{ www_home }}/error_root"
+error_pages:
+  - "502 503 /errors/50x.html"
+  - "400 /errors/400.html"

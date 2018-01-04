@@ -1,0 +1,11 @@
+#!/usr/bin/python
+import sys
+import boto3
+
+if len(sys.argv) != 2:
+    raise Exception('Usage is retrieve_backup.py <filename>')
+
+filename = sys.argv[1]
+s3 = boto3.client('s3', region_name='{{ aws_region }}')
+s3.download_file('dimagi-{{ deploy_env }}-postgres-backups',
+                 filename, filename)

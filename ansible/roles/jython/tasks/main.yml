@@ -1,6 +1,6 @@
 ---
 - name: Install Jython
-  sudo: yes
+  become: yes
   script: install_jython.sh creates=/usr/local/lib/jython/bin/jython
 
 - name: Verify Jython

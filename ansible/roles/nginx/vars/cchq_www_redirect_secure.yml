@@ -1,0 +1,14 @@
+---
+# Send everything from https://commcarehq.org -> https://www.commcarehq.org
+nginx_sites:
+- server:
+   file_name: "{{ deploy_env }}_commcare_redirect"
+   listen: "443 ssl"
+   server_name: "{{ NO_WWW_SITE_HOST }}"
+   client_max_body_size: 100m
+   proxy_set_headers:
+   - "Host $host"
+   - "X-Forwarded-Protocol  $scheme"
+   locations:
+     - name: /
+       return: "301 https://{{ SITE_HOST }}$request_uri"

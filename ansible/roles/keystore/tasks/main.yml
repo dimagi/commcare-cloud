@@ -1,5 +1,5 @@
 - name: Send Keystore
-  sudo: yes
+  become: yes
   copy:
     src: "{{ keystore_file }}"
     dest: "{{ www_dir }}/DimagiKeyStore"
@@ -7,3 +7,4 @@
     owner: cchq
     mode: 0644
     backup: yes
+  when: keystore_file is defined

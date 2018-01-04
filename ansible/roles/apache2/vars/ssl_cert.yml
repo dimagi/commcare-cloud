@@ -1,3 +1,0 @@
-apache2_ssl_cert: /etc/ssl/certs/{{ deploy_env }}.pem
-apache2_ssl_key: /etc/ssl/private/{{ deploy_env }}.key
-apache2_ssl_ca_certificate_file: /etc/ssl/certs/{{ deploy_env }}-intermediate.pem

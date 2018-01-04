@@ -1,43 +1,38 @@
 ---
 
 - name: Create shared data dir
-  sudo: yes
+  become: yes
   file:
     path: "{{ shared_data_dir }}"
     owner: "nobody"
     group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
+    mode: "u=rwx,g=rwx,o=rx"
     state: directory
   tags:
     - nfs
+    - shared_files
 
-- name: Add shared dir to exports
-  sudo: yes
-  lineinfile:
-    dest: /etc/exports
-    line: "{{ shared_data_dir }} {{ item }}(rw,sync,all_squash,no_subtree_check,anongid={{ shared_dir_gid }})"
-    regexp: "^{{ shared_data_dir }} {{ item }}"
-    state: present
-  with_flattened:
-    - groups.webworkers
-    - groups.proxy
-    - groups.celery
+- name: Format system data disk
+  become: yes
+  filesystem: fstype=ext4 dev="{{ datadisk_device }}1"
+  when: datadisk_device is defined
   tags:
-    - nfs
+    - shared_files
 
-- name: Export directories
-  sudo: yes
-  command: "exportfs -a"
+- name: Mount system data disk
+  become: yes
+  mount: name="{{ shared_data_dir }}" src="{{ datadisk_device }}1" fstype=ext4 state=mounted opts=defaults,noatime,nofail
+  when: datadisk_device is defined
   tags:
-    - nfs
+    - shared_files
 
-- name: create shared directories
-  sudo: yes
+- name: Create shared directories
+  become: yes
   file:
     path: "{{ item }}"
     owner: "nobody"
     group: "{{ shared_dir_gid }}"
-    mode: "u=rwx,g=rwx,o=r"
+    mode: "u=rwx,g=rwx,o=rx"
     state: directory
   with_items:
     - "{{ restore_payload_dir_host }}"
@@ -47,17 +42,40 @@
     - shared_files
 
 - name: Create purging cron jobs
-  sudo: yes
+  become: yes
   cron:
     name: "{{ item.name }}"
-    special_time: daily
-    job: "find {{ item.dir }} -type f -maxdepth 1 -mtime +{{ item.max_age }} -delete"
+    special_time: hourly
+    job: "find {{ item.dir }} -maxdepth 1 -type f -mmin +{{ item.max_age }} -delete"
     user: root
     cron_file: purge_cache_files
   with_items:
-    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 2}
-    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 2}
-    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 1}
+    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 180 } # 3 hours
+    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 180 } # 3 hours
+    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 180 } # 3 hours
   tags:
     - shared_files
 
+- name: Add shared dir to exports
+  become: yes
+  when: shared_drive_enabled
+  lineinfile:
+    dest: /etc/exports
+    line: "{{ shared_data_dir }} {{ item }}(rw,sync,all_squash,no_subtree_check,anongid={{ shared_dir_gid }})"
+    regexp: "^{{ shared_data_dir }} {{ item }}"
+    state: present
+  with_flattened:
+    - "{{ groups.webworkers }}"
+    - "{{ groups.proxy }}"
+    - "{{ groups.celery }}"
+    - "{{ groups.pillowtop }}"
+    - "{{ groups.shared_dir_host }}"
+  tags:
+    - nfs
+
+- name: Export directories
+  become: yes
+  when: shared_drive_enabled
+  command: "exportfs -a"
+  tags:
+    - nfs

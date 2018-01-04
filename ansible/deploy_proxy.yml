@@ -1,41 +1,144 @@
 ---
-# deploy_staging_proxy.yml
 - name: Proxy
   hosts: proxy
-  roles:
-    - { role: hq_status, when: proxy_type == 'apache2' }
-    - { role: shared_dir }
-    - { role: apache2, when: proxy_type == 'apache2' }
-    - { role: nginx, when: proxy_type == 'nginx', action: install }
-    - { role: nginx, when: proxy_type == 'nginx', action: site, site_name: cchq_ssl }
-    - { role: nginx, when: proxy_type == 'nginx', action: errorpages }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_redirect == True, action: site, site_name: cchq_redirect }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http == True, action: site, site_name: cchq_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.cchq_http_redirect == True, action: site, site_name: cchq_http_redirect }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.hq_status == True, action: site, site_name: hq_status }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.tableau == True, action: site, site_name: tableau_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.dhis == True, action: site, site_name: dhis_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.wiki == True, action: site, site_name: wiki_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech}
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.motech == True, action: site, site_name: motech_http }
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_ssl == True, action: site, site_name: commtrack_ssl }
-    # Don't put any .commcarehq.org ssl configurations below commtrack, the ssl cert variable that gets loaded persists between roles
-    - { role: nginx, when: proxy_type == 'nginx' and active_sites.commtrack_http == True, action: site, site_name: commtrack_http }
-    - { role: nginx, when: proxy_type == 'nginx', action: restart }
-
-- name: Newrelic Plugin Agent for Proxy
-  hosts: proxy
   tasks:
-    - include: roles/newrelic/tasks/plugin-agent.yml
-      when: run_newrelic_plugin_agent
-  tags:
-    - newrelic-plugin-agent
+    - name: setup shared dir
+      include_role:
+        name: shared_dir
+
+    - name: install nginx
+      include_role:
+        name: nginx
+        tasks_from: install
+      when: not nginx_installed|default(False)
+
+    - name: install error pages
+      include_role:
+        name: nginx
+        tasks_from: errorpages
+
+    - name: remove old sites
+      include_role:
+        name: nginx
+        tasks_from: dropsite
+      with_items:
+        - "{{ deploy_env }}_riakcs"
+        - hq_status
+      loop_control:
+        loop_var: file_name
+
+    - name: install sites
+      include_role:
+        name: nginx
+        tasks_from: site
+      when: active_sites.get(site_config.name) == True
+      with_items:
+        - {name: cchq_http, vars_file: cchq_http}
+        - {name: cchq_ssl, vars_file: cchq_ssl}
+        - {name: cchq_www_redirect_insecure, vars_file: cchq_www_redirect_insecure}
+        - {name: cchq_www_redirect_secure, vars_file: cchq_www_redirect_secure}
+        - {name: motech, vars_file: motech}
+        - {name: motech, vars_file: motech_http}
+        - {name: motech2, vars_file: motech2}
+        - {name: motech2, vars_file: motech2_http}
+        - {name: wiki, vars_file: wiki}
+        - {name: wiki, vars_file: wiki_http}
+        - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
+        - {name: commtrack_ssl, vars_file: commtrack_ssl}
+        - {name: commtrack_http, vars_file: commtrack_http}
+        - {name: icds_tableau, vars_file: icds_tableau}
+        - {name: icds_tableau, vars_file: icds_tableau_http}
+      loop_control:
+        loop_var: site_config
+
+    - name: riakcs site
+      include_role:
+        name: nginx
+        tasks_from: site
+      vars:
+        site_config: {name: riakcs, vars_file: riakcs}
+        hosts_group: riakcs
+      when: active_sites.riakcs
+
+    - name: riakcs new
+      include_role:
+        name: nginx
+        tasks_from: site
+      vars:
+        hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
+        riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
+        site_config: {name: riakcs, vars_file: riakcs}
+      when: "active_sites.riakcs == True
+        and ('BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings or 'TEMP_RIAKCS_PROXY' in localsettings)"
+
+    - name: drop riak temp
+      include_role:
+        name: nginx
+        tasks_from: dropsite
+      vars:
+        file_name: "{{ deploy_env }}_riakcs_{{ temp_riakcs_proxy_port }}"
+      when: "active_sites.riakcs == True
+        and 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' not in localsettings
+        and 'TEMP_RIAKCS_PROXY' not in localsettings"
+
+    - name: Restart nginx
+      include_role:
+        name: nginx
+        tasks_from: restart
+
+- name: CAS Proxy
+  hosts: cas_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: cas_ssl, vars_file: cas_ssl}
+      when: active_sites.cas_ssl == True
+
+- name: Enikshay Proxy
+  hosts: enikshay_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: enikshay_ssl, vars_file: enikshay_ssl}
+      when: active_sites.enikshay_ssl == True
+
+- name: PNA Proxy
+  hosts: pna_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: pna_ssl, vars_file: pna_ssl}
+      when: active_sites.pna_ssl == True
+
+- name: Couchdb 2.0 Proxy
+  hosts: couchdb2_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: couchdb2, vars_file: couchdb2}
+      when: active_sites.couchdb2 == True
+
+- name: Move logrotate to hourly
+  hosts:
+    - proxy
+    - couchdb2_proxy
+  become: true
+  roles:
+    - role: logrotate
 
 - name: Nginx log rolling configurations
-  hosts: proxy
+  hosts:
+   - proxy
+   - couchdb2_proxy
+  become: true
   roles:
     - role: ansible-logrotate
       logrotate_scripts:
@@ -43,11 +146,13 @@
           path: "{{ log_home }}/*.log"
           options:
             - monthly
-            - size 1G
+            - size 750M
             - rotate 14
             - missingok
             - compress
             - delaycompress
-            - copytruncate
             - nocreate
             - notifempty
+            - sharedscripts
+          scripts:
+            postrotate: "[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`"

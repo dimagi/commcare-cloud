@@ -1,0 +1,197 @@
+# This is a temporary deployment script for managing hosts in [riakcs_new],
+# which is a temporary group used while migrating to a new riak cluster.
+#
+# This is a copy of deploy_riakcs.yml with replacements:
+# - hosts:
+#   riakcs -> riakcs_new
+#   stanchion -> stanchion_new
+#   riakcs_control_host -> riakcs_new_control_host
+#
+# Also added one task to set riakcs_control and updated variable assignments.
+#
+# run with --tags=mount-ecryptfs to mount encrypted volume after reboot
+
+- name: Set variables
+  hosts:
+    - riakcs_new
+    - stanchion_new
+  tasks:
+    - set_fact: _riak_backend="{{ riak_new_backend }}"
+    - set_fact: _riak_ring_size="{{ riak_new_ring_size }}"
+    - set_fact: riakcs_control="{{ groups.riakcs_new[0] }}"
+    - set_fact: stanchion_host="{{ groups.stanchion_new[0] }}"
+
+- name: Common Setup
+  hosts:
+    - riakcs_new
+    - stanchion_new
+  become: true
+  roles:
+    - {role: ecryptfs}
+
+- name: First host in riakcs_new group -> riakcs_new_control_host
+  # riakcs_new_control_host group must contain at most one host
+  hosts:
+    - riakcs_new
+  tasks:
+    - add_host: name="{{ riakcs_control }}" groups=riakcs_new_control_host
+      when: riakcs_new_control_host is undefined
+      check_mode: no
+      changed_when: false
+      tags: localsettings
+
+- name: Register riak conf override fact
+  # NOTE riak config files are only created/updated if they do not already exist
+  # or if '-e force_riak_config=host1,host2,...' is specified on the command
+  # line listing each node to force configure (use inventory_hostname as host
+  # name). This is because it can be dangerous to change the riak.conf of a
+  # running node. The Riak service may refuse to start or ignore some data if
+  # the configuration is changed.
+  hosts:
+    - riakcs_new
+  vars_files:
+    - roles/riakcs/install/defaults/main.yml
+    - roles/riakcs/configure/vars/main.yml
+  tasks:
+    - name: "Stat {{ riak_conf }}"
+      stat: path="{{ riak_conf }}"
+      register: riak_conf_file
+      changed_when: false
+      failed_when: false
+      check_mode: no
+    - set_fact: _force_riak_config="{{ 'yes'
+        if inventory_hostname in (force_riak_config | default('')).split(',')
+            or force_riak_config | default('') == 'all'
+            or not (riak_conf_file.stat.exists | default(True))
+        else '' }}"
+    # HACK set fact because defaults cannot be loaded from other hosts
+    - set_fact: riak_nodename="{{ backend_vars.riak_nodename }}"
+
+- name: Configure swap for riak hosts
+  hosts: riakcs_new
+  roles:
+    - {role: swap}
+
+- name: Load admin keys from Riak CS conf
+  become: true
+  hosts: riakcs_new_control_host
+  vars_files:
+    - roles/riakcs/install/defaults/main.yml
+  tasks:
+    - include: roles/riakcs/get_admin_keys.yml tags=localsettings
+
+- name: Install Riak and Riak CS
+  become: true
+  hosts: riakcs_new
+  vars_files:
+    # for backend_vars.riak_version
+    - roles/riakcs/configure/vars/main.yml
+  roles:
+    - {role: riakcs/install, name: riak}
+    - {role: riakcs/install, name: riakcs, service: riak-cs}
+
+- name: Install Stanchion
+  become: true
+  hosts: stanchion_new
+  vars_files:
+    # for backend_vars.riak_version
+    - roles/riakcs/configure/vars/main.yml
+  roles:
+    - {role: riakcs/install, name: stanchion}
+
+- name: Configure and start Riak
+  # Riak CS must be installed before Riak can be started
+  become: true
+  hosts: riakcs_new
+  roles:
+    - role: riakcs/configure
+      name: riak
+      drop_conf: "{{ backend_vars.drop_conf }}"
+      advanced_conf: "{{ backend_vars.advanced_conf }}"
+      data_dirs:
+        - "{{ riak_data_dir }}"
+        - "{{ riak_ring_dir }}"
+        - "{{ riak_data_root_leveldb }}"
+        - "{{ riak_data_root_bitcask if _riak_backend == 'bitcask' else '' }}"
+        - "{{ riak_data_root_blocks if _riak_backend == 'leveldb' else '' }}"
+      when: _force_riak_config | bool
+
+- name: Start Riak
+  become: true
+  hosts: riakcs_new
+  tasks:
+    - service: name="riak" state=started enabled=yes
+      tags: after-reboot
+
+- name: Join Riak [CS] nodes to cluster
+  become: true
+  hosts: riakcs_new
+  tasks:
+    - include: roles/riakcs/join_cluster.yml
+      when: inventory_hostname != riakcs_control and _force_riak_config
+
+- name: Configure and start Stanchion
+  # Riak must be started before Stanchion can be started
+  become: true
+  hosts: stanchion_new
+  roles:
+    - role: riakcs/configure
+      name: stanchion
+      ulimit_n: 4096
+      data_dirs: [ "{{ stanchion_data_dir }}" ]
+
+- name: Configure and start Riak CS
+  become: true
+  hosts: riakcs_new
+  roles:
+    - {role: riakcs/configure, name: riakcs, service: riak-cs}
+
+- name: Create admin user
+  become: true
+  hosts: riakcs_new_control_host
+  roles:
+    - role: riakcs/create_admin_user
+      when: riak_key is undefined or riak_secret is undefined
+
+- name: Sync admin user keys to Riak CS cluster
+  become: true
+  hosts: riakcs_new
+  roles:
+    - {role: riakcs/sync_keys, name: riakcs}
+
+- name: Sync admin user keys to Stanchion
+  become: true
+  hosts:
+    - stanchion_new
+  roles:
+    - {role: riakcs/sync_keys, name: stanchion}
+
+- name: Remove Riak Restarter
+  hosts: riakcs_new
+  become: true
+  tasks:
+    - name: Remove Riak restart script
+      become: true
+      file: >
+        path=/root/riak-restarter.sh
+        state=absent
+    - name: Remove Cron job
+      become: true
+      cron:
+        name: "Reboot Riak"
+        cron_file: riak-restarter
+        state: absent
+
+- name: Riak CS logs
+  hosts: riakcs_new
+  become: true
+  tasks:
+    - name: Purge old Riak CS access logs
+      cron:
+        name: "riak-cs-access-logs"
+        user: root
+        special_time: daily
+        job: /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mmin +90 -exec gzip -q {} \; &&
+             /usr/bin/find /var/log/riak-cs -name 'access.log.*' -mtime +365 -delete
+        cron_file: riak-cs-access-logs
+        state: present

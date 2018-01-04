@@ -1,5 +1,5 @@
 - name: create required directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -10,8 +10,16 @@
     - "{{ errors_home }}"
 
 - name: pull errors repository
+  become: true
+  become_user: "{{ cchq_user }}"
+  vars:
+    ansible_ssh_pipelining: true
   git:
-    repo={{ commcarehq_errors_repository }} dest={{ errors_home }} version=master recursive=yes accept_hostkey=yes depth=1
-  sudo_user: "{{ cchq_user }}"
+    repo: "{{ commcarehq_errors_repository }}"
+    dest: "{{ errors_home }}"
+    version: "{{ commcare_errors_branch }}"
+    recursive: yes
+    accept_hostkey: yes
+    depth: 1
   tags:
     - git

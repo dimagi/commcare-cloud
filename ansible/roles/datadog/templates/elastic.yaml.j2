@@ -1,0 +1,9 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+  - url: http://{{ inventory_hostname }}:9200
+    tags:
+      - environment:{{ env_name|default(deploy_env) }}

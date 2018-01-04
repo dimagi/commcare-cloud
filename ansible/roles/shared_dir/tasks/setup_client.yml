@@ -1,7 +1,8 @@
 ---
 
 - name: Create shared mount dir
-  sudo: yes
+  become: yes
+  when: shared_drive_enabled
   file:
     path: "{{ shared_mount_dir }}"
     owner: "nobody"
@@ -12,7 +13,8 @@
     - nfs
 
 - name: Mount directory in /etc/fstab
-  sudo: yes
+  become: yes
+  when: shared_drive_enabled
   mount:
     name: "{{ shared_mount_dir }}"
     src: "{{ groups.shared_dir_host[0] }}:{{ shared_data_dir }}"

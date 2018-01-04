@@ -1,1 +1,2 @@
-uses_postgres: False
+uses_postgres: True
+touchforms_enabled: True

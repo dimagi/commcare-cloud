@@ -1,0 +1,22 @@
+---
+nginx_ssl_cert: "{{ tableau_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ tableau_nginx_ssl_key }}"
+
+nginx_sites:
+- server:
+   file_name: icds_tableau
+   listen: "443 ssl"
+   # Move these to a localsetting?
+   server_name: "{{ TABLEAU_HOST }}"
+   client_max_body_size: 100m
+   proxy_set_headers:
+   - "Host $host"
+   - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-Proto $scheme"
+   - "X-Forwarded-Host $host:443"
+   locations:
+     - name: /
+       proxy_pass: "http://{{ tableau_server }}"
+       proxy_read_timeout: 120s
+     - name: /errors
+       alias: "{{ errors_home }}/pages"

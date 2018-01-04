@@ -2,25 +2,53 @@
 # {{ ansible_managed }}
 #
 
-{% if item.server.get('use_balancer', False) == True %}
-upstream {{ item.server.file_name }} {
+{% for balancer in item.server.get('balancers', []) %}
+upstream {{ balancer.name }} {
+  zone {{ balancer.name }} {{ balancer.zone|default('64k') }};
+
+  {% if balancer.get('method') %}
+  {{ balancer.method }};
+  {% else %}
   least_conn;
-{% for host in groups['webworkers'] %}
-  server {{ host }}:{{ django_port }};
+  {% endif %}
+
+{% for host in groups[balancer.hosts] %}
+  server {{ host }}:{{ balancer.port }};
 {% endfor %}
 }
-{% endif %}
+{% endfor %}
+
+{% for var_map in item.server.get('mappings', []) %}
+map {{ var_map.variable }} {{ var_map.name }} {
+  ""     {{ var_map.value }};
+  default     "";
+}
+{% endfor %}
+
+{% for zone in item.server.get('limit_req_zones', []) %}
+limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }}:{{ zone.size }} rate={{ zone.rate }};
+{% endfor %}
+
+{% for cache in item.server.get('proxy_cache_path', []) %}
+proxy_cache_path {{ cache.path }} levels=1:2 keys_zone={{ cache.name }}:10m
+                 max_size={{ cache.max_size}} inactive={{ cache.inactive_time }} use_temp_path=off;
+{% endfor %}
 
 server {
 
 {% if nginx_separate_logs_per_site == True %}
-  access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }};
-  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }};
+  access_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_access_log_name }} rt_cache;
+  error_log {{ log_home }}/{{ item.server.file_name }}-{{ nginx_error_log_name }} warn;
 {% endif %}
 
 {% if 'ssl' in item.server.listen %}
+  {% if fake_ssl_cert %}
+  ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+  ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+  {% else %}
   ssl_certificate {{ ssl_certs_dir }}/{{ nginx_ssl_cert }};
   ssl_certificate_key {{ ssl_keys_dir }}/{{ nginx_ssl_key }};
+  {% endif %}
 {% if nginx_ssl_protocols|default('') %}
   ssl_protocols {{ nginx_ssl_protocols }};
 {% endif %}
@@ -32,8 +60,12 @@ server {
 {% endif %}
 {% endif %}
 
+{% if server_tokens|default('off') %}
+  server_tokens {{ server_tokens }};
+{% endif %}
+
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k != 'file_name' and k != 'use_balancer' and k != 'proxy_set_headers' %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}
@@ -44,16 +76,28 @@ server {
   {% endfor %}
 {% endfor %}
 
-{% for k,v in item.server.iteritems() if k.find('location') != -1 %}
-  location {{ v.name }} {
-    {% if v.get('use_balancer', False) == True %}
-        proxy_pass http://{{ item.server.file_name }};
+{% for value in error_pages %}
+  error_page {{ value }};
+{% endfor %}
+
+{% for location in item.server.get('locations', []) + item.server.get('extra_locations', []) %}
+  location {{ location.name }} {
+    {% if location.get('balancer', None) %}
+        proxy_pass http://{{ location.balancer }};
     {% endif %}
-    {% if v.get('is_internal', False) == True %}
+    {% if location.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in v.iteritems() if x not in ['name', 'use_balancer', 'is_internal'] %}
+    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'limit_reqs'] %}
         {{ x }} {{ y }};
+    {% endfor %}
+    {% if location.get('proxy_set_headers') %}
+      {% for header in location.proxy_set_headers %}
+        proxy_set_header {{ header }};
+      {% endfor %}
+    {% endif %}
+    {% for limit in location.get('limit_reqs', []) %}
+        limit_req zone={{ limit.zone_name }}{% if limit.get('burst') %} burst={{limit.burst}}{% endif %}{% if limit.get('nodelay') %} nodelay{% endif %};
     {% endfor %}
   }
 {% endfor %}

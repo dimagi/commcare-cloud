@@ -1,47 +1,118 @@
 ---
-- name: Install ecryptfs-utils
-  sudo: yes
-  apt: name=ecryptfs-utils state=present
 
-- name: Check for already mounted drive
-  shell: cat /etc/mtab
+- name: Check for valid partition table on block storage device
+  become: yes
+  shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
+  register: partition_check
+  when: datavol_device is defined and ansible_hostname not in groups['lvm']
+  changed_when: false
+  failed_when: false
+  check_mode: no
+
+- name: Create partition on block storage volume
+  become: yes
+  shell: echo -e "o\nn\np\n1\n\n\nw" | fdisk {{ datavol_device }}
+  # http://superuser.com/a/739586/86694
+  # o - clear in memory partition table
+  # n - new partition
+  # p - primary partition
+  # 1 - partition number 1
+  #   - default - start at beginning of disk 
+  #   - default - use entire disk
+  # w - write the partition table
+  when: datavol_device is defined and partition_check.rc == 0 and ansible_hostname not in groups['lvm']
+
+- name: Format block storage volume
+  become: yes
+  filesystem: fstype=ext4 dev="{{ datavol_device }}1"
+  when: datavol_device is defined
+
+- name: Mount block storage volume
+  become: yes
+  mount:
+    name: "{{ encrypted_root }}"
+    src: "{{ datavol_device }}1"
+    fstype: ext4
+    state: mounted
+    opts: "defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}"
+    dump: "0"
+    passno: "0"
+  when: datavol_device is defined
+
+- name: Check for already mounted encrypted drive
+  shell: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
   register: mtab_contents
+  failed_when: false
+  changed_when: false
+  check_mode: no
+  tags:
+    - mount-ecryptfs
+    - after-reboot
 
-- name: Create /opt/data directory
-  sudo: yes
-  file: path=/opt/data owner=root group=root mode=0755 state=directory
+- name: Install ecryptfs-utils
+  become: yes
+  apt: name=ecryptfs-utils state=present
+  # Do not install ecryptfs utils if already mounted. This should trigger alarm
+  # bells if something causes a false positive result on checking for encrypted
+  # volume is already mounted.
+  when: encrypted_root not in mtab_contents.stdout
+
+- name: Create encrypted drive root directory
+  become: yes
+  file: path="{{ encrypted_root }}" owner=root group=root mode=0755 state=directory
+  tags:
+    - mount-ecryptfs
+    - after-reboot
 
 - name: Add encryption password to keyring
-  sudo: yes
+  become: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
-  when: "'/opt/data' not in mtab_contents.stdout"
+  when: encrypted_root  not in mtab_contents.stdout
+  tags:
+    - mount-ecryptfs
+    - after-reboot
 
 - name: Mount data drive
-  sudo: yes
-  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 /opt/data/ /opt/data/"
-  when: "'/opt/data' not in mtab_contents.stdout"
+  become: yes
+  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
+  when: encrypted_root not in mtab_contents.stdout
+  tags:
+    - mount-ecryptfs
+    - after-reboot
+
+- name: "Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS"
+  become: yes
+  when: not shared_drive_enabled
+  file: path="{{ encrypted_root }}/blobdb" owner=nobody group="{{ shared_dir_gid }}" mode=0775 state=directory
+  tags:
+    - ecryptfs-blobdb
+
+- name: Create shared data dir
+  become: yes
+  file:
+    path: "{{ shared_data_dir }}"
+    owner: "nobody"
+    group: "{{ shared_dir_gid }}"
+    mode: "u=rwx,g=rwx,o=rx"
+    state: directory
+  when: not shared_drive_enabled
+  tags:
+    - ecryptfs-blobdb
+
+- name: Create blob DB symlink (cchq looks for it in the shared drive)
+  become: yes
+  when: not shared_drive_enabled
+  file: src="{{ encrypted_root }}/blobdb" dest="{{ shared_data_dir }}/blobdb" state=link
+  tags:
+    - ecryptfs-blobdb
 
 - name: Drop unencrypted readme in directory
-  sudo: yes
+  become: yes
   lineinfile:
-    dest: '/opt/data/README'
+    dest: '{{ encrypted_root }}/README'
     line: 'If you can read this file the directory is unencrypted'
     create: yes
     owner: root
     group: root
     mode: 0770
-
-- name: Register mount configuration
-  sudo: yes
-  shell: "tail /etc/mtab -n1"
-  register: mount_configuration
-
-- name: Create entry in fstab
-  sudo: yes
-  lineinfile:
-    dest: "/etc/fstab"
-    regexp: "^/opt/data"
-    backup: yes
-    line: "{{ mount_configuration.stdout }}"
-  when: "'/opt/data' not in mtab_contents.stdout"

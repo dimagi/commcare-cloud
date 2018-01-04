@@ -1,0 +1,116 @@
+---
+# Sets up a PostrgeSQL standby node
+# Usage:
+#   commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]
+#
+- hosts:
+    - "{{ standby }}"
+  become: yes
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  tasks:
+    - assert:
+        that:
+          - "hot_standby_master is defined"
+        msg: "Standby node ('{{ standby }}') provided does not have 'hot_standby_master var set. Are you sure it's the right node?"
+
+    - stat:
+        path: "{{ postgresql_home }}/recovery.conf"
+      register: recovery_file
+
+    - assert:
+        that:
+          - "force|default('no') == 'yes' or recovery_file.stat.exists == False"
+        msg: "Standby node ('{{ standby }}') already has a 'recovery.conf' file. Run with '-e force=yes' to proceed anyway"
+
+    - service:
+        name: postgresql
+        state: stopped
+
+    - file:
+       path:  "{{ postgresql_home }}"
+       state: absent
+
+    - file:
+       path:  "{{ postgresql_home }}"
+       owner: postgres
+       group: postgres
+       mode:  0700
+       state: directory
+
+- hosts:
+    - "{{ standby }}"
+  become: yes
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  tasks:
+    - name: get master size
+      delegate_to: "{{ hot_standby_master }}"
+      shell: du -s {{ postgresql_home }}
+      register: master_size_output
+
+    - debug:
+        msg: "Master DB Size: {{ master_size_output.stdout.split()[0]|int }}"
+      when: not ansible_check_mode
+
+    - name: execute base backup
+      shell: |
+        export PGPASSWORD="{{ postgres_users.replication.password }}" && \
+        {{ postgres_install_dir }}/bin/pg_basebackup \
+          -h {{ hot_standby_master }} \
+          -U {{ postgres_users.replication.username }} \
+          -D {{ postgresql_home }} \
+          -P -v --xlog-method=stream 2>&1
+      async: 7200
+      poll: 0
+      register: async_results
+      when: not ansible_check_mode
+
+    - name: Check sync status
+      async_status:
+        jid: "{{ async_results.ansible_job_id }}"
+      register: async_poll_results
+      when: not ansible_check_mode
+
+    - name: create progress tasks
+      include_tasks: roles/postgresql/tasks/standby_progress.yml
+      with_items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+      when: not ansible_check_mode
+
+    - name: Check sync status
+      async_status:
+        jid: "{{ async_results.ansible_job_id }}"
+      register: async_poll_results
+      until: async_poll_results.finished
+      retries: 100
+      delay: 300
+      when: not ansible_check_mode
+
+    - debug: var=async_poll_results
+      when: not ansible_check_mode
+
+    - name: add new configuration "recovery.conf"
+      blockinfile:
+        create: yes
+        dest: "{{ postgresql_home }}/recovery.conf"
+        block: |
+          standby_mode = 'on'
+          primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ postgresql_port }} sslmode=prefer'
+          primary_slot_name = '{{ replication_slot }}'
+          recovery_target_timeline = 'latest'
+
+    - name: Reset ownership
+      file:
+        dest: "{{ postgresql_home }}"
+        state: directory
+        recurse: yes
+        owner: postgres
+        group: postgres
+
+- hosts:
+    - "{{ standby }}"
+  become: yes
+  tasks:
+    - service:
+        name: postgresql
+        state: started

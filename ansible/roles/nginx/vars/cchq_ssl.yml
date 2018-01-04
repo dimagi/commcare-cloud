@@ -1,30 +1,53 @@
 ---
 nginx_sites:
 - server:
+   balancers:
+    - name: "{{ deploy_env }}_commcare"
+      hosts: webworkers
+      port: "{{ django_port }}"
+    - name: "{{ deploy_env }}_formplayer"
+      hosts: formplayer
+      port: "{{ formplayer_port }}"
+      method: "hash $cookie_sessionid consistent"
    file_name: "{{ deploy_env }}_commcare"
-   listen: "443 ssl {{ nginx_set_default_server }}"
+   listen: "443 ssl{{ ' http2' if ansible_distribution_version != '12.04' else '' }}{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
+   root: "/var/www/html"
    server_name: "{{ SITE_HOST }}"
-   client_max_body_size: 100m
-   use_balancer: True
+   client_max_body_size: 600m
    proxy_set_headers:
-   - "Host $http_host"
+   - "Host $host"
    - "X-Forwarded-For $remote_addr"
-   error_page: "502 503 /errors/50x.html"
+   - "X-Forwarded-Protocol  $scheme"
+   add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
-   location1:
-    name: /
-    use_balancer: True
-    proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
-    proxy_next_upstream_tries: 1
-    proxy_read_timeout: 900s
-   location2:
-    name: "/static"
-    alias: "{{ nginx_static_home }}"
-    try_files: "$uri $uri/index.html $uri/ =404"
-   location3:
-    name: "/{{ transfer_payload_dir_name }}"
-    alias: "{{ transfer_payload_dir }}"
-    is_internal: True
-   location4:
-    name: /errors
-    alias: "{{ errors_home }}/pages"
+   locations:
+    - name: "/a/ipm-senegal/phone/restore"
+      return: 503
+    - name: "/a/ipm-senegal/receiver"
+      return: 503
+    - name: /
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+    - name: "/static"
+      alias: "{{ nginx_static_home }}"
+      add_header: "Access-Control-Allow-Origin *"
+      expires: "1M"
+      try_files: "$uri $uri/index.html $uri/ =404"
+    - name: "/{{ transfer_payload_dir_name }}"
+      alias: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}/{{ transfer_payload_dir_name }}"
+      is_internal: True
+    - name: /errors
+      alias: "{{ errors_home }}/pages"
+    - name: /ws
+      proxy_pass: "http://unix:{{ www_home }}/web.socket"
+      proxy_http_version: "1.1"
+      proxy_set_headers:
+      - "Upgrade $http_upgrade"
+      - "Connection \"upgrade\""
+    - name: /formplayer
+      balancer: "{{ deploy_env }}_formplayer/"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+   extra_locations: "{{ site_locations|default([]) }}"

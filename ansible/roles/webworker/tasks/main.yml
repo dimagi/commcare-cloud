@@ -1,7 +1,7 @@
 # Tasks to be run on machines running django
 
 - name: Remove old cron jobs
-  sudo: yes
+  become: yes
   cron:
     name: "Purge old restore payload files"
     user: "{{ cchq_user }}"

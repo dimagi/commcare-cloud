@@ -1,0 +1,30 @@
+aws_config:
+  pem: /path/to/cert.pem
+  ami: ami-xxxxxxxx
+  type: t2.micro
+  key_name: aws_key_name
+  security_group_id: sg-xxxxxxxx
+  subnet: subnet-xxxxxxxx
+
+allocations:
+  proxy: 1
+  webworkers: 1
+  postgresql: 1
+  rabbitmq: 1
+  kafka: 1
+  zookeeper:
+    from: kafka
+  celery: 1
+  pillowtop: 1
+  formplayer: 1
+  redis: 1
+  elasticsearch: 1
+  shared_dir_host: 1
+  riakcs: 1
+  stanchion:
+    count: 1
+    from: riakcs
+  couchdb2: 1
+  couchdb2_proxy:
+    count: 1
+    from: couchdb2

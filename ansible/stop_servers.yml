@@ -1,0 +1,139 @@
+- hosts:
+  - all
+  tasks:
+  - service:
+      name: monit
+      state: stopped
+    become: yes
+    name: Stop Monit
+  - service:
+      name: cron
+      state: stopped
+    become: yes
+    name: Stop Cron
+
+- hosts:
+  - shared_dir_host
+  tasks:
+  - service:
+      name: nfs-kernel-server
+      state: stopped
+    become: yes
+    name: Stop NFS
+
+- hosts:
+  - proxy
+  - cas_proxy
+  - couchdb2_proxy
+  tasks:
+  - service:
+      name: nginx
+      state: stopped
+    become: yes
+    name: Stop Nginx
+
+- hosts:
+  - webworkers
+  - touchforms
+  - pillowtop
+  - formplayer
+  tasks:
+  - command: supervisorctl stop all
+    become: yes
+    name: Stop supervisor services
+
+- hosts:
+  - postgresql
+  - pg_standby
+  tasks:
+  - service:
+      name: postgresql
+      state: stopped
+    become: yes
+    name: Stop PostgreSQL
+
+- hosts:
+  - couchdb
+  tasks:
+  - service:
+      name: couchdb
+      state: stopped
+    become: yes
+    name: Stop couchdb
+
+- hosts:
+  - couchdb2
+  tasks:
+  - service:
+      name: couchdb2
+      state: stopped
+    become: yes
+    name: Stop couchdb2
+
+- hosts:
+  - redis
+  tasks:
+  - service:
+      name: redis-server
+      state: stopped
+    name: Stop redis
+    become: yes
+
+- hosts:
+  - zookeeper
+  tasks:
+  - service:
+      name: zookeeper
+      state: stopped
+    name: Stop zookeeper
+    become: yes
+
+- hosts:
+  - kafka
+  tasks:
+  - service:
+      name: kafka-server
+      state: stopped
+    become: yes
+    name: Stop kafka
+
+- hosts:
+  - rabbitmq
+  tasks:
+  - service:
+      name: rabbitmq-server
+      state: stopped
+    name: Stop rabbitmq
+    become: yes
+
+- hosts:
+  - elasticsearch
+  tasks:
+  - service:
+      name: elasticsearch
+      state: stopped
+    become: yes
+    name: Stop elasticsearch
+
+- hosts:
+  - riakcs
+  tasks:
+  - service:
+      name: riak
+      state: stopped
+    name: Stop riak
+    become: yes
+  - service:
+      name: riak-cs
+      state: stopped
+    name: Stop riak-cs
+    become: yes
+
+- hosts:
+  - stanchion
+  tasks:
+  - service:
+      name: stanchion
+      state: stopped
+    name: Stop stanchion
+    become: yes

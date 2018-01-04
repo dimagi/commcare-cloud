@@ -2,17 +2,19 @@
 
 - name: SharedDirHost
   hosts: shared_dir_host  # Should be one
-  sudo: yes
+  become: yes
   vars_files:
+    - ../group_vars/all.yml
     - shared_dir/vars/main.yml
   tasks:
     - include: shared_dir/tasks/install.yml
     - include: shared_dir/tasks/setup_host.yml
 
 - name: SharedDirClient
-  hosts: webworkers:proxy:celery
-  sudo: yes
+  hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
+  become: yes
   vars_files:
+    - ../group_vars/all.yml
     - shared_dir/vars/main.yml
   tasks:
     - include: shared_dir/tasks/install.yml

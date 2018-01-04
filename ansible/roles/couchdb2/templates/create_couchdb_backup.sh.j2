@@ -1,0 +1,19 @@
+#!/bin/bash
+BACKUP_TYPE=$1
+DAYS_TO_RETAIN_BACKUPS=$2
+
+TODAY=$(date +"%Y_%m_%d")
+BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
+
+tar -Pzcf "{{ couch_backup_dir }}/${BACKUP_FILE}" "{{ couch_data_dir }}"
+
+# Remove old backups of this backup type
+find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" -delete
+
+{% if remote_couch_backup %}
+rsync -avH --delete --exclude="commcarehq__synclogs.*.couch" {{ couch_backup_dir }}/ {{ remote_couch_backup }}:{{ couch_backup_dir }} 
+{% endif %}
+
+{% if couch_s3 %}
+( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "dimagi-{{ deploy_env }}-couch-backups" )
+{% endif %}

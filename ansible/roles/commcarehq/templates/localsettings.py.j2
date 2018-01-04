@@ -2,168 +2,138 @@
 # {{ ansible_managed }}
 #
 
+from datetime import time
+import hashlib
+import json
 import os
 import sys
 
+from celery.schedules import crontab
+
+_ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
+
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-DATABASES = {
-    'default': {
+DATABASES = { {% for config in postgresql_dbs %}
+{%- if config.get('django_alias') %}
+    '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '{{ localsettings.PG_DATABASE_NAME }}',
-        'USER': '{{ localsettings.PG_DATABASE_USER }}',
-        'PASSWORD': '{{ localsettings.PG_DATABASE_PASSWORD }}',
-        'HOST': '{{ localsettings.PG_DATABASE_HOST }}',
-        'PORT': '{{ localsettings.get('PG_DATABASE_PORT', 5432) }}'
+        'NAME': '{{ config.name }}',
+        'USER': '{{ config.get('user', localsettings.PG_DATABASE_USER) }}',
+        'PASSWORD': '{{ config.get('password', localsettings.PG_DATABASE_PASSWORD) }}',
+        'HOST': '{{ config.get('host', localsettings.PG_DATABASE_HOST) }}',
+        'PORT': {{ config.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }},
+        'OPTIONS': {{ config.get('options', localsettings.get('PG_DATABASE_OPTIONS', {}))|to_json }},
+        {% if 'django_migrate' in config -%}
+        'MIGRATE': {{ config.django_migrate }},
+        {% endif -%}
     },
+{% endif -%}
+{% endfor %}
 }
 
-{% if localsettings.REPORT_OBJECT_OWNER %}
-SQL_REPORTING_OBJECT_OWNER = '{{ localsettings.REPORT_OBJECT_OWNER }}'
-{% endif %}
+USE_PARTITIONED_DATABASE = {{ localsettings.get('USE_PARTITIONED_DATABASE', False) }}
 
-CTABLE_BACKENDS = {'SQL': 'ctable.backends.SqlBackend'}
-
-{% if localsettings.CTABLE_PREFIX %}
-CTABLE_PREFIX = '{{ localsettings.CTABLE_PREFIX }}'
-{% endif %}
-
-DJANGO_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
-ACCOUNTING_LOG_FILE = os.path.join('{{ log_home }}',"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
-        },
-        'pillowtop': {
-            'format': '%(asctime)s %(levelname)s %(module)s %(message)s'
-        },
+{% if localsettings.get('USE_PARTITIONED_DATABASE', False) %}
+PARTITION_DATABASE_CONFIG = {
+    'shards': {
+        {% for config in postgresql_dbs %}
+            {%- if config.get('shards') %}'{{config.django_alias}}': {{config.shards|to_json}},
+        {% endif -%}
+        {% endfor %}
     },
-    'handlers': {
-        'pillowtop': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'pillowtop'
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': DJANGO_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'accountinglog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': ACCOUNTING_LOG_FILE,
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 20  # Backup 200 MB of logs
-        },
-        'couchlog': {
-            'level': 'WARNING',
-            'class': 'couchlog.handlers.CouchHandler',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'corehq.util.log.HqAdminEmailHandler',
-        },
-        'notify_exception': {
-            'level': 'ERROR',
-            'class': 'corehq.util.log.NotifyExceptionEmailer',
-        },
-        'sentry': {
-            'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        },
-        'null': {
-            'class': 'django.utils.log.NullHandler',
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file', 'couchlog', 'sentry'],
-            'propagate': True,
-            'level': 'INFO',
-        },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'django.security.DisallowedHost': {
-            'handlers': ['null'],
-            'propagate': False,
-        },
-        'notify': {
-            'handlers': ['notify_exception'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'celery.task': {
-            'handlers': ['console', 'file', 'couchlog', 'sentry'],
-            'level': 'INFO',
-            'propagate': True
-        },
-        'pillowtop': {
-            'handlers': ['pillowtop', 'sentry'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'pillowtop_eval': {
-            'handlers': ['sentry'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'smsbillables': {
-            'handlers': ['file', 'sentry'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'currency_update': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'accounting': {
-            'handlers': ['accountinglog', 'sentry', 'console', 'couchlog', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': False,
-        },
+    'groups': {
+        'main': ['default'],
+        'proxy': ['proxy'],
+        'form_processing': [
+            {% for config in postgresql_dbs %}
+                {%- if config.get('shards') %}'{{config.django_alias}}',
+            {% endif -%}
+            {% endfor %}
+        ]
     }
 }
+{% endif %}
+
+REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
+
+{% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
+ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
+{% endif %}
+
+{% if localsettings.get('ICDS_UCR_TEST_DATABASE_ALIAS') %}
+ICDS_UCR_TEST_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
+{% endif %}
+
+LOG_HOME = '{{ log_home }}'
+COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
+DJANGO_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
+ACCOUNTING_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.accounting.log")
+ANALYTICS_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.analytics.log")
+DATADOG_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.datadog.log")
+EXPORT_MIGRATION_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-export_migration.log")
+UCR_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_timing.log")
+UCR_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_diff.log")
+UCR_EXCEPTION_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_exception.log")
+
+# Shared Drive Setup
+{% if shared_drive_enabled|default(true) %}
+SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
+{% else %}
+SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
+{% endif %}
+RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
+TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
+SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
+TRANSFER_SERVER = 'nginx'
+
 
 # Email setup
 # email settings: these ones are the custom hq ones
+{% if file_email or not localsettings.EMAIL_LOGIN %}
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/django_email'
+{% else %}
 EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
+{% if 'EMAIL_PASSWORD' in localsettings %}
 EMAIL_PASSWORD = "{{ localsettings.EMAIL_PASSWORD }}"
+{% else %}
+# This prevents django from attempting smtp auth for servers where it is not configured
+EMAIL_PASSWORD = None
+{% endif %}
 EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
+{% endif %}
 
-SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
-EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
-SERVER_ENVIRONMENT = '{{ item.deploy_env_name }}'
+EMAIL_SUBJECT_PREFIX = '[{{ env_name|default(deploy_env) }}] '
+SERVER_ENVIRONMENT = '{{ env_name|default(deploy_env) }}'
 
-XFORMS_FORM_TRANSLATE_JAR = os.path.join(os.path.dirname(__file__),"lib","form_translate.jar")
+XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 
-#CLOUDANT SETUP
-COUCH_USERNAME = '{{ localsettings.COUCH_USERNAME }}'
-COUCH_PASSWORD = '{{ localsettings.COUCH_PASSWORD }}'
-COUCH_SERVER_ROOT = '{{ localsettings.COUCH_SERVER_ROOT }}'
-COUCH_DATABASE_NAME = '{{ localsettings.COUCH_DATABASE_NAME }}'
-COUCH_HTTPS = {{ localsettings.COUCH_HTTPS }}
+#COUCH SETUP
+COUCH_DATABASES = {
+{% for alias, config in couch_dbs.items() %}
+    '{{ alias }}': {
+        'COUCH_HTTPS': {{ config.is_https }},
+        'COUCH_SERVER_ROOT': '{{ config.host }}:{{ config.port }}',
+        'COUCH_USERNAME': '{{ config.username }}',
+        'COUCH_PASSWORD': '{{ config.password }}',
+        'COUCH_DATABASE_NAME': '{{ config.name }}',
+    },
+{% endfor %}
+}
+
+{% if 'CUSTOM_SYNCLOGS_DB' in localsettings %}
+CUSTOM_SYNCLOGS_DB = '{{ localsettings.CUSTOM_SYNCLOGS_DB }}'
+{% endif %}
+
+{% if 'BIGCOUCH' in localsettings %}
+BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
+{% endif %}
+
+{% if 'BIGCOUCH_QUORUM_COUNT' in localsettings %}
+BIGCOUCH_QUORUM_COUNT = '{{ localsettings.BIGCOUCH_QUORUM_COUNT }}'
+{% endif %}
 
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
 COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
@@ -174,10 +144,6 @@ COUCH_CACHE_VIEWS = '{{ localsettings.COUCH_CACHE_VIEWS }}'
 
 {% if 'STAGING_DOMAINS' in localsettings %}
 STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
-{% endif %}
-
-{% if 'PRODUCTION_COUCHDB_URI' in localsettings %}
-PRODUCTION_COUCHDB_URI = '{{ localsettings.PRODUCTION_COUCHDB_URI }}'
 {% endif %}
 
 {% if 'DROPBOX_APP_NAME' in localsettings %}
@@ -192,34 +158,52 @@ DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
 DROPBOX_SECRET = '{{ localsettings.DROPBOX_SECRET }}'
 {% endif %}
 
-{% if 'ES_CASE_CHECK_DIRECT_DOC_ID' in localsettings %}
-ES_CASE_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_CASE_CHECK_DIRECT_DOC_ID }}'
-{% else %}
-ES_CASE_CHECK_DIRECT_DOC_ID = None
+{% if 'AMAZON_S3_ACCESS_KEY' in localsettings %}
+S3_ACCESS_KEY = '{{ localsettings.AMAZON_S3_ACCESS_KEY }}'
 {% endif %}
-{% if 'ES_XFORM_CHECK_DIRECT_DOC_ID' in localsettings %}
-ES_XFORM_CHECK_DIRECT_DOC_ID = '{{ localsettings.ES_XFORM_CHECK_DIRECT_DOC_ID }}'
-{% else %}
-ES_XFORM_CHECK_DIRECT_DOC_ID = None
+{% if 'AMAZON_S3_SECRET_KEY' in localsettings %}
+S3_SECRET_KEY = '{{ localsettings.AMAZON_S3_SECRET_KEY }}'
+{% endif %}
+
+{% if s3_blob_db_enabled %}
+S3_BLOB_DB_SETTINGS = {
+    'url': '{{ s3_blob_db_url }}',
+    'access_key': '{{ s3_blob_db_access_key }}',
+    'secret_key': '{{ s3_blob_db_secret_key }}',
+    'config': {'signature_version': 's3'},
+}
+{% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
+OLD_S3_BLOB_DB_SETTINGS = {
+    'url': '{{ old_s3_blob_db_url }}',
+    'access_key': '{{ old_s3_blob_db_access_key }}',
+    'secret_key': '{{ old_s3_blob_db_secret_key }}',
+    'config': {'signature_version': 's3'},
+}
+BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
+{% endif %}
+{% if 'BLOB_DB_MIGRATING_FROM_FS_TO_S3' in localsettings %}
+BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_S3 }}
+{% endif %}
+{% endif %}{# s3_blob_db_enabled #}
+
+{% if 'MOBILE_INTEGRATION_TEST_TOKEN' in localsettings %}
+MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN }}'
 {% endif %}
 
 ####### For Constructing Global URLs ########
 
-{% if 'SENTRY_DSN' in localsettings %}
-SENTRY_DSN = '{{ localsettings.SENTRY_DSN }}'
-{% else %}
-SENTRY_DSN = None
+LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+
+{% if 'LOCAL_PILLOWS' in localsettings %}
+LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
 {% endif %}
 
-LOCAL_APPS = ('dimagi.utils', 'gunicorn', 'raven.contrib.django.raven_compat',)
 
 BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
 
-_ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 JAR_SIGN = dict(
-    jad_tool = os.path.join(_ROOT_DIR, "submodules", "core-hq-src", "corehq", "apps", "app_manager", "JadTool.jar"),
-    key_store = os.path.join(os.path.dirname(os.path.dirname(_ROOT_DIR)), "DimagiKeyStore"),
+    key_store = os.path.join('{{ www_dir }}', "DimagiKeyStore"),
     key_alias = "{{ localsettings.JAR_KEY_ALIAS }}",
     store_pass = "{{ localsettings.JAR_STORE_PASS }}",
     key_pass = "{{ localsettings.JAR_KEY_PASS }}",
@@ -234,6 +218,10 @@ GET_URL_BASE  = 'settings.get_url_base'
 EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 
 
+{% if 'ICDS_DOMAIN' in localsettings %}
+ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
+{% endif %}
+
 SMS_QUEUE_ENABLED = {{localsettings.get('SMS_QUEUE_ENABLED', False)}}
 REMINDERS_QUEUE_ENABLED = {{localsettings.get('REMINDERS_QUEUE_ENABLED', False)}}
 
@@ -245,57 +233,46 @@ SMS_BACKENDS = {
     "265" : "MOBILE_BACKEND_TROPO_CANADIAN",
 }
 
-# mach sms config
-SMS_GATEWAY_URL = "{{ localsettings.SMS_GATEWAY_URL }}"
-SMS_GATEWAY_PARAMS = "{{ localsettings.SMS_GATEWAY_PARAMS }}"
-
-MACH_CONFIG = {"username": "{{ localsettings.MACH_USERNAME }}", "password": "{{ localsettings.MACH_PASSWORD }}", "service_profile": "changeme" }
-
-# unicel sms config
-UNICEL_CONFIG = {"username": "{{ localsettings.UNICEL_USERNAME }}",
-                 "password": "{{ localsettings.UNICEL_PASSWORD }}",
-                 "sender": "{{ localsettings.UNICEL_SENDER }}",
-                 "receive_phone": "+{{ localsettings.UNICEL_RECEIVE_PHONE }}",
-                }
-
-filepath = os.path.abspath(os.path.dirname(__file__))
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
-MEDIA_ROOT = os.path.join(filepath,'mediafiles') #media for user uploaded media.  in general this won't be used at all.
+MEDIA_ROOT = os.path.join(_ROOT_DIR,'mediafiles') #media for user uploaded media.  in general this won't be used at all.
 {% endif %}
 {% if 'STATIC_ROOT' in localsettings and localsettings.STATIC_ROOT %}
 STATIC_ROOT = '{{ localsettings.STATIC_ROOT }}'
 {% else %}
-STATIC_ROOT = os.path.join(filepath,'staticfiles')
+STATIC_ROOT = os.path.join(_ROOT_DIR,'staticfiles')
+{% endif %}
+{% if 'STATIC_CDN' in localsettings %}
+STATIC_CDN = '{{ localsettings.STATIC_CDN }}'
 {% endif %}
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 LESS_DEBUG = DEBUG
 
-ADMINS = (('HQ Dev Team', 'commcarehq-ops@dimagi.com'),)
+ADMINS = (('HQ Dev Team', 'commcarehq-ops+admins@dimagi.com'),)
 SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
 DEFAULT_PROTOCOL = "https"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 ANALYTICS_IDS = {
-    'GOOGLE_ANALYTICS_ID': '{{ localsettings.GOOGLE_ANALYTICS_ID }}',
-    'PINGDOM_ID': '{{ localsettings.PINGDOM_ID }}',
-    'SEGMENT_ANALYTICS_KEY': '{{ localsettings.SEGMENT_ANALYTICS_KEY }}',
-    'HUBSPOT_ID': '{{ localsettings.HUBSPOT_ID }}',
-    'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY }}',
-    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY}}'
+    'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID|default('', true) }}',
+    'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID|default('', true) }}',
+    'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY|default('', true) }}',
+    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY|default('', true) }}',
+    'FULLSTORY_ID': '{{ localsettings.FULLSTORY_ID|default('', true) }}',
+    'DRIFT_ID': '{{ localsettings.DRIFT_ID|default('', true) }}'
 }
 
 ANALYTICS_CONFIG = {
-    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}'
+    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}',
+    'DEBUG': {{ localsettings.ANALYTICS_DEBUG|default(False) }},
+    'LOG_LEVEL': '{{ localsettings.ANALYTICS_LOG_LEVEL|default('') }}',
 }
 
 AXES_LOCK_OUT_AT_FAILURE = False
-
-# This setting is used by couchlog to enable search
-LUCENE_ENABLED = True
 
 BUG_REPORT_RECIPIENTS = ['commcarehq-support@dimagi.com']
 NEW_DOMAIN_RECIPIENTS = ['inquiries@dimagi.com']
@@ -309,18 +286,14 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-DOMAIN_SYNCS = { "crs": { "target": "public",
-                          "transform": "corehq.apps.domainsync.transforms.deidentify_domain" }}
+CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMAILS', False) }}
 
-DOMAIN_SYNC_APP_NAME_MAP = { "kaushambi": "Pregnancy" }
-{% if 'DOMAIN_SYNC_DATABASE_NAME' in localsettings %}
-DOMAIN_SYNC_DATABASE_NAME = '{{ localsettings.DOMAIN_SYNC_DATABASE_NAME }}'
-{% endif %}
-
-CELERY_SEND_TASK_ERROR_EMAILS = True
 CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
 CELERY_PERIODIC_QUEUE = '{{ localsettings.CELERY_PERIODIC_QUEUE }}'
 CELERY_FLOWER_URL = '{{ localsettings.CELERY_FLOWER_URL }}'
+{% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
+CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
+{% endif %}
 
 {% if localsettings.get('CELERY_REMINDER_RULE_QUEUE') %}
 CELERY_REMINDER_RULE_QUEUE = '{{ localsettings.CELERY_REMINDER_RULE_QUEUE }}'
@@ -330,57 +303,61 @@ CELERY_REMINDER_RULE_QUEUE = '{{ localsettings.CELERY_REMINDER_RULE_QUEUE }}'
 CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_QUEUE }}'
 {% endif %}
 
+{% if localsettings.get('CELERY_REPEAT_RECORD_QUEUE') %}
+CELERY_REPEAT_RECORD_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_QUEUE }}'
+{% endif %}
+
+{% if localsettings.get('ENIKSHAY_QUEUE') %}
+ENIKSHAY_QUEUE = '{{ localsettings.ENIKSHAY_QUEUE }}'
+{% endif %}
+
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
+TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER|default('') }}"
+TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD|default('') }}"
 
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
+
+{% if 'FORMPLAYER_URL' in localsettings %}
+FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
+{% endif %}
+
+{% if 'FORMPLAYER_INTERNAL_AUTH_KEY' in localsettings %}
+FORMPLAYER_INTERNAL_AUTH_KEY = "{{ localsettings.FORMPLAYER_INTERNAL_AUTH_KEY }}"
+{% endif %}
 
 SOIL_BACKEND = "soil.CachedDownload"
 SOIL_DEFAULT_CACHE = "redis"
 
 REPORT_CACHE = 'redis'
 
-SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
-RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
-TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
-SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
-TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
 
-import imp
-try:
-    imp.find_module('django_redis')
-except ImportError:
-    redis_cache = {
-        'BACKEND': 'redis_cache.cache.RedisCache',
-    {% if 'REDIS_DB' in localsettings %}
-        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}:{{ localsettings.REDIS_DB }}',
-    {% else %}
-        'LOCATION': '{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
-    {% endif %}
-        'OPTIONS': {},
-    }
-else:
-    redis_cache = {
-        'BACKEND': 'django_redis.cache.RedisCache',
-    {% if 'REDIS_DB' in localsettings %}
-        'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
-    {% else %}
-        'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
-    {% endif %}
-        'OPTIONS': {},
-    }
+redis_cache = {
+    'BACKEND': 'django_redis.cache.RedisCache',
+{% if 'REDIS_DB' in localsettings %}
+    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
+{% else %}
+    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+{% endif %}
+    'OPTIONS': {
+        'PARSER_CLASS': 'redis.connection.HiredisParser',
+    },
+}
 
 CACHES = {
     'default': redis_cache,
     'redis': redis_cache,
 }
 
+ELASTICSEARCH_HOSTS = [
+    {% for es_host in groups.elasticsearch -%}
+    '{{ es_host }}',
+    {% endfor -%}
+]
 ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
 ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
 SECRET_KEY = "{{ localsettings.SECRET_KEY }}"
@@ -428,7 +405,7 @@ INTERNAL_DATA = {
     "services": ["Basic", "Plus", "Full", "Custom", "Active Data Management", "Daily Contract", "Call Center"],
     "account_types": [	"Academic", "Alliance", "Competitor", "Funder", "Implementer - Local", "Implementer - Multinational",
                           "Investor", "Networking", "Other", "Partner", "Pharmaceutical", "Reseller", "Technology"],
-    "initiatives": ["CORE Group POC", "DIV 1 POC", "DIV 2 POC", "Senegal POC", "Workshop"],
+    "initiatives": ["CORE Group POC", "DIV 1 POC", "DIV 2 POC", "Senegal POC", "Workshop", "Partner Program Sandbox"],
     "contract_type": ["FFP", "T&M", "Cost Plus"],
     "area": [
         {
@@ -528,7 +505,8 @@ INDICATOR_NAMESPACES = {
         ('mvp_indicators', "MVP"),
     ),
 }
-COUCH_STALE_QUERY = 'ok'
+# should be 'ok' if couchdb version < 1.1.0, or cloudant, else 'update_after'
+COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('ok') }}'
 
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
@@ -538,7 +516,6 @@ SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
 {% endif %}
 
 {% if 'MAPS_LAYERS' in localsettings %}
-import json
 MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_json }}')
 {% endif %}
 
@@ -550,12 +527,8 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
-{% if localsettings.get('KAFKA_HOST') %}
-KAFKA_HOST = '{{ localsettings.KAFKA_HOST }}'
-{% endif %}
-
-{% if localsettings.get('COUCHPULSE_DATABASE_URL') %}
-COUCHPULSE_DATABASE_URL = '{{ localsettings.COUCHPULSE_DATABASE_URL }}'
+{% if localsettings.get('KAFKA_URL') %}
+KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
 {% endif %}
 
 INVOICE_TERMS = "Net 30"
@@ -588,32 +561,12 @@ BANK_NAME = '{{ localsettings.BANK_NAME }}'
 BANK_ACCOUNT_NUMBER = '{{ localsettings.BANK_ACCOUNT_NUMBER }}'
 {% endif %}
 
-{% if localsettings.get('BANK_ROUTING_NUMBER') %}
-BANK_ROUTING_NUMBER = '{{ localsettings.BANK_ROUTING_NUMBER }}'
-{% endif %}
-
 {% if localsettings.get('BANK_SWIFT_CODE') %}
 BANK_SWIFT_CODE = '{{ localsettings.BANK_SWIFT_CODE }}'
 {% endif %}
 
-{% if localsettings.get('OPEN_EXCHANGE_RATES_ID') %}
-OPEN_EXCHANGE_RATES_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_ID }}'
-{% endif %}
-
-{% if localsettings.get('MANDRILL_APIKEY') %}
-MANDRILL_APIKEY = '{{ localsettings.MANDRILL_APIKEY }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_APIKEY') %}
-MAILCHIMP_APIKEY = '{{ localsettings.MAILCHIMP_APIKEY }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_COMMCARE_USERS_ID') %}
-MAILCHIMP_COMMCARE_USERS_ID = '{{ localsettings.MAILCHIMP_COMMCARE_USERS_ID }}'
-{% endif %}
-
-{% if localsettings.get('MAILCHIMP_MASS_EMAIL_ID') %}
-MAILCHIMP_MASS_EMAIL_ID = '{{ localsettings.MAILCHIMP_MASS_EMAIL_ID }}'
+{% if localsettings.get('OPEN_EXCHANGE_RATES_API_ID') %}
+OPEN_EXCHANGE_RATES_API_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_API_ID }}'
 {% endif %}
 
 {% if localsettings.get('STRIPE_PRIVATE_KEY') %}
@@ -634,12 +587,149 @@ ES_QUERY_CHUNKSIZE = '{{ localsettings.ES_QUERY_CHUNKSIZE }}'
 SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 {% endif %}
 
+{% if localsettings.get('INACTIVITY_TIMEOUT') %}
+INACTIVITY_TIMEOUT = {{ localsettings.INACTIVITY_TIMEOUT }}
+{% endif %}
+
+{% if localsettings.get('MIA_THE_DEPLOY_BOT_API') %}
+MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
+{% endif %}
+
 # Set to something like "192.168.1.5:8000" (with your IP address).
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
+
+{% if localsettings.get('J2ME_ADDRESS') %}
+J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
+{% endif %}
+
+CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
+
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
 BANK_ROUTING_NUMBER_ACH = '{{ localsettings.BANK_ROUTING_NUMBER_ACH }}'
 BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
 
-ENABLE_PRELOGIN_SITE = True
+ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
+
+{% if localsettings.get('ENABLE_DRACONIAN_SECURITY_FEATURES') %}
+ENABLE_DRACONIAN_SECURITY_FEATURES = True
+{% endif %}
+
+{% if supervisor_http_enabled|default(false) %}
+SUPERVISOR_RPC_ENABLED = True
+SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
+SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
+{% endif %}
+
+ENVIRONMENT_HOSTS = {{ groups | to_json }}
+
+{% if localsettings.get('HQ_PRIVATE_KEY') %}
+HQ_PRIVATE_KEY = \
+{{ localsettings.HQ_PRIVATE_KEY }}
+{% endif %}
+
+{% if DATADOG_ENABLED|default(false) %}
+DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
+DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
+{% endif %}
+
+{% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
+WS4REDIS_CONNECTION = {
+    'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
+}
+{% endif %}
+
+{% if localsettings.get('TWO_FACTOR_SMS_GATEWAY') %}
+TWO_FACTOR_SMS_GATEWAY = '{{ localsettings.TWO_FACTOR_SMS_GATEWAY }}'
+{% endif %}
+
+{% if localsettings.get('TWO_FACTOR_CALL_GATEWAY') %}
+TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
+{% endif %}
+
+
+{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
+{% endif %}
+
+{% if localsettings.get('ENTERPRISE_MODE') %}
+ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
+{% endif %}
+
+{% if localsettings.get('TABLEAU_URL_ROOT') %}
+TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
+{% endif %}
+
+{% if localsettings.get('COMMCARE_HQ_NAME') %}
+COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
+{% endif %}
+
+{% if localsettings.get('COMMCARE_NAME') %}
+COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
+{% endif %}
+
+{% if localsettings.get('SENTRY_PUBLIC_KEY') %}
+SENTRY_PUBLIC_KEY = '{{ localsettings.SENTRY_PUBLIC_KEY }}'
+SENTRY_PRIVATE_KEY = '{{ localsettings.SENTRY_PRIVATE_KEY }}'
+SENTRY_PROJECT_ID = '{{ localsettings.SENTRY_PROJECT_ID }}'
+SENTRY_QUERY_URL = '{{ localsettings.SENTRY_QUERY_URL }}'
+SENTRY_API_KEY = '{{ localsettings.SENTRY_API_KEY }}'
+{% endif %}
+
+{% if localsettings.get('GREENHOUSE_API_KEY') %}
+GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
+{% endif %}
+
+LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
+
+{% if localsettings.get('ENIKSHAY_PRIVATE_API_USERS') %}
+ENIKSHAY_PRIVATE_API_USERS = {{ localsettings.ENIKSHAY_PRIVATE_API_USERS }}
+{% endif %}
+
+{% if localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD') %}
+ENIKSHAY_PRIVATE_API_PASSWORD = hashlib.md5('{{ localsettings.ENIKSHAY_PRIVATE_API_PASSWORD }}').hexdigest()
+{% endif %}
+
+{% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
+OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE = True
+{% endif %}
+
+{% if localsettings.get('RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE') %}
+RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE = True
+{% endif %}
+
+{% if localsettings.get('DAYS_TO_KEEP_DEVICE_LOGS') %}
+DAYS_TO_KEEP_DEVICE_LOGS = {{ localsettings.DAYS_TO_KEEP_DEVICE_LOGS }}
+{% endif %}
+
+{% if localsettings.get('ASYNC_INDICATORS_TO_QUEUE') %}
+ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
+{% endif %}
+
+{% if localsettings.get('ASYNC_INDICATOR_QUEUE_CRONTAB') %}
+ASYNC_INDICATOR_QUEUE_CRONTAB = crontab(**{{ localsettings.get('ASYNC_INDICATOR_QUEUE_CRONTAB') }})
+{% endif %}
+
+{% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
+MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
+{% endif %}
+
+SERVER_EMAIL = '{{ server_email }}'
+DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
+SUPPORT_EMAIL = '{{ support_email }}'
+PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
+CCHQ_BUG_REPORT_EMAIL = '{{ cchq_bug_report_email }}'
+ACCOUNTS_EMAIL = '{{ accounts_email }}'
+DATA_EMAIL = '{{ data_email }}'
+SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'
+INTERNAL_SUBSCRIPTION_CHANGE_EMAIL = '{{ internal_subscription_change_email }}'
+BILLING_EMAIL = '{{ billing_email }}'
+INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
+GROWTH_EMAIL = '{{ growth_email }}'
+MASTER_LIST_EMAIL = '{{ master_list_email }}'
+REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
+EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
+CONTACT_EMAIL = '{{ contact_email }}'
+SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
+DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'

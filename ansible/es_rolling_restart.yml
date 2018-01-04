@@ -1,0 +1,9 @@
+---
+- name: Elasticsearch
+  hosts: elasticsearch
+  become: true
+  serial: 1
+  tasks:
+    - include: roles/elasticsearch/tasks/rolling_restart.yml
+      vars:
+         es_host: "{% if inventory_hostname|ipaddr %}{{ inventory_hostname }}{% else %}{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}{% endif %}"
