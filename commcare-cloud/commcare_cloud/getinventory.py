@@ -49,7 +49,7 @@ def get_server_address(environment, group, exit=sys.exit):
     except IOError as err:
         exit(err)
     except KeyError as err:
-        exit("Unknown group: {}\n".format(group))
+        exit("Unknown server name/group: {}\n".format(group))
 
     if index is not None and index > len(servers) - 1:
         exit(
