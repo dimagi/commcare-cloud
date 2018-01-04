@@ -496,18 +496,14 @@ class Fab(object):
             ) + (
                 (args.fab_command,) if args.fab_command else ()
             ) + tuple(unknown_args)
-
+            # explicitly run the fab that is in the same virtualenv
+            # as the commcare-cloud executable
+            which_fab = os.path.join(os.path.dirname(sys.executable), 'fab')
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
-            p.communicate()
-            return p.returncode
+            os.execvp(which_fab, cmd_parts)
 
-        exit_code = run_fab(args, unknown_args)
-        if exit_code == 0:
-            puts(colored.green(u"✓ Fab completed with status code {}".format(exit_code)))
-        else:
-            puts(colored.red(u"✗ Fab failed with status code {}".format(exit_code)))
+        run_fab(args, unknown_args)
 
 
 class Lookup(object):
