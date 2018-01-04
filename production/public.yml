@@ -176,7 +176,6 @@ localsettings:
   BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
   BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
   CELERY_FLOWER_URL: "http://{{ groups.celery.0 }}:5555"
@@ -264,6 +263,7 @@ localsettings:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  TEMP_RIAKCS_PROXY: True
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
