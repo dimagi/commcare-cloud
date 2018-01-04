@@ -14,9 +14,21 @@ from .parse_help import filtered_help_message, add_to_help_text
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
-INVENTORY_DIR = os.path.join(REPO_BASE, 'fab', 'fab', 'inventory')
+ENVIRONMENTS_DIR = os.path.join(REPO_BASE, 'environments')
+
+
+def get_public_vars_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
+
+
+def get_vault_vars_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
+
+
+def get_inventory_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
+
 
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
@@ -70,7 +82,7 @@ def arg_stdout_callback(parser):
 
 
 def get_public_vars(environment):
-    filename = os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=environment))
+    filename = get_public_vars_filepath(environment)
     with open(filename) as f:
         return yaml.load(f)
 
@@ -177,9 +189,9 @@ class AnsiblePlaybook(object):
             cmd_parts = (
                 'ansible-playbook',
                 os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
-                '-i', os.path.join(INVENTORY_DIR, '{env}'.format(env=environment)),
-                '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_vault.yml'.format(env=environment))),
-                '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=environment))),
+                '-i', get_inventory_filepath(environment),
+                '-e', '@{}'.format(get_vault_vars_filepath(environment)),
+                '-e', '@{}'.format(get_public_vars_filepath(environment)),
                 '--diff',
             ) + cmd_args
 
@@ -368,7 +380,7 @@ class RunAnsibleModule(object):
                 'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
                 'ansible', args.inventory_group,
                 '-m', args.module,
-                '-i', os.path.join(INVENTORY_DIR, '{env}'.format(env=args.environment)),
+                '-i', get_inventory_filepath(args.environment),
                 '-u', args.remote_user,
                 '-a', args.module_args,
                 '--diff',
@@ -390,8 +402,8 @@ class RunAnsibleModule(object):
 
             if include_vars:
                 cmd_parts += (
-                    '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_vault.yml'.format(env=args.environment))),
-                    '-e', '@{}'.format(os.path.join(VARS_DIR, '{env}/{env}_public.yml'.format(env=args.environment))),
+                    '-e', '@{}'.format(get_vault_vars_filepath(args.environment)),
+                    '-e', '@{}'.format(get_public_vars_filepath(args.environment)),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
@@ -539,12 +551,11 @@ STANDARD_ARGS = [
 
 def main():
     parser = ArgumentParser()
-    inventory_dir = os.path.join(INVENTORY_DIR, '')
-    vars_dir = os.path.join(VARS_DIR, '')
-    if os.path.isdir(inventory_dir) and os.path.isdir(vars_dir):
-        available_envs = sorted(set(os.listdir(inventory_dir)) & set(os.listdir(vars_dir)))
-    else:
-        available_envs = []
+    available_envs = sorted(
+        env for env in os.listdir(ENVIRONMENTS_DIR)
+        if os.path.exists(get_public_vars_filepath(env))
+        and os.path.exists(get_inventory_filepath(env))
+    )
     parser.add_argument('environment', choices=available_envs, help=(
         "server environment to run against"
     ))
