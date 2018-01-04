@@ -1,3 +1,5 @@
+DEPRECATED use `commcare-cloud <env> {ssh,mosh} [<user>@]<group>[:<n>]`
+
 It can get a little annoying keeping track of what machines are called (`hqpillowtop0`... or is it `hqpillowtop1` now?). Well, now you don't have to keep track, you can just run
 
 ```
@@ -29,9 +31,9 @@ hqdjango12.internal.commcarehq.org
 hqdjango13.internal.commcarehq.org
 hqdjango14.internal.commcarehq.org
 
-Use `scripts/inventory/ssh production webworkers 1` to get the first
+Use `scripts/inventory/ssh production webworkers:0` to get the first
 ```
 
-And then you can run `scripts/inventory/ssh production webworkers 1` to get the first (or `2` for the second, etc.).
+And then you can run `scripts/inventory/ssh production webworkers:0` to get the first (or `1` for the second, etc.).
 
 All commands work with `scripts/inventory/mosh` instead as well.
