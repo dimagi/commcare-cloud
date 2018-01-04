@@ -32,7 +32,7 @@ function update_repo() {
     git submodule update --init --recursive
 }
 
-for repo in "commcare-hq-deploy" "commcarehq-ansible/config" "commcarehq-ansible"
+for repo in "commcarehq-ansible/config" "commcarehq-ansible"
 do
     cd ~/$repo
     pwd

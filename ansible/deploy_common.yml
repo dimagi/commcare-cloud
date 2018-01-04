@@ -56,3 +56,29 @@
     tags:
       - static-routes
       - after-reboot
+
+- name: DNS configuration
+  hosts: all
+  tasks:
+
+  - name: set running configuration
+    become: yes
+    lineinfile:
+      dest: /etc/resolv.conf
+      line: 'nameserver {{ item }}'
+    with_items: "{{ nameservers }}"
+    when: nameservers is defined
+    tags:
+      - dns
+      - after-reboot
+
+  - name: set resolvconf base configuration
+    become: yes
+    lineinfile:
+      dest: /etc/resolvconf/resolv.conf.d/base
+      line: 'nameserver {{ item }}'
+    with_items: "{{ nameservers }}"
+    when: nameservers is defined
+    tags:
+      - dns
+      - after-reboot
