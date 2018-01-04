@@ -36,8 +36,7 @@ riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 primary_ssl_env: "enikshay.in"
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
-msp_user: true
-msp_user_password_sha_512: "{{ secrets.MSP_USER_PASSWORD_SHA_512 }}"
+msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False

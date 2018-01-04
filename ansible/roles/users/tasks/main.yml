@@ -16,13 +16,15 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Add MSP user sudo user
-  user: name=msp state=present shell=/bin/bash groups="sudo" password="{{ msp_user_password_sha_512 }}"
-  when: msp_user|default(false)
+  user: name="{{ item.value.username }}" state=present shell=/bin/bash groups="sudo" password="{{ item.value.password }}"
+  when: msp_users|default(false)
+  with_dict: '{{ msp_users }}'
 
 - name: Add public key for MSP
   become: yes
-  authorized_key: user=msp state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/msp.pub') }}"
-  when: msp_user|default(false)
+  authorized_key: user="{{ item.value.username }}" state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/{{ item.value.username }}.pub') }}"
+  when: msp_users|default(false)
+  with_dict: '{{ msp_users }}'
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Add ansible user

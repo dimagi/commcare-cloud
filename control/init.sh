@@ -36,8 +36,6 @@ alias ap='ansible-playbook -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/
 alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
-# so that you can run fab from any directory
-alias fab="fab -f ~/commcarehq-ansible/fab/fabfile.py"
 
 [ ! -f ~/.bash_completion ] && source  ~/commcarehq-ansible/control/.bash_completion
 cp ~/commcarehq-ansible/control/.bash_completion ~/
@@ -76,4 +74,4 @@ function ansible-control-banner() {
 }
 
 [ -t 1 ] && ansible-control-banner
-cd ~/commcarehq-ansible/ansible
+cd ~/commcarehq-ansible
