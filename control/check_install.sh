@@ -7,10 +7,19 @@ function realpath() {
 ANSIBLE_REPO="$(realpath $(dirname $0)/..)"
 FAB_CONFIG="${ANSIBLE_REPO}/fab/fab/config.py"
 
-[ ! -d ~/.commcare-cloud ] && mkdir ~/.commcare-cloud
+if [ ! -d ~/.commcare-cloud ]
+then
+    mkdir ~/.commcare-cloud
+    echo "→ Created ~/.commcare-cloud"
+else
+    echo "✓ ~/.commcare-cloud exists"
+fi
 if [ ! -d ~/.commcare-cloud/repo ]
 then
     ln -sf "${ANSIBLE_REPO}" ~/.commcare-cloud/repo
+    echo "→ Linked this repo to ~/.commcare-cloud/repo"
+else
+    echo "✓ ~/.commcare-cloud/repo exists"
 fi
 
 if [ ! -f "${FAB_CONFIG}" ]
@@ -23,8 +32,18 @@ then
             if [ -f "${OLD_FAB_CONFIG}" ]
             then
                 cp "${OLD_FAB_CONFIG}" "${FAB_CONFIG}"
+                echo "→ Copied $(realpath ${OLD_FAB_CONFIG}) to ${FAB_CONFIG}"
                 break
             fi
         fi
     done
+else
+    echo "✓ ${FAB_CONFIG} exists"
+fi
+# fab config _still_ doesn't exist, note that we were unsuccessful in inferring it
+if [ ! -f "${FAB_CONFIG}" ]
+then
+    echo "✗ ${FAB_CONFIG} does not exist and suitable location to copy it from was not found."
+    echo "  This file is just a convenience, so this is a non-critical error."
+    echo "  If you have fab/config.py in a previous location, then copy it to ${FAB_CONFIG}."
 fi
