@@ -1,0 +1,31 @@
+postgresql:
+  transfer:
+    icds.pg0: pgucr
+    icds.pg1: pgmain
+    icds.pg2: pgshard1
+    icds.pg3: pgshard2
+
+couchdb2:
+  # Does a selective rsync based on couchdb2-shard-plan.yml
+  reshard:
+    icds.couch0:
+      - couch0
+      - couch1
+      - couch2
+
+elasticsearch:
+  transfer:
+    icds.es0: es0
+    icds.es1: es1
+    icds.es2: es2
+    icds.es3: es3
+
+riakcs:
+  transfer:
+    icds.pg1: riak0
+    icds.es0: riak1
+    icds.es1: riak2
+    icds.es2: riak3
+    icds.es3: riak4
+    icds.pg2: riak5
+    icds.pg3: riak6
