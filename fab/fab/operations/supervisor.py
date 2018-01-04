@@ -136,17 +136,18 @@ def show_periodic_server_whitelist_message_and_abort(env):
         "If you...\n\n"
         '1. are really glad we caught this for you, just remove (or comment out)\n'
         '   {environment}.celery_processes.{hostname}.celery_periodic\n'
-        '   from fab/environments.yml\n'
+        '   from environments/{env_name}/app-processes.yml\n'
         "2. know what you're doing and want to deploy celery beat to {environment}\n"
         "   set {environment}.celery_processes.{hostname}.celery_periodic.server_whitelist\n"
         '   to {host}\n'
-        '   in fab/environments.yml\n'
+        '   in environments/{env_name}/app-processes.yml\n'
         "3. are really confused, find someone who might know more about this\n"
         "   and ask them."
         .format(environment=env.environment,
                 hostname=env.get('host_string').split('.')[0],
-                host=env.host)
-        )
+                host=env.host,
+                env_name=env.env_name)
+    )
 
 
 def set_pillowtop_supervisorconf():
