@@ -13,22 +13,15 @@ import yaml
 
 from .getinventory import get_server_address
 from .parse_help import filtered_help_message, add_to_help_text
-from .paths import REPO_BASE, ENVIRONMENTS_DIR
-
-ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
-
-
-def get_public_vars_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
-
-
-def get_vault_vars_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
-
-
-def get_inventory_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
+from .paths import (
+    ANSIBLE_DIR,
+    ENVIRONMENTS_DIR,
+    FABFILE,
+    get_inventory_filepath,
+    get_public_vars_filepath,
+    get_vault_vars_filepath,
+    REPO_BASE,
+)
 
 
 DEPRECATED_ANSIBLE_ARGS = [

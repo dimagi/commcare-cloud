@@ -7,9 +7,7 @@ from __future__ import absolute_import
 import os
 import sys
 
-from .paths import REPO_BASE, ENVIRONMENTS_DIR
-
-FAB_ROOT = os.path.join(REPO_BASE, 'fab')
+from .paths import FAB_DIR, get_inventory_filepath
 
 
 def import_read_inventory_file():
@@ -19,16 +17,16 @@ def import_read_inventory_file():
     Not sure this is a great idea. If you ever find its brittleness breaks something,
     feel free to copy and paste read_inventory_file from there, which is how it was before.
     """
-    sys.path.append(FAB_ROOT)
+    sys.path.append(FAB_DIR)
     from fab.utils import read_inventory_file
-    sys.path.remove(FAB_ROOT)
+    sys.path.remove(FAB_DIR)
     return read_inventory_file
 
 
 def get_instance_group(instance, group):
     read_inventory_file = import_read_inventory_file()
-    servers = read_inventory_file(
-        os.path.join(ENVIRONMENTS_DIR, instance, 'inventory.ini'))
+    filepath = get_inventory_filepath(instance)
+    servers = read_inventory_file(filepath)
     return servers[group]
 
 
