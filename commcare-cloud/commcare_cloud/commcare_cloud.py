@@ -489,21 +489,18 @@ class Fab(object):
 
     @staticmethod
     def run(args, unknown_args):
-        def run_fab(args, unknown_args):
-            cmd_parts = (
-                'fab', '-f', FABFILE,
-                args.environment,
-            ) + (
-                (args.fab_command,) if args.fab_command else ()
-            ) + tuple(unknown_args)
-            # explicitly run the fab that is in the same virtualenv
-            # as the commcare-cloud executable
-            which_fab = os.path.join(os.path.dirname(sys.executable), 'fab')
-            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-            print(cmd)
-            os.execvp(which_fab, cmd_parts)
-
-        run_fab(args, unknown_args)
+        cmd_parts = (
+            'fab', '-f', FABFILE,
+            args.environment,
+        ) + (
+            (args.fab_command,) if args.fab_command else ()
+        ) + tuple(unknown_args)
+        # explicitly run the fab that is in the same virtualenv
+        # as the commcare-cloud executable
+        which_fab = os.path.join(os.path.dirname(sys.executable), 'fab')
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print(cmd)
+        os.execvp(which_fab, cmd_parts)
 
 
 class Lookup(object):
