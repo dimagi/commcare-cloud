@@ -6,22 +6,14 @@ deploy_env: production
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: True
-  cchq_http: True
-  cchq_www_redirect_insecure: True
-  cchq_http_j2me: True
   commtrack_ssl: True
   commtrack_http: True
   tableau: True
-  icds_tableau: False
   wiki: True
   wiki_http: True
   motech: True
   motech2: True
   riakcs: True
-  cas_ssl: False
-  couchdb2: False
 
 riak_backend: "leveldb-bad-config"
 riak_ring_size: 64

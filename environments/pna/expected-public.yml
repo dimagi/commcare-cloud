@@ -19,6 +19,9 @@ active_sites:
   motech2: False
   riakcs: False
   pna_ssl: True
+  cas_ssl: False
+  couchdb2: False
+  enikshay_ssl: False
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 ssh_port: 1337

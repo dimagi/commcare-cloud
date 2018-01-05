@@ -4,20 +4,9 @@ COMMTRACK_SITE_HOST: 'commcare.pna.sn'
 deploy_env: pna
 
 active_sites:
-  cchq_ssl: True
   cchq_www_redirect_secure: False
-  cchq_http: True
   cchq_http_j2me: False
   cchq_www_redirect_insecure: False
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  riakcs: False
   pna_ssl: True
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"

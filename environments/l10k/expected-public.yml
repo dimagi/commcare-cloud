@@ -18,6 +18,10 @@ active_sites:
   motech: False
   motech2: False
   riakcs: False
+  cas_ssl: False
+  couchdb2: False
+  enikshay_ssl: False
+
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no

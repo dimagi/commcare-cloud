@@ -22,6 +22,7 @@ active_sites:
   riakcs: True
   cas_ssl: False
   couchdb2: False
+  enikshay_ssl: False
 
 riak_backend: "leveldb-bad-config"
 riak_ring_size: 64
