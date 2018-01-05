@@ -39,12 +39,16 @@ alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansib
 cp ~/commcarehq-ansible/control/.bash_completion ~/
 
 function ap() {
-    commcare-cloud $1 ansible-playbook
+    ENV=$1
+    shift
+    commcare-cloud $ENV ansible-playbook $@
 }
 
 
 function aps() {
-    ap $1 deploy_stack.yml
+    ENV=$1
+    shift
+    ap $ENV deploy_stack.yml $@
 }
 
 function ae() {
