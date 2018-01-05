@@ -43,36 +43,17 @@ Then, simply run:
 ./install.sh
 ```
 
+You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
+
 # Optional: Hook up the bells and whistles
 
-If you want to have access to the `commcare-cloud` command outside your virtualenv,
-you can link the executable (within your vitualenv) to somewhere on your PATH.
-While it's technically redundant, I like to accomplish this by adding the link command
-to my bash profile:
+To be able to
+- use `commcare-cloud` (and its alias `cchq`) from anywhere
+- use `commcare-cloud` bash completion
+
+add the following to your bash profile:
 
 ```
-ln -sf ~/.virtualenvs/ansible/bin/commcare-cloud /usr/local/bin
-```
-
-(Instead of `/usr/local/bin`, you will need to use a directory that is owned by your user
-and on your PATH.)
-
-If you want to have access to bash completion for the commcare-cloud command, you will
-need to add
-
-```
+PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 ```
-
-to your bash profile.
-
-`commcare-cloud` also comes with an alias to the same command, `cchq`. You may link this
-to somewhere on your path as well. All together that comes to something like
-
-```
-ln -sf ~/.virtualenvs/ansible/bin/commcare-cloud /usr/local/bin
-ln -sf ~/.virtualenvs/ansible/bin/cchq /usr/local/bin
-source ~/.commcare-cloud/repo/control/.bash_completion
-```
-
-though you may have to modify that somewhat for your own environment.
