@@ -269,7 +269,8 @@ localsettings:
     - 127.0.0.1
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
-    - '164.100.59.184'
+    - '{{ hostvars[groups.proxy.0].public_ip }}'
+
   ASYNC_INDICATORS_TO_QUEUE: 120000
   ASYNC_INDICATOR_QUEUE_CRONTAB:
     minute: '*/5'
