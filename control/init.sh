@@ -39,6 +39,7 @@ alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansib
 
 [ ! -f ~/.bash_completion ] && source  ~/commcarehq-ansible/control/.bash_completion
 cp ~/commcarehq-ansible/control/.bash_completion ~/
+PATH=$PATH:~/.commcare-cloud/bin
 
 function ae() {
     ansible $1 -m shell -a "$2" -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV
