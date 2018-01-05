@@ -13,12 +13,12 @@ import yaml
 
 from .getinventory import get_server_address
 from .parse_help import filtered_help_message, add_to_help_text
-from .var_files import get_consolidated_vars, get_public_vars, get_expected_public_vars
+from .var_files import get_expected_public_vars, \
+    create_consolidated_vars_file
 from .paths import (
     ANSIBLE_DIR,
     ENVIRONMENTS_DIR,
     FABFILE,
-    get_consolidated_public_vars_filepath,
     get_inventory_filepath,
     get_public_vars_filepath,
     get_vault_vars_filepath,
@@ -172,7 +172,7 @@ class AnsiblePlaybook(object):
     def run(args, unknown_args):
         ansible_context = AnsibleContext(args)
         check_branch(args)
-        public_vars = get_public_vars(args.environment)
+        public_vars, consolidated_filepath = create_consolidated_vars_file(args.environment)
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
 
         def ansible_playbook(environment, playbook, *cmd_args):
@@ -181,7 +181,7 @@ class AnsiblePlaybook(object):
                 os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
                 '-i', get_inventory_filepath(environment),
                 '-e', '@{}'.format(get_vault_vars_filepath(environment)),
-                '-e', '@{}'.format(get_public_vars_filepath(environment)),
+                '-e', '@{}'.format(consolidated_filepath),
                 '--diff',
             ) + cmd_args
 
@@ -297,7 +297,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     @staticmethod
     def run(args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        public_vars = get_public_vars(args.environment)
+        public_vars, _ = create_consolidated_vars_file(args.environment)
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
@@ -363,7 +363,7 @@ class RunAnsibleModule(object):
     @staticmethod
     def run(args, unknown_args):
         ansible_context = AnsibleContext(args)
-        public_vars = get_public_vars(args.environment)
+        public_vars, consolidated_filepath = create_consolidated_vars_file(args.environment)
 
         def _run_ansible(args, *unknown_args):
             cmd_parts = (
@@ -393,7 +393,7 @@ class RunAnsibleModule(object):
             if include_vars:
                 cmd_parts += (
                     '-e', '@{}'.format(get_vault_vars_filepath(args.environment)),
-                    '-e', '@{}'.format(get_public_vars_filepath(args.environment)),
+                    '-e', '@{}'.format(consolidated_filepath),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
@@ -575,16 +575,12 @@ class CheckVars(object):
 
     @staticmethod
     def run(args, unknown_args):
-        consolidated = get_consolidated_vars(args.environment)
+        consolidated, consolidated_filepath = create_consolidated_vars_file(args.environment)
         expected = get_expected_public_vars(args.environment)
         if consolidated != expected:
-            consolidated_pretty = yaml.safe_dump(consolidated, default_flow_style=False)
             expected_pretty = yaml.safe_dump(expected, default_flow_style=False)
-            consolidated_filepath = get_consolidated_public_vars_filepath(args.environment)
             expected_pretty_filepath = os.path.join(
                 os.path.dirname(consolidated_filepath), '.expected-pretty-public.yml')
-            with open(consolidated_filepath, 'w') as f:
-                f.write(consolidated_pretty)
             with open(expected_pretty_filepath, 'w') as f:
                 f.write(expected_pretty)
             subprocess.call(['diff', '-u', expected_pretty_filepath, consolidated_filepath])
