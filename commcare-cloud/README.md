@@ -1,5 +1,7 @@
 # Set up commcarehq-ansible
 
+You will need python 2.7 and virtualenvwrapper installed. To follow these instructions.
+
 Clone the commcarehq-ansible repo (suggested location alongside commcare-hq):
 
 ```
@@ -30,19 +32,23 @@ git pull
 
 # Install commcare-cloud
 
+You need to be in the ansible virtualenv:
 ```
 workon ansible
 ```
-
+Additionally, you'll need the latest pip in your virtualenv for the following installs to work:
 ```
 pip install pip --upgrade
 ```
 
+Install the python requirements into your virtualenv:
 ```
-pip install -e commcare-cloud
-pip install -r ansible/requirements.txt  # to be able to run ansible commands
+pip install -r requirements.txt
+```
+
+To run ansible commands you will also need in install the galaxy modules:
+```
 ansible-galaxy install -r ansible/requirements.yml  # to be able to run ansible commands
-pip install -r fab/requirements.txt  # to be able to run fab commands
 ```
 
 Finally, finish your install with
@@ -68,7 +74,9 @@ and on your PATH.)
 If you want to have access to bash completion for the commcare-cloud command, you will
 need to add
 
+```
 source ~/.commcare-cloud/repo/control/.bash_completion
+```
 
 to your bash profile.
 
