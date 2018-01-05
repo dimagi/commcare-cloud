@@ -1,4 +1,5 @@
 import os
+import sys
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
@@ -17,3 +18,7 @@ def get_vault_vars_filepath(environment):
 
 def get_inventory_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
+
+
+def get_virtualenv_path():
+    return os.path.dirname(sys.executable)
