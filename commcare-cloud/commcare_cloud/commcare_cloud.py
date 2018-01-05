@@ -13,6 +13,7 @@ import yaml
 
 from .getinventory import get_server_address
 from .parse_help import filtered_help_message, add_to_help_text
+from .var_files import get_consolidated_vars, get_public_vars, get_expected_public_vars
 from .paths import (
     ANSIBLE_DIR,
     ENVIRONMENTS_DIR,
@@ -73,12 +74,6 @@ def arg_stdout_callback(parser):
         help=("The callback plugin to use for generating output. "
               "See ansible-doc -t callback -l and ansible-doc -t callback [ansible|minimal]"
     ))
-
-
-def get_public_vars(environment):
-    filename = get_public_vars_filepath(environment)
-    with open(filename) as f:
-        return yaml.load(f)
 
 
 def get_common_ssh_args(public_vars):
@@ -569,6 +564,40 @@ def check_branch(args):
         exit(-1)
 
 
+class CheckVars(object):
+    command = '_checkvars'
+    help = 'Check consolidated public vars against expected-public.yml'
+
+    @staticmethod
+    def make_parser(parser):
+        pass
+
+    @staticmethod
+    def run(args, unknown_args):
+        consolidated = get_consolidated_vars(args.environment)
+        expected = get_expected_public_vars(args.environment)
+        if consolidated != expected:
+            consolidated_pretty = yaml.safe_dump(consolidated, default_flow_style=False)
+            expected_pretty = yaml.safe_dump(expected, default_flow_style=False)
+            consolidated_filepath = os.path.join(
+                os.path.dirname(get_public_vars_filepath(args.environment)),
+                '.consolidated-public.yml'
+            )
+            expected_pretty_filepath = os.path.join(
+                os.path.dirname(get_public_vars_filepath(args.environment)),
+                '.expected-pretty-public.yml'
+            )
+            with open(consolidated_filepath, 'w') as f:
+                f.write(consolidated_pretty)
+            with open(expected_pretty_filepath, 'w') as f:
+                f.write(expected_pretty)
+            subprocess.call(['diff', '-u', expected_pretty_filepath, consolidated_filepath])
+            exit(1)
+        else:
+            puts(colored.green(u"✓ OK"))
+            exit(0)
+
+
 STANDARD_ARGS = [
     AnsiblePlaybook,
     UpdateConfig,
@@ -580,6 +609,7 @@ STANDARD_ARGS = [
     Lookup,
     Ssh,
     Mosh,
+    CheckVars,
 ]
 
 
