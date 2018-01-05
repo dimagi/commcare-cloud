@@ -13,6 +13,14 @@ Now make a virtualenv for ansible:
 mkvirtualenv ansible
 ```
 
+If you want `workon ansible` to always bring you to this directory, then you can also run
+
+```
+pwd > ~/.virtualenvs/ansible/.project
+```
+
+at this time.
+
 **Note**: If you already have commcarehq-ansible cloned, then just enter that directory
 and update it with
 
