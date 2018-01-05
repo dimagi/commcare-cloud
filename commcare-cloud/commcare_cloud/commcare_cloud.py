@@ -20,7 +20,7 @@ from .paths import (
     get_inventory_filepath,
     get_public_vars_filepath,
     get_vault_vars_filepath,
-    REPO_BASE,
+    get_virtualenv_path,
 )
 
 
@@ -495,12 +495,9 @@ class Fab(object):
         ) + (
             (args.fab_command,) if args.fab_command else ()
         ) + tuple(unknown_args)
-        # explicitly run the fab that is in the same virtualenv
-        # as the commcare-cloud executable
-        which_fab = os.path.join(os.path.dirname(sys.executable), 'fab')
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
-        os.execvp(which_fab, cmd_parts)
+        os.execvp('fab', cmd_parts)
 
 
 class Lookup(object):
@@ -587,6 +584,7 @@ STANDARD_ARGS = [
 
 
 def main():
+    os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
     available_envs = sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
