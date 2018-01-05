@@ -13,6 +13,10 @@ def get_public_vars_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
 
 
+def get_consolidated_public_vars_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, '.consolidated-public.yml')
+
+
 def get_vault_vars_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
 

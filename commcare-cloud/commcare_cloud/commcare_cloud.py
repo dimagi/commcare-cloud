@@ -18,6 +18,7 @@ from .paths import (
     ANSIBLE_DIR,
     ENVIRONMENTS_DIR,
     FABFILE,
+    get_consolidated_public_vars_filepath,
     get_inventory_filepath,
     get_public_vars_filepath,
     get_vault_vars_filepath,
@@ -579,14 +580,9 @@ class CheckVars(object):
         if consolidated != expected:
             consolidated_pretty = yaml.safe_dump(consolidated, default_flow_style=False)
             expected_pretty = yaml.safe_dump(expected, default_flow_style=False)
-            consolidated_filepath = os.path.join(
-                os.path.dirname(get_public_vars_filepath(args.environment)),
-                '.consolidated-public.yml'
-            )
+            consolidated_filepath = get_consolidated_public_vars_filepath(args.environment)
             expected_pretty_filepath = os.path.join(
-                os.path.dirname(get_public_vars_filepath(args.environment)),
-                '.expected-pretty-public.yml'
-            )
+                os.path.dirname(consolidated_filepath), '.expected-pretty-public.yml')
             with open(consolidated_filepath, 'w') as f:
                 f.write(consolidated_pretty)
             with open(expected_pretty_filepath, 'w') as f:
