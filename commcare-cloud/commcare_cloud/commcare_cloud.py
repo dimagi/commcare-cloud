@@ -272,6 +272,26 @@ class UpdateConfig(_AnsiblePlaybookAlias):
         AnsiblePlaybook.run(args, unknown_args)
 
 
+class AfterReboot(_AnsiblePlaybookAlias):
+    command = 'after-reboot'
+    help = (
+        "Bring a just-rebooted machine back into operation. "
+        "Includes mounting the encrypted drive."
+    )
+
+    @staticmethod
+    def make_parser(parser):
+        _AnsiblePlaybookAlias.make_parser(parser)
+        arg_inventory_group(parser)
+
+    @staticmethod
+    def run(args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        args.skip_check = True
+        unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
+        AnsiblePlaybook.run(args, unknown_args)
+
+
 class RestartElasticsearch(_AnsiblePlaybookAlias):
     command = 'restart-elasticsearch'
     help = (
@@ -572,6 +592,7 @@ def check_branch(args):
 STANDARD_ARGS = [
     AnsiblePlaybook,
     UpdateConfig,
+    AfterReboot,
     RestartElasticsearch,
     BootstrapUsers,
     RunShellCommand,
