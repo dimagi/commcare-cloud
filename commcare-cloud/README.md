@@ -16,7 +16,7 @@ mkvirtualenv ansible
 If you want `workon ansible` to always bring you to this directory, then you can also run
 
 ```
-pwd > ~/.virtualenvs/ansible/.project
+setvirtualenvproject
 ```
 
 at this time.
