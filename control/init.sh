@@ -32,13 +32,20 @@ wait
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
 ~/commcarehq-ansible/control/check_install.sh
-alias ap='ansible-playbook -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
-alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
 [ ! -f ~/.bash_completion ] && source  ~/commcarehq-ansible/control/.bash_completion
 cp ~/commcarehq-ansible/control/.bash_completion ~/
+
+function ap() {
+    commcare-cloud $1 ansible-playbook
+}
+
+
+function aps() {
+    ap $1 deploy_stack.yml
+}
 
 function ae() {
     ansible $1 -m shell -a "$2" -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV
@@ -67,8 +74,8 @@ function ansible-control-banner() {
     printf "${BLUE}update-code${NC} - update the ansible repositories (safely)\n"
     printf "${BLUE}workon ansible${NC} - activate the ansible virtual env\n"
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible. See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
-    printf "ap - Use ${YELLOW}commcare-cloud <env> ansible-playbook${NC} instead.\n"
-    printf "aps - Use ${YELLOW}commcare-cloud <env> ansible-playbook deploy_stack.yml${NC} instead.\n"
+    printf "ap - Alias for ${YELLOW}commcare-cloud <env> ansible-playbook${NC} e.g. ap production deploy_proxy.yml \n"
+    printf "aps - Alias for ${YELLOW}commcare-cloud <env> ansible-playbook deploy_stack.yml${NC} e.g. aps production \n"
     printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
     printf "${BLUE}ae${NC} - allows running ad hoc commands on specified machines e.g. ae riakcs 'grep OOM /var/log/riak/console.log'\n"
 }
