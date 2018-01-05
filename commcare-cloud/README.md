@@ -32,29 +32,15 @@ git pull
 
 # Install commcare-cloud
 
-You need to be in the ansible virtualenv:
+You must be in your virtualenv for the install script to work
 ```
 workon ansible
 ```
-Additionally, you'll need the latest pip in your virtualenv for the following installs to work:
-```
-pip install pip --upgrade
-```
 
-Install the python requirements into your virtualenv:
-```
-pip install -r requirements.txt
-```
-
-To run ansible commands you will also need in install the galaxy modules:
-```
-ansible-galaxy install -r ansible/requirements.yml  # to be able to run ansible commands
-```
-
-Finally, finish your install with
+Then, simply run:
 
 ```
-./control/check_install.sh
+./install.sh
 ```
 
 # Optional: Hook up the bells and whistles
