@@ -27,13 +27,14 @@ workon ansible
 ```
 
 ```
-pip install -r requirements.txt
+pip install pip --upgrade
 ```
 
-To be able to run ansible commands, you must additionally run
-
 ```
-ansible-galaxy install -r ansible/requirements.yml
+pip install -e commcare-cloud
+pip install -r ansible/requirements.txt  # to be able to run ansible commands
+ansible-galaxy install -r ansible/requirements.yml  # to be able to run ansible commands
+pip install -r fab/requirements.txt  # to be able to run fab commands
 ```
 
 Finally, finish your install with
