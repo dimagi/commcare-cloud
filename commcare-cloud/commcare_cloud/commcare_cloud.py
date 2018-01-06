@@ -4,30 +4,24 @@ from __future__ import absolute_import
 import getpass
 import os
 import re
+import sys
 from six.moves import input, shlex_quote
 from argparse import ArgumentParser
 import subprocess
 from clint.textui import puts, colored
 import yaml
 
+from .getinventory import get_server_address
 from .parse_help import filtered_help_message, add_to_help_text
-
-REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
-ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
-ENVIRONMENTS_DIR = os.path.join(REPO_BASE, 'environments')
-
-
-def get_public_vars_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
-
-
-def get_vault_vars_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
-
-
-def get_inventory_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
+from .paths import (
+    ANSIBLE_DIR,
+    ENVIRONMENTS_DIR,
+    FABFILE,
+    get_inventory_filepath,
+    get_public_vars_filepath,
+    get_vault_vars_filepath,
+    get_virtualenv_path,
+)
 
 
 DEPRECATED_ANSIBLE_ARGS = [
@@ -495,25 +489,62 @@ class Fab(object):
 
     @staticmethod
     def run(args, unknown_args):
-        def run_fab(args, unknown_args):
-            cmd_parts = (
-                'fab', '-f', FABFILE,
-                args.environment,
-            ) + (
-                (args.fab_command,) if args.fab_command else ()
-            ) + tuple(unknown_args)
+        cmd_parts = (
+            'fab', '-f', FABFILE,
+            args.environment,
+        ) + (
+            (args.fab_command,) if args.fab_command else ()
+        ) + tuple(unknown_args)
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print(cmd)
+        os.execvp('fab', cmd_parts)
 
-            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-            print(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True)
-            p.communicate()
-            return p.returncode
 
-        exit_code = run_fab(args, unknown_args)
-        if exit_code == 0:
-            puts(colored.green(u"✓ Fab completed with status code {}".format(exit_code)))
-        else:
-            puts(colored.red(u"✗ Fab failed with status code {}".format(exit_code)))
+class Lookup(object):
+    command = 'lookup'
+    help = "Lookup remote hostname or IP address"
+
+    @classmethod
+    def make_parser(cls, parser):
+        cls.parser = parser
+        parser.add_argument("server",
+            help="Server name/group: postgresql, proxy, webworkers, ... The server "
+                 "name/group may be prefixed with 'username@' to login as a specific "
+                 "user and may be terminated with ':<n>' to choose one of "
+                 "multiple servers if there is more than one in the group. "
+                 "For example: webworkers:0 will pick the first webworker.")
+
+    @classmethod
+    def lookup_server_address(cls, args):
+        def exit(message):
+            cls.parser.error("\n" + message)
+        return get_server_address(args.environment, args.server, exit)
+
+    @classmethod
+    def run(cls, args, unknown_args):
+        if unknown_args:
+            sys.stderr.write(
+                "Ignoring extra argument(s): {}\n".format(unknown_args)
+            )
+        print(cls.lookup_server_address(args))
+
+
+class Ssh(Lookup):
+    command = 'ssh'
+    help = "Connect to a remote host with ssh"
+
+    @classmethod
+    def run(cls, args, ssh_args):
+        address = cls.lookup_server_address(args)
+        cmd_parts = [cls.command, address] + ssh_args
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print(cmd)
+        os.execvp(cls.command, cmd_parts)
+
+
+class Mosh(Ssh):
+    command = 'mosh'
+    help = "Connect to a remote host with mosh"
 
 
 def git_branch():
@@ -546,10 +577,14 @@ STANDARD_ARGS = [
     RunShellCommand,
     RunAnsibleModule,
     Fab,
+    Lookup,
+    Ssh,
+    Mosh,
 ]
 
 
 def main():
+    os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
     available_envs = sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
