@@ -90,7 +90,7 @@
 - name: Install elasticsearch aws plugin
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: backup_es and "'cloud-aws' not in installed_plugins.stdout"
+  when: "backup_es and 'cloud-aws' not in installed_plugins.stdout"
 
 - name: Reload upstart
   become: yes
@@ -115,7 +115,7 @@
     url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
     body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "s3.{{ aws_region }}.amazonaws.com" }}'
-  when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"
+  when: backup_es and inventory_hostname == groups.elasticsearch.0
 
 - name: Remove old backup script
   file:
@@ -132,7 +132,7 @@
     owner: root
     mode: 0700
     backup: yes
-  when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"
+  when: backup_es and inventory_hostname == groups.elasticsearch.0
   tags: cron
 
 - name: Create es backup cron job
@@ -144,5 +144,5 @@
     minute: 0
     user: root
     cron_file: create_es_snapshot
-  when: backup_es and inventory_hostname == "{{ groups.elasticsearch.0 }}"
+  when: backup_es and inventory_hostname == groups.elasticsearch.0
   tags: cron
