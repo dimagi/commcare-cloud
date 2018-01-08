@@ -14,6 +14,7 @@ then
 else
     echo "✓ ~/.commcare-cloud exists"
 fi
+
 if [ ! -d ~/.commcare-cloud/repo ]
 then
     ln -sf "${ANSIBLE_REPO}" ~/.commcare-cloud/repo
@@ -21,6 +22,30 @@ then
 else
     echo "✓ ~/.commcare-cloud/repo exists"
 fi
+
+if [ ! -d ~/.commcare-cloud/bin ]
+then
+    mkdir ~/.commcare-cloud/bin
+    echo "→ Created ~/.commcare-cloud/bin"
+else
+    echo "✓ ~/.commcare-cloud/bin exists"
+fi
+
+for executable in commcare-cloud cchq
+do
+    if [ ! -f ~/.commcare-cloud/bin/${executable} ]
+    then
+        if [ -z "$(which ${executable})" ]
+        then
+            echo "✗ No executable found for ${executable}. Skipping"
+        else
+            ln -sf $(which ${executable}) ~/.commcare-cloud/bin/
+            echo "→ Created ~/.commcare-cloud/bin/${executable}"
+        fi
+    else
+        echo "✓ ~/.commcare-cloud/bin/${executable} exists"
+    fi
+done
 
 if [ ! -f "${FAB_CONFIG}" ]
 then
