@@ -37,7 +37,7 @@ alias aps='ap deploy_stack.yml'
 alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
 
-PATH=$PATH:~/.commcare-cloud/bin
+export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
 function ae() {

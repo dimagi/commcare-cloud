@@ -54,6 +54,6 @@ To be able to
 add the following to your bash profile:
 
 ```
-PATH=$PATH:~/.commcare-cloud/bin
+export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 ```
