@@ -38,7 +38,7 @@ def ask(message, strict=False, quiet=False):
     if quiet:
         return True
     yesno = 'YES/NO' if strict else 'y/N'
-    negatives = ('NO', 'N', 'n', 'no')
+    negatives = ('NO', 'N', 'n', 'no', '')
     affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
     acceptable_options = affirmatives + negatives
 
