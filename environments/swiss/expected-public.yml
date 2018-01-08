@@ -4,6 +4,9 @@ NO_WWW_SITE_HOST: 'swiss.commcarehq.org'
 deploy_env: swiss
 
 active_sites:
+  cchq_ssl: True
+  cchq_www_redirect_secure: True
+  cchq_http: True
   cchq_http_j2me: False
   cchq_www_redirect_insecure: False
   commtrack_ssl: False
@@ -16,6 +19,8 @@ active_sites:
   motech2: False
   riakcs: False
   couchdb2: False
+  cas_ssl: False
+  enikshay_ssl: False
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no

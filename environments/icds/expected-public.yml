@@ -25,6 +25,10 @@ static_routes:
     gateway: "10.247.24.4"
 
 active_sites:
+  cchq_ssl: True
+  cchq_www_redirect_secure: True
+  cchq_http: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: False
   commtrack_ssl: False
   commtrack_http: False
@@ -38,6 +42,8 @@ active_sites:
   motech2: False
   riakcs: True
   cas_ssl: True
+  couchdb2: False
+  enikshay_ssl: False
 
 riak_backend: "bitcask"
 riak_ring_size: 64

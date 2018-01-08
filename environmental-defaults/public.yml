@@ -1,0 +1,18 @@
+active_sites:
+  cchq_ssl: True
+  cchq_www_redirect_secure: True
+  cchq_http: True
+  cchq_www_redirect_insecure: True
+  cchq_http_j2me: True
+  commtrack_ssl: False
+  commtrack_http: False
+  tableau: False
+  icds_tableau: False
+  wiki: False
+  wiki_http: False
+  motech: False
+  motech2: False
+  riakcs: False
+  cas_ssl: False
+  couchdb2: False
+  enikshay_ssl: False

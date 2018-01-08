@@ -7,9 +7,23 @@ tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 
 active_sites:
+  cchq_ssl: True
+  cchq_www_redirect_secure: False
+  cchq_http: True
+  cchq_www_redirect_insecure: False
+  cchq_http_j2me: True
+  commtrack_ssl: False
+  commtrack_http: False
+  tableau: False
+  icds_tableau: False
+  wiki: False
+  wiki_http: False
+  motech: False
+  motech2: False
   riakcs: True
-  cchq_www_redirect_insecure: false
-  cchq_www_redirect_secure: false
+  cas_ssl: False
+  enikshay_ssl: False
+  couchdb2: False
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"

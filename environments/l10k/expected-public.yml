@@ -1,9 +1,12 @@
-SITE_HOST: 'swiss.commcarehq.org'
-COMMTRACK_SITE_HOST: 'swiss.commcarehq.org'
-NO_WWW_SITE_HOST: 'swiss.commcarehq.org'
-deploy_env: swiss
+SITE_HOST: 'l10k.commcarehq.org'
+COMMTRACK_SITE_HOST: 'l10k.commcarehq.org'
+NO_WWW_SITE_HOST: 'l10k.commcarehq.org'
+deploy_env: l10k
 
 active_sites:
+  cchq_ssl: True
+  cchq_www_redirect_secure: True
+  cchq_http: True
   cchq_http_j2me: False
   cchq_www_redirect_insecure: False
   commtrack_ssl: False
@@ -15,7 +18,10 @@ active_sites:
   motech: False
   motech2: False
   riakcs: False
+  cas_ssl: False
   couchdb2: False
+  enikshay_ssl: False
+
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
@@ -24,17 +30,16 @@ NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
-DATADOG_INTEGRATIONS_ENABLED: False
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
-elasticsearch_cluster_name: 'deves'
+elasticsearch_cluster_name: 'l10k-es'
 #elasticsearch_node_name: '??'
 
-nginx_key_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.key'
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.combined.crt'
+nginx_key_file: '../config/{{ deploy_env }}/ssl/l10k.commcarehq.org.key'
+nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/l10k.commcarehq.org.combined.crt'
 
 keystore_file: '../config/DimagiKeyStore'
 
@@ -48,22 +53,41 @@ couch_s3: False
 
 postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
-postgresql_max_connections: 300
-pgbouncer_max_connections: 400
-pgbouncer_default_pool: 290
-pgbouncer_reserve_pool: 5
-pgbouncer_pool_timeout: 1
-pgbouncer_pool_mode: transaction
+postgres_config:
+  max_connections: 300
+  pgb_max_connections: 400
+  pgb_default_pool: 290
+  pgb_reserve_pool: 5
+  pgb_pool_timeout: 1
+  pgb_pool_mode: transaction
 
 formplayer_db_name: formplayer
 
 postgresql_dbs:
   - name: commcarehq_ucr
     django_alias: ucr
-    django_migrate: False
   - name: "{{ localsettings.PG_DATABASE_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2_proxy[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
@@ -79,24 +103,15 @@ KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
-AMQP_HOST: "185.12.7.167"
+AMQP_HOST: "192.168.0.10"
 AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
 
-couch_dbs:
-  default:
-    host: 185.12.7.167
-    port: 5984
-    name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-
 localsettings:
   ALLOWED_HOSTS:
-    - swiss.commcarehq.org
-    - 185.12.7.167
+    - l10k.commcarehq.org
+    - 192.168.0.10
     - localhost
     - 127.0.0.1
     - testserver
@@ -118,9 +133,13 @@ localsettings:
   CLOUDCARE_BASE_URL: http://localhost:9010
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
+  COUCH_HTTPS: False
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_SERVER_ROOT: "192.168.0.10"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-# swiss is not hosted by Cloudant
+  COUCH_PORT: 5984
+# l10k is not hosted by Cloudant
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
 #  DROPBOX_APP_NAME:
@@ -129,15 +148,14 @@ localsettings:
   ELASTICSEARCH_HOST: "localhost"
   ELASTICSEARCH_PORT: '9200'
   EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
-  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
-  EMAIL_SMTP_PORT: 587
-  EMAIL_USE_TLS: yes
+  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_PORT: 25
+  EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
   FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
-  HQ_INSTANCE: 'swiss'
+  HQ_INSTANCE: 'l10k'
   HUBSPOT_API_ID:
   HUBSPOT_API_KEY:
   INVOICE_FROM_ADDRESS:

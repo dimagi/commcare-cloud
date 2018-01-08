@@ -7,6 +7,7 @@ deploy_env: staging
 active_sites:
   cchq_www_redirect_secure: True
   cchq_http: True
+  cchq_ssl: False
   cchq_www_redirect_insecure: True
   cchq_http_j2me: True
   commtrack_ssl: False
@@ -14,6 +15,7 @@ active_sites:
   tableau: False
   icds_tableau: False
   wiki: False
+  wiki_http: False
   motech: False
   motech2: False
   riakcs: True
