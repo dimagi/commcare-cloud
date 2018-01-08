@@ -296,7 +296,6 @@ def development():
 def env_common():
     require('inventory', 'environment')
     servers = read_inventory_file(env.inventory)
-    print(servers)
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
@@ -304,7 +303,6 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    print(all)
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     riakcs = servers.get('riakcs', [])
