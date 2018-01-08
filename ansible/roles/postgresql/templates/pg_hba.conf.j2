@@ -22,7 +22,7 @@ host    all             {{ postgres_users.backup.username }}   {{ cluster_ip_ran
 {% endif %}
 
 {% if postgres_users.get('tableau_readonly') %}
-host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_server.split(':')[0] }}    md5
+host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_server.split(':')[0] }}/32    md5
 {% endif %}
 
 {% if cluster_ip_range is defined %}
