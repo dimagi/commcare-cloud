@@ -242,7 +242,7 @@ To use these files with `ansible-playbook` include the `--ask-vault-pass` param.
 You can use Vault's built in editing capability as follows:
 
 ```
-ENV=production ansible-vault edit ansible/vars/$ENV/${ENV}_vault.yml
+ENV=production; ansible-vault edit environments/$ENV/vault.yml
 ```
 
 This will decrypt the file for editing and re-encrypt it after. Note that even if no changes
@@ -251,7 +251,7 @@ are made to the file the encrypted contents will have changed.
 If you just want to view the contents of the file you can use this command:
 
 ```
-ENV=production ansible-vault view ansible/vars/$ENV/${ENV}_vault.yml
+ENV=production; ansible-vault view environments/$ENV/vault.yml
 ```
 
 #### Encrypting / Decrypting files
