@@ -185,13 +185,6 @@ def softlayer():
     _setup_env('softlayer')
 
 
-@task
-def icds():
-    """www.icds-cas.gov.in"""
-    _confirm_environment_time('icds', 'Asia/Kolkata')
-    _setup_env('icds')
-
-
 @task(alias='icds-new')
 def icds_new():
     """www.icds-cas.gov.in"""
