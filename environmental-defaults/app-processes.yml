@@ -35,3 +35,4 @@ formplayer_memory: "3584m"
 keepalive: 60
 http_proxy: null
 newrelic_javaagent: False
+ignore_kafka_checkpoint_warning: False
