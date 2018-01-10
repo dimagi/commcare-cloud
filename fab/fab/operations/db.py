@@ -47,18 +47,18 @@ def ensure_preindex_completion():
 
 @roles(ROLES_DEPLOY)
 def ensure_checkpoints_safe():
-    extras = '--print-only' if env.force else ''
+    extras = '--print-only' if env.ignore_kafka_checkpoint_warning else ''
     with cd(env.code_root):
         try:
             sudo('{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
                 env=env, extras=extras
             ))
         except Exception as e:
-            if not env.force:
+            if not env.ignore_kafka_checkpoint_warning:
                 message = (
                     "Deploy failed, likely because kafka checkpoints weren't available.\n"
                     "Scroll up for more detailed information.\n"
-                    "You can rerun with --set force=true to prevent this error from blocking the deploy."
+                    "You can rerun with --set ignore_kafka_checkpoint_warning=true to prevent this error from blocking the deploy."
                 ).format(e)
                 raise Exception(message)
             else:
