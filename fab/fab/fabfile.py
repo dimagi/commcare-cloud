@@ -223,14 +223,14 @@ def production():
 @task
 def staging():
     """staging.commcarehq.org"""
-    _setup_env('staging', default_branch='autostaging')
+    _setup_env('staging')
 
 
-def _setup_env(env_name, default_branch=None):
-    _confirm_branch(default_branch)
+def _setup_env(env_name):
     env.env_name = env_name
     env.inventory = os.path.join(REPO_BASE, 'environments', env_name, 'inventory.ini')
     load_env(env_name)
+    _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
 
