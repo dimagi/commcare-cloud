@@ -38,3 +38,4 @@ newrelic_javaagent: False
 ignore_kafka_checkpoint_warning: False
 acceptable_maintenance_window: null
 email_enabled: True
+default_branch: master
