@@ -179,7 +179,6 @@ def load_env(env_name):
 
 def _setup_env(env_name):
     env.env_name = env_name
-    env.inventory = os.path.join(REPO_BASE, 'environments', env_name, 'inventory.ini')
     load_env(env_name)
     _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
@@ -239,8 +238,7 @@ def development():
 
 
 def env_common():
-    require('inventory', 'environment')
-    servers = read_inventory_file(env.inventory)
+    servers = read_inventory_file(env.env_name)
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
