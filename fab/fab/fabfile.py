@@ -28,6 +28,7 @@ Server layout:
 from __future__ import absolute_import
 from __future__ import print_function
 import datetime
+import functools
 import os
 import posixpath
 from getpass import getpass
@@ -44,6 +45,8 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
+from commcare_cloud.commcare_cloud import get_public_vars
+from commcare_cloud.paths import get_available_envs
 from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
@@ -170,60 +173,6 @@ def load_env(env_name):
         print('NOTE: ignoring app-processes.yml var {}={!r}. Using value {!r} instead.'.format(key, vars[key], vars_not_to_overwrite[key]))
     vars.update(vars_not_to_overwrite)
     env.update(vars)
-
-
-@task
-def swiss():
-    """swiss.commcarehq.org"""
-    _setup_env('swiss')
-
-
-@task(alias='india')
-def softlayer():
-    """india.commcarehq.org"""
-    _setup_env('softlayer')
-
-
-@task
-def icds():
-    """www.icds-cas.gov.in"""
-    _setup_env('icds')
-
-
-@task(alias='icds-new')
-def icds_new():
-    """www.icds-cas.gov.in"""
-    _setup_env('icds-new')
-
-
-@task
-def enikshay():
-    """enikshay.in"""
-    _setup_env('enikshay')
-
-
-@task
-def pna():
-    """commcare.pna.sn"""
-    _setup_env('pna')
-
-
-@task
-def l10k():
-    """l10k.commcare.org"""
-    _setup_env('l10k')
-
-
-@task
-def production():
-    """www.commcarehq.org"""
-    _setup_env('production')
-
-
-@task
-def staging():
-    """staging.commcarehq.org"""
-    _setup_env('staging')
 
 
 def _setup_env(env_name):
@@ -929,6 +878,7 @@ OFFLINE_DEPLOY_COMMANDS = [
     release.clean_releases,
 ]
 
+
 @task
 def check_status():
     env.user = 'ansible'
@@ -939,3 +889,9 @@ def check_status():
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
     execute(check_servers.riakcs)
+
+
+# Automatically create a task for each environment
+for env_name in get_available_envs():
+    locals()[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
+    locals()[env_name].__doc__ = get_public_vars(env_name)['SITE_HOST']
