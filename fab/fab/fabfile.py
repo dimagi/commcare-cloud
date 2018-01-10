@@ -891,7 +891,12 @@ def check_status():
     execute(check_servers.riakcs)
 
 
+def make_tasks_for_envs(available_envs):
+    tasks = {}
+    for env_name in available_envs:
+        tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
+        tasks[env_name].__doc__ = get_public_vars(env_name)['SITE_HOST']
+    return tasks
+
 # Automatically create a task for each environment
-for env_name in get_available_envs():
-    locals()[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-    locals()[env_name].__doc__ = get_public_vars(env_name)['SITE_HOST']
+locals().update(make_tasks_for_envs(get_available_envs()))
