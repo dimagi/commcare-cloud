@@ -1,7 +1,6 @@
 environment: l10k
 jython_memory: "1024m"
 formplayer_memory: "1024m"
-ignore_kafka_checkpoint_warning: True
 
 service_blacklist:
   - supervisor_websockets.conf
