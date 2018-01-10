@@ -568,15 +568,10 @@ class Mosh(Ssh):
 
 
 def git_branch():
-    cwd = ANSIBLE_DIR
-    git_branch_output = subprocess.check_output("git branch", cwd=cwd, shell=True).strip().split('\n')
-    starred_line, = [line for line in git_branch_output if line.startswith('*')]
-    if re.search(r'\* \(.*detached .*\)', starred_line):
-        return starred_line.split(' ')[4][:-1]
-    elif re.search(r'\* \w+', starred_line):
-        return starred_line.split(' ')[1]
-    else:
-        assert False, "Unable to parse branch name or commit: {}".format(starred_line)
+    # https://stackoverflow.com/a/19585361/10840
+    return subprocess.check_output(
+        "git status | head -1", cwd=ANSIBLE_DIR, shell=True
+    ).strip().split()[-1]
 
 
 def check_branch(args):
