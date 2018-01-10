@@ -1,11 +1,6 @@
 environment: enikshay
 formplayer_memory: "7000m"
 newrelic_javaagent: False
-ignore_kafka_checkpoint_warning: True
-acceptable_maintenance_window:
-  hour_start: 2
-  hour_end: 7
-  timezone: Asia/Kolkata
 celery_processes:
   '172.25.2.10':
     celery_periodic:

@@ -164,7 +164,9 @@ def load_env(env_name):
                              if key not in ('sudo_user', 'keepalive')}
     vars = {}
     vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')))
     vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'fab-settings.yml')))
     # Variables that were already in `env`
     # take precedence over variables set in app-processes.yml
     # except a short blacklist that we expect app-processes.yml vars to overwrite
