@@ -8,6 +8,7 @@ acceptable_maintenance_window:
   hour_start: 0
   hour_end: 7
   timezone: Asia/Kolkata
+email_enabled: False
 celery_processes:
   '10.247.164.40':  # celery0
     flower: {}
