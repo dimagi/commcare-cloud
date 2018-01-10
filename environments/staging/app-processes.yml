@@ -1,4 +1,5 @@
 environment: staging
+ignore_kafka_checkpoint_warning: True
 
 celery_processes:
   '*':
