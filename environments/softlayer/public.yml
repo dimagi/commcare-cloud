@@ -247,6 +247,7 @@ localsettings:
 #  MAPS_LAYERS:
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
