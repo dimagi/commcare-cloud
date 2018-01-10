@@ -167,10 +167,19 @@ def load_env(env_name):
         else:
             raise Exception("Environment file not found: {}".format(path))
 
-    env_dict = get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml'))
-    base_dict = get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml'))
-    env.update(base_dict)
-    env.update(env_dict)
+    vars_not_to_overwrite = {key: value for key, value in env.items()
+                             if key not in ('sudo_user', 'keepalive')}
+    vars = {}
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
+    # Variables that were already in `env`
+    # take precedence over variables set in app-processes.yml
+    # except a short blacklist that we expect app-processes.yml vars to overwrite
+    overlap = set(vars_not_to_overwrite) & set(vars)
+    for key in overlap:
+        print('NOTE: ignoring app-processes.yml var {}={!r}. Using value {!r} instead.'.format(key, vars[key], vars_not_to_overwrite[key]))
+    vars.update(vars_not_to_overwrite)
+    env.update(vars)
 
 
 @task
