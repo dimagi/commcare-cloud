@@ -94,11 +94,6 @@ env.email_enabled = True
 env.always_use_pty = False
 env['sudo_prefix'] += '-H '
 
-if not hasattr(env, 'code_branch'):
-    print ("code_branch not specified, using 'master'. "
-           "You can set it with '--set code_branch=<branch>'")
-    env.code_branch = 'master'
-
 
 env.roledefs = {
     'django_celery': [],
@@ -244,15 +239,16 @@ def _setup_env(env_name, default_branch=None):
     execute(env_common)
 
 
-def _confirm_branch(default_branch=None):
-    if env.code_branch == 'master':
-        if default_branch:
-            env.code_branch = default_branch
-            print ("using default branch of {}. you can override this "
-                   "with --set code_branch=<branch>".format(default_branch))
-    else:
+def _confirm_branch(default_branch='master'):
+    if not hasattr(env, 'code_branch'):
+        print("code_branch not specified, using '{}'. "
+              "You can override this with '--set code_branch=<branch>'"
+              .format(default_branch))
+        env.code_branch = default_branch
+
+    if env.code_branch != default_branch:
         branch_message = (
-            "Woah there bud! You're using branch {env.code_branch}. "
+            "Whoa there bud! You're using branch {env.code_branch}. "
             "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
         ).format(env=env)
         if not console.confirm(branch_message, default=False):
