@@ -4,11 +4,6 @@ additional_no_proxy_hosts: "relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
 gunicorn_workers_factor: 2
 formplayer_memory: "16000m"
 gunicorn_workers_static_factor: 1
-acceptable_maintenance_window:
-  hour_start: 0
-  hour_end: 7
-  timezone: Asia/Kolkata
-email_enabled: False
 celery_processes:
   '10.247.164.40':  # celery0
     flower: {}
