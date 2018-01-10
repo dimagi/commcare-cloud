@@ -100,10 +100,6 @@ if not hasattr(env, 'code_branch'):
     env.code_branch = 'master'
 
 
-if not hasattr(env, 'ignore_kafka_checkpoint_warning'):
-    env.ignore_kafka_checkpoint_warning = False  # --set ignore_kafka_checkpoint_warning=true to override blocking warnings (e.g. stale pillow checkpoints)
-
-
 env.roledefs = {
     'django_celery': [],
     'django_app': [],
@@ -185,7 +181,7 @@ def load_env(env_name):
 @task
 def swiss():
     """swiss.commcarehq.org"""
-    _setup_env('swiss', ignore_kafka_checkpoint_warning=True)
+    _setup_env('swiss')
 
 
 @task(alias='india')
@@ -213,19 +209,19 @@ def icds_new():
 def enikshay():
     """enikshay.in"""
     _confirm_environment_time('enikshay', 'Asia/Kolkata')
-    _setup_env('enikshay', ignore_kafka_checkpoint_warning=True)
+    _setup_env('enikshay')
 
 
 @task
 def pna():
     """commcare.pna.sn"""
-    _setup_env('pna', ignore_kafka_checkpoint_warning=True)
+    _setup_env('pna')
 
 
 @task
 def l10k():
     """l10k.commcare.org"""
-    _setup_env('l10k', ignore_kafka_checkpoint_warning=True)
+    _setup_env('l10k')
 
 
 @task
@@ -237,13 +233,12 @@ def production():
 @task
 def staging():
     """staging.commcarehq.org"""
-    _setup_env('staging', ignore_kafka_checkpoint_warning=True, default_branch='autostaging')
+    _setup_env('staging', default_branch='autostaging')
 
 
-def _setup_env(env_name, ignore_kafka_checkpoint_warning=False, default_branch=None):
+def _setup_env(env_name, default_branch=None):
     _confirm_branch(default_branch)
     env.env_name = env_name
-    env.ignore_kafka_checkpoint_warning = ignore_kafka_checkpoint_warning  # don't worry about kafka checkpoints if True
     env.inventory = os.path.join(REPO_BASE, 'environments', env_name, 'inventory.ini')
     load_env(env_name)
     execute(env_common)
