@@ -15,8 +15,8 @@ from .getinventory import get_server_address
 from .parse_help import filtered_help_message, add_to_help_text
 from .paths import (
     ANSIBLE_DIR,
-    ENVIRONMENTS_DIR,
     FABFILE,
+    get_available_envs,
     get_inventory_filepath,
     get_public_vars_filepath,
     get_vault_vars_filepath,
@@ -602,11 +602,7 @@ STANDARD_ARGS = [
 def main():
     os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
-    available_envs = sorted(
-        env for env in os.listdir(ENVIRONMENTS_DIR)
-        if os.path.exists(get_public_vars_filepath(env))
-        and os.path.exists(get_inventory_filepath(env))
-    )
+    available_envs = get_available_envs()
     parser.add_argument('environment', choices=available_envs, help=(
         "server environment to run against"
     ))
