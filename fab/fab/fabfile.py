@@ -188,14 +188,12 @@ def softlayer():
 @task
 def icds():
     """www.icds-cas.gov.in"""
-    _confirm_environment_time('icds', 'Asia/Kolkata')
     _setup_env('icds')
 
 
 @task(alias='icds-new')
 def icds_new():
     """www.icds-cas.gov.in"""
-    _confirm_environment_time('icds-new', 'Asia/Kolkata')
     _setup_env('icds-new')
     env.email_enabled = False
 
@@ -203,7 +201,6 @@ def icds_new():
 @task
 def enikshay():
     """enikshay.in"""
-    _confirm_environment_time('enikshay', 'Asia/Kolkata')
     _setup_env('enikshay')
 
 
@@ -236,6 +233,7 @@ def _setup_env(env_name, default_branch=None):
     env.env_name = env_name
     env.inventory = os.path.join(REPO_BASE, 'environments', env_name, 'inventory.ini')
     load_env(env_name)
+    _confirm_environment_time(env_name)
     execute(env_common)
 
 
@@ -255,19 +253,17 @@ def _confirm_branch(default_branch='master'):
             utils.abort('Action aborted.')
 
 
-def _confirm_environment_time(env_name, env_tz):
-    env_hours_start_end = {
-        'enikshay': (2, 7),  # call center is offline 2am-8am IST
-        'icds': (0, 7),
-        'icds-new': (0, 7),
-    }
-    hour_start, hour_end = env_hours_start_end[env_name]
-    d = datetime.datetime.now(pytz.timezone(env_tz))
-    if hour_start <= d.hour < hour_end:
+def _confirm_environment_time(env_name):
+    window = env.acceptable_maintenance_window
+    if window:
+        d = datetime.datetime.now(pytz.timezone(window['timezone']))
+        if window['hour_start'] <= d.hour < window['hour_end']:
+            return
+    else:
         return
 
     message = (
-        "Woah there bud! You're deploying '%s' during the day. "
+        "Whoa there bud! You're deploying '%s' during the day. "
         "The current local time is %s.\n"
         "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
     ) % (env_name, d.strftime("%-I:%M%p on %h. %d %Z"))

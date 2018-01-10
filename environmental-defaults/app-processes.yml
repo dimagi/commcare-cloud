@@ -36,3 +36,4 @@ keepalive: 60
 http_proxy: null
 newrelic_javaagent: False
 ignore_kafka_checkpoint_warning: False
+acceptable_maintenance_window: null
