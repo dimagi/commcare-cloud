@@ -275,6 +275,12 @@ localsettings:
   ASYNC_INDICATOR_QUEUE_CRONTAB:
     minute: '*/5'
     hour: '0-9,16-23'
+  ASYNC_INDICATOR_QUEUE_TIMES:
+    '*':
+      - [11, 23]
+      - [0, 4]
+    '7':
+      - [0, 24]
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
