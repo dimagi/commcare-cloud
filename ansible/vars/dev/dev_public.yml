@@ -60,7 +60,6 @@ deploy_env: dev
 # This is the name used for datadog and in settings.SERVER_ENVIRONMENT
 # env_name: dev1
 fake_ssl_cert: yes
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:
   present:
@@ -82,19 +81,12 @@ elasticsearch_cluster_name: 'deves'
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: no
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
-AMQP_USER: "{{ deploy_env }}_worker"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
@@ -158,8 +150,6 @@ nofile_limit: 65536
 nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 formplayer_db_name: formplayer
 

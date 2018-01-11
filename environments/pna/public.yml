@@ -20,16 +20,13 @@ active_sites:
   riakcs: False
   pna_ssl: True
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 ssh_port: 1337
 fake_ssl_cert: no
 
-#NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
+NEW_RELIC_KEY: null
 #run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '2048m'
@@ -58,7 +55,6 @@ couch_s3: True
 
 aws_region: 'us-east-1'
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_shared_buffers: '2GB'
 postgresql_max_stack_depth: '4MB'
@@ -158,13 +154,8 @@ redis_maxmemory_policy: allkeys-lru
 server_email: commcare@pna.sn
 default_from_email: commcare@pna.sn
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: yes
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
-AMQP_USER: "{{ secrets.AMQP_USER }}"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "127.0.0.1"
 AMQP_NAME: commcarehq
 

@@ -28,23 +28,14 @@ riak_ring_size: 64
 riak_new_backend: "leveldb"
 riak_new_ring_size: 128
 
-riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
-riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
-old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
-old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
-
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
-NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: True
 
 DATADOG_ENABLED: True
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 CLOUDANT_CLUSTER_NAME: dimagi003
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
@@ -52,7 +43,6 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 
-formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 nofile_limit: 65536
 
@@ -65,8 +55,6 @@ commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.or
 commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 keystore_file: '../config/DimagiKeyStore'
 
@@ -77,7 +65,6 @@ postgres_s3: True
 
 aws_region: 'us-east-1'
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 300
 pgbouncer_max_connections: 800
@@ -133,13 +120,8 @@ redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: yes
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
-AMQP_USER: "{{ secrets.AMQP_USER }}"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
