@@ -163,8 +163,6 @@ kafka_log_dir: '/opt/data/kafka'
 
 KSPLICE_ACTIVE: no
 
-AMQP_USER: "{{ secrets.AMQP_USER }}"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.rabbit0.0 }}"
 AMQP_NAME: commcarehq
 
