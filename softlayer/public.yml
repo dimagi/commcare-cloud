@@ -73,7 +73,6 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 300
 pgbouncer_max_connections: 1000

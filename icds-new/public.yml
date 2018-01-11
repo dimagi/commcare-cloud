@@ -65,7 +65,6 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_version: '9.6'
 postgresql_shared_buffers: '8GB'

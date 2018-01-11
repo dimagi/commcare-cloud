@@ -54,7 +54,6 @@ postgres_s3: False
 
 aws_region: 'us-east-1'
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 20
 pgbouncer_max_connections: 100
