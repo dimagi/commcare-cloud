@@ -49,7 +49,6 @@ primary_ssl_env: "cas"
 nginx_max_clients: 1024
 nginx_worker_rlimit_nofile : 16384
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
