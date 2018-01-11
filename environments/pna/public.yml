@@ -20,7 +20,6 @@ active_sites:
   riakcs: False
   pna_ssl: True
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 ssh_port: 1337
 fake_ssl_cert: no
 
