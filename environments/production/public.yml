@@ -134,7 +134,6 @@ redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
 
 KSPLICE_ACTIVE: yes
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
