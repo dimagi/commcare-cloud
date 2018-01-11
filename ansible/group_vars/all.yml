@@ -150,6 +150,7 @@ ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
+formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
