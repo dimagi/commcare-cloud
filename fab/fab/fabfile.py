@@ -28,6 +28,7 @@ Server layout:
 from __future__ import absolute_import
 from __future__ import print_function
 import datetime
+import functools
 import os
 import posixpath
 from getpass import getpass
@@ -44,6 +45,8 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
+from commcare_cloud.commcare_cloud import get_public_vars
+from commcare_cloud.paths import get_available_envs
 from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
@@ -90,18 +93,8 @@ env.abort_exception = Exception
 env.linewise = True
 env.colorize_errors = True
 env.captain_user = None
-env.email_enabled = True
 env.always_use_pty = False
 env['sudo_prefix'] += '-H '
-
-if not hasattr(env, 'code_branch'):
-    print ("code_branch not specified, using 'master'. "
-           "You can set it with '--set code_branch=<branch>'")
-    env.code_branch = 'master'
-
-
-if not hasattr(env, 'force'):
-    env.force = False  # --set force=true to override blocking warnings (e.g. stale pillow checkpoints)
 
 
 env.roledefs = {
@@ -167,107 +160,59 @@ def load_env(env_name):
         else:
             raise Exception("Environment file not found: {}".format(path))
 
-    env_dict = get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml'))
-    base_dict = get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml'))
-    env.update(base_dict)
-    env.update(env_dict)
+    vars_not_to_overwrite = {key: value for key, value in env.items()
+                             if key not in ('sudo_user', 'keepalive')}
+    vars = {}
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')))
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
+    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'fab-settings.yml')))
+    # Variables that were already in `env`
+    # take precedence over variables set in app-processes.yml
+    # except a short blacklist that we expect app-processes.yml vars to overwrite
+    overlap = set(vars_not_to_overwrite) & set(vars)
+    for key in overlap:
+        print('NOTE: ignoring app-processes.yml var {}={!r}. Using value {!r} instead.'.format(key, vars[key], vars_not_to_overwrite[key]))
+    vars.update(vars_not_to_overwrite)
+    env.update(vars)
 
 
-@task
-def swiss():
-    """swiss.commcarehq.org"""
-    _setup_env('swiss', force=True)
-
-
-@task(alias='india')
-def softlayer():
-    """india.commcarehq.org"""
-    _setup_env('softlayer')
-
-
-@task
-def icds():
-    """www.icds-cas.gov.in"""
-    _confirm_environment_time('icds', 'Asia/Kolkata')
-    _setup_env('icds')
-
-
-@task(alias='icds-new')
-def icds_new():
-    """www.icds-cas.gov.in"""
-    _confirm_environment_time('icds-new', 'Asia/Kolkata')
-    _setup_env('icds-new')
-    env.email_enabled = False
-
-
-@task
-def enikshay():
-    """enikshay.in"""
-    _confirm_environment_time('enikshay', 'Asia/Kolkata')
-    _setup_env('enikshay', force=True)
-
-
-@task
-def pna():
-    """commcare.pna.sn"""
-    _setup_env('pna', force=True)
-
-
-@task
-def l10k():
-    """l10k.commcare.org"""
-    _setup_env('l10k', force=True)
-
-
-@task
-def production():
-    """www.commcarehq.org"""
-    _setup_env('production')
-
-
-@task
-def staging():
-    """staging.commcarehq.org"""
-    _setup_env('staging', force=True, default_branch='autostaging')
-
-
-def _setup_env(env_name, force=False, default_branch=None):
-    _confirm_branch(default_branch)
+def _setup_env(env_name):
     env.env_name = env_name
-    env.force = force  # don't worry about kafka checkpoints if True
     env.inventory = os.path.join(REPO_BASE, 'environments', env_name, 'inventory.ini')
     load_env(env_name)
+    _confirm_branch(env.default_branch)
+    _confirm_environment_time(env_name)
     execute(env_common)
 
 
-def _confirm_branch(default_branch=None):
-    if env.code_branch == 'master':
-        if default_branch:
-            env.code_branch = default_branch
-            print ("using default branch of {}. you can override this "
-                   "with --set code_branch=<branch>".format(default_branch))
-    else:
+def _confirm_branch(default_branch='master'):
+    if not hasattr(env, 'code_branch'):
+        print("code_branch not specified, using '{}'. "
+              "You can override this with '--set code_branch=<branch>'"
+              .format(default_branch))
+        env.code_branch = default_branch
+
+    if env.code_branch != default_branch:
         branch_message = (
-            "Woah there bud! You're using branch {env.code_branch}. "
+            "Whoa there bud! You're using branch {env.code_branch}. "
             "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
         ).format(env=env)
         if not console.confirm(branch_message, default=False):
             utils.abort('Action aborted.')
 
 
-def _confirm_environment_time(env_name, env_tz):
-    env_hours_start_end = {
-        'enikshay': (2, 7),  # call center is offline 2am-8am IST
-        'icds': (0, 7),
-        'icds-new': (0, 7),
-    }
-    hour_start, hour_end = env_hours_start_end[env_name]
-    d = datetime.datetime.now(pytz.timezone(env_tz))
-    if hour_start <= d.hour < hour_end:
+def _confirm_environment_time(env_name):
+    window = env.acceptable_maintenance_window
+    if window:
+        d = datetime.datetime.now(pytz.timezone(window['timezone']))
+        if window['hour_start'] <= d.hour < window['hour_end']:
+            return
+    else:
         return
 
     message = (
-        "Woah there bud! You're deploying '%s' during the day. "
+        "Whoa there bud! You're deploying '%s' during the day. "
         "The current local time is %s.\n"
         "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
     ) % (env_name, d.strftime("%-I:%M%p on %h. %d %Z"))
@@ -935,6 +880,7 @@ OFFLINE_DEPLOY_COMMANDS = [
     release.clean_releases,
 ]
 
+
 @task
 def check_status():
     env.user = 'ansible'
@@ -945,3 +891,14 @@ def check_status():
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
     execute(check_servers.riakcs)
+
+
+def make_tasks_for_envs(available_envs):
+    tasks = {}
+    for env_name in available_envs:
+        tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
+        tasks[env_name].__doc__ = get_public_vars(env_name)['SITE_HOST']
+    return tasks
+
+# Automatically create a task for each environment
+locals().update(make_tasks_for_envs(get_available_envs()))
