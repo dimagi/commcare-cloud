@@ -145,7 +145,7 @@ daily_deploy_email: null
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
+DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
