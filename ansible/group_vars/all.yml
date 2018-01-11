@@ -153,6 +153,7 @@ ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
+postgres_users: "{{ secrets.POSTGRES_USERS }}"
 riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
 riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"

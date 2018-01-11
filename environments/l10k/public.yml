@@ -43,7 +43,6 @@ postgres_s3: False
 blobdb_s3: False
 couch_s3: False
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgres_config:
   max_connections: 300

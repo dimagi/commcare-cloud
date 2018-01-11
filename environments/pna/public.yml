@@ -55,7 +55,6 @@ couch_s3: True
 
 aws_region: 'us-east-1'
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_shared_buffers: '2GB'
 postgresql_max_stack_depth: '4MB'
