@@ -68,7 +68,6 @@ postgres_s3: False
 backup_couch: True
 nadir_hour: 16
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_shared_buffers: '8GB'
 postgresql_max_stack_depth: '6MB'

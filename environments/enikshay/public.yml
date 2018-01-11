@@ -78,7 +78,6 @@ nadir_hour: 16
 
 nofile_limit: 65536
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_num_logs_to_keep: 100
 postgresql_shared_buffers: '10GB'

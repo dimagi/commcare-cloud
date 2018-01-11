@@ -45,7 +45,6 @@ postgres_s3: False
 blobdb_s3: False
 couch_s3: False
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_max_connections: 300
 pgbouncer_max_connections: 400
