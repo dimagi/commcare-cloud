@@ -85,8 +85,6 @@ elasticsearch_cluster_name: 'deves'
 KSPLICE_ACTIVE: no
 
 DATADOG_ENABLED: False
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
