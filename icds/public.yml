@@ -173,8 +173,6 @@ ZABBIX_DB_ROOT_PASS: "{{ secrets.ZABBIX_DB_ROOT_PASS }}"
 ZABBIX_DB_USER_PASS: "{{ secrets.ZABBIX_DB_USER_PASS }}"
 
 DATADOG_ENABLED: True
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 datadog_integration_cloudant: False
 datadog_integration_vmware: True
 
