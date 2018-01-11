@@ -64,8 +64,6 @@ enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 keystore_file: '../config/DimagiKeyStore'
 

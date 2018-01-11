@@ -63,8 +63,6 @@ commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.or
 commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 keystore_file: '../config/DimagiKeyStore'
 
