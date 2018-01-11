@@ -712,7 +712,7 @@ ASYNC_INDICATOR_QUEUE_CRONTAB = crontab(**{{ localsettings.get('ASYNC_INDICATOR_
 {% endif %}
 
 {% if localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES') %}
-ASYNC_INDICATOR_QUEUE_TIMES = crontab(**{{ localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES') }})
+ASYNC_INDICATOR_QUEUE_TIMES = {{ localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES') }}
 {% endif %}
 
 {% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
