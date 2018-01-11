@@ -271,7 +271,7 @@ localsettings:
     - '{{ CAS_SITE_HOST }}'
     - '{{ hostvars[groups.proxy.0].public_ip }}'
 
-  ASYNC_INDICATORS_TO_QUEUE: 120000
+  ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_CRONTAB:
     minute: '*/5'
     hour: '0-9,16-23'
