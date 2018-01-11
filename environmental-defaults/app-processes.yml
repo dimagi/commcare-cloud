@@ -20,18 +20,12 @@
 # consuming from the same 'queue_name' queue.
 
 ---
-sudo_user: cchq
 django_bind: 0.0.0.0
 django_port: 9010
 flower_port: 5555
 gunicorn_workers_factor: 1
 gunicorn_workers_static_factor: 0
-home: "/home/cchq"
-project: commcare-hq
-code_repo: 'git://github.com/dimagi/commcare-hq.git'
-timing_log: null  # make a file path to log deploy timing to it. e.g. '../fabric-timing.txt'
 jython_memory: "3584m"
 formplayer_memory: "3584m"
-keepalive: 60
 http_proxy: null
 newrelic_javaagent: False

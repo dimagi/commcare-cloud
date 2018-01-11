@@ -22,3 +22,11 @@ def get_inventory_filepath(environment):
 
 def get_virtualenv_path():
     return os.path.dirname(sys.executable)
+
+
+def get_available_envs():
+    return sorted(
+        env for env in os.listdir(ENVIRONMENTS_DIR)
+        if os.path.exists(get_public_vars_filepath(env))
+        and os.path.exists(get_inventory_filepath(env))
+    )
