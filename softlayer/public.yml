@@ -38,7 +38,6 @@ old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY }}"
 
 primary_ssl_env: "softlayer"
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 fake_ssl_cert: no
 
 NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
