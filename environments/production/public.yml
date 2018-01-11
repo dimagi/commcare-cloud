@@ -33,7 +33,6 @@ primary_ssl_env: "production"
 
 fake_ssl_cert: no
 
-NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: True
 
 DATADOG_ENABLED: True
