@@ -30,20 +30,15 @@ riak_backend: "leveldb-bad-config"
 riak_ring_size: 128
 
 riakcs_proxy_port_override: 9980
-riakcs_s3_access_key: "{{ secrets.RIAKCS_S3_ACCESS_KEY }}"
-riakcs_s3_secret_key: "{{ secrets.RIAKCS_S3_SECRET_KEY }}"
 
 primary_ssl_env: "enikshay.in"
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY }}"
 datadog_integration_cloudant: False
 datadog_integration_vmware: True
 
@@ -63,11 +58,8 @@ enikshay_nginx_combined_cert_value: '{{ ssl_secrets.certs.enikshay_commcarehq_or
 enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
 enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
 
-formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 keystore_file: '../config/DimagiKeyStore'
 
@@ -86,7 +78,6 @@ nadir_hour: 16
 
 nofile_limit: 65536
 
-postgres_users: "{{ secrets.POSTGRES_USERS }}"
 
 postgresql_num_logs_to_keep: 100
 postgresql_shared_buffers: '10GB'
@@ -172,13 +163,8 @@ redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: yes
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
-AMQP_USER: "{{ secrets.AMQP_USER }}"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
