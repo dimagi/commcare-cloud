@@ -90,8 +90,6 @@ DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
-AMQP_USER: "{{ deploy_env }}_worker"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 

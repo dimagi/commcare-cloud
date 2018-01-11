@@ -77,8 +77,6 @@ redis_maxmemory_policy: allkeys-lru
 
 KSPLICE_ACTIVE: yes
 
-AMQP_USER: "{{ secrets.AMQP_USER }}"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "185.12.7.167"
 AMQP_NAME: commcarehq
 
