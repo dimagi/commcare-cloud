@@ -153,7 +153,7 @@ def load_env(env_name):
         if os.path.isfile(path):
             with open(path) as f:
                 try:
-                    return yaml.load(f)
+                    return yaml.load(f) or {}
                 except Exception:
                     print('Error in file {}'.format(path))
                     raise
