@@ -56,7 +56,6 @@ fake_ssl_cert: no
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 
-formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN }}'
 
 supervisor_http_enabled: True
 
