@@ -110,7 +110,6 @@ postgresql_dbs:
     django_migrate: False
 
 KSPLICE_ACTIVE: yes
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"

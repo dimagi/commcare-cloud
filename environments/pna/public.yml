@@ -159,7 +159,6 @@ server_email: commcare@pna.sn
 default_from_email: commcare@pna.sn
 
 KSPLICE_ACTIVE: yes
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 AMQP_USER: "{{ secrets.AMQP_USER }}"
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"

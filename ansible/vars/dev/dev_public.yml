@@ -83,7 +83,6 @@ elasticsearch_cluster_name: 'deves'
 #control_machine_ip: 127.0.0.1
 
 KSPLICE_ACTIVE: no
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
