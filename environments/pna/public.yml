@@ -23,7 +23,7 @@ active_sites:
 ssh_port: 1337
 fake_ssl_cert: no
 
-#NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
+NEW_RELIC_KEY: null
 #run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True

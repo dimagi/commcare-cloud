@@ -36,7 +36,6 @@ primary_ssl_env: "softlayer"
 
 fake_ssl_cert: no
 
-NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY }}"
 run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
