@@ -259,13 +259,10 @@ localsettings:
     - '{{ hostvars[groups.proxy.0].public_ip }}'
 
   ASYNC_INDICATORS_TO_QUEUE: 60000
-  ASYNC_INDICATOR_QUEUE_CRONTAB:
-    minute: '*/5'
-    hour: '0-9,16-23'
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':
       - [11, 23]
-      - [0, 4]
+      - [0, 3]
     '7':
       - [0, 24]
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
