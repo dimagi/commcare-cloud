@@ -265,7 +265,7 @@ localsettings:
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':
       - [11, 23]
-      - [0, 4]
+      - [0, 3]
     '7':
       - [0, 24]
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
