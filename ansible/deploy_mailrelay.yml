@@ -10,7 +10,6 @@
         line: "relay_transport = error"
         state: absent
       notify: restart postfix
-  handlers:
     - name: "no error for mail transport"
       lineinfile:
         dest: /etc/postfix/main.cf
