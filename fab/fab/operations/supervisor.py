@@ -296,7 +296,7 @@ def _format_env(current_env, extra=None):
         'newrelic_javaagent',
     ]
 
-    inventory = get_inventory(current_env.inventory)
+    inventory = get_inventory(current_env.env_name)
     all_hosts = [host.name for host in inventory.groups['all'].hosts]
 
     ret['supervisor_env_vars'] = {}

@@ -4,30 +4,17 @@ from __future__ import print_function
 
 import logging
 import os
+import sys
 import re
 from argparse import ArgumentParser
-from os.path import dirname
 
-from ansible.inventory import Inventory
-from ansible.parsing.dataloader import DataLoader
-from ansible.vars import VariableManager
+from commcare_cloud.paths import get_available_envs
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # this lets us import from utils file
+from fab.utils import get_inventory
 
 logging.basicConfig(format='[%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
-
-ROOT = dirname(dirname(os.path.abspath(__file__)))
-
-
-def get_inventory(inventory_path):
-    return Inventory(loader=DataLoader(), variable_manager=VariableManager(), host_list=inventory_path)
-
-
-def _available_environments():
-    inventory_root = os.path.join(ROOT, 'fab', 'inventory')
-    return [
-        file for file in os.listdir(inventory_root)
-        if os.path.isfile(os.path.join(inventory_root, file))
-    ]
 
 
 def main():
@@ -37,7 +24,7 @@ def main():
     )
     parser.add_argument(
         "environment",
-        choices=_available_environments(),
+        choices=get_available_envs(),
         help="Environment to process."
     )
     parser.add_argument(
@@ -49,14 +36,14 @@ def main():
     env = args.environment
     suffix = args.suffix
 
-    inventory_path = os.path.join(ROOT, 'fab', 'inventory', env)
-    inventory = get_inventory(inventory_path)
+    inventory = get_inventory(env)
 
     missing_hostname = []
     host_lines = []
     for host in inventory.get_hosts():
         vars = host.get_vars()
-        vars.update(host.get_group_vars())
+        for group in host.get_groups():
+            vars.update(group.get_vars())
         hostname = vars.get('hostname', None)
         if not hostname:
             # check if host is any groups with only one host and where the group name
