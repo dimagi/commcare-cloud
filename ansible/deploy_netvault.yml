@@ -1,5 +1,5 @@
 - name: "Install Netvault Client"
-  hosts: pg_standby
+  hosts: pg_standby:couchdb2
   become: true
   tasks:
 
