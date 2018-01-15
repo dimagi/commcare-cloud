@@ -20,8 +20,14 @@
         dest: /usr/lib64
         state: link
 
-    # FIXME: deal with prompt for options
     - name: "Runs install script"
-      #command: /tmp/netvault/install
-      command: /bin/true
-      when: false
+      expect:
+        chdir: /tmp/netvault/
+        command: /tmp/netvault/install
+        responses:
+          'Select a Language': '' # send Enter for English
+          '(.*)terms of the license(.*)': 'y' # Accept
+          '(.*)Where should NetVault be installed(.*)': '' # default /usr/netvault
+          '(.*)Please enter a NetVault machine name(.*)': '' # default hostname
+          'Please enter the NetVault password for this machine': "{{ netvault_password }}"
+          'Please confirm password': "{{ netvault_password }}"
