@@ -14,6 +14,7 @@ from getpass import getpass
 from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
+from commcare_cloud.paths import get_inventory_filepath
 
 from .const import (
     PROJECT_ROOT,
@@ -256,12 +257,12 @@ def bower_command(command, production=True, config=None):
     sudo(cmd)
 
 
-def get_inventory(inventory_path, data_loader=None):
+def get_inventory(env_name, data_loader=None):
     data_loader = data_loader or DataLoader()
-    return InventoryManager(loader=data_loader, sources=inventory_path)
+    return InventoryManager(loader=data_loader, sources=get_inventory_filepath(env_name))
 
 
-def read_inventory_file(filename):
+def read_inventory_file(env_name):
     """
     filename is a path to an ansible inventory file
 
@@ -272,7 +273,7 @@ def read_inventory_file(filename):
 
     """
     data_loader = DataLoader()
-    inventory = get_inventory(filename, data_loader=data_loader)
+    inventory = get_inventory(env_name, data_loader=data_loader)
     var_manager = VariableManager(data_loader, inventory)
     port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
                 for host in inventory.get_hosts()}
@@ -280,4 +281,4 @@ def read_inventory_file(filename):
         '{}:{}'.format(host, port_map[host])
         if port_map[host] is not None else host
         for host in hosts
-    ] for group, hosts in get_inventory(filename).get_groups_dict().items()}
+    ] for group, hosts in get_inventory(env_name).get_groups_dict().items()}
