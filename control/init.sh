@@ -66,11 +66,14 @@ function ansible-control-banner() {
     printf "${GREEN}Available commands:\n"
     printf "${BLUE}update-code${NC} - update the ansible repositories (safely)\n"
     printf "${BLUE}workon ansible${NC} - activate the ansible virtual env\n"
-    printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible. See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
+    printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
+    printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
+    printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
+    printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
+    printf -- "\n--- Deprecated Commands ---\n"
     printf "ap - Use ${YELLOW}commcare-cloud <env> ansible-playbook${NC} instead.\n"
     printf "aps - Use ${YELLOW}commcare-cloud <env> ansible-playbook deploy_stack.yml${NC} instead.\n"
-    printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
-    printf "${BLUE}ae${NC} - allows running ad hoc commands on specified machines e.g. ae riakcs 'grep OOM /var/log/riak/console.log'\n"
+    printf "ae - Use ${YELLOW}commcare-cloud <env> run-shell-command${NC} instead.\n"
 }
 
 [ -t 1 ] && ansible-control-banner
