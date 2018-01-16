@@ -97,6 +97,7 @@
     - virtualenv
     - sh
     - httplib2
+    - pexpect
 
 - name: Install virtualenv-clone
   become: yes
