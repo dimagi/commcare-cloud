@@ -24,8 +24,7 @@ def import_read_inventory_file():
 
 def get_instance_group(instance, group):
     read_inventory_file = import_read_inventory_file()
-    filepath = get_inventory_filepath(instance)
-    servers = read_inventory_file(filepath)
+    servers = read_inventory_file(instance)
     return servers[group]
 
 
