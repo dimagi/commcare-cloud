@@ -1,5 +1,5 @@
 - name: "Install Netvault Client"
-  hosts: pg_backup
+  hosts: netvault_backup
   become: true
   tasks:
 
