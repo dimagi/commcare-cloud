@@ -1,11 +1,11 @@
 - name: "Install Netvault Client"
-  hosts: pg_standby:couchdb2
+  hosts: netvault_backup
   become: true
   tasks:
 
     - name: "Download Netvault"
       get_url:
-        url: "{{ netvault_url }}"
+        url: "{{ secrets.NETVAULT_URL }}"
         dest: /tmp/netvault.tar.gz
 
     - name: "Unarchive Netvault"
@@ -20,8 +20,14 @@
         dest: /usr/lib64
         state: link
 
-    # FIXME: deal with prompt for options
     - name: "Runs install script"
-      #command: /tmp/netvault/install
-      command: /bin/true
-      when: false
+      expect:
+        chdir: /tmp/netvault/
+        command: /tmp/netvault/install
+        responses:
+          'Select a Language': '' # send Enter for English
+          '(.*)terms of the license(.*)': 'y' # Accept
+          '(.*)Where should NetVault be installed(.*)': '' # default /usr/netvault
+          '(.*)Please enter a NetVault machine name(.*)': '' # default hostname
+          'Please enter the NetVault password for this machine': "{{ secrets.NETVAULT_CLIENT_PASSWORD }}"
+          'Please confirm password': "{{ secrets.NETVAULT_CLIENT_PASSWORD }}"
