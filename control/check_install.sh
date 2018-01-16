@@ -54,6 +54,12 @@ for executable in commcare-cloud cchq
 do
     if [ ! -f ~/.commcare-cloud/bin/${executable} ]
     then
+        if [ -h ~/.commcare-cloud/bin/${executable} ]
+        then
+            # if '! -f' (file does not exist) but '-h' (is symbolic link)
+            # then that means it's a broken link
+            rm ~/.commcare-cloud/bin/${executable}
+        fi
         if [ -z "$(which ${executable})" ]
         then
             echo "✗ No executable found for ${executable}. Skipping"
