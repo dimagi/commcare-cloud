@@ -62,7 +62,7 @@ def arg_quiet(parser):
 
 def arg_branch(parser):
     parser.add_argument('--branch', default='master', help=(
-        "the name of the commcarehq-ansible git branch to run against, if not master"
+        "the name of the commcare-cloud git branch to run against, if not master"
     ))
 
 
