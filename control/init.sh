@@ -70,7 +70,7 @@ function ansible-control-banner() {
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
-    printf -- "\n--- Deprecated Commands ---\n"
+    printf -- "\n${GREEN}Deprecated Commands${NC}\n"
     printf "ap - Use ${YELLOW}commcare-cloud <env> ansible-playbook${NC} instead.\n"
     printf "aps - Use ${YELLOW}commcare-cloud <env> ansible-playbook deploy_stack.yml${NC} instead.\n"
     printf "ae - Use ${YELLOW}commcare-cloud <env> run-shell-command${NC} instead.\n"
