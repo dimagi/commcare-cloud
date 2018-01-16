@@ -104,5 +104,3 @@
   pip:
     name: virtualenv-clone
     version: 0.2.6
-
-
