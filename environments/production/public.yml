@@ -46,7 +46,7 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 
 nofile_limit: 65536
 
-nginx_hsts_max_age: 86400 # 1 day
+nginx_hsts_max_age: 300 # 5 minutes
 
 # commcarehq.org of certs
 nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
