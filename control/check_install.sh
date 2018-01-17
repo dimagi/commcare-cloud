@@ -4,9 +4,13 @@ function realpath() {
     python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
 }
 
+function git_remote_get_url() {
+    # git 1.9-compatible replacement for `git remote get-url <remote>`
+    git remote show ${1} | head -n2 | tail -n1 | grep -o '[^ ]*$'
+}
 ANSIBLE_REPO="$(realpath $(dirname $0)/..)"
 FAB_CONFIG="${ANSIBLE_REPO}/fab/fab/config.py"
-ORIGIN=$(git remote get-url origin)
+ORIGIN=$(git_remote_get_url origin)
 OLD_ORIGIN_HTTPS_RE="https://github.com/dimagi/commcarehq-ansible(.git)?"
 OLD_ORIGIN_SSH_RE="git@github.com:dimagi/commcarehq-ansible(.git)?"
 OLD_ORIGIN_HTTPS="https://github.com/dimagi/commcarehq-ansible.git"
