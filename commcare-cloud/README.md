@@ -1,12 +1,12 @@
-# Set up commcarehq-ansible
+# Set up commcare-cloud
 
 You will need python 2.7 and virtualenvwrapper installed. To follow these instructions.
 
-Clone the commcarehq-ansible repo (suggested location alongside commcare-hq):
+Clone the commcare-cloud repo (suggested location alongside commcare-hq):
 
 ```
-git clone https://github.com/dimagi/commcarehq-ansible.git
-cd commcarehq-ansible
+git clone https://github.com/dimagi/commcare-cloud.git
+cd commcare-cloud
 ```
 
 Now make a virtualenv for ansible:
@@ -23,7 +23,7 @@ setvirtualenvproject
 
 at this time.
 
-**Note**: If you already have commcarehq-ansible cloned, then just enter that directory
+**Note**: If you already have commcare-cloud cloned, then just enter that directory
 and update it with
 
 ```

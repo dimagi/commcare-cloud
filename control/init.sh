@@ -16,32 +16,39 @@ else
     workon ansible
 fi
 
-if [ ! -d ~/commcarehq-ansible/config ]; then
-    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcarehq-ansible/config || mkdir ~/commcarehq-ansible/config
+if [ -d ~/commcarehq-ansible ]; then
+    echo "Moving repo to ~/commcare-cloud"
+    mv ~/commcarehq-ansible ~/commcare-cloud
+    # delete broken link
+    [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
+fi
+
+if [ ! -d ~/commcare-cloud/config ]; then
+    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcare-cloud/config || mkdir ~/commcare-cloud/config
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-ansible-galaxy install -r ~/commcarehq-ansible/ansible/requirements.yml &
-pip install -r ~/commcarehq-ansible/ansible/requirements.txt &
-pip install -e ~/commcarehq-ansible/commcare-cloud &
-pip install -r ~/commcarehq-ansible/fab/requirements.txt &
+ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
+pip install -r ~/commcare-cloud/ansible/requirements.txt &
+pip install -e ~/commcare-cloud/commcare-cloud &
+pip install -r ~/commcare-cloud/fab/requirements.txt &
 pip install pip --upgrade &
 wait
 
 # convenience: . init-ansible
-[ ! -f ~/init-ansible ] && ln -s ~/commcarehq-ansible/control/init.sh ~/init-ansible
-~/commcarehq-ansible/control/check_install.sh
-alias ap='ansible-playbook -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
+[ ! -f ~/init-ansible ] && ln -s ~/commcare-cloud/control/init.sh ~/init-ansible
+cd ~/commcare-cloud && ./control/check_install.sh && cd -
+alias ap='ansible-playbook -u ansible -i ~/commcare-cloud/fab/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
 alias aps='ap deploy_stack.yml'
-alias update-code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
-alias update_code='~/commcarehq-ansible/control/update_code.sh && . ~/init-ansible'
+alias update-code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
+alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
 
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
 function ae() {
-    ansible $1 -m shell -a "$2" -u ansible -i ~/commcarehq-ansible/fab/fab/inventory/$ENV
+    ansible $1 -m shell -a "$2" -u ansible -i ~/commcare-cloud/fab/fab/inventory/$ENV
 }
 
 # It aint pretty, but it gets the job done
@@ -54,7 +61,7 @@ function ansible-deploy-control() {
     env="$1"
     echo "You must be root to deploy the control machine"
     echo "Run \`su\` to become the root user, then paste in this command to deploy:"
-    echo 'ENV='$env' && USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcarehq-ansible/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_vault.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_public.yml --diff --ask-vault-pass'
+    echo 'ENV='$env' && USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcare-cloud/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_vault.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_public.yml --diff --ask-vault-pass'
 }
 
 function ansible-control-banner() {
@@ -77,4 +84,4 @@ function ansible-control-banner() {
 }
 
 [ -t 1 ] && ansible-control-banner
-cd ~/commcarehq-ansible
+cd ~/commcare-cloud

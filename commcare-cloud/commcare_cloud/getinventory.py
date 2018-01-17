@@ -11,7 +11,7 @@ from .paths import FAB_DIR, get_inventory_filepath
 
 def import_read_inventory_file():
     """
-    This is a hack that makes this script dependent on commcarehq-ansible/fab
+    This is a hack that makes this script dependent on commcare-cloud/fab
 
     Not sure this is a great idea. If you ever find its brittleness breaks something,
     feel free to copy and paste read_inventory_file from there, which is how it was before.
