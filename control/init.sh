@@ -19,6 +19,8 @@ fi
 if [ -d ~/commcarehq-ansible ]; then
     echo "Moving repo to ~/commcare-cloud"
     mv ~/commcarehq-ansible ~/commcare-cloud
+    # delete broken link
+    [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
 
 if [ ! -d ~/commcare-cloud/config ]; then
