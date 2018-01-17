@@ -6,6 +6,25 @@ function realpath() {
 
 ANSIBLE_REPO="$(realpath $(dirname $0)/..)"
 FAB_CONFIG="${ANSIBLE_REPO}/fab/fab/config.py"
+ORIGIN=$(git remote get-url origin)
+OLD_ORIGIN_HTTPS="https://github.com/dimagi/commcarehq-ansible.git"
+OLD_ORIGIN_SSH="git@github.com:dimagi/commcarehq-ansible.git"
+NEW_ORIGIN_HTTPS="https://github.com/dimagi/commcare-cloud.git"
+NEW_ORIGIN_SSH="git@github.com:dimagi/commcare-cloud.git"
+if [ "${ORIGIN}" = ${OLD_ORIGIN_HTTPS} ]
+then
+    git remote set-url origin ${NEW_ORIGIN_HTTPS}
+    echo "→ Set origin to ${NEW_ORIGIN_HTTPS}"
+elif [ "${ORIGIN}" = ${OLD_ORIGIN_SSH} ]
+then
+    git remote set-url origin ${NEW_ORIGIN_SSH}
+    echo "→ Set origin to git@github.com:dimagi/commcare-cloud.git"
+elif [ "${ORIGIN}" = ${NEW_ORIGIN_HTTPS} -o "${ORIGIN}" = ${NEW_ORIGIN_SSH} ]
+then
+    echo "✓ origin already set to ${ORIGIN}"
+else
+    echo "✗ origin is not recognized: ${ORIGIN}"
+fi
 
 if [ ! -d ~/.commcare-cloud ]
 then
@@ -35,6 +54,12 @@ for executable in commcare-cloud cchq
 do
     if [ ! -f ~/.commcare-cloud/bin/${executable} ]
     then
+        if [ -h ~/.commcare-cloud/bin/${executable} ]
+        then
+            # if '! -f' (file does not exist) but '-h' (is symbolic link)
+            # then that means it's a broken link
+            rm ~/.commcare-cloud/bin/${executable}
+        fi
         if [ -z "$(which ${executable})" ]
         then
             echo "✗ No executable found for ${executable}. Skipping"
