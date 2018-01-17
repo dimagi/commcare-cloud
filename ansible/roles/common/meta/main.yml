@@ -6,4 +6,3 @@ dependencies:
   - {role: ssh, tags: ssh}
   - role: edit
   - {role: ksplice, tags: ksplice}
-  - {role: newrelic, tags: newrelic, when: NEW_RELIC_KEY is defined}
