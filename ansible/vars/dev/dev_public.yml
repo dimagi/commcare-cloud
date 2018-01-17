@@ -67,6 +67,7 @@ dev_users:
     - dmiller
     - droberts
     - jwilson
+    - nsharma
     - npellegrino
   absent: []
 
