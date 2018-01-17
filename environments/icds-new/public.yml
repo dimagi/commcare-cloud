@@ -85,7 +85,7 @@ postgresql_dbs:
     host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
   - django_alias: proxy
     name: commcarehq_proxy
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.plproxy1.0].inventory_hostname }}"
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
