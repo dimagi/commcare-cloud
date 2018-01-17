@@ -231,7 +231,7 @@ def _rebuild_supervisor_conf_file(conf_command, filename, params=None, conf_dest
     remote_service_template_dir = os.path.join(env.code_root, 'deployment', 'commcare-hq-deploy', 'fab', 'services', 'templates')
     local_service_template_dir = os.path.join(os.path.dirname(__file__), '..', 'services', 'templates')
 
-    # put the commcarehq-ansible/fab/fab/services/templates directory
+    # put the commcare-cloud/fab/fab/services/templates directory
     # in the legacy commcare-hq-deploy location
     # so that the make_supervisor*_conf management commands know where to find it
     please_put(local_service_template_dir, remote_service_template_dir)

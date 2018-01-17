@@ -1,7 +1,7 @@
 # Ansible deployment orchestration and configuration management
 
 [![Build
-Status](https://travis-ci.org/dimagi/commcarehq-ansible.svg?branch=master)](https://travis-ci.org/dimagi/commcarehq-ansible)
+Status](https://travis-ci.org/dimagi/commcare-cloud.svg?branch=master)](https://travis-ci.org/dimagi/commcare-cloud)
 
 This repository represents a workable role for deploying a single new
 "webworker" to a given stack for the commcare-hq application.
@@ -14,7 +14,7 @@ described in
 Begin by checkout out the source for this repostiory:
 
 ```
-$ git clone https://github.com/dimagi/commcarehq-ansible
+$ git clone https://github.com/dimagi/commcare-cloud
 ```
 
 Then install the git hooks:
@@ -26,12 +26,12 @@ Then install the git hooks:
 Now you can change directories into the new clone and set up submodules:
 
 ```
-$ cd commcarehq-ansible
+$ cd commcare-cloud
 $ git submodule init
 $ git submodule update
 ```
 
-There is one file that is omitted from the commcarehq-ansible repository:
+There is one file that is omitted from the commcare-cloud repository:
 DimagiKeyStore. You will need it to complete a full stack deployment. Obtain a
 copy of it, and place it in the ansible/roles/keystore/files/ directory.
 
@@ -181,8 +181,8 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 You must ssh in as your dev user, with SSH `ForwardAgent` enabled (see above).
 
 ```bash
-git clone git@github.com:dimagi/commcarehq-ansible
-. commcarehq-ansible/control/init.sh
+git clone git@github.com:dimagi/commcare-cloud
+. commcare-cloud/control/init.sh
 update-code
 
 # optional: make subsequent logins a bit more convenient
@@ -210,8 +210,8 @@ ansible-playbook -u root -i inventories/development -e @vars/dev/dev_private.yml
 Login as your user: `vagrant ssh control -- -l $USER -A
 
 ```bash
-ln -s /vagrant ~/commcarehq-ansible
-. commcarehq-ansible/control/init.sh
+ln -s /vagrant ~/commcare-cloud
+. commcare-cloud/control/init.sh
 echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
 
 # run ansible

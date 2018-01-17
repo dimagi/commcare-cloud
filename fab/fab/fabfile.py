@@ -230,7 +230,7 @@ def development():
     Example command:
 
         fab development awesome_deploy \
-        --set inventory=/path/to/commcarehq-ansible/ansible/inventories/development,environment=dev
+        --set inventory=/path/to/commcare-cloud/ansible/inventories/development,environment=dev
 
     """
     load_env('development')
