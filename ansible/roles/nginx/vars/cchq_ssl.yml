@@ -30,6 +30,8 @@ nginx_sites:
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
+      proxy_buffers: 8 64k
+      proxy_buffer_size: 64k
     - name: "/static"
       alias: "{{ nginx_static_home }}"
       add_header: "Access-Control-Allow-Origin *"
