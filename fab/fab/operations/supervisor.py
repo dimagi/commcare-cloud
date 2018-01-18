@@ -194,6 +194,7 @@ def set_reminder_queue_supervisorconf():
     if 'reminder_queue' in _get_celery_queues() and _check_in_roles(ROLES_REMINDER_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_queue_schedule_instances.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_handle_survey_actions.conf')
 
 
 def set_pillow_retry_queue_supervisorconf():
