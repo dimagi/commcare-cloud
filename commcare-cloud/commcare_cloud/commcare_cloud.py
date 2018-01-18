@@ -556,6 +556,9 @@ class Ssh(Lookup):
     @classmethod
     def run(cls, args, ssh_args):
         address = cls.lookup_server_address(args)
+        if ':' in address:
+            address, port = address.split(':')
+            ssh_args = ['-p', port] + ssh_args
         cmd_parts = [cls.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print(cmd)
