@@ -44,3 +44,4 @@ errors_home: "{{ www_home }}/error_root"
 error_pages:
   - "502 503 /errors/50x.html"
   - "400 /errors/400.html"
+nginx_hsts_max_age: null
