@@ -1,5 +1,7 @@
+# coding: utf-8
 import os
 import subprocess
+from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \

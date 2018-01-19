@@ -1,7 +1,7 @@
 import getpass
 import os
 from commcare_cloud.environment import ANSIBLE_DIR
-
+from six.moves import shlex_quote
 
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
