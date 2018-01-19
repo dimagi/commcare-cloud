@@ -57,14 +57,6 @@ PARTITION_DATABASE_CONFIG = {
 
 REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
 
-{% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
-ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
-{% endif %}
-
-{% if localsettings.get('ICDS_UCR_TEST_DATABASE_ALIAS') %}
-ICDS_UCR_TEST_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
-{% endif %}
-
 LOG_HOME = '{{ log_home }}'
 COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
 DJANGO_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
