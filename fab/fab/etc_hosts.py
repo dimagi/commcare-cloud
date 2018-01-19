@@ -8,7 +8,7 @@ import sys
 import re
 from argparse import ArgumentParser
 
-from commcare_cloud.paths import get_available_envs
+from commcare_cloud.environment import get_available_envs
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # this lets us import from utils file
 from fab.utils import get_inventory

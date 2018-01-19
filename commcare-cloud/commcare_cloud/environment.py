@@ -1,5 +1,6 @@
 import os
 import sys
+import yaml
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
@@ -30,3 +31,9 @@ def get_available_envs():
         if os.path.exists(get_public_vars_filepath(env))
         and os.path.exists(get_inventory_filepath(env))
     )
+
+
+def get_public_vars(environment):
+    filename = get_public_vars_filepath(environment)
+    with open(filename) as f:
+        return yaml.load(f)

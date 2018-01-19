@@ -3,10 +3,9 @@ Utilities to get server hostname or IP address from an inventory file and group.
 """
 from __future__ import print_function
 from __future__ import absolute_import
-import os
 import sys
 
-from .paths import FAB_DIR, get_inventory_filepath
+from ...environment import FAB_DIR
 
 
 def import_read_inventory_file():
