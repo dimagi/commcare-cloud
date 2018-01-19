@@ -9,7 +9,6 @@ import sys
 import shutil
 import yaml
 import jsonobject
-from six.moves import shlex_quote
 from commcare_cloud.commcare_cloud import get_inventory_filepath, \
     get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, REPO_BASE
 
