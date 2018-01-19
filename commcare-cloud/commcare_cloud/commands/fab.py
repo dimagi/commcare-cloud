@@ -1,5 +1,6 @@
 import os
-from commcare_cloud.environment import FABFILE
+from ..environment import FABFILE
+from six.moves import shlex_quote
 
 
 class Fab(object):

@@ -1,7 +1,8 @@
 import re
 import subprocess
 from clint.textui import puts, colored
-from commcare_cloud.environment import ANSIBLE_DIR
+from .environment import ANSIBLE_DIR
+from six.moves import input
 
 
 def ask(message, strict=False, quiet=False):

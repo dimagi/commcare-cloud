@@ -1,6 +1,7 @@
 import os
 import sys
-from commcare_cloud.getinventory import get_server_address
+from .getinventory import get_server_address
+from six.moves import shlex_quote
 
 
 class Lookup(object):

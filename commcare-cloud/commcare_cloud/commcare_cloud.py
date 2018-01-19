@@ -4,11 +4,11 @@ from __future__ import absolute_import
 import os
 from argparse import ArgumentParser
 
-from commcare_cloud.commands.ansible.ansible_playbook import AnsiblePlaybook, \
+from .commands.ansible.ansible_playbook import AnsiblePlaybook, \
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers
-from commcare_cloud.commands.ansible.run_module import RunAnsibleModule, RunShellCommand
-from commcare_cloud.commands.fab import Fab
-from commcare_cloud.commands.inventory_lookup import Lookup, Ssh, Mosh
+from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
+from .commands.fab import Fab
+from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh
 from .environment import (
     get_available_envs,
     get_virtualenv_path,
