@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import os
 import sys
 
-from .environment import FAB_DIR, get_inventory_filepath
+from .paths import FAB_DIR, get_inventory_filepath
 
 
 def import_read_inventory_file():

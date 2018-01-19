@@ -45,7 +45,8 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
-from commcare_cloud.environment import get_available_envs, get_public_vars
+from commcare_cloud.commcare_cloud import get_public_vars
+from commcare_cloud.paths import get_available_envs
 from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
