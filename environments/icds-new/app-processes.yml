@@ -14,7 +14,9 @@ celery_processes:
        concurrency: 4
        server_whitelist: 10.247.164.40
     pillow_retry_queue:
-       concurrency: 1
+      pooling: gevent
+      concurrency: 5
+      num_workers: 1
     submission_reprocessing_queue:
        concurrency: 1
     email_queue:
