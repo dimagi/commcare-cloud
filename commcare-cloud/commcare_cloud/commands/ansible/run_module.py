@@ -6,6 +6,7 @@ from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
     get_common_ssh_args
+from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
@@ -13,21 +14,21 @@ from commcare_cloud.environment import ANSIBLE_DIR, get_inventory_filepath, get_
     get_public_vars_filepath, get_public_vars
 
 
-class RunAnsibleModule(object):
+class RunAnsibleModule(CommandBase):
     command = 'run-module'
     help = (
         'Run an arbitrary Ansible module.'
     )
 
-    @staticmethod
-    def make_parser(parser):
+    @classmethod
+    def make_parser(cls, parser):
         arg_inventory_group(parser)
         parser.add_argument('module', help="The module to run")
         parser.add_argument('module_args', help="The arguments to pass to the module")
         RunAnsibleModule.add_non_positional_arguments(parser)
 
-    @staticmethod
-    def add_non_positional_arguments(parser):
+    @classmethod
+    def add_non_positional_arguments(cls, parser):
         parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
             "connect as this user (default=ansible)"
         ))
@@ -62,8 +63,8 @@ class RunAnsibleModule(object):
             )
         ))
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
 
@@ -148,18 +149,18 @@ class RunAnsibleModule(object):
         exit(exit_code)
 
 
-class RunShellCommand(object):
+class RunShellCommand(CommandBase):
     command = 'run-shell-command'
     help = 'Run an arbitrary command via the shell module.'
 
-    @staticmethod
-    def make_parser(parser):
+    @classmethod
+    def make_parser(cls, parser):
         arg_inventory_group(parser)
         parser.add_argument('shell_command', help="The shell command you want to run")
         RunAnsibleModule.add_non_positional_arguments(parser)
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
