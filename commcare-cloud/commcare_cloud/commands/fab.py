@@ -1,20 +1,21 @@
 import os
+from .command_base import CommandBase
 from ..environment import FABFILE
 from six.moves import shlex_quote
 
 
-class Fab(object):
+class Fab(CommandBase):
     command = 'fab'
     help = (
         "Run a fab command as you would with fab"
     )
 
-    @staticmethod
-    def make_parser(parser):
+    @classmethod
+    def make_parser(cls, parser):
         parser.add_argument(dest='fab_command', help="fab command", default=None)
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         cmd_parts = (
             'fab', '-f', FABFILE,
             args.environment,

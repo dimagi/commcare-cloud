@@ -6,6 +6,7 @@ from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, has_arg, check_branch
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
     get_common_ssh_args
+from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_branch, arg_stdout_callback
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
@@ -13,7 +14,7 @@ from commcare_cloud.environment import ANSIBLE_DIR, get_inventory_filepath, get_
     get_public_vars_filepath, get_public_vars
 
 
-class AnsiblePlaybook(object):
+class AnsiblePlaybook(CommandBase):
     command = 'ansible-playbook'
     help = (
         "Run a playbook as you would with ansible-playbook, "
@@ -21,8 +22,8 @@ class AnsiblePlaybook(object):
         "By default, you will see --check output and then asked whether to apply. "
     )
 
-    @staticmethod
-    def make_parser(parser):
+    @classmethod
+    def make_parser(cls, parser):
         arg_skip_check(parser)
         arg_quiet(parser)
         arg_branch(parser)
@@ -47,8 +48,8 @@ class AnsiblePlaybook(object):
             )
         ))
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         ansible_context = AnsibleContext(args)
         check_branch(args)
         public_vars = get_public_vars(args.environment)
@@ -124,9 +125,9 @@ class AnsiblePlaybook(object):
         exit(exit_code)
 
 
-class _AnsiblePlaybookAlias(object):
-    @staticmethod
-    def make_parser(parser):
+class _AnsiblePlaybookAlias(CommandBase):
+    @classmethod
+    def make_parser(cls, parser):
         arg_skip_check(parser)
         arg_quiet(parser)
         arg_branch(parser)
@@ -140,8 +141,8 @@ class UpdateConfig(_AnsiblePlaybookAlias):
         "such as django localsettings.py and formplayer application.properties."
     )
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         args.playbook = 'deploy_localsettings.yml'
         unknown_args += ('--tags=localsettings',)
         AnsiblePlaybook.run(args, unknown_args)
@@ -154,13 +155,13 @@ class AfterReboot(_AnsiblePlaybookAlias):
         "Includes mounting the encrypted drive."
     )
 
-    @staticmethod
-    def make_parser(parser):
+    @classmethod
+    def make_parser(cls, parser):
         _AnsiblePlaybookAlias.make_parser(parser)
         arg_inventory_group(parser)
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         args.skip_check = True
         unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
@@ -173,8 +174,8 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
         "Do a rolling restart of elasticsearch."
     )
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
         if not ask('Have you stopped all the elastic pillows?', strict=True, quiet=args.quiet):
             exit(0)
@@ -193,8 +194,8 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         "This must be done before any other user can log in."
     )
 
-    @staticmethod
-    def run(args, unknown_args):
+    @classmethod
+    def run(cls, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         public_vars = get_public_vars(args.environment)
         root_user = public_vars.get('commcare_cloud_root_user', 'root')

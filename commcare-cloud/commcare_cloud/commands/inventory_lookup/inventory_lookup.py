@@ -1,10 +1,11 @@
 import os
 import sys
+from commcare_cloud.commands.command_base import CommandBase
 from .getinventory import get_server_address
 from six.moves import shlex_quote
 
 
-class Lookup(object):
+class Lookup(CommandBase):
     command = 'lookup'
     help = "Lookup remote hostname or IP address"
 
