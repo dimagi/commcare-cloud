@@ -18,7 +18,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^ChallengeResponseAuthentication"
-    line: "ChallengeResponseAuthentication {{ 'yes' if ssh_allow_password else 'no' }}"
+    line: "ChallengeResponseAuthentication no"
     state: present
   notify: Restart ssh
 
