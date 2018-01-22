@@ -10,7 +10,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication {{ 'yes' if ssh_allow_password|else 'no' }}"
+    line: "PasswordAuthentication {{ 'yes' if ssh_allow_password else 'no' }}"
     state: present
   notify: Restart ssh
 
@@ -18,7 +18,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^ChallengeResponseAuthentication"
-    line: "ChallengeResponseAuthentication {{ 'yes' if ssh_allow_password|else 'no' }}"
+    line: "ChallengeResponseAuthentication {{ 'yes' if ssh_allow_password else 'no' }}"
     state: present
   notify: Restart ssh
 
