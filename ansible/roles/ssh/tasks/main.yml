@@ -10,7 +10,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication no"
+    line: "PasswordAuthentication {{ 'yes' if ssh_allow_password else 'no' }}"
     state: present
   notify: Restart ssh
 
