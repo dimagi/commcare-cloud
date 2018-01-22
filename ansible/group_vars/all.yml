@@ -54,6 +54,7 @@ dev_users:
     - brudolph
     - ncarnahan
 
+ssh_allow_password: False
 django_port: 9010
 riakcs_port: 8080
 riakcs_proxy_port_override: "{{ riakcs_port }}"  # use this to override in env vars
