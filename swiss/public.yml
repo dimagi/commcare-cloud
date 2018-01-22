@@ -35,6 +35,7 @@ elasticsearch_cluster_name: 'deves'
 nginx_key_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.key'
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/swiss.commcarehq.org.combined.crt'
 
+ssh_allow_password: True
 keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
