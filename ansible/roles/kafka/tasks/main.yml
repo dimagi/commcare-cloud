@@ -81,6 +81,7 @@
     - ruby2.3-dev
   tags:
     - kafkat
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Install kafkat
   command: 'gem install kafkat'
