@@ -9,6 +9,7 @@ abstractclassmethod = abc.abstractmethod
 class CommandBase(object):
     command = None
     help = None
+    aliases = ()
 
     @abstractclassmethod
     def make_parser(cls, parser):
