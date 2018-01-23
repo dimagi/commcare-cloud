@@ -11,6 +11,7 @@
         name: nginx
         tasks_from: install
       when: not nginx_installed|default(False)
+      tags: nginx
 
     - name: install error pages
       include_role:
