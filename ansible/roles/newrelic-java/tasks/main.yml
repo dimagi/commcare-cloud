@@ -10,6 +10,7 @@
     copy: no
     owner: '{{ cchq_user }}'
     group: '{{ cchq_user }}'
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Copy newrelic template
   become_user: "{{ cchq_user }}"
