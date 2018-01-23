@@ -92,6 +92,7 @@
   when: not fake_ssl_cert and nginx_combined_cert_value is undefined
   tags:
     - update-cert
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Copy cchq SSL Key (from vault)
   become: yes
@@ -118,6 +119,7 @@
   when: not fake_ssl_cert and nginx_key_value is undefined
   tags:
     - update-cert
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Copy commtrack SSL cert
   become: yes
