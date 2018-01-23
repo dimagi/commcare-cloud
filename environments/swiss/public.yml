@@ -21,8 +21,8 @@ active_sites:
   couchdb2: False
 
 fake_ssl_cert: no
-
-run_newrelic_plugin_agent: False
+NEW_RELIC_KEY: null
+#run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
 DATADOG_INTEGRATIONS_ENABLED: False
