@@ -117,6 +117,16 @@
         site_config: {name: pna_ssl, vars_file: pna_ssl}
       when: active_sites.pna_ssl == True
 
+- name: SWISS Proxy
+  hosts: swiss_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: custom_site
+      vars:
+        site_config: {name: swiss_ssl, vars_file: swiss_ssl}
+      when: active_sites.swiss_ssl == True
+      
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
   tasks:
