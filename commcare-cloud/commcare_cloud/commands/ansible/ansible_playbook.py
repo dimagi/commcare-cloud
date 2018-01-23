@@ -21,6 +21,7 @@ class AnsiblePlaybook(CommandBase):
         "but with boilerplate settings already set based on your <environment>. "
         "By default, you will see --check output and then asked whether to apply. "
     )
+    aliases = ('ap',)
 
     @classmethod
     def make_parser(cls, parser):
