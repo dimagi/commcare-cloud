@@ -3,6 +3,7 @@
   file:
     dest: "/usr/local/sbin/redis-restart.sh"
     state: absent
+  tags: redis
 
 - name: Create Cron job
   become: yes
@@ -12,3 +13,4 @@
     user: root
     cron_file: ../crontab
     state: absent
+  tags: redis
