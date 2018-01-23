@@ -17,6 +17,7 @@ local   replication     postgres                                peer
 {% if postgres_users.get('replication') %}
 host    replication     {{ postgres_users.replication.username }}   {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
 {% endif %}
+
 {% if postgres_users.get('backup') %}
 host    all             {{ postgres_users.backup.username }}   {{ cluster_ip_range|default('0.0.0.0/0') }}    md5
 {% endif %}
