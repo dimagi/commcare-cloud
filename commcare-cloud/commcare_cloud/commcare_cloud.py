@@ -52,7 +52,6 @@ def main():
             commands[alias] = cmd
 
     args, unknown_args = parser.parse_known_args()
-    print(args, unknown_args)
     commands[args.command].run(args, unknown_args)
 
 if __name__ == '__main__':
