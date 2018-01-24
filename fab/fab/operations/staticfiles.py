@@ -40,7 +40,7 @@ def _version_static():
 
 
 @parallel
-@roles(ROLES_STATIC)
+@roles(set(ROLES_STATIC + ROLES_DJANGO))
 def bower_install():
     with cd(env.code_root):
         config = {
