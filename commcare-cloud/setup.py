@@ -14,6 +14,7 @@ setup(
     },
     install_requires=(
         'six',
-        'clint'
+        'clint',
+        'argparse==1.4',
     ),
 )
