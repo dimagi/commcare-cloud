@@ -46,12 +46,13 @@ def main():
         assert issubclass(command_type, CommandBase), command_type
         cmd = command_type(subparsers.add_parser(
             command_type.command, help=command_type.help, aliases=command_type.aliases))
-
+        cmd.make_parser()
         commands[cmd.command] = cmd
         for alias in cmd.aliases:
             commands[alias] = cmd
 
     args, unknown_args = parser.parse_known_args()
+    print(args, unknown_args)
     commands[args.command].run(args, unknown_args)
 
 if __name__ == '__main__':
