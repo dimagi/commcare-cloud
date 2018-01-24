@@ -11,14 +11,10 @@ rather than inlining this manual import magic.
 from __future__ import print_function
 from __future__ import absolute_import
 import pkgutil
-import sys
-import os
+from commcare_cloud.environment import get_virtualenv_site_packages_path
 
-for filepath in sys.path:
-    if os.path.isdir(filepath) and 'argparse.py' in os.listdir(filepath):
-        argparse = pkgutil.get_importer(filepath).find_module('argparse').load_module('argparse')
-else:
-    import argparse
+site_packages = get_virtualenv_site_packages_path()
+argparse = pkgutil.get_importer(site_packages).find_module('argparse').load_module('argparse')
 
 ArgumentParser = argparse.ArgumentParser
 
