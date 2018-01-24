@@ -10,12 +10,10 @@ class Fab(CommandBase):
         "Run a fab command as you would with fab"
     )
 
-    @classmethod
-    def make_parser(cls, parser):
-        parser.add_argument(dest='fab_command', help="fab command", default=None)
+    def make_parser(self):
+        self.parser.add_argument(dest='fab_command', help="fab command", default=None)
 
-    @classmethod
-    def run(cls, args, unknown_args):
+    def run(self, args, unknown_args):
         cmd_parts = (
             'fab', '-f', FABFILE,
             args.environment,

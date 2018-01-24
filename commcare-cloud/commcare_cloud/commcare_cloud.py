@@ -16,7 +16,7 @@ from .environment import (
 )
 
 
-STANDARD_ARGS = [
+COMMAND_TYPES = [
     AnsiblePlaybook,
     UpdateConfig,
     AfterReboot,
@@ -40,15 +40,19 @@ def main():
     ))
     subparsers = parser.add_subparsers(dest='command')
 
-    for standard_arg in STANDARD_ARGS:
-        assert issubclass(standard_arg, CommandBase), standard_arg
-        standard_arg.make_parser(subparsers.add_parser(
-            standard_arg.command, help=standard_arg.help, aliases=standard_arg.aliases))
+    commands = {}
+
+    for command_type in COMMAND_TYPES:
+        assert issubclass(command_type, CommandBase), command_type
+        cmd = command_type(subparsers.add_parser(
+            command_type.command, help=command_type.help, aliases=command_type.aliases))
+
+        commands[cmd.command] = cmd
+        for alias in cmd.aliases:
+            commands[alias] = cmd
 
     args, unknown_args = parser.parse_known_args()
-    for standard_arg in STANDARD_ARGS:
-        if args.command == standard_arg.command or args.command in standard_arg.aliases:
-            standard_arg.run(args, unknown_args)
+    commands[args.command].run(args, unknown_args)
 
 if __name__ == '__main__':
     main()
