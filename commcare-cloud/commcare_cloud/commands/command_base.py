@@ -1,9 +1,6 @@
 import abc
 import six
 
-# this is just to document intent; the subclass will use @classmethod
-abstractclassmethod = abc.abstractmethod
-
 
 @six.add_metaclass(abc.ABCMeta)
 class CommandBase(object):
@@ -11,10 +8,14 @@ class CommandBase(object):
     help = None
     aliases = ()
 
-    @abstractclassmethod
-    def make_parser(cls, parser):
+    def __init__(self, parser):
+        self.parser = parser
+        self.make_parser()
+
+    @abc.abstractmethod
+    def make_parser(self):
         pass
 
-    @abstractclassmethod
-    def run(cls, args, unknown_args):
+    @abc.abstractmethod
+    def run(self, args, unknown_args):
         pass

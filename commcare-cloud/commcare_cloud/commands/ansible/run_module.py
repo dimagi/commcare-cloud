@@ -20,28 +20,26 @@ class RunAnsibleModule(CommandBase):
         'Run an arbitrary Ansible module.'
     )
 
-    @classmethod
-    def make_parser(cls, parser):
-        arg_inventory_group(parser)
-        parser.add_argument('module', help="The module to run")
-        parser.add_argument('module_args', help="The arguments to pass to the module")
-        RunAnsibleModule.add_non_positional_arguments(parser)
+    def make_parser(self):
+        arg_inventory_group(self.parser)
+        self.parser.add_argument('module', help="The module to run")
+        self.parser.add_argument('module_args', help="The arguments to pass to the module")
+        self.add_non_positional_arguments()
 
-    @classmethod
-    def add_non_positional_arguments(cls, parser):
-        parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
+    def add_non_positional_arguments(self):
+        self.parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
             "connect as this user (default=ansible)"
         ))
-        parser.add_argument('-b', '--become', action='store_true', help=(
+        self.parser.add_argument('-b', '--become', action='store_true', help=(
             "run operations with become (implies vault password prompting if necessary)"
         ))
-        parser.add_argument('--become-user', help=(
+        self.parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
         ))
-        arg_skip_check(parser)
-        arg_quiet(parser)
-        arg_stdout_callback(parser)
-        add_to_help_text(parser, "\n{}\n{}".format(
+        arg_skip_check(self.parser)
+        arg_quiet(self.parser)
+        arg_stdout_callback(self.parser)
+        add_to_help_text(self.parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
             filtered_help_message(
                 "ansible -h",
@@ -63,8 +61,7 @@ class RunAnsibleModule(CommandBase):
             )
         ))
 
-    @classmethod
-    def run(cls, args, unknown_args):
+    def run(self, args, unknown_args):
         ansible_context = AnsibleContext(args)
         public_vars = get_public_vars(args.environment)
 
@@ -149,18 +146,16 @@ class RunAnsibleModule(CommandBase):
         exit(exit_code)
 
 
-class RunShellCommand(CommandBase):
+class RunShellCommand(RunAnsibleModule):
     command = 'run-shell-command'
     help = 'Run an arbitrary command via the shell module.'
 
-    @classmethod
-    def make_parser(cls, parser):
-        arg_inventory_group(parser)
-        parser.add_argument('shell_command', help="The shell command you want to run")
-        RunAnsibleModule.add_non_positional_arguments(parser)
+    def make_parser(self):
+        arg_inventory_group(self.parser)
+        self.parser.add_argument('shell_command', help="The shell command you want to run")
+        super(RunShellCommand, self).add_non_positional_arguments()
 
-    @classmethod
-    def run(cls, args, unknown_args):
+    def run(self, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
@@ -173,4 +168,4 @@ class RunShellCommand(CommandBase):
         args.skip_check = True
         args.quiet = True
         del args.shell_command
-        RunAnsibleModule.run(args, unknown_args)
+        super(RunShellCommand, self).run(args, unknown_args)
