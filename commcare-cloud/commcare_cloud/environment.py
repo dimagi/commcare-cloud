@@ -25,6 +25,12 @@ def get_virtualenv_path():
     return os.path.dirname(sys.executable)
 
 
+def get_virtualenv_site_packages_path():
+    for filepath in sys.path:
+        if filepath.startswith(os.path.dirname(get_virtualenv_path())) and filepath.endswith('site-packages'):
+            return filepath
+
+
 def get_available_envs():
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
