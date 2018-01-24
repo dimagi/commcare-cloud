@@ -10,7 +10,6 @@ class CommandBase(object):
 
     def __init__(self, parser):
         self.parser = parser
-        self.make_parser()
 
     @abc.abstractmethod
     def make_parser(self):

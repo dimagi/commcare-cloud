@@ -124,7 +124,7 @@ class AnsiblePlaybook(CommandBase):
         exit(exit_code)
 
 
-class _AnsiblePlaybookAlias(AnsiblePlaybook):
+class _AnsiblePlaybookAlias(CommandBase):
     def make_parser(self):
         arg_skip_check(self.parser)
         arg_quiet(self.parser)
@@ -142,7 +142,7 @@ class UpdateConfig(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_localsettings.yml'
         unknown_args += ('--tags=localsettings',)
-        super(UpdateConfig, self).run(args, unknown_args)
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class AfterReboot(_AnsiblePlaybookAlias):
@@ -160,7 +160,7 @@ class AfterReboot(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.skip_check = True
         unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
-        super(AfterReboot, self).run(args, unknown_args)
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class RestartElasticsearch(_AnsiblePlaybookAlias):
@@ -178,7 +178,7 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
             "except in a few cases where an index is replicated across multiple nodes."))
         if not ask('Do a rolling restart of the ES cluster?', strict=True, quiet=args.quiet):
             exit(0)
-        super(RestartElasticsearch, self).run(args, unknown_args)
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class BootstrapUsers(_AnsiblePlaybookAlias):
@@ -195,4 +195,4 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
-        super(BootstrapUsers, self).run(args, unknown_args)
+        AnsiblePlaybook(self.parser).run(args, unknown_args)

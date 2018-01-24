@@ -146,14 +146,14 @@ class RunAnsibleModule(CommandBase):
         exit(exit_code)
 
 
-class RunShellCommand(RunAnsibleModule):
+class RunShellCommand(CommandBase):
     command = 'run-shell-command'
     help = 'Run an arbitrary command via the shell module.'
 
     def make_parser(self):
         arg_inventory_group(self.parser)
         self.parser.add_argument('shell_command', help="The shell command you want to run")
-        super(RunShellCommand, self).add_non_positional_arguments()
+        RunAnsibleModule(self.parser).add_non_positional_arguments()
 
     def run(self, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
@@ -168,4 +168,4 @@ class RunShellCommand(RunAnsibleModule):
         args.skip_check = True
         args.quiet = True
         del args.shell_command
-        super(RunShellCommand, self).run(args, unknown_args)
+        RunAnsibleModule(self.parser).run(args, unknown_args)
