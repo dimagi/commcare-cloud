@@ -38,8 +38,14 @@ celery_processes:
       max_tasks_per_child: 1
     sms_queue:
       pooling: gevent
-      concurrency: 30
-      num_workers: 4
+      concurrency: 10
+      num_workers: 3
+    ils_gateway_sms_queue:
+      # Use 1 worker with concurrency 8 in order to enforce the
+      # restriction of having 8 max simultaneous connections with
+      # the push sms gateway
+      pooling: gevent
+      concurrency: 8
     logistics_reminder_queue:
       concurrency: 2
       max_tasks_per_child: 5
