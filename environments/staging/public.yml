@@ -6,6 +6,7 @@ deploy_env: staging
 
 active_sites:
   cchq_www_redirect_secure: True
+  cchq_ssl: True
   cchq_http: True
   cchq_www_redirect_insecure: True
   cchq_http_j2me: True
