@@ -132,6 +132,19 @@ class _AnsiblePlaybookAlias(CommandBase):
         arg_stdout_callback(self.parser)
 
 
+class DeployStack(_AnsiblePlaybookAlias):
+    command = 'deploy-stack'
+    aliases = ('aps',)
+    help = (
+        "Run the ansible playbook for deploying the entire stack. "
+        "Often used in conjunction with --limit and/or --tag for a more specific update."
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
 class UpdateConfig(_AnsiblePlaybookAlias):
     command = 'update-config'
     help = (

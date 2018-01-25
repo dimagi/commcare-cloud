@@ -5,7 +5,7 @@ import os
 from .argparse14 import ArgumentParser
 
 from .commands.ansible.ansible_playbook import AnsiblePlaybook, \
-    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers
+    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh
@@ -18,6 +18,7 @@ from .environment import (
 
 COMMAND_TYPES = [
     AnsiblePlaybook,
+    DeployStack,
     UpdateConfig,
     AfterReboot,
     RestartElasticsearch,
