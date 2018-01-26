@@ -1,36 +1,32 @@
-# Ansible deployment orchestration and configuration management
+# Ansible in commcare-cloud 
 
-This repository represents a workable role for deploying a single new
-"webworker" to a given stack for the commcare-hq application.
+The roles and playbooks in this directory are intended to be used through
+commcare-cloud, via commands such as `commcare-cloud <env> ansible-playbook`
+and the other shortcut commands it provides.
 
-To test the role, a vagrant file has been added that will provide the required
-servers for a multi-machine deployment similar to the US production stack
-described in
-[Dimagi devops needs](https://docs.google.com/document/d/1tQFDC56SU8N1M-1abDWpnQKti2zYroTPBC2EmeIM8SA/pub)
+## Todos and Deprecated things
+- The contents of `ansible/inventories/` contains inventory files that weren't clearly part
+  of an environment, and which may or may not still be useful.
+  Environments' inventories live in `environments/`.
+- `ansible/vars/` still contains user keys, though these conceptually should now live
+  somewhere in `environments` or `environmental_defaults`.
+- `ansible/vars/` also contains variables for a `dev` environment.
+  This may or may not still be usable for a local vagrant setup.
+- There's a file `DimagiKeyStore` that we rely on (for old J2ME support)
+  that isn't commited to this directory.
+  Instead, to do a full deploy, one must obtain a copy of it and place it at
+  ansible/roles/keystore/files/ directory.
+  Originally this way because its contents are secret, it would now be preferable
+  for this file to live encrypted in `environments/` or `environmental_defaults/`.
 
-Begin by checkout out the source for this repostiory:
 
-```
-$ git clone https://github.com/dimagi/commcare-cloud
-```
+## Local vagrant setup
 
-Then install the git hooks:
-
-```
-./git-hooks/install.sh
-```
-
-Now you can change directories into the new clone and set up submodules:
-
-```
-$ cd commcare-cloud
-$ git submodule init
-$ git submodule update
-```
-
-There is one file that is omitted from the commcare-cloud repository:
-DimagiKeyStore. You will need it to complete a full stack deployment. Obtain a
-copy of it, and place it in the ansible/roles/keystore/files/ directory.
+**Note** This section is quite old, and the latest person to revamp this file
+mostly just left this section untouched.
+If you want to use this, ask around to see if anyone can tell you whether these
+steps currently work or not before going down too much of a rabbit hole
+trying to follow these docs.
 
 Ensure you have downloaded Vagrant and virtual box
 
@@ -56,6 +52,9 @@ $ vagrant ssh control
 ...
 $ ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
 ```
+
+(**Doc Note**: these commands should be replaced
+with the appropriate commcare-cloud commands.)
 
 This will build a database server, a proxy server and a single web worker,
 hooked into both appropriately.
