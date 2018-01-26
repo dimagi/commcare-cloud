@@ -1,5 +1,8 @@
 # CommCare-Cloud
 
+[![Build
+Status](https://travis-ci.org/dimagi/commcare-cloud.svg?branch=master)](https://travis-ci.org/dimagi/commcare-cloud)
+
 Tools for standing up and managing a CommCare HQ server environment.
 
 
