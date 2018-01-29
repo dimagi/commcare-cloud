@@ -1,8 +1,23 @@
-# Set up commcare-cloud
+# CommCare-Cloud
 
+Tools for standing up and managing a CommCare HQ server environment.
+
+
+# Components
+
+- Ansible
+- Fabric
+- configurable environments (under `environments/`)
+- Assorted small tools for managing and accessing servers
+- Command line interface (`commcare-cloud`) for running commands backed
+  by the other components
+
+
+# Install and setup
 You will need python 2.7 and virtualenvwrapper installed. To follow these instructions.
 
-Clone the commcare-cloud repo (suggested location alongside commcare-hq):
+Clone the commcare-cloud repo
+(suggested location alongside commcare-hq, if you have that repo cloned as well):
 
 ```
 git clone https://github.com/dimagi/commcare-cloud.git
@@ -57,3 +72,14 @@ add the following to your bash profile:
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 ```
+
+
+# Contributing
+
+Before making any commits, make sure you install the git hooks:
+
+```
+./git-hooks/install.sh
+```
+
+This will make sure you never commit an unencrypted vault.yml file.
