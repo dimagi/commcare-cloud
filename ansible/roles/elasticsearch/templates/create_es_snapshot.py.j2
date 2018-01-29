@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import time
 from elasticsearch import Elasticsearch
 from elasticsearch.client import SnapshotClient
 from datetime import datetime, date
@@ -10,6 +11,10 @@ def get_snapshot_client():
     snapshot_client = SnapshotClient(es)
     return snapshot_client
 
+def check_snapshot(client):
+    today = date.today()
+    stats =  client.status('{{ es_repository_name }}', '{{ es_repository_name }}_{year}_{month}_{day}'.format(year=today.year, month=today.month, day=today.day))
+    return stats['snapshots'][0]['state']
 
 def create_snapshot(client):
     today = date.today()
@@ -18,16 +23,31 @@ def create_snapshot(client):
 
 def delete_old_snapshots(client):
     snaps = client.get('{{ es_repository_name }}', '_all')
-    three_days_ago = (datetime.utcnow() - timedelta(days=3)).isoformat()
-    old_snapshots = [s['snapshot'] for s in snaps['snapshots'] if s['start_time'] < three_days_ago]
+    number_of_days_ago = (datetime.utcnow() - timedelta(days={{elastcsearch_backup_days|default(3)}} )).isoformat()
+    ld_snapshots = [s['snapshot'] for s in snaps['snapshots'] if s['start_time'] < number_of_days_ago]
     for snap in old_snapshots:
         client.delete('{{ es_repository_name }}', snap)
 
 
 def main():
     client = get_snapshot_client()
+# Create Today's Snapshot
     create_snapshot(client)
-    delete_old_snapshots(client)
+# Check if snapshot completed or not
+    itteration = 1
+    while itteration < 5:
+        status = check_snapshot(client)
+        if status == 'SUCESS':
+            # Delete Previous Snapshots
+            delete_old_snapshots(client)
+	    exit(0)
+        else:
+            # Wait
+            time.sleep(300)
+        itteration += 1
+    # Exit after 5 tries.
+    print "Snapshot Not deleted, Since Current Snapshot not completed."
+    exit(1)
 
 
 if __name__ == "__main__":
