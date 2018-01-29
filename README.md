@@ -17,7 +17,8 @@ Tools for standing up and managing a CommCare HQ server environment.
 
 
 # Install and setup
-You will need python 2.7 and virtualenvwrapper installed. To follow these instructions.
+You will need python 2.7 and `virtualenvwrapper` installed
+to follow these instructions.
 
 Clone the commcare-cloud repo
 (suggested location alongside commcare-hq, if you have that repo cloned as well):
