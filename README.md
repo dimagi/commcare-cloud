@@ -1,273 +1,88 @@
-# Ansible deployment orchestration and configuration management
+# CommCare-Cloud
 
 [![Build
 Status](https://travis-ci.org/dimagi/commcare-cloud.svg?branch=master)](https://travis-ci.org/dimagi/commcare-cloud)
 
-This repository represents a workable role for deploying a single new
-"webworker" to a given stack for the commcare-hq application.
+Tools for standing up and managing a CommCare HQ server environment.
 
-To test the role, a vagrant file has been added that will provide the required
-servers for a multi-machine deployment similar to the US production stack
-described in
-[Dimagi devops needs](https://docs.google.com/document/d/1tQFDC56SU8N1M-1abDWpnQKti2zYroTPBC2EmeIM8SA/pub)
 
-Begin by checkout out the source for this repostiory:
+# Components
+
+- Ansible
+- Fabric
+- configurable environments (under `environments/`)
+- Assorted small tools for managing and accessing servers
+- Command line interface (`commcare-cloud`) for running commands backed
+  by the other components
+
+
+# Install and setup
+You will need python 2.7 and virtualenvwrapper installed. To follow these instructions.
+
+Clone the commcare-cloud repo
+(suggested location alongside commcare-hq, if you have that repo cloned as well):
 
 ```
-$ git clone https://github.com/dimagi/commcare-cloud
+git clone https://github.com/dimagi/commcare-cloud.git
+cd commcare-cloud
 ```
 
-Then install the git hooks:
+Now make a virtualenv for ansible:
+
+```
+mkvirtualenv ansible
+```
+
+If you want `workon ansible` to always bring you to this directory, then you can also run
+
+```
+setvirtualenvproject
+```
+
+at this time.
+
+**Note**: If you already have commcare-cloud cloned, then just enter that directory
+and update it with
+
+```
+git pull
+```
+
+# Install commcare-cloud
+
+You must be in your virtualenv for the install script to work
+```
+workon ansible
+```
+
+Then, simply run:
+
+```
+./install.sh
+```
+
+You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
+
+# Optional: Hook up the bells and whistles
+
+To be able to
+- use `commcare-cloud` (and its alias `cchq`) from anywhere
+- use `commcare-cloud` bash completion
+
+add the following to your bash profile:
+
+```
+export PATH=$PATH:~/.commcare-cloud/bin
+source ~/.commcare-cloud/repo/control/.bash_completion
+```
+
+
+# Contributing
+
+Before making any commits, make sure you install the git hooks:
 
 ```
 ./git-hooks/install.sh
 ```
 
-Now you can change directories into the new clone and set up submodules:
-
-```
-$ cd commcare-cloud
-$ git submodule init
-$ git submodule update
-```
-
-There is one file that is omitted from the commcare-cloud repository:
-DimagiKeyStore. You will need it to complete a full stack deployment. Obtain a
-copy of it, and place it in the ansible/roles/keystore/files/ directory.
-
-Ensure you have downloaded Vagrant and virtual box
-
-### Multi-machine cluster setup
-
-Then start vagrant:
-
-```
-$ vagrant up
-```
-
-If you run into issues starting vagrant, see the troubleshooting section at the bottom.
-
-The `./scripts/reset-vms` command can be run at any time, possibly with a subset of the
-VM names, to reset the VMs to their initial state and provision them with your
-SSH key. Run `./scripts/reset-vms` without arguments for usage info.
-
-Once vagrant is up, you may ssh into the control server and run a full
-deployment:
-
-```
-$ vagrant ssh control
-...
-$ ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
-```
-
-This will build a database server, a proxy server and a single web worker,
-hooked into both appropriately.
-
-Once the preliminary deployment is complete, a new web worker may be added
-simply by editing the file `ansible/inventories/development` and adding the second
-web worker server IP address. Also uncomment the section of the vagrant file that refers to 'app2':
-
-```ini
-[webworkers]
-192.168.33.15
-192.168.33.18
-```
-
-### Monolith setup
-
-Sometimes multi machine setup locally can be very large. In order to setup a monolith, which is just one machine, you can use this setup:
-```
-cp Vagrantfile-monolith Vagrantfile
-vagrant up
-```
-The one other change needed is to point to the proper inventory. Instead of using `ansible/inventories/development`, use `ansible/inventories/monolith`:
-
-```
-$ vagrant ssh control
-...
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
-```
-
-### Email setup
-
-In order to have this set up send email without crashing
-(which you need to do during a deploy, for example)
-run a debug smtp server daemon on control:
-
-```bash
-$ vagrant ssh control
-...
-$ python -m smtpd -n -c DebuggingServer 0.0.0.0:1025
-```
-
-### Troubleshooting
-
-`vagrant up` fails.
-* Start VirtualBox `$ VirtualBox`
-  * Or on a Mac, `$ sudo /Library/StartupItems/VirtualBox/VirtualBox restart`
-* Attempt to start the VM
-  * If the error message is: `VT-x needs to be enabled in BIOS`
-For the Lenovo T440s: 
-  * Restart machine, press Enter during startup
-  * Navigate to Security -> Virtualization
-    * Turn both settings on
-
-
-### Running only parts of the playbook
-
-- Update localsettings:
-  ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_localsettings.yml --tags=localsettings
-  ```
-- Skip the common setup, including apt installs and updating the commcarehq code:
-  ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --skip-tags=common
-  ```
-
-Tags available:
-
-- aptcache
-- common
-- deploy
-- git
-- keystore
-- ksplice
-- localsettings
-- newrelic
-- slow
-
-Note: to generate this list automatically, you can run something like
-
-```bash
-ENV=production && ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
-/g' | xargs -I% echo - %
-```
-
-
-### Setting up ansible control machine
-
-This must be done as the root user.  Run `ansible-deploy-control` to get the
-proper command.
-
-### Use your ssh key to authenticate
-
-Ansible forwards SSH requests through your local machine to authenticate with
-remote servers.  This way authentication originates from your machine and your
-credentials, and the ansible machine doesn't need its own auth to communicate
-with other servers managed with ansible.
-
-SSH `ForwardAgent` can be enabled by passing the `-A` flag on the command line:
-```bash
-$ ssh -A control.internal-va.commcarehq.org
-```
-
-You can also enable it automatically for an alias in your ssh config (note that
-you then must use the alias `$ ssh control` for the settings to take effect)
-```
-# ~/.ssh/config
-Host control
-    Hostname control.internal-va.commcarehq.org
-    ForwardAgent yes
-```
-
-Be careful not to enable `ForwardAgent` for untrusted hosts.
-
-You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
-
-[troubleshooting](https://developer.github.com/guides/using-ssh-agent-forwarding/)
-
-### Setting up a dev account on ansible control machine
-
-You must ssh in as your dev user, with SSH `ForwardAgent` enabled (see above).
-
-```bash
-git clone git@github.com:dimagi/commcare-cloud
-. commcare-cloud/control/init.sh
-update-code
-
-# optional: make subsequent logins a bit more convenient
-echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
-```
-
-On subsequent logins if optional step was not done.
-
-```bash
-. init-ansible
-```
-
-### Simulate dev user setup on vagrant control machine
-
-Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
-`ansible/vars/dev/users/{username}.pub`.
-
-Login with `vagrant ssh control`
-
-```bash
-ansible-playbook -u root -i inventories/development -e @vars/dev/dev_private.yml \
-  -e @vars/dev/dev_public.yml --diff deploy_control.yml
-```
-
-Login as your user: `vagrant ssh control -- -l $USER -A
-
-```bash
-ln -s /vagrant ~/commcare-cloud
-. commcare-cloud/control/init.sh
-echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
-
-# run ansible
-ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
-  -e @vars/dev/dev_private.yml -e @vars/dev/dev_public.yml \
-  --diff deploy_stack.yml --tags=users,ssh # or whatever
-```
-
-#### Alternately, deploy directly from your dev environment
-
-```bash
-ansible-playbook -u vagrant -i inventories/development -e @vars/dev/dev_private.yml \
-  -e @vars/dev/dev_public.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
-```
-
-### Managing secrets with Vault
-**IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
-
-All the secret variables and private data required for the different environments is included
-in this repository as encrypted files (`${ENV}_vault.yml`).
-
-To edit these files you need to provide them on the command line when prompted (keys stored in CommCare Keepass).
-
-To use these files with `ansible-playbook` include the `--ask-vault-pass` param.
-(This is included for your convenience in the `ap` and `aps` aliases.)
-
-#### Viewing / Editing encrypted files
-You can use Vault's built in editing capability as follows:
-
-```
-ENV=production; ansible-vault edit environments/$ENV/vault.yml
-```
-
-This will decrypt the file for editing and re-encrypt it after. Note that even if no changes
-are made to the file the encrypted contents will have changed.
-
-If you just want to view the contents of the file you can use this command:
-
-```
-ENV=production; ansible-vault view environments/$ENV/vault.yml
-```
-
-#### Encrypting / Decrypting files
-**CAUTION**: Make sure that you re-encrypt any files with the correct key before committing them.
-
-The following command can be used to encrypt and decrypt files:
-
-```
-ENV=production && ansible-vault [encrypt|decrypt] filename
-```
-
-For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
-
-### Running against Vagrant machines from localhost
-It is also possible to run tasks on the vagrant machines from you're local machine:
-
-```
-ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
-```
+This will make sure you never commit an unencrypted vault.yml file.
