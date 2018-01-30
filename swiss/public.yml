@@ -39,7 +39,7 @@ ssh_allow_password: True
 
 backup_blobdb: True
 backup_postgres: dump
-backup_es: False
+backup_es: True
 backup_couch: True
 postgres_s3: False
 blobdb_s3: False
