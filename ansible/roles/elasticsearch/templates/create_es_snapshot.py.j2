@@ -24,7 +24,7 @@ def create_snapshot(client):
 def delete_old_snapshots(client):
     snaps = client.get('{{ es_repository_name }}', '_all')
     number_of_days_ago = (datetime.utcnow() - timedelta(days={{elastcsearch_backup_days|default(30)}} )).isoformat()
-    ld_snapshots = [s['snapshot'] for s in snaps['snapshots'] if s['start_time'] < number_of_days_ago]
+    old_snapshots = [s['snapshot'] for s in snaps['snapshots'] if s['start_time'] < number_of_days_ago]
     for snap in old_snapshots:
         client.delete('{{ es_repository_name }}', snap)
 
