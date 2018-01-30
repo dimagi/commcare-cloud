@@ -37,7 +37,7 @@ def main():
     itteration = 1
     while itteration < 5:
         status = check_snapshot(client)
-        if status == 'SUCESS':
+        if status == 'SUCCESS':
             # Delete Previous Snapshots
             delete_old_snapshots(client)
 	    exit(0)
