@@ -1,0 +1,41 @@
+---
+- name: Generate a Let's Encrypt Certificate
+  openssl_certificate:
+    path: {{ letsencrypt_certs_dir }}/{{ letsencrypt_ssl_cert }}
+    csr_path: {{ letsencrypt_csr_dir }}/{{ letsencrypt_ssl_csr }}
+    provider: acme
+    acme_accountkey: {{ letsencrypt_key_dir }}/{{ letsencrypt_ssl_key }}
+    acme_challenge_path: {{ letsencrypt_challenge_dir }}/{{ SITE_HOST }}/
+    force: {{force_letsencrypt|default(no)}}
+
+- name: Get the letsencrypt acme challenge http-01
+  letsencrypt:
+    account_key: {{ letsencrypt_key_dir }}/{{ letsencrypt_ssl_key }}
+    csr: {{ letsencrypt_csr_dir }}/{{ letsencrypt_ssl_csr }}
+    dest: {{ letsencrypt_certs_dir }}/{{ letsencrypt_ssl_cert }}
+  register: letsencrypt_challenge
+
+- name: Build the challenge variable
+  set_fact:
+    challenge_data : "{{letsencrypt_challenge['challenge_data'] }} + ['{{SITE_HOST}}']"
+
+- name: Fulfill the challenge refer: https://certbot.eff.org/docs/challenges.html?highlight=http#http-01-challenge
+  copy:
+    dest: /var/www/html/{{ challenge_data['http-01']['resource'] }}
+    content: "{{ challenge_data['http-01']['resource_value'] }}"
+    when: letsencrypt_challenge | changed
+
+- name: Put the certificate in place and verify the challenge
+  letsencrypt:
+    account_key: {{ letsencrypt_key_dir }}/{{ letsencrypt_ssl_key }}
+    csr: {{ letsencrypt_csr_dir }}/{{ letsencrypt_ssl_csr }}
+    dest: {{ letsencrypt_certs_dir }}/{{ letsencrypt_ssl_cert }}
+    data: {{letsencrypt_challenge}}
+
+- name: Verify that an existing certificate was issued by the Let's Encrypt CA and is currently still valid
+  openssl_certificate:
+    path: /etc/ssl/crt/{{SITE_HOST}}.crt
+    provider: assertonly
+    issuer:
+      O: Let's Encrypt
+    has_expired: False

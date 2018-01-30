@@ -1,0 +1,11 @@
+#
+# {{ ansible_managed }}
+#
+# Rule for legitimate ACME Challenge requests
+location ^~ /.well-known/acme-challenge/ {
+    root         /var/www/letsencrypt;
+}
+# Hide /acme-challenge subdirectory and return 404 on all requests.
+location = /.well-known/acme-challenge/ {
+    return 404;
+}
