@@ -51,6 +51,7 @@
         - {name: icds_tableau, vars_file: icds_tableau_http}
       loop_control:
         loop_var: site_config
+      tags: nginx_sites
 
     - name: riakcs site
       include_role:
@@ -126,7 +127,7 @@
       vars:
         site_config: {name: swiss_ssl, vars_file: swiss_ssl}
       when: active_sites.swiss_ssl == True
-      
+
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
   tasks:
