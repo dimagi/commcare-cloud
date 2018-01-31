@@ -7,7 +7,7 @@ gunicorn_workers_static_factor: 1
 celery_processes:
   '10.247.164.40':  # celery0
     flower: {}
-    celery:
+    repeat_record_queue,celery:
       concurrency: 8
       max_tasks_per_child: 5
     celery_periodic:
