@@ -83,8 +83,9 @@ def set_celery_supervisorconf():
         params={'python_options': '-O'}, conf_destination_filename='celery_bash_runner_optimized.sh'
     )
 
-    for queue, params in queues.items():
-        if queue == 'flower':
+    for comma_separated_queue_names, params in queues.items():
+        queue_names = comma_separated_queue_names.split(',')
+        if queue_names == ['flower']:
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',
                 'supervisor_celery_flower.conf',
@@ -97,7 +98,7 @@ def set_celery_supervisorconf():
         num_workers = params.get('num_workers', 1)
 
         params.update({
-            'queue': queue,
+            'comma_separated_queue_names': comma_separated_queue_names,
             'pooling': pooling,
             'max_tasks_per_child': max_tasks_per_child,
         })
@@ -107,7 +108,8 @@ def set_celery_supervisorconf():
                 'worker_num': worker_num,
             })
 
-            conf_destination_filename = 'supervisor_celery_worker_%s_%s.conf' % (queue, worker_num)
+            conf_destination_filename = 'supervisor_celery_worker_{}_{}.conf'.format(
+                comma_separated_queue_names, worker_num)
 
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',
@@ -116,7 +118,7 @@ def set_celery_supervisorconf():
                 conf_destination_filename,
             )
 
-        if queue == 'celery_periodic':
+        if 'celery_periodic' in queue_names:
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',
                 'supervisor_celery_beat.conf',
