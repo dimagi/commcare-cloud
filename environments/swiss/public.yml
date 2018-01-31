@@ -46,7 +46,7 @@ postgres_s3: True
 blobdb_s3: True
 couch_s3: True
 
-aws_region: 'us-east-1'
+aws_region: 'eu-central-1'
 
 
 pgbouncer_default_pool: 290
