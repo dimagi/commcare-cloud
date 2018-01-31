@@ -23,14 +23,32 @@ def create_snapshot(client):
 
 def delete_old_snapshots(client):
     snaps = client.get('{{ es_repository_name }}', '_all')
-    number_of_days_ago = (datetime.utcnow() - timedelta(days={{elastcsearch_backup_days|default(30)}} )).isoformat()
+    number_of_days_ago = (datetime.utcnow() - timedelta(days={{elastcsearch_backup_days|default(3)}} )).isoformat()
     old_snapshots = [s['snapshot'] for s in snaps['snapshots'] if s['start_time'] < number_of_days_ago]
     for snap in old_snapshots:
         client.delete('{{ es_repository_name }}', snap)
 
+{% if es_local_repo and not backup_es%}
+def create_snapshot_repo(client):
+    body = {
+        "type": "fs",
+        "settings": {
+        "location":  "{{es_repository_name}}",
+        }
+    }
+    client.create_repository("{{es_repository_name}}",body)
+{% endif %}
 
 def main():
     client = get_snapshot_client()
+
+
+
+{% if es_local_repo and not backup_es%}
+    # Create Local Repository if es_local_repo enabled
+    create_snapshot_repo(client)
+{% endif %}
+
 # Create Today's Snapshot
     create_snapshot(client)
 # Check if snapshot completed or not
