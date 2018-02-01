@@ -116,12 +116,17 @@
     method: PUT
     body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "s3.{{ aws_region }}.amazonaws.com" }}'
   when: backup_es and inventory_hostname == groups.elasticsearch.0
+  tags:
+    - cron
+    - backups
 
 - name: Remove old backup script
   file:
     dest: "/etc/cron.d/create_es_snapshot.py"
     state: absent
-  tags: cron
+  tags:
+    - cron
+    - backups
 
 - name: Copy es backup script
   become: yes
@@ -133,7 +138,9 @@
     mode: 0700
     backup: yes
   when: backup_es and inventory_hostname == groups.elasticsearch.0
-  tags: cron
+  tags:
+    - cron
+    - backups
 
 - name: Create es backup cron job
   become: yes
@@ -145,4 +152,6 @@
     user: root
     cron_file: create_es_snapshot
   when: backup_es and inventory_hostname == groups.elasticsearch.0
-  tags: cron
+  tags:
+    - cron
+    - backups
