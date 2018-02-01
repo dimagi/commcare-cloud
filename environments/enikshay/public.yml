@@ -183,7 +183,7 @@ nameservers:
 
 shared_drive_enabled: true
 
-# adding missing variables compared to icds 
+# adding missing variables compared to icds
 #http_proxy_address: '172.25.3.6' # use pg_standby as the patch server
 #http_proxy_port: '3128'
 
