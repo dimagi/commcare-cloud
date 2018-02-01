@@ -20,6 +20,7 @@ active_sites:
   riakcs: False
   couchdb2: False
 
+msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False
