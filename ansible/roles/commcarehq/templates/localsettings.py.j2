@@ -657,6 +657,10 @@ RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
 TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
 {% endif %}
 
+{% if localsettings.get('HQ_INSTANCE') %}
+HQ_INSTANCE = '{{ localsettings.HQ_INSTANCE }}'
+{% endif %}
+
 {% if localsettings.get('COMMCARE_HQ_NAME') %}
 COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
 {% endif %}
