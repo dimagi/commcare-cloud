@@ -67,6 +67,11 @@ celery_processes:
       concurrency: 4
       max_tasks_per_child: 1
 pillows:
+  hqpillowtop2:
+    kafka-ucr-main:
+      num_processes: 4
+    kafka-ucr-static:
+      num_processes: 1
   hqpillowtop1:
     kafka-ucr-main:
       num_processes: 4
