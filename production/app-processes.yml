@@ -72,11 +72,6 @@ pillows:
       num_processes: 4
     kafka-ucr-static:
       num_processes: 1
-  hqpillowtop1:
-    kafka-ucr-main:
-      num_processes: 4
-    kafka-ucr-static:
-      num_processes: 1
   hqpillowtop0:
     AppDbChangeFeedPillow:
       num_processes: 1
