@@ -111,34 +111,14 @@ For the Lenovo T440s:
 
 ### Running only parts of the playbook
 
-- Update localsettings:
+- Only do the common setup, including apt installs and updating the commcarehq code:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_localsettings.yml --tags=localsettings
+  commcare-cloud production deploy-stack --tags=common
   ```
-- Skip the common setup, including apt installs and updating the commcarehq code:
+- Do everything _but_ the common setup:
   ```bash
-  ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml'  deploy_stack.yml --skip-tags=common
+  commcare-cloud production deploy-stack --skip-tags=common
   ```
-
-Tags available:
-
-- aptcache
-- common
-- deploy
-- git
-- keystore
-- ksplice
-- localsettings
-- newrelic
-- slow
-
-Note: to generate this list automatically, you can run something like
-
-```bash
-ENV=production && ansible-playbook -u root -i ../../commcare-hq/fab/inventory/india deploy_stack.yml -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --tags= | sed 's/ERROR: tag(s) not found in playbook: .  possible values: //g' | sed 's/,/\
-/g' | xargs -I% echo - %
-```
-
 
 ### Setting up ansible control machine
 
@@ -227,7 +207,7 @@ ansible-playbook -u vagrant -i inventories/development -e @vars/dev/dev_private.
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
 
 All the secret variables and private data required for the different environments is included
-in this repository as encrypted files (`${ENV}_vault.yml`).
+in this repository as encrypted files (`vault.yml`).
 
 To edit these files you need to provide them on the command line when prompted (keys stored in CommCare Keepass).
 
