@@ -156,6 +156,8 @@ AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
 
+touchforms_enabled: false
+
 localsettings:
   ALLOWED_HOSTS:
     - "{{ PNA_SITE_HOST }}"
