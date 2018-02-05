@@ -7,7 +7,7 @@ service_blacklist:
 
 celery_processes:
   '*':
-    main:
+    repeat_record_queue,celery:
       concurrency: 1
     background_queue:
       concurrency: 1
@@ -30,7 +30,6 @@ celery_processes:
     celery:
     reminder_case_update_queue:
     reminder_rule_queue:
-    repeat_record_queue:
     sms_queue:
 
 pillows:

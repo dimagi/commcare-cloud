@@ -1,9 +1,11 @@
 environment: staging
 
 celery_processes:
-  '*':
+  None:
     # celery_periodic is intentionally absent from here,
     # so that no SMSes, etc. ever come from staging.
+    celery_periodic:
+  '*':
     enikshay_queue,repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery:
       concurrency: 4
       max_tasks_per_child: 5
