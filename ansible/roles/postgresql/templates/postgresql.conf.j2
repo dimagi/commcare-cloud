@@ -84,7 +84,7 @@ log_rotation_size = 100000
 client_min_messages = notice
 log_min_messages = warning
 log_min_error_statement = error
-log_min_duration_statement = 300
+log_min_duration_statement = {{ postgresql_slow_log_threshold }}
 
 log_checkpoints = on
 log_connections = on
