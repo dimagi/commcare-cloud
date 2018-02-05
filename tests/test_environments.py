@@ -63,11 +63,7 @@ CELERY_PROCESS_NAMES = [
     "sms_queue",
     "submission_reprocessing_queue",
     "ucr_indicator_queue",
-    "ucr_indicator_queue",
     "ucr_queue",
-
-    # todo: remove this
-    "main",
 ]
 
 
@@ -80,9 +76,6 @@ OPTIONAL_CELERY_PROCESSES = [
     'reminder_queue',
     'submission_reprocessing_queue',
     'ucr_indicator_queue',
-
-    # todo: remove these
-    "main",
 ]
 
 
