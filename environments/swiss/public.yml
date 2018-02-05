@@ -20,6 +20,7 @@ active_sites:
   riakcs: False
   couchdb2: False
 
+msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False
@@ -31,6 +32,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'deves'
 #elasticsearch_node_name: '??'
+elastcsearch_backup_days: 3
 
 nginx_key_value: '{{ ssl_secrets.private_keys.swiss_commcarehq_org }}'
 nginx_combined_cert_value: '{{ ssl_secrets.certs.swiss_commcarehq_org }}'
@@ -39,11 +41,13 @@ ssh_allow_password: True
 
 backup_blobdb: True
 backup_postgres: plain
-backup_es: False
+backup_es: True
 backup_couch: True
-postgres_s3: False
-blobdb_s3: False
-couch_s3: False
+postgres_s3: True
+blobdb_s3: True
+couch_s3: True
+
+aws_region: 'eu-central-1'
 
 
 pgbouncer_default_pool: 290
