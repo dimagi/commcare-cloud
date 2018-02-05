@@ -12,6 +12,7 @@ before_install:
 install:
   - pip install -r ansible/requirements.txt
   - ansible-galaxy install -r ansible/requirements.yml
+  - pip install -r test_requirements.txt
 
 script:
   - ".travis/tests.sh"
