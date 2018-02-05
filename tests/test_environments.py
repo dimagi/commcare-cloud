@@ -92,7 +92,7 @@ def test_app_processes_yml(env):
                 assert len(queue_names) == 1, \
                     "The special 'flower' process may not be grouped with other processes"
             for queue_name in queue_names:
-                assert queue_name in CELERY_PROCESS_NAMES,\
+                assert queue_name in CELERY_PROCESS_NAMES, \
                     "Celery process not recognized: {}".format(queue_name)
             all_queues_mentioned.update(queue_names)
     required_but_not_mentioned = [queue_name for queue_name, count in all_queues_mentioned.items()
