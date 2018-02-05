@@ -3,4 +3,4 @@
   hosts: touchforms
   become: true
   roles:
-    - touchforms
+    - {role: touchforms, tags: 'touchforms'}
