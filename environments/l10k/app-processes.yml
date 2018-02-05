@@ -25,6 +25,14 @@ celery_processes:
     async_restore_queue:
       concurrency: 1
     flower: {}
+  None:
+    # todo: create these queues?
+    celery:
+    reminder_case_update_queue:
+    reminder_rule_queue:
+    repeat_record_queue:
+    sms_queue:
+
 pillows:
   '*':
     AppDbChangeFeedPillow:

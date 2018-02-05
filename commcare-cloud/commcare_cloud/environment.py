@@ -21,6 +21,14 @@ def get_inventory_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
 
 
+def get_app_processes_filepath(env_name):
+    return os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')
+
+
+def get_default_app_processes_filepath():
+    return os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')
+
+
 def get_virtualenv_path():
     return os.path.dirname(sys.executable)
 
