@@ -1,13 +1,12 @@
 from __future__ import print_function
 
-from collections import Counter
+from collections import Counter, namedtuple
 
 import jsonobject as jsonobject
 import yaml
 from commcare_cloud.environment import get_available_envs, get_app_processes_filepath, \
     get_default_app_processes_filepath
 from parameterized import parameterized
-
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -43,40 +42,38 @@ class AppProcessesConfig(jsonobject.JsonObject):
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
 
 
-CELERY_PROCESS_NAMES = [
-    "async_restore_queue",
-    "background_queue",
-    "celery",
-    "celery_periodic",
-    "email_queue",
-    "enikshay_queue",
-    "flower",
-    "ils_gateway_sms_queue",
-    "logistics_background_queue",
-    "logistics_reminder_queue",
-    "pillow_retry_queue",
-    "reminder_case_update_queue",
-    "reminder_queue",
-    "reminder_rule_queue",
-    "repeat_record_queue",
-    "saved_exports_queue",
-    "sms_queue",
-    "submission_reprocessing_queue",
-    "ucr_indicator_queue",
-    "ucr_queue",
+class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
+    def __new__(cls, name, required=True, *args, **kwargs):
+        return super(CeleryProcess, cls).__new__(cls, name, required, *args, **kwargs)
+
+
+CELERY_PROCESSES = [
+    CeleryProcess("async_restore_queue"),
+    CeleryProcess("background_queue"),
+    CeleryProcess("celery"),
+    CeleryProcess("celery_periodic", required=False),
+    CeleryProcess("email_queue"),
+    CeleryProcess("enikshay_queue", required=False),
+    CeleryProcess("flower"),
+    CeleryProcess("ils_gateway_sms_queue", required=False),
+    CeleryProcess("logistics_background_queue", required=False),
+    CeleryProcess("logistics_reminder_queue", required=False),
+    CeleryProcess("pillow_retry_queue"),
+    CeleryProcess("reminder_case_update_queue"),
+    CeleryProcess("reminder_queue", required=False),
+    CeleryProcess("reminder_rule_queue"),
+    CeleryProcess("repeat_record_queue"),
+    CeleryProcess("saved_exports_queue"),
+    CeleryProcess("sms_queue"),
+    CeleryProcess("submission_reprocessing_queue", required=False),
+    CeleryProcess("ucr_indicator_queue", required=False),
+    CeleryProcess("ucr_queue"),
 ]
 
 
-OPTIONAL_CELERY_PROCESSES = [
-    'celery_periodic',
-    'enikshay_queue',
-    'ils_gateway_sms_queue',
-    'logistics_background_queue',
-    'logistics_reminder_queue',
-    'reminder_queue',
-    'submission_reprocessing_queue',
-    'ucr_indicator_queue',
-]
+CELERY_PROCESS_NAMES = [process.name for process in CELERY_PROCESSES]
+OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
+                             if not process.required]
 
 
 @parameterized(get_available_envs())
