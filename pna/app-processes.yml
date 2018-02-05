@@ -9,6 +9,8 @@ celery_processes:
   '*':
     main:
       concurrency: 1
+    celery:
+      concurrency: 1
     background_queue:
       concurrency: 1
     email_queue:
