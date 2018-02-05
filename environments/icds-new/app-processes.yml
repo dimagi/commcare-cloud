@@ -5,9 +5,11 @@ gunicorn_workers_factor: 2
 formplayer_memory: "16000m"
 gunicorn_workers_static_factor: 1
 celery_processes:
+  None:
+    repeat_record_queue:
   '10.247.164.40':  # celery0
     flower: {}
-    repeat_record_queue,celery:
+    celery:
       concurrency: 8
       max_tasks_per_child: 5
     celery_periodic:
