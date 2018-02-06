@@ -66,3 +66,8 @@ cloud:
 
 # Only allow indices to be created by an explicit "create" command
 action.auto_create_index: false
+
+
+{% if es_local_repo and not backup_es%}
+path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
+{% endif %}
