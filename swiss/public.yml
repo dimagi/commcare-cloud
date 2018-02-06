@@ -41,11 +41,13 @@ ssh_allow_password: True
 
 backup_blobdb: True
 backup_postgres: plain
-backup_es: True
+backup_es: False
 backup_couch: True
-postgres_s3: True
-blobdb_s3: True
-couch_s3: True
+postgres_s3: False
+blobdb_s3: False
+couch_s3: False
+
+es_local_repo: True
 
 aws_region: 'eu-central-1'
 
