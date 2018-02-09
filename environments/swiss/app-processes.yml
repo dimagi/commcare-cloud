@@ -10,7 +10,7 @@ celery_processes:
     repeat_record_queue,celery:
       concurrency: 1
       max_tasks_per_child: 5
-    background_queue:
+    background_queue,case_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
     celery_periodic:
