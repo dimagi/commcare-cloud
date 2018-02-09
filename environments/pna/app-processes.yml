@@ -9,7 +9,7 @@ celery_processes:
   '*':
     repeat_record_queue,celery:
       concurrency: 1
-    background_queue:
+    background_queue,case_rule_queue:
       concurrency: 1
     email_queue:
       concurrency: 1

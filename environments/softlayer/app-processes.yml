@@ -43,7 +43,7 @@ celery_processes:
       concurrency: 10
     async_restore_queue:
       concurrency: 8
-    background_queue:
+    background_queue,case_rule_queue:
       concurrency: 4
       max_tasks_per_child: 1
     flower: {}
