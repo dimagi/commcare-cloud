@@ -61,7 +61,16 @@ cloud:
   aws:
     access_key: "{{ localsettings.AMAZON_S3_ACCESS_KEY }}"
     secret_key: "{{ localsettings.AMAZON_S3_SECRET_KEY }}"
+    {% if aws_region defined %}
     region: "{{ aws_region }}"
+    {% endif %}
+    # Signer used by service : https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/cloud-aws-usage.html#cloud-aws-usage-signer
+    # Endpoint : https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/cloud-aws-usage.html#cloud-aws-usage-signer
+    {% if aws_endpoint defined %}
+    s3:
+      endpoint: "{{ aws_endpoint }}"
+    {% endif %}
+
 {% endif %}
 
 # Only allow indices to be created by an explicit "create" command
