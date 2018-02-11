@@ -49,7 +49,7 @@ couch_s3: False
 
 es_local_repo: True
 
-aws_region: 'eu-central-1'
+aws_endpoint: https://sos-ch-dk-2.exo.io
 
 
 pgbouncer_default_pool: 290
