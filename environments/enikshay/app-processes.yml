@@ -2,7 +2,7 @@ environment: enikshay
 formplayer_memory: "7000m"
 newrelic_javaagent: False
 celery_processes:
-  '172.25.2.10':
+  'kafka0':
     celery_periodic:
       server_whitelist: '172.25.2.10'
       concurrency: 4
@@ -48,7 +48,7 @@ celery_processes:
       concurrency: 6
       max_tasks_per_child: 5
     flower: {}
-  '172.25.2.6':
+  'web0':
     ucr_indicator_queue:
       concurrency: 8
 pillows:
