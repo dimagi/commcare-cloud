@@ -10,8 +10,6 @@ tar -Pzcf "{{ blobdb_backup_dir }}/${BACKUP_FILE}" "{{ blobdb_dir_path }}"
 # Remove old backups of this backup type
 find {{ blobdb_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "blobdb_${BACKUP_TYPE}_*" -delete;
 
-{% if blobdb_s3 and blobdb_backup_bucket and aws_endpoint %}
-( cd {{ blobdb_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" {{ blobdb_backup_bucket }} {{aws_endpoint}} )
-{% elif blobdb_s3 %}
-( cd {{ blobdb_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "dimagi-{{ deploy_env }}-blobdb-backups" )
+{% if blobdb_s3 %}
+( cd {{ blobdb_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" {{ blobdb_snapshot_bucket }} {{aws_endpoint}} )
 {% endif %}

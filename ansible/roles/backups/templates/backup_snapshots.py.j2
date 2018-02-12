@@ -3,7 +3,7 @@ import sys
 import boto3
 
 if len(sys.argv) == 2:
-    bucket = 'dimagi-{{ deploy_env }}-postgres-backups'
+    bucket = {{postgres_snapshot_bucket}}
 elif len(sys.argv) == 3:
     bucket = sys.argv[2]
 elif len(sys.argv) == 4:

@@ -51,9 +51,9 @@ es_local_repo: False
 
 aws_endpoint: https://sos-ch-dk-2.exo.io
 es_snapshot_bucket:   commcare-almanach-backup
-postgres_backup_bucket: commcare-almanach-backup
-blobdb_backup_bucket: commcare-almanach-backup
-couchdb_backup_bucket: commcare-almanach-backup
+postgres_snapshot_bucket: commcare-almanach-backup
+blobdb_snapshot_bucket: commcare-almanach-backup
+couchdb_snapshot_bucket: commcare-almanach-backup
 
 pgbouncer_default_pool: 290
 pgbouncer_max_connections: 400
