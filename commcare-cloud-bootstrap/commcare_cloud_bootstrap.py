@@ -9,7 +9,7 @@ import sys
 import shutil
 import yaml
 import jsonobject
-from commcare_cloud.commcare_cloud import get_inventory_filepath, \
+from commcare_cloud.environment import get_inventory_filepath, \
     get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, REPO_BASE
 
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
@@ -183,6 +183,7 @@ def poll_for_aws_state(env, instance_ids):
 def save_inventory(env, inventory):
     inventory_file_contents = yaml.safe_dump(inventory.to_json(), default_flow_style=False)
     inventory_file = get_inventory_filepath(env)
+    os.makedirs(inventory_file)
     with open(inventory_file, 'w') as f:
         f.write(inventory_file_contents)
     print('inventory file saved to {}'.format(inventory_file),
