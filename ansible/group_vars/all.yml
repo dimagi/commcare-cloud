@@ -164,3 +164,9 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD | default(None) }
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME | default(None) }}"
 # To enable Local ES snapshot override with repository location
 es_local_repo: false
+
+blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
+couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
+postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
+es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
+aws_endpoint: "s3.{{ aws_region }}.amazonaws.com"
