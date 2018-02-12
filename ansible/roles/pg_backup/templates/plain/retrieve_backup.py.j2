@@ -2,10 +2,26 @@
 import sys
 import boto3
 
-if len(sys.argv) != 2:
-    raise Exception('Usage is retrieve_backup.py <filename>')
+if len(sys.argv) == 2:
+    filename = sys.argv[1]
+    bucket = {{postgres_snapshot_bucket}}
+elif len(sys.argv) == 3:
+    filename = sys.argv[1]
+    bucket = sys.argv[2]
+elif len(sys.argv) == 4:
+    filename = sys.argv[1]
+    bucket = sys.argv[2]
+    endpoint = sys.argv[3]
+else:
+    raise Exception('Usage is backup_snapshots.py filename <s3_bucket>')
 
-filename = sys.argv[1]
-s3 = boto3.client('s3', region_name='{{ aws_region }}')
-s3.download_file('dimagi-{{ deploy_env }}-postgres-backups',
+
+session = boto3.session.Session()
+{% if aws_region is defined %}
+s3 = session.client(service_name='s3',endpoint_url=endpoint,region_name='{{ aws_region }}')
+{% else %}
+s3 = session.client(service_name='s3',endpoint_url=endpoint)
+
+{% endif %}
+s3.download_file(bucket,
                  filename, filename)

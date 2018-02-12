@@ -39,9 +39,9 @@ fi
 
 {% if postgres_s3 %}
 if [ -f "${DIRECTORY}.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "dimagi-{{ deploy_env }}-postgres-backups" )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 if [ -f "${DIRECTORY}.tar.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "dimagi-{{ deploy_env }}-postgres-backups" )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 {% endif %}
