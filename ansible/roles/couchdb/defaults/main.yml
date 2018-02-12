@@ -11,3 +11,4 @@ remote_couch_backup: False
 couch_s3: False
 couchdb_backup_days: 3
 couchdb_backup_weeks: 3
+couchdb_dir: /usr/local/couchdb/couchdb
