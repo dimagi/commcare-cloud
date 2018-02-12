@@ -18,3 +18,4 @@ script:
   - "diff <(ansible -h) commcare-cloud/commcare_cloud/help_cache/ansible.txt"
   - "diff <(ansible-playbook -h) commcare-cloud/commcare_cloud/help_cache/ansible-playbook.txt"
   - "nosetests"
+  - "nosetests fab"
