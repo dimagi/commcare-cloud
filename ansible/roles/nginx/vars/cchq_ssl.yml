@@ -21,10 +21,6 @@ nginx_sites:
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
-    - name: "/a/ipm-senegal/phone/restore"
-      return: 503
-    - name: "/a/ipm-senegal/receiver"
-      return: 503
     - name: /
       balancer: "{{ deploy_env }}_commcare"
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
