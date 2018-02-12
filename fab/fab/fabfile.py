@@ -46,6 +46,7 @@ from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
 from commcare_cloud.environment import get_available_envs, get_public_vars
+
 from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
@@ -80,6 +81,7 @@ from .utils import (
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
+    check_and_translate_hosts,
 )
 from .checks import (
     check_servers,
@@ -290,6 +292,9 @@ def env_common():
     env.resume = False
     env.offline = False
     env.supervisor_roles = ROLES_ALL_SRC
+
+    for key in ('celery_processes', 'pillows'):
+        env[key] = check_and_translate_hosts(env.env_name, env[key])
 
 
 @task

@@ -8,6 +8,7 @@ import traceback
 from fabric.operations import sudo
 from fabric.context_managers import settings
 from fabric.api import local
+from fabric.utils import abort
 import re
 from getpass import getpass
 
@@ -282,3 +283,34 @@ def read_inventory_file(env_name):
         if port_map[host] is not None else host
         for host in hosts
     ] for group, hosts in get_inventory(env_name).get_groups_dict().items()}
+
+
+def check_and_translate_hosts(env_name, host_mapping):
+    """
+    :param env_name: name of the env used to lookup the inventory
+    :param host_mapping: dictionary where keys can be one of:
+                         * host (must be in inventory file)
+                         * inventory group containing a single host
+                         * literal '*' or 'None'
+    :return: dictionary with the same content as the input but where
+             keys that were inventory groups have been converted into their
+             representative host
+    """
+    translated = {}
+    inventory = get_inventory(env_name)
+    for host, config in host_mapping.items():
+        if host == 'None' or host == '*' or host in inventory.hosts:
+            translated[host] = config
+        else:
+            group = inventory.groups.get(host)
+            if not group:
+                abort('Unknown host referenced in app processes: {}'.format(host))
+            group_hosts = group.get_hosts()
+            if len(group_hosts) == 1:
+                translated[group_hosts[0]] = config
+            else:
+                abort(
+                    'Unable to translate host referenced '
+                    'in app processes to a single host name: {}'.format(host))
+
+    return translated
