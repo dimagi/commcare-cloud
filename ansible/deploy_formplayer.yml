@@ -4,4 +4,4 @@
   become: true
   roles:
     - {role: formplayer, tags: formplayer}
-    - {role: newrelic-java, tags: newrelic-java, when: NEW_RELIC_KEY is defined}
+    - {role: newrelic-java, tags: newrelic-java, when: NEW_RELIC_KEY is defined and NEW_RELIC_KEY}
