@@ -23,10 +23,8 @@ active_sites:
   cas_ssl: False
   couchdb2: False
 
-riak_backend: "leveldb-bad-config"
-riak_ring_size: 64
-riak_new_backend: "leveldb"
-riak_new_ring_size: 128
+riak_backend: "leveldb"
+riak_ring_size: 128
 
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
