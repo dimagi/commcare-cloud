@@ -55,7 +55,7 @@
   template: src=kafka-server.j2 dest=/etc/init.d/kafka-server mode=0755
 
 - name: Enable and start Kafka service
-  service: name=kafka-server enabled=yes state=restarted
+  service: name=kafka-server enabled=yes state=started
   tags: after-reboot
 
 - name: Add Kafka binaries to PATH
