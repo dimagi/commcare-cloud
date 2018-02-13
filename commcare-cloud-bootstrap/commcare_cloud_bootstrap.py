@@ -18,6 +18,9 @@ from commcare_cloud.environment import get_inventory_filepath, \
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
 
 
+# Spec
+
+
 class Spec(jsonobject.JsonObject):
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
     allocations = jsonobject.DictProperty(lambda: Allocation)
@@ -46,14 +49,11 @@ class Allocation(jsonobject.JsonObject):
     from_ = jsonobject.StringProperty(name='from')
 
 
-class AnsibleInventory(jsonobject.JsonObject):
-    all = jsonobject.ObjectProperty(lambda: AnsibleInventoryGroup)
+# Inventory
 
-
-class AnsibleInventoryGroup(jsonobject.JsonObject):
-    children = jsonobject.DictProperty(lambda: AnsibleInventoryGroup, required=False)
-    # values can be var:value dicts, but are often null
-    hosts = jsonobject.DictProperty(jsonobject.DictProperty(), exclude_if_none=True)
+class Inventory(jsonobject.JsonObject):
+    all_hosts = jsonobject.ListProperty(lambda: Host)
+    all_groups = jsonobject.DictProperty(lambda: Group)
 
 
 class Host(jsonobject.JsonObject):
@@ -67,11 +67,6 @@ class Group(jsonobject.JsonObject):
     name = jsonobject.StringProperty()
     host_names = jsonobject.ListProperty(unicode)
     vars = jsonobject.DictProperty()
-
-
-class Inventory(jsonobject.JsonObject):
-    all_hosts = jsonobject.ListProperty(Host)
-    all_groups = jsonobject.DictProperty(Group)
 
 
 def provision_machines(spec, env=None):
