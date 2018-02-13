@@ -182,7 +182,7 @@ def ask_aws_for_instances(env, aws_config, count):
 def print_describe_instances(describe_instances):
     for reservation in describe_instances['Reservations']:
         for instance in reservation['Instances']:
-            print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PublicDnsName}".format(**instance),
+            print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PrivateIpAddress}".format(**instance),
                   file=sys.stderr)
 
 
