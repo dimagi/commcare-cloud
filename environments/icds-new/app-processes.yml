@@ -7,7 +7,7 @@ gunicorn_workers_static_factor: 1
 celery_processes:
   None:
     repeat_record_queue:
-  '10.247.164.40':  # celery0
+  'celery0':
     flower: {}
     celery:
       concurrency: 8
@@ -29,7 +29,7 @@ celery_processes:
       num_workers: 5
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.41':  # celery1
+  'celery1':
     ucr_queue:
       concurrency: 4
       max_tasks_per_child: 5
@@ -42,7 +42,7 @@ celery_processes:
       num_workers: 10
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.42':  # celery2
+  'celery2':
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -59,7 +59,7 @@ celery_processes:
       max_tasks_per_child: 1
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.43':  # celery3
+  'celery3':
     # Still waiting on whitelisting from celery3
     # sms_queue:
     #   pooling: gevent
@@ -73,7 +73,7 @@ celery_processes:
       concurrency: 4
     ucr_indicator_queue:
       concurrency: 8
-  '10.247.164.44':  # celery4
+  'celery4':
     ucr_indicator_queue:
       concurrency: 10
     background_queue,case_rule_queue:
@@ -83,7 +83,7 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 10
-  '10.247.164.31': # web0
+  'web0':
     ucr_indicator_queue:
       concurrency: 3
     # Temporarily run the sms_queue worker here as web0 is whitelisted
@@ -91,35 +91,35 @@ celery_processes:
       pooling: gevent
       concurrency: 20
       num_workers: 1
-  '10.247.164.32': # web1
+  'web1':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.30': # web2
+  'web2':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.11': # web3
+  'web3':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.29': # web4
+  'web4':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.28': # web5
+  'web5':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.10': # web6
+  'web6':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.6': # web7
+  'web7':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.8': # web9
+  'web8':
     ucr_indicator_queue:
       concurrency: 4
-  '10.247.164.9': # web9
+  'web9':
     ucr_indicator_queue:
       concurrency: 4
 pillows:
-  '10.247.164.37': # pillow0
+  'pillow0':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
@@ -142,7 +142,7 @@ pillows:
       start_process: 0
       num_processes: 6
       total_processes: 24
-  '10.247.164.38': # pillow1
+  'pillow1':
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
@@ -165,7 +165,7 @@ pillows:
       start_process: 6
       num_processes: 6
       total_processes: 36
-  '10.247.164.7': # pillow2
+  'pillow2':
     kafka-ucr-static-cases:
       start_process: 12
       num_processes: 6
@@ -174,7 +174,7 @@ pillows:
       start_process: 12
       num_processes: 4
       total_processes: 24
-  '10.247.164.35': # pillow3
+  'pillow3':
     kafka-ucr-static-cases:
       start_process: 18
       num_processes: 6
@@ -183,7 +183,7 @@ pillows:
       start_process: 16
       num_processes: 4
       total_processes: 24
-  '10.247.164.33': # pillow4
+  'pillow4':
     kafka-ucr-static-cases:
       start_process: 24
       num_processes: 6
@@ -192,14 +192,14 @@ pillows:
       start_process: 20
       num_processes: 4
       total_processes: 24
-  '10.247.164.36': # pillow5
+  'pillow5':
     kafka-ucr-static-cases:
       start_process: 30
       num_processes: 6
       total_processes: 36
     FormSubmissionMetadataTrackerPillow:
       num_processes: 4
-  '10.247.164.34': # pillow6
+  'pillow6':
     kafka-ucr-static-forms:
       num_processes: 8
     kafka-ucr-main:
