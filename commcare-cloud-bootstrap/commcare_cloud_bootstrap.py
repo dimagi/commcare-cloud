@@ -18,10 +18,14 @@ from commcare_cloud.environment import get_inventory_filepath, \
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
 
 
+class StrictJsonObject(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+
+
 # Spec
 
 
-class Spec(jsonobject.JsonObject):
+class Spec(StrictJsonObject):
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
     allocations = jsonobject.DictProperty(lambda: Allocation)
 
@@ -35,7 +39,7 @@ class Spec(jsonobject.JsonObject):
         return super(Spec, cls).wrap(obj)
 
 
-class AwsConfig(jsonobject.JsonObject):
+class AwsConfig(StrictJsonObject):
     pem = jsonobject.StringProperty()
     ami = jsonobject.StringProperty()
     type = jsonobject.StringProperty()
@@ -44,26 +48,26 @@ class AwsConfig(jsonobject.JsonObject):
     subnet = jsonobject.StringProperty()
 
 
-class Allocation(jsonobject.JsonObject):
+class Allocation(StrictJsonObject):
     count = jsonobject.IntegerProperty()
     from_ = jsonobject.StringProperty(name='from')
 
 
 # Inventory
 
-class Inventory(jsonobject.JsonObject):
+class Inventory(StrictJsonObject):
     all_hosts = jsonobject.ListProperty(lambda: Host)
     all_groups = jsonobject.DictProperty(lambda: Group)
 
 
-class Host(jsonobject.JsonObject):
+class Host(StrictJsonObject):
     name = jsonobject.StringProperty()
     public_ip = jsonobject.StringProperty()
     private_ip = jsonobject.StringProperty()
     vars = jsonobject.DictProperty()
 
 
-class Group(jsonobject.JsonObject):
+class Group(StrictJsonObject):
     name = jsonobject.StringProperty()
     host_names = jsonobject.ListProperty(unicode)
     vars = jsonobject.DictProperty()
