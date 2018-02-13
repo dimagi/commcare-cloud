@@ -149,6 +149,15 @@ def _setup_path():
     env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
 
 
+def _override_code_root_to_current():
+    env.code_root = env.code_current
+    env.project_root = posixpath.join(env.code_root, env.project)
+    env.project_media = posixpath.join(env.code_root, 'media')
+    env.virtualenv_current = posixpath.join(env.code_current, 'python_env')
+    env.virtualenv_root = posixpath.join(env.code_root, 'python_env')
+    env.services = posixpath.join(env.code_root, 'services')
+
+
 def load_env(env_name):
     def get_env_dict(path):
         if os.path.isfile(path):
@@ -785,6 +794,16 @@ def silent_services_restart(use_current_release=False):
 def set_supervisor_config():
     setup_release()
     execute_with_timing(supervisor.set_supervisor_config)
+
+
+@task
+def update_current_supervisor_config():
+    """This only writes the supervisor config. To make the new configs take
+    affect you must restart services
+    """
+    _override_code_root_to_current()
+    with cd(env.code_current):
+        execute_with_timing(supervisor.set_supervisor_config)
 
 
 @task
