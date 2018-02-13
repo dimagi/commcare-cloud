@@ -4,7 +4,7 @@
 {%- for key, value in machine.vars.items() %} {{ key }}={{ value }}{% endfor %}
 
 {% endfor -%}
-{% for group in inventory.all_groups.values() %}
+{% for _, group in inventory.all_groups.items()|sort %}
 [{{ group.name }}:children]
 {% for host_name in group.host_names -%}
 {{ host_name }}

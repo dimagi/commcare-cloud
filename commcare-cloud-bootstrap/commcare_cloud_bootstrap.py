@@ -7,7 +7,8 @@ import string
 import subprocess
 import sys
 import shutil
-from collections import namedtuple
+
+import re
 
 import jinja2
 import yaml
@@ -195,6 +196,59 @@ def raw_describe_instances(env):
     return json.loads(subprocess.check_output(cmd_parts))
 
 
+def get_hosts_from_describe_instances(describe_instances):
+    hosts = []
+    for reservation in describe_instances['Reservations']:
+        for instance in reservation['Instances']:
+            hosts.append(
+                Host(public_ip=instance['PublicIpAddress'],
+                     private_ip=instance['PrivateIpAddress']))
+    return hosts
+
+
+def get_inventory_from_file(env):
+    inventory = Inventory()
+    state = None
+    with open(get_inventory_filepath(env)) as f:
+        for line in f.readlines():
+            group_line_match = re.match(r'^\[\s*(.*)\s*\]\s*$', line)
+            if re.match(r'^\s*$', line):
+                continue
+            if group_line_match:
+                section_name = group_line_match.groups()[0]
+                if section_name.endswith(':children'):
+                    state = 'parsing-group'
+                    current_group_name = section_name[:-len(':children')]
+                    current_group = Group(name=current_group_name)
+                    inventory.all_groups[current_group_name] = current_group
+                else:
+                    state = 'parsing-host'
+                    current_host_name = section_name
+            else:
+                if state == 'parsing-host':
+                    line_groups = list(re.split(r'\s+', line.strip()))
+                    private_ip, variables = line_groups[0], line_groups[1:]
+                    variables = dict(var.strip().split('=') for var in variables)
+                    public_ip = variables.pop('ansible_host')
+                    host = Host(name=current_host_name, private_ip=private_ip, public_ip=public_ip,
+                                vars=variables)
+                    inventory.all_hosts.append(host)
+                elif state == 'parsing-group':
+                    host_name = line.strip()
+                    current_group.host_names.append(host_name)
+                else:
+                    raise ValueError('Encountered items outside a section')
+    return inventory
+
+
+def update_inventory_public_ips(inventory, new_hosts):
+    assert len(inventory.all_hosts) == len(new_hosts)
+    assert {host.private_ip for host in inventory.all_hosts} == {host.private_ip for host in new_hosts}
+    new_host_by_private_ip = {host.private_ip: host for host in new_hosts}
+    for host in inventory.all_hosts:
+        host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
+
+
 def poll_for_aws_state(env, instance_ids):
     describe_instances = raw_describe_instances(env)
     print_describe_instances(describe_instances)
@@ -277,9 +331,28 @@ class Show(object):
         print_describe_instances(describe_instances)
 
 
+class Reip(object):
+    command = 'reip'
+    help = ("Rewrite the public IP addresses in the inventory for an env. "
+            "Useful after reboot.")
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        new_hosts = get_hosts_from_describe_instances(describe_instances)
+        inventory = get_inventory_from_file(args.env)
+        update_inventory_public_ips(inventory, new_hosts)
+        save_inventory(args.env, inventory)
+
+
 STANDARD_ARGS = [
     Provision,
     Show,
+    Reip,
 ]
 
 
