@@ -127,7 +127,7 @@ def bootstrap_inventory(spec, env):
                 # on strings containing integers.
                 # Once we have more than 10 it'll start sorting wrong
                 host_names = sorted(
-                    inventory.all_groups[allocation.from_].hosts,
+                    inventory.all_groups[allocation.from_].host_names,
                     key=alphanumeric_sort_key,
                 )[:allocation.count]
                 inventory.all_groups[role] = Group(
