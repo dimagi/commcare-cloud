@@ -10,5 +10,6 @@ setup(
         'six',
         'jsonobject',
         'awscli',
+        'jinja2',
     ),
 )

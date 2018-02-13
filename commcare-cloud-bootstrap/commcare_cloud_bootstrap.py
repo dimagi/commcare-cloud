@@ -7,6 +7,9 @@ import string
 import subprocess
 import sys
 import shutil
+from collections import namedtuple
+
+import jinja2
 import yaml
 import jsonobject
 from commcare_cloud.environment import get_inventory_filepath, \
@@ -53,41 +56,69 @@ class AnsibleInventoryGroup(jsonobject.JsonObject):
     hosts = jsonobject.DictProperty(jsonobject.DictProperty(), exclude_if_none=True)
 
 
+class Host(jsonobject.JsonObject):
+    name = jsonobject.StringProperty()
+    public_ip = jsonobject.StringProperty()
+    private_ip = jsonobject.StringProperty()
+    vars = jsonobject.DictProperty()
+
+
+class Group(jsonobject.JsonObject):
+    name = jsonobject.StringProperty()
+    host_names = jsonobject.ListProperty(unicode)
+    vars = jsonobject.DictProperty()
+
+
+class Inventory(jsonobject.JsonObject):
+    all_hosts = jsonobject.ListProperty(Host)
+    all_groups = jsonobject.DictProperty(Group)
+
+
 def provision_machines(spec, env=None):
     if env is None:
         env = u'hq-{}'.format(
             ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
-    all_hosts, inventory = bootstrap_inventory(spec, env)
-    instance_ids = ask_aws_for_instances(env, spec.aws_config, len(all_hosts))
+    inventory = bootstrap_inventory(spec, env)
+    instance_ids = ask_aws_for_instances(env, spec.aws_config, len(inventory.all_hosts))
 
     while True:
         instance_ip_addresses = poll_for_aws_state(env, instance_ids)
         if instance_ip_addresses:
             break
 
-    host_vars_by_host_name = {}
+    hosts_by_name = {}
 
-    for host_name, ip_address in zip(all_hosts.keys(), instance_ip_addresses.values()):
-        inventory.all.children[host_name] = AnsibleInventoryGroup(hosts={ip_address: {}})
-        host_vars_by_host_name[host_name] = inventory.all.children[host_name].hosts[ip_address]
+    for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
+        host.public_ip = public_ip
+        host.private_ip = private_ip
+        hosts_by_name[host.name] = host
 
-    for i, host_name in enumerate(sorted(inventory.all.children['kafka'].children)):
-        host_vars_by_host_name[host_name]['kafka_broker_id'] = i
-        host_vars_by_host_name[host_name]['swap_size'] = '2G'
+    for i, host_name in enumerate(inventory.all_groups['kafka'].host_names):
+        hosts_by_name[host_name].vars['kafka_broker_id'] = i
+        hosts_by_name[host_name].vars['swap_size'] = '2G'
 
-    for host_name in inventory.all.children['elasticsearch'].children:
-        host_vars_by_host_name[host_name]['elasticsearch_node_name'] = host_name
+    for host_name in inventory.all_groups['elasticsearch'].host_names:
+        hosts_by_name[host_name].vars['elasticsearch_node_name'] = host_name
 
     save_inventory(env, inventory)
     copy_default_vars(env, spec.aws_config)
 
 
+def alphanumeric_sort_key(key):
+    """
+    Sort the given iterable in the way that humans expect.
+    Thanks to http://stackoverflow.com/a/2669120/240553
+    """
+    import re
+    convert = lambda text: int(text) if text.isdigit() else text
+    return [convert(c) for c in re.split('([0-9]+)', key)]
+
+
 def bootstrap_inventory(spec, env):
-    inventory = AnsibleInventory()
     incomplete = dict(spec.allocations.items())
 
-    all_hosts = {}
+    inventory = Inventory()
 
     while incomplete:
         for role, allocation in incomplete.items():
@@ -100,26 +131,30 @@ def bootstrap_inventory(spec, env):
                 # This is kind of hacky because it does a string sort
                 # on strings containing integers.
                 # Once we have more than 10 it'll start sorting wrong
-                host_names = sorted(inventory.all.children[allocation.from_].children.keys())[:allocation.count]
-                inventory.all.children[role] = AnsibleInventoryGroup(children={
-                    host_names: AnsibleInventoryGroup()
-                    for host_names in host_names
-                })
-                for host_name in host_names:
-                    all_hosts[host_name].append(role)
-
+                host_names = sorted(
+                    inventory.all_groups[allocation.from_].hosts,
+                    key=alphanumeric_sort_key,
+                )[:allocation.count]
+                inventory.all_groups[role] = Group(
+                    name=role,
+                    host_names=[host_name for host_name in host_names],
+                    vars={},
+                )
             else:
                 new_host_names = set()
                 for i in range(allocation.count):
                     host_name = '{env}-{group}-{i}'.format(env=env, group=role, i=i)
                     new_host_names.add(host_name)
-                    all_hosts[host_name] = [role]
-                inventory.all.children[role] = AnsibleInventoryGroup(children={
-                    host_name: AnsibleInventoryGroup() for host_name in new_host_names
-                })
+                    inventory.all_hosts.append(
+                        Host(name=host_name, public_ip=None, private_ip=None, vars={}))
+                inventory.all_groups[role] = Group(
+                    name=role,
+                    host_names=[host_name for host_name in new_host_names],
+                    vars={},
+                )
 
             del incomplete[role]
-    return all_hosts, inventory
+    return inventory
 
 
 def ask_aws_for_instances(env, aws_config, count):
@@ -174,16 +209,19 @@ def poll_for_aws_state(env, instance_ids):
     }
     if not unfinished_instances:
         return {
-            instance['InstanceId']: instance['PublicIpAddress']
+            instance['InstanceId']: (instance['PublicIpAddress'], instance['PrivateIpAddress'])
             for instance in instances
             if instance['InstanceId'] in instance_ids
         }
 
 
 def save_inventory(env, inventory):
-    inventory_file_contents = yaml.safe_dump(inventory.to_json(), default_flow_style=False)
+    j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    template = j2.get_template('inventory.ini.j2')
+    inventory_file_contents = template.render(inventory=inventory)
     inventory_file = get_inventory_filepath(env)
-    os.makedirs(inventory_file)
+    if not os.path.exists(os.path.dirname(inventory_file)):
+        os.makedirs(os.path.dirname(inventory_file))
     with open(inventory_file, 'w') as f:
         f.write(inventory_file_contents)
     print('inventory file saved to {}'.format(inventory_file),
@@ -194,10 +232,9 @@ def copy_default_vars(env, aws_config):
     vars_dir = VARS_DIR
     template_dir = os.path.join(vars_dir, '.commcare-cloud-bootstrap')
     new_dir = ENVIRONMENTS_DIR
-    if os.path.exists(VARS_DIR) and os.path.exists(template_dir) and not os.path.exists(new_dir):
-        os.makedirs(new_dir)
-        vars_public = get_public_vars_filepath(env)
-        vars_vault = get_vault_vars_filepath(env)
+    vars_public = get_public_vars_filepath(env)
+    vars_vault = get_vault_vars_filepath(env)
+    if os.path.exists(template_dir) and not os.path.exists(vars_public):
         shutil.copyfile(os.path.join(template_dir, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(template_dir, 'public.yml'), vars_public)
         with open(vars_public, 'a') as f:
