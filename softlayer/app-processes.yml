@@ -2,7 +2,7 @@ environment: softlayer
 formplayer_memory: "7000m"
 newrelic_javaagent: True
 celery_processes:
-  '10.162.36.233':  # celery0
+  'celery0':
     celery_periodic:
       server_whitelist: '10.162.36.233'
       concurrency: 4
@@ -26,7 +26,7 @@ celery_processes:
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1
-  '10.162.36.194':  # celery1
+  'celery1':
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -48,7 +48,7 @@ celery_processes:
       max_tasks_per_child: 1
     flower: {}
 pillows:
-  '10.162.36.253':
+  'pillow1':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
@@ -79,7 +79,7 @@ pillows:
       num_processes: 1
     ReportXFormToElasticsearchPillow:
       num_processes: 1
-  '10.162.36.212':
+  'pillow3':
     CaseSearchToElasticsearchPillow:
       num_processes: 1
     kafka-ucr-static:

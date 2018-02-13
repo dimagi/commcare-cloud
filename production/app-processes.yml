@@ -2,7 +2,7 @@ environment: production
 newrelic_javaagent: True
 
 celery_processes:
-  hqcelery0:
+  hqcelery0.internal-va.commcarehq.org:
     celery_periodic:
       server_whitelist: hqcelery0.internal-va.commcarehq.org
       concurrency: 4
@@ -24,7 +24,7 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  hqcelery1:
+  hqcelery1.internal-va.commcarehq.org:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -56,7 +56,7 @@ celery_processes:
       concurrency: 2
       max_tasks_per_child: 5
     flower: {}
-  hqcelery2:
+  hqcelery2.internal-va.commcarehq.org:
     case_rule_queue:
       concurrency: 4
       max_tasks_per_child: 1
@@ -70,12 +70,12 @@ celery_processes:
       concurrency: 4
       max_tasks_per_child: 1
 pillows:
-  hqpillowtop2:
+  hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
       num_processes: 4
     kafka-ucr-static:
       num_processes: 1
-  hqpillowtop0:
+  hqpillowtop0.internal-va.commcarehq.org:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
