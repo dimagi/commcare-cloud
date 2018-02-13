@@ -203,9 +203,23 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
+        args.skip_check = True
         public_vars = get_public_vars(args.environment)
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
+class UpdateUsers(_AnsiblePlaybookAlias):
+    command = 'update-users'
+    help = (
+        "Add users to a set of new machines as root. "
+        "This must be done before any other user can log in."
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        unknown_args += ('--tags=users',)
         AnsiblePlaybook(self.parser).run(args, unknown_args)
