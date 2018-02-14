@@ -83,17 +83,17 @@ celery_processes:
     pillow_retry_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 1
+      num_workers: 2
   'celery6':
     pillow_retry_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 1
+      num_workers: 2
   'celery7':
     pillow_retry_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 1
+      num_workers: 2
   'web0':
     ucr_indicator_queue:
       concurrency: 3
