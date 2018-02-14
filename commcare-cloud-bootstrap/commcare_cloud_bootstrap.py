@@ -7,15 +7,26 @@ import string
 import subprocess
 import sys
 import shutil
+
+import re
+
+import jinja2
 import yaml
 import jsonobject
-from commcare_cloud.commcare_cloud import get_inventory_filepath, \
+from commcare_cloud.environment import get_inventory_filepath, \
     get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, REPO_BASE
 
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
 
 
-class Spec(jsonobject.JsonObject):
+class StrictJsonObject(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+
+
+# Spec
+
+
+class Spec(StrictJsonObject):
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
     allocations = jsonobject.DictProperty(lambda: Allocation)
 
@@ -29,7 +40,7 @@ class Spec(jsonobject.JsonObject):
         return super(Spec, cls).wrap(obj)
 
 
-class AwsConfig(jsonobject.JsonObject):
+class AwsConfig(StrictJsonObject):
     pem = jsonobject.StringProperty()
     ami = jsonobject.StringProperty()
     type = jsonobject.StringProperty()
@@ -38,73 +49,112 @@ class AwsConfig(jsonobject.JsonObject):
     subnet = jsonobject.StringProperty()
 
 
-class Allocation(jsonobject.JsonObject):
+class Allocation(StrictJsonObject):
     count = jsonobject.IntegerProperty()
     from_ = jsonobject.StringProperty(name='from')
 
 
-class AnsibleInventory(jsonobject.JsonObject):
-    all = jsonobject.ObjectProperty(lambda: AnsibleInventoryGroup)
+# Inventory
+
+class Inventory(StrictJsonObject):
+    all_hosts = jsonobject.ListProperty(lambda: Host)
+    all_groups = jsonobject.DictProperty(lambda: Group)
 
 
-class AnsibleInventoryGroup(jsonobject.JsonObject):
-    children = jsonobject.DictProperty(lambda: AnsibleInventoryGroup, required=False)
-    # values can be var:value dicts, but are often null
-    hosts = jsonobject.DictProperty(jsonobject.DictProperty(), exclude_if_none=True)
+class Host(StrictJsonObject):
+    name = jsonobject.StringProperty()
+    public_ip = jsonobject.StringProperty()
+    private_ip = jsonobject.StringProperty()
+    vars = jsonobject.DictProperty()
+
+
+class Group(StrictJsonObject):
+    name = jsonobject.StringProperty()
+    host_names = jsonobject.ListProperty(unicode)
+    vars = jsonobject.DictProperty()
 
 
 def provision_machines(spec, env=None):
     if env is None:
         env = u'hq-{}'.format(
-            ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(7))
+            ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
-    all_hosts, inventory = bootstrap_inventory(spec, env)
-    instance_ids = ask_aws_for_instances(env, spec.aws_config, len(all_hosts))
+    inventory = bootstrap_inventory(spec, env)
+    instance_ids = ask_aws_for_instances(env, spec.aws_config, len(inventory.all_hosts))
 
     while True:
         instance_ip_addresses = poll_for_aws_state(env, instance_ids)
         if instance_ip_addresses:
             break
 
-    ip_addresses_by_host = dict(zip(all_hosts, instance_ip_addresses.values()))
+    hosts_by_name = {}
 
-    for group_name, group in inventory.all.children.items():
-        for host_name, host_vars in group.hosts.items():
-            host_vars['ansible_host'] = str(ip_addresses_by_host[host_name])
+    for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
+        host.public_ip = public_ip
+        host.private_ip = private_ip
+        hosts_by_name[host.name] = host
+
+    for i, host_name in enumerate(inventory.all_groups['kafka'].host_names):
+        hosts_by_name[host_name].vars['kafka_broker_id'] = i
+        hosts_by_name[host_name].vars['swap_size'] = '2G'
+
+    for host_name in inventory.all_groups['elasticsearch'].host_names:
+        hosts_by_name[host_name].vars['elasticsearch_node_name'] = host_name
 
     save_inventory(env, inventory)
     copy_default_vars(env, spec.aws_config)
 
 
+def alphanumeric_sort_key(key):
+    """
+    Sort the given iterable in the way that humans expect.
+    Thanks to http://stackoverflow.com/a/2669120/240553
+    """
+    import re
+    convert = lambda text: int(text) if text.isdigit() else text
+    return [convert(c) for c in re.split('([0-9]+)', key)]
+
+
 def bootstrap_inventory(spec, env):
-    inventory = AnsibleInventory()
     incomplete = dict(spec.allocations.items())
 
-    all_hosts = set()
+    inventory = Inventory()
 
     while incomplete:
-        for name, allocation in incomplete.items():
+        for role, allocation in incomplete.items():
             if allocation.from_:
                 if allocation.from_ not in spec.allocations:
                     raise KeyError('You specified an unknown group in the from field of {}: {}'
-                                   .format(name, allocation.from_))
+                                   .format(role, allocation.from_))
                 if allocation.from_ in incomplete:
                     continue
-                inventory.all.children[name] = AnsibleInventoryGroup(hosts={
-                    host: {}
-                    for host in inventory.all.children[allocation.from_].hosts.keys()[:allocation.count]
-                })
+                # This is kind of hacky because it does a string sort
+                # on strings containing integers.
+                # Once we have more than 10 it'll start sorting wrong
+                host_names = sorted(
+                    inventory.all_groups[allocation.from_].host_names,
+                    key=alphanumeric_sort_key,
+                )[:allocation.count]
+                inventory.all_groups[role] = Group(
+                    name=role,
+                    host_names=[host_name for host_name in host_names],
+                    vars={},
+                )
             else:
-                new_hosts = {
-                    '{env}-{group}-{i}'.format(env=env, group=name, i=i)
-                    for i in range(allocation.count)
-                }
-                inventory.all.children[name] = AnsibleInventoryGroup(hosts={
-                    host: {} for host in new_hosts
-                })
-                all_hosts.update(new_hosts)
-            del incomplete[name]
-    return all_hosts, inventory
+                new_host_names = set()
+                for i in range(allocation.count):
+                    host_name = '{env}-{group}-{i}'.format(env=env, group=role, i=i)
+                    new_host_names.add(host_name)
+                    inventory.all_hosts.append(
+                        Host(name=host_name, public_ip=None, private_ip=None, vars={}))
+                inventory.all_groups[role] = Group(
+                    name=role,
+                    host_names=[host_name for host_name in new_host_names],
+                    vars={},
+                )
+
+            del incomplete[role]
+    return inventory
 
 
 def ask_aws_for_instances(env, aws_config, count):
@@ -124,9 +174,8 @@ def ask_aws_for_instances(env, aws_config, count):
             '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env + '}]',
         ]
         aws_response = subprocess.check_output(cmd_parts)
-        with open('ask_aws_for_instances.json', 'w') as f:
+        with open(cache_file, 'w') as f:
             f.write(aws_response)
-
     aws_response = json.loads(aws_response)
     return {instance['InstanceId'] for instance in aws_response["Instances"]}
 
@@ -134,17 +183,74 @@ def ask_aws_for_instances(env, aws_config, count):
 def print_describe_instances(describe_instances):
     for reservation in describe_instances['Reservations']:
         for instance in reservation['Instances']:
-            print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PublicDnsName}".format(**instance),
+            print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PrivateIpAddress}".format(**instance),
                   file=sys.stderr)
 
 
-def poll_for_aws_state(env, instance_ids):
+def raw_describe_instances(env):
     cmd_parts = [
         'aws', 'ec2', 'describe-instances', '--filters',
         'Name=instance-state-code,Values=16',
         'Name=tag:env,Values=' + env
     ]
-    describe_instances = json.loads(subprocess.check_output(cmd_parts))
+    return json.loads(subprocess.check_output(cmd_parts))
+
+
+def get_hosts_from_describe_instances(describe_instances):
+    hosts = []
+    for reservation in describe_instances['Reservations']:
+        for instance in reservation['Instances']:
+            hosts.append(
+                Host(public_ip=instance['PublicIpAddress'],
+                     private_ip=instance['PrivateIpAddress']))
+    return hosts
+
+
+def get_inventory_from_file(env):
+    inventory = Inventory()
+    state = None
+    with open(get_inventory_filepath(env)) as f:
+        for line in f.readlines():
+            group_line_match = re.match(r'^\[\s*(.*)\s*\]\s*$', line)
+            if re.match(r'^\s*$', line):
+                continue
+            if group_line_match:
+                section_name = group_line_match.groups()[0]
+                if section_name.endswith(':children'):
+                    state = 'parsing-group'
+                    current_group_name = section_name[:-len(':children')]
+                    current_group = Group(name=current_group_name)
+                    inventory.all_groups[current_group_name] = current_group
+                else:
+                    state = 'parsing-host'
+                    current_host_name = section_name
+            else:
+                if state == 'parsing-host':
+                    line_groups = list(re.split(r'\s+', line.strip()))
+                    private_ip, variables = line_groups[0], line_groups[1:]
+                    variables = dict(var.strip().split('=') for var in variables)
+                    public_ip = variables.pop('ansible_host')
+                    host = Host(name=current_host_name, private_ip=private_ip, public_ip=public_ip,
+                                vars=variables)
+                    inventory.all_hosts.append(host)
+                elif state == 'parsing-group':
+                    host_name = line.strip()
+                    current_group.host_names.append(host_name)
+                else:
+                    raise ValueError('Encountered items outside a section')
+    return inventory
+
+
+def update_inventory_public_ips(inventory, new_hosts):
+    assert len(inventory.all_hosts) == len(new_hosts)
+    assert {host.private_ip for host in inventory.all_hosts} == {host.private_ip for host in new_hosts}
+    new_host_by_private_ip = {host.private_ip: host for host in new_hosts}
+    for host in inventory.all_hosts:
+        host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
+
+
+def poll_for_aws_state(env, instance_ids):
+    describe_instances = raw_describe_instances(env)
     print_describe_instances(describe_instances)
 
     instances = [instance
@@ -156,15 +262,19 @@ def poll_for_aws_state(env, instance_ids):
     }
     if not unfinished_instances:
         return {
-            instance['InstanceId']: instance['PublicIpAddress']
+            instance['InstanceId']: (instance['PublicIpAddress'], instance['PrivateIpAddress'])
             for instance in instances
             if instance['InstanceId'] in instance_ids
         }
 
 
 def save_inventory(env, inventory):
-    inventory_file_contents = yaml.safe_dump(inventory.to_json(), default_flow_style=False)
+    j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    template = j2.get_template('inventory.ini.j2')
+    inventory_file_contents = template.render(inventory=inventory)
     inventory_file = get_inventory_filepath(env)
+    if not os.path.exists(os.path.dirname(inventory_file)):
+        os.makedirs(os.path.dirname(inventory_file))
     with open(inventory_file, 'w') as f:
         f.write(inventory_file_contents)
     print('inventory file saved to {}'.format(inventory_file),
@@ -172,15 +282,15 @@ def save_inventory(env, inventory):
 
 
 def copy_default_vars(env, aws_config):
-    template_dir = os.path.join(VARS_DIR, 'dev')
+    vars_dir = VARS_DIR
+    template_dir = os.path.join(vars_dir, '.commcare-cloud-bootstrap')
     new_dir = ENVIRONMENTS_DIR
-    if os.path.exists(VARS_DIR) and os.path.exists(template_dir) and not os.path.exists(new_dir):
-        os.makedirs(new_dir)
-        shutil.copyfile(os.path.join(template_dir, 'dev_private.yml'),
-                        get_vault_vars_filepath(env))
-        shutil.copyfile(os.path.join(template_dir, 'dev_public.yml'),
-                        get_public_vars_filepath(env))
-        with open(get_public_vars_filepath(env), 'a') as f:
+    vars_public = get_public_vars_filepath(env)
+    vars_vault = get_vault_vars_filepath(env)
+    if os.path.exists(template_dir) and not os.path.exists(vars_public):
+        shutil.copyfile(os.path.join(template_dir, 'private.yml'), vars_vault)
+        shutil.copyfile(os.path.join(template_dir, 'public.yml'), vars_public)
+        with open(vars_public, 'a') as f:
             f.write('commcare_cloud_root_user: ubuntu\n')
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
             f.write('commcare_cloud_strict_host_key_checking: no\n')
@@ -189,15 +299,72 @@ def copy_default_vars(env, aws_config):
               file=sys.stderr)
 
 
+class Provision(object):
+    command = 'provision'
+    help = """Provision a new environment based on a spec yaml file. (See example_spec.yml.)"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('spec')
+        parser.add_argument('--env')
+
+    @staticmethod
+    def run(args):
+        with open(args.spec) as f:
+            spec = yaml.load(f)
+
+        spec = Spec.wrap(spec)
+        provision_machines(spec, args.env)
+
+
+class Show(object):
+    command = 'show'
+    help = """Show provisioned instances for a given env"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        print_describe_instances(describe_instances)
+
+
+class Reip(object):
+    command = 'reip'
+    help = ("Rewrite the public IP addresses in the inventory for an env. "
+            "Useful after reboot.")
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        new_hosts = get_hosts_from_describe_instances(describe_instances)
+        inventory = get_inventory_from_file(args.env)
+        update_inventory_public_ips(inventory, new_hosts)
+        save_inventory(args.env, inventory)
+
+
+STANDARD_ARGS = [
+    Provision,
+    Show,
+    Reip,
+]
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('spec')
-    parser.add_argument('--env')
+    subparsers = parser.add_subparsers(dest='command')
+
+    for standard_arg in STANDARD_ARGS:
+        standard_arg.make_parser(subparsers.add_parser(standard_arg.command, help=standard_arg.help))
 
     args = parser.parse_args()
 
-    with open(args.spec) as f:
-        spec = yaml.load(f)
-    spec = Spec.wrap(spec)
-    # provision_machines(spec, args.env)
-    copy_default_vars(args.env, spec.aws_config)
+    for standard_arg in STANDARD_ARGS:
+        if args.command == standard_arg.command:
+            standard_arg.run(args)
