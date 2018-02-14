@@ -307,7 +307,8 @@ def check_and_translate_hosts(env_name, host_mapping):
                 abort('Unknown host referenced in app processes: {}'.format(host))
             group_hosts = group.get_hosts()
             if len(group_hosts) == 1:
-                translated[group_hosts[0]] = config
+                host = group_hosts[0].get_name()
+                translated[host] = config
             else:
                 abort(
                     'Unable to translate host referenced '

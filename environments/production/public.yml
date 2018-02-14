@@ -23,10 +23,8 @@ active_sites:
   cas_ssl: False
   couchdb2: False
 
-riak_backend: "leveldb-bad-config"
-riak_ring_size: 64
-riak_new_backend: "leveldb"
-riak_new_ring_size: 128
+riak_backend: "leveldb"
+riak_ring_size: 128
 
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
@@ -152,6 +150,8 @@ localsettings:
     - "{{ J2ME_SITE_HOST }}"
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
+  APPCUES_ID: "{{ localsettings_private.APPCUES_ID }}"
+  APPCUES_KEY: "{{ localsettings_private.APPCUES_KEY }}"
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
