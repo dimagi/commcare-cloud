@@ -143,7 +143,7 @@ pillows:
       total_processes: 36
     CaseToElasticsearchPillow:
       start_process: 0
-      num_processes: 6
+      num_processes: 4
       total_processes: 24
   'pillow1':
     DefaultChangeFeedPillow:
@@ -160,21 +160,21 @@ pillows:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
-    CaseToElasticsearchPillow:
-      start_process: 6
-      num_processes: 6
-      total_processes: 24
     kafka-ucr-static-cases:
       start_process: 6
       num_processes: 6
       total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 4
+      num_processes: 4
+      total_processes: 24
   'pillow2':
     kafka-ucr-static-cases:
       start_process: 12
       num_processes: 6
       total_processes: 36
     CaseToElasticsearchPillow:
-      start_process: 12
+      start_process: 8
       num_processes: 4
       total_processes: 24
   'pillow3':
@@ -183,7 +183,7 @@ pillows:
       num_processes: 6
       total_processes: 36
     CaseToElasticsearchPillow:
-      start_process: 16
+      start_process: 12
       num_processes: 4
       total_processes: 24
   'pillow4':
@@ -192,7 +192,7 @@ pillows:
       num_processes: 6
       total_processes: 36
     CaseToElasticsearchPillow:
-      start_process: 20
+      start_process: 16
       num_processes: 4
       total_processes: 24
   'pillow5':
@@ -200,6 +200,10 @@ pillows:
       start_process: 30
       num_processes: 6
       total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 20
+      num_processes: 4
+      total_processes: 24
   'pillow6':
     kafka-ucr-static-forms:
       num_processes: 8
