@@ -15,10 +15,6 @@ celery_processes:
     celery_periodic:
        concurrency: 4
        server_whitelist: 10.247.164.40
-    pillow_retry_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 1
     submission_reprocessing_queue:
        concurrency: 1
     email_queue:
@@ -75,7 +71,7 @@ celery_processes:
       concurrency: 8
   'celery4':
     ucr_indicator_queue:
-      concurrency: 10
+      concurrency: 8
     background_queue,case_rule_queue:
       concurrency: 4
       max_tasks_per_child: 1
@@ -83,6 +79,27 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 10
+  'celery5':
+    pillow_retry_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    ucr_indicator_queue:
+      concurrency: 4
+  'celery6':
+    pillow_retry_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    ucr_indicator_queue:
+      concurrency: 4
+  'celery7':
+    pillow_retry_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    ucr_indicator_queue:
+      concurrency: 4
   'web0':
     ucr_indicator_queue:
       concurrency: 3
@@ -120,6 +137,76 @@ celery_processes:
       concurrency: 4
 pillows:
   'pillow0':
+    kafka-ucr-static-cases:
+      start_process: 0
+      num_processes: 6
+      total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 0
+      num_processes: 4
+      total_processes: 24
+  'pillow1':
+    kafka-ucr-static-cases:
+      start_process: 6
+      num_processes: 6
+      total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 4
+      num_processes: 4
+      total_processes: 24
+  'pillow2':
+    kafka-ucr-static-cases:
+      start_process: 12
+      num_processes: 6
+      total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 8
+      num_processes: 4
+      total_processes: 24
+  'pillow3':
+    kafka-ucr-static-cases:
+      start_process: 18
+      num_processes: 6
+      total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 12
+      num_processes: 4
+      total_processes: 24
+  'pillow4':
+    kafka-ucr-static-cases:
+      start_process: 24
+      num_processes: 6
+      total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 16
+      num_processes: 4
+      total_processes: 24
+  'pillow5':
+    kafka-ucr-static-cases:
+      start_process: 30
+      num_processes: 6
+      total_processes: 36
+    CaseToElasticsearchPillow:
+      start_process: 20
+      num_processes: 4
+      total_processes: 24
+  'pillow6':
+    kafka-ucr-static-forms:
+      num_processes: 8
+    kafka-ucr-main:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    LedgerToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+    XFormToElasticsearchPillow:
+      num_processes: 4
+  'pillow7':
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 8
+  'pillow8':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
@@ -134,15 +221,7 @@ pillows:
       num_processes: 1
     UserPillow:
       num_processes: 1
-    kafka-ucr-static-cases:
-      start_process: 0
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 0
-      num_processes: 6
-      total_processes: 24
-  'pillow1':
+  'pillow9':
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
@@ -157,58 +236,3 @@ pillows:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
-    CaseToElasticsearchPillow:
-      start_process: 6
-      num_processes: 6
-      total_processes: 24
-    kafka-ucr-static-cases:
-      start_process: 6
-      num_processes: 6
-      total_processes: 36
-  'pillow2':
-    kafka-ucr-static-cases:
-      start_process: 12
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 12
-      num_processes: 4
-      total_processes: 24
-  'pillow3':
-    kafka-ucr-static-cases:
-      start_process: 18
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 16
-      num_processes: 4
-      total_processes: 24
-  'pillow4':
-    kafka-ucr-static-cases:
-      start_process: 24
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 20
-      num_processes: 4
-      total_processes: 24
-  'pillow5':
-    kafka-ucr-static-cases:
-      start_process: 30
-      num_processes: 6
-      total_processes: 36
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 4
-  'pillow6':
-    kafka-ucr-static-forms:
-      num_processes: 8
-    kafka-ucr-main:
-      num_processes: 1
-    KafkaDomainPillow:
-      num_processes: 1
-    LedgerToElasticsearchPillow:
-      num_processes: 1
-    SqlSMSPillow:
-      num_processes: 1
-    XFormToElasticsearchPillow:
-      num_processes: 4
