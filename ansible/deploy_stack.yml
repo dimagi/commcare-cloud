@@ -22,6 +22,7 @@
 - import_playbook: deploy_mailrelay.yml
 - import_playbook: deploy_tmpreaper.yml
 - import_playbook: deploy_etckeeper.yml
-
+# migrate must happen before first fab, and also before touchforms can create its special user
+- import_playbook: migrate.yml
 - import_playbook: deploy_touchforms.yml
   when: touchforms_enabled|default(true)
