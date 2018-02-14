@@ -170,4 +170,6 @@ blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
-aws_endpoint: "s3.{{ aws_region }}.amazonaws.com"
+aws_region: None
+# this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
+aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
