@@ -132,6 +132,8 @@ localsettings:
     - testserver
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
+  APPCUES_ID: "{{ localsettings_private.APPCUES_ID }}"
+  APPCUES_KEY: "{{ localsettings_private.APPCUES_KEY }}"
   BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
