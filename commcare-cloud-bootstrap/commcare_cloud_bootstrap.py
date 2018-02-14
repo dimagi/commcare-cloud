@@ -25,10 +25,14 @@ class StrictJsonObject(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
 
-# Spec
-
-
 class Spec(StrictJsonObject):
+    """
+    Parser for spec files
+
+    These files declare how many machines should be allocated for each role.
+    See specs/example_spec.yml for an example.
+
+    """
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
     allocations = jsonobject.DictProperty(lambda: Allocation)
 
@@ -52,13 +56,19 @@ class AwsConfig(StrictJsonObject):
 
 
 class Allocation(StrictJsonObject):
-    count = jsonobject.IntegerProperty()
+    count = jsonobject.IntegerProperty(default=None)  # None means all here
     from_ = jsonobject.StringProperty(name='from')
 
 
-# Inventory
-
 class Inventory(StrictJsonObject):
+    """
+    This is an internal representation of the info we'll put in an ansible inventory file
+
+    It's not structured the same way ansible inventory files are,
+    because conceptually we treat host "groups" (just a way to name individual hosts)
+    differently from "actual" groups (which we use to define roles).
+
+    """
     all_hosts = jsonobject.ListProperty(lambda: Host)
     all_groups = jsonobject.DictProperty(lambda: Group)
 
@@ -132,13 +142,10 @@ def bootstrap_inventory(spec, env):
                                    .format(role, allocation.from_))
                 if allocation.from_ in incomplete:
                     continue
-                # This is kind of hacky because it does a string sort
-                # on strings containing integers.
-                # Once we have more than 10 it'll start sorting wrong
                 host_names = sorted(
                     inventory.all_groups[allocation.from_].host_names,
                     key=alphanumeric_sort_key,
-                )[:allocation.count]
+                )[:allocation.count]  # if count is None, this is all machines
                 inventory.all_groups[role] = Group(
                     name=role,
                     host_names=[host_name for host_name in host_names],
@@ -301,16 +308,13 @@ def save_fab_settings_yml(env):
 
 
 def copy_default_vars(env, aws_config):
-    new_dir = ENVIRONMENTS_DIR
     vars_public = get_public_vars_filepath(env)
     vars_vault = get_vault_vars_filepath(env)
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
-        shutil.copyfile(os.path.join(template_dir, 'private.yml'), vars_vault)
-        shutil.copyfile(os.path.join(template_dir, 'public.yml'), vars_public)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         with open(vars_public, 'a') as f:
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
-        print('template vars dir copied to {}'.format(new_dir),
-              file=sys.stderr)
 
 
 class Provision(object):
