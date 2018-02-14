@@ -6,8 +6,6 @@ NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
 J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
 internal_domain_name: 'localdomain'
 
-testing: True
-
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
