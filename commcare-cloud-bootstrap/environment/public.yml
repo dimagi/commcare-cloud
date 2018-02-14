@@ -292,6 +292,7 @@ localsettings:
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: commcarehq
   PG_DATABASE_USER: commcarehq
+  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
@@ -318,3 +319,7 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+
+commcare_cloud_root_user: ubuntu
+commcare_cloud_strict_host_key_checking: no
+commcare_cloud_use_vault: no
