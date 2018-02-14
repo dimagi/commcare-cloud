@@ -1,4 +1,4 @@
-# Ansible in commcare-cloud 
+# Ansible in commcare-cloud
 
 The roles and playbooks in this directory are intended to be used through
 commcare-cloud, via commands such as `commcare-cloud <env> ansible-playbook`
@@ -81,9 +81,16 @@ The one other change needed is to point to the proper inventory. Instead of usin
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
+$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml --tags=users --user=root
 ```
 
+Now you will have ansible user in monolith that you can use to run the further playbooks.
+
+Note: the above step in necessary since subsequent playbooks block root login to monolith.
+
+```
+$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml --user=ansible
+```
 ### Email setup
 
 In order to have this set up send email without crashing
@@ -103,7 +110,7 @@ $ python -m smtpd -n -c DebuggingServer 0.0.0.0:1025
   * Or on a Mac, `$ sudo /Library/StartupItems/VirtualBox/VirtualBox restart`
 * Attempt to start the VM
   * If the error message is: `VT-x needs to be enabled in BIOS`
-For the Lenovo T440s: 
+For the Lenovo T440s:
   * Restart machine, press Enter during startup
   * Navigate to Security -> Virtualization
     * Turn both settings on
