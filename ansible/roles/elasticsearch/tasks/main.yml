@@ -90,7 +90,7 @@
 - name: Install elasticsearch aws plugin
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: "backup_es and 'cloud-aws' not in installed_plugins.stdout"
+  when: (backup_es) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout)
 
 - name: Reload upstart
   become: yes
