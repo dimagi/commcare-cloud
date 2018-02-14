@@ -71,7 +71,7 @@ celery_processes:
       concurrency: 8
   'celery4':
     ucr_indicator_queue:
-      concurrency: 10
+      concurrency: 8
     background_queue,case_rule_queue:
       concurrency: 4
       max_tasks_per_child: 1
