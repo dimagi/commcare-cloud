@@ -20,6 +20,7 @@ active_sites:
   riakcs: False
   pna_ssl: True
 
+ssh_allow_password: True
 ssh_port: 1337
 fake_ssl_cert: no
 
@@ -153,6 +154,10 @@ KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "127.0.0.1"
 AMQP_NAME: commcarehq
+
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
 
 shared_drive_enabled: false
 

@@ -31,9 +31,9 @@ dev_users:
     - droberts
     - esoergel
     - frener
+    - gbova
     - gcapalbo
     - jemord
-    - jhoffman
     - jroth
     - jschweers
     - jwilson
@@ -55,6 +55,7 @@ dev_users:
     - jenkins_slave
     - brudolph
     - ncarnahan
+    - jhoffman
 
 ssh_allow_password: False
 django_port: 9010
