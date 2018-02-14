@@ -69,6 +69,9 @@ celery_processes:
     background_queue:
       concurrency: 4
       max_tasks_per_child: 1
+    send_report_throttled:
+      concurrency: 2
+      max_tasks_per_child: 1
 pillows:
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
