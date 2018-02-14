@@ -45,14 +45,9 @@
   changed_when: false
   check_mode: no
 
+- import_tasks: remove_users.yml
+  when: dev_users.absent
+
 - name: Copy sudoers file
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
-
-# ansible used to create this file
-# but for consistency with prod machines, we changed to 'cchq'
-- name: remove cchq_sudoers
-  file: state=absent path=/etc/sudoers.d/cchq_sudoers
-
-- import_tasks: remove_users.yml
-  when: dev_users.absent

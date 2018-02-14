@@ -1,6 +1,6 @@
 aws_config:
   pem: /path/to/cert.pem
-  ami: ami-xxxxxxxx
+  ami: ami-7dce6507
   type: t2.micro
   key_name: aws_key_name
   security_group_id: sg-xxxxxxxx
@@ -17,6 +17,8 @@ allocations:
   celery: 1
   pillowtop: 1
   formplayer: 1
+  touchforms:
+    from: formplayer
   redis: 1
   elasticsearch: 1
   shared_dir_host: 1
@@ -28,3 +30,4 @@ allocations:
   couchdb2_proxy:
     count: 1
     from: couchdb2
+  pg_standby: 0
