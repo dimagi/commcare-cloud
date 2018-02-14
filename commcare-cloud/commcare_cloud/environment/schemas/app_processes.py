@@ -125,7 +125,8 @@ def check_and_translate_hosts(environment, host_mapping):
             assert len(group_hosts) == 1, (
                 'Unable to translate host referenced '
                 'in app processes to a single host name: {}'.format(host))
-            host = group_hosts[0].get_name()
+            host_object = group_hosts[0]
+            host = host_object.get_vars().get('ansible_host', host_object.get_name())
             translated[host] = config
 
     return translated
