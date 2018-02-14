@@ -46,7 +46,7 @@
 
 - name: Create the link for site enabled specific configurations
   become: yes
-  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
+  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default force=yes
 
 - name: Allow cchq user to modify sites-availabled
   become: yes
@@ -137,6 +137,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and commtrack_key_file is defined
 
 - name: Copy icds tableau SSL cert (from vault)
@@ -157,6 +158,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and tableau_key_value is defined
 
 - name: Copy CAS SSL cert
@@ -177,6 +179,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and cas_key_value is defined
 
 - name: Copy Enikshay SSL cert (from vault)
@@ -207,6 +210,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is defined
 
 - name: Copy Enikshay SSL Key
@@ -217,6 +221,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is undefined
 
 - name: Copy PNA SSL cert (from vault)
@@ -247,6 +252,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is defined
 
 - name: Copy PNA SSL Key
@@ -257,6 +263,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is undefined
 
 - set_fact: nginx_installed=True
