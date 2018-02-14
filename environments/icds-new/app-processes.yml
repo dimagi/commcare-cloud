@@ -200,8 +200,6 @@ pillows:
       start_process: 30
       num_processes: 6
       total_processes: 36
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 4
   'pillow6':
     kafka-ucr-static-forms:
       num_processes: 8
@@ -216,5 +214,7 @@ pillows:
     XFormToElasticsearchPillow:
       num_processes: 4
   'pillow7':
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 8
   'pillow8':
   'pillow9':
