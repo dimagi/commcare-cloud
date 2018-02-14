@@ -84,16 +84,22 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 2
+    ucr_indicator_queue:
+      concurrency: 4
   'celery6':
     pillow_retry_queue:
       pooling: gevent
       concurrency: 5
       num_workers: 2
+    ucr_indicator_queue:
+      concurrency: 4
   'celery7':
     pillow_retry_queue:
       pooling: gevent
       concurrency: 5
       num_workers: 2
+    ucr_indicator_queue:
+      concurrency: 4
   'web0':
     ucr_indicator_queue:
       concurrency: 3
