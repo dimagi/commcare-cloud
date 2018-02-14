@@ -83,6 +83,9 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 10
+  'celery5':
+  'celery6':
+  'celery7':
   'web0':
     ucr_indicator_queue:
       concurrency: 3
@@ -212,3 +215,6 @@ pillows:
       num_processes: 1
     XFormToElasticsearchPillow:
       num_processes: 4
+  'pillow7':
+  'pillow8':
+  'pillow9':
