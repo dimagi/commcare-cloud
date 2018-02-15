@@ -110,6 +110,11 @@
   tags:
     - es_restart
 
+- name: Wait for elastic Search to come up, start checking after 5 second
+  wait_for:
+    port: 9200
+    delay: 5
+
 - name: Create initial snapshot
   uri:
     url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
