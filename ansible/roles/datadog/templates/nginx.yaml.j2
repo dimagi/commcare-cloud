@@ -7,3 +7,4 @@ instances:
   - nginx_status_url: http://localhost/nginx_stub_status/
     tags:
       - environment:{{ env_name|default(deploy_env) }}
+    no_proxy: True
