@@ -1,0 +1,2 @@
+SITE_HOST: 'emm.dimagi.com'
+deploy_env: emm-gateway
