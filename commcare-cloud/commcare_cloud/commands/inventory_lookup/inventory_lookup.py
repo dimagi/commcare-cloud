@@ -1,6 +1,8 @@
 from __future__ import print_function
 import os
 import sys
+
+from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment import get_public_vars
 from .getinventory import get_server_address
@@ -29,7 +31,7 @@ class Lookup(CommandBase):
             sys.stderr.write(
                 "Ignoring extra argument(s): {}\n".format(unknown_args)
             )
-        print(self.lookup_server_address(args))
+        print_command(self.lookup_server_address(args))
 
 
 class Ssh(Lookup):
@@ -43,7 +45,7 @@ class Ssh(Lookup):
             ssh_args = ['-p', port] + ssh_args
         cmd_parts = [self.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print(cmd)
+        print_command(cmd)
         os.execvp(self.command, cmd_parts)
 
 
