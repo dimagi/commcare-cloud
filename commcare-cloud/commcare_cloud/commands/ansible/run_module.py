@@ -3,7 +3,7 @@ import os
 import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
-from commcare_cloud.cli_utils import ask
+from commcare_cloud.cli_utils import ask, print_command
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
     get_common_ssh_args
 from commcare_cloud.commands.command_base import CommandBase
@@ -102,7 +102,7 @@ class RunAnsibleModule(CommandBase):
 
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-            print(cmd)
+            print_command(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
                 p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
