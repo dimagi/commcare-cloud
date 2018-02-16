@@ -164,7 +164,7 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 You must ssh in as your dev user, with SSH `ForwardAgent` enabled (see above).
 
 ```bash
-git clone git@github.com:dimagi/commcare-cloud
+git clone https://github.com/dimagi/commcare-cloud.git
 . commcare-cloud/control/init.sh
 update-code
 
