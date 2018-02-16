@@ -56,6 +56,10 @@ class Mosh(Ssh):
 
 class DjangoManage(CommandBase):
     command = 'django-manage'
+    help = ("Run a django management command. "
+            "`commcare-cloud <env> django-manage ...` "
+            "runs `./manage.py ...` on the first webworker of <env>. "
+            "Omit <command> to see a full list of possible commands.")
 
     def make_parser(self):
         pass
