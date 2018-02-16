@@ -65,6 +65,7 @@ CELERY_PROCESSES = [
     CeleryProcess("reminder_rule_queue"),
     CeleryProcess("repeat_record_queue"),
     CeleryProcess("saved_exports_queue"),
+    CeleryProcess("send_report_throttled", required=False),
     CeleryProcess("sms_queue"),
     CeleryProcess("submission_reprocessing_queue", required=False),
     CeleryProcess("ucr_indicator_queue", required=False),
