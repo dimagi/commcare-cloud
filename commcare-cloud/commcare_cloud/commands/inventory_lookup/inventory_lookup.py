@@ -1,6 +1,8 @@
+from __future__ import print_function
 import os
 import sys
 from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.environment import get_public_vars
 from .getinventory import get_server_address
 from six.moves import shlex_quote
 
@@ -48,3 +50,25 @@ class Ssh(Lookup):
 class Mosh(Ssh):
     command = 'mosh'
     help = "Connect to a remote host with mosh"
+
+
+class DjangoManage(CommandBase):
+    command = 'django-manage'
+
+    def make_parser(self):
+        pass
+
+    def run(self, args, manage_args):
+        public_vars = get_public_vars(args.environment)
+        # the default 'cchq' is redundant with ansible/group_vars/all.yml
+        cchq_user = public_vars.get('cchq_user', 'cchq')
+        deploy_env = public_vars['deploy_env']
+        # the paths here are redundant with ansible/group_vars/all.yml
+        code_current = '/home/{cchq_user}/www/{deploy_env}/current'.format(
+            cchq_user=cchq_user, deploy_env=deploy_env)
+        remote_command = (
+            'sudo -u {cchq_user} {code_current}/python_env/bin/python {code_current}/manage.py {args}'
+            .format(cchq_user=cchq_user, code_current=code_current, args=' '.join(shlex_quote(arg) for arg in manage_args))
+        )
+        args.server = 'webworkers:0'
+        Ssh(self.parser).run(args, [remote_command])
