@@ -4,7 +4,7 @@ import yaml
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-ENVIRONMENTS_DIR = os.path.join(REPO_BASE, 'environments')
+ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(REPO_BASE, 'environments'))
 FAB_DIR = os.path.join(REPO_BASE, 'fab')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
 
@@ -40,6 +40,11 @@ def get_virtualenv_site_packages_path():
 
 
 def get_available_envs():
+    if not os.path.exists(ENVIRONMENTS_DIR):
+        print("The directory {!r} does not exist.\n"
+              "Set COMMCARE_CLOUD_ENVIRONMENTS to a directory that exists."
+              .format(ENVIRONMENTS_DIR))
+        exit(1)
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
         if os.path.exists(get_public_vars_filepath(env))
