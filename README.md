@@ -5,6 +5,8 @@ Status](https://travis-ci.org/dimagi/commcare-cloud.svg?branch=master)](https://
 
 Tools for standing up and managing a CommCare HQ server environment.
 
+Docs at [https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/commcare-cloud/)
+.
 
 # Components
 
