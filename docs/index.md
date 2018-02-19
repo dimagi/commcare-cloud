@@ -1,3 +1,3 @@
-Check out the following docs
+# Quick Links
 - The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
 - The [ansible README](https://github.com/dimagi/commcare-cloud/blob/master/ansible/README.md) (somewhat outdated)
