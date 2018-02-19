@@ -10,8 +10,8 @@ from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_branch, arg_stdout_callback
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment import ANSIBLE_DIR, get_inventory_filepath, get_vault_vars_filepath, \
-    get_public_vars_filepath, get_public_vars
+from commcare_cloud.environment import ANSIBLE_DIR, get_known_hosts_filepath, get_inventory_filepath, \
+    get_vault_vars_filepath, get_public_vars_filepath, get_public_vars
 
 
 class AnsiblePlaybook(CommandBase):
@@ -69,6 +69,11 @@ class AnsiblePlaybook(CommandBase):
 
             if not has_arg(unknown_args, '-f', '--forks'):
                 cmd_parts += ('--forks', '15')
+
+            known_hosts_filepath = get_known_hosts_filepath(environment)
+            print known_hosts_filepath
+            if os.path.exists(known_hosts_filepath):
+                cmd_parts += ("--ssh-common-args='-o=UserKnownHostsFile=%s'" % (known_hosts_filepath,), )
 
             if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
                 puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
