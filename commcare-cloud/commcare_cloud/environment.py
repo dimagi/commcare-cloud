@@ -17,6 +17,10 @@ def get_vault_vars_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
 
 
+def get_known_hosts_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'known_hosts')
+
+
 def get_inventory_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
 
