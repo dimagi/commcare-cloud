@@ -1,3 +1,4 @@
 theme: jekyll-theme-leap-day
-description: Official toolkit for deploying and maintaining a CommCare server cluster
+title: <a href="."><img src="https://www.commcarehq.org/static/hqstyle/images/commcare-flower-lg.png" width="40"/></a> CommCare Cloud
+description: Official toolkit for deploying and maintaining CommCare server environment
 author: Dimagi
