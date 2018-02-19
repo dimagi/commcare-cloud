@@ -71,7 +71,6 @@ class AnsiblePlaybook(CommandBase):
                 cmd_parts += ('--forks', '15')
 
             known_hosts_filepath = get_known_hosts_filepath(environment)
-            print known_hosts_filepath
             if os.path.exists(known_hosts_filepath):
                 cmd_parts += ("--ssh-common-args='-o=UserKnownHostsFile=%s'" % (known_hosts_filepath,), )
 
