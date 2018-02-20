@@ -2,6 +2,12 @@
   - all
   tasks:
   - action: ping
+  - wait_for:
+      host: "{{ item }}"
+      port: 22
+      timeout: 5
+    with_items: "{{ groups['all'] }}"
+  - debug: msg=ok
 
 - hosts:
   - proxy
@@ -113,6 +119,19 @@
     name: Check elasticsearch status
     args:
       warn: False
+
+- hosts:
+  - elasticsearch
+  tasks:
+  - uri: url="http://{{ inventory_hostname }}:9200/_cluster/health" return_content=yes
+    name: Get ES status
+    register: es_status
+    when: inventory_hostname == groups.elasticsearch.0
+  - assert:
+      that: "es_status.json.status == 'green'"
+      msg: "ES health is {{ es_status.json.status }}"
+    name: Check ES status
+    when: inventory_hostname == groups.elasticsearch.0
 
 - hosts:
   - shared_dir_host
