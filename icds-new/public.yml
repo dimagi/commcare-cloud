@@ -165,8 +165,6 @@ datadog_integration_vmware: True
 
 file_email: False
 
-ufw_private_interface: eth0
-
 shared_drive_enabled: true
 
 touchforms_enabled: false
