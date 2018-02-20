@@ -1,0 +1,86 @@
+environment: swiss
+jython_memory: "1024m"
+formplayer_memory: "1024m"
+
+service_blacklist:
+  - supervisor_websockets.conf
+
+celery_processes:
+  '*':
+    repeat_record_queue,celery:
+      concurrency: 1
+      max_tasks_per_child: 5
+    background_queue,case_rule_queue:
+      concurrency: 1
+      max_tasks_per_child: 1
+    celery_periodic:
+      concurrency: 1
+      server_whitelist: swiss.commcarehq.org
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 1
+    email_queue:
+      concurrency: 1
+    saved_exports_queue:
+      concurrency: 1
+      max_tasks_per_child: 1
+      optimize: True
+    pillow_retry_queue:
+      concurrency: 1
+    submission_reprocessing_queue:
+      concurrency: 1
+    ucr_queue:
+      concurrency: 1
+      max_tasks_per_child: 5
+    reminder_case_update_queue:
+      concurrency: 1
+    reminder_queue:
+      concurrency: 1
+    reminder_rule_queue:
+      concurrency: 1
+      max_tasks_per_child: 1
+    sms_queue:
+      concurrency: 1
+    async_restore_queue:
+      concurrency: 1
+    flower: {}
+pillows:
+  '*':
+    AppDbChangeFeedPillow:
+      num_processes: 1
+    ApplicationBlobDeletionPillow:
+      num_processes: 1
+    ApplicationToElasticsearchPillow:
+      num_processes: 1
+    BlobDeletionPillow:
+      num_processes: 1
+    CacheInvalidatePillow:
+      num_processes: 1
+    CaseToElasticsearchPillow:
+      num_processes: 1
+    DefaultChangeFeedPillow:
+      num_processes: 1
+    DomainDbKafkaPillow:
+      num_processes: 1
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 1
+    GroupPillow:
+      num_processes: 1
+    GroupToUserPillow:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+    UnknownUsersPillow:
+      num_processes: 1
+    UpdateUserSyncHistoryPillow:
+      num_processes: 1
+    UserCacheInvalidatePillow:
+      num_processes: 1
+    UserGroupsDbKafkaPillow:
+      num_processes: 1
+    UserPillow:
+      num_processes: 1
+    XFormToElasticsearchPillow:
+      num_processes: 1

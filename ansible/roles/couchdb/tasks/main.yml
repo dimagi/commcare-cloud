@@ -103,25 +103,22 @@
   when: update_config|changed and ((item.host == inventory_hostname) or is_monolith|bool)
   with_items: "{{ couch_dbs.values() }}"
 
-- name: Copy couch restart script
+- name: Copy couch restart script (cleanup)
   become: yes
-  template:
-    src: "couch-restarter.sh.j2"
+  file:
     dest: "/usr/local/sbin/couch-restarter.sh"
-    group: root
-    owner: root
-    mode: 0700
-    backup: yes
+    state: absent
   tags:
     - cron
 
-- name: Create Cron job
+- name: Create Cron job (cleanup)
   become: yes
   cron:
     name: "Reboot Couch"
     job: "/usr/local/sbin/couch-restarter.sh > /dev/null"
     user: root
     cron_file: couch-restarter
+    state: absent
   tags:
     - cron
 
@@ -137,9 +134,9 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
 
-- name: Create Daily Cron job
+- name: Create Daily Cron job (cleanup blobdb)
   become: yes
   cron:
     name: "Backup blobdb daily"
@@ -149,11 +146,13 @@
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
+    state: absent
   when: backup_couch
   tags:
     - cron
+    - backups
 
-- name: Create Weekly Cron job
+- name: Create Weekly Cron job (cleanup blobdb)
   become: yes
   cron:
     name: "Backup blobdb weekly"
@@ -163,7 +162,65 @@
     weekday: 0
     user: couchdb
     cron_file: backup_couch
+    state: absent
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
+
+- name: Create Daily Cron job
+  become: yes
+  cron:
+    name: "Backup couchdb daily"
+    job: "/usr/local/sbin/create_couchdb_backup.sh daily {{ couchdb_backup_days }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: couchdb
+    cron_file: backup_couch
+  when: backup_couch
+  tags:
+    - cron
+    - backups
+
+- name: Create Weekly Cron job
+  become: yes
+  cron:
+    name: "Backup couchdb weekly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: couchdb
+    cron_file: backup_couch
+  when: backup_couch
+  tags:
+    - cron
+    - backups
+
+- name: Create aws config directory
+  become: yes
+  file:
+    path: '{{ couchdb_dir }}/.aws'
+    owner: couchdb
+    group: couchdb
+    mode: 0700
+    state: directory
+  when: couch_s3
+  tags:
+    - cron
+    - backups
+
+- name: copy boto3 credentials file
+  become: yes
+  template:
+    src: "aws_credentials.j2"
+    dest: "{{ couchdb_dir }}/.aws/credentials"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: couch_s3
+  tags:
+    - cron
+    - backups

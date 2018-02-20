@@ -34,7 +34,7 @@
    - _replicator
    - _global_changes
 
-- name: Copy couch restart script
+- name: Copy couch restart script (cleanup)
   become: yes
   file:
     dest: "/usr/local/sbin/couch2-restarter.sh"
@@ -42,7 +42,7 @@
   tags:
     - cron
 
-- name: Create Cron job
+- name: Create Cron job (cleanup)
   become: yes
   cron:
     name: "Reboot Couch"
@@ -52,6 +52,19 @@
     state: absent
   tags:
     - cron
+
+- name: Create couch backup dir
+  become: yes
+  file:
+    path: "{{ couch_backup_dir }}"
+    state: directory
+    mode: 0700
+    group: couchdb
+    owner: couchdb
+  when: backup_couch
+  tags:
+    - cron
+    - backups
 
 - name: Copy couch backup script
   become: yes
@@ -65,13 +78,45 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
+
+- name: Create Daily Cron job (cleanup blobdb)
+  become: yes
+  cron:
+    name: "Backup blobdb daily"
+    job: "/usr/local/sbin/create_couchdb_backup.sh daily {{ couchdb_backup_days }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: couchdb
+    cron_file: backup_couch
+    state: absent
+  when: backup_couch
+  tags:
+    - cron
+    - backups
+
+- name: Create Weekly Cron job (cleanup blobdb)
+  become: yes
+  cron:
+    name: "Backup blobdb weekly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: couchdb
+    cron_file: backup_couch
+    state: absent
+  when: backup_couch
+  tags:
+    - cron
+    - backups
 
 - name: Create Daily Cron job
   become: yes
   cron:
-    name: "Backup blobdb daily"
-    job: "/usr/local/sbin/create_couchdb_backup.sh daily 3"
+    name: "Backup couchdb daily"
+    job: "/usr/local/sbin/create_couchdb_backup.sh daily {{ couchdb_backup_days }}"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
@@ -80,12 +125,13 @@
   when: backup_couch
   tags:
     - cron
+    - backups
 
 - name: Create Weekly Cron job
   become: yes
   cron:
-    name: "Backup blobdb weekly"
-    job: "/usr/local/sbin/create_couchdb_backup.sh weekly 21"
+    name: "Backup coudhdb weekly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     weekday: 0
@@ -94,7 +140,34 @@
   when: backup_couch
   tags:
     - cron
-    - backup
+    - backups
+
+- name: Create aws config directory
+  become: yes
+  file:
+    path: '{{ couchdb_dir }}/.aws'
+    owner: couchdb
+    group: couchdb
+    mode: 0700
+    state: directory
+  when: couch_s3
+  tags:
+    - cron
+    - backups
+
+- name: copy boto3 credentials file
+  become: yes
+  template:
+    src: "aws_credentials.j2"
+    dest: "{{ couchdb_dir }}/.aws/credentials"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: couch_s3
+  tags:
+    - cron
+    - backups
 
 - name: start the couchdb2 service
   service: name="couchdb2" state=started enabled=yes
@@ -117,3 +190,5 @@
     name: couchdb2
     state: monitored
   tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
+

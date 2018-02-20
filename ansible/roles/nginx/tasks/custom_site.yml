@@ -1,0 +1,31 @@
+# use in a play as follows
+#
+#- name: Custom Site X
+#  hosts: host_group_A
+#  tasks:
+#    - include_role:
+#        name: nginx
+#        tasks_from: custom_site
+#      vars:
+#        site_config: {name: cas_ssl, vars_file: cas_ssl}
+
+---
+- name: setup shared dir
+  include_role:
+    name: shared_dir
+
+- name: install nginx
+  include_role:
+    name: nginx
+    tasks_from: install
+  when: not nginx_installed|default(False)
+
+- name: "{{site_config.name}} site"
+  include_role:
+    name: nginx
+    tasks_from: site
+
+- name: Restart nginx
+  include_role:
+    name: nginx
+    tasks_from: restart

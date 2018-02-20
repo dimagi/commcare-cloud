@@ -1,13 +1,26 @@
 ---
+- name: Remove official nginx repository
+  become: yes
+  apt_repository: repo='ppa:nginx/stable' state=absent
+  when: ansible_distribution_version == '14.04'
+
 - name: Add nginx repository
   become: yes
-  apt_repository: repo='ppa:nginx/stable' state=present
+  apt_repository: repo='ppa:ondrej/nginx' state=present
+  with_items: "{{ 'ppa:ondrej/nginx' if ansible_distribution_version == '14.04' else 'ppa:nginx/stable' }}"
 
 - name: Install nginx
   become: yes
-  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=3600
+  apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
   with_items: "{{ nginx_ubuntu_pkg }}"
   when: nginx_install == True
+
+- name: Make sure nofile ulimit is high
+  become: yes
+  lineinfile:
+    path: /etc/default/nginx
+    regexp: '^ULIMIT='
+    line: 'ULIMIT="-n 65536"'
 
 - name: Create nginx http user
   become: yes
@@ -33,7 +46,7 @@
 
 - name: Create the link for site enabled specific configurations
   become: yes
-  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
+  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default force=yes
 
 - name: Allow cchq user to modify sites-availabled
   become: yes
@@ -124,47 +137,50 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and commtrack_key_file is defined
 
-- name: Copy icds SSL cert
+- name: Copy icds tableau SSL cert (from vault)
   become: yes
   copy:
-    src: "{{ tableau_nginx_combined_cert_file }}"
+    content: "{{ tableau_nginx_combined_cert_value }}"
     dest: "{{ ssl_certs_dir }}/{{ tableau_nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and tableau_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and tableau_nginx_combined_cert_value is defined
 
-- name: Copy icds SSL Key
+- name: Copy icds tableau SSL Key (from vault)
   become: yes
   copy:
-    src: "{{ tableau_key_file }}"
+    content: "{{ tableau_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ tableau_nginx_ssl_key }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and tableau_key_file is defined
+  no_log: true
+  when: not fake_ssl_cert and tableau_key_value is defined
 
 - name: Copy CAS SSL cert
   become: yes
   copy:
-    src: "{{ cas_nginx_combined_cert_file }}"
+    content: "{{ cas_nginx_combined_cert_value }}"
     dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and cas_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and cas_nginx_combined_cert_value is defined
 
-- name: Copy CAS SSL Key
+- name: Copy CAS SSL Key (from vault)
   become: yes
   copy:
-    src: "{{ cas_key_file }}"
+    content: "{{ cas_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and cas_key_file is defined
+  no_log: true
+  when: not fake_ssl_cert and cas_key_value is defined
 
 - name: Copy Enikshay SSL cert (from vault)
   become: yes
@@ -194,6 +210,7 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is defined
 
 - name: Copy Enikshay SSL Key
@@ -204,4 +221,49 @@
     mode: 0400
     owner: root
     group: root
+  no_log: true
   when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is undefined
+
+- name: Copy PNA SSL cert (from vault)
+  become: yes
+  copy:
+    content: "{{ pna_nginx_combined_cert_value }}"
+    dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and pna_nginx_combined_cert_file is defined and pna_nginx_combined_cert_value is defined
+
+- name: Copy PNA SSL cert
+  become: yes
+  copy:
+    src: "{{ pna_nginx_combined_cert_file }}"
+    dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
+    mode: 0400
+    owner: root
+    group: root
+  when: not fake_ssl_cert and pna_nginx_combined_cert_file is defined and pna_nginx_combined_cert_value is undefined
+
+- name: Copy PNA SSL Key (from vault)
+  become: yes
+  copy:
+    content: "{{ pna_key_value }}"
+    dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
+    mode: 0400
+    owner: root
+    group: root
+  no_log: true
+  when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is defined
+
+- name: Copy PNA SSL Key
+  become: yes
+  copy:
+    src: "{{ pna_key_file }}"
+    dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
+    mode: 0400
+    owner: root
+    group: root
+  no_log: true
+  when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is undefined
+
+- set_fact: nginx_installed=True

@@ -1,0 +1,6 @@
+ check process pgbouncer with pidfile {{ pgbouncer_pid_file }}
+   group database
+   group pgbouncer
+   start program = "/etc/init.d/pgbouncer start"
+   stop program = "/etc/init.d/pgbouncer stop"
+   if failed host {{ inventory_hostname }} port {{ pgbouncer_port }} then restart

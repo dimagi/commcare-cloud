@@ -1,3 +1,4 @@
+---
 - name: Cleanup shared dir clients
   hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
   become: true
@@ -13,3 +14,33 @@
     - roles/shared_dir/vars/main.yml
   tasks:
     - include: roles/shared_dir/tasks/cleanup_host.yml
+
+- name: Cleanup Formplayer cron jobs
+  hosts:
+    - all:!formplayer
+  become: true
+  tasks:
+    - {include: 'roles/formplayer/tasks/cleanup.yml', tags: ['formplayer', 'cleanup']}
+
+- name: Cleanup PostgreSQL backup tasks
+  hosts:
+    - all
+  become: true
+  tasks:
+    - {include: 'roles/pg_backup/tasks/cleanup.yml', tags: ['postgresql', 'pg_backup', 'cleanup']}
+
+- name: Cleanup blobdb backup tasks
+  hosts:
+    - all
+  become: true
+  tasks:
+    - {include: 'roles/backups/tasks/cleanup.yml', tags: ['backups', 'cleanup']}
+
+- name: Cleanup tochforms tasks
+  hosts:
+    - all
+  become: true
+  tasks:
+    - {include_vars: '../roles/touchforms/defaults/main.yml', tags: ['touchforms', 'cleanup']}
+    - {include_vars: '../roles/touchforms/vars/main.yml', tags: ['touchforms', 'cleanup']}
+    - {include: 'roles/touchforms/tasks/cleanup.yml', tags: ['touchforms', 'cleanup']}

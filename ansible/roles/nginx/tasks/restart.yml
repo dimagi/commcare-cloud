@@ -3,7 +3,7 @@
   become: yes
   shell: "nginx -t"
   register: result
-  always_run: true
+  check_mode: no
   failed_when: "result.rc != 0"
 
 - name: start the nginx service

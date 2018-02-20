@@ -10,16 +10,23 @@
     - zookeeper
     - riakcs
     - formplayer
+    - pg_standby
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
-- name: Postgresql
-  hosts: postgresql
+- name: PostgreSQL
+  hosts: postgresql:pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
+
+- name: PostgreSQL Backup
+  hosts: postgresql:pg_backup
+  become: true
+  roles:
+    - {role: pg_backup, tags: ['postgresql', 'backups', 'pg_backup']}
 
 - name: Setup auth for standby
   hosts:
@@ -30,14 +37,9 @@
     - state: 'present'
   tasks:
     - include: roles/setup_auth_keys.yml
+      when: hot_standby_server is defined
   tags:
     - pg_standby
-
-- name: Posgres Standby
-  hosts: pg_standby
-  become: true
-  roles:
-    - {role: pg_standby, tags: 'pg_standby'}
 
 - name: Couchdb
   hosts: couchdb

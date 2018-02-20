@@ -12,6 +12,22 @@ etc_hosts_lines: []
 etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
+static_routes:
+  - name: docker
+    cmd: add
+    interface: eth1
+    prefix: "172.17.0.0/16"
+    gateway: "192.168.121.1"
+  - name: local
+    cmd: del
+    interface: eth1
+    prefix: "10.0.0.0/8"
+    gateway: "192.168.121.1"
+
 http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
@@ -21,15 +37,13 @@ http_proxy_parent_port: '3128'
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_www_redirect_secure: True
   cchq_http: True
-  cchq_http_redirect: True
+  cchq_www_redirect_insecure: True
   cchq_http_j2me: False
   commtrack_ssl: True
   commtrack_http: True
   riakcs: False
-  couchdb2: True
-  hq_status: False
   icds_tableau: False
   motech: False
   motech2: False
@@ -38,9 +52,14 @@ active_sites:
   tableau: False
   cas_ssl: False
 
+riak_backend: "leveldb"
+riak_ring_size: 64
+
+# This is used for creating all physical resources e.g. /home/cchq/www/{{deploy_env}}
 deploy_env: dev
+# This is the name used for datadog and in settings.SERVER_ENVIRONMENT
+# env_name: dev1
 fake_ssl_cert: yes
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:
   present:
@@ -48,11 +67,9 @@ dev_users:
     - dmiller
     - droberts
     - jwilson
+    - nsharma
     - npellegrino
   absent: []
-
-# use this value to switch between nginx and apache
-proxy_type: nginx
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
@@ -65,19 +82,12 @@ elasticsearch_cluster_name: 'deves'
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: no
-KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
-AMQP_USER: "{{ deploy_env }}_worker"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
@@ -85,6 +95,8 @@ AMQP_NAME: commcarehq
 #keystore_file: 'DimagiKeyStore'
 
 backup_es: False
+
+postgresql_version: 9.6
 
 postgres_users:
   commcare:
@@ -102,32 +114,43 @@ postgres_users:
       username: 'hqrepl'
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
+  backup:
+      username: 'hqbackup'
+      password: 'hqbackup'
+      role_attr_flags: 'SUPERUSER'
 
 pg_replication_slots:
- 192.168.33.16:
-   - standby1
+  192.168.33.16:
+    - standby1
 
+encrypted_root: '/opt/data'
+postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 postgresql_ssl_enabled: False
 postgresql_max_connections: 20
 postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '128MB'
 postgresql_max_stack_depth: '6MB'
 postgresql_effective_cache_size: '4GB'
+postgresql_max_standby_delay: '-1'
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
+postgresql_wal_keep_segments: 8
+pgstandby_wal_keep_segments: 8
 
 shared_drive_enabled: True
-backup_postgres: True
+backup_postgres: dump
 backup_blobdb: True
+postgresql_backup_master: True
 postgres_s3: False
 nadir_hour: 18
 
+nofile_limit: 65536
+nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
+
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 formplayer_db_name: formplayer
 
@@ -178,6 +201,7 @@ postgresql_dbs:
 #    django_alias: ucr
 
 mailrelay: 'relay.example.com'
+root_email: 'root@example.com'
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"

@@ -1,4 +1,4 @@
- check process couchdb2 with pidfile /usr/local/couchdb2/couchdb/var/run/couchdb2.pid
+ check process couchdb2 with pidfile {{ couchdb_dir }}/var/run/couchdb2.pid
    group database
    group couchdb2
    start program = "/etc/init.d/couchdb2 start"

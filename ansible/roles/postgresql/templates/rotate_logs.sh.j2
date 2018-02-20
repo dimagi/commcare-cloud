@@ -1,0 +1,17 @@
+#!/bin/bash
+# keep latest {{ postgresql_num_logs_to_keep }} log files
+find {{ postgresql_log_directory }} \
+    -type f \
+    \( -name '*.csv' -o -name '*.csv.gz' -o -name '*.log' \) \
+    -printf '%T@\t%p\n' \
+    | sort -t $'\t' -g \
+    | head -n -{{ postgresql_num_logs_to_keep }} \
+    | cut -d $'\t' -f 2- \
+    | xargs --no-run-if-empty -d '\n' rm --
+
+# gzip all files except for the most recent 3
+find {{ postgresql_log_directory }} -type f -name '*.csv' -printf '%T@\t%p\n' \
+    | sort -t $'\t' -g \
+    | head -n -3 \
+    | cut -d $'\t' -f 2- \
+    | xargs --no-run-if-empty -d '\n' gzip --

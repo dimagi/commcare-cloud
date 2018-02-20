@@ -20,11 +20,11 @@ nginx_sites:
     - name: "restore"
       zone: "$digest_submission"
       size: "10m"
-      rate: "2r/s"
+      rate: "4r/s"
     - name: "submissions"
       zone: "$digest_submission"
       size: "10m"
-      rate: "9r/s"
+      rate: "25r/s"
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
@@ -39,12 +39,13 @@ nginx_sites:
       max_size: "3g"
       inactive_time: "24h"
    file_name: "{{ deploy_env }}_cas_commcare"
-   listen: "443 ssl default_server"
+   listen: "443 ssl http2 default_server"
    server_name: "{{ CAS_SITE_HOST }}"
    client_max_body_size: 100m
    proxy_set_headers:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-Protocol  $scheme"
    add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:

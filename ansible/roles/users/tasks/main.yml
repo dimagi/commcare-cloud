@@ -13,15 +13,19 @@
   become: yes
   authorized_key: user="{{ item }}" state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Add MSP user sudo user
-  user: name=msp state=present shell=/bin/bash groups="sudo" password="{{ msp_user_password_sha_512 }}"
-  when: msp_user|default(false)
+  user: name="{{ item.value.username }}" state=present shell=/bin/bash groups="sudo" password="{{ item.value.password }}"
+  when: msp_users|default(false)
+  with_dict: '{{ msp_users }}'
 
 - name: Add public key for MSP
   become: yes
-  authorized_key: user=msp state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/msp.pub') }}"
-  when: msp_user|default(false)
+  authorized_key: user="{{ item.value.username }}" state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/{{ item.value.username }}.pub') }}"
+  when: msp_users|default(false)
+  with_dict: '{{ msp_users }}'
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Add ansible user
   user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_user_password_sha_512 }}"
@@ -41,13 +45,9 @@
   changed_when: false
   check_mode: no
 
+- import_tasks: remove_users.yml
+  when: dev_users.absent
+
 - name: Copy sudoers file
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
-
-# ansible used to create this file
-# but for consistency with prod machines, we changed to 'cchq'
-- name: remove cchq_sudoers
-  file: state=absent path=/etc/sudoers.d/cchq_sudoers
-
-- import_tasks: remove_users.yml

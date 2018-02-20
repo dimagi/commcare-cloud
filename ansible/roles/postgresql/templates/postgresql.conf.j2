@@ -26,50 +26,65 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 # RESOURCE USAGE (except WAL)
 
-{% if not is_pg_standby|default(false) %}
 shared_buffers = {{ postgresql_shared_buffers }}
 work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
-{% endif %}
+maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
 vacuum_cost_delay = 20ms
+dynamic_shared_memory_type = posix
 
 
 # WRITE AHEAD LOG
+{% if backup_postgres == 'pgbackrest' and not is_pg_standby %}
+archive_mode = on
+archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'
+archive_timeout = 60
+{% endif %}
 
 wal_level = hot_standby
-max_wal_senders = 3
-checkpoint_segments = {{ postgresql_checkpoint_segments|default(16) }}
+max_wal_senders = 8
+{% if postgresql_version == '9.4' %}
+checkpoint_segments = {{ postgresql_checkpoint_segments }}
+{%  elif postgresql_version == '9.6' %}
+max_wal_size = {{ postgresql_max_wal_size }}
+{% endif %}
+checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
+wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
-wal_keep_segments = 8
-
+{% if is_pg_standby %}
+wal_keep_segments = {{ pgstandby_wal_keep_segments|default(8) }}
+{% else %}
+wal_keep_segments = {{ postgresql_wal_keep_segments|default(8) }}
+{% endif %}
 
 # REPLICATION
 
 hot_standby = on    # ignored on masters
 max_replication_slots = 8
 
+{% if is_pg_standby|default(false) and postgresql_max_standby_delay|default(false) %}
+max_standby_archive_delay = {{ postgresql_max_standby_delay }}
+max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
+{% endif %}
 
 # QUERY TUNING
-
-{% if not is_pg_standby|default(false) %}
 effective_cache_size = {{ postgresql_effective_cache_size }}
-{% endif %}
 
 
 # ERROR REPORTING AND LOGGING
 
 log_destination = 'csvlog'
 logging_collector = on
-log_directory = 'pg_log'
-log_filename = 'postgresql-%a.log'
+log_directory = '{{ postgresql_log_directory }}'
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
 log_truncate_on_rotation = on
-log_rotation_age = 1d
-log_rotation_size = 0
+log_rotation_age = 0
+log_rotation_size = 100000
 
 client_min_messages = notice
 log_min_messages = warning
 log_min_error_statement = error
-log_min_duration_statement = 300
+log_min_duration_statement = {{ postgresql_slow_log_threshold }}
 
 log_checkpoints = on
 log_connections = on
@@ -82,6 +97,7 @@ log_temp_files = 0
 # RUNTIME STATISTICS
 
 track_functions = all
+default_statistics_target = {{ postgresql_default_statistics_target }}
 
 {% if not is_pg_standby|default(false) and pg_query_stats|default(false) %}
 shared_preload_libraries = 'pg_stat_statements'
