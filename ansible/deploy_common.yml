@@ -23,7 +23,7 @@
   tasks:
     - ufw: state=disabled
       when: ufw_private_interface is not defined and not is_monolith|bool
-      tags: ufw-proxy
+      tags: ufw
 
 - name: Datadog agent
   hosts: all
