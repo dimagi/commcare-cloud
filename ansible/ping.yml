@@ -2,6 +2,12 @@
   - all
   tasks:
   - action: ping
+  - wait_for:
+      host: "{{ item }}"
+      port: 22
+      timeout: 5
+    with_items: "{{ groups['all'] }}"
+  - debug: msg=ok
 
 - hosts:
   - proxy
