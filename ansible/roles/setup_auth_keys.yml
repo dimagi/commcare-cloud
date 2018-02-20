@@ -24,8 +24,7 @@
     user: "{{username}}"
     state: "{{ state }}"
     key: "{{ lookup('file', '/tmp/id_rsa.tmp') }}"
-    exclusive: yes
-  delegate_to: "{{ hostTo }}"
+  delegate_to: "{{ inventory_hostname }}"
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Deleting temp files

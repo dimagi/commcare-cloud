@@ -4,10 +4,10 @@
 ## 
 ## Acceptable values:
 ##   - an IP/port pair, e.g. 127.0.0.1:10011
-{% if groups['stanchion'][0]|ipaddr %}
-listener = {{ groups['stanchion'][0] }}:{{ stanchion_port }}
+{% if stanchion_host|ipaddr %}
+listener = {{ stanchion_host }}:{{ stanchion_port }}
 {% else %}
-listener = {{ lookup('dig', groups['stanchion'][0], wantlist=True)[0] }}:{{ stanchion_port }}
+listener = {{ lookup('dig', stanchion_host, wantlist=True)[0] }}:{{ stanchion_port }}
 {% endif %}
 
 ## Default cert location for https can be overridden

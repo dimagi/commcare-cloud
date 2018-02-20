@@ -1,5 +1,22 @@
 # run with --tags=mount-ecryptfs to mount encrypted volume after reboot
 
+- name: Set variables
+  hosts:
+    - riakcs
+    - stanchion
+  tasks:
+    # Assign to new variable names so these values, which normally come from
+    # vars files specified on the command line (having the higest variable
+    # precedence), can be changed in deploy_riakcs_new.yml. The underscore-
+    # prefixed versions should be used everywhere except when assigning a
+    # concrete value (e.g., in defaults or inventory vars files).
+    - set_fact: _riak_backend="{{ riak_backend }}"
+      tags: always
+    - set_fact: _riak_ring_size="{{ riak_ring_size }}"
+      tags: always
+    - set_fact: stanchion_host="{{ groups.stanchion[0] }}"
+      tags: always
+
 - name: Common Setup
   hosts:
     - riakcs
@@ -16,7 +33,8 @@
     - add_host: name="{{ riakcs_control }}" groups=riakcs_control_host
       when: riakcs_control_host is undefined
       check_mode: no
-      tags: localsettings
+      changed_when: false
+      tags: always
 
 - name: Register riak conf override fact
   # NOTE riak config files are only created/updated if they do not already exist
@@ -29,7 +47,7 @@
     - riakcs
   vars_files:
     - roles/riakcs/install/defaults/main.yml
-    - roles/riakcs/configure/defaults/main.yml
+    - roles/riakcs/configure/vars/main.yml
   tasks:
     - name: "Stat {{ riak_conf }}"
       stat: path="{{ riak_conf }}"
@@ -37,13 +55,16 @@
       changed_when: false
       failed_when: false
       check_mode: no
+      tags: always
     - set_fact: _force_riak_config="{{ 'yes'
         if inventory_hostname in (force_riak_config | default('')).split(',')
             or force_riak_config | default('') == 'all'
             or not (riak_conf_file.stat.exists | default(True))
         else '' }}"
+      tags: always
     # HACK set fact because defaults cannot be loaded from other hosts
-    - set_fact: riak_nodename="{{ riak_nodename }}"
+    - set_fact: riak_nodename="{{ backend_vars.riak_nodename }}"
+      tags: always
 
 - name: Configure swap for riak hosts
   hosts: riakcs
@@ -61,6 +82,9 @@
 - name: Install Riak and Riak CS
   become: true
   hosts: riakcs
+  vars_files:
+    # for backend_vars.riak_version
+    - roles/riakcs/configure/vars/main.yml
   roles:
     - {role: riakcs/install, name: riak}
     - {role: riakcs/install, name: riakcs, service: riak-cs}
@@ -68,6 +92,9 @@
 - name: Install Stanchion
   become: true
   hosts: stanchion
+  vars_files:
+    # for backend_vars.riak_version
+    - roles/riakcs/configure/vars/main.yml
   roles:
     - {role: riakcs/install, name: stanchion}
 
@@ -78,12 +105,15 @@
   roles:
     - role: riakcs/configure
       name: riak
-      drop_conf: advanced.config
+      drop_conf: "{{ backend_vars.drop_conf }}"
+      advanced_conf: "{{ backend_vars.advanced_conf }}"
       data_dirs:
         - "{{ riak_data_dir }}"
         - "{{ riak_ring_dir }}"
         - "{{ riak_data_root_leveldb }}"
-      when: _force_riak_config|default(false) | bool
+        - "{{ riak_data_root_bitcask if _riak_backend == 'bitcask' else '' }}"
+        - "{{ riak_data_root_blocks if _riak_backend == 'leveldb' else '' }}"
+      when: _force_riak_config | bool
 
 - name: Start Riak
   become: true

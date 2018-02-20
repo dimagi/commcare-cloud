@@ -1,7 +1,21 @@
 ---
 
 - name: load configuration
-  include_vars: "{{ site_name }}.yml"
+  include_vars: "{{ site_config.vars_file }}.yml"
+
+- name: create paths
+  become: yes
+  file:
+    path: "{{ item.1.path }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_subelements:
+    - "{{ nginx_sites|default([]) }}"
+    - server.proxy_cache_path
+    - flags:
+      skip_missing: True
 
 - name: Create the site configurations
   become: yes
@@ -12,9 +26,13 @@
     group: "{{ cchq_user }}"
     mode: "u=rw,g=rw,o=r"
   with_items: "{{ nginx_sites|default([]) }}"
+  loop_control:
+    label: "{{item.server.file_name}}"
 
 - name: Create the links to enable site configurations
   become: yes
-  file: path="/etc/nginx/sites-enabled/{{ item.server['file_name'] }}" state=link src="/etc/nginx/sites-available/{{ item.server['file_name'] }}"
+  file: path="/etc/nginx/sites-enabled/{{ item.server['file_name'] }}" state=link src="/etc/nginx/sites-available/{{ item.server['file_name'] }}" force=yes
   with_items: "{{ nginx_sites|default([]) }}"
   when: not ansible_check_mode
+  loop_control:
+    label: "{{item.server.file_name}}"

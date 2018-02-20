@@ -1,0 +1,21 @@
+---
+# Promote a PostrgeSQL standby node
+# Usage:
+#   commcare-cloud <env> ansible-playbook promote_pg_standby.yml -e standby=[standby node]
+#
+- hosts: "{{ standby }}"
+  become: yes
+  vars_files:
+    - roles/postgresql/defaults/main.yml
+  tasks:
+    - stat:
+        path: "{{ postgresql_home }}/recovery.conf"
+      register: recovery_file
+
+    - assert:
+        that:
+          - "recovery_file.stat.exists"
+        msg: "Standby node ('{{ standby }}') does not have a recovery.conf file. Are you sure it's a standby node?"
+
+    - name: promote pg standby node
+      command:  pg_ctlcluster 9.4 main promote

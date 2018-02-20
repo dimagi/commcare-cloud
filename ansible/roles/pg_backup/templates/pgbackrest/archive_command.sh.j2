@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# {{ ansible_managed }}
+pgbackrest --stanza=backup archive-push $1
+{% if postgres_s3 %}
+pgbackrest --stanza=backups3 archive-push $1
+{% endif %}

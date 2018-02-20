@@ -26,13 +26,13 @@ function check_for_changes() {
 }
 
 function update_repo() {
-    git fetch --prune
+    git fetch --prune || abort "Fetch failed. This can happen if you do not have ForwardAgent enabled on your SSH connection."
     git checkout master
     git reset --hard origin/master
     git submodule update --init --recursive
 }
 
-for repo in "commcare-hq-deploy" "commcarehq-ansible/config" "commcarehq-ansible"
+for repo in "commcare-cloud/config" "commcare-cloud"
 do
     cd ~/$repo
     pwd

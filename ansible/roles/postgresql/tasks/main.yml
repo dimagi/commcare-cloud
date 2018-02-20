@@ -34,7 +34,7 @@
     - unzip
 
 - name: Check for original postgresql directory
-  stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}"
+  stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
   register: orig_path
 
 - name: Make new postgresql directory
@@ -47,7 +47,7 @@
     state: directory
 
 - name: Check for new postgresql directory
-  stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}"
+  stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
   register: new_path
 
 - name: Assert postgresql directory shows up in exactly one place
@@ -55,11 +55,18 @@
   when: ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
 
 - name: Move postgres to encrypted drive
-  command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/{{ postgresql_version }}"
+  command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/"
   when: orig_path.stat.exists
 
 - name: assert hot standby config correct
   assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
+
+- name: Create postgresql_log_directory
+  file:
+    dest: "{{ postgresql_log_directory }}"
+    state: directory
+    owner: postgres
+    group: postgres
 
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
@@ -80,11 +87,12 @@
 
 - name: PostgreSQL access configuration
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
+  tags: postgresql_conf
   notify: Reload postgres
 
 - name: start postgresql
   become: true
-  service: name=postgresql state=started
+  service: name=postgresql state=started args="{{ postgresql_version }}"
   tags: after-reboot
 
 - name: Create PostgreSQL users
@@ -114,6 +122,7 @@
     privs: "{{ item.1.privs }}"
     objs: "{{ item.1.objs }}"
     roles: "{{ item.0.username }}"
+    port: "{{ postgresql_port }}"
   when: not is_pg_standby|default(False)
   with_subelements:
     - "{{ postgres_users.values() }}"
@@ -148,9 +157,14 @@
 - meta: flush_handlers
 
 - name: Create replication slots
-  pg_replication_slot: name={{ item }} state=present
+  pg_replication_slot:
+    name: "{{ item }}"
+    port: "{{ postgresql_port }}"
+    state: present
   become: yes
   become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
   with_items: "{{ postgresql_replication_slots|default([]) }}"
   when: not is_pg_standby|default(False)
   tags:
@@ -180,14 +194,50 @@
   tags:
     - pgbouncer
 
+- name: Make sure nofile ulimit is high
+  lineinfile:
+    path: /etc/default/pgbouncer
+    regexp: '^ULIMIT='
+    line: 'ULIMIT="-n 65536"'
+  notify: Restart pgbouncer
+  tags:
+    - pgbouncer
+
+- name: pgbouncer init script
+  template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
+  notify: Restart pgbouncer
+  tags:
+    - pgbouncer
+
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
+- name: Restarts pgbouncer (affect max open files limit)
+  command: /bin/true
+  notify: Restart pgbouncer
+  when: no_tags is not defined
+  tags: after-reboot
+
+- name: check if pghashlib installed
+  stat:
+    path: "{{postgres_install_dir}}/lib/hashlib.so"
+  register: hashlib_stat
+  tags: pghashlib
+
 - name: Download pghashlib
   get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
+  when: hashlib_stat.stat.exists == False
+  tags: pghashlib
 
 - name: Unzip pghashlib
   command: unzip pghashlib.zip
   args:
      chdir: /tmp
      creates: /tmp/pghashlib-master
+  when: hashlib_stat.stat.exists == False
+  tags: pghashlib
 
 - name: Install pghashlib
   become: yes
@@ -198,6 +248,8 @@
   notify:
     - Run ldconfig
     - Restart postgres
+  when: hashlib_stat.stat.exists == False
+  tags: pghashlib
 
 - name: Create plproxy extension
   become: yes
@@ -207,6 +259,7 @@
   postgresql_ext:
     name: plproxy
     db: "{{item.name}}"
+    port: "{{ postgresql_port }}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
@@ -218,8 +271,10 @@
   postgresql_ext:
     name: hashlib
     db: "{{item.name}}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
+    port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs }}"
+  when: item.create|default(True) and not is_pg_standby|default(False) and ((item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool)
+  tags: pghashlib
 
 - name: Make plproxy a trusted language
   become: yes
@@ -230,6 +285,7 @@
     lang: plproxy
     trust: True
     db: "{{item.name}}"
+    port: "{{ postgresql_port }}"
   when: (item.get('django_alias') == 'proxy' and item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
@@ -250,3 +306,62 @@
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
   when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False) and (item.get('host', localsettings.PG_DATABASE_HOST) == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
+
+- name: Copy log rotation script
+  become: yes
+  template:
+    src: "rotate_logs.sh.j2"
+    dest: "/usr/local/sbin/rotate_postgres_logs.sh"
+    group: postgres
+    owner: postgres
+    mode: 0700
+    backup: yes
+  tags:
+    - cron
+
+- name: Create log rotation cron
+  become: yes
+  cron:
+    name: "Rotate postgres logs"
+    job: "/usr/local/sbin/rotate_postgres_logs.sh"
+    minute: "*/15"
+    user: postgres
+    cron_file: rotate_postgres
+  tags:
+    - cron
+
+- name: PostgreSQL monit config
+  become: yes
+  template:
+    src: "monit.postgresql.j2"
+    dest: "/etc/monit/conf.d/postgresql"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- name: pgbouncer monit config
+  become: yes
+  template:
+    src: "monit.pgbouncer.j2"
+    dest: "/etc/monit/conf.d/pgbouncer"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: pgbouncer
+    state: monitored
+  tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- monit:
+    name: postgresql
+    state: monitored
+  tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"

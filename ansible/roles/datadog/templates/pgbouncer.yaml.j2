@@ -9,4 +9,4 @@ instances:
      username: {{ postgres_users.devreadonly.username }}
      password: {{ postgres_users.devreadonly.password }}
      tags:
-       - environment:{{ deploy_env }}
+       - environment:{{ env_name|default(deploy_env) }}

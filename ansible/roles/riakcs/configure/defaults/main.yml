@@ -1,15 +1,39 @@
-# variables used in conf files
+# Possible values for riak_backend
+#
+# - "leveldb"
+#   The default, use this unless you know you need something different.
+#   Requires less RAM, lower performance.
+#
+# - "bitcask"
+#   All keys must fit in RAM. Higher performance, but requires more RAM. Uses
+#   a LOT more disk space possibly due to bitcask not using compression.
+#
+# - "leveldb-bad-config"
+#   Bad leveldb configuration. We're slowly migrating away from this, but the
+#   migration requires reading each object from the old cluster and saving
+#   it in a new cluster.
+#   http://lists.basho.com/pipermail/riak-users_lists.basho.com/2017-March/019142.html
+#   This configuration uses by far the least disk space. Would be cool if a
+#   change could be made to riak to support this configuration and eliminate
+#   the (low) chance of data loss that it apparently has.
+#
+riak_backend: "leveldb"
 
-# the following are defined in group_vars/all.yml
-#riak_data_dir: ...
-#riak_port: ...
-#riakcs_port: ...
-#stanchion_data_dir: ...
-#stanchion_port: ...
+# `riakcs_port` is defined in group_vars/all.yml
 
+riak_port: 8087
 riak_data_root_leveldb: "{{ riak_data_dir }}/leveldb"
+riak_data_root_bitcask: "{{ riak_data_dir }}/bitcask"
+riak_data_root_blocks: "{{ riak_data_dir }}/blocks"
+riak_data_dir: "{{ encrypted_root }}/riak"
 riak_ring_dir: "{{ riak_data_dir }}/ring"
-riak_nodename: "riak-{{ inventory_hostname_short }}@{{ inventory_hostname }}"
-riak_ring_size: 64
+
+# This parameter cannot be changed once the cluster has been configured and
+# has data in it. Use a lower ring size (64) in envs where RAM is very limited
+# since higher ring size requires more RAM, even for leveldb-only backend.
+riak_ring_size: 128
 
 riakcs_ebin: "/usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin"
+
+stanchion_port: 8085
+stanchion_data_dir: "{{ encrypted_root }}/stanchion"

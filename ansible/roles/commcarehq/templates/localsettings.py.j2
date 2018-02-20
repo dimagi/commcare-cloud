@@ -57,14 +57,6 @@ PARTITION_DATABASE_CONFIG = {
 
 REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
 
-{% if localsettings.get('ICDS_UCR_DATABASE_ALIAS') %}
-ICDS_UCR_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_DATABASE_ALIAS }}"
-{% endif %}
-
-{% if localsettings.get('ICDS_UCR_TEST_DATABASE_ALIAS') %}
-ICDS_UCR_TEST_DATABASE_ALIAS = "{{ localsettings.ICDS_UCR_TEST_DATABASE_ALIAS }}"
-{% endif %}
-
 LOG_HOME = '{{ log_home }}'
 COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
 DJANGO_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
@@ -85,7 +77,7 @@ SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
 RESTORE_PAYLOAD_DIR_NAME = '{{ restore_payload_dir_name }}'
 TRANSFER_FILE_DIR_NAME = '{{ transfer_payload_dir_name }}'
 SHARED_TEMP_DIR_NAME = '{{ shared_temp_dir_name }}'
-TRANSFER_SERVER = '{{ (proxy_type == 'nginx') | ternary('nginx', 'apache') }}'
+TRANSFER_SERVER = 'nginx'
 
 
 # Email setup
@@ -105,9 +97,8 @@ EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 {% endif %}
 
-SERVER_EMAIL = 'commcarehq-noreply+{{ localsettings.DEPLOY_MACHINE_NAME }}@dimagi.com' #the physical server emailing - differentiate if needed
-EMAIL_SUBJECT_PREFIX = '[{{ item.deploy_env_name }}] '
-SERVER_ENVIRONMENT = '{{ item.deploy_env_name }}'
+EMAIL_SUBJECT_PREFIX = '[{{ env_name|default(deploy_env) }}] '
+SERVER_ENVIRONMENT = '{{ env_name|default(deploy_env) }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 
@@ -123,6 +114,10 @@ COUCH_DATABASES = {
     },
 {% endfor %}
 }
+
+{% if 'CUSTOM_SYNCLOGS_DB' in localsettings %}
+CUSTOM_SYNCLOGS_DB = '{{ localsettings.CUSTOM_SYNCLOGS_DB }}'
+{% endif %}
 
 {% if 'BIGCOUCH' in localsettings %}
 BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
@@ -252,17 +247,23 @@ SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
 DEFAULT_PROTOCOL = "https"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 ANALYTICS_IDS = {
     'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID|default('', true) }}',
     'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID|default('', true) }}',
     'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY|default('', true) }}',
     'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY|default('', true) }}',
-    'FULLSTORY_ID': '{{ localsettings.FULLSTORY_ID|default('', true) }}'
+    'FULLSTORY_ID': '{{ localsettings.FULLSTORY_ID|default('', true) }}',
+    'DRIFT_ID': '{{ localsettings.DRIFT_ID|default('', true) }}',
+    'APPCUES_ID': '{{ localsettings.APPCUES_ID|default('', true) }}',
+    'APPCUES_KEY': '{{ localsettings.APPCUES_KEY|default('', true) }}'
 }
 
 ANALYTICS_CONFIG = {
-    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}'
+    'HQ_INSTANCE': '{{ localsettings.HQ_INSTANCE }}',
+    'DEBUG': {{ localsettings.ANALYTICS_DEBUG|default(False) }},
+    'LOG_LEVEL': '{{ localsettings.ANALYTICS_LOG_LEVEL|default('') }}',
 }
 
 AXES_LOCK_OUT_AT_FAILURE = False
@@ -308,12 +309,13 @@ PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
+TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER|default('') }}"
+TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD|default('') }}"
 
 BROKER_URL = '{{ localsettings.BROKER_URL }}'
 
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL }}"
+XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
+
 {% if 'FORMPLAYER_URL' in localsettings %}
 FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
 {% endif %}
@@ -649,6 +651,10 @@ CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
 ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 {% endif %}
 
+{% if localsettings.get('RESTRICT_DOMAIN_CREATION') %}
+RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
+{% endif %}
+
 {% if localsettings.get('TABLEAU_URL_ROOT') %}
 TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
 {% endif %}
@@ -659,10 +665,6 @@ COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
 
 {% if localsettings.get('COMMCARE_NAME') %}
 COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
-{% endif %}
-
-{% if localsettings.get('ONBOARDING_DOMAIN_TEST_DATE') %}
-ONBOARDING_DOMAIN_TEST_DATE = {{ localsettings.ONBOARDING_DOMAIN_TEST_DATE }}
 {% endif %}
 
 {% if localsettings.get('SENTRY_PUBLIC_KEY') %}
@@ -707,6 +709,29 @@ ASYNC_INDICATORS_TO_QUEUE = {{ localsettings.ASYNC_INDICATORS_TO_QUEUE }}
 ASYNC_INDICATOR_QUEUE_CRONTAB = crontab(**{{ localsettings.get('ASYNC_INDICATOR_QUEUE_CRONTAB') }})
 {% endif %}
 
+{% if localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES') %}
+ASYNC_INDICATOR_QUEUE_TIMES = {{ localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES') }}
+{% endif %}
+
 {% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
 MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
 {% endif %}
+
+SERVER_EMAIL = '{{ server_email }}'
+DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
+SUPPORT_EMAIL = '{{ support_email }}'
+PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
+CCHQ_BUG_REPORT_EMAIL = '{{ cchq_bug_report_email }}'
+ACCOUNTS_EMAIL = '{{ accounts_email }}'
+DATA_EMAIL = '{{ data_email }}'
+SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'
+INTERNAL_SUBSCRIPTION_CHANGE_EMAIL = '{{ internal_subscription_change_email }}'
+BILLING_EMAIL = '{{ billing_email }}'
+INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
+GROWTH_EMAIL = '{{ growth_email }}'
+MASTER_LIST_EMAIL = '{{ master_list_email }}'
+REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
+EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
+CONTACT_EMAIL = '{{ contact_email }}'
+SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
+DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'

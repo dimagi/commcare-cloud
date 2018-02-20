@@ -1,0 +1,5 @@
+ignore_kafka_checkpoint_warning: True
+acceptable_maintenance_window:
+  hour_start: 2
+  hour_end: 7
+  timezone: Asia/Kolkata

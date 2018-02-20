@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# DEPRECATED use commcare-cloud <env> mosh [<user>@]<group>[:<n>]
+_env=$1
+shift  # drop environment arg
+commcare-cloud $_env mosh "$@"

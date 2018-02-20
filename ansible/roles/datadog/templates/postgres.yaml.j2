@@ -10,4 +10,4 @@ instances:
        password: {{ postgres_users.devreadonly.password }}
        ssl: False
        tags:
-            - environment:{{ deploy_env }}
+            - environment:{{ env_name|default(deploy_env) }}
