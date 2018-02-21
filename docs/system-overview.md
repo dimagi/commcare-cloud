@@ -40,12 +40,15 @@ and that there be no other method of SSH login enabled,
 and these policies are automatically implemented via the `commcare-cloud` `update-users`
 command (or the `deploy-stack` command, which includes the former).
 
-As a result of these policies, it's important to keep in mind that
-- Password-based log-ins are disabled for all users
+As a result or extension of these policies, it's important to keep in mind that
+- Password-based log-ins are disabled for all users.
 - Every individual who needs to be able to log in must have an SSH key pair,
   and their public key must be recorded in your environment's configuration files.
-- There are no shared log-ins, and thus no root login.
-  All access to shared user accounts will be mediated by the individual's own SSH key log-in.
+- There are no shared ssh credentials.
+- There is no root login.
+- All individuals may log in as the special `ansible` user.
+  (This doesn't violate the prohibition against shared ssh credentials.)
+  because each individual uses their own SSH key to do so.
 - Individuals' users do not have passwords associated with them.
 
 In addition to logging in as their own user, each individual can log in
@@ -54,9 +57,9 @@ user's `authorized_keys` file as well. This user has `sudo` privileges
 as well as a password that can be used to `sudo` or become any other user via `su`.
 
 Each individual user also has the ability to run a small number of `sudo` commands
-without a password; notably, `sudo -u cchq bash` and `sudo -u ansible bash`,
-letting them become the `cchq` or `ansible` user for convenience.
-
+without a password. Notably, they can run `sudo -u cchq bash` or `sudo -u ansible bash`
+to become the `cchq` or `ansible` user. This is merely a convenience,
+and useful when logging in to troubleshoot. 
 
 ### Encrypted Drive
 
