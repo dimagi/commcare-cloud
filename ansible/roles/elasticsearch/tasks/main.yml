@@ -112,6 +112,7 @@
 
 - name: Wait for elastic Search to come up, start checking after 5 second
   wait_for:
+    host: "{{ groups.elasticsearch.0 }}"
     port: 9200
     delay: 5
 
