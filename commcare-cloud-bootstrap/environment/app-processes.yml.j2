@@ -4,10 +4,16 @@ newrelic_javaagent: True
 celery_processes:
   {{ celery_host.name }}:
     celery_periodic:
-      server_whitelist: {{ celery_host.private_ip }}
+      server_whitelist: {{ celery_host.public_ip }}
       concurrency: 4
-    async_restore_queue,background_queue,case_rule_queue,celery,email_queue,pillow_retry_queue,reminder_case_update_queue,reminder_rule_queue,reminder_queue,repeat_record_queue,saved_exports_queue,sms_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
-      concurrency: 4
+    async_restore_queue,background_queue,case_rule_queue,celery:
+      concurrency: 1
+    email_queue,pillow_retry_queue,reminder_case_update_queue:
+      concurrency: 1
+    reminder_rule_queue,reminder_queue,repeat_record_queue,saved_exports_queue:
+      concurrency: 1
+    sms_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
+      concurrency: 1
     flower: {}
 pillows:
   {{ pillowtop_host.name }}:
