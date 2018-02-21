@@ -51,7 +51,7 @@ couch_s3: True
 
 aws_region: 'us-east-1'
 
-
+postgresql_version: '9.6'
 postgresql_shared_buffers: '2GB'
 postgresql_max_stack_depth: '4MB'
 postgresql_effective_cache_size: '8GB'
