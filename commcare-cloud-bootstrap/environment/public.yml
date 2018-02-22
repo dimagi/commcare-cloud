@@ -268,7 +268,7 @@ localsettings:
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   J2ME_ADDRESS: ''
-  KAFKA_URL: ''
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
   LOCAL_PILLOWS:
     custom:
