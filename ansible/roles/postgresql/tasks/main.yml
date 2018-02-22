@@ -94,6 +94,12 @@
   become: true
   service: name=postgresql state=started args="{{ postgresql_version }}"
   tags: after-reboot
+  register: start_postgresql
+
+- name: wait after restarting postgres
+  when: start_postgresql.changed
+  wait_for:
+    port: '{{ postgresql_port }}'
 
 - name: Create PostgreSQL users
   become: yes
