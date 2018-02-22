@@ -57,8 +57,8 @@ user's `authorized_keys` file as well. This user has `sudo` privileges
 as well as a password that can be used to `sudo` or become any other user via `su`.
 
 Each individual user also has the ability to run a small number of `sudo` commands
-without a password. Notably, they can run `sudo -u cchq bash` or `sudo -u ansible bash`
-to become the `cchq` or `ansible` user. This is merely a convenience,
+without a password. Notably, they can run `sudo -u cchq bash`
+to become the `cchq` user. This is merely a convenience,
 and useful when logging in to troubleshoot. 
 
 ### Encrypted Drive
