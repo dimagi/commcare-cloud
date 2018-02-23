@@ -2,8 +2,9 @@
 if ! hash virtualenvwrapper.sh 2>/dev/null; then
     echo "Please install virtualenvwrapper and make sure it is in your PATH"
     echo ""
-    echo "  sudo apt-get install git python-dev python-pip"
     echo "  sudo pip install virtualenv virtualenvwrapper"
+    echo ""
+    echo "Other requirements: git, python-dev, python-pip"
     return 1
 fi
 
