@@ -23,6 +23,11 @@ if [ -d ~/commcarehq-ansible ]; then
     [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
 
+if [ ! -d ~/commcarehq-cloud ]; then
+    echo "Checking out CommCare Cloud Repo"
+    git clone https://github.com/dimagi/commcare-cloud.git
+fi
+
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
