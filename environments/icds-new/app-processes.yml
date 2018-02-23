@@ -8,6 +8,11 @@ celery_processes:
   None:
     repeat_record_queue:
   'celery0':
+    # The celery workers which have less cpu intensive tasks
+    # are meant to go on this machine. Try to avoid putting
+    # ucr_indicator_queue, reminder_case_update_queue, or
+    # pillow_retry_queue workers here so that the workers
+    # on this machine have the cpu they need to perform their tasks.
     flower: {}
     celery:
       concurrency: 8
@@ -19,42 +24,36 @@ celery_processes:
        concurrency: 1
     email_queue:
       concurrency: 2
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 5
-    ucr_indicator_queue:
-      concurrency: 4
-  'celery1':
-    ucr_queue:
-      concurrency: 4
-      max_tasks_per_child: 5
-    background_queue,case_rule_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 10
-    ucr_indicator_queue:
-      concurrency: 4
-  'celery2':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 10
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 6
     reminder_rule_queue:
-      concurrency: 1
+      concurrency: 2
       max_tasks_per_child: 1
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1
-    ucr_indicator_queue:
+    background_queue,case_rule_queue:
+      concurrency: 6
+      max_tasks_per_child: 1
+  'celery1':
+    ucr_queue:
       concurrency: 4
+      max_tasks_per_child: 5
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    ucr_indicator_queue:
+      concurrency: 6
+  'celery2':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 6
+    ucr_indicator_queue:
+      concurrency: 6
   'celery3':
     # Still waiting on whitelisting from celery3
     # sms_queue:
@@ -72,9 +71,6 @@ celery_processes:
   'celery4':
     ucr_indicator_queue:
       concurrency: 8
-    background_queue,case_rule_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -86,6 +82,10 @@ celery_processes:
       num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
   'celery6':
     pillow_retry_queue:
       pooling: gevent
@@ -93,6 +93,10 @@ celery_processes:
       num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
   'celery7':
     pillow_retry_queue:
       pooling: gevent
@@ -100,6 +104,10 @@ celery_processes:
       num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
   'web0':
     ucr_indicator_queue:
       concurrency: 3
