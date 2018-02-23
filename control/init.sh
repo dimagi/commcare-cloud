@@ -23,10 +23,6 @@ if [ -d ~/commcarehq-ansible ]; then
     [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
 
-if [ ! -d ~/commcare-cloud/config ]; then
-    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcare-cloud/config || mkdir ~/commcare-cloud/config
-fi
-
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
