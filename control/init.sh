@@ -60,7 +60,7 @@ if ! grep -q init-ansible ~/.profile; then
             printf "${YELLOW}→ Added init script to ~/.profile"
         ;;
         * )
-            printf "${BLUE}You can always set it up later by running this command:\n'
+            printf "${BLUE}You can always set it up later by running this command:\n"
             printf "${BLUE}'[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
