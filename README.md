@@ -29,7 +29,7 @@ sudo pip install virtualenv virtualenvwrapper
 # Quick setup
 This should be run from your home director:
 ```
-bash <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
+source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
 
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
