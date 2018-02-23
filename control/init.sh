@@ -52,15 +52,15 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 if ! grep -q init-ansible ~/.profile; then
-    printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}"
+    printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
     read -t 30 -p "(y/n): " yn
     case $yn in
         [Yy]* )
             echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
-            printf "${YELLOW}→ Added init script to ~/.profile"
+            printf "${YELLOW}→ Added init script to ~/.profile\n"
         ;;
         * )
-            printf "${BLUE}You can always set it up later by running this command:\n"
+            printf "\n${BLUE}You can always set it up later by running this command:\n"
             printf "${BLUE}'[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
