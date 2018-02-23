@@ -31,9 +31,7 @@ fi
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
-pip install -r ~/commcare-cloud/ansible/requirements.txt &
-pip install -e ~/commcare-cloud/commcare-cloud &
-pip install -r ~/commcare-cloud/fab/requirements.txt &
+pip install -r ~/commcare-cloud/requirements.txt &
 pip install pip --upgrade &
 wait
 
