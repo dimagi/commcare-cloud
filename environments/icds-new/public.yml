@@ -368,6 +368,7 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-thr_forms'
+            - 'static-thr_forms_v2
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
