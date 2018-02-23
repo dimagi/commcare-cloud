@@ -27,7 +27,7 @@ sudo pip install virtualenv virtualenvwrapper
 ```
 
 # Quick setup
-This should be run from your home director:
+This should be run from your home directory:
 ```
 source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
