@@ -26,13 +26,16 @@ fi
 if [ ! -d ~/commcarehq-cloud ]; then
     echo "Checking out CommCare Cloud Repo"
     git clone https://github.com/dimagi/commcare-cloud.git
+    # first time install need requiremnts installed in serial
+    cd ~/commcare-cloud && pip install -r ~/commcare-cloud/requirements.txt && cd -
+else
+    cd ~/commcare-cloud && pip install -r ~/commcare-cloud/requirements.txt && cd - &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
-pip install -r ~/commcare-cloud/requirements.txt &
 pip install pip --upgrade &
+ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
 wait
 
 # convenience: . init-ansible
