@@ -23,7 +23,7 @@ if [ -d ~/commcarehq-ansible ]; then
     [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
 
-if [ ! -d ~/commcarehq-cloud ]; then
+if [ ! -d ~/commcare-cloud ]; then
     echo "Checking out CommCare Cloud Repo"
     git clone https://github.com/dimagi/commcare-cloud.git
     # first time install need requiremnts installed in serial
