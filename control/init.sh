@@ -47,15 +47,21 @@ alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
 if ! grep -q init-ansible ~/.profile; then
-    read -t 30 -p "Do you want to have the CommCare Cloud environment setup on login? (y/n): " yn
+    printf "${YELLOW}"Do you want to have the CommCare Cloud environment setup on login?${NC}"
+    read -t 30 -p "(y/n): " yn
     case $yn in
         [Yy]* )
             echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+            printf "${YELLOW}→ Added init script to ~/.profile"
         ;;
         * )
-            echo 'You can always set it up later by running this command:'
-            echo "'[ -t 1 ] && source ~/init-ansible' >> ~/.profile"
+            printf "${BLUE}You can always set it up later by running this command:\n'
+            printf "${BLUE}'[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
 fi
