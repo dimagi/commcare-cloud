@@ -46,6 +46,19 @@ alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
+if ! grep -q init-ansible "~/.profile"; then
+    read -t 5 -n 1 -p "Do you want to have the CommCare Cloud environment setup on login? (y/n): " yn
+    case $yn in
+        [Yy]* )
+            echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+        ;;
+        * )
+            echo 'You can always set it up later by running this command:'
+            echo "'[ -t 1 ] && source ~/init-ansible' >> ~/.profile"
+        ;;
+    esac
+fi
+
 # It aint pretty, but it gets the job done
 function ansible-deploy-control() {
     if [ -z "$1" ]; then
