@@ -35,17 +35,11 @@ wait
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ~/commcare-cloud/control/init.sh ~/init-ansible
 cd ~/commcare-cloud && ./control/check_install.sh && cd -
-alias ap='ansible-playbook -u ansible -i ~/commcare-cloud/fab/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
-alias aps='ap deploy_stack.yml'
 alias update-code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
 alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
 
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
-
-function ae() {
-    ansible $1 -m shell -a "$2" -u ansible -i ~/commcare-cloud/fab/fab/inventory/$ENV
-}
 
 # It aint pretty, but it gets the job done
 function ansible-deploy-control() {
