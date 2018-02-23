@@ -52,7 +52,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 if ! grep -q init-ansible ~/.profile; then
-    printf "${YELLOW}"Do you want to have the CommCare Cloud environment setup on login?${NC}"
+    printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}"
     read -t 30 -p "(y/n): " yn
     case $yn in
         [Yy]* )
