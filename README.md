@@ -19,66 +19,20 @@ Docs at [https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/comm
 
 
 # Install and setup
-You will need python 2.7 and `virtualenvwrapper` installed
-to follow these instructions.
-
-Clone the commcare-cloud repo
-(suggested location alongside commcare-hq, if you have that repo cloned as well):
+You will need python 2.7 and `virtualenvwrapper` installed to follow these instructions:
 
 ```
-git clone https://github.com/dimagi/commcare-cloud.git
-cd commcare-cloud
+sudo apt-get install git python-dev python-pip
+sudo pip install virtualenv virtualenvwrapper
 ```
 
-Now make a virtualenv for ansible:
-
+# Quick setup
+This should be run from your home director:
 ```
-mkvirtualenv ansible
-```
-
-If you want `workon ansible` to always bring you to this directory, then you can also run
-
-```
-setvirtualenvproject
-```
-
-at this time.
-
-**Note**: If you already have commcare-cloud cloned, then just enter that directory
-and update it with
-
-```
-git pull
-```
-
-# Install commcare-cloud
-
-You must be in your virtualenv for the install script to work
-```
-workon ansible
-```
-
-Then, simply run:
-
-```
-./install.sh
+bash <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
 
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
-
-# Optional: Hook up the bells and whistles
-
-To be able to
-- use `commcare-cloud` (and its alias `cchq`) from anywhere
-- use `commcare-cloud` bash completion
-
-add the following to your bash profile:
-
-```
-export PATH=$PATH:~/.commcare-cloud/bin
-source ~/.commcare-cloud/repo/control/.bash_completion
-```
-
 
 # Contributing
 
