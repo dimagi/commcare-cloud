@@ -47,7 +47,7 @@ alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
-if ! grep -q init-ansible "~/.profile"; then
+if ! grep -q init-ansible ~/.profile; then
     read -t 30 -p "Do you want to have the CommCare Cloud environment setup on login? (y/n): " yn
     case $yn in
         [Yy]* )
