@@ -48,7 +48,7 @@ export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
 if ! grep -q init-ansible "~/.profile"; then
-    read -t 5 -n 1 -p "Do you want to have the CommCare Cloud environment setup on login? (y/n): " yn
+    read -t 30 -p "Do you want to have the CommCare Cloud environment setup on login? (y/n): " yn
     case $yn in
         [Yy]* )
             echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
