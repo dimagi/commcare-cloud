@@ -361,6 +361,7 @@ localsettings:
             - 'form-sql'
           include_ucrs:
             - 'static-child_delivery_forms'
+            - 'static-complementary_feeding_forms'
             - 'static-daily_feeding_forms'
             - 'static-gm_forms'
             - 'static-home_visit_forms'
