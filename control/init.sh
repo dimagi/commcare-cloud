@@ -94,7 +94,7 @@ function ansible-control-banner() {
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
     printf -- "\n${GREEN}Deprecated Commands${NC}\n"
-    printf "ap - Use ${YELLOW}commcare-cloud <env> ap{NC} instead.\n"
+    printf "ap - Use ${YELLOW}commcare-cloud <env> ap${NC} instead.\n"
     printf "aps - Use ${YELLOW}commcare-cloud <env> aps${NC} instead.\n"
     printf "ae - Use ${YELLOW}commcare-cloud <env> run-shell-command${NC} instead.\n"
 }
