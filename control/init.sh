@@ -26,7 +26,7 @@ fi
 
 if [ ! -d ~/commcare-cloud ]; then
     echo "Checking out CommCare Cloud Repo"
-    git clone https://github.com/dimagi/commcare-cloud.git
+    git clone git@github.com:dimagi/commcare-cloud.git
     # first time install need requiremnts installed in serial
     cd ~/commcare-cloud && pip install -r ~/commcare-cloud/requirements.txt && cd -
 else
