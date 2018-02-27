@@ -202,8 +202,6 @@ pillows:
       num_processes: 4
       total_processes: 24
   'pillow6':
-    kafka-ucr-static-forms:
-      num_processes: 8
     kafka-ucr-main:
       num_processes: 1
     KafkaDomainPillow:
@@ -218,6 +216,9 @@ pillows:
     FormSubmissionMetadataTrackerPillow:
       num_processes: 8
   'pillow8':
+      kafka-ucr-static-forms:
+      num_processes: 8
+  'pillow9':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
@@ -232,7 +233,6 @@ pillows:
       num_processes: 1
     UserPillow:
       num_processes: 1
-  'pillow9':
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
