@@ -34,7 +34,7 @@ def build_formplayer(use_current_release=False):
     if env.environment == 'staging':
         jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer-staging/lastSuccessfulBuild/artifact/*zip*/archive.zip'
     else:
-        jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/*zip*/archive.zip'
+        jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
 
     release_name = 'formplayer__{}'.format(datetime.datetime.utcnow().strftime(DATE_FMT))
     with cd(build_dir):
