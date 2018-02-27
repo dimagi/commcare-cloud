@@ -95,6 +95,7 @@ each with its own distinct purpose and set of functionality:
 - Web workers
 - Asynchronous task processors (Celery)
 - [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) processes ("Pillowtop")
+  that themselves come in a number of different flavors and fill a number of different roles
 - The CommCare mobile engine exposed as a webservice ("Formplayer")
 
 You will also need some familiarity with the following sysadmin tools:
