@@ -216,7 +216,7 @@ pillows:
     FormSubmissionMetadataTrackerPillow:
       num_processes: 8
   'pillow8':
-      kafka-ucr-static-forms:
+    kafka-ucr-static-forms:
       num_processes: 8
   'pillow9':
     AppDbChangeFeedPillow:
