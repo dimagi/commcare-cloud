@@ -80,6 +80,7 @@ class RunAnsibleModule(CommandBase):
             become_user = args.become_user
             include_vars = False
             if become:
+                cmd_parts += ('--become',)
                 if become_user not in ('cchq',):
                     # ansible user can do things as cchq without a password,
                     # but needs the ansible user password in order to do things as other users.
@@ -87,8 +88,6 @@ class RunAnsibleModule(CommandBase):
                     include_vars = True
                 if become_user:
                     cmd_parts += ('--become-user', args.become_user)
-                else:
-                    cmd_parts += ('--become',)
 
             if include_vars:
                 cmd_parts += (
