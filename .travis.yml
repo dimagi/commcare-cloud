@@ -8,6 +8,7 @@ env:
 before_install:
   # Make sure everything's up to date.
   - sudo apt-get update -qq
+  - pip install virtualenv virtualenvwrapper
 
 install:
   - "source control/init.sh"
