@@ -21,9 +21,8 @@ Options:
                         (default=5)
   -h, --help            show this help message and exit
   -i INVENTORY, --inventory=INVENTORY, --inventory-file=INVENTORY
-                        specify inventory host path
-                        (default=[[u'/etc/ansible/hosts']]) or comma separated
-                        host list. --inventory-file is deprecated
+                        specify inventory host path or comma separated host
+                        list. --inventory-file is deprecated
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -34,10 +33,6 @@ Options:
                         prepend colon-separated path(s) to module library
                         (default=[u'/home/travis/.ansible/plugins/modules',
                         u'/usr/share/ansible/plugins/modules'])
-  --new-vault-id=NEW_VAULT_ID
-                        the new vault identity to use for rekey
-  --new-vault-password-file=NEW_VAULT_PASSWORD_FILES
-                        new vault password file for rekey
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
