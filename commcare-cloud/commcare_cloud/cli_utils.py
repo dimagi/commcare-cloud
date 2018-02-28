@@ -4,7 +4,7 @@ import subprocess
 
 import sys
 from clint.textui import puts, colored
-from .environment import ANSIBLE_DIR
+from .environment.paths import ANSIBLE_DIR
 from six.moves import input
 
 

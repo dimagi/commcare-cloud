@@ -15,7 +15,7 @@ from getpass import getpass
 from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
-from commcare_cloud.environment import get_inventory_filepath
+from commcare_cloud.environment.paths import get_inventory_filepath
 
 from .const import (
     PROJECT_ROOT,

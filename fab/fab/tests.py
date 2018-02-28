@@ -1,5 +1,5 @@
 import yaml
-from commcare_cloud.environment import get_available_envs, get_default_app_processes_filepath, \
+from commcare_cloud.environment.paths import get_available_envs, get_default_app_processes_filepath, \
     get_app_processes_filepath
 from nose_parameterized import parameterized
 
