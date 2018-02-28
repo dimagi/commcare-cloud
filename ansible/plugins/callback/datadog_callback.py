@@ -21,6 +21,9 @@ class CallbackModule(CallbackBase):
         if not HAS_MODULES:
             self.disabled = True
             print('Datadog callback disabled.\nMake sure you call all required libraries: "datadog" and "yaml".')
+        elif cli and cli.options.check:
+            self.disabled = False
+            print ('Datadog callback disabled in "check mode".  ')
         else:
             self.disabled = False
             # Set logger level - datadog api and urllib3
@@ -221,7 +224,7 @@ class CallbackModule(CallbackBase):
             os.path.basename(playbook_file_name))
         if isinstance(inventory, list):
             inventory = ','.join(inventory)
-        self._inventory_name = ','.join([os.path.basename(os.path.realpath(name)) for name in inventory.split(',') if name])
+        self._inventory_name = ','.join([os.path.basename(os.path.dirname(os.path.realpath(name))) for name in inventory.split(',') if name])
 
     def v2_playbook_on_play_start(self, play):
         # On Ansible v2, Ansible doesn't set `self.play` automatically
