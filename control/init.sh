@@ -70,7 +70,9 @@ NC='\033[0m' # No Color
 
 if ! grep -q init-ansible ~/.profile; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    read -t 30 -p "(y/n): " yn
+    if [ -z TRAVIS_TEST ]; then
+        read -t 30 -p "(y/n): " yn
+    fi
     case $yn in
         [Yy]* )
             echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
