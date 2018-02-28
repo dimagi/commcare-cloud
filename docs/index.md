@@ -26,8 +26,17 @@ but in steady state as well.
 
 If you or your organization is hosting or interested in hosting
 its own CommCare server environment,
-we strongly suggested you read our [Hosting Considerations](hosting-considerations.md) page
+we strongly suggested you read our [Hosting Considerations](hosting-considerations) page
 before going any further.
+
+## CommCare HQ in Production: System Overview
+
+Before proceeding, we highly recommend that you gain a high-level understanding
+of what a CommCare HQ production system looks like
+by consulting our [System Overview](system-overview) page.
+CommCare Cloud will help you stand up a system like the one described on that page,
+but maintaining it---even with the help of CommCare Cloud's helpful tooling---will require
+an understanding of the system's architecture and each of the system's underlying technologies.
 
 ## Miscellaneous Links
 - The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
