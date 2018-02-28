@@ -90,11 +90,11 @@ postgresql_dbs:
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
@@ -122,11 +122,11 @@ postgresql_dbs:
   - django_alias: p9
     name: commcarehq_p9
     shards: [824, 926]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
   - django_alias: p10
     name: commcarehq_p10
     shards: [927, 1023]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
   - name: commcarehq_ucr
     host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
     django_alias: ucr
@@ -164,8 +164,6 @@ datadog_integration_cloudant: False
 datadog_integration_vmware: True
 
 file_email: False
-
-ufw_private_interface: eth0
 
 shared_drive_enabled: true
 
@@ -363,6 +361,7 @@ localsettings:
             - 'form-sql'
           include_ucrs:
             - 'static-child_delivery_forms'
+            - 'static-complementary_feeding_forms'
             - 'static-daily_feeding_forms'
             - 'static-gm_forms'
             - 'static-home_visit_forms'
