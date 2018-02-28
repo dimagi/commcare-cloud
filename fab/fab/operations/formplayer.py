@@ -18,13 +18,11 @@ def build_formplayer(use_current_release=False):
     ~/www/$ENV/current/fromplayer_build
         formplayer__2017-08-23_16.16/
             libs/formplayer.jar
-            scripts/archive_dbs.sh
         current -> formplayer__2017-08-23_16.16
         formplayer.jar -> current/libs/formplayer.jar
 
     Thus the current artifacts will always be available at
       ~/www/$ENV/current/fromplayer_build/formplayer.jar and
-      ~/www/$ENV/current/fromplayer_build/current/scripts/archive_dbs.sh
     """
     code_dir = env.code_root if not use_current_release else env.code_current
     build_dir = os.path.join(code_dir, FORMPLAYER_BUILD_DIR)
@@ -32,23 +30,17 @@ def build_formplayer(use_current_release=False):
         sudo('mkdir {}'.format(build_dir))
 
     if env.environment == 'staging':
-        jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer-staging/lastSuccessfulBuild/artifact/*zip*/archive.zip'
+        jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful/formplayer.jar'
     else:
-        jenkins_formplayer_build_url = 'https://jenkins.dimagi.com/job/formplayer/lastSuccessfulBuild/artifact/*zip*/archive.zip'
+        jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
 
     release_name = 'formplayer__{}'.format(datetime.datetime.utcnow().strftime(DATE_FMT))
+    release_name_libs = os.path.join(release_name, 'libs')
     with cd(build_dir):
-        sudo("wget -nv '{}' -O archive.zip".format(jenkins_formplayer_build_url))
-        # this will unzip into the build_dir
-        # (not because that's where archive.zip is but because of cd(build_dir) above)
-        # and will create a dir called archive because that's the name inside the zip
-        # (not because it's the name we chose for the zip file)
-        sudo("unzip archive.zip".format(build_dir, release_name))
-        sudo("mv archive/build {}".format(release_name))
+        sudo('mkdir -p {}'.format(release_name_libs))
+        sudo("wget -nv '{}' -O {}/formplayer.jar".format(jenkins_formplayer_build_url, release_name_libs))
         sudo('ln -sfn {} current'.format(release_name))
         sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
-        sudo('chmod 755 current/scripts/archive_dbs.sh')
-        sudo('rm -r archive/ archive.zip')
 
 
 @roles(ROLES_FORMPLAYER)
