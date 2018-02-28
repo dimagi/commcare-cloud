@@ -10,7 +10,7 @@ from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment import ANSIBLE_DIR, get_inventory_filepath, get_vault_vars_filepath, \
+from commcare_cloud.environment.paths import ANSIBLE_DIR, get_inventory_filepath, get_vault_vars_filepath, \
     get_public_vars_filepath, get_public_vars
 
 

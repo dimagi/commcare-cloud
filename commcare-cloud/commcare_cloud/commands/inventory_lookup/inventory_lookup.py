@@ -4,7 +4,7 @@ import sys
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.environment import get_public_vars
+from commcare_cloud.environment.paths import get_public_vars
 from .getinventory import get_server_address
 from six.moves import shlex_quote
 
