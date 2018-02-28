@@ -40,7 +40,10 @@ fi
 if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     echo "Checking out CommCare Cloud Repo"
     git clone https://github.com/dimagi/commcare-cloud.git
-    # first time install need requiremnts installed in serial
+fi
+
+if [ -z "$(which ansible-galaxy)" ]; then
+    # first time install need requirements installed in serial
     cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd -
 else
     cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd - &
