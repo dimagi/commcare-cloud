@@ -3,7 +3,7 @@ language: python
 python: "2.7"
 
 env:
-  - ANSIBLE_ROLES_PATH="~/.ansible/roles"
+  - ANSIBLE_ROLES_PATH="~/.ansible/roles" TRAVIS_TEST=1
 
 before_install:
   # Make sure everything's up to date.
