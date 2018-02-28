@@ -4,7 +4,7 @@ from collections import Counter, namedtuple
 
 import jsonobject as jsonobject
 import yaml
-from commcare_cloud.environment import get_available_envs, get_app_processes_filepath, \
+from commcare_cloud.environment.paths import get_available_envs, get_app_processes_filepath, \
     get_default_app_processes_filepath
 from parameterized import parameterized
 
