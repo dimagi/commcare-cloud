@@ -681,6 +681,10 @@ GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
 
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
 
+{% if localsettings.get('SUMOLOGIC_URL) %}
+SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'
+{% endif %}
+
 {% if localsettings.get('ENIKSHAY_PRIVATE_API_USERS') %}
 ENIKSHAY_PRIVATE_API_USERS = {{ localsettings.ENIKSHAY_PRIVATE_API_USERS }}
 {% endif %}
