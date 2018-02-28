@@ -681,7 +681,7 @@ GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
 
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
 
-{% if localsettings.get('SUMOLOGIC_URL) %}
+{% if localsettings.get('SUMOLOGIC_URL') %}
 SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'
 {% endif %}
 
