@@ -4,6 +4,7 @@ from collections import Counter, namedtuple
 
 import jsonobject
 
+from commcare_cloud.environment.loaders import get_inventory
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -38,9 +39,12 @@ class AppProcessesConfig(jsonobject.JsonObject):
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
 
-    def validate(self):
-        super(AppProcessesConfig, self).validate()
+    def check(self):
         validate_app_processes_config(self)
+
+    def check_and_translate_hosts(self, env_name):
+        self.celery_processes = check_and_translate_hosts(env_name, self.celery_processes)
+        self.pillows = check_and_translate_hosts(env_name, self.pillows)
 
 
 class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
@@ -97,3 +101,32 @@ def validate_app_processes_config(app_processes_config):
         "The following queues were not mentioned: {}".format(', '.join(required_but_not_mentioned))
     assert all_queues_mentioned['celery_periodic'] <= 1, \
         'You cannot run the periodic celery queue on more than one machine because it implies celery beat.'
+
+
+def check_and_translate_hosts(env_name, host_mapping):
+    """
+    :param env_name: name of the env used to lookup the inventory
+    :param host_mapping: dictionary where keys can be one of:
+                         * host (must be in inventory file)
+                         * inventory group containing a single host
+                         * literal '*' or 'None'
+    :return: dictionary with the same content as the input but where
+             keys that were inventory groups have been converted into their
+             representative host
+    """
+    translated = {}
+    inventory = get_inventory(env_name)
+    for host, config in host_mapping.items():
+        if host == 'None' or host == '*' or host in inventory.hosts:
+            translated[host] = config
+        else:
+            group = inventory.groups.get(host)
+            assert group, 'Unknown host referenced in app processes: {}'.format(host)
+            group_hosts = group.get_hosts()
+            assert len(group_hosts) == 1, (
+                'Unable to translate host referenced '
+                'in app processes to a single host name: {}'.format(host))
+            host = group_hosts[0].get_name()
+            translated[host] = config
+
+    return translated

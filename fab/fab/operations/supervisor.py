@@ -27,7 +27,8 @@ from ..const import (
     ROLES_ALL_SERVICES,
     ROLES_SUBMISSION_REPROCESSING_QUEUE)
 from fabric import utils
-from ..utils import get_pillow_env_config, get_inventory
+from ..utils import get_pillow_env_config
+from commcare_cloud.environment.loaders import get_inventory
 from six.moves import range
 
 

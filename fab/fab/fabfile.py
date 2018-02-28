@@ -77,12 +77,13 @@ from .utils import (
     cache_deploy_state,
     clear_cached_deploy,
     execute_with_timing,
-    read_inventory_file,
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
-    check_and_translate_hosts,
 )
+from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
+
+from commcare_cloud.environment.loaders import read_inventory_file
 from .checks import (
     check_servers,
 )
@@ -172,10 +173,14 @@ def load_env(env_name):
 
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
-    vars = {}
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
+    app_processes = {}
+    app_processes.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
+    app_processes.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
+    app_processes = AppProcessesConfig.wrap(app_processes)
+    app_processes.check_and_translate_hosts(env_name)
+    app_processes.check()
+    vars = app_processes.to_json()
     vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')))
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
     vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'fab-settings.yml')))
     # Variables that were already in `env`
     # take precedence over variables set in app-processes.yml
@@ -301,9 +306,6 @@ def env_common():
     env.resume = False
     env.offline = False
     env.supervisor_roles = ROLES_ALL_SRC
-
-    for key in ('celery_processes', 'pillows'):
-        env[key] = check_and_translate_hosts(env.env_name, env[key])
 
 
 @task
