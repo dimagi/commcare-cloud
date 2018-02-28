@@ -16,4 +16,6 @@ def test_app_processes_yml(env):
         app_processes_json.update(yaml.load(f))
 
     app_processes_config = AppProcessesConfig.wrap(app_processes_json)
-    app_processes_config.validate()
+    app_processes_config.check()
+    app_processes_config.check_and_translate_hosts(env)
+    app_processes_config.check()
