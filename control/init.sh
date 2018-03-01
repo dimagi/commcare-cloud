@@ -1,20 +1,36 @@
 #! /bin/bash
-if ! hash virtualenvwrapper.sh 2>/dev/null; then
-    echo "Please install virtualenvwrapper and make sure it is in your PATH"
-    echo ""
-    echo "  sudo pip install virtualenv virtualenvwrapper"
-    echo ""
-    echo "Other requirements: git, python-dev, python-pip"
-    return 1
+if [ -z TRAVIS_TEST ]; then
+    if ! hash virtualenvwrapper.sh 2>/dev/null; then
+        echo "Please install virtualenvwrapper and make sure it is in your PATH"
+        echo ""
+        echo "  sudo pip install virtualenv virtualenvwrapper"
+        echo ""
+        echo "Other requirements: git, python-dev, python-pip"
+        return 1
+    fi
 fi
 
-source virtualenvwrapper.sh
-
-if [ ! -d ~/.virtualenvs/ansible ]; then
-    echo "Creating ansible virtualenv..."
-    mkvirtualenv ansible
+if [ -n "${BASH_SOURCE[0]}" ]
+then
+    # this script is being run from a file on disk, presumably from within commcare-cloud repo
+    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname ${BASH_SOURCE[0]})); pwd)
+elif [ -d ~/.commcare-cloud/repo ]
+then
+    # commcare-cloud is already installed; use the one specified
+    COMMCARE_CLOUD_REPO=~/.commcare-cloud/repo
 else
-    workon ansible
+    # commcare-cloud is not yet installed; use the default location
+    COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
+fi
+
+if [ -z TRAVIS_TEST ]; then
+    source virtualenvwrapper.sh
+    if [ ! -d ~/.virtualenvs/ansible ]; then
+        echo "Creating ansible virtualenv..."
+        mkvirtualenv ansible
+    else
+        workon ansible
+    fi
 fi
 
 if [ -d ~/commcarehq-ansible ]; then
@@ -24,26 +40,29 @@ if [ -d ~/commcarehq-ansible ]; then
     [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
 
-if [ ! -d ~/commcare-cloud ]; then
+if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     echo "Checking out CommCare Cloud Repo"
     git clone https://github.com/dimagi/commcare-cloud.git
-    # first time install need requiremnts installed in serial
-    cd ~/commcare-cloud && pip install -r ~/commcare-cloud/requirements.txt && cd -
+fi
+
+if [ -z "$(which ansible-galaxy)" ]; then
+    # first time install need requirements installed in serial
+    cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd -
 else
-    cd ~/commcare-cloud && pip install -r ~/commcare-cloud/requirements.txt && cd - &
+    cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd - &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 pip install pip --upgrade &
-ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
+ansible-galaxy install -r ${COMMCARE_CLOUD_REPO}/ansible/requirements.yml &
 wait
 
 # convenience: . init-ansible
-[ ! -f ~/init-ansible ] && ln -s ~/commcare-cloud/control/init.sh ~/init-ansible
-cd ~/commcare-cloud && ./control/check_install.sh && cd -
-alias update-code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
-alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
+[ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
+cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
+alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
+alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
@@ -54,7 +73,9 @@ NC='\033[0m' # No Color
 
 if ! grep -q init-ansible ~/.profile; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    read -t 30 -p "(y/n): " yn
+    if [ -z TRAVIS_TEST ]; then
+        read -t 30 -p "(y/n): " yn
+    fi
     case $yn in
         [Yy]* )
             echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
@@ -100,4 +121,4 @@ function ansible-control-banner() {
 }
 
 [ -t 1 ] && ansible-control-banner
-cd ~/commcare-cloud
+cd ${COMMCARE_CLOUD_REPO}

@@ -3,17 +3,15 @@ language: python
 python: "2.7"
 
 env:
-  - ANSIBLE_ROLES_PATH="~/.ansible/roles"
+  - ANSIBLE_ROLES_PATH="~/.ansible/roles" TRAVIS_TEST=1
 
 before_install:
   # Make sure everything's up to date.
   - sudo apt-get update -qq
+  - pip install virtualenv virtualenvwrapper
 
 install:
-  - pip install pip --upgrade
-  - pip install -r requirements.txt
-  - ansible-galaxy install -r ansible/requirements.yml
-  - ./control/check_install.sh
+  - "source control/init.sh"
   - pip install -r test_requirements.txt
 
 script:
