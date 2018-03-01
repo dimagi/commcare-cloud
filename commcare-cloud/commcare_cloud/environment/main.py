@@ -1,7 +1,7 @@
 import yaml
-from memoized import memoized
+from memoized import memoized, memoized_property
 
-from commcare_cloud.environment.paths import DefaultPaths, memoized_property
+from commcare_cloud.environment.paths import DefaultPaths
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
 from ansible.inventory.manager import InventoryManager
