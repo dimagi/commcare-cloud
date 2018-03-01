@@ -12,6 +12,7 @@ before_install:
 
 install:
   - "source control/init.sh"
+  - pip install -r test_requirements.txt
 
 script:
   - ".travis/tests.sh"
