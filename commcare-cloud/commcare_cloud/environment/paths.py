@@ -1,12 +1,47 @@
 import os
 import sys
+
+import functools
 import yaml
+from memoized import memoized
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(REPO_BASE, 'environments'))
 FAB_DIR = os.path.join(REPO_BASE, 'fab')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
+
+
+memoized_property = lambda fn: property(memoized(fn))
+
+
+class DefaultPaths(object):
+    def __init__(self, env_name):
+        self.env_name = env_name
+
+    @memoized_property
+    def public_yml(self):
+        return get_public_vars_filepath(self.env_name)
+
+    @memoized_property
+    def vault_yml(self):
+        return get_vault_vars_filepath(self.env_name)
+
+    @memoized_property
+    def known_hosts(self):
+        return get_known_hosts_filepath(self.env_name)
+
+    @memoized_property
+    def inventory_ini(self):
+        return get_inventory_filepath(self.env_name)
+
+    @memoized_property
+    def app_processes_yml(self):
+        return get_app_processes_filepath(self.env_name)
+
+    @memoized_property
+    def app_processes_yml_default(self):
+        return get_default_app_processes_filepath()
 
 
 def get_public_vars_filepath(environment):

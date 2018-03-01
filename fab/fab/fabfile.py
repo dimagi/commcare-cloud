@@ -45,6 +45,8 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
+
+from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs, get_public_vars
 
 from .const import (
@@ -82,8 +84,6 @@ from .utils import (
     traceback_string,
 )
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
-
-from commcare_cloud.environment.loaders import read_inventory_file
 from .checks import (
     check_servers,
 )
@@ -160,6 +160,7 @@ def _override_code_root_to_current():
 
 
 def load_env(env_name):
+    env.ccc_environment = get_environment(env.env_name)
     def get_env_dict(path):
         if os.path.isfile(path):
             with open(path) as f:
@@ -173,13 +174,8 @@ def load_env(env_name):
 
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
-    app_processes = {}
-    app_processes.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
-    app_processes.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
-    app_processes = AppProcessesConfig.wrap(app_processes)
-    app_processes.check_and_translate_hosts(env_name)
-    app_processes.check()
-    vars = app_processes.to_json()
+
+    vars = env.ccc_environment.translated_app_processes_config.to_json()
     vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')))
     vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'fab-settings.yml')))
     # Variables that were already in `env`
@@ -253,7 +249,7 @@ def development():
 
 
 def env_common():
-    servers = read_inventory_file(env.env_name)
+    servers = env.ccc_environment.inventory_hosts_by_group
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
