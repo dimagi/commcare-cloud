@@ -47,7 +47,7 @@ from fabric.decorators import runs_once
 from fabric.operations import require
 
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.environment.paths import get_available_envs, get_public_vars
+from commcare_cloud.environment.paths import get_available_envs
 
 from .const import (
     ROLES_ALL_SRC,
@@ -916,7 +916,7 @@ def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
         tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-        tasks[env_name].__doc__ = get_public_vars(env_name)['SITE_HOST']
+        tasks[env_name].__doc__ = get_environment(env_name).public_vars['SITE_HOST']
     return tasks
 
 # Automatically create a task for each environment
