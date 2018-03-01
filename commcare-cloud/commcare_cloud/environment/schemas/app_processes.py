@@ -4,7 +4,6 @@ from collections import Counter, namedtuple
 
 import jsonobject
 
-from commcare_cloud.environment.loaders import get_inventory
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -42,9 +41,9 @@ class AppProcessesConfig(jsonobject.JsonObject):
     def check(self):
         validate_app_processes_config(self)
 
-    def check_and_translate_hosts(self, env_name):
-        self.celery_processes = check_and_translate_hosts(env_name, self.celery_processes)
-        self.pillows = check_and_translate_hosts(env_name, self.pillows)
+    def check_and_translate_hosts(self, environment):
+        self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
+        self.pillows = check_and_translate_hosts(environment, self.pillows)
 
 
 class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
@@ -103,7 +102,7 @@ def validate_app_processes_config(app_processes_config):
         'You cannot run the periodic celery queue on more than one machine because it implies celery beat.'
 
 
-def check_and_translate_hosts(env_name, host_mapping):
+def check_and_translate_hosts(environment, host_mapping):
     """
     :param env_name: name of the env used to lookup the inventory
     :param host_mapping: dictionary where keys can be one of:
@@ -115,7 +114,7 @@ def check_and_translate_hosts(env_name, host_mapping):
              representative host
     """
     translated = {}
-    inventory = get_inventory(env_name)
+    inventory = environment.inventory_manager
     for host, config in host_mapping.items():
         if host == 'None' or host == '*' or host in inventory.hosts:
             translated[host] = config

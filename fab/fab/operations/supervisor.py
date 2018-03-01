@@ -28,7 +28,6 @@ from ..const import (
     ROLES_SUBMISSION_REPROCESSING_QUEUE)
 from fabric import utils
 from ..utils import get_pillow_env_config
-from commcare_cloud.environment.loaders import get_inventory
 from six.moves import range
 
 
@@ -295,7 +294,7 @@ def _format_env(current_env, extra=None):
         'newrelic_javaagent',
     ]
 
-    inventory = get_inventory(current_env.env_name)
+    inventory = env.ccc_environment.inventory_manager
     all_hosts = [host.name for host in inventory.groups['all'].hosts]
 
     ret['supervisor_env_vars'] = {}
