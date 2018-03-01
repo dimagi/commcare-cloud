@@ -9,9 +9,9 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_A
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_branch, arg_stdout_callback
+from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment.paths import ANSIBLE_DIR, get_known_hosts_filepath, get_inventory_filepath, \
-    get_vault_vars_filepath, get_public_vars_filepath, get_public_vars
+from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 
 class AnsiblePlaybook(CommandBase):
@@ -49,18 +49,19 @@ class AnsiblePlaybook(CommandBase):
         ))
 
     def run(self, args, unknown_args):
+        environment = get_environment(args.environment)
         ansible_context = AnsibleContext(args)
         check_branch(args)
-        public_vars = get_public_vars(args.environment)
+        public_vars = environment.public_vars
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
 
         def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
                 'ansible-playbook',
                 os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
-                '-i', get_inventory_filepath(environment),
-                '-e', '@{}'.format(get_vault_vars_filepath(environment)),
-                '-e', '@{}'.format(get_public_vars_filepath(environment)),
+                '-i', environment.paths.inventory_ini,
+                '-e', '@{}'.format(environment.paths.vault_yml),
+                '-e', '@{}'.format(environment.paths.public_yml),
                 '--diff',
             ) + cmd_args
 
@@ -70,7 +71,7 @@ class AnsiblePlaybook(CommandBase):
             if not has_arg(unknown_args, '-f', '--forks'):
                 cmd_parts += ('--forks', '15')
 
-            known_hosts_filepath = get_known_hosts_filepath(environment)
+            known_hosts_filepath = environment.paths.known_hosts
             if os.path.exists(known_hosts_filepath):
                 cmd_parts += ("--ssh-common-args='-o=UserKnownHostsFile=%s'" % (known_hosts_filepath,), )
 
@@ -93,10 +94,10 @@ class AnsiblePlaybook(CommandBase):
             return p.returncode
 
         def run_check():
-            return ansible_playbook(args.environment, args.playbook, '--check', *unknown_args)
+            return ansible_playbook(environment, args.playbook, '--check', *unknown_args)
 
         def run_apply():
-            return ansible_playbook(args.environment, args.playbook, *unknown_args)
+            return ansible_playbook(environment, args.playbook, *unknown_args)
 
         exit_code = 0
 
@@ -206,9 +207,10 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
+        environment = get_environment(args.environment)
         args.playbook = 'deploy_stack.yml'
         args.skip_check = True
-        public_vars = get_public_vars(args.environment)
+        public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):

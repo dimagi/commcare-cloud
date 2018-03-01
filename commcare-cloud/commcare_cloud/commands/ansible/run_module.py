@@ -9,9 +9,9 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_A
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
+from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment.paths import ANSIBLE_DIR, get_inventory_filepath, get_vault_vars_filepath, \
-    get_public_vars_filepath, get_public_vars
+from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 
 class RunAnsibleModule(CommandBase):
@@ -62,15 +62,16 @@ class RunAnsibleModule(CommandBase):
         ))
 
     def run(self, args, unknown_args):
+        environment = get_environment(args.environment)
         ansible_context = AnsibleContext(args)
-        public_vars = get_public_vars(args.environment)
+        public_vars = environment.public_vars
 
         def _run_ansible(args, *unknown_args):
             cmd_parts = (
                 'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
                 'ansible', args.inventory_group,
                 '-m', args.module,
-                '-i', get_inventory_filepath(args.environment),
+                '-i', environment.paths.inventory_ini,
                 '-u', args.remote_user,
                 '-a', args.module_args,
                 '--diff',
@@ -91,8 +92,8 @@ class RunAnsibleModule(CommandBase):
 
             if include_vars:
                 cmd_parts += (
-                    '-e', '@{}'.format(get_vault_vars_filepath(args.environment)),
-                    '-e', '@{}'.format(get_public_vars_filepath(args.environment)),
+                    '-e', '@{}'.format(environment.paths.vault_yml),
+                    '-e', '@{}'.format(environment.paths.public_yml),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)

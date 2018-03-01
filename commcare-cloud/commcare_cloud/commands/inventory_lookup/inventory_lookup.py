@@ -4,6 +4,7 @@ import sys
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_public_vars
 from .getinventory import get_server_address
 from six.moves import shlex_quote
@@ -65,7 +66,8 @@ class DjangoManage(CommandBase):
         pass
 
     def run(self, args, manage_args):
-        public_vars = get_public_vars(args.environment)
+        environment = get_environment(args.environment)
+        public_vars = environment.public_vars
         # the default 'cchq' is redundant with ansible/group_vars/all.yml
         cchq_user = public_vars.get('cchq_user', 'cchq')
         deploy_env = public_vars['deploy_env']
