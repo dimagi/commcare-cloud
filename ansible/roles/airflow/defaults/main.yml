@@ -1,0 +1,3 @@
+airflow_home: "{{ cchq_home }}/airflow"
+airflow_code_dir: "{{ airflow_home }}/pipes"
+airflow_version: "master"

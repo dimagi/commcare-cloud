@@ -11,6 +11,7 @@
     - riakcs
     - formplayer
     - pg_standby
+    - airflow
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}

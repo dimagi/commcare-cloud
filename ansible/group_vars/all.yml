@@ -171,3 +171,5 @@ couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_endpoint: "s3.{{ aws_region }}.amazonaws.com"
+
+airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'

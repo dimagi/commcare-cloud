@@ -1,0 +1,5 @@
+---
+- name: Airflow
+  hosts: airflow
+  roles:
+    - {role: airflow, tags: airflow}
