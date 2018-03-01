@@ -100,7 +100,7 @@ class CallbackModule(CallbackBase):
             )
         except Exception as e:
             # We don't want Ansible to fail on an API error
-            print('Couldn\'t send event "{0}" to Datadog'.format(title))
+            print('Couldn\'t send event "{0}" to Datadog'.format(self.variables['secrets']['DATADOG_API_KEY']))
             print(e)
 
     # Send event, aggregated with other task-level events from the same host
@@ -254,26 +254,34 @@ class CallbackModule(CallbackBase):
     def v2_playbook_on_play_start(self, play):
         # On Ansible v2, Ansible doesn't set `self.play` automatically
         self.play = play
+        self.variables = self.play.get_variable_manager()._extra_vars
         if self.disabled:
             return
+        api_key = self.variables['secrets']['DATADOG_API_KEY']
+        url = 'https://app.datadoghq.com'
 
         # Read config and hostvars
-        config_path = os.environ.get('ANSIBLE_DATADOG_CALLBACK_CONF_FILE', os.path.join(os.path.dirname(__file__), "datadog_callback.yml"))
-        api_key, url = self._load_conf(config_path)
+        # config_path = os.environ.get('ANSIBLE_DATADOG_CALLBACK_CONF_FILE', os.path.join(os.path.dirname(__file__), "datadog_callback.yml"))
+        # api_key, url = self._load_conf(config_path)
 
         # If there is no api key defined in config file, try to get it from hostvars
-        if api_key == '':
-            self.hostvars = self.play.get_variable_manager()._hostvars
+        # if api_key == '':
+        #     self.hostvars = self.play.get_variable_manager()._hostvars
+        #     if self.variables:
+        #         try:
+        #             api_key = self.variables['secrets']['DATADOG_API_KEY']
+        #         except Exception as e:
+        #             print ('DATADOG API not set in vault')
+        #     elif not self.hostvars:
+        #         print("No api_key found in the config file ({0}) and hostvars aren't set: disabling Datadog callback plugin".format(config_path))
+        #         self.disabled = True
+        #     else:
+        #         try:
+        #             api_key = self.hostvars['localhost']['datadog_api_key']
+        #         except Exception as e:
+        #             print('No "api_key" found in the config file ({0}) and "datadog_api_key" is not set in the hostvars: disabling Datadog callback plugin'.format(config_path))
+        #             self.disabled = True
 
-            if not self.hostvars:
-                print("No api_key found in the config file ({0}) and hostvars aren't set: disabling Datadog callback plugin".format(config_path))
-                self.disabled = True
-            else:
-                try:
-                    api_key = self.hostvars['localhost']['datadog_api_key']
-                except Exception as e:
-                    print('No "api_key" found in the config file ({0}) and "datadog_api_key" is not set in the hostvars: disabling Datadog callback plugin'.format(config_path))
-                    self.disabled = True
 
         # Set up API client and send a start event
         if not self.disabled:
