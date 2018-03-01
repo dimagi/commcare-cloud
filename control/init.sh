@@ -1,11 +1,13 @@
 #! /bin/bash
-if ! hash virtualenvwrapper.sh 2>/dev/null; then
-    echo "Please install virtualenvwrapper and make sure it is in your PATH"
-    echo ""
-    echo "  sudo pip install virtualenv virtualenvwrapper"
-    echo ""
-    echo "Other requirements: git, python-dev, python-pip"
-    return 1
+if [ -z TRAVIS_TEST ]; then
+    if ! hash virtualenvwrapper.sh 2>/dev/null; then
+        echo "Please install virtualenvwrapper and make sure it is in your PATH"
+        echo ""
+        echo "  sudo pip install virtualenv virtualenvwrapper"
+        echo ""
+        echo "Other requirements: git, python-dev, python-pip"
+        return 1
+    fi
 fi
 
 if [ -n "${BASH_SOURCE[0]}" ]
@@ -21,13 +23,14 @@ else
     COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
 fi
 
-source virtualenvwrapper.sh
-
-if [ ! -d ~/.virtualenvs/ansible ]; then
-    echo "Creating ansible virtualenv..."
-    mkvirtualenv ansible
-else
-    workon ansible
+if [ -z TRAVIS_TEST ]; then
+    source virtualenvwrapper.sh
+    if [ ! -d ~/.virtualenvs/ansible ]; then
+        echo "Creating ansible virtualenv..."
+        mkvirtualenv ansible
+    else
+        workon ansible
+    fi
 fi
 
 if [ -d ~/commcarehq-ansible ]; then
