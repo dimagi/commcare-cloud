@@ -11,3 +11,4 @@
         virtualenv: "{{ virtualenv_home }}"
       environment:
         CCHQ_IS_FRESH_INSTALL: 1
+      when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
