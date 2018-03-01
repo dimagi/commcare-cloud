@@ -1,7 +1,6 @@
 import os
 import sys
 
-import functools
 import yaml
 from memoized import memoized
 
