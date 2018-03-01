@@ -15,7 +15,8 @@ setup(
     install_requires=(
         'six',
         'clint',
-        'argparse==1.4',
         'dimagi-memoized>=1.1.0',
+        'argparse>=1.4',
+        'jsonobject>=0.8.0',
     ),
 )
