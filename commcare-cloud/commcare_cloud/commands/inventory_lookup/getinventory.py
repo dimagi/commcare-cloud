@@ -5,26 +5,12 @@ from __future__ import print_function
 from __future__ import absolute_import
 import sys
 
-from ...environment.paths import FAB_DIR
+from commcare_cloud.environment.main import get_environment
 
 
-def import_read_inventory_file():
-    """
-    This is a hack that makes this script dependent on commcare-cloud/fab
-
-    Not sure this is a great idea. If you ever find its brittleness breaks something,
-    feel free to copy and paste read_inventory_file from there, which is how it was before.
-    """
-    sys.path.append(FAB_DIR)
-    from fab.utils import read_inventory_file
-    sys.path.remove(FAB_DIR)
-    return read_inventory_file
-
-
-def get_instance_group(instance, group):
-    read_inventory_file = import_read_inventory_file()
-    servers = read_inventory_file(instance)
-    return servers[group]
+def get_instance_group(environment, group):
+    env = get_environment(environment)
+    return env.inventory_hosts_by_group[group]
 
 
 def get_server_address(environment, group, exit=sys.exit):
