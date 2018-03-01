@@ -3,6 +3,7 @@ import getpass
 import logging
 import os
 import time
+import yaml
 
 try:
     import datadog
@@ -36,6 +37,15 @@ class CallbackModule(CallbackBase):
         if cli:
             self._options = cli.options
 
+        extra_vars_file = self._options.extra_vars[1][1:]
+        print extra_vars_file
+
+        with open(extra_vars_file, 'r') as stream:
+            try:
+                self.extra_vars = yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
         # self.playbook is set in the `v2_playbook_on_start` callback method
         self.playbook = None
         # self.play is set in the `playbook_on_play_start` callback method
@@ -60,6 +70,10 @@ class CallbackModule(CallbackBase):
                 conf_dict = yaml.load(conf_file)
 
         return os.environ.get('DATADOG_API_KEY', conf_dict.get('api_key', '')), conf_dict.get('url', 'https://app.datadoghq.com')
+# Set host to match datadog agent
+
+    def _get_hostname(self,host):
+        return self.hostvars[host]['hostname']
 
     # Send event to Datadog
     def _send_event(self, title, alert_type=None, text=None, tags=None, host=None, event_type=None, event_object=None):
@@ -67,6 +81,11 @@ class CallbackModule(CallbackBase):
             tags = []
         tags.extend(self.default_tags)
         priority = 'normal' if alert_type == 'error' else 'low'
+        try:
+            hostname = self._get_hostname(host)
+            host = str(hostname) + "." +self.extra_vars['internal_domain_name']
+        except:
+            host = host.split(".")[0]
         try:
             datadog.api.Event.create(
                 title=title,
@@ -116,6 +135,12 @@ class CallbackModule(CallbackBase):
         if tags is None:
             tags = []
         tags.extend(self.default_tags)
+        try:
+            hostname = self._get_hostname(host)
+            host = str(hostname) + "." +self.extra_vars['internal_domain_name']
+        except:
+            host = host.split(".")[0]
+
         try:
             datadog.api.Metric.send(
                 metric="ansible.{0}".format(metric),
@@ -238,14 +263,14 @@ class CallbackModule(CallbackBase):
 
         # If there is no api key defined in config file, try to get it from hostvars
         if api_key == '':
-            hostvars = self.play.get_variable_manager()._hostvars
+            self.hostvars = self.play.get_variable_manager()._hostvars
 
-            if not hostvars:
+            if not self.hostvars:
                 print("No api_key found in the config file ({0}) and hostvars aren't set: disabling Datadog callback plugin".format(config_path))
                 self.disabled = True
             else:
                 try:
-                    api_key = hostvars['localhost']['datadog_api_key']
+                    api_key = self.hostvars['localhost']['datadog_api_key']
                 except Exception as e:
                     print('No "api_key" found in the config file ({0}) and "datadog_api_key" is not set in the hostvars: disabling Datadog callback plugin'.format(config_path))
                     self.disabled = True
@@ -262,6 +287,7 @@ class CallbackModule(CallbackBase):
                     self._inventory_name),
                 event_type='start',
             )
+
 
     def playbook_on_stats(self, stats):
         total_tasks = 0
