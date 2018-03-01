@@ -9,3 +9,4 @@ DimagiKeyStore
 ansible/*.retry
 *.pyc
 *.egg-info
+*~
