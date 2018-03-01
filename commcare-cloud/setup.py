@@ -16,6 +16,6 @@ setup(
         'six',
         'clint',
         'argparse==1.4',
-        'dimagi-memoized',
+        'dimagi-memoized>=1.1.0',
     ),
 )
