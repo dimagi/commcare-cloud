@@ -1,5 +1,11 @@
 #! /bin/bash
-if [ -z TRAVIS_TEST ]; then
+
+function realpath() {
+    python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
+}
+
+
+if [ -z ${TRAVIS_TEST} ]; then
     if ! hash virtualenvwrapper.sh 2>/dev/null; then
         echo "Please install virtualenvwrapper and make sure it is in your PATH"
         echo ""
@@ -13,7 +19,7 @@ fi
 if [ -n "${BASH_SOURCE[0]}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname ${BASH_SOURCE[0]})); pwd)
+    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname $(realpath ${BASH_SOURCE[0]}))); pwd)
 elif [ -d ~/.commcare-cloud/repo ]
 then
     # commcare-cloud is already installed; use the one specified
@@ -23,7 +29,7 @@ else
     COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
 fi
 
-if [ -z TRAVIS_TEST ]; then
+if [ -z ${TRAVIS_TEST} ]; then
     source virtualenvwrapper.sh
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
@@ -73,7 +79,7 @@ NC='\033[0m' # No Color
 
 if ! grep -q init-ansible ~/.profile; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    if [ -z TRAVIS_TEST ]; then
+    if [ -z ${TRAVIS_TEST} ]; then
         read -t 30 -p "(y/n): " yn
     fi
     case $yn in
