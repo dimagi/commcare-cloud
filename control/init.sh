@@ -1,5 +1,5 @@
 #! /bin/bash
-if [ -z TRAVIS_TEST ]; then
+if [ -z ${TRAVIS_TEST} ]; then
     if ! hash virtualenvwrapper.sh 2>/dev/null; then
         echo "Please install virtualenvwrapper and make sure it is in your PATH"
         echo ""
@@ -23,7 +23,7 @@ else
     COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
 fi
 
-if [ -z TRAVIS_TEST ]; then
+if [ -z ${TRAVIS_TEST} ]; then
     source virtualenvwrapper.sh
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
@@ -73,7 +73,7 @@ NC='\033[0m' # No Color
 
 if ! grep -q init-ansible ~/.profile; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    if [ -z TRAVIS_TEST ]; then
+    if [ -z ${TRAVIS_TEST} ]; then
         read -t 30 -p "(y/n): " yn
     fi
     case $yn in
