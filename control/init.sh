@@ -1,4 +1,10 @@
 #! /bin/bash
+
+function realpath() {
+    python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
+}
+
+
 if [ -z ${TRAVIS_TEST} ]; then
     if ! hash virtualenvwrapper.sh 2>/dev/null; then
         echo "Please install virtualenvwrapper and make sure it is in your PATH"
@@ -13,7 +19,7 @@ fi
 if [ -n "${BASH_SOURCE[0]}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname $(readlink ${BASH_SOURCE[0]}))); pwd)
+    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname $(realpath ${BASH_SOURCE[0]}))); pwd)
 elif [ -d ~/.commcare-cloud/repo ]
 then
     # commcare-cloud is already installed; use the one specified
