@@ -294,8 +294,7 @@ def _format_env(current_env, extra=None):
         'newrelic_javaagent',
     ]
 
-    inventory = env.ccc_environment.inventory_manager
-    all_hosts = [host.name for host in inventory.groups['all'].hosts]
+    all_hosts = env.ccc_environment.inventory_hosts_by_group['all']
 
     ret['supervisor_env_vars'] = {}
     if env.http_proxy:
