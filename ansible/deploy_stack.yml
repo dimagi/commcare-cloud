@@ -22,6 +22,7 @@
 - import_playbook: deploy_mailrelay.yml
 - import_playbook: deploy_tmpreaper.yml
 - import_playbook: deploy_etckeeper.yml
+- import_playbook: deploy_airflow.yml
 
 - import_playbook: deploy_touchforms.yml
   when: touchforms_enabled|default(true)
