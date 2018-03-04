@@ -1,3 +1,4 @@
 ---
 dependencies:
   - role: postgresql_basic
+    become: true
