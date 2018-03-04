@@ -8,9 +8,9 @@ from .commands.ansible.ansible_playbook import AnsiblePlaybook, \
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack, UpdateUsers
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
-from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh
+from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage
 from commcare_cloud.commands.command_base import CommandBase
-from .environment import (
+from .environment.paths import (
     get_available_envs,
     get_virtualenv_path,
 )
@@ -30,6 +30,7 @@ COMMAND_TYPES = [
     Lookup,
     Ssh,
     Mosh,
+    DjangoManage,
 ]
 
 

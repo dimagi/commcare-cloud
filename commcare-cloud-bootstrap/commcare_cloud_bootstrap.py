@@ -13,7 +13,7 @@ import re
 import jinja2
 import yaml
 import jsonobject
-from commcare_cloud.environment import get_inventory_filepath, \
+from commcare_cloud.environment.paths import get_inventory_filepath, \
     get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, REPO_BASE
 
 VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')

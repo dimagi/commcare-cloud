@@ -1,7 +1,10 @@
+from __future__ import print_function
 import re
 import subprocess
+
+import sys
 from clint.textui import puts, colored
-from .environment import ANSIBLE_DIR
+from .environment.paths import ANSIBLE_DIR
 from six.moves import input
 
 
@@ -54,3 +57,12 @@ def check_branch(args):
         else:
             puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(args.branch)))
         exit(-1)
+
+
+def print_command(command):
+    """
+    commcare-cloud commands by convention print the underlying command they execute
+
+    Use this function to do so
+    """
+    print(command, file=sys.stderr)

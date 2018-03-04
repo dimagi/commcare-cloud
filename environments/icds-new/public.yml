@@ -90,11 +90,11 @@ postgresql_dbs:
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
@@ -122,11 +122,11 @@ postgresql_dbs:
   - django_alias: p9
     name: commcarehq_p9
     shards: [824, 926]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
   - django_alias: p10
     name: commcarehq_p10
     shards: [927, 1023]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
   - name: commcarehq_ucr
     host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
     django_alias: ucr
@@ -164,8 +164,6 @@ datadog_integration_cloudant: False
 datadog_integration_vmware: True
 
 file_email: False
-
-ufw_private_interface: eth0
 
 shared_drive_enabled: true
 
@@ -363,6 +361,7 @@ localsettings:
             - 'form-sql'
           include_ucrs:
             - 'static-child_delivery_forms'
+            - 'static-complementary_feeding_forms'
             - 'static-daily_feeding_forms'
             - 'static-gm_forms'
             - 'static-home_visit_forms'
@@ -370,6 +369,7 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-thr_forms'
+            - 'static-thr_forms_v2'
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
@@ -404,6 +404,7 @@ localsettings:
   SMS_GATEWAY_PARAMS:
   SMS_GATEWAY_URL: 
   SMS_QUEUE_ENABLED: True
+  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'

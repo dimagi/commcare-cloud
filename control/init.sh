@@ -1,19 +1,42 @@
 #! /bin/bash
-if ! hash virtualenvwrapper.sh 2>/dev/null; then
-    echo "Please install virtualenvwrapper and make sure it is in your PATH"
-    echo ""
-    echo "  sudo apt-get install git python-dev python-pip"
-    echo "  sudo pip install virtualenv virtualenvwrapper"
-    return 1
+
+function realpath() {
+    python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
+}
+
+
+if [ -z ${TRAVIS_TEST} ]; then
+    if ! hash virtualenvwrapper.sh 2>/dev/null; then
+        echo "Please install virtualenvwrapper and make sure it is in your PATH"
+        echo ""
+        echo "  sudo pip install virtualenv virtualenvwrapper"
+        echo ""
+        echo "Other requirements: git, python-dev, python-pip"
+        return 1
+    fi
 fi
 
-source virtualenvwrapper.sh
-
-if [ ! -d ~/.virtualenvs/ansible ]; then
-    echo "Creating ansible virtualenv..."
-    mkvirtualenv ansible
+if [ -n "${BASH_SOURCE[0]}" ]
+then
+    # this script is being run from a file on disk, presumably from within commcare-cloud repo
+    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname $(realpath ${BASH_SOURCE[0]}))); pwd)
+elif [ -d ~/.commcare-cloud/repo ]
+then
+    # commcare-cloud is already installed; use the one specified
+    COMMCARE_CLOUD_REPO=~/.commcare-cloud/repo
 else
-    workon ansible
+    # commcare-cloud is not yet installed; use the default location
+    COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
+fi
+
+if [ -z ${TRAVIS_TEST} ]; then
+    source virtualenvwrapper.sh
+    if [ ! -d ~/.virtualenvs/ansible ]; then
+        echo "Creating ansible virtualenv..."
+        mkvirtualenv ansible
+    else
+        workon ansible
+    fi
 fi
 
 if [ -d ~/commcarehq-ansible ]; then
@@ -23,33 +46,53 @@ if [ -d ~/commcarehq-ansible ]; then
     [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
 
-if [ ! -d ~/commcare-cloud/config ]; then
-    git clone /home/ansible/commcarehq-ansible-secrets.git ~/commcare-cloud/config || mkdir ~/commcare-cloud/config
+if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
+    echo "Checking out CommCare Cloud Repo"
+    git clone https://github.com/dimagi/commcare-cloud.git
+fi
+
+if [ -z "$(which ansible-galaxy)" ]; then
+    # first time install need requirements installed in serial
+    cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd -
+else
+    cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd - &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-ansible-galaxy install -r ~/commcare-cloud/ansible/requirements.yml &
-pip install -r ~/commcare-cloud/ansible/requirements.txt &
-pip install -e ~/commcare-cloud/commcare-cloud &
-pip install -r ~/commcare-cloud/fab/requirements.txt &
 pip install pip --upgrade &
+ansible-galaxy install -r ${COMMCARE_CLOUD_REPO}/ansible/requirements.yml &
 wait
 
 # convenience: . init-ansible
-[ ! -f ~/init-ansible ] && ln -s ~/commcare-cloud/control/init.sh ~/init-ansible
-cd ~/commcare-cloud && ./control/check_install.sh && cd -
-alias ap='ansible-playbook -u ansible -i ~/commcare-cloud/fab/fab/inventory/$ENV -e "@vars/$ENV/${ENV}_vault.yml" -e "@vars/$ENV/${ENV}_public.yml" --ask-vault-pass'
-alias aps='ap deploy_stack.yml'
-alias update-code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
-alias update_code='~/commcare-cloud/control/update_code.sh && . ~/init-ansible'
+[ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
+cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
+alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
+alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/control/.bash_completion
 
-function ae() {
-    ansible $1 -m shell -a "$2" -u ansible -i ~/commcare-cloud/fab/fab/inventory/$ENV
-}
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+if ! grep -q init-ansible ~/.profile; then
+    printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
+    if [ -z ${TRAVIS_TEST} ]; then
+        read -t 30 -p "(y/n): " yn
+    fi
+    case $yn in
+        [Yy]* )
+            echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+            printf "${YELLOW}→ Added init script to ~/.profile\n"
+        ;;
+        * )
+            printf "\n${BLUE}You can always set it up later by running this command:\n"
+            printf "${BLUE}'[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
+        ;;
+    esac
+fi
 
 # It aint pretty, but it gets the job done
 function ansible-deploy-control() {
@@ -78,10 +121,10 @@ function ansible-control-banner() {
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
     printf -- "\n${GREEN}Deprecated Commands${NC}\n"
-    printf "ap - Use ${YELLOW}commcare-cloud <env> ansible-playbook${NC} instead.\n"
-    printf "aps - Use ${YELLOW}commcare-cloud <env> ansible-playbook deploy_stack.yml${NC} instead.\n"
+    printf "ap - Use ${YELLOW}commcare-cloud <env> ap${NC} instead.\n"
+    printf "aps - Use ${YELLOW}commcare-cloud <env> aps${NC} instead.\n"
     printf "ae - Use ${YELLOW}commcare-cloud <env> run-shell-command${NC} instead.\n"
 }
 
 [ -t 1 ] && ansible-control-banner
-cd ~/commcare-cloud
+cd ${COMMCARE_CLOUD_REPO}

@@ -1,12 +1,43 @@
 import os
 import sys
+
 import yaml
+from memoized import memoized_property
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-ENVIRONMENTS_DIR = os.path.join(REPO_BASE, 'environments')
+ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(REPO_BASE, 'environments'))
 FAB_DIR = os.path.join(REPO_BASE, 'fab')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
+
+
+class DefaultPaths(object):
+    def __init__(self, env_name):
+        self.env_name = env_name
+
+    @memoized_property
+    def public_yml(self):
+        return get_public_vars_filepath(self.env_name)
+
+    @memoized_property
+    def vault_yml(self):
+        return get_vault_vars_filepath(self.env_name)
+
+    @memoized_property
+    def known_hosts(self):
+        return get_known_hosts_filepath(self.env_name)
+
+    @memoized_property
+    def inventory_ini(self):
+        return get_inventory_filepath(self.env_name)
+
+    @memoized_property
+    def app_processes_yml(self):
+        return get_app_processes_filepath(self.env_name)
+
+    @memoized_property
+    def app_processes_yml_default(self):
+        return get_default_app_processes_filepath()
 
 
 def get_public_vars_filepath(environment):
@@ -15,6 +46,10 @@ def get_public_vars_filepath(environment):
 
 def get_vault_vars_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
+
+
+def get_known_hosts_filepath(environment):
+    return os.path.join(ENVIRONMENTS_DIR, environment, 'known_hosts')
 
 
 def get_inventory_filepath(environment):
@@ -40,6 +75,11 @@ def get_virtualenv_site_packages_path():
 
 
 def get_available_envs():
+    if not os.path.exists(ENVIRONMENTS_DIR):
+        print("The directory {!r} does not exist.\n"
+              "Set COMMCARE_CLOUD_ENVIRONMENTS to a directory that exists."
+              .format(ENVIRONMENTS_DIR))
+        exit(1)
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
         if os.path.exists(get_public_vars_filepath(env))
