@@ -8,6 +8,7 @@
    - pillowtop
    - postgresql
    - couchdb2_proxy
+   - airflow
   become: true
   roles:
     - {role: commcarehq, tags: commcarehq}
