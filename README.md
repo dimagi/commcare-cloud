@@ -19,7 +19,7 @@ Docs at [https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/comm
 
 
 # Install and setup
-You will need python 2.7 and `virtualenvwrapper` installed to follow these instructions:
+You will need python 2.7.12+ and `virtualenvwrapper` installed to follow these instructions:
 
 ```
 sudo apt-get install git python-dev python-pip
