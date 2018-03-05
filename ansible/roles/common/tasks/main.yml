@@ -124,5 +124,11 @@
   tags:
     - antivirus
     - after-reboot
-- include: cron.yml 
+
+- include: cron.yml
   tags: cron
+
+- include: mount.yml
+  tags:
+    - mount
+    - after-reboot
