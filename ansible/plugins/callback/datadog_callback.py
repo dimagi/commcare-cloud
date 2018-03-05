@@ -1,5 +1,6 @@
 #!/usr/bin/python
-# Author : Nitigya Sharma
+# Modified By : Nitigya Sharma
+# Forked from : https://github.com/DataDog/ansible-datadog-callback
 # Changes :
     # 1) Disable in check mode
     # 2) Read API_KEY from vault variables
@@ -45,15 +46,6 @@ class CallbackModule(CallbackBase):
         if cli:
             self._options = cli.options
 
-        extra_vars_file = self._options.extra_vars[1][1:]
-        print extra_vars_file
-
-        with open(extra_vars_file, 'r') as stream:
-            try:
-                self.extra_vars = yaml.load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-
         # self.playbook is set in the `v2_playbook_on_start` callback method
         self.playbook = None
         # self.play is set in the `playbook_on_play_start` callback method
@@ -72,8 +64,18 @@ class CallbackModule(CallbackBase):
 
     # Set host to match datadog agent
 
-    def _get_hostname(self,host):
+    def _get_hostname(self, host):
         return self.hostvars[str(host)]['hostname']
+
+    def _generate_datadog_hostname(self, host=None):
+        try:
+            if host is not None:
+                hostname = self._get_hostname(host)
+                host = str(hostname) + "." +self.variables['internal_domain_name']
+        except Exception as e:
+            print(e)
+            host = host.split(".")[0]
+        return host
 
     # Send event to Datadog
     def _send_event(self, title, alert_type=None, text=None, tags=None, host=None, event_type=None, event_object=None):
@@ -81,13 +83,7 @@ class CallbackModule(CallbackBase):
             tags = []
         tags.extend(self.default_tags)
         priority = 'normal' if alert_type == 'error' else 'low'
-        try:
-            if host is not None:
-                hostname = self._get_hostname(host)
-                host = str(hostname) + "." +self.extra_vars['internal_domain_name']
-        except Exception as e:
-            print(e)
-            host = host.split(".")[0]
+        host = self._generate_datadog_hostname(host)
         try:
             datadog.api.Event.create(
                 title=title,
@@ -137,13 +133,7 @@ class CallbackModule(CallbackBase):
         if tags is None:
             tags = []
         tags.extend(self.default_tags)
-        try:
-            if host is not None:
-                hostname = self._get_hostname(host)
-                host = str(hostname) + "." +self.extra_vars['internal_domain_name']
-        except:
-            host = host.split(".")[0]
-
+        host = self._generate_datadog_hostname(host)
         try:
             datadog.api.Metric.send(
                 metric="ansible.{0}".format(metric),
