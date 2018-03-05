@@ -127,7 +127,7 @@ AMQP_NAME: commcarehq
 kafka_broker_id: 0
 kafka_log_dir: '/opt/data/kafka'
 
-encrypted_root: /opt/data/ecrypt
+encrypted_root: "{{ encrypted_root_override|default('/opt/data/ecrypt') }}"
 
 ufw_private_interface: eth0
 
