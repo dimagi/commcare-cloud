@@ -118,3 +118,12 @@
     dest: "{{ code_home }}/services/supervisor/{{ deploy_env }}_supervisor_pillowtop.conf"
   tags:
     - services
+
+- name: define form feed services
+  become: cchq
+  hosts: pillowtop
+  template:
+    src: supervisor_form_feed.conf.j2
+    dest: "{{ code_home }}/services/supervisor/{{ deploy_env }}_supervisor_form_feed.conf"
+  tags:
+    - services
