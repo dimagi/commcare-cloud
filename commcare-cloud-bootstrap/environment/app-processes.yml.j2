@@ -1,0 +1,71 @@
+environment: dev
+newrelic_javaagent: True
+
+celery_processes:
+  {{ celery_host.name }}:
+    celery_periodic:
+      server_whitelist: {{ celery_host.public_ip }}
+      concurrency: 4
+    async_restore_queue,background_queue,case_rule_queue,celery:
+      concurrency: 1
+    email_queue,pillow_retry_queue,reminder_case_update_queue:
+      concurrency: 1
+    reminder_rule_queue,reminder_queue,repeat_record_queue,saved_exports_queue:
+      concurrency: 1
+    sms_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
+      concurrency: 1
+    flower: {}
+pillows:
+  {{ pillowtop_host.name }}:
+    kafka-ucr-main:
+      num_processes: 1
+    kafka-ucr-static:
+      num_processes: 1
+    AppDbChangeFeedPillow:
+      num_processes: 1
+    ApplicationBlobDeletionPillow:
+      num_processes: 1
+    ApplicationToElasticsearchPillow:
+      num_processes: 1
+    BlobDeletionPillow:
+      num_processes: 1
+    CacheInvalidatePillow:
+      num_processes: 1
+    CaseSearchToElasticsearchPillow:
+      num_processes: 1
+    CaseToElasticsearchPillow:
+      num_processes: 1
+    DefaultChangeFeedPillow:
+      num_processes: 1
+    DomainDbKafkaPillow:
+      num_processes: 1
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 1
+    GeographyFluffPillow:
+      num_processes: 1
+    GroupPillow:
+      num_processes: 1
+    GroupToUserPillow:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    LedgerToElasticsearchPillow:
+      num_processes: 1
+    ReportCaseToElasticsearchPillow:
+      num_processes: 1
+    ReportXFormToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+    UnknownUsersPillow:
+      num_processes: 1
+    UpdateUserSyncHistoryPillow:
+      num_processes: 1
+    UserCacheInvalidatePillow:
+      num_processes: 1
+    UserGroupsDbKafkaPillow:
+      num_processes: 1
+    UserPillow:
+      num_processes: 1
+    XFormToElasticsearchPillow:
+      num_processes: 1

@@ -1,12 +1,7 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
-SITE_HOST: '{{ groups.proxy.0 }}'
-COMMTRACK_SITE_HOST: '{{ groups.proxy.0 }}'
-NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
-J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
+SITE_HOST: '{{ hostvars[groups.proxy.0].ansible_host }}'
 internal_domain_name: 'localdomain'
-
-testing: True
 
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
@@ -21,13 +16,13 @@ http_proxy_parent_port: '3128'
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
   cchq_ssl: True
-  cchq_redirect: True
+  cchq_redirect: False
   cchq_http: True
   cchq_http_redirect: True
   cchq_http_j2me: False
-  commtrack_ssl: True
-  commtrack_http: True
-  riakcs: False
+  commtrack_ssl: False
+  commtrack_http: False
+  riakcs: True
   couchdb2: True
   hq_status: False
   icds_tableau: False
@@ -37,6 +32,9 @@ active_sites:
   wiki_http: False
   tableau: False
   cas_ssl: False
+
+riak_backend: "bitcask"
+riak_ring_size: 64
 
 deploy_env: dev
 fake_ssl_cert: yes
@@ -256,6 +254,7 @@ localsettings:
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
+  FORMPLAYER_INTERNAL_AUTH_KEY: '{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}'
   FULLSTORY_ID:
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
@@ -269,7 +268,7 @@ localsettings:
   JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
   JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   J2ME_ADDRESS: ''
-  KAFKA_URL: ''
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
   LOCAL_PILLOWS:
     custom:
@@ -290,6 +289,7 @@ localsettings:
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: commcarehq
   PG_DATABASE_USER: commcarehq
+  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
@@ -316,3 +316,7 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+
+commcare_cloud_root_user: ubuntu
+commcare_cloud_strict_host_key_checking: no
+commcare_cloud_use_vault: no
