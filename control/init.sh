@@ -9,7 +9,7 @@ if [ -z ${TRAVIS_TEST} ]; then
     if ! hash virtualenvwrapper.sh 2>/dev/null; then
         echo "Please install virtualenvwrapper and make sure it is in your PATH"
         echo ""
-        echo "  sudo pip install virtualenv virtualenvwrapper"
+        echo "  sudo pip install virtualenv virtualenvwrapper --ignore-installed six"
         echo ""
         echo "Other requirements: git, python-dev, python-pip"
         return 1
@@ -19,7 +19,7 @@ fi
 if [ -n "${BASH_SOURCE[0]}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname $(realpath ${BASH_SOURCE[0]}))); pwd)
+    COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
 elif [ -d ~/.commcare-cloud/repo ]
 then
     # commcare-cloud is already installed; use the one specified
