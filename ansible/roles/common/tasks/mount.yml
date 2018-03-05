@@ -1,0 +1,12 @@
+- name: "Mount additional disks"
+  become: yes
+  mount:
+    src: "{{ item.partition }}"
+    path: "{{ item.dest }}"
+    fstype: "{{ item.fstype }}"
+    state: mounted
+  with_items: "{{ mount_points }}"
+  when: mount_points is defined
+  tags:
+    - mount
+    - after-reboot
