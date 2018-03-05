@@ -25,6 +25,9 @@ celery_processes:
       concurrency: 2
       max_tasks_per_child: 5
   hqcelery1.internal-va.commcarehq.org:
+    case_rule_queue:
+      concurrency: 4
+      max_tasks_per_child: 1
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -57,9 +60,6 @@ celery_processes:
       max_tasks_per_child: 5
     flower: {}
   hqcelery2.internal-va.commcarehq.org:
-    case_rule_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
     celery:
       concurrency: 8
       max_tasks_per_child: 5
