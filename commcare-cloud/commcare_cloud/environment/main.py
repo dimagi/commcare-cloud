@@ -64,11 +64,16 @@ class Environment(object):
         """
         inventory = self.inventory_manager
         var_manager = VariableManager(self._ansible_inventory_data_loader, inventory)
+        # use the ip address specified by ansible_host to ssh in if it's given
+        ssh_addr_map = {
+            host.name: var_manager.get_vars(host=host).get('ansible_host', host.name)
+            for host in inventory.get_hosts()}
+        # use the port specified by ansible_port to ssh in if it's given
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
                     for host in inventory.get_hosts()}
         return {group: [
-            '{}:{}'.format(host, port_map[host])
-            if port_map[host] is not None else host
+            '{}:{}'.format(ssh_addr_map[host], port_map[host])
+            if port_map[host] is not None else ssh_addr_map[host]
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 

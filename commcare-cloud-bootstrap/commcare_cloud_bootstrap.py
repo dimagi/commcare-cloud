@@ -14,19 +14,25 @@ import jinja2
 import yaml
 import jsonobject
 from commcare_cloud.environment.paths import get_inventory_filepath, \
-    get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, REPO_BASE
+    get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, \
+    get_app_processes_filepath
 
-VARS_DIR = os.path.join(REPO_BASE, 'ansible', 'vars')
+TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
+j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
 
 
 class StrictJsonObject(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
 
-# Spec
-
-
 class Spec(StrictJsonObject):
+    """
+    Parser for spec files
+
+    These files declare how many machines should be allocated for each role.
+    See specs/example_spec.yml for an example.
+
+    """
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
     allocations = jsonobject.DictProperty(lambda: Allocation)
 
@@ -50,13 +56,19 @@ class AwsConfig(StrictJsonObject):
 
 
 class Allocation(StrictJsonObject):
-    count = jsonobject.IntegerProperty()
+    count = jsonobject.IntegerProperty(default=None)  # None means all here
     from_ = jsonobject.StringProperty(name='from')
 
 
-# Inventory
-
 class Inventory(StrictJsonObject):
+    """
+    This is an internal representation of the info we'll put in an ansible inventory file
+
+    It's not structured the same way ansible inventory files are,
+    because conceptually we treat host "groups" (just a way to name individual hosts)
+    differently from "actual" groups (which we use to define roles).
+
+    """
     all_hosts = jsonobject.ListProperty(lambda: Host)
     all_groups = jsonobject.DictProperty(lambda: Group)
 
@@ -103,6 +115,8 @@ def provision_machines(spec, env=None):
 
     save_inventory(env, inventory)
     copy_default_vars(env, spec.aws_config)
+    save_app_processes_yml(env, inventory)
+    save_fab_settings_yml(env)
 
 
 def alphanumeric_sort_key(key):
@@ -128,13 +142,10 @@ def bootstrap_inventory(spec, env):
                                    .format(role, allocation.from_))
                 if allocation.from_ in incomplete:
                     continue
-                # This is kind of hacky because it does a string sort
-                # on strings containing integers.
-                # Once we have more than 10 it'll start sorting wrong
                 host_names = sorted(
                     inventory.all_groups[allocation.from_].host_names,
                     key=alphanumeric_sort_key,
-                )[:allocation.count]
+                )[:allocation.count]  # if count is None, this is all machines
                 inventory.all_groups[role] = Group(
                     name=role,
                     host_names=[host_name for host_name in host_names],
@@ -269,7 +280,6 @@ def poll_for_aws_state(env, instance_ids):
 
 
 def save_inventory(env, inventory):
-    j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
     template = j2.get_template('inventory.ini.j2')
     inventory_file_contents = template.render(inventory=inventory)
     inventory_file = get_inventory_filepath(env)
@@ -281,22 +291,30 @@ def save_inventory(env, inventory):
           file=sys.stderr)
 
 
+def save_app_processes_yml(env, inventory):
+    template = j2.get_template('app-processes.yml.j2')
+    celery_host_name = inventory.all_groups['celery'].host_names[0]
+    pillowtop_host_name = inventory.all_groups['pillowtop'].host_names[0]
+    celery_host, = [host for host in inventory.all_hosts if host.name == celery_host_name]
+    pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
+    contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
+    with open(get_app_processes_filepath(env), 'w') as f:
+        f.write(contents)
+
+
+def save_fab_settings_yml(env):
+    with open(os.path.join(ENVIRONMENTS_DIR, env, 'fab-settings.yml'), 'w') as f:
+        f.write('')
+
+
 def copy_default_vars(env, aws_config):
-    vars_dir = VARS_DIR
-    template_dir = os.path.join(vars_dir, '.commcare-cloud-bootstrap')
-    new_dir = ENVIRONMENTS_DIR
     vars_public = get_public_vars_filepath(env)
     vars_vault = get_vault_vars_filepath(env)
-    if os.path.exists(template_dir) and not os.path.exists(vars_public):
-        shutil.copyfile(os.path.join(template_dir, 'private.yml'), vars_vault)
-        shutil.copyfile(os.path.join(template_dir, 'public.yml'), vars_public)
+    if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         with open(vars_public, 'a') as f:
-            f.write('commcare_cloud_root_user: ubuntu\n')
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
-            f.write('commcare_cloud_strict_host_key_checking: no\n')
-            f.write('commcare_cloud_use_vault: no\n')
-        print('template vars dir copied to {}'.format(new_dir),
-              file=sys.stderr)
 
 
 class Provision(object):
