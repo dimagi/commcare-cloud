@@ -124,10 +124,10 @@ KSPLICE_ACTIVE: yes
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
-kafka_broker_id: 0
-kafka_log_dir: '/opt/data/kafka'
-
 encrypted_root: "{{ encrypted_root_override|default('/opt/data/ecrypt') }}"
+
+kafka_broker_id: 0
+kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 ufw_private_interface: eth0
 
