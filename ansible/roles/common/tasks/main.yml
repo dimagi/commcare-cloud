@@ -129,4 +129,6 @@
   tags: cron
 
 - include: mount.yml
-  tags: mount
+  tags:
+    - mount
+    - after-reboot
