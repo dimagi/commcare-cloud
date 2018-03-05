@@ -1,12 +1,12 @@
-[program:{{ project }}-{{ environment }}-form_feed]
-directory={{ code_current }}/
-command={{ virtualenv_current }}/bin/python manage.py run_form_websocket_feed
-user={{ sudo_user }}
+[program:commcare-hq-{{ deploy_env }}-form_feed]
+directory={{ code_home }}
+command={{ virtualenv_home }}/bin/python manage.py run_form_websocket_feed
+user=cchq
 numprocs=1
 autostart=true
 autorestart=true
-stdout_logfile={{ log_dir }}/form_feed.log
+stdout_logfile={{ log_home }}/form_feed.log
 redirect_stderr=true
-stderr_logfile={{ log_dir }}/form_feed.error.log
+stderr_logfile={{ log_home }}/form_feed.error.log
 startsecs=0
 stopwaitsecs=10
