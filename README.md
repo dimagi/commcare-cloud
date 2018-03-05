@@ -23,7 +23,7 @@ You will need python 2.7 and `virtualenvwrapper` installed to follow these instr
 
 ```
 sudo apt-get install git python-dev python-pip
-sudo pip install virtualenv virtualenvwrapper
+sudo pip install virtualenv virtualenvwrapper --ignore-installed six
 ```
 
 # Quick setup
