@@ -7,6 +7,3 @@
     state: mounted
   with_items: "{{ mount_points }}"
   when: mount_points is defined
-  tags:
-    - mount
-    - after-reboot
