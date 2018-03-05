@@ -32,7 +32,7 @@ class CallbackModule(CallbackBase):
             self.disabled = True
             print('Datadog callback disabled.\nMake sure you call all required libraries: "datadog" and "yaml".')
         elif cli and cli.options.check:
-            self.disabled = False
+            self.disabled = True
             print ('Datadog callback disabled in "check mode".  ')
         else:
             self.disabled = False
@@ -73,7 +73,6 @@ class CallbackModule(CallbackBase):
                 hostname = self._get_hostname(host)
                 host = str(hostname) + "." +self.variables['internal_domain_name']
         except Exception as e:
-            print(e)
             host = host.split(".")[0]
         return host
 
