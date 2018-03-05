@@ -73,7 +73,7 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-
+postgresql_version: '9.6'
 postgresql_max_connections: 300
 pgbouncer_max_connections: 1000
 pgbouncer_default_pool: 290
