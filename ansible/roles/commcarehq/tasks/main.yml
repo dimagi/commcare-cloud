@@ -106,12 +106,13 @@
     - localsettings
     - hq-localsettings
 
-- include_vars: "../../../../environments/{deploy_env}/app-processes.yml"
+- include_vars: "../../../../environments/{{ deploy_env }}/app-processes.yml"
   tags:
     - services
 
 - name: define pillowtop services
   become: cchq
+  hosts: pillowtop
   template:
     src: supervisor_pillowtop.conf.j2
     dest: "{{ code_home }}/services/supervisor/{{ deploy_env }}_supervisor_pillowtop.conf"
