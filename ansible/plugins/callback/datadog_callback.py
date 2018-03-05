@@ -5,8 +5,6 @@
     # 2) Read API_KEY from vault variables
     # 3) Works for pushing metrics to correct host
 
-
-
 import getpass
 import logging
 import os
@@ -32,7 +30,7 @@ class CallbackModule(CallbackBase):
             print('Datadog callback disabled.\nMake sure you call all required libraries: "datadog" and "yaml".')
         elif cli and cli.options.check:
             self.disabled = False
-            print ('Datadog callback disabled in "check mode".  ')
+            print('Datadog callback disabled in "check mode".  ')
         else:
             self.disabled = False
             # Set logger level - datadog api and urllib3
@@ -46,7 +44,6 @@ class CallbackModule(CallbackBase):
             self._options = cli.options
 
         extra_vars_file = self._options.extra_vars[1][1:]
-        print extra_vars_file
 
         with open(extra_vars_file, 'r') as stream:
             try:
@@ -70,24 +67,21 @@ class CallbackModule(CallbackBase):
             print("Couldn't get logger - %s" % name)
             print(e)
 
-    # Set host to match datadog agent
-
     def _get_hostname(self,host):
-        return self.hostvars[str(host)]['hostname']
+         try:
+            if host is not None:
+                hostname = self.hostvars[str(host)]['hostname']
+                return str(hostname) + "." + self.extra_vars['internal_domain_name']
+        except:
+            return host.split(".")[0]
 
-    # Send event to Datadog
     def _send_event(self, title, alert_type=None, text=None, tags=None, host=None, event_type=None, event_object=None):
         if tags is None:
             tags = []
         tags.extend(self.default_tags)
         priority = 'normal' if alert_type == 'error' else 'low'
-        try:
-            if host is not None:
-                hostname = self._get_hostname(host)
-                host = str(hostname) + "." +self.extra_vars['internal_domain_name']
-        except Exception as e:
-            print(e)
-            host = host.split(".")[0]
+        host = self._get_hostname(host)
+        
         try:
             datadog.api.Event.create(
                 title=title,
@@ -101,7 +95,6 @@ class CallbackModule(CallbackBase):
                 event_object=event_object,
             )
         except Exception as e:
-            # We don't want Ansible to fail on an API error
             print('Couldn\'t send event "{0}" to Datadog'.format(title))
             print(e)
 
@@ -137,13 +130,7 @@ class CallbackModule(CallbackBase):
         if tags is None:
             tags = []
         tags.extend(self.default_tags)
-        try:
-            if host is not None:
-                hostname = self._get_hostname(host)
-                host = str(hostname) + "." +self.extra_vars['internal_domain_name']
-        except:
-            host = host.split(".")[0]
-
+        host = self._get_hostname(host)
         try:
             datadog.api.Metric.send(
                 metric="ansible.{0}".format(metric),
