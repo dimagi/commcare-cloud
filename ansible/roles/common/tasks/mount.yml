@@ -9,3 +9,4 @@
   when: mount_points is defined
   tags:
     - mount
+    - after-reboot
