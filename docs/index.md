@@ -41,3 +41,6 @@ an understanding of the system's architecture and each of the system's underlyin
 ## Miscellaneous Links
 - The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
 - The [ansible README](https://github.com/dimagi/commcare-cloud/blob/master/ansible/README.md) (somewhat outdated)
+
+## HowTos
+- [Moving partitioned databases](howto/move-partitioned-database)

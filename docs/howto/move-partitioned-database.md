@@ -5,39 +5,39 @@ case and form (and related) data can be partitioned between multiple PostgreSQL 
 
 To ease the burden of scaling it is common to create as many databases as necessary
 up front since splitting databases is much more difficult than moving databases. In
-this case a deployment of CommCare HQ may start with a single database machine
-that contains all the databases. As the project scales up more database resources
+this case a deployment of CommCare HQ may start with a single database server
+that contains all the databases. As the project scales up more database servers
 can be added and the databases can be moved to spread the load.
 
 This document describes the process required to move a database from one PostgreSQL
 instance to another.
 
-For the purposes of this document we'll assume that we have two database machines, `pg1`
-and `pg2`. `pg1` has two partitioned databases and `pg2` has none:
+For the purposes of this document we'll assume that we have two database machines, *pg1*
+and *pg2*. *pg1* has two partitioned databases and *pg2* has none:
 
-`pg1` databases:
+*pg1* databases:
 
-* `partition1`
-* `partition2`
+* *partition1*
+* *partition2*
 
-`pg2` is a newly deployed machine and we want to move `partition2` onto `pg2`.
+*pg2* is a newly deployed server and we want to move *partition2* onto *pg2*.
 
 ## Assumptions
 
-* `pg2` has been added to the Ansible inventory
-* `pg2` has had a full stack Ansible deploy
-* `pg1` has a replication slot available
+* *pg2* has been added to the Ansible inventory
+* *pg2* has had a full stack Ansible deploy
+* *pg1* has a replication slot available
 
 ## Process Overview
 
-1. Setup `pg2` node as a standby node of `pg1`
-3. Promote `pg2` to a master node
-4. Update the configuration so that requests for `partition2` go to `pg2` instead
-of `pg1`.
+1. Setup *pg2* node as a standby node of *pg1*
+3. Promote *pg2* to a master node
+4. Update the configuration so that requests for *partition2* go to *pg2* instead
+of *pg1*.
 
 ## Process detail
 
-### 1. Setup `pg2` as a standby node of `pg1`
+### 1. Setup *pg2* as a standby node of *pg1*
 This step does not require downtime and can be done at any stage prior to the
 downtime.
 
@@ -80,21 +80,21 @@ commcare-cloud <env> django-manage print_approximate_doc_distribution --csv
 
 **Update ansible config**
 
-Update the `postgresql_dbs` configuration in the environments `public.yml` file
-to show that the `partition2` database is now on `pg2`:
+Update the *postgresql_dbs* configuration in the environment's *public.yml* file
+to show that the *partition2* database is now on *pg2*:
 
-```
 
-postgresql_dbs:
-  - django_alias: partition1
-    name: partition1
-    shards: [0, 1]
-    host: "{{ hostvars[groups.pg1.0].inventory_hostname }}"
-  - django_alias: partition2
-    name: partition2
-    shards: [2, 3]
--    host: "{{ hostvars[groups.pg1.0].inventory_hostname }}"
-+    host: "{{ hostvars[groups.pg2.0].inventory_hostname }}"
+```diff
+    postgresql_dbs:
+        - django_alias: partition1
+          name: partition1
+          shards: [0, 1]
+          host: "pg1"
+        - django_alias: partition2
+          name: partition2
+          shards: [2, 3]
+-         host: pg1
++         host: pg2
 ```
 
 **Deploy changes**
@@ -107,9 +107,9 @@ commcare-cloud <env> update-config
 commcare-cloud <env> django-manage print_approximate_doc_distribution --csv
 ```
 
-This should show that the `partition2` database is now on the `pg2` host.
+This should show that the *partition2* database is now on the *pg2* host.
 
-### 6. Promote `pg2` to master
+### 6. Promote *pg2* to master
 
 **Verify that replication is up to date**
 ```
@@ -152,4 +152,4 @@ commcare-cloud <env> fab supervisorctl:"start all"
 ```
 
 ### 10. Cleanup
-Now you can go back and delete the duplicate databases on `pg1` and `pg2`.
+Now you can go back and delete the duplicate databases on *pg1* and *pg2*.
