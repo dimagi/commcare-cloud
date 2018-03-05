@@ -41,7 +41,6 @@ def set_supervisor_config():
     set_errand_boy_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
-    set_pillowtop_supervisorconf()
     set_sms_queue_supervisorconf()
     set_reminder_queue_supervisorconf()
     set_pillow_retry_queue_supervisorconf()
@@ -145,21 +144,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
                 host=env.host,
                 env_name=env.env_name)
     )
-
-
-def set_pillowtop_supervisorconf():
-    # Don't run if there are no hosts for the 'django_pillowtop' role.
-    # If there are no matching roles, it's still run once
-    # on the 'deploy' machine, db!
-    # So you need to explicitly test to see if all_hosts is empty.
-    if env.all_hosts and _check_in_roles(ROLES_PILLOWTOP):
-        _rebuild_supervisor_conf_file(
-            'make_supervisor_pillowtop_conf',
-            'supervisor_pillowtop.conf',
-            {'pillow_env_configs': get_pillow_env_config()}
-        )
-
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
 
 
 def set_djangoapp_supervisorconf():
