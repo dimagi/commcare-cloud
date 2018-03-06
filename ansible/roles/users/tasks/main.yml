@@ -20,7 +20,7 @@
   user: name="{{ cchq_user }}" state=present shell=/bin/bash groups={{ dev_group }} append=yes
   tags: commcarehq
 
-- name: Remove public key for cchq user
+- name: Remove public key for cchq user  # todo: remove after applied to all envs
   become: yes
   authorized_key: user="{{ cchq_user }}" key='' state=present exclusive=yes
   tags: commcarehq
@@ -45,9 +45,12 @@
   authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
-- name: De-authorize ansible pubkey
+- name: De-authorize ansible & cchq pubkey  # todo: remove after applied to all envs
   become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/ansible.pub') }}"
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
+  with_items:
+    - ansible
+    - cchq
 
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'
