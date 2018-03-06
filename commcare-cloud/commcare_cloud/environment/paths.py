@@ -90,12 +90,6 @@ def get_available_envs():
         exit(1)
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
-        if os.path.exists(get_public_vars_filepath(env))
-        and os.path.exists(get_inventory_filepath(env))
+        if os.path.exists(DefaultPaths(env).public_yml)
+        and os.path.exists(DefaultPaths(env).inventory_ini)
     )
-
-
-def get_public_vars(environment):
-    filename = get_public_vars_filepath(environment)
-    with open(filename) as f:
-        return yaml.load(f)
