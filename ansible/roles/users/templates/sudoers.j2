@@ -5,7 +5,7 @@
 User_Alias HIPAA_USERS = ansible, {% for user in dev_users.present -%}
 {{ user }}
 {%- if not loop.last %}, {% endif %}
-{%- endfor %}
+{%- endfor %}, {{ cchq_user }}
 
 Runas_Alias HIPAA_ACTOR = {{ cchq_user }}
 
