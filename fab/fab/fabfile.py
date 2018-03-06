@@ -94,7 +94,6 @@ if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path
 env.abort_exception = Exception
 env.linewise = True
 env.colorize_errors = True
-env.captain_user = None
 env.always_use_pty = False
 env['sudo_prefix'] += '-H '
 
