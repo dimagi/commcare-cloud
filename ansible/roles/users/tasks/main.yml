@@ -2,6 +2,7 @@
 - name: Add dev group
   become: yes
   group: name="{{ dev_group }}" state=present
+  tags: commcarehq
 
 - name: Add users for current devs
   become: yes
