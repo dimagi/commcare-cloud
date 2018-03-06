@@ -288,7 +288,7 @@ def record_successful_deploy():
             '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
         ) % {
             'virtualenv_current': env.virtualenv_current,
-            'user': env.captain_user or env.user,
+            'user': env.user,
             'environment': env.environment,
             'url': env.deploy_metadata.diff_url,
             'minutes': str(int(delta.total_seconds() // 60))
