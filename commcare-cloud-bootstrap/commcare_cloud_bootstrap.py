@@ -13,9 +13,8 @@ import re
 import jinja2
 import yaml
 import jsonobject
-from commcare_cloud.environment.paths import get_inventory_filepath, \
-    get_public_vars_filepath, get_vault_vars_filepath, ENVIRONMENTS_DIR, \
-    get_app_processes_filepath
+
+from commcare_cloud.environment.main import get_environment
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -86,16 +85,17 @@ class Group(StrictJsonObject):
     vars = jsonobject.DictProperty()
 
 
-def provision_machines(spec, env=None):
-    if env is None:
-        env = u'hq-{}'.format(
+def provision_machines(spec, env_name=None):
+    if env_name is None:
+        env_name = u'hq-{}'.format(
             ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
-    inventory = bootstrap_inventory(spec, env)
-    instance_ids = ask_aws_for_instances(env, spec.aws_config, len(inventory.all_hosts))
+    environment = get_environment()
+    inventory = bootstrap_inventory(spec, env_name)
+    instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
 
     while True:
-        instance_ip_addresses = poll_for_aws_state(env, instance_ids)
+        instance_ip_addresses = poll_for_aws_state(env_name, instance_ids)
         if instance_ip_addresses:
             break
 
@@ -113,10 +113,10 @@ def provision_machines(spec, env=None):
     for host_name in inventory.all_groups['elasticsearch'].host_names:
         hosts_by_name[host_name].vars['elasticsearch_node_name'] = host_name
 
-    save_inventory(env, inventory)
-    copy_default_vars(env, spec.aws_config)
-    save_app_processes_yml(env, inventory)
-    save_fab_settings_yml(env)
+    save_inventory(environment, inventory)
+    copy_default_vars(environment, spec.aws_config)
+    save_app_processes_yml(environment, inventory)
+    save_fab_settings_yml(environment)
 
 
 def alphanumeric_sort_key(key):
@@ -129,7 +129,7 @@ def alphanumeric_sort_key(key):
     return [convert(c) for c in re.split('([0-9]+)', key)]
 
 
-def bootstrap_inventory(spec, env):
+def bootstrap_inventory(spec, env_name):
     incomplete = dict(spec.allocations.items())
 
     inventory = Inventory()
@@ -154,7 +154,7 @@ def bootstrap_inventory(spec, env):
             else:
                 new_host_names = set()
                 for i in range(allocation.count):
-                    host_name = '{env}-{group}-{i}'.format(env=env, group=role, i=i)
+                    host_name = '{env}-{group}-{i}'.format(env=env_name, group=role, i=i)
                     new_host_names.add(host_name)
                     inventory.all_hosts.append(
                         Host(name=host_name, public_ip=None, private_ip=None, vars={}))
@@ -168,8 +168,8 @@ def bootstrap_inventory(spec, env):
     return inventory
 
 
-def ask_aws_for_instances(env, aws_config, count):
-    cache_file = '{env}-aws-new-instances.json'.format(env=env)
+def ask_aws_for_instances(env_name, aws_config, count):
+    cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
         with open(cache_file, 'r') as f:
             aws_response = f.read()
@@ -182,7 +182,7 @@ def ask_aws_for_instances(env, aws_config, count):
             '--key-name', aws_config.key_name,
             '--security-group-ids', aws_config.security_group_id,
             '--subnet-id', aws_config.subnet,
-            '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env + '}]',
+            '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
         ]
         aws_response = subprocess.check_output(cmd_parts)
         with open(cache_file, 'w') as f:
@@ -198,11 +198,11 @@ def print_describe_instances(describe_instances):
                   file=sys.stderr)
 
 
-def raw_describe_instances(env):
+def raw_describe_instances(env_name):
     cmd_parts = [
         'aws', 'ec2', 'describe-instances', '--filters',
         'Name=instance-state-code,Values=16',
-        'Name=tag:env,Values=' + env
+        'Name=tag:env,Values=' + env_name
     ]
     return json.loads(subprocess.check_output(cmd_parts))
 
@@ -217,10 +217,10 @@ def get_hosts_from_describe_instances(describe_instances):
     return hosts
 
 
-def get_inventory_from_file(env):
+def get_inventory_from_file(environment):
     inventory = Inventory()
     state = None
-    with open(get_inventory_filepath(env)) as f:
+    with open(environment.paths.inventory_ini) as f:
         for line in f.readlines():
             group_line_match = re.match(r'^\[\s*(.*)\s*\]\s*$', line)
             if re.match(r'^\s*$', line):
@@ -260,8 +260,8 @@ def update_inventory_public_ips(inventory, new_hosts):
         host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
 
 
-def poll_for_aws_state(env, instance_ids):
-    describe_instances = raw_describe_instances(env)
+def poll_for_aws_state(env_name, instance_ids):
+    describe_instances = raw_describe_instances(env_name)
     print_describe_instances(describe_instances)
 
     instances = [instance
@@ -279,10 +279,10 @@ def poll_for_aws_state(env, instance_ids):
         }
 
 
-def save_inventory(env, inventory):
+def save_inventory(environment, inventory):
     template = j2.get_template('inventory.ini.j2')
     inventory_file_contents = template.render(inventory=inventory)
-    inventory_file = get_inventory_filepath(env)
+    inventory_file = environment.paths.inventory_ini()
     if not os.path.exists(os.path.dirname(inventory_file)):
         os.makedirs(os.path.dirname(inventory_file))
     with open(inventory_file, 'w') as f:
@@ -291,25 +291,25 @@ def save_inventory(env, inventory):
           file=sys.stderr)
 
 
-def save_app_processes_yml(env, inventory):
+def save_app_processes_yml(environment, inventory):
     template = j2.get_template('app-processes.yml.j2')
     celery_host_name = inventory.all_groups['celery'].host_names[0]
     pillowtop_host_name = inventory.all_groups['pillowtop'].host_names[0]
     celery_host, = [host for host in inventory.all_hosts if host.name == celery_host_name]
     pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
     contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
-    with open(get_app_processes_filepath(env), 'w') as f:
+    with open(environment.paths.app_processes_yml, 'w') as f:
         f.write(contents)
 
 
-def save_fab_settings_yml(env):
-    with open(os.path.join(ENVIRONMENTS_DIR, env, 'fab-settings.yml'), 'w') as f:
+def save_fab_settings_yml(environment):
+    with open(environment.paths.fab_settings_yml, 'w') as f:
         f.write('')
 
 
-def copy_default_vars(env, aws_config):
-    vars_public = get_public_vars_filepath(env)
-    vars_vault = get_vault_vars_filepath(env)
+def copy_default_vars(environment, aws_config):
+    vars_public = environment.paths.public_yml
+    vars_vault = environment.paths.vault_yml
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
@@ -361,10 +361,11 @@ class Reip(object):
     @staticmethod
     def run(args):
         describe_instances = raw_describe_instances(args.env)
+        environment = get_environment(args.env)
         new_hosts = get_hosts_from_describe_instances(describe_instances)
-        inventory = get_inventory_from_file(args.env)
+        inventory = get_inventory_from_file(environment)
         update_inventory_public_ips(inventory, new_hosts)
-        save_inventory(args.env, inventory)
+        save_inventory(environment, inventory)
 
 
 STANDARD_ARGS = [

@@ -39,6 +39,14 @@ class DefaultPaths(object):
     def app_processes_yml_default(self):
         return get_default_app_processes_filepath()
 
+    @memoized_property
+    def fab_settings_yml(self):
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'fab-settings.yml')
+
+    @memoized_property
+    def fab_settings_yml_default(self):
+        return os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')
+
 
 def get_public_vars_filepath(environment):
     return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
