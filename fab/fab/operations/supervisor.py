@@ -148,7 +148,7 @@ def show_periodic_server_whitelist_message_and_abort(env):
 
 
 def copy_pillowtop_supervisorconf():
-    services_dir = "/services/supervisor/"
+    services_dir = "services/supervisor"
     pillowtop_conf = "{}/{}_supervisor_pillowtop.conf".format(services_dir, env.environment)
     form_feed_conf = "{}/{}_supervisor_form_feed.conf".format(services_dir, env.environment)
 
