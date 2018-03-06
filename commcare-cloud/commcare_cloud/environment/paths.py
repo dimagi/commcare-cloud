@@ -1,7 +1,6 @@
 import os
 import sys
 
-import yaml
 from memoized import memoized_property
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
@@ -17,27 +16,27 @@ class DefaultPaths(object):
 
     @memoized_property
     def public_yml(self):
-        return get_public_vars_filepath(self.env_name)
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'public.yml')
 
     @memoized_property
     def vault_yml(self):
-        return get_vault_vars_filepath(self.env_name)
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'vault.yml')
 
     @memoized_property
     def known_hosts(self):
-        return get_known_hosts_filepath(self.env_name)
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'known_hosts')
 
     @memoized_property
     def inventory_ini(self):
-        return get_inventory_filepath(self.env_name)
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'inventory.ini')
 
     @memoized_property
     def app_processes_yml(self):
-        return get_app_processes_filepath(self.env_name)
+        return os.path.join(REPO_BASE, 'environments', self.env_name, 'app-processes.yml')
 
     @memoized_property
     def app_processes_yml_default(self):
-        return get_default_app_processes_filepath()
+        return os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')
 
     @memoized_property
     def fab_settings_yml(self):
@@ -46,30 +45,6 @@ class DefaultPaths(object):
     @memoized_property
     def fab_settings_yml_default(self):
         return os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')
-
-
-def get_public_vars_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'public.yml')
-
-
-def get_vault_vars_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'vault.yml')
-
-
-def get_known_hosts_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'known_hosts')
-
-
-def get_inventory_filepath(environment):
-    return os.path.join(ENVIRONMENTS_DIR, environment, 'inventory.ini')
-
-
-def get_app_processes_filepath(env_name):
-    return os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')
-
-
-def get_default_app_processes_filepath():
-    return os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')
 
 
 def get_virtualenv_path():
