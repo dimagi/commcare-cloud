@@ -24,9 +24,11 @@ and *pg2*. *pg1* has two partitioned databases and *pg2* has none:
 
 ## Assumptions
 
-* *pg2* has been added to the Ansible inventory
+* *pg2* has been added to the Ansible inventory and included in the *[postgresql]* group
 * *pg2* has had a full stack Ansible deploy
-* *pg1* has a replication slot available
+* *pg1* has a [replication slot][] available
+
+[replication slot]: https://www.postgresql.org/docs/current/static/warm-standby.html#STREAMING-REPLICATION-SLOTS
 
 ## Process Overview
 
