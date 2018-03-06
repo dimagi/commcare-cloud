@@ -21,7 +21,7 @@
 
 - name: Remove public key for cchq user
   become: yes
-  authorized_key: user="{{ cchq_user }}" state=absent
+  authorized_key: user="{{ cchq_user }}" key='' state=present exclusive=yes
   tags: commcarehq
 
 - name: Add MSP user sudo user
