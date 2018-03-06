@@ -46,7 +46,6 @@ dev_users:
     - skelly
     - sravfeyn
     - wpride
-    - cchq
   absent:
     - preseed
     - twymer

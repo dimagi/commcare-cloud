@@ -1,8 +1,8 @@
 ---
-# cchq user is created in supervisor role
 - name: Add dev group
   become: yes
   group: name="{{ dev_group }}" state=present
+  tags: commcarehq
 
 - name: Add users for current devs
   become: yes
@@ -14,6 +14,16 @@
   authorized_key: user="{{ item }}" state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
   ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Add cchq user
+  become: yes
+  user: name="{{ cchq_user }}" state=present shell=/bin/bash groups={{ dev_group }} append=yes
+  tags: commcarehq
+
+- name: Remove public key for cchq user  # todo: remove after applied to all envs
+  become: yes
+  authorized_key: user="{{ cchq_user }}" key='' state=present exclusive=yes
+  tags: commcarehq
 
 - name: Add MSP user sudo user
   user: name="{{ item.value.username }}" state=present shell=/bin/bash groups="sudo" password="{{ item.value.password }}"
@@ -35,9 +45,12 @@
   authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
-- name: De-authorize ansible pubkey
+- name: De-authorize ansible & cchq pubkey  # todo: remove after applied to all envs
   become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/ansible.pub') }}"
+  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
+  with_items:
+    - ansible
+    - cchq
 
 - name: find supervisorctl path
   shell: 'dirname "$(which supervisorctl)"'
