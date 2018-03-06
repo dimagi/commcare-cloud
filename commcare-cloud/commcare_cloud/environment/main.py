@@ -8,6 +8,8 @@ from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
+from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
+
 
 class Environment(object):
     def __init__(self, paths):
@@ -41,6 +43,21 @@ class Environment(object):
         app_processes_config.check_and_translate_hosts(self)
         app_processes_config.check()
         return app_processes_config
+
+    @memoized_property
+    def fab_settings_config(self):
+        """
+        collated contents of fab-settings.yml files, as a FabSettingsConfig object
+
+        includes environmental-defaults/fab-settings.yml as well as <env>/fab-settings.yml
+        """
+        with open(self.paths.fab_settings_yml_default) as f:
+            fab_settings_json = yaml.load(f)
+        with open(self.paths.fab_settings_yml) as f:
+            fab_settings_json.update(yaml.load(f) or {})
+
+        fab_settings_config = FabSettingsConfig.wrap(fab_settings_json)
+        return fab_settings_config
 
     @memoized_property
     def _ansible_inventory_data_loader(self):

@@ -158,25 +158,13 @@ def _override_code_root_to_current():
     env.services = posixpath.join(env.code_root, 'services')
 
 
-def load_env(env_name):
+def load_env():
     env.ccc_environment = get_environment(env.env_name)
-    def get_env_dict(path):
-        if os.path.isfile(path):
-            with open(path) as f:
-                try:
-                    return yaml.load(f) or {}
-                except Exception:
-                    print('Error in file {}'.format(path))
-                    raise
-        else:
-            raise Exception("Environment file not found: {}".format(path))
-
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
 
     vars = env.ccc_environment.translated_app_processes_config.to_json()
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')))
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'fab-settings.yml')))
+    vars.update(env.ccc_environment.fab_settings_config.to_json())
     # Variables that were already in `env`
     # take precedence over variables set in app-processes.yml
     # except a short blacklist that we expect app-processes.yml vars to overwrite
@@ -189,7 +177,7 @@ def load_env(env_name):
 
 def _setup_env(env_name):
     env.env_name = env_name
-    load_env(env_name)
+    load_env()
     _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
