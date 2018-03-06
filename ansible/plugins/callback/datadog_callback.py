@@ -73,7 +73,7 @@ class CallbackModule(CallbackBase):
             if host is not None:
                 hostname = self._get_hostname(host)
                 host = str(hostname) + "." +self.variables['internal_domain_name']
-        except Exception as e:
+        except KeyError as e:
             host = host.split(".")[0]
         return host
 
