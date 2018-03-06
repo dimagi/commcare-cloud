@@ -63,8 +63,6 @@ supervisor_http_enabled: True
 
 keystore_file: '../config/DimagiKeyStore'
 
-encrypted_root: '/opt/data'
-
 backup_blobdb: False
 backup_postgres: plain
 postgresql_backup_days: 1
