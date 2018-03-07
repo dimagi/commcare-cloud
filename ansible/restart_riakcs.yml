@@ -1,0 +1,49 @@
+- name: Stop Riak
+  become: true
+  hosts: riakcs
+  tasks:
+    - service: name="riak" state=stopped
+  tags:
+    - restart_riak
+    - stop_riak
+
+- name: Start Riak
+  become: true
+  hosts: riakcs
+  tasks:
+    - service: name="riak" state=started enabled=yes
+  tags:
+    - restart_riak
+    - start_riak
+
+- name: Stop Stanchion
+  hosts: stanchion
+  tasks:
+    - service: name="stanchion" state=stopped
+  tags:
+    - restart_stanchion
+    - stop_stanchion
+
+- name: Start Stanchion
+  hosts: stanchion
+  tasks:
+    - service: name="stanchion" state=started enabled=yes
+  tags:
+    - restart_stanchion
+    - start_stanchion
+
+- name: Stop riak-cs
+  hosts: riakcs
+  tasks:
+    - service: name="riak-cs" state=stopped
+  tags:
+    - restart_riak-cs
+    - stop_riak-cs
+
+- name: Start riak-cs
+  hosts: riakcs
+  tasks:
+    - service: name="riak-cs" state=started enabled=yes
+  tags:
+    - restart_riak-cs
+    - start_riak-cs

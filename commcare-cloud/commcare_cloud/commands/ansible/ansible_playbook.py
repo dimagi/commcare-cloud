@@ -4,14 +4,20 @@ import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
-from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
-    get_common_ssh_args
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
+    get_common_ssh_args,
+    AnsibleOptions,
+)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_branch, arg_stdout_callback
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.commands.ansible.run_module import (
+    RunAnsibleModule,
+)
 
 
 class AnsiblePlaybook(CommandBase):
@@ -229,3 +235,84 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=users',)
         AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
+class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
+    """
+    example usages
+    1. To restart riak and stanchion only for riakcs
+       only option can be skipped to restart all services which are a part of riakcs
+       i.e riak, riak-cs and stanchion in that order
+        commcare-cloud staging service riakcs restart --only riak stanchion riak-cs
+    2. To start services under proxy i.e nginx
+       You can still pass ansible options which are
+       --user, --become, --become_user
+        commcare-cloud staging service proxy start -b
+    """
+    command = 'service'
+    help = (
+        "Manage services."
+    )
+    SERVICES = {
+        'proxy': 'nginx',
+        'riakcs': ['riak', 'riak-cs', 'stanchion']
+    }
+    ACTIONS = ['start', 'stop', 'restart']
+
+    def make_parser(self):
+        super(ManageServices, self).make_parser()
+        self.parser.add_argument(
+            'inventory_group',
+            choices=self.SERVICES,
+            help="The inventory group to run the command on"
+            )
+        self.add_ansible_options()
+        self.parser.add_argument(
+            'action',
+            choices=self.ACTIONS,
+            help="What action to take"
+        )
+        self.parser.add_argument(
+            '--only',
+            nargs='+',
+            help=(
+                "Specific services to act on for the inventory group. "
+                "Can mention multiple separated with empty spaces. "
+                "Example Usage: --only riak stanchion"
+            )
+        )
+
+    def for_proxy(self, args, unknown_args):
+        action = args.action
+        if action == 'start':
+            state = 'started'
+        elif action == 'restart':
+            state = 'restarted'
+        elif action == 'stop':
+            state = 'stopped'
+        args.module = 'service'
+        args.module_args = "name=nginx state=%s" % state
+        RunAnsibleModule(self.parser).run(
+            args,
+            unknown_args
+        )
+
+    def for_riakcs(self, args, unknown_args):
+        tags = []
+        action = args.action
+        args.playbook = "restart_riakcs.yml"
+        if args.only:
+            # for options to act on certain services create tags
+            services = args.only
+            for service in services:
+                tags.append("%s_%s" % (action, service))
+        if tags:
+            unknown_args += ('--tags=%s' % ','.join(tags),)
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+    def run(self, args, unknown_args):
+        inventory_group = args.inventory_group
+        if inventory_group == "proxy":
+            self.for_proxy(args, unknown_args)
+        elif inventory_group == "riakcs":
+            self.for_riakcs(args, unknown_args)
