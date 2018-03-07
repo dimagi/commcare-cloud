@@ -13,6 +13,19 @@ DEPRECATED_ANSIBLE_ARGS = [
 ]
 
 
+class AnsibleOptions(object):
+    def add_ansible_options(self):
+        self.parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
+            "connect as this user (default=ansible)"
+        ))
+        self.parser.add_argument('-b', '--become', action='store_true', help=(
+            "run operations with become (implies vault password prompting if necessary)"
+        ))
+        self.parser.add_argument('--become-user', help=(
+            "run operations as this user (default=root)"
+        ))
+
+
 class AnsibleContext(object):
     def __init__(self, args):
         self._ansible_vault_password = None

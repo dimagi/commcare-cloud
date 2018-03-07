@@ -4,8 +4,12 @@ import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, print_command
-from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
-    get_common_ssh_args
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext,
+    DEPRECATED_ANSIBLE_ARGS,
+    get_common_ssh_args,
+    AnsibleOptions,
+)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
@@ -14,7 +18,7 @@ from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 
-class RunAnsibleModule(CommandBase):
+class RunAnsibleModule(AnsibleOptions, CommandBase):
     command = 'run-module'
     help = (
         'Run an arbitrary Ansible module.'
@@ -27,15 +31,7 @@ class RunAnsibleModule(CommandBase):
         self.add_non_positional_arguments()
 
     def add_non_positional_arguments(self):
-        self.parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
-            "connect as this user (default=ansible)"
-        ))
-        self.parser.add_argument('-b', '--become', action='store_true', help=(
-            "run operations with become (implies vault password prompting if necessary)"
-        ))
-        self.parser.add_argument('--become-user', help=(
-            "run operations as this user (default=root)"
-        ))
+        self.add_ansible_options()
         arg_skip_check(self.parser)
         arg_quiet(self.parser)
         arg_stdout_callback(self.parser)
