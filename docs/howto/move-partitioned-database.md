@@ -43,7 +43,7 @@ of *pg1*.
 This step does not require downtime and can be done at any stage prior to the
 downtime.
 
-```
+```bash
 commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=pg2 -e hot_standby_master=pg1 -e replication_slot=[replication slot name]
 ```
 
@@ -51,7 +51,7 @@ commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=pg2 -e hot
 This will bring the CommCare HQ site down.
 
 **Stop all CommCare processes**
-```
+```bash
 commcare-cloud <env> fab supervisorctl:"stop all"
 ```
 
@@ -66,7 +66,7 @@ commcare-cloud <env> django-manage show_celery_workers
 To be completely certain that no data will be updating during the move you can also
 prevent connections from pgbouncer:
 
-```
+```bash
 $ psql -p 6543 -U someuser pgbouncer
 
 > PAUSE pg1
@@ -127,7 +127,7 @@ commcare-cloud <env> run-shell-command pg1,pg2 'ps -ef | grep -E "sender|receive
 Output shows that master and standby are up to date (both processing the same log).
 
 **Promote *pg2***
-```
+```bash
 commcare-cloud <env> run-shell-command pg2 -b 'pg_ctlcluster <pg version> main promote'
 ```
 
@@ -142,16 +142,66 @@ commcare-cloud <env> django-manage configure_pl_proxy_cluster
 
 ### 9. Restart services
 **Unpause pgbouncer**
-```
+```bash
 $ psql -p 6543 -U someuser pgbouncer
 
 > RESUME pg1
 ```
 
 **Restart services**
-```
+```bash
 commcare-cloud <env> fab supervisorctl:"start all"
 ```
 
-### 10. Cleanup
-Now you can go back and delete the duplicate databases on *pg1* and *pg2*.
+### 10. Validate the setup
+One way to check that things are working as you expect is to examine the
+connections to the databases.
+
+```sql
+SELECT client_addr, datname as database, count(*) AS connections FROM pg_stat_activity GROUP BY client_addr, datname;
+```
+
+*pg1* should only have connections to the *partition1* database
+```
+  client_addr   | database   | connections
+----------------+------------+------------
+ <client IP>    | partition1 |   3
+```
+
+*pg2* should only have connections to the *partition2* database
+```
+  client_addr   | database   | connections
+----------------+------------+------------
+ <client IP>    | partition2 |   3
+```
+
+### 11. Cleanup
+**Delete duplicate databases**
+
+Once you're confident that everything is working correctly you can go back
+and delete the duplicate databases on *pg1* and *pg2*.
+
+*pg1*
+
+```sql
+DROP DATABASE partition2;
+```
+
+*pg2*
+
+```sql
+DROP DATABASE partition1;
+```
+
+
+**Drop replication slot**
+
+In order to prevent the WAL logs on *pg1* from piling up we need to delete
+the replication slot that was used by *pg2*:
+
+```sql
+SELECT pg_drop_replication_slot('<slot name>');
+
+-- optionally re-create the slot
+SELECT pg_create_physical_replication_slot('<slot name>');
+```
