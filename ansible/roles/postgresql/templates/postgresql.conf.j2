@@ -60,6 +60,9 @@ wal_keep_segments = {{ postgresql_wal_keep_segments|default(8) }}
 # REPLICATION
 
 hot_standby = on    # ignored on masters
+{% if postgres_users.get('netvault') %}
+hot_standby_feedback = on
+{% endif %}
 max_replication_slots = 8
 
 {% if is_pg_standby|default(false) and postgresql_max_standby_delay|default(false) %}
