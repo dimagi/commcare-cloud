@@ -142,16 +142,51 @@ commcare-cloud <env> django-manage configure_pl_proxy_cluster
 
 ### 9. Restart services
 **Unpause pgbouncer**
-```
+```bash
 $ psql -p 6543 -U someuser pgbouncer
 
 > RESUME pg1
 ```
 
 **Restart services**
-```
+```bash
 commcare-cloud <env> fab supervisorctl:"start all"
 ```
 
-### 10. Cleanup
-Now you can go back and delete the duplicate databases on *pg1* and *pg2*.
+### 10. Validate the setup
+One way to check that things are working as you expect is to examine the
+connections to the databases.
+
+```sql
+SELECT client_addr, datname as database, count(*) AS connections FROM pg_stat_activity GROUP BY client_addr, datname;
+```
+
+*pg1* should only have connections to the *partition1* database
+```
+  client_addr   | database   | connections
+----------------+------------+------------
+ <client IP>    | partition1 |   3
+```
+
+*pg2* should only have connections to the *partition2* database
+```
+  client_addr   | database   | connections
+----------------+------------+------------
+ <client IP>    | partition2 |   3
+```
+
+### 11. Cleanup
+Once you're confident that everything is working correctly you can go back
+and delete the duplicate databases on *pg1* and *pg2*.
+
+*pg1*
+
+```sql
+DROP DATABASE partition2;
+```
+
+*pg2*
+
+```sql
+DROP DATABASE partition1;
+```
