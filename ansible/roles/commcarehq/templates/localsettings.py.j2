@@ -14,7 +14,7 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-SYNCLOGS_SQL_DB_ALIAS = "{{ localsettings.get('SYNCLOGS_SQL_DB_ALIAS', 'default' }}"
+SYNCLOGS_SQL_DB_ALIAS = "{{ localsettings.get('SYNCLOGS_SQL_DB_ALIAS', 'default') }}"
 
 DATABASES = { {% for config in postgresql_dbs %}
 {%- if config.get('django_alias') %}
