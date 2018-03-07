@@ -176,6 +176,8 @@ SELECT client_addr, datname as database, count(*) AS connections FROM pg_stat_ac
 ```
 
 ### 11. Cleanup
+**Delete duplicate databases**
+
 Once you're confident that everything is working correctly you can go back
 and delete the duplicate databases on *pg1* and *pg2*.
 
@@ -189,4 +191,17 @@ DROP DATABASE partition2;
 
 ```sql
 DROP DATABASE partition1;
+```
+
+
+**Drop replication slot**
+
+In order to prevent the WAL logs on *pg1* from piling up we need to delete
+the replication slot that was used by *pg2*:
+
+```sql
+SELECT pg_drop_replication_slot('<slot name>');
+
+-- optionally re-create the slot
+SELECT pg_create_physical_replication_slot('<slot name>');
 ```
