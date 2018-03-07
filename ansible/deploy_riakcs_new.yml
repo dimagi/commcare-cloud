@@ -78,7 +78,7 @@
   vars_files:
     - roles/riakcs/install/defaults/main.yml
   tasks:
-    - include: roles/riakcs/get_admin_keys.yml tags=localsettings
+    - import_tasks: roles/riakcs/get_admin_keys.yml tags=localsettings
 
 - name: Install Riak and Riak CS
   become: true
@@ -127,7 +127,7 @@
   become: true
   hosts: riakcs_new
   tasks:
-    - include: roles/riakcs/join_cluster.yml
+    - import_tasks: roles/riakcs/join_cluster.yml
       when: inventory_hostname != riakcs_control and _force_riak_config
 
 - name: Configure and start Stanchion
