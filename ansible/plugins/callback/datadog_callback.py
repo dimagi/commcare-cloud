@@ -254,7 +254,7 @@ class CallbackModule(CallbackBase):
             return
         try:
             api_key = self.variables['secrets']['DATADOG_API_KEY']
-            if api_key == '':
+            if api_key == '' or not api_key:
                 self.disabled = True
             #api_key = ''
             url = 'https://app.datadoghq.com'
