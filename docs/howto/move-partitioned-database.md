@@ -43,7 +43,7 @@ of *pg1*.
 This step does not require downtime and can be done at any stage prior to the
 downtime.
 
-```
+```bash
 commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=pg2 -e hot_standby_master=pg1 -e replication_slot=[replication slot name]
 ```
 
@@ -51,7 +51,7 @@ commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=pg2 -e hot
 This will bring the CommCare HQ site down.
 
 **Stop all CommCare processes**
-```
+```bash
 commcare-cloud <env> fab supervisorctl:"stop all"
 ```
 
@@ -66,7 +66,7 @@ commcare-cloud <env> django-manage show_celery_workers
 To be completely certain that no data will be updating during the move you can also
 prevent connections from pgbouncer:
 
-```
+```bash
 $ psql -p 6543 -U someuser pgbouncer
 
 > PAUSE pg1
@@ -127,7 +127,7 @@ commcare-cloud <env> run-shell-command pg1,pg2 'ps -ef | grep -E "sender|receive
 Output shows that master and standby are up to date (both processing the same log).
 
 **Promote *pg2***
-```
+```bash
 commcare-cloud <env> run-shell-command pg2 -b 'pg_ctlcluster <pg version> main promote'
 ```
 
