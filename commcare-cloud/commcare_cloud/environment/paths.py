@@ -10,39 +10,42 @@ FAB_DIR = os.path.join(REPO_BASE, 'fab')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
 
 
+lazy_immutable_property = memoized_property
+
+
 class DefaultPaths(object):
     def __init__(self, env_name):
         self.env_name = env_name
 
-    @memoized_property
+    @lazy_immutable_property
     def public_yml(self):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'public.yml')
 
-    @memoized_property
+    @lazy_immutable_property
     def vault_yml(self):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'vault.yml')
 
-    @memoized_property
+    @lazy_immutable_property
     def known_hosts(self):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'known_hosts')
 
-    @memoized_property
+    @lazy_immutable_property
     def inventory_ini(self):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'inventory.ini')
 
-    @memoized_property
+    @lazy_immutable_property
     def app_processes_yml(self):
         return os.path.join(REPO_BASE, 'environments', self.env_name, 'app-processes.yml')
 
-    @memoized_property
+    @lazy_immutable_property
     def app_processes_yml_default(self):
         return os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')
 
-    @memoized_property
+    @lazy_immutable_property
     def fab_settings_yml(self):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'fab-settings.yml')
 
-    @memoized_property
+    @lazy_immutable_property
     def fab_settings_yml_default(self):
         return os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')
 
