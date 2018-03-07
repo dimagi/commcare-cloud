@@ -282,7 +282,7 @@ def poll_for_aws_state(env_name, instance_ids):
 def save_inventory(environment, inventory):
     template = j2.get_template('inventory.ini.j2')
     inventory_file_contents = template.render(inventory=inventory)
-    inventory_file = environment.paths.inventory_ini()
+    inventory_file = environment.paths.inventory_ini
     if not os.path.exists(os.path.dirname(inventory_file)):
         os.makedirs(os.path.dirname(inventory_file))
     with open(inventory_file, 'w') as f:
