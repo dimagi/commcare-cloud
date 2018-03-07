@@ -90,7 +90,7 @@ def provision_machines(spec, env_name=None):
         env_name = u'hq-{}'.format(
             ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
-    environment = get_environment()
+    environment = get_environment(env_name)
     inventory = bootstrap_inventory(spec, env_name)
     instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
 
