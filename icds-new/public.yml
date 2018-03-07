@@ -84,6 +84,9 @@ postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
     host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
+    host: "{{ hostvars[groups.pgsynclogs.0].inventory_hostname }}"
   - django_alias: proxy
     name: commcarehq_proxy
     host: "{{ hostvars[groups.plproxy1.0].inventory_hostname }}"
@@ -406,6 +409,7 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   USE_PARTITIONED_DATABASE: True
