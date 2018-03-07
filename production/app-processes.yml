@@ -76,9 +76,9 @@ pillows:
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
       num_processes: 4
+  hqpillowtop0.internal-va.commcarehq.org:
     kafka-ucr-static:
       num_processes: 1
-  hqpillowtop0.internal-va.commcarehq.org:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
