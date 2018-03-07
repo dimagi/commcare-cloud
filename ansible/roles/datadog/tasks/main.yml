@@ -44,7 +44,7 @@
     update: yes
   notify: restart datadog
 
-- include: add_integrations.yml
+- include_tasks: add_integrations.yml
   when: DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
 
-- include: remove_integrations.yml
+- include_tasks: remove_integrations.yml
