@@ -1,5 +1,13 @@
 #! /bin/bash
 
+if [[ $_ == $0 ]]
+then
+    echo "Please run this script as follows:"
+    echo "    $ source /path/to/init.sh"
+    exit 1
+fi
+
+
 function realpath() {
     python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
 }
