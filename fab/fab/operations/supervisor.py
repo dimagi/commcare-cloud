@@ -44,9 +44,6 @@ def set_supervisor_config():
     set_submissions_reprocessing_queue_supervisorconf()
     set_websocket_supervisorconf()
 
-    # if needing tunneled ES setup, comment this back in
-    # execute(set_elasticsearch_supervisorconf)
-
 
 def _get_celery_queues():
     queues = env.celery_processes.get('*', {})
