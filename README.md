@@ -26,13 +26,26 @@ sudo apt-get install git python-dev python-pip
 sudo pip install virtualenv virtualenvwrapper --ignore-installed six
 ```
 
-# Quick setup
+# Setup
 This should be run from your home directory:
 ```
 source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
 
+Alternately:
+```
+git clone https://github.com/dimagi/commcare-cloud.git
+source commcare-cloud/control/init.sh
+```
+
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
+
+We also recommend that you put the following in your `~/.profile` which gives you access to the tool
+from anywhere:
+```
+export PATH=$PATH:~/.commcare-cloud/bin
+source ~/.commcare-cloud/repo/control/.bash_completion
+```
 
 # Contributing
 
