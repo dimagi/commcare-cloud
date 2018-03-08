@@ -1,1 +1,2 @@
+legacy_supervisor_task_conf: "{{ legacy_service_home }}/supervisor"
 supervisor_task_conf: "{{ service_home }}/supervisor"
