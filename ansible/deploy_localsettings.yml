@@ -1,7 +1,7 @@
 ---
-# deploy-stack.yml
+# deploy-localsettings.yml
 
-- include: deploy_riakcs.yml
-- include: deploy_commcarehq.yml
-- include: deploy_touchforms.yml
-- include: deploy_formplayer.yml
+- import_playbook: deploy_riakcs.yml
+- import_playbook: deploy_commcarehq.yml
+- import_playbook: deploy_touchforms.yml
+- import_playbook: deploy_formplayer.yml

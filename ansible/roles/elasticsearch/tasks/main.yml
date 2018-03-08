@@ -100,7 +100,7 @@
   become: yes
   service: name=elasticsearch state=started
   register: result
-  failed_when: result.state != "started"
+  failed_when: (result.state is defined) and (result.state != "started")
   tags: after-reboot
 
 - name: Restart Elasticsearch
@@ -112,6 +112,7 @@
 
 - name: Wait for elastic Search to come up, start checking after 5 second
   wait_for:
+    host: "{{ groups.elasticsearch.0 }}"
     port: 9200
     delay: 5
 

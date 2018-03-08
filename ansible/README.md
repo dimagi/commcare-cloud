@@ -160,23 +160,7 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 [troubleshooting](https://developer.github.com/guides/using-ssh-agent-forwarding/)
 
 ### Setting up a dev account on ansible control machine
-
-You must ssh in as your dev user, with SSH `ForwardAgent` enabled (see above).
-
-```bash
-git clone git@github.com:dimagi/commcare-cloud
-. commcare-cloud/control/init.sh
-update-code
-
-# optional: make subsequent logins a bit more convenient
-echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
-```
-
-On subsequent logins if optional step was not done.
-
-```bash
-. init-ansible
-```
+See main [README](../README.md) file.
 
 ### Simulate dev user setup on vagrant control machine
 
@@ -195,7 +179,6 @@ Login as your user: `vagrant ssh control -- -l $USER -A
 ```bash
 ln -s /vagrant ~/commcare-cloud
 . commcare-cloud/control/init.sh
-echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
 
 # run ansible
 ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \

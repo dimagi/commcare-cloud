@@ -7,8 +7,8 @@ local   all             postgres                                peer
 
 {% if postgres_users.get('netvault') %}
 # Netvault required configuration
-host    all             netvault        127.0.0.1/32            md5
-local   all             netvault                                md5
+host    all             netvault        127.0.0.1/32            trust
+local   all             netvault                                trust
 {% endif %}
 
 # Allow replication connections from localhost, by a user with the replication privilege.

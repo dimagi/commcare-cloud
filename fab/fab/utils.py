@@ -8,14 +8,12 @@ import traceback
 from fabric.operations import sudo
 from fabric.context_managers import settings
 from fabric.api import local
-from fabric.utils import abort
 import re
 from getpass import getpass
 
 from github3 import login
 from fabric.api import execute, env
 from fabric.colors import magenta
-from commcare_cloud.environment import get_inventory_filepath
 
 from .const import (
     PROJECT_ROOT,
@@ -25,9 +23,6 @@ from .const import (
     OFFLINE_STAGING_DIR,
 )
 
-from ansible.inventory.manager import InventoryManager
-from ansible.vars.manager import VariableManager
-from ansible.parsing.dataloader import DataLoader
 from six.moves import input
 
 
@@ -256,62 +251,3 @@ def generate_bower_command(command, production=True, config=None):
 def bower_command(command, production=True, config=None):
     cmd = generate_bower_command(command, production, config)
     sudo(cmd)
-
-
-def get_inventory(env_name, data_loader=None):
-    data_loader = data_loader or DataLoader()
-    return InventoryManager(loader=data_loader, sources=get_inventory_filepath(env_name))
-
-
-def read_inventory_file(env_name):
-    """
-    filename is a path to an ansible inventory file
-
-    returns a mapping of group names ("webworker", "proxy", etc.)
-    to lists of hostnames as listed in the inventory file.
-    ("Hostnames" can also be IP addresses.)
-    If the hostname in the file includes :<port>, that will be included here as well.
-
-    """
-    data_loader = DataLoader()
-    inventory = get_inventory(env_name, data_loader=data_loader)
-    var_manager = VariableManager(data_loader, inventory)
-    port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
-                for host in inventory.get_hosts()}
-    return {group: [
-        '{}:{}'.format(host, port_map[host])
-        if port_map[host] is not None else host
-        for host in hosts
-    ] for group, hosts in get_inventory(env_name).get_groups_dict().items()}
-
-
-def check_and_translate_hosts(env_name, host_mapping):
-    """
-    :param env_name: name of the env used to lookup the inventory
-    :param host_mapping: dictionary where keys can be one of:
-                         * host (must be in inventory file)
-                         * inventory group containing a single host
-                         * literal '*' or 'None'
-    :return: dictionary with the same content as the input but where
-             keys that were inventory groups have been converted into their
-             representative host
-    """
-    translated = {}
-    inventory = get_inventory(env_name)
-    for host, config in host_mapping.items():
-        if host == 'None' or host == '*' or host in inventory.hosts:
-            translated[host] = config
-        else:
-            group = inventory.groups.get(host)
-            if not group:
-                abort('Unknown host referenced in app processes: {}'.format(host))
-            group_hosts = group.get_hosts()
-            if len(group_hosts) == 1:
-                host = group_hosts[0].get_name()
-                translated[host] = config
-            else:
-                abort(
-                    'Unable to translate host referenced '
-                    'in app processes to a single host name: {}'.format(host))
-
-    return translated

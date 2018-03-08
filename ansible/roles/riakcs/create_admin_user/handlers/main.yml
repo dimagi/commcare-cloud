@@ -1,1 +1,1 @@
-- include: ../../configure/handlers/main.yml
+- import_tasks: ../../configure/handlers/main.yml

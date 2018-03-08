@@ -27,7 +27,7 @@ from ..const import (
     ROLES_ALL_SERVICES,
     ROLES_SUBMISSION_REPROCESSING_QUEUE)
 from fabric import utils
-from ..utils import get_pillow_env_config, get_inventory
+from ..utils import get_pillow_env_config
 from six.moves import range
 
 
@@ -294,8 +294,7 @@ def _format_env(current_env, extra=None):
         'newrelic_javaagent',
     ]
 
-    inventory = get_inventory(current_env.env_name)
-    all_hosts = [host.name for host in inventory.groups['all'].hosts]
+    all_hosts = env.ccc_environment.inventory_hosts_by_group['all']
 
     ret['supervisor_env_vars'] = {}
     if env.http_proxy:
