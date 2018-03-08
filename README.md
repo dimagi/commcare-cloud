@@ -40,6 +40,13 @@ source commcare-cloud/control/init.sh
 
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
 
+We also recommend that you put the following in your `~/.profile` which gives you access to the tool
+from anywhere:
+```
+export PATH=$PATH:~/.commcare-cloud/bin
+source ~/.commcare-cloud/repo/control/.bash_completion
+```
+
 # Contributing
 
 Before making any commits, make sure you install the git hooks:
