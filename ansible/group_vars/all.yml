@@ -46,7 +46,6 @@ dev_users:
     - skelly
     - sravfeyn
     - wpride
-    - cchq
   absent:
     - preseed
     - twymer
@@ -106,8 +105,10 @@ old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory
-s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
-s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
+s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
+s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
+
+couchdb_mirror: https://archive.apache.org/dist/couchdb/source
 
 datadog_integration_cloudant: false
 datadog_integration_couch: false
@@ -170,4 +171,6 @@ blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
-aws_endpoint: "s3.{{ aws_region }}.amazonaws.com"
+aws_region: None
+# this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
+aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'

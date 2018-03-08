@@ -73,7 +73,7 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-
+postgresql_version: '9.6'
 postgresql_max_connections: 300
 pgbouncer_max_connections: 1000
 pgbouncer_default_pool: 290
@@ -125,9 +125,7 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 
 kafka_broker_id: 0
-kafka_log_dir: '/opt/data/kafka'
-
-encrypted_root: /opt/data/ecrypt
+kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 ufw_private_interface: eth0
 
@@ -267,3 +265,9 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
   ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
+
+site_locations:
+  - name: /data_dumps/export/enikshay/public
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'

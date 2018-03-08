@@ -8,6 +8,8 @@ from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
+from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
+
 
 class Environment(object):
     def __init__(self, paths):
@@ -43,6 +45,21 @@ class Environment(object):
         return app_processes_config
 
     @memoized_property
+    def fab_settings_config(self):
+        """
+        collated contents of fab-settings.yml files, as a FabSettingsConfig object
+
+        includes environmental-defaults/fab-settings.yml as well as <env>/fab-settings.yml
+        """
+        with open(self.paths.fab_settings_yml_default) as f:
+            fab_settings_json = yaml.load(f)
+        with open(self.paths.fab_settings_yml) as f:
+            fab_settings_json.update(yaml.load(f) or {})
+
+        fab_settings_config = FabSettingsConfig.wrap(fab_settings_json)
+        return fab_settings_config
+
+    @memoized_property
     def _ansible_inventory_data_loader(self):
         return DataLoader()
 
@@ -64,11 +81,16 @@ class Environment(object):
         """
         inventory = self.inventory_manager
         var_manager = VariableManager(self._ansible_inventory_data_loader, inventory)
+        # use the ip address specified by ansible_host to ssh in if it's given
+        ssh_addr_map = {
+            host.name: var_manager.get_vars(host=host).get('ansible_host', host.name)
+            for host in inventory.get_hosts()}
+        # use the port specified by ansible_port to ssh in if it's given
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
                     for host in inventory.get_hosts()}
         return {group: [
-            '{}:{}'.format(host, port_map[host])
-            if port_map[host] is not None else host
+            '{}:{}'.format(ssh_addr_map[host], port_map[host])
+            if port_map[host] is not None else ssh_addr_map[host]
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 

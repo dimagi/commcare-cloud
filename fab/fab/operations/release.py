@@ -288,7 +288,7 @@ def record_successful_deploy():
             '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
         ) % {
             'virtualenv_current': env.virtualenv_current,
-            'user': env.captain_user or env.user,
+            'user': env.user,
             'environment': env.environment,
             'url': env.deploy_metadata.diff_url,
             'minutes': str(int(delta.total_seconds() // 60))
@@ -383,7 +383,8 @@ def copy_localsettings():
 @roles(ROLES_TOUCHFORMS)
 def copy_tf_localsettings():
     hosts_defined = _hosts_in_roles(ROLES_TOUCHFORMS)
-    if hosts_defined:
+    path_template = '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'
+    if hosts_defined and files.exists(path_template.format(env.code_current)):
         sudo(
             'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
             '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(

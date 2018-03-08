@@ -16,7 +16,7 @@
     - hostTo: "{{ hostB }}"
     - state: "{{ 'present' if action == 'add' else 'absent' }}"
   tasks:
-    - include: roles/setup_auth_keys.yml
+    - import_tasks: roles/setup_auth_keys.yml
 
 - name: Setup auth from {{ hostB }} to {{ hostA }}
   gather_facts: True
@@ -26,4 +26,4 @@
     - hostTo: "{{ hostA }}"
     - state: "{{ 'present' if action == 'add' else 'absent' }}"
   tasks:
-    - include: roles/setup_auth_keys.yml
+    - import_tasks: roles/setup_auth_keys.yml

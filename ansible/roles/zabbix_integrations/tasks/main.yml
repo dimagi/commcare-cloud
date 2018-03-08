@@ -19,24 +19,24 @@
     mode: 0755
     state: directory
 
-- include: diskstats.yml
+- import_tasks: diskstats.yml
 
-- include: es.yml
+- import_tasks: es.yml
   when: "'elasticsearch' in group_names"
   tags:
     zabbix_es
 
-- include: postgres.yml
+- import_tasks: postgres.yml
   when: "'postgresql' in group_names"
   tags:
     zabbix_postgres
 
-- include: pgbouncer.yml
+- import_tasks: pgbouncer.yml
   when: "'postgresql' in group_names"
   tags:
     zabbix_pgbouncer
 
-- include: nginx.yml
+- import_tasks: nginx.yml
   when: "'proxy' in group_names"
   tags:
     zabbix_nginx

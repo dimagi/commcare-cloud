@@ -63,8 +63,6 @@ supervisor_http_enabled: True
 
 keystore_file: '../config/DimagiKeyStore'
 
-encrypted_root: '/opt/data'
-
 backup_blobdb: False
 backup_postgres: plain
 postgresql_backup_days: 1
@@ -78,7 +76,7 @@ nadir_hour: 16
 
 nofile_limit: 65536
 
-
+postgresql_version: '9.4'
 postgresql_num_logs_to_keep: 100
 postgresql_shared_buffers: '10GB'
 postgresql_max_stack_depth: '6MB'
@@ -307,3 +305,9 @@ localsettings:
   ENTERPRISE_MODE: True
   COMMCARE_HQ_NAME: 'eNikshay'
   COMMCARE_NAME: 'eNikshay'
+
+site_locations:
+  - name: /data_dumps/export/enikshay/public
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'
