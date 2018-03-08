@@ -38,3 +38,9 @@
   tasks:
     - include_tasks: roles/commcarehq/tasks/proxy.yml
       tags: services
+
+- name: Webworker Supervisor Config
+  hosts: webworkers
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/webworkers.yml
+      tags: services
