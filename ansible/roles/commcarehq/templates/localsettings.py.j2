@@ -721,7 +721,7 @@ ASYNC_INDICATOR_QUEUE_TIMES = {{ localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES'
 MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
 {% endif %}
 
-{% if localsettings.get('REPEATERS_WHITELIST') %}
+{% if localsettings.get('REPEATERS_WHITELIST') is not none %}
 REPEATERS_WHITELIST = {{ localsettings.REPEATERS_WHITELIST }}
 {% endif %}
 
