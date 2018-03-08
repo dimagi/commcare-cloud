@@ -20,6 +20,15 @@ if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
     COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
+
+    # check for expected file to verify we've got the right place
+    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]
+    then
+        echo "It looks like you're running this script from an unexpected location."
+        echo "Please check the README for installation instructions:"
+        echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
+        return 1
+    fi
 elif [ -d ~/.commcare-cloud/repo ]
 then
     # commcare-cloud is already installed; use the one specified
