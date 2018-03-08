@@ -32,3 +32,9 @@
   tasks:
     - include_tasks: roles/commcarehq/tasks/celery.yml
       tags: services
+
+- name: Proxy Supervisor Config
+  hosts: proxy
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/proxy.yml
+      tags: services
