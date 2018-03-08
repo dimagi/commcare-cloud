@@ -90,9 +90,9 @@
   tags: postgresql_conf
   notify: Reload postgres
 
-- name: start postgresql
+- name: Restart postgresql
   become: true
-  service: name=postgresql state=started args="{{ postgresql_version }}"
+  service: name=postgresql state=restarted args="{{ postgresql_version }}"
   tags: after-reboot
   register: start_postgresql
 
