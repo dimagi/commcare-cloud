@@ -267,7 +267,6 @@ def env_common():
         'rabbitmq': rabbitmq,
         'django_celery': celery,
         'sms_queue': celery,
-        'reminder_queue': celery,
         'pillow_retry_queue': celery,
         'submission_reprocessing_queue': celery,
         'django_app': webworkers,
