@@ -26,3 +26,9 @@
   tasks:
     - include_tasks: roles/commcarehq/tasks/pillowtop.yml
       tags: services
+
+- name: Celery Supervisor Config
+  hosts: celery
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/celery.yml
+      tags: services
