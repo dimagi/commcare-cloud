@@ -119,11 +119,25 @@
   tags:
     - services
 
-- name: define form feed services
+- name: define form feed service
   become: cchq
   hosts: pillowtop
   template:
     src: supervisor_form_feed.conf.j2
     dest: "{{ services_home }}/{{ deploy_env }}_supervisor_form_feed.conf"
+  tags:
+    - services
+
+- name: define reminder queue services
+  become: cchq
+  hosts: celery
+  template:
+    src: "{{ item }}"
+    dest: "{{ services_home }}/{{ deploy_env }}_{{ item }}"
+  when: 'reminder_queue' in celery_processes.get(ansible_host)
+  items:
+    - supervisor_reminder_queue.conf
+    - supervisor_queue_schedule_instances.conf
+    - supervisor_handle_survey_actions.conf
   tags:
     - services
