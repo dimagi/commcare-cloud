@@ -1,4 +1,4 @@
-{% for pillow_name, params in pillows.get(ansible_host).items() %}
+{% for pillow_name, params in pillows.get(ansible_hostname).items() %}
 {% for num_process in range(params.get('start_process', 0), params.get('start_process', 0) + params.get('num_processes', 1)) %}
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]

@@ -110,24 +110,6 @@
   tags:
     - services
 
-- name: define pillowtop services
-  become: cchq
-  hosts: pillowtop
-  template:
-    src: supervisor_pillowtop.conf.j2
-    dest: "{{ services_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
-  tags:
-    - services
-
-- name: define form feed service
-  become: cchq
-  hosts: pillowtop
-  template:
-    src: supervisor_form_feed.conf.j2
-    dest: "{{ services_home }}/{{ deploy_env }}_supervisor_form_feed.conf"
-  tags:
-    - services
-
 - name: define reminder queue services
   become: cchq
   hosts: celery
