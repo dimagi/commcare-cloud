@@ -20,3 +20,9 @@
     - role: tmpreaper
       tags: ['commcarehq', 'celery_hq', 'tmpreaper', 'cron']
       tmpreaper_time: '2d'
+
+- name: Pillows Supervisor Config
+  hosts: pillowtop
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/pillowtop.yml
+      tags: services
