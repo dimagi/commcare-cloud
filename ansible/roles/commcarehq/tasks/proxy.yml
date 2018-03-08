@@ -1,0 +1,11 @@
+- include_vars: "../../../../environments/{{ deploy_env }}/app-processes.yml"
+  tags:
+    - services
+
+- name: define websockets services
+  become: cchq
+  template:
+    src: "../templates/supervisor_websockets.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+  tags:
+    - services
