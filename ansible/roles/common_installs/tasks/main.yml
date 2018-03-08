@@ -105,11 +105,3 @@
   pip:
     name: virtualenv-clone
     version: 0.2.6
-
-- name: Install npm (only) a second time
-  npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
-  become: yes
-  with_items:
-    - {name: 'npm', version: '3.6.0'}
-  tags:
-    - npm
