@@ -19,11 +19,10 @@ from ..const import (
     ROLES_DJANGO,
     ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
-    ROLES_PILLOW_RETRY_QUEUE,
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
-    )
+)
 from fabric import utils
 from six.moves import range
 
@@ -35,7 +34,6 @@ def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     set_celery_supervisorconf()
     set_djangoapp_supervisorconf()
-    set_errand_boy_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
 
@@ -138,11 +136,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
 def set_djangoapp_supervisorconf():
     if _check_in_roles(ROLES_DJANGO):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
-
-
-def set_errand_boy_supervisorconf():
-    if _check_in_roles(ROLES_DJANGO + ROLES_CELERY):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
 
 
 def set_formsplayer_supervisorconf():

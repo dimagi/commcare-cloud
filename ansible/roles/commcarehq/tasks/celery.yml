@@ -41,3 +41,11 @@
   when: celery_processes.get(ansible_hostname).sms_queue is defined
   tags:
     - services
+
+- name: define errand boy services
+  become: cchq
+  template:
+    src: "../templates/supervisor_errand_boy.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
+  tags:
+    - services
