@@ -141,3 +141,12 @@
     - supervisor_handle_survey_actions.conf
   tags:
     - services
+
+- name: define websockets services
+  become: cchq
+  hosts: proxy
+  template:
+    src: "supervisor_websockets.conf"
+    dest: "{{ services_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+  tags:
+    - services
