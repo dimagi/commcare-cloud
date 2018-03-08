@@ -7,7 +7,7 @@
   template:
     src: "../templates/{{ item }}"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item }}"
-  when: 'reminder_queue' in celery_processes.get(ansible_host)
+  when: celery_processes.get(ansible_host).reminder_queue is defined
   items:
     - supervisor_reminder_queue.conf
     - supervisor_queue_schedule_instances.conf
@@ -20,7 +20,7 @@
   template:
     src: "../templates/supervisor_submission_reprocessing_queue.conf"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_submission_reprocessing_queue.conf"
-  when: 'submission_reprocessing_queue' in celery_processes.get(ansible_host)
+  when: celery_processes.get(ansible_host).submission_reprocessing_queue is defined
   tags:
     - services
 
@@ -29,7 +29,7 @@
   template:
     src: "../templates/supervisor_pillow_retry_queue.conf"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
-  when: 'pillow_retry_queue' in celery_processes.get(ansible_host)
+  when: celery_processes.get(ansible_host).pillow_retry_queue is defined
   tags:
     - services
 
