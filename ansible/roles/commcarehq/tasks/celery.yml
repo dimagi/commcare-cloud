@@ -1,0 +1,35 @@
+- include_vars: "../../../../environments/{{ deploy_env }}/app-processes.yml"
+  tags:
+    - services
+
+- name: define reminder queue services
+  become: cchq
+  template:
+    src: "../templates/{{ item }}"
+    dest: "{{ service_home }}/{{ deploy_env }}_{{ item }}"
+  when: 'reminder_queue' in celery_processes.get(ansible_host)
+  items:
+    - supervisor_reminder_queue.conf
+    - supervisor_queue_schedule_instances.conf
+    - supervisor_handle_survey_actions.conf
+  tags:
+    - services
+
+- name: define submission reprocessing queue services
+  become: cchq
+  template:
+    src: "../templates/supervisor_submission_reprocessing_queue.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_submission_reprocessing_queue.conf"
+  when: 'submission_reprocessing_queue' in celery_processes.get(ansible_host)
+  tags:
+    - services
+
+- name: define pillow retry queue services
+  become: cchq
+  template:
+    src: "../templates/supervisor_pillow_retry_queue.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
+  when: 'pillow_retry_queue' in celery_processes.get(ansible_host)
+  tags:
+    - services
+
