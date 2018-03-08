@@ -5,40 +5,55 @@
 - name: define reminder queue services
   become: cchq
   template:
-    src: "../templates/{{ item }}"
-    dest: "{{ service_home }}/{{ deploy_env }}_{{ item }}"
+    src: "../templates/common_supervisor_management.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
   when: celery_processes.get(ansible_hostname).reminder_queue is defined
-  items:
-    - supervisor_reminder_queue.conf
-    - supervisor_queue_schedule_instances.conf
-    - supervisor_handle_survey_actions.conf
+  with_items:
+    - dest_name: supervisor_reminder_queue.conf
+      process_name: reminder_queue
+      management_command: run_reminder_queue
+    - dest_name: supervisor_queue_schedule_instances.conf
+      process_name: queue_schedule_instances
+      management_command: queue_schedule_instances
+    - dest_name: supervisor_handle_survey_actions.conf
+      process_name: handle_survey_actions
+      management_command: handle_survey_actions
   tags:
     - services
 
 - name: define submission reprocessing queue services
   become: cchq
   template:
-    src: "../templates/supervisor_submission_reprocessing_queue.conf"
+    src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_submission_reprocessing_queue.conf"
   when: celery_processes.get(ansible_hostname).submission_reprocessing_queue is defined
+  with_items:
+    - process_name: submission_reprocessing_queue
+      management_command: run_submission_reprocessing_queue
   tags:
     - services
 
 - name: define pillow retry queue services
   become: cchq
   template:
-    src: "../templates/supervisor_pillow_retry_queue.conf"
+    src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
   when: celery_processes.get(ansible_hostname).pillow_retry_queue is defined
+  with_items:
+    - process_name: pillow_retry_queue
+      management_command: run_pillow_retry_queue
   tags:
     - services
 
 - name: define pillow retry queue services
   become: cchq
   template:
-    src: "../templates/supervisor_sms_queue.conf"
+    src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_sms_queue.conf"
   when: celery_processes.get(ansible_hostname).sms_queue is defined
+  with_items:
+    - process_name: sms_queue
+      management_command: run_sms_queue
   tags:
     - services
 

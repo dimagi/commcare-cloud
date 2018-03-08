@@ -1,0 +1,12 @@
+[program:{{ project }}-{{ deploy_env }}-{{ item.process_name }}]
+directory={{ code_home }}
+command={{ virtualenv_home }}/bin/python manage.py {{ item.management_command }}
+user={{ cchq_user }}
+numprocs=1
+autostart=true
+autorestart=true
+stdout_logfile={{ log_home }}/{{ item.process_name }}.log
+redirect_stderr=true
+stderr_logfile={{ log_home }}/{{ item.process_name }}.error.log
+startsecs=0
+stopwaitsecs=10
