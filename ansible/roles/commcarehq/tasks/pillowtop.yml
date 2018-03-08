@@ -15,8 +15,11 @@
   become: cchq
   hosts: pillowtop
   template:
-    src: "../templates/supervisor_form_feed.conf.j2"
+    src: "../templates/common.supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_form_feed.conf"
   when: inventory_hostname == groups.pillowtop.0
+  with_items:
+    - process_name: form_feed
+      management_command: run_form_websocket_feed
   tags:
     - services
