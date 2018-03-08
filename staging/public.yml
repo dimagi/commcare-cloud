@@ -73,6 +73,8 @@ postgresql_dbs:
     query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 99]
@@ -220,6 +222,7 @@ localsettings:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   USE_PARTITIONED_DATABASE: True
