@@ -152,7 +152,7 @@ redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
 
-kafka_log_dir: '/opt/data/kafka'
+kafka_log_dir: '{{ encrypted_root }}/kafka'
 
 KSPLICE_ACTIVE: no
 
@@ -386,6 +386,7 @@ localsettings:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
+  REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
   REPORTING_DATABASES:
     ucr: ucr

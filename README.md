@@ -19,20 +19,33 @@ Docs at [https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/comm
 
 
 # Install and setup
-You will need python 2.7 and `virtualenvwrapper` installed to follow these instructions:
+You will need python 2.7.12+ and `virtualenvwrapper` installed to follow these instructions:
 
 ```
 sudo apt-get install git python-dev python-pip
-sudo pip install virtualenv virtualenvwrapper
+sudo pip install virtualenv virtualenvwrapper --ignore-installed six
 ```
 
-# Quick setup
+# Setup
 This should be run from your home directory:
 ```
 source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
 
+Alternately:
+```
+git clone https://github.com/dimagi/commcare-cloud.git
+source commcare-cloud/control/init.sh
+```
+
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
+
+We also recommend that you put the following in your `~/.profile` which gives you access to the tool
+from anywhere:
+```
+export PATH=$PATH:~/.commcare-cloud/bin
+source ~/.commcare-cloud/repo/control/.bash_completion
+```
 
 # Contributing
 

@@ -1,5 +1,13 @@
 #! /bin/bash
 
+if [[ $_ == $0 ]]
+then
+    echo "Please run this script as follows:"
+    echo "    $ source /path/to/repo/control/init.sh"
+    exit 1
+fi
+
+
 function realpath() {
     python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
 }
@@ -9,17 +17,26 @@ if [ -z ${TRAVIS_TEST} ]; then
     if ! hash virtualenvwrapper.sh 2>/dev/null; then
         echo "Please install virtualenvwrapper and make sure it is in your PATH"
         echo ""
-        echo "  sudo pip install virtualenv virtualenvwrapper"
+        echo "  sudo pip install virtualenv virtualenvwrapper --ignore-installed six"
         echo ""
         echo "Other requirements: git, python-dev, python-pip"
         return 1
     fi
 fi
 
-if [ -n "${BASH_SOURCE[0]}" ]
+if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(cd $(dirname $(dirname $(realpath ${BASH_SOURCE[0]}))); pwd)
+    COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
+
+    # check for expected file to verify we've got the right place
+    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]
+    then
+        echo "It looks like you're running this script from an unexpected location."
+        echo "Please check the README for installation instructions:"
+        echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
+        return 1
+    fi
 elif [ -d ~/.commcare-cloud/repo ]
 then
     # commcare-cloud is already installed; use the one specified
@@ -43,8 +60,10 @@ if [ -d ~/commcarehq-ansible ]; then
     echo "Moving repo to ~/commcare-cloud"
     mv ~/commcarehq-ansible ~/commcare-cloud
     # delete broken link
-    [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
+
+# remove broken links
+[ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 
 if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     echo "Checking out CommCare Cloud Repo"

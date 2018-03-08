@@ -120,9 +120,15 @@
   tags:
     - postfix
 
-- include: antivirus.yml
+- import_tasks: antivirus.yml
   tags:
     - antivirus
     - after-reboot
-- include: cron.yml 
+
+- import_tasks: cron.yml
   tags: cron
+
+- import_tasks: mount.yml
+  tags:
+    - mount
+    - after-reboot

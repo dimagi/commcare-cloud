@@ -1,0 +1,14 @@
+- name: Migrate DB
+  hosts: "{{ groups.webworkers.0 }}"
+  become: true
+  tasks:
+    - name: Migrate DB
+      become: yes
+      become_user: "{{ cchq_user }}"
+      django_manage:
+        command: migrate
+        app_path: "{{ code_home }}"
+        virtualenv: "{{ virtualenv_home }}"
+      environment:
+        CCHQ_IS_FRESH_INSTALL: 1
+      when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
