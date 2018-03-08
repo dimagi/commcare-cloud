@@ -1,2 +1,2 @@
 ---
-- include: roles/shared_dir.yml
+- import_playbook: roles/shared_dir.yml

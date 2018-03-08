@@ -45,7 +45,9 @@ from fabric.context_managers import cd
 from fabric.contrib import files, console
 from fabric.decorators import runs_once
 from fabric.operations import require
-from commcare_cloud.environment import get_available_envs, get_public_vars
+
+from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.paths import get_available_envs
 
 from .const import (
     ROLES_ALL_SRC,
@@ -77,12 +79,11 @@ from .utils import (
     cache_deploy_state,
     clear_cached_deploy,
     execute_with_timing,
-    read_inventory_file,
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
-    check_and_translate_hosts,
 )
+from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 from .checks import (
     check_servers,
 )
@@ -93,7 +94,6 @@ if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path
 env.abort_exception = Exception
 env.linewise = True
 env.colorize_errors = True
-env.captain_user = None
 env.always_use_pty = False
 env['sudo_prefix'] += '-H '
 
@@ -158,25 +158,13 @@ def _override_code_root_to_current():
     env.services = posixpath.join(env.code_root, 'services')
 
 
-def load_env(env_name):
-    def get_env_dict(path):
-        if os.path.isfile(path):
-            with open(path) as f:
-                try:
-                    return yaml.load(f) or {}
-                except Exception:
-                    print('Error in file {}'.format(path))
-                    raise
-        else:
-            raise Exception("Environment file not found: {}".format(path))
-
+def load_env():
+    env.ccc_environment = get_environment(env.env_name)
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
-    vars = {}
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')))
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')))
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'app-processes.yml')))
-    vars.update(get_env_dict(os.path.join(REPO_BASE, 'environments', env_name, 'fab-settings.yml')))
+
+    vars = env.ccc_environment.translated_app_processes_config.to_json()
+    vars.update(env.ccc_environment.fab_settings_config.to_json())
     # Variables that were already in `env`
     # take precedence over variables set in app-processes.yml
     # except a short blacklist that we expect app-processes.yml vars to overwrite
@@ -189,7 +177,7 @@ def load_env(env_name):
 
 def _setup_env(env_name):
     env.env_name = env_name
-    load_env(env_name)
+    load_env()
     _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
@@ -248,7 +236,7 @@ def development():
 
 
 def env_common():
-    servers = read_inventory_file(env.env_name)
+    servers = env.ccc_environment.inventory_hosts_by_group
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
@@ -301,9 +289,6 @@ def env_common():
     env.resume = False
     env.offline = False
     env.supervisor_roles = ROLES_ALL_SRC
-
-    for key in ('celery_processes', 'pillows'):
-        env[key] = check_and_translate_hosts(env.env_name, env[key])
 
 
 @task
@@ -918,7 +903,7 @@ def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
         tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-        tasks[env_name].__doc__ = get_public_vars(env_name)['SITE_HOST']
+        tasks[env_name].__doc__ = get_environment(env_name).public_vars['SITE_HOST']
     return tasks
 
 # Automatically create a task for each environment

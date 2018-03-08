@@ -2,6 +2,7 @@
 # Sets up a PostrgeSQL standby node
 # Usage:
 #   commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]
+#   commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node] -e hot_standby_master=[IP or master] -e replication_slot=[replication slot name]
 #
 - hosts:
     - "{{ standby }}"

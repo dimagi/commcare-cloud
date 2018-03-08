@@ -3,15 +3,15 @@ import os
 import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
-from commcare_cloud.cli_utils import ask
+from commcare_cloud.cli_utils import ask, print_command
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
     get_common_ssh_args
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
+from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment import ANSIBLE_DIR, get_inventory_filepath, get_vault_vars_filepath, \
-    get_public_vars_filepath, get_public_vars
+from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 
 class RunAnsibleModule(CommandBase):
@@ -62,15 +62,16 @@ class RunAnsibleModule(CommandBase):
         ))
 
     def run(self, args, unknown_args):
+        environment = get_environment(args.environment)
         ansible_context = AnsibleContext(args)
-        public_vars = get_public_vars(args.environment)
+        public_vars = environment.public_vars
 
         def _run_ansible(args, *unknown_args):
             cmd_parts = (
                 'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
                 'ansible', args.inventory_group,
                 '-m', args.module,
-                '-i', get_inventory_filepath(args.environment),
+                '-i', environment.paths.inventory_ini,
                 '-u', args.remote_user,
                 '-a', args.module_args,
                 '--diff',
@@ -80,6 +81,7 @@ class RunAnsibleModule(CommandBase):
             become_user = args.become_user
             include_vars = False
             if become:
+                cmd_parts += ('--become',)
                 if become_user not in ('cchq',):
                     # ansible user can do things as cchq without a password,
                     # but needs the ansible user password in order to do things as other users.
@@ -87,13 +89,11 @@ class RunAnsibleModule(CommandBase):
                     include_vars = True
                 if become_user:
                     cmd_parts += ('--become-user', args.become_user)
-                else:
-                    cmd_parts += ('--become',)
 
             if include_vars:
                 cmd_parts += (
-                    '-e', '@{}'.format(get_vault_vars_filepath(args.environment)),
-                    '-e', '@{}'.format(get_public_vars_filepath(args.environment)),
+                    '-e', '@{}'.format(environment.paths.vault_yml),
+                    '-e', '@{}'.format(environment.paths.public_yml),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
@@ -102,7 +102,7 @@ class RunAnsibleModule(CommandBase):
 
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-            print(cmd)
+            print_command(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
                 p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
