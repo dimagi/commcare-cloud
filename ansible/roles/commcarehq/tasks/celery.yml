@@ -33,3 +33,11 @@
   tags:
     - services
 
+- name: define pillow retry queue services
+  become: cchq
+  template:
+    src: "../templates/supervisor_sms_queue.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_sms_queue.conf"
+  when: celery_processes.get(ansible_hostname).sms_queue is defined
+  tags:
+    - services

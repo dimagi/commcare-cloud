@@ -19,7 +19,6 @@ from ..const import (
     ROLES_DJANGO,
     ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
-    ROLES_SMS_QUEUE,
     ROLES_PILLOW_RETRY_QUEUE,
     ROLES_PILLOWTOP,
     ROLES_STATIC,
@@ -39,7 +38,6 @@ def set_supervisor_config():
     set_errand_boy_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
-    set_sms_queue_supervisorconf()
 
 
 def _get_celery_queues():
@@ -155,11 +153,6 @@ def set_formsplayer_supervisorconf():
 def set_formplayer_spring_supervisorconf():
     if _check_in_roles(ROLES_FORMPLAYER):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
-
-
-def set_sms_queue_supervisorconf():
-    if 'sms_queue' in _get_celery_queues() and _check_in_roles(ROLES_SMS_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_sms_queue.conf')
 
 
 def please_put(local_dir, remote_dir, temp_dir='/tmp'):
