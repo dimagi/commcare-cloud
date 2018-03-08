@@ -16,7 +16,7 @@ if [ -z ${TRAVIS_TEST} ]; then
     fi
 fi
 
-if [ -n "${BASH_SOURCE[0]}" ]
+if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
     COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
