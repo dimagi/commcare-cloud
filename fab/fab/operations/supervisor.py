@@ -40,7 +40,6 @@ def set_supervisor_config():
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
     set_sms_queue_supervisorconf()
-    set_pillow_retry_queue_supervisorconf()
 
 
 def _get_celery_queues():
@@ -161,11 +160,6 @@ def set_formplayer_spring_supervisorconf():
 def set_sms_queue_supervisorconf():
     if 'sms_queue' in _get_celery_queues() and _check_in_roles(ROLES_SMS_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_sms_queue.conf')
-
-
-def set_pillow_retry_queue_supervisorconf():
-    if 'pillow_retry_queue' in _get_celery_queues() and _check_in_roles(ROLES_PILLOW_RETRY_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
 
 
 def please_put(local_dir, remote_dir, temp_dir='/tmp'):

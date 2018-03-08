@@ -152,6 +152,16 @@
   tags:
     - services
 
+- name: define pillow retry queue services
+  become: cchq
+  hosts: celery
+  template:
+    src: "supervisor_pillow_retry_queue.conf"
+    dest: "{{ services_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
+  when: 'pillow_retry_queue' in celery_processes.get(ansible_host)
+  tags:
+    - services
+
 - name: define websockets services
   become: cchq
   hosts: proxy

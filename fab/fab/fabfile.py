@@ -57,7 +57,6 @@ from .const import (
     ROLES_DJANGO,
     ROLES_STATIC,
     ROLES_SMS_QUEUE,
-    ROLES_PILLOW_RETRY_QUEUE,
     ROLES_DB_ONLY,
     ROLES_DEPLOY,
     RELEASE_RECORD,
@@ -103,7 +102,6 @@ env.roledefs = {
     # for now combined with celery
     'django_pillowtop': [],
     'sms_queue': [],
-    'pillow_retry_queue': [],
     # 'django_celery, 'django_app', and 'django_pillowtop' all in one
     # use this ONLY for single server config,
     # otherwise deploy() will run multiple times in parallel causing issues
@@ -265,7 +263,6 @@ def env_common():
         'rabbitmq': rabbitmq,
         'django_celery': celery,
         'sms_queue': celery,
-        'pillow_retry_queue': celery,
         'django_app': webworkers,
         'django_pillowtop': pillowtop,
         'formsplayer': touchforms,
