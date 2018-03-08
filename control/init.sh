@@ -60,8 +60,10 @@ if [ -d ~/commcarehq-ansible ]; then
     echo "Moving repo to ~/commcare-cloud"
     mv ~/commcarehq-ansible ~/commcare-cloud
     # delete broken link
-    [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 fi
+
+# remove broken links
+[ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 
 if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     echo "Checking out CommCare Cloud Repo"
