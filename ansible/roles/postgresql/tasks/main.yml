@@ -96,10 +96,6 @@
   tags: after-reboot
   register: start_postgresql
 
-- name: Reload postgresql
-  become: true
-  service: name=postgresql state=reloaded args="{{ postgresql_version }}"
-
 - name: wait after restarting postgres
   when: start_postgresql.changed
   wait_for:
