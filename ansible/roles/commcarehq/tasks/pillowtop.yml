@@ -15,7 +15,7 @@
   become: cchq
   hosts: pillowtop
   template:
-    src: "../templates/common.supervisor_management.conf.j2"
+    src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_form_feed.conf"
   when: inventory_hostname == groups.pillowtop.0
   with_items:
