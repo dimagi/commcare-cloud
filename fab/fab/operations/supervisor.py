@@ -24,7 +24,7 @@ from ..const import (
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
-    ROLES_SUBMISSION_REPROCESSING_QUEUE)
+    )
 from fabric import utils
 from six.moves import range
 
@@ -41,7 +41,6 @@ def set_supervisor_config():
     set_formplayer_spring_supervisorconf()
     set_sms_queue_supervisorconf()
     set_pillow_retry_queue_supervisorconf()
-    set_submissions_reprocessing_queue_supervisorconf()
 
 
 def _get_celery_queues():
@@ -167,11 +166,6 @@ def set_sms_queue_supervisorconf():
 def set_pillow_retry_queue_supervisorconf():
     if 'pillow_retry_queue' in _get_celery_queues() and _check_in_roles(ROLES_PILLOW_RETRY_QUEUE):
         _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
-
-
-def set_submissions_reprocessing_queue_supervisorconf():
-    if 'submission_reprocessing_queue' in _get_celery_queues() and _check_in_roles(ROLES_SUBMISSION_REPROCESSING_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_submission_reprocessing_queue.conf')
 
 
 def please_put(local_dir, remote_dir, temp_dir='/tmp'):
