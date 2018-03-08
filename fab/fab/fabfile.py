@@ -103,9 +103,7 @@ env.roledefs = {
     # for now combined with celery
     'django_pillowtop': [],
     'sms_queue': [],
-    'reminder_queue': [],
     'pillow_retry_queue': [],
-    'submission_reprocessing_queue': [],
     # 'django_celery, 'django_app', and 'django_pillowtop' all in one
     # use this ONLY for single server config,
     # otherwise deploy() will run multiple times in parallel causing issues
@@ -268,7 +266,6 @@ def env_common():
         'django_celery': celery,
         'sms_queue': celery,
         'pillow_retry_queue': celery,
-        'submission_reprocessing_queue': celery,
         'django_app': webworkers,
         'django_pillowtop': pillowtop,
         'formsplayer': touchforms,
