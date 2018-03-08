@@ -41,7 +41,6 @@ def set_supervisor_config():
     set_errand_boy_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
-    copy_pillowtop_supervisorconf()
     set_sms_queue_supervisorconf()
     set_reminder_queue_supervisorconf()
     set_pillow_retry_queue_supervisorconf()
@@ -145,17 +144,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
                 host=env.host,
                 env_name=env.env_name)
     )
-
-
-def copy_pillowtop_supervisorconf():
-    services_dir = "services/supervisor"
-    pillowtop_conf = "{}/{}_supervisor_pillowtop.conf".format(services_dir, env.environment)
-    form_feed_conf = "{}/{}_supervisor_form_feed.conf".format(services_dir, env.environment)
-
-    sudo('cp {current_code}/{pillowtop_conf} {new_code}/{pillowtop_conf}'.format(
-        current_code=env.code_current, new_code=env.code_root, pillowtop_conf=pillowtop_conf))
-    sudo('cp {current_code}/{form_feed_conf} {new_code}/{form_feed_conf}'.format(
-        current_code=env.code_current, new_code=env.code_root, form_feed_conf=form_feed_conf))
 
 
 def set_djangoapp_supervisorconf():
