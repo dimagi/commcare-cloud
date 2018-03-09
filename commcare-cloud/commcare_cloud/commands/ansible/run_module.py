@@ -63,6 +63,7 @@ class RunAnsibleModule(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.environment)
+        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
         public_vars = environment.public_vars
 
@@ -94,6 +95,7 @@ class RunAnsibleModule(CommandBase):
                 cmd_parts += (
                     '-e', '@{}'.format(environment.paths.vault_yml),
                     '-e', '@{}'.format(environment.paths.public_yml),
+                    '-e', '@{}'.format(environment.paths.generated_yml),
                 )
 
             ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
