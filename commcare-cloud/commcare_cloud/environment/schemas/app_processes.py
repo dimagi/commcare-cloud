@@ -60,6 +60,7 @@ CELERY_PROCESSES = [
     CeleryProcess("email_queue"),
     CeleryProcess("enikshay_queue", required=False),
     CeleryProcess("flower"),
+    CeleryProcess("icds_dashboard_reports_queue", required=False),
     CeleryProcess("ils_gateway_sms_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
