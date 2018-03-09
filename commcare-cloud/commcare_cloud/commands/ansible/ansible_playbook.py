@@ -258,6 +258,11 @@ class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
         'riakcs': ['riak', 'riak-cs', 'stanchion']
     }
     ACTIONS = ['start', 'stop', 'restart']
+    DESIRED_STATE_FOR_ACTION = {
+        'start': 'started',
+        'stop': 'stopped',
+        'restart': 'restarted',
+    }
 
     def make_parser(self):
         super(ManageServices, self).make_parser()
@@ -284,12 +289,7 @@ class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
 
     def for_proxy(self, args, unknown_args):
         action = args.action
-        if action == 'start':
-            state = 'started'
-        elif action == 'restart':
-            state = 'restarted'
-        elif action == 'stop':
-            state = 'stopped'
+        state = self.DESIRED_STATE_FOR_ACTION[action]
         args.module = 'service'
         args.module_args = "name=nginx state=%s" % state
         RunAnsibleModule(self.parser).run(
@@ -300,14 +300,24 @@ class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
     def for_riakcs(self, args, unknown_args):
         tags = []
         action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
         args.playbook = "restart_riakcs.yml"
         if args.only:
             # for options to act on certain services create tags
-            services = args.only
-            for service in services:
+            run_for_services = args.only
+            for service in run_for_services:
                 tags.append("%s_%s" % (action, service))
+        else:
+            run_for_services = self.SERVICES['riakcs']
         if tags:
-            unknown_args += ('--tags=%s' % ','.join(tags),)
+            unknown_args.append('--tags=%s' % ','.join(tags),)
+        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
+        # ToDo: use this with when in the playbook instead of tags
+        # currently its running riak even when just riak-cs is ran
+        # but skips riak when running for only stanchion
+        # as of now it looks like
+        # --extra-vars 'desired_services=['"'"'riak-cs'"'"', '"'"'stanchion'"'"']'
+        unknown_args.extend(['--extra-vars', "desired_services=%s" % run_for_services])
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def run(self, args, unknown_args):
