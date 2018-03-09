@@ -75,6 +75,9 @@ postgresql_dbs:
   - name: "{{ localsettings.PG_DATABASE_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
+    host: "{{ groups.postgresql.0 }}"
 
 redis_max_memory: 4096mb
 redis_logfile: '/var/log/redis/redis-server.log'
@@ -192,6 +195,7 @@ localsettings:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
+  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
 #  STATIC_ROOT:
 #  STRIPE_PRIVATE_KEY:
 #  STRIPE_PUBLIC_KEY:
