@@ -267,7 +267,6 @@ class Service(_AnsiblePlaybookAlias):
             choices=self.SERVICES,
             help="The inventory group to run the command on"
             )
-        self.add_ansible_options()
         self.parser.add_argument(
             'action',
             choices=self.ACTIONS,
@@ -281,7 +280,7 @@ class Service(_AnsiblePlaybookAlias):
             )
         )
 
-    def for_proxy(self, args, unknown_args):
+    def run_for_proxy(self, args, unknown_args):
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
         args.module = 'service'
@@ -291,11 +290,11 @@ class Service(_AnsiblePlaybookAlias):
             unknown_args
         )
 
-    def for_riakcs(self, args, unknown_args):
+    def run_for_riakcs(self, args, unknown_args):
         tags = []
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.playbook = "restart_riakcs.yml"
+        args.playbook = "service_playbooks/restart_riakcs.yml"
         if args.only:
             # for options to act on certain services create tags
             run_for_services = args.only.split(',')
@@ -318,6 +317,6 @@ class Service(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         service_group = args.service_group
         if service_group == "proxy":
-            self.for_proxy(args, unknown_args)
+            self.run_for_proxy(args, unknown_args)
         elif service_group == "riakcs":
-            self.for_riakcs(args, unknown_args)
+            self.run_for_riakcs(args, unknown_args)
