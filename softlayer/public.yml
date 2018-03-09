@@ -110,7 +110,6 @@ postgresql_dbs:
   - django_alias: icds-ucr
     name: icds-ucr
   - name: "{{ formplayer_db_name }}"
-  - name: commcarehq_icds_testdata
 
 postgresql_ssl_enabled: False
 
