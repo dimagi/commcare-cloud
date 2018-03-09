@@ -237,7 +237,7 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
-class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
+class Service(AnsibleOptions, _AnsiblePlaybookAlias):
     """
     example usages
     1. To restart riak and stanchion only for riakcs
@@ -265,7 +265,7 @@ class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
     }
 
     def make_parser(self):
-        super(ManageServices, self).make_parser()
+        super(Service, self).make_parser()
         self.parser.add_argument(
             'inventory_group',
             choices=self.SERVICES,
@@ -279,11 +279,9 @@ class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
         )
         self.parser.add_argument(
             '--only',
-            nargs='+',
             help=(
-                "Specific services to act on for the inventory group. "
-                "Can mention multiple separated with empty spaces. "
-                "Example Usage: --only riak stanchion"
+                "Specific comma separated services to act on for the inventory group. "
+                "Example Usage: --only=riak,stanchion"
             )
         )
 
@@ -304,9 +302,10 @@ class ManageServices(AnsibleOptions, _AnsiblePlaybookAlias):
         args.playbook = "restart_riakcs.yml"
         if args.only:
             # for options to act on certain services create tags
-            run_for_services = args.only
+            run_for_services = args.only.split(',')
             for service in run_for_services:
-                tags.append("%s_%s" % (action, service))
+                if service:
+                    tags.append("%s_%s" % (action, service))
         else:
             run_for_services = self.SERVICES['riakcs']
         if tags:

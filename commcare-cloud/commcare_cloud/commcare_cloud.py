@@ -7,7 +7,7 @@ from .argparse14 import ArgumentParser
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack, UpdateUsers,
-    ManageServices,
+    Service,
 )
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
@@ -34,7 +34,7 @@ COMMAND_TYPES = [
     Ssh,
     Mosh,
     DjangoManage,
-    ManageServices,
+    Service,
 ]
 
 
