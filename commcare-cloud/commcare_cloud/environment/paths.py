@@ -49,6 +49,10 @@ class DefaultPaths(object):
     def fab_settings_yml_default(self):
         return os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')
 
+    @lazy_immutable_property
+    def generated_yml(self):
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, '.generated.yml')
+
 
 def get_virtualenv_path():
     return os.path.dirname(sys.executable)

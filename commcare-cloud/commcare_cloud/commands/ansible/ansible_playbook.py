@@ -50,6 +50,7 @@ class AnsiblePlaybook(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.environment)
+        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
         check_branch(args)
         public_vars = environment.public_vars
@@ -62,6 +63,7 @@ class AnsiblePlaybook(CommandBase):
                 '-i', environment.paths.inventory_ini,
                 '-e', '@{}'.format(environment.paths.vault_yml),
                 '-e', '@{}'.format(environment.paths.public_yml),
+                '-e', '@{}'.format(environment.paths.generated_yml),
                 '--diff',
             ) + cmd_args
 
