@@ -94,6 +94,13 @@ class Environment(object):
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 
+    def create_generated_yml(self):
+        generated_variables = {
+            'app_processes_config': self.translated_app_processes_config.to_json(),
+        }
+        with open(self.paths.generated_yml, 'w') as f:
+            f.write(yaml.safe_dump(generated_variables))
+
 
 @memoized
 def get_environment(env_name):
