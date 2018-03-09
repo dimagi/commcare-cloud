@@ -71,6 +71,8 @@ celery_processes:
       concurrency: 4
     ucr_indicator_queue:
       concurrency: 8
+    icds_dashboard_reports_queue:
+      concurrency: 2
   'celery4':
     ucr_indicator_queue:
       concurrency: 8
@@ -78,6 +80,8 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 10
+    icds_dashboard_reports_queue:
+      concurrency: 2
   'celery5':
     pillow_retry_queue:
       pooling: gevent
