@@ -25,7 +25,7 @@
   become: true
   pip:
     requirements: "{{ airflow_code_dir }}/requirements.txt"
-    virtualenv: "{{ virtualenv_source }}"
+    virtualenv: "{{ airflow_virtualenv }}"
     chdir: "{{ airflow_code_dir }}"
 
 - name: chown clone
@@ -37,8 +37,8 @@
     group: "{{ cchq_user }}"
     recurse: yes
   with_items:
-    - "{{ code_source }}"
-    - "{{ virtualenv_source }}"
+    - "{{ airflow_code_dir }}"
+    - "{{ airflow_virtualenv }}"
 
 - name: copy airflow settings
   become: true
@@ -55,10 +55,16 @@
     group: "{{ cchq_user }}"
 
 - name: symlink dags
-  file: src="{{ airflow_code_dir }}/dags" path="{{ airflow_home }}/dags" state=link
+  become: true
+  file: 
+      src="{{ airflow_code_dir }}/dags" 
+      dest="{{ airflow_dag_dir }}" 
+      owner="{{ cchq_user }}"
+      group="{{ cchq_user }}"
+      state=link
 
 - name: initialize database
-  shell: "{{ virtualenv_source }}/bin/airflow initdb"
+  shell: "{{ airflow_virtualenv }}/bin/airflow initdb"
 
 - name: set cchq home variable
-  shell: "{{ virtualenv_source }}/bin/airflow variables --set CCHQ_HOME {{ code_home }}"
+  shell: "{{ airflow_virtualenv }}/bin/airflow variables --set CCHQ_HOME {{ code_home }}"

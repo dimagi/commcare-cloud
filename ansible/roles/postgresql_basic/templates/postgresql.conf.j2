@@ -35,7 +35,7 @@ dynamic_shared_memory_type = posix
 
 
 # WRITE AHEAD LOG
-{% if backup_postgres == 'pgbackrest' and not is_pg_standby %}
+{% if backup_postgres == 'pgbackrest' and not is_pg_standby|default(false) %}
 archive_mode = on
 archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'
 archive_timeout = 60
@@ -51,7 +51,7 @@ max_wal_size = {{ postgresql_max_wal_size }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
-{% if is_pg_standby %}
+{% if is_pg_standby|default(false) %}
 wal_keep_segments = {{ pgstandby_wal_keep_segments|default(8) }}
 {% else %}
 wal_keep_segments = {{ postgresql_wal_keep_segments|default(8) }}

@@ -1,0 +1,3 @@
+datadog_integration_postgres: true
+is_pg_standby: false
+is_pg_master: true
