@@ -13,7 +13,9 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Copy newrelic template
-  become_user: "{{ cchq_user }}"
+  become: True
   template:
     src: newrelic.yml.j2
     dest: '{{ newrelic_dest }}/newrelic/newrelic.yml'
+    owner: '{{ cchq_user }}'
+    group: '{{ cchq_user }}'
