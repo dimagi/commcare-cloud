@@ -31,7 +31,7 @@ class CallbackModule(CallbackBase):
     def __init__(self):
         if not HAS_MODULES:
             self.disabled = True
-            print('Datadog callback disabled.\nMake sure you call all required libraries: "datadog" and "yaml".')
+            print('Datadog callback disabled.\nMake sure you call all required libraries: "datadog" and "pyyaml".')
         elif cli and cli.options.check:
             self.disabled = True
             print ('Datadog callback disabled in "check mode".  ')
