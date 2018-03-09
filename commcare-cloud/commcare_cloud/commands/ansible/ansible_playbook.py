@@ -263,7 +263,7 @@ class Service(_AnsiblePlaybookAlias):
     def make_parser(self):
         super(Service, self).make_parser()
         self.parser.add_argument(
-            'inventory_group',
+            'service_group',
             choices=self.SERVICES,
             help="The inventory group to run the command on"
             )
@@ -316,8 +316,8 @@ class Service(_AnsiblePlaybookAlias):
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def run(self, args, unknown_args):
-        inventory_group = args.inventory_group
-        if inventory_group == "proxy":
+        service_group = args.service_group
+        if service_group == "proxy":
             self.for_proxy(args, unknown_args)
-        elif inventory_group == "riakcs":
+        elif service_group == "riakcs":
             self.for_riakcs(args, unknown_args)
