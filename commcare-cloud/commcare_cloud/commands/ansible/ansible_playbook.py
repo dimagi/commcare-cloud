@@ -7,7 +7,6 @@ from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
-    AnsibleOptions,
 )
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
@@ -237,7 +236,7 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
-class Service(AnsibleOptions, _AnsiblePlaybookAlias):
+class Service(_AnsiblePlaybookAlias):
     """
     example usages
     1. To restart riak and stanchion only for riakcs
@@ -245,9 +244,6 @@ class Service(AnsibleOptions, _AnsiblePlaybookAlias):
        i.e riak, riak-cs and stanchion in that order
         commcare-cloud staging service riakcs restart --only riak stanchion riak-cs
     2. To start services under proxy i.e nginx
-       You can still pass ansible options which are
-       --user, --become, --become_user
-        commcare-cloud staging service proxy start -b
     """
     command = 'service'
     help = (
