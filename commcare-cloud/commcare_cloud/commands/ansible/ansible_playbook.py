@@ -248,7 +248,7 @@ class Service(_AnsiblePlaybookAlias):
         commcare-cloud staging service proxy restart
     3. To get status
         commcare-cloud staging service riakcs status
-        commcare-cloud staging service riakcs --only=stanchion,status
+        commcare-cloud staging service riakcs status --only=stanchion
     """
     command = 'service'
     help = (
