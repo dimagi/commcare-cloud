@@ -306,6 +306,10 @@ class Service(_AnsiblePlaybookAlias):
     def run_for_proxy(self, args, unknown_args):
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.inventory_group = self.get_inventory_group_for_service('nginx', args.service_group)
+        args.remote_user = 'ansible'
+        args.become = True
+        args.become_user = False
         args.module = 'service'
         args.module_args = "name=nginx state=%s" % state
         RunAnsibleModule(self.parser).run(
