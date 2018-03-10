@@ -275,7 +275,7 @@ class Service(_AnsiblePlaybookAlias):
         self.parser.add_argument(
             'service_group',
             choices=self.SERVICES,
-            help="The inventory group to run the command on"
+            help="The service group to run the command on"
             )
         self.parser.add_argument(
             'action',
@@ -285,7 +285,7 @@ class Service(_AnsiblePlaybookAlias):
         self.parser.add_argument(
             '--only',
             help=(
-                "Specific comma separated services to act on for the inventory group. "
+                "Specific comma separated services to act on for the service group. "
                 "Example Usage: --only=riak,stanchion"
             )
         )
