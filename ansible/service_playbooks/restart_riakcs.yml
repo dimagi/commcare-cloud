@@ -1,4 +1,4 @@
-- name: "{{ desired_action }} Riak"
+- name: "{{ desired_action|capitalize }} Riak"
   become: true
   hosts: riakcs
   tasks:
@@ -8,7 +8,7 @@
     - start_riak
     - stop_riak
 
-- name: "{{ desired_action }} Stanchion"
+- name: "{{ desired_action|capitalize }} Stanchion"
   become: true
   hosts: stanchion
   tasks:
@@ -18,7 +18,7 @@
     - start_stanchion
     - stop_stanchion
 
-- name: "{{ desired_action }} Riak-CS"
+- name: "{{ desired_action|capitalize }} Riak-CS"
   become: true
   hosts: riakcs
   tasks:
