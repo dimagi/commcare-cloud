@@ -10,7 +10,7 @@
 
 - name: "{{ desired_action }} Stanchion"
   become: true
-  hosts: riakcs
+  hosts: stanchion
   tasks:
     - service: name="stanchion" state={{ desired_state }}
   tags:
