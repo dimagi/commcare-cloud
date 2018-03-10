@@ -16,6 +16,7 @@ from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.commands.ansible.run_module import (
     RunAnsibleModule,
+    RunShellCommand,
 )
 
 
@@ -244,20 +245,28 @@ class Service(_AnsiblePlaybookAlias):
        i.e riak, riak-cs and stanchion in that order
         commcare-cloud staging service riakcs restart --only riak stanchion riak-cs
     2. To start services under proxy i.e nginx
+    3. To get status
+        commcare-cloud staging service riakcs status
+        commcare-cloud staging service riakcs --only=stanchion status
     """
     command = 'service'
     help = (
         "Manage services."
     )
     SERVICES = {
-        'proxy': 'nginx',
-        'riakcs': ['riak', 'riak-cs', 'stanchion']
+        'proxy': ['nginx'],
+        'riakcs': ['riak', 'riak-cs', 'stanchion'],
+        'stanchion': ['stanchion']
     }
-    ACTIONS = ['start', 'stop', 'restart']
+    ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
         'start': 'started',
         'stop': 'stopped',
         'restart': 'restarted',
+    }
+    # add this mapping where service group is not same as the inventory group itself
+    INVENTORY_GROUP_FOR_SERVICE = {
+        'stanchion': 'stanchion',
     }
 
     def make_parser(self):
@@ -280,6 +289,18 @@ class Service(_AnsiblePlaybookAlias):
             )
         )
 
+    def get_inventory_group_for_service(self, service, service_group):
+        return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
+
+    def run_status_for_service(self, service_group, args, unknown_args):
+        for service in self.run_for_services(service_group, args):
+            args.shell_command = "service %s status" % service
+            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+            args.remote_user = 'ansible'
+            args.become = True
+            args.become_user = False
+            RunShellCommand(self.parser).run(args, unknown_args)
+
     def run_for_proxy(self, args, unknown_args):
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
@@ -290,21 +311,25 @@ class Service(_AnsiblePlaybookAlias):
             unknown_args
         )
 
+    def run_for_services(self, service_group, args):
+        if args.only:
+            return args.only.split(',')
+        else:
+            return self.SERVICES[service_group]
+
     def run_for_riakcs(self, args, unknown_args):
         tags = []
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
         args.playbook = "service_playbooks/restart_riakcs.yml"
+        run_for_services = self.run_for_services('riakcs', args)
         if args.only:
             # for options to act on certain services create tags
-            run_for_services = args.only.split(',')
             for service in run_for_services:
                 if service:
                     tags.append("%s_%s" % (action, service))
-        else:
-            run_for_services = self.SERVICES['riakcs']
-        if tags:
-            unknown_args.append('--tags=%s' % ','.join(tags),)
+            if tags:
+                unknown_args.append('--tags=%s' % ','.join(tags),)
         unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
         # ToDo: use this with when in the playbook instead of tags
         # currently its running riak even when just riak-cs is ran
@@ -316,7 +341,22 @@ class Service(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         service_group = args.service_group
+        if args.only:
+            run_for_services = self.run_for_services(service_group, args)
+            for service in run_for_services:
+                assert service in self.SERVICES[service_group], \
+                    ("%s not allowed. Please use from %s for --only option" %
+                     (service, self.SERVICES[service_group])
+                     )
+        action = args.action
+        if action == "status":
+            self.run_status_for_service(service_group, args, unknown_args)
+            return
         if service_group == "proxy":
             self.run_for_proxy(args, unknown_args)
         elif service_group == "riakcs":
+            self.run_for_riakcs(args, unknown_args)
+        elif service_group == "stanchion":
+            if not args.only:
+                args.only = "stanchion"
             self.run_for_riakcs(args, unknown_args)
