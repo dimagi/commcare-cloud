@@ -242,12 +242,13 @@ class Service(_AnsiblePlaybookAlias):
     example usages
     1. To restart riak and stanchion only for riakcs
        only option can be skipped to restart all services which are a part of riakcs
-       i.e riak, riak-cs and stanchion in that order
-        commcare-cloud staging service riakcs restart --only riak stanchion riak-cs
+       This would always act on riak, riak-cs and stanchion, in that order
+        commcare-cloud staging service riakcs restart --only riak,stanchion,riak-cs
     2. To start services under proxy i.e nginx
+        commcare-cloud staging service proxy restart
     3. To get status
         commcare-cloud staging service riakcs status
-        commcare-cloud staging service riakcs --only=stanchion status
+        commcare-cloud staging service riakcs --only=stanchion,status
     """
     command = 'service'
     help = (
