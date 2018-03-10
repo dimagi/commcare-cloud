@@ -255,6 +255,7 @@ class Service(_AnsiblePlaybookAlias):
         "Manage services."
     )
     SERVICES = {
+        # service_group: services
         'proxy': ['nginx'],
         'riakcs': ['riak', 'riak-cs', 'stanchion'],
         'stanchion': ['stanchion']
@@ -274,7 +275,7 @@ class Service(_AnsiblePlaybookAlias):
         super(Service, self).make_parser()
         self.parser.add_argument(
             'service_group',
-            choices=self.SERVICES,
+            choices=self.SERVICES.keys(),
             help="The service group to run the command on"
             )
         self.parser.add_argument(
@@ -340,19 +341,15 @@ class Service(_AnsiblePlaybookAlias):
         unknown_args.extend(['--extra-vars', "desired_services=%s" % run_for_services])
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
-    def run(self, args, unknown_args):
-        service_group = args.service_group
-        if args.only:
-            run_for_services = self.run_for_services(service_group, args)
-            for service in run_for_services:
-                assert service in self.SERVICES[service_group], \
-                    ("%s not allowed. Please use from %s for --only option" %
-                     (service, self.SERVICES[service_group])
-                     )
-        action = args.action
-        if action == "status":
-            self.run_status_for_service(service_group, args, unknown_args)
-            return
+    def ensure_permitted_only_options(self, service_group, args):
+        run_for_services = self.run_for_services(service_group, args)
+        for service in run_for_services:
+            assert service in self.SERVICES[service_group], \
+                ("%s not allowed. Please use from %s for --only option" %
+                 (service, self.SERVICES[service_group])
+                 )
+
+    def perform_action(self, service_group, args, unknown_args):
         if service_group == "proxy":
             self.run_for_proxy(args, unknown_args)
         elif service_group == "riakcs":
@@ -361,3 +358,13 @@ class Service(_AnsiblePlaybookAlias):
             if not args.only:
                 args.only = "stanchion"
             self.run_for_riakcs(args, unknown_args)
+
+    def run(self, args, unknown_args):
+        service_group = args.service_group
+        if args.only:
+            self.ensure_permitted_only_options(service_group, args)
+        action = args.action
+        if action == "status":
+            self.run_status_for_service(service_group, args, unknown_args)
+        else:
+            self.perform_action(service_group, args, unknown_args)
