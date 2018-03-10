@@ -298,18 +298,12 @@ class Service(_AnsiblePlaybookAlias):
         for service in self.run_for_services(service_group, args):
             args.shell_command = "service %s status" % service
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            args.remote_user = 'ansible'
-            args.become = True
-            args.become_user = False
             RunShellCommand(self.parser).run(args, unknown_args)
 
     def run_for_proxy(self, args, unknown_args):
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
         args.inventory_group = self.get_inventory_group_for_service('nginx', args.service_group)
-        args.remote_user = 'ansible'
-        args.become = True
-        args.become_user = False
         args.module = 'service'
         args.module_args = "name=nginx state=%s" % state
         RunAnsibleModule(self.parser).run(
@@ -365,6 +359,9 @@ class Service(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         service_group = args.service_group
+        args.remote_user = 'ansible'
+        args.become = True
+        args.become_user = False
         if args.only:
             self.ensure_permitted_only_options(service_group, args)
         action = args.action
