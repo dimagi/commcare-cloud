@@ -279,6 +279,16 @@ class Service(_AnsiblePlaybookAlias):
         'elasticsearch': 'elasticsearch',
         'zookeeper': 'zookeeper',
     }
+    # add this if the service package is not same as the service itself
+    SERVICE_PACKAGES_FOR_SERVICE = {
+        'rabbitmq': 'rabbitmq-server',
+        'kafka': 'kafka-server'
+    }
+    # add this if the module name is not same as the service itself
+    ANSIBLE_MODULE_FOR_SERVICE = {
+        "redis": "redis-server",
+
+    }
 
     def make_parser(self):
         super(Service, self).make_parser()
@@ -307,25 +317,26 @@ class Service(_AnsiblePlaybookAlias):
         for service in self.run_for_services(service_group, args):
             if service == "redis":
                 args.shell_command = "redis-cli ping"
-            elif service == "rabbitmq":
-                args.shell_command = "service rabbitmq-server status"
-            elif service == "kafka":
-                args.shell_command = "service kafka-server status"
             else:
-                args.shell_command = "service %s status" % service
+                args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
             RunShellCommand(self.parser).run(args, unknown_args)
 
-    def run_for_proxy(self, args, unknown_args):
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.inventory_group = self.get_inventory_group_for_service('nginx', args.service_group)
-        args.module = 'service'
-        args.module_args = "name=nginx state=%s" % state
-        RunAnsibleModule(self.parser).run(
-            args,
-            unknown_args
-        )
+    def run_ansible_module_for_service_group(self, service_group, args, unknown_args, inventory_group=None):
+        for service in self.SERVICES[service_group]:
+            action = args.action
+            state = self.DESIRED_STATE_FOR_ACTION[action]
+            args.inventory_group = (
+                inventory_group or
+                self.get_inventory_group_for_service(service, service_group))
+            args.module = 'service'
+            args.module_args = "name=%s state=%s" % (
+                self.ANSIBLE_MODULE_FOR_SERVICE.get(service, service),
+                state)
+            RunAnsibleModule(self.parser).run(
+                args,
+                unknown_args
+            )
 
     def run_for_services(self, service_group, args):
         if args.only:
@@ -338,55 +349,7 @@ class Service(_AnsiblePlaybookAlias):
         if action == "restart":
             RestartElasticsearch(self.parser).run(args, unknown_args)
         else:
-            state = self.DESIRED_STATE_FOR_ACTION[action]
-            args.inventory_group = self.get_inventory_group_for_service('elasticsearch', args.service_group)
-            args.module = 'service'
-            args.module_args = "name=elasticsearch state=%s" % state
-            RunAnsibleModule(self.parser).run(args, unknown_args)
-
-    def run_for_redis(self, args, unknown_args):
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.inventory_group = self.get_inventory_group_for_service('redis', args.service_group)
-        args.module = 'service'
-        args.module_args = "name=redis-server state=%s" % state
-        RunAnsibleModule(self.parser).run(
-            args,
-            unknown_args
-        )
-
-    def run_for_couchdb2(self, args, unknown_args):
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.inventory_group = self.get_inventory_group_for_service('couchdb2', args.service_group)
-        args.module = 'service'
-        args.module_args = "name=couchdb2 state=%s" % state
-        RunAnsibleModule(self.parser).run(
-            args,
-            unknown_args
-        )
-
-    def run_for_postgresql(self, args, unknown_args):
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.inventory_group = self.get_inventory_group_for_service('postgresql', args.service_group)
-        args.module = 'service'
-        args.module_args = "name=postgresql state=%s" % state
-        RunAnsibleModule(self.parser).run(
-            args,
-            unknown_args
-        )
-
-    def run_for_rabbitmq(self, args, unknown_args):
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.inventory_group = self.get_inventory_group_for_service('rabbitmq', args.service_group)
-        args.module = 'service'
-        args.module_args = "name=rabbitmq state=%s" % state
-        RunAnsibleModule(self.parser).run(
-            args,
-            unknown_args
-        )
+            self.run_ansible_module_for_service_group("es", args, unknown_args)
 
     def run_for_riakcs(self, args, unknown_args):
         tags = []
@@ -429,15 +392,7 @@ class Service(_AnsiblePlaybookAlias):
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def run_for_pg_standby(self, args, unknown_args):
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.inventory_group = 'pg_standby'
-        args.module = 'service'
-        args.module_args = "name=postgresql state=%s" % state
-        RunAnsibleModule(self.parser).run(
-            args,
-            unknown_args
-        )
+        self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
 
     def ensure_permitted_only_options(self, service_group, args):
         run_for_services = self.run_for_services(service_group, args)
@@ -448,8 +403,8 @@ class Service(_AnsiblePlaybookAlias):
                  )
 
     def perform_action(self, service_group, args, unknown_args):
-        if service_group == "proxy":
-            self.run_for_proxy(args, unknown_args)
+        if service_group in ['proxy', 'redis', 'couchdb2', 'postgresql', 'rabbitmq']:
+            self.run_ansible_module_for_service_group(service_group, args, unknown_args)
         elif service_group == "riakcs":
             self.run_for_riakcs(args, unknown_args)
         elif service_group == "stanchion":
@@ -458,14 +413,6 @@ class Service(_AnsiblePlaybookAlias):
             self.run_for_riakcs(args, unknown_args)
         elif service_group == "es":
             self.run_for_es(args, unknown_args)
-        elif service_group == "redis":
-            self.run_for_redis(args, unknown_args)
-        elif service_group == "couchdb2":
-            self.run_for_couchdb2(args, unknown_args)
-        elif service_group == "postgresql":
-            self.run_for_postgresql(args, unknown_args)
-        elif service_group == "rabbitmq":
-            self.run_for_rabbitmq(args, unknown_args)
         elif service_group == "kafka":
             self.run_for_kafka(args, unknown_args)
         elif service_group == "pg_standby":
