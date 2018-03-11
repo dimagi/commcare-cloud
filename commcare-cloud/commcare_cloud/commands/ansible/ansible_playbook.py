@@ -259,7 +259,8 @@ class Service(_AnsiblePlaybookAlias):
         'proxy': ['nginx'],
         'riakcs': ['riak', 'riak-cs', 'stanchion'],
         'stanchion': ['stanchion'],
-        'es': ['elasticsearch']
+        'es': ['elasticsearch'],
+        'redis': ['redis']
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
@@ -297,10 +298,15 @@ class Service(_AnsiblePlaybookAlias):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
     def run_status_for_service(self, service_group, args, unknown_args):
-        for service in self.run_for_services(service_group, args):
-            args.shell_command = "service %s status" % service
-            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+        if service_group == "redis":
+            args.shell_command = "redis-cli ping"
+            args.inventory_group = self.get_inventory_group_for_service("redis", args.service_group)
             RunShellCommand(self.parser).run(args, unknown_args)
+        else:
+            for service in self.run_for_services(service_group, args):
+                args.shell_command = "service %s status" % service
+                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+                RunShellCommand(self.parser).run(args, unknown_args)
 
     def run_for_proxy(self, args, unknown_args):
         action = args.action
@@ -329,6 +335,17 @@ class Service(_AnsiblePlaybookAlias):
             args.module = 'service'
             args.module_args = "name=elasticsearch state=%s" % state
             RunAnsibleModule(self.parser).run(args, unknown_args)
+
+    def run_for_redis(self, args, unknown_args):
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.inventory_group = self.get_inventory_group_for_service('redis', args.service_group)
+        args.module = 'service'
+        args.module_args = "name=redis-server state=%s" % state
+        RunAnsibleModule(self.parser).run(
+            args,
+            unknown_args
+        )
 
     def run_for_riakcs(self, args, unknown_args):
         tags = []
@@ -371,6 +388,8 @@ class Service(_AnsiblePlaybookAlias):
             self.run_for_riakcs(args, unknown_args)
         elif service_group == "es":
             self.run_for_es(args, unknown_args)
+        elif service_group == "redis":
+            self.run_for_redis(args, unknown_args)
 
     def run(self, args, unknown_args):
         service_group = args.service_group
