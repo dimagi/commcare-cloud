@@ -260,7 +260,12 @@ class Service(_AnsiblePlaybookAlias):
         'riakcs': ['riak', 'riak-cs', 'stanchion'],
         'stanchion': ['stanchion'],
         'es': ['elasticsearch'],
-        'redis': ['redis']
+        'redis': ['redis'],
+        'couchdb2': ['couchdb2'],
+        'postgresql': ['postgresql'],
+        'rabbitmq': ['rabbitmq'],
+        'kafka': ['kafka', 'zookeeper'],
+        'pg_standby': ['postgresql']
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
@@ -272,6 +277,7 @@ class Service(_AnsiblePlaybookAlias):
     INVENTORY_GROUP_FOR_SERVICE = {
         'stanchion': 'stanchion',
         'elasticsearch': 'elasticsearch',
+        'zookeeper': 'zookeeper',
     }
 
     def make_parser(self):
@@ -298,15 +304,17 @@ class Service(_AnsiblePlaybookAlias):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
     def run_status_for_service(self, service_group, args, unknown_args):
-        if service_group == "redis":
-            args.shell_command = "redis-cli ping"
-            args.inventory_group = self.get_inventory_group_for_service("redis", args.service_group)
-            RunShellCommand(self.parser).run(args, unknown_args)
-        else:
-            for service in self.run_for_services(service_group, args):
+        for service in self.run_for_services(service_group, args):
+            if service == "redis":
+                args.shell_command = "redis-cli ping"
+            elif service == "rabbitmq":
+                args.shell_command = "service rabbitmq-server status"
+            elif service == "kafka":
+                args.shell_command = "service kafka-server status"
+            else:
                 args.shell_command = "service %s status" % service
-                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                RunShellCommand(self.parser).run(args, unknown_args)
+            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+            RunShellCommand(self.parser).run(args, unknown_args)
 
     def run_for_proxy(self, args, unknown_args):
         action = args.action
@@ -347,6 +355,39 @@ class Service(_AnsiblePlaybookAlias):
             unknown_args
         )
 
+    def run_for_couchdb2(self, args, unknown_args):
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.inventory_group = self.get_inventory_group_for_service('couchdb2', args.service_group)
+        args.module = 'service'
+        args.module_args = "name=couchdb2 state=%s" % state
+        RunAnsibleModule(self.parser).run(
+            args,
+            unknown_args
+        )
+
+    def run_for_postgresql(self, args, unknown_args):
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.inventory_group = self.get_inventory_group_for_service('postgresql', args.service_group)
+        args.module = 'service'
+        args.module_args = "name=postgresql state=%s" % state
+        RunAnsibleModule(self.parser).run(
+            args,
+            unknown_args
+        )
+
+    def run_for_rabbitmq(self, args, unknown_args):
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.inventory_group = self.get_inventory_group_for_service('rabbitmq', args.service_group)
+        args.module = 'service'
+        args.module_args = "name=rabbitmq state=%s" % state
+        RunAnsibleModule(self.parser).run(
+            args,
+            unknown_args
+        )
+
     def run_for_riakcs(self, args, unknown_args):
         tags = []
         action = args.action
@@ -369,6 +410,35 @@ class Service(_AnsiblePlaybookAlias):
         unknown_args.extend(['--extra-vars', "desired_services=%s" % run_for_services])
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
+    def run_for_kafka(self, args, unknown_args):
+        tags = []
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.playbook = "service_playbooks/kafka.yml"
+        run_for_services = self.run_for_services('kafka', args)
+        if args.only:
+            # for options to act on certain services create tags
+            for service in run_for_services:
+                if service:
+                    tags.append("%s_%s" % (action, service))
+            if tags:
+                unknown_args.append('--tags=%s' % ','.join(tags),)
+        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
+        # ToDo: use this with when in the playbook instead of tags
+        unknown_args.extend(['--extra-vars', "desired_services=%s" % run_for_services])
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+    def run_for_pg_standby(self, args, unknown_args):
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.inventory_group = 'pg_standby'
+        args.module = 'service'
+        args.module_args = "name=postgresql state=%s" % state
+        RunAnsibleModule(self.parser).run(
+            args,
+            unknown_args
+        )
+
     def ensure_permitted_only_options(self, service_group, args):
         run_for_services = self.run_for_services(service_group, args)
         for service in run_for_services:
@@ -390,6 +460,16 @@ class Service(_AnsiblePlaybookAlias):
             self.run_for_es(args, unknown_args)
         elif service_group == "redis":
             self.run_for_redis(args, unknown_args)
+        elif service_group == "couchdb2":
+            self.run_for_couchdb2(args, unknown_args)
+        elif service_group == "postgresql":
+            self.run_for_postgresql(args, unknown_args)
+        elif service_group == "rabbitmq":
+            self.run_for_rabbitmq(args, unknown_args)
+        elif service_group == "kafka":
+            self.run_for_kafka(args, unknown_args)
+        elif service_group == "pg_standby":
+            self.run_for_pg_standby(args, unknown_args)
 
     def run(self, args, unknown_args):
         service_group = args.service_group
