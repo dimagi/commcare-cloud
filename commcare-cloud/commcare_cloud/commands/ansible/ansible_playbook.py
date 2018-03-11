@@ -321,7 +321,7 @@ class Service(_AnsiblePlaybookAlias):
         tags = []
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.playbook = "service_playbooks/restart_riakcs.yml"
+        args.playbook = "service_playbooks/riakcs.yml"
         run_for_services = self.run_for_services('riakcs', args)
         if args.only:
             # for options to act on certain services create tags
