@@ -258,7 +258,8 @@ class Service(_AnsiblePlaybookAlias):
         # service_group: services
         'proxy': ['nginx'],
         'riakcs': ['riak', 'riak-cs', 'stanchion'],
-        'stanchion': ['stanchion']
+        'stanchion': ['stanchion'],
+        'es': ['elasticsearch']
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
@@ -269,6 +270,7 @@ class Service(_AnsiblePlaybookAlias):
     # add this mapping where service group is not same as the inventory group itself
     INVENTORY_GROUP_FOR_SERVICE = {
         'stanchion': 'stanchion',
+        'elasticsearch': 'elasticsearch',
     }
 
     def make_parser(self):
@@ -317,6 +319,17 @@ class Service(_AnsiblePlaybookAlias):
         else:
             return self.SERVICES[service_group]
 
+    def run_for_es(self, args, unknown_args):
+        action = args.action
+        if action == "restart":
+            RestartElasticsearch(self.parser).run(args, unknown_args)
+        else:
+            state = self.DESIRED_STATE_FOR_ACTION[action]
+            args.inventory_group = self.get_inventory_group_for_service('elasticsearch', args.service_group)
+            args.module = 'service'
+            args.module_args = "name=elasticsearch state=%s" % state
+            RunAnsibleModule(self.parser).run(args, unknown_args)
+
     def run_for_riakcs(self, args, unknown_args):
         tags = []
         action = args.action
@@ -356,6 +369,8 @@ class Service(_AnsiblePlaybookAlias):
             if not args.only:
                 args.only = "stanchion"
             self.run_for_riakcs(args, unknown_args)
+        elif service_group == "es":
+            self.run_for_es(args, unknown_args)
 
     def run(self, args, unknown_args):
         service_group = args.service_group
