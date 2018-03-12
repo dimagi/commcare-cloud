@@ -43,6 +43,9 @@ class Ssh(Lookup):
         if ':' in address:
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
+        if args.server == 'control':
+            # Always include ssh agent forwarding on control machine
+            ssh_args = ['-A'] + ssh_args
         cmd_parts = [self.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
