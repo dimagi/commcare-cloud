@@ -10,7 +10,7 @@ ARGS=""
 
 {% if backup_postgres=='plain' %}
 CMD="pg_basebackup"
-ARGS="-Ft -Z9 -Xs -D $DIRECTORY"
+ARGS="-Fp -Z9 -Xs -D $DIRECTORY"
 {% if pg_backup_from %}
 ARGS="$ARGS -h {{ pg_backup_from }} -w -U{{ postgres_users['replication']['username'] }}"
 {% endif %}
@@ -27,8 +27,7 @@ sh -c "$CMD $ARGS"
 EXITCODE=$?
 
 if [ -d "$DIRECTORY" ]; then
-    mv "${DIRECTORY}/base.tar.gz" "${DIRECTORY}.tar.gz"
-    rmdir $DIRECTORY
+    tar -czf --remove-files "${DIRECTORY}.tar.gz" "${DIRECTORY}"
 fi
 
 # Remove old backups of this backup type, if backup succeded
