@@ -34,27 +34,40 @@ class Lookup(CommandBase):
         print_command(self.lookup_server_address(args))
 
 
-class Ssh(Lookup):
-    command = 'ssh'
-    help = "Connect to a remote host with ssh"
+class _Ssh(Lookup):
 
     def run(self, args, ssh_args):
         address = self.lookup_server_address(args)
         if ':' in address:
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
-        if args.server == 'control':
-            # Always include ssh agent forwarding on control machine
-            ssh_args = ['-A'] + ssh_args
         cmd_parts = [self.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
         os.execvp(self.command, cmd_parts)
 
 
-class Mosh(Ssh):
+class Ssh(_Ssh):
+    command = 'ssh'
+    help = "Connect to a remote host with ssh"
+
+    def run(self, args, ssh_args):
+        if args.server == 'control' and '-A' not in ssh_args:
+            # Always include ssh agent forwarding on control machine
+            ssh_args = ['-A'] + ssh_args
+        super(Ssh, self).run(args, ssh_args)
+
+
+class Mosh(_Ssh):
     command = 'mosh'
     help = "Connect to a remote host with mosh"
+
+    def run(self, args, ssh_args):
+        if args.server == 'control' or '-A' in ssh_args:
+            print("! mosh does not support ssh agent forwarding, using ssh instead.",
+                  file=sys.stderr)
+            Ssh(self.parser).run(args, ssh_args)
+        super(Mosh, self).run(args, ssh_args)
 
 
 class DjangoManage(CommandBase):
