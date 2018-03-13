@@ -358,12 +358,6 @@ class Service(_AnsiblePlaybookAlias):
             if tags:
                 unknown_args.append('--tags=%s' % ','.join(tags), )
         unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
-        # ToDo: use this with when in the playbook instead of tags
-        # currently its running riak even when just riak-cs is ran
-        # but skips riak when running for only stanchion
-        # as of now it looks like
-        # --extra-vars 'desired_services=['"'"'riak-cs'"'"', '"'"'stanchion'"'"']'
-        unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def services(self, service_group, args):
