@@ -93,6 +93,7 @@ def migrate():
     with cd(env.code_root):
         sudo('%(virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
         sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
+        sudo('%(virtualenv_root)s/bin/python manage.py check --deploy' % env)
 
 
 @roles(ROLES_DEPLOY)
