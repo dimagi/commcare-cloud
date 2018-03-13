@@ -192,10 +192,15 @@ def ask_aws_for_instances(env_name, aws_config, count):
 
 
 def print_describe_instances(describe_instances):
+    for instance in get_instances(describe_instances):
+        print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PrivateIpAddress}".format(**instance),
+              file=sys.stderr)
+
+
+def get_instances(describe_instances):
     for reservation in describe_instances['Reservations']:
         for instance in reservation['Instances']:
-            print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PrivateIpAddress}".format(**instance),
-                  file=sys.stderr)
+            yield instance
 
 
 def raw_describe_instances(env_name):
@@ -215,6 +220,13 @@ def get_hosts_from_describe_instances(describe_instances):
                 Host(public_ip=instance['PublicIpAddress'],
                      private_ip=instance['PrivateIpAddress']))
     return hosts
+
+
+def terminate_instances(instance_ids):
+    cmd_parts = [
+        'aws', 'ec2', 'terminate-instances', '--instance-ids',
+    ] + instance_ids
+    return json.loads(subprocess.check_output(cmd_parts))
 
 
 def get_inventory_from_file(environment):
@@ -349,6 +361,23 @@ class Show(object):
         print_describe_instances(describe_instances)
 
 
+class Terminate(object):
+    command = 'terminate'
+    help = """Terminate instances for a given env"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
+        terminate_instances_result = terminate_instances(instance_ids)
+        print(terminate_instances_result)
+        print(instance_ids)
+
+
 class Reip(object):
     command = 'reip'
     help = ("Rewrite the public IP addresses in the inventory for an env. "
@@ -372,6 +401,7 @@ STANDARD_ARGS = [
     Provision,
     Show,
     Reip,
+    Terminate,
 ]
 
 
