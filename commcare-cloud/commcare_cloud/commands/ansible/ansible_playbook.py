@@ -321,7 +321,8 @@ class Service(_AnsiblePlaybookAlias):
             if service == "redis":
                 args.shell_command = "redis-cli ping"
             else:
-                args.shell_command = "warn=false service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
+                args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
+                args.silence_warnings = True
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
             exit_code = RunShellCommand(self.parser).run(args, unknown_args, ansible_context)
             if exit_code is not 0:
