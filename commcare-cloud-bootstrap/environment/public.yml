@@ -87,7 +87,7 @@ backup_es: False
 
 postgres_users:
   commcare:
-    username: "{{ localsettings.PG_DATABASE_USER }}"
+    username: commcarehq
     password: commcarehq
   devreadonly:
     username: "devreadonly"
