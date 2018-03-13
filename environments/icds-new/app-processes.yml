@@ -38,8 +38,7 @@ celery_processes:
       max_tasks_per_child: 1
     sumologic_logs_queue:
       pooling: gevent
-      concurrency: 5
-      num_workers: 8
+      concurrency: 8
   'celery1':
     ucr_queue:
       concurrency: 4
