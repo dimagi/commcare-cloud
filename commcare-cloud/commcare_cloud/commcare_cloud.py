@@ -59,7 +59,9 @@ def main():
             commands[alias] = cmd
 
     args, unknown_args = parser.parse_known_args()
-    commands[args.command].run(args, unknown_args)
+    exit_code = commands[args.command].run(args, unknown_args)
+    if exit_code is not 0:
+        exit(exit_code)
 
 if __name__ == '__main__':
     main()
