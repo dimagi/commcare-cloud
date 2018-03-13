@@ -314,7 +314,7 @@ class Service(_AnsiblePlaybookAlias):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
     def run_status_for_service(self, service_group, args, unknown_args):
-        for service in self.run_for_services(service_group, args):
+        for service in self.services(service_group, args):
             if service == "redis":
                 args.shell_command = "redis-cli ping"
             else:
@@ -338,7 +338,7 @@ class Service(_AnsiblePlaybookAlias):
                 unknown_args
             )
 
-    def run_for_services(self, service_group, args):
+    def services(self, service_group, args):
         if args.only:
             return args.only.split(',')
         else:
@@ -356,10 +356,10 @@ class Service(_AnsiblePlaybookAlias):
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
         args.playbook = "service_playbooks/riakcs.yml"
-        run_for_services = self.run_for_services('riakcs', args)
+        services = self.services('riakcs', args)
         if args.only:
             # for options to act on certain services create tags
-            for service in run_for_services:
+            for service in services:
                 if service:
                     tags.append("%s_%s" % (action, service))
             if tags:
@@ -370,7 +370,7 @@ class Service(_AnsiblePlaybookAlias):
         # but skips riak when running for only stanchion
         # as of now it looks like
         # --extra-vars 'desired_services=['"'"'riak-cs'"'"', '"'"'stanchion'"'"']'
-        unknown_args.extend(['--extra-vars', "desired_services=%s" % run_for_services])
+        unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def run_for_kafka(self, args, unknown_args):
@@ -378,25 +378,25 @@ class Service(_AnsiblePlaybookAlias):
         action = args.action
         state = self.DESIRED_STATE_FOR_ACTION[action]
         args.playbook = "service_playbooks/kafka.yml"
-        run_for_services = self.run_for_services('kafka', args)
+        services = self.services('kafka', args)
         if args.only:
             # for options to act on certain services create tags
-            for service in run_for_services:
+            for service in services:
                 if service:
                     tags.append("%s_%s" % (action, service))
             if tags:
                 unknown_args.append('--tags=%s' % ','.join(tags),)
         unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
         # ToDo: use this with when in the playbook instead of tags
-        unknown_args.extend(['--extra-vars', "desired_services=%s" % run_for_services])
+        unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
         AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def run_for_pg_standby(self, args, unknown_args):
         self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
 
     def ensure_permitted_only_options(self, service_group, args):
-        run_for_services = self.run_for_services(service_group, args)
-        for service in run_for_services:
+        services = self.services(service_group, args)
+        for service in services:
             assert service in self.SERVICES[service_group], \
                 ("%s not allowed. Please use from %s for --only option" %
                  (service, self.SERVICES[service_group])
