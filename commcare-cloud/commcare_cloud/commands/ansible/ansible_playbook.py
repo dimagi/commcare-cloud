@@ -84,7 +84,7 @@ class AnsiblePlaybook(CommandBase):
             if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
                 puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
                 puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
-                exit(2)
+                return 2  # exit code
 
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
@@ -114,8 +114,7 @@ class AnsiblePlaybook(CommandBase):
             exit_code = run_check()
             if exit_code == 1:
                 # this means there was an error before ansible was able to start running
-                exit(exit_code)
-                return  # for IDE
+                return exit_code
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
                 user_wants_to_apply = ask('Do you want to apply these changes?',
@@ -132,7 +131,7 @@ class AnsiblePlaybook(CommandBase):
             else:
                 puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
 
-        exit(exit_code)
+        return exit_code
 
 
 class _AnsiblePlaybookAlias(CommandBase):
@@ -153,7 +152,7 @@ class DeployStack(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class UpdateConfig(_AnsiblePlaybookAlias):
@@ -166,7 +165,7 @@ class UpdateConfig(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_localsettings.yml'
         unknown_args += ('--tags=localsettings',)
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class AfterReboot(_AnsiblePlaybookAlias):
@@ -184,7 +183,7 @@ class AfterReboot(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.skip_check = True
         unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class RestartElasticsearch(_AnsiblePlaybookAlias):
@@ -196,13 +195,13 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
         if not ask('Have you stopped all the elastic pillows?', strict=True, quiet=args.quiet):
-            exit(0)
+            return 0  # exit code
         puts(colored.yellow(
             "This will cause downtime on the order of seconds to minutes,\n"
             "except in a few cases where an index is replicated across multiple nodes."))
         if not ask('Do a rolling restart of the ES cluster?', strict=True, quiet=args.quiet):
-            exit(0)
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+            return 0  # exit code
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class BootstrapUsers(_AnsiblePlaybookAlias):
@@ -221,7 +220,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class UpdateUsers(_AnsiblePlaybookAlias):
@@ -234,7 +233,7 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=users',)
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class Service(_AnsiblePlaybookAlias):
@@ -314,13 +313,18 @@ class Service(_AnsiblePlaybookAlias):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
     def run_status_for_service(self, service_group, args, unknown_args):
+        exit_code = 0
         for service in self.services(service_group, args):
             if service == "redis":
                 args.shell_command = "redis-cli ping"
             else:
                 args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            RunShellCommand(self.parser).run(args, unknown_args)
+            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+            if exit_code is not 0:
+                # if any service status check didn't go smoothly exit right away
+                return exit_code
+        return exit_code
 
     def run_ansible_module_for_service_group(self, service_group, args, unknown_args, inventory_group=None):
         for service in self.SERVICES[service_group]:
@@ -333,7 +337,7 @@ class Service(_AnsiblePlaybookAlias):
             args.module_args = "name=%s state=%s" % (
                 self.ANSIBLE_MODULE_FOR_SERVICE.get(service, service),
                 state)
-            RunAnsibleModule(self.parser).run(
+            return RunAnsibleModule(self.parser).run(
                 args,
                 unknown_args
             )
@@ -358,7 +362,7 @@ class Service(_AnsiblePlaybookAlias):
         # as of now it looks like
         # --extra-vars 'desired_services=['"'"'riak-cs'"'"', '"'"'stanchion'"'"']'
         unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
     def services(self, service_group, args):
         if args.only:
@@ -369,9 +373,9 @@ class Service(_AnsiblePlaybookAlias):
     def run_for_es(self, args, unknown_args):
         action = args.action
         if action == "restart":
-            RestartElasticsearch(self.parser).run(args, unknown_args)
+            return RestartElasticsearch(self.parser).run(args, unknown_args)
         else:
-            self.run_ansible_module_for_service_group("es", args, unknown_args)
+            return self.run_ansible_module_for_service_group("es", args, unknown_args)
 
     def ensure_permitted_only_options(self, service_group, args):
         services = self.services(service_group, args)
@@ -382,18 +386,20 @@ class Service(_AnsiblePlaybookAlias):
                  )
 
     def perform_action(self, service_group, args, unknown_args):
+        exit_code = 0
         if service_group in ['proxy', 'redis', 'couchdb2', 'postgresql', 'rabbitmq']:
-            self.run_ansible_module_for_service_group(service_group, args, unknown_args)
+            exit_code = self.run_ansible_module_for_service_group(service_group, args, unknown_args)
         elif service_group in ['riakcs', 'kafka']:
-            self.run_ansible_playbook_for_service_group(service_group, args, unknown_args)
+            exit_code = self.run_ansible_playbook_for_service_group(service_group, args, unknown_args)
         elif service_group == "stanchion":
             if not args.only:
                 args.only = "stanchion"
-            self.run_ansible_playbook_for_service_group('riakcs', args, unknown_args)
+            exit_code = self.run_ansible_playbook_for_service_group('riakcs', args, unknown_args)
         elif service_group == "es":
-            self.run_for_es(args, unknown_args)
+            exit_code = self.run_for_es(args, unknown_args)
         elif service_group == "pg_standby":
-            self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
+            exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
+        return exit_code
 
     def run(self, args, unknown_args):
         service_group = args.service_group
@@ -404,6 +410,7 @@ class Service(_AnsiblePlaybookAlias):
             self.ensure_permitted_only_options(service_group, args)
         action = args.action
         if action == "status":
-            self.run_status_for_service(service_group, args, unknown_args)
+            exit_code = self.run_status_for_service(service_group, args, unknown_args)
         else:
-            self.perform_action(service_group, args, unknown_args)
+            exit_code = self.perform_action(service_group, args, unknown_args)
+        return exit_code

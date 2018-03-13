@@ -128,8 +128,7 @@ class RunAnsibleModule(CommandBase):
             exit_code = run_check()
             if exit_code == 1:
                 # this means there was an error before ansible was able to start running
-                exit(exit_code)
-                return  # for IDE
+                return exit_code
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
                 user_wants_to_apply = ask('Do you want to apply these changes?',
@@ -146,7 +145,7 @@ class RunAnsibleModule(CommandBase):
             else:
                 puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
 
-        exit(exit_code)
+        return exit_code
 
 
 class RunShellCommand(CommandBase):
@@ -164,11 +163,11 @@ class RunShellCommand(CommandBase):
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
                 "Using 'sudo' directly in the command is non-standard practice."))
             if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):
-                exit(0)
+                return 0  # exit code
 
         args.module = 'shell'
         args.module_args = args.shell_command
         args.skip_check = True
         args.quiet = True
         del args.shell_command
-        RunAnsibleModule(self.parser).run(args, unknown_args)
+        return RunAnsibleModule(self.parser).run(args, unknown_args)
