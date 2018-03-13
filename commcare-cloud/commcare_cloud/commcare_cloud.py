@@ -4,8 +4,11 @@ from __future__ import absolute_import
 import os
 from .argparse14 import ArgumentParser
 
-from .commands.ansible.ansible_playbook import AnsiblePlaybook, \
-    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack, UpdateUsers
+from .commands.ansible.ansible_playbook import (
+    AnsiblePlaybook,
+    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack, UpdateUsers,
+    Service,
+)
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage
@@ -31,6 +34,7 @@ COMMAND_TYPES = [
     Ssh,
     Mosh,
     DjangoManage,
+    Service,
 ]
 
 
@@ -55,7 +59,9 @@ def main():
             commands[alias] = cmd
 
     args, unknown_args = parser.parse_known_args()
-    commands[args.command].run(args, unknown_args)
+    exit_code = commands[args.command].run(args, unknown_args)
+    if exit_code is not 0:
+        exit(exit_code)
 
 if __name__ == '__main__':
     main()
