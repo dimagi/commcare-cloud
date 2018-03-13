@@ -318,6 +318,8 @@ localsettings:
   FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
+root_email: /dev/null
+
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
