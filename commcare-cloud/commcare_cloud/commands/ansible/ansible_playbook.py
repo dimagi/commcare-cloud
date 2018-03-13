@@ -312,7 +312,7 @@ class Service(_AnsiblePlaybookAlias):
     def get_inventory_group_for_service(self, service, service_group):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
-    def run_status_for_service(self, service_group, args, unknown_args):
+    def run_status_for_service_group(self, service_group, args, unknown_args):
         exit_code = 0
         for service in self.services(service_group, args):
             if service == "redis":
@@ -410,7 +410,7 @@ class Service(_AnsiblePlaybookAlias):
             self.ensure_permitted_only_options(service_group, args)
         action = args.action
         if action == "status":
-            exit_code = self.run_status_for_service(service_group, args, unknown_args)
+            exit_code = self.run_status_for_service_group(service_group, args, unknown_args)
         else:
             exit_code = self.perform_action(service_group, args, unknown_args)
         return exit_code
