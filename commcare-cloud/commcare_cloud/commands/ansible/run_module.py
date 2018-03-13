@@ -155,6 +155,8 @@ class RunShellCommand(CommandBase):
     def make_parser(self):
         arg_inventory_group(self.parser)
         self.parser.add_argument('shell_command', help="The shell command you want to run")
+        self.parser.add_argument('--silence-warnings', action='store_true',
+                                 help="Silence shell warnings (such as to use another module instead)")
         RunAnsibleModule(self.parser).add_non_positional_arguments()
 
     def run(self, args, unknown_args, ansible_context=None):
@@ -166,7 +168,10 @@ class RunShellCommand(CommandBase):
                 return 0  # exit code
 
         args.module = 'shell'
-        args.module_args = args.shell_command
+        if args.silence_warnings:
+            args.module_args = 'warn=false ' + args.shell_command
+        else:
+            args.module_args = args.shell_command
         args.skip_check = True
         args.quiet = True
         del args.shell_command
