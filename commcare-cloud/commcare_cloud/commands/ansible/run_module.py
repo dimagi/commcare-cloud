@@ -64,9 +64,9 @@ class RunAnsibleModule(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, ansible_context=None):
         environment = get_environment(args.environment)
-        ansible_context = AnsibleContext(args)
+        ansible_context = ansible_context or AnsibleContext(args)
         public_vars = environment.public_vars
 
         def _run_ansible(args, *unknown_args):
@@ -157,7 +157,7 @@ class RunShellCommand(CommandBase):
         self.parser.add_argument('shell_command', help="The shell command you want to run")
         RunAnsibleModule(self.parser).add_non_positional_arguments()
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, ansible_context=None):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
@@ -170,4 +170,4 @@ class RunShellCommand(CommandBase):
         args.skip_check = True
         args.quiet = True
         del args.shell_command
-        return RunAnsibleModule(self.parser).run(args, unknown_args)
+        return RunAnsibleModule(self.parser).run(args, unknown_args, ansible_context)
