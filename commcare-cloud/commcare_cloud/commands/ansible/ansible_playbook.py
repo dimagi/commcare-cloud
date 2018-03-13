@@ -54,9 +54,9 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, ansible_context=None):
         environment = get_environment(args.environment)
-        ansible_context = AnsibleContext(args)
+        ansible_context = ansible_context or AnsibleContext(args)
         check_branch(args)
         public_vars = environment.public_vars
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
