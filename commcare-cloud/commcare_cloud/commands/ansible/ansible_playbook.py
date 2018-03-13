@@ -338,6 +338,28 @@ class Service(_AnsiblePlaybookAlias):
                 unknown_args
             )
 
+    def run_ansible_playbook_for_service_group(self, service_group, args, unknown_args):
+        tags = []
+        action = args.action
+        state = self.DESIRED_STATE_FOR_ACTION[action]
+        args.playbook = "service_playbooks/%s.yml" % service_group
+        services = self.services(service_group, args)
+        if args.only:
+            # for options to act on certain services create tags
+            for service in services:
+                if service:
+                    tags.append("%s_%s" % (action, service))
+            if tags:
+                unknown_args.append('--tags=%s' % ','.join(tags), )
+        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
+        # ToDo: use this with when in the playbook instead of tags
+        # currently its running riak even when just riak-cs is ran
+        # but skips riak when running for only stanchion
+        # as of now it looks like
+        # --extra-vars 'desired_services=['"'"'riak-cs'"'"', '"'"'stanchion'"'"']'
+        unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
+        AnsiblePlaybook(self.parser).run(args, unknown_args)
+
     def services(self, service_group, args):
         if args.only:
             return args.only.split(',')
@@ -351,49 +373,6 @@ class Service(_AnsiblePlaybookAlias):
         else:
             self.run_ansible_module_for_service_group("es", args, unknown_args)
 
-    def run_for_riakcs(self, args, unknown_args):
-        tags = []
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.playbook = "service_playbooks/riakcs.yml"
-        services = self.services('riakcs', args)
-        if args.only:
-            # for options to act on certain services create tags
-            for service in services:
-                if service:
-                    tags.append("%s_%s" % (action, service))
-            if tags:
-                unknown_args.append('--tags=%s' % ','.join(tags),)
-        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
-        # ToDo: use this with when in the playbook instead of tags
-        # currently its running riak even when just riak-cs is ran
-        # but skips riak when running for only stanchion
-        # as of now it looks like
-        # --extra-vars 'desired_services=['"'"'riak-cs'"'"', '"'"'stanchion'"'"']'
-        unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-    def run_for_kafka(self, args, unknown_args):
-        tags = []
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.playbook = "service_playbooks/kafka.yml"
-        services = self.services('kafka', args)
-        if args.only:
-            # for options to act on certain services create tags
-            for service in services:
-                if service:
-                    tags.append("%s_%s" % (action, service))
-            if tags:
-                unknown_args.append('--tags=%s' % ','.join(tags),)
-        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
-        # ToDo: use this with when in the playbook instead of tags
-        unknown_args.extend(['--extra-vars', "desired_services=%s" % services])
-        AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-    def run_for_pg_standby(self, args, unknown_args):
-        self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
-
     def ensure_permitted_only_options(self, service_group, args):
         services = self.services(service_group, args)
         for service in services:
@@ -405,18 +384,16 @@ class Service(_AnsiblePlaybookAlias):
     def perform_action(self, service_group, args, unknown_args):
         if service_group in ['proxy', 'redis', 'couchdb2', 'postgresql', 'rabbitmq']:
             self.run_ansible_module_for_service_group(service_group, args, unknown_args)
-        elif service_group == "riakcs":
-            self.run_for_riakcs(args, unknown_args)
+        elif service_group in ['riakcs', 'kafka']:
+            self.run_ansible_playbook_for_service_group(service_group, args, unknown_args)
         elif service_group == "stanchion":
             if not args.only:
                 args.only = "stanchion"
-            self.run_for_riakcs(args, unknown_args)
+            self.run_ansible_playbook_for_service_group('riakcs', args, unknown_args)
         elif service_group == "es":
             self.run_for_es(args, unknown_args)
-        elif service_group == "kafka":
-            self.run_for_kafka(args, unknown_args)
         elif service_group == "pg_standby":
-            self.run_for_pg_standby(args, unknown_args)
+            self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
 
     def run(self, args, unknown_args):
         service_group = args.service_group
