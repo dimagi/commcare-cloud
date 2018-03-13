@@ -65,4 +65,4 @@ def print_command(command):
 
     Use this function to do so
     """
-    print(command, file=sys.stderr)
+    print(colored.cyan(command), file=sys.stderr)
