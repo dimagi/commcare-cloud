@@ -263,10 +263,10 @@ class Service(_AnsiblePlaybookAlias):
         'es': ['elasticsearch'],
         'redis': ['redis'],
         'couchdb2': ['couchdb2'],
-        'postgresql': ['postgresql'],
+        'postgresql': ['postgresql', 'pgbouncer'],
         'rabbitmq': ['rabbitmq'],
         'kafka': ['kafka', 'zookeeper'],
-        'pg_standby': ['postgresql']
+        'pg_standby': ['postgresql', 'pgbouncer'],
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
