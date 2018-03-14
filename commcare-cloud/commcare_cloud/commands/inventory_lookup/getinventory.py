@@ -13,6 +13,16 @@ def get_instance_group(environment, group):
     return env.inventory_hosts_by_group[group]
 
 
+def get_monolith_address(environment, exit=sys.exit):
+    env = get_environment(environment)
+    hosts = env.inventory_manager.get_hosts()
+    if len(hosts) != 1:
+        exit("There are {} servers in the environment. Please include the 'server'"
+             "argument to select one.".format(len(hosts)))
+    else:
+        return hosts[0].address
+
+
 def get_server_address(environment, group, exit=sys.exit):
     if "@" in group:
         username, group = group.split('@', 1)
