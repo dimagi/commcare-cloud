@@ -28,4 +28,5 @@ then
     fail() {
         [[ 'a' = 'b' ]]
     }
+    fail
 fi
