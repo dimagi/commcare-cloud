@@ -5,7 +5,7 @@ import sys
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
-from .getinventory import get_server_address
+from .getinventory import get_server_address, get_monolith_address
 from six.moves import shlex_quote
 
 
@@ -14,16 +14,19 @@ class Lookup(CommandBase):
     help = "Lookup remote hostname or IP address"
 
     def make_parser(self):
-        self.parser.add_argument("server",
+        self.parser.add_argument("server", nargs="?",
             help="Server name/group: postgresql, proxy, webworkers, ... The server "
                  "name/group may be prefixed with 'username@' to login as a specific "
                  "user and may be terminated with ':<n>' to choose one of "
                  "multiple servers if there is more than one in the group. "
-                 "For example: webworkers:0 will pick the first webworker.")
+                 "For example: webworkers:0 will pick the first webworker. May also"
+                 "be ommitted for environments with only a single server.")
 
     def lookup_server_address(self, args):
         def exit(message):
             self.parser.error("\n" + message)
+        if not args.server:
+            return get_monolith_address(args.environment, exit)
         return get_server_address(args.environment, args.server, exit)
 
     def run(self, args, unknown_args):
