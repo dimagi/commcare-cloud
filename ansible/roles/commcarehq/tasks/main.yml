@@ -22,6 +22,18 @@
     - "{{ log_home }}"
     - "{{ code_releases }}"
 
+- name: create required directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0777
+    state: directory
+  with_items:
+    - "{{ service_home }}"
+  tags: services
+
 # Do not update source unless you're cloning for the first time
 
 - name: register git repo
