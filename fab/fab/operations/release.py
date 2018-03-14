@@ -399,6 +399,7 @@ def copy_formplayer_properties():
     sudo(
         'cp {} {}'.format(
             os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, 'application.properties'),
+            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, 'sentry.properties'),
             os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
         ))
 
