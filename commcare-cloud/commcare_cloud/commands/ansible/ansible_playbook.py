@@ -250,6 +250,9 @@ class Service(_AnsiblePlaybookAlias):
         commcare-cloud staging service riakcs status --only=stanchion
     4. Limit to hosts
         commcare-cloud staging service riakcs status --only=riak,riak-cs --limit=hqriak00-staging.internal-va.commcarehq.org
+    5. Check status or act on celery workers
+        commcare-cloud staging service celery status --worker_name=commcare-hq-staging-celery_async_restore_queue_0,commcare-hq-staging-celery_email_queue_0
+        commcare-cloud staging service celery restart --worker_name=commcare-hq-staging-celery_async_restore_queue_0,commcare-hq-staging-celery_email_queue_0 --limit=hqdb1-staging.internal-va.commcarehq.org
     """
     command = 'service'
     help = (
@@ -266,7 +269,8 @@ class Service(_AnsiblePlaybookAlias):
         'postgresql': ['postgresql'],
         'rabbitmq': ['rabbitmq'],
         'kafka': ['kafka', 'zookeeper'],
-        'pg_standby': ['postgresql']
+        'pg_standby': ['postgresql'],
+        'celery': ['celery']
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
@@ -310,6 +314,14 @@ class Service(_AnsiblePlaybookAlias):
                 "Example Usage: --only=riak,stanchion"
             )
         )
+        self.parser.add_argument(
+            '--worker_name',
+            help=(
+                "Celery worker name as appearing in the status list. "
+                "This can also be a comma-separated list of workers"
+                "For ex: Run 'commcare-cloud staging celery status' to get name of workers"
+            )
+        )
 
     def get_inventory_group_for_service(self, service, service_group):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
@@ -319,6 +331,11 @@ class Service(_AnsiblePlaybookAlias):
         for service in self.services(service_group, args):
             if service == "redis":
                 args.shell_command = "redis-cli ping"
+            elif service == "celery":
+                shell_command = "supervisorctl status"
+                if args.worker_name:
+                    shell_command += " %s" % ' '.join(args.worker_name.split(','))
+                args.shell_command = shell_command
             else:
                 args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
@@ -360,6 +377,22 @@ class Service(_AnsiblePlaybookAlias):
         unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
+    def run_supervisor_for_service_group(self, service_group, args, unknown_args):
+        exit_code = 0
+        if service_group == "celery":
+            action = args.action
+            shell_command = "supervisorctl %s %s" % (
+                action,
+                (' '.join(args.worker_name.split(',')) or 'all')
+            )
+            args.shell_command = shell_command
+            for service in self.services(service_group, args):
+                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+                exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+                if exit_code is not 0:
+                    return exit_code
+        return exit_code
+
     def services(self, service_group, args):
         if args.only:
             return args.only.split(',')
@@ -394,7 +427,10 @@ class Service(_AnsiblePlaybookAlias):
         elif service_group == "es":
             exit_code = self.run_for_es(args, unknown_args)
         elif service_group == "pg_standby":
-            exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
+            exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args,
+                                                                  inventory_group="pg_standby")
+        elif service_group == "celery":
+            exit_code = self.run_supervisor_for_service_group(service_group, args, unknown_args)
         return exit_code
 
     def run(self, args, unknown_args):
