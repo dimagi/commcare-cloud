@@ -1,6 +1,8 @@
 # coding=utf-8
 import os
 import subprocess
+from collections import defaultdict
+
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
@@ -251,8 +253,10 @@ class Service(_AnsiblePlaybookAlias):
     4. Limit to hosts
         commcare-cloud staging service riakcs status --only=riak,riak-cs --limit=hqriak00-staging.internal-va.commcarehq.org
     5. Check status or act on celery workers
-        commcare-cloud staging service celery status --worker_name=commcare-hq-staging-celery_async_restore_queue_0,commcare-hq-staging-celery_email_queue_0
-        commcare-cloud staging service celery restart --worker_name=commcare-hq-staging-celery_async_restore_queue_0,commcare-hq-staging-celery_email_queue_0 --limit=hqdb1-staging.internal-va.commcarehq.org
+        commcare-cloud staging service celery status
+        commcare-cloud staging service celery restart
+        commcare-cloud staging service celery restart --worker_name=saved_exports_queue,pillow_retry_queue
+        commcare-cloud production service celery restart --worker_name=logistics_reminder_queue,saved_exports_queue
     """
     command = 'service'
     help = (
@@ -326,20 +330,121 @@ class Service(_AnsiblePlaybookAlias):
     def get_inventory_group_for_service(self, service, service_group):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
+    @staticmethod
+    def _get_celery_processes(env):
+        environment = get_environment(env)
+        app_processes_config = environment.translated_app_processes_config
+        return app_processes_config.celery_processes
+
+    def get_celery_config(self, args):
+        environment = get_environment(args.environment)
+        project_name = environment.fab_settings_config.project
+        """
+        This picks the logic from set_celery_supervisorconf to produce the full worker names
+        as declared in the template supervisor_celery_worker.conf
+        {{ project }}-{{ environment }}-celery_{{ celery_params.comma_separated_queue_names }}_{{ celery_params.worker_num }}
+        :return:
+        celery_worker_config: a worker name mapped to list for full worker names per host
+        {'submission_reprocessing_queue':
+          {'hqcelery0.internal-va.commcarehq.org':
+            ['commcare-hq-production-celery_submission_reprocessing_queue_0']
+          }
+        },
+        """
+        celery_worker_config = {}
+        celery_processes = self._get_celery_processes(args.environment)
+        for host, celery_processes_list in celery_processes.items():
+            if host != 'None':
+                for worker_name, details in celery_processes_list.items():
+                    # split comma separated names to individual workers
+                    for worker in worker_name.split(','):
+                        # ignore flower and celery periodic as celery workers
+                        if worker not in ['flower', 'celery_periodic']:
+                            if not celery_worker_config.get(worker):
+                                celery_worker_config[worker] = defaultdict(list)
+
+                            if details.get('num_workers', 1) > 2:
+                                for num in range(details.get('num_workers')):
+                                    full_worker_name = "%s-%s-celery_%s_%s" % (
+                                        project_name, args.environment, worker_name, num
+                                    )
+                                    celery_worker_config[worker][host].append(full_worker_name)
+                            else:
+                                full_worker_name = "%s-%s-celery_%s_%s" % (
+                                    project_name, args.environment, worker_name, 0
+                                )
+                                celery_worker_config[worker][host].append(full_worker_name)
+        return celery_worker_config
+
+    def get_workers_to_work_on(self, args):
+        """
+        :return:
+        workers_by_host: full name of workers per host to work on
+        """
+        celery_config = self.get_celery_config(args)
+        # full name of workers per host to run an action on
+        workers_by_host = defaultdict(list)
+        if args.worker_name:
+            for worker_name in args.worker_name.split(','):
+                if worker_name not in celery_config:
+                    puts(colored.red(
+                        "%s not found in the list of possible worker names, %s" % (
+                            worker_name, celery_config.keys()
+                        )))
+                    raise
+                for host, full_worker_names in celery_config[worker_name].items():
+                    workers_by_host[host].extend(full_worker_names)
+        else:
+            for worker_name in celery_config:
+                for host, full_worker_names in celery_config[worker_name].items():
+                    workers_by_host[host].extend(full_worker_names)
+        return workers_by_host
+
+    def run_for_celery(self, service_group, action, args, unknown_args):
+        exit_code = 0
+        service = "celery"
+        if action == "status" and not args.worker_name:
+            args.shell_command = "supervisorctl %s" % action
+            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+        else:
+            try:
+                workers_by_host = self.get_workers_to_work_on(args)
+            except Exception:
+                exit_code = 1
+            else:
+                puts(colored.blue("This is going to run the following"))
+                for host, workers in workers_by_host.items():
+                    puts(colored.green('Host: [' + host + ']'))
+                    puts(colored.green("supervisorctl %s %s" % (action, ' '.join(workers))))
+
+                if not ask('Good to go?', strict=True, quiet=args.quiet):
+                    return 0  # exit code
+
+                for host, workers in workers_by_host.items():
+                    args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+                    # if not applicable for all hosts then limit to a host
+                    if host != "*":
+                        unknown_args.append('--limit=%s' % host)
+                    args.shell_command = "supervisorctl %s %s" % (action, ' '.join(workers))
+                    for service in self.services(service_group, args):
+                        exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+                        if exit_code is not 0:
+                            return exit_code
+        return exit_code
+
     def run_status_for_service_group(self, service_group, args, unknown_args):
         exit_code = 0
         for service in self.services(service_group, args):
-            if service == "redis":
-                args.shell_command = "redis-cli ping"
-            elif service == "celery":
-                shell_command = "supervisorctl status"
-                if args.worker_name:
-                    shell_command += " %s" % ' '.join(args.worker_name.split(','))
-                args.shell_command = shell_command
+            if service == "celery":
+                exit_code = self.run_for_celery(service_group, 'status', args, unknown_args)
             else:
-                args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
-            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+                if service == "redis":
+                    args.shell_command = "redis-cli ping"
+                else:
+                    args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
+                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+                exit_code = RunShellCommand(self.parser).run(args, unknown_args)
             if exit_code is not 0:
                 # if any service status check didn't go smoothly exit right away
                 return exit_code
@@ -380,17 +485,7 @@ class Service(_AnsiblePlaybookAlias):
     def run_supervisor_for_service_group(self, service_group, args, unknown_args):
         exit_code = 0
         if service_group == "celery":
-            action = args.action
-            shell_command = "supervisorctl %s %s" % (
-                action,
-                (' '.join(args.worker_name.split(',')) or 'all')
-            )
-            args.shell_command = shell_command
-            for service in self.services(service_group, args):
-                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-                if exit_code is not 0:
-                    return exit_code
+            exit_code = self.run_for_celery(service_group, args.action, args, unknown_args)
         return exit_code
 
     def services(self, service_group, args):
