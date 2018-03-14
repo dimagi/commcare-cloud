@@ -1,7 +1,3 @@
-- include_vars: "../../../../environments/{{ deploy_env }}/app-processes.yml"
-  tags:
-    - services
-
 - name: define pillowtop services
   become: cchq
   hosts: pillowtop
