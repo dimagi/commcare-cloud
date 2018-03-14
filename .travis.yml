@@ -3,12 +3,20 @@ language: python
 python: "2.7"
 
 env:
-  - ANSIBLE_ROLES_PATH="~/.ansible/roles" TRAVIS_TEST=1
+  global:
+    - ANSIBLE_ROLES_PATH="~/.ansible/roles"
+    - TRAVIS_TEST=1
+  matrix:
+    - TEST=main
+    - TEST=prove-deploy
+
+matrix:
+  allow_failures:
+    - env: TEST=prove-deploy
 
 before_install:
   # Make sure everything's up to date.
   - sudo apt-get update -qq
-  - pip install virtualenv virtualenvwrapper
 
 install:
   - "source control/init.sh"
@@ -16,7 +24,3 @@ install:
 
 script:
   - ".travis/tests.sh"
-  - "diff <(ansible -h) commcare-cloud/commcare_cloud/help_cache/ansible.txt"
-  - "diff <(ansible-playbook -h) commcare-cloud/commcare_cloud/help_cache/ansible-playbook.txt"
-  - "nosetests"
-  - "nosetests fab"
