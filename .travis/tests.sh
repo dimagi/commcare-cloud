@@ -26,7 +26,7 @@ then
 elif [[ ${TEST} = 'prove-deploy' ]]
 then
     bootstrap() {
-        bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} ${TRAVIS_COMMIT} .travis/spec.yml
+        bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} FETCH_HEAD .travis/spec.yml
     }
     bootstrap
 fi
