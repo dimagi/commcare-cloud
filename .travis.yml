@@ -16,6 +16,12 @@ matrix:
     - env: TEST=prove-deploy
 
 before_install:
+  - openssl aes-256-cbc -K $encrypted_ab59a62b4b29_key -iv $encrypted_ab59a62b4b29_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+  - tar xvf .travis/secrets.tar
+  - mkdir -p ~/.aws ~/.ssh
+  - mv .travis/secrets/config ~/.aws
+  - mv .travis/secrets/credentials ~/.aws
+  - mv .travis/secrets/commcarehq_testing.pem ~/.ssh
   # Make sure everything's up to date.
   - sudo apt-get update -qq
 
