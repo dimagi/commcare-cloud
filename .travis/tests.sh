@@ -25,8 +25,8 @@ then
 
 elif [[ ${TEST} = 'prove-deploy' ]]
 then
-    fail() {
-        [[ 'a' = 'b' ]]
+    bootstrap() {
+        bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} ${TRAVIS_COMMIT} .travis/spec.yml
     }
-    fail
+    bootstrap
 fi

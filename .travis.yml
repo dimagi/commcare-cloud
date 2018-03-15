@@ -27,7 +27,11 @@ before_install:
 
 install:
   - "source control/init.sh"
+  - "if [[ $TEST = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
   - pip install -r test_requirements.txt
 
 script:
   - ".travis/tests.sh"
+
+after_script:
+  - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"
