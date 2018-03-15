@@ -539,6 +539,7 @@ def _deploy_without_asking():
         silent_services_restart()
         raise
     else:
+        execute(check_servers.perform_system_checks)
         execute_with_timing(release.update_current)
         silent_services_restart()
         execute_with_timing(release.record_successful_release)
@@ -886,6 +887,11 @@ def check_status():
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
     execute(check_servers.riakcs)
+
+
+@task
+def perform_system_checks():
+    execute(check_servers.perform_system_checks, True)
 
 
 def make_tasks_for_envs(available_envs):

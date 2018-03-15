@@ -90,16 +90,7 @@
   tags: postgresql_conf
   notify: Reload postgres
 
-- name: Restart postgresql
-  become: true
-  service: name=postgresql state=restarted args="{{ postgresql_version }}"
-  tags: after-reboot
-  register: start_postgresql
-
-- name: wait after restarting postgres
-  when: start_postgresql.changed
-  wait_for:
-    port: '{{ postgresql_port }}'
+- meta: flush_handlers
 
 - name: Create PostgreSQL users
   become: yes

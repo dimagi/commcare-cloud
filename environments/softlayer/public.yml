@@ -88,6 +88,8 @@ postgresql_dbs:
     name: "{{localsettings.PG_DATABASE_NAME}}"
   - django_alias: proxy
     name: commcarehq_proxy
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 204]
@@ -108,7 +110,6 @@ postgresql_dbs:
   - django_alias: icds-ucr
     name: icds-ucr
   - name: "{{ formplayer_db_name }}"
-  - name: commcarehq_icds_testdata
 
 postgresql_ssl_enabled: False
 
@@ -257,6 +258,7 @@ localsettings:
 #  STATIC_ROOT:
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'

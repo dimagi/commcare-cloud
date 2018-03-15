@@ -104,6 +104,9 @@ postgresql_dbs:
   - django_alias: proxy
     name: commcarehq_proxy
     host: "{{ groups.postgresql.0 }}"
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
+    host: "{{ groups.postgresql.0 }}"
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 103]
@@ -291,6 +294,7 @@ localsettings:
 #  STATIC_ROOT:
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'

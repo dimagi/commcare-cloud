@@ -1,0 +1,19 @@
+- name: "{{ desired_action|capitalize }} Kafka"
+  become: true
+  hosts: kafka
+  tasks:
+    - service: name=kafka-server state={{ desired_state }}
+  tags:
+    - restart_kafka
+    - start_kafka
+    - stop_kafka
+
+- name: "{{ desired_action|capitalize }} Zookeeper"
+  become: true
+  hosts: zookeeper
+  tasks:
+    - service: name=zookeeper state={{ desired_state }}
+  tags:
+    - restart_zookeeper
+    - start_zookeeper
+    - stop_zookeeper

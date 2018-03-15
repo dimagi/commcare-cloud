@@ -1,13 +1,15 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from fabric.api import roles, env, sudo, run, hide
+from fabric.context_managers import cd
+from fabric.decorators import runs_once
 
 from ..const import (
     ROLES_ALL,
     ROLES_POSTGRESQL,
     ROLES_ELASTICSEARCH,
     ROLES_RIAKCS,
-)
+    ROLES_DEPLOY)
 
 
 @roles(ROLES_ALL)
@@ -48,3 +50,12 @@ def riakcs():
 def postgresql():
     run('service postgresql status')
     run('service pgbouncer status')
+
+
+@roles(ROLES_DEPLOY)
+@runs_once
+def perform_system_checks(current=False):
+    path = env.code_current if current else env.code_root
+    venv = env.virtualenv_current if current else env.virtualenv_root
+    with cd(path):
+        sudo('%s/bin/python manage.py check --deploy' % venv)

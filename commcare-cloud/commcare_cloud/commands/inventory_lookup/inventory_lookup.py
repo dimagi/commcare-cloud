@@ -5,7 +5,7 @@ import sys
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
-from .getinventory import get_server_address
+from .getinventory import get_server_address, get_monolith_address
 from six.moves import shlex_quote
 
 
@@ -14,16 +14,19 @@ class Lookup(CommandBase):
     help = "Lookup remote hostname or IP address"
 
     def make_parser(self):
-        self.parser.add_argument("server",
+        self.parser.add_argument("server", nargs="?",
             help="Server name/group: postgresql, proxy, webworkers, ... The server "
                  "name/group may be prefixed with 'username@' to login as a specific "
                  "user and may be terminated with ':<n>' to choose one of "
                  "multiple servers if there is more than one in the group. "
-                 "For example: webworkers:0 will pick the first webworker.")
+                 "For example: webworkers:0 will pick the first webworker. May also"
+                 "be ommitted for environments with only a single server.")
 
     def lookup_server_address(self, args):
         def exit(message):
             self.parser.error("\n" + message)
+        if not args.server:
+            return get_monolith_address(args.environment, exit)
         return get_server_address(args.environment, args.server, exit)
 
     def run(self, args, unknown_args):
@@ -34,9 +37,7 @@ class Lookup(CommandBase):
         print_command(self.lookup_server_address(args))
 
 
-class Ssh(Lookup):
-    command = 'ssh'
-    help = "Connect to a remote host with ssh"
+class _Ssh(Lookup):
 
     def run(self, args, ssh_args):
         address = self.lookup_server_address(args)
@@ -49,9 +50,27 @@ class Ssh(Lookup):
         os.execvp(self.command, cmd_parts)
 
 
-class Mosh(Ssh):
+class Ssh(_Ssh):
+    command = 'ssh'
+    help = "Connect to a remote host with ssh"
+
+    def run(self, args, ssh_args):
+        if args.server == 'control' and '-A' not in ssh_args:
+            # Always include ssh agent forwarding on control machine
+            ssh_args = ['-A'] + ssh_args
+        super(Ssh, self).run(args, ssh_args)
+
+
+class Mosh(_Ssh):
     command = 'mosh'
     help = "Connect to a remote host with mosh"
+
+    def run(self, args, ssh_args):
+        if args.server == 'control' or '-A' in ssh_args:
+            print("! mosh does not support ssh agent forwarding, using ssh instead.",
+                  file=sys.stderr)
+            Ssh(self.parser).run(args, ssh_args)
+        super(Mosh, self).run(args, ssh_args)
 
 
 class DjangoManage(CommandBase):
