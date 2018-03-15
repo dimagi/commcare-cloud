@@ -44,3 +44,10 @@
   tasks:
     - include_tasks: roles/commcarehq/tasks/webworkers.yml
       tags: services
+
+- shell: ls -1 {{ service_home }}
+  register: contents
+
+- file: path={{ service_home }}/{{ item }} state=absent
+  with_items: contents.stdout_lines
+  when: item not in managed_files
