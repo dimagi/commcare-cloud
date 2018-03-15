@@ -3,7 +3,7 @@ import sys
 import boto3
 
 if len(sys.argv) == 2:
-    bucket = {{postgres_snapshot_bucket}}
+    bucket = '{{postgres_snapshot_bucket}}'
 elif len(sys.argv) == 3:
     bucket = sys.argv[2]
 elif len(sys.argv) == 4:
@@ -13,6 +13,11 @@ else:
     raise Exception('Usage is backup_snapshots.py filename <s3_bucket> [ <endpoint> ]')
 
 filename = sys.argv[1]
+# This will give daily / weekly
+upload_filename = sys.argv[1].split('_')[1]
+
+if not endpoint.startswith("http"):
+    endpoint = 'https://' + endpoint
 
 session = boto3.session.Session()
 {% if aws_region is defined %}
@@ -22,4 +27,4 @@ s3 = session.client(service_name='s3',endpoint_url=endpoint)
 {% endif %}
 
 s3.upload_file(filename, bucket,
-               filename, ExtraArgs={'ServerSideEncryption':'AES256'})
+               upload_filename, ExtraArgs={'ServerSideEncryption':'AES256'})
