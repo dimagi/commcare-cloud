@@ -45,9 +45,24 @@
     - include_tasks: roles/commcarehq/tasks/webworkers.yml
       tags: services
 
-- shell: ls -1 {{ service_home }}
-  register: contents
-
-- file: path={{ service_home }}/{{ item }} state=absent
-  with_items: contents.stdout_lines
-  when: item not in managed_files
+# https://stackoverflow.com/a/30372407
+- name: Remove old supervisor files
+  hosts:
+    - celery
+    - pillowtop
+    - proxy
+    - webworkers
+  tasks:
+    - set_fact:
+        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) }}"
+      tags: services
+    - shell: ls -1 {{ service_home|quote }}
+      register: contents
+      tags: services
+    - name: "Remove supervisor configs that are no longer needed"
+      file:
+        path: "{{ service_home }}/{{ item }}"
+        state: absent
+      with_items: contents.stdout_lines
+      when: item not in supervisor_files
+      tags: services

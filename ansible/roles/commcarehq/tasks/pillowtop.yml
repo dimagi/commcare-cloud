@@ -6,6 +6,7 @@
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
   tags:
     - services
+  register: pillowtop_conf_file
 
 - name: define form feed service
   become: cchq
@@ -19,3 +20,10 @@
       management_command: run_form_websocket_feed
   tags:
     - services
+  register: pillowtop_form_feed_conf_file
+
+- set_fact:
+    pillowtop_supervisor_files: "{{ pillowtop_conf_file.get('results', []) + pillowtop_form_feed_conf_file.get('results', []) }}"
+
+- set_fact:
+    pillowtop_managed_files: "{{ pillowtop_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + pillowtop_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"

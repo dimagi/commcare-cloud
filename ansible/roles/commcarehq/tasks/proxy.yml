@@ -5,3 +5,10 @@
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
   tags:
     - services
+  register: proxy_websocket_conf_file
+
+- set_fact:
+    proxy_supervisor_files: "{{ proxy_websocket_conf_file.get('results', []) }}"
+
+- set_fact:
+    proxy_managed_files: "{{ proxy_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + proxy_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
