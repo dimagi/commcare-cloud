@@ -4,8 +4,11 @@ import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, print_command
-from commcare_cloud.commands.ansible.helpers import AnsibleContext, DEPRECATED_ANSIBLE_ARGS, \
-    get_common_ssh_args
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext,
+    DEPRECATED_ANSIBLE_ARGS,
+    get_common_ssh_args,
+)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
@@ -61,10 +64,11 @@ class RunAnsibleModule(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, ansible_context=None):
         environment = get_environment(args.environment)
         environment.create_generated_yml()
-        ansible_context = AnsibleContext(args)
+        ansible_context = ansible_context or AnsibleContext(args)
+
         public_vars = environment.public_vars
 
         def _run_ansible(args, *unknown_args):
@@ -127,8 +131,7 @@ class RunAnsibleModule(CommandBase):
             exit_code = run_check()
             if exit_code == 1:
                 # this means there was an error before ansible was able to start running
-                exit(exit_code)
-                return  # for IDE
+                return exit_code
             elif exit_code == 0:
                 puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
                 user_wants_to_apply = ask('Do you want to apply these changes?',
@@ -145,7 +148,7 @@ class RunAnsibleModule(CommandBase):
             else:
                 puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
 
-        exit(exit_code)
+        return exit_code
 
 
 class RunShellCommand(CommandBase):
@@ -155,19 +158,24 @@ class RunShellCommand(CommandBase):
     def make_parser(self):
         arg_inventory_group(self.parser)
         self.parser.add_argument('shell_command', help="The shell command you want to run")
+        self.parser.add_argument('--silence-warnings', action='store_true',
+                                 help="Silence shell warnings (such as to use another module instead)")
         RunAnsibleModule(self.parser).add_non_positional_arguments()
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, ansible_context=None):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
                 "Using 'sudo' directly in the command is non-standard practice."))
             if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):
-                exit(0)
+                return 0  # exit code
 
         args.module = 'shell'
-        args.module_args = args.shell_command
+        if args.silence_warnings:
+            args.module_args = 'warn=false ' + args.shell_command
+        else:
+            args.module_args = args.shell_command
         args.skip_check = True
         args.quiet = True
         del args.shell_command
-        RunAnsibleModule(self.parser).run(args, unknown_args)
+        return RunAnsibleModule(self.parser).run(args, unknown_args, ansible_context)
