@@ -71,4 +71,3 @@
 
 - set_fact:
     celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
-- debug: var=celery_managed_files
