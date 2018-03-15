@@ -1,0 +1,32 @@
+aws_config:
+  pem: /home/travis/.ssh/commcarehq_testing.pem
+  ami: ami-7dce6507
+  type: t2.micro
+  key_name: commcarehq_testing
+  security_group_id: sg-8f9a57fa
+  subnet: subnet-ea62acc5
+
+allocations:
+  proxy: 1
+  webworkers: 1
+  postgresql: 1
+  rabbitmq: 1
+  kafka: 1
+  zookeeper:
+    from: kafka
+  celery: 1
+  pillowtop: 1
+  formplayer: 1
+  touchforms: 0
+  redis: 1
+  elasticsearch: 1
+  shared_dir_host: 1
+  riakcs: 1
+  stanchion:
+    count: 1
+    from: riakcs
+  couchdb2: 1
+  couchdb2_proxy:
+    count: 1
+    from: couchdb2
+  pg_standby: 0
