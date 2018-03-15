@@ -5,3 +5,10 @@
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
   tags:
     - services
+  register: webworker_errand_boy_conf_file
+
+- set_fact:
+    webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }}"
+
+- set_fact:
+    webworker_managed_files: "{{ webworker_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + webworker_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
