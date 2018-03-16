@@ -20,41 +20,6 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
-dev_users:
-  present:
-    - astone
-    - biyeun
-    - cellowitz
-    - ctsims
-    - czue
-    - dmiller
-    - droberts
-    - esoergel
-    - frener
-    - gbova
-    - gcapalbo
-    - jemord
-    - jroth
-    - jschweers
-    - jwilson
-    - mkangia
-    - npellegrino
-    - nhooper
-    - nsharma
-    - pvaidyanathan
-    - sgoyal
-    - skelly
-    - sravfeyn
-    - wpride
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
-    - brudolph
-    - ncarnahan
-    - jhoffman
 
 ssh_allow_password: False
 django_port: 9010
