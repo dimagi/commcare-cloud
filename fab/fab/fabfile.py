@@ -173,7 +173,7 @@ def load_env():
         print('NOTE: ignoring app-processes.yml var {}={!r}. Using value {!r} instead.'.format(key, vars[key], vars_not_to_overwrite[key]))
     vars.update(vars_not_to_overwrite)
     env.update(vars)
-    env.environment = env.ccc_environment.meta_config.environment
+    env.environment = env.ccc_environment.meta_config.deploy_env
 
 
 def _setup_env(env_name):

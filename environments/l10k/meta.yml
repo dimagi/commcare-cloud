@@ -1,3 +1,2 @@
-environment: l10k
 deploy_env: l10k
 env_name: l10k

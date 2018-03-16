@@ -1,3 +1,2 @@
-environment: staging
 deploy_env: staging
 env_name: staging
