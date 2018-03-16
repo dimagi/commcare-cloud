@@ -1,7 +1,6 @@
 SITE_HOST: 'commcare.pna.sn'
 PNA_SITE_HOST: 'pna.commcarehq.org'
 COMMTRACK_SITE_HOST: 'commcare.pna.sn'
-deploy_env: pna
 
 active_sites:
   cchq_ssl: True

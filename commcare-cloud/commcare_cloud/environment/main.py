@@ -9,6 +9,7 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
+from commcare_cloud.environment.schemas.meta import MetaConfig
 
 
 class Environment(object):
@@ -20,6 +21,12 @@ class Environment(object):
         """contents of public.yml, as a dict"""
         with open(self.paths.public_yml) as f:
             return yaml.load(f)
+
+    @memoized_property
+    def meta_config(self):
+        with open(self.paths.meta_yml) as f:
+            meta_json = yaml.load(f)
+        return MetaConfig.wrap(meta_json)
 
     @memoized_property
     def app_processes_config(self):
@@ -97,6 +104,8 @@ class Environment(object):
     def create_generated_yml(self):
         generated_variables = {
             'app_processes_config': self.translated_app_processes_config.to_json(),
+            'deploy_env': self.meta_config.deploy_env,
+            'env_name': self.meta_config.env_name,
         }
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
