@@ -56,10 +56,11 @@ commcare-cloud <env> fab supervisorctl:"stop all"
 ```
 
 You may have to wait for any long running celery tasks to complete. You can list any
-celery workers that are still running using the following command:
+celery workers that are still running using the following commands:
 
 ```
 commcare-cloud <env> django-manage show_celery_workers
+commcare-cloud <env> run-shell-command celery "ps -ef | grep celery"
 ```
 
 **Stop pgbouncer**
@@ -101,7 +102,11 @@ to show that the *partition2* database is now on *pg2*:
 
 **Deploy changes**
 ```
+# update localsettings
 commcare-cloud <env> update-config
+
+# update PostgreSQL config on new PG node
+commcare-cloud <env> ap deploy_db.yml --limit=pg2
 ```
 
 ### 5. Verify config changes
@@ -204,4 +209,9 @@ SELECT pg_drop_replication_slot('<slot name>');
 
 -- optionally re-create the slot
 SELECT pg_create_physical_replication_slot('<slot name>');
+```
+
+**Update PostgreSQL config**
+```
+commcare-cloud <env> ap deploy_db.yml --limit=postgresql
 ```
