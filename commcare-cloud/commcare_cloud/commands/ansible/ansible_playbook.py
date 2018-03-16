@@ -260,7 +260,12 @@ class Service(_AnsiblePlaybookAlias):
         commcare-cloud staging service celery status
         commcare-cloud staging service celery restart
         commcare-cloud staging service celery restart --only=saved_exports_queue,pillow_retry_queue
-        commcare-cloud production service celery restart --only=logistics_reminder_queue,saved_exports_queue
+    6. Check status or act on web workers
+        commcare-cloud staging service webworkers status
+        commcare-cloud staging service webworkers restart
+    7. Check status or act on formplayer and formplayer-spring
+        commcare-cloud staging service formplayer status
+        commcare-cloud staging service formplayer restart --only=formplayer-spring
     """
     command = 'service'
     help = (
