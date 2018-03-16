@@ -7,7 +7,12 @@ import posixpath
 from contextlib import contextmanager
 import uuid
 
-from commcare_cloud.commands.ansible.helpers import get_celery_worker_name, get_django_webworker_name
+from commcare_cloud.commands.ansible.helpers import (
+    get_celery_worker_name,
+    get_django_webworker_name,
+    get_formplayer_instance_name,
+    get_formplayer_spring_instance_name,
+)
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
@@ -184,12 +189,20 @@ def set_errand_boy_supervisorconf():
 
 def set_formsplayer_supervisorconf():
     if _check_in_roles(ROLES_TOUCHFORMS):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_formsplayer.conf',
+                                      {'formplayer_instance_name':
+                                           get_formplayer_instance_name(env.env_name)}
+                                      )
 
 
 def set_formplayer_spring_supervisorconf():
     if _check_in_roles(ROLES_FORMPLAYER):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_formplayer_spring.conf',
+                                      {'formplayer_spring_instance_name':
+                                           get_formplayer_spring_instance_name(env.env_name)}
+                                      )
 
 
 def set_sms_queue_supervisorconf():
