@@ -22,6 +22,7 @@ from commcare_cloud.commands.ansible.run_module import (
     RunAnsibleModule,
     RunShellCommand,
 )
+from commcare_cloud.commands.ansible.exceptions import IncorrectOptions
 
 
 class AnsiblePlaybook(CommandBase):
@@ -377,7 +378,7 @@ class Service(_AnsiblePlaybookAlias):
         """
         celery_config = self.get_celery_config(args)
         # full name of workers per host to run an action on
-        workers_by_host = defaultdict(list)
+        workers_by_host = defaultdict(set)
         if args.worker_name:
             for worker_name in args.worker_name.split(','):
                 if worker_name not in celery_config:
@@ -385,13 +386,13 @@ class Service(_AnsiblePlaybookAlias):
                         "%s not found in the list of possible worker names, %s" % (
                             worker_name, celery_config.keys()
                         )))
-                    raise
+                    raise IncorrectOptions
                 for host, full_worker_names in celery_config[worker_name].items():
-                    workers_by_host[host].extend(full_worker_names)
+                    workers_by_host[host].update(full_worker_names)
         else:
             for worker_name in celery_config:
                 for host, full_worker_names in celery_config[worker_name].items():
-                    workers_by_host[host].extend(full_worker_names)
+                    workers_by_host[host].update(full_worker_names)
         return workers_by_host
 
     def run_for_celery(self, service_group, action, args, unknown_args):
@@ -404,7 +405,7 @@ class Service(_AnsiblePlaybookAlias):
         else:
             try:
                 workers_by_host = self.get_workers_to_work_on(args)
-            except Exception:
+            except IncorrectOptions:
                 exit_code = 1
             else:
                 puts(colored.blue("This is going to run the following"))
@@ -428,10 +429,14 @@ class Service(_AnsiblePlaybookAlias):
         return exit_code
 
     def run_for_webworkers(self, service_group, action, args, unknown_args):
+        exit_code = 0
         django_webworker_name = get_django_webworker_name(args.environment)
-        action = args.action
-        args.shell_command = "supervisorctl %s %s" % (action, django_webworker_name)
-        exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+        for service in self.services(service_group, args):
+            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+            args.shell_command = "supervisorctl %s %s" % (action, django_webworker_name)
+            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+            if exit_code is not 0:
+                return exit_code
         return exit_code
 
     def run_status_for_service_group(self, service_group, args, unknown_args):
@@ -540,6 +545,7 @@ class Service(_AnsiblePlaybookAlias):
         args.remote_user = 'ansible'
         args.become = True
         args.become_user = False
+        args.silence_warnings = True
         if args.only:
             self.ensure_permitted_only_options(service_group, args)
         action = args.action
