@@ -27,7 +27,7 @@ sh -c "$CMD $ARGS"
 
 if [[ $? -ne 0 ]] ; then
     echo "Postgres Backup : pg_basebackup Failed"
-    exit(1)
+    exit 1
 fi
 
 if [ -d "$DIRECTORY" ]; then
@@ -36,7 +36,7 @@ fi
 
 if [[ $? -ne 0 ]] ; then
     echo "Postgres Backup : Tar Failed"
-    exit(2)
+    exit 2
 else
     find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
     find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
@@ -47,16 +47,16 @@ fi
 
 {% if postgres_s3 %}
 if [ -f "${DIRECTORY}.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "postgres_${BACKUP_TYPE}" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 if [ -f "${DIRECTORY}.tar.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "postgres_${BACKUP_TYPE}" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 {% endif %}
 
 if [[ $? -ne 0 ]] ; then
     echo "Postgres Backup : /usr/local/sbin/backup_snapshots.py Failed"
-    exit(4)
+    exit 3
 fi
 
-exit(0)
+exit 0
