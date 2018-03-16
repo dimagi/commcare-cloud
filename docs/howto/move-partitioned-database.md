@@ -56,10 +56,11 @@ commcare-cloud <env> fab supervisorctl:"stop all"
 ```
 
 You may have to wait for any long running celery tasks to complete. You can list any
-celery workers that are still running using the following command:
+celery workers that are still running using the following commands:
 
 ```
 commcare-cloud <env> django-manage show_celery_workers
+commcare-cloud <env> run-shell-command celery "ps -ef | grep celery"
 ```
 
 **Stop pgbouncer**
