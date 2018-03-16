@@ -126,15 +126,15 @@ env.roledefs = {
 
 
 def _require_target():
-    require('root', 'code_root', 'hosts', 'environment',
+    require('root', 'code_root', 'hosts', 'deploy_env',
             provided_by=('staging', 'production', 'softlayer'))
 
 
 def _setup_path():
     # using posixpath to ensure unix style slashes.
     # See bug-ticket: http://code.fabfile.org/attachments/61/posixpath.patch
-    env.root = posixpath.join(env.home, 'www', env.environment)
-    env.log_dir = posixpath.join(env.home, 'www', env.environment, 'log')
+    env.root = posixpath.join(env.home, 'www', env.deploy_env)
+    env.log_dir = posixpath.join(env.home, 'www', env.deploy_env, 'log')
     env.releases = posixpath.join(env.root, 'releases')
     env.code_current = posixpath.join(env.root, 'current')
     env.code_root = posixpath.join(env.releases, env.deploy_metadata.timestamp)
@@ -144,7 +144,7 @@ def _setup_path():
     env.virtualenv_root = posixpath.join(env.code_root, 'python_env')
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
-    env.db = '%s_%s' % (env.project, env.environment)
+    env.db = '%s_%s' % (env.project, env.deploy_env)
     env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
     env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
 
@@ -173,7 +173,7 @@ def load_env():
         print('NOTE: ignoring app-processes.yml var {}={!r}. Using value {!r} instead.'.format(key, vars[key], vars_not_to_overwrite[key]))
     vars.update(vars_not_to_overwrite)
     env.update(vars)
-    env.environment = env.ccc_environment.meta_config.deploy_env
+    env.deploy_env = env.ccc_environment.meta_config.deploy_env
 
 
 def _setup_env(env_name):
@@ -223,16 +223,19 @@ def development():
     """
     Must pass in the 'inventory' env variable,
     which is the path to an ansible inventory file
-    and an 'environment' env variable,
+    and an 'deploy_env' env variable,
     which is the name of the directory to be used under /home/cchq/www/
 
     Example command:
 
         fab development awesome_deploy \
-        --set inventory=/path/to/commcare-cloud/ansible/inventories/development,environment=dev
+        --set inventory=/path/to/commcare-cloud/ansible/inventories/development,deploy_env=dev
 
     """
-    load_env('development')
+    # not sure if this still works, it was broken for a while without anyone saying anything
+    # so guessing we can delete this task altogether? ~ Danny
+    env.env_name = 'development'
+    load_env()
     execute(env_common)
 
 
@@ -241,7 +244,7 @@ def env_common():
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
-    env.deploy_metadata = DeployMetadata(env.code_branch, env.environment)
+    env.deploy_metadata = DeployMetadata(env.code_branch, env.deploy_env)
     _setup_path()
 
     all = servers['all']
@@ -320,12 +323,12 @@ def mail_admins(subject, message, use_current_release=False):
     with cd(code_dir):
         sudo((
             '%(virtualenv_dir)s/bin/python manage.py '
-            'mail_admins --subject %(subject)s %(message)s --slack --environment %(environment)s'
+            'mail_admins --subject %(subject)s %(message)s --slack --environment %(deploy_env)s'
         ) % {
             'virtualenv_dir': virtualenv_dir,
             'subject': pipes.quote(subject),
             'message': pipes.quote(message),
-            'environment': pipes.quote(env.environment),
+            'deploy_env': pipes.quote(env.deploy_env),
         })
 
 
@@ -337,8 +340,8 @@ def hotfix_deploy():
     for small python-only hotfixes
 
     """
-    if not console.confirm('Are you sure you want to deploy to {env.environment}?'.format(env=env), default=False) or \
-       not console.confirm('Did you run "fab {env.environment} preindex_views"? '.format(env=env), default=False) or \
+    if not console.confirm('Are you sure you want to deploy to {env.deploy_env}?'.format(env=env), default=False) or \
+       not console.confirm('Did you run "fab {env.deploy_env} preindex_views"? '.format(env=env), default=False) or \
        not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
         utils.abort('Deployment aborted.')
 
@@ -361,7 +364,7 @@ def hotfix_deploy():
 
 
 def _confirm_translated():
-    if datetime.datetime.now().isoweekday() != 2 or env.environment != 'production':
+    if datetime.datetime.now().isoweekday() != 2 or env.deploy_env != 'production':
         return True
     return console.confirm(
         "It's Tuesday, did you update the translations from transifex? "
@@ -506,7 +509,7 @@ def announce_deploy_start():
         mail_admins,
         "{user} has initiated a deploy to {environment}.".format(
             user=env.user,
-            environment=env.environment,
+            environment=env.deploy_env,
         ),
         ''
     )
@@ -517,7 +520,7 @@ def announce_formplayer_deploy_start():
         mail_admins,
         "{user} has initiated a formplayer deploy to {environment}.".format(
             user=env.user,
-            environment=env.environment,
+            environment=env.deploy_env,
         ),
         '',
         use_current_release=True,
@@ -535,7 +538,7 @@ def _deploy_without_asking():
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
-            " You can't deploy to {} yet. There's a preindex in process.".format(env.environment),
+            " You can't deploy to {} yet. There's a preindex in process.".format(env.env_name),
             ("Preindexing is taking a while, so hold tight "
              "and wait for an email saying it's done. "
              "Thank you for using AWESOME DEPLOY.")
@@ -544,7 +547,7 @@ def _deploy_without_asking():
         execute_with_timing(
             mail_admins,
             "Deploy to {environment} failed. Try resuming with "
-            "fab {environment} deploy:resume=yes.".format(environment=env.environment),
+            "fab {environment} deploy:resume=yes.".format(environment=env.env_name),
             traceback_string()
         )
         # hopefully bring the server back to life
@@ -571,7 +574,7 @@ def unlink_current():
     """
     Unlinks the current code directory. Use with caution.
     """
-    message = 'Are you sure you want to unlink the current release of {env.environment}?'.format(env=env)
+    message = 'Are you sure you want to unlink the current release of {env.deploy_env}?'.format(env=env)
 
     if not console.confirm(message, default=False):
         utils.abort('Deployment aborted.')
@@ -684,7 +687,7 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
         not _confirm_translated() or
         not console.confirm(
             'Are you sure you want to preindex and deploy to '
-            '{env.environment}?'.format(env=env), default=False)
+            '{env.deploy_env}?'.format(env=env), default=False)
     ):
         utils.abort('Deployment aborted.')
 
@@ -761,7 +764,7 @@ def services_stop():
 def restart_services():
     _require_target()
     if not console.confirm('Are you sure you want to restart the services on '
-                           '{env.environment}?'.format(env=env), default=False):
+                           '{env.deploy_env}?'.format(env=env), default=False):
         utils.abort('Task aborted.')
 
     silent_services_restart(use_current_release=True)
@@ -828,7 +831,7 @@ def reset_mvp_pillows():
 @roles(ROLES_PILLOWTOP)
 def reset_pillow(pillow):
     _require_target()
-    prefix = 'commcare-hq-{}-pillowtop'.format(env.environment)
+    prefix = 'commcare-hq-{}-pillowtop'.format(env.deploy_env)
     supervisor.supervisor_command('stop {prefix}-{pillow}'.format(
         prefix=prefix,
         pillow=pillow

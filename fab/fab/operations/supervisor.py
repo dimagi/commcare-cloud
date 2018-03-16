@@ -132,16 +132,15 @@ def show_periodic_server_whitelist_message_and_abort(env):
         "running celery beat; that screws up queuing, etc.\n\n"
         "If you...\n\n"
         '1. are really glad we caught this for you, just remove (or comment out)\n'
-        '   {environment}.celery_processes.{hostname}.celery_periodic\n'
+        '   celery_processes.{hostname}.celery_periodic\n'
         '   from environments/{env_name}/app-processes.yml\n'
-        "2. know what you're doing and want to deploy celery beat to {environment}\n"
-        "   set {environment}.celery_processes.{hostname}.celery_periodic.server_whitelist\n"
+        "2. know what you're doing and want to deploy celery beat to {env_name}\n"
+        "   set celery_processes.{hostname}.celery_periodic.server_whitelist\n"
         '   to {host}\n'
         '   in environments/{env_name}/app-processes.yml\n'
         "3. are really confused, find someone who might know more about this\n"
         "   and ask them."
-        .format(environment=env.environment,
-                hostname=env.get('host_string').split('.')[0],
+        .format(hostname=env.get('host_string').split('.')[0],
                 host=env.host,
                 env_name=env.env_name)
     )
@@ -273,7 +272,6 @@ def _format_env(current_env, extra=None):
     ret = dict()
     important_props = [
         'root',
-        'environment',
         'code_root',
         'code_current',
         'log_dir',
@@ -304,6 +302,8 @@ def _format_env(current_env, extra=None):
 
     for prop in important_props:
         ret[prop] = current_env.get(prop, '')
+
+    ret['environment'] = current_env.get('deploy_env', '')
 
     if extra:
         ret.update(extra)
@@ -354,7 +354,7 @@ def restart_all_except_webworkers():
 @roles(ROLES_STATIC)
 def _decommission_host(host):
     files.comment(
-        '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
+        '/etc/nginx/sites-available/{}_commcare'.format(env.deploy_env),
         '^[ ]*server[ ]+{}'.format(host),
         use_sudo=True,
     )
@@ -364,7 +364,7 @@ def _decommission_host(host):
 @roles(ROLES_STATIC)
 def _recommission_host(host):
     files.uncomment(
-        '/etc/nginx/sites-available/{}_commcare'.format(env.environment),
+        '/etc/nginx/sites-available/{}_commcare'.format(env.deploy_env),
         'server[ ]+{}'.format(host),
         use_sudo=True,
     )
