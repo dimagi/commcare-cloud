@@ -16,6 +16,14 @@ class Environment(object):
     def __init__(self, paths):
         self.paths = paths
 
+    def check(self):
+        self.public_vars
+        self.meta_config
+        self.app_processes_config
+        self.translated_app_processes_config
+        self.fab_settings_config
+        self.inventory_manager
+
     @memoized_property
     def public_vars(self):
         """contents of public.yml, as a dict"""
