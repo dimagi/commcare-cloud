@@ -21,6 +21,8 @@ from commcare_cloud.commands.ansible.run_module import (
     RunShellCommand,
 )
 
+from fab.fab.operations.supervisor import get_celery_worker_name
+
 
 class AnsiblePlaybook(CommandBase):
     command = 'ansible-playbook'
@@ -337,8 +339,6 @@ class Service(_AnsiblePlaybookAlias):
         return app_processes_config.celery_processes
 
     def get_celery_config(self, args):
-        environment = get_environment(args.environment)
-        project_name = environment.fab_settings_config.project
         """
         This picks the logic from set_celery_supervisorconf to produce the full worker names
         as declared in the template supervisor_celery_worker.conf
@@ -365,14 +365,10 @@ class Service(_AnsiblePlaybookAlias):
 
                             if details.get('num_workers', 1) > 2:
                                 for num in range(details.get('num_workers')):
-                                    full_worker_name = "%s-%s-celery_%s_%s" % (
-                                        project_name, args.environment, worker_name, num
-                                    )
+                                    full_worker_name = get_celery_worker_name(worker_name, num)
                                     celery_worker_config[worker][host].append(full_worker_name)
                             else:
-                                full_worker_name = "%s-%s-celery_%s_%s" % (
-                                    project_name, args.environment, worker_name, 0
-                                )
+                                full_worker_name = get_celery_worker_name(worker_name, 0)
                                 celery_worker_config[worker][host].append(full_worker_name)
         return celery_worker_config
 
