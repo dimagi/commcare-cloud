@@ -1,3 +1,2 @@
-environment: dev
 deploy_env: dev
 env_name: dev
