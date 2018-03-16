@@ -22,7 +22,6 @@ from commcare_cloud.commands.ansible.run_module import (
     RunAnsibleModule,
     RunShellCommand,
 )
-from commcare_cloud.commands.ansible.exceptions import IncorrectOptions
 
 
 class AnsiblePlaybook(CommandBase):
@@ -258,8 +257,8 @@ class Service(_AnsiblePlaybookAlias):
     5. Check status or act on celery workers
         commcare-cloud staging service celery status
         commcare-cloud staging service celery restart
-        commcare-cloud staging service celery restart --worker_name=saved_exports_queue,pillow_retry_queue
-        commcare-cloud production service celery restart --worker_name=logistics_reminder_queue,saved_exports_queue
+        commcare-cloud staging service celery restart --only=saved_exports_queue,pillow_retry_queue
+        commcare-cloud production service celery restart --only=logistics_reminder_queue,saved_exports_queue
     """
     command = 'service'
     help = (
@@ -320,14 +319,9 @@ class Service(_AnsiblePlaybookAlias):
             help=(
                 "Specific comma separated services to act on for the service group. "
                 "Example Usage: --only=riak,stanchion"
-            )
-        )
-        self.parser.add_argument(
-            '--worker_name',
-            help=(
-                "Celery worker name as appearing in the status list. "
+                "For Celery, this can be Celery worker names as appearing in the status list. "
                 "This can also be a comma-separated list of workers"
-                "For ex: Run 'commcare-cloud staging celery status' to get name of workers"
+                "For ex: Run 'commcare-cloud staging celery status --only=sms_queue' to get name of workers"
             )
         )
 
@@ -379,14 +373,8 @@ class Service(_AnsiblePlaybookAlias):
         celery_config = self.get_celery_config(args)
         # full name of workers per host to run an action on
         workers_by_host = defaultdict(set)
-        if args.worker_name:
-            for worker_name in args.worker_name.split(','):
-                if worker_name not in celery_config:
-                    puts(colored.red(
-                        "%s not found in the list of possible worker names, %s" % (
-                            worker_name, celery_config.keys()
-                        )))
-                    raise IncorrectOptions
+        if args.only:
+            for worker_name in args.only.split(','):
                 for host, full_worker_names in celery_config[worker_name].items():
                     workers_by_host[host].update(full_worker_names)
         else:
@@ -398,34 +386,30 @@ class Service(_AnsiblePlaybookAlias):
     def run_for_celery(self, service_group, action, args, unknown_args):
         exit_code = 0
         service = "celery"
-        if action == "status" and not args.worker_name:
+        if action == "status" and not args.only:
             args.shell_command = "supervisorctl %s" % action
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
             exit_code = RunShellCommand(self.parser).run(args, unknown_args)
         else:
-            try:
-                workers_by_host = self.get_workers_to_work_on(args)
-            except IncorrectOptions:
-                exit_code = 1
-            else:
-                puts(colored.blue("This is going to run the following"))
-                for host, workers in workers_by_host.items():
-                    puts(colored.green('Host: [' + host + ']'))
-                    puts(colored.green("supervisorctl %s %s" % (action, ' '.join(workers))))
+            workers_by_host = self.get_workers_to_work_on(args)
+            puts(colored.blue("This is going to run the following"))
+            for host, workers in workers_by_host.items():
+                puts(colored.green('Host: [' + host + ']'))
+                puts(colored.green("supervisorctl %s %s" % (action, ' '.join(workers))))
 
-                if not ask('Good to go?', strict=True, quiet=args.quiet):
-                    return 0  # exit code
+            if not ask('Good to go?', strict=True, quiet=args.quiet):
+                return 0  # exit code
 
-                for host, workers in workers_by_host.items():
-                    args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                    # if not applicable for all hosts then limit to a host
-                    if host != "*":
-                        unknown_args.append('--limit=%s' % host)
-                    args.shell_command = "supervisorctl %s %s" % (action, ' '.join(workers))
-                    for service in self.services(service_group, args):
-                        exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-                        if exit_code is not 0:
-                            return exit_code
+            for host, workers in workers_by_host.items():
+                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+                # if not applicable for all hosts then limit to a host
+                if host != "*":
+                    unknown_args.append('--limit=%s' % host)
+                args.shell_command = "supervisorctl %s %s" % (action, ' '.join(workers))
+                for service in self.services(service_group, args):
+                    exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+                    if exit_code is not 0:
+                        return exit_code
         return exit_code
 
     def run_for_webworkers(self, service_group, action, args, unknown_args):
@@ -501,7 +485,7 @@ class Service(_AnsiblePlaybookAlias):
         return exit_code
 
     def services(self, service_group, args):
-        if args.only:
+        if service_group != 'celery' and args.only:
             return args.only.split(',')
         else:
             return self.SERVICES[service_group]
@@ -513,13 +497,26 @@ class Service(_AnsiblePlaybookAlias):
         else:
             return self.run_ansible_module_for_service_group("es", args, unknown_args)
 
+    def ensure_permitted_celery_only_options(self, args):
+        celery_config = self.get_celery_config(args)
+        # full name of workers per host to run an action on
+        if args.only:
+            for worker_name in args.only.split(','):
+                assert worker_name in celery_config, \
+                        "%s not found in the list of possible worker names, %s" % (
+                            worker_name, celery_config.keys()
+                        )
+
     def ensure_permitted_only_options(self, service_group, args):
         services = self.services(service_group, args)
         for service in services:
-            assert service in self.SERVICES[service_group], \
-                ("%s not allowed. Please use from %s for --only option" %
-                 (service, self.SERVICES[service_group])
-                 )
+            if service == "celery":
+                self.ensure_permitted_celery_only_options(args)
+            else:
+                assert service in self.SERVICES[service_group], \
+                    ("%s not allowed. Please use from %s for --only option" %
+                     (service, self.SERVICES[service_group])
+                     )
 
     def perform_action(self, service_group, args, unknown_args):
         exit_code = 0
