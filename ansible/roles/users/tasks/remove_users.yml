@@ -29,13 +29,13 @@
 
 - name: check if key files exist
   become: false
-  local_action: stat path="{{ 'vars/users/' ~ item ~ '.pub' }}"
+  local_action: stat path="{{ authorized_keys_dir ~ item ~ '.pub' }}"
   register: absent_user_keys
   with_items: '{{ dev_users.absent }}'
 
 - name: Revoke former devs ability to login as ansible
   become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item.0 ~ '.pub') }}"
+  authorized_key: user=ansible state=absent key="{{ lookup('file', authorized_keys_dir ~ item.0 ~ '.pub') }}"
   when: item.1.stat.exists
   with_together:
     - "{{ dev_users.absent }}"

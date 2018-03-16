@@ -57,15 +57,6 @@ riak_ring_size: 64
 
 fake_ssl_cert: yes
 
-dev_users:
-  present:
-    - dmiller
-    - droberts
-    - jwilson
-    - nsharma
-    - npellegrino
-  absent: []
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'
