@@ -10,6 +10,7 @@ from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
     get_celery_worker_name,
+    get_django_webworker_name,
 )
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
@@ -275,7 +276,8 @@ class Service(_AnsiblePlaybookAlias):
         'rabbitmq': ['rabbitmq'],
         'kafka': ['kafka', 'zookeeper'],
         'pg_standby': ['postgresql', 'pgbouncer'],
-        'celery': ['celery']
+        'celery': ['celery'],
+        'webworkers': ['webworkers'],
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
@@ -425,20 +427,29 @@ class Service(_AnsiblePlaybookAlias):
                             return exit_code
         return exit_code
 
+    def run_for_webworkers(self, service_group, action, args, unknown_args):
+        django_webworker_name = get_django_webworker_name(args.environment)
+        action = args.action
+        args.shell_command = "supervisorctl %s %s" % (action, django_webworker_name)
+        exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+        return exit_code
+
     def run_status_for_service_group(self, service_group, args, unknown_args):
         exit_code = 0
         ansible_context = AnsibleContext(args)
+        args.silence_warnings = True
         for service in self.services(service_group, args):
             if service == "celery":
                 exit_code = self.run_for_celery(service_group, 'status', args, unknown_args)
+            elif service == "webworkers":
+                exit_code = self.run_for_webworkers(service_group, 'status', args, unknown_args)
             else:
                 if service == "redis":
                     args.shell_command = "redis-cli ping"
                 else:
                     args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
                 args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                args.silence_warnings = True
-                exit_code = RunShellCommand(self.parser).run(args, unknown_args)
+                exit_code = RunShellCommand(self.parser).run(args, unknown_args, ansible_context)
             if exit_code is not 0:
                 # if any service status check didn't go smoothly exit right away
                 return exit_code
@@ -480,6 +491,8 @@ class Service(_AnsiblePlaybookAlias):
         exit_code = 0
         if service_group == "celery":
             exit_code = self.run_for_celery(service_group, args.action, args, unknown_args)
+        elif service_group == "webworkers":
+            exit_code = self.run_for_webworkers(service_group, args.action, args, unknown_args)
         return exit_code
 
     def services(self, service_group, args):
@@ -518,7 +531,7 @@ class Service(_AnsiblePlaybookAlias):
         elif service_group == "pg_standby":
             exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args,
                                                                   inventory_group="pg_standby")
-        elif service_group == "celery":
+        elif service_group in ["celery", "webworkers"]:
             exit_code = self.run_supervisor_for_service_group(service_group, args, unknown_args)
         return exit_code
 
