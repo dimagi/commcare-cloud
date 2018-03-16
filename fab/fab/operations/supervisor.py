@@ -107,7 +107,8 @@ def set_celery_supervisorconf():
             conf_destination_filename = 'supervisor_celery_worker_{}_{}.conf'.format(
                 comma_separated_queue_names, worker_num)
 
-            worker_name = get_celery_worker_name(params['comma_separated_queue_names'],
+            worker_name = get_celery_worker_name(env.env_name,
+                                                 params['comma_separated_queue_names'],
                                                  params['worker_num'])
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',

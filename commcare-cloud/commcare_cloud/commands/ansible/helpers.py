@@ -53,8 +53,8 @@ def get_common_ssh_args(public_vars):
     return cmd_parts
 
 
-def get_celery_worker_name(comma_separated_queue_name, worker_num):
-    environment = get_environment(env.env_name)
+def get_celery_worker_name(environment_name, comma_separated_queue_name, worker_num):
+    environment = get_environment(environment_name)
     environment_environment = environment.translated_app_processes_config.environment
     project = environment.fab_settings_config.project
     return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(

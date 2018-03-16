@@ -363,10 +363,10 @@ class Service(_AnsiblePlaybookAlias):
 
                             if details.get('num_workers', 1) > 2:
                                 for num in range(details.get('num_workers')):
-                                    full_worker_name = get_celery_worker_name(worker_name, num)
+                                    full_worker_name = get_celery_worker_name(args.environment, worker_name, num)
                                     celery_worker_config[worker][host].append(full_worker_name)
                             else:
-                                full_worker_name = get_celery_worker_name(worker_name, 0)
+                                full_worker_name = get_celery_worker_name(args.environment, worker_name, 0)
                                 celery_worker_config[worker][host].append(full_worker_name)
         return celery_worker_config
 
