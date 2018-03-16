@@ -176,11 +176,11 @@ def _get_github():
 
 
 def _get_checkpoint_filename():
-    return '{}_{}'.format(env.environment, CACHED_DEPLOY_CHECKPOINT_FILENAME)
+    return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_CHECKPOINT_FILENAME)
 
 
 def _get_env_filename():
-    return '{}_{}'.format(env.environment, CACHED_DEPLOY_ENV_FILENAME)
+    return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_ENV_FILENAME)
 
 
 def cache_deploy_state(command_index):

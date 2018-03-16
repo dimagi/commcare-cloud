@@ -29,7 +29,7 @@ def build_formplayer(use_current_release=False):
     if not files.exists(build_dir):
         sudo('mkdir {}'.format(build_dir))
 
-    if env.environment == 'staging':
+    if env.deploy_env == 'staging':
         jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful/formplayer.jar'
     else:
         jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
