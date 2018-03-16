@@ -26,6 +26,8 @@ then
 elif [[ ${TEST} = 'prove-deploy' ]]
 then
     bootstrap() {
+        ssh-keygen -f ~/.ssh/id_rsa.pub -N "" -q
+        cp ~/.ssh/id_rsa.pub .travis/environments/_authorized_keys/travis.pub
         bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} FETCH_HEAD .travis/spec.yml
     }
     bootstrap
