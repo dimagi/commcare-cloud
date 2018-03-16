@@ -1,11 +1,12 @@
 #!/bin/bash
 
 test_syntax() {
-  ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml --syntax-check
+  ansible-playbook -i .travis/environments/travis/inventory.ini ansible/deploy_stack.yml --syntax-check
 }
 
 test_localsettings() {
-  ansible-playbook -i ansible/inventories/test ansible/deploy_stack.yml -e '@ansible/vars/dev/dev_private.yml' -e '@ansible/vars/dev/dev_public.yml' --tags=commcarehq
+  cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
+  COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --tags=commcarehq
   sudo python -m py_compile /home/cchq/www/dev/current/localsettings.py
 }
 
