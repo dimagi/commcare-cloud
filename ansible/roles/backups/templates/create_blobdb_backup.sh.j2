@@ -11,5 +11,5 @@ tar -Pzcf "{{ blobdb_backup_dir }}/${BACKUP_FILE}" "{{ blobdb_dir_path }}"
 find {{ blobdb_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "blobdb_${BACKUP_TYPE}_*" -delete;
 
 {% if blobdb_s3 %}
-( cd {{ blobdb_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" {{ blobdb_snapshot_bucket }} {{aws_endpoint}} )
+( cd {{ blobdb_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "blobdb" {{ blobdb_snapshot_bucket }} {{aws_endpoint}} )
 {% endif %}
