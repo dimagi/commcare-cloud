@@ -17,8 +17,7 @@ allocations:
   celery: 1
   pillowtop: 1
   formplayer: 1
-  touchforms:
-    from: formplayer
+  touchforms: 0
   redis: 1
   elasticsearch: 1
   shared_dir_host: 1

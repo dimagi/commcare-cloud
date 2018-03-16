@@ -12,6 +12,8 @@ http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
 http_proxy_parent_port: '3128'
 
+touchforms_enabled: false
+
 # active sites defines the sites that will be configured with nginx
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
@@ -85,7 +87,7 @@ backup_es: False
 
 postgres_users:
   commcare:
-    username: "{{ localsettings.PG_DATABASE_USER }}"
+    username: commcarehq
     password: commcarehq
   devreadonly:
     username: "devreadonly"
@@ -312,9 +314,11 @@ localsettings:
 #  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: 'touchforms@example.com'
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
-  FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
+#  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
+  FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+
+root_email: /dev/null
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
