@@ -339,9 +339,6 @@ class Service(_AnsiblePlaybookAlias):
 
     def get_celery_config(self, args):
         """
-        This picks the logic from set_celery_supervisorconf to produce the full worker names
-        as declared in the template supervisor_celery_worker.conf
-        {{ project }}-{{ environment }}-celery_{{ celery_params.comma_separated_queue_names }}_{{ celery_params.worker_num }}
         :return:
         celery_worker_config: a worker name mapped to list for full worker names per host
         {'submission_reprocessing_queue':
