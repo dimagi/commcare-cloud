@@ -7,7 +7,7 @@ test_syntax() {
 test_localsettings() {
   cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
   COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --tags=commcarehq
-  sudo python -m py_compile /home/cchq/www/dev/current/localsettings.py
+  sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
 }
 
 test_syntax
