@@ -6,6 +6,9 @@ aws_config:
   security_group_id: sg-8f9a57fa
   subnet: subnet-ea62acc5
 
+settings:
+  users: travis
+
 allocations:
   proxy: 1
   webworkers: 1

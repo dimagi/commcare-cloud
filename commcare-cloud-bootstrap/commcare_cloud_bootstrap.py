@@ -33,6 +33,7 @@ class Spec(StrictJsonObject):
 
     """
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
+    settings = jsonobject.ObjectProperty(lambda: Settings)
     allocations = jsonobject.DictProperty(lambda: Allocation)
 
     @classmethod
@@ -52,6 +53,10 @@ class AwsConfig(StrictJsonObject):
     key_name = jsonobject.StringProperty()
     security_group_id = jsonobject.StringProperty()
     subnet = jsonobject.StringProperty()
+
+
+class Settings(StrictJsonObject):
+    users = jsonobject.StringProperty(default='dimagi')
 
 
 class Allocation(StrictJsonObject):
@@ -117,6 +122,7 @@ def provision_machines(spec, env_name=None):
     copy_default_vars(environment, spec.aws_config)
     save_app_processes_yml(environment, inventory)
     save_fab_settings_yml(environment)
+    save_meta_yml(environment, env_name, spec.settings.users)
 
 
 def alphanumeric_sort_key(key):
@@ -314,6 +320,13 @@ def save_app_processes_yml(environment, inventory):
         f.write(contents)
 
 
+def save_meta_yml(environment, env_name, users):
+    template = j2.get_template('meta.yml.j2')
+    contents = template.render(env_name=env_name, users=users)
+    with open(environment.paths.meta_yml, 'w') as f:
+        f.write(contents)
+
+
 def save_fab_settings_yml(environment):
     with open(environment.paths.fab_settings_yml, 'w') as f:
         f.write('')
@@ -325,7 +338,6 @@ def copy_default_vars(environment, aws_config):
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
-        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'meta.yml'), environment.paths.meta_yml)
         with open(vars_public, 'a') as f:
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
 
