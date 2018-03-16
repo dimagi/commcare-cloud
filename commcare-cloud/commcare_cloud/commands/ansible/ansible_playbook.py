@@ -58,9 +58,9 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, ansible_context=None):
         environment = get_environment(args.environment)
-        ansible_context = AnsibleContext(args)
+        ansible_context = ansible_context or AnsibleContext(args)
         check_branch(args)
         public_vars = environment.public_vars
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
@@ -272,10 +272,10 @@ class Service(_AnsiblePlaybookAlias):
         'es': ['elasticsearch'],
         'redis': ['redis'],
         'couchdb2': ['couchdb2'],
-        'postgresql': ['postgresql'],
+        'postgresql': ['postgresql', 'pgbouncer'],
         'rabbitmq': ['rabbitmq'],
         'kafka': ['kafka', 'zookeeper'],
-        'pg_standby': ['postgresql'],
+        'pg_standby': ['postgresql', 'pgbouncer'],
         'celery': ['celery']
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
@@ -431,6 +431,7 @@ class Service(_AnsiblePlaybookAlias):
 
     def run_status_for_service_group(self, service_group, args, unknown_args):
         exit_code = 0
+        ansible_context = AnsibleContext(args)
         for service in self.services(service_group, args):
             if service == "celery":
                 exit_code = self.run_for_celery(service_group, 'status', args, unknown_args)
@@ -440,6 +441,7 @@ class Service(_AnsiblePlaybookAlias):
                 else:
                     args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
                 args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
+                args.silence_warnings = True
                 exit_code = RunShellCommand(self.parser).run(args, unknown_args)
             if exit_code is not 0:
                 # if any service status check didn't go smoothly exit right away

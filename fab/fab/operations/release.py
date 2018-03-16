@@ -396,11 +396,12 @@ def copy_tf_localsettings():
 @roles(ROLES_FORMPLAYER)
 def copy_formplayer_properties():
     sudo('mkdir -p {}'.format(os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)))
-    sudo(
-        'cp {} {}'.format(
-            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, 'application.properties'),
-            os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-        ))
+    for filename in ['application.properties', 'sentry.properties']:
+        sudo(
+            'cp {} {}'.format(
+                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, filename),
+                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
+            ))
 
 
 @parallel
