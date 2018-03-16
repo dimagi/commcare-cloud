@@ -119,7 +119,7 @@ def set_celery_supervisorconf():
                 'make_supervisor_conf',
                 'supervisor_celery_worker.conf',
                 {'celery_params': params,
-                 'program': worker_name,
+                 'worker_name': worker_name,
                  },
                 conf_destination_filename,
             )
