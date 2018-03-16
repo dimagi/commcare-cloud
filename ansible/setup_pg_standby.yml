@@ -91,15 +91,10 @@
     - debug: var=async_poll_results
       when: not ansible_check_mode
 
-    - name: add new configuration "recovery.conf"
-      blockinfile:
-        create: yes
+    - name: create / update "recovery.conf"
+      template:
+        src: roles/postgresql/templates/recovery.conf.j2
         dest: "{{ postgresql_home }}/recovery.conf"
-        block: |
-          standby_mode = 'on'
-          primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ postgresql_port }} sslmode=prefer'
-          primary_slot_name = '{{ replication_slot }}'
-          recovery_target_timeline = 'latest'
 
     - name: Reset ownership
       file:
