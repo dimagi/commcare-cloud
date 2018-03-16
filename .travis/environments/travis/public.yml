@@ -316,3 +316,5 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+
+commcare_cloud_use_vault: no
