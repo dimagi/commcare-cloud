@@ -7,7 +7,7 @@ import posixpath
 from contextlib import contextmanager
 import uuid
 
-from commcare_cloud.commands.ansible.helpers import get_celery_worker_name
+from commcare_cloud.commands.ansible.helpers import get_celery_worker_name, get_django_webworker_name
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
@@ -168,8 +168,12 @@ def set_pillowtop_supervisorconf():
 
 
 def set_djangoapp_supervisorconf():
+    django_worker_name = get_django_webworker_name(env.env_name)
     if _check_in_roles(ROLES_DJANGO):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_django.conf',
+                                      {django_worker_name: django_worker_name}
+                                      )
 
 
 def set_errand_boy_supervisorconf():
