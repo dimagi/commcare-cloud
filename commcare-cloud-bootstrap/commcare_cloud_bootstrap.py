@@ -325,6 +325,7 @@ def copy_default_vars(environment, aws_config):
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'meta.yml'), environment.paths.meta_yml)
         with open(vars_public, 'a') as f:
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
 
