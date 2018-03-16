@@ -8,7 +8,7 @@ instances:
     rabbitmq_user: {{ AMQP_USER }}
     rabbitmq_pass: {{ AMQP_PASSWORD }}
     tags:
-      - environment:{{ env_name|default(deploy_env) }}
+      - environment:{{ env_monitoring_id }}
     vhosts:
       - {{ AMQP_NAME }}
     no_proxy: True
