@@ -1,4 +1,3 @@
-environment: production
 newrelic_javaagent: True
 
 celery_processes:

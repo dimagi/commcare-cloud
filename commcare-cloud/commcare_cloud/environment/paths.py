@@ -34,6 +34,10 @@ class DefaultPaths(object):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'inventory.ini')
 
     @lazy_immutable_property
+    def meta_yml(self):
+        return os.path.join(REPO_BASE, 'environments', self.env_name, 'meta.yml')
+
+    @lazy_immutable_property
     def app_processes_yml(self):
         return os.path.join(REPO_BASE, 'environments', self.env_name, 'app-processes.yml')
 
