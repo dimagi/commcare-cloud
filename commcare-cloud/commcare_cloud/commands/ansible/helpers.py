@@ -4,7 +4,6 @@ import os
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from six.moves import shlex_quote
-from fabric.api import env
 
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
