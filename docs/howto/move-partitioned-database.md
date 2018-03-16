@@ -101,7 +101,11 @@ to show that the *partition2* database is now on *pg2*:
 
 **Deploy changes**
 ```
+# update localsettings
 commcare-cloud <env> update-config
+
+# update PostgreSQL config on new PG node
+commcare-cloud <env> ap deploy_db.yml --limit=pg2
 ```
 
 ### 5. Verify config changes
@@ -204,4 +208,9 @@ SELECT pg_drop_replication_slot('<slot name>');
 
 -- optionally re-create the slot
 SELECT pg_create_physical_replication_slot('<slot name>');
+```
+
+**Update PostgreSQL config**
+```
+commcare-cloud <env> ap deploy_db.yml --limit=postgresql
 ```
