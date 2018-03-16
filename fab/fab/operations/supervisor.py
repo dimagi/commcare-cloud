@@ -7,6 +7,7 @@ import posixpath
 from contextlib import contextmanager
 import uuid
 
+from commcare_cloud.environment.main import get_environment
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
@@ -63,6 +64,17 @@ def _check_in_roles(roles):
     return any(env.get('host_string') in env.roledefs[role] for role in roles)
 
 
+def get_celery_worker_name(comma_separated_queue_name, worker_num):
+    environment = get_environment(env)
+    project = environment.fab_settings_config.project
+    return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
+        project=project,
+        environment=env,
+        comma_separated_queue_name=comma_separated_queue_name,
+        worker_num=worker_num
+    )
+
+
 def set_celery_supervisorconf():
     if not _check_in_roles(ROLES_CELERY):
         return
@@ -106,10 +118,14 @@ def set_celery_supervisorconf():
             conf_destination_filename = 'supervisor_celery_worker_{}_{}.conf'.format(
                 comma_separated_queue_names, worker_num)
 
+            worker_name = get_celery_worker_name(params.comma_separated_queue_names,
+                                                 params.worker_num)
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',
                 'supervisor_celery_worker.conf',
-                {'celery_params': params},
+                {'celery_params': params,
+                 'program': worker_name,
+                 },
                 conf_destination_filename,
             )
 
