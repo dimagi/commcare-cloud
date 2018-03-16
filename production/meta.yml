@@ -1,3 +1,2 @@
-environment: production
 deploy_env: production
 env_name: production
