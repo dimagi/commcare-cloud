@@ -1,2 +1,2 @@
 deploy_env: staging
-env_name: staging
+env_monitoring_id: staging

@@ -101,8 +101,8 @@ EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 {% endif %}
 
-EMAIL_SUBJECT_PREFIX = '[{{ env_name|default(deploy_env) }}] '
-SERVER_ENVIRONMENT = '{{ env_name|default(deploy_env) }}'
+EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
+SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 

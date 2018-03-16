@@ -8,7 +8,7 @@ dd_url: https://app.datadoghq.com
 api_key: {{ DATADOG_API_KEY }}
 tags: {% for group, group_hosts in groups.items() -%}
     {%- if inventory_hostname in group_hosts %}group:{{ group }}, {% endif -%}
-{%- endfor %} environment:{{ env_name|default(deploy_env) }}
+{%- endfor %} environment:{{ env_monitoring_id }}
 
 {% if http_proxy_address is defined and http_proxy_address %}
 proxy_host: {{ http_proxy_address }}

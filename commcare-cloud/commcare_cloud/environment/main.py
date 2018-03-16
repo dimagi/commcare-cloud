@@ -105,7 +105,7 @@ class Environment(object):
         generated_variables = {
             'app_processes_config': self.translated_app_processes_config.to_json(),
             'deploy_env': self.meta_config.deploy_env,
-            'env_name': self.meta_config.env_name,
+            'env_monitoring_id': self.meta_config.env_monitoring_id,
         }
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))

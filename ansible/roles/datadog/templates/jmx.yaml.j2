@@ -13,7 +13,7 @@ instances:
     name: jmx_formplayer_instance
 
     tags:
-      env: {{ env_name|default(deploy_env) }}
+      env: {{ env_monitoring_id }}
       newTag: formplayer
 
     conf:
