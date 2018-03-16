@@ -9,6 +9,7 @@ from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
+    get_celery_worker_name,
 )
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
@@ -20,8 +21,6 @@ from commcare_cloud.commands.ansible.run_module import (
     RunAnsibleModule,
     RunShellCommand,
 )
-
-from fab.fab.operations.supervisor import get_celery_worker_name
 
 
 class AnsiblePlaybook(CommandBase):
