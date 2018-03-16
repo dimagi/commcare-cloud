@@ -319,9 +319,9 @@ class Service(_AnsiblePlaybookAlias):
             help=(
                 "Specific comma separated services to act on for the service group. "
                 "Example Usage: --only=riak,stanchion"
-                "For Celery, this can be Celery worker names as appearing in the status list. "
+                "For Celery, this can be Celery worker names as appearing in app-processes.yml. "
                 "This can also be a comma-separated list of workers"
-                "For ex: Run 'commcare-cloud staging celery status --only=sms_queue' to get name of workers"
+                "For ex: Run 'commcare-cloud staging celery status --only=sms_queue,email_queue'"
             )
         )
 
