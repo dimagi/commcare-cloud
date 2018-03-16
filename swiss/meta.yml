@@ -1,0 +1,3 @@
+environment: swiss
+deploy_env: swiss
+env_name: swiss

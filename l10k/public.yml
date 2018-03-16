@@ -1,7 +1,6 @@
 SITE_HOST: 'l10k.commcarehq.org'
 COMMTRACK_SITE_HOST: 'l10k.commcarehq.org'
 NO_WWW_SITE_HOST: 'l10k.commcarehq.org'
-deploy_env: l10k
 
 active_sites:
   cchq_ssl: True

@@ -1,0 +1,3 @@
+environment: softlayer
+deploy_env: softlayer
+env_name: softlayer
