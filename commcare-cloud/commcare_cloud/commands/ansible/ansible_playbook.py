@@ -386,28 +386,22 @@ class Service(_AnsiblePlaybookAlias):
                         return exit_code
         return exit_code
 
-    def run_for_webworkers(self, service_group, action, args, unknown_args):
-        exit_code = 0
-        django_webworker_name = get_django_webworker_name(args.environment)
-        for service in self.services(service_group, args):
-            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            args.shell_command = "supervisorctl %s %s" % (action, django_webworker_name)
-            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-            if exit_code is not 0:
-                return exit_code
-        return exit_code
+    @staticmethod
+    def get_supervisor_program_name(service, environment_name):
+        if service == "webworkers":
+            return get_django_webworker_name(environment_name)
+        elif service == "formplayer":
+            return get_formplayer_instance_name(environment_name)
+        elif service == "formplayer-spring":
+            return get_formplayer_spring_instance_name(environment_name)
 
-    def run_for_formplayer(self, service_group, action, args, unknown_args):
+    def run_supervisor_action_for_service_group(self, service_group, action, args, unknown_args):
         exit_code = 0
         ansible_context = AnsibleContext(args)
         for service in self.services(service_group, args):
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            if service == "formplayer":
-                formplayer_instance_name = get_formplayer_instance_name(args.environment)
-                args.shell_command = "supervisorctl %s %s" % (action, formplayer_instance_name)
-            elif service == "formplayer-spring":
-                formplayer_spring_instance_name = get_formplayer_spring_instance_name(args.environment)
-                args.shell_command = "supervisorctl %s %s" % (action, formplayer_spring_instance_name)
+            supervisor_command_name = self.get_supervisor_program_name(service, args.environment)
+            args.shell_command = "supervisorctl %s %s" % (action, supervisor_command_name)
             exit_code = RunShellCommand(self.parser).run(args, unknown_args, ansible_context)
             if exit_code is not 0:
                 return exit_code
@@ -417,14 +411,12 @@ class Service(_AnsiblePlaybookAlias):
         exit_code = 0
         ansible_context = AnsibleContext(args)
         args.silence_warnings = True
-        if service_group == "formplayer":
-            exit_code = self.run_for_formplayer(service_group, 'status', args, unknown_args)
+        if service_group in ["formplayer", "webworkers"]:
+            exit_code = self.run_supervisor_action_for_service_group(service_group, 'status', args, unknown_args)
         else:
             for service in self.services(service_group, args):
                 if service == "celery":
                     exit_code = self.run_for_celery(service_group, 'status', args, unknown_args)
-                elif service == "webworkers":
-                    exit_code = self.run_for_webworkers(service_group, 'status', args, unknown_args)
                 else:
                     if service == "redis":
                         args.shell_command = "redis-cli ping"
@@ -474,9 +466,9 @@ class Service(_AnsiblePlaybookAlias):
         if service_group == "celery":
             exit_code = self.run_for_celery(service_group, args.action, args, unknown_args)
         elif service_group == "webworkers":
-            exit_code = self.run_for_webworkers(service_group, args.action, args, unknown_args)
+            exit_code = self.run_supervisor_action_for_service_group(service_group, args.action, args, unknown_args)
         elif service_group == "formplayer":
-            exit_code = self.run_for_formplayer(service_group, args.action, args, unknown_args)
+            exit_code = self.run_supervisor_action_for_service_group(service_group, args.action, args, unknown_args)
         return exit_code
 
     def services(self, service_group, args):
