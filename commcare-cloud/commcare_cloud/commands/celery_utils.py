@@ -37,7 +37,7 @@ def get_celery_workers_config(environment_name):
     to
     {
         email_queue: {
-            kafka0: commcare-hq-staging-celery_email_queue_0
+            kafka0: [commcare-hq-staging-celery_email_queue_0]
         }
     }
     """
@@ -63,3 +63,12 @@ def get_celery_workers_config(environment_name):
                                                                         comma_separated_queue_names, 0)
                             celery_worker_config[queue_name][host].append(celery_worker_name)
     return celery_worker_config
+
+
+def find_celery_worker_name(environment_name, queue_name, host, worker_num=None):
+    celery_workers_config = get_celery_workers_config(environment_name)
+    queue_workers_for_host = celery_workers_config.get(queue_name, {}).get(host)
+    if queue_workers_for_host:
+        for worker in queue_workers_for_host:
+            if worker.endswith(worker_num):
+                return worker
