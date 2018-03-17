@@ -371,6 +371,7 @@ localsettings:
             - 'static-infrastructure_form'
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
+            - 'static-postnatal_care_forms'
             - 'static-thr_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
