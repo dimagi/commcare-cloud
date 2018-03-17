@@ -25,6 +25,7 @@ from commcare_cloud.commands.ansible.run_module import (
 )
 from commcare_cloud.commands.celery_utils import (
     get_celery_workers_config,
+    find_celery_worker_name,
 )
 
 
@@ -262,6 +263,7 @@ class Service(_AnsiblePlaybookAlias):
         commcare-cloud staging service celery status
         commcare-cloud staging service celery restart
         commcare-cloud staging service celery restart --only=saved_exports_queue,pillow_retry_queue
+        commcare-cloud staging service celery restart --only=saved_exports_queue:1,pillow_retry_queue:2
     6. Check status or act on web workers
         commcare-cloud staging service webworkers status
         commcare-cloud staging service webworkers restart
@@ -349,7 +351,20 @@ class Service(_AnsiblePlaybookAlias):
         workers_by_host = defaultdict(set)
         if args.only:
             for queue_name in args.only.split(','):
+                worker_num = None
+                if ':' in queue_name:
+                    queue_name, worker_num = queue_name.split(':')
                 for host, celery_worker_names in celery_config[queue_name].items():
+                    if worker_num:
+                        celery_worker_name = find_celery_worker_name(
+                            args.environment, queue_name, host, worker_num)
+                        assert celery_worker_name, \
+                            "Could not find the celery worker for queue {queue_name} with index {worker_num}".format(
+                                queue_name=queue_name, worker_num=worker_num
+                            )
+                        workers_by_host[host].add(celery_worker_name)
+                    else:
+                        workers_by_host[host].update(celery_worker_names)
                     workers_by_host[host].update(celery_worker_names)
         else:
             for queue_name in celery_config:
@@ -484,12 +499,15 @@ class Service(_AnsiblePlaybookAlias):
         else:
             return self.run_ansible_module_for_service_group("es", args, unknown_args)
 
-    def ensure_permitted_celery_only_options(self, args):
+    @staticmethod
+    def ensure_permitted_celery_only_options(args):
         celery_config = get_celery_workers_config(args.environment)
         # full name of workers per host to run an action on
         if args.only:
             for queue_name in args.only.split(','):
-                assert queue_name in celery_config, \
+                if ':' in queue_name:
+                    queue_name, woker_num = queue_name.split(':')
+                    assert queue_name in celery_config, \
                         "%s not found in the list of possible queues, %s" % (
                             queue_name, celery_config.keys()
                         )
