@@ -7,8 +7,8 @@ import posixpath
 from contextlib import contextmanager
 import uuid
 
+from commcare_cloud.celery_utils import get_celery_worker_name
 from commcare_cloud.commands.ansible.helpers import (
-    get_celery_worker_name,
     get_django_webworker_name,
     get_formplayer_instance_name,
     get_formplayer_spring_instance_name,

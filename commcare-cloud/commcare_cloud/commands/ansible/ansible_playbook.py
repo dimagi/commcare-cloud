@@ -9,7 +9,6 @@ from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
-    get_celery_worker_name,
     get_django_webworker_name,
     get_formplayer_instance_name,
     get_formplayer_spring_instance_name,
@@ -23,6 +22,9 @@ from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.commands.ansible.run_module import (
     RunAnsibleModule,
     RunShellCommand,
+)
+from commcare_cloud.commands.celery_utils import (
+    get_celery_workers_config,
 )
 
 
@@ -337,58 +339,22 @@ class Service(_AnsiblePlaybookAlias):
         return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
 
     @staticmethod
-    def _get_celery_processes(env):
-        environment = get_environment(env)
-        app_processes_config = environment.translated_app_processes_config
-        return app_processes_config.celery_processes
-
-    def get_celery_config(self, args):
-        """
-        :return:
-        celery_worker_config: a worker name mapped to list for full worker names per host
-        {'submission_reprocessing_queue':
-          {'hqcelery0.internal-va.commcarehq.org':
-            ['commcare-hq-production-celery_submission_reprocessing_queue_0']
-          }
-        },
-        """
-        celery_worker_config = {}
-        celery_processes = self._get_celery_processes(args.environment)
-        for host, celery_processes_list in celery_processes.items():
-            if host != 'None':
-                for worker_name, details in celery_processes_list.items():
-                    # split comma separated names to individual workers
-                    for worker in worker_name.split(','):
-                        # ignore flower and celery periodic as celery workers
-                        if worker not in ['flower', 'celery_periodic']:
-                            if not celery_worker_config.get(worker):
-                                celery_worker_config[worker] = defaultdict(list)
-
-                            if details.get('num_workers', 1) > 2:
-                                for num in range(details.get('num_workers')):
-                                    full_worker_name = get_celery_worker_name(args.environment, worker_name, num)
-                                    celery_worker_config[worker][host].append(full_worker_name)
-                            else:
-                                full_worker_name = get_celery_worker_name(args.environment, worker_name, 0)
-                                celery_worker_config[worker][host].append(full_worker_name)
-        return celery_worker_config
-
-    def get_workers_to_work_on(self, args):
+    def get_celery_workers_to_work_on(args):
         """
         :return:
         workers_by_host: full name of workers per host to work on
         """
-        celery_config = self.get_celery_config(args)
+        celery_config = get_celery_workers_config(args.environment)
         # full name of workers per host to run an action on
         workers_by_host = defaultdict(set)
         if args.only:
-            for worker_name in args.only.split(','):
-                for host, full_worker_names in celery_config[worker_name].items():
-                    workers_by_host[host].update(full_worker_names)
+            for queue_name in args.only.split(','):
+                for host, celery_worker_names in celery_config[queue_name].items():
+                    workers_by_host[host].update(celery_worker_names)
         else:
-            for worker_name in celery_config:
-                for host, full_worker_names in celery_config[worker_name].items():
-                    workers_by_host[host].update(full_worker_names)
+            for queue_name in celery_config:
+                for host, celery_worker_names in celery_config[queue_name].items():
+                    workers_by_host[host].update(celery_worker_names)
         return workers_by_host
 
     def run_for_celery(self, service_group, action, args, unknown_args):
@@ -399,7 +365,7 @@ class Service(_AnsiblePlaybookAlias):
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
             exit_code = RunShellCommand(self.parser).run(args, unknown_args)
         else:
-            workers_by_host = self.get_workers_to_work_on(args)
+            workers_by_host = self.get_celery_workers_to_work_on(args)
             puts(colored.blue("This is going to run the following"))
             for host, workers in workers_by_host.items():
                 puts(colored.green('Host: [' + host + ']'))
@@ -527,13 +493,13 @@ class Service(_AnsiblePlaybookAlias):
             return self.run_ansible_module_for_service_group("es", args, unknown_args)
 
     def ensure_permitted_celery_only_options(self, args):
-        celery_config = self.get_celery_config(args)
+        celery_config = get_celery_workers_config(args.environment)
         # full name of workers per host to run an action on
         if args.only:
-            for worker_name in args.only.split(','):
-                assert worker_name in celery_config, \
-                        "%s not found in the list of possible worker names, %s" % (
-                            worker_name, celery_config.keys()
+            for queue_name in args.only.split(','):
+                assert queue_name in celery_config, \
+                        "%s not found in the list of possible queues, %s" % (
+                            queue_name, celery_config.keys()
                         )
 
     def ensure_permitted_only_options(self, service_group, args):
