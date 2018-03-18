@@ -1,7 +1,13 @@
 ---
-- name: Install Java
+- name: Install Java 7
   become: yes
   apt: name=openjdk-7-jdk state=present
+  when: ansible_distribution_version == '14.04'
+
+- name: Install Java 8
+  become: yes
+  apt: name=openjdk-8-jdk state=present
+  when: ansible_distribution_version == '16.04'
 
 - name: Verify Java
   become: no

@@ -6,6 +6,12 @@
 - name: Install Emacs
   become: yes
   apt: name=emacs23 state=present
+  when: ansible_distribution_version == '14.04'
+
+- name: Install Emacs
+  become: yes
+  apt: name=emacs24 state=present
+  when: ansible_distribution_version == '16.04'
 
 - name: Include vimrc
   become: yes

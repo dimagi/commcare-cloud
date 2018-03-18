@@ -55,7 +55,7 @@
   # Do not install ecryptfs utils if already mounted. This should trigger alarm
   # bells if something causes a false positive result on checking for encrypted
   # volume is already mounted.
-  when: encrypted_root not in mtab_contents.stdout
+  when: mtab_contents is defined and encrypted_root not in mtab_contents.stdout
 
 - name: Create encrypted drive root directory
   become: yes

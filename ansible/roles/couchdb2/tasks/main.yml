@@ -1,7 +1,7 @@
 ---
 - name: set couchdb username and password
   uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/_node/couchdb@{{ inventory_hostname|ipaddr }}/_config/admins/{{ couchdb2.username }}"
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname }}:{{ couchdb_port }}/_node/couchdb@{{ inventory_hostname }}/_config/admins/{{ couchdb2.username }}"
     method: PUT
     status_code: 200, 401 # 401 means this is already set up
     body: '"{{ couchdb2.password }}"'
@@ -9,7 +9,7 @@
 
 - name: Add nodes
   uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item }}"
     method: PUT
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"
@@ -21,7 +21,7 @@
 
 - name: Create system databases
   uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/{{ item }}"
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname }}:{{ couchdb_port }}/{{ item }}"
     method: PUT
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"

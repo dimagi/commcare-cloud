@@ -60,6 +60,26 @@
   register: copy_elasticsearch_upstart_result
   tags:
     - es_conf
+  when: ansible_distribution_version == '14.04'
+
+- name: Copy Elasticsearch systemd Conf
+  become: yes
+  template:
+    src: systemd/elasticsearch.service
+    dest: "/etc/systemd/system/elasticsearch.service"
+  register: copy_elasticsearch_upstart_result
+  tags:
+    - es_conf
+  when: ansible_distribution_version == '16.04'
+
+- name: Create dirctory for Elasticsearch PID
+  become: yes
+  file:
+    path: /var/run/elasticsearch
+    owner: elasticsearch
+    group: elasticsearch
+    state: directory
+  when: ansible_distribution_version == '16.04'
 
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
@@ -95,6 +115,12 @@
 - name: Reload upstart
   become: yes
   shell: initctl reload-configuration
+  when: ansible_distribution_version == '14.04'
+
+- name: Reload systemd
+  become: yes
+  shell: systemctl daemon-reload
+  when: ansible_distribution_version == '16.04'
 
 - name: Start Elasticsearch
   become: yes
