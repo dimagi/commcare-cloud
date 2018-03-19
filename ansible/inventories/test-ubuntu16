@@ -57,8 +57,8 @@
 10.0.3.21
 
 [riakcs]
-10.0.3.23
-10.0.3.21
+10.0.3.23 riak_secret=none riak_key=none
+10.0.3.21 riak_secret=none riak_key=none
 
 [stanchion]
 10.0.3.23
