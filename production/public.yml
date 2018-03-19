@@ -2,7 +2,6 @@ SITE_HOST: 'www.commcarehq.org'
 NO_WWW_SITE_HOST: 'commcarehq.org'
 COMMTRACK_SITE_HOST: 'commtrack.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
-deploy_env: production
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
