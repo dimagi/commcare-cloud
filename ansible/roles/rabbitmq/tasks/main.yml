@@ -9,6 +9,14 @@
   apt: pkg=rabbitmq-server state=installed force=yes
   notify:
   - restart rabbitmq
+  when: ansible_distribution_version == '14.04'
+
+- name: Install rabbitmq
+  become: true
+  apt: pkg=rabbitmq-server state=installed allow_unauthenticated=yes
+  notify:
+  - restart rabbitmq
+  when: ansible_distribution_version == '16.04'
 
 - name: Install rabbitmq plugins
   become: true
