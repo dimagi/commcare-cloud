@@ -7,4 +7,4 @@ instances:
   - host: localhost
     port: 6379
     tags:
-      - environment:{{ env_name|default(deploy_env) }}
+      - environment:{{ env_monitoring_id }}
