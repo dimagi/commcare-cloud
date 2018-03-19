@@ -19,4 +19,4 @@
   shell: 'service nginx status'
   register: nginx_status
   changed_when: false
-  failed_when: nginx_status.rc != 0 or nginx_status.stdout.find('start/running') == -1
+  failed_when: nginx_status.rc != 0 or (nginx_status.stdout.find('start/running') == -1 and nginx_status.stdout.find('(running)') == -1)
