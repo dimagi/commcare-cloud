@@ -47,6 +47,12 @@ class CallbackModule(CallbackBase):
         if cli:
             self._options = cli.options
 
+
+        inventory = self._options.inventory
+        if isinstance(inventory, list):
+            inventory = ','.join(inventory)
+        self._inventory_name = ','.join([os.path.basename(os.path.dirname(os.path.realpath(name))) for name in inventory.split(',') if name])
+
         # self.playbook is set in the `v2_playbook_on_start` callback method
         self.playbook = None
         # self.play is set in the `playbook_on_play_start` callback method
@@ -233,16 +239,12 @@ class CallbackModule(CallbackBase):
         self.playbook = playbook
 
         playbook_file_name = self.playbook._file_name
-        inventory = self._options.inventory
 
         self.start_timer()
 
         # Set the playbook name from its filename
         self._playbook_name, _ = os.path.splitext(
             os.path.basename(playbook_file_name))
-        if isinstance(inventory, list):
-            inventory = ','.join(inventory)
-        self._inventory_name = ','.join([os.path.basename(os.path.dirname(os.path.realpath(name))) for name in inventory.split(',') if name])
 
     def v2_playbook_on_play_start(self, play):
         # On Ansible v2, Ansible doesn't set `self.play` automatically
