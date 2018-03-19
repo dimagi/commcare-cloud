@@ -121,6 +121,8 @@ redis_syslog_enabled: 'no'
 redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
+redis_appendonly: yes
+redis_db_dir: "{{ encrypted_root }}/redis"
 
 KSPLICE_ACTIVE: yes
 
