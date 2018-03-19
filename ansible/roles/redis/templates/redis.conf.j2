@@ -30,6 +30,10 @@ dbfilename {{ redis_dbfilename }}
 ## Append Mode
 appendonly no
 appendfsync {{ redis_appendfsync }}
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+aof-use-rdb-preamble yes
 
 # Slave
 {% if redis_role == 'slave' %}
