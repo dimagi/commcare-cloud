@@ -66,7 +66,7 @@
   become: yes
   template:
     src: systemd/elasticsearch.service
-    dest: "/etc/systemd/system/elasticsearch.service"
+    dest: "/lib/systemd/system/elasticsearch.service"
   register: copy_elasticsearch_upstart_result
   tags:
     - es_conf
