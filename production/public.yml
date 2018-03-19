@@ -86,7 +86,7 @@ postgresql_dbs:
     host: "hqdb1.internal-va.commcarehq.org"
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
     name: commcarehq_synclogs
-    host: "hqdb0.internal-va.commcarehq.org"
+    host: "pgsynclog.internal-va.commcarehq.org"
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 204]
