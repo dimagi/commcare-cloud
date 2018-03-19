@@ -82,6 +82,8 @@ class DeployMetadata(object):
         repo.create_git_tag_and_release(
             tag=tag_name,
             tag_message=msg,
+            release_name=tag_name,
+            release_message=msg,
             object=self._deploy_ref,
             type='commit',
         )
