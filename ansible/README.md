@@ -50,17 +50,14 @@ deployment:
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
+$ commcare-cloud development aps -u vagrant
 ```
-
-(**Doc Note**: these commands should be replaced
-with the appropriate commcare-cloud commands.)
 
 This will build a database server, a proxy server and a single web worker,
 hooked into both appropriately.
 
 Once the preliminary deployment is complete, a new web worker may be added
-simply by editing the file `ansible/inventories/development` and adding the second
+simply by editing the file `environments/development/inventory.ini` and adding the second
 web worker server IP address. Also uncomment the section of the vagrant file that refers to 'app2':
 
 ```ini
@@ -69,28 +66,6 @@ web worker server IP address. Also uncomment the section of the vagrant file tha
 192.168.33.18
 ```
 
-### Monolith setup
-
-Sometimes multi machine setup locally can be very large. In order to setup a monolith, which is just one machine, you can use this setup:
-```
-cp Vagrantfile-monolith Vagrantfile
-vagrant up
-```
-The one other change needed is to point to the proper inventory. Instead of using `ansible/inventories/development`, use `ansible/inventories/monolith`:
-
-```
-$ vagrant ssh control
-...
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml --tags=users --user=root
-```
-
-Now you will have ansible user in monolith that you can use to run the further playbooks.
-
-Note: the above step in necessary since subsequent playbooks block root login to monolith.
-
-```
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml --user=ansible
-```
 ### Email setup
 
 In order to have this set up send email without crashing
@@ -170,8 +145,7 @@ Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_publi
 Login with `vagrant ssh control`
 
 ```bash
-ansible-playbook -u root -i inventories/development -e @vars/dev/dev_private.yml \
-  -e @vars/dev/dev_public.yml --diff deploy_control.yml
+commcare-cloud development ansible-playbook deploy_control.yml -u vagrant
 ```
 
 Login as your user: `vagrant ssh control -- -l $USER -A
