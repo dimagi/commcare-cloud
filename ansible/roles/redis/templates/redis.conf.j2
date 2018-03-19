@@ -35,7 +35,7 @@ auto-aof-rewrite-min-size 64mb
 aof-load-truncated yes
 aof-use-rdb-preamble yes
 
-# Slave
+# Replication
 {% if redis_role == 'slave' %}
 slaveof {{ redis_master_ip }} {{ redis_master_port }}
 masterauth {{ redis_master_auth }}
