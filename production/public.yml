@@ -115,14 +115,6 @@ postgresql_dbs:
   - name: "{{ formplayer_db_name }}"
     host: "{{ groups.postgresql.0 }}"
 
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
-redis_db_dir: "{{ encrypted_root }}/redis"
-
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
