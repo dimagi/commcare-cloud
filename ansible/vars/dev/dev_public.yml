@@ -319,4 +319,5 @@ localsettings:
   TOUCHFORMS_API_USER: 'touchforms@example.com'
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
