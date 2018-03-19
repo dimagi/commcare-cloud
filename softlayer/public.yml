@@ -112,12 +112,7 @@ postgresql_dbs:
 
 postgresql_ssl_enabled: False
 
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 KSPLICE_ACTIVE: yes
 
