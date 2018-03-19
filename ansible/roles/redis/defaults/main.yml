@@ -19,6 +19,7 @@ redis_pass: None
 redis_max_clients: 10000
 redis_max_memory: 512mb
 redis_maxmemory_policy: volatile-lru
+redis_appendonly: no
 redis_appendfsync: everysec
 # check https://www.kernel.org/doc/Documentation/sysctl/vm.txt
 # and http://redis.io/topics/faq
