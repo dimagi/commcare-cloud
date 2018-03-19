@@ -148,6 +148,7 @@ redis_syslog_enabled: 'no'
 redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 server_email: commcare@pna.sn
 default_from_email: commcare@pna.sn
