@@ -78,7 +78,6 @@ class DeployMetadata(object):
                 self._environment
             )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        msg = "{} deploy at {}".format(self._environment, self.timestamp)
         repo.create_git_ref(
             ref='refs/tags/' + tag_name,
             sha=self.deploy_ref,
@@ -132,6 +131,13 @@ class DeployMetadata(object):
         # turn whatever `code_branch` is into a commit hash
         branch = repo.get_branch(self._code_branch)
         self._deploy_ref = branch.commit.sha
+
+        # Causes setup_release to fail fast if the right github permissions aren't set
+        repo.create_git_ref(
+            ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
+            sha=self._deploy_ref,
+        )
+
         return self._deploy_ref
 
 
