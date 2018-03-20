@@ -61,8 +61,7 @@
           -h {{ hot_standby_master }} \
           -U {{ postgres_users.replication.username }} \
           -D {{ postgresql_home }} \
-          -S {{ replication_slot }} \
-          -R -v --xlog-method=stream 2>&1
+          -P -v --xlog-method=stream 2>&1
       async: 7200
       poll: 0
       register: async_results
