@@ -1,0 +1,35 @@
+dev_users:
+  present:
+    - astone
+    - biyeun
+    - cellowitz
+    - ctsims
+    - czue
+    - dmiller
+    - droberts
+    - esoergel
+    - frener
+    - gbova
+    - gcapalbo
+    - jemord
+    - jroth
+    - jschweers
+    - jwilson
+    - mkangia
+    - npellegrino
+    - nhooper
+    - nsharma
+    - pvaidyanathan
+    - sgoyal
+    - skelly
+    - sravfeyn
+    - wpride
+  absent:
+    - preseed
+    - twymer
+    - tsheffels
+    - dmyung
+    - jenkins_slave
+    - brudolph
+    - ncarnahan
+    - jhoffman
