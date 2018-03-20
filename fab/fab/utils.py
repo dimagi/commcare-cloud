@@ -64,7 +64,7 @@ class DeployMetadata(object):
             self._offline_tag_commit()
             return
 
-        pattern = ".*-{}-.*".format(re.escape(self._environment))
+        pattern = ".*-{}-deploy".format(re.escape(self._environment))
         github = _get_github()
         repo = github.get_organization('dimagi').get_repo('commcare-hq')
         for tag in repo.get_tags()[:self._max_tags]:
