@@ -102,6 +102,7 @@
     - redis_dir: "{{ encrypted_root }}/redis"
     - redis_local_facts: false
     - redis_service_name: redis-server
+    - redis_install_dir: "/opt/redis/{{ redis_version}}"
 
     - redis_syslog_enabled: "no"
     - redis_maxmemory: 4gb
