@@ -78,7 +78,6 @@ class DeployMetadata(object):
                 self._environment
             )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        msg = "{} deploy at {}".format(self._environment, self.timestamp)
         repo.create_git_ref(
             ref='refs/tags/' + tag_name,
             sha=self.deploy_ref,
