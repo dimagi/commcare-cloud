@@ -6,7 +6,7 @@ service_blacklist:
 
 celery_processes:
   '*':
-    repeat_record_queue,celery:
+    repeat_record_queue,celery,export_download_queue:
       concurrency: 1
     background_queue,case_rule_queue:
       concurrency: 1
