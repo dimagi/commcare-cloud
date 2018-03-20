@@ -13,7 +13,7 @@ celery_processes:
     # pillow_retry_queue workers here so that the workers
     # on this machine have the cpu they need to perform their tasks.
     flower: {}
-    celery:
+    celery,export_download_queue:
       concurrency: 8
       max_tasks_per_child: 5
     celery_periodic:
