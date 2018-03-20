@@ -1,7 +1,6 @@
 SITE_HOST: 'enikshay.in'
 ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
 J2ME_SITE_HOST: 'j2me.enikshay.in'
-deploy_env: enikshay
 internal_domain_name: 'enikshay.in'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
@@ -163,6 +162,7 @@ redis_syslog_enabled: 'no'
 redis_database_save_times: []
 redis_max_clients: 10000
 redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 KSPLICE_ACTIVE: yes
 

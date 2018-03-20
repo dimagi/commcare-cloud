@@ -55,20 +55,7 @@ active_sites:
 riak_backend: "leveldb"
 riak_ring_size: 64
 
-# This is used for creating all physical resources e.g. /home/cchq/www/{{deploy_env}}
-deploy_env: dev
-# This is the name used for datadog and in settings.SERVER_ENVIRONMENT
-# env_name: dev1
 fake_ssl_cert: yes
-
-dev_users:
-  present:
-    - dmiller
-    - droberts
-    - jwilson
-    - nsharma
-    - npellegrino
-  absent: []
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
@@ -320,3 +307,5 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+
+commcare_cloud_use_vault: no

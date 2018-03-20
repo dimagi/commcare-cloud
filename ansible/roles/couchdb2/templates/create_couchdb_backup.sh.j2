@@ -15,5 +15,5 @@ rsync -avH --delete --exclude="commcarehq__synclogs.*.couch" {{ couch_backup_dir
 {% endif %}
 
 {% if couch_s3 %}
-( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" {{ couchdb_snapshot_bucket }} {{aws_endpoint}} )
+( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "couchdb" {{ couchdb_snapshot_bucket }} {{aws_endpoint}} )
 {% endif %}

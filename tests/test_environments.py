@@ -17,3 +17,9 @@ def test_app_processes_yml(env):
 def test_fab_settings_yml(env):
     environment = get_environment(env)
     environment.fab_settings_config  # check if the schema wraps it
+
+
+@parameterized(get_available_envs())
+def test_all(env):
+    environment = get_environment(env)
+    environment.check()

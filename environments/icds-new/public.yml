@@ -1,8 +1,6 @@
 SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
-deploy_env: icds
-env_name: icds-new
 internal_domain_name: 'internal-icds-new.commcarehq.org'
 cluster_ip_range: '10.247.164.0/23'
 
@@ -109,11 +107,11 @@ postgresql_dbs:
   - django_alias: p5
     name: commcarehq_p5
     shards: [412, 514]
-    host: "{{ hostvars[groups.pgshard4.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
   - django_alias: p6
     name: commcarehq_p6
     shards: [515, 617]
-    host: "{{ hostvars[groups.pgshard4.0].inventory_hostname }}"
+    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
   - django_alias: p7
     name: commcarehq_p7
     shards: [618, 720]
@@ -148,12 +146,7 @@ postgresql_dbs:
     create: False
     django_migrate: False
 
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
@@ -191,11 +184,11 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: '/etc/nginx/.htpasswd'
-  - name: /bihar_ls_files
+  - name: /bihar_ls_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_bihar"
-  - name: /maharashtra_icds-cas_files
+  - name: /maharashtra_icds-cas_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
@@ -203,27 +196,27 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_mp"
-  - name: /ls_hindi
+  - name: /ls_hindi 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_hindi"
-  - name: /ls_marathi
+  - name: /ls_marathi 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_marathi"
-  - name: /ls_telugu
+  - name: /ls_telugu 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_telugu"
-  - name: /hindi_files
+  - name: /hindi_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files"
-  - name: /marathi_files
+  - name: /marathi_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_marathi_files"
-  - name: /telugu_files
+  - name: /telugu_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
@@ -371,6 +364,7 @@ localsettings:
             - 'static-infrastructure_form'
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
+            - 'static-postnatal_care_forms'
             - 'static-thr_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
@@ -406,7 +400,7 @@ localsettings:
   SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
   SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
   SMS_GATEWAY_PARAMS:
-  SMS_GATEWAY_URL:
+  SMS_GATEWAY_URL: 
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"

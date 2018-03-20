@@ -2,7 +2,6 @@ SITE_HOST: 'staging.commcarehq.org'
 NO_WWW_SITE_HOST: 'staging.commcarehq.org'
 COMMTRACK_SITE_HOST: 'test.commtrack.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
-deploy_env: staging
 
 active_sites:
   cchq_www_redirect_secure: True
@@ -23,6 +22,7 @@ active_sites:
 riak_backend: "leveldb"
 riak_ring_size: 64
 
+redis_appendonly: 'no'
 
 primary_ssl_env: "staging"
 

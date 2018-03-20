@@ -3,7 +3,7 @@ commcarehq.host=https://{{ ALTERNATE_FORMPLAYER_HQ_HOST }}
 {% else %}
 commcarehq.host=https://{{ SITE_HOST }}
 {% endif %}
-commcarehq.environment={{ env_name|default(deploy_env) }}
+commcarehq.environment={{ env_monitoring_id }}
 commcarehq.formplayerAuthKey={{ localsettings.FORMPLAYER_INTERNAL_AUTH_KEY }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
