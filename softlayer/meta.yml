@@ -1,0 +1,3 @@
+deploy_env: softlayer
+env_monitoring_id: softlayer
+users: dimagi
