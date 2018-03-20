@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github3 import login
+from github import Github
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -64,10 +64,10 @@ class DeployMetadata(object):
             self._offline_tag_commit()
             return
 
-        pattern = ".*-{}-.*".format(re.escape(self._environment))
+        pattern = ".*-{}-deploy".format(re.escape(self._environment))
         github = _get_github()
-        repo = github.repository('dimagi', 'commcare-hq')
-        for tag in repo.tags(self._max_tags):
+        repo = github.get_organization('dimagi').get_repo('commcare-hq')
+        for tag in repo.get_tags()[:self._max_tags]:
             if re.match(pattern, tag.name):
                 self._last_tag = tag.name
                 break
@@ -78,18 +78,9 @@ class DeployMetadata(object):
                 self._environment
             )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        msg = "{} deploy at {}".format(self._environment, self.timestamp)
-        user = github.me()
-        repo.create_tag(
-            tag=tag_name,
-            message=msg,
+        repo.create_git_ref(
+            ref='refs/tags/' + tag_name,
             sha=self.deploy_ref,
-            obj_type='commit',
-            tagger={
-                'name': user.login,
-                'email': user.email or '{}@dimagi.com'.format(user.login),
-                'date': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            }
         )
         self._deploy_tag = tag_name
 
@@ -135,11 +126,18 @@ class DeployMetadata(object):
             return self._deploy_ref
 
         github = _get_github()
-        repo = github.repository('dimagi', 'commcare-hq')
+        repo = github.get_organization('dimagi').get_repo('commcare-hq')
 
         # turn whatever `code_branch` is into a commit hash
-        branch = repo.branch(self._code_branch)
+        branch = repo.get_branch(self._code_branch)
         self._deploy_ref = branch.commit.sha
+
+        # Causes setup_release to fail fast if the right github permissions aren't set
+        repo.create_git_ref(
+            ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
+            sha=self._deploy_ref,
+        )
+
         return self._deploy_ref
 
 
@@ -163,24 +161,24 @@ def _get_github():
         ).format(project_root=PROJECT_ROOT))
         username = input('Github username: ')
         password = getpass('Github password: ')
-        global_github = login(
-            username=username,
+        global_github = Github(
+            login_or_token=username,
             password=password,
         )
     else:
-        global_github = login(
-            token=GITHUB_APIKEY,
+        global_github = Github(
+            login_or_token=GITHUB_APIKEY,
         )
 
     return global_github
 
 
 def _get_checkpoint_filename():
-    return '{}_{}'.format(env.environment, CACHED_DEPLOY_CHECKPOINT_FILENAME)
+    return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_CHECKPOINT_FILENAME)
 
 
 def _get_env_filename():
-    return '{}_{}'.format(env.environment, CACHED_DEPLOY_ENV_FILENAME)
+    return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_ENV_FILENAME)
 
 
 def cache_deploy_state(command_index):

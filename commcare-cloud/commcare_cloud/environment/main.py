@@ -9,17 +9,40 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
+from commcare_cloud.environment.schemas.meta import MetaConfig
+from commcare_cloud.environment.users import UsersConfig
 
 
 class Environment(object):
     def __init__(self, paths):
         self.paths = paths
 
+    def check(self):
+        self.public_vars
+        self.meta_config
+        self.users_config
+        self.app_processes_config
+        self.translated_app_processes_config
+        self.fab_settings_config
+        self.inventory_manager
+
     @memoized_property
     def public_vars(self):
         """contents of public.yml, as a dict"""
         with open(self.paths.public_yml) as f:
             return yaml.load(f)
+
+    @memoized_property
+    def meta_config(self):
+        with open(self.paths.meta_yml) as f:
+            meta_json = yaml.load(f)
+        return MetaConfig.wrap(meta_json)
+
+    @memoized_property
+    def users_config(self):
+        with open(self.paths.get_users_yml(self.meta_config.users)) as f:
+            users_json = yaml.load(f)
+        return UsersConfig.wrap(users_json)
 
     @memoized_property
     def app_processes_config(self):
@@ -97,6 +120,10 @@ class Environment(object):
     def create_generated_yml(self):
         generated_variables = {
             'app_processes_config': self.translated_app_processes_config.to_json(),
+            'deploy_env': self.meta_config.deploy_env,
+            'env_monitoring_id': self.meta_config.env_monitoring_id,
+            'dev_users': self.users_config.dev_users.to_json(),
+            'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
         }
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
