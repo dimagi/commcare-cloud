@@ -84,7 +84,7 @@ class DeployMetadata(object):
             tag_message=msg,
             release_name=tag_name,
             release_message=msg,
-            object=self._deploy_ref,
+            object=self.deploy_ref,
             type='commit',
         )
         self._deploy_tag = tag_name
