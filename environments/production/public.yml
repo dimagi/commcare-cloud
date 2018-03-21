@@ -63,7 +63,7 @@ backup_es: True
 postgres_s3: True
 
 aws_region: 'us-east-1'
-postgresql_backup_days: 2
+postgresql_backup_days: 1
 postgresql_version: '9.4'
 postgresql_max_connections: 300
 pgbouncer_max_connections: 800
