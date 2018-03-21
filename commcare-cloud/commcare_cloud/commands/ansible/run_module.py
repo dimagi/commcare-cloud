@@ -64,10 +64,10 @@ class RunAnsibleModule(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args, ansible_context=None):
+    def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
-        ansible_context = ansible_context or AnsibleContext(args)
+        ansible_context = AnsibleContext(args)
         public_vars = environment.public_vars
 
         def _run_ansible(args, *unknown_args):
@@ -110,7 +110,7 @@ class RunAnsibleModule(CommandBase):
             print_command(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
-                p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
+                p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
             else:
                 p.communicate()
             return p.returncode
@@ -161,7 +161,7 @@ class RunShellCommand(CommandBase):
                                  help="Silence shell warnings (such as to use another module instead)")
         RunAnsibleModule(self.parser).add_non_positional_arguments()
 
-    def run(self, args, unknown_args, ansible_context=None):
+    def run(self, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
             puts(colored.yellow(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
@@ -177,4 +177,4 @@ class RunShellCommand(CommandBase):
         args.skip_check = True
         args.quiet = True
         del args.shell_command
-        return RunAnsibleModule(self.parser).run(args, unknown_args, ansible_context)
+        return RunAnsibleModule(self.parser).run(args, unknown_args)
