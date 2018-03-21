@@ -54,7 +54,7 @@ def get_common_ssh_args(public_vars):
 
 def get_django_webworker_name(environment_name):
     environment = get_environment(environment_name)
-    environment_environment = environment.translated_app_processes_config.environment
+    environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-django".format(
         project=project,
@@ -64,7 +64,7 @@ def get_django_webworker_name(environment_name):
 
 def get_formplayer_instance_name(environment_name):
     environment = get_environment(environment_name)
-    environment_environment = environment.translated_app_processes_config.environment
+    environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-formsplayer".format(
         project=project,
@@ -74,7 +74,7 @@ def get_formplayer_instance_name(environment_name):
 
 def get_formplayer_spring_instance_name(environment_name):
     environment = get_environment(environment_name)
-    environment_environment = environment.translated_app_processes_config.environment
+    environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-formsplayer-spring".format(
         project=project,
