@@ -94,7 +94,8 @@ class AnsiblePlaybook(CommandBase):
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
-            ansible_context.get_ansible_vault_password()
+            if ask_vault_pass:
+                ansible_context.get_ansible_vault_password()
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
                 p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
