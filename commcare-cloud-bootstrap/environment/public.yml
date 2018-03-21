@@ -38,7 +38,6 @@ active_sites:
 riak_backend: "bitcask"
 riak_ring_size: 64
 
-deploy_env: dev
 fake_ssl_cert: yes
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 

@@ -1,7 +1,6 @@
 SITE_HOST: 'swiss.commcarehq.org'
 COMMTRACK_SITE_HOST: 'swiss.commcarehq.org'
 NO_WWW_SITE_HOST: 'swiss.commcarehq.org'
-deploy_env: swiss
 
 active_sites:
   cchq_ssl: True
@@ -79,12 +78,7 @@ postgresql_dbs:
     name: commcarehq_synclogs
     host: "{{ groups.postgresql.0 }}"
 
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 KSPLICE_ACTIVE: yes
 

@@ -1,7 +1,6 @@
 SITE_HOST: 'commcare.pna.sn'
 PNA_SITE_HOST: 'pna.commcarehq.org'
 COMMTRACK_SITE_HOST: 'commcare.pna.sn'
-deploy_env: pna
 
 active_sites:
   cchq_ssl: True
@@ -143,12 +142,7 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 server_email: commcare@pna.sn
 default_from_email: commcare@pna.sn

@@ -63,8 +63,9 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args, ansible_context=None):
+    def run(self, args, unknown_args, ansible_context=None, always_skip_check=False):
         environment = get_environment(args.environment)
+        environment.create_generated_yml()
         ansible_context = ansible_context or AnsibleContext(args)
         check_branch(args)
         public_vars = environment.public_vars
@@ -77,6 +78,7 @@ class AnsiblePlaybook(CommandBase):
                 '-i', environment.paths.inventory_ini,
                 '-e', '@{}'.format(environment.paths.vault_yml),
                 '-e', '@{}'.format(environment.paths.public_yml),
+                '-e', '@{}'.format(environment.paths.generated_yml),
                 '--diff',
             ) + cmd_args
 
@@ -101,6 +103,8 @@ class AnsiblePlaybook(CommandBase):
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
+            if ask_vault_pass:
+                ansible_context.get_ansible_vault_password()
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
                 p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
@@ -116,7 +120,11 @@ class AnsiblePlaybook(CommandBase):
 
         exit_code = 0
 
-        if args.skip_check:
+        if always_skip_check:
+            user_wants_to_apply = ask(
+                'This command will apply without running the check first. Continue?',
+                quiet=args.quiet)
+        elif args.skip_check:
             user_wants_to_apply = ask('Do you want to apply without running the check first?',
                                       quiet=args.quiet)
         else:
@@ -190,9 +198,8 @@ class AfterReboot(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        args.skip_check = True
         unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
 class RestartElasticsearch(_AnsiblePlaybookAlias):
@@ -223,13 +230,12 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         environment = get_environment(args.environment)
         args.playbook = 'deploy_stack.yml'
-        args.skip_check = True
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
 class UpdateUsers(_AnsiblePlaybookAlias):

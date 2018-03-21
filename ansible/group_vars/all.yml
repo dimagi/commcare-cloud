@@ -20,41 +20,6 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
-dev_users:
-  present:
-    - astone
-    - biyeun
-    - cellowitz
-    - ctsims
-    - czue
-    - dmiller
-    - droberts
-    - esoergel
-    - frener
-    - gbova
-    - gcapalbo
-    - jemord
-    - jroth
-    - jschweers
-    - jwilson
-    - mkangia
-    - npellegrino
-    - nhooper
-    - nsharma
-    - pvaidyanathan
-    - sgoyal
-    - skelly
-    - sravfeyn
-    - wpride
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
-    - brudolph
-    - ncarnahan
-    - jhoffman
 
 ssh_allow_password: False
 django_port: 9010
@@ -166,7 +131,6 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD | default(None) }
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME | default(None) }}"
 # To enable Local ES snapshot override with repository location
 es_local_repo: false
-
 blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
@@ -174,3 +138,13 @@ es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
 aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
+
+redis_max_memory: 4096mb
+redis_logfile: '/var/log/redis/redis-server.log'
+redis_syslog_enabled: 'no'
+redis_database_save_times: []
+redis_max_clients: 10000
+redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'yes'
+redis_db_dir: "{{ encrypted_root }}/redis"
+

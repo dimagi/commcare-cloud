@@ -1,4 +1,3 @@
-environment: dev
 newrelic_javaagent: True
 
 celery_processes:
@@ -6,7 +5,7 @@ celery_processes:
     celery_periodic:
       server_whitelist: {{ celery_host.public_ip }}
       concurrency: 4
-    async_restore_queue,background_queue,case_rule_queue,celery:
+    async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue:
       concurrency: 1
     email_queue,pillow_retry_queue,reminder_case_update_queue:
       concurrency: 1
