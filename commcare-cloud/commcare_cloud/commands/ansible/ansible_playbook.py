@@ -267,9 +267,12 @@ class Service(_AnsiblePlaybookAlias):
     6. Check status or act on web workers
         commcare-cloud staging service webworkers status
         commcare-cloud staging service webworkers restart
-    7. Check status or act on formplayer and formplayer-spring
+    7. Check status or act on formplayer
         commcare-cloud staging service formplayer status
-        commcare-cloud staging service formplayer restart --only=formplayer-spring
+        commcare-cloud staging service formplayer restart
+    8. Check status or act on touchforms
+        commcare-cloud staging service touchforms status
+        commcare-cloud staging service touchforms restart
     """
     command = 'service'
     help = (
@@ -289,7 +292,8 @@ class Service(_AnsiblePlaybookAlias):
         'pg_standby': ['postgresql', 'pgbouncer'],
         'celery': ['celery'],
         'webworkers': ['webworkers'],
-        'formplayer': ['formplayer', 'formplayer-spring']
+        'formplayer': ['formplayer-spring'],
+        'touchforms': ['formplayer'],
     }
     ACTIONS = ['start', 'stop', 'restart', 'status']
     DESIRED_STATE_FOR_ACTION = {
@@ -426,7 +430,7 @@ class Service(_AnsiblePlaybookAlias):
         exit_code = 0
         ansible_context = AnsibleContext(args)
         args.silence_warnings = True
-        if service_group in ["formplayer", "webworkers"]:
+        if service_group in ["touchforms", "formplayer", "webworkers"]:
             exit_code = self.run_supervisor_action_for_service_group(service_group, 'status', args, unknown_args)
         else:
             for service in self.services(service_group, args):
@@ -480,9 +484,7 @@ class Service(_AnsiblePlaybookAlias):
         exit_code = 0
         if service_group == "celery":
             exit_code = self.run_for_celery(service_group, args.action, args, unknown_args)
-        elif service_group == "webworkers":
-            exit_code = self.run_supervisor_action_for_service_group(service_group, args.action, args, unknown_args)
-        elif service_group == "formplayer":
+        elif service_group in ["webworkers", "formplayer", "touchforms"]:
             exit_code = self.run_supervisor_action_for_service_group(service_group, args.action, args, unknown_args)
         return exit_code
 
@@ -538,7 +540,7 @@ class Service(_AnsiblePlaybookAlias):
         elif service_group == "pg_standby":
             exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args,
                                                                   inventory_group="pg_standby")
-        elif service_group in ["celery", "webworkers", "formplayer"]:
+        elif service_group in ["celery", "webworkers", "formplayer", "touchforms"]:
             exit_code = self.run_supervisor_for_service_group(service_group, args, unknown_args)
         return exit_code
 
