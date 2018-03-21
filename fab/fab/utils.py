@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github import Github
+from github import Github, UnknownObjectException
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -133,10 +133,16 @@ class DeployMetadata(object):
         self._deploy_ref = branch.commit.sha
 
         # Causes setup_release to fail fast if the right github permissions aren't set
-        repo.create_git_ref(
-            ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
-            sha=self._deploy_ref,
-        )
+        try:
+            repo.create_git_ref(
+                ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
+                sha=self._deploy_ref,
+            )
+        except UnknownObjectException:
+            raise Exception(
+                'Github API key does not have the right settings. '
+                'Please create an API key with the public_repo scope enabled.'
+            )
 
         return self._deploy_ref
 
