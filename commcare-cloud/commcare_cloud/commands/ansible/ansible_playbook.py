@@ -507,10 +507,10 @@ class Service(_AnsiblePlaybookAlias):
             for queue_name in args.only.split(','):
                 if ':' in queue_name:
                     queue_name, woker_num = queue_name.split(':')
-                    assert queue_name in celery_config, \
-                        "%s not found in the list of possible queues, %s" % (
-                            queue_name, celery_config.keys()
-                        )
+                assert queue_name in celery_config, \
+                    "%s not found in the list of possible queues, %s" % (
+                        queue_name, celery_config.keys()
+                    )
 
     def ensure_permitted_only_options(self, service_group, args):
         services = self.services(service_group, args)
