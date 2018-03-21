@@ -64,7 +64,7 @@ class AnsiblePlaybook(CommandBase):
         ))
 
     def run(self, args, unknown_args, ansible_context=None, always_skip_check=False):
-        environment = get_environment(args.environment)
+        environment = get_environment(args.env_name)
         environment.create_generated_yml()
         ansible_context = ansible_context or AnsibleContext(args)
         check_branch(args)
@@ -228,7 +228,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.environment)
+        environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
