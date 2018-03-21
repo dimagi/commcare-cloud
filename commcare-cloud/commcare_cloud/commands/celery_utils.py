@@ -13,7 +13,7 @@ def get_celery_processes(environment_name):
 def get_celery_worker_name(environment_name, comma_separated_queue_name, worker_num):
     from commcare_cloud.environment.main import get_environment
     environment = get_environment(environment_name)
-    environment_environment = environment.translated_app_processes_config.environment
+    environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
         project=project,
