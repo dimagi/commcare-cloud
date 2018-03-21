@@ -17,7 +17,7 @@ class Fab(CommandBase):
     def run(self, args, unknown_args):
         cmd_parts = (
             'fab', '-f', FABFILE,
-            args.environment,
+            args.env_name,
         ) + (
             (args.fab_command,) if args.fab_command else ()
         ) + tuple(unknown_args)
