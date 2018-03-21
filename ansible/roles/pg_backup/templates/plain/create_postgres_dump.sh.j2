@@ -2,7 +2,7 @@
 BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
 ENV="{{ deploy_env }}"
-
+HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
 DIRECTORY="{{ postgresql_backup_dir }}/${FILENAME}"
@@ -47,10 +47,10 @@ fi
 
 {% if postgres_s3 %}
 if [ -f "${DIRECTORY}.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "postgres_${BACKUP_TYPE}" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "postgres_${BACKUP_TYPE}_${HOSTNAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 if [ -f "${DIRECTORY}.tar.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "postgres_${BACKUP_TYPE}" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "postgres_${BACKUP_TYPE}_${HOSTNAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 {% endif %}
 
