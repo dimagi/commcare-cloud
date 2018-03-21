@@ -1,5 +1,8 @@
 import getpass
 import os
+
+from memoized import memoized
+
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from six.moves import shlex_quote
 
@@ -15,13 +18,11 @@ DEPRECATED_ANSIBLE_ARGS = [
 
 class AnsibleContext(object):
     def __init__(self, args):
-        self._ansible_vault_password = None
         self.env_vars = self._build_env(args)
 
+    @memoized
     def get_ansible_vault_password(self):
-        if self._ansible_vault_password is None:
-            self._ansible_vault_password = getpass.getpass("Vault Password: ")
-        return self._ansible_vault_password
+        return getpass.getpass("Vault Password: ")
 
     def _build_env(self, args):
         """Look for args that have been flagged as environment variables
