@@ -63,10 +63,10 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args, ansible_context=None, always_skip_check=False):
+    def run(self, args, unknown_args, always_skip_check=False):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
-        ansible_context = ansible_context or AnsibleContext(args)
+        ansible_context = AnsibleContext(args)
         check_branch(args)
         public_vars = environment.public_vars
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
@@ -422,19 +422,17 @@ class Service(_AnsiblePlaybookAlias):
 
     def run_supervisor_action_for_service_group(self, service_group, action, args, unknown_args):
         exit_code = 0
-        ansible_context = AnsibleContext(args)
         for service in self.services(service_group, args):
             args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
             supervisor_command_name = self.get_supervisor_program_name(service, args.environment)
             args.shell_command = "supervisorctl %s %s" % (action, supervisor_command_name)
-            exit_code = RunShellCommand(self.parser).run(args, unknown_args, ansible_context)
+            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
             if exit_code is not 0:
                 return exit_code
         return exit_code
 
     def run_status_for_service_group(self, service_group, args, unknown_args):
         exit_code = 0
-        ansible_context = AnsibleContext(args)
         args.silence_warnings = True
         if service_group in ["touchforms", "formplayer", "webworkers"]:
             exit_code = self.run_supervisor_action_for_service_group(service_group, 'status', args, unknown_args)
@@ -448,7 +446,7 @@ class Service(_AnsiblePlaybookAlias):
                     else:
                         args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
                     args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                    exit_code = RunShellCommand(self.parser).run(args, unknown_args, ansible_context)
+                    exit_code = RunShellCommand(self.parser).run(args, unknown_args)
                 if exit_code is not 0:
                     # if any service status check didn't go smoothly exit right away
                     return exit_code
