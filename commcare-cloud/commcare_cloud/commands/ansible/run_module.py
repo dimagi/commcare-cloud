@@ -110,7 +110,7 @@ class RunAnsibleModule(CommandBase):
             print_command(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
-                p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
+                p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
             else:
                 p.communicate()
             return p.returncode
