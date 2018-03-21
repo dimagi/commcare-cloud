@@ -1,8 +1,6 @@
 SITE_HOST: 'www.icds-cas.gov.in'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
-deploy_env: icds
-env_name: icds-new
 internal_domain_name: 'internal-icds-new.commcarehq.org'
 cluster_ip_range: '10.247.164.0/23'
 
@@ -148,12 +146,7 @@ postgresql_dbs:
     create: False
     django_migrate: False
 
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
+redis_appendonly: 'no'
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
@@ -371,6 +364,7 @@ localsettings:
             - 'static-infrastructure_form'
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
+            - 'static-postnatal_care_forms'
             - 'static-thr_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'

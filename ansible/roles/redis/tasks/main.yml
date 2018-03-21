@@ -34,6 +34,15 @@
 - name: Set the kernel paramter for vm overcommit 
   sysctl: name=vm.overcommit_memory value="{{ redis_overcommit_memory }}" state=present
 
+- name: create redis data dir
+  become: yes
+  file:
+    path: '{{ redis_db_dir }}'
+    owner: redis
+    group: redis
+    mode: 0755
+    state: directory
+
 - name: start the redis service
   service: name="{{ redis_service }}" state=started enabled=yes
   tags: after-reboot

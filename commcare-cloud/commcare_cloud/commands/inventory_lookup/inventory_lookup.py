@@ -88,7 +88,7 @@ class DjangoManage(CommandBase):
         public_vars = environment.public_vars
         # the default 'cchq' is redundant with ansible/group_vars/all.yml
         cchq_user = public_vars.get('cchq_user', 'cchq')
-        deploy_env = public_vars['deploy_env']
+        deploy_env = environment.meta_config.deploy_env
         # the paths here are redundant with ansible/group_vars/all.yml
         code_current = '/home/{cchq_user}/www/{deploy_env}/current'.format(
             cchq_user=cchq_user, deploy_env=deploy_env)

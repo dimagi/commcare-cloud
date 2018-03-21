@@ -6,6 +6,7 @@ import os
 import sys
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
 from .argparse14 import ArgumentParser
 
 from .commands.ansible.ansible_playbook import (
@@ -39,6 +40,7 @@ COMMAND_TYPES = [
     Mosh,
     DjangoManage,
     Service,
+    ValidateEnvironmentSettings,
 ]
 
 
