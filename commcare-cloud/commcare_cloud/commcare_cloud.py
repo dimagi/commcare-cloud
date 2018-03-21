@@ -49,7 +49,7 @@ def run_on_control_instead(args, sys_argv):
     argv.remove('--control')
     executable = 'commcare-cloud'
     cmd_parts = [
-        executable, args.environment, 'ssh', 'control',
+        executable, args.env_name, 'ssh', 'control',
         'source ~/init-ansible && git checkout master && control/update_code.sh && source ~/init-ansible && {} {}'
         .format(executable, ' '.join([shlex_quote(arg) for arg in argv]))
     ]
@@ -62,7 +62,7 @@ def main():
     os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
     available_envs = get_available_envs()
-    parser.add_argument('environment', choices=available_envs, help=(
+    parser.add_argument('env_name', choices=available_envs, metavar='environment', help=(
         "server environment to run against"
     ))
     parser.add_argument('--control', action='store_true', help=(

@@ -65,7 +65,7 @@ class RunAnsibleModule(CommandBase):
         ))
 
     def run(self, args, unknown_args, ansible_context=None):
-        environment = get_environment(args.environment)
+        environment = get_environment(args.env_name)
         environment.create_generated_yml()
         ansible_context = ansible_context or AnsibleContext(args)
         public_vars = environment.public_vars
