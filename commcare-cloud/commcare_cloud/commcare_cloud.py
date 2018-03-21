@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import os
 
 import sys
+import warnings
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
@@ -58,6 +59,23 @@ def run_on_control_instead(args, sys_argv):
     os.execvp(executable, cmd_parts)
 
 
+def add_backwards_compatibility_to_args(args):
+    """
+    make accessing args.environment trigger a DeprecationWarning and return args.env_name
+
+    This function and any calls to it may be deleted once all open PRs using args.environment
+    have been merged and all such usage fixed.
+    """
+    class NamespaceWrapper(args.__class__):
+        @property
+        def environment(self):
+            warnings.warn("args.environment is deprecated. Use args.env_name instead.",
+                          DeprecationWarning)
+            return self.env_name
+
+    args.__class__ = NamespaceWrapper
+
+
 def main():
     os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
@@ -82,6 +100,9 @@ def main():
             commands[alias] = cmd
 
     args, unknown_args = parser.parse_known_args()
+
+    add_backwards_compatibility_to_args(args)
+
     if args.control:
         run_on_control_instead(args, sys.argv)
     exit_code = commands[args.command].run(args, unknown_args)
