@@ -132,7 +132,6 @@ class DeployMetadata(object):
         branch = repo.get_branch(self._code_branch)
         self._deploy_ref = branch.commit.sha
 
-        # Causes setup_release to fail fast if the right github permissions aren't set
         try:
             repo.create_git_ref(
                 ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
