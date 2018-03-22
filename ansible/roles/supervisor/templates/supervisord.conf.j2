@@ -134,5 +134,4 @@ serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
 ; include files themselves.
 
 [include]
-files = {{ legacy_supervisor_task_conf }}/*.conf
-files = {{ supervisor_task_conf }}/*.conf
+files = {{ legacy_supervisor_task_conf }}/*.conf {{ supervisor_task_conf }}/*.conf
