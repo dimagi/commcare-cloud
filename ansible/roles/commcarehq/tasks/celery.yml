@@ -1,0 +1,73 @@
+- name: define reminder queue services
+  become: cchq
+  template:
+    src: "../templates/common_supervisor_management.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
+  when: app_processes_config.celery_processes.get(inventory_hostname).reminder_queue is defined
+  with_items:
+    - dest_name: supervisor_reminder_queue.conf
+      process_name: reminder_queue
+      management_command: run_reminder_queue
+    - dest_name: supervisor_queue_schedule_instances.conf
+      process_name: queue_schedule_instances
+      management_command: queue_schedule_instances
+    - dest_name: supervisor_handle_survey_actions.conf
+      process_name: handle_survey_actions
+      management_command: handle_survey_actions
+  tags:
+    - services
+  register: celery_reminder_queue_files
+
+- name: define submission reprocessing queue services
+  become: cchq
+  template:
+    src: "../templates/common_supervisor_management.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_submission_reprocessing_queue.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname).submission_reprocessing_queue is defined
+  with_items:
+    - process_name: submission_reprocessing_queue
+      management_command: run_submission_reprocessing_queue
+  tags:
+    - services
+  register: celery_submission_reprocessing_files
+
+- name: define pillow retry queue services
+  become: cchq
+  template:
+    src: "../templates/common_supervisor_management.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname).pillow_retry_queue is defined
+  with_items:
+    - process_name: pillow_retry_queue
+      management_command: run_pillow_retry_queue
+  tags:
+    - services
+  register: celery_pillow_retry_files
+
+- name: define sms queue services
+  become: cchq
+  template:
+    src: "../templates/common_supervisor_management.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_sms_queue.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname).sms_queue is defined
+  with_items:
+    - process_name: sms_queue
+      management_command: run_sms_queue
+  tags:
+    - services
+  register: celery_sms_files
+
+- name: define errand boy services
+  become: cchq
+  template:
+    src: "../templates/supervisor_errand_boy.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
+  tags:
+    - services
+  register: celery_errand_boy_files
+
+- set_fact:
+    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_pillow_retry_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }}"
+
+- set_fact:
+    celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"

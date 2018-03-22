@@ -25,15 +25,11 @@ from ..const import (
     ROLES_DJANGO,
     ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
-    ROLES_SMS_QUEUE,
-    ROLES_REMINDER_QUEUE,
-    ROLES_PILLOW_RETRY_QUEUE,
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
-    ROLES_SUBMISSION_REPROCESSING_QUEUE)
+)
 from fabric import utils
-from ..utils import get_pillow_env_config
 from six.moves import range
 
 
@@ -44,18 +40,8 @@ def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     set_celery_supervisorconf()
     set_djangoapp_supervisorconf()
-    set_errand_boy_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
-    set_pillowtop_supervisorconf()
-    set_sms_queue_supervisorconf()
-    set_reminder_queue_supervisorconf()
-    set_pillow_retry_queue_supervisorconf()
-    set_submissions_reprocessing_queue_supervisorconf()
-    set_websocket_supervisorconf()
-
-    # if needing tunneled ES setup, comment this back in
-    # execute(set_elasticsearch_supervisorconf)
 
 
 def _get_celery_queues():
@@ -157,21 +143,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
     )
 
 
-def set_pillowtop_supervisorconf():
-    # Don't run if there are no hosts for the 'django_pillowtop' role.
-    # If there are no matching roles, it's still run once
-    # on the 'deploy' machine, db!
-    # So you need to explicitly test to see if all_hosts is empty.
-    if env.all_hosts and _check_in_roles(ROLES_PILLOWTOP):
-        _rebuild_supervisor_conf_file(
-            'make_supervisor_pillowtop_conf',
-            'supervisor_pillowtop.conf',
-            {'pillow_env_configs': get_pillow_env_config()}
-        )
-
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_form_feed.conf')
-
-
 def set_djangoapp_supervisorconf():
     django_worker_name = get_django_webworker_name(env.env_name)
     if _check_in_roles(ROLES_DJANGO):
@@ -179,11 +150,6 @@ def set_djangoapp_supervisorconf():
                                       'supervisor_django.conf',
                                       {"django_worker_name": django_worker_name}
                                       )
-
-
-def set_errand_boy_supervisorconf():
-    if _check_in_roles(ROLES_DJANGO + ROLES_CELERY):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_errand_boy.conf')
 
 
 def set_formsplayer_supervisorconf():
@@ -202,33 +168,6 @@ def set_formplayer_spring_supervisorconf():
                                       {'formplayer_spring_instance_name':
                                            get_formplayer_spring_instance_name(env.env_name)}
                                       )
-
-
-def set_sms_queue_supervisorconf():
-    if 'sms_queue' in _get_celery_queues() and _check_in_roles(ROLES_SMS_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_sms_queue.conf')
-
-
-def set_reminder_queue_supervisorconf():
-    if 'reminder_queue' in _get_celery_queues() and _check_in_roles(ROLES_REMINDER_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_reminder_queue.conf')
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_queue_schedule_instances.conf')
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_handle_survey_actions.conf')
-
-
-def set_pillow_retry_queue_supervisorconf():
-    if 'pillow_retry_queue' in _get_celery_queues() and _check_in_roles(ROLES_PILLOW_RETRY_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_pillow_retry_queue.conf')
-
-
-def set_submissions_reprocessing_queue_supervisorconf():
-    if 'submission_reprocessing_queue' in _get_celery_queues() and _check_in_roles(ROLES_SUBMISSION_REPROCESSING_QUEUE):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_submission_reprocessing_queue.conf')
-
-
-def set_websocket_supervisorconf():
-    if _check_in_roles(ROLES_STATIC):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_websockets.conf')
 
 
 def please_put(local_dir, remote_dir, temp_dir='/tmp'):
