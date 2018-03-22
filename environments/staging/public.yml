@@ -55,7 +55,7 @@ postgres_s3: False
 
 aws_region: 'us-east-1'
 
-postgresql_version: '9.6'
+postgresql_version: '9.4'
 postgresql_max_connections: 20
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
