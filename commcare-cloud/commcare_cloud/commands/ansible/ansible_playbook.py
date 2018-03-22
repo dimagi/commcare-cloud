@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import subprocess
+
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
@@ -14,10 +15,6 @@ from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_ch
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
-from commcare_cloud.commands.ansible.run_module import (
-    RunAnsibleModule,
-    RunShellCommand,
-)
 
 
 class AnsiblePlaybook(CommandBase):
@@ -54,10 +51,10 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args, ansible_context=None):
-        environment = get_environment(args.environment)
+    def run(self, args, unknown_args, always_skip_check=False):
+        environment = get_environment(args.env_name)
         environment.create_generated_yml()
-        ansible_context = ansible_context or AnsibleContext(args)
+        ansible_context = AnsibleContext(args)
         check_branch(args)
         public_vars = environment.public_vars
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
@@ -93,9 +90,11 @@ class AnsiblePlaybook(CommandBase):
             cmd_parts += get_common_ssh_args(public_vars)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
+            if ask_vault_pass:
+                environment.get_ansible_vault_password()
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
             if ask_vault_pass:
-                p.communicate(input='{}\n'.format(ansible_context.get_ansible_vault_password()))
+                p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
             else:
                 p.communicate()
             return p.returncode
@@ -108,7 +107,11 @@ class AnsiblePlaybook(CommandBase):
 
         exit_code = 0
 
-        if args.skip_check:
+        if always_skip_check:
+            user_wants_to_apply = ask(
+                'This command will apply without running the check first. Continue?',
+                quiet=args.quiet)
+        elif args.skip_check:
             user_wants_to_apply = ask('Do you want to apply without running the check first?',
                                       quiet=args.quiet)
         else:
@@ -182,9 +185,8 @@ class AfterReboot(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        args.skip_check = True
         unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
 class RestartElasticsearch(_AnsiblePlaybookAlias):
@@ -213,15 +215,14 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.environment)
+        environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        args.skip_check = True
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
 class UpdateUsers(_AnsiblePlaybookAlias):
@@ -235,181 +236,3 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=users',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-
-class Service(_AnsiblePlaybookAlias):
-    """
-    example usages
-    1. To restart riak and stanchion only for riakcs
-       only option can be skipped to restart all services which are a part of riakcs
-       This would always act on riak, riak-cs and stanchion, in that order
-        commcare-cloud staging service riakcs restart --only=riak,stanchion
-    2. To start services under proxy i.e nginx
-        commcare-cloud staging service proxy restart
-    3. To get status
-        commcare-cloud staging service riakcs status
-        commcare-cloud staging service riakcs status --only=stanchion
-    4. Limit to hosts
-        commcare-cloud staging service riakcs status --only=riak,riak-cs --limit=hqriak00-staging.internal-va.commcarehq.org
-    """
-    command = 'service'
-    help = (
-        "Manage services."
-    )
-    SERVICES = {
-        # service_group: services
-        'proxy': ['nginx'],
-        'riakcs': ['riak', 'riak-cs', 'stanchion'],
-        'stanchion': ['stanchion'],
-        'es': ['elasticsearch'],
-        'redis': ['redis'],
-        'couchdb2': ['couchdb2'],
-        'postgresql': ['postgresql', 'pgbouncer'],
-        'rabbitmq': ['rabbitmq'],
-        'kafka': ['kafka', 'zookeeper'],
-        'pg_standby': ['postgresql', 'pgbouncer'],
-    }
-    ACTIONS = ['start', 'stop', 'restart', 'status']
-    DESIRED_STATE_FOR_ACTION = {
-        'start': 'started',
-        'stop': 'stopped',
-        'restart': 'restarted',
-    }
-    # add this mapping where service group is not same as the inventory group itself
-    INVENTORY_GROUP_FOR_SERVICE = {
-        'stanchion': 'stanchion',
-        'elasticsearch': 'elasticsearch',
-        'zookeeper': 'zookeeper',
-    }
-    # add this if the service package is not same as the service itself
-    SERVICE_PACKAGES_FOR_SERVICE = {
-        'rabbitmq': 'rabbitmq-server',
-        'kafka': 'kafka-server'
-    }
-    # add this if the module name is not same as the service itself
-    ANSIBLE_MODULE_FOR_SERVICE = {
-        "redis": "redis-server",
-
-    }
-
-    def make_parser(self):
-        super(Service, self).make_parser()
-        self.parser.add_argument(
-            'service_group',
-            choices=self.SERVICES.keys(),
-            help="The service group to run the command on"
-            )
-        self.parser.add_argument(
-            'action',
-            choices=self.ACTIONS,
-            help="What action to take"
-        )
-        self.parser.add_argument(
-            '--only',
-            help=(
-                "Specific comma separated services to act on for the service group. "
-                "Example Usage: --only=riak,stanchion"
-            )
-        )
-
-    def get_inventory_group_for_service(self, service, service_group):
-        return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
-
-    def run_status_for_service_group(self, service_group, args, unknown_args):
-        exit_code = 0
-        ansible_context = AnsibleContext(args)
-        for service in self.services(service_group, args):
-            if service == "redis":
-                args.shell_command = "redis-cli ping"
-            else:
-                args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
-                args.silence_warnings = True
-            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            exit_code = RunShellCommand(self.parser).run(args, unknown_args, ansible_context)
-            if exit_code is not 0:
-                # if any service status check didn't go smoothly exit right away
-                return exit_code
-        return exit_code
-
-    def run_ansible_module_for_service_group(self, service_group, args, unknown_args, inventory_group=None):
-        for service in self.SERVICES[service_group]:
-            action = args.action
-            state = self.DESIRED_STATE_FOR_ACTION[action]
-            args.inventory_group = (
-                inventory_group or
-                self.get_inventory_group_for_service(service, service_group))
-            args.module = 'service'
-            args.module_args = "name=%s state=%s" % (
-                self.ANSIBLE_MODULE_FOR_SERVICE.get(service, service),
-                state)
-            return RunAnsibleModule(self.parser).run(
-                args,
-                unknown_args
-            )
-
-    def run_ansible_playbook_for_service_group(self, service_group, args, unknown_args):
-        tags = []
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.playbook = "service_playbooks/%s.yml" % service_group
-        services = self.services(service_group, args)
-        if args.only:
-            # for options to act on certain services create tags
-            for service in services:
-                if service:
-                    tags.append("%s_%s" % (action, service))
-            if tags:
-                unknown_args.append('--tags=%s' % ','.join(tags), )
-        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-    def services(self, service_group, args):
-        if args.only:
-            return args.only.split(',')
-        else:
-            return self.SERVICES[service_group]
-
-    def run_for_es(self, args, unknown_args):
-        action = args.action
-        if action == "restart":
-            return RestartElasticsearch(self.parser).run(args, unknown_args)
-        else:
-            return self.run_ansible_module_for_service_group("es", args, unknown_args)
-
-    def ensure_permitted_only_options(self, service_group, args):
-        services = self.services(service_group, args)
-        for service in services:
-            assert service in self.SERVICES[service_group], \
-                ("%s not allowed. Please use from %s for --only option" %
-                 (service, self.SERVICES[service_group])
-                 )
-
-    def perform_action(self, service_group, args, unknown_args):
-        exit_code = 0
-        if service_group in ['proxy', 'redis', 'couchdb2', 'postgresql', 'rabbitmq']:
-            exit_code = self.run_ansible_module_for_service_group(service_group, args, unknown_args)
-        elif service_group in ['riakcs', 'kafka']:
-            exit_code = self.run_ansible_playbook_for_service_group(service_group, args, unknown_args)
-        elif service_group == "stanchion":
-            if not args.only:
-                args.only = "stanchion"
-            exit_code = self.run_ansible_playbook_for_service_group('riakcs', args, unknown_args)
-        elif service_group == "es":
-            exit_code = self.run_for_es(args, unknown_args)
-        elif service_group == "pg_standby":
-            exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args, inventory_group="pg_standby")
-        return exit_code
-
-    def run(self, args, unknown_args):
-        service_group = args.service_group
-        args.remote_user = 'ansible'
-        args.become = True
-        args.become_user = False
-        if args.only:
-            self.ensure_permitted_only_options(service_group, args)
-        action = args.action
-        if action == "status":
-            exit_code = self.run_status_for_service_group(service_group, args, unknown_args)
-        else:
-            exit_code = self.perform_action(service_group, args, unknown_args)
-        return exit_code

@@ -1,0 +1,8 @@
+dev_users:
+  present:
+    - dmiller
+    - droberts
+    - jwilson
+    - nsharma
+    - npellegrino
+  absent: []
