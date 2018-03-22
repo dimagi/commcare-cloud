@@ -142,8 +142,6 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-redis_appendonly: 'no'
-
 server_email: commcare@pna.sn
 default_from_email: commcare@pna.sn
 
