@@ -1,6 +1,6 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
-SITE_HOST: '{{ hostvars[groups.proxy.0].ansible_host }}'
+SITE_HOST: "{{ hostvars[groups.proxy.0].ansible_hostname }}"
 internal_domain_name: 'localdomain'
 
 etc_hosts_lines: []
