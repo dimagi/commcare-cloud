@@ -1,0 +1,29 @@
+- name: define pillowtop services
+  become: cchq
+  hosts: pillowtop
+  template:
+    src: "../templates/supervisor_pillowtop.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
+  tags:
+    - services
+  register: pillowtop_conf_file
+
+- name: define form feed service
+  become: cchq
+  hosts: pillowtop
+  template:
+    src: "../templates/common_supervisor_management.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_form_feed.conf"
+  when: inventory_hostname == groups.pillowtop.0
+  with_items:
+    - process_name: form_feed
+      management_command: run_form_websocket_feed
+  tags:
+    - services
+  register: pillowtop_form_feed_conf_file
+
+- set_fact:
+    pillowtop_supervisor_files: "{{ pillowtop_conf_file.get('results', []) + pillowtop_form_feed_conf_file.get('results', []) }}"
+
+- set_fact:
+    pillowtop_managed_files: "{{ pillowtop_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + pillowtop_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
