@@ -5,13 +5,8 @@ commcare-cloud, via commands such as `commcare-cloud <env> ansible-playbook`
 and the other shortcut commands it provides.
 
 ## Todos and Deprecated things
-- The contents of `ansible/inventories/` contains inventory files that weren't clearly part
-  of an environment, and which may or may not still be useful.
-  Environments' inventories live in `environments/`.
 - `ansible/vars/` still contains user keys, though these conceptually should now live
   somewhere in `environments` or `environmental_defaults`.
-- `ansible/vars/` also contains variables for a `dev` environment.
-  This may or may not still be usable for a local vagrant setup.
 - There's a file `DimagiKeyStore` that we rely on (for old J2ME support)
   that isn't commited to this directory.
   Instead, to do a full deploy, one must obtain a copy of it and place it at
