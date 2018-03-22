@@ -11,7 +11,7 @@
 
 - name: Add public keys for current devs
   become: yes
-  authorized_key: user="{{ item }}" state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key: user="{{ item }}" state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
   ignore_errors: "{{ ansible_check_mode }}"
 
@@ -42,12 +42,12 @@
 
 - name: Authorize current devs to login as ansible
   become: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
+  authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
 - name: De-authorize ansible & cchq pubkey  # todo: remove after applied to all envs
   become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', 'vars/users/' ~ item ~ '.pub') }}"
+  authorized_key: user=ansible state=absent key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
   with_items:
     - ansible
     - cchq

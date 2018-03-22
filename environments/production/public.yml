@@ -63,7 +63,7 @@ backup_es: True
 postgres_s3: True
 
 aws_region: 'us-east-1'
-postgresql_backup_days: 2
+postgresql_backup_days: 1
 postgresql_version: '9.4'
 postgresql_max_connections: 300
 pgbouncer_max_connections: 800
@@ -80,48 +80,40 @@ formplayer_purge_time_spec: '8d'
 postgresql_dbs:
   - django_alias: default
     name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ groups.postgresql.0 }}"
+    host: "hqdb0.internal-va.commcarehq.org"
   - django_alias: proxy
     name: commcarehq_proxy
-    host: "{{ groups.postgresql.1 }}"
+    host: "hqdb1.internal-va.commcarehq.org"
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
     name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
+    host: "pgsynclog.internal-va.commcarehq.org"
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 204]
-    host: "{{ groups.postgresql.1 }}"
+    host: "hqdb1.internal-va.commcarehq.org"
   - django_alias: p2
     name: commcarehq_p2
     shards: [205, 409]
-    host: "{{ groups.postgresql.1 }}"
+    host: "hqdb1.internal-va.commcarehq.org"
   - django_alias: p3
     name: commcarehq_p3
     shards: [410, 614]
-    host: "{{ groups.postgresql.1 }}"
+    host: "hqdb1.internal-va.commcarehq.org"
   - django_alias: p4
     name: commcarehq_p4
     shards: [615, 819]
-    host: "{{ groups.postgresql.1 }}"
+    host: "hqdb1.internal-va.commcarehq.org"
   - django_alias: p5
     name: commcarehq_p5
     shards: [820, 1023]
-    host: "{{ groups.postgresql.1 }}"
+    host: "hqdb1.internal-va.commcarehq.org"
   - name: commcarehq_ucr
-    host: "{{ groups.postgresql.0 }}"
+    host: "hqdb0.internal-va.commcarehq.org"
     query_stats: True
     django_alias: ucr
     django_migrate: False
   - name: "{{ formplayer_db_name }}"
-    host: "{{ groups.postgresql.0 }}"
-
-redis_max_memory: 4096mb
-redis_logfile: '/var/log/redis/redis-server.log'
-redis_syslog_enabled: 'no'
-redis_database_save_times: []
-redis_max_clients: 10000
-redis_maxmemory_policy: allkeys-lru
-redis_appendonly: 'yes'
+    host: "hqdb0.internal-va.commcarehq.org"
 
 KSPLICE_ACTIVE: yes
 
@@ -221,7 +213,7 @@ localsettings:
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST_TOKEN }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
+  PG_DATABASE_HOST: "hqdb0.internal-va.commcarehq.org"
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
   PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"

@@ -7,6 +7,12 @@ import posixpath
 from contextlib import contextmanager
 import uuid
 
+from commcare_cloud.commands.celery_utils import get_celery_worker_name
+from commcare_cloud.commands.ansible.helpers import (
+    get_django_webworker_name,
+    get_formplayer_instance_name,
+    get_formplayer_spring_instance_name,
+)
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
@@ -106,10 +112,15 @@ def set_celery_supervisorconf():
             conf_destination_filename = 'supervisor_celery_worker_{}_{}.conf'.format(
                 comma_separated_queue_names, worker_num)
 
+            worker_name = get_celery_worker_name(env.env_name,
+                                                 params['comma_separated_queue_names'],
+                                                 params['worker_num'])
             _rebuild_supervisor_conf_file(
                 'make_supervisor_conf',
                 'supervisor_celery_worker.conf',
-                {'celery_params': params},
+                {'celery_params': params,
+                 'worker_name': worker_name,
+                 },
                 conf_destination_filename,
             )
 
@@ -162,8 +173,12 @@ def set_pillowtop_supervisorconf():
 
 
 def set_djangoapp_supervisorconf():
+    django_worker_name = get_django_webworker_name(env.env_name)
     if _check_in_roles(ROLES_DJANGO):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_django.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_django.conf',
+                                      {django_worker_name: django_worker_name}
+                                      )
 
 
 def set_errand_boy_supervisorconf():
@@ -173,12 +188,20 @@ def set_errand_boy_supervisorconf():
 
 def set_formsplayer_supervisorconf():
     if _check_in_roles(ROLES_TOUCHFORMS):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formsplayer.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_formsplayer.conf',
+                                      {'formplayer_instance_name':
+                                           get_formplayer_instance_name(env.env_name)}
+                                      )
 
 
 def set_formplayer_spring_supervisorconf():
     if _check_in_roles(ROLES_FORMPLAYER):
-        _rebuild_supervisor_conf_file('make_supervisor_conf', 'supervisor_formplayer_spring.conf')
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_formplayer_spring.conf',
+                                      {'formplayer_spring_instance_name':
+                                           get_formplayer_spring_instance_name(env.env_name)}
+                                      )
 
 
 def set_sms_queue_supervisorconf():
