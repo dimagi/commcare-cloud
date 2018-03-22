@@ -50,11 +50,7 @@ pillows:
   'pillow1':
     AppDbChangeFeedPillow:
       num_processes: 1
-    ApplicationBlobDeletionPillow:
-      num_processes: 1
     ApplicationToElasticsearchPillow:
-      num_processes: 1
-    BlobDeletionPillow:
       num_processes: 1
     CacheInvalidatePillow:
       num_processes: 1
