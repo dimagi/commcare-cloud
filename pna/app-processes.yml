@@ -5,7 +5,7 @@ service_blacklist:
   - supervisor_websockets.conf
 
 celery_processes:
-  '*':
+  'pnaserver1':
     repeat_record_queue,celery,export_download_queue:
       concurrency: 1
     background_queue,case_rule_queue:
@@ -31,7 +31,7 @@ celery_processes:
     reminder_rule_queue:
     sms_queue:
 pillows:
-  '*':
+  'pnaserver1':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationBlobDeletionPillow:
