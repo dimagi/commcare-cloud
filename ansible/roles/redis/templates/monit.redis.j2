@@ -3,4 +3,4 @@
    group redis
    start program = "/etc/init.d/{{ redis_service_name }} start"
    stop program = "/etc/init.d/{{ redis_service_name }} stop"
-   if failed host {{ inventory_hostname|ipaddr }} port {{ redis_port }} then restart
+   if failed host {{ inventory_hostname }} port {{ redis_port }} then restart
