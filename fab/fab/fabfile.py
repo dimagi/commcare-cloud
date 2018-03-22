@@ -217,26 +217,26 @@ def _confirm_environment_time(env_name):
     if not console.confirm(message, default=False):
         utils.abort('Action aborted.')
 
-
-@task
-def development():
-    """
-    Must pass in the 'inventory' env variable,
-    which is the path to an ansible inventory file
-    and an 'deploy_env' env variable,
-    which is the name of the directory to be used under /home/cchq/www/
-
-    Example command:
-
-        fab development awesome_deploy \
-        --set inventory=/path/to/commcare-cloud/ansible/inventories/development,deploy_env=dev
-
-    """
-    # not sure if this still works, it was broken for a while without anyone saying anything
-    # so guessing we can delete this task altogether? ~ Danny
-    env.env_name = 'development'
-    load_env()
-    execute(env_common)
+#
+# @task
+# def development():
+#     """
+#     Must pass in the 'inventory' env variable,
+#     which is the path to an ansible inventory file
+#     and an 'deploy_env' env variable,
+#     which is the name of the directory to be used under /home/cchq/www/
+#
+#     Example command:
+#
+#         fab development awesome_deploy \
+#         --set inventory=/path/to/commcare-cloud/ansible/inventories/development,deploy_env=dev
+#
+#     """
+#     # not sure if this still works, it was broken for a while without anyone saying anything
+#     # so guessing we can delete this task altogether? ~ Danny
+#     env.env_name = 'development'
+#     load_env()
+#     execute(env_common)
 
 
 def env_common():
