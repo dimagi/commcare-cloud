@@ -93,7 +93,7 @@ For the Lenovo T440s:
   commcare-cloud production deploy-stack --skip-tags=common
   ```
 
-### Setting up ansible control machine
+## Setting up ansible control machine
 
 This must be done as the root user.  Run `ansible-deploy-control` to get the
 proper command.
@@ -128,37 +128,7 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 ### Setting up a dev account on ansible control machine
 See main [README](../README.md) file.
 
-### Simulate dev user setup on vagrant control machine
-
-Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
-`ansible/vars/dev/users/{username}.pub`.
-
-Login with `vagrant ssh control`
-
-```bash
-commcare-cloud development ansible-playbook deploy_control.yml -u vagrant
-```
-
-Login as your user: `vagrant ssh control -- -l $USER -A
-
-```bash
-ln -s /vagrant ~/commcare-cloud
-. commcare-cloud/control/init.sh
-
-# run ansible
-ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
-  -e @vars/dev/dev_private.yml -e @vars/dev/dev_public.yml \
-  --diff deploy_stack.yml --tags=users,ssh # or whatever
-```
-
-#### Alternately, deploy directly from your dev environment
-
-```bash
-ansible-playbook -u vagrant -i inventories/development -e @vars/dev/dev_private.yml \
-  -e @vars/dev/dev_public.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
-```
-
-### Managing secrets with Vault
+## Managing secrets with Vault
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
 
 All the secret variables and private data required for the different environments is included
@@ -195,10 +165,3 @@ ENV=production && ansible-vault [encrypt|decrypt] filename
 ```
 
 For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
-
-### Running against Vagrant machines from localhost
-It is also possible to run tasks on the vagrant machines from you're local machine:
-
-```
-ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
-```
