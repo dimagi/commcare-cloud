@@ -51,5 +51,6 @@
     - {"name": "couch", "enabled": "{{ datadog_integration_couch or inventory_hostname == couchdb2_first_host }}"}
     - {"name": "couchdb2", "enabled": false}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
+    - {"name": "http", "enabled": "{{ datadog_integration_http }}"}
     # "Datadog Integration Graveyard": list globally removed integrations below
     - {"name": "process", "enabled": false}
