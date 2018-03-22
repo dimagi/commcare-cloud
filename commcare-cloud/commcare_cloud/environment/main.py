@@ -1,3 +1,5 @@
+import getpass
+
 import yaml
 from memoized import memoized, memoized_property
 
@@ -25,6 +27,10 @@ class Environment(object):
         self.translated_app_processes_config
         self.fab_settings_config
         self.inventory_manager
+
+    @memoized
+    def get_ansible_vault_password(self):
+        return getpass.getpass("Vault Password: ")
 
     @memoized_property
     def public_vars(self):

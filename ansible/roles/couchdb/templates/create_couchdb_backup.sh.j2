@@ -1,7 +1,7 @@
 #!/bin/bash
 BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
-
+HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
 
@@ -15,5 +15,5 @@ rsync -avH --delete {{ couch_backup_dir }}/ {{ remote_couch_backup }}:{{ couch_b
 {% endif %}
 
 {% if couch_s3 %}
-( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "couchdb" {{ couchdb_snapshot_bucket }} {{aws_endpoint}} )
+( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz" {{ couchdb_snapshot_bucket }} {{aws_endpoint}} )
 {% endif %}

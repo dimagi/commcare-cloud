@@ -729,6 +729,30 @@ MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
 REPEATERS_WHITELIST = {{ localsettings.REPEATERS_WHITELIST }}
 {% endif %}
 
+{% if localsettings.AUDIT_MODEL_SAVE is defined %}
+AUDIT_MODEL_SAVE= [
+  {% for model in localsettings.get("AUDIT_MODEL_SAVE") -%}
+  '{{ model }}',
+  {% endfor -%}
+]
+{% endif %}
+
+{% if localsettings.AUDIT_MODULES is defined %}
+AUDIT_MODULES= [
+  {% for module in localsettings.get("AUDIT_MODULES") -%}
+  '{{ module }}',
+  {% endfor -%}
+]
+{% endif %}
+
+{% if localsettings.AUDIT_VIEWS is defined %}
+AUDIT_VIEWS= [
+  {% for view in localsettings.get("AUDIT_VIEWS") -%}
+  '{{ view }}',
+  {% endfor -%}
+]
+{% endif %}
+
 SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
