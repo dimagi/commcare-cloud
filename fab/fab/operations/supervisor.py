@@ -177,7 +177,7 @@ def set_djangoapp_supervisorconf():
     if _check_in_roles(ROLES_DJANGO):
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_django.conf',
-                                      {django_worker_name: django_worker_name}
+                                      {"django_worker_name": django_worker_name}
                                       )
 
 
