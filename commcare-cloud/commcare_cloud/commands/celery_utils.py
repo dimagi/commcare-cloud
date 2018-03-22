@@ -53,7 +53,7 @@ def get_celery_workers_config(environment_name):
                         if not celery_worker_config.get(queue_name):
                             celery_worker_config[queue_name] = defaultdict(list)
 
-                        if details.get('num_workers', 1) > 2:
+                        if details.get('num_workers', 1) > 1:
                             for num in range(details.get('num_workers')):
                                 celery_worker_name = get_celery_worker_name(
                                     environment_name, comma_separated_queue_names, num)
