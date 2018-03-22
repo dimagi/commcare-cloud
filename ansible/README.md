@@ -14,38 +14,34 @@ and the other shortcut commands it provides.
   Originally this way because its contents are secret, it would now be preferable
   for this file to live encrypted in `environments/` or `environmental_defaults/`.
 
-
 ## Local vagrant setup
 
-**Note** This section is quite old, and the latest person to revamp this file
-mostly just left this section untouched.
-If you want to use this, ask around to see if anyone can tell you whether these
-steps currently work or not before going down too much of a rabbit hole
-trying to follow these docs.
-
-Ensure you have downloaded Vagrant and virtual box
-
-### Multi-machine cluster setup
-
-Then start vagrant:
+Ensure you have downloaded Vagrant and virtual box then start vagrant:
 
 ```
 $ vagrant up
 ```
 
+This will setup 4 VMs:
+* 192.168.33.14 (control)
+* 192.168.33.15 (app1)
+* 192.168.33.16 (db1)
+* 192.168.33.17 (proxy1)
+
+See `environments/development` the configuration of this testing environment.
+
+The VMs should be configured so that you can SSH between them as the `vagrant` user
+without requiring a password.
+
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-The `./scripts/reset-vms` command can be run at any time, possibly with a subset of the
-VM names, to reset the VMs to their initial state and provision them with your
-SSH key. Run `./scripts/reset-vms` without arguments for usage info.
-
-Once vagrant is up, you may ssh into the control server and run a full
+Once vagrant is up, you may SSH into the control server and run a full
 deployment:
 
 ```
 $ vagrant ssh control
 ...
-$ commcare-cloud development aps -u vagrant
+$ commcare-cloud development deploy-stack
 ```
 
 This will build a database server, a proxy server and a single web worker,
@@ -73,7 +69,7 @@ $ vagrant ssh control
 $ python -m smtpd -n -c DebuggingServer 0.0.0.0:1025
 ```
 
-### Troubleshooting
+### Troubleshooting Vagrant
 
 `vagrant up` fails.
 * Start VirtualBox `$ VirtualBox`
