@@ -1,5 +1,7 @@
-import getpass
 import os
+
+from commcare_cloud.environment.main import get_environment
+
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from six.moves import shlex_quote
 
@@ -15,13 +17,7 @@ DEPRECATED_ANSIBLE_ARGS = [
 
 class AnsibleContext(object):
     def __init__(self, args):
-        self._ansible_vault_password = None
         self.env_vars = self._build_env(args)
-
-    def get_ansible_vault_password(self):
-        if self._ansible_vault_password is None:
-            self._ansible_vault_password = getpass.getpass("Vault Password: ")
-        return self._ansible_vault_password
 
     def _build_env(self, args):
         """Look for args that have been flagged as environment variables
@@ -48,3 +44,33 @@ def get_common_ssh_args(public_vars):
     if common_ssh_args:
         cmd_parts += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
     return cmd_parts
+
+
+def get_django_webworker_name(environment_name):
+    environment = get_environment(environment_name)
+    environment_environment = environment.meta_config.deploy_env
+    project = environment.fab_settings_config.project
+    return "{project}-{environment}-django".format(
+        project=project,
+        environment=environment_environment
+    )
+
+
+def get_formplayer_instance_name(environment_name):
+    environment = get_environment(environment_name)
+    environment_environment = environment.meta_config.deploy_env
+    project = environment.fab_settings_config.project
+    return "{project}-{environment}-formsplayer".format(
+        project=project,
+        environment=environment_environment
+    )
+
+
+def get_formplayer_spring_instance_name(environment_name):
+    environment = get_environment(environment_name)
+    environment_environment = environment.meta_config.deploy_env
+    project = environment.fab_settings_config.project
+    return "{project}-{environment}-formsplayer-spring".format(
+        project=project,
+        environment=environment_environment
+    )

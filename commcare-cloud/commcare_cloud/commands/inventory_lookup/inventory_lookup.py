@@ -26,8 +26,8 @@ class Lookup(CommandBase):
         def exit(message):
             self.parser.error("\n" + message)
         if not args.server:
-            return get_monolith_address(args.environment, exit)
-        return get_server_address(args.environment, args.server, exit)
+            return get_monolith_address(args.env_name, exit)
+        return get_server_address(args.env_name, args.server, exit)
 
     def run(self, args, unknown_args):
         if unknown_args:
@@ -84,7 +84,7 @@ class DjangoManage(CommandBase):
         pass
 
     def run(self, args, manage_args):
-        environment = get_environment(args.environment)
+        environment = get_environment(args.env_name)
         public_vars = environment.public_vars
         # the default 'cchq' is redundant with ansible/group_vars/all.yml
         cchq_user = public_vars.get('cchq_user', 'cchq')

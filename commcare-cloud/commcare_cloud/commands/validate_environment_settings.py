@@ -15,7 +15,7 @@ class ValidateEnvironmentSettings(CommandBase):
         pass
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.environment)
+        environment = get_environment(args.env_name)
         try:
             environment.check()
         except Exception:
