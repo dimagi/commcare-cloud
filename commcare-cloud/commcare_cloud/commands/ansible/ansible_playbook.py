@@ -7,7 +7,7 @@ from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
-)
+    get_user_arg)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_branch, arg_stdout_callback
@@ -73,8 +73,7 @@ class AnsiblePlaybook(CommandBase):
                 '--diff',
             ) + cmd_args
 
-            if not has_arg(unknown_args, '-u', '--user'):
-                cmd_parts += ('-u', 'ansible')
+            cmd_parts += get_user_arg(public_vars, unknown_args)
 
             if not has_arg(unknown_args, '-f', '--forks'):
                 cmd_parts += ('--forks', '15')

@@ -1,5 +1,7 @@
 import getpass
 import os
+
+from commcare_cloud.cli_utils import has_arg
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from six.moves import shlex_quote
 
@@ -47,4 +49,12 @@ def get_common_ssh_args(public_vars):
     cmd_parts = tuple()
     if common_ssh_args:
         cmd_parts += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
+    return cmd_parts
+
+
+def get_user_arg(public_vars, unknown_args):
+    cmd_parts = tuple()
+    if not has_arg(unknown_args, '-u', '--user'):
+        user = public_vars.get('commcare_cloud_remote_user', 'ansible')
+        cmd_parts += ('-u', user)
     return cmd_parts
