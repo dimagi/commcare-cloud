@@ -78,8 +78,6 @@ postgresql_dbs:
     name: commcarehq_synclogs
     host: "{{ groups.postgresql.0 }}"
 
-redis_appendonly: 'no'
-
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "185.12.7.167"
