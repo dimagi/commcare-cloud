@@ -98,15 +98,15 @@ postgresql_dbs:
   - django_alias: p3
     name: commcarehq_p3
     shards: [410, 614]
-    host: "hqdb1.internal-va.commcarehq.org"
+    host: "hqdb2.internal-va.commcarehq.org"
   - django_alias: p4
     name: commcarehq_p4
     shards: [615, 819]
-    host: "hqdb1.internal-va.commcarehq.org"
+    host: "hqdb2.internal-va.commcarehq.org"
   - django_alias: p5
     name: commcarehq_p5
     shards: [820, 1023]
-    host: "hqdb1.internal-va.commcarehq.org"
+    host: "hqdb2.internal-va.commcarehq.org"
   - name: commcarehq_ucr
     host: "hqdb0.internal-va.commcarehq.org"
     query_stats: True
