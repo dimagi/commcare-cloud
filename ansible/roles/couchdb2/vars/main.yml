@@ -6,7 +6,7 @@ couchdb_data_dir: '{{ encrypted_root }}/couchdb2'
 couchdb_secure: False
 couchdb_bind:
   ty: static
-  host: '{{ inventory_hostname|ipaddr }}'
+  host: '{{ inventory_hostname }}'
 couchdb_socket_options: '[{recbuf, 262144}, {sndbuf, 262144}, {nodelay, true}]'
 
 couchdb_install_parent_dir: /usr/local/couchdb2
