@@ -7,7 +7,6 @@ REPO_BASE = os.path.realpath(os.path.join(PROJECT_ROOT, '..', '..'))
 
 ROLES_ALL = ['all']
 ROLES_ALL_SRC = [
-    'pg',
     'django_monolith',
     'django_app',
     'django_celery',
