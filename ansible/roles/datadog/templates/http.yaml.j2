@@ -8,5 +8,6 @@ instances:
     days_warning: 28
     days_critical: 14
     timeout: 20
-  - name: {{ env_monitoring_id }} Heartbeat
-    url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat
+{#  wait for https://github.com/dimagi/commcare-hq/commit/22a1c1205ac48757996b45d2b6e5fdbc39b9ff31 #}
+{#  - name: {{ env_monitoring_id }} Heartbeat#}
+{#    url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat#}
