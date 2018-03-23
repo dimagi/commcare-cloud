@@ -56,7 +56,6 @@ from .const import (
     ROLES_PILLOWTOP,
     ROLES_DJANGO,
     ROLES_STATIC,
-    ROLES_DB_ONLY,
     ROLES_DEPLOY,
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
