@@ -237,3 +237,16 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=users',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
+class UpdateServices(_AnsiblePlaybookAlias):
+    command = 'update-services'
+    help = (
+        "Updates the supervisor configuration files for services required by "
+        "CommCare. These services are defined in app-processes.yml."
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        unknown_args += ('--tags=supervisor,services',)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
