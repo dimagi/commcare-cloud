@@ -52,9 +52,7 @@ nginx_key_value: '{{ ssl_secrets.private_keys.enikshay_in }}'
 nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.combined.crt'
 nginx_combined_cert_value: "{{ ssl_secrets.certs.enikshay_in }}"
 
-enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
 enikshay_nginx_combined_cert_value: '{{ ssl_secrets.certs.enikshay_commcarehq_org }}'
-enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
 enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
 
 
