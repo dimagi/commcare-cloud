@@ -68,9 +68,9 @@ To be completely certain that no data will be updating during the move you can a
 prevent connections from pgbouncer:
 
 ```bash
-$ psql -p 6543 -U someuser pgbouncer
+pg1 $ psql -p 6432 -U someuser pgbouncer
 
-> PAUSE pg1
+> PAUSE partition1
 ```
 
 ### 3. Check document counts in the databases
@@ -148,9 +148,9 @@ commcare-cloud <env> django-manage configure_pl_proxy_cluster
 ### 9. Restart services
 **Unpause pgbouncer**
 ```bash
-$ psql -p 6543 -U someuser pgbouncer
+pg1 $ psql -p 6543 -U someuser pgbouncer
 
-> RESUME pg1
+> RESUME partition1
 ```
 
 **Restart services**
