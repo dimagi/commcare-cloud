@@ -1,5 +1,5 @@
 - name: Add datadog apt key
-  apt_key: id=C7A7DA52 keyserver=keyserver.ubuntu.com state=present
+  apt_key: id=382E94DE keyserver=keyserver.ubuntu.com state=present
   tags:
     - datadog
 
