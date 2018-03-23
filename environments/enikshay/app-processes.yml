@@ -51,7 +51,7 @@ celery_processes:
     ucr_indicator_queue:
       concurrency: 8
 pillows:
-  '*':
+  '172.25.2.6':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
