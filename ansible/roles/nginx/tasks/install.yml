@@ -190,17 +190,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and enikshay_nginx_combined_cert_file is defined and enikshay_nginx_combined_cert_value is defined
-
-- name: Copy Enikshay SSL cert
-  become: yes
-  copy:
-    src: "{{ enikshay_nginx_combined_cert_file }}"
-    dest: "{{ ssl_certs_dir }}/{{ enikshay_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and enikshay_nginx_combined_cert_file is defined and enikshay_nginx_combined_cert_value is undefined
+  when: not fake_ssl_cert and enikshay_nginx_combined_cert_value is defined
 
 - name: Copy Enikshay SSL Key (from vault)
   become: yes
@@ -211,18 +201,7 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is defined
-
-- name: Copy Enikshay SSL Key
-  become: yes
-  copy:
-    src: "{{ enikshay_key_file }}"
-    dest: "{{ ssl_keys_dir }}/{{ enikshay_nginx_ssl_key  }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and enikshay_key_file is defined and enikshay_key_value is undefined
+  when: not fake_ssl_cert and enikshay_key_value is defined
 
 - name: Copy PNA SSL cert (from vault)
   become: yes
@@ -232,17 +211,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and pna_nginx_combined_cert_file is defined and pna_nginx_combined_cert_value is defined
-
-- name: Copy PNA SSL cert
-  become: yes
-  copy:
-    src: "{{ pna_nginx_combined_cert_file }}"
-    dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and pna_nginx_combined_cert_file is defined and pna_nginx_combined_cert_value is undefined
+  when: not fake_ssl_cert and pna_nginx_combined_cert_value is defined
 
 - name: Copy PNA SSL Key (from vault)
   become: yes
@@ -253,17 +222,6 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is defined
-
-- name: Copy PNA SSL Key
-  become: yes
-  copy:
-    src: "{{ pna_key_file }}"
-    dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and pna_key_file is defined and pna_key_value is undefined
+  when: not fake_ssl_cert and pna_key_value is defined
 
 - set_fact: nginx_installed=True
