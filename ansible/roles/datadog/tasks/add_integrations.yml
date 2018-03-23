@@ -54,4 +54,4 @@
     - {"name": "couch", "enabled": "{{ datadog_integration_couch or inventory_hostname == couchdb2_first_host }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
-    - {"name": "http", "enabled": "{{ datadog_integration_http }}"}
+    - {"name": "http_check", "enabled": "{{ datadog_integration_http }}"}
