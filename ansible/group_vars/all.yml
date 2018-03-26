@@ -93,6 +93,7 @@ datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_vmware: false
+datadog_extra_host_checks: []
 
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
