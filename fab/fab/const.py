@@ -7,7 +7,6 @@ REPO_BASE = os.path.realpath(os.path.join(PROJECT_ROOT, '..', '..'))
 
 ROLES_ALL = ['all']
 ROLES_ALL_SRC = [
-    'pg',
     'django_monolith',
     'django_app',
     'django_celery',
@@ -31,7 +30,6 @@ ROLES_DJANGO = ['django_monolith', 'django_app']
 ROLES_TOUCHFORMS = ['django_monolith', 'formsplayer']
 ROLES_FORMPLAYER = ['django_monolith', 'formplayer']
 ROLES_STATIC = ['django_monolith', 'staticfiles']
-ROLES_DB_ONLY = ['pg', 'django_monolith']
 ROLES_POSTGRESQL = ['pg', 'pgstandby', 'django_monolith']
 ROLES_ELASTICSEARCH = ['elasticsearch', 'django_monolith']
 ROLES_RIAKCS = ['riakcs', 'django_monolith']
