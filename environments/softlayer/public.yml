@@ -43,10 +43,10 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 
-nginx_key_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.key'
+nginx_key_value: '{{ ssl_secrets.private_keys.india_commcarehq_org }}'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/india.commcarehq.org.combined.crt'
+nginx_combined_cert_value: '{{ ssl_secrets.certs.india_commcarehq_org }}'
 
 supervisor_http_enabled: True
 
