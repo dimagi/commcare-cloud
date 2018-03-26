@@ -122,7 +122,7 @@
 - name: Copy commtrack SSL cert
   become: yes
   copy:
-    src: "{{ commtrack_nginx_combined_cert_file }}"
+    content: "{{ commtrack_nginx_combined_cert_value }}"
     dest: "{{ ssl_certs_dir }}/{{ commtrack_nginx_ssl_cert }}"
     mode: 0400
     owner: root
@@ -132,7 +132,7 @@
 - name: Copy commtrack SSL Key
   become: yes
   copy:
-    src: "{{ commtrack_key_file }}"
+    content: "{{ commtrack_key_value }}"
     dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"
     mode: 0400
     owner: root
