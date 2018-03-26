@@ -8,7 +8,7 @@ from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext,
     DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
-)
+    get_user_arg)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_stdout_callback
@@ -30,9 +30,6 @@ class RunAnsibleModule(CommandBase):
         self.add_non_positional_arguments()
 
     def add_non_positional_arguments(self):
-        self.parser.add_argument('-u', '--user', dest='remote_user', default='ansible', help=(
-            "connect as this user (default=ansible)"
-        ))
         self.parser.add_argument('-b', '--become', action='store_true', help=(
             "run operations with become (implies vault password prompting if necessary)"
         ))
@@ -50,7 +47,6 @@ class RunAnsibleModule(CommandBase):
                 above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
                 exclude_args=DEPRECATED_ANSIBLE_ARGS + [
                     '--help',
-                    '--user',
                     '--become',
                     '--become-user',
                     '-i',
@@ -76,10 +72,11 @@ class RunAnsibleModule(CommandBase):
                 'ansible', args.inventory_group,
                 '-m', args.module,
                 '-i', environment.paths.inventory_ini,
-                '-u', args.remote_user,
                 '-a', args.module_args,
                 '--diff',
             ) + tuple(unknown_args)
+
+            cmd_parts += get_user_arg(public_vars, unknown_args)
 
             become = args.become or bool(args.become_user)
             become_user = args.become_user
