@@ -55,7 +55,7 @@ commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"
 
 supervisor_http_enabled: True
 
-keystore_file: '../config/DimagiKeyStore'
+keystore_file: '../environments/{{ deploy_env }}/DimagiKeyStore.vault'
 
 backup_blobdb: False
 backup_postgres: plain
