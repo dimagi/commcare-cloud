@@ -58,8 +58,6 @@ enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
 
 supervisor_http_enabled: True
 
-keystore_file: '../config/DimagiKeyStore'
-
 backup_blobdb: False
 backup_postgres: plain
 postgresql_backup_days: 1
