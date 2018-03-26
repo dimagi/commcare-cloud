@@ -102,7 +102,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and commtrack_nginx_combined_cert_file is defined
+  when: not fake_ssl_cert and commtrack_nginx_combined_cert_value is defined
 
 - name: Copy commtrack SSL Key
   become: yes
@@ -113,7 +113,7 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and commtrack_key_file is defined
+  when: not fake_ssl_cert and commtrack_key_value is defined
 
 - name: Copy icds tableau SSL cert (from vault)
   become: yes
