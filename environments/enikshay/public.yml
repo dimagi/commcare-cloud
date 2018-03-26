@@ -45,22 +45,16 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'enikshayes-1.x'
 
-nginx_key_file: '../config/{{ deploy_env }}/ssl/enikshay.in.key'
 nginx_key_value: '{{ ssl_secrets.private_keys.enikshay_in }}'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/enikshay.in.combined.crt'
 nginx_combined_cert_value: "{{ ssl_secrets.certs.enikshay_in }}"
 
-enikshay_nginx_combined_cert_file: '../config/{{ deploy_env}}/ssl/enikshay.commcarehq.org.combined.crt'
 enikshay_nginx_combined_cert_value: '{{ ssl_secrets.certs.enikshay_commcarehq_org }}'
-enikshay_key_file: '../config/{{ deploy_env }}/ssl/enikshay.commcarehq.org.key'
 enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
 
 
 supervisor_http_enabled: True
-
-keystore_file: '../config/DimagiKeyStore'
 
 backup_blobdb: False
 backup_postgres: plain
