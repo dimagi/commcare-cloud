@@ -69,7 +69,7 @@
     - "{{ ssl_certs_dir }}"
     - "{{ ssl_keys_dir }}"
 
-- name: Copy cchq SSL cert (from vault)
+- name: Copy cchq SSL cert
   become: yes
   copy:
     content: '{{ nginx_combined_cert_value }}'
@@ -81,7 +81,7 @@
   tags:
     - update-cert
 
-- name: Copy cchq SSL Key (from vault)
+- name: Copy cchq SSL Key
   become: yes
   copy:
     content: "{{ nginx_key_value }}"
@@ -115,7 +115,7 @@
   no_log: true
   when: not fake_ssl_cert and commtrack_key_value is defined
 
-- name: Copy icds tableau SSL cert (from vault)
+- name: Copy icds tableau SSL cert
   become: yes
   copy:
     content: "{{ tableau_nginx_combined_cert_value }}"
@@ -125,7 +125,7 @@
     group: root
   when: not fake_ssl_cert and tableau_nginx_combined_cert_value is defined
 
-- name: Copy icds tableau SSL Key (from vault)
+- name: Copy icds tableau SSL Key
   become: yes
   copy:
     content: "{{ tableau_key_value }}"
@@ -146,7 +146,7 @@
     group: root
   when: not fake_ssl_cert and cas_nginx_combined_cert_value is defined
 
-- name: Copy CAS SSL Key (from vault)
+- name: Copy CAS SSL Key
   become: yes
   copy:
     content: "{{ cas_key_value }}"
@@ -157,7 +157,7 @@
   no_log: true
   when: not fake_ssl_cert and cas_key_value is defined
 
-- name: Copy Enikshay SSL cert (from vault)
+- name: Copy Enikshay SSL cert
   become: yes
   copy:
     content: "{{ enikshay_nginx_combined_cert_value }}"
@@ -167,7 +167,7 @@
     group: root
   when: not fake_ssl_cert and enikshay_nginx_combined_cert_value is defined
 
-- name: Copy Enikshay SSL Key (from vault)
+- name: Copy Enikshay SSL Key
   become: yes
   copy:
     content: "{{ enikshay_key_value }}"
@@ -178,7 +178,7 @@
   no_log: true
   when: not fake_ssl_cert and enikshay_key_value is defined
 
-- name: Copy PNA SSL cert (from vault)
+- name: Copy PNA SSL cert
   become: yes
   copy:
     content: "{{ pna_nginx_combined_cert_value }}"
@@ -188,7 +188,7 @@
     group: root
   when: not fake_ssl_cert and pna_nginx_combined_cert_value is defined
 
-- name: Copy PNA SSL Key (from vault)
+- name: Copy PNA SSL Key
   become: yes
   copy:
     content: "{{ pna_key_value }}"
