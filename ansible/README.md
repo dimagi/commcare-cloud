@@ -5,13 +5,8 @@ commcare-cloud, via commands such as `commcare-cloud <env> ansible-playbook`
 and the other shortcut commands it provides.
 
 ## Todos and Deprecated things
-- The contents of `ansible/inventories/` contains inventory files that weren't clearly part
-  of an environment, and which may or may not still be useful.
-  Environments' inventories live in `environments/`.
 - `ansible/vars/` still contains user keys, though these conceptually should now live
   somewhere in `environments` or `environmental_defaults`.
-- `ansible/vars/` also contains variables for a `dev` environment.
-  This may or may not still be usable for a local vagrant setup.
 - There's a file `DimagiKeyStore` that we rely on (for old J2ME support)
   that isn't commited to this directory.
   Instead, to do a full deploy, one must obtain a copy of it and place it at
@@ -19,48 +14,41 @@ and the other shortcut commands it provides.
   Originally this way because its contents are secret, it would now be preferable
   for this file to live encrypted in `environments/` or `environmental_defaults/`.
 
-
 ## Local vagrant setup
 
-**Note** This section is quite old, and the latest person to revamp this file
-mostly just left this section untouched.
-If you want to use this, ask around to see if anyone can tell you whether these
-steps currently work or not before going down too much of a rabbit hole
-trying to follow these docs.
-
-Ensure you have downloaded Vagrant and virtual box
-
-### Multi-machine cluster setup
-
-Then start vagrant:
+Ensure you have downloaded Vagrant and virtual box then start vagrant:
 
 ```
 $ vagrant up
 ```
 
+This will setup 4 VMs:
+* 192.168.33.14 (control)
+* 192.168.33.15 (app1)
+* 192.168.33.16 (db1)
+* 192.168.33.17 (proxy1)
+
+See `environments/development` the configuration of this testing environment.
+
+The VMs should be configured so that you can SSH between them as the `vagrant` user
+without requiring a password.
+
 If you run into issues starting vagrant, see the troubleshooting section at the bottom.
 
-The `./scripts/reset-vms` command can be run at any time, possibly with a subset of the
-VM names, to reset the VMs to their initial state and provision them with your
-SSH key. Run `./scripts/reset-vms` without arguments for usage info.
-
-Once vagrant is up, you may ssh into the control server and run a full
+Once vagrant is up, you may SSH into the control server and run a full
 deployment:
 
 ```
 $ vagrant ssh control
 ...
-$ ansible-playbook -i inventories/development -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
+$ commcare-cloud development deploy-stack
 ```
-
-(**Doc Note**: these commands should be replaced
-with the appropriate commcare-cloud commands.)
 
 This will build a database server, a proxy server and a single web worker,
 hooked into both appropriately.
 
 Once the preliminary deployment is complete, a new web worker may be added
-simply by editing the file `ansible/inventories/development` and adding the second
+simply by editing the file `environments/development/inventory.ini` and adding the second
 web worker server IP address. Also uncomment the section of the vagrant file that refers to 'app2':
 
 ```ini
@@ -69,28 +57,6 @@ web worker server IP address. Also uncomment the section of the vagrant file tha
 192.168.33.18
 ```
 
-### Monolith setup
-
-Sometimes multi machine setup locally can be very large. In order to setup a monolith, which is just one machine, you can use this setup:
-```
-cp Vagrantfile-monolith Vagrantfile
-vagrant up
-```
-The one other change needed is to point to the proper inventory. Instead of using `ansible/inventories/development`, use `ansible/inventories/monolith`:
-
-```
-$ vagrant ssh control
-...
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml --tags=users --user=root
-```
-
-Now you will have ansible user in monolith that you can use to run the further playbooks.
-
-Note: the above step in necessary since subsequent playbooks block root login to monolith.
-
-```
-$ ansible-playbook -i inventories/monolith -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml --user=ansible
-```
 ### Email setup
 
 In order to have this set up send email without crashing
@@ -103,7 +69,7 @@ $ vagrant ssh control
 $ python -m smtpd -n -c DebuggingServer 0.0.0.0:1025
 ```
 
-### Troubleshooting
+### Troubleshooting Vagrant
 
 `vagrant up` fails.
 * Start VirtualBox `$ VirtualBox`
@@ -127,7 +93,7 @@ For the Lenovo T440s:
   commcare-cloud production deploy-stack --skip-tags=common
   ```
 
-### Setting up ansible control machine
+## Setting up ansible control machine
 
 This must be done as the root user.  Run `ansible-deploy-control` to get the
 proper command.
@@ -162,38 +128,7 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 ### Setting up a dev account on ansible control machine
 See main [README](../README.md) file.
 
-### Simulate dev user setup on vagrant control machine
-
-Add a record for your user to `dev_users.present` in `ansible/vars/dev/dev_public.yml` and your SSH public key to
-`ansible/vars/dev/users/{username}.pub`.
-
-Login with `vagrant ssh control`
-
-```bash
-ansible-playbook -u root -i inventories/development -e @vars/dev/dev_private.yml \
-  -e @vars/dev/dev_public.yml --diff deploy_control.yml
-```
-
-Login as your user: `vagrant ssh control -- -l $USER -A
-
-```bash
-ln -s /vagrant ~/commcare-cloud
-. commcare-cloud/control/init.sh
-
-# run ansible
-ansible-playbook -u ansible --ask-sudo-pass -i inventories/development \
-  -e @vars/dev/dev_private.yml -e @vars/dev/dev_public.yml \
-  --diff deploy_stack.yml --tags=users,ssh # or whatever
-```
-
-#### Alternately, deploy directly from your dev environment
-
-```bash
-ansible-playbook -u vagrant -i inventories/development -e @vars/dev/dev_private.yml \
-  -e @vars/dev/dev_public.yml --diff deploy_stack.yml --tags=users,ssh # or whatever
-```
-
-### Managing secrets with Vault
+## Managing secrets with Vault
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
 
 All the secret variables and private data required for the different environments is included
@@ -230,10 +165,3 @@ ENV=production && ansible-vault [encrypt|decrypt] filename
 ```
 
 For more info on Vault see the [Ansible Documentation](https://docs.ansible.com/ansible/playbooks_vault.html)
-
-### Running against Vagrant machines from localhost
-It is also possible to run tasks on the vagrant machines from you're local machine:
-
-```
-ansible-playbook -u vagrant -i inventories/development --private-key=~/.vagrant.d/insecure_private_key -e '@vars/dev/dev_private.yml' -e '@vars/dev/dev_public.yml' deploy_stack.yml
-```

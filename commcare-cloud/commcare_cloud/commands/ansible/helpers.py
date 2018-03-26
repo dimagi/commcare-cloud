@@ -1,7 +1,7 @@
 import os
 
+from commcare_cloud.cli_utils import has_arg
 from commcare_cloud.environment.main import get_environment
-
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from six.moves import shlex_quote
 
@@ -74,3 +74,11 @@ def get_formplayer_spring_instance_name(environment_name):
         project=project,
         environment=environment_environment
     )
+
+
+def get_user_arg(public_vars, unknown_args):
+    cmd_parts = tuple()
+    if not has_arg(unknown_args, '-u', '--user'):
+        user = public_vars.get('commcare_cloud_remote_user', 'ansible')
+        cmd_parts += ('-u', user)
+    return cmd_parts

@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   cchq_proxy_port = ENV.fetch("VAGRANT_CCHQ_PROXY_PORT", 8080)
   config.ssh.insert_key = false
-  authorize_key_for_root config, '~/.ssh/id_dsa.pub', '~/.ssh/id_rsa.pub'
+  authorize_key config, '~/.vagrant.d/insecure_private_key'
 
   {
     'app1'    => '192.168.33.15',
