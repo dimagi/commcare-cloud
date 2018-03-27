@@ -6,8 +6,8 @@ TODAY=$(date +"%Y_%m_%d")
 BACKUP_FILE="blobdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
 UPLOAD_NAME="blobdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 
-#Reset if versioning is not enabled
 {% if not aws_versioning_enable%}
+#Reset if versioning is not enabled
 UPLOAD_NAME="${BACKUP_FILE}"
 {% endif %}
 

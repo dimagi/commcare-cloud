@@ -9,8 +9,9 @@ DIRECTORY="{{ postgresql_backup_dir }}/${FILENAME}"
 
 UPLOAD_NAME="postgres_${BACKUP_TYPE}_${HOSTNAME}"
 
-#Reset if versioning is not enabled
+
 {% if not aws_versioning_enable%}
+#Reset if versioning is not enabled
 UPLOAD_NAME="${FILENAME}"
 {% endif %}
 

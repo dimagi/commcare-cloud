@@ -7,8 +7,9 @@ BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
 UPLOAD_NAME="couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 tar -Pzcf "{{ couch_backup_dir }}/${BACKUP_FILE}" "{{ couch_data_dir }}"
 
-#Reset if versioning is not enabled
+
 {% if not aws_versioning_enable%}
+#Reset if versioning is not enabled
 UPLOAD_NAME="${BACKUP_FILE}"
 {% endif %}
 
