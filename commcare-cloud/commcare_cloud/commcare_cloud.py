@@ -50,7 +50,7 @@ def run_on_control_instead(args, sys_argv):
     argv.remove('--control')
     executable = 'commcare-cloud'
     cmd_parts = [
-        executable, args.env_name, 'ssh', 'control',
+        executable, args.env_name, 'ssh', 'control', '-t'
         'source ~/init-ansible && git checkout master && control/update_code.sh && source ~/init-ansible && {} {}'
         .format(executable, ' '.join([shlex_quote(arg) for arg in argv]))
     ]
