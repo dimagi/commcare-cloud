@@ -13,7 +13,7 @@ from .argparse14 import ArgumentParser
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateServices
+    UpdateUsers, UpdateSupervisorConfs
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
@@ -34,7 +34,7 @@ COMMAND_TYPES = [
     RestartElasticsearch,
     BootstrapUsers,
     UpdateUsers,
-    UpdateServices,
+    UpdateSupervisorConfs,
     RunShellCommand,
     RunAnsibleModule,
     Fab,

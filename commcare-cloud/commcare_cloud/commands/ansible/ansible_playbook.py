@@ -239,8 +239,8 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
-class UpdateServices(_AnsiblePlaybookAlias):
-    command = 'update-services'
+class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
+    command = 'update-supervisor-confs'
     help = (
         "Updates the supervisor configuration files for services required by "
         "CommCare. These services are defined in app-processes.yml."
