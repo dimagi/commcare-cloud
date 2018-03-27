@@ -6,6 +6,14 @@ HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
 DIRECTORY="{{ postgresql_backup_dir }}/${FILENAME}"
+
+UPLOAD_NAME="postgres_${BACKUP_TYPE}_${HOSTNAME}"
+
+#Reset if versioning is not enabled
+{% if not aws_versioning_enable%}
+UPLOAD_NAME="${FILENAME}"
+{% endif %}
+
 ARGS=""
 
 {% if backup_postgres=='plain' %}
@@ -47,10 +55,10 @@ fi
 
 {% if postgres_s3 %}
 if [ -f "${DIRECTORY}.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "postgres_${BACKUP_TYPE}_${HOSTNAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "${UPLOAD_NAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 if [ -f "${DIRECTORY}.tar.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "postgres_${BACKUP_TYPE}_${HOSTNAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "${UPLOAD_NAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 {% endif %}
 

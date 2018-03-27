@@ -4,8 +4,13 @@ DAYS_TO_RETAIN_BACKUPS=$2
 HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
-
+UPLOAD_NAME="couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 tar -Pzcf "{{ couch_backup_dir }}/${BACKUP_FILE}" "{{ couch_data_dir }}"
+
+#Reset if versioning is not enabled
+{% if not aws_versioning_enable%}
+UPLOAD_NAME="${BACKUP_FILE}"
+{% endif %}
 
 # Remove old backups of this backup type
 find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" -delete
@@ -15,5 +20,5 @@ rsync -avH --delete --exclude="commcarehq__synclogs.*.couch" {{ couch_backup_dir
 {% endif %}
 
 {% if couch_s3 %}
-( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz" {{ couchdb_snapshot_bucket }} {{aws_endpoint}} )
+( cd {{ couch_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "${UPLOAD_NAME}" {{ couchdb_snapshot_bucket }} {{aws_endpoint}} )
 {% endif %}
