@@ -108,5 +108,7 @@ if [ ! -f "${FAB_CONFIG}" ]
 then
     printf "${RED}✗ ${FAB_CONFIG} does not exist and suitable location to copy it from was not found.\n"
     printf "${BLUE}  This file is just a convenience, so this is a non-critical error.\n"
-    printf "${BLUE}  If you have fab/config.py in a previous location, then copy it to ${FAB_CONFIG}.${NC}\n"
+    printf "${BLUE}  If you have fab/config.py in a previous location, then copy it to ${FAB_CONFIG}.\n"
 fi
+
+printf "${NC}"
