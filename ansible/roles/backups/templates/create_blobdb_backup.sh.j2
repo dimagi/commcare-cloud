@@ -4,12 +4,13 @@ DAYS_TO_RETAIN_BACKUPS=$2
 HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 BACKUP_FILE="blobdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
-UPLOAD_NAME="blobdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 
 {% if not aws_versioning_enable%}
-#Reset if versioning is not enabled
 UPLOAD_NAME="${BACKUP_FILE}"
+{% else %}
+UPLOAD_NAME="blobdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 {% endif %}
+
 
 tar -Pzcf "{{ blobdb_backup_dir }}/${BACKUP_FILE}" "{{ blobdb_dir_path }}"
 

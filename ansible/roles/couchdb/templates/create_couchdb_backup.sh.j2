@@ -4,14 +4,15 @@ DAYS_TO_RETAIN_BACKUPS=$2
 HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
-UPLOAD_NAME="couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 tar -Pzcf "{{ couch_backup_dir }}/${BACKUP_FILE}" "{{ couch_data_dir }}"
 
 
 {% if not aws_versioning_enable%}
-#Reset if versioning is not enabled
 UPLOAD_NAME="${BACKUP_FILE}"
+{% else %}
+UPLOAD_NAME="couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 {% endif %}
+
 
 # Remove old backups of this backup type
 find {{ couch_backup_dir }} -mtime "+${DAYS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" -delete

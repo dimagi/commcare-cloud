@@ -7,13 +7,12 @@ TODAY=$(date +"%Y_%m_%d")
 FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
 DIRECTORY="{{ postgresql_backup_dir }}/${FILENAME}"
 
-UPLOAD_NAME="postgres_${BACKUP_TYPE}_${HOSTNAME}"
-
-
 {% if not aws_versioning_enable%}
-#Reset if versioning is not enabled
 UPLOAD_NAME="${FILENAME}"
+{% else %}
+UPLOAD_NAME="postgres_${BACKUP_TYPE}_${HOSTNAME}"
 {% endif %}
+
 
 ARGS=""
 
