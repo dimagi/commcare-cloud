@@ -82,7 +82,7 @@ def main():
     os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
     available_envs = get_available_envs()
-    parser.add_argument('env_name', choices=available_envs, metavar='environment', help=(
+    parser.add_argument('env_name', choices=available_envs, help=(
         "server environment to run against"
     ))
     parser.add_argument('--control', action='store_true', help=(
