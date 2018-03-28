@@ -13,7 +13,8 @@ ROLES_ALL_SRC = [
     'django_pillowtop',
     'formsplayer',
     'formplayer',
-    'staticfiles'
+    'staticfiles',
+    'airflow'
 ]
 ROLES_ALL_SERVICES = [
     'django_monolith',
@@ -35,6 +36,7 @@ ROLES_ELASTICSEARCH = ['elasticsearch', 'django_monolith']
 ROLES_RIAKCS = ['riakcs', 'django_monolith']
 ROLES_DEPLOY = ['deploy', 'django_monolith']
 ROLES_CONTROL = ['control']
+ROLES_AIRFLOW = ['airflow']
 
 RELEASE_RECORD = 'RELEASES.txt'
 KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
