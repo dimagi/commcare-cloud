@@ -28,6 +28,7 @@ from ..const import (
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
+    ROLES_AIRFLOW
 )
 from fabric import utils
 from six.moves import range
@@ -42,6 +43,8 @@ def set_supervisor_config():
     set_djangoapp_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
+    set_airflow_scheduler_supervisorconf()
+    set_airflow_webserver_supervisorconf()
 
 
 def _get_celery_queues():
@@ -168,6 +171,18 @@ def set_formplayer_spring_supervisorconf():
                                       {'formplayer_spring_instance_name':
                                            get_formplayer_spring_instance_name(env.env_name)}
                                       )
+
+
+def set_airflow_scheduler_supervisorconf():
+    if _check_in_roles(ROLES_AIRFLOW):
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_airflow_scheduler.conf')
+
+
+def set_airflow_webserver_supervisorconf():
+    if _check_in_roles(ROLES_AIRFLOW):
+        _rebuild_supervisor_conf_file('make_supervisor_conf',
+                                      'supervisor_airflow_webserver.conf')
 
 
 def please_put(local_dir, remote_dir, temp_dir='/tmp'):
