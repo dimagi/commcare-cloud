@@ -30,5 +30,11 @@ def arg_stdout_callback(parser):
     parser.add_argument(
         '--output', dest='stdout_callback', default=default, choices=['actionable', 'minimal'],
         help=("The callback plugin to use for generating output. "
-              "See ansible-doc -t callback -l and ansible-doc -t callback [ansible|minimal]"
+              "See ansible-doc -t callback -l and ansible-doc -t callback [ansible|minimal]")
+    )
+
+
+def arg_limit(parser):
+    parser.add_argument('-l', '--limit', metavar="SUBSET", help=(
+        "further limit selected hosts to an additional pattern"
     ))
