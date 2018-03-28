@@ -28,11 +28,9 @@ active_sites:
   commtrack_http: False
   tableau: False
   icds_tableau: True
-  dhis: False
   wiki: False
   wiki_http: False
   motech: False
-  motech1: False
   motech2: False
   riakcs: True
   cas_ssl: True
