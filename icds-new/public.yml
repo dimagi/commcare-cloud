@@ -53,8 +53,6 @@ elasticsearch_cluster_name: 'icds-2.0'
 
 supervisor_http_enabled: True
 
-# keystore_file: '../config/DimagiKeyStore'
-
 backup_blobdb: False
 backup_postgres: plain
 backup_es: False
