@@ -11,6 +11,7 @@
     - riakcs
     - formplayer
     - pg_standby
+    - airflow
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -36,7 +37,7 @@
     - hostTo: "{{ hot_standby_server }}"
     - state: 'present'
   tasks:
-    - import_tasks: roles/setup_auth_keys.yml
+    - include: roles/setup_auth_keys.yml
       when: hot_standby_server is defined
   tags:
     - pg_standby
@@ -131,7 +132,7 @@
   roles:
     - {role: kafka, tags: 'kafka'}
 
-- import_playbook: deploy_riakcs.yml
+- include: deploy_riakcs.yml
   tags: riakcs
 
 # Note other machines also have java installed, but are initiated through the meta task

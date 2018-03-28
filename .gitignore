@@ -1,6 +1,5 @@
 /commcare-cloud-bootstrap/specs
 !/commcare-cloud-bootstrap/specs/example_spec.yml
-.generated.yml
 *.swp
 /config
 .vagrant/
@@ -10,3 +9,4 @@ DimagiKeyStore
 ansible/*.retry
 *.pyc
 *.egg-info
+*~
