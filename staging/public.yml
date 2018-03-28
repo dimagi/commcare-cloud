@@ -1,6 +1,5 @@
 SITE_HOST: 'staging.commcarehq.org'
 NO_WWW_SITE_HOST: 'staging.commcarehq.org'
-COMMTRACK_SITE_HOST: 'test.commtrack.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 
 active_sites:
