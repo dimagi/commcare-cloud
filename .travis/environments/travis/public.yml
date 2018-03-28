@@ -1,7 +1,6 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
 SITE_HOST: '{{ groups.proxy.0 }}'
-NO_WWW_SITE_HOST: '{{ groups.proxy.0 }}'
 J2ME_SITE_HOST: 'j2me.{{ groups.proxy.0 }}'
 internal_domain_name: 'localdomain'
 
@@ -36,9 +35,9 @@ http_proxy_parent_port: '3128'
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
   cchq_ssl: True
-  cchq_www_redirect_secure: True
+  cchq_www_redirect_secure: False
   cchq_http: True
-  cchq_www_redirect_insecure: True
+  cchq_www_redirect_insecure: False
   cchq_http_j2me: False
   commtrack_ssl: True
   commtrack_http: True
