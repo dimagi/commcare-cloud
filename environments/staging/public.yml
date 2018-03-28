@@ -17,7 +17,6 @@ active_sites:
   motech: False
   motech2: False
   riakcs: True
-  couchdb2: False
 
 riak_backend: "leveldb"
 riak_ring_size: 64

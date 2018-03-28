@@ -25,7 +25,6 @@ active_sites:
   commtrack_ssl: False
   commtrack_http: False
   riakcs: True
-  couchdb2: True
   hq_status: False
   icds_tableau: False
   motech: False
