@@ -14,8 +14,6 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-SYNCLOGS_SQL_DB_ALIAS = "{{ localsettings.get('SYNCLOGS_SQL_DB_ALIAS', 'default') }}"
-
 DATABASES = { {% for config in postgresql_dbs %}
 {%- if config.get('django_alias') %}
     '{{config.django_alias}}': {
@@ -59,7 +57,7 @@ PARTITION_DATABASE_CONFIG = {
 
 REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
 
-WAREHOUSE_DATABASE_ALIAS = "{{ localsettings.WAREHOUSE_DATABASE_ALIAS|default('default') }}"
+WAREHOUSE_DATABASE_ALIAS = '{{ localsettings.WAREHOUSE_DATABASE_ALIAS|default('default') }}'
 
 LOG_HOME = '{{ log_home }}'
 COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
@@ -101,8 +99,8 @@ EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 {% endif %}
 
-EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
-SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
+EMAIL_SUBJECT_PREFIX = '[{{ env_name|default(deploy_env) }}] '
+SERVER_ENVIRONMENT = '{{ env_name|default(deploy_env) }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
 
@@ -723,34 +721,6 @@ ASYNC_INDICATOR_QUEUE_TIMES = {{ localsettings.get('ASYNC_INDICATOR_QUEUE_TIMES'
 
 {% if 'MAX_RULE_UPDATES_IN_ONE_RUN' in localsettings %}
 MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
-{% endif %}
-
-{% if localsettings.get('REPEATERS_WHITELIST') is not none %}
-REPEATERS_WHITELIST = {{ localsettings.REPEATERS_WHITELIST }}
-{% endif %}
-
-{% if localsettings.AUDIT_MODEL_SAVE is defined %}
-AUDIT_MODEL_SAVE= [
-  {% for model in localsettings.get("AUDIT_MODEL_SAVE") -%}
-  '{{ model }}',
-  {% endfor -%}
-]
-{% endif %}
-
-{% if localsettings.AUDIT_MODULES is defined %}
-AUDIT_MODULES= [
-  {% for module in localsettings.get("AUDIT_MODULES") -%}
-  '{{ module }}',
-  {% endfor -%}
-]
-{% endif %}
-
-{% if localsettings.AUDIT_VIEWS is defined %}
-AUDIT_VIEWS= [
-  {% for view in localsettings.get("AUDIT_VIEWS") -%}
-  '{{ view }}',
-  {% endfor -%}
-]
 {% endif %}
 
 SERVER_EMAIL = '{{ server_email }}'

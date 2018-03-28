@@ -1,0 +1,64 @@
+- name: create required directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ airflow_home }}"
+    - "{{ airflow_code_dir }}"
+
+- name: Pull full Airflow source
+  git:
+    repo: "{{ airflow_repository }}"
+    dest: "{{ airflow_code_dir }}"
+    version: "{{ airflow_version }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
+  become: true
+
+
+- name: install pip requirements
+  become: true
+  pip:
+    requirements: "{{ airflow_code_dir }}/requirements.txt"
+    virtualenv: "{{ airflow_virtualenv }}"
+    chdir: "{{ airflow_code_dir }}"
+
+- name: chown clone
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+  with_items:
+    - "{{ airflow_code_dir }}"
+    - "{{ airflow_virtualenv }}"
+
+- name: copy airflow settings
+  become: true
+  template:
+    src: airflow.cfg.j2
+    dest: "{{ airflow_home }}/airflow.cfg"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+
+- name: symlink dags
+  become: true
+  file: 
+      src="{{ airflow_code_dir }}/dags" 
+      dest="{{ airflow_dag_dir }}" 
+      owner="{{ cchq_user }}"
+      group="{{ cchq_user }}"
+      state=link
+
+- name: initialize database
+  shell: "{{ airflow_virtualenv }}/bin/airflow initdb"
+
+- name: set cchq home variable
+  shell: "{{ airflow_virtualenv }}/bin/airflow variables --set CCHQ_HOME {{ code_home }}"
