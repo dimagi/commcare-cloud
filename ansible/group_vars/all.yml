@@ -9,7 +9,7 @@ virtualenv_home: "{{ code_home }}/python_env"
 encrypted_root: "/opt/data"
 project: "commcare-hq"
 
-shared_drive_enabled: true  # overridden in ../config/$ENV/$ENV.yml
+shared_drive_enabled: true
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
@@ -93,6 +93,7 @@ datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_vmware: false
+datadog_integration_http: false
 datadog_extra_host_checks: []
 
 root_email: commcarehq-ops+root@dimagi.com

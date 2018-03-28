@@ -45,18 +45,22 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 6
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 3
     ucr_indicator_queue:
       concurrency: 6
   'celery2':
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 6
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 6
+      num_workers: 3
     ucr_indicator_queue:
       concurrency: 6
   'celery3':
@@ -68,7 +72,7 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 10
+      num_workers: 6
     async_restore_queue:
       concurrency: 4
     ucr_indicator_queue:
@@ -81,7 +85,11 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 10
+      num_workers: 6
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 3
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery5':
@@ -94,7 +102,11 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 6
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 3
   'celery6':
     pillow_retry_queue:
       pooling: gevent
@@ -105,7 +117,11 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 6
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 3
   'celery7':
     pillow_retry_queue:
       pooling: gevent
@@ -116,7 +132,11 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 6
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 3
   'web0':
     ucr_indicator_queue:
       concurrency: 3
