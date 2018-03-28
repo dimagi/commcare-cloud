@@ -11,7 +11,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_user_arg)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
-    arg_branch, arg_stdout_callback
+    arg_branch, arg_stdout_callback, arg_limit
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -31,6 +31,7 @@ class AnsiblePlaybook(CommandBase):
         arg_quiet(self.parser)
         arg_branch(self.parser)
         arg_stdout_callback(self.parser)
+        arg_limit(self.parser)
         self.parser.add_argument('playbook', help=(
             "The ansible playbook .yml file to run."
         ))
@@ -47,6 +48,7 @@ class AnsiblePlaybook(CommandBase):
                     '-i',
                     '--ask-vault-pass',
                     '--vault-password-file',
+                    '--limit',
                 ],
             )
         ))
@@ -59,6 +61,18 @@ class AnsiblePlaybook(CommandBase):
         public_vars = environment.public_vars
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
 
+        def get_limit():
+            limit_parts = []
+            if args.limit:
+                limit_parts.append(args.limit)
+            if 'ansible_skip' in environment.inventory_hosts_by_group:
+                limit_parts.append('!ansible_skip')
+
+            if limit_parts:
+                return '--limit', ':'.join(limit_parts)
+            else:
+                return ()
+
         def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
                 'ansible-playbook',
@@ -68,7 +82,7 @@ class AnsiblePlaybook(CommandBase):
                 '-e', '@{}'.format(environment.paths.public_yml),
                 '-e', '@{}'.format(environment.paths.generated_yml),
                 '--diff',
-            ) + cmd_args
+            ) + get_limit() + cmd_args
 
             cmd_parts += get_user_arg(public_vars, unknown_args)
 
@@ -144,6 +158,7 @@ class _AnsiblePlaybookAlias(CommandBase):
         arg_quiet(self.parser)
         arg_branch(self.parser)
         arg_stdout_callback(self.parser)
+        arg_limit(self.parser)
 
 
 class DeployStack(_AnsiblePlaybookAlias):
@@ -185,7 +200,12 @@ class AfterReboot(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=after-reboot', '--limit', args.inventory_group)
+        if args.limit:
+            args.limit += '{}:&{}'.format(args.limit, args.inventory_group)
+        else:
+            args.limit = args.inventory_group
+        del args.inventory_group
+        unknown_args += ('--tags', 'after-reboot',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
@@ -235,4 +255,17 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=users',)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
+class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
+    command = 'update-supervisor-confs'
+    help = (
+        "Updates the supervisor configuration files for services required by "
+        "CommCare. These services are defined in app-processes.yml."
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        unknown_args += ('--tags=supervisor,services',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
