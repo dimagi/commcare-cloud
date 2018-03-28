@@ -56,7 +56,6 @@ from .const import (
     ROLES_PILLOWTOP,
     ROLES_DJANGO,
     ROLES_STATIC,
-    ROLES_DB_ONLY,
     ROLES_DEPLOY,
     RELEASE_RECORD,
     RSYNC_EXCLUDE,
@@ -233,7 +232,7 @@ def env_common():
     # if no server specified, just don't run pillowtop
     pillowtop = servers.get('pillowtop', [])
 
-    deploy = servers.get('deploy', servers['postgresql'])[:1]
+    deploy = servers.get('deploy', servers['webworkers'])[:1]
 
     env.roledefs = {
         'all': all,

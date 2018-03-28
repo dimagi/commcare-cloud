@@ -12,7 +12,8 @@ from .argparse14 import ArgumentParser
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
-    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack, UpdateUsers,
+    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
+    UpdateUsers, UpdateSupervisorConfs
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
@@ -33,6 +34,7 @@ COMMAND_TYPES = [
     RestartElasticsearch,
     BootstrapUsers,
     UpdateUsers,
+    UpdateSupervisorConfs,
     RunShellCommand,
     RunAnsibleModule,
     Fab,
@@ -50,7 +52,7 @@ def run_on_control_instead(args, sys_argv):
     argv.remove('--control')
     executable = 'commcare-cloud'
     cmd_parts = [
-        executable, args.env_name, 'ssh', 'control',
+        executable, args.env_name, 'ssh', 'control', '-t'
         'source ~/init-ansible && git checkout master && control/update_code.sh && source ~/init-ansible && {} {}'
         .format(executable, ' '.join([shlex_quote(arg) for arg in argv]))
     ]

@@ -32,7 +32,7 @@ function update_repo() {
     git submodule update --init --recursive
 }
 
-for repo in "commcare-cloud/config" "commcare-cloud"
+for repo in "commcare-cloud"
 do
     cd ~/$repo
     pwd
