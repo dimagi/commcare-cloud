@@ -18,14 +18,11 @@ touchforms_enabled: false
 # "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
 active_sites:
   cchq_ssl: True
-  cchq_redirect: False
   cchq_http: True
-  cchq_http_redirect: True
   cchq_http_j2me: False
   commtrack_ssl: False
   commtrack_http: False
   riakcs: True
-  hq_status: False
   icds_tableau: False
   motech: False
   motech2: False
