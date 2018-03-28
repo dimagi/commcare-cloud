@@ -1,12 +1,11 @@
 SITE_HOST: 'staging.commcarehq.org'
-NO_WWW_SITE_HOST: 'staging.commcarehq.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 
 active_sites:
-  cchq_www_redirect_secure: True
+  cchq_www_redirect_secure: False
   cchq_ssl: True
   cchq_http: True
-  cchq_www_redirect_insecure: True
+  cchq_www_redirect_insecure: False
   cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False

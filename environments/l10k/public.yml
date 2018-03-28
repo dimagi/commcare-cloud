@@ -1,9 +1,8 @@
 SITE_HOST: 'l10k.commcarehq.org'
-NO_WWW_SITE_HOST: 'l10k.commcarehq.org'
 
 active_sites:
   cchq_ssl: True
-  cchq_www_redirect_secure: True
+  cchq_www_redirect_secure: False
   cchq_http: True
   cchq_http_j2me: False
   cchq_www_redirect_insecure: False
