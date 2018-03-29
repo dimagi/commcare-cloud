@@ -1,5 +1,5 @@
 - name: create required directories
-  become: yes
+  become: "{{ cchq_user }}"
   file:
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
@@ -18,30 +18,17 @@
     recursive: yes
     accept_hostkey: yes
     update: yes
-  become: true
-
+  become: "{{ cchq_user }}"
 
 - name: install pip requirements
-  become: true
+  become: "{{ cchq_user }}"
   pip:
     requirements: "{{ airflow_code_dir }}/requirements.txt"
     virtualenv: "{{ airflow_virtualenv }}"
     chdir: "{{ airflow_code_dir }}"
 
-- name: chown clone
-  become: true
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    recurse: yes
-  with_items:
-    - "{{ airflow_code_dir }}"
-    - "{{ airflow_virtualenv }}"
-
 - name: copy airflow settings
-  become: true
+  become: "{{ cchq_user }}"
   template:
     src: airflow.cfg.j2
     dest: "{{ airflow_home }}/airflow.cfg"
@@ -49,7 +36,7 @@
     group: "{{ cchq_user }}"
 
 - name: symlink dags
-  become: true
+  become: "{{ cchq_user }}"
   file: 
       src="{{ airflow_code_dir }}/dags" 
       dest="{{ airflow_dag_dir }}" 
