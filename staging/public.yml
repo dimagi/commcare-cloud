@@ -2,7 +2,6 @@ SITE_HOST: 'staging.commcarehq.org'
 NO_WWW_SITE_HOST: 'staging.commcarehq.org'
 COMMTRACK_SITE_HOST: 'test.commtrack.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
-deploy_env: staging
 
 active_sites:
   cchq_www_redirect_secure: True
@@ -23,7 +22,6 @@ active_sites:
 riak_backend: "leveldb"
 riak_ring_size: 64
 
-
 primary_ssl_env: "staging"
 
 fake_ssl_cert: no
@@ -34,19 +32,18 @@ DATADOG_ENABLED: False
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 
-# Source paths of certs
-nginx_key_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.key'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
-nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commcarehq.org.combined.crt'
+nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
+nginx_key_value: "{{ ssl_secrets.private_keys.commcarehq_org }}"
 
-# Commtrack Certs
-commtrack_nginx_combined_cert_file: '../config/{{ deploy_env }}/ssl/commtrack.org.combined.crt'
-commtrack_key_file: '../config/{{ deploy_env }}/ssl/commtrack.org.key'
+# commtrack.org
+commtrack_nginx_combined_cert_value: "{{ ssl_secrets.certs.commtrack_org }}"
+commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"
 
 supervisor_http_enabled: True
 
-keystore_file: '../config/DimagiKeyStore'
+keystore_file: '../environments/{{ deploy_env }}/DimagiKeyStore.vault'
 
 backup_blobdb: False
 backup_postgres: plain
@@ -55,7 +52,7 @@ postgres_s3: False
 
 aws_region: 'us-east-1'
 
-postgresql_version: '9.6'
+postgresql_version: '9.4'
 postgresql_max_connections: 20
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
@@ -73,6 +70,8 @@ postgresql_dbs:
     query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
   - django_alias: p1
     name: commcarehq_p1
     shards: [0, 99]
@@ -221,6 +220,7 @@ localsettings:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
+  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   USE_PARTITIONED_DATABASE: True
