@@ -28,16 +28,35 @@
       loop_control:
         loop_var: file_name
 
-    - name: install sites
+    - name: install cchq sites
+      include_role:
+        name: nginx
+        tasks_from: site
+      with_items:
+        - {name: cchq_http, vars_file: cchq_http}
+        - {name: cchq_ssl, vars_file: cchq_ssl}
+      loop_control:
+        loop_var: site_config
+      tags: nginx_sites
+
+    - name: install no www redirect sites
+      include_role:
+        name: nginx
+        tasks_from: site
+      when: NO_WWW_SITE_HOST|default(None)
+      with_items:
+        - {name: cchq_www_redirect_insecure, vars_file: cchq_www_redirect_insecure}
+        - {name: cchq_www_redirect_secure, vars_file: cchq_www_redirect_secure}
+      loop_control:
+        loop_var: site_config
+      tags: nginx_sites
+
+    - name: install other sites
       include_role:
         name: nginx
         tasks_from: site
       when: active_sites.get(site_config.name) == True
       with_items:
-        - {name: cchq_http, vars_file: cchq_http}
-        - {name: cchq_ssl, vars_file: cchq_ssl}
-        - {name: cchq_www_redirect_insecure, vars_file: cchq_www_redirect_insecure}
-        - {name: cchq_www_redirect_secure, vars_file: cchq_www_redirect_secure}
         - {name: motech, vars_file: motech}
         - {name: motech, vars_file: motech_http}
         - {name: motech2, vars_file: motech2}

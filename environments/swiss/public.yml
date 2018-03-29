@@ -1,11 +1,7 @@
 SITE_HOST: 'swiss.commcarehq.org'
 
 active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: False
-  cchq_http: True
   cchq_http_j2me: False
-  cchq_www_redirect_insecure: False
   commtrack_ssl: False
   commtrack_http: False
   tableau: False
