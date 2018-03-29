@@ -44,6 +44,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     def check_and_translate_hosts(self, environment):
         self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
         self.pillows = check_and_translate_hosts(environment, self.pillows)
+        _validate_all_required_machines_mentioned(environment, self)
 
 
 class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
@@ -103,6 +104,17 @@ def validate_app_processes_config(app_processes_config):
         "The following queues were not mentioned: {}".format(', '.join(required_but_not_mentioned))
     assert all_queues_mentioned['celery_periodic'] <= 1, \
         'You cannot run the periodic celery queue on more than one machine because it implies celery beat.'
+
+
+def _validate_all_required_machines_mentioned(environment, translated_app_process_config):
+    inventory = environment.inventory_manager
+    for host in inventory.groups['pillowtop'].get_hosts():
+        assert host.get_name() in translated_app_process_config.pillows, \
+            "pillowtop machine {} not in {}".format(host.get_name(), environment.paths.app_processes_yml)
+
+    for host in inventory.groups['celery'].get_hosts():
+        assert host.get_name() in translated_app_process_config.celery_processes, \
+            "celery machine {} not in {}".format(host.get_name(), environment.paths.app_processes_yml)
 
 
 def check_and_translate_hosts(environment, host_mapping):
