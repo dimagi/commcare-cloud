@@ -45,7 +45,7 @@ def set_supervisor_config():
 
 
 def _get_celery_queues():
-    queues = env.celery_processes.get('*', {})
+    queues = {}
     queues.update(env.celery_processes.get(env.get('host_string'), {}))
 
     return queues

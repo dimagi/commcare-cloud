@@ -43,7 +43,7 @@ def get_pillow_env_config():
     if full_host and '.' in full_host:
         host = full_host.split('.')[0]
 
-    pillows = env.pillows.get('*', {})
+    pillows = {}
     pillows.update(env.pillows.get(host, {}))
     pillows.update(env.pillows.get(full_host, {}))
     return pillows
