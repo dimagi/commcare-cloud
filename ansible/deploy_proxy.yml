@@ -139,16 +139,6 @@
         site_present: "{{ 'pna_ssl' in special_sites }}"
         site_config: {name: pna_ssl, vars_file: pna_ssl}
 
-- name: SWISS Proxy
-  hosts: swiss_proxy
-  tasks:
-    - include_role:
-        name: nginx
-        tasks_from: set_site_present
-      vars:
-        site_present: "{{ 'swiss_ssl' in special_sites }}"
-        site_config: {name: swiss_ssl, vars_file: swiss_ssl}
-
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
   tasks:
