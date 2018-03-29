@@ -1,15 +1,6 @@
 SITE_HOST: 'staging.commcarehq.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 
-active_sites:
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  motech: False
-  motech2: False
-
 riak_backend: "leveldb"
 riak_ring_size: 64
 
