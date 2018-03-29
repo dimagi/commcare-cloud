@@ -19,7 +19,6 @@ touchforms_enabled: false
 active_sites:
   commtrack_ssl: False
   commtrack_http: False
-  riakcs: True
   icds_tableau: False
   motech: False
   motech2: False

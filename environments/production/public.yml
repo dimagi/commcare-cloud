@@ -13,7 +13,6 @@ active_sites:
   wiki_http: True
   motech: True
   motech2: True
-  riakcs: True
   cas_ssl: False
 
 riak_backend: "leveldb"
