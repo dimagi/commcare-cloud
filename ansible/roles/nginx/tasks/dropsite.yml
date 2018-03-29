@@ -1,9 +1,14 @@
 ---
+- name: Include site vars if they exist
+  include_vars: "{{ site_config.vars_file }}.yml"
+  when: site_config is defined
 
 - name: Drop site configuration
   become: yes
-  file: path=/etc/nginx/sites-available/{{ file_name }} state=absent
-
-- name: Drop link to enable site configuration
-  become: yes
-  file: path=/etc/nginx/sites-enabled/{{ file_name }} state=absent
+  file: path=/etc/nginx/{{ item.0 }}/{{ item.1.server.file_name }} state=absent
+  with_nested:
+    - [sites-available, sites-enabled]
+    # works with either vars from site_config or just file_name
+    - "{{ nginx_sites|default([{'server': {'file_name': file_name}}]) }}"
+  loop_control:
+    label: "{{item.1.server.file_name}}"

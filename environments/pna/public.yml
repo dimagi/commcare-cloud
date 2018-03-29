@@ -1,23 +1,8 @@
 SITE_HOST: 'commcare.pna.sn'
 PNA_SITE_HOST: 'pna.commcarehq.org'
-COMMTRACK_SITE_HOST: 'commcare.pna.sn'
 
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: False
-  cchq_http: True
-  cchq_http_j2me: False
-  cchq_www_redirect_insecure: False
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  riakcs: False
-  pna_ssl: True
+special_sites:
+  - pna_ssl
 
 ssh_allow_password: True
 ssh_port: 1337
