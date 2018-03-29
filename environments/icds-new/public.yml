@@ -27,7 +27,6 @@ active_sites:
   wiki_http: False
   motech: False
   motech2: False
-  riakcs: True
   cas_ssl: True
 
 riak_backend: "bitcask"

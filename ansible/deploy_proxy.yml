@@ -88,11 +88,11 @@
     - name: riakcs site
       include_role:
         name: nginx
-        tasks_from: site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ groups.get('riakcs') }}"
         site_config: {name: riakcs, vars_file: riakcs}
         hosts_group: riakcs
-      when: active_sites.riakcs
 
     - name: riakcs new
       include_role:
@@ -102,7 +102,7 @@
         hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
         riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
         site_config: {name: riakcs, vars_file: riakcs}
-      when: "active_sites.riakcs == True
+      when: "groups.get('riakcs')
         and ('BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings or 'TEMP_RIAKCS_PROXY' in localsettings)"
 
     - name: drop riak temp
@@ -111,7 +111,7 @@
         tasks_from: dropsite
       vars:
         file_name: "{{ deploy_env }}_riakcs_{{ temp_riakcs_proxy_port }}"
-      when: "active_sites.riakcs == True
+      when: "groups.get('riakcs')
         and 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' not in localsettings
         and 'TEMP_RIAKCS_PROXY' not in localsettings"
 

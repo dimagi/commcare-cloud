@@ -10,7 +10,6 @@ active_sites:
   wiki_http: False
   motech: False
   motech2: False
-  riakcs: False
   pna_ssl: True
 
 ssh_allow_password: True
