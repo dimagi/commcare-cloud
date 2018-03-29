@@ -111,7 +111,7 @@ def check_and_translate_hosts(environment, host_mapping):
     :param host_mapping: dictionary where keys can be one of:
                          * host (must be in inventory file)
                          * inventory group containing a single host
-                         * literal '*' or 'None'
+                         * 'None'
     :return: dictionary with the same content as the input but where
              keys that were inventory groups have been converted into their
              representative host
@@ -119,7 +119,7 @@ def check_and_translate_hosts(environment, host_mapping):
     translated = {}
     inventory = environment.inventory_manager
     for host, config in host_mapping.items():
-        if host == 'None' or host == '*' or host in inventory.hosts:
+        if host == 'None' or host in inventory.hosts:
             translated[host] = config
         else:
             group = inventory.groups.get(host)
