@@ -155,7 +155,7 @@ def load_env():
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
 
-    vars = env.ccc_environment.translated_app_processes_config.to_json()
+    vars = env.ccc_environment.app_processes_config.to_json()
     vars.update(env.ccc_environment.fab_settings_config.to_json())
     # Variables that were already in `env`
     # take precedence over variables set in app-processes.yml
