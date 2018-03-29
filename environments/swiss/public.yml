@@ -1,15 +1,5 @@
 SITE_HOST: 'swiss.commcarehq.org'
 
-active_sites:
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-
 msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
