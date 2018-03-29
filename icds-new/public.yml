@@ -62,10 +62,6 @@ formplayer_db_name: formplayer
 nofile_limit: 65536
 
 DEFAULT_POSTGRESQL_HOST: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-DEFAULT_POSTGRESQL_NAME: commcarehq
-DEFAULT_POSTGRESQL_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-DEFAULT_POSTGRESQL_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-DEFAULT_POSTGRESQL_PORT: 6432
 
 postgresql_dbs:
   - django_alias: default
