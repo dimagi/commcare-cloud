@@ -114,48 +114,49 @@
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'cas_ssl' in special_sites }}"
         site_config: {name: cas_ssl, vars_file: cas_ssl}
-      when: "'cas_ssl' in special_sites"
 
 - name: Enikshay Proxy
   hosts: enikshay_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'enikshay_ssl' in special_sites }}"
         site_config: {name: enikshay_ssl, vars_file: enikshay_ssl}
-      when: "'enikshay_ssl' in special_sites"
 
 - name: PNA Proxy
   hosts: pna_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'pna_ssl' in special_sites }}"
         site_config: {name: pna_ssl, vars_file: pna_ssl}
-      when: "'pna_ssl' in special_sites"
 
 - name: SWISS Proxy
   hosts: swiss_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'swiss_ssl' in special_sites }}"
         site_config: {name: swiss_ssl, vars_file: swiss_ssl}
-      when: "'swiss_ssl' in special_sites"
 
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: True
         site_config: {name: couchdb2, vars_file: couchdb2}
 
 - name: Move logrotate to hourly
