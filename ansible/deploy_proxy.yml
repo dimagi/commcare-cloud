@@ -52,6 +52,18 @@
         loop_var: site_config
       tags: nginx_sites
 
+    - name: install j2me http site
+      include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: "{{ J2ME_SITE_HOST|default(None) }}"
+      with_items:
+        - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
+      loop_control:
+        loop_var: site_config
+      tags: nginx_sites
+
     - name: install other sites
       include_role:
         name: nginx
@@ -65,7 +77,6 @@
         - {name: motech2, vars_file: motech2_http}
         - {name: wiki, vars_file: wiki}
         - {name: wiki, vars_file: wiki_http}
-        - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
         - {name: commtrack_ssl, vars_file: commtrack_ssl}
         - {name: commtrack_http, vars_file: commtrack_http}
         - {name: icds_tableau, vars_file: icds_tableau}
