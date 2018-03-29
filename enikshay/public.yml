@@ -21,8 +21,6 @@ primary_ssl_env: "enikshay.in"
 msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
-run_newrelic_plugin_agent: False
-
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False
 datadog_integration_vmware: True
