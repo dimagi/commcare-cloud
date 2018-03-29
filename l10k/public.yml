@@ -9,7 +9,6 @@ active_sites:
   wiki_http: False
   motech: False
   motech2: False
-  riakcs: False
 
 fake_ssl_cert: no
 

@@ -13,7 +13,6 @@ active_sites:
   wiki_http: False
   motech: False
   motech2: False
-  riakcs: True
   enikshay_ssl: True
 
 couchdb2:
