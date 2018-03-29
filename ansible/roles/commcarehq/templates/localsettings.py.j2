@@ -21,11 +21,11 @@ DATABASES = { {% for config in postgresql_dbs %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ config.name }}',
-        'USER': '{{ config.get('user', localsettings.PG_DATABASE_USER) }}',
-        'PASSWORD': '{{ config.get('password', localsettings.PG_DATABASE_PASSWORD) }}',
-        'HOST': '{{ config.get('host', localsettings.PG_DATABASE_HOST) }}',
-        'PORT': {{ config.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }},
-        'OPTIONS': {{ config.get('options', localsettings.get('PG_DATABASE_OPTIONS', {}))|to_json }},
+        'USER': '{{ config.get('user', DEFAULT_POSTGRESQL_USER) }}',
+        'PASSWORD': '{{ config.get('password', DEFAULT_POSTGRESQL_PASSWORD) }}',
+        'HOST': '{{ config.get('host', DEFAULT_POSTGRESQL_HOST) }}',
+        'PORT': {{ config.get('port', DEFAULT_POSTGRESQL_PORT) }},
+        'OPTIONS': {{ config.get('options', DEFAULT_POSTGRESQL_OPTIONS)|to_json }},
         {% if 'django_migrate' in config -%}
         'MIGRATE': {{ config.django_migrate }},
         {% endif -%}
