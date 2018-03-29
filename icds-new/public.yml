@@ -18,16 +18,9 @@ cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
 tableau_nginx_combined_cert_value: "{{ ssl_secrets.certs.reports_icds_cas_gov_in }}"
 tableau_key_value: '{{ ssl_secrets.private_keys.reports_icds_cas_gov_in }}'
 
-active_sites:
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: True
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  cas_ssl: True
+special_sites:
+  - icds_tableau
+  - cas_ssl
 
 riak_backend: "bitcask"
 riak_ring_size: 64

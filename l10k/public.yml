@@ -1,15 +1,5 @@
 SITE_HOST: 'l10k.commcarehq.org'
 
-active_sites:
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-
 fake_ssl_cert: no
 
 run_newrelic_plugin_agent: False

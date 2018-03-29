@@ -4,16 +4,14 @@ COMMTRACK_SITE_HOST: 'commtrack.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-active_sites:
-  commtrack_ssl: True
-  commtrack_http: True
-  tableau: True
-  icds_tableau: False
-  wiki: True
-  wiki_http: True
-  motech: True
-  motech2: True
-  cas_ssl: False
+special_sites:
+  - commtrack_ssl
+  - commtrack_http
+  - tableau
+  - wiki
+  - wiki_http
+  - motech
+  - motech2
 
 riak_backend: "leveldb"
 riak_ring_size: 128
