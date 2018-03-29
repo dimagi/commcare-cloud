@@ -2,7 +2,6 @@ SITE_HOST: 'commcare.pna.sn'
 PNA_SITE_HOST: 'pna.commcarehq.org'
 
 active_sites:
-  cchq_http_j2me: False
   commtrack_ssl: False
   commtrack_http: False
   tableau: False

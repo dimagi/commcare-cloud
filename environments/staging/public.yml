@@ -2,7 +2,6 @@ SITE_HOST: 'staging.commcarehq.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 
 active_sites:
-  cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False
   tableau: False

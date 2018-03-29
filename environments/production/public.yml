@@ -5,7 +5,6 @@ J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
-  cchq_http_j2me: True
   commtrack_ssl: True
   commtrack_http: True
   tableau: True

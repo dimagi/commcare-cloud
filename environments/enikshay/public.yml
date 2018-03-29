@@ -5,7 +5,6 @@ internal_domain_name: 'enikshay.in'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 active_sites:
-  cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False
   tableau: False
