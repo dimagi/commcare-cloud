@@ -97,23 +97,12 @@
     - name: riakcs new
       include_role:
         name: nginx
-        tasks_from: site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ groups.get('riakcs') and ('BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings or 'TEMP_RIAKCS_PROXY' in localsettings) }}"
         hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
         riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
         site_config: {name: riakcs, vars_file: riakcs}
-      when: "groups.get('riakcs')
-        and ('BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings or 'TEMP_RIAKCS_PROXY' in localsettings)"
-
-    - name: drop riak temp
-      include_role:
-        name: nginx
-        tasks_from: dropsite
-      vars:
-        file_name: "{{ deploy_env }}_riakcs_{{ temp_riakcs_proxy_port }}"
-      when: "groups.get('riakcs')
-        and 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' not in localsettings
-        and 'TEMP_RIAKCS_PROXY' not in localsettings"
 
     - name: Restart nginx
       include_role:
@@ -125,48 +114,39 @@
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'cas_ssl' in special_sites }}"
         site_config: {name: cas_ssl, vars_file: cas_ssl}
-      when: "'cas_ssl' in special_sites"
 
 - name: Enikshay Proxy
   hosts: enikshay_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'enikshay_ssl' in special_sites }}"
         site_config: {name: enikshay_ssl, vars_file: enikshay_ssl}
-      when: "'enikshay_ssl' in special_sites"
 
 - name: PNA Proxy
   hosts: pna_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: "{{ 'pna_ssl' in special_sites }}"
         site_config: {name: pna_ssl, vars_file: pna_ssl}
-      when: "'pna_ssl' in special_sites"
-
-- name: SWISS Proxy
-  hosts: swiss_proxy
-  tasks:
-    - include_role:
-        name: nginx
-        tasks_from: custom_site
-      vars:
-        site_config: {name: swiss_ssl, vars_file: swiss_ssl}
-      when: "'swiss_ssl' in special_sites"
 
 - name: Couchdb 2.0 Proxy
   hosts: couchdb2_proxy
   tasks:
     - include_role:
         name: nginx
-        tasks_from: custom_site
+        tasks_from: set_site_present
       vars:
+        site_present: True
         site_config: {name: couchdb2, vars_file: couchdb2}
 
 - name: Move logrotate to hourly
