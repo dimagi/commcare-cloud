@@ -46,9 +46,15 @@ pg_query_stats: True
 formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
 
+DEFAULT_POSTGRESQL_HOST: "{{ groups.postgresql.0 }}"
+DEFAULT_POSTGRESQL_NAME: commcarehq
+DEFAULT_POSTGRESQL_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+DEFAULT_POSTGRESQL_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+DEFAULT_POSTGRESQL_PORT: 6432
+
 postgresql_dbs:
   - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
+    name: "{{DEFAULT_POSTGRESQL_NAME}}"
     query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy
@@ -174,11 +180,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
