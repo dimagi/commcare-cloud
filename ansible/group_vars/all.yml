@@ -3,11 +3,13 @@ www_dir: "{{ cchq_home }}/www"
 www_home: "{{ www_dir }}/{{ deploy_env }}"
 code_home: "{{ www_home }}/current"
 log_home: "{{ www_home }}/log"
-service_home: "{{ code_home }}/services"
+legacy_service_home: "{{ code_home }}/services"
+service_home: "{{ www_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
 encrypted_root: "/opt/data"
+project: "commcare-hq"
 
-shared_drive_enabled: true  # overridden in ../config/$ENV/$ENV.yml
+shared_drive_enabled: true
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
@@ -20,42 +22,6 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
-dev_users:
-  present:
-    - astone
-    - biyeun
-    - cellowitz
-    - ctsims
-    - czue
-    - dmiller
-    - droberts
-    - esoergel
-    - frener
-    - gbova
-    - gcapalbo
-    - jemord
-    - jroth
-    - jschweers
-    - jwilson
-    - mkangia
-    - npellegrino
-    - nhooper
-    - nsharma
-    - pvaidyanathan
-    - sgoyal
-    - skelly
-    - sravfeyn
-    - wpride
-    - cchq
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
-    - brudolph
-    - ncarnahan
-    - jhoffman
 
 ssh_allow_password: False
 django_port: 9010
@@ -106,8 +72,10 @@ old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory
-s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key is defined else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
-s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key is defined else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
+s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
+s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
+
+couchdb_mirror: https://archive.apache.org/dist/couchdb/source
 
 datadog_integration_cloudant: false
 datadog_integration_couch: false
@@ -127,7 +95,6 @@ datadog_integration_jmx: false
 datadog_integration_vmware: false
 datadog_integration_http: false
 datadog_extra_host_checks: []
-
 
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
@@ -168,12 +135,13 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD | default(None) }
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME | default(None) }}"
 # To enable Local ES snapshot override with repository location
 es_local_repo: false
-
 blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
-aws_endpoint: "s3.{{ aws_region }}.amazonaws.com"
+aws_region: None
+# this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
+aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
 
 airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
 airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
