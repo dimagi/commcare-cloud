@@ -121,7 +121,9 @@ class DeployMetadata(object):
         if self._deploy_ref is not None:
             return self._deploy_ref
 
-        if env.offline:
+        # https://github.com/PyGithub/PyGithub/pull/709
+        uses_proxy = os.getenv('http_proxy') or os.getenv('HTTP_PROXY')
+        if env.offline or uses_proxy:
             self._deploy_ref = env.code_branch
             return self._deploy_ref
 
