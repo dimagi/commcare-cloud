@@ -33,10 +33,16 @@ postgres_config:
 
 formplayer_db_name: formplayer
 
+DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
+DEFAULT_POSTGRESQL_NAME: commcarehq
+DEFAULT_POSTGRESQL_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+DEFAULT_POSTGRESQL_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+DEFAULT_POSTGRESQL_PORT: 6432
+
 postgresql_dbs:
   - name: commcarehq_ucr
     django_alias: ucr
-  - name: "{{ localsettings.PG_DATABASE_NAME }}"
+  - name: "{{ DEFAULT_POSTGRESQL_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
@@ -142,11 +148,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "127.0.0.1"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
