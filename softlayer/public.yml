@@ -6,7 +6,6 @@ tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 
 active_sites:
-  cchq_http_j2me: True
   commtrack_ssl: False
   commtrack_http: False
   tableau: False
