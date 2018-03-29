@@ -48,10 +48,6 @@ pg_query_stats: False
 formplayer_db_name: formplayer
 
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
-DEFAULT_POSTGRESQL_NAME: commcarehq
-DEFAULT_POSTGRESQL_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-DEFAULT_POSTGRESQL_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-DEFAULT_POSTGRESQL_PORT: 6432
 
 postgresql_dbs:
   - django_alias: default

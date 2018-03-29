@@ -130,8 +130,6 @@ formplayer_db_name: formplayer
 #    django_alias: "default" # if present this DB will be configured for django under this alias
 #    shards: [0, 99] # pl_proxy shards assigned to this DB (total across all DB's must be power of 2)
 
-DEFAULT_POSTGRESQL_HOST: "{{ groups.postgresql.0 }}"
-DEFAULT_POSTGRESQL_NAME: commcarehq
 DEFAULT_POSTGRESQL_PASSWORD: commcarehq
 DEFAULT_POSTGRESQL_USER: commcarehq
 
