@@ -1,3 +1,4 @@
+DEFAULT_POSTGRESQL_HOST: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
 postgresql_dbs:
   - django_alias: default
     name: "{{POSTGRESQL_DB_NAME}}"

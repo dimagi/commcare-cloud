@@ -1,3 +1,5 @@
+DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
+
 postgresql_dbs:
   - name: commcarehq_ucr
     query_stats: True

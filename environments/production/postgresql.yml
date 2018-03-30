@@ -1,3 +1,4 @@
+DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
 postgresql_dbs:
   - django_alias: default
     name: "{{POSTGRESQL_DB_NAME}}"

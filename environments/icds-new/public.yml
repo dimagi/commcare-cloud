@@ -61,8 +61,6 @@ formplayer_db_name: formplayer
 
 nofile_limit: 65536
 
-DEFAULT_POSTGRESQL_HOST: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-
 redis_appendonly: 'no'
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
