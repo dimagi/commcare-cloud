@@ -148,7 +148,7 @@
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
-  when: item.create|default(True) and ((item.host == inventory_hostname) or is_monolith|bool)
+  when: item.create and ((item.host == inventory_hostname) or is_monolith|bool)
 
 # restart / reload if necessary to make sure replication slot config updated
 - meta: flush_handlers
@@ -270,7 +270,7 @@
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs }}"
-  when: item.create|default(True) and not is_pg_standby|default(False) and ((item.host == inventory_hostname) or is_monolith|bool)
+  when: item.create and not is_pg_standby|default(False) and ((item.host == inventory_hostname) or is_monolith|bool)
   tags: pghashlib
 
 - name: Make plproxy a trusted language
