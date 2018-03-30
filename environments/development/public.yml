@@ -121,19 +121,22 @@ formplayer_db_name: formplayer
 #
 #postgresql_dbs:
 #  - name: "database_name"
-#    host: "db_host" # defaults to localsettings.PG_DATABASE_HOST
-#    port: "db_port" # defaults to  localsettings.get('PG_DATABASE_PORT', 5432))
-#    user: "db user for django" # defaults to localsettings.PG_DATABASE_USER
-#    password: "db user password for django" # defaults to localsettings.PG_DATABASE_PASSWORD
-#    options: "django db options dict" # defaults to localsettings.get('PG_DATABASE_OPTIONS', {})
+#    host: "db_host" # defaults to DEFAULT_POSTGRESQL_HOST
+#    port: "db_port" # defaults to DEFAULT_POSTGRESQL_PORT
+#    user: "db user for django" # defaults to DEFAULT_POSTGRESQL_USER
+#    password: "db user password for django" # defaults to DEFAULT_POSTGRESQL_PASSWORD
+#    options: "django db options dict" # defaults to DEFAULT_POSTGRESQL_OPTIONS
 #    django_alias: "default" # if present this DB will be configured for django under this alias
-#    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
+#    shards: [0, 99] # pl_proxy shards assigned to this DB (total across all DB's must be power of 2)
+
+DEFAULT_POSTGRESQL_PASSWORD: commcarehq
+DEFAULT_POSTGRESQL_USER: commcarehq
 
 postgresql_dbs:
   - name: commcarehq_ucr
     django_alias: ucr
     django_migrate: False
-  - name: "{{localsettings.PG_DATABASE_NAME}}"
+  - name: "{{DEFAULT_POSTGRESQL_NAME}}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
 
@@ -142,7 +145,7 @@ postgresql_dbs:
 #
 #postgresql_dbs:
 #  - django_alias: default
-#    name: "{{localsettings.PG_DATABASE_NAME}}"
+#    name: "{{DEFAULT_POSTGRESQL_NAME}}"
 #  - django_alias: proxy
 #    name: commcarehq_proxy
 #  - django_alias: p1
@@ -264,11 +267,6 @@ localsettings:
 #  MAPS_LAYERS:
 #  MEDIA_ROOT:
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: commcarehq
-  PG_DATABASE_USER: commcarehq
-  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
