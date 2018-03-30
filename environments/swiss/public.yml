@@ -3,8 +3,6 @@ SITE_HOST: 'swiss.commcarehq.org'
 msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
 
-run_newrelic_plugin_agent: False
-
 DATADOG_ENABLED: True
 DATADOG_INTEGRATIONS_ENABLED: False
 

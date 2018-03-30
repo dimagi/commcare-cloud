@@ -21,8 +21,6 @@ primary_ssl_env: "production"
 
 fake_ssl_cert: no
 
-run_newrelic_plugin_agent: True
-
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
 

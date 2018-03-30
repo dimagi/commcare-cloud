@@ -8,8 +8,6 @@ primary_ssl_env: "staging"
 
 fake_ssl_cert: no
 
-run_newrelic_plugin_agent: False
-
 DATADOG_ENABLED: False
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
