@@ -47,9 +47,11 @@ pg_query_stats: False
 
 formplayer_db_name: formplayer
 
+DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
+
 postgresql_dbs:
   - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
+    name: "{{DEFAULT_POSTGRESQL_NAME}}"
     host: "{{ groups.postgresql.0 }}"
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
     name: commcarehq_synclogs
@@ -213,11 +215,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "127.0.0.1"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
