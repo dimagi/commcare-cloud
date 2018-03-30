@@ -31,7 +31,7 @@ class DBOptions(jsonobject.JsonObject):
     port = jsonobject.IntegerProperty(default=6432)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    options = jsonobject.DictProperty(unicode, exclude_if_none=True)
+    options = jsonobject.DictProperty(unicode)
     django_alias = jsonobject.StringProperty()
     shards = jsonobject.ListProperty(int, exclude_if_none=True)  # [start, end] pair
     django_migrate = jsonobject.BooleanProperty(default=True)

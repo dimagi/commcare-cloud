@@ -25,7 +25,7 @@ DATABASES = { {% for config in postgresql_dbs %}
         'PASSWORD': '{{ config.password }}',
         'HOST': '{{ config.host }}',
         'PORT': {{ config.port }},
-        'OPTIONS': {{ config.get('options', DEFAULT_POSTGRESQL_OPTIONS)|to_json }},
+        'OPTIONS': {{ config.options|to_json }},
         {% if not config.django_migrate -%}
         'MIGRATE': False,
         {% endif -%}
