@@ -65,7 +65,7 @@ DEFAULT_POSTGRESQL_HOST: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
 
 postgresql_dbs:
   - django_alias: default
-    name: "{{DEFAULT_POSTGRESQL_NAME}}"
+    name: "{{POSTGRESQL_DB_NAME}}"
     host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
     name: commcarehq_synclogs

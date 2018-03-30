@@ -52,7 +52,7 @@ postgresql_dbs:
     query_stats: True
     django_alias: ucr
     django_migrate: False
-  - name: "{{ DEFAULT_POSTGRESQL_NAME }}"
+  - name: "{{ POSTGRESQL_DB_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"

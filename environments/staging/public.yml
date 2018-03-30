@@ -47,7 +47,7 @@ formplayer_archive_time_spec: '10m'
 
 postgresql_dbs:
   - django_alias: default
-    name: "{{DEFAULT_POSTGRESQL_NAME}}"
+    name: "{{POSTGRESQL_DB_NAME}}"
     query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy

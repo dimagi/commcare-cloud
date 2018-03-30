@@ -136,7 +136,7 @@ postgresql_dbs:
   - name: commcarehq_ucr
     django_alias: ucr
     django_migrate: False
-  - name: "{{DEFAULT_POSTGRESQL_NAME}}"
+  - name: "{{POSTGRESQL_DB_NAME}}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
 
@@ -145,7 +145,7 @@ postgresql_dbs:
 #
 #postgresql_dbs:
 #  - django_alias: default
-#    name: "{{DEFAULT_POSTGRESQL_NAME}}"
+#    name: "{{POSTGRESQL_DB_NAME}}"
 #  - django_alias: proxy
 #    name: commcarehq_proxy
 #  - django_alias: p1
