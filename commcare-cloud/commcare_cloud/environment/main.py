@@ -23,8 +23,8 @@ class Environment(object):
         self.public_vars
         self.meta_config
         self.users_config
+        self.raw_app_processes_config
         self.app_processes_config
-        self.translated_app_processes_config
         self.fab_settings_config
         self.inventory_manager
 
@@ -51,7 +51,7 @@ class Environment(object):
         return UsersConfig.wrap(users_json)
 
     @memoized_property
-    def app_processes_config(self):
+    def raw_app_processes_config(self):
         """
         collated contents of app-processes.yml files, as an AppProcessesConfig object
 
@@ -62,13 +62,13 @@ class Environment(object):
         with open(self.paths.app_processes_yml) as f:
             app_processes_json.update(yaml.load(f))
 
-        app_processes_config = AppProcessesConfig.wrap(app_processes_json)
-        app_processes_config.check()
-        return app_processes_config
+        raw_app_processes_config = AppProcessesConfig.wrap(app_processes_json)
+        raw_app_processes_config.check()
+        return raw_app_processes_config
 
     @memoized_property
-    def translated_app_processes_config(self):
-        app_processes_config = AppProcessesConfig.wrap(self.app_processes_config.to_json())
+    def app_processes_config(self):
+        app_processes_config = AppProcessesConfig.wrap(self.raw_app_processes_config.to_json())
         app_processes_config.check_and_translate_hosts(self)
         app_processes_config.check()
         return app_processes_config
@@ -125,7 +125,7 @@ class Environment(object):
 
     def create_generated_yml(self):
         generated_variables = {
-            'app_processes_config': self.translated_app_processes_config.to_json(),
+            'app_processes_config': self.app_processes_config.to_json(),
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
