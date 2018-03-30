@@ -77,7 +77,7 @@ formplayer_purge_time_spec: '8d'
 
 postgresql_dbs:
   - django_alias: default
-    name: "{{DEFAULT_POSTGRESQL_NAME}}"
+    name: "{{POSTGRESQL_DB_NAME}}"
     host: "{{ groups.postgresql.0 }}"
   - django_alias: proxy
     name: commcarehq_proxy

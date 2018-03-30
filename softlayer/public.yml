@@ -54,7 +54,7 @@ formplayer_db_name: formplayer
 
 postgresql_dbs:
   - django_alias: default
-    name: "{{DEFAULT_POSTGRESQL_NAME}}"
+    name: "{{POSTGRESQL_DB_NAME}}"
   - django_alias: proxy
     name: commcarehq_proxy
   - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
