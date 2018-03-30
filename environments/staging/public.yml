@@ -44,45 +44,6 @@ pg_query_stats: True
 formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
 
-
-postgresql_dbs:
-  - django_alias: default
-    name: "{{POSTGRESQL_DB_NAME}}"
-    query_stats: True
-  - django_alias: proxy
-    name: commcarehq_proxy
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 99]
-    query_stats: True
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [100, 199]
-    query_stats: True
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [200, 299]
-    query_stats: True
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [300, 399]
-    query_stats: True
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [400, 511]
-    query_stats: True
-  - name: commcarehq_ucr
-    query_stats: True
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: icds-ucr
-    name: commcarehq_icds_testdata
-    query_stats: True
-    django_migrate: False
-
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"

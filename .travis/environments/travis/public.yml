@@ -118,54 +118,8 @@ supervisor_http_enabled: True
 
 formplayer_db_name: formplayer
 
-# postgresql_dbs keys description
-#
-#postgresql_dbs:
-#  - name: "database_name"
-#    host: "db_host" # defaults to DEFAULT_POSTGRESQL_HOST
-#    port: "db_port" # defaults to DEFAULT_POSTGRESQL_PORT
-#    user: "db user for django" # defaults to DEFAULT_POSTGRESQL_USER
-#    password: "db user password for django" # defaults to DEFAULT_POSTGRESQL_PASSWORD
-#    options: "django db options dict" # defaults to DEFAULT_POSTGRESQL_OPTIONS
-#    django_alias: "default" # if present this DB will be configured for django under this alias
-#    shards: [0, 99] # pl_proxy shards assigned to this DB (total across all DB's must be power of 2)
-
 DEFAULT_POSTGRESQL_PASSWORD: commcarehq
 DEFAULT_POSTGRESQL_USER: commcarehq
-
-postgresql_dbs:
-  - name: commcarehq_ucr
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{POSTGRESQL_DB_NAME}}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-
-# example setup for sharded database
-# also set localsettings.USE_PARTITIONED_DATABASE to True
-#
-#postgresql_dbs:
-#  - django_alias: default
-#    name: "{{POSTGRESQL_DB_NAME}}"
-#  - django_alias: proxy
-#    name: commcarehq_proxy
-#  - django_alias: p1
-#    name: commcarehq_p1
-#    shards: [0, 99]
-#  - django_alias: p2
-#    name: commcarehq_p2
-#    shards: [100, 199]
-#  - django_alias: p3
-#    name: commcarehq_p3
-#    shards: [200, 299]
-#  - django_alias: p4
-#    name: commcarehq_p4
-#    shards: [300, 399]
-#  - django_alias: p5
-#    name: commcarehq_p5
-#    shards: [400, 511]
-#  - name: commcarehq_ucr
-#    django_alias: ucr
 
 mailrelay: 'relay.example.com'
 root_email: 'root@example.com'

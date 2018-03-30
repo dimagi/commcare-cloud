@@ -12,6 +12,7 @@ from ansible.vars.manager import VariableManager
 
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
+from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -27,6 +28,8 @@ class Environment(object):
         self.app_processes_config
         self.fab_settings_config
         self.inventory_manager
+        self.postgresql_config
+        self.create_generated_yml()
 
     @memoized
     def get_ansible_vault_password(self):
@@ -43,6 +46,12 @@ class Environment(object):
         with open(self.paths.meta_yml) as f:
             meta_json = yaml.load(f)
         return MetaConfig.wrap(meta_json)
+
+    @memoized_property
+    def postgresql_config(self):
+        with open(self.paths.postgresql_yml) as f:
+            postgresql_json = yaml.load(f)
+        return PostgresqlConfig.wrap(postgresql_json)
 
     @memoized_property
     def users_config(self):
@@ -130,6 +139,7 @@ class Environment(object):
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
+            'postgresql_dbs': self.postgresql_config.to_json()['postgresql_dbs']
         }
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))

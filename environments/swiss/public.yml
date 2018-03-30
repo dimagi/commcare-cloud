@@ -47,18 +47,6 @@ formplayer_db_name: formplayer
 
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 
-postgresql_dbs:
-  - name: commcarehq_ucr
-    query_stats: True
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ POSTGRESQL_DB_NAME }}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
-
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "185.12.7.167"

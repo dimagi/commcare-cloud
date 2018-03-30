@@ -1,0 +1,9 @@
+postgresql_dbs:
+  - name: commcarehq_ucr
+    django_alias: ucr
+  - name: "{{ POSTGRESQL_DB_NAME }}"
+    django_alias: default
+  - name: "{{ formplayer_db_name }}"
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
+    host: "{{ groups.postgresql.0 }}"

@@ -1,0 +1,67 @@
+postgresql_dbs:
+  - django_alias: default
+    name: "{{POSTGRESQL_DB_NAME}}"
+    host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
+    host: "{{ hostvars[groups.pgsynclog.0].inventory_hostname }}"
+  - django_alias: proxy
+    name: commcarehq_proxy
+    host: "{{ hostvars[groups.plproxy1.0].inventory_hostname }}"
+  - django_alias: p1
+    name: commcarehq_p1
+    shards: [0, 103]
+    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
+  - django_alias: p2
+    name: commcarehq_p2
+    shards: [104, 205]
+    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
+  - django_alias: p3
+    name: commcarehq_p3
+    shards: [206, 308]
+    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+  - django_alias: p4
+    name: commcarehq_p4
+    shards: [309, 411]
+    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+  - django_alias: p5
+    name: commcarehq_p5
+    shards: [412, 514]
+    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
+  - django_alias: p6
+    name: commcarehq_p6
+    shards: [515, 617]
+    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+  - django_alias: p7
+    name: commcarehq_p7
+    shards: [618, 720]
+    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+  - django_alias: p8
+    name: commcarehq_p8
+    shards: [721, 823]
+    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
+  - django_alias: p9
+    name: commcarehq_p9
+    shards: [824, 926]
+    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
+  - django_alias: p10
+    name: commcarehq_p10
+    shards: [927, 1023]
+    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
+  - name: commcarehq_ucr
+    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
+    django_alias: ucr
+    django_migrate: False
+  - django_alias: icds-ucr
+    name: commcarehq_icds_aggregatedata
+    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
+    query_stats: True
+  - name: commcarehq_icds_testdata
+    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
+  - name: "{{ formplayer_db_name }}"
+    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
+  - django_alias: icds-ucr-standby1
+    name: commcarehq_icds_aggregatedata
+    host: "{{ hostvars[groups.pgucrstandby.0].inventory_hostname }}"
+    create: False
+    django_migrate: False

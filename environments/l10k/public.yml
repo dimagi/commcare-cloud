@@ -33,16 +33,6 @@ formplayer_db_name: formplayer
 
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 
-postgresql_dbs:
-  - name: commcarehq_ucr
-    django_alias: ucr
-  - name: "{{ POSTGRESQL_DB_NAME }}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
-
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
