@@ -21,8 +21,8 @@ DATABASES = { {% for config in postgresql_dbs %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ config.name }}',
-        'USER': '{{ config.get('user', DEFAULT_POSTGRESQL_USER) }}',
-        'PASSWORD': '{{ config.get('password', DEFAULT_POSTGRESQL_PASSWORD) }}',
+        'USER': '{{ config.user }}',
+        'PASSWORD': '{{ config.password }}',
         'HOST': '{{ config.host }}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.get('options', DEFAULT_POSTGRESQL_OPTIONS)|to_json }},

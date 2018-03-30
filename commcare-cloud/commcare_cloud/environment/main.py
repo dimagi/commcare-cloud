@@ -139,9 +139,8 @@ class Environment(object):
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
-            'postgresql_dbs': self.postgresql_config.to_json()['postgresql_dbs'],
-            'DEFAULT_POSTGRESQL_HOST': self.postgresql_config.to_json()['DEFAULT_POSTGRESQL_HOST'],
         }
+        generated_variables.update(self.postgresql_config.to_json())
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
 
