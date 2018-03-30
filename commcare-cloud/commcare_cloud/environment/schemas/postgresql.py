@@ -21,7 +21,7 @@ class DBOptions(jsonobject.JsonObject):
 
     name = jsonobject.StringProperty(exclude_if_none=True)
     host = jsonobject.StringProperty()
-    port = jsonobject.IntegerProperty(exclude_if_none=True)
+    port = jsonobject.IntegerProperty(default=6432)
     user = jsonobject.StringProperty(exclude_if_none=True)
     password = jsonobject.StringProperty(exclude_if_none=True)
     options = jsonobject.DictProperty(unicode, exclude_if_none=True)
