@@ -26,7 +26,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
 class DBOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
-    name = jsonobject.StringProperty(exclude_if_none=True)
+    name = jsonobject.StringProperty(required=True)
     host = jsonobject.StringProperty()
     port = jsonobject.IntegerProperty(default=6432)
     user = jsonobject.StringProperty()
