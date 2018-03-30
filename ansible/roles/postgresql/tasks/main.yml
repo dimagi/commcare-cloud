@@ -148,7 +148,7 @@
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
   with_items: "{{ postgresql_dbs }}"
-  when: item.create|default(True) and ((item.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname) or is_monolith|bool)
+  when: item.create|default(True) and ((item.host == inventory_hostname) or is_monolith|bool)
 
 # restart / reload if necessary to make sure replication slot config updated
 - meta: flush_handlers
@@ -257,7 +257,7 @@
     name: plproxy
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname) or is_monolith|bool
+  when: (item.get('django_alias') == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Create pghashlib extension
@@ -270,7 +270,7 @@
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs }}"
-  when: item.create|default(True) and not is_pg_standby|default(False) and ((item.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname) or is_monolith|bool)
+  when: item.create|default(True) and not is_pg_standby|default(False) and ((item.host == inventory_hostname) or is_monolith|bool)
   tags: pghashlib
 
 - name: Make plproxy a trusted language
@@ -283,7 +283,7 @@
     trust: True
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
-  when: (item.get('django_alias') == 'proxy' and item.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname) or is_monolith|bool
+  when: (item.get('django_alias') == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Grant usage on plproxy FDW
@@ -292,7 +292,7 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.get('user', DEFAULT_POSTGRESQL_USER)}}\""
-  when: (item.get('django_alias') == 'proxy' and item.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname) or is_monolith|bool
+  when: (item.get('django_alias') == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Enable query stat collection
@@ -301,7 +301,7 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
-  when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False) and (item.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname) or is_monolith|bool
+  when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False) and (item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Copy log rotation script

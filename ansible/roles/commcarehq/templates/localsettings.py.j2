@@ -23,7 +23,7 @@ DATABASES = { {% for config in postgresql_dbs %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.get('user', DEFAULT_POSTGRESQL_USER) }}',
         'PASSWORD': '{{ config.get('password', DEFAULT_POSTGRESQL_PASSWORD) }}',
-        'HOST': '{{ config.get('host', DEFAULT_POSTGRESQL_HOST) }}',
+        'HOST': '{{ config.host }}',
         'PORT': {{ config.get('port', DEFAULT_POSTGRESQL_PORT) }},
         'OPTIONS': {{ config.get('options', DEFAULT_POSTGRESQL_OPTIONS)|to_json }},
         {% if not config.django_migrate -%}

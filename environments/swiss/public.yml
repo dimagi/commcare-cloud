@@ -45,8 +45,6 @@ postgresql_work_mem: '1MB'
 
 formplayer_db_name: formplayer
 
-DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
-
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "185.12.7.167"

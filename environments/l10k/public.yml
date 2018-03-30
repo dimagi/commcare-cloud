@@ -31,8 +31,6 @@ postgres_config:
 
 formplayer_db_name: formplayer
 
-DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
-
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
