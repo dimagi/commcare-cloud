@@ -117,9 +117,6 @@ supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
 formplayer_db_name: formplayer
 
-DEFAULT_POSTGRESQL_PASSWORD: commcarehq
-DEFAULT_POSTGRESQL_USER: commcarehq
-
 mailrelay: 'relay.example.com'
 
 couchdb2:

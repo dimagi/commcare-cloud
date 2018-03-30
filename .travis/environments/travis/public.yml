@@ -118,9 +118,6 @@ supervisor_http_enabled: True
 
 formplayer_db_name: formplayer
 
-DEFAULT_POSTGRESQL_PASSWORD: commcarehq
-DEFAULT_POSTGRESQL_USER: commcarehq
-
 mailrelay: 'relay.example.com'
 root_email: 'root@example.com'
 
