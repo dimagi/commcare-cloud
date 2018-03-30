@@ -257,7 +257,7 @@
     name: plproxy
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
-  when: (item.get('django_alias') == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
+  when: (item.django_alias == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Create pghashlib extension
@@ -283,7 +283,7 @@
     trust: True
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
-  when: (item.get('django_alias') == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
+  when: (item.django_alias == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Grant usage on plproxy FDW
@@ -292,7 +292,7 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{item.user}}\""
-  when: (item.get('django_alias') == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
+  when: (item.django_alias == 'proxy' and item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Enable query stat collection

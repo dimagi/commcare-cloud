@@ -17,7 +17,7 @@ ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_js
 SYNCLOGS_SQL_DB_ALIAS = "{{ localsettings.get('SYNCLOGS_SQL_DB_ALIAS', 'default') }}"
 
 DATABASES = { {% for config in postgresql_dbs %}
-{%- if config.get('django_alias') %}
+{%- if config.django_alias %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ config.name }}',
