@@ -1,0 +1,27 @@
+postgresql_dbs:
+  - django_alias: default
+    name: "{{POSTGRESQL_DB_NAME}}"
+  - django_alias: proxy
+    name: commcarehq_proxy
+  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+    name: commcarehq_synclogs
+  - django_alias: p1
+    name: commcarehq_p1
+    shards: [0, 204]
+  - django_alias: p2
+    name: commcarehq_p2
+    shards: [205, 409]
+  - django_alias: p3
+    name: commcarehq_p3
+    shards: [410, 614]
+  - django_alias: p4
+    name: commcarehq_p4
+    shards: [615, 819]
+  - django_alias: p5
+    name: commcarehq_p5
+    shards: [820, 1023]
+  - name: commcarehq_ucr
+    django_alias: ucr
+  - django_alias: icds-ucr
+    name: icds-ucr
+  - name: "{{ formplayer_db_name }}"
