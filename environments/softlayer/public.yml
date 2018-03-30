@@ -17,8 +17,6 @@ primary_ssl_env: "softlayer"
 
 fake_ssl_cert: no
 
-run_newrelic_plugin_agent: False
-
 DATADOG_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
