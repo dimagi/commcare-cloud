@@ -144,4 +144,3 @@ aws_region: None
 aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
 
 POSTGRESQL_DB_NAME: commcarehq
-DEFAULT_POSTGRESQL_PORT: 6432
