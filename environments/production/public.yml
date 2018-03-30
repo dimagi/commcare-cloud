@@ -70,7 +70,7 @@ DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
 
 postgresql_dbs:
   - django_alias: default
-    name: "{{DEFAULT_POSTGRESQL_NAME}}"
+    name: "{{POSTGRESQL_DB_NAME}}"
     host: "hqdb0.internal-va.commcarehq.org"
   - django_alias: proxy
     name: commcarehq_proxy
