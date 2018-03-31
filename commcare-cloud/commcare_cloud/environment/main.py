@@ -52,7 +52,9 @@ class Environment(object):
     def postgresql_config(self):
         with open(self.paths.postgresql_yml) as f:
             postgresql_json = yaml.load(f)
-        return PostgresqlConfig.wrap(postgresql_json)
+        postgresql_config = PostgresqlConfig.wrap(postgresql_json)
+        postgresql_config.replace_hosts(self)
+        return postgresql_config
 
     @memoized_property
     def users_config(self):
@@ -106,6 +108,17 @@ class Environment(object):
     def inventory_manager(self):
         return InventoryManager(loader=self._ansible_inventory_data_loader,
                                 sources=self.paths.inventory_ini)
+
+    @memoized_property
+    def groups(self):
+        """
+        mimics ansible's `groups` variable
+
+        env.groups['postgresql'][0] => {{ groups.postgresql.0 }}
+        """
+        return {group: [
+            host for host in hosts
+        ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 
     @memoized_property
     def sshable_hostnames_by_group(self):

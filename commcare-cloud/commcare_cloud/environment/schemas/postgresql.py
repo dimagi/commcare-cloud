@@ -5,7 +5,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
     SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
-    DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default="{{ groups.postgresql.0 }}")
+    DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
     DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
 
@@ -23,6 +23,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.password = self.DEFAULT_POSTGRESQL_PASSWORD
         return self
 
+    def replace_hosts(self, environment):
+        if self.DEFAULT_POSTGRESQL_HOST is None:
+            self.DEFAULT_POSTGRESQL_HOST = environment.groups['postgresql'][0]
 
 class DBOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
