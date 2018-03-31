@@ -159,6 +159,17 @@ class Environment(object):
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
 
+    def translate_host(self, host, filename_for_error):
+        if host == 'None' or host in self.inventory_manager.hosts:
+            return host
+        else:
+            group = self.groups.get(host)
+            assert group, 'Unknown host referenced in {}: {}'.format(filename_for_error, host)
+            assert len(group) == 1, (
+                'Unable to translate host referenced '
+                'in {} to a single host name: {}'.format(filename_for_error, host))
+            return group[0]
+
 
 @memoized
 def get_environment(env_name):
