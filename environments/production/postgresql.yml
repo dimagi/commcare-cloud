@@ -1,4 +1,5 @@
 DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
+
 postgresql_dbs:
   - django_alias: default
     name: "{{POSTGRESQL_DB_NAME}}"
@@ -6,7 +7,7 @@ postgresql_dbs:
   - django_alias: proxy
     name: commcarehq_proxy
     host: "hqdb1.internal-va.commcarehq.org"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+  - django_alias: synclogs
     name: commcarehq_synclogs
     host: "pgsynclog.internal-va.commcarehq.org"
   - django_alias: p1

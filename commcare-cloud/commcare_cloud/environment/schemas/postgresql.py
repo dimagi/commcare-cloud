@@ -4,6 +4,7 @@ import jsonobject
 class PostgresqlConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
+    SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default="{{ groups.postgresql.0 }}")
     DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")

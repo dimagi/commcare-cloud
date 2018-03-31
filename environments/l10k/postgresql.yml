@@ -5,6 +5,6 @@ postgresql_dbs:
   - name: "{{ POSTGRESQL_DB_NAME }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+  - django_alias: synclogs
     name: commcarehq_synclogs
     host: "{{ groups.postgresql.0 }}"

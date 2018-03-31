@@ -3,7 +3,7 @@ postgresql_dbs:
   - django_alias: default
     name: "{{POSTGRESQL_DB_NAME}}"
     host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+  - django_alias: synclogs
     name: commcarehq_synclogs
     host: "{{ hostvars[groups.pgsynclog.0].inventory_hostname }}"
   - django_alias: proxy
