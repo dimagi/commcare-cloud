@@ -26,6 +26,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
     def replace_hosts(self, environment):
         if self.DEFAULT_POSTGRESQL_HOST is None:
             self.DEFAULT_POSTGRESQL_HOST = environment.groups['postgresql'][0]
+        elif self.DEFAULT_POSTGRESQL_HOST != '127.0.0.1':
+            self.DEFAULT_POSTGRESQL_HOST = environment.translate_host(
+                self.DEFAULT_POSTGRESQL_HOST, environment.paths.postgresql_yml)
 
 class DBOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
