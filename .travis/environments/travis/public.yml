@@ -116,8 +116,6 @@ nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
 
 supervisor_http_enabled: True
 
-formplayer_db_name: formplayer
-
 mailrelay: 'relay.example.com'
 root_email: 'root@example.com'
 

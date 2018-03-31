@@ -3,6 +3,7 @@ import getpass
 import yaml
 from memoized import memoized, memoized_property
 
+from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.paths import DefaultPaths
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
@@ -141,6 +142,7 @@ class Environment(object):
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
         }
         generated_variables.update(self.postgresql_config.to_json())
+        generated_variables.update(constants.to_json())
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
 
