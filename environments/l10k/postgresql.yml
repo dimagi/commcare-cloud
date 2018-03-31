@@ -7,4 +7,3 @@ postgresql_dbs:
   - name: "{{ formplayer_db_name }}"
   - django_alias: synclogs
     name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
