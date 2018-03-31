@@ -15,8 +15,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
     def wrap(cls, data):
         self = super(PostgresqlConfig, cls).wrap(data)
         for db in self.postgresql_dbs:
-            if not db.host:
-                db.host = self.DEFAULT_POSTGRESQL_HOST
             if not db.user:
                 db.user = self.DEFAULT_POSTGRESQL_USER
             if not db.password:
@@ -29,6 +27,13 @@ class PostgresqlConfig(jsonobject.JsonObject):
         elif self.DEFAULT_POSTGRESQL_HOST != '127.0.0.1':
             self.DEFAULT_POSTGRESQL_HOST = environment.translate_host(
                 self.DEFAULT_POSTGRESQL_HOST, environment.paths.postgresql_yml)
+
+        for db in self.postgresql_dbs:
+            if db.host is None:
+                db.host = self.DEFAULT_POSTGRESQL_HOST
+            elif db.host != '127.0.0.1':
+                db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
+
 
 class DBOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
