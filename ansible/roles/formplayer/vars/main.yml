@@ -3,7 +3,7 @@ formplayer_data_dir: "{{ encrypted_root }}/formplayer"
 # formplayer_sentry_dsn: ..defined in secret file
 # formplayer_db_name: ..defined in secret file
 hq_main_db_host: "{% for config in postgresql_dbs -%}
-  {%- if config.name == POSTGRESQL_DB_NAME -%}
+  {%- if config.name == postgresql_db_name -%}
   {%- if 'host' in config -%}{{ config.host }}
   {%- else -%}{{ groups.postgresql.0 }}
   {%- endif -%}
