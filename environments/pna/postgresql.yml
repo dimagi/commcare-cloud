@@ -1,7 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 postgresql_dbs:
   - django_alias: default
-    name: "{{POSTGRESQL_DB_NAME}}"
+    name: "{{postgresql_db_name}}"
     host: "{{ groups.postgresql.0 }}"
   - django_alias: synclogs
     name: commcarehq_synclogs
