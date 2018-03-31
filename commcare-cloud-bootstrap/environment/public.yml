@@ -115,8 +115,6 @@ supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
 supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
 
-formplayer_db_name: formplayer
-
 mailrelay: 'relay.example.com'
 
 couchdb2:

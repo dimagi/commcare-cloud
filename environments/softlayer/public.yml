@@ -49,7 +49,6 @@ pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
 
-formplayer_db_name: formplayer
 
 postgresql_ssl_enabled: False
 

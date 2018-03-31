@@ -29,7 +29,6 @@ postgres_config:
   pgb_pool_timeout: 1
   pgb_pool_mode: transaction
 
-formplayer_db_name: formplayer
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"

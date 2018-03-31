@@ -41,7 +41,6 @@ pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: transaction
 pg_query_stats: True
 
-formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
 
 KSPLICE_ACTIVE: yes
