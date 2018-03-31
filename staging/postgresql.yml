@@ -1,6 +1,6 @@
 postgresql_dbs:
   - django_alias: default
-    name: "{{POSTGRESQL_DB_NAME}}"
+    name: "{{postgresql_db_name}}"
     query_stats: True
   - django_alias: proxy
     name: commcarehq_proxy
