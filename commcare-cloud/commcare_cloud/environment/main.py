@@ -108,7 +108,7 @@ class Environment(object):
                                 sources=self.paths.inventory_ini)
 
     @memoized_property
-    def inventory_hosts_by_group(self):
+    def sshable_hostnames_by_group(self):
         """
         filename is a path to an ansible inventory file
 

@@ -211,7 +211,7 @@ def _confirm_environment_time(env_name):
 
 
 def env_common():
-    servers = env.ccc_environment.inventory_hosts_by_group
+    servers = env.ccc_environment.sshable_hostnames_by_group
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
