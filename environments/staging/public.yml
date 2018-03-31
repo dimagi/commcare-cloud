@@ -156,7 +156,6 @@ localsettings:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   USE_PARTITIONED_DATABASE: True
