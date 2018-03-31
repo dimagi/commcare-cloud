@@ -188,7 +188,6 @@ localsettings:
 #  STATIC_ROOT:
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'

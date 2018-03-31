@@ -3,7 +3,7 @@ postgresql_dbs:
     name: "{{POSTGRESQL_DB_NAME}}"
   - django_alias: proxy
     name: commcarehq_proxy
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+  - django_alias: synclogs
     name: commcarehq_synclogs
   - django_alias: p1
     name: commcarehq_p1

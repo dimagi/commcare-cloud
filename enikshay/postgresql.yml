@@ -5,7 +5,7 @@ postgresql_dbs:
   - django_alias: proxy
     name: commcarehq_proxy
     host: "{{ groups.postgresql.0 }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
+  - django_alias: synclogs
     name: commcarehq_synclogs
     host: "{{ groups.postgresql.0 }}"
   - django_alias: p1

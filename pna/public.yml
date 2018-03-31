@@ -172,7 +172,6 @@ localsettings:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
 #  STATIC_ROOT:
 #  STRIPE_PRIVATE_KEY:
 #  STRIPE_PUBLIC_KEY:

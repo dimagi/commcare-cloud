@@ -317,7 +317,6 @@ localsettings:
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   USE_PARTITIONED_DATABASE: True
