@@ -45,7 +45,6 @@ pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
 pg_query_stats: False
 
-formplayer_db_name: formplayer
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
