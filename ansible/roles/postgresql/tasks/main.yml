@@ -130,7 +130,7 @@
     - postgres_users
 
 - name: check postgres database hosts
-  assert: { that: "item.host is not defined or item.host in groups.postgresql or item.host in groups.pg_standby" }
+  assert: { that: "item.host in groups.postgresql or item.host in groups.pg_standby or item.host == '127.0.0.1'" }
   with_items: "{{ postgresql_dbs }}"
 
 - name: Create PostgreSQL databases
