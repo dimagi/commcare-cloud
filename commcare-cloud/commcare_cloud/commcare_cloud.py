@@ -13,7 +13,7 @@ from .argparse14 import ArgumentParser
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateSupervisorConfs
+    UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
@@ -44,6 +44,7 @@ COMMAND_TYPES = [
     DjangoManage,
     Service,
     ValidateEnvironmentSettings,
+    UpdateLocalKnownHosts,
 ]
 
 

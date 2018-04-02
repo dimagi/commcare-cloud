@@ -153,6 +153,7 @@ class Environment(object):
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
+            'known_hosts_file': self.paths.known_hosts,
         }
         generated_variables.update(self.postgresql_config.to_json())
         generated_variables.update(constants.to_json())
