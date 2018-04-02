@@ -269,3 +269,15 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
+class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
+    command = 'update-local-known-hosts'
+    help = (
+        "Update the local known_hosts file of the environment configuration."
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'add-ssh-keys.yml'
+        args.quiet = True
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
