@@ -9,7 +9,7 @@
   connection: local
   vars:
     ssh_known_hosts_command: "ssh-keyscan -T 10"
-    ssh_known_hosts_file: "../environments/{{ deploy_env }}/known_hosts"
+    ssh_known_hosts_file: "{{ known_hosts_file }}"
     ssh_known_hosts: "{{ groups['all'] }}"
 
 
