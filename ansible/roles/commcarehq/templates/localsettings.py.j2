@@ -15,9 +15,9 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
 {% if SEPARATE_SYNCLOGS_DB %}
-SYNCLOGS_SQL_DB_ALIAS = 'synclogs'
+SYNCLOGS_SQL_DB_ALIAS = "synclogs"
 {% else %}
-SYNCLOGS_SQL_DB_ALIAS = 'default'
+SYNCLOGS_SQL_DB_ALIAS = "default"
 {% endif %}
 
 DATABASES = { {% for config in postgresql_dbs %}
