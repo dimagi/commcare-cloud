@@ -6,7 +6,6 @@
    - celery
    - proxy
    - pillowtop
-   - postgresql
    - couchdb2_proxy
   become: true
   roles:
