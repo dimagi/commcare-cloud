@@ -337,6 +337,8 @@ localsettings:
             - 'static-ccs_record_cases_monthly_tableau_v2'
             - 'static-person_cases_v2'
             - 'static-commcare_user_cases'
+            - 'static-pregnant-tasks_cases'
+            - 'static-child_tasks_cases'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
