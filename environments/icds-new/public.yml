@@ -336,6 +336,7 @@ localsettings:
             - 'static-ccs_record_cases_monthly_v2'
             - 'static-ccs_record_cases_monthly_tableau_v2'
             - 'static-person_cases_v2'
+            - 'static-commcare_user_cases'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -352,12 +353,12 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-postnatal_care_forms'
-            - 'static-thr_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
             - 'static-it_report_follow_issue'
+            - 'static-dashboard_delivery_forms'
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PILLOWTOP_MACHINE_ID: pil0
