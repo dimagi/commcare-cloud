@@ -15,10 +15,9 @@ dbs:
     host: pgucr
   ucr:
     host: pgucr
+  synclogs:
+    host: pgsynclog
   custom:
-    - django_alias: synclogs
-      name: commcarehq_synclogs
-      host: pgsynclog
     - django_alias: proxy
       name: commcarehq_proxy
       host: plproxy1

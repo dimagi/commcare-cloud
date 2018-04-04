@@ -1,7 +1,5 @@
 dbs:
   custom:
-    - django_alias: synclogs
-      name: commcarehq_synclogs
     - django_alias: proxy
       name: commcarehq_proxy
     - django_alias: p1
