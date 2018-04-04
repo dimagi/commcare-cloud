@@ -72,6 +72,8 @@ AMQP_NAME: commcarehq
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False
 datadog_integration_vmware: True
+datadog_extra_host_checks:
+  - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
 
 file_email: False
 
