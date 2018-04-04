@@ -14,20 +14,24 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-SYNCLOGS_SQL_DB_ALIAS = "{{ localsettings.get('SYNCLOGS_SQL_DB_ALIAS', 'default') }}"
+{% if SEPARATE_SYNCLOGS_DB %}
+SYNCLOGS_SQL_DB_ALIAS = "synclogs"
+{% else %}
+SYNCLOGS_SQL_DB_ALIAS = "default"
+{% endif %}
 
 DATABASES = { {% for config in postgresql_dbs %}
-{%- if config.get('django_alias') %}
+{%- if config.django_alias %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ config.name }}',
-        'USER': '{{ config.get('user', DEFAULT_POSTGRESQL_USER) }}',
-        'PASSWORD': '{{ config.get('password', DEFAULT_POSTGRESQL_PASSWORD) }}',
-        'HOST': '{{ config.get('host', DEFAULT_POSTGRESQL_HOST) }}',
-        'PORT': {{ config.get('port', DEFAULT_POSTGRESQL_PORT) }},
-        'OPTIONS': {{ config.get('options', DEFAULT_POSTGRESQL_OPTIONS)|to_json }},
-        {% if 'django_migrate' in config -%}
-        'MIGRATE': {{ config.django_migrate }},
+        'USER': '{{ config.user }}',
+        'PASSWORD': '{{ config.password }}',
+        'HOST': '{{ config.host }}',
+        'PORT': {{ config.port }},
+        'OPTIONS': {{ config.options|to_json }},
+        {% if not config.django_migrate -%}
+        'MIGRATE': False,
         {% endif -%}
     },
 {% endif -%}

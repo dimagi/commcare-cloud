@@ -65,7 +65,7 @@ class AnsiblePlaybook(CommandBase):
             limit_parts = []
             if args.limit:
                 limit_parts.append(args.limit)
-            if 'ansible_skip' in environment.inventory_hosts_by_group:
+            if 'ansible_skip' in environment.sshable_hostnames_by_group:
                 limit_parts.append('!ansible_skip')
 
             if limit_parts:

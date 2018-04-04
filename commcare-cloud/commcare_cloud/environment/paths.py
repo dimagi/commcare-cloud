@@ -38,6 +38,10 @@ class DefaultPaths(object):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'meta.yml')
 
     @lazy_immutable_property
+    def postgresql_yml(self):
+        return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'postgresql.yml')
+
+    @lazy_immutable_property
     def app_processes_yml(self):
         return os.path.join(ENVIRONMENTS_DIR, self.env_name, 'app-processes.yml')
 
