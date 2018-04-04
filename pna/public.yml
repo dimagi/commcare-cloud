@@ -10,7 +10,7 @@ fake_ssl_cert: no
 
 DATADOG_ENABLED: True
 datadog_extra_host_checks:
-  - url: https://pna.commcarehq.org/accounts/login/
+  - url: "https://{{ PNA_SITE_HOST }}/accounts/login/"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '2048m'
