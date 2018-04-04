@@ -1,6 +1,8 @@
 dbs:
   main:
     query_stats: True
+  ucr:
+    query_stats: True
   custom:
     - django_alias: proxy
       name: commcarehq_proxy
@@ -26,10 +28,6 @@ dbs:
       name: commcarehq_p5
       shards: [400, 511]
       query_stats: True
-    - name: commcarehq_ucr
-      query_stats: True
-      django_alias: ucr
-      django_migrate: False
 
 postgresql_dbs:
   - django_alias: default
