@@ -44,12 +44,16 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
 
     def generate_postgresql_dbs(self):
-        return [self.dbs.main, self.dbs.formplayer, self.dbs.ucr] + self.dbs.custom
+        return filter(None, self.dbs.custom + [
+            self.dbs.main, self.dbs.formplayer, self.dbs.ucr, self.dbs.synclogs])
 
     def check(self):
         def get_normalized(db_list):
             return sorted([db.to_json() for db in db_list], key=lambda db: db['name'])
 
+        assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
+                else not self.SEPARATE_SYNCLOGS_DB), \
+            'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
         assert get_normalized(self.generate_postgresql_dbs()) == \
             get_normalized(self.postgresql_dbs), \
             "{} != {}".format(get_normalized(self.generate_postgresql_dbs()),
@@ -59,9 +63,10 @@ class PostgresqlConfig(jsonobject.JsonObject):
 class SmartDBConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
-    main = jsonobject.ObjectProperty(lambda: MainDBOptions)
-    formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions)
-    ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions)
+    main = jsonobject.ObjectProperty(lambda: MainDBOptions, required=True)
+    formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions, required=True)
+    ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions, required=True)
+    synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
 
     custom = jsonobject.ListProperty(lambda: ShardDBOptions)
 
@@ -104,6 +109,11 @@ class UcrDBOptions(DBOptions):
     name = constants.ucr_db_name
     django_alias = 'ucr'
     django_migrate = False
+
+
+class SynclogsDBOptions(DBOptions):
+    name = constants.synclogs_db_name
+    django_alias = 'synclogs'
 
 
 class ShardDBOptions(DBOptions):

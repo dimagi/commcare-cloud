@@ -8,13 +8,12 @@ dbs:
   ucr:
       host: hqdb0
       query_stats: True
+  synclogs:
+    host: pgsynclog
   custom:
     - django_alias: proxy
       name: commcarehq_proxy
       host: "hqdb1.internal-va.commcarehq.org"
-    - django_alias: synclogs
-      name: commcarehq_synclogs
-      host: "pgsynclog.internal-va.commcarehq.org"
     - django_alias: p1
       name: commcarehq_p1
       shards: [0, 204]
