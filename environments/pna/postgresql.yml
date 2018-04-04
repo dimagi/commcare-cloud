@@ -37,7 +37,6 @@ dbs:
     - name: commcarehq_ucr
       django_alias: ucr
       django_migrate: False
-    - name: "{{ formplayer_db_name }}"
 
 postgresql_dbs:
   - django_alias: default

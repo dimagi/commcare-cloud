@@ -6,7 +6,6 @@ dbs:
       query_stats: True
       django_alias: ucr
       django_migrate: False
-    - name: "{{ formplayer_db_name }}"
     - django_alias: synclogs
       name: commcarehq_synclogs
 
