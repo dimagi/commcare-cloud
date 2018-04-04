@@ -33,6 +33,8 @@ postgres_snapshot_bucket: commcare-almanach-backup
 blobdb_snapshot_bucket: commcare-almanach-backup
 couchdb_snapshot_bucket: commcare-almanach-backup
 
+aws_versioning_enabled: false
+
 postgresql_version: '9.6'
 pgbouncer_default_pool: 290
 pgbouncer_max_connections: 400
