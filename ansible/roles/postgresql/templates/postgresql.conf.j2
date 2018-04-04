@@ -102,7 +102,7 @@ log_temp_files = 0
 track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
-{% if not is_pg_standby|default(false) and pg_query_stats|default(false) %}
+{% if not is_pg_standby|default(false) %}
 shared_preload_libraries = 'pg_stat_statements'
 pg_stat_statements.track = all
 pg_stat_statements.max = 10000
