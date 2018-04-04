@@ -5,7 +5,7 @@ postgresql_dbs:
     query_stats: True
     django_alias: ucr
     django_migrate: False
-  - name: "{{ postgresql_db_name }}"
+  - name: "{{ commcarehq_main_db_name }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
   - django_alias: synclogs

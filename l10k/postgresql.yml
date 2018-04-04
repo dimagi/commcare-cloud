@@ -2,7 +2,7 @@ DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 postgresql_dbs:
   - name: commcarehq_ucr
     django_alias: ucr
-  - name: "{{ postgresql_db_name }}"
+  - name: "{{ commcarehq_main_db_name }}"
     django_alias: default
   - name: "{{ formplayer_db_name }}"
   - django_alias: synclogs
