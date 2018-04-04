@@ -1,4 +1,13 @@
 DEFAULT_POSTGRESQL_HOST: pgmain
+REPORTING_DATABASES:
+  ucr: ucr
+  icds-ucr:
+    WRITE: icds-ucr
+    READ:
+      - [icds-ucr, 5]
+      - [icds-ucr-standby1, 5]
+  icds-test-ucr: icds-ucr
+
 postgresql_dbs:
   - django_alias: default
     name: "{{commcarehq_main_db_name}}"
