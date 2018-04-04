@@ -33,8 +33,8 @@ celery_processes:
       num_workers: 2
     reminder_queue:
       pooling: gevent
-      concurrency: 5
-      num_workers: 2
+      concurrency: 10
+      num_workers: 3
     reminder_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
