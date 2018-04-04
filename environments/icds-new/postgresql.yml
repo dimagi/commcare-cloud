@@ -1,7 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: pgmain
 postgresql_dbs:
   - django_alias: default
-    name: "{{postgresql_db_name}}"
+    name: "{{commcarehq_main_db_name}}"
     host: pgmain
   - django_alias: synclogs
     name: commcarehq_synclogs
