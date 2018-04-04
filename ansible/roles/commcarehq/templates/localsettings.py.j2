@@ -222,6 +222,10 @@ EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
 {% endif %}
 
+{% if 'USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS' in localsettings %}
+USER_REPORTING_METADATA_UPDATE_FREQUENCY = {{ localsettings.USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS }} * 60
+{% endif %}
+
 SMS_QUEUE_ENABLED = {{localsettings.get('SMS_QUEUE_ENABLED', False)}}
 REMINDERS_QUEUE_ENABLED = {{localsettings.get('REMINDERS_QUEUE_ENABLED', False)}}
 
