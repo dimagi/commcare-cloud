@@ -7,24 +7,19 @@ REPORTING_DATABASES:
 dbs:
   ucr:
     django_migrate: True  # I think this is a mistake, but it's been this way
+  form_processing:
+    partitions:
+      p1:
+        shards: [0, 204]
+      p2:
+        shards: [205, 409]
+      p3:
+        shards: [410, 614]
+      p4:
+        shards: [615, 819]
+      p5:
+        shards: [820, 1023]
   custom:
-    - django_alias: proxy
-      name: commcarehq_proxy
-    - django_alias: p1
-      name: commcarehq_p1
-      shards: [0, 204]
-    - django_alias: p2
-      name: commcarehq_p2
-      shards: [205, 409]
-    - django_alias: p3
-      name: commcarehq_p3
-      shards: [410, 614]
-    - django_alias: p4
-      name: commcarehq_p4
-      shards: [615, 819]
-    - django_alias: p5
-      name: commcarehq_p5
-      shards: [820, 1023]
     - django_alias: icds-ucr
       name: icds-ucr
 
