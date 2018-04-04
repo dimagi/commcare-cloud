@@ -201,7 +201,7 @@ class AfterReboot(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         if args.limit:
-            args.limit += '{}:&{}'.format(args.limit, args.inventory_group)
+            args.limit = '{}:&{}'.format(args.limit, args.inventory_group)
         else:
             args.limit = args.inventory_group
         del args.inventory_group
