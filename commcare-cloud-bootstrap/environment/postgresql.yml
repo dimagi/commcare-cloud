@@ -1,6 +1,6 @@
 DEFAULT_POSTGRESQL_PASSWORD: commcarehq
 DEFAULT_POSTGRESQL_USER: commcarehq
-SEPARATE_SYNCLOGS_DB: True
+SEPARATE_SYNCLOGS_DB: False
 
 postgresql_dbs:
   - name: commcarehq_ucr
