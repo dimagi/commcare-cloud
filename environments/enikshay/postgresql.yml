@@ -1,3 +1,5 @@
+USE_PARTITIONED_DATABASE: True
+
 dbs:
   ucr:
     query_stats: True

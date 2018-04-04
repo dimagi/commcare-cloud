@@ -1,3 +1,5 @@
+USE_PARTITIONED_DATABASE: True
+
 dbs:
   main:
     query_stats: True

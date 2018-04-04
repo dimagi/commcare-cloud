@@ -1,4 +1,5 @@
 DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
+USE_PARTITIONED_DATABASE: True
 
 dbs:
   main:

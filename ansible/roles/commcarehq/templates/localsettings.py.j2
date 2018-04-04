@@ -38,9 +38,9 @@ DATABASES = { {% for config in postgresql_dbs %}
 {% endfor %}
 }
 
-USE_PARTITIONED_DATABASE = {{ localsettings.get('USE_PARTITIONED_DATABASE', False) }}
+USE_PARTITIONED_DATABASE = {{ USE_PARTITIONED_DATABASE }}
 
-{% if localsettings.get('USE_PARTITIONED_DATABASE', False) %}
+{% if USE_PARTITIONED_DATABASE %}
 PARTITION_DATABASE_CONFIG = {
     'shards': {
         {% for config in postgresql_dbs %}
