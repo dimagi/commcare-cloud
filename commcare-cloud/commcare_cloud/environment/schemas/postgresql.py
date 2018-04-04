@@ -8,6 +8,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
     DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
+    REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
 
     postgresql_dbs = jsonobject.ListProperty(lambda: DBOptions, required=True)
 

@@ -1,3 +1,8 @@
+REPORTING_DATABASES:
+  ucr: ucr
+  icds-ucr: icds-ucr
+  icds-test-ucr: icds-ucr
+
 postgresql_dbs:
   - django_alias: default
     name: "{{commcarehq_main_db_name}}"
