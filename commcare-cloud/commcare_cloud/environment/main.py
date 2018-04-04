@@ -54,6 +54,7 @@ class Environment(object):
             postgresql_json = yaml.load(f)
         postgresql_config = PostgresqlConfig.wrap(postgresql_json)
         postgresql_config.replace_hosts(self)
+        postgresql_config.check()
         return postgresql_config
 
     @memoized_property
