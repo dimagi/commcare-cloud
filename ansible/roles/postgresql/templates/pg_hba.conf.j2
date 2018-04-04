@@ -29,7 +29,7 @@ host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_serv
 {% if cluster_ip_range is defined %}
 {% for db_name, db_list in postgresql_dbs|groupby('name') %}
 {% set db = db_list[0] %}
-{% if db.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname or db.get('host', DEFAULT_POSTGRESQL_HOST) == hot_standby_master|default(None) or is_monolith|bool %}
+{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
 {% for user_key in postgres_users | reject('in', ['netvault', 'replication'])  %}
 {% set user = postgres_users[user_key] %}
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.username }}    {{ cluster_ip_range }}    md5
@@ -42,11 +42,11 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.us
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs|groupby('name') %}
 {% set db = db_list[0] %}
-{% if db.get('host', DEFAULT_POSTGRESQL_HOST) == inventory_hostname or db.get('host', DEFAULT_POSTGRESQL_HOST) == hot_standby_master|default(None) or is_monolith|bool %}
+{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
 {% if host | ipaddr %}
-host   {{ db.name }}	{{ db.get('user', DEFAULT_POSTGRESQL_USER) }}	{{ host }}/32   md5
+host   {{ db.name }}	{{ db.user }}	{{ host }}/32   md5
 {% else %}
-host   {{ db.name }}	{{ db.get('user', DEFAULT_POSTGRESQL_USER) }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {% endif %}
 {% endif %}
 {% endfor %}

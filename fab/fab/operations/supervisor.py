@@ -254,7 +254,7 @@ def _format_env(current_env, extra=None):
         'newrelic_javaagent',
     ]
 
-    all_hosts = env.ccc_environment.inventory_hosts_by_group['all']
+    all_hosts = env.ccc_environment.sshable_hostnames_by_group['all']
 
     ret['supervisor_env_vars'] = {}
     if env.http_proxy:

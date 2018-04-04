@@ -142,11 +142,3 @@ es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
 aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
-
-
-DEFAULT_POSTGRESQL_HOST: "{{ groups.postgresql.0 }}"
-DEFAULT_POSTGRESQL_NAME: commcarehq
-DEFAULT_POSTGRESQL_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-DEFAULT_POSTGRESQL_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-DEFAULT_POSTGRESQL_PORT: 6432
-DEFAULT_POSTGRESQL_OPTIONS: {}

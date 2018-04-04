@@ -3,6 +3,7 @@ import getpass
 import yaml
 from memoized import memoized, memoized_property
 
+from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.paths import DefaultPaths
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
@@ -12,6 +13,7 @@ from ansible.vars.manager import VariableManager
 
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
+from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -27,6 +29,8 @@ class Environment(object):
         self.app_processes_config
         self.fab_settings_config
         self.inventory_manager
+        self.postgresql_config
+        self.create_generated_yml()
 
     @memoized
     def get_ansible_vault_password(self):
@@ -43,6 +47,14 @@ class Environment(object):
         with open(self.paths.meta_yml) as f:
             meta_json = yaml.load(f)
         return MetaConfig.wrap(meta_json)
+
+    @memoized_property
+    def postgresql_config(self):
+        with open(self.paths.postgresql_yml) as f:
+            postgresql_json = yaml.load(f)
+        postgresql_config = PostgresqlConfig.wrap(postgresql_json)
+        postgresql_config.replace_hosts(self)
+        return postgresql_config
 
     @memoized_property
     def users_config(self):
@@ -98,7 +110,18 @@ class Environment(object):
                                 sources=self.paths.inventory_ini)
 
     @memoized_property
-    def inventory_hosts_by_group(self):
+    def groups(self):
+        """
+        mimics ansible's `groups` variable
+
+        env.groups['postgresql'][0] => {{ groups.postgresql.0 }}
+        """
+        return {group: [
+            host for host in hosts
+        ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
+
+    @memoized_property
+    def sshable_hostnames_by_group(self):
         """
         filename is a path to an ansible inventory file
 
@@ -132,8 +155,21 @@ class Environment(object):
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
         }
+        generated_variables.update(self.postgresql_config.to_json())
+        generated_variables.update(constants.to_json())
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
+
+    def translate_host(self, host, filename_for_error):
+        if host == 'None' or host in self.inventory_manager.hosts:
+            return host
+        else:
+            group = self.groups.get(host)
+            assert group, 'Unknown host referenced in {}: {}'.format(filename_for_error, host)
+            assert len(group) == 1, (
+                'Unable to translate host referenced '
+                'in {} to a single host name: {}'.format(filename_for_error, host))
+            return group[0]
 
 
 @memoized

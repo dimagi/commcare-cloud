@@ -119,7 +119,7 @@ def _validate_all_required_machines_mentioned(environment, translated_app_proces
 
 def check_and_translate_hosts(environment, host_mapping):
     """
-    :param env_name: name of the env used to lookup the inventory
+    :param environment: name of the env used to lookup the inventory
     :param host_mapping: dictionary where keys can be one of:
                          * host (must be in inventory file)
                          * inventory group containing a single host
@@ -129,19 +129,7 @@ def check_and_translate_hosts(environment, host_mapping):
              representative host
     """
     translated = {}
-    inventory = environment.inventory_manager
     for host, config in host_mapping.items():
-        if host == 'None' or host in inventory.hosts:
-            translated[host] = config
-        else:
-            group = inventory.groups.get(host)
-            assert group, 'Unknown host referenced in app processes: {}'.format(host)
-            group_hosts = group.get_hosts()
-            assert len(group_hosts) == 1, (
-                'Unable to translate host referenced '
-                'in app processes to a single host name: {}'.format(host))
-            host_object = group_hosts[0]
-            host = host_object.get_name()
-            translated[host] = config
+        translated[environment.translate_host(host, environment.paths.app_processes_yml)] = config
 
     return translated

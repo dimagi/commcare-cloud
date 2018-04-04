@@ -1,0 +1,68 @@
+DEFAULT_POSTGRESQL_HOST: pgmain
+postgresql_dbs:
+  - django_alias: default
+    name: "{{commcarehq_main_db_name}}"
+    host: pgmain
+  - django_alias: synclogs
+    name: commcarehq_synclogs
+    host: pgsynclog
+  - django_alias: proxy
+    name: commcarehq_proxy
+    host: plproxy1
+  - django_alias: p1
+    name: commcarehq_p1
+    shards: [0, 103]
+    host: pgshard5
+  - django_alias: p2
+    name: commcarehq_p2
+    shards: [104, 205]
+    host: pgshard5
+  - django_alias: p3
+    name: commcarehq_p3
+    shards: [206, 308]
+    host: pgshard2
+  - django_alias: p4
+    name: commcarehq_p4
+    shards: [309, 411]
+    host: pgshard2
+  - django_alias: p5
+    name: commcarehq_p5
+    shards: [412, 514]
+    host: pgshard2
+  - django_alias: p6
+    name: commcarehq_p6
+    shards: [515, 617]
+    host: pgshard1
+  - django_alias: p7
+    name: commcarehq_p7
+    shards: [618, 720]
+    host: pgshard1
+  - django_alias: p8
+    name: commcarehq_p8
+    shards: [721, 823]
+    host: pgshard1
+  - django_alias: p9
+    name: commcarehq_p9
+    shards: [824, 926]
+    host: pgshard3
+  - django_alias: p10
+    name: commcarehq_p10
+    shards: [927, 1023]
+    host: pgshard3
+  - name: commcarehq_ucr
+    host: pgucr
+    django_alias: ucr
+    django_migrate: False
+  - django_alias: icds-ucr
+    name: commcarehq_icds_aggregatedata
+    host: pgucr
+    query_stats: True
+  - name: commcarehq_icds_testdata
+    host: pgucr
+  - name: "{{ formplayer_db_name }}"
+    host: pgucr
+  - django_alias: icds-ucr-standby1
+    name: commcarehq_icds_aggregatedata
+    host: pgucrstandby
+    create: False
+    django_migrate: False
