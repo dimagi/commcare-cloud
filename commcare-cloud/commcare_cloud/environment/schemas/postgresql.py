@@ -47,5 +47,5 @@ class DBOptions(jsonobject.JsonObject):
     django_alias = jsonobject.StringProperty()
     shards = jsonobject.ListProperty(int, exclude_if_none=True)  # [start, end] pair
     django_migrate = jsonobject.BooleanProperty(default=True)
-    query_stats = jsonobject.BooleanProperty(exclude_if_none=True)
+    query_stats = jsonobject.BooleanProperty(default=False)
     create = jsonobject.BooleanProperty(default=True)
