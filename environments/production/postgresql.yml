@@ -3,6 +3,8 @@ DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
 dbs:
   main:
     host: hqdb0
+  formplayer:
+    host: hqdb0
   custom:
     - django_alias: proxy
       name: commcarehq_proxy
@@ -35,8 +37,6 @@ dbs:
       query_stats: True
       django_alias: ucr
       django_migrate: False
-    - name: "{{ formplayer_db_name }}"
-      host: "hqdb0.internal-va.commcarehq.org"
 
 postgresql_dbs:
   - django_alias: default

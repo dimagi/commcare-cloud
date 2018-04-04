@@ -44,7 +44,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
 
     def generate_postgresql_dbs(self):
-        return [self.dbs.main] + self.dbs.custom
+        return [self.dbs.main, self.dbs.formplayer] + self.dbs.custom
 
     def check(self):
         def get_normalized(db_list):
@@ -60,6 +60,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
     main = jsonobject.ObjectProperty(lambda: MainDBOptions)
+    formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions)
 
     custom = jsonobject.ListProperty(lambda: ShardDBOptions)
 
@@ -83,12 +84,19 @@ class DBOptions(jsonobject.JsonObject):
         self = super(DBOptions, cls).wrap(data)
         if re.match('^{{\s*commcarehq_main_db_name\s*}}$', self.name):
             self.name = constants.commcarehq_main_db_name
+        if re.match('^{{\s*formplayer_db_name\s*}}$', self.name):
+            self.name = constants.formplayer_db_name
         return self
 
 
 class MainDBOptions(DBOptions):
     name = constants.commcarehq_main_db_name
     django_alias = 'default'
+
+
+class FormplayerDBOptions(DBOptions):
+    name = constants.formplayer_db_name
+    django_alias = None
 
 
 class ShardDBOptions(DBOptions):
