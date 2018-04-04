@@ -5,6 +5,9 @@ dbs:
     host: hqdb0
   formplayer:
     host: hqdb0
+  ucr:
+      host: hqdb0
+      query_stats: True
   custom:
     - django_alias: proxy
       name: commcarehq_proxy
@@ -32,11 +35,6 @@ dbs:
       name: commcarehq_p5
       shards: [820, 1023]
       host: "hqdb2.internal-va.commcarehq.org"
-    - name: commcarehq_ucr
-      host: "hqdb0.internal-va.commcarehq.org"
-      query_stats: True
-      django_alias: ucr
-      django_migrate: False
 
 postgresql_dbs:
   - django_alias: default

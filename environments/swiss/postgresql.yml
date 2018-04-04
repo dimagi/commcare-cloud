@@ -1,11 +1,9 @@
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 
 dbs:
+  ucr:
+    query_stats: True
   custom:
-    - name: commcarehq_ucr
-      query_stats: True
-      django_alias: ucr
-      django_migrate: False
     - django_alias: synclogs
       name: commcarehq_synclogs
 

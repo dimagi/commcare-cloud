@@ -34,9 +34,6 @@ dbs:
     - django_alias: p10
       name: commcarehq_p10
       shards: [927, 1023]
-    - name: commcarehq_ucr
-      django_alias: ucr
-      django_migrate: False
 
 postgresql_dbs:
   - django_alias: default
