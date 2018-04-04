@@ -4,6 +4,8 @@ REPORTING_DATABASES:
   icds-test-ucr: icds-ucr
 
 dbs:
+  ucr:
+    django_migrate: True  # I think this is a mistake, but it's been this way
   custom:
     - django_alias: proxy
       name: commcarehq_proxy
@@ -24,8 +26,6 @@ dbs:
     - django_alias: p5
       name: commcarehq_p5
       shards: [820, 1023]
-    - name: commcarehq_ucr
-      django_alias: ucr
     - django_alias: icds-ucr
       name: icds-ucr
 

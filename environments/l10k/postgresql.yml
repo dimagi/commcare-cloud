@@ -1,9 +1,9 @@
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 
 dbs:
+  ucr:
+    django_migrate: True  # I think this is a mistake, but it's been this way
   custom:
-    - name: commcarehq_ucr
-      django_alias: ucr
     - django_alias: synclogs
       name: commcarehq_synclogs
 

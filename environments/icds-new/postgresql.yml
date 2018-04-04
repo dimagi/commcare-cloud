@@ -13,6 +13,8 @@ dbs:
     host: pgmain
   formplayer:
     host: pgucr
+  ucr:
+    host: pgucr
   custom:
     - django_alias: synclogs
       name: commcarehq_synclogs
@@ -60,10 +62,6 @@ dbs:
       name: commcarehq_p10
       shards: [927, 1023]
       host: pgshard3
-    - name: commcarehq_ucr
-      host: pgucr
-      django_alias: ucr
-      django_migrate: False
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
       host: pgucr

@@ -14,7 +14,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
 
     postgresql_dbs = jsonobject.ListProperty(lambda: ShardDBOptions, required=True)
-    dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig, required=True)
+    dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
 
     @property
     def all_dbs(self):
@@ -44,7 +44,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
 
     def generate_postgresql_dbs(self):
-        return [self.dbs.main, self.dbs.formplayer] + self.dbs.custom
+        return [self.dbs.main, self.dbs.formplayer, self.dbs.ucr] + self.dbs.custom
 
     def check(self):
         def get_normalized(db_list):
@@ -61,6 +61,7 @@ class SmartDBConfig(jsonobject.JsonObject):
 
     main = jsonobject.ObjectProperty(lambda: MainDBOptions)
     formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions)
+    ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions)
 
     custom = jsonobject.ListProperty(lambda: ShardDBOptions)
 
@@ -97,6 +98,12 @@ class MainDBOptions(DBOptions):
 class FormplayerDBOptions(DBOptions):
     name = constants.formplayer_db_name
     django_alias = None
+
+
+class UcrDBOptions(DBOptions):
+    name = constants.ucr_db_name
+    django_alias = 'ucr'
+    django_migrate = False
 
 
 class ShardDBOptions(DBOptions):
