@@ -65,7 +65,7 @@ hot_standby_feedback = on
 {% endif %}
 max_replication_slots = 8
 
-{% if is_pg_standby|default(false) and postgresql_max_standby_delay|default(false) %}
+{% if is_pg_standby and postgresql_max_standby_delay|default(false) %}
 max_standby_archive_delay = {{ postgresql_max_standby_delay }}
 max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
 {% endif %}
@@ -102,7 +102,7 @@ log_temp_files = 0
 track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
-{% if not is_pg_standby|default(false) %}
+{% if not is_pg_standby %}
 shared_preload_libraries = 'pg_stat_statements'
 pg_stat_statements.track = all
 pg_stat_statements.max = 10000
