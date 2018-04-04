@@ -188,6 +188,5 @@ localsettings:
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-  USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
