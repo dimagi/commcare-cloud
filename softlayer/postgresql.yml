@@ -28,7 +28,6 @@ dbs:
       django_alias: ucr
     - django_alias: icds-ucr
       name: icds-ucr
-    - name: "{{ formplayer_db_name }}"
 
 postgresql_dbs:
   - django_alias: default

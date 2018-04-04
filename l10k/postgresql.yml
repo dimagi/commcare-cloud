@@ -4,7 +4,6 @@ dbs:
   custom:
     - name: commcarehq_ucr
       django_alias: ucr
-    - name: "{{ formplayer_db_name }}"
     - django_alias: synclogs
       name: commcarehq_synclogs
 

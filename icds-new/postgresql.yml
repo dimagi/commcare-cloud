@@ -11,6 +11,8 @@ REPORTING_DATABASES:
 dbs:
   main:
     host: pgmain
+  formplayer:
+    host: pgucr
   custom:
     - django_alias: synclogs
       name: commcarehq_synclogs
@@ -66,8 +68,6 @@ dbs:
       name: commcarehq_icds_aggregatedata
       host: pgucr
       query_stats: True
-    - name: "{{ formplayer_db_name }}"
-      host: pgucr
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby
