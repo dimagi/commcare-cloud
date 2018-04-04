@@ -14,7 +14,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
 
-    postgresql_dbs = jsonobject.ListProperty(lambda: ShardDBOptions, required=True)
+    postgresql_dbs = jsonobject.ListProperty(lambda: PartitionDBOptions, required=True)
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
 
     @property
@@ -46,7 +46,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     def generate_postgresql_dbs(self):
         return filter(None, self.dbs.custom + [
-            self.dbs.main, self.dbs.formplayer, self.dbs.ucr, self.dbs.synclogs])
+            self.dbs.main, self.dbs.formplayer, self.dbs.ucr, self.dbs.synclogs,
+        ] + (self.dbs.form_processing.get_db_list() if self.dbs.form_processing else [None]))
 
     def check(self):
         def get_normalized(db_list):
@@ -55,6 +56,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
             'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
+        assert (self.USE_PARTITIONED_DATABASE if self.dbs.form_processing is not None
+                else not self.USE_PARTITIONED_DATABASE), \
+            'form_processing should be None if and only if USE_PARTITIONED_DATABASE is False'
         assert get_normalized(self.generate_postgresql_dbs()) == \
             get_normalized(self.postgresql_dbs), \
             "{} != {}".format(get_normalized(self.generate_postgresql_dbs()),
@@ -68,8 +72,9 @@ class SmartDBConfig(jsonobject.JsonObject):
     formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions, required=True)
     ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions, required=True)
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
+    form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
 
-    custom = jsonobject.ListProperty(lambda: ShardDBOptions)
+    custom = jsonobject.ListProperty(lambda: PartitionDBOptions)
 
 
 class DBOptions(jsonobject.JsonObject):
@@ -117,5 +122,34 @@ class SynclogsDBOptions(DBOptions):
     django_alias = 'synclogs'
 
 
-class ShardDBOptions(DBOptions):
+class FormProcessingConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    proxy = jsonobject.ObjectProperty(lambda: FormProcessingProxyDBOptions, required=True)
+    partitions = jsonobject.DictProperty(lambda: StrictPartitionDBOptions, required=True)
+
+    @classmethod
+    def wrap(cls, data):
+        for i, (django_alias, db) in enumerate(data['partitions'].items()):
+            db['django_alias'] = db.get('django_alias', django_alias)
+            db['name'] = db.get('name', 'commcarehq_{}'.format(db['django_alias']))
+        self = super(FormProcessingConfig, cls).wrap(data)
+        return self
+
+    def get_db_list(self):
+        return [self.proxy] + self.partitions.values()
+
+
+class FormProcessingProxyDBOptions(DBOptions):
+    name = constants.form_processing_proxy_db_name
+    django_alias = 'proxy'
+
+
+class PartitionDBOptions(DBOptions):
     shards = jsonobject.ListProperty(int, exclude_if_none=True)  # [start, end] pair
+
+
+class StrictPartitionDBOptions(PartitionDBOptions):
+    def validate(self, *args, **kwargs):
+        assert re.match(r'p\d+', self.django_alias)
+        assert self.name == 'commcarehq_{}'.format(self.django_alias)
+        return super(StrictPartitionDBOptions, self).validate(*args, **kwargs)
