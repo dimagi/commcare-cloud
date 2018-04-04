@@ -4,6 +4,7 @@ SEPARATE_SYNCLOGS_DB: False
 
 dbs:
   synclogs: null
+  form_processing: null
 
 postgresql_dbs:
   - name: commcarehq_ucr

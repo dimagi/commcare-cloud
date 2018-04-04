@@ -5,29 +5,23 @@ dbs:
     query_stats: True
   ucr:
     query_stats: True
-  custom:
-    - django_alias: proxy
-      name: commcarehq_proxy
-    - django_alias: p1
-      name: commcarehq_p1
-      shards: [0, 99]
-      query_stats: True
-    - django_alias: p2
-      name: commcarehq_p2
-      shards: [100, 199]
-      query_stats: True
-    - django_alias: p3
-      name: commcarehq_p3
-      shards: [200, 299]
-      query_stats: True
-    - django_alias: p4
-      name: commcarehq_p4
-      shards: [300, 399]
-      query_stats: True
-    - django_alias: p5
-      name: commcarehq_p5
-      shards: [400, 511]
-      query_stats: True
+  form_processing:
+    partitions:
+      p1:
+        shards: [0, 99]
+        query_stats: True
+      p2:
+        shards: [100, 199]
+        query_stats: True
+      p3:
+        shards: [200, 299]
+        query_stats: True
+      p4:
+        shards: [300, 399]
+        query_stats: True
+      p5:
+        shards: [400, 511]
+        query_stats: True
 
 postgresql_dbs:
   - django_alias: default
