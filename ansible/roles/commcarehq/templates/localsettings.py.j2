@@ -61,7 +61,7 @@ PARTITION_DATABASE_CONFIG = {
 }
 {% endif %}
 
-REPORTING_DATABASES = json.loads('{{ localsettings.REPORTING_DATABASES|to_json }}')
+REPORTING_DATABASES = json.loads('{{ REPORTING_DATABASES|to_json }}')
 
 WAREHOUSE_DATABASE_ALIAS = "{{ localsettings.WAREHOUSE_DATABASE_ALIAS|default('default') }}"
 
