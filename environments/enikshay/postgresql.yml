@@ -4,8 +4,6 @@ dbs:
   custom:
     - django_alias: proxy
       name: commcarehq_proxy
-    - django_alias: synclogs
-      name: commcarehq_synclogs
     - django_alias: p1
       name: commcarehq_p1
       shards: [0, 103]
