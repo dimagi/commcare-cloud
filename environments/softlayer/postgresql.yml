@@ -1,3 +1,4 @@
+USE_PARTITIONED_DATABASE: True
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr: icds-ucr
