@@ -1,4 +1,3 @@
-USE_PARTITIONED_DATABASE: True
 
 dbs:
   main:

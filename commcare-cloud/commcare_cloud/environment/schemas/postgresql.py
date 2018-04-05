@@ -23,7 +23,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
     SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
-    USE_PARTITIONED_DATABASE = jsonobject.BooleanProperty(default=False)
+    SEPARATE_FORM_PROCESSING_DBS = jsonobject.BooleanProperty(default=True)
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
     DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
@@ -87,9 +87,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
             'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
-        assert (self.USE_PARTITIONED_DATABASE if self.dbs.form_processing is not None
-                else not self.USE_PARTITIONED_DATABASE), \
-            'form_processing should be None if and only if USE_PARTITIONED_DATABASE is False'
+        assert (self.SEPARATE_FORM_PROCESSING_DBS if self.dbs.form_processing is not None
+                else not self.SEPARATE_FORM_PROCESSING_DBS), \
+            'form_processing should be None if and only if SEPARATE_FORM_PROCESSING_DBS is False'
 
 
 class SmartDBConfig(jsonobject.JsonObject):

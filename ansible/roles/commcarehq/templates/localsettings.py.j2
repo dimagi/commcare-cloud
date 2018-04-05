@@ -38,9 +38,9 @@ DATABASES = { {% for config in postgresql_dbs %}
 {% endfor %}
 }
 
-USE_PARTITIONED_DATABASE = {{ USE_PARTITIONED_DATABASE }}
+USE_PARTITIONED_DATABASE = {{ SEPARATE_FORM_PROCESSING_DBS }}
 
-{% if USE_PARTITIONED_DATABASE %}
+{% if SEPARATE_FORM_PROCESSING_DBS %}
 PARTITION_DATABASE_CONFIG = {
     'shards': {
         {% for config in postgresql_dbs %}
