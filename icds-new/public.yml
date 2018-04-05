@@ -18,24 +18,9 @@ cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
 tableau_nginx_combined_cert_value: "{{ ssl_secrets.certs.reports_icds_cas_gov_in }}"
 tableau_key_value: '{{ ssl_secrets.private_keys.reports_icds_cas_gov_in }}'
 
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: True
-  cchq_http: True
-  cchq_www_redirect_insecure: True
-  cchq_http_j2me: False
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: True
-  dhis: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech1: False
-  motech2: False
-  riakcs: True
-  cas_ssl: True
+special_sites:
+  - icds_tableau
+  - cas_ssl
 
 riak_backend: "bitcask"
 riak_ring_size: 64
@@ -70,79 +55,9 @@ postgresql_slow_log_threshold: 1000
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
-pg_query_stats: True
 
-formplayer_db_name: formplayer
 
 nofile_limit: 65536
-
-postgresql_dbs:
-  - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ hostvars[groups.pgsynclog.0].inventory_hostname }}"
-  - django_alias: proxy
-    name: commcarehq_proxy
-    host: "{{ hostvars[groups.plproxy1.0].inventory_hostname }}"
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 103]
-    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [104, 205]
-    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [206, 308]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [309, 411]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [412, 514]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
-  - django_alias: p6
-    name: commcarehq_p6
-    shards: [515, 617]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
-  - django_alias: p7
-    name: commcarehq_p7
-    shards: [618, 720]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
-  - django_alias: p8
-    name: commcarehq_p8
-    shards: [721, 823]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
-  - django_alias: p9
-    name: commcarehq_p9
-    shards: [824, 926]
-    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
-  - django_alias: p10
-    name: commcarehq_p10
-    shards: [927, 1023]
-    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
-  - name: commcarehq_ucr
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-    django_alias: ucr
-    django_migrate: False
-  - django_alias: icds-ucr
-    name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-    query_stats: True
-  - name: commcarehq_icds_testdata
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-  - name: "{{ formplayer_db_name }}"
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-  - django_alias: icds-ucr-standby1
-    name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgucrstandby.0].inventory_hostname }}"
-    create: False
-    django_migrate: False
 
 redis_appendonly: 'no'
 
@@ -156,6 +71,8 @@ AMQP_NAME: commcarehq
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False
 datadog_integration_vmware: True
+datadog_extra_host_checks:
+  - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
 
 file_email: False
 
@@ -349,6 +266,9 @@ localsettings:
             - 'static-ccs_record_cases_monthly_v2'
             - 'static-ccs_record_cases_monthly_tableau_v2'
             - 'static-person_cases_v2'
+            - 'static-commcare_user_cases'
+            - 'static-pregnant-tasks_cases'
+            - 'static-child_tasks_cases'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -365,19 +285,15 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-postnatal_care_forms'
-            - 'static-thr_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
             - 'static-it_report_follow_issue'
+            - 'static-dashboard_delivery_forms'
+            - 'static-dashboard_thr_forms'
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -405,7 +321,6 @@ localsettings:
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   USE_PARTITIONED_DATABASE: True
@@ -416,3 +331,4 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
+  USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6

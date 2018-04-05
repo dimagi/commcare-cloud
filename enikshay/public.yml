@@ -4,22 +4,8 @@ J2ME_SITE_HOST: 'j2me.enikshay.in'
 internal_domain_name: 'enikshay.in'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: False
-  cchq_http: True
-  cchq_www_redirect_insecure: False
-  cchq_http_j2me: True
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  riakcs: True
-  enikshay_ssl: True
+special_sites:
+  - enikshay_ssl
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -34,8 +20,6 @@ primary_ssl_env: "enikshay.in"
 
 msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
-
-run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False
@@ -84,69 +68,9 @@ pgbouncer_default_pool: 500
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
-pg_query_stats: True
 
-formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
 formplayer_purge_time_spec: '8d'
-
-postgresql_dbs:
-  - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: proxy
-    name: commcarehq_proxy
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 103]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [104, 205]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [206, 308]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [309, 411]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [412, 514]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p6
-    name: commcarehq_p6
-    shards: [515, 617]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p7
-    name: commcarehq_p7
-    shards: [618, 720]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p8
-    name: commcarehq_p8
-    shards: [721, 823]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p9
-    name: commcarehq_p9
-    shards: [824, 926]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p10
-    name: commcarehq_p10
-    shards: [927, 1023]
-    host: "{{ groups.postgresql.0 }}"
-  - name: commcarehq_ucr
-    query_stats: True
-    host: "{{ groups.postgresql.0 }}"
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ formplayer_db_name }}"
-    host: "{{ groups.postgresql.0 }}"
 
 postgresql_ssl_enabled: False
 
@@ -253,11 +177,6 @@ localsettings:
   MAX_RULE_UPDATES_IN_ONE_RUN: 500000
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
   PILLOWTOP_MACHINE_ID: enikshaycloud
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -282,7 +201,6 @@ localsettings:
 #  STATIC_ROOT:
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'
@@ -303,3 +221,7 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'
+  - name: /data_dumps/export/enikshay/private
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_private'
