@@ -15,23 +15,22 @@ class PostgresqlConfig(jsonobject.JsonObject):
     DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
-
-    postgresql_dbs = jsonobject.ListProperty(lambda: PartitionDBOptions, required=True)
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
-
-    @property
-    def all_dbs(self):
-        return self.postgresql_dbs + self.generate_postgresql_dbs()
 
     @classmethod
     def wrap(cls, data):
         self = super(PostgresqlConfig, cls).wrap(data)
-        for db in self.all_dbs:
+        for db in self.generate_postgresql_dbs():
             if not db.user:
                 db.user = self.DEFAULT_POSTGRESQL_USER
             if not db.password:
                 db.password = self.DEFAULT_POSTGRESQL_PASSWORD
         return self
+
+    def to_json(self):
+        data = super(PostgresqlConfig, self).to_json()
+        data['postgresql_dbs'] = [db.to_json() for db in self.generate_postgresql_dbs()]
+        return data
 
     def replace_hosts(self, environment):
         if self.DEFAULT_POSTGRESQL_HOST is None:
@@ -40,7 +39,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.DEFAULT_POSTGRESQL_HOST = environment.translate_host(
                 self.DEFAULT_POSTGRESQL_HOST, environment.paths.postgresql_yml)
 
-        for db in self.all_dbs:
+        for db in self.generate_postgresql_dbs():
             if db.host is None:
                 db.host = self.DEFAULT_POSTGRESQL_HOST
             elif db.host != '127.0.0.1':
@@ -69,9 +68,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
                      ', '.join(sorted(defined_django_aliases))))
 
     def check(self):
-        def get_normalized(db_list):
-            return sorted([db.to_json() for db in db_list], key=lambda db: db['name'])
-
         self._check_reporting_databases()
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
@@ -79,10 +75,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
         assert (self.USE_PARTITIONED_DATABASE if self.dbs.form_processing is not None
                 else not self.USE_PARTITIONED_DATABASE), \
             'form_processing should be None if and only if USE_PARTITIONED_DATABASE is False'
-        assert get_normalized(self.generate_postgresql_dbs()) == \
-            get_normalized(self.postgresql_dbs), \
-            "{} != {}".format(get_normalized(self.generate_postgresql_dbs()),
-                              get_normalized(self.postgresql_dbs))
 
 
 class SmartDBConfig(jsonobject.JsonObject):

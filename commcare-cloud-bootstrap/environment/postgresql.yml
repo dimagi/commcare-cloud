@@ -5,11 +5,3 @@ SEPARATE_SYNCLOGS_DB: False
 dbs:
   synclogs: null
   form_processing: null
-
-postgresql_dbs:
-  - name: commcarehq_ucr
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{commcarehq_main_db_name}}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
