@@ -1,6 +1,8 @@
 import jsonobject
 import re
 
+import six
+
 from commcare_cloud.environment.constants import constants
 
 
@@ -49,10 +51,28 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.main, self.dbs.formplayer, self.dbs.ucr, self.dbs.synclogs,
         ] + (self.dbs.form_processing.get_db_list() if self.dbs.form_processing else [None]))
 
+    def _check_reporting_databases(self):
+        referenced_django_aliases = set()
+        defined_django_aliases = {db.django_alias for db in self.generate_postgresql_dbs()
+                                  if db.django_alias is not None}
+        for reporting_alias, value in self.REPORTING_DATABASES.items():
+            if isinstance(value, six.string_types):
+                referenced_django_aliases.add(value)
+            else:
+                # value is {WRITE: alias, READ: [(alias, weight)...]}
+                referenced_django_aliases.add(value['WRITE'])
+                for alias, _ in value['READ']:
+                    referenced_django_aliases.add(alias)
+        assert referenced_django_aliases - defined_django_aliases == set(), \
+            ("REPORTING_DATABASES must refer only to defined django aliases: {} not in {}"
+             .format(', '.join(sorted(referenced_django_aliases - defined_django_aliases)),
+                     ', '.join(sorted(defined_django_aliases))))
+
     def check(self):
         def get_normalized(db_list):
             return sorted([db.to_json() for db in db_list], key=lambda db: db['name'])
 
+        self._check_reporting_databases()
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
             'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
