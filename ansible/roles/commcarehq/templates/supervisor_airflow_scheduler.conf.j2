@@ -1,7 +1,7 @@
 [program:{{ project }}-{{ environment }}-airflow_scheduler]
 command={{ airflow_env }}/bin/airflow scheduler
-directory={{ code_current }}
-user={{ sudo_user }}
+directory={{ code_home }}
+user={{ cchq_user }}
 numprocs=1
 autostart=true
 autorestart=true
@@ -9,4 +9,4 @@ stdout_logfile={{ log_dir }}/airflow_scheduler.log
 redirect_stderr=true
 stderr_logfile={{ log_dir }}/airflow_scheduler.error.log
 startsecs=10
-environment=AIRFLOW_HOME="{{ home }}/airflow",HOME="{{ home }}",PATH="{{ airflow_env }}/bin:%(ENV_PATH)s"
+environment=AIRFLOW_HOME="{{ airflow_home }}",HOME="{{ cchq_home }}",PATH="{{ airflow_virtualenv }}/bin:%(ENV_PATH)s"
