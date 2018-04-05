@@ -95,7 +95,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
 
-    custom = jsonobject.ListProperty(lambda: PartitionDBOptions)
+    custom = jsonobject.ListProperty(lambda: CustomDBOptions)
 
 
 class DBOptions(jsonobject.JsonObject):
@@ -159,6 +159,10 @@ class FormProcessingProxyDBOptions(DBOptions):
 
 class PartitionDBOptions(DBOptions):
     shards = jsonobject.ListProperty(int, exclude_if_none=True)  # [start, end] pair
+
+
+class CustomDBOptions(PartitionDBOptions):
+    django_migrate = jsonobject.BooleanProperty(required=True)
 
 
 class StrictPartitionDBOptions(PartitionDBOptions):
