@@ -4,12 +4,3 @@ dbs:
   ucr:
     django_migrate: True  # I think this is a mistake, but it's been this way
   form_processing: null
-
-postgresql_dbs:
-  - name: commcarehq_ucr
-    django_alias: ucr
-  - name: "{{ commcarehq_main_db_name }}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: synclogs
-    name: commcarehq_synclogs
