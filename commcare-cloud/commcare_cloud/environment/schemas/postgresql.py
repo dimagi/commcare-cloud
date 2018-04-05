@@ -6,6 +6,13 @@ import six
 from commcare_cloud.environment.constants import constants
 
 
+def alphanum_key(key):
+    """adapted from https://stackoverflow.com/a/2669120/240553"""
+    def convert(text):
+        return int(text) if text.isdigit() else text
+    return [convert(c) for c in re.split(r'([0-9]+)', key)]
+
+
 class PostgresqlConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
@@ -46,9 +53,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
 
     def generate_postgresql_dbs(self):
-        return filter(None, self.dbs.custom + [
-            self.dbs.main, self.dbs.formplayer, self.dbs.ucr, self.dbs.synclogs,
-        ] + (self.dbs.form_processing.get_db_list() if self.dbs.form_processing else [None]))
+        return filter(None, [
+            self.dbs.main, self.dbs.synclogs,
+        ] + (
+            self.dbs.form_processing.get_db_list() if self.dbs.form_processing else [None]
+        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom)
 
     def _check_reporting_databases(self):
         referenced_django_aliases = set()
@@ -148,7 +157,8 @@ class FormProcessingConfig(jsonobject.JsonObject):
         return self
 
     def get_db_list(self):
-        return [self.proxy] + self.partitions.values()
+        return [self.proxy] + sorted(self.partitions.values(),
+                                     key=lambda db: alphanum_key(db.django_alias))
 
 
 class FormProcessingProxyDBOptions(DBOptions):
