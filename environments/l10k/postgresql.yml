@@ -1,6 +1,4 @@
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 
 dbs:
-  ucr:
-    django_migrate: True  # I think this is a mistake, but it's been this way
   form_processing: null
