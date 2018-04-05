@@ -1,0 +1,161 @@
+postgresql_dbs:
+- create: true
+  django_alias: default
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: synclogs
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_synclogs
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: proxy
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_proxy
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p1
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p1
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [0, 103]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p2
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p2
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [104, 205]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p3
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p3
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [206, 308]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p4
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p4
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [309, 411]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p5
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p5
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [412, 514]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p6
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p6
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [515, 617]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p7
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p7
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [618, 720]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p8
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p8
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [721, 823]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p9
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p9
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [824, 926]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p10
+  django_migrate: true
+  host: 196.207.230.171
+  name: commcarehq_p10
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [927, 1023]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: ucr
+  django_migrate: false
+  host: 196.207.230.171
+  name: commcarehq_ucr
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: null
+  django_migrate: true
+  host: 196.207.230.171
+  name: formplayer
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
