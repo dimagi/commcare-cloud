@@ -7,7 +7,13 @@ from commcare_cloud.environment.constants import constants
 
 
 def alphanum_key(key):
-    """adapted from https://stackoverflow.com/a/2669120/240553"""
+    """
+    Used to generate a natural numeric sort key
+
+    Example: ("p10" => ["p", 10]) is greater than ("p1" => ["p", 1])
+
+    adapted from https://stackoverflow.com/a/2669120/240553
+    """
     def convert(text):
         return int(text) if text.isdigit() else text
     return [convert(c) for c in re.split(r'([0-9]+)', key)]
