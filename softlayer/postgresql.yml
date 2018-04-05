@@ -5,8 +5,6 @@ REPORTING_DATABASES:
   icds-test-ucr: icds-ucr
 
 dbs:
-  ucr:
-    django_migrate: True  # I think this is a mistake, but it's been this way
   form_processing:
     partitions:
       p1:
