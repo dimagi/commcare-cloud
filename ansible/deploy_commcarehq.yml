@@ -45,6 +45,12 @@
     - include_tasks: roles/commcarehq/tasks/webworkers.yml
       tags: services
 
+- name: Airflow Supervisor Config
+  hosts: airflow
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/airflow.yml
+      tags: services
+
 # https://stackoverflow.com/a/30372407
 - name: Remove old supervisor files
   hosts:
@@ -54,7 +60,7 @@
     - webworkers
   tasks:
     - set_fact:
-        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) }}"
+        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) + airflow_managed_files|default([]) }}"
       tags: services
     - shell: ls -1 {{ service_home|quote }}
       register: contents
