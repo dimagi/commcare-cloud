@@ -22,3 +22,4 @@ dbs:
   custom:
     - django_alias: icds-ucr
       name: icds-ucr
+      django_migrate: True  # I think this is a mistake, but it's been this way
