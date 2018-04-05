@@ -1,0 +1,99 @@
+---
+# commcare-cloud <env> ansible-playbook letsencrypt_cert.yml -e SITE=[example.com] -e nginx_conf_file=[nginx_conf_file] -e subdomain=[subdomain]
+- hosts: proxy
+  become: yes
+  tasks:
+    - name: Add certbot apt repo
+      apt_repository: repo='ppa:certbot/certbo' state=present
+      register: add_cert_repo
+
+    # - name: Update package list
+    #   apt: update_cache=yes
+    #   when: add_cert_repo|changed
+
+    - name: Install Certbot
+      apt:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - software-properties-common
+        - certbot
+      ignore_errors: '{{ ansible_check_mode }}'
+
+    - name: Create Challenge Directory
+      file:
+        path: '/var/www/letsencrypt/.well-known/acme-challenge'
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Create a test file
+      file:
+        path: '/var/www/letsencrypt/.well-known/acme-challenge/test.txt'
+        owner: www-data
+        group: www-data
+      ignore_errors: '{{ ansible_check_mode }}'
+
+
+    - name: Add configuration in Nginx to fulfill challenge.
+      lineinfile:
+        dest: /etc/nginx/sites-enabled/{{ deploy_env }}_commcare
+        regexp: "}$"
+        line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
+        backup: yes
+        validate: 'nginx -t'
+
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
+
+
+    - name: Check that a test page returns a status 200
+      uri:
+        url: 'https://{{SITE_HOST}}.well-known/acme-challenge/test.txt'
+        return_content: yes
+        register: webpage
+
+    # - name: Fail if AWESOME is not in the page content
+    #   fail:
+    #   when: "'AWESOME' not in webpage.content"
+
+    - name: 'Verify that there exists a certbot Directory /etc/letsencrypt/live/{{ SITE_HOST }}'
+      stat:
+        path: "/etc/letsencrypt/live/{{ SITE_HOST }}"
+      register: certdir
+
+    - name: 'Take Backup of /etc/letsencrypt/live/{{ SITE_HOST }} to /etc/letsencrypt/live/{{ SITE_HOST }}.back'
+      command: "mv /etc/letsencrypt/live/{{ SITE_HOST }} /etc/letsencrypt/live/{{ SITE_HOST }}.back"
+      when: certdir.stat.exists
+
+    - name: Run Certbot command when there is a www host
+      command: 'sudo certbot certonly --webroot -w /var/www/letsencrypt/ -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
+      when: NO_WWW_SITE_HOST is defined
+
+    - name: Run Certbot command when there is no www host
+      command: 'sudo certbot certonly --webroot -w /var/www/letsencrypt/ -d {{SITE_HOST}}'
+      when: NO_WWW_SITE_HOST is not defined
+
+    - name: 'Copy Certificate /etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem to /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt'
+      copy:
+        src: '/etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem'
+        dest: '/etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt'
+        remote_src: yes
+
+    - name: 'Copy Privatekey /etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem to /etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key'
+      copy:
+        src: '/etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem'
+        dest: '/etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key'
+        remote_src: yes
+
+    - name: Dump Certificate and keys
+      command: 'cat /etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt '
+
+    - name: Remove the letsencrypt line from nginx
+      lineinfile:
+        dest: /etc/nginx/sites-enabled/{{ deploy_env }}_commcare
+        line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
+        state: absent
+        validate: 'nginx -t'
