@@ -5,24 +5,6 @@ J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
 tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: False
-  cchq_http: True
-  cchq_www_redirect_insecure: False
-  cchq_http_j2me: True
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  riakcs: True
-  cas_ssl: False
-  enikshay_ssl: False
-
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -34,8 +16,6 @@ riak_ring_size: 128
 primary_ssl_env: "softlayer"
 
 fake_ssl_cert: no
-
-run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
 
@@ -69,35 +49,6 @@ pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
 
-formplayer_db_name: formplayer
-
-postgresql_dbs:
-  - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
-  - django_alias: proxy
-    name: commcarehq_proxy
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 204]
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [205, 409]
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [410, 614]
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [615, 819]
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [820, 1023]
-  - name: commcarehq_ucr
-    django_alias: ucr
-  - django_alias: icds-ucr
-    name: icds-ucr
-  - name: "{{ formplayer_db_name }}"
 
 postgresql_ssl_enabled: False
 
@@ -210,11 +161,6 @@ localsettings:
 #  MAPS_LAYERS:
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
   PILLOWTOP_MACHINE_ID: indiacloud
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -241,7 +187,6 @@ localsettings:
 #  STATIC_ROOT:
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'
@@ -256,3 +201,7 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'
+  - name: /data_dumps/export/enikshay/private
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_private'

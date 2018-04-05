@@ -5,7 +5,7 @@ service_blacklist:
   - supervisor_websockets.conf
 
 celery_processes:
-  '*':
+  l10kserver1:
     repeat_record_queue,celery,export_download_queue:
       concurrency: 1
     background_queue,case_rule_queue:
@@ -32,7 +32,7 @@ celery_processes:
     sms_queue:
 
 pillows:
-  '*':
+  l10kserver1:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:

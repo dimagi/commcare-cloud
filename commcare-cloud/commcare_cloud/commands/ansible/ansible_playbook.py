@@ -65,7 +65,7 @@ class AnsiblePlaybook(CommandBase):
             limit_parts = []
             if args.limit:
                 limit_parts.append(args.limit)
-            if 'ansible_skip' in environment.inventory_hosts_by_group:
+            if 'ansible_skip' in environment.sshable_hostnames_by_group:
                 limit_parts.append('!ansible_skip')
 
             if limit_parts:
@@ -201,7 +201,7 @@ class AfterReboot(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         if args.limit:
-            args.limit += '{}:&{}'.format(args.limit, args.inventory_group)
+            args.limit = '{}:&{}'.format(args.limit, args.inventory_group)
         else:
             args.limit = args.inventory_group
         del args.inventory_group
@@ -269,3 +269,15 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
+class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
+    command = 'update-local-known-hosts'
+    help = (
+        "Update the local known_hosts file of the environment configuration."
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'add-ssh-keys.yml'
+        args.quiet = True
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

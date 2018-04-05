@@ -13,7 +13,7 @@ from .argparse14 import ArgumentParser
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateSupervisorConfs
+    UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
@@ -44,6 +44,7 @@ COMMAND_TYPES = [
     DjangoManage,
     Service,
     ValidateEnvironmentSettings,
+    UpdateLocalKnownHosts,
 ]
 
 
@@ -82,7 +83,7 @@ def main():
     os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
     parser = ArgumentParser()
     available_envs = get_available_envs()
-    parser.add_argument('env_name', choices=available_envs, metavar='environment', help=(
+    parser.add_argument('env_name', choices=available_envs, help=(
         "server environment to run against"
     ))
     parser.add_argument('--control', action='store_true', help=(

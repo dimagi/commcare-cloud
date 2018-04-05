@@ -1,6 +1,5 @@
 - name: define pillowtop services
   become: cchq
-  hosts: pillowtop
   template:
     src: "../templates/supervisor_pillowtop.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
@@ -10,7 +9,6 @@
 
 - name: define form feed service
   become: cchq
-  hosts: pillowtop
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_form_feed.conf"

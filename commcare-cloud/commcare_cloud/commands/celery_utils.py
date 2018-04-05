@@ -6,7 +6,7 @@ from memoized import memoized
 def get_celery_processes(environment_name):
     from commcare_cloud.environment.main import get_environment
     environment = get_environment(environment_name)
-    app_processes_config = environment.translated_app_processes_config
+    app_processes_config = environment.app_processes_config
     return app_processes_config.celery_processes
 
 

@@ -1,28 +1,7 @@
 SITE_HOST: 'swiss.commcarehq.org'
-COMMTRACK_SITE_HOST: 'swiss.commcarehq.org'
-NO_WWW_SITE_HOST: 'swiss.commcarehq.org'
-
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: True
-  cchq_http: True
-  cchq_http_j2me: False
-  cchq_www_redirect_insecure: False
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  riakcs: False
-  couchdb2: False
 
 msp_users: "{{ secrets.MSP_USERS }}"
 fake_ssl_cert: no
-
-run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: True
 DATADOG_INTEGRATIONS_ENABLED: False
@@ -54,6 +33,8 @@ postgres_snapshot_bucket: commcare-almanach-backup
 blobdb_snapshot_bucket: commcare-almanach-backup
 couchdb_snapshot_bucket: commcare-almanach-backup
 
+aws_versioning_enabled: false
+
 postgresql_version: '9.6'
 pgbouncer_default_pool: 290
 pgbouncer_max_connections: 400
@@ -64,19 +45,6 @@ postgresql_max_connections: 300
 postgresql_wal_keep_segments: 0
 postgresql_work_mem: '1MB'
 
-formplayer_db_name: formplayer
-
-postgresql_dbs:
-  - name: commcarehq_ucr
-    query_stats: True
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ localsettings.PG_DATABASE_NAME }}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
 
 KSPLICE_ACTIVE: yes
 
@@ -162,11 +130,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "127.0.0.1"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -187,7 +150,6 @@ localsettings:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
 #  STATIC_ROOT:
 #  STRIPE_PRIVATE_KEY:
 #  STRIPE_PUBLIC_KEY:
