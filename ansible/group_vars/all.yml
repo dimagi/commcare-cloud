@@ -146,3 +146,9 @@ aws_versioning_enabled: true
 
 airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
 airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
+
+hq_main_db_host: "{% for config in postgresql_dbs -%}
+  {%- if config.name == commcarehq_main_db_name -%}
+    {{ config.host }}
+  {%- endif -%}
+{%- endfor %}"
