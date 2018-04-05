@@ -7,8 +7,8 @@ dbs:
   formplayer:
     host: hqdb0
   ucr:
-      host: hqdb0
-      query_stats: True
+    host: hqdb0
+    query_stats: True
   synclogs:
     host: pgsynclog
   form_processing:
