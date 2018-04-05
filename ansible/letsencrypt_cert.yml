@@ -1,5 +1,5 @@
 ---
-# commcare-cloud <env> ansible-playbook letsencrypt_cert.yml -e SITE=[example.com] -e nginx_conf_file=[nginx_conf_file] -e subdomain=[subdomain]
+# commcare-cloud <env> ansible-playbook letsencrypt_cert.yml
 - hosts: proxy
   become: yes
   tasks:
@@ -7,9 +7,9 @@
       apt_repository: repo='ppa:certbot/certbo' state=present
       register: add_cert_repo
 
-    # - name: Update package list
-    #   apt: update_cache=yes
-    #   when: add_cert_repo|changed
+    - name: Update package list
+      apt: update_cache=yes
+      when: add_cert_repo|changed
 
     - name: Install Certbot
       apt:
@@ -55,10 +55,6 @@
         return_content: yes
         register: webpage
 
-    # - name: Fail if AWESOME is not in the page content
-    #   fail:
-    #   when: "'AWESOME' not in webpage.content"
-
     - name: 'Verify that there exists a certbot Directory /etc/letsencrypt/live/{{ SITE_HOST }}'
       stat:
         path: "/etc/letsencrypt/live/{{ SITE_HOST }}"
@@ -97,3 +93,8 @@
         line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
         state: absent
         validate: 'nginx -t'
+
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
