@@ -57,8 +57,6 @@ postgresql_dbs:
     name: commcarehq_icds_aggregatedata
     host: pgucr
     query_stats: True
-  - name: commcarehq_icds_testdata
-    host: pgucr
   - name: "{{ formplayer_db_name }}"
     host: pgucr
   - django_alias: icds-ucr-standby1
