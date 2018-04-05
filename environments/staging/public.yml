@@ -1,23 +1,5 @@
 SITE_HOST: 'staging.commcarehq.org'
-NO_WWW_SITE_HOST: 'staging.commcarehq.org'
-COMMTRACK_SITE_HOST: 'test.commtrack.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
-
-active_sites:
-  cchq_www_redirect_secure: True
-  cchq_ssl: True
-  cchq_http: True
-  cchq_www_redirect_insecure: True
-  cchq_http_j2me: True
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  motech: False
-  motech2: False
-  riakcs: True
-  couchdb2: False
 
 riak_backend: "leveldb"
 riak_ring_size: 64
@@ -25,8 +7,6 @@ riak_ring_size: 64
 primary_ssl_env: "staging"
 
 fake_ssl_cert: no
-
-run_newrelic_plugin_agent: False
 
 DATADOG_ENABLED: False
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
@@ -59,49 +39,8 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: transaction
-pg_query_stats: True
 
-formplayer_db_name: formplayer
 formplayer_archive_time_spec: '10m'
-
-postgresql_dbs:
-  - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
-    query_stats: True
-  - django_alias: proxy
-    name: commcarehq_proxy
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 99]
-    query_stats: True
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [100, 199]
-    query_stats: True
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [200, 299]
-    query_stats: True
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [300, 399]
-    query_stats: True
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [400, 511]
-    query_stats: True
-  - name: commcarehq_ucr
-    query_stats: True
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: icds-ucr
-    name: commcarehq_icds_testdata
-    query_stats: True
-    django_migrate: False
-  - name: airflow
 
 KSPLICE_ACTIVE: yes
 
@@ -193,11 +132,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -220,7 +154,6 @@ localsettings:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   USE_PARTITIONED_DATABASE: True

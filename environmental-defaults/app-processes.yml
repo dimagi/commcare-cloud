@@ -4,8 +4,8 @@
 # Celery configuration should be broken out by queue. Example:
 #
 # celery_processes:
-#   host_name:                  # Required; the name of the host on which to put the workers ('*' means all identified celery hosts)
-#     queue_name:               # Required; the name of the queue from which each worker configured in this section will consume
+#   <host_name>:                # Required; the name of the host on which to put the workers
+#     queue_name:               # Required; the comma-separated names of the queue from which each worker configured in this section will consume
 #       concurrency: 4          # Required; the concurrency configured on each worker
 #       pooling: prefork        # Optional, default prefork; specify prefork or gevent for the process pool type used on each worker in this section
 #       max_tasks_per_child: 5  # Optional, default 50; only applicable for prefork pooling (corresponds to maxtasksperchild worker command line arg)

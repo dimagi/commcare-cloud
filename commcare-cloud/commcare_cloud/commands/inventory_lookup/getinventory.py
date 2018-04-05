@@ -10,7 +10,7 @@ from commcare_cloud.environment.main import get_environment
 
 def get_instance_group(environment, group):
     env = get_environment(environment)
-    return env.inventory_hosts_by_group[group]
+    return env.sshable_hostnames_by_group[group]
 
 
 def get_monolith_address(environment, exit=sys.exit):

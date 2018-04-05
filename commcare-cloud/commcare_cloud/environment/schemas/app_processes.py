@@ -44,6 +44,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     def check_and_translate_hosts(self, environment):
         self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
         self.pillows = check_and_translate_hosts(environment, self.pillows)
+        _validate_all_required_machines_mentioned(environment, self)
 
 
 class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
@@ -105,31 +106,30 @@ def validate_app_processes_config(app_processes_config):
         'You cannot run the periodic celery queue on more than one machine because it implies celery beat.'
 
 
+def _validate_all_required_machines_mentioned(environment, translated_app_process_config):
+    inventory = environment.inventory_manager
+    for host in inventory.groups['pillowtop'].get_hosts():
+        assert host.get_name() in translated_app_process_config.pillows, \
+            "pillowtop machine {} not in {}".format(host.get_name(), environment.paths.app_processes_yml)
+
+    for host in inventory.groups['celery'].get_hosts():
+        assert host.get_name() in translated_app_process_config.celery_processes, \
+            "celery machine {} not in {}".format(host.get_name(), environment.paths.app_processes_yml)
+
+
 def check_and_translate_hosts(environment, host_mapping):
     """
-    :param env_name: name of the env used to lookup the inventory
+    :param environment: name of the env used to lookup the inventory
     :param host_mapping: dictionary where keys can be one of:
                          * host (must be in inventory file)
                          * inventory group containing a single host
-                         * literal '*' or 'None'
+                         * 'None'
     :return: dictionary with the same content as the input but where
              keys that were inventory groups have been converted into their
              representative host
     """
     translated = {}
-    inventory = environment.inventory_manager
     for host, config in host_mapping.items():
-        if host == 'None' or host == '*' or host in inventory.hosts:
-            translated[host] = config
-        else:
-            group = inventory.groups.get(host)
-            assert group, 'Unknown host referenced in app processes: {}'.format(host)
-            group_hosts = group.get_hosts()
-            assert len(group_hosts) == 1, (
-                'Unable to translate host referenced '
-                'in app processes to a single host name: {}'.format(host))
-            host_object = group_hosts[0]
-            host = host_object.get_vars().get('ansible_host', host_object.get_name())
-            translated[host] = config
+        translated[environment.translate_host(host, environment.paths.app_processes_yml)] = config
 
     return translated

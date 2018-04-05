@@ -7,11 +7,12 @@ instances:
     check_certificate_expiration: true
     days_warning: 28
     days_critical: 14
-    timeout: 20
+    timeout: 30
     include_content: true
-{#  wait for https://github.com/dimagi/commcare-hq/commit/22a1c1205ac48757996b45d2b6e5fdbc39b9ff31 #}
-{#  - name: {{ env_monitoring_id }} Heartbeat#}
-{#    url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat#}
+  - name: {{ env_monitoring_id }} Heartbeat
+    url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat
+    check_certificate_expiration: false
+    timeout: 30
 {% for host in datadog_extra_host_checks %}
   - name: {{ host.url|urlsplit('hostname') }}
     url: {{ host.url }}
@@ -19,6 +20,6 @@ instances:
     check_certificate_expiration: {{ host.check_certificate_expiration|default('true') }}
     days_warning: 28
     days_critical: 14
-    timeout: 20
+    timeout: 30
     include_content: false
 {% endfor %}

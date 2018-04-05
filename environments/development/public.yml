@@ -14,27 +14,6 @@ http_proxy_parent_port: '3128'
 
 touchforms_enabled: false
 
-# active sites defines the sites that will be configured with nginx
-# "cchq" is always deployed, the corresponding configurations live in roles/nginx/vars
-active_sites:
-  cchq_ssl: True
-  cchq_redirect: False
-  cchq_http: True
-  cchq_http_redirect: True
-  cchq_http_j2me: False
-  commtrack_ssl: False
-  commtrack_http: False
-  riakcs: True
-  couchdb2: True
-  hq_status: False
-  icds_tableau: False
-  motech: False
-  motech2: False
-  wiki: False
-  wiki_http: False
-  tableau: False
-  cas_ssl: False
-
 riak_backend: "bitcask"
 riak_ring_size: 64
 
@@ -135,54 +114,6 @@ nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
 supervisor_http_enabled: True
 supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
 supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
-
-formplayer_db_name: formplayer
-
-# postgresql_dbs keys description
-#
-#postgresql_dbs:
-#  - name: "database_name"
-#    host: "db_host" # defaults to localsettings.PG_DATABASE_HOST
-#    port: "db_port" # defaults to  localsettings.get('PG_DATABASE_PORT', 5432))
-#    user: "db user for django" # defaults to localsettings.PG_DATABASE_USER
-#    password: "db user password for django" # defaults to localsettings.PG_DATABASE_PASSWORD
-#    options: "django db options dict" # defaults to localsettings.get('PG_DATABASE_OPTIONS', {})
-#    django_alias: "default" # if present this DB will be configured for django under this alias
-#    shards: [0, 99] # pl_proxy shards assigned to this DB (total accross all DB's must be power of 2)
-
-postgresql_dbs:
-  - name: commcarehq_ucr
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{localsettings.PG_DATABASE_NAME}}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-
-# example setup for sharded database
-# also set localsettings.USE_PARTITIONED_DATABASE to True
-#
-#postgresql_dbs:
-#  - django_alias: default
-#    name: "{{localsettings.PG_DATABASE_NAME}}"
-#  - django_alias: proxy
-#    name: commcarehq_proxy
-#  - django_alias: p1
-#    name: commcarehq_p1
-#    shards: [0, 99]
-#  - django_alias: p2
-#    name: commcarehq_p2
-#    shards: [100, 199]
-#  - django_alias: p3
-#    name: commcarehq_p3
-#    shards: [200, 299]
-#  - django_alias: p4
-#    name: commcarehq_p4
-#    shards: [300, 399]
-#  - django_alias: p5
-#    name: commcarehq_p5
-#    shards: [400, 511]
-#  - name: commcarehq_ucr
-#    django_alias: ucr
 
 mailrelay: 'relay.example.com'
 
@@ -285,11 +216,6 @@ localsettings:
 #  MAPS_LAYERS:
 #  MEDIA_ROOT:
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ groups.postgresql.0 }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: commcarehq
-  PG_DATABASE_USER: commcarehq
-  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'

@@ -142,6 +142,7 @@ es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
 aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
+aws_versioning_enabled: true
 
 airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
 airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'

@@ -33,6 +33,7 @@ class Spec(StrictJsonObject):
 
     """
     aws_config = jsonobject.ObjectProperty(lambda: AwsConfig)
+    settings = jsonobject.ObjectProperty(lambda: Settings)
     allocations = jsonobject.DictProperty(lambda: Allocation)
 
     @classmethod
@@ -52,6 +53,10 @@ class AwsConfig(StrictJsonObject):
     key_name = jsonobject.StringProperty()
     security_group_id = jsonobject.StringProperty()
     subnet = jsonobject.StringProperty()
+
+
+class Settings(StrictJsonObject):
+    users = jsonobject.StringProperty(default='dimagi')
 
 
 class Allocation(StrictJsonObject):
@@ -117,6 +122,7 @@ def provision_machines(spec, env_name=None):
     copy_default_vars(environment, spec.aws_config)
     save_app_processes_yml(environment, inventory)
     save_fab_settings_yml(environment)
+    save_meta_yml(environment, env_name, spec.settings.users)
 
 
 def alphanumeric_sort_key(key):
@@ -311,6 +317,13 @@ def save_app_processes_yml(environment, inventory):
     pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
     contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
     with open(environment.paths.app_processes_yml, 'w') as f:
+        f.write(contents)
+
+
+def save_meta_yml(environment, env_name, users):
+    template = j2.get_template('meta.yml.j2')
+    contents = template.render(env_name=env_name, users=users)
+    with open(environment.paths.meta_yml, 'w') as f:
         f.write(contents)
 
 

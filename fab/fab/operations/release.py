@@ -327,6 +327,7 @@ def mark_last_release_unsuccessful():
 def git_gc_current():
     with cd(env.code_current):
         sudo('echo "git gc" | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
+        sudo('echo "git submodule foreach \'git gc\'" | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
 
 
 @roles(ROLES_ALL_SRC)

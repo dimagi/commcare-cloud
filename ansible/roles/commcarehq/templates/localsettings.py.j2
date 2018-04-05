@@ -14,20 +14,24 @@ _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy) | unique | to_json }}
 
-SYNCLOGS_SQL_DB_ALIAS = "{{ localsettings.get('SYNCLOGS_SQL_DB_ALIAS', 'default') }}"
+{% if SEPARATE_SYNCLOGS_DB %}
+SYNCLOGS_SQL_DB_ALIAS = "synclogs"
+{% else %}
+SYNCLOGS_SQL_DB_ALIAS = "default"
+{% endif %}
 
 DATABASES = { {% for config in postgresql_dbs %}
-{%- if config.get('django_alias') %}
+{%- if config.django_alias %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ config.name }}',
-        'USER': '{{ config.get('user', localsettings.PG_DATABASE_USER) }}',
-        'PASSWORD': '{{ config.get('password', localsettings.PG_DATABASE_PASSWORD) }}',
-        'HOST': '{{ config.get('host', localsettings.PG_DATABASE_HOST) }}',
-        'PORT': {{ config.get('port', localsettings.get('PG_DATABASE_PORT', 5432)) }},
-        'OPTIONS': {{ config.get('options', localsettings.get('PG_DATABASE_OPTIONS', {}))|to_json }},
-        {% if 'django_migrate' in config -%}
-        'MIGRATE': {{ config.django_migrate }},
+        'USER': '{{ config.user }}',
+        'PASSWORD': '{{ config.password }}',
+        'HOST': '{{ config.host }}',
+        'PORT': {{ config.port }},
+        'OPTIONS': {{ config.options|to_json }},
+        {% if not config.django_migrate -%}
+        'MIGRATE': False,
         {% endif -%}
     },
 {% endif -%}
@@ -216,6 +220,10 @@ EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 
 {% if 'ICDS_DOMAIN' in localsettings %}
 ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
+{% endif %}
+
+{% if 'USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS' in localsettings %}
+USER_REPORTING_METADATA_UPDATE_FREQUENCY = {{ localsettings.USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS }} * 60
 {% endif %}
 
 SMS_QUEUE_ENABLED = {{localsettings.get('SMS_QUEUE_ENABLED', False)}}

@@ -1,23 +1,8 @@
 SITE_HOST: 'commcare.pna.sn'
 PNA_SITE_HOST: 'pna.commcarehq.org'
-COMMTRACK_SITE_HOST: 'commcare.pna.sn'
 
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: False
-  cchq_http: True
-  cchq_http_j2me: False
-  cchq_www_redirect_insecure: False
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech2: False
-  riakcs: False
-  pna_ssl: True
+special_sites:
+  - pna_ssl
 
 ssh_allow_password: True
 ssh_port: 1337
@@ -25,7 +10,7 @@ fake_ssl_cert: no
 
 DATADOG_ENABLED: True
 datadog_extra_host_checks:
-  - url: https://pna.commcarehq.org/accounts/login/
+  - url: "https://{{ PNA_SITE_HOST }}/accounts/login/"
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '2048m'
@@ -58,67 +43,6 @@ pgbouncer_default_pool: 290
 pgbouncer_reserve_pool: 5
 pgbouncer_pool_timeout: 1
 pgbouncer_pool_mode: transaction
-pg_query_stats: False
-
-formplayer_db_name: formplayer
-
-postgresql_dbs:
-  - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: proxy
-    name: commcarehq_proxy
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 103]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [104, 205]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [206, 308]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [309, 411]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [412, 514]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p6
-    name: commcarehq_p6
-    shards: [515, 617]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p7
-    name: commcarehq_p7
-    shards: [618, 720]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p8
-    name: commcarehq_p8
-    shards: [721, 823]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p9
-    name: commcarehq_p9
-    shards: [824, 926]
-    host: "{{ groups.postgresql.0 }}"
-  - django_alias: p10
-    name: commcarehq_p10
-    shards: [927, 1023]
-    host: "{{ groups.postgresql.0 }}"
-  - name: commcarehq_ucr
-    query_stats: True
-    host: "{{ groups.postgresql.0 }}"
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ formplayer_db_name }}"
-    host: "{{ groups.postgresql.0 }}"
 
 
 couchdb2:
@@ -228,11 +152,6 @@ localsettings:
   MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS }}"
   MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
   OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "127.0.0.1"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -251,7 +170,6 @@ localsettings:
   SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS }}"
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
 #  STATIC_ROOT:
 #  STRIPE_PRIVATE_KEY:
 #  STRIPE_PUBLIC_KEY:
