@@ -36,7 +36,6 @@ postgresql_dbs:
     name: commcarehq_p10
     shards: [927, 1023]
   - name: commcarehq_ucr
-    query_stats: True
     django_alias: ucr
     django_migrate: False
   - name: "{{ formplayer_db_name }}"
