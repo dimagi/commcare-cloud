@@ -112,15 +112,6 @@ class DBOptions(jsonobject.JsonObject):
     query_stats = jsonobject.BooleanProperty(default=False)
     create = jsonobject.BooleanProperty(default=True)
 
-    @classmethod
-    def wrap(cls, data):
-        self = super(DBOptions, cls).wrap(data)
-        if re.match('^{{\s*commcarehq_main_db_name\s*}}$', self.name):
-            self.name = constants.commcarehq_main_db_name
-        if re.match('^{{\s*formplayer_db_name\s*}}$', self.name):
-            self.name = constants.formplayer_db_name
-        return self
-
 
 class MainDBOptions(DBOptions):
     name = constants.commcarehq_main_db_name
