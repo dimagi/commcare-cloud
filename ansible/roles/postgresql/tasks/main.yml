@@ -103,7 +103,7 @@
     role_attr_flags: "{{ item.role_attr_flags|default('CREATEDB') }}"
     state: present
     port: "{{ postgresql_port }}"
-  when: not is_pg_standby|default(False)
+  when: not is_pg_standby
   with_items: "{{ postgres_users.values() }}"
   tags:
     - postgres_users
@@ -120,7 +120,7 @@
     objs: "{{ item.1.objs }}"
     roles: "{{ item.0.username }}"
     port: "{{ postgresql_port }}"
-  when: not is_pg_standby|default(False)
+  when: not is_pg_standby
   with_subelements:
     - "{{ postgres_users.values() }}"
     - privs
@@ -163,7 +163,7 @@
   vars:
     ansible_ssh_pipelining: true
   with_items: "{{ postgresql_replication_slots|default([]) }}"
-  when: not is_pg_standby|default(False)
+  when: not is_pg_standby
   tags:
     - replication
 
@@ -270,7 +270,7 @@
     db: "{{item.name}}"
     port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs }}"
-  when: item.create and not is_pg_standby|default(False) and ((item.host == inventory_hostname) or is_monolith|bool)
+  when: item.create and not is_pg_standby and ((item.host == inventory_hostname) or is_monolith|bool)
   tags: pghashlib
 
 - name: Make plproxy a trusted language
@@ -301,7 +301,7 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
-  when: pg_query_stats|default(False) and item.query_stats|default(False) and not is_pg_standby|default(False) and (item.host == inventory_hostname) or is_monolith|bool
+  when: item.query_stats and not is_pg_standby and (item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs }}"
 
 - name: Copy log rotation script
