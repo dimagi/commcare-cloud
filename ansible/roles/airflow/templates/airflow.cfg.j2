@@ -53,7 +53,7 @@ max_active_runs_per_dag = 1
 load_examples = False
 
 # Where your Airflow plugins are stored
-plugins_folder = /Users/calellowitz/airflow/plugins
+plugins_folder = {{ airflow_home }}/plugins
 
 # Secret key to save connection passwords in the db
 fernet_key = {{ airflow_secret_key }}
