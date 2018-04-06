@@ -222,8 +222,6 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
 #  REMINDERS_QUEUE_ENABLED:
-  REPORTING_DATABASES:
-    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
 #  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
 #  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
