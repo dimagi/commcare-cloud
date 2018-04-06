@@ -37,6 +37,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     @classmethod
     def wrap(cls, data):
+        # for better validation error message
+        PostgresqlOverride.wrap(data.get('override', {}))
         self = super(PostgresqlConfig, cls).wrap(data)
         for db in self.generate_postgresql_dbs():
             if not db.user:
