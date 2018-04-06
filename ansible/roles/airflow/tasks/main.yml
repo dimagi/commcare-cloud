@@ -50,6 +50,11 @@
 
 - name: initialize database
   shell: "{{ airflow_virtualenv }}/bin/airflow initdb"
+  become: yes
+  become_user: "{{ cchq_user }}"
 
 - name: set cchq home variable
   shell: "{{ airflow_virtualenv }}/bin/airflow variables --set CCHQ_HOME {{ code_home }}"
+  become: yes
+  become_user: "{{ cchq_user }}"
+
