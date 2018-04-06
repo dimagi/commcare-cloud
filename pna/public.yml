@@ -158,8 +158,6 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
-  REPORTING_DATABASES:
-    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS:
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
@@ -175,7 +173,6 @@ localsettings:
 #  STRIPE_PUBLIC_KEY:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
-  USE_PARTITIONED_DATABASE: True
   XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True

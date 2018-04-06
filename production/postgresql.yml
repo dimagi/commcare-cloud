@@ -1,39 +1,31 @@
-DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
+DEFAULT_POSTGRESQL_HOST: hqdb0
 
-postgresql_dbs:
-  - django_alias: default
-    name: "{{commcarehq_main_db_name}}"
-    host: "hqdb0.internal-va.commcarehq.org"
-  - django_alias: proxy
-    name: commcarehq_proxy
-    host: "hqdb1.internal-va.commcarehq.org"
-  - django_alias: synclogs
-    name: commcarehq_synclogs
-    host: "pgsynclog.internal-va.commcarehq.org"
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 204]
-    host: "hqdb1.internal-va.commcarehq.org"
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [205, 409]
-    host: "hqdb1.internal-va.commcarehq.org"
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [410, 614]
-    host: "hqdb2.internal-va.commcarehq.org"
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [615, 819]
-    host: "hqdb2.internal-va.commcarehq.org"
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [820, 1023]
-    host: "hqdb2.internal-va.commcarehq.org"
-  - name: commcarehq_ucr
-    host: "hqdb0.internal-va.commcarehq.org"
+dbs:
+  main:
+    host: hqdb0
+  formplayer:
+    host: hqdb0
+  ucr:
+    host: hqdb0
     query_stats: True
-    django_alias: ucr
-    django_migrate: False
-  - name: "{{ formplayer_db_name }}"
-    host: "hqdb0.internal-va.commcarehq.org"
+  synclogs:
+    host: pgsynclog
+  form_processing:
+    proxy:
+      host: hqdb1
+    partitions:
+      p1:
+        shards: [0, 204]
+        host: hqdb1
+      p2:
+        shards: [205, 409]
+        host: hqdb1
+      p3:
+        shards: [410, 614]
+        host: hqdb2
+      p4:
+        shards: [615, 819]
+        host: hqdb2
+      p5:
+        shards: [820, 1023]
+        host: hqdb2
