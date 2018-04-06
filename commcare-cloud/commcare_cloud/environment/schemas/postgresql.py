@@ -173,6 +173,6 @@ class CustomDBOptions(PartitionDBOptions):
 
 class StrictPartitionDBOptions(PartitionDBOptions):
     def validate(self, *args, **kwargs):
-        assert re.match(r'p\d+', self.django_alias)
+        assert re.match(r'p\d+$', self.django_alias)
         assert self.name == 'commcarehq_{}'.format(self.django_alias)
         return super(StrictPartitionDBOptions, self).validate(*args, **kwargs)
