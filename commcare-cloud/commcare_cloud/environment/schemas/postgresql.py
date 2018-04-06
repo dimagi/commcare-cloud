@@ -62,7 +62,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         return filter(None, [
             self.dbs.main, self.dbs.synclogs,
         ] + (
-            self.dbs.form_processing.get_db_list() if self.dbs.form_processing else [None]
+            self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
         ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom)
 
     def _check_reporting_databases(self):
