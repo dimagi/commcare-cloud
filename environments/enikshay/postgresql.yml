@@ -1,3 +1,20 @@
+override:
+  postgresql_version: '9.4'
+  postgresql_num_logs_to_keep: 100
+  postgresql_shared_buffers: '10GB'
+  postgresql_max_stack_depth: '6MB'
+  postgresql_effective_cache_size: '32GB'
+  postgresql_work_mem: '16MB'
+  postgresql_max_connections: 600
+  postgresql_checkpoint_segments: 32
+  pgstandby_wal_keep_segments: 500
+  pgbouncer_max_connections: 1600
+  pgbouncer_default_pool: 500
+  pgbouncer_reserve_pool: 5
+  pgbouncer_pool_timeout: 1
+  pgbouncer_pool_mode: transaction
+  postgresql_ssl_enabled: False
+  postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 
 dbs:
   ucr:
