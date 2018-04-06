@@ -9,6 +9,9 @@ virtualenv_home: "{{ code_home }}/python_env"
 encrypted_root: "/opt/data"
 project: "commcare-hq"
 
+airflow_home: "{{ cchq_home }}/airflow"
+airflow_virtualenv: "{{ airflow_home }}/env"
+
 shared_drive_enabled: true
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
