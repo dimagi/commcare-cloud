@@ -1,13 +1,13 @@
 DEFAULT_POSTGRESQL_HOST: hqdb0
 
 override:
-  postgresql_version: '9.4'
-  postgresql_max_connections: 300
-  pgbouncer_max_connections: 800
   pgbouncer_default_pool: 290
-  pgbouncer_reserve_pool: 5
-  pgbouncer_pool_timeout: 1
+  pgbouncer_max_connections: 800
   pgbouncer_pool_mode: transaction
+  pgbouncer_pool_timeout: 1
+  pgbouncer_reserve_pool: 5
+  postgresql_max_connections: 300
+  postgresql_version: '9.4'
 
 dbs:
   main:
