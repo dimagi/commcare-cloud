@@ -4,6 +4,9 @@ import re
 import six
 
 from commcare_cloud.environment.constants import constants
+from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
+
+PostgresqlOverride = get_defaults_jsonobject('postgresql')
 
 
 def alphanum_key(key):
@@ -30,6 +33,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
 
+    override = jsonobject.ObjectProperty(PostgresqlOverride)
+
     @classmethod
     def wrap(cls, data):
         self = super(PostgresqlConfig, cls).wrap(data)
@@ -40,9 +45,12 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.password = self.DEFAULT_POSTGRESQL_PASSWORD
         return self
 
-    def to_json(self):
-        data = super(PostgresqlConfig, self).to_json()
+    def to_generated_variables(self):
+        data = self.to_json()
+        del data['dbs']
+        del data['override']
         data['postgresql_dbs'] = [db.to_json() for db in self.generate_postgresql_dbs()]
+        data.update(self.override.to_json())
         return data
 
     def replace_hosts(self, environment):
