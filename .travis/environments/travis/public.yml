@@ -83,10 +83,6 @@ postgres_users:
       password: 'hqbackup'
       role_attr_flags: 'SUPERUSER'
 
-pg_replication_slots:
-  192.168.33.16:
-    - standby1
-
 encrypted_root: '/opt/data'
 postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 postgresql_ssl_enabled: False

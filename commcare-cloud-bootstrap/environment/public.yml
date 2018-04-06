@@ -80,10 +80,6 @@ postgres_users:
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
 
-pg_replication_slots:
-  192.168.33.16:
-    - standby1
-
 encrypted_root: '/opt/data'
 postgresql_log_directory: "{{ encrypted_root }}/pg_log"
 postgresql_ssl_enabled: False
