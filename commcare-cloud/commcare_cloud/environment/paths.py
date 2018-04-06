@@ -1,6 +1,7 @@
 import os
 import sys
 
+import yaml
 from memoized import memoized_property, memoized
 
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
@@ -69,6 +70,17 @@ class DefaultPaths(object):
     @memoized
     def get_users_yml(self, org):
         return os.path.join(self.environments_dir, '_users', '{}.yml'.format(org))
+
+
+def get_role_defaults_yml(role):
+    return os.path.join(REPO_BASE, 'ansible', 'roles', role, 'defaults', 'main.yml')
+
+
+@memoized
+def get_role_defaults(role):
+    """contents of a role's defaults/main.yml, as a dict"""
+    with open(get_role_defaults_yml(role)) as f:
+        return yaml.load(f)
 
 
 def get_virtualenv_path():

@@ -156,7 +156,7 @@ class Environment(object):
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
         }
-        generated_variables.update(self.postgresql_config.to_json())
+        generated_variables.update(self.postgresql_config.to_generated_variables())
         generated_variables.update(constants.to_json())
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
