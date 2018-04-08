@@ -183,8 +183,6 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
-  REPORTING_DATABASES:
-    ucr: ucr
   AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY }}"
   AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY }}"
   SAVED_EXPORT_ACCESS_CUTOFF: 180
@@ -204,7 +202,6 @@ localsettings:
   TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
   TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER }}"
   TRANSFER_SERVER: 'nginx'
-  USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   ENABLE_PRELOGIN_SITE: False
