@@ -38,7 +38,7 @@ dbs:
         host: pgshard6
       p6:
         shards: [515, 617]
-        host: pgshard1
+        host: pgshard0
       p7:
         shards: [618, 720]
         host: pgshard0
