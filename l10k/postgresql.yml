@@ -1,9 +1,5 @@
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
-postgresql_dbs:
-  - name: commcarehq_ucr
-    django_alias: ucr
-  - name: "{{ commcarehq_main_db_name }}"
-    django_alias: default
-  - name: "{{ formplayer_db_name }}"
-  - django_alias: synclogs
-    name: commcarehq_synclogs
+SEPARATE_FORM_PROCESSING_DBS: False
+
+dbs:
+  form_processing: null

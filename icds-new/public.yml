@@ -301,14 +301,6 @@ localsettings:
   REDIS_PORT: '6379'
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
-  REPORTING_DATABASES:
-    ucr: ucr
-    icds-ucr:
-      WRITE: icds-ucr
-      READ:
-        - [icds-ucr, 5]
-        - [icds-ucr-standby1, 5]
-    icds-test-ucr: icds-ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
   SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
@@ -323,7 +315,6 @@ localsettings:
   STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-  USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'

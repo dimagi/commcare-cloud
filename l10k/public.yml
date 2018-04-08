@@ -135,8 +135,6 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
-  REPORTING_DATABASES:
-    ucr: ucr
   SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
   SIMPLE_API_KEYS:
   SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
