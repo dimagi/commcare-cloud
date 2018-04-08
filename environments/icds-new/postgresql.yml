@@ -16,7 +16,7 @@ postgresql_dbs:
   - django_alias: p2
     name: commcarehq_p2
     shards: [104, 205]
-    host: pgshard5
+    host: pgshard8
   - django_alias: p3
     name: commcarehq_p3
     shards: [206, 308]
@@ -24,11 +24,11 @@ postgresql_dbs:
   - django_alias: p4
     name: commcarehq_p4
     shards: [309, 411]
-    host: pgshard2
+    host: pgshard9
   - django_alias: p5
     name: commcarehq_p5
     shards: [412, 514]
-    host: pgshard2
+    host: pgshard6
   - django_alias: p6
     name: commcarehq_p6
     shards: [515, 617]
@@ -36,11 +36,11 @@ postgresql_dbs:
   - django_alias: p7
     name: commcarehq_p7
     shards: [618, 720]
-    host: pgshard1
+    host: pgshard0
   - django_alias: p8
     name: commcarehq_p8
     shards: [721, 823]
-    host: pgshard1
+    host: pgshard4
   - django_alias: p9
     name: commcarehq_p9
     shards: [824, 926]
@@ -48,7 +48,7 @@ postgresql_dbs:
   - django_alias: p10
     name: commcarehq_p10
     shards: [927, 1023]
-    host: pgshard3
+    host: pgshard7
   - name: commcarehq_ucr
     host: pgucr
     django_alias: ucr
