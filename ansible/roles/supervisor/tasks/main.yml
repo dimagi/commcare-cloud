@@ -23,9 +23,11 @@
 
 - name: pkill supervisord if run by cchq
   command: pkill -U cchq supervisord
-  # if it returns 1 with no output, that just means no process to kill
   register: result
-  failed_when: result.rc != 0 and (result.stderr or result.stdout)
+  # rc = 0: one or more processes match
+  # rc = 1: no processes match
+  failed_when: result.rc > 1
+  changed_when: result.rc == 0
 
 - name: remove /etc/init.d/supervisor
   file: state=absent path=/etc/init.d/supervisor
@@ -53,7 +55,10 @@
   command: pkill -9 -U cchq
   # if it returns 1 with no output, that just means no process to kill
   register: result
-  failed_when: result.rc != 0 and (result.stderr or result.stdout)
+  # rc = 0: one or more processes match
+  # rc = 1: no processes match
+  failed_when: result.rc > 1
+  changed_when: result.rc == 0
 
 - become: yes
   command: start supervisord
