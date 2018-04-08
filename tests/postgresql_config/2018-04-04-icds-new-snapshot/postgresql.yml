@@ -26,37 +26,37 @@ dbs:
         host: pgshard5
       p2:
         shards: [104, 205]
-        host: pgshard8
+        host: pgshard5
       p3:
         shards: [206, 308]
         host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard9
+        host: pgshard2
       p5:
         shards: [412, 514]
-        host: pgshard6
+        host: pgshard2
       p6:
         shards: [515, 617]
         host: pgshard1
       p7:
         shards: [618, 720]
-        host: pgshard0
+        host: pgshard1
       p8:
         shards: [721, 823]
-        host: pgshard4
+        host: pgshard1
       p9:
         shards: [824, 926]
         host: pgshard3
       p10:
         shards: [927, 1023]
-        host: pgshard7
+        host: pgshard3
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
       host: pgucr
       query_stats: True
-      django_migrate: True  # the dashboard models are stored here
+      django_migrate: True
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby

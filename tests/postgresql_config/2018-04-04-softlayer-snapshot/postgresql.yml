@@ -4,6 +4,8 @@ REPORTING_DATABASES:
   icds-test-ucr: icds-ucr
 
 dbs:
+  ucr:
+    django_migrate: True  # I think this is a mistake, but it's been this way
   form_processing:
     partitions:
       p1:
@@ -19,4 +21,4 @@ dbs:
   custom:
     - django_alias: icds-ucr
       name: icds-ucr
-      django_migrate: True  # ICDS dashboard models are stored here
+      django_migrate: True
