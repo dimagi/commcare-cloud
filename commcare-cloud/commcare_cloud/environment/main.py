@@ -4,7 +4,7 @@ import yaml
 from memoized import memoized, memoized_property
 
 from commcare_cloud.environment.constants import constants
-from commcare_cloud.environment.paths import DefaultPaths
+from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
 from ansible.inventory.manager import InventoryManager
@@ -22,7 +22,9 @@ class Environment(object):
         self.paths = paths
 
     def check(self):
-        self.public_vars
+
+        included_disallowed_public_variables = set(self.public_vars.keys()) & self._disallowed_public_variables
+        assert not included_disallowed_public_variables, included_disallowed_public_variables
         self.meta_config
         self.users_config
         self.raw_app_processes_config
@@ -41,6 +43,10 @@ class Environment(object):
         """contents of public.yml, as a dict"""
         with open(self.paths.public_yml) as f:
             return yaml.load(f)
+
+    @memoized_property
+    def _disallowed_public_variables(self):
+        return set(get_role_defaults('postgresql').keys())
 
     @memoized_property
     def meta_config(self):
@@ -156,7 +162,7 @@ class Environment(object):
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
         }
-        generated_variables.update(self.postgresql_config.to_json())
+        generated_variables.update(self.postgresql_config.to_generated_variables())
         generated_variables.update(constants.to_json())
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
