@@ -41,17 +41,6 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-postgresql_version: '9.6'
-postgresql_max_connections: 300
-pgbouncer_max_connections: 1000
-pgbouncer_default_pool: 290
-pgbouncer_reserve_pool: 5
-pgbouncer_pool_timeout: 1
-pgbouncer_pool_mode: transaction
-
-
-postgresql_ssl_enabled: False
-
 redis_appendonly: 'no'
 
 KSPLICE_ACTIVE: yes
