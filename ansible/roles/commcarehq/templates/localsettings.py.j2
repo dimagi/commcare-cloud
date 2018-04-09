@@ -90,13 +90,13 @@ TRANSFER_SERVER = 'nginx'
 
 # Email setup
 # email settings: these ones are the custom hq ones
-{% if file_email or not localsettings.EMAIL_LOGIN %}
+{% if file_email or not EMAIL_LOGIN %}
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/django_email'
 {% else %}
-EMAIL_LOGIN = "{{ localsettings.EMAIL_LOGIN }}"
+EMAIL_LOGIN = "{{ EMAIL_LOGIN }}"
 {% if 'EMAIL_PASSWORD' in localsettings %}
-EMAIL_PASSWORD = "{{ localsettings.EMAIL_PASSWORD }}"
+EMAIL_PASSWORD = "{{ EMAIL_PASSWORD }}"
 {% else %}
 # This prevents django from attempting smtp auth for servers where it is not configured
 EMAIL_PASSWORD = None
@@ -146,23 +146,23 @@ COUCH_CACHE_VIEWS = '{{ localsettings.COUCH_CACHE_VIEWS }}'
 STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
 {% endif %}
 
-{% if 'DROPBOX_APP_NAME' in localsettings %}
-DROPBOX_APP_NAME = '{{ localsettings.DROPBOX_APP_NAME }}'
+{% if DROPBOX_APP_NAME and DROPBOX_KEY %}
+DROPBOX_APP_NAME = '{{ DROPBOX_APP_NAME }}'
 {% endif %}
 
-{% if 'DROPBOX_KEY' in localsettings %}
-DROPBOX_KEY = '{{ localsettings.DROPBOX_KEY }}'
+{% if DROPBOX_KEY %}
+DROPBOX_KEY = '{{ DROPBOX_KEY }}'
 {% endif %}
 
-{% if 'DROPBOX_SECRET' in localsettings %}
-DROPBOX_SECRET = '{{ localsettings.DROPBOX_SECRET }}'
+{% if DROPBOX_SECRET %}
+DROPBOX_SECRET = '{{ DROPBOX_SECRET }}'
 {% endif %}
 
-{% if 'AMAZON_S3_ACCESS_KEY' in localsettings %}
-S3_ACCESS_KEY = '{{ localsettings.AMAZON_S3_ACCESS_KEY }}'
+{% if AMAZON_S3_ACCESS_KEY %}
+S3_ACCESS_KEY = '{{ AMAZON_S3_ACCESS_KEY }}'
 {% endif %}
-{% if 'AMAZON_S3_SECRET_KEY' in localsettings %}
-S3_SECRET_KEY = '{{ localsettings.AMAZON_S3_SECRET_KEY }}'
+{% if AMAZON_S3_SECRET_KEY %}
+S3_SECRET_KEY = '{{ AMAZON_S3_SECRET_KEY }}'
 {% endif %}
 
 {% if s3_blob_db_enabled %}
@@ -186,8 +186,8 @@ BLOB_DB_MIGRATING_FROM_FS_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_FS_TO_
 {% endif %}
 {% endif %}{# s3_blob_db_enabled #}
 
-{% if 'MOBILE_INTEGRATION_TEST_TOKEN' in localsettings %}
-MOBILE_INTEGRATION_TEST_TOKEN = '{{ localsettings.MOBILE_INTEGRATION_TEST_TOKEN }}'
+{% if MOBILE_INTEGRATION_TEST_TOKEN %}
+MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 {% endif %}
 
 ####### For Constructing Global URLs ########
@@ -204,9 +204,9 @@ BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
 
 JAR_SIGN = dict(
     key_store = os.path.join('{{ www_dir }}', "DimagiKeyStore"),
-    key_alias = "{{ localsettings.JAR_KEY_ALIAS }}",
-    store_pass = "{{ localsettings.JAR_STORE_PASS }}",
-    key_pass = "{{ localsettings.JAR_KEY_PASS }}",
+    key_alias = "{{ JAR_KEY_ALIAS }}",
+    store_pass = "{{ JAR_STORE_PASS }}",
+    key_pass = "{{ JAR_KEY_PASS }}",
 )
 
 #xep
@@ -262,14 +262,14 @@ DEFAULT_PROTOCOL = "https"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 ANALYTICS_IDS = {
-    'GOOGLE_ANALYTICS_API_ID': '{{ localsettings.GOOGLE_ANALYTICS_API_ID|default('', true) }}',
-    'HUBSPOT_API_ID': '{{ localsettings.HUBSPOT_API_ID|default('', true) }}',
-    'HUBSPOT_API_KEY': '{{ localsettings.HUBSPOT_API_KEY|default('', true) }}',
-    'KISSMETRICS_KEY': '{{ localsettings.KISSMETRICS_KEY|default('', true) }}',
-    'FULLSTORY_ID': '{{ localsettings.FULLSTORY_ID|default('', true) }}',
-    'DRIFT_ID': '{{ localsettings.DRIFT_ID|default('', true) }}',
-    'APPCUES_ID': '{{ localsettings.APPCUES_ID|default('', true) }}',
-    'APPCUES_KEY': '{{ localsettings.APPCUES_KEY|default('', true) }}'
+    'GOOGLE_ANALYTICS_API_ID': '{{ GOOGLE_ANALYTICS_API_ID }}',
+    'HUBSPOT_API_ID': '{{ HUBSPOT_API_ID }}',
+    'HUBSPOT_API_KEY': '{{ HUBSPOT_API_KEY }}',
+    'KISSMETRICS_KEY': '{{ KISSMETRICS_KEY }}',
+    'FULLSTORY_ID': '{{ FULLSTORY_ID }}',
+    'DRIFT_ID': '{{ DRIFT_ID }}',
+    'APPCUES_ID': '{{ APPCUES_ID }}',
+    'APPCUES_KEY': '{{ APPCUES_KEY }}'
 }
 
 ANALYTICS_CONFIG = {
@@ -318,11 +318,11 @@ ENIKSHAY_QUEUE = '{{ localsettings.ENIKSHAY_QUEUE }}'
 {% endif %}
 
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
-GMAPS_API_KEY = '{{ localsettings.GMAPS_API_KEY }}'
+GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ localsettings.TOUCHFORMS_API_USER|default('') }}"
-TOUCHFORMS_API_PASSWORD = "{{ localsettings.TOUCHFORMS_API_PASSWORD|default('') }}"
+TOUCHFORMS_API_USER = "{{ TOUCHFORMS_API_USER }}"
+TOUCHFORMS_API_PASSWORD = "{{ TOUCHFORMS_API_PASSWORD }}"
 
 BROKER_URL = '{{ BROKER_URL }}'
 
@@ -332,8 +332,8 @@ XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
 FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
 {% endif %}
 
-{% if 'FORMPLAYER_INTERNAL_AUTH_KEY' in localsettings %}
-FORMPLAYER_INTERNAL_AUTH_KEY = "{{ localsettings.FORMPLAYER_INTERNAL_AUTH_KEY }}"
+{% if FORMPLAYER_INTERNAL_AUTH_KEY %}
+FORMPLAYER_INTERNAL_AUTH_KEY = "{{ FORMPLAYER_INTERNAL_AUTH_KEY }}"
 {% endif %}
 
 SOIL_BACKEND = "soil.CachedDownload"
@@ -366,7 +366,7 @@ ELASTICSEARCH_HOSTS = [
 ]
 ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
 ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
-SECRET_KEY = "{{ localsettings.SECRET_KEY }}"
+SECRET_KEY = "{{ SECRET_KEY }}"
 
 PRIME_VIEWS_INTERVAL = 2
 
@@ -521,16 +521,16 @@ API_THROTTLE_TIMEFRAME = 10
 SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
 {% endif %}
 
-{% if 'MAPS_LAYERS' in localsettings %}
-MAPS_LAYERS = json.loads('{{ localsettings.MAPS_LAYERS|to_json }}')
+{% if MAPS_LAYERS %}
+MAPS_LAYERS = json.loads('{{ MAPS_LAYERS|to_json }}')
 {% endif %}
 
 {% if 'PILLOWTOP_MACHINE_ID' in localsettings and localsettings.PILLOWTOP_MACHINE_ID %}
 PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
-{% if localsettings.get('SIMPLE_API_KEYS') %}
-SIMPLE_API_KEYS = {{ localsettings.SIMPLE_API_KEYS|to_json }}
+{% if SIMPLE_API_KEYS %}
+SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
 {% if localsettings.get('KAFKA_URL') %}
@@ -563,24 +563,24 @@ BANK_ADDRESS = {{ localsettings.BANK_ADDRESS|to_json }}
 BANK_NAME = '{{ localsettings.BANK_NAME }}'
 {% endif %}
 
-{% if localsettings.get('BANK_ACCOUNT_NUMBER') %}
-BANK_ACCOUNT_NUMBER = '{{ localsettings.BANK_ACCOUNT_NUMBER }}'
+{% if BANK_ACCOUNT_NUMBER %}
+BANK_ACCOUNT_NUMBER = '{{ BANK_ACCOUNT_NUMBER }}'
 {% endif %}
 
 {% if localsettings.get('BANK_SWIFT_CODE') %}
 BANK_SWIFT_CODE = '{{ localsettings.BANK_SWIFT_CODE }}'
 {% endif %}
 
-{% if localsettings.get('OPEN_EXCHANGE_RATES_API_ID') %}
-OPEN_EXCHANGE_RATES_API_ID = '{{ localsettings.OPEN_EXCHANGE_RATES_API_ID }}'
+{% if OPEN_EXCHANGE_RATES_API_ID %}
+OPEN_EXCHANGE_RATES_API_ID = '{{ OPEN_EXCHANGE_RATES_API_ID }}'
 {% endif %}
 
-{% if localsettings.get('STRIPE_PRIVATE_KEY') %}
-STRIPE_PRIVATE_KEY = '{{ localsettings.STRIPE_PRIVATE_KEY }}'
+{% if STRIPE_PRIVATE_KEY %}
+STRIPE_PRIVATE_KEY = '{{ STRIPE_PRIVATE_KEY }}'
 {% endif %}
 
-{% if localsettings.get('STRIPE_PUBLIC_KEY') %}
-STRIPE_PUBLIC_KEY = '{{ localsettings.STRIPE_PUBLIC_KEY }}'
+{% if STRIPE_PUBLIC_KEY %}
+STRIPE_PUBLIC_KEY = '{{ STRIPE_PUBLIC_KEY }}'
 {% endif %}
 
 COMPRESS_OFFLINE = True
@@ -597,8 +597,8 @@ SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 INACTIVITY_TIMEOUT = {{ localsettings.INACTIVITY_TIMEOUT }}
 {% endif %}
 
-{% if localsettings.get('MIA_THE_DEPLOY_BOT_API') %}
-MIA_THE_DEPLOY_BOT_API = '{{ localsettings.MIA_THE_DEPLOY_BOT_API }}'
+{% if MIA_THE_DEPLOY_BOT_API %}
+MIA_THE_DEPLOY_BOT_API = '{{ MIA_THE_DEPLOY_BOT_API }}'
 {% endif %}
 
 # Set to something like "192.168.1.5:8000" (with your IP address).
@@ -613,8 +613,8 @@ CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
 
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
-BANK_ROUTING_NUMBER_ACH = '{{ localsettings.BANK_ROUTING_NUMBER_ACH }}'
-BANK_ROUTING_NUMBER_WIRE = '{{ localsettings.BANK_ROUTING_NUMBER_WIRE }}'
+BANK_ROUTING_NUMBER_ACH = '{{ BANK_ROUTING_NUMBER_ACH }}'
+BANK_ROUTING_NUMBER_WIRE = '{{ BANK_ROUTING_NUMBER_WIRE }}'
 
 ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
 
@@ -630,9 +630,9 @@ SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
 
 ENVIRONMENT_HOSTS = {{ groups | to_json }}
 
-{% if localsettings.get('HQ_PRIVATE_KEY') %}
+{% if HQ_PRIVATE_KEY %}
 HQ_PRIVATE_KEY = \
-{{ localsettings.HQ_PRIVATE_KEY }}
+{{ HQ_PRIVATE_KEY }}
 {% endif %}
 
 {% if DATADOG_ENABLED|default(false) %}
@@ -679,16 +679,16 @@ COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
 COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
 {% endif %}
 
-{% if localsettings.get('SENTRY_PUBLIC_KEY') %}
-SENTRY_PUBLIC_KEY = '{{ localsettings.SENTRY_PUBLIC_KEY }}'
-SENTRY_PRIVATE_KEY = '{{ localsettings.SENTRY_PRIVATE_KEY }}'
-SENTRY_PROJECT_ID = '{{ localsettings.SENTRY_PROJECT_ID }}'
-SENTRY_QUERY_URL = '{{ localsettings.SENTRY_QUERY_URL }}'
-SENTRY_API_KEY = '{{ localsettings.SENTRY_API_KEY }}'
+{% if SENTRY_PUBLIC_KEY %}
+SENTRY_PUBLIC_KEY = '{{ SENTRY_PUBLIC_KEY }}'
+SENTRY_PRIVATE_KEY = '{{ SENTRY_PRIVATE_KEY }}'
+SENTRY_PROJECT_ID = '{{ SENTRY_PROJECT_ID }}'
+SENTRY_QUERY_URL = '{{ SENTRY_QUERY_URL }}'
+SENTRY_API_KEY = '{{ SENTRY_API_KEY }}'
 {% endif %}
 
-{% if localsettings.get('GREENHOUSE_API_KEY') %}
-GREENHOUSE_API_KEY = '{{ localsettings.GREENHOUSE_API_KEY }}'
+{% if GREENHOUSE_API_KEY %}
+GREENHOUSE_API_KEY = '{{ GREENHOUSE_API_KEY }}'
 {% endif %}
 
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
