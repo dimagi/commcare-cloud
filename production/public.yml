@@ -59,7 +59,6 @@ formplayer_purge_time_spec: '8d'
 
 KSPLICE_ACTIVE: yes
 
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 ufw_private_interface: eth1
 

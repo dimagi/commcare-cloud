@@ -57,7 +57,6 @@ default_from_email: commcare@pna.sn
 
 KSPLICE_ACTIVE: yes
 
-AMQP_HOST: "127.0.0.1"
 
 nameservers:
   - 8.8.8.8
