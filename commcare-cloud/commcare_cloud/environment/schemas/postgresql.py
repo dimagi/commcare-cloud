@@ -22,6 +22,38 @@ def alphanum_key(key):
     return [convert(c) for c in re.split(r'([0-9]+)', key)]
 
 
+def _is_power_of_2(num):
+    return num and not (num & (num - 1))
+
+
+def validate_shards(shard_ranges_by_partition_name):
+    """
+    Validate that shards partitioning in config is valid
+
+    based off of
+    https://github.com/dimagi/commcare-hq/blob/d8fdc0e5b2f7a3200ea743da60be8f808ddd8a60/corehq/sql_db/config.py#L74-L93
+
+    """
+    shards_seen = set()
+    previous_range = None
+    for group, shard_range, in sorted(list(shard_ranges_by_partition_name.items()),
+                                      key=lambda x: x[1]):
+        if not previous_range:
+            assert shard_range[0] == 0, 'Shard numbering must start at 0'
+        else:
+            assert previous_range[1] + 1 == shard_range[0], \
+                'Shards must be numbered consecutively: {} -> {}'.format(
+                    previous_range[1], shard_range[0])
+
+        shards_seen |= set(range(shard_range[0], shard_range[1] + 1))
+        previous_range = shard_range
+
+    num_shards = len(shards_seen)
+
+    assert _is_power_of_2(num_shards), \
+        'Total number of shards must be a power of 2: {}'.format(num_shards)
+
+
 class PostgresqlConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
@@ -92,8 +124,14 @@ class PostgresqlConfig(jsonobject.JsonObject):
              .format(', '.join(sorted(referenced_django_aliases - defined_django_aliases)),
                      ', '.join(sorted(defined_django_aliases))))
 
+    def _check_shards(self):
+        if self.dbs.form_processing:
+            validate_shards({name: db.shards
+                             for name, db in self.dbs.form_processing.partitions.items()})
+
     def check(self):
         self._check_reporting_databases()
+        self._check_shards()
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
             'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
