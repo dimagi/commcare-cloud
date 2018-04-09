@@ -225,7 +225,7 @@ It is unusual to need to override this property.
 - Default: `{"ucr": "ucr"}`
 - Status: Custom
 
-Specify a mapping of ucr "engines".
+Specify a mapping of UCR "engines".
 
 The keys define engine aliases, and can be anything. The values are either
 
