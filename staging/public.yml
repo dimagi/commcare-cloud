@@ -37,7 +37,6 @@ formplayer_archive_time_spec: '10m'
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-AMQP_NAME: commcarehq
 
 ufw_private_interface: eth1
 
