@@ -46,7 +46,6 @@ redis_appendonly: 'no'
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-AMQP_NAME: commcarehq
 
 kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
