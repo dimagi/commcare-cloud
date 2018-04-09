@@ -3,6 +3,13 @@ DEFAULT_POSTGRESQL_USER: commcarehq
 SEPARATE_SYNCLOGS_DB: False
 SEPARATE_FORM_PROCESSING_DBS: False
 
+override:
+  postgresql_effective_cache_size: 4GB
+  postgresql_log_directory: '{{ encrypted_root }}/pg_log'
+  postgresql_max_stack_depth: 6MB
+  postgresql_max_standby_delay: -1
+  postgresql_shared_buffers: 128MB
+
 dbs:
   synclogs: null
   form_processing: null
