@@ -53,8 +53,6 @@ DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
-AMQP_USER: "{{ deploy_env }}_worker"
-AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD }}"
 AMQP_HOST: "{{ groups.celery.0 }}"
 AMQP_NAME: commcarehq
 
@@ -142,7 +140,7 @@ localsettings:
   BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
   BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
 #  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
-  BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+  BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
 #  CELERY_REMINDER_CASE_UPDATE_QUEUE:
 #  CELERY_REMINDER_RULE_QUEUE:
