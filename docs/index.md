@@ -44,3 +44,7 @@ an understanding of the system's architecture and each of the system's underlyin
 
 ## HowTos
 - [Moving partitioned databases](howto/move-partitioned-database)
+
+
+## `commcare-cloud` Documentation
+- [The commcare-cloud environment configuration](env)
