@@ -71,6 +71,10 @@ celery_processes:
     send_report_throttled:
       concurrency: 2
       max_tasks_per_child: 1
+  hqcelery3.internal-va.commcarehq.org:
+    async_restore_queue:
+      concurrency: 8
+      max_tasks_per_child: 5
 pillows:
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
