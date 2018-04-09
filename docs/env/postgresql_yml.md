@@ -168,6 +168,12 @@ See [ansible/roles/postgresql/defaults/main.yml](
 https://github.com/dimagi/commcare-cloud/blob/master/ansible/roles/postgresql/defaults/main.yml)
 for the complete list of variables.
 
+As with any ansible variable, to override these on a per-host basis,
+you may set these as inventory host or group variables in `inventory.ini`.
+Note, however, that variables you set there will not receive any validation,
+whereas variables set here will be validated against the type
+in the defaults file linked above.
+
 ## `SEPARATE_SYNCLOGS_DB`
 
 - Type: boolean
