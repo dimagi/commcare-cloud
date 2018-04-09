@@ -52,7 +52,6 @@ DATADOG_ENABLED: False
 
 CLOUDANT_CLUSTER_NAME: null
 
-AMQP_HOST: "{{ groups.celery.0 }}"
 
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
 #keystore_file: 'DimagiKeyStore'
