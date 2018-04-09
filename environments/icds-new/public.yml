@@ -55,7 +55,6 @@ kafka_log_dir: '{{ encrypted_root }}/kafka'
 KSPLICE_ACTIVE: no
 
 AMQP_HOST: "{{ groups.rabbit0.0 }}"
-AMQP_NAME: commcarehq
 
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False

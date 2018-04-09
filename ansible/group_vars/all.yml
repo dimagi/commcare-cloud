@@ -117,6 +117,7 @@ soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 daily_deploy_email: null
 
 
+AMQP_NAME: commcarehq
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD | default(None) }}"
 AMQP_USER: "{{ secrets.AMQP_USER | default(None) }}"
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY | default(None) }}"

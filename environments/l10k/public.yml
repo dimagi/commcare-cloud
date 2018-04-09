@@ -54,7 +54,6 @@ redis_appendonly: 'no'
 KSPLICE_ACTIVE: yes
 
 AMQP_HOST: "192.168.0.10"
-AMQP_NAME: commcarehq
 
 shared_drive_enabled: false
 
