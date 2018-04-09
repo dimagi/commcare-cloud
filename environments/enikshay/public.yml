@@ -59,7 +59,6 @@ redis_appendonly: 'no'
 
 KSPLICE_ACTIVE: yes
 
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 kafka_broker_id: 0
 

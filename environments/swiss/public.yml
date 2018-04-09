@@ -37,7 +37,6 @@ aws_versioning_enabled: false
 
 KSPLICE_ACTIVE: yes
 
-AMQP_HOST: "185.12.7.167"
 
 shared_drive_enabled: false
 
