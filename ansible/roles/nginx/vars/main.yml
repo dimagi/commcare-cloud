@@ -3,7 +3,6 @@ nginx_ubuntu_pkg: nginx
 nginx_install: True
 nginx_user: www-data
 nginx_static_home: "{{ code_home }}/staticfiles"
-nginx_max_clients: 512
 nginx_access_log_name: nginx_access.log
 nginx_error_log_name: nginx_error.log
 ssl_base_dir: "/etc/pki/tls"
