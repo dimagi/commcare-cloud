@@ -4,7 +4,7 @@ import jsonobject
 class ProxyConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
-    SITE_HOST = jsonobject.StringProperty()
+    SITE_HOST = jsonobject.StringProperty(required=True)
     NO_WWW_SITE_HOST = jsonobject.StringProperty()
     J2ME_SITE_HOST = jsonobject.StringProperty()
     nginx_combined_cert_value = jsonobject.StringProperty()
