@@ -17,25 +17,25 @@ class ProxyConfig(jsonobject.JsonObject):
     special_sites = jsonobject.ListProperty(str)
 
     COMMTRACK_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    commtrack_nginx_combined_cert_value = jsonobject.StringProperty()
-    commtrack_key_value = jsonobject.StringProperty()
+    commtrack_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
+    commtrack_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     CAS_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    cas_nginx_combined_cert_value = jsonobject.StringProperty()
-    cas_key_value = jsonobject.StringProperty()
+    cas_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
+    cas_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     TABLEAU_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    tableau_nginx_combined_cert_value = jsonobject.StringProperty()
-    tableau_key_value = jsonobject.StringProperty()
-    tableau_server = jsonobject.StringProperty()
+    tableau_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
+    tableau_key_value = jsonobject.StringProperty(exclude_if_none=True)
+    tableau_server = jsonobject.StringProperty(exclude_if_none=True)
 
     ENIKSHAY_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    enikshay_nginx_combined_cert_value = jsonobject.StringProperty()
-    enikshay_key_value = jsonobject.StringProperty()
+    enikshay_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
+    enikshay_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     PNA_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    pna_nginx_combined_cert_value = jsonobject.StringProperty()
-    pna_key_value = jsonobject.StringProperty()
+    pna_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
+    pna_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     def check(self):
         pass
