@@ -46,6 +46,14 @@ class AppProcessesConfig(jsonobject.JsonObject):
         self.pillows = check_and_translate_hosts(environment, self.pillows)
         _validate_all_required_machines_mentioned(environment, self)
 
+    def to_generated_variables(self):
+        flower_host, = [machine for machine, queues_config in self.celery_processes.items()
+                        if 'flower' in queues_config]
+        return {
+            'CELERY_FLOWER_URL': "http://{flower_host}:5555".format(flower_host=flower_host),
+            'app_processes_config': self.to_json(),
+        }
+
 
 class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
     def __new__(cls, name, required=True, *args, **kwargs):
@@ -104,6 +112,8 @@ def validate_app_processes_config(app_processes_config):
         "The following queues were not mentioned: {}".format(', '.join(required_but_not_mentioned))
     assert all_queues_mentioned['celery_periodic'] <= 1, \
         'You cannot run the periodic celery queue on more than one machine because it implies celery beat.'
+    assert all_queues_mentioned['flower'] <= 1, \
+        'You cannot run flower on more than one machine because CELERY_FLOWER_URL assumes one endpoint.'
 
 
 def _validate_all_required_machines_mentioned(environment, translated_app_process_config):
