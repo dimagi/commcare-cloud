@@ -144,20 +144,19 @@ localsettings:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
   FULLSTORY_ID:
-    HQ_INSTANCE: 'dev'
+  HQ_INSTANCE: 'dev'
 #  INVOICE_FROM_ADDRESS:
 #  INVOICE_PREFIX:
 #  INVOICE_STARTING_NUMBER:
   J2ME_ADDRESS: ''
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
-    LOCAL_PILLOWS:
+  LOCAL_PILLOWS:
     custom:
       - name: 'kafka-ucr-main-custom-1'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
