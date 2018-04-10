@@ -1,1 +1,2 @@
 SITE_HOST: "{{ hostvars[groups.proxy.0].ansible_hostname }}"
+fake_ssl_cert: yes
