@@ -50,7 +50,7 @@ spring.jpa.hibernate.ddl-auto
 smtp.host={{ localsettings.EMAIL_SMTP_HOST }}
 smtp.port={{ localsettings.EMAIL_SMTP_PORT }}
 smtp.username={{ EMAIL_LOGIN }}
-{% if EMAIL_PASSWORD or EMAIL_PASSWORD == 'None' %}
+{% if EMAIL_PASSWORD %}
 smtp.password={{ EMAIL_PASSWORD }}
 {% else %}
 smtp.password=dummy
