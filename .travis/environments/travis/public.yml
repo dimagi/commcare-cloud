@@ -116,57 +116,28 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
+TOUCHFORMS_API_USER: 'touchforms@example.com'
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-#  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
-#  BANK_ADDRESS:
-#  BANK_NAME:
-#  BANK_SWIFT_CODE:
-  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
-  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
-  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
-  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
-#  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
-#  CELERY_REMINDER_CASE_UPDATE_QUEUE:
-#  CELERY_REMINDER_RULE_QUEUE:
-#  CELERY_REPEAT_RECORD_QUEUE:
   CELERY_RESULT_BACKEND: 'database'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
-  COUCH_MONITORING_USERNAME: commcarehq
-  COUCH_MONITORING_PASSWORD: commcarehq
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  DROPBOX_APP_NAME: "{{ localsettings_private.DROPBOX_APP_NAME }}"
-  DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
-  DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
-  EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD }}"
+
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
   FULLSTORY_ID:
-  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
-  HUBSPOT_API_ID: "{{ localsettings_private.HUBSPOT_API_ID }}"
-  HUBSPOT_API_KEY: "{{ localsettings_private.HUBSPOT_API_KEY }}"
   HQ_INSTANCE: 'dev'
-#  INVOICE_FROM_ADDRESS:
-#  INVOICE_PREFIX:
-#  INVOICE_STARTING_NUMBER:
-  JAR_KEY_ALIAS: ''
-  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
-  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   J2ME_ADDRESS: ''
   KAFKA_URL: ''
-  KISSMETRICS_KEY: "{{ localsettings_private.KISSMETRICS_KEY }}"
   LOCAL_PILLOWS:
     custom:
       - name: 'kafka-ucr-main-custom-1'
@@ -179,32 +150,11 @@ localsettings:
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
           ucr_division: 'af'
-#  MAPS_LAYERS:
-#  MEDIA_ROOT:
-  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-#  PILLOWTOP_MACHINE_ID:
-#  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
-#  REMINDERS_QUEUE_ENABLED:
-  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
-#  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
-#  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
-#  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
-#  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
-#  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
   STATIC_CDN: ""
-#  SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS }}"
-#  SMS_QUEUE_ENABLED: ''
-#  STAGING_DOMAINS:
-#  STATIC_ROOT:
-#  STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
-#  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD }}"
-  TOUCHFORMS_API_USER: 'touchforms@example.com'
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.touchforms.0 }}:8181"
-#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
 commcare_cloud_use_vault: no
