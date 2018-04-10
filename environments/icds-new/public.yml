@@ -163,17 +163,11 @@ localsettings:
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []
-  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
-  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
-  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
-  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
-  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
@@ -185,25 +179,15 @@ localsettings:
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
-  COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
-  COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  DROPBOX_APP_NAME: 'CommCareHQFiles'
-  DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
-  DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
   ELASTICSEARCH_HOST: "{{ groups.es0.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
   EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
-  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
-  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'icds'
-  HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -217,9 +201,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  JAR_KEY_ALIAS: javarosakey
-  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
-  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   KAFKA_URL: "{{ groups.kafka0.0 }}:9092"
   LOCAL_PILLOWS:
     icds:
@@ -277,8 +258,6 @@ localsettings:
             - 'static-it_report_follow_issue'
             - 'static-dashboard_delivery_forms'
             - 'static-dashboard_thr_forms'
-  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
-  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -286,18 +265,9 @@ localsettings:
   REDIS_PORT: '6379'
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
-  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
-  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
-  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
-  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
-  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
-  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
-  SMS_GATEWAY_PARAMS:
-  SMS_GATEWAY_URL: 
+  SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
-  STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
-  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
