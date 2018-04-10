@@ -1,6 +1,5 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
-SITE_HOST: '{{ hostvars[groups.proxy.0].ansible_host }}'
 internal_domain_name: 'localdomain'
 
 etc_hosts_lines: []
@@ -17,7 +16,6 @@ touchforms_enabled: false
 riak_backend: "bitcask"
 riak_ring_size: 64
 
-fake_ssl_cert: yes
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:

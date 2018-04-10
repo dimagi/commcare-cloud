@@ -32,8 +32,6 @@ http_proxy_parent_port: '3128'
 riak_backend: "leveldb"
 riak_ring_size: 64
 
-fake_ssl_cert: yes
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'

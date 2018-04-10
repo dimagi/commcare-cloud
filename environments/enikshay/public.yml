@@ -13,7 +13,6 @@ riakcs_proxy_port_override: 9980
 primary_ssl_env: "enikshay.in"
 
 msp_users: "{{ secrets.MSP_USERS }}"
-fake_ssl_cert: no
 
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False

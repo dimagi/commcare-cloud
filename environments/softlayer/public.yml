@@ -8,8 +8,6 @@ riak_ring_size: 128
 
 primary_ssl_env: "softlayer"
 
-fake_ssl_cert: no
-
 DATADOG_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'

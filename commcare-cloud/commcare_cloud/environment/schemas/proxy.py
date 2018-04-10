@@ -11,6 +11,7 @@ class ProxyConfig(jsonobject.JsonObject):
     nginx_key_value = jsonobject.StringProperty()
     nginx_hsts_max_age = jsonobject.IntegerProperty()
 
+    fake_ssl_cert = jsonobject.BooleanProperty(default=False)
     special_sites = jsonobject.ListProperty(str)
 
     COMMTRACK_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)

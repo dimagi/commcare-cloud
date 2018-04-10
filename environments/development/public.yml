@@ -16,7 +16,6 @@ touchforms_enabled: false
 riak_backend: "bitcask"
 riak_ring_size: 64
 
-fake_ssl_cert: yes
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
 dev_users:

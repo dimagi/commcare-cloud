@@ -6,8 +6,6 @@ riak_ring_size: 128
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
 
-fake_ssl_cert: no
-
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
 
