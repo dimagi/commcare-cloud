@@ -1,6 +1,5 @@
 ssh_allow_password: True
 ssh_port: 1337
-fake_ssl_cert: no
 
 DATADOG_ENABLED: True
 datadog_extra_host_checks:

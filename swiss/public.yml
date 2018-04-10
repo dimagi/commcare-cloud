@@ -1,5 +1,4 @@
 msp_users: "{{ secrets.MSP_USERS }}"
-fake_ssl_cert: no
 
 DATADOG_ENABLED: True
 DATADOG_INTEGRATIONS_ENABLED: False
