@@ -14,6 +14,7 @@ from ansible.vars.manager import VariableManager
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
+from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -32,6 +33,7 @@ class Environment(object):
         self.fab_settings_config
         self.inventory_manager
         self.postgresql_config
+        self.proxy_config
         self.create_generated_yml()
 
     @memoized
@@ -62,6 +64,14 @@ class Environment(object):
         postgresql_config.replace_hosts(self)
         postgresql_config.check()
         return postgresql_config
+
+    @memoized_property
+    def proxy_config(self):
+        with open(self.paths.proxy_yml) as f:
+            proxy_json = yaml.load(f)
+        proxy_config = ProxyConfig.wrap(proxy_json)
+        proxy_config.check()
+        return proxy_config
 
     @memoized_property
     def users_config(self):
