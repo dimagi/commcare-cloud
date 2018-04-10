@@ -162,7 +162,6 @@ SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID | default(None) }
 SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY | default(None) }}"
 SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL | default(None) }}"
 SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS | default(None) }}"
-SMS_GATEWAY_PARAMS: "{{ localsettings_private.SMS_GATEWAY_PARAMS | default(None) }}"  # unused?
 STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None) }}"
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
 TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD | default('') }}"
