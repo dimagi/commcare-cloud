@@ -131,16 +131,8 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-#  BANK_ADDRESS:
-#  BANK_NAME:
-#  BANK_SWIFT_CODE:
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
-#  CELERY_REMINDER_CASE_UPDATE_QUEUE:
-#  CELERY_REMINDER_RULE_QUEUE:
-#  CELERY_REPEAT_RECORD_QUEUE:
   CELERY_RESULT_BACKEND: 'database'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
@@ -151,10 +143,7 @@ localsettings:
   # use True in prod!
   EMAIL_USE_TLS: no
   FULLSTORY_ID:
-    HQ_INSTANCE: 'dev'
-#  INVOICE_FROM_ADDRESS:
-#  INVOICE_PREFIX:
-#  INVOICE_STARTING_NUMBER:
+  HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
     LOCAL_PILLOWS:
@@ -169,20 +158,11 @@ localsettings:
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
           ucr_division: 'af'
-#  MEDIA_ROOT:
-#  PILLOWTOP_MACHINE_ID:
-#  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
-#  REMINDERS_QUEUE_ENABLED:
   STATIC_CDN: ""
-#  SMS_QUEUE_ENABLED: ''
-#  STAGING_DOMAINS:
-#  STATIC_ROOT:
-#  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
   FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
-#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
 root_email: /dev/null
 
