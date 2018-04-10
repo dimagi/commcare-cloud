@@ -1,5 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: "hqdb0.internal-va.commcarehq.org"
 
+postgresql_version: '9.6'
+
 postgresql_dbs:
   - django_alias: default
     name: "{{commcarehq_main_db_name}}"
