@@ -96,7 +96,7 @@ class DjangoManage(CommandBase):
         # the paths here are redundant with ansible/group_vars/all.yml
         code_current = '/home/{cchq_user}/www/{deploy_env}/current'.format(
             cchq_user=cchq_user, deploy_env=deploy_env)
-        remote_command = [
+        ssh_args = [
             'sudo -u {cchq_user} {code_current}/python_env/bin/python {code_current}/manage.py {args}'
             .format(
                 cchq_user=cchq_user,
@@ -106,6 +106,6 @@ class DjangoManage(CommandBase):
         ]
         if manage_args and manage_args[0] in ["shell", "dbshell"]:
             # force ssh to allocate a pseudo-terminal
-            remote_command = ['-t'] + remote_command
+            ssh_args = ['-t'] + ssh_args
         args.server = 'webworkers:0'
-        Ssh(self.parser).run(args, remote_command)
+        Ssh(self.parser).run(args, ssh_args)
