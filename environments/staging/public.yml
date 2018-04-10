@@ -1,6 +1,3 @@
-SITE_HOST: 'staging.commcarehq.org'
-J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
-
 riak_backend: "leveldb"
 riak_ring_size: 64
 
@@ -11,15 +8,6 @@ fake_ssl_cert: no
 DATADOG_ENABLED: False
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
-
-# Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat commcarehq.org.crt hq_thawtecabundle.crt > commcarehq.org.combined.crt
-nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
-nginx_key_value: "{{ ssl_secrets.private_keys.commcarehq_org }}"
-
-# commtrack.org
-commtrack_nginx_combined_cert_value: "{{ ssl_secrets.certs.commtrack_org }}"
-commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"
 
 supervisor_http_enabled: True
 

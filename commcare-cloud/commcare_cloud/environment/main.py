@@ -25,7 +25,8 @@ class Environment(object):
     def check(self):
 
         included_disallowed_public_variables = set(self.public_vars.keys()) & self._disallowed_public_variables
-        assert not included_disallowed_public_variables, included_disallowed_public_variables
+        assert not included_disallowed_public_variables, \
+            "Disallowed variables in {}: {}".format(self.paths.public_yml, included_disallowed_public_variables)
         self.meta_config
         self.users_config
         self.raw_app_processes_config
@@ -48,7 +49,7 @@ class Environment(object):
 
     @memoized_property
     def _disallowed_public_variables(self):
-        return set(get_role_defaults('postgresql').keys())
+        return set(get_role_defaults('postgresql').keys()) | set(ProxyConfig().to_json())
 
     @memoized_property
     def meta_config(self):
@@ -178,6 +179,7 @@ class Environment(object):
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables())
+        generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
 
         with open(self.paths.generated_yml, 'w') as f:

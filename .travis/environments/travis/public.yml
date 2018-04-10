@@ -1,6 +1,5 @@
 # For a real deployment
 # should be e.g. 'www.commcarehq.org'
-SITE_HOST: '{{ groups.proxy.0 }}'
 internal_domain_name: 'localdomain'
 
 testing: True

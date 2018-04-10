@@ -1,10 +1,3 @@
-SITE_HOST: 'india.commcarehq.org'
-CAS_SITE_HOST: 'cas.commcarehq.org'
-ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
-J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
-tableau_server: 'tableau2.internal.commcarehq.org'
-TABLEAU_HOST: 'icds.commcarehq.org'
-
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -22,11 +15,6 @@ DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
-
-nginx_key_value: '{{ ssl_secrets.private_keys.india_commcarehq_org }}'
-# Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_value: '{{ ssl_secrets.certs.india_commcarehq_org }}'
 
 supervisor_http_enabled: True
 
