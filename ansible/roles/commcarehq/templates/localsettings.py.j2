@@ -95,7 +95,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/django_email'
 {% else %}
 EMAIL_LOGIN = "{{ EMAIL_LOGIN }}"
-{% if 'EMAIL_PASSWORD' in localsettings %}
+{% if EMAIL_PASSWORD %}
 EMAIL_PASSWORD = "{{ EMAIL_PASSWORD }}"
 {% else %}
 # This prevents django from attempting smtp auth for servers where it is not configured
@@ -199,8 +199,8 @@ LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
 {% endif %}
 
 
-BITLY_LOGIN = '{{ localsettings.BITLY_LOGIN }}'
-BITLY_APIKEY = '{{ localsettings.BITLY_APIKEY }}'
+BITLY_LOGIN = '{{ BITLY_LOGIN }}'
+BITLY_APIKEY = '{{ BITLY_APIKEY }}'
 
 JAR_SIGN = dict(
     key_store = os.path.join('{{ www_dir }}', "DimagiKeyStore"),
@@ -539,8 +539,8 @@ KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
 
 INVOICE_TERMS = "Net 30"
 
-{% if localsettings.get('BOOKKEEPER_CONTACT_EMAILS') %}
-BOOKKEEPER_CONTACT_EMAILS = {{ localsettings.BOOKKEEPER_CONTACT_EMAILS|to_json }}
+{% if BOOKKEEPER_CONTACT_EMAILS %}
+BOOKKEEPER_CONTACT_EMAILS = {{ BOOKKEEPER_CONTACT_EMAILS|to_json }}
 {% endif %}
 
 {% if localsettings.get('INVOICE_STARTING_NUMBER') %}
