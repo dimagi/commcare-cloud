@@ -1,11 +1,5 @@
-SITE_HOST: 'enikshay.in'
-ENIKSHAY_SITE_HOST: 'enikshay.commcarehq.org'
-J2ME_SITE_HOST: 'j2me.enikshay.in'
 internal_domain_name: 'enikshay.in'
 daily_deploy_email: tech-announce-daily@dimagi.com
-
-special_sites:
-  - enikshay_ssl
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -28,15 +22,6 @@ datadog_integration_vmware: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'enikshayes-1.x'
-
-nginx_key_value: '{{ ssl_secrets.private_keys.enikshay_in }}'
-# Nginx only accepts on cert, so cat the site cert and chain:
-# $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_value: "{{ ssl_secrets.certs.enikshay_in }}"
-
-enikshay_nginx_combined_cert_value: '{{ ssl_secrets.certs.enikshay_commcarehq_org }}'
-enikshay_key_value: '{{ ssl_secrets.private_keys.enikshay_commcarehq_org }}'
-
 
 supervisor_http_enabled: True
 

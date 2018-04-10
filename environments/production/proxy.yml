@@ -1,0 +1,23 @@
+SITE_HOST: 'www.commcarehq.org'
+NO_WWW_SITE_HOST: 'commcarehq.org'
+COMMTRACK_SITE_HOST: 'commtrack.org'
+J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
+
+nginx_hsts_max_age: 300 # 5 minutes
+
+# commcarehq.org of certs
+nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
+nginx_key_value: "{{ ssl_secrets.private_keys.commcarehq_org }}"
+
+# commtrack.org
+commtrack_nginx_combined_cert_value: "{{ ssl_secrets.certs.commtrack_org }}"
+commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"
+
+special_sites:
+  - commtrack_ssl
+  - commtrack_http
+  - tableau
+  - wiki
+  - wiki_http
+  - motech
+  - motech2

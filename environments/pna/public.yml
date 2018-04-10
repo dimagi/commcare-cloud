@@ -1,9 +1,3 @@
-SITE_HOST: 'commcare.pna.sn'
-PNA_SITE_HOST: 'pna.commcarehq.org'
-
-special_sites:
-  - pna_ssl
-
 ssh_allow_password: True
 ssh_port: 1337
 fake_ssl_cert: no
@@ -16,12 +10,6 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '2048m'
 elasticsearch_cluster_name: 'pna-es'
 #elasticsearch_node_name: '??'
-
-nginx_key_value: '{{ ssl_secrets.private_keys.commcare_pna_sn }}'
-nginx_combined_cert_value: "{{ ssl_secrets.certs.commcare_pna_sn }}"
-
-pna_nginx_combined_cert_value: '{{ ssl_secrets.certs.pna_commcarehq_org }}'
-pna_key_value: '{{ ssl_secrets.private_keys.pna_commcarehq_org }}'
 
 backup_blobdb: True
 backup_postgres: dump
