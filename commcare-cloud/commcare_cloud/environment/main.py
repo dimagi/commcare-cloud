@@ -155,15 +155,16 @@ class Environment(object):
 
     def create_generated_yml(self):
         generated_variables = {
-            'app_processes_config': self.app_processes_config.to_json(),
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
         }
+        generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables())
         generated_variables.update(constants.to_json())
+
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
 
