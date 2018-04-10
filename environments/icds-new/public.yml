@@ -8,7 +8,6 @@ riak_ring_size: 64
 
 primary_ssl_env: "cas"
 nginx_max_clients: 1024
-nginx_worker_rlimit_nofile : 16384
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'

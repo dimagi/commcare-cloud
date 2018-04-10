@@ -10,8 +10,10 @@ class ProxyConfig(jsonobject.JsonObject):
     nginx_combined_cert_value = jsonobject.StringProperty()
     nginx_key_value = jsonobject.StringProperty()
     nginx_hsts_max_age = jsonobject.IntegerProperty()
+    nginx_worker_rlimit_nofile = jsonobject.IntegerProperty()
 
     fake_ssl_cert = jsonobject.BooleanProperty(default=False)
+
     special_sites = jsonobject.ListProperty(str)
 
     COMMTRACK_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
@@ -39,4 +41,7 @@ class ProxyConfig(jsonobject.JsonObject):
         pass
 
     def to_generated_variables(self):
-        return self.to_json()
+        variables = self.to_json()
+        if self.nginx_worker_rlimit_nofile is None:
+            variables['nginx_worker_rlimit_nofile'] = "{{ nofile_limit }}"
+        return variables

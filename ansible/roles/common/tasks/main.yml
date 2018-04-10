@@ -10,7 +10,7 @@
     domain: "{{ item }}"
     limit_type: hard
     limit_item: nofile
-    value: "{{ nofile_limit|default(4096) }}"
+    value: "{{ nofile_limit }}"
   tags:
     - nofile_limits
   with_items:
@@ -23,7 +23,7 @@
     domain: "{{ item }}"
     limit_type: soft
     limit_item: nofile
-    value: "{{ nofile_limit|default(4096) }}"
+    value: "{{ nofile_limit }}"
   tags:
     - nofile_limits
   with_items:
