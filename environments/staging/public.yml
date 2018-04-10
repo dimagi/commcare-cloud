@@ -77,13 +77,12 @@ localsettings:
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   FORMPLAYER_URL: "/formplayer"
   HQ_INSTANCE: 'staging'
-      INVOICE_FROM_ADDRESS:
+  INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
     'first_line': "585 Massachusetts Ave"
     'city': "Cambridge"
@@ -97,7 +96,7 @@ localsettings:
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
-      PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
+  PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"

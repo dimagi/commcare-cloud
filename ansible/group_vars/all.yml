@@ -138,7 +138,7 @@ DROPBOX_APP_NAME: 'CommCareHQFiles'
 DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY | default(None) }}"
 DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET | default(None)}}"
 EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN | default(None) }}"
-EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD | default('dummy')}}"
+EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD | default(None) }}"
 FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY | default(None) }}"
 FULLSTORY_ID: "{{ localsettings_private.FULLSTORY_ID | default('', true)}}"
 GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY | default('') }}"
