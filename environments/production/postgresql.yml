@@ -7,7 +7,7 @@ override:
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
   postgresql_max_connections: 300
-  postgresql_version: '9.4'
+  postgresql_version: '9.6'
 
 dbs:
   main:
