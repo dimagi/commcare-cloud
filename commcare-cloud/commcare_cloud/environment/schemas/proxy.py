@@ -45,3 +45,7 @@ class ProxyConfig(jsonobject.JsonObject):
         if self.nginx_worker_rlimit_nofile is None:
             variables['nginx_worker_rlimit_nofile'] = "{{ nofile_limit }}"
         return variables
+
+    @classmethod
+    def get_claimed_variables(cls):
+        return set(cls._properties_by_key.keys())

@@ -49,7 +49,7 @@ class Environment(object):
 
     @memoized_property
     def _disallowed_public_variables(self):
-        return set(get_role_defaults('postgresql').keys()) | set(ProxyConfig().to_json())
+        return set(get_role_defaults('postgresql').keys()) | set(ProxyConfig.get_claimed_variables())
 
     @memoized_property
     def meta_config(self):
