@@ -58,6 +58,10 @@ class Ssh(_Ssh):
         if args.server == 'control' and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
+        ukhf = "UserKnownHostsFile="
+        if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
+            environment = get_environment(args.env_name)
+            ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
         super(Ssh, self).run(args, ssh_args)
 
 
@@ -92,9 +96,16 @@ class DjangoManage(CommandBase):
         # the paths here are redundant with ansible/group_vars/all.yml
         code_current = '/home/{cchq_user}/www/{deploy_env}/current'.format(
             cchq_user=cchq_user, deploy_env=deploy_env)
-        remote_command = (
+        ssh_args = [
             'sudo -u {cchq_user} {code_current}/python_env/bin/python {code_current}/manage.py {args}'
-            .format(cchq_user=cchq_user, code_current=code_current, args=' '.join(shlex_quote(arg) for arg in manage_args))
-        )
+            .format(
+                cchq_user=cchq_user,
+                code_current=code_current,
+                args=' '.join(shlex_quote(arg) for arg in manage_args),
+            )
+        ]
+        if manage_args and manage_args[0] in ["shell", "dbshell"]:
+            # force ssh to allocate a pseudo-terminal
+            ssh_args = ['-t'] + ssh_args
         args.server = 'webworkers:0'
-        Ssh(self.parser).run(args, [remote_command])
+        Ssh(self.parser).run(args, ssh_args)
