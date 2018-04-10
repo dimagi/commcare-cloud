@@ -153,7 +153,12 @@ class Environment(object):
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 
+    def _run_last_minute_checks(self):
+        assert len(self.groups.get('rabbitmq', [])) == 1, \
+            "You must have exactly one host in the [rabbitmq] group"
+
     def create_generated_yml(self):
+        self._run_last_minute_checks()
         generated_variables = {
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
