@@ -191,3 +191,5 @@ aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
 aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
 aws_versioning_enabled: true
+
+nofile_limit: 4096
