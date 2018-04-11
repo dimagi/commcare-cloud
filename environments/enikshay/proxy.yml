@@ -1,5 +1,6 @@
 SITE_HOST: 'enikshay.in'
 J2ME_SITE_HOST: 'j2me.enikshay.in'
+primary_ssl_env: "enikshay.in"
 
 nginx_key_value: '{{ ssl_secrets.private_keys.enikshay_in }}'
 # Nginx only accepts on cert, so cat the site cert and chain:
