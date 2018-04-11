@@ -10,8 +10,6 @@ riak_ring_size: 128
 
 riakcs_proxy_port_override: 9980
 
-primary_ssl_env: "enikshay.in"
-
 msp_users: "{{ secrets.MSP_USERS }}"
 
 DATADOG_ENABLED: True

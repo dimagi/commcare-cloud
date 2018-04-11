@@ -1,8 +1,6 @@
 riak_backend: "leveldb"
 riak_ring_size: 64
 
-primary_ssl_env: "staging"
-
 DATADOG_ENABLED: False
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
