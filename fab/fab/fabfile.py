@@ -335,7 +335,7 @@ def _confirm_translated():
         return True
     return console.confirm(
         "It's Tuesday, did you update the translations from transifex? "
-        "Try running this handy script:\n./scripts/update-translations.sh\n"
+        "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
 
 
