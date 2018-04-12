@@ -880,7 +880,7 @@ def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
         tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-        tasks[env_name].__doc__ = get_environment(env_name).public_vars['SITE_HOST']
+        tasks[env_name].__doc__ = get_environment(env_name).proxy_config['SITE_HOST']
     return tasks
 
 # Automatically create a task for each environment
