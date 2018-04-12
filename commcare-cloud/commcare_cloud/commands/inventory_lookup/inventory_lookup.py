@@ -100,7 +100,7 @@ class Tmux(_Ssh):
                 '-t',
                 r'sudo -u {cchq_user} tmux attach \; new-window {remote_command} || sudo -u {cchq_user} tmux new {remote_command}'.format(
                     cchq_user=cchq_user,
-                    remote_command=shlex_quote(args.remote_command)
+                    remote_command=shlex_quote('{} ; bash'.format(args.remote_command))
                 )
             ] + ssh_args
         else:
