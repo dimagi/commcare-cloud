@@ -104,7 +104,7 @@ class Tmux(_Ssh):
                 )
             ] + ssh_args
         else:
-            ssh_args = ['-t', 'sudo -u {cchq_user} tmux attach'.format(cchq_user=cchq_user)]
+            ssh_args = ['-t', 'sudo -u {cchq_user} tmux attach || sudo -u {cchq_user} tmux new'.format(cchq_user=cchq_user)]
         Ssh(self.parser).run(args, ssh_args)
 
 
