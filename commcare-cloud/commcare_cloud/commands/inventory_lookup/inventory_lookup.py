@@ -77,6 +77,37 @@ class Mosh(_Ssh):
         super(Mosh, self).run(args, ssh_args)
 
 
+class Tmux(_Ssh):
+    command = 'tmux'
+    help = "Connect to a remote host with ssh and open a tmux session"
+
+    def make_parser(self):
+        self.parser.add_argument('server',
+                                 help="server to run tmux session on. "
+                                      "Use '-' to for default (webworkers:0)")
+        self.parser.add_argument('remote_command', nargs='?',
+                                 help="command to run in new tmux session")
+
+    def run(self, args, ssh_args):
+        environment = get_environment(args.env_name)
+        public_vars = environment.public_vars
+        if args.server == '-':
+            args.server = 'webworkers:0'
+        # the default 'cchq' is redundant with ansible/group_vars/all.yml
+        cchq_user = public_vars.get('cchq_user', 'cchq')
+        if args.remote_command:
+            ssh_args = [
+                '-t',
+                r'sudo -u {cchq_user} tmux attach \; new-window {remote_command} || sudo -u {cchq_user} tmux new {remote_command}'.format(
+                    cchq_user=cchq_user,
+                    remote_command=shlex_quote(args.remote_command)
+                )
+            ] + ssh_args
+        else:
+            ssh_args = ['-t', 'sudo -u {cchq_user} tmux attach'.format(cchq_user=cchq_user)]
+        Ssh(self.parser).run(args, ssh_args)
+
+
 class DjangoManage(CommandBase):
     command = 'django-manage'
     help = ("Run a django management command. "
@@ -85,7 +116,7 @@ class DjangoManage(CommandBase):
             "Omit <command> to see a full list of possible commands.")
 
     def make_parser(self):
-        pass
+        self.parser.add_argument('--tmux', action='store_true', default=False, help="Run this command in a tmux and stay connected")
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
@@ -96,16 +127,24 @@ class DjangoManage(CommandBase):
         # the paths here are redundant with ansible/group_vars/all.yml
         code_current = '/home/{cchq_user}/www/{deploy_env}/current'.format(
             cchq_user=cchq_user, deploy_env=deploy_env)
-        ssh_args = [
-            'sudo -u {cchq_user} {code_current}/python_env/bin/python {code_current}/manage.py {args}'
+        remote_command = (
+            '{code_current}/python_env/bin/python {code_current}/manage.py {args}'
             .format(
                 cchq_user=cchq_user,
                 code_current=code_current,
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
-        ]
-        if manage_args and manage_args[0] in ["shell", "dbshell"]:
-            # force ssh to allocate a pseudo-terminal
-            ssh_args = ['-t'] + ssh_args
+        )
         args.server = 'webworkers:0'
-        Ssh(self.parser).run(args, ssh_args)
+        if args.tmux:
+            args.remote_command = remote_command
+            Tmux(self.parser).run(args, [])
+        else:
+            ssh_args = ['sudo -u {cchq_user} {remote_command}'.format(
+                cchq_user=cchq_user,
+                remote_command=remote_command,
+            )]
+            if manage_args and manage_args[0] in ["shell", "dbshell"]:
+                # force ssh to allocate a pseudo-terminal
+                ssh_args = ['-t'] + ssh_args
+            Ssh(self.parser).run(args, ssh_args)
