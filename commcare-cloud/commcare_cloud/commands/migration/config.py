@@ -7,20 +7,38 @@ from commcare_cloud.environment.main import get_environment
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 
 
-class MigrationPlan(jsonobject.JsonObject):
+class EnvironmentInjectionMixin(object):
+    @property
+    def environment(self):
+        try:
+            return self._environment
+        except AttributeError:
+            raise Exception('Environment not set')
+
+    def set_environment(self, environment):
+        if environment:
+            self._environment = environment
+
+
+class MigrationPlan(EnvironmentInjectionMixin, jsonobject.JsonObject):
     couchdb2 = jsonobject.ObjectProperty(lambda: CouchReshardMapping)
 
-    def check(self, environment):
-        self.couchdb2.check(environment)
+    def set_environment(self, environment):
+        super(MigrationPlan, self).set_environment(environment)
+        self.couchdb2.set_environment(environment)
+
+    def check(self):
+        self.environment  # check that it's set
+        self.couchdb2.check()
 
 
-class CouchReshardMapping(jsonobject.JsonObject):
+class CouchReshardMapping(EnvironmentInjectionMixin, jsonobject.JsonObject):
     source = jsonobject.StringProperty()
     dest = jsonobject.ListProperty()
 
-    def check(self, environment):
+    def check(self):
         self.get_source_host()
-        self.get_destination_hosts(environment)
+        self.get_destination_hosts()
 
     def get_source_environment(self):
         env_name = self.source.split('.')[0]
@@ -30,9 +48,9 @@ class CouchReshardMapping(jsonobject.JsonObject):
         host = self.source.split('.')[1]
         return self.get_source_environment().translate_host(host, 'couchdb migration configuration source host')
 
-    def get_destination_hosts(self, environment):
+    def get_destination_hosts(self):
         return [
-            environment.translate_host(host, 'couchdb migration config destination hosts')
+            self.environment.translate_host(host, 'couchdb migration config destination hosts')
             for host in self.dest
         ]
 
@@ -42,7 +60,8 @@ class CouchAllocationPlan(jsonobject.JsonObject):
 
 
 class CouchMigration(object):
-    def __init__(self, config_path, couch_conf_path, couch_plan_path):
+    def __init__(self, environment, config_path, couch_conf_path, couch_plan_path):
+        self.environment = environment
         self.couch_plan_path = couch_plan_path
         self.couch_conf_path = couch_conf_path
         self.config_path = config_path
@@ -52,7 +71,9 @@ class CouchMigration(object):
         with open(self.config_path) as f:
             config = yaml.load(f)
 
-        return MigrationPlan.wrap(config)
+        plan = MigrationPlan.wrap(config)
+        plan.set_environment(self.environment)
+        return plan
 
     @memoized_property
     def couch_config(self):
@@ -73,10 +94,10 @@ class CouchMigration(object):
 
         return CouchAllocationPlan(db_plans=db_plans)
 
-    def validate_config(self, environment):
-        self.plan.check(environment)
+    def validate_config(self):
+        self.plan.check()
 
-        destination_hosts = set(self.plan.couchdb2.get_destination_hosts(environment))
+        destination_hosts = set(self.plan.couchdb2.get_destination_hosts())
         for plan in self.couch_plan.db_plans:
             plan.validate_allocation()
             hosts = plan.get_host_list()
@@ -84,3 +105,5 @@ class CouchMigration(object):
                 'Hosts referenced in migration config are not defined in '
                 'CouchDB shard plan: {}'.format(destination_hosts - set(hosts))
             )
+
+
