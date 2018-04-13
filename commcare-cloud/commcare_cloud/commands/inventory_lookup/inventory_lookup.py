@@ -98,13 +98,13 @@ class Tmux(_Ssh):
         if args.remote_command:
             ssh_args = [
                 '-t',
-                r'sudo -u {cchq_user} tmux attach \; new-window {remote_command} || sudo -u {cchq_user} tmux new {remote_command}'.format(
+                r'sudo -iu {cchq_user} tmux attach \; new-window {remote_command} || sudo -iu {cchq_user} tmux new {remote_command}'.format(
                     cchq_user=cchq_user,
                     remote_command=shlex_quote('{} ; bash'.format(args.remote_command))
                 )
             ] + ssh_args
         else:
-            ssh_args = ['-t', 'sudo -u {cchq_user} tmux attach || sudo -u {cchq_user} tmux new'.format(cchq_user=cchq_user)]
+            ssh_args = ['-t', 'sudo -iu {cchq_user} tmux attach || sudo -iu {cchq_user} tmux new'.format(cchq_user=cchq_user)]
         Ssh(self.parser).run(args, ssh_args)
 
 
