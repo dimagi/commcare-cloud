@@ -2,12 +2,11 @@ from __future__ import print_function
 
 import os
 
-import yaml
+from mock.mock import patch
 from parameterized import parameterized
 
 from commcare_cloud.commands.migrate import CouchMigration
-from commcare_cloud.environment.main import Environment
-from commcare_cloud.environment.paths import DefaultPaths
+from commcare_cloud.environment.main import get_environment
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
 TEST_ENVIRONMENTS = [
@@ -17,8 +16,9 @@ TEST_ENVIRONMENTS = [
 
 
 @parameterized(TEST_ENVIRONMENTS)
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_migration_config(env_name):
-    env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
+    env = get_environment(env_name)
 
     plan_path = os.path.join(env.paths.environments_dir, 'migration-plan.yml')
     couch_conf_path = os.path.join(env.paths.environments_dir, 'couch-config.yml')

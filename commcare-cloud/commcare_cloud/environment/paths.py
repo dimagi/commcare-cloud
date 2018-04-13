@@ -15,11 +15,11 @@ lazy_immutable_property = memoized_property
 
 
 class DefaultPaths(object):
-    def __init__(self, env_name, environments_dir=ENVIRONMENTS_DIR):
+    def __init__(self, env_name, environments_dir=None):
         self.env_name = env_name
-        self.environments_dir = environments_dir
-        self.environment_dir = os.path.join(environments_dir, env_name)
-        
+        self.environments_dir = environments_dir or ENVIRONMENTS_DIR
+        self.environment_dir = os.path.join(self.environments_dir, env_name)
+
     def get_env_file_path(self, filename):
         return os.path.join(self.environment_dir, filename)
 
