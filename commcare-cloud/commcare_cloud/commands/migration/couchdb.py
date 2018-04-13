@@ -1,6 +1,8 @@
 import os
+import subprocess
 
 from couchdb_cluster_admin.file_plan import get_important_files
+from six.moves import shlex_quote
 
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
@@ -23,6 +25,7 @@ class MigrateCouchdb(CommandBase):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
+        environment.get_ansible_vault_password()
 
         migration = CouchMigration(environment, args.migration_plan, args.couch_config, args.couch_plan)
         migration.validate_config()
@@ -34,7 +37,7 @@ class MigrateCouchdb(CommandBase):
         rsync_files_by_host = prepare_to_sync_files(environment, migration, ansible_context, check_mode)
 
         # TODO: stop couch nodes (and monit)
-        sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode)
+        sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode)
         # TODO: start couch nodes (and monit)
         # TODO: commit plan
         """
@@ -45,19 +48,26 @@ class MigrateCouchdb(CommandBase):
         python couchdb-cluster-admin/describe.py --conf {config}
         """
 
-def sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode=True):
+def sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode=True):
     extra_args = []
     if check_mode:
         extra_args.append('--check')
 
     for host, path in rsync_files_by_host.items():
         # TODO: get couch data dir from vars
-        shell_command = (
-            "rsync --append-verify -vaH --info=progress2 "
-            "{source}:/opt/data/couchdb2/ /opt/data/couchdb2/ "
-            "--files-from {file_list} -r"
-        ).format(source=migration.plan.couchdb2.get_source_host(), file_list=path)
-        run_ansible_module(environment, ansible_context, host, 'shell', shell_command, True, None, *extra_args)
+        rsync_cmd = (
+            "sudo -SE rsync --append-verify -vaH --info=progress2 "
+            "ansbile@{source}:/opt/data/couchdb2/ /opt/data/couchdb2/ "
+            "--files-from {file_list} -r {extra_args}"
+        ).format(
+            source=migration.plan.couchdb2.get_source_host(),
+            file_list=os.path.join('/tmp', os.path.basename(path)),
+            extra_args='--dry-run' if check_mode else ''
+        )
+        ssh_cmd = "ssh ansible@{} -A {}".format(host, shlex_quote(rsync_cmd))
+        print(ssh_cmd)
+        p = subprocess.Popen(ssh_cmd, stdin=subprocess.PIPE, shell=True)
+        p.communicate(input='{}\n'.format(environment.get_ansible_user_password()))
 
 
 def prepare_to_sync_files(environment, migration, ansible_context, check_mode=True):
@@ -69,7 +79,7 @@ def prepare_to_sync_files(environment, migration, ansible_context, check_mode=Tr
     for host, path in rsync_files_by_host.items():
         copy_args = "src={src} dest={dest} owner={owner} group={group} mode={mode}".format(
             src=path,
-            dest=path,
+            dest=os.path.join('/tmp', os.path.basename(path)),
             owner='couchdb',  # TODO: get from vars
             group='couchdb',
             mode='0644'
