@@ -117,6 +117,8 @@ class DjangoManage(CommandBase):
 
     def make_parser(self):
         self.parser.add_argument('--tmux', action='store_true', default=False, help="Run this command in a tmux and stay connected")
+        self.parser.add_argument('--release', help=(
+            "Name of release to run under. E.g. '2018-04-13_18.16'"))
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
@@ -125,13 +127,17 @@ class DjangoManage(CommandBase):
         cchq_user = public_vars.get('cchq_user', 'cchq')
         deploy_env = environment.meta_config.deploy_env
         # the paths here are redundant with ansible/group_vars/all.yml
-        code_current = '/home/{cchq_user}/www/{deploy_env}/current'.format(
-            cchq_user=cchq_user, deploy_env=deploy_env)
+        if args.release:
+            code_dir = '/home/{cchq_user}/www/{deploy_env}/releases/{release}'.format(
+                cchq_user=cchq_user, deploy_env=deploy_env, release=args.release)
+        else:
+            code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
+                cchq_user=cchq_user, deploy_env=deploy_env)
         remote_command = (
-            '{code_current}/python_env/bin/python {code_current}/manage.py {args}'
+            '{code_dir}/python_env/bin/python {code_dir}/manage.py {args}'
             .format(
                 cchq_user=cchq_user,
-                code_current=code_current,
+                code_dir=code_dir,
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
         )
