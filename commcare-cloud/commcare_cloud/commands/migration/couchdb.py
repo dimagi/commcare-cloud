@@ -11,7 +11,7 @@ from commcare_cloud.environment.main import get_environment
 
 
 class MigrateCouchdb(CommandBase):
-    command = 'migrate_couch'
+    command = 'migrate_couchdb'
     help = 'Perform a CouchDB migration'
 
     def make_parser(self):
@@ -29,26 +29,43 @@ class MigrateCouchdb(CommandBase):
         migration.couch_config.set_password('a')  # TODO
         ansible_context = AnsibleContext(args)
 
-        check_mode = not args.skip_check
+        check_mode = True #not args.skip_check
 
-        prepare_to_sync_files(environment, migration, ansible_context, check_mode)
+        rsync_files_by_host = prepare_to_sync_files(environment, migration, ansible_context, check_mode)
+        sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode)
+
+
+def sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode=True):
+    extra_args = []
+    if check_mode:
+        extra_args.append('--check')
+
+    for host, path in rsync_files_by_host.items():
+        # TODO: get couch data dir from vars
+        shell_command = (
+            "rsync --append-verify -vaH --info=progress2 "
+            "{source}:/opt/data/couchdb2/ /opt/data/couchdb2/ "
+            "--files-from {file_list} -r"
+        ).format(source=migration.plan.couchdb2.get_source_host(), file_list=path)
+        run_ansible_module(environment, ansible_context, host, 'shell', shell_command, True, None, *extra_args)
 
 
 def prepare_to_sync_files(environment, migration, ansible_context, check_mode=True):
-        rsync_files_by_host = generate_rsync_lists(migration)
-        extra_args = []
-        if check_mode:
-            extra_args.append('--check')
+    rsync_files_by_host = generate_rsync_lists(migration, check_mode)
+    extra_args = []
+    if check_mode:
+        extra_args.append('--check')
 
-        for host, path in rsync_files_by_host.items():
-            copy_args = "src={src} dest={dest} owner={owner} group={group} mode={mode}".format(
-                src=path,
-                dest=path,
-                owner='{{ couchdb_user }}',
-                group='{{ couchdb_group }}',
-                mode='0644'
-            )
-            run_ansible_module(environment, ansible_context, host, 'copy', copy_args, become=True, *extra_args)
+    for host, path in rsync_files_by_host.items():
+        copy_args = "src={src} dest={dest} owner={owner} group={group} mode={mode}".format(
+            src=path,
+            dest=path,
+            owner='couchdb',  # TODO: get from vars
+            group='couchdb',
+            mode='0644'
+        )
+        run_ansible_module(environment, ansible_context, host, 'copy', copy_args, True, None, *extra_args)
+    return rsync_files_by_host
 
 
 def generate_rsync_lists(migration, dry_run=False):
