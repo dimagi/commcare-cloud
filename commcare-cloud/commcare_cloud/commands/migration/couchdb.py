@@ -32,8 +32,18 @@ class MigrateCouchdb(CommandBase):
         check_mode = True #not args.skip_check
 
         rsync_files_by_host = prepare_to_sync_files(environment, migration, ansible_context, check_mode)
-        sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode)
 
+        # TODO: stop couch nodes (and monit)
+        sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode)
+        # TODO: start couch nodes (and monit)
+        # TODO: commit plan
+        """
+        python couchdb-cluster-admin/suggest_shard_allocation.py --conf {config} --from-plan {plan} --commit
+        """
+        # TODO: validate setup
+        """
+        python couchdb-cluster-admin/describe.py --conf {config}
+        """
 
 def sync_files_to_dest(environment, ansible_context, migration, rsync_files_by_host, check_mode=True):
     extra_args = []
