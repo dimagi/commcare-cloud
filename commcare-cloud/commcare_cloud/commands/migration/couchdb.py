@@ -56,15 +56,20 @@ def sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode=T
     for host, path in rsync_files_by_host.items():
         # TODO: get couch data dir from vars
         rsync_cmd = (
-            "sudo -SE -p '' rsync -e 'ssh -oStrictHostKeyChecking=no' --append-verify -vaH --info=progress2 "
-            "ansible@{source}:/opt/data/couchdb2/ /opt/data/couchdb2/ "
+            "rsync -e 'ssh -oStrictHostKeyChecking=no' "
+            "--append-verify -vaH --info=progress2 "
+            "ansible@{source}:{couch_data_dir} {couch_data_dir} "
             "--files-from {file_list} -r {extra_args}"
         ).format(
             source=migration.plan.couchdb2.get_source_host(),
+            couch_data_dir='/opt/data/couchdb2/',
             file_list=os.path.join('/tmp', os.path.basename(path)),
             extra_args='--dry-run' if check_mode else ''
         )
-        ssh_cmd = "ssh ansible@{} -A {}".format(host, shlex_quote(rsync_cmd))
+        # -S to receive password from stdin
+        # -E to preserve agent forwarding env
+        sudo_cmd = "sudo -SE -p '' {}".format(rsync_cmd)
+        ssh_cmd = "ssh ansible@{} -A {}".format(host, shlex_quote(sudo_cmd))
         print(ssh_cmd)
         p = subprocess.Popen(ssh_cmd, stdin=subprocess.PIPE, shell=True)
         p.communicate(input='{}\n'.format(environment.get_ansible_user_password()))
