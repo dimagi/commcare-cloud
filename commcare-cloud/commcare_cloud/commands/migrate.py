@@ -80,7 +80,7 @@ class CouchMigration(object):
         for plan in self.couch_plan.db_plans:
             plan.validate_allocation()
             hosts = plan.get_host_list()
-            assert not destination_hosts ^ set(hosts), (
-                'Hosts referenced in migration config are different from '
-                'those in CouchDB shard plan: {}'.format(destination_hosts ^ set(hosts))
+            assert destination_hosts <= set(hosts), (
+                'Hosts referenced in migration config are not defined in '
+                'CouchDB shard plan: {}'.format(destination_hosts - set(hosts))
             )
