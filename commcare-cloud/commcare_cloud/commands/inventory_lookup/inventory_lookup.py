@@ -95,16 +95,25 @@ class Tmux(_Ssh):
             args.server = 'webworkers:0'
         # the default 'cchq' is redundant with ansible/group_vars/all.yml
         cchq_user = public_vars.get('cchq_user', 'cchq')
+        # Name tabs like "droberts (2018-04-13)"
+        window_name_expression = '"`whoami` (`date +%Y-%m-%d`)"'
         if args.remote_command:
             ssh_args = [
                 '-t',
-                r'sudo -iu {cchq_user} tmux attach \; new-window {remote_command} || sudo -iu {cchq_user} tmux new {remote_command}'.format(
+                r'sudo -iu {cchq_user} tmux attach \; new-window -n {window_name} {remote_command} '
+                r'|| sudo -iu {cchq_user} tmux new -n {window_name} {remote_command}'
+                .format(
                     cchq_user=cchq_user,
-                    remote_command=shlex_quote('{} ; bash'.format(args.remote_command))
+                    remote_command=shlex_quote('{} ; bash'.format(args.remote_command)),
+                    window_name=window_name_expression,
                 )
             ] + ssh_args
         else:
-            ssh_args = ['-t', 'sudo -iu {cchq_user} tmux attach || sudo -iu {cchq_user} tmux new'.format(cchq_user=cchq_user)]
+            ssh_args = [
+                '-t',
+                'sudo -iu {cchq_user} tmux attach || sudo -iu {cchq_user} tmux new -n {window_name}'
+                .format(cchq_user=cchq_user, window_name=window_name_expression)
+            ]
         Ssh(self.parser).run(args, ssh_args)
 
 
