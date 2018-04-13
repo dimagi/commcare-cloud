@@ -341,7 +341,7 @@ def copy_default_vars(environment, aws_config):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
-        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_proxy)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'proxy.yml'), vars_proxy)
         with open(vars_public, 'a') as f:
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
 
