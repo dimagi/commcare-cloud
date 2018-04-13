@@ -1,6 +1,6 @@
 override:
   pgbouncer_pool_mode: transaction
-  postgresql_version: '9.4'
+  postgresql_version: '9.6'
 
 dbs:
   main:
