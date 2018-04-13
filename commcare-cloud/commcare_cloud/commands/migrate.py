@@ -1,5 +1,8 @@
 import jsonobject
 import yaml
+from couchdb_cluster_admin.utils import Config
+from memoized import memoized_property
+
 from commcare_cloud.environment.main import get_environment
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 
@@ -34,28 +37,50 @@ class CouchReshardMapping(jsonobject.JsonObject):
         ]
 
 
-def validate_setup(environment, migration_config_path, couch_shard_plan_path):
-    with open(migration_config_path) as f:
-        migration_config_json = yaml.load(f)
-
-    migration_config = MigrationPlan.wrap(migration_config_json)
-    migration_config.check(environment)
-
-    with open(couch_shard_plan_path) as f:
-        plan_json = yaml.load(f)
-
-    plan_by_db = {
-        db_name: ShardAllocationDoc.from_plan_json(db_name, plan_json)
-        for db_name, plan_json in plan_json.items()
-    }
-
-    destination_hosts = set(migration_config.couchdb2.get_destination_hosts(environment))
-    for db, plan in plan_by_db.items():
-        plan.validate_allocation()
-        hosts = plan.get_host_list()
-        assert not destination_hosts ^ set(hosts), (
-            'Hosts referenced in migration config are different from '
-            'those in CouchDB shard plan: {}'.format(destination_hosts ^ set(hosts))
-        )
+class CouchAllocationPlan(jsonobject.JsonObject):
+    db_plans = jsonobject.ListProperty(lambda: ShardAllocationDoc)
 
 
+class CouchMigration(object):
+    def __init__(self, config_path, couch_conf_path, couch_plan_path):
+        self.couch_plan_path = couch_plan_path
+        self.couch_conf_path = couch_conf_path
+        self.config_path = config_path
+
+    @memoized_property
+    def plan(self):
+        with open(self.config_path) as f:
+            config = yaml.load(f)
+
+        return MigrationPlan.wrap(config)
+
+    @memoized_property
+    def couch_config(self):
+        with open(self.couch_conf_path) as f:
+            config = yaml.load(f)
+
+        return Config.wrap(config)
+
+    @memoized_property
+    def couch_plan(self):
+        with open(self.couch_plan_path) as f:
+            plan = yaml.load(f)
+
+        db_plans = [
+            ShardAllocationDoc.from_plan_json(db_name, plan_json)
+            for db_name, plan_json in plan.items()
+        ]
+
+        return CouchAllocationPlan(db_plans=db_plans)
+
+    def validate_setup(self, environment):
+        self.plan.check(environment)
+
+        destination_hosts = set(self.plan.couchdb2.get_destination_hosts(environment))
+        for plan in self.couch_plan.db_plans:
+            plan.validate_allocation()
+            hosts = plan.get_host_list()
+            assert not destination_hosts ^ set(hosts), (
+                'Hosts referenced in migration config are different from '
+                'those in CouchDB shard plan: {}'.format(destination_hosts ^ set(hosts))
+            )
