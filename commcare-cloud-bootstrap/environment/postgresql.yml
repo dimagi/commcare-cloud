@@ -11,7 +11,7 @@ override:
   postgresql_shared_buffers: '128MB'
   postgresql_max_stack_depth: '6MB'
   postgresql_effective_cache_size: '4GB'
-  postgresql_max_standby_delay: '-1'
+  postgresql_max_standby_delay: -1
   pgbouncer_max_connections: 100
   pgbouncer_default_pool: 15
   pgbouncer_reserve_pool: 4
