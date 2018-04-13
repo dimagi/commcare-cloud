@@ -73,7 +73,7 @@ class CouchMigration(object):
 
         return CouchAllocationPlan(db_plans=db_plans)
 
-    def validate_setup(self, environment):
+    def validate_config(self, environment):
         self.plan.check(environment)
 
         destination_hosts = set(self.plan.couchdb2.get_destination_hosts(environment))

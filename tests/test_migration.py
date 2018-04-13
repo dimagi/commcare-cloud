@@ -21,4 +21,4 @@ def test_migration_config(env_name):
     couch_conf_path = env.paths.get_env_file_path('couch-config.yml')
     couch_plan_path = env.paths.get_env_file_path('shard-plan.yml')
     migration = CouchMigration(plan_path, couch_conf_path, couch_plan_path)
-    migration.validate_setup(env)
+    migration.validate_config(env)
