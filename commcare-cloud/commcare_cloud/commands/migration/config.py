@@ -103,7 +103,8 @@ class CouchMigration(object):
     def working_dir(self):
         plan_name = os.path.split(os.path.basename(self.config_path))[0]
         dir = os.path.join(gettempdir(), self.environment.paths.env_name, plan_name)
-        os.makedirs(dir)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
         return dir
 
     def validate_config(self):
@@ -117,5 +118,3 @@ class CouchMigration(object):
                 'Hosts referenced in migration config are not defined in '
                 'CouchDB shard plan: {}'.format(destination_hosts - set(hosts))
             )
-
-

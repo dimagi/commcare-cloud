@@ -20,22 +20,20 @@ class MigrateCouchdb(CommandBase):
         environment = get_environment(args.env_name)
         migration = CouchMigration(environment, args.migration_plan, args.couch_config, args.couch_plan)
         migration.validate_config()
+        migration.couch_config.set_password('a')  # TODO
+        generate_rsync_lists(migration)
 
-        self.generate_rsync_list(migration)
 
+def generate_rsync_lists(migration, dry_run=False):
+    full_plan = {plan.db_name: plan for plan in migration.couch_plan.db_plans}
+    important_files_by_node = get_important_files(migration.couch_config, full_plan, validate_suffixes=not dry_run)
+    paths_by_host = {}
+    for node, file_list in important_files_by_node.items():
+        files = sorted(file_list)
+        path = os.path.join(migration.working_dir, '{}_files'.format(node))
+        with open(path, 'w') as f:
+            f.write('{}\n'.format('\n'.join(files)))
 
+        paths_by_host[node.split('@')[1]] = path
 
-    def generate_rsync_list(self, migration):
-        full_plan = {plan.db_name: plan for plan in migration.couch_plan.db_plans}
-        important_files_by_node = get_important_files(migration.couch_config, full_plan)
-        for node, file_list in important_files_by_node.items():
-            files = sorted(file_list)
-            with open(os.path.join(migration.working_dir, '{}_files'.format(node)), 'w') as f:
-                f.write('{}\n'.format('\n'.join(files)))
-        """
-        python couchdb-cluster-admin/file_plan.py important --conf icds.yml --from-plan couch-cluster.plan.json
-        --node couch0 > couch0.files && scp couch0.files ansible@10.247.164.12:~/couch-rsync-file-list
-
-        :param host:
-        :return:
-        """
+    return paths_by_host
