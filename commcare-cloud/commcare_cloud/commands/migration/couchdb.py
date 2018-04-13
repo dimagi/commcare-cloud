@@ -57,7 +57,7 @@ def sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode=T
         # TODO: get couch data dir from vars
         rsync_cmd = (
             "sudo -SE rsync --append-verify -vaH --info=progress2 "
-            "ansbile@{source}:/opt/data/couchdb2/ /opt/data/couchdb2/ "
+            "ansible@{source}:/opt/data/couchdb2/ /opt/data/couchdb2/ "
             "--files-from {file_list} -r {extra_args}"
         ).format(
             source=migration.plan.couchdb2.get_source_host(),
