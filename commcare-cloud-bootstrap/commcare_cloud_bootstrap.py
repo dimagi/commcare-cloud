@@ -335,9 +335,13 @@ def save_fab_settings_yml(environment):
 def copy_default_vars(environment, aws_config):
     vars_public = environment.paths.public_yml
     vars_vault = environment.paths.vault_yml
+    vars_postgresql = environment.paths.postgresql_yml
+    vars_proxy = environment.paths.proxy_yml
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_proxy)
         with open(vars_public, 'a') as f:
             f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
 
