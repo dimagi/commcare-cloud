@@ -1,0 +1,6 @@
+couchdb2:
+  source: icds.couch0
+  dest:
+    - couch0
+    - couch1
+    - couch2
