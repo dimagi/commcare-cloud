@@ -64,53 +64,14 @@ class RunAnsibleModule(CommandBase):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
-        public_vars = environment.public_vars
 
         def _run_ansible(args, *unknown_args):
-            cmd_parts = (
-                'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
-                'ansible', args.inventory_group,
-                '-m', args.module,
-                '-i', environment.paths.inventory_ini,
-                '-a', args.module_args,
-                '--diff',
-            ) + tuple(unknown_args)
-
-            cmd_parts += get_user_arg(public_vars, unknown_args)
-
-            become = args.become or bool(args.become_user)
-            become_user = args.become_user
-            include_vars = False
-            if become:
-                cmd_parts += ('--become',)
-                if become_user not in ('cchq',):
-                    # ansible user can do things as cchq without a password,
-                    # but needs the ansible user password in order to do things as other users.
-                    # In that case, we need to pull in the vault variable containing this password
-                    include_vars = True
-                if become_user:
-                    cmd_parts += ('--become-user', args.become_user)
-
-            if include_vars:
-                cmd_parts += (
-                    '-e', '@{}'.format(environment.paths.vault_yml),
-                    '-e', '@{}'.format(environment.paths.public_yml),
-                    '-e', '@{}'.format(environment.paths.generated_yml),
-                )
-
-            ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
-            if ask_vault_pass:
-                cmd_parts += ('--vault-password-file=/bin/cat',)
-
-            cmd_parts += get_common_ssh_args(public_vars)
-            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-            print_command(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
-            if ask_vault_pass:
-                p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
-            else:
-                p.communicate()
-            return p.returncode
+            return run_ansible_module(
+                environment, ansible_context,
+                args.inventory_group, args.module, args.module_args,
+                args.become, args.become_user
+                *unknown_args
+            )
 
         def run_check():
             return _run_ansible(args, '--check', *unknown_args)
@@ -145,6 +106,55 @@ class RunAnsibleModule(CommandBase):
                 puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
 
         return exit_code
+
+
+def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
+                       become=False, become_user=None, *extra_args):
+    cmd_parts = (
+        'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
+        'ansible', inventory_group,
+        '-m', module,
+        '-i', environment.paths.inventory_ini,
+        '-a', module_args,
+        '--diff',
+    ) + tuple(extra_args)
+
+    public_vars = environment.public_vars
+    cmd_parts += get_user_arg(public_vars, extra_args)
+
+    become = become or bool(become_user)
+    become_user = become_user
+    include_vars = False
+    if become:
+        cmd_parts += ('--become',)
+        if become_user not in ('cchq',):
+            # ansible user can do things as cchq without a password,
+            # but needs the ansible user password in order to do things as other users.
+            # In that case, we need to pull in the vault variable containing this password
+            include_vars = True
+        if become_user:
+            cmd_parts += ('--become-user', become_user)
+
+    if include_vars:
+        cmd_parts += (
+            '-e', '@{}'.format(environment.paths.vault_yml),
+            '-e', '@{}'.format(environment.paths.public_yml),
+            '-e', '@{}'.format(environment.paths.generated_yml),
+        )
+
+    ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
+    if ask_vault_pass:
+        cmd_parts += ('--vault-password-file=/bin/cat',)
+
+    cmd_parts += get_common_ssh_args(public_vars)
+    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+    print_command(cmd)
+    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
+    if ask_vault_pass:
+        p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
+    else:
+        p.communicate()
+    return p.returncode
 
 
 class RunShellCommand(CommandBase):
