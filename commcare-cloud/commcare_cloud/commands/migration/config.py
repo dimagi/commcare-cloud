@@ -1,3 +1,6 @@
+import os
+from tempfile import gettempdir
+
 import jsonobject
 import yaml
 from couchdb_cluster_admin.utils import Config
@@ -5,6 +8,8 @@ from memoized import memoized_property
 
 from commcare_cloud.environment.main import get_environment
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
+
+lazy_immutable_property = memoized_property
 
 
 class EnvironmentInjectionMixin(object):
@@ -93,6 +98,13 @@ class CouchMigration(object):
         ]
 
         return CouchAllocationPlan(db_plans=db_plans)
+
+    @lazy_immutable_property
+    def working_dir(self):
+        plan_name = os.path.split(os.path.basename(self.config_path))[0]
+        dir = os.path.join(gettempdir(), self.environment.paths.env_name, plan_name)
+        os.makedirs(dir)
+        return dir
 
     def validate_config(self):
         self.plan.check()

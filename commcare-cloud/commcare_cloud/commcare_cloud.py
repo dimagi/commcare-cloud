@@ -7,6 +7,7 @@ import sys
 import warnings
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.commands.migration.couchdb import MigrateCouchdb
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
 from .argparse14 import ArgumentParser
 
@@ -46,6 +47,7 @@ COMMAND_TYPES = [
     Service,
     ValidateEnvironmentSettings,
     UpdateLocalKnownHosts,
+    MigrateCouchdb
 ]
 
 

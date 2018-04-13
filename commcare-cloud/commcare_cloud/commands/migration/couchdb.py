@@ -1,3 +1,7 @@
+import os
+
+from couchdb_cluster_admin.file_plan import get_important_files
+
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.migration.config import CouchMigration
 from commcare_cloud.environment.main import get_environment
@@ -14,10 +18,20 @@ class MigrateCouchdb(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        migration = CouchMigration(args.migration_plan, args.couch_config, args.couch_plan)
-        migration.validate_config(environment)
+        migration = CouchMigration(environment, args.migration_plan, args.couch_config, args.couch_plan)
+        migration.validate_config()
 
-    def generate_rsync_list(self, host):
+        self.generate_rsync_list(migration)
+
+
+
+    def generate_rsync_list(self, migration):
+        full_plan = {plan.db_name: plan for plan in migration.couch_plan.db_plans}
+        important_files_by_node = get_important_files(migration.couch_config, full_plan)
+        for node, file_list in important_files_by_node.items():
+            files = sorted(file_list)
+            with open(os.path.join(migration.working_dir, '{}_files'.format(node)), 'w') as f:
+                f.write('{}\n'.format('\n'.join(files)))
         """
         python couchdb-cluster-admin/file_plan.py important --conf icds.yml --from-plan couch-cluster.plan.json
         --node couch0 > couch0.files && scp couch0.files ansible@10.247.164.12:~/couch-rsync-file-list
