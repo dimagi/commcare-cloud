@@ -2,9 +2,10 @@ import os
 import subprocess
 
 from clint.textui import puts, colored
+from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.file_plan import get_important_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan
-from couchdb_cluster_admin.utils import put_shard_allocation
+from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list
 from decorator import contextmanager
 from six.moves import shlex_quote
 
@@ -53,10 +54,11 @@ class MigrateCouchdb(CommandBase):
                 sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode)
 
         commit_migration(migration)
-        # TODO: validate setup
-        """
-        python couchdb-cluster-admin/describe.py --conf {config}
-        """
+
+        print_shard_table([
+            get_shard_allocation(migration.couch_config, db_name)
+            for db_name in sorted(get_db_list(migration.couch_config.get_control_node()))
+        ])
         return 0
 
 
