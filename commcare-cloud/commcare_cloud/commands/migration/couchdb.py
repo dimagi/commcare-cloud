@@ -5,7 +5,7 @@ from clint.textui import puts, colored
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.file_plan import get_important_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan
-from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list
+from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection
 from decorator import contextmanager
 from six.moves import shlex_quote
 
@@ -36,6 +36,8 @@ class MigrateCouchdb(CommandBase):
         migration = CouchMigration(environment, args.migration_plan, args.couch_config, args.couch_plan)
         migration.validate_config()
         migration.couch_config.set_password('a')  # TODO
+        check_connection(migration.couch_config.get_control_node())
+
         ansible_context = AnsibleContext(args)
 
         def run_check():
