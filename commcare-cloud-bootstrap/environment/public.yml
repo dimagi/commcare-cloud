@@ -143,7 +143,7 @@ localsettings:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
-    LOCAL_PILLOWS:
+  LOCAL_PILLOWS:
     custom:
       - name: 'kafka-ucr-main-custom-1'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
