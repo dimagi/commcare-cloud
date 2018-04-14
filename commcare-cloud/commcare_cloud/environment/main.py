@@ -38,14 +38,29 @@ class Environment(object):
         self.proxy_config
         self.create_generated_yml()
 
+    @property
+    def env_name(self):
+        return self.paths.env_name
+
     @memoized
     def get_ansible_vault_password(self):
         return getpass.getpass("Vault Password: ")
 
     @memoized
     def get_vault_variables(self):
-        vault = Vault(self.get_ansible_vault_password())
-        return vault.load(open(self.paths.vault_yml).read())
+        try:  # try unencrypted first for tests
+            with open(self.paths.vault_yml) as f:
+                return yaml.load(f)
+        except:
+            vault = Vault(self.get_ansible_vault_password())
+            return vault.load(open(self.paths.vault_yml).read())
+
+    def get_vault_var(self, var):
+        path = var.split('.')
+        context = self.get_vault_variables()
+        for node in path:
+            context = context[node]
+        return context
 
     def get_ansible_user_password(self):
         return self.get_vault_variables()['ansible_sudo_pass']
