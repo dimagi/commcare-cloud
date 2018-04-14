@@ -2,6 +2,8 @@ import os
 import subprocess
 
 from couchdb_cluster_admin.file_plan import get_important_files
+from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan
+from couchdb_cluster_admin.utils import put_shard_allocation
 from six.moves import shlex_quote
 
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
@@ -39,14 +41,19 @@ class MigrateCouchdb(CommandBase):
         # TODO: stop couch nodes (and monit)
         sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode)
         # TODO: start couch nodes (and monit)
-        # TODO: commit plan
-        """
-        python couchdb-cluster-admin/suggest_shard_allocation.py --conf {config} --from-plan {plan} --commit
-        """
+
+        commit_migration(migration)
         # TODO: validate setup
         """
         python couchdb-cluster-admin/describe.py --conf {config}
         """
+
+def commit_migration(migration):
+    shard_allocations = get_shard_allocation_from_plan(migration.couch_config, migration.couch_plan)
+    for shard_allocation_doc in shard_allocations:
+        response = put_shard_allocation(migration.couch_config, shard_allocation_doc)
+        print(response)
+
 
 def sync_files_to_dest(environment, migration, rsync_files_by_host, check_mode=True):
     extra_args = []
