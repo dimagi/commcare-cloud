@@ -8,7 +8,7 @@ from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
-    get_user_arg)
+    get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
     arg_branch, arg_stdout_callback, arg_limit
@@ -119,37 +119,7 @@ class AnsiblePlaybook(CommandBase):
         def run_apply():
             return ansible_playbook(environment, args.playbook, *unknown_args)
 
-        exit_code = 0
-
-        if always_skip_check:
-            user_wants_to_apply = ask(
-                'This command will apply without running the check first. Continue?',
-                quiet=args.quiet)
-        elif args.skip_check:
-            user_wants_to_apply = ask('Do you want to apply without running the check first?',
-                                      quiet=args.quiet)
-        else:
-            exit_code = run_check()
-            if exit_code == 1:
-                # this means there was an error before ansible was able to start running
-                return exit_code
-            elif exit_code == 0:
-                puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to apply these changes?',
-                                          quiet=args.quiet)
-            else:
-                puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
-                user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
-                                          quiet=args.quiet)
-
-        if user_wants_to_apply:
-            exit_code = run_apply()
-            if exit_code == 0:
-                puts(colored.green(u"✓ Apply completed with status code {}".format(exit_code)))
-            else:
-                puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
-
-        return exit_code
+        return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet, always_skip_check)
 
 
 class _AnsiblePlaybookAlias(CommandBase):
