@@ -2,47 +2,43 @@ from __future__ import print_function
 
 import os
 
+import yaml
 from mock.mock import patch
-from parameterized import parameterized
+from nose_parameterized import parameterized
 
 from commcare_cloud.commands.migration.config import CouchMigration
 from commcare_cloud.commands.migration.couchdb import generate_rsync_lists
-from commcare_cloud.environment.main import get_environment
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
-TEST_ENVIRONMENTS = [
-    dir for dir in os.listdir(TEST_ENVIRONMENTS_DIR)
-    if os.path.isdir(os.path.join(TEST_ENVIRONMENTS_DIR, dir))
-]
+PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
+TEST_PLANS = os.listdir(PLANS_DIR)
+
+def tearDown():
+    # delete generated files
+    for plan_name in TEST_PLANS:
+        plan_path = os.path.join(PLANS_DIR, plan_name)
+        for item in os.listdir(plan_path):
+            build_path = os.path.join(plan_path, item)
+            if item.startswith('migration_build') and os.path.isdir(build_path):
+                for file in os.listdir(build_path):
+                    if file.startswith('couchdb@'):
+                        os.remove(os.path.join(build_path, file))
 
 
-@parameterized(TEST_ENVIRONMENTS)
+@parameterized(TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
-def test_migration_config(env_name):
-    _get_and_validate_migration(env_name)
+def test_migration_plan(plan_name):
+    plan_path = os.path.join(PLANS_DIR, plan_name, 'plan.yml')
+    migration = CouchMigration('env1', plan_path)
+    assert not migration.separate_source_and_target
+    with open(os.path.join(PLANS_DIR, plan_name, 'expected_couch_config.yml')) as f:
+        expected_couch_config_json = yaml.load(f)
 
+    assert expected_couch_config_json == migration.target_couch_config.to_json()
 
-def _get_and_validate_migration(env_name):
-    env = get_environment(env_name)
-    plan_path = os.path.join(env.paths.environments_dir, 'migration-plan.yml')
-    couch_conf_path = os.path.join(env.paths.environments_dir, 'couch-config.yml')
-    couch_plan_path = os.path.join(env.paths.environments_dir, 'shard-plan.yml')
-    migration = CouchMigration(env, plan_path, couch_conf_path, couch_plan_path)
-    migration.couch_config.set_password('a')  # TODO
-    migration.validate_config()
-    return migration
+    files_by_host = generate_rsync_lists(migration, check_mode=True)
 
-
-@parameterized(TEST_ENVIRONMENTS)
-@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
-def test_write_files(env_name):
-    migration = _get_and_validate_migration(env_name)
-    files_by_host = generate_rsync_lists(migration, dry_run=True)
-    assert '10.247.164.75' in files_by_host
-    assert '10.247.164.74' in files_by_host
-    assert '10.247.164.76' in files_by_host
-
-    with open(os.path.join(TEST_ENVIRONMENTS_DIR, 'expected_rsync_file.txt')) as exp:
+    with open(os.path.join(PLANS_DIR, plan_name, 'expected_rsync_file.txt')) as exp:
         expected = exp.read()
 
     for host, file_path in files_by_host.items():
