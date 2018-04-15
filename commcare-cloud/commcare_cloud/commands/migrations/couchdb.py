@@ -52,15 +52,15 @@ class MigrateCouchdb(CommandBase):
         ansible_context = AnsibleContext(args)
 
         if args.action == 'describe':
-            print u'Membership'
+            print u'\nMembership'
             with indent():
                 puts(get_membership(migration.target_couch_config).get_printable())
 
-            print u'DB Info'
+            print u'\nDB Info'
             # TODO: indent
             print_db_info(migration.target_couch_config)
 
-            print u'Shards'
+            print u'\nShards'
             # TODO: indent
             print_shard_table([
                 get_shard_allocation(migration.target_couch_config, db_name)
