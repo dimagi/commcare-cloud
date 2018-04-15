@@ -8,6 +8,7 @@ from nose_parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists
+from commcare_cloud.environment.main import get_environment
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
@@ -29,7 +30,7 @@ def tearDown():
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_migration_plan(plan_name):
     plan_path = os.path.join(PLANS_DIR, plan_name, 'plan.yml')
-    migration = CouchMigration('env1', plan_path)
+    migration = CouchMigration(get_environment('env1'), plan_path)
     assert not migration.separate_source_and_target
     with open(os.path.join(PLANS_DIR, plan_name, 'expected_couch_config.yml')) as f:
         expected_couch_config_json = yaml.load(f)
