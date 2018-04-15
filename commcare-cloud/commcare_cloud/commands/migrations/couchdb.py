@@ -1,10 +1,11 @@
 import os
 import subprocess
 
+import yaml
 from clint.textui import puts, colored
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.file_plan import get_important_files
-from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan
+from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection
 from decorator import contextmanager
 from six.moves import shlex_quote
@@ -24,7 +25,8 @@ class MigrateCouchdb(CommandBase):
 
     def make_parser(self):
         self.parser.add_argument(dest='migration_plan', help="Path to migration plan file")
-        self.parser.add_argument(dest='action', choices=['migrate', 'commit'], help="Path to migration plan file")
+        self.parser.add_argument(dest='action', choices=['plan', 'migrate', 'commit'],
+                                 help="Action to perform")
         arg_skip_check(self.parser)
 
     def run(self, args, unknown_args):
@@ -38,6 +40,26 @@ class MigrateCouchdb(CommandBase):
             check_connection(migration.source_couch_config.get_control_node())
 
         ansible_context = AnsibleContext(args)
+
+        if args.action == 'plan':
+            new_plan = True
+            if os.path.exists(migration.shard_plan_path):
+                new_plan = ask("Plan already exists. Do you want to overwrite it?")
+
+            if new_plan:
+                shard_allocations = generate_shard_allocation(
+                    migration.source_couch_config, migration.plan.target_allocation
+                )
+
+                with open(migration.shard_plan_path, 'w') as f:
+                    f.write(yaml.safe_dump({
+                        shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
+                        for shard_allocation_doc in shard_allocations
+                    }))
+            else:
+                shard_allocations = migration.shard_plan
+
+            print_shard_table([shard_allocation_doc for shard_allocation_doc in shard_allocations])
 
         if args.action == 'migrate':
             def run_check():
@@ -84,7 +106,7 @@ def start_stop_service(environment, ansible_context, service_state, check_mode=F
 
 
 def commit_migration(migration):
-    shard_allocations = get_shard_allocation_from_plan(migration.source_couch_config, migration.couch_plan)
+    shard_allocations = get_shard_allocation_from_plan(migration.source_couch_config, migration.shard_plan)
     for shard_allocation_doc in shard_allocations:
         response = put_shard_allocation(migration.target_couch_config, shard_allocation_doc)
         print(response)
@@ -133,7 +155,7 @@ def prepare_to_sync_files(migration, ansible_context):
 
 
 def generate_rsync_lists(migration, validate_suffixes=True):
-    full_plan = {plan.db_name: plan for plan in migration.couch_plan}
+    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
     important_files_by_node = get_important_files(
         migration.source_couch_config, full_plan, validate_suffixes=validate_suffixes
     )

@@ -78,9 +78,13 @@ class CouchMigration(object):
             os.makedirs(dir_path)
         return dir_path
 
+    @lazy_immutable_property
+    def shard_plan_path(self):
+        return os.path.join(self.working_dir, COUCH_SHARD_PLAN)
+
     @memoized_property
-    def couch_plan(self):
-        with open(os.path.join(self.working_dir, COUCH_SHARD_PLAN)) as f:
+    def shard_plan(self):
+        with open(self.shard_plan_path) as f:
             plan = yaml.load(f)
 
         return [
