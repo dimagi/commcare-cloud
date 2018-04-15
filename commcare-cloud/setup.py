@@ -25,8 +25,8 @@ setup(
         'dimagi-memoized>=1.1.0',
         'argparse>=1.4',
         'jsonobject>=0.8.0',
-        'couchdb-cluster-admin==0.1.0'
-        'ansible-vault==1.1.1'
+        'couchdb-cluster-admin==0.1.0',
+        'ansible-vault==1.1.1',
     ),
     tests_require=test_deps,
     extras_require=extras,
