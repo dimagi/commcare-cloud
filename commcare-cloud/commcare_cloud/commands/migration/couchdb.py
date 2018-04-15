@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+from clint.textui import puts, colored
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.file_plan import get_important_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan
@@ -8,6 +9,7 @@ from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocati
 from decorator import contextmanager
 from six.moves import shlex_quote
 
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase
@@ -22,6 +24,7 @@ class MigrateCouchdb(CommandBase):
 
     def make_parser(self):
         self.parser.add_argument(dest='migration_plan', help="Path to migration plan file")
+        self.parser.add_argument(dest='action', choices=['migrate', 'commit'], help="Path to migration plan file")
         arg_skip_check(self.parser)
 
     def run(self, args, unknown_args):
@@ -30,33 +33,38 @@ class MigrateCouchdb(CommandBase):
         environment.get_ansible_vault_password()
 
         migration = CouchMigration(environment, args.migration_plan)
-        # migration.validate_config()
         check_connection(migration.target_couch_config.get_control_node())
         if migration.separate_source_and_target:
             check_connection(migration.source_couch_config.get_control_node())
 
         ansible_context = AnsibleContext(args)
 
-        def run_check():
-            return self._run_migration(migration, ansible_context, check_mode=False)
+        if args.action == 'migrate':
+            def run_check():
+                return self._run_migration(migration, ansible_context, check_mode=True)
 
-        def run_apply():
-            return self._run_migration(migration, ansible_context, check_mode=False)
+            def run_apply():
+                return self._run_migration(migration, ansible_context, check_mode=False)
 
-        return run_action_with_check_mode(run_check, run_apply, args.skip_check)
+            return run_action_with_check_mode(run_check, run_apply, args.skip_check)
+        else:
+            if ask("Are you sure you want to update the Couch Database config?"):
+                commit_migration(migration)
+
+                puts(colored.yellow("New shard allocation:\n"))
+                print_shard_table([
+                    get_shard_allocation(migration.target_couch_config, db_name)
+                    for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+                ])
+
+            return 0
 
     def _run_migration(self, migration, ansible_context, check_mode):
-        rsync_files_by_host = prepare_to_sync_files(migration, ansible_context, check_mode)
+        rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
-        with stop_couch(migration.all_environments, ansible_context):
-                sync_files_to_dest(migration, rsync_files_by_host, check_mode)
+        with stop_couch(migration.all_environments, ansible_context, check_mode):
+            sync_files_to_dest(migration, rsync_files_by_host, check_mode)
 
-        commit_migration(migration)
-
-        print_shard_table([
-            get_shard_allocation(migration.target_couch_config, db_name)
-            for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
-        ])
         return 0
 
 
@@ -109,11 +117,8 @@ def sync_files_to_dest(migration, rsync_files_by_host, check_mode=True):
         p.communicate(input='{}\n'.format(migration.target_environment.get_ansible_user_password()))
 
 
-def prepare_to_sync_files(migration, ansible_context, check_mode=True):
-    rsync_files_by_host = generate_rsync_lists(migration, check_mode)
-    extra_args = []
-    if check_mode:
-        extra_args.append('--check')
+def prepare_to_sync_files(migration, ansible_context):
+    rsync_files_by_host = generate_rsync_lists(migration)
 
     for host, path in rsync_files_by_host.items():
         copy_args = "src={src} dest={dest} owner={owner} group={group} mode={mode}".format(
@@ -123,13 +128,15 @@ def prepare_to_sync_files(migration, ansible_context, check_mode=True):
             group='couchdb',
             mode='0644'
         )
-        run_ansible_module(migration.target_environment, ansible_context, host, 'copy', copy_args, True, None, *extra_args)
+        run_ansible_module(migration.target_environment, ansible_context, host, 'copy', copy_args, True, None)
     return rsync_files_by_host
 
 
-def generate_rsync_lists(migration, check_mode=False):
+def generate_rsync_lists(migration, validate_suffixes=True):
     full_plan = {plan.db_name: plan for plan in migration.couch_plan}
-    important_files_by_node = get_important_files(migration.source_couch_config, full_plan, validate_suffixes=not check_mode)
+    important_files_by_node = get_important_files(
+        migration.source_couch_config, full_plan, validate_suffixes=validate_suffixes
+    )
     paths_by_host = {}
     for node, file_list in important_files_by_node.items():
         files = sorted(file_list)
