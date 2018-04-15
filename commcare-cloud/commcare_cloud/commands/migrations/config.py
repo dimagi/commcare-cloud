@@ -16,9 +16,9 @@ COUCH_SHARD_PLAN = 'shard_plan.yml'
 
 
 class CouchMigration(object):
-    def __init__(self, env_name, plan_path):
+    def __init__(self, environment, plan_path):
         self.plan_path = plan_path
-        self.target_environment = get_environment(env_name)
+        self.target_environment = environment
 
     @memoized_property
     def plan(self):
