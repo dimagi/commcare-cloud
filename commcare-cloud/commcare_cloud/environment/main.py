@@ -48,13 +48,15 @@ class Environment(object):
 
     @memoized
     def get_vault_variables(self):
-        try:  # try unencrypted first for tests
-            with open(self.paths.vault_yml, 'r') as f:
-                return yaml.load(f)
-        except:
-            vault = Vault(self.get_ansible_vault_password())
-            with open(self.paths.vault_yml ,'r') as vf:
-                return vault.load(vf.read())
+        # try unencrypted first for tests
+        with open(self.paths.vault_yml, 'r') as f:
+            vault_vars = yaml.load(f)
+        if isinstance(vault_vars, dict):
+            return vault_vars
+
+        vault = Vault(self.get_ansible_vault_password())
+        with open(self.paths.vault_yml, 'r') as vf:
+            return vault.load(vf.read())
 
     def get_vault_var(self, var):
         path = var.split('.')
