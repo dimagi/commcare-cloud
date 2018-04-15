@@ -69,7 +69,7 @@ class RunAnsibleModule(CommandBase):
             return run_ansible_module(
                 environment, ansible_context,
                 args.inventory_group, args.module, args.module_args,
-                args.become, args.become_user
+                args.become, args.become_user,
                 *unknown_args
             )
 
