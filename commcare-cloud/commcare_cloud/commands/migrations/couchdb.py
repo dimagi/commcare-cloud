@@ -92,6 +92,11 @@ class MigrateCouchdb(CommandBase):
             migration.source_environment, ansible_context, 'couchdb2', 'user', user_args, True, None
         )
 
+        file_args = "path=/opt/data/couchdb2 mode=0755"
+        run_ansible_module(
+            migration.source_environment, ansible_context, 'couchdb2', 'file', file_args, True, None
+        )
+
         rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
         with stop_couch(migration.all_environments, ansible_context, check_mode):
