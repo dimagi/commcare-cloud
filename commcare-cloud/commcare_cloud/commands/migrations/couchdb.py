@@ -105,9 +105,13 @@ def stop_couch(environments, ansible_context, check_mode=False):
 
 
 def start_stop_service(environment, ansible_context, service_state, check_mode=False):
+    extra_args = []
+    if check_mode:
+        extra_args.append('--check')
+
     for service in ('monit', 'couchdb2'):
         args = 'name={} state={}'.format(service, service_state)
-        run_ansible_module(environment, ansible_context, 'couchdb2', 'service', args, True, None, check_mode)
+        run_ansible_module(environment, ansible_context, 'couchdb2', 'service', args, True, None, *extra_args)
 
 
 def commit_migration(migration):
