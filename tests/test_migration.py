@@ -6,8 +6,8 @@ import yaml
 from mock.mock import patch
 from nose_parameterized import parameterized
 
-from commcare_cloud.commands.migration.config import CouchMigration
-from commcare_cloud.commands.migration.couchdb import generate_rsync_lists
+from commcare_cloud.commands.migrations.config import CouchMigration
+from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')

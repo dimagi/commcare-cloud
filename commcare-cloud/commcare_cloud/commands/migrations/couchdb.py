@@ -13,7 +13,7 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commands.migration.config import CouchMigration
+from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.shared_args import arg_skip_check
 from commcare_cloud.environment.main import get_environment
 
