@@ -38,19 +38,19 @@ dbs:
         host: pgshard8
       p3:
         shards: [206, 308]
-        host: pgshard2
+        host: pgshard11
       p4:
         shards: [309, 411]
-        host: pgshard9
+        host: pgshard12
       p5:
         shards: [412, 514]
         host: pgshard6
       p6:
         shards: [515, 617]
-        host: pgshard0
+        host: pgshard1
       p7:
         shards: [618, 720]
-        host: pgshard0
+        host: pgshard10
       p8:
         shards: [721, 823]
         host: pgshard4
