@@ -87,6 +87,11 @@ class MigrateCouchdb(CommandBase):
             return 0
 
     def _run_migration(self, migration, ansible_context, check_mode):
+        user_args = "user=ansible groups=couchdb append=yes"
+        run_ansible_module(
+            migration.source_environment, ansible_context, 'couchdb2', 'user', user_args, True, None
+        )
+
         rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
         with stop_couch(migration.all_environments, ansible_context, check_mode):
