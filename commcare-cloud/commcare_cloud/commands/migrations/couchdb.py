@@ -1,3 +1,10 @@
+"""
+Migrate CouchDB
+
+TODO:
+* better cluster info. Include shard allocation + info from 'print_db_info' + size on disk
+"""
+
 import json
 import os
 
