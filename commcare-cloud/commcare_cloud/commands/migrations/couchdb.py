@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 
@@ -52,14 +53,17 @@ class MigrateCouchdb(CommandBase):
                 )
 
                 with open(migration.shard_plan_path, 'w') as f:
-                    f.write(yaml.safe_dump({
+                    plan = {
                         shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
                         for shard_allocation_doc in shard_allocations
-                    }))
+                    }
+                    # hack - yaml didn't want to dump this directly
+                    yaml.safe_dump(json.loads(json.dumps(plan)), f, indent=2)
             else:
                 shard_allocations = migration.shard_plan
 
             print_shard_table([shard_allocation_doc for shard_allocation_doc in shard_allocations])
+            return
 
         if args.action == 'migrate':
             def run_check():
@@ -69,7 +73,8 @@ class MigrateCouchdb(CommandBase):
                 return self._run_migration(migration, ansible_context, check_mode=False)
 
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
-        else:
+
+        if args.action == 'commit':
             if ask("Are you sure you want to update the Couch Database config?"):
                 commit_migration(migration)
 
