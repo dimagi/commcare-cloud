@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import shutil
 
 import yaml
 from mock.mock import patch
@@ -17,20 +18,14 @@ TEST_PLANS = os.listdir(PLANS_DIR)
 def tearDown():
     # delete generated files
     for plan_name in TEST_PLANS:
-        plan_path = os.path.join(PLANS_DIR, plan_name)
-        for item in os.listdir(plan_path):
-            build_path = os.path.join(plan_path, item)
-            if item.startswith('migration_build') and os.path.isdir(build_path):
-                for file in os.listdir(build_path):
-                    if file.startswith('couchdb@'):
-                        os.remove(os.path.join(build_path, file))
+        migration = _get_migration(plan_name)
+        shutil.rmtree(migration.rsync_files_path)
 
 
 @parameterized(TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_migration_plan(plan_name):
-    plan_path = os.path.join(PLANS_DIR, plan_name, 'plan.yml')
-    migration = CouchMigration(get_environment('env1'), plan_path)
+    migration = _get_migration(plan_name)
     assert not migration.separate_source_and_target
     with open(os.path.join(PLANS_DIR, plan_name, 'expected_couch_config.yml')) as f:
         expected_couch_config_json = yaml.load(f)
@@ -46,3 +41,9 @@ def test_migration_plan(plan_name):
         with open(file_path, 'r') as f:
             actual = f.read()
         assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
+
+
+def _get_migration(plan_name):
+    plan_path = os.path.join(PLANS_DIR, plan_name, 'plan.yml')
+    migration = CouchMigration(get_environment('env1'), plan_path)
+    return migration

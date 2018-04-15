@@ -1,6 +1,5 @@
 import json
 import os
-import subprocess
 
 import yaml
 from clint.textui import puts, colored
@@ -9,7 +8,6 @@ from couchdb_cluster_admin.file_plan import get_important_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection
 from decorator import contextmanager
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
@@ -18,6 +16,8 @@ from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.shared_args import arg_skip_check
 from commcare_cloud.environment.main import get_environment
+
+RSYNC_FILE_LIST_NAME = 'couchdb_migration_rsync_file_list'
 
 
 class MigrateCouchdb(CommandBase):
@@ -78,6 +78,7 @@ class MigrateCouchdb(CommandBase):
             if ask("Are you sure you want to update the Couch Database config?"):
                 commit_migration(migration)
 
+                # TODO: verify that shard config in DB matches what we expect
                 puts(colored.yellow("New shard allocation:\n"))
                 print_shard_table([
                     get_shard_allocation(migration.target_couch_config, db_name)
@@ -125,37 +126,53 @@ def start_stop_service(environment, ansible_context, service_state, check_mode=F
 
 
 def commit_migration(migration):
-    shard_allocations = get_shard_allocation_from_plan(migration.source_couch_config, migration.shard_plan)
+    plan_by_db = {
+        shard_allocation.db_name: shard_allocation
+        for shard_allocation in migration.shard_plan
+    }
+    shard_allocations = get_shard_allocation_from_plan(
+        migration.source_couch_config, plan_by_db, create=True
+    )
     for shard_allocation_doc in shard_allocations:
         response = put_shard_allocation(migration.target_couch_config, shard_allocation_doc)
         print(response)
 
 
 def sync_files_to_dest(migration, rsync_files_by_host, check_mode=True):
-    extra_args = []
-    if check_mode:
-        extra_args.append('--check')
+    rsync_cmd = (
+        "rsync -e 'ssh -oStrictHostKeyChecking=no' "
+        "--append-verify -aH --info=progress2 "
+        "ansible@{source}:{couch_data_dir} {couch_data_dir} "
+        "--files-from {file_list} -r {extra_args}"
+    ).format(
+        source=migration.source_couch_config.control_node_ip,
+        couch_data_dir='/opt/data/couchdb2/',
+        file_list=os.path.join('/tmp', RSYNC_FILE_LIST_NAME),
+        extra_args='--dry-run' if check_mode else ''
+    )
+    run_parallel_command(
+        migration.target_environment,
+        list(rsync_files_by_host),
+        rsync_cmd
+    )
 
-    for host, path in rsync_files_by_host.items():
-        # TODO: get couch data dir from vars
-        rsync_cmd = (
-            "rsync -e 'ssh -oStrictHostKeyChecking=no' "
-            "--append-verify -vaH --info=progress2 "
-            "ansible@{source}:{couch_data_dir} {couch_data_dir} "
-            "--files-from {file_list} -r {extra_args}"
-        ).format(
-            source=migration.source_couch_config.control_node_ip,
-            couch_data_dir='/opt/data/couchdb2/',
-            file_list=os.path.join('/tmp', os.path.basename(path)),
-            extra_args='--dry-run' if check_mode else ''
-        )
-        # -S to receive password from stdin
-        # -E to preserve agent forwarding env
-        sudo_cmd = "sudo -SE -p '' {}".format(rsync_cmd)
-        ssh_cmd = "ssh ansible@{} -A {}".format(host, shlex_quote(sudo_cmd))
-        print(ssh_cmd)
-        p = subprocess.Popen(ssh_cmd, stdin=subprocess.PIPE, shell=True)
-        p.communicate(input='{}\n'.format(migration.target_environment.get_ansible_user_password()))
+
+def run_parallel_command(environment, hosts, command):
+    from fabric.api import execute, sudo, env, parallel
+    if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
+        env.use_ssh_config = True
+    env.forward_agent = True
+    env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
+    env.user = 'ansible'
+    env.password = environment.get_ansible_user_password()
+    env.hosts = hosts
+    env.warn_only = True
+
+    @parallel(pool_size=10)
+    def _task():
+        sudo(command)
+
+    execute(_task)
 
 
 def prepare_to_sync_files(migration, ansible_context):
@@ -164,7 +181,7 @@ def prepare_to_sync_files(migration, ansible_context):
     for host, path in rsync_files_by_host.items():
         copy_args = "src={src} dest={dest} owner={owner} group={group} mode={mode}".format(
             src=path,
-            dest=os.path.join('/tmp', os.path.basename(path)),
+            dest=os.path.join('/tmp', RSYNC_FILE_LIST_NAME),
             owner='couchdb',  # TODO: get from vars
             group='couchdb',
             mode='0644'
@@ -181,7 +198,7 @@ def generate_rsync_lists(migration, validate_suffixes=True):
     paths_by_host = {}
     for node, file_list in important_files_by_node.items():
         files = sorted(file_list)
-        path = os.path.join(migration.working_dir, '{}_files'.format(node))
+        path = os.path.join(migration.rsync_files_path, '{}_files'.format(node))
         with open(path, 'w') as f:
             f.write('{}\n'.format('\n'.join(files)))
 

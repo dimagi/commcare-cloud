@@ -79,6 +79,13 @@ class CouchMigration(object):
         return dir_path
 
     @lazy_immutable_property
+    def rsync_files_path(self):
+        path = os.path.join(self.working_dir, '.rsync_files')
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
+
+    @lazy_immutable_property
     def shard_plan_path(self):
         return os.path.join(self.working_dir, COUCH_SHARD_PLAN)
 
