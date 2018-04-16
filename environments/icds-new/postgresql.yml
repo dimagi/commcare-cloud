@@ -4,8 +4,8 @@ REPORTING_DATABASES:
   icds-ucr:
     WRITE: icds-ucr
     READ:
-      - [icds-ucr, 5]
-      - [icds-ucr-standby1, 5]
+      - [icds-ucr, 3]
+      - [icds-ucr-standby1, 7]
   icds-test-ucr: icds-ucr
 
 override:
