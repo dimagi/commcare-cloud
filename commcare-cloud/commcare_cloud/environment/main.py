@@ -4,7 +4,7 @@ import yaml
 from memoized import memoized, memoized_property
 
 from commcare_cloud.environment.constants import constants
-from commcare_cloud.environment.paths import DefaultPaths
+from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
 from ansible.inventory.manager import InventoryManager
@@ -14,6 +14,7 @@ from ansible.vars.manager import VariableManager
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
+from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -22,7 +23,10 @@ class Environment(object):
         self.paths = paths
 
     def check(self):
-        self.public_vars
+
+        included_disallowed_public_variables = set(self.public_vars.keys()) & self._disallowed_public_variables
+        assert not included_disallowed_public_variables, \
+            "Disallowed variables in {}: {}".format(self.paths.public_yml, included_disallowed_public_variables)
         self.meta_config
         self.users_config
         self.raw_app_processes_config
@@ -30,6 +34,7 @@ class Environment(object):
         self.fab_settings_config
         self.inventory_manager
         self.postgresql_config
+        self.proxy_config
         self.create_generated_yml()
 
     @memoized
@@ -43,6 +48,10 @@ class Environment(object):
             return yaml.load(f)
 
     @memoized_property
+    def _disallowed_public_variables(self):
+        return set(get_role_defaults('postgresql').keys()) | set(ProxyConfig.get_claimed_variables())
+
+    @memoized_property
     def meta_config(self):
         with open(self.paths.meta_yml) as f:
             meta_json = yaml.load(f)
@@ -54,7 +63,16 @@ class Environment(object):
             postgresql_json = yaml.load(f)
         postgresql_config = PostgresqlConfig.wrap(postgresql_json)
         postgresql_config.replace_hosts(self)
+        postgresql_config.check()
         return postgresql_config
+
+    @memoized_property
+    def proxy_config(self):
+        with open(self.paths.proxy_yml) as f:
+            proxy_json = yaml.load(f)
+        proxy_config = ProxyConfig.wrap(proxy_json)
+        proxy_config.check()
+        return proxy_config
 
     @memoized_property
     def users_config(self):
@@ -146,17 +164,24 @@ class Environment(object):
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 
+    def _run_last_minute_checks(self):
+        assert len(self.groups.get('rabbitmq', [])) == 1, \
+            "You must have exactly one host in the [rabbitmq] group"
+
     def create_generated_yml(self):
+        self._run_last_minute_checks()
         generated_variables = {
-            'app_processes_config': self.app_processes_config.to_json(),
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
         }
-        generated_variables.update(self.postgresql_config.to_json())
+        generated_variables.update(self.app_processes_config.to_generated_variables())
+        generated_variables.update(self.postgresql_config.to_generated_variables())
+        generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
+
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
 

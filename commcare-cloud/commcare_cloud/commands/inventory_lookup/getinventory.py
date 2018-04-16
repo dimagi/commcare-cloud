@@ -20,7 +20,7 @@ def get_monolith_address(environment, exit=sys.exit):
         exit("There are {} servers in the environment. Please include the 'server'"
              "argument to select one.".format(len(hosts)))
     else:
-        return hosts[0].address
+        return get_server_address(environment, 'all', exit=exit)
 
 
 def get_server_address(environment, group, exit=sys.exit):

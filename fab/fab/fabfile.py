@@ -338,7 +338,7 @@ def _confirm_translated():
         return True
     return console.confirm(
         "It's Tuesday, did you update the translations from transifex? "
-        "Try running this handy script:\n./scripts/update-translations.sh\n"
+        "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
 
 
@@ -888,7 +888,7 @@ def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
         tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-        tasks[env_name].__doc__ = get_environment(env_name).public_vars['SITE_HOST']
+        tasks[env_name].__doc__ = get_environment(env_name).proxy_config['SITE_HOST']
     return tasks
 
 # Automatically create a task for each environment

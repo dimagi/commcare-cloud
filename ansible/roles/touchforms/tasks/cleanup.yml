@@ -8,8 +8,8 @@
     app_path: "{{ code_home }}"
     virtualenv: "{{ virtualenv_home }}"
     state: absent
-    name: "{{ localsettings.TOUCHFORMS_API_USER }}"
-    password: "{{ localsettings.TOUCHFORMS_API_PASSWORD }}"
+    name: "{{ TOUCHFORMS_API_USER }}"
+    password: "{{ TOUCHFORMS_API_PASSWORD }}"
     superuser: yes
   when: not touchforms_enabled
 

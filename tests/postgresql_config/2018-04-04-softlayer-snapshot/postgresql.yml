@@ -1,0 +1,24 @@
+REPORTING_DATABASES:
+  ucr: ucr
+  icds-ucr: icds-ucr
+  icds-test-ucr: icds-ucr
+
+dbs:
+  ucr:
+    django_migrate: True  # I think this is a mistake, but it's been this way
+  form_processing:
+    partitions:
+      p1:
+        shards: [0, 204]
+      p2:
+        shards: [205, 409]
+      p3:
+        shards: [410, 614]
+      p4:
+        shards: [615, 819]
+      p5:
+        shards: [820, 1023]
+  custom:
+    - django_alias: icds-ucr
+      name: icds-ucr
+      django_migrate: True
