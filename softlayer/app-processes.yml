@@ -11,7 +11,7 @@ celery_processes:
       concurrency: 1
     email_queue:
       concurrency: 2
-    repeat_record_queue:
+    repeat_record_queue,sumologic_logs_queue:
       pooling: gevent
       concurrency: 200
     ucr_queue:
