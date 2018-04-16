@@ -342,9 +342,13 @@ def copy_default_vars(environment, aws_config):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'proxy.yml'), vars_proxy)
-        with open(vars_public, 'a') as f:
-            f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
-
+        with open(vars_public, 'a+') as f:
+            if os.path.isfile(os.path.expanduser(aws_config.pem)):
+                f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
+            else:
+                print("The pem file {} specified in {} does not exist. Exiting.".format(
+                    aws_config.pem, os.path.join(TEMPLATE_DIR, 'public.yml')))
+                sys.exit(1)
 
 class Provision(object):
     command = 'provision'
