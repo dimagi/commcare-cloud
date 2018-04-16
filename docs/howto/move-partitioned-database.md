@@ -204,14 +204,26 @@ DROP DATABASE partition1;
 In order to prevent the WAL logs on *pg1* from piling up we need to delete
 the replication slot that was used by *pg2*:
 
-```sql
-SELECT pg_drop_replication_slot('<slot name>');
+```
+commcare-cloud <env> run-shell-command p1 -b --become-user postgres 'psql -c "select pg_drop_replication_slot('\'<slot name>\'');"'
 
--- optionally re-create the slot
-SELECT pg_create_physical_replication_slot('<slot name>');
+# optionally re-create the slot
+commcare-cloud <env> run-shell-command p1 -b --become-user postgres 'psql -c "select pg_create_physical_replication_slot('\'<slot name>\'');"'
 ```
 
 **Update PostgreSQL config**
 ```
 commcare-cloud <env> ap deploy_db.yml --limit=postgresql
+```
+
+## Other useful commands
+
+**Check which nodes are in recovery**
+```
+commcare-cloud <env> run-shell-command postgresql -b --become-user postgres "psql -c 'select pg_is_in_recovery();'"
+```
+
+**Check replication slot status**
+```
+commcare-cloud <env> run-shell-command postgresql -b --become-user postgres "psql -c 'select * from pg_replication_slots;'"
 ```

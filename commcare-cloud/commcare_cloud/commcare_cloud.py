@@ -18,7 +18,7 @@ from .commands.ansible.ansible_playbook import (
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
-from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage
+from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from commcare_cloud.commands.command_base import CommandBase
 from .environment.paths import (
     get_available_envs,
@@ -42,6 +42,7 @@ COMMAND_TYPES = [
     Ssh,
     Mosh,
     DjangoManage,
+    Tmux,
     Service,
     ValidateEnvironmentSettings,
     UpdateLocalKnownHosts,
@@ -53,7 +54,7 @@ def run_on_control_instead(args, sys_argv):
     argv.remove('--control')
     executable = 'commcare-cloud'
     cmd_parts = [
-        executable, args.env_name, 'ssh', 'control', '-t'
+        executable, args.env_name, 'ssh', 'control', '-t',
         'source ~/init-ansible && git checkout master && control/update_code.sh && source ~/init-ansible && {} {}'
         .format(executable, ' '.join([shlex_quote(arg) for arg in argv]))
     ]

@@ -56,11 +56,11 @@ index.search.slowlog.threshold.query.trace: 500ms
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
 
-{% if backup_es and localsettings.get('AMAZON_S3_ACCESS_KEY', None) %}
+{% if backup_es and AMAZON_S3_ACCESS_KEY %}
 cloud:
   aws:
-    access_key: "{{ localsettings.AMAZON_S3_ACCESS_KEY }}"
-    secret_key: "{{ localsettings.AMAZON_S3_SECRET_KEY }}"
+    access_key: "{{ AMAZON_S3_ACCESS_KEY }}"
+    secret_key: "{{ AMAZON_S3_SECRET_KEY }}"
     {% if aws_region is defined %}region: "{{ aws_region }}" {% endif %}
     
     s3:
