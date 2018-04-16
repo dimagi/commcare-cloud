@@ -1,3 +1,4 @@
+newrelic_djangoagent: True
 newrelic_javaagent: True
 
 celery_processes:
