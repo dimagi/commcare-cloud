@@ -1,0 +1,10 @@
+# Move couch from couch0,couch1,couch2 to couch3,couch4,couch5
+#
+# cchq icds migrate_couchdb environments/icds-new/migration/20180-04-resize/plan.yml describe
+# cchq icds migrate_couchdb environments/icds-new/migration/20180-04-resize/plan.yml plan
+# cchq icds migrate_couchdb environments/icds-new/migration/20180-04-resize/plan.yml migrate
+# cchq icds migrate_couchdb environments/icds-new/migration/20180-04-resize/plan.yml commit
+# cchq icds migrate_couchdb environments/icds-new/migration/20180-04-resize/plan.yml describe
+
+target_allocation:
+  - couch3,couch4,couch5:3
