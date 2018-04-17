@@ -8,6 +8,14 @@ REPORTING_DATABASES:
       - [icds-ucr-standby1, 7]
   icds-test-ucr: icds-ucr
 
+LOAD_BALANCED_APPS:
+  users:
+    - [default, 5]
+    - [pgmainstandby, 5]
+  accounting:
+    - [default, 5]
+    - [pgmainstandby, 5]
+
 override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
@@ -69,5 +77,10 @@ dbs:
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby
+      create: False
+      django_migrate: False
+    - django_alias: pgmainstandby
+      name: commcarehq
+      host: pgmainstandby
       create: False
       django_migrate: False
