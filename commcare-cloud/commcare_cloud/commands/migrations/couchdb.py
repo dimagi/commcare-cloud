@@ -7,6 +7,7 @@ TODO:
 
 import json
 import os
+from contextlib import contextmanager
 
 import yaml
 from clint.textui import puts, colored, indent
@@ -16,7 +17,6 @@ from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
     get_membership
-from decorator import contextmanager
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
