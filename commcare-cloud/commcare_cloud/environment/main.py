@@ -38,10 +38,6 @@ class Environment(object):
         self.proxy_config
         self.create_generated_yml()
 
-    @property
-    def env_name(self):
-        return self.paths.env_name
-
     @memoized
     def get_ansible_vault_password(self):
         return getpass.getpass("Vault Password: ")
