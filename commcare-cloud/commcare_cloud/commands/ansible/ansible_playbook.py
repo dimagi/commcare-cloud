@@ -239,6 +239,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
+        unknown_args += ('--become-user', 'ubuntu')
         unknown_args += ('--tags=users', '-u', root_user)
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
