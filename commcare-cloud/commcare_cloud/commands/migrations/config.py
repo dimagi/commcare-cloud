@@ -56,7 +56,7 @@ class CouchMigration(object):
 
     def _get_couch_config(self, environment):
         nodes = list(self.plan.allocation_by_node())
-        error = '"get couch IP for env: {}'.format(environment.env_name)
+        error = '"get couch IP for env: {}'.format(environment.meta_config.deploy_env)
         config = Config(
             control_node_ip=environment.groups['couchdb2'][0],
             control_node_port=15984,
@@ -72,7 +72,7 @@ class CouchMigration(object):
     @lazy_immutable_property
     def working_dir(self):
         plan_name = os.path.splitext(os.path.basename(self.plan_path))[0]
-        dirname = "migration_build_{}_{}".format(self.target_environment.env_name, plan_name)
+        dirname = "migration_build_{}_{}".format(self.target_environment.meta_config.deploy_env, plan_name)
         dir_path = os.path.join(os.path.dirname(self.plan_path), dirname)
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
