@@ -36,6 +36,8 @@ class RunAnsibleModule(CommandBase):
         self.parser.add_argument('--become-user', help=(
             "run operations as this user (default=root)"
         ))
+        self.parser.add_argument('--use-pem', action='store_true', help=(
+            "uses the pem file commcare_cloud_pem specified in public.vars"))
         arg_skip_check(self.parser)
         arg_quiet(self.parser)
         arg_stdout_callback(self.parser)
@@ -102,7 +104,8 @@ class RunAnsibleModule(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts += get_common_ssh_args(public_vars)
+            cmd_parts += get_common_ssh_args(public_vars, args.use_pem)
+
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
