@@ -69,7 +69,9 @@
 - name: newrelic
   hosts:
     - webworkers
+  become: true
   tasks:
-  - import_role:
-      name: newrelic
-    when: app_processes_config.newrelic_djangoagent and NEW_RELIC_KEY is defined and NEW_RELIC_KEY
+    - import_role:
+        name: newrelic
+      when: app_processes_config.newrelic_djangoagent and NEW_RELIC_KEY is defined and NEW_RELIC_KEY
+      tags: newrelic
