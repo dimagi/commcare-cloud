@@ -44,6 +44,7 @@
     - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
     - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
     - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+    - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
     - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
     - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
     - {"name": "riak", "enabled": "{{ datadog_integration_riak }}"}
