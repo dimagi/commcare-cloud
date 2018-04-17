@@ -28,4 +28,5 @@ gunicorn_workers_static_factor: 0
 jython_memory: "3584m"
 formplayer_memory: "3584m"
 http_proxy: null
+newrelic_djangoagent: False
 newrelic_javaagent: False
