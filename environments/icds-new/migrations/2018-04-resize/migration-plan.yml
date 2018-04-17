@@ -1,6 +1,0 @@
-couchdb2:
-  source: icds-new.couch0
-  dest:
-    - couch3
-    - couch4
-    - couch5
