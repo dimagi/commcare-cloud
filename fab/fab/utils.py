@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github import Github, UnknownObjectException
+from github import Github, UnknownObjectException, GithubException
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -146,6 +146,9 @@ class DeployMetadata(object):
                 'Github API key does not have the right settings. '
                 'Please create an API key with the public_repo scope enabled.'
             )
+        except GithubException as e:
+            if e.data.get('message') != 'Reference already exists':
+                raise
 
         return self._deploy_ref
 
