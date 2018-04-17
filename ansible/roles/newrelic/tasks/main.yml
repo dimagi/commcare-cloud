@@ -20,7 +20,9 @@
   tags: after-reboot
 
 - name: copy newrelic ini file
-  become_user: "{{ cchq_user }}"
   template:
     src: newrelic.ini.j2
     dest: "{{ www_home }}/newrelic.ini"
+    group: cchq
+    owner: cchq
+    mode: 0755
