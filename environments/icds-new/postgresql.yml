@@ -9,7 +9,7 @@ REPORTING_DATABASES:
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
-  users:
+  auth:
     - [default, 5]
     - [pgmainstandby, 5]
   accounting:
