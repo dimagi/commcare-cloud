@@ -71,7 +71,7 @@ class RunAnsibleModule(CommandBase):
             return run_ansible_module(
                 environment, ansible_context,
                 args.inventory_group, args.module, args.module_args,
-                args.become, args.become_user,
+                args.become, args.become_user, args.use_pem,
                 *unknown_args
             )
 
@@ -85,7 +85,7 @@ class RunAnsibleModule(CommandBase):
 
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become, become_user, *extra_args):
+                       become, become_user, use_pem, *extra_args):
     cmd_parts = (
         'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
@@ -122,7 +122,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     if ask_vault_pass:
         cmd_parts += ('--vault-password-file=/bin/cat',)
 
-    cmd_parts += get_common_ssh_args(public_vars, args.use_pem)
+    cmd_parts += get_common_ssh_args(public_vars, use_pem)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
