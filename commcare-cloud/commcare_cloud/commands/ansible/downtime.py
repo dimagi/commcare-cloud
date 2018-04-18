@@ -72,7 +72,7 @@ def start_downtime(environment, ansible_context, args):
             print_downtime(downtime)
         go_down = ask("Do you want to continue?")
     else:
-        go_down = ask("Are you sure you want to start downtime now?", strict=True)
+        go_down = ask("Are you sure you want to stop all CommCare services?", strict=True)
 
     if go_down:
         if not downtime:
