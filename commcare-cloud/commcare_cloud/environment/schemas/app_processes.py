@@ -31,6 +31,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     jython_memory = MemorySpecProperty()
     formplayer_memory = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
+    newrelic_djangoagent = jsonobject.BooleanProperty()
     newrelic_javaagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 

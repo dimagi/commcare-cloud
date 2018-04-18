@@ -1,6 +1,9 @@
+# coding=utf-8
 import os
 
-from commcare_cloud.cli_utils import has_arg
+from clint.textui import puts, colored
+
+from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from six.moves import shlex_quote
@@ -83,3 +86,35 @@ def get_user_arg(public_vars, unknown_args):
         user = public_vars.get('commcare_cloud_remote_user', 'ansible')
         cmd_parts += ('-u', user)
     return cmd_parts
+
+
+def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, always_skip_check=False):
+    if always_skip_check:
+        user_wants_to_apply = ask(
+            'This command will apply without running the check first. Continue?',
+            quiet=quiet)
+    elif skip_check:
+        user_wants_to_apply = ask('Do you want to apply without running the check first?',
+                                  quiet=quiet)
+    else:
+        exit_code = run_check()
+        if exit_code == 1:
+            # this means there was an error before ansible was able to start running
+            return exit_code
+        elif exit_code == 0:
+            puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
+            user_wants_to_apply = ask('Do you want to apply these changes?',
+                                      quiet=quiet)
+        else:
+            puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
+            user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
+                                      quiet=quiet)
+
+    if user_wants_to_apply:
+        exit_code = run_apply()
+        if exit_code == 0:
+            puts(colored.green(u"✓ Apply completed with status code {}".format(exit_code)))
+        else:
+            puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
+
+    return exit_code
