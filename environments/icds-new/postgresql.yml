@@ -15,6 +15,9 @@ LOAD_BALANCED_APPS:
   accounting:
     - [default, 5]
     - [pgmainstandby, 5]
+  locations:
+    - [default, 5]
+    - [pgmainstandby, 5]
 
 override:
   pgbouncer_pool_mode: transaction
