@@ -26,3 +26,5 @@
 - import_playbook: migrate_on_fresh_install.yml
 - import_playbook: deploy_touchforms.yml
   when: touchforms_enabled|default(true)
+- import_playbook: deploy_http_proxy.yml
+  when: http_proxy_address|default(false)

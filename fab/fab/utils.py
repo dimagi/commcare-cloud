@@ -11,7 +11,7 @@ from fabric.api import local
 import re
 from getpass import getpass
 
-from github import Github, UnknownObjectException
+from github import Github, UnknownObjectException, GithubException
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -111,6 +111,8 @@ class DeployMetadata(object):
 
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
+        if not self._last_tag:
+            return '"Previous deploy not found, cannot make comparison"'
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
             self._last_tag,
             self._deploy_tag,
@@ -144,6 +146,9 @@ class DeployMetadata(object):
                 'Github API key does not have the right settings. '
                 'Please create an API key with the public_repo scope enabled.'
             )
+        except GithubException as e:
+            if e.data.get('message') != 'Reference already exists':
+                raise
 
         return self._deploy_ref
 

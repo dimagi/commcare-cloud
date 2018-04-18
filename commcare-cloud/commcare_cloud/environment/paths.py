@@ -15,41 +15,44 @@ lazy_immutable_property = memoized_property
 
 
 class DefaultPaths(object):
-    def __init__(self, env_name, environments_dir=ENVIRONMENTS_DIR):
+    def __init__(self, env_name, environments_dir=None):
         self.env_name = env_name
-        self.environments_dir = environments_dir
+        self.environments_dir = environments_dir or ENVIRONMENTS_DIR
+
+    def get_env_file_path(self, filename):
+        return os.path.join(self.environments_dir, self.env_name, filename)
 
     @lazy_immutable_property
     def public_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'public.yml')
+        return self.get_env_file_path('public.yml')
 
     @lazy_immutable_property
     def vault_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'vault.yml')
+        return self.get_env_file_path('vault.yml')
 
     @lazy_immutable_property
     def known_hosts(self):
-        return os.path.join(self.environments_dir, self.env_name, 'known_hosts')
+        return self.get_env_file_path('known_hosts')
 
     @lazy_immutable_property
     def inventory_ini(self):
-        return os.path.join(self.environments_dir, self.env_name, 'inventory.ini')
+        return self.get_env_file_path('inventory.ini')
 
     @lazy_immutable_property
     def meta_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'meta.yml')
+        return self.get_env_file_path('meta.yml')
 
     @lazy_immutable_property
     def postgresql_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'postgresql.yml')
+        return self.get_env_file_path('postgresql.yml')
 
     @lazy_immutable_property
     def proxy_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'proxy.yml')
+        return self.get_env_file_path('proxy.yml')
 
     @lazy_immutable_property
     def app_processes_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'app-processes.yml')
+        return self.get_env_file_path('app-processes.yml')
 
     @lazy_immutable_property
     def app_processes_yml_default(self):
@@ -57,7 +60,7 @@ class DefaultPaths(object):
 
     @lazy_immutable_property
     def fab_settings_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, 'fab-settings.yml')
+        return self.get_env_file_path('fab-settings.yml')
 
     @lazy_immutable_property
     def fab_settings_yml_default(self):
@@ -65,7 +68,7 @@ class DefaultPaths(object):
 
     @lazy_immutable_property
     def generated_yml(self):
-        return os.path.join(self.environments_dir, self.env_name, '.generated.yml')
+        return self.get_env_file_path('.generated.yml')
 
     @lazy_immutable_property
     def authorized_keys_dir(self):

@@ -1,6 +1,7 @@
 import getpass
 
 import yaml
+from ansible_vault import Vault
 from memoized import memoized, memoized_property
 
 from commcare_cloud.environment.constants import constants
@@ -40,6 +41,28 @@ class Environment(object):
     @memoized
     def get_ansible_vault_password(self):
         return getpass.getpass("Vault Password: ")
+
+    @memoized
+    def get_vault_variables(self):
+        # try unencrypted first for tests
+        with open(self.paths.vault_yml, 'r') as f:
+            vault_vars = yaml.load(f)
+        if isinstance(vault_vars, dict):
+            return vault_vars
+
+        vault = Vault(self.get_ansible_vault_password())
+        with open(self.paths.vault_yml, 'r') as vf:
+            return vault.load(vf.read())
+
+    def get_vault_var(self, var):
+        path = var.split('.')
+        context = self.get_vault_variables()
+        for node in path:
+            context = context[node]
+        return context
+
+    def get_ansible_user_password(self):
+        return self.get_vault_variables()['ansible_sudo_pass']
 
     @memoized_property
     def public_vars(self):

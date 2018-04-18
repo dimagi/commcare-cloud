@@ -1,17 +1,20 @@
 ---
-- name: Proxy
-  hosts: proxy
+- name: setup nginx
+  hosts: proxy:couchdb2_proxy
   tasks:
-    - name: setup shared dir
-      include_role:
-        name: shared_dir
-
     - name: install nginx
       include_role:
         name: nginx
         tasks_from: install
       when: not nginx_installed|default(False)
       tags: nginx
+
+- name: Proxy
+  hosts: proxy
+  tasks:
+    - name: setup shared dir
+      include_role:
+        name: shared_dir
 
     - name: install error pages
       include_role:

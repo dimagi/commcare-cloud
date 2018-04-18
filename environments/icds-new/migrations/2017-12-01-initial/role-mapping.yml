@@ -7,11 +7,11 @@ postgresql:
 
 couchdb2:
   # Does a selective rsync based on couchdb2-shard-plan.yml
-  reshard:
-    icds.couch0:
-      - couch0
-      - couch1
-      - couch2
+  source: icds.couch0
+  dest:
+    - couch0
+    - couch1
+    - couch2
 
 elasticsearch:
   transfer:
