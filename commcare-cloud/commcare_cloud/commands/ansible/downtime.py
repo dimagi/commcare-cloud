@@ -24,7 +24,7 @@ class Downtime(CommandBase):
     )
 
     def make_parser(self):
-        self.parser.add_argument('state', choices=('start', 'check', 'end'))
+        self.parser.add_argument('action', choices=('start', 'check', 'end'))
         self.parser.add_argument('-m', '--message', help='Optional message to set on Datadog')
 
     def run(self, args, unknown_args):
@@ -32,10 +32,10 @@ class Downtime(CommandBase):
         environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
 
-        if args.state == 'start':
+        if args.action == 'start':
             start_downtime(environment, ansible_context, args)
 
-        if args.state == 'check':
+        if args.action == 'check':
             downtime = get_downtime_record(environment)
             if downtime:
                 print_downtime(downtime)
@@ -46,7 +46,7 @@ class Downtime(CommandBase):
                 if r_code == 0:
                     puts(colored.blue('Some processes are still running.'))
 
-        if args.state == 'end':
+        if args.action == 'end':
             end_downtime(environment, ansible_context)
 
 
