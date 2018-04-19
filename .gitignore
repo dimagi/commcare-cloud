@@ -8,7 +8,8 @@
 DimagiKeyStore
 .idea/
 .DS_Store
-ansible/*.retry
+**/ansible/*.retry
 *.pyc
 *.egg-info
 couchdb@*_files
+**/fab/config.py
