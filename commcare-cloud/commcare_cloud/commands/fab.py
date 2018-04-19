@@ -12,7 +12,8 @@ class Fab(CommandBase):
     )
 
     def make_parser(self):
-        self.parser.add_argument(dest='fab_command', help="fab command", default=None)
+        self.parser.add_argument(dest='fab_command', help="fab command", default=None, nargs="?")
+        self.parser.print_help = lambda file=None: os.execvp('fab', ('fab', '-l'))
 
     def run(self, args, unknown_args):
         cmd_parts = (
