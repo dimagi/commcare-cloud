@@ -24,7 +24,7 @@ class Downtime(CommandBase):
     )
 
     def make_parser(self):
-        self.parser.add_argument('action', choices=('start', 'check', 'end'))
+        self.parser.add_argument('action', choices=('start', 'end'))
         self.parser.add_argument('-m', '--message', help='Optional message to set on Datadog')
 
     def run(self, args, unknown_args):
@@ -34,17 +34,6 @@ class Downtime(CommandBase):
 
         if args.action == 'start':
             start_downtime(environment, ansible_context, args)
-
-        if args.action == 'check':
-            downtime = get_downtime_record(environment)
-            if downtime:
-                print_downtime(downtime)
-            else:
-                puts('No downtime record found.')
-            if ask('Do you want to check for running processes?'):
-                r_code = check_for_running_cchq_processes(environment, ansible_context, invert_success=False)
-                if r_code == 0:
-                    puts(colored.blue('Some processes are still running.'))
 
         if args.action == 'end':
             end_downtime(environment, ansible_context)
