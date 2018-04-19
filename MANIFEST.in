@@ -1,0 +1,3 @@
+recursive-include commcare_cloud/ansible *
+include commcare_cloud/help_cache/*
+include commcare_cloud/environmental-defaults/*

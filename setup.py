@@ -12,6 +12,7 @@ setup(
     description="A tool for managing commcare deploys.",
     long_description="",
     license='BSD-3',
+    include_package_data=True,
     packages=find_packages('.'),
     entry_points={
         'console_scripts': [

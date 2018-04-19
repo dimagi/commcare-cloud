@@ -4,7 +4,7 @@ import sys
 import yaml
 from memoized import memoized_property, memoized
 
-REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
+REPO_BASE = os.path.join(os.path.dirname(__file__), '..')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(REPO_BASE, 'environments'))
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
