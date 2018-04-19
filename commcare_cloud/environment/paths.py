@@ -7,7 +7,6 @@ from memoized import memoized_property, memoized
 REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
 ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(REPO_BASE, 'environments'))
-FAB_DIR = os.path.join(REPO_BASE, 'fab')
 FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
 
 
