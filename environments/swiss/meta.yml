@@ -1,3 +1,4 @@
 deploy_env: swiss
 env_monitoring_id: swiss
 users: dimagi
+slack_alerts_channel: alerts-swiss

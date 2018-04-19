@@ -27,6 +27,7 @@ setup(
         'jsonobject>=0.8.0',
         'couchdb-cluster-admin>=0.2.1',
         'ansible-vault==1.1.1',
+        'datadog==0.2.0',
     ),
     tests_require=test_deps,
     extras_require=extras,
