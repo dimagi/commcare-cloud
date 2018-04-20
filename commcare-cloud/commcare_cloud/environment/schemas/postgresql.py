@@ -63,7 +63,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
     DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
     DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
-    LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
 
     override = jsonobject.ObjectProperty(PostgresqlOverride)
