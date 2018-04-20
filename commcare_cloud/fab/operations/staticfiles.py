@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
 
-from fab.utils import bower_command
+from commcare_cloud.fab.utils import bower_command
 
 from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_CELERY
 

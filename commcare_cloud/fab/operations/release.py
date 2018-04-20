@@ -26,7 +26,7 @@ from ..const import (
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
     ROLES_CONTROL)
-from fab.utils import pip_install
+from commcare_cloud.fab.utils import pip_install
 
 GitConfig = namedtuple('GitConfig', 'key value')
 
