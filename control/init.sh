@@ -90,7 +90,7 @@ alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ans
 alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 
 export PATH=$PATH:~/.commcare-cloud/bin
-source ~/.commcare-cloud/repo/commcare_cloud/.bash_completion
+source ~/.commcare-cloud/repo/src/commcare_cloud/.bash_completion
 
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'

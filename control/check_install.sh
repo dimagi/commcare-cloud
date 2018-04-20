@@ -9,7 +9,7 @@ function git_remote_get_url() {
     git remote show ${1} | head -n2 | tail -n1 | grep -o '[^ ]*$'
 }
 COMMCARE_CLOUD_REPO="$(realpath $(dirname $0)/..)"
-FAB_CONFIG="${COMMCARE_CLOUD_REPO}/commcare_cloud/fab/config.py"
+FAB_CONFIG="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
 ORIGIN=$(git_remote_get_url origin)
 OLD_ORIGIN_HTTPS_RE="https://github.com/dimagi/commcarehq-ansible(.git)?"
 OLD_ORIGIN_SSH_RE="git@github.com:dimagi/commcarehq-ansible(.git)?"
