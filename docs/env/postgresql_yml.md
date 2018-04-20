@@ -249,27 +249,4 @@ READ:
 
 where `<weight>` is a low-ish integer.
 The probability of hitting a given database with weight W<sub>n</sub> is its normalized weight,
-i.e. W<sub>n</sub> / (W<sub>1</sub> + ... + W<sub>N</sub>).
-
-## `LOAD_BALANCED_APPS`
-
-- Type: dict
-- Default: `{}`
-- Status: Custom
-
-Specify a list of django apps that can be read from multiple dbs.
-
-The keys are the django app label. The values are a weighted list of databases to read from.
-
-This is formatted as:
-
-```
-<app_name>:
-  - [<django_alias>, <weight>]
-  - [<django_alias>, <weight>]
-  ...
-```
-
-where `<weight>` is a low-ish integer.
-The probability of hitting a given database with weight W<sub>n</sub> is its normalized weight,
-i.e. W<sub>n</sub> / (W<sub>1</sub> + ... + W<sub>N</sub>).
+i.e. W<sub>n</sub> / (W<sub>1</sub> + ... + W<sub>N</sub>).  
