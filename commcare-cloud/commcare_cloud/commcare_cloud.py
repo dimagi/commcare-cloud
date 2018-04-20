@@ -7,6 +7,7 @@ import sys
 import warnings
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.commands.ansible.data_dump import DumpData
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
@@ -50,6 +51,7 @@ COMMAND_TYPES = [
     UpdateLocalKnownHosts,
     MigrateCouchdb,
     Downtime,
+    DumpData,
 ]
 
 
