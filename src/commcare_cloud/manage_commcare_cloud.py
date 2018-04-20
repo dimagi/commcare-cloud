@@ -34,8 +34,21 @@ class Install(CommandBase):
         return p.returncode
 
 
+class Config(CommandBase):
+    command = 'config'
+    help = "Print the value of a property of the commcare-cloud install"
+
+    def make_parser(self):
+        self.parser.add_argument('property', choices=['ANSIBLE_DIR'])
+
+    def run(self, args, unknown_args):
+        if args.property == 'ANSIBLE_DIR':
+            print(ANSIBLE_DIR)
+
+
 COMMAND_TYPES = [
     Install,
+    Config,
 ]
 
 
