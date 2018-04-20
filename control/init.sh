@@ -72,15 +72,15 @@ fi
 
 if [ -z "$(which ansible-galaxy)" ]; then
     # first time install need requirements installed in serial
-    cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd -
+    cd ${COMMCARE_CLOUD_REPO} && pip install -e . && cd -
 else
-    cd ${COMMCARE_CLOUD_REPO} && pip install -r ${COMMCARE_CLOUD_REPO}/requirements.txt && cd - &
+    cd ${COMMCARE_CLOUD_REPO} && pip install -e . && cd - &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 pip install pip --upgrade &
-ansible-galaxy install -r ${COMMCARE_CLOUD_REPO}/ansible/requirements.yml &
+ansible-galaxy install -r ${COMMCARE_CLOUD_REPO}/commcare_cloud/ansible/requirements.yml &
 wait
 
 # convenience: . init-ansible
@@ -90,13 +90,13 @@ alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ans
 alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 
 export PATH=$PATH:~/.commcare-cloud/bin
-source ~/.commcare-cloud/repo/control/.bash_completion
+source ~/.commcare-cloud/repo/commcare_cloud/.bash_completion
 
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-if ! grep -q init-ansible ~/.profile; then
+if ! grep -q init-ansible ~/.profile 2>/dev/null; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
     if [ -z ${TRAVIS_TEST} ]; then
         read -t 30 -p "(y/n): " yn
