@@ -13,7 +13,8 @@ setup(
     long_description="",
     license='BSD-3',
     include_package_data=True,
-    packages=find_packages('.'),
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
     entry_points={
         'console_scripts': [
             'commcare-cloud = commcare_cloud.commcare_cloud:main',
