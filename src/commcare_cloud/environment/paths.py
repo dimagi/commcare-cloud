@@ -18,7 +18,9 @@ def get_virtualenv_site_packages_path():
 PACKAGE_BASE = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 ANSIBLE_ROLES_PATH = os.path.realpath(os.path.join(get_virtualenv_site_packages_path(), '.ansible/roles'))
 ANSIBLE_DIR = os.path.join(PACKAGE_BASE, 'ansible')
-ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(PACKAGE_BASE, 'environments'))
+# only works with egg install (`pip install -e .`)
+DIMAGI_ENVIRONMENTS_DIR = os.path.realpath(os.path.join(PACKAGE_BASE, '..', '..', 'environments'))
+ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', DIMAGI_ENVIRONMENTS_DIR)
 FABFILE = os.path.join(PACKAGE_BASE, 'fabfile.py')
 
 
