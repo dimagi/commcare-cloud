@@ -20,7 +20,7 @@ _commcare_cloud()
 {
     local cur prev opts
     COMPREPLY=()
-    FILE_EXCHANGE_DIR=$(manage-commcare-cloud config ANSIBLE_DIR)
+    FILE_EXCHANGE_DIR=$(manage-commcare-cloud get-path ANSIBLE_DIR)
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="--help --version"
