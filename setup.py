@@ -16,8 +16,8 @@ setup(
     packages=find_packages('.'),
     entry_points={
         'console_scripts': [
-            'commcare-cloud = commcare_cloud:main',
-            'cchq = commcare_cloud:main',
+            'commcare-cloud = commcare_cloud.commcare_cloud:main',
+            'cchq = commcare_cloud.commcare_cloud:main',
         ],
     },
     install_requires=(
