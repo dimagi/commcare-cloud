@@ -19,6 +19,7 @@ setup(
         'console_scripts': [
             'commcare-cloud = commcare_cloud.commcare_cloud:main',
             'cchq = commcare_cloud.commcare_cloud:main',
+            'manage-commcare-cloud = commcare_cloud.manage_commcare_cloud:main',
         ],
     },
     install_requires=(
