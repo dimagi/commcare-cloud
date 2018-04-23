@@ -16,10 +16,17 @@ def ask(message, strict=False, quiet=False):
     affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
     acceptable_options = affirmatives + negatives
 
-    r = input('{} [{}]'.format(message, yesno))
-    while r not in acceptable_options:
-        r = input('{} or {}? '.format(*yesno.split('/')))
-    return r in affirmatives
+    response = ask_option(message, yesno.split('/'), acceptable_options)
+    return response in affirmatives
+
+
+def ask_option(message, options, acceptable_responses=None):
+    options_display = '/'.join(options)
+    acceptable_responses = acceptable_responses or options
+    r = input('{} [{}]'.format(message, options_display))
+    while r not in acceptable_responses:
+        r = input('Please enter one of {} :'.format(', '.join(options)))
+    return r
 
 
 def has_arg(unknown_args, short_form, long_form):
