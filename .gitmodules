@@ -1,3 +1,0 @@
-[submodule "ansible/roles/ansible-logrotate"]
-	path = src/commcare_cloud/ansible/roles/ansible-logrotate
-	url = https://github.com/nickhammond/ansible-logrotate.git
