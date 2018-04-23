@@ -1,6 +1,6 @@
 import os
 import subprocess
-from pipes import quote
+from six.moves import shlex_quote
 
 from clint.textui import puts, colored
 
