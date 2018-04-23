@@ -7,6 +7,14 @@ from memoized import memoized_property, memoized
 
 
 def get_virtualenv_bin_path():
+    """
+    Get the bin directory that the current executable is running from
+
+    This is meant to work even when the user isn't inside a virtualenv,
+    but is directly running an executable that lives in the virtualenv bin,
+    so `os.environ["VIRTUAL_ENV"]` does not work here.
+
+    """
     return os.path.dirname(sys.executable)
 
 
