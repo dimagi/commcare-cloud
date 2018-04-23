@@ -87,7 +87,9 @@ done
 
 if [ ! -f "${FAB_CONFIG}" ]
 then
-    for OLD_FAB_DIR in "${COMMCARE_CLOUD_REPO}/../commcare-hq/deployment/commcare-hq-deploy" "${COMMCARE_CLOUD_REPO}/../commcare-hq-deploy"
+    for OLD_FAB_DIR in "${COMMCARE_CLOUD_REPO}/../commcare-hq/deployment/commcare-hq-deploy" \
+                       "${COMMCARE_CLOUD_REPO}/../commcare-hq-deploy" \
+                       "${COMMCARE_CLOUD_REPO}/fab"
     do
         if [ -d "${OLD_FAB_DIR}" ]
         then
