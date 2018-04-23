@@ -1,10 +1,16 @@
-#! /bin/bash
+# This script must be run from BASH with "source control/init.sh".
 
-if [[ $_ == $0 ]]
+if [ "$_" = "$0" ]
 then
     echo "Please run this script as follows:"
     echo "    $ source /path/to/repo/control/init.sh"
     exit 1
+fi
+
+if [ "$0" != "bash" ]
+then
+    echo "Please run this script from the BASH shell."
+    return
 fi
 
 
