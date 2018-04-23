@@ -75,7 +75,7 @@ if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
     rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
 fi
 
-if [ -z "$(which ansible-galaxy)" ]; then
+if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     cd ${COMMCARE_CLOUD_REPO} && pip install -e . && cd -
 else
