@@ -12,7 +12,7 @@ from six.moves import shlex_quote
 from commcare_cloud.cli_utils import print_command, ask
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.paths import ANSIBLE_ROLES_PATH, ANSIBLE_DIR, \
-    put_virtualenv_on_the_path, PACKAGE_BASE, get_virtualenv_path, DIMAGI_ENVIRONMENTS_DIR
+    put_virtualenv_bin_on_the_path, PACKAGE_BASE, get_virtualenv_bin_path, DIMAGI_ENVIRONMENTS_DIR
 
 
 class Install(CommandBase):
@@ -24,7 +24,7 @@ class Install(CommandBase):
 
     def run(self, args, unknown_args):
         env = os.environ.copy()
-        put_virtualenv_on_the_path()
+        put_virtualenv_bin_on_the_path()
         if not os.path.exists(ANSIBLE_ROLES_PATH):
             os.makedirs(ANSIBLE_ROLES_PATH)
 
@@ -106,7 +106,7 @@ class Configure(CommandBase):
                     source {PACKAGE_BASE}/.bash_completion
                 """.format(
                     COMMCARE_CLOUD_ENVIRONMENTS=shlex_quote(environments_dir),
-                    virtualenv_path=get_virtualenv_path(),
+                    virtualenv_path=get_virtualenv_bin_path(),
                     PACKAGE_BASE=PACKAGE_BASE,
                 )).strip())
         puts(colored.blue("Add the following to your ~/.bash_profile:"))

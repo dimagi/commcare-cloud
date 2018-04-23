@@ -6,7 +6,7 @@ import yaml
 from memoized import memoized_property, memoized
 
 
-def get_virtualenv_path():
+def get_virtualenv_bin_path():
     return os.path.dirname(sys.executable)
 
 
@@ -115,5 +115,5 @@ def get_available_envs():
     )
 
 
-def put_virtualenv_on_the_path():
-    os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
+def put_virtualenv_bin_on_the_path():
+    os.environ['PATH'] = '{}:{}'.format(get_virtualenv_bin_path(), os.environ['PATH'])
