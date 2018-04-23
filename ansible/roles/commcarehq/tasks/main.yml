@@ -97,6 +97,15 @@
     - six
     - pip
     - setuptools
+        
+- name: chown virtualenv
+  become: true
+  file:
+    path: "{{ virtualenv_home }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
 
 - name: copy localsettings
   become: true
