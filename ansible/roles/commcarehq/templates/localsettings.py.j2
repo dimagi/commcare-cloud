@@ -70,6 +70,8 @@ REPORTING_DATABASES = json.loads('{{ REPORTING_DATABASES|to_json }}')
 
 WAREHOUSE_DATABASE_ALIAS = "{{ localsettings.WAREHOUSE_DATABASE_ALIAS|default('default') }}"
 
+LOAD_BALANCED_APPS = json.loads('{{ LOAD_BALANCED_APPS|to_json|default({}) }}')
+
 LOG_HOME = '{{ log_home }}'
 COUCH_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log")
 DJANGO_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.django.log")
