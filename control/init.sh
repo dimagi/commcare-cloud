@@ -70,6 +70,11 @@ if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     git clone https://github.com/dimagi/commcare-cloud.git
 fi
 
+if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
+    # we are on an old version of commcare-cloud before it was moved to src/
+    rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
+fi
+
 if [ -z "$(which ansible-galaxy)" ]; then
     # first time install need requirements installed in serial
     cd ${COMMCARE_CLOUD_REPO} && pip install -e . && cd -
