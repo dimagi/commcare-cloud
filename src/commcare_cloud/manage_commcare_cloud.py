@@ -44,12 +44,17 @@ class Configure(CommandBase):
     help = 'Guide to setting up everything you need to work with commcare-cloud'
 
     def make_parser(self):
-        pass
+        self.parser.add_argument('--environments-dir')
+        self.parser.add_argument('--quiet', action='store_true')
 
-    def _determine_environments_dir(self):
+    @staticmethod
+    def _determine_environments_dir(quiet):
         environments_dir = None
 
         environ_value = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS')
+
+        if quiet:
+            return environ_value or DIMAGI_ENVIRONMENTS_DIR
 
         def have_same_realpath(dir1, dir2):
             return os.path.realpath(dir1) == os.path.realpath(dir2)
@@ -91,7 +96,10 @@ class Configure(CommandBase):
     def run(self, args, unknown_args):
         puts(colored.blue("Let's get you set up to run commcare-cloud."))
 
-        environments_dir = self._determine_environments_dir()
+        if args.environments_dir:
+            environments_dir = args.environments_dir
+        else:
+            environments_dir = self._determine_environments_dir(quiet=args.quiet)
 
         commcare_cloud_dir = os.path.expanduser("~/.commcare-cloud")
         if not os.path.exists(commcare_cloud_dir):
