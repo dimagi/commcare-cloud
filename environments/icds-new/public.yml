@@ -230,6 +230,7 @@ localsettings:
             - 'static-it_report_follow_issue'
             - 'static-dashboard_delivery_forms'
             - 'static-dashboard_thr_forms'
+            - 'static-dashboard_growth_monitoring_forms'
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
