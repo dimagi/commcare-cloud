@@ -80,8 +80,8 @@ def set_celery_supervisorconf():
             )
             continue
 
-        pooling = params['pooling']
-        max_tasks_per_child = params['max_tasks_per_child']
+        pooling = params.get('pooling', 'prefork')
+        max_tasks_per_child = params.get('max_tasks_per_child', 50)
         num_workers = params.get('num_workers', 1)
 
         params.update({
