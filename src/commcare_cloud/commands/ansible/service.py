@@ -198,6 +198,7 @@ class Service(_AnsiblePlaybookAlias):
         if service_group in ["touchforms", "formplayer", "webworkers"]:
             exit_code = self.run_supervisor_action_for_service_group(service_group, 'status', args, unknown_args)
         else:
+            exit_codes = []
             for service in self.services(service_group, args):
                 if service == "celery":
                     exit_code = self.run_for_celery(service_group, 'status', args, unknown_args)
@@ -209,8 +210,12 @@ class Service(_AnsiblePlaybookAlias):
                     args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
                     exit_code = RunShellCommand(self.parser).run(args, unknown_args)
                 if exit_code is not 0:
-                    # if any service status check didn't go smoothly exit right away
-                    return exit_code
+
+                    exit_codes.append(exit_code)
+            if exit_codes:
+                # if any service status check doesn't go smoothly, return the first exit code
+                return exit_codes[0]
+
         return exit_code
 
     def run_ansible_module_for_service_group(self, service_group, args, unknown_args, inventory_group=None):
