@@ -74,3 +74,20 @@ Before making any commits, make sure you install the git hooks:
 ```
 
 This will make sure you never commit an unencrypted vault.yml file.
+
+
+# Running tests
+
+To run tests, first install the test dependencies
+
+```
+pip install -e .[test]
+```
+
+and then run
+
+```
+nosetests
+```
+
+Tests include tests of your own specific environments dir.

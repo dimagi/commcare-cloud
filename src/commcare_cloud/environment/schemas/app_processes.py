@@ -14,15 +14,14 @@ CommaSeparatedStrings = jsonobject.StringProperty
 
 class CeleryOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    concurrency = jsonobject.IntegerProperty()
+    concurrency = jsonobject.IntegerProperty(required=True)
     pooling = jsonobject.StringProperty(choices=['gevent', 'prefork'], default='prefork')
-    max_tasks_per_child = jsonobject.IntegerProperty()
+    max_tasks_per_child = jsonobject.IntegerProperty(default=50)
     server_whitelist = IpAddressProperty()
 
 
 class AppProcessesConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    environment = jsonobject.StringProperty()
     django_bind = IpAddressProperty()
     django_port = PortProperty()
     flower_port = PortProperty()
