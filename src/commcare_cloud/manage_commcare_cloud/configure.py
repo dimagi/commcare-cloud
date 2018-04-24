@@ -64,20 +64,18 @@ class Configure(CommandBase):
 
         return environments_dir
 
-    def run(self, args, unknown_args):
+    def _write_load_config_sh(self, environments_dir, quiet):
         puts(colored.blue("Let's get you set up to run commcare-cloud."))
 
-        if args.environments_dir:
-            environments_dir = args.environments_dir
-        else:
-            environments_dir = self._determine_environments_dir(quiet=args.quiet)
+        if not environments_dir:
+            environments_dir = self._determine_environments_dir(quiet=quiet)
 
         commcare_cloud_dir = os.path.expanduser("~/.commcare-cloud")
         if not os.path.exists(commcare_cloud_dir):
             os.makedirs(commcare_cloud_dir)
         load_config_file = os.path.expanduser("~/.commcare-cloud/load_config.sh")
         if not os.path.exists(load_config_file) or \
-                ask("Overwrite your ~/.commcare-cloud/load_config.sh?", quiet=args.quiet):
+                ask("Overwrite your ~/.commcare-cloud/load_config.sh?", quiet=quiet):
             with open(load_config_file, 'w') as f:
                 f.write(textwrap.dedent("""
                     # auto-generated with `manage-commcare-cloud configure`:
@@ -94,3 +92,6 @@ class Configure(CommandBase):
         puts(colored.blue(
             "and then open a new shell. "
             "You should be able to run `commcare-cloud` without entering your virtualenv."))
+
+    def run(self, args, unknown_args):
+        self._write_load_config_sh(environments_dir=args.environments_dir, quiet=args.quiet)
