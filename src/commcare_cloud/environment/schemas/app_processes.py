@@ -68,7 +68,6 @@ CELERY_PROCESSES = [
     CeleryProcess("celery"),
     CeleryProcess("celery_periodic", required=False),
     CeleryProcess("email_queue"),
-    CeleryProcess("enikshay_queue", required=False),
     CeleryProcess("export_download_queue"),
     CeleryProcess("flower"),
     CeleryProcess("icds_dashboard_reports_queue", required=False),
