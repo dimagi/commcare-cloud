@@ -22,6 +22,7 @@ from ..const import (
     ROLES_FORMPLAYER,
     ROLES_STATIC,
     ROLES_DEPLOY,
+    ROLES_MANAGE,
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
@@ -31,24 +32,29 @@ from commcare_cloud.fab.utils import pip_install
 GitConfig = namedtuple('GitConfig', 'key value')
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_code(git_tag, use_current_release=False):
-    # If not updating current release,  we are making a new release and thus have to do cloning
-    # we should only ever not make a new release when doing a hotfix deploy
-    if not use_current_release:
-        _update_code_from_previous_release()
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('git remote prune origin')
-        sudo('git fetch origin --tags -q')
-        sudo('git checkout {}'.format(git_tag))
-        sudo('git reset --hard {}'.format(git_tag))
-        sudo('git submodule sync')
-        sudo('git submodule update --init --recursive -q')
-        # remove all untracked files, including submodules
-        sudo("git clean -ffd")
-        # remove all .pyc files in the project
-        sudo("find . -name '*.pyc' -delete")
+def update_code(git_tag, use_current_release=False, manage=False):
+    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+
+    @roles(roles_to_use)
+    @parallel
+    def update(git_tag, use_current_release):
+        # If not updating current release,  we are making a new release and thus have to do cloning
+        # we should only ever not make a new release when doing a hotfix deploy
+        if not use_current_release:
+            _update_code_from_previous_release()
+        with cd(env.code_root if not use_current_release else env.code_current):
+            sudo('git remote prune origin')
+            sudo('git fetch origin --tags -q')
+            sudo('git checkout {}'.format(git_tag))
+            sudo('git reset --hard {}'.format(git_tag))
+            sudo('git submodule sync')
+            sudo('git submodule update --init --recursive -q')
+            # remove all untracked files, including submodules
+            sudo("git clean -ffd")
+            # remove all .pyc files in the project
+            sudo("find . -name '*.pyc' -delete")
+
+    update(git_tag, use_current_release)
 
 
 @roles(ROLES_ALL_SRC)
@@ -232,39 +238,47 @@ def clone_virtualenv():
     _clone_virtual_env()
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_virtualenv():
+def update_virtualenv(manage=False):
     """
     update external dependencies on remote host
 
     assumes you've done a code update
 
     """
-    requirements = posixpath.join(env.code_root, 'requirements')
+    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
 
-    # Optimization if we have current setup (i.e. not the first deploy)
-    if files.exists(env.virtualenv_current):
-        _clone_virtual_env()
+    @roles(roles_to_use)
+    @parallel
+    def update():
+        requirements = posixpath.join(env.code_root, 'requirements')
 
-    with cd(env.code_root):
-        cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
-            env.sudo_user, env.virtualenv_root)
-        # uninstall requirements in uninstall-requirements.txt
-        # but only the ones that are actually installed (checks pip freeze)
-        sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
-             user=env.sudo_user)
-        pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
-            posixpath.join(requirements, 'prod-requirements.txt'),
-            posixpath.join(requirements, 'requirements.txt'),
-        ])
+        # Optimization if we have current setup (i.e. not the first deploy)
+        if files.exists(env.virtualenv_current):
+            _clone_virtual_env()
 
+        with cd(env.code_root):
+            cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+                env.sudo_user, env.virtualenv_root)
+            # uninstall requirements in uninstall-requirements.txt
+            # but only the ones that are actually installed (checks pip freeze)
+            sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
+                 user=env.sudo_user)
+            pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
+                posixpath.join(requirements, 'prod-requirements.txt'),
+                posixpath.join(requirements, 'requirements.txt'),
+            ])
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def create_code_dir():
-    sudo('mkdir -p {}'.format(env.code_root))
+    update()
 
+def create_code_dir(manage=False):
+    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+
+    @roles(roles_to_use)
+    @parallel
+    def create():
+        sudo('mkdir -p {}'.format(env.code_root))
+
+    create()
 
 @roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
@@ -374,10 +388,15 @@ def clean_releases(keep=3):
     git_gc_current()
 
 
-@parallel
-@roles(ROLES_ALL_SRC)
-def copy_localsettings():
-    sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
+def copy_localsettings(manage=False):
+    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+
+    @parallel
+    @roles(roles_to_use)
+    def copy():
+        sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
+
+    copy()
 
 
 @parallel
@@ -452,12 +471,17 @@ def ensure_release_exists(release):
     return files.exists(release)
 
 
-@roles(ROLES_ALL_SRC)
-@parallel
-def mark_keep_until(keep_days):
-    until_date = (datetime.utcnow() + timedelta(days=keep_days)).strftime(DATE_FMT)
-    with cd(env.code_root):
-        sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
+def mark_keep_until(keep_days, manage=False):
+    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+
+    @roles(roles_to_use)
+    @parallel
+    def mark(keep_days):
+        until_date = (datetime.utcnow() + timedelta(days=keep_days)).strftime(DATE_FMT)
+        with cd(env.code_root):
+            sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
+
+    mark(keep_days)
 
 
 @roles(ROLES_ALL_SRC)

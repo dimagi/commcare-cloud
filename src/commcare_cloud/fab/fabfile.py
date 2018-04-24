@@ -221,6 +221,7 @@ def env_common():
     all = servers['all']
     proxy = servers['proxy']
     webworkers = servers['webworkers']
+    manage = webworkers[0]
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
@@ -243,6 +244,7 @@ def env_common():
         'rabbitmq': rabbitmq,
         'django_celery': celery,
         'django_app': webworkers,
+        'django_manage': manage,
         'django_pillowtop': pillowtop,
         'formsplayer': touchforms,
         'formplayer': formplayer,
@@ -383,7 +385,7 @@ def prepare_offline_deploy():
 
 
 @task
-def setup_release(keep_days=0):
+def setup_release(keep_days=0, manage=False):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
@@ -391,6 +393,7 @@ def setup_release(keep_days=0):
     last past a deploy use the `keep_days` param.
 
     :param keep_days: The number of days to keep this release before it will be purged
+    :param manage: If True, only setup on webworkers[0] where the command will be run
 
     Example:
     fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
@@ -401,15 +404,22 @@ def setup_release(keep_days=0):
         print(red("Unable to parse '{}' into an integer".format(keep_days)))
         exit()
 
+    try:
+        manage = strtobool(manage)
+    except ValueError:
+        print(red("Unable to parse '{}' into a boolean".format(manage)))
+        exit()
+    if manage and not keep_days:
+        keep_days = 1
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    execute_with_timing(release.create_code_dir)
-    execute_with_timing(release.update_code, deploy_ref)
-    execute_with_timing(release.update_virtualenv)
+    execute_with_timing(release.create_code_dir, manage)
+    execute_with_timing(release.update_code, deploy_ref, manage=manage)
+    execute_with_timing(release.update_virtualenv, manage)
 
-    execute_with_timing(copy_release_files)
+    execute_with_timing(copy_release_files, manage)
 
     if keep_days > 0:
-        execute_with_timing(release.mark_keep_until, keep_days)
+        execute_with_timing(release.mark_keep_until, keep_days, manage)
 
     print(blue("Your private release is located here: "))
     print(blue(env.code_root))
@@ -550,13 +560,14 @@ def unlink_current():
         sudo('unlink {}'.format(env.code_current))
 
 
-def copy_release_files():
-    execute(release.copy_localsettings)
-    execute(release.copy_tf_localsettings)
-    execute(release.copy_formplayer_properties)
-    execute(release.copy_components)
-    execute(release.copy_node_modules)
-    execute(release.copy_compressed_js_staticfiles)
+def copy_release_files(manage=False):
+    execute(release.copy_localsettings, manage)
+    if not manage:
+        execute(release.copy_tf_localsettings)
+        execute(release.copy_formplayer_properties)
+        execute(release.copy_components)
+        execute(release.copy_node_modules)
+        execute(release.copy_compressed_js_staticfiles)
 
 
 @task
