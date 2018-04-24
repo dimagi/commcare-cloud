@@ -5,7 +5,7 @@ from clint.textui import puts, colored
 
 from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH
 from six.moves import shlex_quote
 
 DEPRECATED_ANSIBLE_ARGS = [
@@ -28,6 +28,7 @@ class AnsibleContext(object):
         """
         env = os.environ.copy()
         env['ANSIBLE_CONFIG'] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
+        env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
         if hasattr(args, 'stdout_callback'):
             env['ANSIBLE_STDOUT_CALLBACK'] = args.stdout_callback
         return env

@@ -11,9 +11,10 @@ rather than inlining this manual import magic.
 from __future__ import print_function
 from __future__ import absolute_import
 import pkgutil
-from commcare_cloud.environment.paths import get_virtualenv_site_packages_path
+from distutils.sysconfig import get_python_lib
 
-site_packages = get_virtualenv_site_packages_path()
+
+site_packages = get_python_lib()
 argparse = pkgutil.get_importer(site_packages).find_module('argparse').load_module('argparse')
 
 ArgumentParser = argparse.ArgumentParser
