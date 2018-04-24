@@ -24,7 +24,7 @@ from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, Djang
 from commcare_cloud.commands.command_base import CommandBase
 from .environment.paths import (
     get_available_envs,
-    get_virtualenv_path,
+    put_virtualenv_bin_on_the_path,
 )
 from six.moves import shlex_quote
 
@@ -85,7 +85,7 @@ def add_backwards_compatibility_to_args(args):
 
 
 def main():
-    os.environ['PATH'] = '{}:{}'.format(get_virtualenv_path(), os.environ['PATH'])
+    put_virtualenv_bin_on_the_path()
     parser = ArgumentParser()
     available_envs = get_available_envs()
     parser.add_argument('env_name', choices=available_envs, help=(

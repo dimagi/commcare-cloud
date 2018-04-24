@@ -4,11 +4,11 @@ import os
 from datetime import datetime
 
 from fabric.api import env, local
-from fab.utils import generate_bower_command
+from commcare_cloud.fab.utils import generate_bower_command
 from fabric.colors import blue, red
 from fabric.context_managers import settings
 from fabric.contrib import files
-from fab.const import (
+from commcare_cloud.fab.const import (
     OFFLINE_STAGING_DIR,
     WHEELS_ZIP_NAME,
     BOWER_ZIP_NAME,

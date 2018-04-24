@@ -1,14 +1,30 @@
 import os
 import sys
+from distutils.sysconfig import get_python_lib
 
 import yaml
 from memoized import memoized_property, memoized
 
-REPO_BASE = os.path.expanduser('~/.commcare-cloud/repo')
-ANSIBLE_DIR = os.path.join(REPO_BASE, 'ansible')
-ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', os.path.join(REPO_BASE, 'environments'))
-FAB_DIR = os.path.join(REPO_BASE, 'fab')
-FABFILE = os.path.join(REPO_BASE, 'fabfile.py')
+
+def get_virtualenv_bin_path():
+    """
+    Get the bin directory that the current executable is running from
+
+    This is meant to work even when the user isn't inside a virtualenv,
+    but is directly running an executable that lives in the virtualenv bin,
+    so `os.environ["VIRTUAL_ENV"]` does not work here.
+
+    """
+    return os.path.dirname(sys.executable)
+
+
+PACKAGE_BASE = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+ANSIBLE_ROLES_PATH = os.path.realpath(os.path.join(get_python_lib(), '.ansible/roles'))
+ANSIBLE_DIR = os.path.join(PACKAGE_BASE, 'ansible')
+# only works with egg install (`pip install -e .`)
+DIMAGI_ENVIRONMENTS_DIR = os.path.realpath(os.path.join(PACKAGE_BASE, '..', '..', 'environments'))
+ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', DIMAGI_ENVIRONMENTS_DIR)
+FABFILE = os.path.join(PACKAGE_BASE, 'fabfile.py')
 
 
 lazy_immutable_property = memoized_property
@@ -56,7 +72,7 @@ class DefaultPaths(object):
 
     @lazy_immutable_property
     def app_processes_yml_default(self):
-        return os.path.join(REPO_BASE, 'environmental-defaults', 'app-processes.yml')
+        return os.path.join(PACKAGE_BASE, 'environmental-defaults', 'app-processes.yml')
 
     @lazy_immutable_property
     def fab_settings_yml(self):
@@ -64,7 +80,7 @@ class DefaultPaths(object):
 
     @lazy_immutable_property
     def fab_settings_yml_default(self):
-        return os.path.join(REPO_BASE, 'environmental-defaults', 'fab-settings.yml')
+        return os.path.join(PACKAGE_BASE, 'environmental-defaults', 'fab-settings.yml')
 
     @lazy_immutable_property
     def generated_yml(self):
@@ -84,7 +100,7 @@ class DefaultPaths(object):
 
 
 def get_role_defaults_yml(role):
-    return os.path.join(REPO_BASE, 'ansible', 'roles', role, 'defaults', 'main.yml')
+    return os.path.join(PACKAGE_BASE, 'ansible', 'roles', role, 'defaults', 'main.yml')
 
 
 @memoized
@@ -92,16 +108,6 @@ def get_role_defaults(role):
     """contents of a role's defaults/main.yml, as a dict"""
     with open(get_role_defaults_yml(role)) as f:
         return yaml.load(f)
-
-
-def get_virtualenv_path():
-    return os.path.dirname(sys.executable)
-
-
-def get_virtualenv_site_packages_path():
-    for filepath in sys.path:
-        if filepath.startswith(os.path.dirname(get_virtualenv_path())) and filepath.endswith('site-packages'):
-            return filepath
 
 
 def get_available_envs():
@@ -115,3 +121,7 @@ def get_available_envs():
         if os.path.exists(DefaultPaths(env).public_yml)
         and os.path.exists(DefaultPaths(env).inventory_ini)
     )
+
+
+def put_virtualenv_bin_on_the_path():
+    os.environ['PATH'] = '{}:{}'.format(get_virtualenv_bin_path(), os.environ['PATH'])
