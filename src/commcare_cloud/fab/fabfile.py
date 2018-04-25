@@ -402,7 +402,7 @@ def setup_limited_release(keep_days=1):
     Example:
     fab <env> setup_limited_release:keep_days=10  # Makes a new release that will last for 10 days
     """
-    setup_release(parse_int_or_exit(keep_days), full_cluster=False)
+    _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
 @task
