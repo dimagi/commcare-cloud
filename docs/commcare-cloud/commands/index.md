@@ -466,6 +466,7 @@ Here's the breakdown of service groups and the subservices they contain:
 
 #### `migrate-couchdb`
 
+(Deprecated alias `migrate_couchdb`)
 Perform a CouchDB migration
 
 ```
