@@ -402,6 +402,7 @@ def setup_release(keep_days=0, full_cluster='True'):
 
     Example:
     fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    fab <env> setup_release:full_cluster=false  # Makes a new release solely on webworkers[0]
     """
     try:
         keep_days = int(keep_days)
