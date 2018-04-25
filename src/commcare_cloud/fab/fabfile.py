@@ -221,7 +221,7 @@ def env_common():
     all = servers['all']
     proxy = servers['proxy']
     webworkers = servers['webworkers']
-    manage = servers.get('manage', webworkers[0])
+    django_manage = servers.get('django_manage', webworkers[0])
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
@@ -244,7 +244,7 @@ def env_common():
         'rabbitmq': rabbitmq,
         'django_celery': celery,
         'django_app': webworkers,
-        'django_manage': manage,
+        'django_manage': django_manage,
         'django_pillowtop': pillowtop,
         'formsplayer': touchforms,
         'formplayer': formplayer,
@@ -384,13 +384,41 @@ def prepare_offline_deploy():
     offline_ops.prepare_formplayer_build()
 
 
+def parse_int_or_exit(val):
+    try:
+        return int(val)
+    except ValueError:
+        print(red("Unable to parse '{}' into an integer".format(val)))
+        exit()
+
+
 @task
 def setup_limited_release(keep_days=1):
-    setup_release(keep_days, full_cluster='False')
+    """ Sets up a release on a single machine
+    defaults to webworkers:0
+
+    See :func:`_setup_release` for more info
+
+    Example:
+    fab <env> setup_limited_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
+    setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
 @task
-def setup_release(keep_days=0, full_cluster='True'):
+def setup_release(keep_days=0):
+    """ Sets up a full release across the cluster
+
+    See :func:`_setup_release` for info
+
+    Example:
+    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
+
+    _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
+
+
+def _setup_release(keep_days, full_cluster):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
@@ -398,25 +426,8 @@ def setup_release(keep_days=0, full_cluster='True'):
     last past a deploy use the `keep_days` param.
 
     :param keep_days: The number of days to keep this release before it will be purged
-    :param keep_cluster: If True, only setup on webworkers[0] where the command will be run
-
-    Example:
-    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
-    fab <env> setup_release:full_cluster=false  # Makes a new release solely on webworkers[0]
+    :param full_cluster: If True, only setup on webworkers[0] where the command will be run
     """
-    try:
-        keep_days = int(keep_days)
-    except ValueError:
-        print(red("Unable to parse '{}' into an integer".format(keep_days)))
-        exit()
-
-    try:
-        full_cluster = strtobool(full_cluster)
-    except ValueError:
-        print(red("Unable to parse '{}' into a boolean".format(full_cluster)))
-        exit()
-    if not full_cluster and not keep_days:
-        keep_days = 1
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
     execute_with_timing(release.create_code_dir, full_cluster)
     execute_with_timing(release.update_code, deploy_ref, full_cluster=full_cluster)
