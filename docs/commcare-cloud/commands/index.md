@@ -281,71 +281,224 @@ commcare-cloud <env> tmux -
 
 ### Operational
 
-#### `commcare-cloud <env> ansible-playbook`
+#### `ansible-playbook`
 
 (Alias `ap`)
 
-_Run a playbook as you would with ansible-playbook,
+Run a playbook as you would with ansible-playbook,
 but with boilerplate settings already set based on your <environment>.
-By default, you will see --check output and then asked whether to apply._
+By default, you will see --check output and then asked whether to apply.
 
+```
+commcare-cloud <env> ansible-playbook <playbook>
+```
 
+##### `<playbook>`
+
+One of the `*.yml` files located under `commcare_cloud/ansible`
+which is under `src` for an egg install and under
+`<virtualenv>/lib/python2.7/site-packages` for a wheel install.
+
+##### Example
+
+```
+commcare-cloud <env> ansible-playbook deploy_proxy.yml --limit=proxy
+```
 
 #### `deploy-stack`
 
 (Alias `aps`)
 
-_Run the ansible playbook for deploying the entire stack.
+Run the ansible playbook for deploying the entire stack.
 Often used in conjunction with --limit and/or --tag
-for a more specific update._
+for a more specific update.
+
+```
+commcare-cloud <env> deploy-stack
+```
 
 #### `update-config`
 
-_Run the ansible playbook for updating app config such as
-django localsettings.py and formplayer application.properties._
+Run the ansible playbook for updating app config such as
+django localsettings.py and formplayer application.properties.
+
+```
+commcare-cloud <env> update-config
+```
+
 
 #### `after-reboot`
 
-_Bring a just-rebooted machine back into operation.
-Includes mounting the encrypted drive._
+Bring a just-rebooted machine back into operation.
+Includes mounting the encrypted drive.
+
+```
+commcare-cloud <env> after-reboot
+```
+
+This command never runs in check mode.
+
 
 #### `restart-elasticsearch`
 
-_Do a rolling restart of elasticsearch._
+Do a rolling restart of elasticsearch.
+
+This command is deprecated. Use
+
+```
+commcare-cloud <env> service elasticsearch restart
+```
+
+instead.
 
 #### `bootstrap-users`
 
-_Add users to a set of new machines as root.
-This must be done before any other user can log in._
+Add users to a set of new machines as root.
+This must be done before any other user can log in.
+
+```
+commcare-cloud <env> bootstrap-users
+```
+
+This will set up machines to reject root login and require
+password-less logins based on the usernames and public keys
+you have specified in your environment. This can only be run once
+per machine; if after running it you would like to run it again,
+you have to use `update-users` below instead.
 
 #### `update-users`
 
-_Add users to a set of new machines as root.
-This must be done before any other user can log in._
+Add users to a set of new machines as root.
+This must be done before any other user can log in.
+<!-- todo: update this description to match corrected command description-->
+
+```
+commcare-cloud <env> update-users
+```
+
+In steady state this command (and not `bootstrap-users`) should be used
+to keep machine user accounts, permissions, and login information
+up to date.
+
 
 #### `update-supervisor-confs`
 
-
-_Updates the supervisor configuration files
+Updates the supervisor configuration files
 for services required by CommCare.
-These services are defined in app-processes.yml._
+These services are defined in app-processes.yml.
+
+```
+commcare-cloud <env> update-supervisor-confs
+```
 
 #### `fab`
 
-_Run a fab command as you would with fab_
+Run a fab command as you would with fab
+
+```
+commcare-cloud <env> fab [<fab_command>|-l]
+```
+
+##### `<fab_command>`
+
+The name of the fab task to run. It and all following arguments
+will be passed on without modification to `fab`, so all normal `fab`
+syntax rules apply.
+
+##### `-l`
+
+Use `-l` instead of a command to see the full list of commands.
 
 #### `service`
 
-_Manage services._
+Manage services.
 
-#### `migrate_couchdb`
+```
+comcare-cloud <env> service <service_group> <action:status|start|stop|restart> [--only <subservices>]
+```
 
-_Perform a CouchDB migration_
+Services are grouped together to form conceptual service groups.
+Thus the `postgresql` service group applies to both the `postgresql`
+service and the `pgbouncer` service. These actual services are called
+"subservices" in this command.
+
+##### `<service_group>`
+
+The name of the service group to apply the action to.
+There is a preset list of service groups that are supported.
+
+
+##### `<action>`
+
+Action can be `status`, `start`, `stop`, or `restart`.
+This action is applied to every matching service.
+
+##### `[--only <subservices>]`
+
+Many service groups are made up of more than one actual service
+or "subservice" as we call them here.
+
+Here's the breakdown of service groups and the subservices they contain:
+
+###### `supervisorctl` services
+
+| service group | subservices |
+|---------------|-------------|
+| celery        | celery      |
+| formplayer    | formplayer-spring |
+| touchforms    | formplayer |
+| webworkers    | webworkers  |
+
+###### `service` services
+
+| service group | subservices |
+|---------------|-------------|
+| couchdb2      | couchdb2    |
+| es            | elasticsearch |
+| kafka         | kafka, zookeeper |
+| pg_standby    | postgresql, pgbouncer (just on pgstandby machines) |
+| postgresql    | postgresql, pgbouncer (just on postgresql machines) |
+| proxy         | nginx       |
+| rabbitmq      | rabbitmq    |
+| redis         | redis       |
+| riakcs        | riak, riak-cs, stanchion |
+| stanchion     | stanchion   |
+
+#### `migrate-couchdb`
+
+Perform a CouchDB migration
+
+```
+commcare-cloud <env> migrate-couchdb <migration_plan> <action>
+```
+
+This is a recent and advanced addition to the capabilities,
+and is not yet ready for widespread use. At such a time as it is
+ready, it will be more thoroughly documented.
+
+##### `<migration_plan>`
+
+Path to migration plan file
+
+##### `<action>`
+
+Action to perform: `describe`, `plan`, `migrate`, or `commit`.
+
 
 #### `downtime`
 
-_Manage downtime for the selected environment._
+Manage downtime for the selected environment.
 
+```
+commcare-cloud <env> downtime start [--message <message>]
+```
+or
+```
+commcare-cloud <env> downtime end
+```
+
+This notifies Datadog of the planned downtime so that is is recorded
+in the history, and so that during it service alerts are silenced.
 
 ## The special `--control` option
 
