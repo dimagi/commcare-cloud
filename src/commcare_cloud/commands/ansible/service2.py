@@ -1,4 +1,6 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
+from collections import defaultdict
+from itertools import groupby
 
 import six
 from clint.textui import puts, colored
@@ -6,6 +8,7 @@ from clint.textui import puts, colored
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, get_django_webworker_name, \
     get_formplayer_spring_instance_name, get_formplayer_instance_name
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
+from commcare_cloud.commands.celery_utils import get_celery_workers
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.fab.exceptions import NoHostsMatch
@@ -282,6 +285,48 @@ class Touchforms(SupervisorService):
         return get_formplayer_instance_name(self.environment)
 
 
+class Celery(SupervisorService):
+    name = 'celery'
+    inventory_groups = ['celery']
+
+    def _get_processes_by_host(self, process_pattern=None):
+        all_hosts = self.all_service_hosts
+
+        worker_match = queue_match = None
+        if process_pattern:
+            if ':' in process_pattern:
+                queue_match, worker_match = process_pattern.split(':')
+                worker_match = int(worker_match)
+            else:
+                queue_match = process_pattern
+
+        def matches(item, matcher):
+            return matcher is None or matcher == item
+
+        workers = get_celery_workers(self.environment)
+        processes_by_host = defaultdict(set)
+        for host, queue, worker_num, process_name in workers:
+            if host in all_hosts \
+                    and matches(queue, queue_match) \
+                    and matches(worker_num, worker_match):
+                processes_by_host[host].add(process_name)
+
+        processes_by_hosts = {}
+        # group hosts together so we do less calls to ansible
+        for grouper in groupby(processes_by_host.items(), key=lambda hp: hp[1]):
+            hosts = tuple(host_processes[0] for host_processes in grouper[1])
+            processes = grouper[0]
+            processes_by_hosts[hosts] = processes
+        return processes_by_hosts
+
+    def get_managed_services(self):
+        workers = get_celery_workers(self.environment)
+        return sorted({
+            '{}{}'.format(queue, ':{}'.format(worker_num) if worker_num > 1 else '')
+            for host, queue, worker_num, process_name in workers
+        })
+
+
 SERVICES = [
     Postgresql,
     Pgbouncer,
@@ -295,6 +340,7 @@ SERVICES = [
     Webworker,
     Formplayer,
     Touchforms,
+    Celery,
 ]
 
 SERVICE_NAMES = sorted([
