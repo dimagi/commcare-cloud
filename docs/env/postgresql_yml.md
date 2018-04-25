@@ -109,7 +109,7 @@ Name of the postgresql database.
 (See [`NAME`](https://docs.djangoproject.com/en/2.0/ref/settings/#name).)
 
 #### `host`
-- Type: [host string](http://127.0.0.1:4000/env/glossary#host-string)
+- Type: [host string](glossary#host-string)
 
 The host machine on which this database should live.
 (See [`HOST`](https://docs.djangoproject.com/en/2.0/ref/settings/#host).)
@@ -195,7 +195,7 @@ in a separate set of partitioned postgresql dbs.
 A value of `False` may lose support in the near future and is not recommended.
 
 ## `DEFAULT_POSTGRESQL_HOST`
-- Type: [host string](http://127.0.0.1:4000/env/glossary#host-string)
+- Type: [host string](glossary#host-string)
 - Default: The first machine in the `postgresql` inventory group.
 
 This value will be used as the host for any database

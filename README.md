@@ -27,12 +27,14 @@ sudo pip install virtualenv virtualenvwrapper --ignore-installed six
 ```
 
 # Setup
+
 This should be run from your home directory:
 ```
 source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
 
-Alternately:
+Alternatively:
+
 ```
 git clone https://github.com/dimagi/commcare-cloud.git
 source commcare-cloud/control/init.sh
@@ -48,6 +50,22 @@ export ANSIBLE_ROLES_PATH=~/.ansible/roles
 source ~/.commcare-cloud/repo/control/.bash_completion
 ```
 
+# Manual setup
+
+If you'd rather use your own virtualenv name, or the script above didn't work for you
+the set up is pretty simple. Just run:
+
+```
+$ mkvirtualenv ansible
+(ansible)$ git clone https://github.com/dimagi/commcare-cloud.git
+(ansible)$ pip install -e commcare-cloud/
+(ansible)$ manage-commcare-cloud install
+(ansible)$ manage-commcare-cloud configure  # and copy the line from here into your ~/.bash_profile
+```
+
+You will then be able to use cchq from anywhere.
+
+
 # Contributing
 
 Before making any commits, make sure you install the git hooks:
@@ -57,3 +75,20 @@ Before making any commits, make sure you install the git hooks:
 ```
 
 This will make sure you never commit an unencrypted vault.yml file.
+
+
+# Running tests
+
+To run tests, first install the test dependencies
+
+```
+pip install -e .[test]
+```
+
+and then run
+
+```
+nosetests
+```
+
+Tests include tests of your own specific environments dir.
