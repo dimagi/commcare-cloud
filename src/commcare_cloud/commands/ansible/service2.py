@@ -411,8 +411,7 @@ class Service(CommandBase):
         ))
         self.parser.add_argument('--only', help=(
             "Sub-service name to limit action to. Use 'help' action to list all option."
-        )
-                                 )
+        ))
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
