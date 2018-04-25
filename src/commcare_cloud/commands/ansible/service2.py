@@ -298,6 +298,18 @@ class SingleSupervisorService(SupervisorService):
         }
 
 
+class CommCare(SingleSupervisorService):
+    name = 'commcare'
+    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
+
+    @property
+    def supervisor_process_name(self):
+        return ''  # control all supervisor processes
+
+    def get_managed_services(self):
+        return []
+
+
 class Webworker(SingleSupervisorService):
     name = 'webworker'
     inventory_groups = ['webworkers']
@@ -381,6 +393,7 @@ SERVICES = [
     Formplayer,
     Touchforms,
     Celery,
+    CommCare,
 ]
 
 SERVICE_NAMES = sorted([
