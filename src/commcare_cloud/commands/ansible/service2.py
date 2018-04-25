@@ -3,7 +3,8 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 import six
 from clint.textui import puts, colored
 
-from commcare_cloud.commands.ansible.helpers import AnsibleContext
+from commcare_cloud.commands.ansible.helpers import AnsibleContext, get_django_webworker_name, \
+    get_formplayer_spring_instance_name, get_formplayer_instance_name
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
@@ -61,6 +62,50 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         )
 
 
+class SubServicesMixin(six.with_metaclass(ABCMeta)):
+    @abstractmethod
+    def get_managed_services(self):
+        raise NotImplementedError
+
+
+class SupervisorService(SubServicesMixin, ServiceBase):
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if host_pattern:
+            self.environment.inventory_manager.subset(host_pattern)
+
+        process_host_mapping = self._get_processes_by_host(process_pattern)
+
+        exit_status = []
+        for hosts, processes in process_host_mapping.items():
+            command = 'supervisorctl {} {}'.format(
+                action,
+                ' '.join(processes)
+            )
+            exit_status.append(self._run_ansible_module(
+                ','.join(hosts),
+                'shell',
+                command
+            ))
+        if not exit_status:
+            raise NoHostsMatch
+        return max(exit_status)
+
+    @abstractmethod
+    def _get_processes_by_host(self, process_pattern=None):
+        """
+        :param process_pattern: process pattern from the args or None
+        :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
+        """
+        raise NotImplemented
+
+    @property
+    def all_service_hosts(self):
+        pattern = ','.join(self.inventory_groups)
+        return set([
+            host.name for host in self.environment.inventory_manager.get_hosts(pattern)
+        ])
+
+
 class AnsibleService(ServiceBase):
     """Service that is controlled via the ansible 'service' module"""
 
@@ -79,8 +124,7 @@ class AnsibleService(ServiceBase):
         return self._run_ansible_module(host_pattern, 'service', service_args)
 
 
-
-class MultiAnsibleService(AnsibleService):
+class MultiAnsibleService(SubServicesMixin, AnsibleService):
     """Service that is made up of multiple other services e.g. RiakCS"""
 
     @abstractmethod
@@ -89,10 +133,6 @@ class MultiAnsibleService(AnsibleService):
         :param sub_service: name of a sub-service
         :return: inventory group for that service
         """
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_managed_services(self):
         raise NotImplementedError
 
     def check_status(self, host_pattern=None, process_pattern=None):
@@ -204,6 +244,44 @@ class Kafka(MultiAnsibleService):
         }.get(sub_process, 'riakcs')
 
 
+class SingleSupervisorService(SupervisorService):
+    @abstractproperty
+    def supervisor_process_name(self):
+        raise NotImplementedError
+
+    def _get_processes_by_host(self, process_pattern=None):
+        return {
+            tuple(self.all_service_hosts): self.supervisor_process_name()
+        }
+
+
+class Webworker(SingleSupervisorService):
+    name = 'webworker'
+    inventory_groups = ['webworkers']
+
+    @property
+    def supervisor_process_name(self):
+        return get_django_webworker_name(self.environment)
+
+
+class Formplayer(SupervisorService):
+    name = 'formplayer'
+    inventory_groups = ['formplayer']
+
+    @property
+    def supervisor_process_name(self):
+        return get_formplayer_spring_instance_name(self.environment)
+
+
+class Touchforms(SupervisorService):
+    name = 'touchforms'
+    inventory_groups = ['touchforms']
+
+    @property
+    def supervisor_process_name(self):
+        return get_formplayer_instance_name(self.environment)
+
+
 SERVICES = [
     Postgresql,
     Pgbouncer,
@@ -214,6 +292,9 @@ SERVICES = [
     Redis,
     Riakcs,
     Kafka,
+    Webworker,
+    Formplayer,
+    Touchforms,
 ]
 
 SERVICE_NAMES = sorted([
