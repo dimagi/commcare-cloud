@@ -7,9 +7,8 @@ import six
 from clint.textui import puts, colored, indent
 
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, get_django_webworker_name, \
-    get_formplayer_spring_instance_name, get_formplayer_instance_name
+    get_formplayer_spring_instance_name, get_formplayer_instance_name, get_celery_workers
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.celery_utils import get_celery_workers
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.fab.exceptions import NoHostsMatch
