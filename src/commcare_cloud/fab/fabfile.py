@@ -386,7 +386,7 @@ def prepare_offline_deploy():
 
 @task
 def setup_limited_release(keep_days=1):
-    setup_release(keep_days, 'False')
+    setup_release(keep_days, full_cluster='False')
 
 
 @task
