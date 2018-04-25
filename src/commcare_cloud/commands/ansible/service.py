@@ -10,6 +10,7 @@ from commcare_cloud.commands.ansible.helpers import get_django_webworker_name, \
 from commcare_cloud.commands.ansible.run_module import RunShellCommand, RunAnsibleModule
 from commcare_cloud.commands.celery_utils import get_celery_workers_config, \
     find_celery_worker_name
+from commcare_cloud.environment.main import get_environment
 
 
 class Service(_AnsiblePlaybookAlias):
@@ -174,12 +175,13 @@ class Service(_AnsiblePlaybookAlias):
 
     @staticmethod
     def get_supervisor_program_name(service, environment_name):
+        environment = get_environment(environment_name)
         if service == "webworkers":
-            return get_django_webworker_name(environment_name)
+            return get_django_webworker_name(environment)
         elif service == "formplayer":
-            return get_formplayer_instance_name(environment_name)
+            return get_formplayer_instance_name(environment)
         elif service == "formplayer-spring":
-            return get_formplayer_spring_instance_name(environment_name)
+            return get_formplayer_spring_instance_name(environment)
 
     def run_supervisor_action_for_service_group(self, service_group, action, args, unknown_args):
         exit_code = 0

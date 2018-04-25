@@ -2,17 +2,7 @@ from collections import defaultdict
 from memoized import memoized
 
 
-@memoized
-def get_celery_processes(environment_name):
-    from commcare_cloud.environment.main import get_environment
-    environment = get_environment(environment_name)
-    app_processes_config = environment.app_processes_config
-    return app_processes_config.celery_processes
-
-
-def get_celery_worker_name(environment_name, comma_separated_queue_name, worker_num):
-    from commcare_cloud.environment.main import get_environment
-    environment = get_environment(environment_name)
+def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
@@ -42,7 +32,10 @@ def get_celery_workers_config(environment_name):
     }
     """
     celery_worker_config = {}
-    celery_processes = get_celery_processes(environment_name)
+    from commcare_cloud.environment.main import get_environment
+    environment = get_environment(environment_name)
+    celery_processes = environment.app_processes_config.celery_processes
+
     for host, celery_processes_list in celery_processes.items():
         if host != 'None':
             for comma_separated_queue_names, details in celery_processes_list.items():
@@ -56,10 +49,10 @@ def get_celery_workers_config(environment_name):
                         if details.get('num_workers', 1) > 1:
                             for num in range(details.get('num_workers')):
                                 celery_worker_name = get_celery_worker_name(
-                                    environment_name, comma_separated_queue_names, num)
+                                    environment, comma_separated_queue_names, num)
                                 celery_worker_config[queue_name][host].append(celery_worker_name)
                         else:
-                            celery_worker_name = get_celery_worker_name(environment_name,
+                            celery_worker_name = get_celery_worker_name(environment,
                                                                         comma_separated_queue_names, 0)
                             celery_worker_config[queue_name][host].append(celery_worker_name)
     return celery_worker_config
