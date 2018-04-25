@@ -120,7 +120,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     if ask_vault_pass:
         cmd_parts += ('--vault-password-file=/bin/cat',)
 
-    cmd_parts += get_common_ssh_args(public_vars)
+    cmd_parts += get_common_ssh_args(environment)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
