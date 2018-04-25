@@ -98,7 +98,7 @@ def set_celery_supervisorconf():
             conf_destination_filename = 'supervisor_celery_worker_{}_{}.conf'.format(
                 comma_separated_queue_names, worker_num)
 
-            worker_name = get_celery_worker_name(env.env_name,
+            worker_name = get_celery_worker_name(env.ccc_environment.meta_config.deloy_env,
                                                  params['comma_separated_queue_names'],
                                                  params['worker_num'])
             _rebuild_supervisor_conf_file(
@@ -144,7 +144,7 @@ def show_periodic_server_whitelist_message_and_abort(env):
 
 
 def set_djangoapp_supervisorconf():
-    django_worker_name = get_django_webworker_name(env.env_name)
+    django_worker_name = get_django_webworker_name(env.ccc_environment.meta_config.deloy_env)
     if _check_in_roles(ROLES_DJANGO):
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_django.conf',
@@ -154,19 +154,19 @@ def set_djangoapp_supervisorconf():
 
 def set_formsplayer_supervisorconf():
     if _check_in_roles(ROLES_TOUCHFORMS):
+        instance_name = get_formplayer_instance_name(env.ccc_environment.meta_config.deloy_env)
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_formsplayer.conf',
-                                      {'formplayer_instance_name':
-                                           get_formplayer_instance_name(env.env_name)}
+                                      {'formplayer_instance_name': instance_name}
                                       )
 
 
 def set_formplayer_spring_supervisorconf():
     if _check_in_roles(ROLES_FORMPLAYER):
+        instance_name = get_formplayer_spring_instance_name(env.ccc_environment.meta_config.deloy_env)
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_formplayer_spring.conf',
-                                      {'formplayer_spring_instance_name':
-                                           get_formplayer_spring_instance_name(env.env_name)}
+                                      {'formplayer_spring_instance_name': instance_name}
                                       )
 
 
