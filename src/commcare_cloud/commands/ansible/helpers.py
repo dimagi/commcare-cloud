@@ -34,15 +34,19 @@ class AnsibleContext(object):
         return env
 
 
-def get_common_ssh_args(public_vars):
-    pem = public_vars.get('commcare_cloud_pem', None)
-    strict_host_key_checking = public_vars.get('commcare_cloud_strict_host_key_checking', True)
+def get_common_ssh_args(environment):
+    pem = environment.public_vars.get('commcare_cloud_pem', None)
+    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
 
     common_ssh_args = []
     if pem:
         common_ssh_args.extend(['-i', pem])
     if not strict_host_key_checking:
         common_ssh_args.append('-o StrictHostKeyChecking=no')
+
+    known_hosts_filepath = environment.paths.known_hosts
+    if os.path.exists(known_hosts_filepath):
+        common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
 
     cmd_parts = tuple()
     if common_ssh_args:

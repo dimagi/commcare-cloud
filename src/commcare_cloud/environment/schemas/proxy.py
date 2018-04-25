@@ -30,10 +30,6 @@ class ProxyConfig(jsonobject.JsonObject):
     tableau_key_value = jsonobject.StringProperty(exclude_if_none=True)
     tableau_server = jsonobject.StringProperty(exclude_if_none=True)
 
-    ENIKSHAY_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    enikshay_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    enikshay_key_value = jsonobject.StringProperty(exclude_if_none=True)
-
     PNA_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
     pna_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
     pna_key_value = jsonobject.StringProperty(exclude_if_none=True)
