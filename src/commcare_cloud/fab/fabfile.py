@@ -385,7 +385,7 @@ def prepare_offline_deploy():
 
 
 @task
-def setup_release(keep_days=0, manage=False):
+def setup_release(keep_days=0, full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
@@ -405,21 +405,21 @@ def setup_release(keep_days=0, manage=False):
         exit()
 
     try:
-        manage = strtobool(manage)
+        full_cluster = strtobool(full_cluster)
     except ValueError:
-        print(red("Unable to parse '{}' into a boolean".format(manage)))
+        print(red("Unable to parse '{}' into a boolean".format(full_cluster)))
         exit()
-    if manage and not keep_days:
+    if not full_cluster and not keep_days:
         keep_days = 1
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    execute_with_timing(release.create_code_dir, manage)
-    execute_with_timing(release.update_code, deploy_ref, manage=manage)
-    execute_with_timing(release.update_virtualenv, manage)
+    execute_with_timing(release.create_code_dir, full_cluster)
+    execute_with_timing(release.update_code, deploy_ref, full_cluster=full_cluster)
+    execute_with_timing(release.update_virtualenv, full_cluster)
 
-    execute_with_timing(copy_release_files, manage)
+    execute_with_timing(copy_release_files, full_cluster)
 
     if keep_days > 0:
-        execute_with_timing(release.mark_keep_until, keep_days, manage)
+        execute_with_timing(release.mark_keep_until, keep_days, full_cluster)
 
     print(blue("Your private release is located here: "))
     print(blue(env.code_root))
@@ -560,9 +560,9 @@ def unlink_current():
         sudo('unlink {}'.format(env.code_current))
 
 
-def copy_release_files(manage=False):
-    execute(release.copy_localsettings, manage)
-    if not manage:
+def copy_release_files(full_cluster=True):
+    execute(release.copy_localsettings, full_cluster)
+    if full_cluster:
         execute(release.copy_tf_localsettings)
         execute(release.copy_formplayer_properties)
         execute(release.copy_components)

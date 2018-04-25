@@ -32,8 +32,8 @@ from commcare_cloud.fab.utils import pip_install
 GitConfig = namedtuple('GitConfig', 'key value')
 
 
-def update_code(git_tag, use_current_release=False, manage=False):
-    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+def update_code(git_tag, use_current_release=False, full_cluster=True):
+    roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
     @parallel
@@ -238,14 +238,14 @@ def clone_virtualenv():
     _clone_virtual_env()
 
 
-def update_virtualenv(manage=False):
+def update_virtualenv(full_cluster=True):
     """
     update external dependencies on remote host
 
     assumes you've done a code update
 
     """
-    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+    roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
     @parallel
@@ -270,8 +270,8 @@ def update_virtualenv(manage=False):
 
     update()
 
-def create_code_dir(manage=False):
-    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+def create_code_dir(full_cluster=True):
+    roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
     @parallel
@@ -388,8 +388,8 @@ def clean_releases(keep=3):
     git_gc_current()
 
 
-def copy_localsettings(manage=False):
-    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+def copy_localsettings(full_cluster=True):
+    roles_to_use = _get_roles(full_cluster)
 
     @parallel
     @roles(roles_to_use)
@@ -471,8 +471,8 @@ def ensure_release_exists(release):
     return files.exists(release)
 
 
-def mark_keep_until(keep_days, manage=False):
-    roles_to_use = ROLES_MANAGE if manage else ROLES_ALL_SRC
+def mark_keep_until(keep_days, full_cluster=True):
+    roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
     @parallel
@@ -508,3 +508,7 @@ def reverse_patch(filepath):
 
     current_dir = sudo('readlink -f {}'.format(env.code_current))
     sudo('git apply -R --unsafe-paths {} --directory={}'.format(destination, current_dir))
+
+
+def _get_roles(full_cluster):
+    return ROLES_ALL_SRC if full_cluster else ROLES_MANAGE
