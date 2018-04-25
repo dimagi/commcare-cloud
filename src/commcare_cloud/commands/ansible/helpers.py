@@ -119,3 +119,25 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
             puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
 
     return exit_code
+
+
+def get_celery_workers(environment):
+    for host, queues in environment.app_processes_config.celery_processes.items():
+        if not host or host == 'None':
+            continue
+        for comma_separated_queue_names, config in queues.items():
+            for queue in comma_separated_queue_names.split(','):
+                for worker_num in range(config.get('num_workers', 1)):
+                    process_name = get_celery_worker_name(environment, comma_separated_queue_names, 0)
+                    yield (host, queue, worker_num, process_name)
+
+
+def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
+    environment_environment = environment.meta_config.deploy_env
+    project = environment.fab_settings_config.project
+    return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
+        project=project,
+        environment=environment_environment,
+        comma_separated_queue_name=comma_separated_queue_name,
+        worker_num=worker_num
+    )
