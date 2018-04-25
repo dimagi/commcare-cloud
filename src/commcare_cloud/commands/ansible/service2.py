@@ -296,7 +296,7 @@ class SingleSupervisorService(SupervisorService):
 
     def _get_processes_by_host(self, process_pattern=None):
         return {
-            tuple(self.all_service_hosts): self.supervisor_process_name()
+            tuple(self.all_service_hosts): self.supervisor_process_name
         }
 
 
