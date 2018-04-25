@@ -114,7 +114,9 @@ class SubServicesMixin(six.with_metaclass(ABCMeta)):
 
     def get_options(self):
         options = super(SubServicesMixin, self).get_options()
-        options["Sub-services (use with --only)"] = [ServiceOption(service) for service in self.get_managed_services()]
+        managed_services = self.get_managed_services()
+        if managed_services:
+            options["Sub-services (use with --only)"] = [ServiceOption(service) for service in managed_services]
         return options
 
 
