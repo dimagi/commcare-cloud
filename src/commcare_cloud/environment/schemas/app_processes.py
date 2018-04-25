@@ -18,6 +18,7 @@ class CeleryOptions(jsonobject.JsonObject):
     pooling = jsonobject.StringProperty(choices=['gevent', 'prefork'], default='prefork')
     max_tasks_per_child = jsonobject.IntegerProperty(default=50)
     server_whitelist = IpAddressProperty()
+    num_workers = jsonobject.IntegerProperty(default=1)
 
 
 class AppProcessesConfig(jsonobject.JsonObject):
