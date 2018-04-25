@@ -408,6 +408,7 @@ SERVICES_BY_NAME = {
 
 class Service(CommandBase):
     command = 'service'
+    help = "Manage services. Use 'help' action for service details."
 
     def make_parser(self):
         self.parser.add_argument(
