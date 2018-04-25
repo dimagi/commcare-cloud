@@ -15,7 +15,7 @@ dbs:
   formplayer:
     host: hqdb0
   ucr:
-    host: hqdb0
+    host: hqdb3
     query_stats: True
   synclogs:
     host: pgsynclog
