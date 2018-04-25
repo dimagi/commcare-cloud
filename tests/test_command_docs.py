@@ -21,8 +21,9 @@ def contains_whole_word(word, text):
     return re.search(r'\b{}\b'.format(re.escape(word)), text)
 
 
-def contains_but_for_whitespace(string, text):
+def fuzzy_contains(string, text):
     string = re.sub(r'\s*', ' ', string)
+    string = string.strip().rstrip('.')
     text = re.sub(r'\s*', ' ', text)
 
     return string in text
@@ -58,7 +59,7 @@ def test_all_help_strings_appear_in_docs():
     doc_text = _get_commands_doc()
     missing_help_strings = set()
     for command_type in COMMAND_TYPES:
-        if not contains_but_for_whitespace(command_type.help, doc_text):
+        if not fuzzy_contains(command_type.help, doc_text):
             missing_help_strings.add(command_type.command)
 
     assert not missing_help_strings, "Missing help strings in {}: {}".format(
