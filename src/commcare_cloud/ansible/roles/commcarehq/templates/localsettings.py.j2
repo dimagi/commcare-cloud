@@ -320,10 +320,6 @@ CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDAT
 CELERY_REPEAT_RECORD_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_QUEUE }}'
 {% endif %}
 
-{% if localsettings.get('ENIKSHAY_QUEUE') %}
-ENIKSHAY_QUEUE = '{{ localsettings.ENIKSHAY_QUEUE }}'
-{% endif %}
-
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
@@ -702,14 +698,6 @@ LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
 
 {% if localsettings.get('SUMOLOGIC_URL') %}
 SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'
-{% endif %}
-
-{% if localsettings.get('ENIKSHAY_PRIVATE_API_USERS') %}
-ENIKSHAY_PRIVATE_API_USERS = {{ localsettings.ENIKSHAY_PRIVATE_API_USERS }}
-{% endif %}
-
-{% if localsettings.get('ENIKSHAY_PRIVATE_API_PASSWORD') %}
-ENIKSHAY_PRIVATE_API_PASSWORD = hashlib.md5('{{ localsettings.ENIKSHAY_PRIVATE_API_PASSWORD }}').hexdigest()
 {% endif %}
 
 {% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
