@@ -34,6 +34,7 @@ ROLES_POSTGRESQL = ['pg', 'pgstandby', 'django_monolith']
 ROLES_ELASTICSEARCH = ['elasticsearch', 'django_monolith']
 ROLES_RIAKCS = ['riakcs', 'django_monolith']
 ROLES_DEPLOY = ['deploy', 'django_monolith']
+ROLES_MANAGE = ['django_manage']
 ROLES_CONTROL = ['control']
 
 RELEASE_RECORD = 'RELEASES.txt'
