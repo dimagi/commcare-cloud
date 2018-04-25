@@ -385,6 +385,11 @@ def prepare_offline_deploy():
 
 
 @task
+def setup_limited_release(keep_days=1):
+    setup_release(keep_days, False)
+
+
+@task
 def setup_release(keep_days=0, full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
