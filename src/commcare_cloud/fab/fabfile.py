@@ -221,7 +221,7 @@ def env_common():
     all = servers['all']
     proxy = servers['proxy']
     webworkers = servers['webworkers']
-    manage = webworkers[0]
+    manage = servers.get('manage', webworkers[0])
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
@@ -398,7 +398,7 @@ def setup_release(keep_days=0, full_cluster='True'):
     last past a deploy use the `keep_days` param.
 
     :param keep_days: The number of days to keep this release before it will be purged
-    :param manage: If True, only setup on webworkers[0] where the command will be run
+    :param keep_cluster: If True, only setup on webworkers[0] where the command will be run
 
     Example:
     fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
