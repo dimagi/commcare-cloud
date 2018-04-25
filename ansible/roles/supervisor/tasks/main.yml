@@ -20,9 +20,6 @@
   check_mode: no
   when: not which_supervisord.stdout
 
-- name: print debugs
-  debug: var=which_supervisord
-
 - set_fact: which_supervisord = which_supervisord_retry
   when: which_supervisord_retry.skipped is defined and which_supervisord_retry.skipped
 
