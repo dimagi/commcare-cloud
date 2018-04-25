@@ -122,16 +122,6 @@
         site_present: "{{ 'cas_ssl' in special_sites }}"
         site_config: {name: cas_ssl, vars_file: cas_ssl}
 
-- name: Enikshay Proxy
-  hosts: enikshay_proxy
-  tasks:
-    - include_role:
-        name: nginx
-        tasks_from: set_site_present
-      vars:
-        site_present: "{{ 'enikshay_ssl' in special_sites }}"
-        site_config: {name: enikshay_ssl, vars_file: enikshay_ssl}
-
 - name: PNA Proxy
   hosts: pna_proxy
   tasks:

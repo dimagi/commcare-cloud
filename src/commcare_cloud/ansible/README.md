@@ -126,7 +126,7 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 [troubleshooting](https://developer.github.com/guides/using-ssh-agent-forwarding/)
 
 ### Setting up a dev account on ansible control machine
-See main [README](../README.md) file.
+See main [README](../../../README.md) file.
 
 ## Managing secrets with Vault
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
