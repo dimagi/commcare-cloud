@@ -17,7 +17,7 @@ from .commands.ansible.ansible_playbook import (
     UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
-from commcare_cloud.commands.ansible.service2 import Service
+from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
