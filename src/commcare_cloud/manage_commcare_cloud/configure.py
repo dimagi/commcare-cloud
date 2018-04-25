@@ -1,42 +1,13 @@
-from __future__ import absolute_import
-
 import os
-import subprocess
 import textwrap
-
-from argparse import ArgumentParser
-
-from clint.textui import puts, colored
 from six.moves import shlex_quote
 
-from commcare_cloud.cli_utils import print_command, ask
+from clint.textui import puts, colored
+
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.environment.paths import ANSIBLE_ROLES_PATH, ANSIBLE_DIR, \
-    put_virtualenv_bin_on_the_path, PACKAGE_BASE, get_virtualenv_bin_path, DIMAGI_ENVIRONMENTS_DIR
-
-
-class Install(CommandBase):
-    command = 'install'
-    help = "Finishes the commcare-cloud install, including installing ansible-galaxy roles"
-
-    def make_parser(self):
-        pass
-
-    def run(self, args, unknown_args):
-        env = os.environ.copy()
-        put_virtualenv_bin_on_the_path()
-        if not os.path.exists(ANSIBLE_ROLES_PATH):
-            os.makedirs(ANSIBLE_ROLES_PATH)
-
-        env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
-        cmd_parts = ['ansible-galaxy', 'install', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print_command(cmd)
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
-        p.communicate()
-
-        puts(colored.blue("To finish first-time installation, run `manage-commcare-cloud configure`".format()))
-        return p.returncode
+from commcare_cloud.environment.paths import DIMAGI_ENVIRONMENTS_DIR, get_virtualenv_bin_path, \
+    PACKAGE_BASE
 
 
 class Configure(CommandBase):
@@ -44,12 +15,17 @@ class Configure(CommandBase):
     help = 'Guide to setting up everything you need to work with commcare-cloud'
 
     def make_parser(self):
-        pass
+        self.parser.add_argument('--environments-dir')
+        self.parser.add_argument('--quiet', action='store_true')
 
-    def _determine_environments_dir(self):
+    @staticmethod
+    def _determine_environments_dir(quiet):
         environments_dir = None
 
         environ_value = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS')
+
+        if quiet:
+            return environ_value or DIMAGI_ENVIRONMENTS_DIR
 
         def have_same_realpath(dir1, dir2):
             return os.path.realpath(dir1) == os.path.realpath(dir2)
@@ -88,16 +64,18 @@ class Configure(CommandBase):
 
         return environments_dir
 
-    def run(self, args, unknown_args):
+    def _write_load_config_sh(self, environments_dir, quiet):
         puts(colored.blue("Let's get you set up to run commcare-cloud."))
 
-        environments_dir = self._determine_environments_dir()
+        if not environments_dir:
+            environments_dir = self._determine_environments_dir(quiet=quiet)
 
         commcare_cloud_dir = os.path.expanduser("~/.commcare-cloud")
         if not os.path.exists(commcare_cloud_dir):
             os.makedirs(commcare_cloud_dir)
         load_config_file = os.path.expanduser("~/.commcare-cloud/load_config.sh")
-        if not os.path.exists(load_config_file) or ask("Overwrite your ~/.commcare-cloud/load_config.sh?"):
+        if not os.path.exists(load_config_file) or \
+                ask("Overwrite your ~/.commcare-cloud/load_config.sh?", quiet=quiet):
             with open(load_config_file, 'w') as f:
                 f.write(textwrap.dedent("""
                     # auto-generated with `manage-commcare-cloud configure`:
@@ -115,41 +93,5 @@ class Configure(CommandBase):
             "and then open a new shell. "
             "You should be able to run `commcare-cloud` without entering your virtualenv."))
 
-
-class GetPath(CommandBase):
-    command = 'get-path'
-    help = "Print the value of a property of the commcare-cloud install"
-
-    def make_parser(self):
-        self.parser.add_argument('property', choices=['ANSIBLE_DIR'])
-
     def run(self, args, unknown_args):
-        if args.property == 'ANSIBLE_DIR':
-            print(ANSIBLE_DIR)
-
-
-COMMAND_TYPES = [
-    Install,
-    GetPath,
-    Configure,
-]
-
-
-def main():
-    parser = ArgumentParser()
-    subparsers = parser.add_subparsers(dest='command')
-    commands = {}
-
-    for command_type in COMMAND_TYPES:
-        assert issubclass(command_type, CommandBase), command_type
-        cmd = command_type(subparsers.add_parser(command_type.command, help=command_type.help))
-        cmd.make_parser()
-        commands[cmd.command] = cmd
-        for alias in cmd.aliases:
-            commands[alias] = cmd
-
-    args, unknown_args = parser.parse_known_args()
-
-    exit_code = commands[args.command].run(args, unknown_args)
-    if exit_code is not 0:
-        exit(exit_code)
+        self._write_load_config_sh(environments_dir=args.environments_dir, quiet=args.quiet)
