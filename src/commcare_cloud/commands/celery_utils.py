@@ -65,3 +65,14 @@ def find_celery_worker_name(environment_name, queue_name, host, worker_num=None)
         for worker in queue_workers_for_host:
             if worker.endswith(worker_num):
                 return worker
+
+
+def get_celery_workers(environment):
+    for host, queues in environment.app_processes_config.celery_processes.items():
+        if not host or host == 'None':
+            continue
+        for comma_separated_queue_names, config in queues.items():
+            for queue in comma_separated_queue_names.split(','):
+                for worker_num in range(config.get('num_workers', 1)):
+                    process_name = get_celery_worker_name(environment, comma_separated_queue_names, 0)
+                    yield (host, queue, worker_num, process_name)
