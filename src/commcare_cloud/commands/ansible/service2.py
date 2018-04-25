@@ -112,6 +112,11 @@ class SubServicesMixin(six.with_metaclass(ABCMeta)):
     def get_managed_services(self):
         raise NotImplementedError
 
+    def get_options(self):
+        options = super(SubServicesMixin, self).get_options()
+        options["Sub-services (use with --only)"] = [ServiceOption(service) for service in self.get_managed_services()]
+        return options
+
 
 class SupervisorService(SubServicesMixin, ServiceBase):
     def execute_action(self, action, host_pattern=None, process_pattern=None):
