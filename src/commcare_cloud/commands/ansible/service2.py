@@ -1,11 +1,13 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 import six
+from clint.textui import puts, colored
 
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.fab.exceptions import NoHostsMatch
 
 ACTIONS = ['start', 'stop', 'restart', 'status']
 
@@ -29,6 +31,19 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
     def __init__(self, environment, ansible_context):
         self.environment = environment
         self.ansible_context = ansible_context
+
+    def run(self, action, host_pattern=None, process_pattern=None):
+        try:
+            return self.execute_action(action, host_pattern, process_pattern)
+        except NoHostsMatch:
+            only = limit = ''
+            if process_pattern:
+                only = " '--only={}'".format(process_pattern)
+            if host_pattern:
+                limit = " '--limit={}'".format(host_pattern)
+
+            puts(colored.red("No '{}' hosts match{}{}".format(self.name, limit, only)))
+            return 1
 
     @abstractmethod
     def execute_action(self, action, host_pattern=None, process_pattern=None):
@@ -108,6 +123,8 @@ class MultiAnsibleService(AnsibleService):
 
             run_on = self.get_inventory_group_for_sub_process(process_pattern)
             hosts = self.environment.inventory_manager.get_hosts(run_on)
+            if not hosts:
+                raise NoHostsMatch
             run_on = ','.join([host.name for host in hosts])
             return action_fn(process_pattern, run_on)
         else:
