@@ -1,9 +1,10 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from itertools import groupby
 
+import attr
 import six
-from clint.textui import puts, colored
+from clint.textui import puts, colored, indent
 
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, get_django_webworker_name, \
     get_formplayer_spring_instance_name, get_formplayer_instance_name
@@ -13,7 +14,7 @@ from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
-ACTIONS = ['start', 'stop', 'restart', 'status']
+ACTIONS = ['start', 'stop', 'restart', 'status', 'help']
 
 STATES = {
     'start': 'started',
@@ -21,6 +22,12 @@ STATES = {
     'restart': 'restarted',
     'status': 'status'
 }
+
+
+@attr.s
+class ServiceOption(object):
+    name = attr.ib()
+    sub_options = attr.ib(default=None)
 
 
 class ServiceBase(six.with_metaclass(ABCMeta)):
@@ -37,6 +44,10 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         self.ansible_context = ansible_context
 
     def run(self, action, host_pattern=None, process_pattern=None):
+        if action == 'help':
+            self.print_help()
+            return 0
+
         try:
             return self.execute_action(action, host_pattern, process_pattern)
         except NoHostsMatch:
@@ -53,16 +64,47 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         raise NotImplementedError
 
+    def print_help(self):
+        puts(colored.green("Additional help for service '{}'".format(self.name)))
+
+        options = self.get_options()
+        for name, options in options.items():
+            puts("{}:".format(name))
+            with indent():
+                for option in options:
+                    puts(option.name)
+                    if option.sub_options:
+                        with indent():
+                            puts('\n'.join(option.sub_options))
+
+    def get_options(self):
+        all_group_options = []
+        for group in self.inventory_groups:
+            sub_groups = [g.name for g in self.environment.inventory_manager.groups[group].child_groups]
+            all_group_options.append(ServiceOption(group, sub_groups))
+
+        options = OrderedDict()
+        options["Inventory groups (use with '--limit')"] = all_group_options
+        options["Hosts (use with '--limit')"] = [ServiceOption(host) for host in self.all_service_hosts]
+        return options
+
+    @property
+    def all_service_hosts(self):
+        pattern = ','.join(self.inventory_groups)
+        return set([
+            host.name for host in self.environment.inventory_manager.get_hosts(pattern)
+        ])
+
     def _run_ansible_module(self, host_pattern, module, module_args):
-        return run_ansible_module(
-            self.environment,
-            self.ansible_context,
-            host_pattern,
-            module,
-            module_args,
-            True,
-            None,
-        )
+            return run_ansible_module(
+                self.environment,
+                self.ansible_context,
+                host_pattern,
+                module,
+                module_args,
+                True,
+                None,
+            )
 
 
 class SubServicesMixin(six.with_metaclass(ABCMeta)):
@@ -100,13 +142,6 @@ class SupervisorService(SubServicesMixin, ServiceBase):
         :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
         """
         raise NotImplemented
-
-    @property
-    def all_service_hosts(self):
-        pattern = ','.join(self.inventory_groups)
-        return set([
-            host.name for host in self.environment.inventory_manager.get_hosts(pattern)
-        ])
 
 
 class AnsibleService(ServiceBase):
