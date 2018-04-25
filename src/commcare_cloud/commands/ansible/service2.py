@@ -54,9 +54,70 @@ class AnsibleService(ServiceBase):
         return self.name
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if action == 'status':
+            host_pattern = host_pattern or ','.join(self.inventory_groups)
+            command = 'service {} status'.format(self.service_name)
+            return self._run_ansible_module(host_pattern, 'shell', command)
+
         host_pattern = host_pattern or ','.join(self.inventory_groups)
         service_args = 'name={} state={}'.format(self.service_name, STATES[action])
-        self._run_ansible_module(host_pattern, 'service', service_args)
+        return self._run_ansible_module(host_pattern, 'service', service_args)
+
+
+
+class MultiAnsibleService(AnsibleService):
+    """Service that is made up of multiple other services e.g. RiakCS"""
+
+    @abstractmethod
+    def get_inventory_group_for_sub_process(self, sub_service):
+        """
+        :param sub_service: name of a sub-service
+        :return: inventory group for that service
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_managed_services(self):
+        raise NotImplementedError
+
+    def check_status(self, host_pattern=None, process_pattern=None):
+        def _status(service_name, run_on):
+            command = 'service {} status'.format(service_name)
+            return self._run_ansible_module(run_on, 'shell', command)
+
+        return self._run_action_on_hosts(_status, host_pattern, process_pattern)
+
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if action == 'status':
+            return self.check_status(host_pattern, process_pattern)
+
+        def _change_state(service_name, run_on, action=action):
+            service_args = 'name={} state={}'.format(service_name, STATES[action])
+            return self._run_ansible_module(run_on, 'service', service_args)
+
+        return self._run_action_on_hosts(_change_state, host_pattern, process_pattern)
+
+    def _run_action_on_hosts(self, action_fn, host_pattern, process_pattern):
+        if host_pattern:
+            self.environment.inventory_manager.subset(host_pattern)
+
+        if process_pattern:
+            assert process_pattern in self.get_managed_services(), (
+                "{} does not match available sub-processes".format(process_pattern)
+            )
+
+            run_on = self.get_inventory_group_for_sub_process(process_pattern)
+            hosts = self.environment.inventory_manager.get_hosts(run_on)
+            run_on = ','.join([host.name for host in hosts])
+            return action_fn(process_pattern, run_on)
+        else:
+            exit_codes = []
+            for service in self.get_managed_services():
+                run_on = self.get_inventory_group_for_sub_process(service)
+                hosts = self.environment.inventory_manager.get_hosts(run_on)
+                if hosts:
+                    exit_codes.append(action_fn(service, run_on))
+            return max(exit_codes)
 
 
 class Postgresql(AnsibleService):
@@ -96,6 +157,21 @@ class Redis(AnsibleService):
     service_name = 'redis-server'
 
 
+class Riakcs(MultiAnsibleService):
+    name = 'riakcs'
+    inventory_groups = ['riakcs', 'stanchion']
+
+    def get_managed_services(self):
+        return [
+            'riak', 'riak-cs', 'stanchion'
+        ]
+
+    def get_inventory_group_for_sub_process(self, sub_process):
+        return {
+            'stanchion': 'stanchion'
+        }.get(sub_process, 'riakcs')
+
+
 SERVICES = [
     Postgresql,
     Pgbouncer,
@@ -104,6 +180,7 @@ SERVICES = [
     RabbitMq,
     Elasticsearch,
     Redis
+    Riakcs
 ]
 
 SERVICE_NAMES = sorted([
@@ -132,6 +209,10 @@ class Service(CommandBase):
         self.parser.add_argument('--limit', help=(
             "Restrict the hosts to run the command on. Use 'help' action to list all option."
         ))
+        self.parser.add_argument('--only', help=(
+            "Sub-service name to limit action to. Use 'help' action to list all option."
+        )
+                                 )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
