@@ -89,10 +89,6 @@ class AnsiblePlaybook(CommandBase):
             if not has_arg(unknown_args, '-f', '--forks'):
                 cmd_parts += ('--forks', '15')
 
-            known_hosts_filepath = environment.paths.known_hosts
-            if os.path.exists(known_hosts_filepath):
-                cmd_parts += ("--ssh-common-args='-o=UserKnownHostsFile=%s'" % (known_hosts_filepath,), )
-
             if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
                 puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
                 puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
@@ -101,7 +97,7 @@ class AnsiblePlaybook(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts += get_common_ssh_args(public_vars)
+            cmd_parts += get_common_ssh_args(environment)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             if ask_vault_pass:
