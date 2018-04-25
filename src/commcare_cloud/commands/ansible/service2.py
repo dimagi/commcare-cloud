@@ -189,6 +189,21 @@ class Riakcs(MultiAnsibleService):
         }.get(sub_process, 'riakcs')
 
 
+class Kafka(MultiAnsibleService):
+    name = 'kafka'
+    inventory_groups = ['kafka', 'zookeeper']
+
+    def get_managed_services(self):
+        return [
+            'kafka-server', 'zookeeper'
+        ]
+
+    def get_inventory_group_for_sub_process(self, sub_process):
+        return {
+            'stanchion': 'stanchion'
+        }.get(sub_process, 'riakcs')
+
+
 SERVICES = [
     Postgresql,
     Pgbouncer,
@@ -196,8 +211,9 @@ SERVICES = [
     Couchdb,
     RabbitMq,
     Elasticsearch,
-    Redis
-    Riakcs
+    Redis,
+    Riakcs,
+    Kafka,
 ]
 
 SERVICE_NAMES = sorted([
@@ -240,6 +256,8 @@ class Service(CommandBase):
         ]
 
         ansible_context = AnsibleContext(args)
+        exit_codes = []
         for service_cls in services:
             service = service_cls(environment, ansible_context)
-            service.run(args.action, args.limit)
+            exit_codes.append(service.run(args.action, args.limit))
+        return max(exit_codes)
