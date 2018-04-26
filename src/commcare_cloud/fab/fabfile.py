@@ -387,7 +387,7 @@ def prepare_offline_deploy():
 def parse_int_or_exit(val):
     try:
         return int(val)
-    except ValueError:
+    except (ValueError, TypeError):
         print(red("Unable to parse '{}' into an integer".format(val)))
         exit()
 
