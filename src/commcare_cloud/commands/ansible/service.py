@@ -107,13 +107,13 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
 
 
 class SubServicesMixin(six.with_metaclass(ABCMeta)):
-    @abstractmethod
-    def get_managed_services(self):
+    @abstractproperty
+    def managed_services(self):
         raise NotImplementedError
 
     def get_options(self):
         options = super(SubServicesMixin, self).get_options()
-        managed_services = self.get_managed_services()
+        managed_services = self.managed_services
         if managed_services:
             options["Sub-services (use with --only)"] = [ServiceOption(service) for service in managed_services]
         return options
@@ -201,7 +201,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
             self.environment.inventory_manager.subset(host_pattern)
 
         if process_pattern:
-            assert process_pattern in self.get_managed_services(), (
+            assert process_pattern in self.managed_services, (
                 "{} does not match available sub-processes".format(process_pattern)
             )
 
@@ -213,7 +213,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
             return action_fn(process_pattern, run_on)
         else:
             exit_codes = []
-            for service in self.get_managed_services():
+            for service in self.managed_services:
                 run_on = self.get_inventory_group_for_sub_process(service)
                 hosts = self.environment.inventory_manager.get_hosts(run_on)
                 if hosts:
@@ -261,11 +261,7 @@ class Redis(AnsibleService):
 class Riakcs(MultiAnsibleService):
     name = 'riakcs'
     inventory_groups = ['riakcs', 'stanchion']
-
-    def get_managed_services(self):
-        return [
-            'riak', 'riak-cs', 'stanchion'
-        ]
+    managed_services = ['riak', 'riak-cs', 'stanchion']
 
     def get_inventory_group_for_sub_process(self, sub_process):
         return {
@@ -276,11 +272,7 @@ class Riakcs(MultiAnsibleService):
 class Kafka(MultiAnsibleService):
     name = 'kafka'
     inventory_groups = ['kafka', 'zookeeper']
-
-    def get_managed_services(self):
-        return [
-            'kafka-server', 'zookeeper'
-        ]
+    managed_services = ['kafka-server', 'zookeeper']
 
     def get_inventory_group_for_sub_process(self, sub_process):
         return {
@@ -302,13 +294,12 @@ class SingleSupervisorService(SupervisorService):
 class CommCare(SingleSupervisorService):
     name = 'commcare'
     inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
+    managed_services = []
 
     @property
     def supervisor_process_name(self):
         return ''  # control all supervisor processes
 
-    def get_managed_services(self):
-        return []
 
 
 class Webworker(SingleSupervisorService):
@@ -372,7 +363,8 @@ class Celery(SupervisorService):
             processes_by_hosts[hosts] = processes
         return processes_by_hosts
 
-    def get_managed_services(self):
+    @property
+    def managed_services(self):
         workers = get_celery_workers(self.environment)
         return sorted({
             '{}{}'.format(queue, ':{}'.format(worker_num) if worker_num > 1 else '')
