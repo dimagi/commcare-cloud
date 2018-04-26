@@ -134,7 +134,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
 class RunShellCommand(CommandBase):
     command = 'run-shell-command'
-    help = 'Run an arbitrary command via the shell module.'
+    help = 'Run an arbitrary command via the Ansible shell module.'
 
     def make_parser(self):
         arg_inventory_group(self.parser)
