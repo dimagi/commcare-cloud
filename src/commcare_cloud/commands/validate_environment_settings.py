@@ -11,9 +11,6 @@ class ValidateEnvironmentSettings(CommandBase):
         "Validate your environment's configuration files"
     )
 
-    def make_parser(self):
-        pass
-
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         try:

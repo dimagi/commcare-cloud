@@ -13,7 +13,7 @@ class Lookup(CommandBase):
     command = 'lookup'
     help = "Lookup remote hostname or IP address"
 
-    def make_parser(self):
+    def modify_parser(self):
         self.parser.add_argument("server", nargs="?",
             help="Server name/group: postgresql, proxy, webworkers, ... The server "
                  "name/group may be prefixed with 'username@' to login as a specific "
@@ -81,7 +81,7 @@ class Tmux(_Ssh):
     command = 'tmux'
     help = "Connect to a remote host with ssh and open a tmux session"
 
-    def make_parser(self):
+    def modify_parser(self):
         self.parser.add_argument('server',
                                  help="server to run tmux session on. "
                                       "Use '-' to for default (webworkers:0)")
@@ -124,7 +124,7 @@ class DjangoManage(CommandBase):
             "runs `./manage.py ...` on the first webworker of <env>. "
             "Omit <command> to see a full list of possible commands.")
 
-    def make_parser(self):
+    def modify_parser(self):
         self.parser.add_argument('--tmux', action='store_true', default=False, help="Run this command in a tmux and stay connected")
         self.parser.add_argument('--release', help=(
             "Name of release to run under. E.g. '2018-04-13_18.16'"))

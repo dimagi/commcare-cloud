@@ -15,6 +15,10 @@ class CommandBase(object):
     def make_parser(self):
         for argument in self.arguments:
             argument.add_to_parser(self.parser)
+        self.modify_parser()
+
+    def modify_parser(self):
+        pass
 
     @abc.abstractmethod
     def run(self, args, unknown_args):
