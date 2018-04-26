@@ -1,4 +1,9 @@
-# Running Commands with `commcare-cloud`
+# Commands
+
+* TOC
+{:toc}
+
+## Running Commands with `commcare-cloud`
 
 All commcare-cloud commands take the following form:
 
