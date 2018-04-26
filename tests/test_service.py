@@ -25,9 +25,36 @@ def test_get_managed_service_options():
 
 
 @parameterized([
-    (['h1', 'h2', 'h3', 'h4'], process_descriptors, None)
+    # no filtering
+    (['h1', 'h2', 'h3', 'h4'], process_descriptors, None, {
+        ('h1',): ['p1-0', 'p1-1', 'p2-0'],
+        ('h2',): ['p1-2'],
+        ('h3','h4'): ['p3-0']
+    }),
+    # filter hosts
+    (['h1', 'h3'], process_descriptors, None, {
+        ('h1',): ['p1-0', 'p1-1', 'p2-0'],
+        ('h3',): ['p3-0']
+    }),
+    # filter processes
+    (['h1', 'h2', 'h3', 'h4'], process_descriptors, 'p3', {
+        ('h3', 'h4'): ['p3-0'],
+    }),
+    # filter process and host
+    (['h3'], process_descriptors, 'p3', {
+        ('h3',): ['p3-0'],
+    }),
+    # filter process with num
+    (['h1', 'h2'], process_descriptors, 'p1:1', {
+        ('h1',): ['p1-1'],
+    }),
+    # filter just process for process with multiple instances
+    (['h1', 'h2'], process_descriptors, 'p1', {
+        ('h1',): ['p1-0', 'p1-1'],
+        ('h2',): ['p1-2'],
+    })
 ])
-def test_get_processes_by_host(all_hosts, process_descriptors, process_pattern):
+def test_get_processes_by_host(all_hosts, process_descriptors, process_pattern, expected_response):
     processes_by_host = get_processes_by_host(all_hosts, process_descriptors, process_pattern)
 
     # sort for comparison
@@ -35,8 +62,4 @@ def test_get_processes_by_host(all_hosts, process_descriptors, process_pattern):
         hosts: sorted(process)
         for hosts, process in processes_by_host.items()
     }
-    assert processes_by_host == {
-        ('h1',): ['p1-0', 'p1-1', 'p2-0'],
-        ('h2',): ['p1-2'],
-        ('h3','h4'): ['p3-0'],
-    }
+    assert processes_by_host == expected_response, processes_by_host
