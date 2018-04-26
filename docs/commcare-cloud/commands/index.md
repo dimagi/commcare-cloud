@@ -203,7 +203,7 @@ commcare-cloud <env> run-module all debug "msg={{ inventory_hostname }}"
 Run an arbitrary command via the Ansible shell module:
 
 ```
-commcare-cloud <env> run-shell-command <inventory_group> <shell_command>
+commcare-cloud <env> run-shell-command <inventory_group> <shell_command> [--silence-warnings]
 ```
 
 ##### `<inventory_group>`
@@ -215,6 +215,10 @@ See [`run-module`](#run-module).
 Command to run remotely.
 (Tip: put quotes around it, as it will likely contain spaces.)
 Cannot being with `sudo`; to do that use the ansible `--become` option.
+
+##### `[--silence-warnings]`
+
+Silence shell warnings (such as to use another module instead).
 
 ##### Example
 ```
@@ -427,18 +431,19 @@ Usage examples:
    cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
 
 ```
-comcare-cloud <env> service <service_group> <action:status|start|stop|restart> [--only <subservices>]
+comcare-cloud <env> service <services> <action:status|start|stop|restart> [--only <process_pattern>]
 ```
 
 Services are grouped together to form conceptual service groups.
 Thus the `postgresql` service group applies to both the `postgresql`
-service and the `pgbouncer` service. These actual services are called
-"subservices" in this command.
+service and the `pgbouncer` service. We'll call the actual services
+"subservices" here.
 
-##### `<service_group>`
+##### `<services>`
 
-The name of the service group to apply the action to.
+The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
+More than one service may be supplied as separate arguments in a row.
 
 
 ##### `<action>`
@@ -446,7 +451,7 @@ There is a preset list of service groups that are supported.
 Action can be `status`, `start`, `stop`, or `restart`.
 This action is applied to every matching service.
 
-##### `[--only <subservices>]`
+##### `[--only <process_pattern>]`
 
 Many service groups are made up of more than one actual service
 or "subservice" as we call them here.

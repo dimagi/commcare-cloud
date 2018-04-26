@@ -22,9 +22,10 @@ STDOUT_CALLBACK_ARG = Argument(
     '--output', dest='stdout_callback', choices=['actionable', 'minimal'],
     default=os.environ.get('ANSIBLE_STDOUT_CALLBACK') or 'default',
     help=("The callback plugin to use for generating output. "
-          "See ansible-doc -t callback -l and ansible-doc -t callback [ansible|minimal]")
+          "See ansible-doc -t callback -l and ansible-doc -t callback [ansible|minimal]"),
+    include_in_docs=False,
 )
 
 LIMIT_ARG = Argument('-l', '--limit', metavar="SUBSET", help=(
     "further limit selected hosts to an additional pattern"
-))
+), include_in_docs=False)

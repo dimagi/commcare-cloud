@@ -12,7 +12,7 @@ class Fab(CommandBase):
     )
 
     arguments = (
-        Argument(dest='fab_command', help="fab command", default=None, nargs="?")
+        Argument(dest='fab_command', help="fab command", default=None, nargs="?"),
     )
 
     def modify_parser(self):
