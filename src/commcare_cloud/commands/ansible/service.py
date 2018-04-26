@@ -199,13 +199,24 @@ class AnsibleService(ServiceBase):
 class MultiAnsibleService(SubServicesMixin, AnsibleService):
     """Service that is made up of multiple other services e.g. RiakCS"""
 
-    @abstractmethod
-    def get_inventory_group_for_sub_process(self, sub_service):
+    @abstractproperty
+    def service_process_mapping(self):
         """
-        :param sub_service: name of a sub-service
-        :return: inventory group or host for that service
+        Return a mapping of service names (as passed in by the user) to
+        a tuple of (Linux service name, inventory group)
         """
         raise NotImplementedError
+
+    @property
+    def inventory_groups(self):
+        return [
+            inventory_group
+            for service, inventory_group in self.service_process_mapping.values()
+        ]
+
+    @property
+    def managed_services(self):
+        return [name for name in self.service_process_mapping]
 
     def check_status(self, host_pattern=None, process_pattern=None):
         def _status(service_name, run_on):
@@ -228,31 +239,29 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
         if host_pattern:
             self.environment.inventory_manager.subset(host_pattern)
 
-        if process_pattern:
-            assert process_pattern in self.managed_services, (
-                "{} does not match available sub-processes".format(process_pattern)
-            )
-
-            run_on = self.get_inventory_group_for_sub_process(process_pattern)
+        non_zero_exits = []
+        ran = False
+        for service, run_on in self._get_service_host_groups(process_pattern):
             hosts = self.environment.inventory_manager.get_hosts(run_on)
-            if not hosts:
-                raise NoHostsMatch
-            run_on = ','.join([host.name for host in hosts])
-            return action_fn(process_pattern, run_on)
+            run_on = hosts if host_pattern else run_on
+            if hosts:
+                ran = True
+                exit_code = action_fn(service, run_on)
+                if exit_code != 0:
+                    non_zero_exits.append(exit_code)
+
+        if not ran:
+            raise NoHostsMatch
+        return non_zero_exits[0] if non_zero_exits else 0
+
+    def _get_service_host_groups(self, process_pattern):
+        service_groups = []
+        if process_pattern:
+            for name in process_pattern.split(','):
+                service_groups.append(self.service_process_mapping[name])
         else:
-            non_zero_exits = []
-            ran = False
-            for service in self.managed_services:
-                run_on = self.get_inventory_group_for_sub_process(service)
-                hosts = self.environment.inventory_manager.get_hosts(run_on)
-                if hosts:
-                    ran = True
-                    exit_code = action_fn(service, run_on)
-                    if exit_code != 0:
-                        non_zero_exits.append(exit_code)
-            if not ran:
-                raise NoHostsMatch
-            return non_zero_exits[0] if non_zero_exits else 0
+            service_groups = list(self.service_process_mapping.values())
+        return service_groups
 
 
 class Nginx(AnsibleService):
@@ -284,33 +293,27 @@ class Redis(AnsibleService):
 
 class Riakcs(MultiAnsibleService):
     name = 'riakcs'
-    inventory_groups = ['riakcs', 'stanchion']
-    managed_services = ['riak', 'riak-cs', 'stanchion']
-
-    def get_inventory_group_for_sub_process(self, sub_process):
-        return {
-            'stanchion': 'stanchion'
-        }.get(sub_process, 'riakcs')
+    service_process_mapping = {
+        'riak': ('riak', 'riakcs'),
+        'riakcs': ('riak-cs', 'riakcs'),
+        'stanchion': ('stanchion', 'stanchion'),
+    }
 
 
 class Kafka(MultiAnsibleService):
     name = 'kafka'
-    inventory_groups = ['kafka', 'zookeeper']
-    managed_services = ['kafka-server', 'zookeeper']
-
-    def get_inventory_group_for_sub_process(self, sub_process):
-        return {
-            'kafka-server': 'kafka',
-        }.get(sub_process, sub_process)
+    service_process_mapping = {
+        'kafka': ('kafka-server', 'kafka'),
+        'zookeeper': ('zookeeper', 'zookeeper')
+    }
 
 
 class Postgres(MultiAnsibleService):
     name = 'postgres'
-    inventory_groups = ['postgresql', 'pg_standby']
-    managed_services = ['postgresql', 'pgbouncer']
-
-    def get_inventory_group_for_sub_process(self, sub_process):
-        return ','.join(self.inventory_groups)
+    service_process_mapping = {
+        'postgres': ('postgresql', 'postgresql'),
+        'pgbouncer': ('pgbouncer', 'postgresql')
+    }
 
 
 class SingleSupervisorService(SupervisorService):
