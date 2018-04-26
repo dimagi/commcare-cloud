@@ -126,20 +126,23 @@ class SupervisorService(SubServicesMixin, ServiceBase):
 
         process_host_mapping = self._get_processes_by_host(process_pattern)
 
-        exit_status = []
+        if not process_host_mapping:
+            raise NoHostsMatch
+
+        non_zero_exits = []
         for hosts, processes in process_host_mapping.items():
             command = 'supervisorctl {} {}'.format(
                 action,
                 ' '.join(processes)
             )
-            exit_status.append(self._run_ansible_module(
+            exit_code = self._run_ansible_module(
                 ','.join(hosts),
                 'shell',
                 command
-            ))
-        if not exit_status:
-            raise NoHostsMatch
-        return max(exit_status)
+            )
+            if exit_code != 0:
+                non_zero_exits.append(exit_code)
+        return non_zero_exits[0] if non_zero_exits else 0
 
     @abstractmethod
     def _get_processes_by_host(self, process_pattern=None):
@@ -212,13 +215,15 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
             run_on = ','.join([host.name for host in hosts])
             return action_fn(process_pattern, run_on)
         else:
-            exit_codes = []
+            non_zero_exits = []
             for service in self.managed_services:
                 run_on = self.get_inventory_group_for_sub_process(service)
                 hosts = self.environment.inventory_manager.get_hosts(run_on)
                 if hosts:
-                    exit_codes.append(action_fn(service, run_on))
-            return max(exit_codes)
+                    exit_code = action_fn(service, run_on)
+                    if exit_code != 0:
+                        non_zero_exits.append(exit_code)
+            return non_zero_exits[0] if non_zero_exits else 0
 
 
 class Postgresql(AnsibleService):
@@ -429,8 +434,10 @@ class Service(CommandBase):
         ]
 
         ansible_context = AnsibleContext(args)
-        exit_codes = []
+        non_zero_exits = []
         for service_cls in services:
             service = service_cls(environment, ansible_context)
-            exit_codes.append(service.run(args.action, args.limit))
-        return max(exit_codes)
+            exit_code = service.run(args.action, args.limit)
+            if exit_code != 0:
+                non_zero_exits.append(exit_code)
+        return non_zero_exits[0] if non_zero_exits else 0
