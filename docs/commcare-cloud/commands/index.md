@@ -368,9 +368,7 @@ you have to use `update-users` below instead.
 
 #### `update-users`
 
-Add users to a set of new machines as root.
-This must be done before any other user can log in.
-<!-- todo: update this description to match corrected command description-->
+Bring users up to date with the current CommCare Cloud settings.
 
 ```
 commcare-cloud <env> update-users
