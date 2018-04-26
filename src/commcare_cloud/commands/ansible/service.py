@@ -308,8 +308,8 @@ class Kafka(MultiAnsibleService):
     }
 
 
-class Postgres(MultiAnsibleService):
-    name = 'postgres'
+class Postgresql(MultiAnsibleService):
+    name = 'postgresql'
     service_process_mapping = {
         'postgres': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
@@ -456,7 +456,7 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
 
 
 SERVICES = [
-    Postgres,
+    Postgresql,
     Nginx,
     Couchdb,
     RabbitMq,
