@@ -443,7 +443,16 @@ SERVICES_BY_NAME = {
 
 class Service(CommandBase):
     command = 'service'
-    help = "Manage services. Use 'help' action for service details."
+    help = (
+        "Manage services.\n"
+        "Usage examples:"
+        "   cchq <env> service postgresql status\n"
+        "   cchq <env> service celery help\n"
+        "   cchq <env> service celery restart --limit <host>\n"
+        "   cchq <env> service celery restart --only <queue-name>\n"
+        "   cchq <env> service pillowtop restart --limit <host> --only <pillow-name>\n"
+        "\n"
+    )
 
     def make_parser(self):
         self.parser.add_argument(

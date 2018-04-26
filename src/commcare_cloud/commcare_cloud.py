@@ -6,6 +6,8 @@ import os
 import sys
 import warnings
 
+from argparse import RawTextHelpFormatter
+
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
@@ -86,7 +88,7 @@ def add_backwards_compatibility_to_args(args):
 
 def main():
     put_virtualenv_bin_on_the_path()
-    parser = ArgumentParser()
+    parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
     available_envs = get_available_envs()
     parser.add_argument('env_name', choices=available_envs, help=(
         "server environment to run against"
