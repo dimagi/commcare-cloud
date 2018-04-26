@@ -103,7 +103,12 @@ def main():
     for command_type in COMMAND_TYPES:
         assert issubclass(command_type, CommandBase), command_type
         cmd = command_type(subparsers.add_parser(
-            command_type.command, help=command_type.help, aliases=command_type.aliases))
+            command_type.command,
+            help=command_type.help,
+            aliases=command_type.aliases,
+            description=command_type.help,
+            formatter_class=RawTextHelpFormatter)
+        )
         cmd.make_parser()
         commands[cmd.command] = cmd
         for alias in cmd.aliases:
