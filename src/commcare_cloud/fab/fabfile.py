@@ -221,7 +221,7 @@ def env_common():
     all = servers['all']
     proxy = servers['proxy']
     webworkers = servers['webworkers']
-    django_manage = servers.get('django_manage', webworkers[0])
+    django_manage = servers.get('django_manage', [webworkers[0]])
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
