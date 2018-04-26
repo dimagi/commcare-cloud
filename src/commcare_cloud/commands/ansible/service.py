@@ -311,8 +311,8 @@ class Kafka(MultiAnsibleService):
 class Postgres(MultiAnsibleService):
     name = 'postgres'
     service_process_mapping = {
-        'postgres': ('postgresql', 'postgresql'),
-        'pgbouncer': ('pgbouncer', 'postgresql')
+        'postgres': ('postgresql', 'postgresql,pg_standby'),
+        'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
 
 
