@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+from collections import namedtuple
 
 from clint.textui import puts, colored
 
@@ -121,6 +122,9 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
     return exit_code
 
 
+ProcessDescriptor = namedtuple('ProcessDescriptor', 'host, short_name, number, full_name')
+
+
 def get_celery_workers(environment):
     for host, queues in environment.app_processes_config.celery_processes.items():
         if not host or host == 'None':
@@ -129,7 +133,7 @@ def get_celery_workers(environment):
             for queue in comma_separated_queue_names.split(','):
                 for worker_num in range(config.get('num_workers', 1)):
                     process_name = get_celery_worker_name(environment, comma_separated_queue_names, worker_num)
-                    yield (host, queue, worker_num, process_name)
+                    yield ProcessDescriptor(host, queue, worker_num, process_name)
 
 
 def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
@@ -141,3 +145,17 @@ def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
         comma_separated_queue_name=comma_separated_queue_name,
         worker_num=worker_num
     )
+
+
+def get_pillowtop_processes(environment):
+    for host, pillows in environment.app_processes_config.pillows.items():
+        for name, params in pillows.items():
+            start = params.get('start_process', 0)
+            num_processes = params.get('num_processes', 1)
+            for num_process in range(start, start + num_processes):
+                process_name = "commcare-hq-{deploy_env}-pillowtop-{pillow_name}-{num_process}".format(
+                    deploy_env=environment.meta_config.deploy_env,
+                    pillow_name=name,
+                    num_process=num_process
+                )
+                yield ProcessDescriptor(host, name, num_process, process_name)
