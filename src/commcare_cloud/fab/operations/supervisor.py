@@ -7,12 +7,11 @@ import posixpath
 from contextlib import contextmanager
 import uuid
 
-from commcare_cloud.commands.celery_utils import get_celery_worker_name
 from commcare_cloud.commands.ansible.helpers import (
     get_django_webworker_name,
     get_formplayer_instance_name,
     get_formplayer_spring_instance_name,
-)
+    get_celery_worker_name)
 from fabric.api import roles, parallel, env, sudo, serial, execute
 from fabric.colors import magenta
 from fabric.context_managers import cd
@@ -98,7 +97,7 @@ def set_celery_supervisorconf():
             conf_destination_filename = 'supervisor_celery_worker_{}_{}.conf'.format(
                 comma_separated_queue_names, worker_num)
 
-            worker_name = get_celery_worker_name(env.env_name,
+            worker_name = get_celery_worker_name(env.ccc_environment,
                                                  params['comma_separated_queue_names'],
                                                  params['worker_num'])
             _rebuild_supervisor_conf_file(
@@ -144,7 +143,7 @@ def show_periodic_server_whitelist_message_and_abort(env):
 
 
 def set_djangoapp_supervisorconf():
-    django_worker_name = get_django_webworker_name(env.env_name)
+    django_worker_name = get_django_webworker_name(env.ccc_environment)
     if _check_in_roles(ROLES_DJANGO):
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_django.conf',
@@ -157,7 +156,7 @@ def set_formsplayer_supervisorconf():
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_formsplayer.conf',
                                       {'formplayer_instance_name':
-                                           get_formplayer_instance_name(env.env_name)}
+                                           get_formplayer_instance_name(env.ccc_environment)}
                                       )
 
 
@@ -166,7 +165,7 @@ def set_formplayer_spring_supervisorconf():
         _rebuild_supervisor_conf_file('make_supervisor_conf',
                                       'supervisor_formplayer_spring.conf',
                                       {'formplayer_spring_instance_name':
-                                           get_formplayer_spring_instance_name(env.env_name)}
+                                           get_formplayer_spring_instance_name(env.ccc_environment)}
                                       )
 
 
