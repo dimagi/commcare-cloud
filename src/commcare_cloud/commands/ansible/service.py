@@ -367,9 +367,9 @@ class Pillowtop(SupervisorService):
 
 
 def get_managed_service_options(process_descriptors):
-    options = defaultdict(list)
+    options = defaultdict(set)
     for host, short_name, number, full_name in process_descriptors:
-        options[short_name].append(number)
+        options[short_name].add(number)
     return sorted([
         '{}{}'.format(name, ':[0-{}]'.format(max(numbers)) if len(numbers) > 1 else '')
         for name, numbers in options.items()
