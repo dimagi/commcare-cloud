@@ -426,17 +426,17 @@ def _setup_release(keep_days=0, full_cluster=True):
     last past a deploy use the `keep_days` param.
 
     :param keep_days: The number of days to keep this release before it will be purged
-    :param full_cluster: If True, only setup on webworkers[0] where the command will be run
+    :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    execute_with_timing(release.create_code_dir, full_cluster)
-    execute_with_timing(release.update_code, deploy_ref, full_cluster=full_cluster)
-    execute_with_timing(release.update_virtualenv, full_cluster)
+    execute_with_timing(release.create_code_dir(full_cluster))
+    execute_with_timing(release.update_code(full_cluster), deploy_ref)
+    execute_with_timing(release.update_virtualenv(full_cluster))
 
     execute_with_timing(copy_release_files, full_cluster)
 
     if keep_days > 0:
-        execute_with_timing(release.mark_keep_until, keep_days, full_cluster)
+        execute_with_timing(release.mark_keep_until(full_cluster), keep_days)
 
     print(blue("Your private release is located here: "))
     print(blue(env.code_root))
@@ -578,7 +578,7 @@ def unlink_current():
 
 
 def copy_release_files(full_cluster=True):
-    execute(release.copy_localsettings, full_cluster)
+    execute(release.copy_localsettings(full_cluster))
     if full_cluster:
         execute(release.copy_tf_localsettings)
         execute(release.copy_formplayer_properties)

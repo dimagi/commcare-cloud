@@ -32,12 +32,12 @@ from commcare_cloud.fab.utils import pip_install
 GitConfig = namedtuple('GitConfig', 'key value')
 
 
-def update_code(git_tag, use_current_release=False, full_cluster=True):
+def update_code(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
     @parallel
-    def update(git_tag, use_current_release):
+    def update(git_tag, use_current_release=False):
         # If not updating current release,  we are making a new release and thus have to do cloning
         # we should only ever not make a new release when doing a hotfix deploy
         if not use_current_release:
@@ -54,7 +54,7 @@ def update_code(git_tag, use_current_release=False, full_cluster=True):
             # remove all .pyc files in the project
             sudo("find . -name '*.pyc' -delete")
 
-    update(git_tag, use_current_release)
+    return update
 
 
 @roles(ROLES_ALL_SRC)
@@ -268,7 +268,7 @@ def update_virtualenv(full_cluster=True):
                 posixpath.join(requirements, 'requirements.txt'),
             ])
 
-    update()
+    return update
 
 def create_code_dir(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
@@ -278,7 +278,7 @@ def create_code_dir(full_cluster=True):
     def create():
         sudo('mkdir -p {}'.format(env.code_root))
 
-    create()
+    return create
 
 @roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
@@ -396,7 +396,7 @@ def copy_localsettings(full_cluster=True):
     def copy():
         sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
 
-    copy()
+    return copy
 
 
 @parallel
@@ -471,7 +471,7 @@ def ensure_release_exists(release):
     return files.exists(release)
 
 
-def mark_keep_until(keep_days, full_cluster=True):
+def mark_keep_until(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
@@ -481,7 +481,7 @@ def mark_keep_until(keep_days, full_cluster=True):
         with cd(env.code_root):
             sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
 
-    mark(keep_days)
+    return mark
 
 
 @roles(ROLES_ALL_SRC)
