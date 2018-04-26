@@ -486,7 +486,7 @@ SERVICES_BY_NAME = {
 
 
 def validate_pattern(pattern):
-    match = re.match(r'^[\w]+(:[\d]+)?$', pattern)
+    match = re.match(r'^[\w]+(:[\d]+)?(?:,[\w]+(:[\d]+)?)*$', pattern)
     if not match:
         raise ValueError
     return pattern
@@ -498,9 +498,10 @@ class Service(CommandBase):
         "Manage services.\n"
         "Usage examples:"
         "   cchq <env> service postgresql status\n"
+        "   cchq <env> service riakcs restart --only riak,riakcs\n"
         "   cchq <env> service celery help\n"
         "   cchq <env> service celery restart --limit <host>\n"
-        "   cchq <env> service celery restart --only <queue-name>\n"
+        "   cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>\n"
         "   cchq <env> service pillowtop restart --limit <host> --only <pillow-name>\n"
         "\n"
     )
