@@ -370,10 +370,10 @@ def get_managed_service_options(process_descriptors):
     options = defaultdict(list)
     for host, short_name, number, full_name in process_descriptors:
         options[short_name].append(number)
-    return sorted({
+    return sorted([
         '{}{}'.format(name, ':[0-{}]'.format(max(numbers)) if len(numbers) > 1 else '')
         for name, numbers in options.items()
-    })
+    ])
 
 
 def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
@@ -396,11 +396,16 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
                 and matches(number, num_match):
             processes_by_host[host].add(full_name)
 
+    # convert to list so that we can sort
+    processes_by_host = {
+        host: list(p) for host, p in processes_by_host.items()
+    }
+
     processes_by_hosts = {}
     # group hosts together so we do less calls to ansible
-    for grouper in groupby(processes_by_host.items(), key=lambda hp: hp[1]):
-        hosts = tuple(host_processes[0] for host_processes in grouper[1])
-        processes = grouper[0]
+    items = sorted(processes_by_host.items(), key=lambda hp: hp[1])
+    for processes, group in groupby(items, key=lambda hp: hp[1]):
+        hosts = tuple([host_processes[0] for host_processes in group])
         processes_by_hosts[hosts] = processes
     return processes_by_hosts
 

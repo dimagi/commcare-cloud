@@ -128,6 +128,10 @@ ProcessDescriptor = namedtuple('ProcessDescriptor', 'host, short_name, number, f
 def get_celery_workers(environment):
     """
     A generator that yields ``ProcessDescriptor`` tuples for celery
+
+    The same process may be yielded more than once if a single process is managing
+    multiple queues.
+
     :param environment:
     """
     for host, queues in environment.app_processes_config.celery_processes.items():
