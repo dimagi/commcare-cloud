@@ -415,9 +415,11 @@ Manage services.
 
 Usage examples:
    cchq <env> service postgresql status
+   cchq <env> service riakcs restart --only riak,riakcs
    cchq <env> service celery help
    cchq <env> service celery restart --limit <host>
    cchq <env> service celery restart --only <queue-name>
+   cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
    cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
 
 ```
