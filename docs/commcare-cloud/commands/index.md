@@ -5,7 +5,7 @@
 
 ## Running Commands with `commcare-cloud`
 
-All commcare-cloud commands take the following form:
+All `commcare-cloud` commands take the following form:
 
 ```
 commcare-cloud <env> <command> <args...>
