@@ -328,7 +328,7 @@ class SingleSupervisorService(SupervisorService):
             raise NoHostsMatch
 
         return {
-            tuple(self.all_service_hosts): self.supervisor_process_name
+            tuple(self.all_service_hosts): [self.supervisor_process_name]
         }
 
 
