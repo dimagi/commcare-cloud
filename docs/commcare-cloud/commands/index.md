@@ -413,6 +413,13 @@ Use `-l` instead of a command to see the full list of commands.
 
 Manage services.
 
+Usage examples:
+   cchq <env> service postgresql status
+   cchq <env> service celery help
+   cchq <env> service celery restart --limit <host>
+   cchq <env> service celery restart --only <queue-name>
+   cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
+
 ```
 comcare-cloud <env> service <service_group> <action:status|start|stop|restart> [--only <subservices>]
 ```
