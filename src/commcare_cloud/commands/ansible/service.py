@@ -1,3 +1,4 @@
+import re
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict, OrderedDict
 from itertools import groupby
@@ -466,6 +467,12 @@ SERVICES_BY_NAME = {
 }
 
 
+def validate_pattern(pattern):
+    match = re.match(r'^[\w]+(:[\d]+)?$', pattern)
+    if not match:
+        raise ValueError
+
+
 class Service(CommandBase):
     command = 'service'
     help = (
@@ -491,10 +498,13 @@ class Service(CommandBase):
             help="What action to take"
         )
         self.parser.add_argument('--limit', help=(
-            "Restrict the hosts to run the command on. Use 'help' action to list all option."
+            "Restrict the hosts to run the command on."
+            "\nUse 'help' action to list all options."
         ))
-        self.parser.add_argument('--only', dest='process_pattern', help=(
-            "Sub-service name to limit action to. Use 'help' action to list all option."
+        self.parser.add_argument('--only', type=validate_pattern, dest='process_pattern', help=(
+            "Sub-service name to limit action to."
+            "\nFormat as 'name' or 'name:number'."
+            "\nUse 'help' action to list all options."
         ))
 
     def run(self, args, unknown_args):
