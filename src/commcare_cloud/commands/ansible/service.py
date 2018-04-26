@@ -7,7 +7,7 @@ import six
 from clint.textui import puts, colored, indent
 
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, get_django_webworker_name, \
-    get_formplayer_spring_instance_name, get_formplayer_instance_name, get_celery_workers
+    get_formplayer_spring_instance_name, get_formplayer_instance_name, get_celery_workers, get_pillowtop_processes
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
@@ -339,42 +339,67 @@ class Celery(SupervisorService):
     inventory_groups = ['celery']
 
     def _get_processes_by_host(self, process_pattern=None):
-        all_hosts = self.all_service_hosts
-
-        worker_match = queue_match = None
-        if process_pattern:
-            if ':' in process_pattern:
-                queue_match, worker_match = process_pattern.split(':')
-                worker_match = int(worker_match)
-            else:
-                queue_match = process_pattern
-
-        def matches(item, matcher):
-            return matcher is None or matcher == item
-
-        workers = get_celery_workers(self.environment)
-        processes_by_host = defaultdict(set)
-        for host, queue, worker_num, process_name in workers:
-            if host in all_hosts \
-                    and matches(queue, queue_match) \
-                    and matches(worker_num, worker_match):
-                processes_by_host[host].add(process_name)
-
-        processes_by_hosts = {}
-        # group hosts together so we do less calls to ansible
-        for grouper in groupby(processes_by_host.items(), key=lambda hp: hp[1]):
-            hosts = tuple(host_processes[0] for host_processes in grouper[1])
-            processes = grouper[0]
-            processes_by_hosts[hosts] = processes
-        return processes_by_hosts
+        return get_processes_by_host(
+            self.all_service_hosts,
+            get_celery_workers(self.environment),
+            process_pattern
+        )
 
     @property
     def managed_services(self):
-        workers = get_celery_workers(self.environment)
-        return sorted({
-            '{}{}'.format(queue, ':{}'.format(worker_num) if worker_num > 1 else '')
-            for host, queue, worker_num, process_name in workers
-        })
+        return get_managed_service_options(get_celery_workers(self.environment))
+
+
+class Pillowtop(SupervisorService):
+    name = 'pillowtop'
+    inventory_groups = ['pillowtop']
+
+    @property
+    def managed_services(self):
+        return get_managed_service_options(get_pillowtop_processes(self.environment))
+
+    def _get_processes_by_host(self, process_pattern=None):
+        return get_processes_by_host(
+            self.all_service_hosts,
+            get_pillowtop_processes(self.environment),
+            process_pattern
+        )
+
+
+def get_managed_service_options(process_descriptors):
+    return sorted({
+        '{}{}'.format(short_name, ':{}'.format(number) if number > 1 else '')
+        for host, short_name, number, full_name in process_descriptors
+    })
+
+
+def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
+    num_match = name_match = None
+    if process_pattern:
+        if ':' in process_pattern:
+            name_match, num_match = process_pattern.split(':')
+            num_match = int(num_match)
+        else:
+            name_match = process_pattern
+
+    def matches(item, matcher):
+        return matcher is None or matcher == item
+
+
+    processes_by_host = defaultdict(set)
+    for host, name, number, full_name in process_descriptors:
+        if host in all_hosts \
+                and matches(name, name_match) \
+                and matches(number, num_match):
+            processes_by_host[host].add(full_name)
+
+    processes_by_hosts = {}
+    # group hosts together so we do less calls to ansible
+    for grouper in groupby(processes_by_host.items(), key=lambda hp: hp[1]):
+        hosts = tuple(host_processes[0] for host_processes in grouper[1])
+        processes = grouper[0]
+        processes_by_hosts[hosts] = processes
+    return processes_by_hosts
 
 
 SERVICES = [
@@ -392,6 +417,7 @@ SERVICES = [
     Touchforms,
     Celery,
     CommCare,
+    Pillowtop,
 ]
 
 SERVICE_NAMES = sorted([
