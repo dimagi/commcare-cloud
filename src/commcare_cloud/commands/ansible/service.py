@@ -482,6 +482,7 @@ def validate_pattern(pattern):
     match = re.match(r'^[\w]+(:[\d]+)?$', pattern)
     if not match:
         raise ValueError
+    return pattern
 
 
 class Service(CommandBase):
