@@ -186,12 +186,12 @@ class AnsibleService(ServiceBase):
             if not hosts:
                 raise NoHostsMatch
 
+        host_pattern = host_pattern or ','.join(self.inventory_groups)
+
         if action == 'status':
-            host_pattern = host_pattern or ','.join(self.inventory_groups)
             command = 'service {} status'.format(self.service_name)
             return self._run_ansible_module(host_pattern, 'shell', command)
 
-        host_pattern = host_pattern or ','.join(self.inventory_groups)
         service_args = 'name={} state={}'.format(self.service_name, STATES[action])
         return self._run_ansible_module(host_pattern, 'service', service_args)
 
