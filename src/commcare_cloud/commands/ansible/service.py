@@ -74,7 +74,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
                     puts(option.name)
                     if option.sub_options:
                         with indent():
-                            puts('\n'.join(option.sub_options))
+                            puts(', '.join(option.sub_options))
 
     def get_options(self):
         all_group_options = []
