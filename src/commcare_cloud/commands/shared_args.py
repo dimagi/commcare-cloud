@@ -28,27 +28,3 @@ STDOUT_CALLBACK_ARG = Argument(
 LIMIT_ARG = Argument('-l', '--limit', metavar="SUBSET", help=(
     "further limit selected hosts to an additional pattern"
 ))
-
-
-def arg_inventory_group(parser):
-    INVENTORY_GROUP_ARG.add_to_parser(parser)
-
-
-def arg_skip_check(parser):
-    SKIP_CHECK_ARG.add_to_parser(parser)
-
-
-def arg_quiet(parser):
-    QUIET_ARG.add_to_parser(parser)
-
-
-def arg_branch(parser):
-    BRANCH_ARG.add_to_parser(parser)
-
-
-def arg_stdout_callback(parser):
-    STDOUT_CALLBACK_ARG.add_to_parser(parser)
-
-
-def arg_limit(parser):
-    LIMIT_ARG.add_to_parser(parser)
