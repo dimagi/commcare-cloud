@@ -526,7 +526,7 @@ class Service(CommandBase):
         Argument('--limit', help=(
             "Restrict the hosts to run the command on."
             "\nUse 'help' action to list all options."
-        )),
+        ), include_in_docs=False),
         Argument('--only', type=validate_pattern, dest='process_pattern', help=(
             "Sub-service name to limit action to."
             "\nFormat as 'name' or 'name:number'."

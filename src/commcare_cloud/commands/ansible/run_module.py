@@ -18,10 +18,10 @@ from commcare_cloud.environment.paths import ANSIBLE_DIR
 NON_POSITIONAL_ARGUMENTS = (
     Argument('-b', '--become', action='store_true', help=(
         "run operations with become (implies vault password prompting if necessary)"
-    )),
+    ), include_in_docs=False),
     Argument('--become-user', help=(
         "run operations as this user (default=root)"
-    )),
+    ), include_in_docs=False),
     shared_args.SKIP_CHECK_ARG,
     shared_args.QUIET_ARG,
     shared_args.STDOUT_CALLBACK_ARG,
