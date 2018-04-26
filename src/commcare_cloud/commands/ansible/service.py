@@ -310,8 +310,8 @@ class Kafka(MultiAnsibleService):
 
     def get_inventory_group_for_sub_process(self, sub_process):
         return {
-            'stanchion': 'stanchion'
-        }.get(sub_process, 'riakcs')
+            'kafka-server': 'kafka',
+        }.get(sub_process, sub_process)
 
 
 class SingleSupervisorService(SupervisorService):
