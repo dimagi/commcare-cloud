@@ -40,9 +40,6 @@ class RunAnsibleModule(CommandBase):
     ) + NON_POSITIONAL_ARGUMENTS
 
     def modify_parser(self):
-        self.add_help_text()
-
-    def add_help_text(self):
         add_to_help_text(self.parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
             filtered_help_message(
@@ -147,7 +144,7 @@ class RunShellCommand(CommandBase):
     ) + NON_POSITIONAL_ARGUMENTS
 
     def modify_parser(self):
-        RunAnsibleModule(self.parser).add_help_text()
+        RunAnsibleModule(self.parser).modify_parser()
 
     def run(self, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
