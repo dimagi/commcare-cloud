@@ -35,12 +35,16 @@ class ServiceOption(object):
 
 
 class ServiceBase(six.with_metaclass(ABCMeta)):
+    """Base class for all services."""
+
     @abstractproperty
     def name(self):
+        """Name of the service shown on the command line."""
         raise NotImplementedError
 
     @abstractproperty
     def inventory_groups(self):
+        """Inventory groups that are applicable to this service."""
         raise NotImplementedError
 
     def __init__(self, environment, ansible_context):
@@ -94,6 +98,9 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
 
     @property
     def all_service_hosts(self):
+        """
+        :return: set of hosts that are applicable to this service
+        """
         pattern = ','.join(self.inventory_groups)
         return set([
             host.name for host in self.environment.inventory_manager.get_hosts(pattern)
@@ -114,6 +121,9 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
 class SubServicesMixin(six.with_metaclass(ABCMeta)):
     @abstractproperty
     def managed_services(self):
+        """
+        :return: List of sub-services managed by this class. e.g. Celery workers, Pillowtop processes
+        """
         raise NotImplementedError
 
     def get_options(self):
@@ -152,6 +162,8 @@ class SupervisorService(SubServicesMixin, ServiceBase):
     @abstractmethod
     def _get_processes_by_host(self, process_pattern=None):
         """
+        Given the process pattern return the matching processes and hosts.
+
         :param process_pattern: process pattern from the args or None
         :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
         """
@@ -163,6 +175,7 @@ class AnsibleService(ServiceBase):
 
     @property
     def service_name(self):
+        """Override if different"""
         return self.name
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
@@ -183,7 +196,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
     def get_inventory_group_for_sub_process(self, sub_service):
         """
         :param sub_service: name of a sub-service
-        :return: inventory group for that service
+        :return: inventory group or host for that service
         """
         raise NotImplementedError
 
@@ -291,10 +304,12 @@ class Kafka(MultiAnsibleService):
 
 
 class SingleSupervisorService(SupervisorService):
+    """Single service that is managed by supervisor"""
     managed_services = []
 
     @abstractproperty
     def supervisor_process_name(self):
+        """Supervisor process name for this service"""
         raise NotImplementedError
 
     def _get_processes_by_host(self, process_pattern=None):
@@ -372,6 +387,10 @@ class Pillowtop(SupervisorService):
 
 
 def get_managed_service_options(process_descriptors):
+    """
+    :param process_descriptors: List of ``ProcessDescriptor`` tuples
+    :return:
+    """
     options = defaultdict(set)
     for host, short_name, number, full_name in process_descriptors:
         options[short_name].add(number)
@@ -382,6 +401,12 @@ def get_managed_service_options(process_descriptors):
 
 
 def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
+    """
+    :param all_hosts: Filtered list of host names that should be considered.
+    :param process_descriptors: List of ``ProcessDescriptor`` tuples
+    :param process_pattern: Pattern to use to match processes against.
+    :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
+    """
     num_match = name_match = None
     if process_pattern:
         if ':' in process_pattern:
