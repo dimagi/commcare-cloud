@@ -126,6 +126,10 @@ ProcessDescriptor = namedtuple('ProcessDescriptor', 'host, short_name, number, f
 
 
 def get_celery_workers(environment):
+    """
+    A generator that yields ``ProcessDescriptor`` tuples for celery
+    :param environment:
+    """
     for host, queues in environment.app_processes_config.celery_processes.items():
         if not host or host == 'None':
             continue
@@ -148,6 +152,10 @@ def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
 
 
 def get_pillowtop_processes(environment):
+    """
+    A generator that yields ``ProcessDescriptor`` tuples for pillowtop
+    :param environment:
+    """
     for host, pillows in environment.app_processes_config.pillows.items():
         for name, params in pillows.items():
             start = params.get('start_process', 0)
