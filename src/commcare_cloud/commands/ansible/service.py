@@ -423,16 +423,20 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
     :param process_pattern: Pattern to use to match processes against.
     :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
     """
-    num_match = name_match = None
+    num_match = set()
+    name_match = set()
     if process_pattern:
-        if ':' in process_pattern:
-            name_match, num_match = process_pattern.split(':')
-            num_match = int(num_match)
-        else:
-            name_match = process_pattern
+        for pattern in process_pattern.split(','):
+            name = pattern
+            num = 0
+            if ':' in pattern:
+                name, num = pattern.split(':')
+                num = int(num)
+            name_match.add(name)
+            num_match.add(num)
 
     def matches(item, matcher):
-        return matcher is None or matcher == item
+        return not matcher or item in matcher
 
     processes_by_host = defaultdict(set)
     for host, name, number, full_name in process_descriptors:
