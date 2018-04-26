@@ -30,7 +30,8 @@ RSYNC_FILE_LIST_NAME = 'couchdb_migration_rsync_file_list'
 
 
 class MigrateCouchdb(CommandBase):
-    command = 'migrate_couchdb'
+    command = 'migrate-couchdb'
+    aliases = ('migrate_couchdb',)  # deprecated
     help = 'Perform a CouchDB migration'
 
     def make_parser(self):
