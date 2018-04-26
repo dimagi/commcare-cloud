@@ -281,7 +281,7 @@ def preindex_views():
     Creates a new release that runs preindex_everything. Clones code from
     `current` release and updates it.
     """
-    setup_release()
+    _setup_release()
     db.preindex_views()
 
 
@@ -418,7 +418,7 @@ def setup_release(keep_days=0):
     _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
 
 
-def _setup_release(keep_days, full_cluster):
+def _setup_release(keep_days=0, full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
@@ -777,7 +777,7 @@ def silent_services_restart(use_current_release=False):
 
 @task
 def set_supervisor_config():
-    setup_release()
+    _setup_release()
     execute_with_timing(supervisor.set_supervisor_config)
 
 
@@ -814,7 +814,7 @@ def start_pillows():
 @task
 def reset_mvp_pillows():
     _require_target()
-    setup_release()
+    _setup_release()
     mvp_pillows = [
         'MVPFormIndicatorPillow',
         'MVPCaseIndicatorPillow',
@@ -844,7 +844,7 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    setup_release,
+    _setup_release,
     announce_deploy_start,
     db.preindex_views,
     # Compute version statics while waiting for preindex
