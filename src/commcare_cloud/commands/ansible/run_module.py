@@ -39,8 +39,7 @@ class RunAnsibleModule(CommandBase):
         Argument('module_args', help="The arguments to pass to the module"),
     ) + NON_POSITIONAL_ARGUMENTS
 
-    def make_parser(self):
-        super(RunAnsibleModule, self).make_parser()
+    def modify_parser(self):
         self.add_help_text()
 
     def add_help_text(self):
@@ -147,8 +146,7 @@ class RunShellCommand(CommandBase):
                  help="Silence shell warnings (such as to use another module instead)"),
     ) + NON_POSITIONAL_ARGUMENTS
 
-    def make_parser(self):
-        super(RunShellCommand, self).make_parser()
+    def modify_parser(self):
         RunAnsibleModule(self.parser).add_help_text()
 
     def run(self, args, unknown_args):

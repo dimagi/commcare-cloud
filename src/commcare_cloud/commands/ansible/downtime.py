@@ -23,7 +23,7 @@ class Downtime(CommandBase):
         'Manage downtime for the selected environment.'
     )
 
-    def make_parser(self):
+    def modify_parser(self):
         self.parser.add_argument('action', choices=('start', 'end'))
         self.parser.add_argument('-m', '--message', help='Optional message to set on Datadog')
 

@@ -35,8 +35,7 @@ class AnsiblePlaybook(CommandBase):
         ))
     )
 
-    def make_parser(self):
-        super(AnsiblePlaybook, self).make_parser()
+    def modify_parser(self):
         add_to_help_text(self.parser, "\n{}\n{}".format(
             "The ansible-playbook options below are available as well",
             filtered_help_message(
