@@ -180,6 +180,12 @@ class AnsibleService(ServiceBase):
         return self.name
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if host_pattern:
+            self.environment.inventory_manager.subset(self.inventory_groups)
+            hosts = self.environment.inventory_manager.get_hosts(host_pattern)
+            if not hosts:
+                raise NoHostsMatch
+
         if action == 'status':
             host_pattern = host_pattern or ','.join(self.inventory_groups)
             command = 'service {} status'.format(self.service_name)
@@ -235,13 +241,17 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
             return action_fn(process_pattern, run_on)
         else:
             non_zero_exits = []
+            ran = False
             for service in self.managed_services:
                 run_on = self.get_inventory_group_for_sub_process(service)
                 hosts = self.environment.inventory_manager.get_hosts(run_on)
                 if hosts:
+                    ran = True
                     exit_code = action_fn(service, run_on)
                     if exit_code != 0:
                         non_zero_exits.append(exit_code)
+            if not ran:
+                raise NoHostsMatch
             return non_zero_exits[0] if non_zero_exits else 0
 
 
@@ -314,6 +324,9 @@ class SingleSupervisorService(SupervisorService):
         raise NotImplementedError
 
     def _get_processes_by_host(self, process_pattern=None):
+        if not self.all_service_hosts:
+            raise NoHostsMatch
+
         return {
             tuple(self.all_service_hosts): self.supervisor_process_name
         }
