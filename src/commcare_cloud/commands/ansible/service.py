@@ -286,6 +286,8 @@ class Kafka(MultiAnsibleService):
 
 
 class SingleSupervisorService(SupervisorService):
+    managed_services = []
+
     @abstractproperty
     def supervisor_process_name(self):
         raise NotImplementedError
@@ -299,12 +301,10 @@ class SingleSupervisorService(SupervisorService):
 class CommCare(SingleSupervisorService):
     name = 'commcare'
     inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
-    managed_services = []
 
     @property
     def supervisor_process_name(self):
         return ''  # control all supervisor processes
-
 
 
 class Webworker(SingleSupervisorService):
@@ -316,7 +316,7 @@ class Webworker(SingleSupervisorService):
         return get_django_webworker_name(self.environment)
 
 
-class Formplayer(SupervisorService):
+class Formplayer(SingleSupervisorService):
     name = 'formplayer'
     inventory_groups = ['formplayer']
 
@@ -325,7 +325,7 @@ class Formplayer(SupervisorService):
         return get_formplayer_spring_instance_name(self.environment)
 
 
-class Touchforms(SupervisorService):
+class Touchforms(SingleSupervisorService):
     name = 'touchforms'
     inventory_groups = ['touchforms']
 
