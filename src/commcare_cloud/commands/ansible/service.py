@@ -255,16 +255,6 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
             return non_zero_exits[0] if non_zero_exits else 0
 
 
-class Postgresql(AnsibleService):
-    name = 'postgresql'
-    inventory_groups = ['postgresql', 'pg_standby']
-
-
-class Pgbouncer(AnsibleService):
-    name = 'pgbouncer'
-    inventory_groups = ['postgresql']
-
-
 class Nginx(AnsibleService):
     name = 'nginx'
     inventory_groups = ['proxy']
@@ -312,6 +302,15 @@ class Kafka(MultiAnsibleService):
         return {
             'kafka-server': 'kafka',
         }.get(sub_process, sub_process)
+
+
+class Postgres(MultiAnsibleService):
+    name = 'postgres'
+    inventory_groups = ['postgresql', 'pg_standby']
+    managed_services = ['postgresql', 'pgbouncer']
+
+    def get_inventory_group_for_sub_process(self, sub_process):
+        return ','.join(self.inventory_groups)
 
 
 class SingleSupervisorService(SupervisorService):
@@ -454,8 +453,7 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
 
 
 SERVICES = [
-    Postgresql,
-    Pgbouncer,
+    Postgres,
     Nginx,
     Couchdb,
     RabbitMq,
