@@ -6,8 +6,13 @@ import attr
 import six
 from clint.textui import puts, colored, indent
 
-from commcare_cloud.commands.ansible.helpers import AnsibleContext, get_django_webworker_name, \
-    get_formplayer_spring_instance_name, get_formplayer_instance_name, get_celery_workers, get_pillowtop_processes
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext, get_django_webworker_name,
+    get_formplayer_spring_instance_name,
+    get_formplayer_instance_name,
+    get_celery_workers,
+    get_pillowtop_processes
+)
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
@@ -387,7 +392,6 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
 
     def matches(item, matcher):
         return matcher is None or matcher == item
-
 
     processes_by_host = defaultdict(set)
     for host, name, number, full_name in process_descriptors:
