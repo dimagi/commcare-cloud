@@ -52,6 +52,10 @@ def test_get_managed_service_options():
     (['h1', 'h2'], process_descriptors, 'p1', {
         ('h1',): ['p1-0', 'p1-1'],
         ('h2',): ['p1-2'],
+    }),
+    # filter multiple services
+    (['h1', 'h2'], process_descriptors, 'p1:1,p2:0', {
+        ('h1',): ['p1-1', 'p2-0'],
     })
 ])
 def test_get_processes_by_host(all_hosts, process_descriptors, process_pattern, expected_response):

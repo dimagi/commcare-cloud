@@ -416,6 +416,19 @@ def get_managed_service_options(process_descriptors):
     ])
 
 
+class ProcessMatcher(object):
+    """Test a ``ProcessDescriptor`` for matching name and number combination."""
+    def __init__(self, name, number=None):
+        self.name = name
+        self.number = number
+
+    def __call__(self, process_descriptor):
+        return (
+            process_descriptor.short_name == self.name
+            and (not self.number or process_descriptor.number == self.number)
+        )
+
+
 def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
     """
     :param all_hosts: Filtered list of host names that should be considered.
@@ -423,27 +436,20 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
     :param process_pattern: Pattern to use to match processes against.
     :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
     """
-    num_match = set()
-    name_match = set()
+    matchers = []
     if process_pattern:
         for pattern in process_pattern.split(','):
-            name = pattern
-            num = 0
             if ':' in pattern:
                 name, num = pattern.split(':')
-                num = int(num)
-            name_match.add(name)
-            num_match.add(num)
-
-    def matches(item, matcher):
-        return not matcher or item in matcher
+                matchers.append(ProcessMatcher(name, int(num)))
+            else:
+                matchers.append(ProcessMatcher(pattern))
 
     processes_by_host = defaultdict(set)
-    for host, name, number, full_name in process_descriptors:
-        if host in all_hosts \
-                and matches(name, name_match) \
-                and matches(number, num_match):
-            processes_by_host[host].add(full_name)
+    for pd in process_descriptors:
+        matches_pattern = not matchers or any(matcher(pd) for matcher in matchers)
+        if pd.host in all_hosts and matches_pattern:
+            processes_by_host[pd.host].add(pd.full_name)
 
     # convert to list so that we can sort
     processes_by_host = {
