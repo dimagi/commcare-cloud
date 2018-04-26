@@ -421,7 +421,7 @@ class Service(CommandBase):
         self.parser.add_argument('--limit', help=(
             "Restrict the hosts to run the command on. Use 'help' action to list all option."
         ))
-        self.parser.add_argument('--only', help=(
+        self.parser.add_argument('--only', dest='process_pattern', help=(
             "Sub-service name to limit action to. Use 'help' action to list all option."
         ))
 
@@ -437,7 +437,7 @@ class Service(CommandBase):
         non_zero_exits = []
         for service_cls in services:
             service = service_cls(environment, ansible_context)
-            exit_code = service.run(args.action, args.limit)
+            exit_code = service.run(args.action, args.limit, args.process_pattern)
             if exit_code != 0:
                 non_zero_exits.append(exit_code)
         return non_zero_exits[0] if non_zero_exits else 0
