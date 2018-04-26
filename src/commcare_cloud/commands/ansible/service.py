@@ -243,7 +243,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
         ran = False
         for service, run_on in self._get_service_host_groups(process_pattern):
             hosts = self.environment.inventory_manager.get_hosts(run_on)
-            run_on = hosts if host_pattern else run_on
+            run_on = ','.join([host.name for host in hosts]) if host_pattern else run_on
             if hosts:
                 ran = True
                 exit_code = action_fn(service, run_on)
