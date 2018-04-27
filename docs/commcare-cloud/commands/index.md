@@ -166,7 +166,7 @@ All trailing arguments are passed directly to `mosh`
 Run an arbitrary Ansible module:
 
 ```
-commcare-cloud <env> run-module <inventory_group> <module> <module_args>
+commcare-cloud <env> run-module <inventory_group> <module> <module_args> [--use-pem]
 ```
 
 ##### `<inventory_group>`
@@ -190,6 +190,12 @@ Args for the module, formatted as a single string.
 (Tip: put quotes around it, as it will likely contain spaces.)
 Both `'arg1=value1 arg2=value2` syntax
 and `{"arg1": "value1", "arg2": "value2"}` syntax are accepted.
+
+##### `[--use-pem]`
+
+Rarely used argument to use pem file specified by `commcare_cloud_pem` when connecting.
+Only useful on a new machine where the hosting provider gives you a pem file to connect with,
+and before you've run bootstrap-users.
 
 ##### Example
 
