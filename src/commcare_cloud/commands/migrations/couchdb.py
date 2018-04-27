@@ -19,11 +19,11 @@ from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocati
     get_membership
 
 from commcare_cloud.cli_utils import ask
+from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.shared_args import arg_skip_check
 from commcare_cloud.environment.main import get_environment
 
 RSYNC_FILE_LIST_NAME = 'couchdb_migration_rsync_file_list'
@@ -34,11 +34,12 @@ class MigrateCouchdb(CommandBase):
     aliases = ('migrate_couchdb',)  # deprecated
     help = 'Perform a CouchDB migration'
 
-    def make_parser(self):
-        self.parser.add_argument(dest='migration_plan', help="Path to migration plan file")
-        self.parser.add_argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'],
-                                 help="Action to perform")
-        arg_skip_check(self.parser)
+    arguments = (
+        Argument(dest='migration_plan', help="Path to migration plan file"),
+        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'],
+                 help="Action to perform"),
+        shared_args.SKIP_CHECK_ARG,
+    )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)

@@ -1,328 +1,552 @@
-from collections import defaultdict
+import re
+from abc import ABCMeta, abstractmethod, abstractproperty
+from collections import defaultdict, OrderedDict
+from itertools import groupby
 
-from clint.textui import puts, colored
+import attr
+import six
+from clint.textui import puts, colored, indent
 
-from commcare_cloud.cli_utils import ask
-from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, \
-    AnsiblePlaybook, RestartElasticsearch
-from commcare_cloud.commands.ansible.helpers import get_django_webworker_name, \
-    get_formplayer_instance_name, get_formplayer_spring_instance_name
-from commcare_cloud.commands.ansible.run_module import RunShellCommand, RunAnsibleModule
-from commcare_cloud.commands.celery_utils import get_celery_workers_config, \
-    find_celery_worker_name
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext, get_django_webworker_name,
+    get_formplayer_spring_instance_name,
+    get_formplayer_instance_name,
+    get_celery_workers,
+    get_pillowtop_processes
+)
+from commcare_cloud.commands.ansible.run_module import run_ansible_module
+from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.environment.main import get_environment
+from commcare_cloud.fab.exceptions import NoHostsMatch
+
+ACTIONS = ['start', 'stop', 'restart', 'status', 'help']
+
+STATES = {
+    'start': 'started',
+    'stop': 'stopped',
+    'restart': 'restarted',
+    'status': 'status'
+}
 
 
-class Service(_AnsiblePlaybookAlias):
+@attr.s
+class ServiceOption(object):
+    name = attr.ib()
+    sub_options = attr.ib(default=None)
+
+
+class ServiceBase(six.with_metaclass(ABCMeta)):
+    """Base class for all services."""
+
+    @abstractproperty
+    def name(self):
+        """Name of the service shown on the command line."""
+        raise NotImplementedError
+
+    @abstractproperty
+    def inventory_groups(self):
+        """Inventory groups that are applicable to this service."""
+        raise NotImplementedError
+
+    def __init__(self, environment, ansible_context):
+        self.environment = environment
+        self.ansible_context = ansible_context
+
+    def run(self, action, host_pattern=None, process_pattern=None):
+        if action == 'help':
+            self.print_help()
+            return 0
+
+        try:
+            return self.execute_action(action, host_pattern, process_pattern)
+        except NoHostsMatch:
+            only = limit = ''
+            if process_pattern:
+                only = " '--only={}'".format(process_pattern)
+            if host_pattern:
+                limit = " '--limit={}'".format(host_pattern)
+
+            puts(colored.red("No '{}' hosts match{}{}".format(self.name, limit, only)))
+            return 1
+
+    @abstractmethod
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        raise NotImplementedError
+
+    def print_help(self):
+        puts(colored.green("Additional help for service '{}'".format(self.name)))
+
+        options = self.get_options()
+        for name, options in options.items():
+            puts("{}:".format(name))
+            with indent():
+                for option in options:
+                    puts(option.name)
+                    if option.sub_options:
+                        with indent():
+                            puts(', '.join(option.sub_options))
+
+    def get_options(self):
+        all_group_options = []
+        for group in self.inventory_groups:
+            sub_groups = [g.name for g in self.environment.inventory_manager.groups[group].child_groups]
+            all_group_options.append(ServiceOption(group, sub_groups))
+
+        options = OrderedDict()
+        options["Inventory groups (use with '--limit')"] = all_group_options
+        options["Hosts (use with '--limit')"] = [ServiceOption(host) for host in self.all_service_hosts]
+        return options
+
+    @property
+    def all_service_hosts(self):
+        """
+        :return: set of hosts that are applicable to this service
+        """
+        pattern = ','.join(self.inventory_groups)
+        return set([
+            host.name for host in self.environment.inventory_manager.get_hosts(pattern)
+        ])
+
+    def _run_ansible_module(self, host_pattern, module, module_args):
+        return run_ansible_module(
+            self.environment,
+            self.ansible_context,
+            host_pattern,
+            module,
+            module_args,
+            True,
+            None,
+        )
+
+
+class SubServicesMixin(six.with_metaclass(ABCMeta)):
+    @abstractproperty
+    def managed_services(self):
+        """
+        :return: List of sub-services managed by this class. e.g. Celery workers, Pillowtop processes
+        """
+        raise NotImplementedError
+
+    def get_options(self):
+        options = super(SubServicesMixin, self).get_options()
+        managed_services = self.managed_services
+        if managed_services:
+            options["Sub-services (use with --only)"] = [ServiceOption(service) for service in managed_services]
+        return options
+
+
+class SupervisorService(SubServicesMixin, ServiceBase):
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if host_pattern:
+            self.environment.inventory_manager.subset(host_pattern)
+
+        process_host_mapping = self._get_processes_by_host(process_pattern)
+
+        if not process_host_mapping:
+            raise NoHostsMatch
+
+        non_zero_exits = []
+        for hosts, processes in process_host_mapping.items():
+            command = 'supervisorctl {} {}'.format(
+                action,
+                ' '.join(processes)
+            )
+            exit_code = self._run_ansible_module(
+                ','.join(hosts),
+                'shell',
+                command
+            )
+            if exit_code != 0:
+                non_zero_exits.append(exit_code)
+        return non_zero_exits[0] if non_zero_exits else 0
+
+    @abstractmethod
+    def _get_processes_by_host(self, process_pattern=None):
+        """
+        Given the process pattern return the matching processes and hosts.
+
+        :param process_pattern: process pattern from the args or None
+        :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
+        """
+        raise NotImplemented
+
+
+class AnsibleService(ServiceBase):
+    """Service that is controlled via the ansible 'service' module"""
+
+    @property
+    def service_name(self):
+        """Override if different"""
+        return self.name
+
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if host_pattern:
+            self.environment.inventory_manager.subset(self.inventory_groups)
+            hosts = self.environment.inventory_manager.get_hosts(host_pattern)
+            if not hosts:
+                raise NoHostsMatch
+
+        host_pattern = host_pattern or ','.join(self.inventory_groups)
+
+        if action == 'status':
+            command = 'service {} status'.format(self.service_name)
+            return self._run_ansible_module(host_pattern, 'shell', command)
+
+        service_args = 'name={} state={}'.format(self.service_name, STATES[action])
+        return self._run_ansible_module(host_pattern, 'service', service_args)
+
+
+class MultiAnsibleService(SubServicesMixin, AnsibleService):
+    """Service that is made up of multiple other services e.g. RiakCS"""
+
+    @abstractproperty
+    def service_process_mapping(self):
+        """
+        Return a mapping of service names (as passed in by the user) to
+        a tuple of (Linux service name, inventory group)
+        """
+        raise NotImplementedError
+
+    @property
+    def inventory_groups(self):
+        return [
+            inventory_group
+            for service, inventory_group in self.service_process_mapping.values()
+        ]
+
+    @property
+    def managed_services(self):
+        return [name for name in self.service_process_mapping]
+
+    def check_status(self, host_pattern=None, process_pattern=None):
+        def _status(service_name, run_on):
+            command = 'service {} status'.format(service_name)
+            return self._run_ansible_module(run_on, 'shell', command)
+
+        return self._run_action_on_hosts(_status, host_pattern, process_pattern)
+
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if action == 'status':
+            return self.check_status(host_pattern, process_pattern)
+
+        def _change_state(service_name, run_on, action=action):
+            service_args = 'name={} state={}'.format(service_name, STATES[action])
+            return self._run_ansible_module(run_on, 'service', service_args)
+
+        return self._run_action_on_hosts(_change_state, host_pattern, process_pattern)
+
+    def _run_action_on_hosts(self, action_fn, host_pattern, process_pattern):
+        if host_pattern:
+            self.environment.inventory_manager.subset(host_pattern)
+
+        non_zero_exits = []
+        ran = False
+        for service, run_on in self._get_service_host_groups(process_pattern):
+            hosts = self.environment.inventory_manager.get_hosts(run_on)
+            run_on = ','.join([host.name for host in hosts]) if host_pattern else run_on
+            if hosts:
+                ran = True
+                exit_code = action_fn(service, run_on)
+                if exit_code != 0:
+                    non_zero_exits.append(exit_code)
+
+        if not ran:
+            raise NoHostsMatch
+        return non_zero_exits[0] if non_zero_exits else 0
+
+    def _get_service_host_groups(self, process_pattern):
+        service_groups = []
+        if process_pattern:
+            for name in process_pattern.split(','):
+                service_groups.append(self.service_process_mapping[name])
+        else:
+            service_groups = list(self.service_process_mapping.values())
+        return service_groups
+
+
+class Nginx(AnsibleService):
+    name = 'nginx'
+    inventory_groups = ['proxy']
+
+
+class Elasticsearch(AnsibleService):
+    name = 'elasticsearch'
+    inventory_groups = ['elasticsearch']
+
+
+class Couchdb(AnsibleService):
+    name = 'couchdb'
+    inventory_groups = ['couchdb2']
+
+
+class RabbitMq(AnsibleService):
+    name = 'rabbitmq'
+    inventory_groups = ['rabbitmq']
+    service_name = 'rabbitmq-server'
+
+
+class Redis(AnsibleService):
+    name = 'redis'
+    inventory_groups = ['redis']
+    service_name = 'redis-server'
+
+
+class Riakcs(MultiAnsibleService):
+    name = 'riakcs'
+    service_process_mapping = {
+        'riak': ('riak', 'riakcs'),
+        'riakcs': ('riak-cs', 'riakcs'),
+        'stanchion': ('stanchion', 'stanchion'),
+    }
+
+
+class Kafka(MultiAnsibleService):
+    name = 'kafka'
+    service_process_mapping = {
+        'kafka': ('kafka-server', 'kafka'),
+        'zookeeper': ('zookeeper', 'zookeeper')
+    }
+
+
+class Postgresql(MultiAnsibleService):
+    name = 'postgresql'
+    service_process_mapping = {
+        'postgres': ('postgresql', 'postgresql,pg_standby'),
+        'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
+    }
+
+
+class SingleSupervisorService(SupervisorService):
+    """Single service that is managed by supervisor"""
+    managed_services = []
+
+    @abstractproperty
+    def supervisor_process_name(self):
+        """Supervisor process name for this service"""
+        raise NotImplementedError
+
+    def _get_processes_by_host(self, process_pattern=None):
+        if not self.all_service_hosts:
+            raise NoHostsMatch
+
+        return {
+            tuple(self.all_service_hosts): [self.supervisor_process_name]
+        }
+
+
+class CommCare(SingleSupervisorService):
+    name = 'commcare'
+    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
+
+    @property
+    def supervisor_process_name(self):
+        return ''  # control all supervisor processes
+
+
+class Webworker(SingleSupervisorService):
+    name = 'webworker'
+    inventory_groups = ['webworkers']
+
+    @property
+    def supervisor_process_name(self):
+        return get_django_webworker_name(self.environment)
+
+
+class Formplayer(SingleSupervisorService):
+    name = 'formplayer'
+    inventory_groups = ['formplayer']
+
+    @property
+    def supervisor_process_name(self):
+        return get_formplayer_spring_instance_name(self.environment)
+
+
+class Touchforms(SingleSupervisorService):
+    name = 'touchforms'
+    inventory_groups = ['touchforms']
+
+    @property
+    def supervisor_process_name(self):
+        return get_formplayer_instance_name(self.environment)
+
+
+class Celery(SupervisorService):
+    name = 'celery'
+    inventory_groups = ['celery']
+
+    def _get_processes_by_host(self, process_pattern=None):
+        return get_processes_by_host(
+            self.all_service_hosts,
+            get_celery_workers(self.environment),
+            process_pattern
+        )
+
+    @property
+    def managed_services(self):
+        return get_managed_service_options(get_celery_workers(self.environment))
+
+
+class Pillowtop(SupervisorService):
+    name = 'pillowtop'
+    inventory_groups = ['pillowtop']
+
+    @property
+    def managed_services(self):
+        return get_managed_service_options(get_pillowtop_processes(self.environment))
+
+    def _get_processes_by_host(self, process_pattern=None):
+        return get_processes_by_host(
+            self.all_service_hosts,
+            get_pillowtop_processes(self.environment),
+            process_pattern
+        )
+
+
+def get_managed_service_options(process_descriptors):
     """
-    example usages
-    1. To restart riak and stanchion only for riakcs
-       only option can be skipped to restart all services which are a part of riakcs
-       This would always act on riak, riak-cs and stanchion, in that order
-        commcare-cloud staging service riakcs restart --only=riak,stanchion
-    2. To start services under proxy i.e nginx
-        commcare-cloud staging service proxy restart
-    3. To get status
-        commcare-cloud staging service riakcs status
-        commcare-cloud staging service riakcs status --only=stanchion
-    4. Limit to hosts
-        commcare-cloud staging service riakcs status --only=riak,riak-cs --limit=hqriak00-staging.internal-va.commcarehq.org
-    5. Check status or act on celery workers
-        commcare-cloud staging service celery status
-        commcare-cloud staging service celery restart
-        commcare-cloud staging service celery restart --only=saved_exports_queue,pillow_retry_queue
-        commcare-cloud staging service celery restart --only=saved_exports_queue:1,pillow_retry_queue:2
-    6. Check status or act on web workers
-        commcare-cloud staging service webworkers status
-        commcare-cloud staging service webworkers restart
-    7. Check status or act on formplayer
-        commcare-cloud staging service formplayer status
-        commcare-cloud staging service formplayer restart
-    8. Check status or act on touchforms
-        commcare-cloud staging service touchforms status
-        commcare-cloud staging service touchforms restart
+    :param process_descriptors: List of ``ProcessDescriptor`` tuples
+    :return:
     """
+    options = defaultdict(set)
+    for host, short_name, number, full_name in process_descriptors:
+        options[short_name].add(number)
+    return sorted([
+        '{}{}'.format(name, ':[0-{}]'.format(max(numbers)) if len(numbers) > 1 else '')
+        for name, numbers in options.items()
+    ])
+
+
+class ProcessMatcher(object):
+    """Test a ``ProcessDescriptor`` for matching name and number combination."""
+    def __init__(self, name, number=None):
+        self.name = name
+        self.number = number
+
+    def __call__(self, process_descriptor):
+        return (
+            process_descriptor.short_name == self.name
+            and (not self.number or process_descriptor.number == self.number)
+        )
+
+
+def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
+    """
+    :param all_hosts: Filtered list of host names that should be considered.
+    :param process_descriptors: List of ``ProcessDescriptor`` tuples
+    :param process_pattern: Pattern to use to match processes against.
+    :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
+    """
+    matchers = []
+    if process_pattern:
+        for pattern in process_pattern.split(','):
+            if ':' in pattern:
+                name, num = pattern.split(':')
+                matchers.append(ProcessMatcher(name, int(num)))
+            else:
+                matchers.append(ProcessMatcher(pattern))
+
+    processes_by_host = defaultdict(set)
+    for pd in process_descriptors:
+        matches_pattern = not matchers or any(matcher(pd) for matcher in matchers)
+        if pd.host in all_hosts and matches_pattern:
+            processes_by_host[pd.host].add(pd.full_name)
+
+    # convert to list so that we can sort
+    processes_by_host = {
+        host: list(p) for host, p in processes_by_host.items()
+    }
+
+    processes_by_hosts = {}
+    # group hosts together so we do less calls to ansible
+    items = sorted(processes_by_host.items(), key=lambda hp: hp[1])
+    for processes, group in groupby(items, key=lambda hp: hp[1]):
+        hosts = tuple([host_processes[0] for host_processes in group])
+        processes_by_hosts[hosts] = processes
+    return processes_by_hosts
+
+
+SERVICES = [
+    Postgresql,
+    Nginx,
+    Couchdb,
+    RabbitMq,
+    Elasticsearch,
+    Redis,
+    Riakcs,
+    Kafka,
+    Webworker,
+    Formplayer,
+    Touchforms,
+    Celery,
+    CommCare,
+    Pillowtop,
+]
+
+SERVICE_NAMES = sorted([
+    service.name for service in SERVICES
+])
+
+SERVICES_BY_NAME = {
+    service.name: service for service in SERVICES
+}
+
+
+def validate_pattern(pattern):
+    match = re.match(r'^[\w]+(:[\d]+)?(?:,[\w]+(:[\d]+)?)*$', pattern)
+    if not match:
+        raise ValueError
+    return pattern
+
+
+class Service(CommandBase):
     command = 'service'
     help = (
-        "Manage services."
+        "Manage services.\n"
+        "Usage examples:"
+        "   cchq <env> service postgresql status\n"
+        "   cchq <env> service riakcs restart --only riak,riakcs\n"
+        "   cchq <env> service celery help\n"
+        "   cchq <env> service celery restart --limit <host>\n"
+        "   cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>\n"
+        "   cchq <env> service pillowtop restart --limit <host> --only <pillow-name>\n"
+        "\n"
     )
-    SERVICES = {
-        # service_group: services
-        'proxy': ['nginx'],
-        'riakcs': ['riak', 'riak-cs', 'stanchion'],
-        'stanchion': ['stanchion'],
-        'es': ['elasticsearch'],
-        'redis': ['redis'],
-        'couchdb2': ['couchdb2'],
-        'postgresql': ['postgresql', 'pgbouncer'],
-        'rabbitmq': ['rabbitmq'],
-        'kafka': ['kafka', 'zookeeper'],
-        'pg_standby': ['postgresql', 'pgbouncer'],
-        'celery': ['celery'],
-        'webworkers': ['webworkers'],
-        'formplayer': ['formplayer-spring'],
-        'touchforms': ['formplayer'],
-    }
-    ACTIONS = ['start', 'stop', 'restart', 'status']
-    DESIRED_STATE_FOR_ACTION = {
-        'start': 'started',
-        'stop': 'stopped',
-        'restart': 'restarted',
-    }
-    # add this mapping where service group is not same as the inventory group itself
-    INVENTORY_GROUP_FOR_SERVICE = {
-        'stanchion': 'stanchion',
-        'elasticsearch': 'elasticsearch',
-        'zookeeper': 'zookeeper',
-    }
-    # add this if the service package is not same as the service itself
-    SERVICE_PACKAGES_FOR_SERVICE = {
-        'rabbitmq': 'rabbitmq-server',
-        'kafka': 'kafka-server'
-    }
-    # add this if the module name is not same as the service itself
-    ANSIBLE_MODULE_FOR_SERVICE = {
-        "redis": "redis-server",
 
-    }
-
-    def make_parser(self):
-        super(Service, self).make_parser()
-        self.parser.add_argument(
-            'service_group',
-            choices=self.SERVICES.keys(),
-            help="The service group to run the command on"
-            )
-        self.parser.add_argument(
-            'action',
-            choices=self.ACTIONS,
+    arguments = (
+        Argument(
+            'services',
+            nargs="+",
+            choices=SERVICE_NAMES,
+            help="The services to run the command on"
+        ),
+        Argument(
+            'action', choices=ACTIONS,
             help="What action to take"
-        )
-        self.parser.add_argument(
-            '--only',
-            help=(
-                "Specific comma separated services to act on for the service group. "
-                "Example Usage: --only=riak,stanchion"
-                "For Celery, this can be Celery worker names as appearing in app-processes.yml. "
-                "This can also be a comma-separated list of workers"
-                "For ex: Run 'commcare-cloud staging celery status --only=sms_queue,email_queue'"
-            )
-        )
-
-    def get_inventory_group_for_service(self, service, service_group):
-        return self.INVENTORY_GROUP_FOR_SERVICE.get(service, service_group)
-
-    @staticmethod
-    def get_celery_workers_to_work_on(args):
-        """
-        :return:
-        workers_by_host: full name of workers per host to work on
-        """
-        celery_config = get_celery_workers_config(args.environment)
-        # full name of workers per host to run an action on
-        workers_by_host = defaultdict(set)
-        if args.only:
-            for queue_name in args.only.split(','):
-                worker_num = None
-                if ':' in queue_name:
-                    queue_name, worker_num = queue_name.split(':')
-                for host, celery_worker_names in celery_config[queue_name].items():
-                    if worker_num:
-                        celery_worker_name = find_celery_worker_name(
-                            args.environment, queue_name, host, worker_num)
-                        assert celery_worker_name, \
-                            "Could not find the celery worker for queue {queue_name} with index {worker_num}".format(
-                                queue_name=queue_name, worker_num=worker_num
-                            )
-                        workers_by_host[host].add(celery_worker_name)
-                    else:
-                        workers_by_host[host].update(celery_worker_names)
-                    workers_by_host[host].update(celery_worker_names)
-        else:
-            for queue_name in celery_config:
-                for host, celery_worker_names in celery_config[queue_name].items():
-                    workers_by_host[host].update(celery_worker_names)
-        return workers_by_host
-
-    def run_for_celery(self, service_group, action, args, unknown_args):
-        exit_code = 0
-        service = "celery"
-        if action == "status" and not args.only:
-            args.shell_command = "supervisorctl %s" % action
-            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-        else:
-            workers_by_host = self.get_celery_workers_to_work_on(args)
-            puts(colored.blue("This is going to run the following"))
-            for host, workers in workers_by_host.items():
-                puts(colored.green('Host: [' + host + ']'))
-                puts(colored.green("supervisorctl %s %s" % (action, ' '.join(workers))))
-
-            if not ask('Good to go?', strict=True, quiet=args.quiet):
-                return 0  # exit code
-
-            for host, workers in workers_by_host.items():
-                args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                # if not applicable for all hosts then limit to a host
-                if host != "*":
-                    unknown_args.append('--limit=%s' % host)
-                args.shell_command = "supervisorctl %s %s" % (action, ' '.join(workers))
-                for service in self.services(service_group, args):
-                    exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-                    if exit_code is not 0:
-                        return exit_code
-        return exit_code
-
-    @staticmethod
-    def get_supervisor_program_name(service, environment_name):
-        if service == "webworkers":
-            return get_django_webworker_name(environment_name)
-        elif service == "formplayer":
-            return get_formplayer_instance_name(environment_name)
-        elif service == "formplayer-spring":
-            return get_formplayer_spring_instance_name(environment_name)
-
-    def run_supervisor_action_for_service_group(self, service_group, action, args, unknown_args):
-        exit_code = 0
-        for service in self.services(service_group, args):
-            args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-            supervisor_command_name = self.get_supervisor_program_name(service, args.environment)
-            args.shell_command = "supervisorctl %s %s" % (action, supervisor_command_name)
-            exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-            if exit_code is not 0:
-                return exit_code
-        return exit_code
-
-    def run_status_for_service_group(self, service_group, args, unknown_args):
-        exit_code = 0
-        args.silence_warnings = True
-        if service_group in ["touchforms", "formplayer", "webworkers"]:
-            exit_code = self.run_supervisor_action_for_service_group(service_group, 'status', args, unknown_args)
-        else:
-            failed_exit_codes = []
-            for service in self.services(service_group, args):
-                if service == "celery":
-                    exit_code = self.run_for_celery(service_group, 'status', args, unknown_args)
-                else:
-                    if service == "redis":
-                        args.shell_command = "redis-cli ping"
-                    else:
-                        args.shell_command = "service %s status" % self.SERVICE_PACKAGES_FOR_SERVICE.get(service, service)
-                    args.inventory_group = self.get_inventory_group_for_service(service, args.service_group)
-                    exit_code = RunShellCommand(self.parser).run(args, unknown_args)
-                if exit_code is not 0:
-                    failed_exit_codes.append(exit_code)
-            if failed_exit_codes:
-                # if any service status check doesn't go smoothly, return the first exit code
-                return failed_exit_codes[0]
-        return exit_code
-
-    def run_ansible_module_for_service_group(self, service_group, args, unknown_args, inventory_group=None):
-        for service in self.SERVICES[service_group]:
-            action = args.action
-            state = self.DESIRED_STATE_FOR_ACTION[action]
-            args.inventory_group = (
-                inventory_group or
-                self.get_inventory_group_for_service(service, service_group))
-            args.module = 'service'
-            args.module_args = "name=%s state=%s" % (
-                self.ANSIBLE_MODULE_FOR_SERVICE.get(service, service),
-                state)
-            return RunAnsibleModule(self.parser).run(
-                args,
-                unknown_args
-            )
-
-    def run_ansible_playbook_for_service_group(self, service_group, args, unknown_args):
-        tags = []
-        action = args.action
-        state = self.DESIRED_STATE_FOR_ACTION[action]
-        args.playbook = "service_playbooks/%s.yml" % service_group
-        services = self.services(service_group, args)
-        if args.only:
-            # for options to act on certain services create tags
-            for service in services:
-                if service:
-                    tags.append("%s_%s" % (action, service))
-            if tags:
-                unknown_args.append('--tags=%s' % ','.join(tags), )
-        unknown_args.extend(['--extra-vars', "desired_state=%s desired_action=%s" % (state, action)])
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-    def run_supervisor_for_service_group(self, service_group, args, unknown_args):
-        exit_code = 0
-        if service_group == "celery":
-            exit_code = self.run_for_celery(service_group, args.action, args, unknown_args)
-        elif service_group in ["webworkers", "formplayer", "touchforms"]:
-            exit_code = self.run_supervisor_action_for_service_group(service_group, args.action, args, unknown_args)
-        return exit_code
-
-    def services(self, service_group, args):
-        if service_group != 'celery' and args.only:
-            return args.only.split(',')
-        else:
-            return self.SERVICES[service_group]
-
-    def run_for_es(self, args, unknown_args):
-        action = args.action
-        if action == "restart":
-            return RestartElasticsearch(self.parser).run(args, unknown_args)
-        else:
-            return self.run_ansible_module_for_service_group("es", args, unknown_args)
-
-    @staticmethod
-    def ensure_permitted_celery_only_options(args):
-        celery_config = get_celery_workers_config(args.environment)
-        # full name of workers per host to run an action on
-        if args.only:
-            for queue_name in args.only.split(','):
-                if ':' in queue_name:
-                    queue_name, woker_num = queue_name.split(':')
-                assert queue_name in celery_config, \
-                    "%s not found in the list of possible queues, %s" % (
-                        queue_name, celery_config.keys()
-                    )
-
-    def ensure_permitted_only_options(self, service_group, args):
-        services = self.services(service_group, args)
-        for service in services:
-            if service == "celery":
-                self.ensure_permitted_celery_only_options(args)
-            else:
-                assert service in self.SERVICES[service_group], \
-                    ("%s not allowed. Please use from %s for --only option" %
-                     (service, self.SERVICES[service_group])
-                     )
-
-    def perform_action(self, service_group, args, unknown_args):
-        exit_code = 0
-        if service_group in ['proxy', 'redis', 'couchdb2', 'postgresql', 'rabbitmq']:
-            exit_code = self.run_ansible_module_for_service_group(service_group, args, unknown_args)
-        elif service_group in ['riakcs', 'kafka']:
-            exit_code = self.run_ansible_playbook_for_service_group(service_group, args, unknown_args)
-        elif service_group == "stanchion":
-            if not args.only:
-                args.only = "stanchion"
-            exit_code = self.run_ansible_playbook_for_service_group('riakcs', args, unknown_args)
-        elif service_group == "es":
-            exit_code = self.run_for_es(args, unknown_args)
-        elif service_group == "pg_standby":
-            exit_code = self.run_ansible_module_for_service_group('pg_standby', args, unknown_args,
-                                                                  inventory_group="pg_standby")
-        elif service_group in ["celery", "webworkers", "formplayer", "touchforms"]:
-            exit_code = self.run_supervisor_for_service_group(service_group, args, unknown_args)
-        return exit_code
+        ),
+        Argument('--limit', help=(
+            "Restrict the hosts to run the command on."
+            "\nUse 'help' action to list all options."
+        ), include_in_docs=False),
+        Argument('--only', type=validate_pattern, dest='process_pattern', help=(
+            "Sub-service name to limit action to."
+            "\nFormat as 'name' or 'name:number'."
+            "\nUse 'help' action to list all options."
+        )),
+    )
 
     def run(self, args, unknown_args):
-        service_group = args.service_group
-        args.remote_user = 'ansible'
-        args.become = True
-        args.become_user = False
-        args.silence_warnings = True
-        if args.only:
-            self.ensure_permitted_only_options(service_group, args)
-        action = args.action
-        if action == "status":
-            exit_code = self.run_status_for_service_group(service_group, args, unknown_args)
-        else:
-            exit_code = self.perform_action(service_group, args, unknown_args)
-        return exit_code
+        environment = get_environment(args.env_name)
+
+        services = [
+            SERVICES_BY_NAME[name]
+            for name in args.services
+        ]
+
+        ansible_context = AnsibleContext(args)
+        non_zero_exits = []
+        for service_cls in services:
+            service = service_cls(environment, ansible_context)
+            exit_code = service.run(args.action, args.limit, args.process_pattern)
+            if exit_code != 0:
+                non_zero_exits.append(exit_code)
+        return non_zero_exits[0] if non_zero_exits else 0

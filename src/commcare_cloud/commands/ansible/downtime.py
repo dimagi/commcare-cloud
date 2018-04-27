@@ -11,7 +11,7 @@ from memoized import memoized
 from commcare_cloud.cli_utils import ask, ask_option
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
 HQ_PROCESSES_SCOPE = 'webworkers,celery,pillowtop,touchforms,formplayer,proxy'
@@ -22,10 +22,10 @@ class Downtime(CommandBase):
     help = (
         'Manage downtime for the selected environment.'
     )
-
-    def make_parser(self):
-        self.parser.add_argument('action', choices=('start', 'end'))
-        self.parser.add_argument('-m', '--message', help='Optional message to set on Datadog')
+    arguments = (
+        Argument('action', choices=('start', 'end')),
+        Argument('-m', '--message', help='Optional message to set on Datadog'),
+    )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)

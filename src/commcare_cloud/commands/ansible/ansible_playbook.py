@@ -5,13 +5,12 @@ import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
+from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
-from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
-    arg_branch, arg_stdout_callback, arg_limit
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -25,16 +24,18 @@ class AnsiblePlaybook(CommandBase):
         "By default, you will see --check output and then asked whether to apply. "
     )
     aliases = ('ap',)
-
-    def make_parser(self):
-        arg_skip_check(self.parser)
-        arg_quiet(self.parser)
-        arg_branch(self.parser)
-        arg_stdout_callback(self.parser)
-        arg_limit(self.parser)
-        self.parser.add_argument('playbook', help=(
+    arguments = (
+        shared_args.SKIP_CHECK_ARG,
+        shared_args.QUIET_ARG,
+        shared_args.BRANCH_ARG,
+        shared_args.STDOUT_CALLBACK_ARG,
+        shared_args.LIMIT_ARG,
+        Argument('playbook', help=(
             "The ansible playbook .yml file to run."
         ))
+    )
+
+    def modify_parser(self):
         add_to_help_text(self.parser, "\n{}\n{}".format(
             "The ansible-playbook options below are available as well",
             filtered_help_message(
@@ -119,12 +120,13 @@ class AnsiblePlaybook(CommandBase):
 
 
 class _AnsiblePlaybookAlias(CommandBase):
-    def make_parser(self):
-        arg_skip_check(self.parser)
-        arg_quiet(self.parser)
-        arg_branch(self.parser)
-        arg_stdout_callback(self.parser)
-        arg_limit(self.parser)
+    arguments = (
+        shared_args.SKIP_CHECK_ARG,
+        shared_args.QUIET_ARG,
+        shared_args.BRANCH_ARG,
+        shared_args.STDOUT_CALLBACK_ARG,
+        shared_args.LIMIT_ARG,
+    )
 
 
 class DeployStack(_AnsiblePlaybookAlias):
@@ -159,10 +161,9 @@ class AfterReboot(_AnsiblePlaybookAlias):
         "Bring a just-rebooted machine back into operation. "
         "Includes mounting the encrypted drive."
     )
-
-    def make_parser(self):
-        super(AfterReboot, self).make_parser()
-        arg_inventory_group(self.parser)
+    arguments = _AnsiblePlaybookAlias.arguments + (
+        shared_args.INVENTORY_GROUP_ARG,
+    )
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
