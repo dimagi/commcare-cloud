@@ -25,3 +25,5 @@ dbs:
         query_stats: True
   custom:
     - name: airflow
+      django_migrate: False
+
