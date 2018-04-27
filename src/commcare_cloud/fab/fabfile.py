@@ -221,6 +221,7 @@ def env_common():
     all = servers['all']
     proxy = servers['proxy']
     webworkers = servers['webworkers']
+    django_manage = servers.get('django_manage', [webworkers[0]])
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
@@ -243,6 +244,7 @@ def env_common():
         'rabbitmq': rabbitmq,
         'django_celery': celery,
         'django_app': webworkers,
+        'django_manage': django_manage,
         'django_pillowtop': pillowtop,
         'formsplayer': touchforms,
         'formplayer': formplayer,
@@ -279,7 +281,7 @@ def preindex_views():
     Creates a new release that runs preindex_everything. Clones code from
     `current` release and updates it.
     """
-    setup_release()
+    _setup_release()
     db.preindex_views()
 
 
@@ -382,8 +384,41 @@ def prepare_offline_deploy():
     offline_ops.prepare_formplayer_build()
 
 
+def parse_int_or_exit(val):
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        print(red("Unable to parse '{}' into an integer".format(val)))
+        exit()
+
+
+@task
+def setup_limited_release(keep_days=1):
+    """ Sets up a release on a single machine
+    defaults to webworkers:0
+
+    See :func:`_setup_release` for more info
+
+    Example:
+    fab <env> setup_limited_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
+    _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
+
+
 @task
 def setup_release(keep_days=0):
+    """ Sets up a full release across the cluster
+
+    See :func:`_setup_release` for info
+
+    Example:
+    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """
+
+    _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
+
+
+def _setup_release(keep_days=0, full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
@@ -391,25 +426,17 @@ def setup_release(keep_days=0):
     last past a deploy use the `keep_days` param.
 
     :param keep_days: The number of days to keep this release before it will be purged
-
-    Example:
-    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    try:
-        keep_days = int(keep_days)
-    except ValueError:
-        print(red("Unable to parse '{}' into an integer".format(keep_days)))
-        exit()
-
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    execute_with_timing(release.create_code_dir)
-    execute_with_timing(release.update_code, deploy_ref)
-    execute_with_timing(release.update_virtualenv)
+    execute_with_timing(release.create_code_dir(full_cluster))
+    execute_with_timing(release.update_code(full_cluster), deploy_ref)
+    execute_with_timing(release.update_virtualenv(full_cluster))
 
-    execute_with_timing(copy_release_files)
+    execute_with_timing(copy_release_files, full_cluster)
 
     if keep_days > 0:
-        execute_with_timing(release.mark_keep_until, keep_days)
+        execute_with_timing(release.mark_keep_until(full_cluster), keep_days)
 
     print(blue("Your private release is located here: "))
     print(blue(env.code_root))
@@ -550,13 +577,14 @@ def unlink_current():
         sudo('unlink {}'.format(env.code_current))
 
 
-def copy_release_files():
-    execute(release.copy_localsettings)
-    execute(release.copy_tf_localsettings)
-    execute(release.copy_formplayer_properties)
-    execute(release.copy_components)
-    execute(release.copy_node_modules)
-    execute(release.copy_compressed_js_staticfiles)
+def copy_release_files(full_cluster=True):
+    execute(release.copy_localsettings(full_cluster))
+    if full_cluster:
+        execute(release.copy_tf_localsettings)
+        execute(release.copy_formplayer_properties)
+        execute(release.copy_components)
+        execute(release.copy_node_modules)
+        execute(release.copy_compressed_js_staticfiles)
 
 
 @task
@@ -749,7 +777,7 @@ def silent_services_restart(use_current_release=False):
 
 @task
 def set_supervisor_config():
-    setup_release()
+    _setup_release()
     execute_with_timing(supervisor.set_supervisor_config)
 
 
@@ -786,7 +814,7 @@ def start_pillows():
 @task
 def reset_mvp_pillows():
     _require_target()
-    setup_release()
+    _setup_release()
     mvp_pillows = [
         'MVPFormIndicatorPillow',
         'MVPCaseIndicatorPillow',
@@ -816,7 +844,7 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    setup_release,
+    _setup_release,
     announce_deploy_start,
     db.preindex_views,
     # Compute version statics while waiting for preindex
