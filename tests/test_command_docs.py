@@ -18,7 +18,7 @@ def _get_commands_doc():
 
 
 def contains_whole_word(word, text):
-    return re.search(r'\b{}\b'.format(re.escape(word)), text)
+    return re.search(r'[\[`\b]{}[\]`\b]'.format(re.escape(word)), text)
 
 
 def fuzzy_contains(string, text):
@@ -55,14 +55,17 @@ def test_all_aliases_appear_in_docs():
     )
 
 
-def test_all_help_strings_appear_in_docs():
+def test_all_arg_names_appear_in_docs():
     doc_text = _get_commands_doc()
-    missing_help_strings = set()
+    missing_args = set()
     for command_type in COMMAND_TYPES:
-        if not fuzzy_contains(command_type.help, doc_text):
-            missing_help_strings.add(command_type.command)
+        for argument in command_type.arguments:
+            if argument.include_in_docs and \
+                    not contains_whole_word(argument.name_in_docs, doc_text):
+                missing_args.add((command_type.command, argument.name_in_docs))
 
-    assert not missing_help_strings, "Missing help strings in {}: {}".format(
+    assert not missing_args, "Missing arguments in {}:{}".format(
         COMMAND_DOC_PATH,
-        ', '.join(sorted(missing_help_strings))
+        ''.join(sorted('\n  {} (for {})'.format(argument, command)
+                       for command, argument in missing_args))
     )

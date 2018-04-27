@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+from collections import namedtuple
 
 from clint.textui import puts, colored
 
@@ -54,8 +55,7 @@ def get_common_ssh_args(environment, use_pem=False):
     return cmd_parts
 
 
-def get_django_webworker_name(environment_name):
-    environment = get_environment(environment_name)
+def get_django_webworker_name(environment):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-django".format(
@@ -64,8 +64,7 @@ def get_django_webworker_name(environment_name):
     )
 
 
-def get_formplayer_instance_name(environment_name):
-    environment = get_environment(environment_name)
+def get_formplayer_instance_name(environment):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-formsplayer".format(
@@ -74,8 +73,7 @@ def get_formplayer_instance_name(environment_name):
     )
 
 
-def get_formplayer_spring_instance_name(environment_name):
-    environment = get_environment(environment_name)
+def get_formplayer_spring_instance_name(environment):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
     return "{project}-{environment}-formsplayer-spring".format(
@@ -122,3 +120,54 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
             puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
 
     return exit_code
+
+
+ProcessDescriptor = namedtuple('ProcessDescriptor', 'host, short_name, number, full_name')
+
+
+def get_celery_workers(environment):
+    """
+    A generator that yields ``ProcessDescriptor`` tuples for celery
+
+    The same process may be yielded more than once if a single process is managing
+    multiple queues.
+
+    :param environment:
+    """
+    for host, queues in environment.app_processes_config.celery_processes.items():
+        if not host or host == 'None':
+            continue
+        for comma_separated_queue_names, config in queues.items():
+            for queue in comma_separated_queue_names.split(','):
+                for worker_num in range(config.get('num_workers', 1)):
+                    process_name = get_celery_worker_name(environment, comma_separated_queue_names, worker_num)
+                    yield ProcessDescriptor(host, queue, worker_num, process_name)
+
+
+def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
+    environment_environment = environment.meta_config.deploy_env
+    project = environment.fab_settings_config.project
+    return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
+        project=project,
+        environment=environment_environment,
+        comma_separated_queue_name=comma_separated_queue_name,
+        worker_num=worker_num
+    )
+
+
+def get_pillowtop_processes(environment):
+    """
+    A generator that yields ``ProcessDescriptor`` tuples for pillowtop
+    :param environment:
+    """
+    for host, pillows in environment.app_processes_config.pillows.items():
+        for name, params in pillows.items():
+            start = params.get('start_process', 0)
+            num_processes = params.get('num_processes', 1)
+            for num_process in range(start, start + num_processes):
+                process_name = "commcare-hq-{deploy_env}-pillowtop-{pillow_name}-{num_process}".format(
+                    deploy_env=environment.meta_config.deploy_env,
+                    pillow_name=name,
+                    num_process=num_process
+                )
+                yield ProcessDescriptor(host, name, num_process, process_name)
