@@ -15,7 +15,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_pillowtop_processes
 )
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
@@ -512,26 +512,27 @@ class Service(CommandBase):
         "\n"
     )
 
-    def make_parser(self):
-        self.parser.add_argument(
+    arguments = (
+        Argument(
             'services',
             nargs="+",
             choices=SERVICE_NAMES,
             help="The services to run the command on"
-        )
-        self.parser.add_argument(
+        ),
+        Argument(
             'action', choices=ACTIONS,
             help="What action to take"
-        )
-        self.parser.add_argument('--limit', help=(
+        ),
+        Argument('--limit', help=(
             "Restrict the hosts to run the command on."
             "\nUse 'help' action to list all options."
-        ))
-        self.parser.add_argument('--only', type=validate_pattern, dest='process_pattern', help=(
+        ), include_in_docs=False),
+        Argument('--only', type=validate_pattern, dest='process_pattern', help=(
             "Sub-service name to limit action to."
             "\nFormat as 'name' or 'name:number'."
             "\nUse 'help' action to list all options."
-        ))
+        )),
+    )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
