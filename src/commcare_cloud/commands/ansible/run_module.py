@@ -4,17 +4,28 @@ import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
 from commcare_cloud.cli_utils import ask, print_command
+from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext,
     DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
-from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commands.shared_args import arg_inventory_group, arg_skip_check, arg_quiet, \
-    arg_stdout_callback
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
+
+NON_POSITIONAL_ARGUMENTS = (
+    Argument('-b', '--become', action='store_true', help=(
+        "run operations with become (implies vault password prompting if necessary)"
+    ), include_in_docs=False),
+    Argument('--become-user', help=(
+        "run operations as this user (default=root)"
+    ), include_in_docs=False),
+    shared_args.SKIP_CHECK_ARG,
+    shared_args.QUIET_ARG,
+    shared_args.STDOUT_CALLBACK_ARG,
+)
 
 
 class RunAnsibleModule(CommandBase):
@@ -22,23 +33,13 @@ class RunAnsibleModule(CommandBase):
     help = (
         'Run an arbitrary Ansible module.'
     )
+    arguments = (
+        shared_args.INVENTORY_GROUP_ARG,
+        Argument('module', help="The module to run"),
+        Argument('module_args', help="The arguments to pass to the module"),
+    ) + NON_POSITIONAL_ARGUMENTS
 
-    def make_parser(self):
-        arg_inventory_group(self.parser)
-        self.parser.add_argument('module', help="The module to run")
-        self.parser.add_argument('module_args', help="The arguments to pass to the module")
-        self.add_non_positional_arguments()
-
-    def add_non_positional_arguments(self):
-        self.parser.add_argument('-b', '--become', action='store_true', help=(
-            "run operations with become (implies vault password prompting if necessary)"
-        ))
-        self.parser.add_argument('--become-user', help=(
-            "run operations as this user (default=root)"
-        ))
-        arg_skip_check(self.parser)
-        arg_quiet(self.parser)
-        arg_stdout_callback(self.parser)
+    def modify_parser(self):
         add_to_help_text(self.parser, "\n{}\n{}".format(
             "The ansible options below are available as well",
             filtered_help_message(
@@ -135,12 +136,15 @@ class RunShellCommand(CommandBase):
     command = 'run-shell-command'
     help = 'Run an arbitrary command via the Ansible shell module.'
 
-    def make_parser(self):
-        arg_inventory_group(self.parser)
-        self.parser.add_argument('shell_command', help="The shell command you want to run")
-        self.parser.add_argument('--silence-warnings', action='store_true',
-                                 help="Silence shell warnings (such as to use another module instead)")
-        RunAnsibleModule(self.parser).add_non_positional_arguments()
+    arguments = (
+        shared_args.INVENTORY_GROUP_ARG,
+        Argument('shell_command', help="The shell command you want to run"),
+        Argument('--silence-warnings', action='store_true',
+                 help="Silence shell warnings (such as to use another module instead)"),
+    ) + NON_POSITIONAL_ARGUMENTS
+
+    def modify_parser(self):
+        RunAnsibleModule(self.parser).modify_parser()
 
     def run(self, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):

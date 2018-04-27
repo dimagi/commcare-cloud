@@ -3,7 +3,7 @@ import os
 import sys
 
 from commcare_cloud.cli_utils import print_command
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from .getinventory import get_server_address, get_monolith_address
 from six.moves import shlex_quote
@@ -12,15 +12,15 @@ from six.moves import shlex_quote
 class Lookup(CommandBase):
     command = 'lookup'
     help = "Lookup remote hostname or IP address"
-
-    def make_parser(self):
-        self.parser.add_argument("server", nargs="?",
-            help="Server name/group: postgresql, proxy, webworkers, ... The server "
-                 "name/group may be prefixed with 'username@' to login as a specific "
-                 "user and may be terminated with ':<n>' to choose one of "
-                 "multiple servers if there is more than one in the group. "
-                 "For example: webworkers:0 will pick the first webworker. May also"
-                 "be ommitted for environments with only a single server.")
+    arguments = (
+        Argument("server", nargs="?", help=(
+            "Server name/group: postgresql, proxy, webworkers, ... The server "
+             "name/group may be prefixed with 'username@' to login as a specific "
+             "user and may be terminated with ':<n>' to choose one of "
+             "multiple servers if there is more than one in the group. "
+             "For example: webworkers:0 will pick the first webworker. May also"
+             "be ommitted for environments with only a single server.")),
+    )
 
     def lookup_server_address(self, args):
         def exit(message):
@@ -80,13 +80,11 @@ class Mosh(_Ssh):
 class Tmux(_Ssh):
     command = 'tmux'
     help = "Connect to a remote host with ssh and open a tmux session"
-
-    def make_parser(self):
-        self.parser.add_argument('server',
-                                 help="server to run tmux session on. "
-                                      "Use '-' to for default (webworkers:0)")
-        self.parser.add_argument('remote_command', nargs='?',
-                                 help="command to run in new tmux session")
+    arguments = (
+        Argument('server', help=(
+            "server to run tmux session on. Use '-' to for default (webworkers:0)")),
+        Argument('remote_command', nargs='?', help="command to run in new tmux session"),
+    )
 
     def run(self, args, ssh_args):
         environment = get_environment(args.env_name)
@@ -124,10 +122,12 @@ class DjangoManage(CommandBase):
             "runs `./manage.py ...` on the first webworker of <env>. "
             "Omit <command> to see a full list of possible commands.")
 
-    def make_parser(self):
-        self.parser.add_argument('--tmux', action='store_true', default=False, help="Run this command in a tmux and stay connected")
-        self.parser.add_argument('--release', help=(
-            "Name of release to run under. E.g. '2018-04-13_18.16'"))
+    arguments = (
+        Argument('--tmux', action='store_true', default=False, help=(
+            "Run this command in a tmux and stay connected")),
+        Argument('--release', help=(
+            "Name of release to run under. E.g. '2018-04-13_18.16'")),
+    )
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
