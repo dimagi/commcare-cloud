@@ -24,7 +24,7 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-redis_appendonly: 'no'
+redis_appendonly: 'yes'
 
 KSPLICE_ACTIVE: yes
 
