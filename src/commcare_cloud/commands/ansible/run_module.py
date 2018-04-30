@@ -22,6 +22,8 @@ NON_POSITIONAL_ARGUMENTS = (
     Argument('--become-user', help=(
         "run operations as this user (default=root)"
     ), include_in_docs=False),
+    Argument('--use-pem', action='store_true', help=(
+        "uses the pem file commcare_cloud_pem specified in public.vars")),
     shared_args.SKIP_CHECK_ARG,
     shared_args.QUIET_ARG,
     shared_args.STDOUT_CALLBACK_ARG,
@@ -70,7 +72,7 @@ class RunAnsibleModule(CommandBase):
             return run_ansible_module(
                 environment, ansible_context,
                 args.inventory_group, args.module, args.module_args,
-                args.become, args.become_user,
+                args.become, args.become_user, args.use_pem,
                 *unknown_args
             )
 
@@ -84,7 +86,7 @@ class RunAnsibleModule(CommandBase):
 
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become, become_user, *extra_args):
+                       become, become_user, use_pem, *extra_args):
     cmd_parts = (
         'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
@@ -120,8 +122,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
         cmd_parts += ('--vault-password-file=/bin/cat',)
-
-    cmd_parts += get_common_ssh_args(environment)
+    cmd_parts += get_common_ssh_args(environment, use_pem)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
