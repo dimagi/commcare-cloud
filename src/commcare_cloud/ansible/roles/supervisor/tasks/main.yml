@@ -12,6 +12,17 @@
   become: yes
   when: not which_supervisord.stdout
 
+- name: retry finding supervisord path
+  shell: 'which supervisord'
+  register: which_supervisord_retry
+  changed_when: false
+  failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
+  check_mode: no
+  when: not which_supervisord.stdout
+
+- set_fact: which_supervisord = which_supervisord_retry
+  when: which_supervisord_retry.skipped is defined and which_supervisord_retry.skipped
+
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
   register: init_d_conf
@@ -52,7 +63,7 @@
   failed_when: no
 
 - name: pkill supervisord if run by cchq
-  command: pkill -9 -U cchq
+  command: pkill -9 -U cchq supervisord
   # if it returns 1 with no output, that just means no process to kill
   register: result
   # rc = 0: one or more processes match

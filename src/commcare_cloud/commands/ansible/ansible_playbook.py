@@ -215,8 +215,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
 class UpdateUsers(_AnsiblePlaybookAlias):
     command = 'update-users'
     help = (
-        "Add users to a set of new machines as root. "
-        "This must be done before any other user can log in."
+        "Bring users up to date with the current CommCare Cloud settings."
     )
 
     def run(self, args, unknown_args):
