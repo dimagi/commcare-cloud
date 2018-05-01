@@ -34,7 +34,7 @@ setup(
         'dimagi-memoized>=1.1.0',
         'dnspython',
         'Fabric==1.10.2',
-        'jsonobject>=0.9.0a1',
+        'jsonobject>=0.9.0a2',
         'netaddr',
         'passlib',
         'pycrypto==2.6.1',
