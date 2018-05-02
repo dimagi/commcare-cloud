@@ -112,7 +112,10 @@ def supervisor_services(environment, ansible_context, action):
 
 
 def _run_command(environment, ansible_context, command, become=False):
-    return run_ansible_module(environment, ansible_context, HQ_PROCESSES_SCOPE, 'shell', command, become, None)
+    return run_ansible_module(
+        environment, ansible_context, HQ_PROCESSES_SCOPE, 'shell', command,
+        become, None, False
+    )
 
 
 def print_downtime(downtime):
