@@ -119,12 +119,14 @@ class MigrateCouchdb(CommandBase):
     def _run_migration(self, migration, ansible_context, check_mode):
         user_args = "user=ansible groups=couchdb append=yes"
         run_ansible_module(
-            migration.source_environment, ansible_context, 'couchdb2', 'user', user_args, True, None
+            migration.source_environment, ansible_context, 'couchdb2', 'user', user_args,
+            True, None, False
         )
 
         file_args = "path=/opt/data/couchdb2 mode=0755"
         run_ansible_module(
-            migration.source_environment, ansible_context, 'couchdb2', 'file', file_args, True, None
+            migration.source_environment, ansible_context, 'couchdb2', 'file', file_args,
+            True, None, False
         )
 
         rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
@@ -151,7 +153,10 @@ def start_stop_service(environment, ansible_context, service_state, check_mode=F
 
     for service in ('monit', 'couchdb2'):
         args = 'name={} state={}'.format(service, service_state)
-        run_ansible_module(environment, ansible_context, 'couchdb2', 'service', args, True, None, *extra_args)
+        run_ansible_module(
+            environment, ansible_context, 'couchdb2', 'service', args,
+            True, None, False, *extra_args
+        )
 
 
 def commit_migration(migration):
@@ -215,7 +220,10 @@ def prepare_to_sync_files(migration, ansible_context):
             group='couchdb',
             mode='0644'
         )
-        run_ansible_module(migration.target_environment, ansible_context, host, 'copy', copy_args, True, None)
+        run_ansible_module(
+            migration.target_environment, ansible_context, host, 'copy', copy_args,
+            True, None, False
+        )
     return rsync_files_by_host
 
 
