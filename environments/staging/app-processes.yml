@@ -10,8 +10,6 @@ celery_processes:
     background_queue,case_rule_queue:
       concurrency: 2
       max_tasks_per_child: 1
-    pillow_retry_queue:
-      concurrency: 1
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1
