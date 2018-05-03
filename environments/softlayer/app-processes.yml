@@ -5,8 +5,6 @@ celery_processes:
     celery_periodic:
       server_whitelist: '10.162.36.233'
       concurrency: 4
-    pillow_retry_queue:
-      concurrency: 1
     submission_reprocessing_queue:
       concurrency: 1
     email_queue:
