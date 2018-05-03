@@ -1,50 +1,39 @@
-_envs()
-{
-    if [[ -z "$COMMCARE_CLOUD_ENVS" ]]
+_completion_props() {
+    if [[ -z "${COMPLETION_PROPS}" ]]
     then
-        COMMCARE_CLOUD_ENVS=$(commcare-cloud -h | head -n2 | tail -n1 | cut -d'{' -f2 | cut -d'}' -f1 | sed 's/,/ /g')
+        COMPLETION_PROPS="$(manage-commcare-cloud get environments commands ANSIBLE_DIR)"
     fi
-    echo $COMMCARE_CLOUD_ENVS
+    echo "$COMPLETION_PROPS"
 }
 
-_cmds()
-{
-    if [[ -z "$COMMCARE_CLOUD_CMDS" ]]
-    then
-        COMMCARE_CLOUD_CMDS=$(commcare-cloud -h | head -n3 | tail -n1 | cut -d'{' -f2 | cut -d'}' -f1 | sed 's/,/ /g')
-    fi
-    echo $COMMCARE_CLOUD_CMDS
-}
 
 _commcare_cloud()
 {
     local cur prev opts
     COMPREPLY=()
-    FILE_EXCHANGE_DIR=$(manage-commcare-cloud get-path ANSIBLE_DIR)
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="--help --version"
 
-    export COMMCARE_CLOUD_ENVS=$(_envs)
-    envs=$COMMCARE_CLOUD_ENVS
-
-    export COMMCARE_CLOUD_CMDS=$(_cmds)
-    cmds=$COMMCARE_CLOUD_CMDS
+    export COMPLETION_PROPS="$(_completion_props)"
+    COMMCARE_CLOUD_ENVS=$(echo "${COMPLETION_PROPS}" | head -n1 | tail -n1)
+    COMMCARE_CLOUD_CMDS=$(echo "${COMPLETION_PROPS}" | head -n2 | tail -n1)
+    FILE_EXCHANGE_DIR=$(echo "${COMPLETION_PROPS}" | head -n3 | tail -n1)
 
     # only include .yml files that don't contain a space
-    files=$(echo $(ls $FILE_EXCHANGE_DIR | grep -v ' ' | grep '.*.yml$'))
+    files=$(echo $(ls ${FILE_EXCHANGE_DIR} | grep -v ' ' | grep '.*.yml$'))
 
     case $COMP_CWORD in
     1)
         if [[ ${cur} == -* ]] ; then
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         else
-            COMPREPLY=( $(compgen -W "${envs}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${COMMCARE_CLOUD_ENVS}" -- ${cur}) )
         fi
         ;;
     2)
         if [[ ${cur} == * ]] ; then
-            COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${COMMCARE_CLOUD_CMDS}" -- ${cur}) )
         fi
         ;;
     3)
