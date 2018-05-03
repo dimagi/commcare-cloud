@@ -82,8 +82,10 @@ dbs:
       host: pgucrstandby
       create: False
       django_migrate: False
+      hq_acceptable_standby_delay: 3
     - django_alias: pgmainstandby
       name: commcarehq
       host: pgmainstandby
       create: False
       django_migrate: False
+      hq_acceptable_standby_delay: 3
