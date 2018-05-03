@@ -24,7 +24,7 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-redis_appendonly: 'no'
+redis_appendonly: 'yes'
 
 KSPLICE_ACTIVE: yes
 
@@ -64,7 +64,6 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ CAS_SITE_HOST }}"
-    - "{{ ENIKSHAY_SITE_HOST }}"
     - "{{ SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
   ASYNC_INDICATORS_TO_QUEUE: 30000
@@ -87,6 +86,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  EULA_COMPLIANCE: True
   FORMPLAYER_URL: "/formplayer"
   HQ_INSTANCE: 'india'
   INACTIVITY_TIMEOUT: 20160
@@ -113,12 +113,11 @@ localsettings:
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
+  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
 #  STATIC_ROOT:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
-  ENIKSHAY_PRIVATE_API_USERS: {'BI': 'ppia-bi21', 'GU': 'ppia-gu21', 'MH': 'ppia-mh14'}
-  ENIKSHAY_PRIVATE_API_PASSWORD: "{{ localsettings_private.ENIKSHAY_PRIVATE_API_PASSWORD }}"
 
 site_locations:
   - name: /data_dumps/export/enikshay/public
