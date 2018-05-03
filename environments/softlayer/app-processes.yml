@@ -23,7 +23,6 @@ celery_processes:
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1
-  'celery1':
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -72,7 +71,6 @@ pillows:
       num_processes: 1
     ReportXFormToElasticsearchPillow:
       num_processes: 1
-  'pillow3':
     CaseSearchToElasticsearchPillow:
       num_processes: 1
     kafka-ucr-static:
