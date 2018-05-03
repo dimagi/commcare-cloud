@@ -26,7 +26,6 @@ celery_processes:
     flower: {}
   None:
     # todo: create these queues?
-    celery:
     reminder_case_update_queue:
     reminder_rule_queue:
     sms_queue:

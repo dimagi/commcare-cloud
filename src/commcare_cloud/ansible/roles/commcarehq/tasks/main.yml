@@ -1,0 +1,128 @@
+# If "pull CommCare HQ source" fails with any of these messages
+# - fatal: destination path '/home/cchq/www/dev/code_root' already exists and is not an empty directory.
+# - /home/cchq/www/dev/code_root/.git: Permission denied
+# Uncomment these lines
+#- name: delete staticfiles
+#  become: yes
+#  file:
+#    path: "{{ code_home }}"
+#    state: absent
+
+- name: create required directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ www_dir }}"
+    - "{{ www_home }}"
+    - "{{ log_home }}"
+    - "{{ code_releases }}"
+
+- name: create required directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0777
+    state: directory
+  with_items:
+    - "{{ service_home }}"
+  tags: services
+
+# Do not update source unless you're cloning for the first time
+
+- name: register git repo
+  stat: path="{{ code_home }}/.git"
+  register: gitdir
+
+- block:
+    - name: Pull full CommcareHQ source
+      git:
+        repo: "{{ commcarehq_repository }}"
+        dest: "{{ code_source }}"
+        version: "{{ commcarehq_version }}"
+        recursive: yes
+        accept_hostkey: yes
+        update: yes
+      become: true
+      tags:
+        - git
+        - slow
+
+    - name: Link source to code_home
+      become: true
+      file:
+        state: link
+        src: "{{ code_source }}"
+        dest: "{{ code_home }}"
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+
+    - name: install pip requirements
+      become: true
+      with_items: "{{ commcarehq_requirements }}"
+      pip:
+        requirements: "{{ code_home }}/requirements/{{ item }}"
+        virtualenv: "{{ virtualenv_source }}"
+        chdir: "{{ code_home }}"
+      tags:
+        - slow
+      when: not testing|default(False)
+
+    - name: chown clone
+      become: true
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        recurse: yes
+      with_items:
+        - "{{ code_source }}"
+        - "{{ virtualenv_source }}"
+
+  when: not gitdir.stat.exists
+
+- name: Upgrade python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+    virtualenv: "{{ virtualenv_home }}"
+  with_items:
+    - six
+    - pip
+    - setuptools
+        
+- name: chown virtualenv
+  become: true
+  file:
+    path: "{{ virtualenv_home }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+
+- name: copy localsettings
+  become: true
+  template:
+    src: localsettings.py.j2
+    dest: "{{ code_home }}/localsettings.py"
+  tags:
+    - localsettings
+    - hq-localsettings
+
+- name: chown localsettings
+  become: true
+  file:
+    path: "{{ code_home }}/localsettings.py"
+    state: file
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+  tags:
+    - localsettings
+    - hq-localsettings

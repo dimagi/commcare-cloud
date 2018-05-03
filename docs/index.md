@@ -11,6 +11,10 @@ Anyone willing to dedicate the considerable amount of effort
 and system administration knowledge necessary to stand up and manage a CommCare server
 cluster will be able to do so using the same tools that we do.
 
+## `commcare-cloud` Documentation
+If you're looking for documentation on how to use the `commcare-cloud` tool,
+check out the [`commcare-cloud` documentation](commcare-cloud).
+
 ## A word of caution
 
 CommCare HQ is a complex, distributed software application,
@@ -40,11 +44,7 @@ an understanding of the system's architecture and each of the system's underlyin
 
 ## Miscellaneous Links
 - The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
-- The [ansible README](https://github.com/dimagi/commcare-cloud/blob/master/ansible/README.md) (somewhat outdated)
+- The [ansible README](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md) (somewhat outdated)
 
 ## HowTos
 - [Moving partitioned databases](howto/move-partitioned-database)
-
-
-## `commcare-cloud` Documentation
-- [The commcare-cloud environment configuration](env)
