@@ -12,8 +12,7 @@ before_install:
 
 install:
   - "source control/init.sh"
-  - pip install -r test_requirements.txt
-
+  - "pip install -e .[test]"
 script:
   - ".travis/tests.sh"
   - "diff <(ansible -h) src/commcare_cloud/help_cache/ansible.txt"
