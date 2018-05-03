@@ -24,8 +24,6 @@ celery_processes:
       concurrency: 1
       max_tasks_per_child: 1
       optimize: True
-    pillow_retry_queue:
-      concurrency: 1
     submission_reprocessing_queue:
       concurrency: 1
     ucr_queue:
