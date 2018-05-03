@@ -16,7 +16,6 @@ def get_commands():
 
 
 def get_environments():
-
     for env in get_available_envs():
         yield env
 
