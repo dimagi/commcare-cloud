@@ -16,7 +16,7 @@ _commcare_cloud()
     opts="--help --version"
 
     export COMPLETION_PROPS="$(_completion_props)"
-    COMMCARE_CLOUD_ENVS=$(echo "${COMPLETION_PROPS}" | head -n1 | tail -n1)
+    COMMCARE_CLOUD_ENVS=$(echo "${COMPLETION_PROPS}" | head -n1)
     COMMCARE_CLOUD_CMDS=$(echo "${COMPLETION_PROPS}" | head -n2 | tail -n1)
     FILE_EXCHANGE_DIR=$(echo "${COMPLETION_PROPS}" | head -n3 | tail -n1)
 
