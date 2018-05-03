@@ -16,24 +16,24 @@ _commcare_cloud()
     opts="--help --version"
 
     export COMPLETION_PROPS="$(_completion_props)"
-    COMMCARE_CLOUD_ENVS=$(echo "${COMPLETION_PROPS}" | head -n1)
-    COMMCARE_CLOUD_CMDS=$(echo "${COMPLETION_PROPS}" | head -n2 | tail -n1)
-    FILE_EXCHANGE_DIR=$(echo "${COMPLETION_PROPS}" | head -n3 | tail -n1)
+    envs=$(echo "${COMPLETION_PROPS}" | head -n1)
+    cmds=$(echo "${COMPLETION_PROPS}" | head -n2 | tail -n1)
+    ansible_dir=$(echo "${COMPLETION_PROPS}" | head -n3 | tail -n1)
 
     # only include .yml files that don't contain a space
-    files=$(echo $(ls ${FILE_EXCHANGE_DIR} | grep -v ' ' | grep '.*.yml$'))
+    files=$(echo $(ls ${ansible_dir} | grep -v ' ' | grep '.*.yml$'))
 
     case $COMP_CWORD in
     1)
         if [[ ${cur} == -* ]] ; then
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         else
-            COMPREPLY=( $(compgen -W "${COMMCARE_CLOUD_ENVS}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${envs}" -- ${cur}) )
         fi
         ;;
     2)
         if [[ ${cur} == * ]] ; then
-            COMPREPLY=( $(compgen -W "${COMMCARE_CLOUD_CMDS}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
         fi
         ;;
     3)
