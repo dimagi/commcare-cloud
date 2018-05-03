@@ -25,7 +25,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
-  when: app_processes_config.celery_processes.get(inventory_hostname).pillow_retry_queue is defined
+  when: localsettings.get('PILLOW_RETRY_QUEUE_ENABLED', False)
   with_items:
     - process_name: pillow_retry_queue
       management_command: run_pillow_retry_queue
