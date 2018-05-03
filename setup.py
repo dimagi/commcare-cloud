@@ -1,7 +1,9 @@
 from setuptools import setup, find_packages
 
 test_deps = [
-    'mock==2.0.0',
+    'mock>=2.0.0',
+    'nose>=1.3.7',
+    'parameterized>=0.6.1',
 ]
 extras = {
     'test': test_deps,
