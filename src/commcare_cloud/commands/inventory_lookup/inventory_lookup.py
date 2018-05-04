@@ -18,8 +18,8 @@ class Lookup(CommandBase):
              "name/group may be prefixed with 'username@' to login as a specific "
              "user and may be terminated with ':<n>' to choose one of "
              "multiple servers if there is more than one in the group. "
-             "For example: webworkers:0 will pick the first webworker. May also"
-             "be ommitted for environments with only a single server.")),
+             "For example: webworkers:0 will pick the first webworker. May also "
+             "be omitted for environments with only a single server.")),
     )
 
     def lookup_server_address(self, args):
@@ -52,7 +52,14 @@ class _Ssh(Lookup):
 
 class Ssh(_Ssh):
     command = 'ssh'
-    help = "Connect to a remote host with ssh"
+    help = """
+    Connect to a remote host with ssh.
+
+    This will also automatically add the ssh argument `-A`
+    when `<server>` is `control`.
+
+    All trailing arguments are passed directly to `ssh`.
+    """
 
     def run(self, args, ssh_args):
         if args.server == 'control' and '-A' not in ssh_args:
@@ -67,7 +74,15 @@ class Ssh(_Ssh):
 
 class Mosh(_Ssh):
     command = 'mosh'
-    help = "Connect to a remote host with mosh"
+    help = """
+    Connect to a remote host with mosh.
+
+    This will also automatically switch to using ssh with `-A`
+    when `<server>` is `control` (because `mosh` doesn't support `-A`).
+
+    All trailing arguments are passed directly to `mosh`
+    (or `ssh` in the edge case described above).
+    """
 
     def run(self, args, ssh_args):
         if args.server == 'control' or '-A' in ssh_args:

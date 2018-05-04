@@ -1,13 +1,16 @@
-# `commcare-cloud`
+# Commands
 {:.no_toc}
 
-**usage:**
+* TOC
+{:toc}
+
 ```
-commcare-cloud [-h] [--control]
+commcare-cloud [--control]
                       {<env>}
-                      {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,update-local-known-hosts,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,restart-elasticsearch,mosh,after-reboot,ssh,downtime,fab,validate-environment-settings,migrate-couchdb,run-shell-command}
+                      {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                       ...
 ```
+
 ## Positional Arguments
 {:.no_toc}
 
@@ -19,693 +22,214 @@ server environment to run against
 ## Optional Arguments
 {:.no_toc}
 
-### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
 ### `--control`
 {:.no_toc}
 
 include to run command remotely on the control machine
 
 
-# Available Commands
-{:.no_toc}
-* TOC
-{:toc}
+## `cchq` alias
 
-## `bootstrap-users`
-**usage:**
-```
-commcare-cloud {<env>} bootstrap-users [-h] [--skip-check] [--quiet] [--branch BRANCH] [--output {actionable,minimal}]
-                                              [-l SUBSET]
-```
-Add users to a set of new machines as root. This must be done before any other user can log in.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `ansible-playbook`
-**usage:**
-```
-commcare-cloud {<env>} ansible-playbook [-h] [--skip-check] [--quiet] [--branch BRANCH]
-                                               [--output {actionable,minimal}] [-l SUBSET]
-                                               playbook
-```
-Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your &lt;environment&gt;. By default, you will see --check output and then asked whether to apply. 
-
-### Positional Arguments
-{:.no_toc}
-
-#### `playbook`
-{:.no_toc}
-
-The ansible playbook .yml file to run.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-### The ansible-playbook options below are available as well
-{:.no_toc}
-```
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  --flush-cache         clear the fact cache
-  --force-handlers      run handlers even if a task fails
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=5)
-  --list-hosts          outputs a list of matching hosts; does not execute
-                        anything else
-  --list-tags           list all available tags
-  --list-tasks          list all tasks that would be executed
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
-  --skip-tags=SKIP_TAGS
-                        only run plays and tasks whose tags do not match these
-                        values
-  --start-at-task=START_AT_TASK
-                        start the playbook at the task matching this name
-  --step                one-step-at-a-time: confirm each task before running
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
-  -t TAGS, --tags=TAGS  only run plays and tasks tagged with these values
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
-  --version             show program's version number and exit
+Additionally, `commcare-cloud` is aliased to the easier-to-type `cchq`
+(short for "CommCare HQ"), so any command you see here can also be run
+as
 
 ```
-###   Connection Options
-{:.no_toc}
-```
-    control as whom and how to connect to hosts
-
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
-                        use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=10)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
-                        specify extra arguments to pass to sftp only (e.g. -f,
-                        -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
-                        specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-###   Privilege Escalation Options
-{:.no_toc}
-```
-    control how and which user you become as on target hosts
-
-    -b, --become        run operations with become (does not imply password
-                        prompting)
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
-    --become-user=BECOME_USER
-                        run operations as this user (default=root)
-    -K, --ask-become-pass
-                        ask for privilege escalation password
+cchq <env> <command> <args...>
 ```
 
-## `django-manage`
-**usage:**
-```
-commcare-cloud {<env>} django-manage [-h] [--tmux] [--release RELEASE]
-```
-Run a django management command. `commcare-cloud <env> django-manage ...` runs `./manage.py ...` on the first webworker of &lt;env&gt;. Omit &lt;command&gt; to see a full list of possible commands.
+## Underlying tools and common arguments
 
-### Optional Arguments
+The `commcare-cloud` command line tool is by and large a relatively
+thin wrapper around the other tools it uses: `ansible`, `ansible-playbook`,
+`ssh`, `fab`, etc. For every command you run using `commcare-cloud`,
+it will print out the underlying command that it is running,
+a faint blue / cyan color.
+In each case, if you copy and paste the printed command directly,
+it will have essentially the same affect.
+(Note too that some commands run
+multiple underlying commands in sequence,
+and that each command will be printed.)
+
+Where possible, `commcare-cloud` is set up to pass any unknown arguments
+to the underlying tool. In addition, there are a number of common
+arguments that are recognized by many `commcare-cloud` commands,
+and have similar behavior on across them. Rather than include these
+on every command they apply to, we will list upfront
+these common arguments and when they can be used.
+
+To verify availability on any given command, you can always run the
+command with `-h`.
+
+### Ansible-backed commands
+
+For most ansible-backed commands `commcare-cloud`
+will run in check mode first, and then ask you to confirm
+before applying the changes. Since check mode does not make sense
+for all commands, there are some that do not follow this pattern
+and apply the changes directly.
+
+### `--skip-check`
+
+When this argument is included,
+the "check, ask, apply" behavior described above is circumvented,
+and the command is instead applied directly
+
+### `--quiet`
+
+Run the command without every prompting for permission to continue.
+At each point, the affirmative response is assumed.
+
+### `--branch <branch>`
+
+In the specific case that `commcare-cloud` has been installed from
+git source in egg mode (i.e. using `pip install -e .`), it will always
+check that the checked-out git branch matches the `<branch>`
+that is thus passed in. If this arg is not specified,
+it defaults to `master`. As a consequence, when running from git branch
+`master`, there is no need to use the `--branch` arg explicitly.
+
+### `--output [actionable|minimal]`
+
+The callback plugin to use for generating output. See
+ansible-doc -t callback -l and ansible-doc -t callback.
+
+## Available Commands
 {:.no_toc}
 
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--tmux`
-{:.no_toc}
-
-Run this command in a tmux and stay connected
-#### `--release RELEASE`
-{:.no_toc}
-
-Name of release to run under. E.g. '2018-04-13_18.16'
-
-## `aps`
-**usage:**
-```
-commcare-cloud {<env>} deploy-stack [-h] [--skip-check] [--quiet] [--branch BRANCH] [--output {actionable,minimal}]
-                                           [-l SUBSET]
-```
-Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `tmux`
-**usage:**
-```
-commcare-cloud {<env>} tmux [-h] server [remote_command]
-```
-Connect to a remote host with ssh and open a tmux session
-
-### Positional Arguments
-{:.no_toc}
-
-#### `server`
-{:.no_toc}
-
-server to run tmux session on. Use '-' to for default (webworkers:0)
-#### `remote_command`
-{:.no_toc}
-
-command to run in new tmux session
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-
-## `ap`
-**usage:**
-```
-commcare-cloud {<env>} ansible-playbook [-h] [--skip-check] [--quiet] [--branch BRANCH]
-                                               [--output {actionable,minimal}] [-l SUBSET]
-                                               playbook
-```
-Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your &lt;environment&gt;. By default, you will see --check output and then asked whether to apply. 
-
-### Positional Arguments
-{:.no_toc}
-
-#### `playbook`
-{:.no_toc}
-
-The ansible playbook .yml file to run.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-### The ansible-playbook options below are available as well
-{:.no_toc}
-```
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  --flush-cache         clear the fact cache
-  --force-handlers      run handlers even if a task fails
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=5)
-  --list-hosts          outputs a list of matching hosts; does not execute
-                        anything else
-  --list-tags           list all available tags
-  --list-tasks          list all tasks that would be executed
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
-  --skip-tags=SKIP_TAGS
-                        only run plays and tasks whose tags do not match these
-                        values
-  --start-at-task=START_AT_TASK
-                        start the playbook at the task matching this name
-  --step                one-step-at-a-time: confirm each task before running
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
-  -t TAGS, --tags=TAGS  only run plays and tasks tagged with these values
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
-  --version             show program's version number and exit
+### `validate-environment-settings`
 
 ```
-###   Connection Options
-{:.no_toc}
-```
-    control as whom and how to connect to hosts
-
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
-                        use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=10)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
-                        specify extra arguments to pass to sftp only (e.g. -f,
-                        -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
-                        specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-###   Privilege Escalation Options
-{:.no_toc}
-```
-    control how and which user you become as on target hosts
-
-    -b, --become        run operations with become (does not imply password
-                        prompting)
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
-    --become-user=BECOME_USER
-                        run operations as this user (default=root)
-    -K, --ask-become-pass
-                        ask for privilege escalation password
+commcare-cloud {<env>} validate-environment-settings
 ```
 
-## `update-local-known-hosts`
-**usage:**
+Validate your environment's configuration files
+
+As you make changes to your environment files, you can use this
+command to check for validation errors or incompatibilities.
+
+### `update-local-known-hosts`
+
 ```
-commcare-cloud {<env>} update-local-known-hosts [-h] [--skip-check] [--quiet] [--branch BRANCH]
-                                                       [--output {actionable,minimal}] [-l SUBSET]
+commcare-cloud {<env>} update-local-known-hosts
 ```
+
 Update the local known_hosts file of the environment configuration.
 
-### Optional Arguments
-{:.no_toc}
+You can run this on a regualar basis to avoid having to `yes` through
+the ssh prompts. Note that when you run this, you are implicitly
+trusting that at the moment you run it, there is no man-in-the-middle
+attack going on, the type of security breech that the SSH prompt
+is meant to mitigate against in the first place.
 
-#### `-h, --help`
-{:.no_toc}
+### `lookup`
 
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `deploy-stack`
-**usage:**
 ```
-commcare-cloud {<env>} deploy-stack [-h] [--skip-check] [--quiet] [--branch BRANCH] [--output {actionable,minimal}]
-                                           [-l SUBSET]
+commcare-cloud {<env>} lookup [server]
 ```
-Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
 
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `service`
-**usage:**
-```
-commcare-cloud {<env>} service [-h] [--limit LIMIT] [--only PROCESS_PATTERN]
-                                      
-                                      {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                                      [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                                      {start,stop,restart,status,help}
-```
-Manage services.
-Usage examples:   cchq &lt;env&gt; service postgresql status
-   cchq &lt;env&gt; service riakcs restart --only riak,riakcs
-   cchq &lt;env&gt; service celery help
-   cchq &lt;env&gt; service celery restart --limit &lt;host&gt;
-   cchq &lt;env&gt; service celery restart --only &lt;queue-name&gt;,&lt;queue-name&gt;:&lt;queue_num&gt;
-   cchq &lt;env&gt; service pillowtop restart --limit &lt;host&gt; --only &lt;pillow-name&gt;
-
-### Positional Arguments
-{:.no_toc}
-
-#### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
-{:.no_toc}
-
-The services to run the command on
-#### `{start,stop,restart,status,help}`
-{:.no_toc}
-
-What action to take
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--limit LIMIT`
-{:.no_toc}
-
-Restrict the hosts to run the command on.
-Use 'help' action to list all options.
-#### `--only PROCESS_PATTERN`
-{:.no_toc}
-
-Sub-service name to limit action to.
-Format as 'name' or 'name:number'.
-Use 'help' action to list all options.
-
-## `update-supervisor-confs`
-**usage:**
-```
-commcare-cloud {<env>} update-supervisor-confs [-h] [--skip-check] [--quiet] [--branch BRANCH]
-                                                      [--output {actionable,minimal}] [-l SUBSET]
-```
-Updates the supervisor configuration files for services required by CommCare. These services are defined in app-processes.yml.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `update-users`
-**usage:**
-```
-commcare-cloud {<env>} update-users [-h] [--skip-check] [--quiet] [--branch BRANCH] [--output {actionable,minimal}]
-                                           [-l SUBSET]
-```
-Bring users up to date with the current CommCare Cloud settings.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `migrate_couchdb`
-**usage:**
-```
-commcare-cloud {<env>} migrate-couchdb [-h] [--skip-check] migration_plan {describe,plan,migrate,commit}
-```
-Perform a CouchDB migration
-
-### Positional Arguments
-{:.no_toc}
-
-#### `migration_plan`
-{:.no_toc}
-
-Path to migration plan file
-#### `{describe,plan,migrate,commit}`
-{:.no_toc}
-
-Action to perform
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-
-## `lookup`
-**usage:**
-```
-commcare-cloud {<env>} lookup [-h] [server]
-```
 Lookup remote hostname or IP address
 
-### Positional Arguments
+#### Positional Arguments
 {:.no_toc}
 
-#### `server`
+##### `server`
 {:.no_toc}
 
-Server name/group: postgresql, proxy, webworkers, ... The server name/group may be prefixed with 'username@' to login as a specific user and may be terminated with ':<n>' to choose one of multiple servers if there is more than one in the group. For example: webworkers:0 will pick the first webworker. May alsobe ommitted for environments with only a single server.
+Server name/group: postgresql, proxy, webworkers, ... The server
+name/group may be prefixed with 'username@' to login as a
+specific user and may be terminated with ':<n>' to choose one of
+multiple servers if there is more than one in the group. For
+example: webworkers:0 will pick the first webworker. May also be
+omitted for environments with only a single server.
 
-### Optional Arguments
-{:.no_toc}
+### `ssh`
 
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-
-## `run-module`
-**usage:**
 ```
-commcare-cloud {<env>} run-module [-h] [-b] [--become-user BECOME_USER] [--use-pem] [--skip-check] [--quiet]
-                                         [--output {actionable,minimal}]
-                                         inventory_group module module_args
+commcare-cloud {<env>} ssh [server]
 ```
+
+Connect to a remote host with ssh.
+
+This will also automatically add the ssh argument `-A`
+when `<server>` is `control`.
+
+All trailing arguments are passed directly to `ssh`.
+
+#### Positional Arguments
+{:.no_toc}
+
+##### `server`
+{:.no_toc}
+
+Server name/group: postgresql, proxy, webworkers, ... The server
+name/group may be prefixed with 'username@' to login as a
+specific user and may be terminated with ':<n>' to choose one of
+multiple servers if there is more than one in the group. For
+example: webworkers:0 will pick the first webworker. May also be
+omitted for environments with only a single server.
+
+### `mosh`
+
+```
+commcare-cloud {<env>} mosh [server]
+```
+
+Connect to a remote host with mosh.
+
+This will also automatically switch to using ssh with `-A`
+when `<server>` is `control` (because `mosh` doesn't support `-A`).
+
+All trailing arguments are passed directly to `mosh`
+(or `ssh` in the edge case described above).
+
+#### Positional Arguments
+{:.no_toc}
+
+##### `server`
+{:.no_toc}
+
+Server name/group: postgresql, proxy, webworkers, ... The server
+name/group may be prefixed with 'username@' to login as a
+specific user and may be terminated with ':<n>' to choose one of
+multiple servers if there is more than one in the group. For
+example: webworkers:0 will pick the first webworker. May also be
+omitted for environments with only a single server.
+
+### `run-module`
+
+```
+commcare-cloud {<env>} run-module [--use-pem] inventory_group module module_args
+```
+
 Run an arbitrary Ansible module.
 
-### Positional Arguments
+#### Positional Arguments
 {:.no_toc}
 
-#### `inventory_group`
+##### `inventory_group`
 {:.no_toc}
 
-The inventory group to run the command on. Use 'all' for all hosts.
-#### `module`
+The inventory group to run the command on. Use 'all' for all
+hosts.
+##### `module`
 {:.no_toc}
 
 The module to run
-#### `module_args`
+##### `module_args`
 {:.no_toc}
 
 The arguments to pass to the module
 
-### Optional Arguments
+#### Optional Arguments
 {:.no_toc}
 
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `-b, --become`
-{:.no_toc}
-
-run operations with become (implies vault password prompting if necessary)
-#### `--become-user BECOME_USER`
-{:.no_toc}
-
-run operations as this user (default=root)
-#### `--use-pem`
+##### `--use-pem`
 {:.no_toc}
 
 uses the pem file commcare_cloud_pem specified in public.vars
-#### `--skip-check`
-{:.no_toc}
 
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-
-### The ansible options below are available as well
+#### The ansible options below are available as well
 {:.no_toc}
 ```
   -B SECONDS, --background=SECONDS
@@ -737,7 +261,7 @@ The callback plugin to use for generating output. See `ansible-doc -t callback -
   --version             show program's version number and exit
 
 ```
-###   Connection Options
+####   Connection Options
 {:.no_toc}
 ```
     control as whom and how to connect to hosts
@@ -764,7 +288,7 @@ The callback plugin to use for generating output. See `ansible-doc -t callback -
                         specify extra arguments to pass to ssh only (e.g. -R)
 
 ```
-###   Privilege Escalation Options
+####   Privilege Escalation Options
 {:.no_toc}
 ```
     control how and which user you become as on target hosts
@@ -777,218 +301,328 @@ The callback plugin to use for generating output. See `ansible-doc -t callback -
                         ask for privilege escalation password
 ```
 
-## `update-config`
-**usage:**
+### `run-shell-command`
+
 ```
-commcare-cloud {<env>} update-config [-h] [--skip-check] [--quiet] [--branch BRANCH] [--output {actionable,minimal}]
-                                            [-l SUBSET]
+commcare-cloud {<env>} run-shell-command [--silence-warnings] [--use-pem] inventory_group shell_command
 ```
+
+Run an arbitrary command via the Ansible shell module.
+
+#### Positional Arguments
+{:.no_toc}
+
+##### `inventory_group`
+{:.no_toc}
+
+The inventory group to run the command on. Use 'all' for all
+hosts.
+##### `shell_command`
+{:.no_toc}
+
+The shell command you want to run
+
+#### Optional Arguments
+{:.no_toc}
+
+##### `--silence-warnings`
+{:.no_toc}
+
+Silence shell warnings (such as to use another module instead)
+##### `--use-pem`
+{:.no_toc}
+
+uses the pem file commcare_cloud_pem specified in public.vars
+
+#### The ansible options below are available as well
+{:.no_toc}
+```
+  -B SECONDS, --background=SECONDS
+                        run asynchronously, failing after X seconds
+                        (default=N/A)
+  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
+                        set additional variables as key=value or YAML/JSON, if
+                        filename prepend with @
+  -f FORKS, --forks=FORKS
+                        specify number of parallel processes to use
+                        (default=5)
+  -l SUBSET, --limit=SUBSET
+                        further limit selected hosts to an additional pattern
+  --list-hosts          outputs a list of matching hosts; does not execute
+                        anything else
+  -M MODULE_PATH, --module-path=MODULE_PATH
+                        prepend colon-separated path(s) to module library
+                        (default=[u'/Users/droberts/.ansible/plugins/modules',
+                        u'/usr/share/ansible/plugins/modules'])
+  -o, --one-line        condense output
+  -P POLL_INTERVAL, --poll=POLL_INTERVAL
+                        set the poll interval if using -B (default=15)
+  --syntax-check        perform a syntax check on the playbook, but do not
+                        execute it
+  -t TREE, --tree=TREE  log output to this directory
+  --vault-id=VAULT_IDS  the vault identity to use
+  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
+                        connection debugging)
+  --version             show program's version number and exit
+
+```
+####   Connection Options
+{:.no_toc}
+```
+    control as whom and how to connect to hosts
+
+    -k, --ask-pass      ask for connection password
+    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
+                        use this file to authenticate the connection
+    -u REMOTE_USER, --user=REMOTE_USER
+                        connect as this user (default=None)
+    -c CONNECTION, --connection=CONNECTION
+                        connection type to use (default=smart)
+    -T TIMEOUT, --timeout=TIMEOUT
+                        override the connection timeout in seconds
+                        (default=10)
+    --ssh-common-args=SSH_COMMON_ARGS
+                        specify common arguments to pass to sftp/scp/ssh (e.g.
+                        ProxyCommand)
+    --sftp-extra-args=SFTP_EXTRA_ARGS
+                        specify extra arguments to pass to sftp only (e.g. -f,
+                        -l)
+    --scp-extra-args=SCP_EXTRA_ARGS
+                        specify extra arguments to pass to scp only (e.g. -l)
+    --ssh-extra-args=SSH_EXTRA_ARGS
+                        specify extra arguments to pass to ssh only (e.g. -R)
+
+```
+####   Privilege Escalation Options
+{:.no_toc}
+```
+    control how and which user you become as on target hosts
+
+    --become-method=BECOME_METHOD
+                        privilege escalation method to use (default=sudo),
+                        valid choices: [ sudo | su | pbrun | pfexec | doas |
+                        dzdo | ksu | runas | pmrun ]
+    -K, --ask-become-pass
+                        ask for privilege escalation password
+```
+
+### `django-manage`
+
+```
+commcare-cloud {<env>} django-manage [--tmux] [--release RELEASE]
+```
+
+Run a django management command. `commcare-cloud <env> django-manage ...` runs `./manage.py ...` on the first webworker of &lt;env&gt;. Omit &lt;command&gt; to see a full list of possible commands.
+
+#### Optional Arguments
+{:.no_toc}
+
+##### `--tmux`
+{:.no_toc}
+
+Run this command in a tmux and stay connected
+##### `--release RELEASE`
+{:.no_toc}
+
+Name of release to run under. E.g. '2018-04-13_18.16'
+
+### `tmux`
+
+```
+commcare-cloud {<env>} tmux server [remote_command]
+```
+
+Connect to a remote host with ssh and open a tmux session
+
+#### Positional Arguments
+{:.no_toc}
+
+##### `server`
+{:.no_toc}
+
+server to run tmux session on. Use '-' to for default
+(webworkers:0)
+##### `remote_command`
+{:.no_toc}
+
+command to run in new tmux session
+
+### `ansible-playbook`
+
+```
+commcare-cloud {<env>} ansible-playbook playbook
+```
+
+Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your &lt;environment&gt;. By default, you will see --check output and then asked whether to apply. 
+
+#### Positional Arguments
+{:.no_toc}
+
+##### `playbook`
+{:.no_toc}
+
+The ansible playbook .yml file to run.
+
+#### The ansible-playbook options below are available as well
+{:.no_toc}
+```
+  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
+                        set additional variables as key=value or YAML/JSON, if
+                        filename prepend with @
+  --flush-cache         clear the fact cache
+  --force-handlers      run handlers even if a task fails
+  -f FORKS, --forks=FORKS
+                        specify number of parallel processes to use
+                        (default=5)
+  --list-hosts          outputs a list of matching hosts; does not execute
+                        anything else
+  --list-tags           list all available tags
+  --list-tasks          list all tasks that would be executed
+  -M MODULE_PATH, --module-path=MODULE_PATH
+                        prepend colon-separated path(s) to module library
+                        (default=[u'/Users/droberts/.ansible/plugins/modules',
+                        u'/usr/share/ansible/plugins/modules'])
+  --skip-tags=SKIP_TAGS
+                        only run plays and tasks whose tags do not match these
+                        values
+  --start-at-task=START_AT_TASK
+                        start the playbook at the task matching this name
+  --step                one-step-at-a-time: confirm each task before running
+  --syntax-check        perform a syntax check on the playbook, but do not
+                        execute it
+  -t TAGS, --tags=TAGS  only run plays and tasks tagged with these values
+  --vault-id=VAULT_IDS  the vault identity to use
+  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
+                        connection debugging)
+  --version             show program's version number and exit
+
+```
+####   Connection Options
+{:.no_toc}
+```
+    control as whom and how to connect to hosts
+
+    -k, --ask-pass      ask for connection password
+    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
+                        use this file to authenticate the connection
+    -u REMOTE_USER, --user=REMOTE_USER
+                        connect as this user (default=None)
+    -c CONNECTION, --connection=CONNECTION
+                        connection type to use (default=smart)
+    -T TIMEOUT, --timeout=TIMEOUT
+                        override the connection timeout in seconds
+                        (default=10)
+    --ssh-common-args=SSH_COMMON_ARGS
+                        specify common arguments to pass to sftp/scp/ssh (e.g.
+                        ProxyCommand)
+    --sftp-extra-args=SFTP_EXTRA_ARGS
+                        specify extra arguments to pass to sftp only (e.g. -f,
+                        -l)
+    --scp-extra-args=SCP_EXTRA_ARGS
+                        specify extra arguments to pass to scp only (e.g. -l)
+    --ssh-extra-args=SSH_EXTRA_ARGS
+                        specify extra arguments to pass to ssh only (e.g. -R)
+
+```
+####   Privilege Escalation Options
+{:.no_toc}
+```
+    control how and which user you become as on target hosts
+
+    -b, --become        run operations with become (does not imply password
+                        prompting)
+    --become-method=BECOME_METHOD
+                        privilege escalation method to use (default=sudo),
+                        valid choices: [ sudo | su | pbrun | pfexec | doas |
+                        dzdo | ksu | runas | pmrun ]
+    --become-user=BECOME_USER
+                        run operations as this user (default=root)
+    -K, --ask-become-pass
+                        ask for privilege escalation password
+```
+
+### `deploy-stack`
+
+```
+commcare-cloud {<env>} deploy-stack
+```
+
+Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
+
+### `update-config`
+
+```
+commcare-cloud {<env>} update-config
+```
+
 Run the ansible playbook for updating app config such as django localsettings.py and formplayer application.properties.
 
-### Optional Arguments
-{:.no_toc}
+### `after-reboot`
 
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `restart-elasticsearch`
-**usage:**
 ```
-commcare-cloud {<env>} restart-elasticsearch [-h] [--skip-check] [--quiet] [--branch BRANCH]
-                                                    [--output {actionable,minimal}] [-l SUBSET]
+commcare-cloud {<env>} after-reboot inventory_group
 ```
-Do a rolling restart of elasticsearch.
 
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `mosh`
-**usage:**
-```
-commcare-cloud {<env>} mosh [-h] [server]
-```
-Connect to a remote host with mosh
-
-### Positional Arguments
-{:.no_toc}
-
-#### `server`
-{:.no_toc}
-
-Server name/group: postgresql, proxy, webworkers, ... The server name/group may be prefixed with 'username@' to login as a specific user and may be terminated with ':<n>' to choose one of multiple servers if there is more than one in the group. For example: webworkers:0 will pick the first webworker. May alsobe ommitted for environments with only a single server.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-
-## `after-reboot`
-**usage:**
-```
-commcare-cloud {<env>} after-reboot [-h] [--skip-check] [--quiet] [--branch BRANCH] [--output {actionable,minimal}]
-                                           [-l SUBSET]
-                                           inventory_group
-```
 Bring a just-rebooted machine back into operation. Includes mounting the encrypted drive.
 
-### Positional Arguments
+#### Positional Arguments
 {:.no_toc}
 
-#### `inventory_group`
+##### `inventory_group`
 {:.no_toc}
 
-The inventory group to run the command on. Use 'all' for all hosts.
+The inventory group to run the command on. Use 'all' for all
+hosts.
 
-### Optional Arguments
-{:.no_toc}
+### `restart-elasticsearch`
 
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--branch BRANCH`
-{:.no_toc}
-
-the name of the commcare-cloud git branch to run against, if not master
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-#### `-l SUBSET, --limit SUBSET`
-{:.no_toc}
-
-further limit selected hosts to an additional pattern
-
-## `ssh`
-**usage:**
 ```
-commcare-cloud {<env>} ssh [-h] [server]
+commcare-cloud {<env>} restart-elasticsearch
 ```
-Connect to a remote host with ssh
 
-### Positional Arguments
-{:.no_toc}
+Do a rolling restart of elasticsearch.
 
-#### `server`
-{:.no_toc}
+### `bootstrap-users`
 
-Server name/group: postgresql, proxy, webworkers, ... The server name/group may be prefixed with 'username@' to login as a specific user and may be terminated with ':<n>' to choose one of multiple servers if there is more than one in the group. For example: webworkers:0 will pick the first webworker. May alsobe ommitted for environments with only a single server.
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-
-## `downtime`
-**usage:**
 ```
-commcare-cloud {<env>} downtime [-h] [-m MESSAGE] {start,end}
+commcare-cloud {<env>} bootstrap-users
 ```
-Manage downtime for the selected environment.
 
-### Positional Arguments
-{:.no_toc}
+Add users to a set of new machines as root. This must be done before any other user can log in.
 
-#### `{start,end}`
-{:.no_toc}
+### `update-users`
 
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `-m MESSAGE, --message MESSAGE`
-{:.no_toc}
-
-Optional message to set on Datadog
-
-## `fab`
-**usage:**
 ```
-commcare-cloud {<env>} fab [-h] [fab_command]
+commcare-cloud {<env>} update-users
 ```
+
+Bring users up to date with the current CommCare Cloud settings.
+
+### `update-supervisor-confs`
+
+```
+commcare-cloud {<env>} update-supervisor-confs
+```
+
+Updates the supervisor configuration files for services required by CommCare. These services are defined in app-processes.yml.
+
+### `fab`
+
+```
+commcare-cloud {<env>} fab [fab_command]
+```
+
 Run a fab command as you would with fab
 
-### Positional Arguments
+#### Positional Arguments
 {:.no_toc}
 
-#### `fab_command`
+##### `fab_command`
 {:.no_toc}
 
 fab command
 
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-
-### Available commands
+#### Available commands
 {:.no_toc}
 ```
 
@@ -1037,177 +671,86 @@ show this help message and exit
     supervisor.set_supervisor_config  Upload and link Supervisor configuratio...
 ```
 
-## `validate-environment-settings`
-**usage:**
-```
-commcare-cloud {<env>} validate-environment-settings [-h]
-```
-Validate your environment's configuration files
+### `service`
 
-### Optional Arguments
+```
+commcare-cloud {<env>} service [--only PROCESS_PATTERN]
+                                      
+                                      {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
+                                      [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
+                                      {start,stop,restart,status,help}
+```
+
+Manage services.
+Usage examples:   cchq &lt;env&gt; service postgresql status
+   cchq &lt;env&gt; service riakcs restart --only riak,riakcs
+   cchq &lt;env&gt; service celery help
+   cchq &lt;env&gt; service celery restart --limit &lt;host&gt;
+   cchq &lt;env&gt; service celery restart --only &lt;queue-name&gt;,&lt;queue-name&gt;:&lt;queue_num&gt;
+   cchq &lt;env&gt; service pillowtop restart --limit &lt;host&gt; --only &lt;pillow-name&gt;
+
+#### Positional Arguments
 {:.no_toc}
 
-#### `-h, --help`
+##### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,n
+ginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webwo
+rker}`
 {:.no_toc}
 
-show this help message and exit
+The services to run the command on
+##### `{start,stop,restart,status,help}`
+{:.no_toc}
 
-## `migrate-couchdb`
-**usage:**
+What action to take
+
+#### Optional Arguments
+{:.no_toc}
+
+##### `--only PROCESS_PATTERN`
+{:.no_toc}
+
+Sub-service name to limit action to.
+Format as 'name' or 'name:number'.
+Use 'help' action to list all options.
+
+### `migrate-couchdb`
+
 ```
-commcare-cloud {<env>} migrate-couchdb [-h] [--skip-check] migration_plan {describe,plan,migrate,commit}
+commcare-cloud {<env>} migrate-couchdb migration_plan {describe,plan,migrate,commit}
 ```
+
 Perform a CouchDB migration
 
-### Positional Arguments
+#### Positional Arguments
 {:.no_toc}
 
-#### `migration_plan`
+##### `migration_plan`
 {:.no_toc}
 
 Path to migration plan file
-#### `{describe,plan,migrate,commit}`
+##### `{describe,plan,migrate,commit}`
 {:.no_toc}
 
 Action to perform
 
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-
-## `run-shell-command`
-**usage:**
-```
-commcare-cloud {<env>} run-shell-command [-h] [--silence-warnings] [-b] [--become-user BECOME_USER] [--use-pem]
-                                                [--skip-check] [--quiet] [--output {actionable,minimal}]
-                                                inventory_group shell_command
-```
-Run an arbitrary command via the Ansible shell module.
-
-### Positional Arguments
-{:.no_toc}
-
-#### `inventory_group`
-{:.no_toc}
-
-The inventory group to run the command on. Use 'all' for all hosts.
-#### `shell_command`
-{:.no_toc}
-
-The shell command you want to run
-
-### Optional Arguments
-{:.no_toc}
-
-#### `-h, --help`
-{:.no_toc}
-
-show this help message and exit
-#### `--silence-warnings`
-{:.no_toc}
-
-Silence shell warnings (such as to use another module instead)
-#### `-b, --become`
-{:.no_toc}
-
-run operations with become (implies vault password prompting if necessary)
-#### `--become-user BECOME_USER`
-{:.no_toc}
-
-run operations as this user (default=root)
-#### `--use-pem`
-{:.no_toc}
-
-uses the pem file commcare_cloud_pem specified in public.vars
-#### `--skip-check`
-{:.no_toc}
-
-skip the default of viewing --check output first
-#### `--quiet`
-{:.no_toc}
-
-skip all user prompts and proceed as if answered in the affirmative
-#### `--output {actionable,minimal}`
-{:.no_toc}
-
-The callback plugin to use for generating output. See `ansible-doc -t callback -l` and `ansible-doc -t callback [ansible|minimal]`
-
-### The ansible options below are available as well
-{:.no_toc}
-```
-  -B SECONDS, --background=SECONDS
-                        run asynchronously, failing after X seconds
-                        (default=N/A)
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=5)
-  -l SUBSET, --limit=SUBSET
-                        further limit selected hosts to an additional pattern
-  --list-hosts          outputs a list of matching hosts; does not execute
-                        anything else
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
-  -o, --one-line        condense output
-  -P POLL_INTERVAL, --poll=POLL_INTERVAL
-                        set the poll interval if using -B (default=15)
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
-  -t TREE, --tree=TREE  log output to this directory
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
-  --version             show program's version number and exit
+### `downtime`
 
 ```
-###   Connection Options
+commcare-cloud {<env>} downtime [-m MESSAGE] {start,end}
+```
+
+Manage downtime for the selected environment.
+
+#### Positional Arguments
 {:.no_toc}
-```
-    control as whom and how to connect to hosts
 
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
-                        use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=10)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
-                        specify extra arguments to pass to sftp only (e.g. -f,
-                        -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
-                        specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-###   Privilege Escalation Options
+##### `{start,end}`
 {:.no_toc}
-```
-    control how and which user you become as on target hosts
 
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
-    -K, --ask-become-pass
-                        ask for privilege escalation password
-```
+#### Optional Arguments
+{:.no_toc}
+
+##### `-m MESSAGE, --message MESSAGE`
+{:.no_toc}
+
+Optional message to set on Datadog

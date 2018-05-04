@@ -3,6 +3,7 @@ from __future__ import print_function
 import cgi
 import os
 import re
+import textwrap
 from StringIO import StringIO
 
 import jinja2
@@ -11,7 +12,7 @@ from ..argparse14 import RawTextHelpFormatter
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commcare_cloud import make_parser
+from commcare_cloud.commcare_cloud import make_parser, COMMAND_TYPES
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -44,16 +45,21 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
     def _format_action(self, action):
         text = super(MarkdownFormatterBase, self)._format_action(action)
-        return '\n'.join(line.strip() for line in text.splitlines())
+        return self.wrap_lines(text)
 
     def _format_usage(self, usage, actions, groups, prefix):
         formatted_usage = super(MarkdownFormatterBase, self)._format_usage(usage, actions, groups, prefix)
 
         prefix = prefix or _('usage: ')
         if formatted_usage.startswith(prefix):
-            return "**{}**\n```\n{}\n```\n".format(prefix.strip(), formatted_usage.strip()[len(prefix):])
+            return "```\n{}\n```\n\n".format(formatted_usage.strip()[len(prefix):])
         else:
             return formatted_usage
+
+    @staticmethod
+    def wrap_lines(text):
+        return '\n'.join('\n'.join(textwrap.wrap(line.strip(), 64))
+                         for line in text.splitlines())
 
     @staticmethod
     def escape_html_outside_backticks(text):
@@ -127,7 +133,7 @@ class MarkdownFormatter(MarkdownFormatterBase):
 
 
 class SubparserMarkdownFormatter(MarkdownFormatterBase):
-    header_level = 2
+    header_level = 3
 
 
 class MakeDocs(CommandBase):
@@ -153,6 +159,9 @@ class MakeDocs(CommandBase):
             prog='commcare-cloud',
             formatter_class=MarkdownFormatter,
             subparser_formatter_class=SubparserMarkdownFormatter,
+            add_help=False,
+            for_docs=True,
         )
+        subparsers = [(cmd.command, subparsers.choices[cmd.command]) for cmd in COMMAND_TYPES]
         template = j2.get_template('commands.md.j2')
-        print(template.render(parser=parser, subparsers=subparsers), end='')
+        print(template.render(parser=parser, subparsers=subparsers, commands=commands), end='')

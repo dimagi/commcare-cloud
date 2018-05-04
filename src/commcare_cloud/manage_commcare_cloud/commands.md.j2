@@ -1,13 +1,81 @@
-# `commcare-cloud`
+# Commands
 {:.no_toc}
+
+* TOC
+{:toc}
 
 {{ parser|print_help }}
 
-# Available Commands
+## `cchq` alias
+
+Additionally, `commcare-cloud` is aliased to the easier-to-type `cchq`
+(short for "CommCare HQ"), so any command you see here can also be run
+as
+
+```
+cchq <env> <command> <args...>
+```
+
+## Underlying tools and common arguments
+
+The `commcare-cloud` command line tool is by and large a relatively
+thin wrapper around the other tools it uses: `ansible`, `ansible-playbook`,
+`ssh`, `fab`, etc. For every command you run using `commcare-cloud`,
+it will print out the underlying command that it is running,
+a faint blue / cyan color.
+In each case, if you copy and paste the printed command directly,
+it will have essentially the same affect.
+(Note too that some commands run
+multiple underlying commands in sequence,
+and that each command will be printed.)
+
+Where possible, `commcare-cloud` is set up to pass any unknown arguments
+to the underlying tool. In addition, there are a number of common
+arguments that are recognized by many `commcare-cloud` commands,
+and have similar behavior on across them. Rather than include these
+on every command they apply to, we will list upfront
+these common arguments and when they can be used.
+
+To verify availability on any given command, you can always run the
+command with `-h`.
+
+### Ansible-backed commands
+
+For most ansible-backed commands `commcare-cloud`
+will run in check mode first, and then ask you to confirm
+before applying the changes. Since check mode does not make sense
+for all commands, there are some that do not follow this pattern
+and apply the changes directly.
+
+### `--skip-check`
+
+When this argument is included,
+the "check, ask, apply" behavior described above is circumvented,
+and the command is instead applied directly
+
+### `--quiet`
+
+Run the command without every prompting for permission to continue.
+At each point, the affirmative response is assumed.
+
+### `--branch <branch>`
+
+In the specific case that `commcare-cloud` has been installed from
+git source in egg mode (i.e. using `pip install -e .`), it will always
+check that the checked-out git branch matches the `<branch>`
+that is thus passed in. If this arg is not specified,
+it defaults to `master`. As a consequence, when running from git branch
+`master`, there is no need to use the `--branch` arg explicitly.
+
+### `--output [actionable|minimal]`
+
+The callback plugin to use for generating output. See
+ansible-doc -t callback -l and ansible-doc -t callback.
+
+## Available Commands
 {:.no_toc}
-* TOC
-{:toc}
-{% for command, subparser in subparsers.choices.items() %}
-## `{{ command }}`
+{% for command, subparser in subparsers %}
+### `{{ command }}`
+
 {{ subparser|print_help }}
 {%- endfor -%}

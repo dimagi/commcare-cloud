@@ -12,8 +12,10 @@ class CommandBase(object):
     def __init__(self, parser):
         self.parser = parser
 
-    def make_parser(self):
+    def make_parser(self, for_docs=False):
         for argument in self.arguments:
+            if for_docs and not argument.include_in_docs:
+                continue
             argument.add_to_parser(self.parser)
         self.modify_parser()
 

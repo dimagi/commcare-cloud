@@ -240,7 +240,12 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
 class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     command = 'update-local-known-hosts'
     help = (
-        "Update the local known_hosts file of the environment configuration."
+        "Update the local known_hosts file of the environment configuration.\n\n"
+        "You can run this on a regualar basis to avoid having to `yes` through\n"
+        "the ssh prompts. Note that when you run this, you are implicitly\n"
+        "trusting that at the moment you run it, there is no man-in-the-middle\n"
+        "attack going on, the type of security breech that the SSH prompt\n"
+        "is meant to mitigate against in the first place."
     )
 
     def run(self, args, unknown_args):
