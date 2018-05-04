@@ -6,56 +6,55 @@ commcare-cloud [-h] [--control]
                       {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,update-local-known-hosts,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,restart-elasticsearch,mosh,after-reboot,ssh,downtime,fab,validate-environment-settings,migrate-couchdb,run-shell-command}
                       ...
 ```
-### Positional Arguments
+## Positional Arguments
 
-#### `{<env>}`
+### `{<env>}`
 server environment to run against
-#### `{bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,update-local-known-hosts,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,restart-elasticsearch,mosh,after-reboot,ssh,downtime,fab,validate-environment-settings,migrate-couchdb,run-shell-command}`
+### `{bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,update-local-known-hosts,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,restart-elasticsearch,mosh,after-reboot,ssh,downtime,fab,validate-environment-settings,migrate-couchdb,run-shell-command}`
 
-#### `ansible-playbook (ap)`
+### `ansible-playbook (ap)`
 
 Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your <environment>. By default, you will see --check output and then asked whether to apply.
-#### `deploy-stack (aps)`
+### `deploy-stack (aps)`
 
 Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
-#### `update-config`
+### `update-config`
 
 Run the ansible playbook for updating app config such as django localsettings.py and formplayer application.properties.
-#### `after-reboot`
+### `after-reboot`
 
 Bring a just-rebooted machine back into operation. Includes mounting the encrypted drive.
-#### `restart-elasticsearch`
+### `restart-elasticsearch`
 
 Do a rolling restart of elasticsearch.
-#### `bootstrap-users`
+### `bootstrap-users`
 
 Add users to a set of new machines as root. This must be done before any other user can log in.
-#### `update-users`
+### `update-users`
 
 Bring users up to date with the current CommCare Cloud settings.
-#### `update-supervisor-confs`
+### `update-supervisor-confs`
 
 Updates the supervisor configuration files for services required by CommCare. These services are defined in app-processes.yml.
-#### `run-shell-command`
+### `run-shell-command`
 
 Run an arbitrary command via the Ansible shell module.
-#### `run-module`
-
+### `run-module`
 Run an arbitrary Ansible module.
-#### `fab`
+### `fab`
 Run a fab command as you would with fab
-#### `lookup`
+### `lookup`
 Lookup remote hostname or IP address
-#### `ssh`
+### `ssh`
 Connect to a remote host with ssh
-#### `mosh`
+### `mosh`
 Connect to a remote host with mosh
-#### `django-manage`
+### `django-manage`
 
 Run a django management command. `commcare-cloud <env> django-manage ...` runs `./manage.py ...` on the first webworker of <env>. Omit <command> to see a full list of possible commands.
-#### `tmux`
+### `tmux`
 Connect to a remote host with ssh and open a tmux session
-#### `service`
+### `service`
 Manage services.
 Usage examples:   cchq <env> service postgresql status
 cchq <env> service riakcs restart --only riak,riakcs
@@ -64,23 +63,23 @@ cchq <env> service celery restart --limit <host>
 cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
 cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
 
-#### `validate-environment-settings`
+### `validate-environment-settings`
 
 Validate your environment's configuration files
-#### `update-local-known-hosts`
+### `update-local-known-hosts`
 
 Update the local known_hosts file of the environment configuration.
-#### `migrate-couchdb (migrate_couchdb)`
+### `migrate-couchdb (migrate_couchdb)`
 
 Perform a CouchDB migration
-#### `downtime`
+### `downtime`
 Manage downtime for the selected environment.
 
-### Optional Arguments
+## Optional Arguments
 
-#### `-h, --help`
+### `-h, --help`
 show this help message and exit
-#### `--control`
+### `--control`
 include to run command remotely on the control machine
 * TOC
 {:toc}
