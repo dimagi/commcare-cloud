@@ -43,7 +43,7 @@ class RunAnsibleModule(CommandBase):
 
     def modify_parser(self):
         add_to_help_text(self.parser, "\n{}\n{}".format(
-            "The ansible options below are available as well",
+            "The ansible options below are available as well:",
             filtered_help_message(
                 "ansible -h",
                 below_line='Options:',

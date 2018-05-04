@@ -6,13 +6,11 @@ import os
 import sys
 import warnings
 
-from argparse import RawTextHelpFormatter
-
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from .argparse14 import ArgumentParser
+from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
@@ -86,10 +84,8 @@ def add_backwards_compatibility_to_args(args):
     args.__class__ = NamespaceWrapper
 
 
-def main():
-    put_virtualenv_bin_on_the_path()
-    parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
-    available_envs = get_available_envs()
+def make_parser(available_envs, formatter_class=RawTextHelpFormatter, prog=None):
+    parser = ArgumentParser(formatter_class=formatter_class, prog=prog)
     parser.add_argument('env_name', choices=available_envs, help=(
         "server environment to run against"
     ))
@@ -107,13 +103,18 @@ def main():
             help=command_type.help,
             aliases=command_type.aliases,
             description=command_type.help,
-            formatter_class=RawTextHelpFormatter)
+            formatter_class=formatter_class)
         )
         cmd.make_parser()
         commands[cmd.command] = cmd
         for alias in cmd.aliases:
             commands[alias] = cmd
+    return parser, subparsers, commands
 
+
+def main():
+    put_virtualenv_bin_on_the_path()
+    parser, subparsers, commands = make_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args()
 
     add_backwards_compatibility_to_args(args)
