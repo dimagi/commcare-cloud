@@ -84,7 +84,9 @@ def add_backwards_compatibility_to_args(args):
     args.__class__ = NamespaceWrapper
 
 
-def make_parser(available_envs, formatter_class=RawTextHelpFormatter, prog=None):
+def make_parser(available_envs, formatter_class=RawTextHelpFormatter, subparser_formatter_class=None, prog=None):
+    if subparser_formatter_class is None:
+        subparser_formatter_class = formatter_class
     parser = ArgumentParser(formatter_class=formatter_class, prog=prog)
     parser.add_argument('env_name', choices=available_envs, help=(
         "server environment to run against"
@@ -103,7 +105,7 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter, prog=None)
             help=command_type.help,
             aliases=command_type.aliases,
             description=command_type.help,
-            formatter_class=formatter_class)
+            formatter_class=subparser_formatter_class)
         )
         cmd.make_parser()
         commands[cmd.command] = cmd

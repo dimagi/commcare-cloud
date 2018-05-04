@@ -17,28 +17,32 @@ class _Section(RawTextHelpFormatter._Section):
         if self.heading and formatted_help.strip().startswith(self.heading):
             # remove '<heading>:\n'
             formatted_help = formatted_help.strip()[len(self.heading) + 2:]
-            return "### {}\n{}\n\n".format(self.heading.title(), formatted_help)
+            return "{} {}\n{}\n\n".format('#' * (self.formatter.header_level + 1),
+                                          self.heading.title(), formatted_help)
         else:
             return formatted_help
 
 
-class MarkdownFormatter(RawTextHelpFormatter):
+class MarkdownFormatterBase(RawTextHelpFormatter):
     _Section = _Section
+
+    header_level = None
 
     def __init__(self, *args, **kwargs):
         kwargs['width'] = kwargs.get('width', 125)
-        super(MarkdownFormatter, self).__init__(*args, **kwargs)
+        super(MarkdownFormatterBase, self).__init__(*args, **kwargs)
 
     def _format_action_invocation(self, action):
-        return "\n#### `{}`\n".format(
-            super(MarkdownFormatter, self)._format_action_invocation(action))
+        return "\n{} `{}`\n".format(
+            '#' * (self.header_level + 2),
+            super(MarkdownFormatterBase, self)._format_action_invocation(action))
 
     def _format_action(self, action):
-        text = super(MarkdownFormatter, self)._format_action(action)
+        text = super(MarkdownFormatterBase, self)._format_action(action)
         return '\n'.join(line.strip() for line in text.splitlines())
 
     def _format_usage(self, usage, actions, groups, prefix):
-        formatted_usage = super(MarkdownFormatter, self)._format_usage(usage, actions, groups, prefix)
+        formatted_usage = super(MarkdownFormatterBase, self)._format_usage(usage, actions, groups, prefix)
 
         prefix = prefix or _('usage: ')
         if formatted_usage.startswith(prefix):
@@ -50,17 +54,17 @@ class MarkdownFormatter(RawTextHelpFormatter):
         if text:
             text = cgi.escape(re.sub(r'({{|}})', r"{{ '\1' }}", text))
             text = self._reformat_help(text)
-        return super(MarkdownFormatter, self).add_text(text)
+        return super(MarkdownFormatterBase, self).add_text(text)
 
-    @staticmethod
-    def _reformat_help(text):
+    def _reformat_help(self, text):
         in_lines = text.strip().splitlines()
 
         if in_lines and in_lines[0].endswith(':'):
             class Parser(object):
-                def __init__(self):
+                def __init__(self, formatter):
                     self.section = []
                     self.out_lines = []
+                    self.formatter = formatter
 
                 def parse(self, in_lines):
                     for line in in_lines:
@@ -72,7 +76,7 @@ class MarkdownFormatter(RawTextHelpFormatter):
 
                 def add_header(self, header):
                     self.shift_section()
-                    self.out_lines.extend(['### {}'.format(header)])
+                    self.out_lines.extend(['{} {}'.format('#' * (self.formatter.header_level + 1), header)])
 
                 def shift_section(self):
                     if self.section:
@@ -87,11 +91,19 @@ class MarkdownFormatter(RawTextHelpFormatter):
                 def get_output(self):
                     return '\n'.join(self.out_lines)
 
-            parser = Parser()
+            parser = Parser(formatter=self)
             parser.parse(in_lines)
             return parser.get_output()
         else:
             return text
+
+
+class MarkdownFormatter(MarkdownFormatterBase):
+    header_level = 1
+
+
+class SubparserMarkdownFormatter(MarkdownFormatterBase):
+    header_level = 2
 
 
 class MakeDocs(CommandBase):
@@ -106,6 +118,7 @@ class MakeDocs(CommandBase):
             available_envs=('<env>',),
             prog='commcare-cloud',
             formatter_class=MarkdownFormatter,
+            subparser_formatter_class=SubparserMarkdownFormatter,
         )
 
         print('# `commcare-cloud`')
