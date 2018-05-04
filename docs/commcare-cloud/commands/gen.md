@@ -1,5 +1,6 @@
 # `commcare-cloud`
 {:.no_toc}
+
 **usage:**
 ```
 commcare-cloud [-h] [--control]
@@ -26,6 +27,8 @@ show this help message and exit
 {:.no_toc}
 
 include to run command remotely on the control machine
+
+
 # Available Commands
 {:.no_toc}
 * TOC
