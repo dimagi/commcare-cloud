@@ -1,4 +1,8 @@
 import os
+import subprocess
+
+from memoized import memoized
+
 from commcare_cloud.cli_utils import print_command
 from .command_base import CommandBase, Argument
 from ..environment.paths import FABFILE
@@ -16,7 +20,14 @@ class Fab(CommandBase):
     )
 
     def modify_parser(self):
-        self.parser.print_help = lambda file=None: os.execvp('fab', ('fab', '-l'))
+
+        class _Parser(self.parser.__class__):
+            @property
+            @memoized
+            def epilog(self):
+                return subprocess.check_output(['fab', '-f', FABFILE, '-l'])
+
+        self.parser.__class__ = _Parser
 
     def run(self, args, unknown_args):
         cmd_parts = (

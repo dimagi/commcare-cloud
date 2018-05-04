@@ -161,11 +161,4 @@ def filtered_help_message(command, below_line, exclude_args, above_line=None):
 
 
 def add_to_help_text(parser, additional_text):
-    super_print_help = parser.print_help
-
-    def print_help(file=None):
-        if file is None:
-            file = sys.stdout
-        super_print_help(file)
-        print(additional_text, file=file)
-    parser.print_help = print_help
+    parser.epilog = additional_text + (parser.epilog or '')
