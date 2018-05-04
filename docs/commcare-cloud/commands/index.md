@@ -75,28 +75,27 @@ it defaults to `master`. As a consequence, when running from git branch
 The callback plugin to use for generating output. See
 ansible-doc -t callback -l and ansible-doc -t callback.
 
-## Available commands
+## Available Commands
 
-### Internal Housekeeping for your `commcare-cloud` environments
+## Internal Housekeeping for your `commcare-cloud` environments
 
 
-#### `validate-environment-settings`
-
-Validate your environment's configuration files:
+### `validate-environment-settings`
 ```
 commcare-cloud <env> validate-environment-settings
 ```
+Validate your environment's configuration files
 
 As you make changes to your environment files, you can use this
 command to check for validation errors or incompatibilities.
 
-#### `update-local-known-hosts`
-
-Update the local known_hosts file of the environment configuration:
+### `update-local-known-hosts`
 
 ```
 commcare-cloud <env> update-local-known-hosts
 ```
+
+Update the local known_hosts file of the environment configuration.
 
 You can run this on a regualar basis to avoid having to `yes` through
 the ssh prompts. Note that when you run this, you are implicitly
@@ -104,17 +103,17 @@ trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
 
-### Ad-hoc
+## Ad-hoc
 
-#### `lookup`
-
-Lookup remote hostname or IP address:
+### `lookup`
 
 ```
 commcare-cloud <env> lookup <server>
 ```
 
-##### `<server>`
+Lookup remote hostname or IP address
+
+##### `server`
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
@@ -123,9 +122,9 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-#### `ssh`
+### `ssh`
 
-Connect to a remote host with ssh:
+Connect to a remote host with ssh.
 
 ```
 commcare-cloud <env> ssh <server> <ssh args...>
@@ -134,42 +133,49 @@ commcare-cloud <env> ssh <server> <ssh args...>
 This will also automatically add the ssh argument `-A`
 when `<server>` is `control`.
 
-##### `<server>`
-
-See [`lookup`](#lookup).
-
-##### `<ssh args...>`
-
 All trailing arguments are passed directly to `ssh`.
 
-#### `mosh`
+##### `server`
 
-Connect to a remote host with mosh:
+Server name/group: postgresql, proxy, webworkers, ... The server
+name/group may be prefixed with 'username@' to login as a
+specific user and may be terminated with ':<n>' to choose one of
+multiple servers if there is more than one in the group. For
+example: webworkers:0 will pick the first webworker. May also be
+omitted for environments with only a single server.
+
+### `mosh`
+
 ```
 commcare-cloud <env> mosh <server> <mosh args...>
 ```
 
+Connect to a remote host with mosh.
+
 This will also automatically switch to using ssh with `-A`
 when `<server>` is `control` (because `mosh` doesn't support `-A`).
-
-##### `<server>`
-
-See [`lookup`](#lookup).
-
-##### `<mosh args...>`
 
 All trailing arguments are passed directly to `mosh`
 (or `ssh` in the edge case described above).
 
-#### `run-module`
+##### `server`
 
-Run an arbitrary Ansible module:
+Server name/group: postgresql, proxy, webworkers, ... The server
+name/group may be prefixed with 'username@' to login as a
+specific user and may be terminated with ':<n>' to choose one of
+multiple servers if there is more than one in the group. For
+example: webworkers:0 will pick the first webworker. May also be
+omitted for environments with only a single server.
+
+### `run-module`
+
+Run an arbitrary Ansible module.
 
 ```
 commcare-cloud <env> run-module <inventory_group> <module> <module_args> [--use-pem]
 ```
 
-##### `<inventory_group>`
+##### `inventory_group`
 
 Machines to run on. Is anything that could be used in as a value for
 `hosts` in an playbook "play", e.g.
@@ -179,12 +185,12 @@ Machines to run on. Is anything that could be used in as a value for
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
 
-##### `<module>`
+##### `module`
 
 The name of the ansible module to run. Complete list of built-in modules
 can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
 
-##### `<module_args>`
+##### `module_args`
 
 Args for the module, formatted as a single string.
 (Tip: put quotes around it, as it will likely contain spaces.)
@@ -199,24 +205,24 @@ and before you've run bootstrap-users.
 
 ##### Example
 
-To print out the `inventory_hostname` ansible variable for each machine:
+To print out the `inventory_hostname` ansible variable for each machine.
 ```
 commcare-cloud <env> run-module all debug "msg={{ inventory_hostname }}"
 ```
 
-#### `run-shell-command`
+### `run-shell-command`
 
-Run an arbitrary command via the Ansible shell module:
+Run an arbitrary command via the Ansible shell module.
 
 ```
 commcare-cloud <env> run-shell-command <inventory_group> <shell_command> [--silence-warnings]
 ```
 
-##### `<inventory_group>`
+##### `inventory_group`
 
 See [`run-module`](#run-module).
 
-##### `<shell_command>`
+##### `shell_command`
 
 Command to run remotely.
 (Tip: put quotes around it, as it will likely contain spaces.)
@@ -233,7 +239,7 @@ commcare-cloud <env> run-shell-command all 'df -h | grep /opt/data'
 
 (to get disk usage stats for `/opt/data` on every machine.)
 
-#### `django-manage`
+### `django-manage`
 
 Run a django management command.
 `commcare-cloud <env> django-manage ...` runs `./manage.py ...`
@@ -259,21 +265,21 @@ If none is specified, the `current` release will be used.
 
 ##### Example
 
-To open a django shell in a tmux window using the `2018-04-13_18.16` release:
+To open a django shell in a tmux window using the `2018-04-13_18.16` release.
 
 ```
 commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
 ```
 
-#### `tmux`
+### `tmux`
 
-Connect to a remote host with ssh and open a tmux session:
+Connect to a remote host with ssh and open a tmux session.
 
 ```
 commcare-cloud <env> tmux <server> [<remote_command>]
 ```
 
-##### `<server>`
+##### `server`
 
 Server to run tmux session on.
 Use '-' to for default (webworkers:0)
@@ -288,15 +294,15 @@ tmux windows will a new one be opened.
 
 ##### Example
 
-Rejoin last open tmux window:
+Rejoin last open tmux window.
 
 ```
 commcare-cloud <env> tmux -
 ```
 
-### Operational
+## Operational
 
-#### `ansible-playbook`
+### `ansible-playbook`
 
 (Alias `ap`)
 
@@ -308,7 +314,7 @@ By default, you will see --check output and then asked whether to apply.
 commcare-cloud <env> ansible-playbook <playbook>
 ```
 
-##### `<playbook>`
+##### `playbook`
 
 One of the `*.yml` files located under `commcare_cloud/ansible`
 which is under `src` for an egg install and under
@@ -320,7 +326,7 @@ which is under `src` for an egg install and under
 commcare-cloud <env> ansible-playbook deploy_proxy.yml --limit=proxy
 ```
 
-#### `deploy-stack`
+### `deploy-stack`
 
 (Alias `aps`)
 
@@ -332,7 +338,7 @@ for a more specific update.
 commcare-cloud <env> deploy-stack
 ```
 
-#### `update-config`
+### `update-config`
 
 Run the ansible playbook for updating app config such as
 django localsettings.py and formplayer application.properties.
@@ -342,7 +348,7 @@ commcare-cloud <env> update-config
 ```
 
 
-#### `after-reboot`
+### `after-reboot`
 
 Bring a just-rebooted machine back into operation.
 Includes mounting the encrypted drive.
@@ -354,7 +360,7 @@ commcare-cloud <env> after-reboot
 This command never runs in check mode.
 
 
-#### `restart-elasticsearch`
+### `restart-elasticsearch`
 
 Do a rolling restart of elasticsearch.
 
@@ -366,7 +372,7 @@ commcare-cloud <env> service elasticsearch restart
 
 instead.
 
-#### `bootstrap-users`
+### `bootstrap-users`
 
 Add users to a set of new machines as root.
 This must be done before any other user can log in.
@@ -381,7 +387,7 @@ you have specified in your environment. This can only be run once
 per machine; if after running it you would like to run it again,
 you have to use `update-users` below instead.
 
-#### `update-users`
+### `update-users`
 
 Bring users up to date with the current CommCare Cloud settings.
 
@@ -394,7 +400,7 @@ to keep machine user accounts, permissions, and login information
 up to date.
 
 
-#### `update-supervisor-confs`
+### `update-supervisor-confs`
 
 Updates the supervisor configuration files
 for services required by CommCare.
@@ -404,7 +410,7 @@ These services are defined in app-processes.yml.
 commcare-cloud <env> update-supervisor-confs
 ```
 
-#### `fab`
+### `fab`
 
 Run a fab command as you would with fab
 
@@ -412,7 +418,7 @@ Run a fab command as you would with fab
 commcare-cloud <env> fab [<fab_command>|-l]
 ```
 
-##### `<fab_command>`
+##### `fab_command`
 
 The name of the fab task to run. It and all following arguments
 will be passed on without modification to `fab`, so all normal `fab`
@@ -422,7 +428,7 @@ syntax rules apply.
 
 Use `-l` instead of a command to see the full list of commands.
 
-#### `service`
+### `service`
 
 Manage services.
 
@@ -443,14 +449,14 @@ Thus the `postgresql` service group applies to both the `postgresql`
 service and the `pgbouncer` service. We'll call the actual services
 "subservices" here.
 
-##### `<services>`
+##### `services`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
 More than one service may be supplied as separate arguments in a row.
 
 
-##### `<action>`
+##### `action`
 
 Action can be `status`, `start`, `stop`, or `restart`.
 This action is applied to every matching service.
@@ -486,7 +492,7 @@ Here's the breakdown of service groups and the subservices they contain:
 | riakcs        | riak, riak-cs, stanchion |
 | stanchion     | stanchion   |
 
-#### `migrate-couchdb`
+### `migrate-couchdb`
 
 (Deprecated alias `migrate_couchdb`)
 Perform a CouchDB migration
@@ -499,16 +505,16 @@ This is a recent and advanced addition to the capabilities,
 and is not yet ready for widespread use. At such a time as it is
 ready, it will be more thoroughly documented.
 
-##### `<migration_plan>`
+##### `migration_plan`
 
 Path to migration plan file
 
-##### `<action>`
+##### `action`
 
 Action to perform: `describe`, `plan`, `migrate`, or `commit`.
 
 
-#### `downtime`
+### `downtime`
 
 Manage downtime for the selected environment.
 

@@ -8,15 +8,15 @@ INVENTORY_GROUP_ARG = Argument('inventory_group', help=(
 
 SKIP_CHECK_ARG = Argument('--skip-check', action='store_true', default=False, help=(
     "skip the default of viewing --check output first"
-))
+), include_in_docs=False)
 
 QUIET_ARG = Argument('--quiet', action='store_true', default=False, help=(
     "skip all user prompts and proceed as if answered in the affirmative"
-))
+), include_in_docs=False)
 
 BRANCH_ARG = Argument('--branch', default='master', help=(
     "the name of the commcare-cloud git branch to run against, if not master"
-))
+), include_in_docs=False)
 
 STDOUT_CALLBACK_ARG = Argument(
     '--output', dest='stdout_callback', choices=['actionable', 'minimal'],

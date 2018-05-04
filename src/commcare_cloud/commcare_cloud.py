@@ -1,9 +1,12 @@
 # coding=utf-8
 from __future__ import print_function
 from __future__ import absolute_import
+
+import inspect
 import os
 
 import sys
+import textwrap
 import warnings
 
 from commcare_cloud.cli_utils import print_command
@@ -28,7 +31,19 @@ from .environment.paths import (
 )
 from six.moves import shlex_quote
 
+
 COMMAND_TYPES = [
+    ValidateEnvironmentSettings,
+    UpdateLocalKnownHosts,
+
+    Lookup,
+    Ssh,
+    Mosh,
+    RunAnsibleModule,
+    RunShellCommand,
+    DjangoManage,
+    Tmux,
+
     AnsiblePlaybook,
     DeployStack,
     UpdateConfig,
@@ -37,17 +52,8 @@ COMMAND_TYPES = [
     BootstrapUsers,
     UpdateUsers,
     UpdateSupervisorConfs,
-    RunShellCommand,
-    RunAnsibleModule,
     Fab,
-    Lookup,
-    Ssh,
-    Mosh,
-    DjangoManage,
-    Tmux,
     Service,
-    ValidateEnvironmentSettings,
-    UpdateLocalKnownHosts,
     MigrateCouchdb,
     Downtime,
 ]
@@ -84,10 +90,11 @@ def add_backwards_compatibility_to_args(args):
     args.__class__ = NamespaceWrapper
 
 
-def make_parser(available_envs, formatter_class=RawTextHelpFormatter, subparser_formatter_class=None, prog=None):
+def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
+                subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
     if subparser_formatter_class is None:
         subparser_formatter_class = formatter_class
-    parser = ArgumentParser(formatter_class=formatter_class, prog=prog)
+    parser = ArgumentParser(formatter_class=formatter_class, prog=prog, add_help=add_help)
     parser.add_argument('env_name', choices=available_envs, help=(
         "server environment to run against"
     ))
@@ -102,12 +109,13 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter, subparser_
         assert issubclass(command_type, CommandBase), command_type
         cmd = command_type(subparsers.add_parser(
             command_type.command,
-            help=command_type.help,
+            help=inspect.cleandoc(command_type.help).splitlines()[0],
             aliases=command_type.aliases,
-            description=command_type.help,
-            formatter_class=subparser_formatter_class)
+            description=inspect.cleandoc(command_type.help),
+            formatter_class=subparser_formatter_class,
+            add_help=add_help)
         )
-        cmd.make_parser()
+        cmd.make_parser(for_docs=for_docs)
         commands[cmd.command] = cmd
         for alias in cmd.aliases:
             commands[alias] = cmd
