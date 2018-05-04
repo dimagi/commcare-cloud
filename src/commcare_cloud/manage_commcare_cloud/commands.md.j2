@@ -1,0 +1,13 @@
+# `commcare-cloud`
+{:.no_toc}
+
+{{ parser|print_help }}
+
+# Available Commands
+{:.no_toc}
+* TOC
+{:toc}
+{% for command, subparser in subparsers.choices.items() %}
+## `{{ command }}`
+{{ subparser|print_help }}
+{%- endfor -%}

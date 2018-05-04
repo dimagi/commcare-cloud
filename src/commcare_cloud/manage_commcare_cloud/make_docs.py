@@ -1,7 +1,11 @@
 from __future__ import print_function
 
 import cgi
+import os
 import re
+from StringIO import StringIO
+
+import jinja2
 
 from ..argparse14 import RawTextHelpFormatter
 from gettext import gettext as _
@@ -134,20 +138,21 @@ class MakeDocs(CommandBase):
         pass
 
     def run(self, args, unknown_args):
+        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
+        def do_print_help(parser):
+            """Capture output of parser.print_help()"""
+            string_io = StringIO()
+            parser.print_help(file=string_io)
+            return string_io.getvalue()
+
+        j2.filters['print_help'] = do_print_help
+
         parser, subparsers, commands = make_parser(
             available_envs=('<env>',),
             prog='commcare-cloud',
             formatter_class=MarkdownFormatter,
             subparser_formatter_class=SubparserMarkdownFormatter,
         )
-
-        print('# `commcare-cloud`')
-        print('{:.no_toc}')
-        parser.print_help()
-
-        print('# Available Commands')
-        print('{:.no_toc}')
-        print("* TOC\n{:toc}")
-        for command, subparser in subparsers.choices.items():
-            print('\n## `{}`'.format(command))
-            subparser.print_help()
+        template = j2.get_template('commands.md.j2')
+        print(template.render(parser=parser, subparsers=subparsers), end='')
