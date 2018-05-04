@@ -17,8 +17,9 @@ class _Section(RawTextHelpFormatter._Section):
         if self.heading and formatted_help.strip().startswith(self.heading):
             # remove '<heading>:\n'
             formatted_help = formatted_help.strip()[len(self.heading) + 2:]
-            return "{} {}\n{}\n\n".format('#' * (self.formatter.header_level + 1),
-                                          self.heading.title(), formatted_help)
+            return "{} {}\n{{:.no_toc}}\n{}\n\n".format(
+                '#' * (self.formatter.header_level + 1),
+                self.heading.title(), formatted_help)
         else:
             return formatted_help
 
@@ -33,7 +34,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
         super(MarkdownFormatterBase, self).__init__(*args, **kwargs)
 
     def _format_action_invocation(self, action):
-        return "\n{} `{}`\n".format(
+        return "\n{} `{}`\n{{:.no_toc}}\n".format(
             '#' * (self.header_level + 2),
             super(MarkdownFormatterBase, self)._format_action_invocation(action))
 
@@ -50,9 +51,17 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
         else:
             return formatted_usage
 
+    @staticmethod
+    def escape_html_outside_backticks(text):
+        parts = text.split('`')
+        for i in range(0, len(parts), 2):
+            parts[i] = cgi.escape(parts[i])
+        return '`'.join(parts)
+
     def add_text(self, text):
         if text:
-            text = cgi.escape(re.sub(r'({{|}})', r"{{ '\1' }}", text))
+            text = re.sub(r'({{|}})', r"{{ '\1' }}", text)
+            text = self.escape_html_outside_backticks(text)
             text = self._reformat_help(text)
         return super(MarkdownFormatterBase, self).add_text(text)
 
@@ -76,7 +85,8 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
                 def add_header(self, header):
                     self.shift_section()
-                    self.out_lines.extend(['{} {}'.format('#' * (self.formatter.header_level + 1), header)])
+                    self.out_lines.extend(['{} {}'.format('#' * (self.formatter.header_level + 1), header),
+                                           '{:.no_toc}'])
 
                 def shift_section(self):
                     if self.section:
@@ -89,7 +99,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
                     self.section.append(line)
 
                 def get_output(self):
-                    return '\n'.join(self.out_lines)
+                    return '\n'.join(self.out_lines) + '\n'
 
             parser = Parser(formatter=self)
             parser.parse(in_lines)
@@ -100,6 +110,16 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
 class MarkdownFormatter(MarkdownFormatterBase):
     header_level = 1
+
+    def __init__(self, *args, **kwargs):
+        self.skip_actions = kwargs.pop('skip_actions', ())
+        super(MarkdownFormatter, self).__init__(*args, **kwargs)
+
+    def _format_action(self, action):
+        if action.__class__.__name__ == '_SubParsersAction':
+            return ''
+        else:
+            return super(MarkdownFormatter, self)._format_action(action)
 
 
 class SubparserMarkdownFormatter(MarkdownFormatterBase):
@@ -122,9 +142,12 @@ class MakeDocs(CommandBase):
         )
 
         print('# `commcare-cloud`')
+        print('{:.no_toc}')
         parser.print_help()
 
+        print('# Available Commands')
+        print('{:.no_toc}')
         print("* TOC\n{:toc}")
         for command, subparser in subparsers.choices.items():
-            print('## `{}`'.format(command))
+            print('\n## `{}`'.format(command))
             subparser.print_help()
