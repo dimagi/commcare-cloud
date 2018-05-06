@@ -4,12 +4,12 @@ from argparse import ArgumentParser
 
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.manage_commcare_cloud.configure import Configure
-from commcare_cloud.manage_commcare_cloud.get_path import GetPath
+from commcare_cloud.manage_commcare_cloud.get import Get
 from commcare_cloud.manage_commcare_cloud.install import Install
 
 COMMAND_TYPES = [
     Install,
-    GetPath,
+    Get,
     Configure,
 ]
 

@@ -34,6 +34,7 @@ class AnsibleContext(object):
             env['ANSIBLE_STDOUT_CALLBACK'] = args.stdout_callback
         return env
 
+
 def get_common_ssh_args(environment, use_pem=False):
     strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
 

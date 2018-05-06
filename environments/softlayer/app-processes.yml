@@ -5,8 +5,6 @@ celery_processes:
     celery_periodic:
       server_whitelist: '10.162.36.233'
       concurrency: 4
-    pillow_retry_queue:
-      concurrency: 1
     submission_reprocessing_queue:
       concurrency: 1
     email_queue:
@@ -26,7 +24,6 @@ celery_processes:
       concurrency: 3
       max_tasks_per_child: 1
       optimize: True
-  'celery1':
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -75,7 +72,6 @@ pillows:
       num_processes: 1
     ReportXFormToElasticsearchPillow:
       num_processes: 1
-  'pillow3':
     CaseSearchToElasticsearchPillow:
       num_processes: 1
     kafka-ucr-static:
