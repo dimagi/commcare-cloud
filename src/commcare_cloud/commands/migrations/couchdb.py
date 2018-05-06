@@ -5,7 +5,7 @@ from contextlib import contextmanager
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.file_plan import get_important_files
+from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
@@ -19,7 +19,7 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.environment.main import get_environment
 
-RSYNC_FILE_LIST_NAME = 'couchdb_migration_rsync_file_list'
+RSYNC_FILE_LIST_FOLDER_NAME = 'couchdb_migration_rsync_file_list'
 
 
 class MigrateCouchdb(CommandBase):
@@ -225,18 +225,25 @@ def prepare_to_sync_files(migration, ansible_context):
     return rsync_files_by_host
 
 
-def generate_rsync_lists(migration, validate_suffixes=True):
+def generate_rsync_lists(migration):
     full_plan = {plan.db_name: plan for plan in migration.shard_plan}
-    important_files_by_node = get_important_files(
-        migration.source_couch_config, full_plan, validate_suffixes=validate_suffixes
+    important_files_by_node = get_missing_files_by_node_and_source(
+        migration.source_couch_config, full_plan
     )
     paths_by_host = {}
-    for node, file_list in important_files_by_node.items():
-        files = sorted(file_list)
-        path = os.path.join(migration.rsync_files_path, '{}_files'.format(node))
-        with open(path, 'w') as f:
-            f.write('{}\n'.format('\n'.join(files)))
+    for node, source_file_list in important_files_by_node.items():
+        node_ip = node.split('@')[1]
+        node_files_path = os.path.join(migration.rsync_files_path, node_ip)
+        if not os.path.exists(node_files_path):
+            os.makedirs(node_files_path)
 
-        paths_by_host[node.split('@')[1]] = path
+        for source, file_list in source_file_list.items():
+            source_ip = source.split('@')[1]
+            files = sorted([f.filename for f in file_list])
+            path = os.path.join(node_files_path, '{}__files'.format(source_ip))
+            with open(path, 'w') as f:
+                f.write('{}\n'.format('\n'.join(files)))
+
+            paths_by_host[node_ip] = path
 
     return paths_by_host
