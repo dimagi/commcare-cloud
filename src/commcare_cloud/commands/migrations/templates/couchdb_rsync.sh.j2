@@ -1,0 +1,7 @@
+#!/bin/bash
+
+{% for source_ip, files_from in rsync_file_list %}
+rsync -e 'ssh -oStrictHostKeyChecking=no' --append-verify -aH --info=progress2 \
+    ansible@{{ source_ip }}:{{ couch_data_dir }} {{ couch_data_dir }} \
+    --files-from {{ rsync_file_root }}/{{ files_from }} -r $@
+{% endfor %}
