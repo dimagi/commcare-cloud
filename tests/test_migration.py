@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import os
 import shutil
+import subprocess
 
 import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
@@ -9,7 +10,8 @@ from mock.mock import patch
 from nose_parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists
+from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
+    COUCHDB_RSYNC_SCRIPT
 from commcare_cloud.environment.main import get_environment
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
@@ -43,24 +45,37 @@ def test_migration_plan(plan_name):
     with open(os.path.join(PLANS_DIR, plan_name, 'expected_couch_config.yml')) as f:
         expected_couch_config_json = yaml.load(f)
 
-    assert expected_couch_config_json == migration.target_couch_config.to_json()
+    assert expected_couch_config_json == migration.target_couch_config.to_json(), migration.target_couch_config.to_json()
 
+    files_by_host = _generate_rsync_lists(migration, plan_name)
+
+    with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(COUCHDB_RSYNC_SCRIPT))) as exp:
+        expected_script = exp.read()
+
+    for host, file_paths in files_by_host.items():
+        for file_path in file_paths:
+            file_name = file_path.split('/')[-1]
+            with open(file_path, 'r') as f:
+                actual = f.read()
+
+            with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(file_name))) as exp:
+                expected = exp.read()
+            assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
+
+        script_path = os.path.join(migration.rsync_files_path, host, COUCHDB_RSYNC_SCRIPT)
+        with open(script_path, 'r') as exp:
+            script_source = exp.read()
+
+        assert expected_script == script_source, script_source
+
+
+def _generate_rsync_lists(migration, plan_name):
     with open(os.path.join(PLANS_DIR, plan_name, 'mock_shard_allocation.yml')) as f:
         mock_shard_allocation = yaml.load(f)
-
     mock_func = get_shard_allocation_func(mock_shard_allocation)
     with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
         files_by_host = generate_rsync_lists(migration)
-
-    with open(os.path.join(PLANS_DIR, plan_name, 'expected_rsync_file.txt')) as exp:
-        expected = exp.read()
-
-    for host, file_path in files_by_host.items():
-        source_ip = file_path.split('/')[-1].split('__')[0]
-        assert '10.247.164.12' == source_ip
-        with open(file_path, 'r') as f:
-            actual = f.read()
-        assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
+    return files_by_host
 
 
 def _get_migration(plan_name):

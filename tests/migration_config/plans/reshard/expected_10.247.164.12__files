@@ -1,8 +1,4 @@
 .shards/00000000-7fffffff/commcarehq.1495824481_design
 .shards/00000000-7fffffff/commcarehq__apps.1495824505_design
-.shards/80000000-ffffffff/commcarehq.1495824481_design
-.shards/80000000-ffffffff/commcarehq__apps.1495824505_design
 shards/00000000-7fffffff/commcarehq.1495824481.couch
 shards/00000000-7fffffff/commcarehq__apps.1495824505.couch
-shards/80000000-ffffffff/commcarehq.1495824481.couch
-shards/80000000-ffffffff/commcarehq__apps.1495824505.couch
