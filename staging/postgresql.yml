@@ -23,3 +23,7 @@ dbs:
       p5:
         shards: [400, 511]
         query_stats: True
+  custom:
+    - name: airflow
+      django_migrate: False
+
