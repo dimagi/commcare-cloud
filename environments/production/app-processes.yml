@@ -64,6 +64,7 @@ celery_processes:
     saved_exports_queue:
       concurrency: 4
       max_tasks_per_child: 1
+      optimize: True
     background_queue:
       concurrency: 4
       max_tasks_per_child: 1
