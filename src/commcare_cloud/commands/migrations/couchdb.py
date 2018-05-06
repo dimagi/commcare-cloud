@@ -1,10 +1,3 @@
-"""
-Migrate CouchDB
-
-TODO:
-* better cluster info. Include shard allocation + info from 'print_db_info' + size on disk
-"""
-
 import json
 import os
 from contextlib import contextmanager
@@ -37,7 +30,11 @@ class MigrateCouchdb(CommandBase):
     arguments = (
         Argument(dest='migration_plan', help="Path to migration plan file"),
         Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'],
-                 help="Action to perform"),
+                 help="Action to perform\n"
+                      "    describe: Print out cluster info\n"
+                      "    plan: generate plan details from migration plan\n"
+                      "    migrate: stop nodes and copy shard data according to plan\n"
+                      "    commit: update database docs with new shard allocation"),
         shared_args.SKIP_CHECK_ARG,
     )
 
@@ -59,11 +56,9 @@ class MigrateCouchdb(CommandBase):
                 puts(get_membership(migration.target_couch_config).get_printable())
 
             print u'\nDB Info'
-            # TODO: indent
             print_db_info(migration.target_couch_config)
 
             print u'\nShards'
-            # TODO: indent
             print_shard_table([
                 get_shard_allocation(migration.target_couch_config, db_name)
                 for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
@@ -92,7 +87,7 @@ class MigrateCouchdb(CommandBase):
                 shard_allocations = migration.shard_plan
 
             print_shard_table([shard_allocation_doc for shard_allocation_doc in shard_allocations])
-            return
+            return 0
 
         if args.action == 'migrate':
             def run_check():
@@ -117,6 +112,7 @@ class MigrateCouchdb(CommandBase):
             return 0
 
     def _run_migration(self, migration, ansible_context, check_mode):
+        puts(colored.blue('Give ansible user access to couchdb files:'))
         user_args = "user=ansible groups=couchdb append=yes"
         run_ansible_module(
             migration.source_environment, ansible_context, 'couchdb2', 'user', user_args,
@@ -129,8 +125,10 @@ class MigrateCouchdb(CommandBase):
             True, None, False
         )
 
+        puts(colored.blue('Copy file lists to nodes:'))
         rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
+        puts(colored.blue('Stop couch and reallocate shards'))
         with stop_couch(migration.all_environments, ansible_context, check_mode):
             sync_files_to_dest(migration, rsync_files_by_host, check_mode)
 
