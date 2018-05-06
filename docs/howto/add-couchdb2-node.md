@@ -1,7 +1,7 @@
 # Add a new CouchDB node to an existing cluster
 
 ## Setup the new node and add it to the cluster
-* Update inventory
+1. Update inventory
 
 ```diff
 + [couchN]
@@ -12,13 +12,13 @@
 + couchN
 ```
 
-* Deploy new node
+2. Deploy new node
 
 ```
 commcare-cloud <env> deploy_stack.yml --limit=couchN
 ```
 
-* Add node to cluster
+3. Add node to cluster
 
 ```
 $ commcare-cloud <env> aps --tags=add_couch_nodes --limit=couchdb2
