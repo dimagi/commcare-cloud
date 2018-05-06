@@ -46,7 +46,6 @@ We also recommend that you put the following in your `~/.profile` which gives yo
 from anywhere:
 ```
 export PATH=$PATH:~/.commcare-cloud/bin
-export ANSIBLE_ROLES_PATH=~/.ansible/roles
 source ~/.commcare-cloud/repo/control/.bash_completion
 ```
 

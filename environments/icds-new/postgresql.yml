@@ -30,7 +30,7 @@ override:
 
 dbs:
   main:
-    host: pgmain
+    host: pgmain1
   formplayer:
     host: pgucr
   ucr:
@@ -84,6 +84,6 @@ dbs:
       django_migrate: False
     - django_alias: pgmainstandby
       name: commcarehq
-      host: pgmainstandby
+      host: pgmainstandby1
       create: False
       django_migrate: False
