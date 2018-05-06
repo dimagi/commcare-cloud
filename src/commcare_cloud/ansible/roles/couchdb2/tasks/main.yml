@@ -18,6 +18,8 @@
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
+  tags:
+    - add_couch_nodes
 
 - name: Create system databases
   uri:
