@@ -22,7 +22,7 @@ class _Section(RawTextHelpFormatter._Section):
         if self.heading and formatted_help.strip().startswith(self.heading):
             # remove '<heading>:\n'
             formatted_help = formatted_help.strip()[len(self.heading) + 2:]
-            return "{} {}\n{{:.no_toc}}\n{}\n\n".format(
+            return "{} {}\n{}\n\n".format(
                 '#' * (self.formatter.header_level + 1),
                 self.heading.title(), formatted_help)
         else:
@@ -39,7 +39,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
         super(MarkdownFormatterBase, self).__init__(*args, **kwargs)
 
     def _format_action_invocation(self, action):
-        return "\n{} `{}`\n{{:.no_toc}}\n".format(
+        return "\n{} `{}`\n".format(
             '#' * (self.header_level + 2),
             super(MarkdownFormatterBase, self)._format_action_invocation(action))
 
@@ -95,8 +95,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
                 def add_header(self, header):
                     self.shift_section()
-                    self.out_lines.extend(['{} {}'.format('#' * (self.formatter.header_level + 1), header),
-                                           '{:.no_toc}'])
+                    self.out_lines.extend(['{} {}'.format('#' * (self.formatter.header_level + 1), header)])
 
                 def shift_section(self):
                     if self.section:
