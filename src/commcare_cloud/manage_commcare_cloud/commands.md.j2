@@ -85,8 +85,9 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 ## Operational
 {% else %}
 ## {{ group }}
-{% endif %}
+{% endif -%}
 {% for command, subparser in subparsers %}
+
 ### `{{ command }}`
 
 {{ subparser|print_help }}

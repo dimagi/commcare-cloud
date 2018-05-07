@@ -22,6 +22,12 @@ class AnsiblePlaybook(CommandBase):
     Run a playbook as you would with ansible-playbook
 
     By default, you will see --check output and then asked whether to apply.
+    
+    Example:
+
+    ```
+    commcare-cloud <env> ansible-playbook deploy_proxy.yml --limit=proxy
+    ```
     """
     aliases = ('ap',)
     arguments = (
@@ -30,9 +36,12 @@ class AnsiblePlaybook(CommandBase):
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
         shared_args.LIMIT_ARG,
-        Argument('playbook', help=(
-            "The ansible playbook .yml file to run."
-        ))
+        Argument('playbook', help="""
+            The ansible playbook .yml file to run.
+            Options are the `*.yml` files located under `commcare_cloud/ansible`
+            which is under `src` for an egg install and under
+            `<virtualenv>/lib/python2.7/site-packages` for a wheel install.
+        """)
     )
 
     def modify_parser(self):
@@ -132,10 +141,12 @@ class _AnsiblePlaybookAlias(CommandBase):
 class DeployStack(_AnsiblePlaybookAlias):
     command = 'deploy-stack'
     aliases = ('aps',)
-    help = (
-        "Run the ansible playbook for deploying the entire stack. "
-        "Often used in conjunction with --limit and/or --tag for a more specific update."
-    )
+    help = """
+        Run the ansible playbook for deploying the entire stack.
+
+        Often used in conjunction with --limit and/or --tag
+        for a more specific update.
+    """
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
@@ -144,10 +155,11 @@ class DeployStack(_AnsiblePlaybookAlias):
 
 class UpdateConfig(_AnsiblePlaybookAlias):
     command = 'update-config'
-    help = (
-        "Run the ansible playbook for updating app config "
-        "such as django localsettings.py and formplayer application.properties."
-    )
+    help = """
+    Run the ansible playbook for updating app config.
+
+    This includes django `localsettings.py` and formplayer `application.properties`.
+    """
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_localsettings.yml'
@@ -157,10 +169,12 @@ class UpdateConfig(_AnsiblePlaybookAlias):
 
 class AfterReboot(_AnsiblePlaybookAlias):
     command = 'after-reboot'
-    help = (
-        "Bring a just-rebooted machine back into operation. "
-        "Includes mounting the encrypted drive."
-    )
+    help = """
+    Bring a just-rebooted machine back into operation.
+
+    Includes mounting the encrypted drive.
+    This command never runs in check mode.
+    """
     arguments = _AnsiblePlaybookAlias.arguments + (
         shared_args.INVENTORY_GROUP_ARG,
     )
@@ -178,9 +192,17 @@ class AfterReboot(_AnsiblePlaybookAlias):
 
 class RestartElasticsearch(_AnsiblePlaybookAlias):
     command = 'restart-elasticsearch'
-    help = (
-        "Do a rolling restart of elasticsearch."
-    )
+    help = """
+    Do a rolling restart of elasticsearch.
+
+    **This command is deprecated.** Use
+
+    ```
+    commcare-cloud <env> service elasticsearch restart
+    ```
+
+    instead.
+    """
 
     def run(self, args, unknown_args):
         args.playbook = 'es_rolling_restart.yml'
@@ -196,10 +218,17 @@ class RestartElasticsearch(_AnsiblePlaybookAlias):
 
 class BootstrapUsers(_AnsiblePlaybookAlias):
     command = 'bootstrap-users'
-    help = (
-        "Add users to a set of new machines as root. "
-        "This must be done before any other user can log in."
-    )
+    help = """
+        Add users to a set of new machines as root.
+
+        This must be done before any other user can log in.
+
+        This will set up machines to reject root login and require
+        password-less logins based on the usernames and public keys
+        you have specified in your environment. This can only be run once
+        per machine; if after running it you would like to run it again,
+        you have to use `update-users` below instead.
+        """
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
@@ -214,9 +243,13 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
 
 class UpdateUsers(_AnsiblePlaybookAlias):
     command = 'update-users'
-    help = (
-        "Bring users up to date with the current CommCare Cloud settings."
-    )
+    help = """
+    Bring users up to date with the current CommCare Cloud settings.
+
+    In steady state this command (and not `bootstrap-users`) should be used
+    to keep machine user accounts, permissions, and login information
+    up to date.
+    """
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
@@ -226,10 +259,11 @@ class UpdateUsers(_AnsiblePlaybookAlias):
 
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     command = 'update-supervisor-confs'
-    help = (
-        "Updates the supervisor configuration files for services required by "
-        "CommCare. These services are defined in app-processes.yml."
-    )
+    help = """
+    Updates the supervisor configuration files for services required by CommCare.
+
+    These services are defined in app-processes.yml.
+    """
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
