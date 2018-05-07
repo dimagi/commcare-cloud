@@ -8,6 +8,7 @@ import os
 import sys
 import textwrap
 import warnings
+from collections import OrderedDict
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
@@ -32,31 +33,38 @@ from .environment.paths import (
 from six.moves import shlex_quote
 
 
-COMMAND_TYPES = [
-    ValidateEnvironmentSettings,
-    UpdateLocalKnownHosts,
+COMMAND_GROUPS = OrderedDict([
+    ('housekeeping', [
+        ValidateEnvironmentSettings,
+        UpdateLocalKnownHosts,
+    ]),
+    ('ad-hoc', [
+        Lookup,
+        Ssh,
+        Mosh,
+        RunAnsibleModule,
+        RunShellCommand,
+        DjangoManage,
+        Tmux,
+    ]),
+    ('operational', [
+        AnsiblePlaybook,
+        DeployStack,
+        UpdateConfig,
+        AfterReboot,
+        RestartElasticsearch,
+        BootstrapUsers,
+        UpdateUsers,
+        UpdateSupervisorConfs,
+        Fab,
+        Service,
+        MigrateCouchdb,
+        Downtime,
+    ])
+])
 
-    Lookup,
-    Ssh,
-    Mosh,
-    RunAnsibleModule,
-    RunShellCommand,
-    DjangoManage,
-    Tmux,
-
-    AnsiblePlaybook,
-    DeployStack,
-    UpdateConfig,
-    AfterReboot,
-    RestartElasticsearch,
-    BootstrapUsers,
-    UpdateUsers,
-    UpdateSupervisorConfs,
-    Fab,
-    Service,
-    MigrateCouchdb,
-    Downtime,
-]
+COMMAND_TYPES = [command_type for command_types in COMMAND_GROUPS.values()
+                 for command_type in command_types]
 
 
 def run_on_control_instead(args, sys_argv):

@@ -3,11 +3,15 @@
 * TOC
 {:toc}
 
+## Running Commands with `commcare-cloud`
+
+All `commcare-cloud` commands take the following form:
+
 ```
 commcare-cloud [--control]
-                      {<env>}
-                      {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
-                      ...
+               {<env>}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               ...
 ```
 
 ## Positional Arguments
@@ -89,6 +93,9 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 ## Available Commands
 
+## Internal Housekeeping for your `commcare-cloud` environments
+
+
 ### `validate-environment-settings`
 
 ```
@@ -113,6 +120,9 @@ the ssh prompts. Note that when you run this, you are implicitly
 trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
+
+## Ad-hoc
+
 
 ### `lookup`
 
@@ -401,6 +411,9 @@ server to run tmux session on. Use '-' to for default
 
 command to run in new tmux session
 
+## Operational
+
+
 ### `ansible-playbook`
 
 ```
@@ -618,10 +631,10 @@ fab command
 
 ```
 commcare-cloud {<env>} service [--only PROCESS_PATTERN]
-                                      
-                                      {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                                      [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                                      {start,stop,restart,status,help}
+                               
+                               {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
+                               [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
+                               {start,stop,restart,status,help}
 ```
 
 Manage services.
