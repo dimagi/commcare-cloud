@@ -103,9 +103,13 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
     if subparser_formatter_class is None:
         subparser_formatter_class = formatter_class
     parser = ArgumentParser(formatter_class=formatter_class, prog=prog, add_help=add_help)
-    parser.add_argument('env_name', choices=available_envs, help=(
+    if available_envs:
+        env_name_kwargs = dict(choices=available_envs)
+    else:
+        env_name_kwargs = dict(metavar='<env>')
+    parser.add_argument('env_name', help=(
         "server environment to run against"
-    ))
+    ), **env_name_kwargs)
     parser.add_argument('--control', action='store_true', help=(
         "include to run command remotely on the control machine"
     ))

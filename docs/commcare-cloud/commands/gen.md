@@ -9,14 +9,14 @@ All `commcare-cloud` commands take the following form:
 
 ```
 commcare-cloud [--control]
-               {<env>}
+               <env>
                {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
 ## Positional Arguments
 
-### `{<env>}`
+### `<env>`
 server environment to run against
 
 ## Optional Arguments
@@ -99,7 +99,7 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 ### `validate-environment-settings`
 
 ```
-commcare-cloud {<env>} validate-environment-settings
+commcare-cloud <env> validate-environment-settings
 ```
 
 Validate your environment's configuration files
@@ -110,7 +110,7 @@ command to check for validation errors or incompatibilities.
 ### `update-local-known-hosts`
 
 ```
-commcare-cloud {<env>} update-local-known-hosts
+commcare-cloud <env> update-local-known-hosts
 ```
 
 Update the local known_hosts file of the environment configuration.
@@ -127,7 +127,7 @@ is meant to mitigate against in the first place.
 ### `lookup`
 
 ```
-commcare-cloud {<env>} lookup [server]
+commcare-cloud <env> lookup [server]
 ```
 
 Lookup remote hostname or IP address
@@ -145,7 +145,7 @@ omitted for environments with only a single server.
 ### `ssh`
 
 ```
-commcare-cloud {<env>} ssh [server]
+commcare-cloud <env> ssh [server]
 ```
 
 Connect to a remote host with ssh.
@@ -168,7 +168,7 @@ omitted for environments with only a single server.
 ### `mosh`
 
 ```
-commcare-cloud {<env>} mosh [server]
+commcare-cloud <env> mosh [server]
 ```
 
 Connect to a remote host with mosh.
@@ -192,7 +192,7 @@ omitted for environments with only a single server.
 ### `run-module`
 
 ```
-commcare-cloud {<env>} run-module [--use-pem] inventory_group module module_args
+commcare-cloud <env> run-module [--use-pem] inventory_group module module_args
 ```
 
 Run an arbitrary Ansible module.
@@ -286,7 +286,7 @@ uses the pem file commcare_cloud_pem specified in public.vars
 ### `run-shell-command`
 
 ```
-commcare-cloud {<env>} run-shell-command [--silence-warnings] [--use-pem] inventory_group shell_command
+commcare-cloud <env> run-shell-command [--silence-warnings] [--use-pem] inventory_group shell_command
 ```
 
 Run an arbitrary command via the Ansible shell module.
@@ -381,7 +381,7 @@ uses the pem file commcare_cloud_pem specified in public.vars
 ### `django-manage`
 
 ```
-commcare-cloud {<env>} django-manage [--tmux] [--release RELEASE]
+commcare-cloud <env> django-manage [--tmux] [--release RELEASE]
 ```
 
 Run a django management command. `commcare-cloud <env> django-manage ...` runs `./manage.py ...` on the first webworker of &lt;env&gt;. Omit &lt;command&gt; to see a full list of possible commands.
@@ -397,7 +397,7 @@ Name of release to run under. E.g. '2018-04-13_18.16'
 ### `tmux`
 
 ```
-commcare-cloud {<env>} tmux server [remote_command]
+commcare-cloud <env> tmux server [remote_command]
 ```
 
 Connect to a remote host with ssh and open a tmux session
@@ -417,7 +417,7 @@ command to run in new tmux session
 ### `ansible-playbook`
 
 ```
-commcare-cloud {<env>} ansible-playbook playbook
+commcare-cloud <env> ansible-playbook playbook
 ```
 
 Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your &lt;environment&gt;. By default, you will see --check output and then asked whether to apply. 
@@ -505,7 +505,7 @@ The ansible playbook .yml file to run.
 ### `deploy-stack`
 
 ```
-commcare-cloud {<env>} deploy-stack
+commcare-cloud <env> deploy-stack
 ```
 
 Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
@@ -513,7 +513,7 @@ Run the ansible playbook for deploying the entire stack. Often used in conjuncti
 ### `update-config`
 
 ```
-commcare-cloud {<env>} update-config
+commcare-cloud <env> update-config
 ```
 
 Run the ansible playbook for updating app config such as django localsettings.py and formplayer application.properties.
@@ -521,7 +521,7 @@ Run the ansible playbook for updating app config such as django localsettings.py
 ### `after-reboot`
 
 ```
-commcare-cloud {<env>} after-reboot inventory_group
+commcare-cloud <env> after-reboot inventory_group
 ```
 
 Bring a just-rebooted machine back into operation. Includes mounting the encrypted drive.
@@ -536,7 +536,7 @@ hosts.
 ### `restart-elasticsearch`
 
 ```
-commcare-cloud {<env>} restart-elasticsearch
+commcare-cloud <env> restart-elasticsearch
 ```
 
 Do a rolling restart of elasticsearch.
@@ -544,7 +544,7 @@ Do a rolling restart of elasticsearch.
 ### `bootstrap-users`
 
 ```
-commcare-cloud {<env>} bootstrap-users
+commcare-cloud <env> bootstrap-users
 ```
 
 Add users to a set of new machines as root. This must be done before any other user can log in.
@@ -552,7 +552,7 @@ Add users to a set of new machines as root. This must be done before any other u
 ### `update-users`
 
 ```
-commcare-cloud {<env>} update-users
+commcare-cloud <env> update-users
 ```
 
 Bring users up to date with the current CommCare Cloud settings.
@@ -560,7 +560,7 @@ Bring users up to date with the current CommCare Cloud settings.
 ### `update-supervisor-confs`
 
 ```
-commcare-cloud {<env>} update-supervisor-confs
+commcare-cloud <env> update-supervisor-confs
 ```
 
 Updates the supervisor configuration files for services required by CommCare. These services are defined in app-processes.yml.
@@ -568,7 +568,7 @@ Updates the supervisor configuration files for services required by CommCare. Th
 ### `fab`
 
 ```
-commcare-cloud {<env>} fab [fab_command]
+commcare-cloud <env> fab [fab_command]
 ```
 
 Run a fab command as you would with fab
@@ -630,11 +630,11 @@ fab command
 ### `service`
 
 ```
-commcare-cloud {<env>} service [--only PROCESS_PATTERN]
-                               
-                               {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                               [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                               {start,stop,restart,status,help}
+commcare-cloud <env> service [--only PROCESS_PATTERN]
+                             
+                             {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
+                             [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
+                             {start,stop,restart,status,help}
 ```
 
 Manage services.
@@ -667,7 +667,7 @@ Use 'help' action to list all options.
 ### `migrate-couchdb`
 
 ```
-commcare-cloud {<env>} migrate-couchdb migration_plan {describe,plan,migrate,commit}
+commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commit}
 ```
 
 Perform a CouchDB migration
@@ -684,7 +684,7 @@ Action to perform
 ### `downtime`
 
 ```
-commcare-cloud {<env>} downtime [-m MESSAGE] {start,end}
+commcare-cloud <env> downtime [-m MESSAGE] {start,end}
 ```
 
 Manage downtime for the selected environment.
