@@ -37,6 +37,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
     def __init__(self, *args, **kwargs):
         kwargs['width'] = kwargs.get('width', 125)
+        kwargs['max_help_position'] = kwargs.get('max_help_position', 0)
         super(MarkdownFormatterBase, self).__init__(*args, **kwargs)
 
     def _format_action_invocation(self, action):
@@ -45,8 +46,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
             super(MarkdownFormatterBase, self)._format_action_invocation(action))
 
     def _format_action(self, action):
-        text = super(MarkdownFormatterBase, self)._format_action(action)
-        return self.wrap_lines(text)
+        return super(MarkdownFormatterBase, self)._format_action(action).lstrip(' ')
 
     def _format_usage(self, usage, actions, groups, prefix):
         formatted_usage = super(MarkdownFormatterBase, self)._format_usage(usage, actions, groups, prefix)

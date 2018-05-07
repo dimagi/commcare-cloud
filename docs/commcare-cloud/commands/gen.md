@@ -17,11 +17,13 @@ commcare-cloud [--control]
 ## Positional Arguments
 
 ### `<env>`
+
 server environment to run against
 
 ## Optional Arguments
 
 ### `--control`
+
 include to run command remotely on the control machine
 
 
@@ -135,6 +137,7 @@ commcare-cloud <env> lookup [server]
 #### Positional Arguments
 
 ##### `server`
+
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with ':<n>' to choose one of
@@ -158,6 +161,7 @@ All trailing arguments are passed directly to `ssh`.
 #### Positional Arguments
 
 ##### `server`
+
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with ':<n>' to choose one of
@@ -182,6 +186,7 @@ All trailing arguments are passed directly to `mosh`
 #### Positional Arguments
 
 ##### `server`
+
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with ':<n>' to choose one of
@@ -201,10 +206,18 @@ commcare-cloud <env> run-module [--use-pem] inventory_group module module_args
 
 ##### `inventory_group`
 
-The inventory group to run the command on. Use 'all' for all
-hosts.
+Machines to run on. Is anything that could be used in as a value for
+`hosts` in an playbook "play", e.g.
+`all` for all machines,
+`webworkers` for a single group,
+`celery:pillowtop` for multiple groups, etc.
+See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
+for more detail in what can go here.
+
 ##### `module`
+
 The module to run
+
 ##### `module_args`
 
 The arguments to pass to the module
@@ -212,6 +225,7 @@ The arguments to pass to the module
 #### Optional Arguments
 
 ##### `--use-pem`
+
 uses the pem file commcare_cloud_pem specified in public.vars
 
 #### The ansible options below are available as well
@@ -295,8 +309,14 @@ commcare-cloud <env> run-shell-command [--silence-warnings] [--use-pem] inventor
 
 ##### `inventory_group`
 
-The inventory group to run the command on. Use 'all' for all
-hosts.
+Machines to run on. Is anything that could be used in as a value for
+`hosts` in an playbook "play", e.g.
+`all` for all machines,
+`webworkers` for a single group,
+`celery:pillowtop` for multiple groups, etc.
+See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
+for more detail in what can go here.
+
 ##### `shell_command`
 
 The shell command you want to run
@@ -306,7 +326,9 @@ The shell command you want to run
 ##### `--silence-warnings`
 
 Silence shell warnings (such as to use another module instead)
+
 ##### `--use-pem`
+
 uses the pem file commcare_cloud_pem specified in public.vars
 
 #### The ansible options below are available as well
@@ -393,7 +415,9 @@ Omit &lt;command&gt; to see a full list of possible commands.
 #### Optional Arguments
 
 ##### `--tmux`
+
 Run this command in a tmux and stay connected
+
 ##### `--release RELEASE`
 
 Name of release to run under. E.g. '2018-04-13_18.16'
@@ -409,8 +433,9 @@ commcare-cloud <env> tmux server [remote_command]
 #### Positional Arguments
 
 ##### `server`
-server to run tmux session on. Use '-' to for default
-(webworkers:0)
+
+server to run tmux session on. Use '-' to for default (webworkers:0)
+
 ##### `remote_command`
 
 command to run in new tmux session
@@ -431,6 +456,7 @@ By default, you will see --check output and then asked whether to apply.
 #### Positional Arguments
 
 ##### `playbook`
+
 The ansible playbook .yml file to run.
 
 #### The ansible-playbook options below are available as well
@@ -536,8 +562,13 @@ commcare-cloud <env> after-reboot inventory_group
 
 ##### `inventory_group`
 
-The inventory group to run the command on. Use 'all' for all
-hosts.
+Machines to run on. Is anything that could be used in as a value for
+`hosts` in an playbook "play", e.g.
+`all` for all machines,
+`webworkers` for a single group,
+`celery:pillowtop` for multiple groups, etc.
+See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
+for more detail in what can go here.
 
 ### `restart-elasticsearch`
 
@@ -653,11 +684,10 @@ Usage examples:   cchq &lt;env&gt; service postgresql status
 
 #### Positional Arguments
 
-##### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,n
-ginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webwo
-rker}`
+##### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
 
 The services to run the command on
+
 ##### `{start,stop,restart,status,help}`
 
 What action to take
@@ -683,6 +713,7 @@ commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commi
 ##### `migration_plan`
 
 Path to migration plan file
+
 ##### `{describe,plan,migrate,commit}`
 
 Action to perform
