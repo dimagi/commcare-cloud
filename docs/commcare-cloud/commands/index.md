@@ -81,9 +81,11 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 
 ### `validate-environment-settings`
+
 ```
 commcare-cloud <env> validate-environment-settings
 ```
+
 Validate your environment's configuration files
 
 As you make changes to your environment files, you can use this
@@ -104,6 +106,7 @@ attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
 
 ## Ad-hoc
+
 
 ### `lookup`
 
@@ -301,6 +304,7 @@ commcare-cloud <env> tmux -
 ```
 
 ## Operational
+
 
 ### `ansible-playbook`
 

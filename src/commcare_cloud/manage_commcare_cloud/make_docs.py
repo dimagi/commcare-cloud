@@ -12,7 +12,7 @@ from ..argparse14 import RawTextHelpFormatter
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commcare_cloud import make_parser, COMMAND_TYPES
+from commcare_cloud.commcare_cloud import make_parser, COMMAND_TYPES, COMMAND_GROUPS
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -52,7 +52,9 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
         prefix = prefix or _('usage: ')
         if formatted_usage.startswith(prefix):
-            return "```\n{}\n```\n\n".format(formatted_usage.strip()[len(prefix):])
+            return "```\n{}\n```\n\n".format(
+                '\n'.join(line[len(prefix):]
+                          for line in formatted_usage.strip().splitlines()))
         else:
             return formatted_usage
 
@@ -161,6 +163,11 @@ class MakeDocs(CommandBase):
             add_help=False,
             for_docs=True,
         )
-        subparsers = [(cmd.command, subparsers.choices[cmd.command]) for cmd in COMMAND_TYPES]
+
+        subparsers_by_group = [
+            (group, [(cmd.command, subparsers.choices[cmd.command]) for cmd in command_types])
+            for group, command_types in COMMAND_GROUPS.items()
+        ]
         template = j2.get_template('commands.md.j2')
-        print(template.render(parser=parser, subparsers=subparsers, commands=commands), end='')
+        print(template.render(parser=parser, subparsers_by_group=subparsers_by_group,
+                              commands=commands), end='')
