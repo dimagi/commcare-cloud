@@ -89,6 +89,7 @@ datadog_integration_kafka_consumer: false
 datadog_integration_nginx: false
 datadog_integration_pgbouncer: false
 datadog_integration_postgres: false
+datadog_integration_postgres_receiver: false
 datadog_integration_rabbitmq: false
 datadog_integration_redisdb: false
 datadog_integration_riak: false
