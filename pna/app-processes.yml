@@ -21,6 +21,8 @@ celery_processes:
       concurrency: 1
     async_restore_queue:
       concurrency: 1
+    celery:
+      concurrency: 1
     flower: {}
   None:
     # todo: create these queues?
