@@ -18,11 +18,11 @@ from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 class AnsiblePlaybook(CommandBase):
     command = 'ansible-playbook'
-    help = (
-        "Run a playbook as you would with ansible-playbook, "
-        "but with boilerplate settings already set based on your <environment>. "
-        "By default, you will see --check output and then asked whether to apply. "
-    )
+    help = """
+    Run a playbook as you would with ansible-playbook
+
+    By default, you will see --check output and then asked whether to apply.
+    """
     aliases = ('ap',)
     arguments = (
         shared_args.SKIP_CHECK_ARG,
