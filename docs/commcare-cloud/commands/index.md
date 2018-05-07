@@ -82,22 +82,22 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 ### `validate-environment-settings`
 
+Validate your environment's configuration files
+
 ```
 commcare-cloud <env> validate-environment-settings
 ```
-
-Validate your environment's configuration files
 
 As you make changes to your environment files, you can use this
 command to check for validation errors or incompatibilities.
 
 ### `update-local-known-hosts`
 
+Update the local known_hosts file of the environment configuration.
+
 ```
 commcare-cloud <env> update-local-known-hosts
 ```
-
-Update the local known_hosts file of the environment configuration.
 
 You can run this on a regualar basis to avoid having to `yes` through
 the ssh prompts. Note that when you run this, you are implicitly
@@ -110,11 +110,11 @@ is meant to mitigate against in the first place.
 
 ### `lookup`
 
+Lookup remote hostname or IP address
+
 ```
 commcare-cloud <env> lookup <server>
 ```
-
-Lookup remote hostname or IP address
 
 ##### `server`
 
@@ -149,11 +149,11 @@ omitted for environments with only a single server.
 
 ### `mosh`
 
+Connect to a remote host with mosh.
+
 ```
 commcare-cloud <env> mosh <server> <mosh args...>
 ```
-
-Connect to a remote host with mosh.
 
 This will also automatically switch to using ssh with `-A`
 when `<server>` is `control` (because `mosh` doesn't support `-A`).

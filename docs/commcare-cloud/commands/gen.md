@@ -98,22 +98,22 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 ### `validate-environment-settings`
 
+Validate your environment's configuration files
+
 ```
 commcare-cloud <env> validate-environment-settings
 ```
-
-Validate your environment's configuration files
 
 As you make changes to your environment files, you can use this
 command to check for validation errors or incompatibilities.
 
 ### `update-local-known-hosts`
 
+Update the local known_hosts file of the environment configuration.
+
 ```
 commcare-cloud <env> update-local-known-hosts
 ```
-
-Update the local known_hosts file of the environment configuration.
 
 You can run this on a regualar basis to avoid having to `yes` through
 the ssh prompts. Note that when you run this, you are implicitly
@@ -126,11 +126,11 @@ is meant to mitigate against in the first place.
 
 ### `lookup`
 
+Lookup remote hostname or IP address
+
 ```
 commcare-cloud <env> lookup [server]
 ```
-
-Lookup remote hostname or IP address
 
 #### Positional Arguments
 
@@ -144,11 +144,11 @@ omitted for environments with only a single server.
 
 ### `ssh`
 
+Connect to a remote host with ssh.
+
 ```
 commcare-cloud <env> ssh [server]
 ```
-
-Connect to a remote host with ssh.
 
 This will also automatically add the ssh argument `-A`
 when `<server>` is `control`.
@@ -167,11 +167,11 @@ omitted for environments with only a single server.
 
 ### `mosh`
 
+Connect to a remote host with mosh.
+
 ```
 commcare-cloud <env> mosh [server]
 ```
-
-Connect to a remote host with mosh.
 
 This will also automatically switch to using ssh with `-A`
 when `<server>` is `control` (because `mosh` doesn't support `-A`).
@@ -191,11 +191,11 @@ omitted for environments with only a single server.
 
 ### `run-module`
 
+Run an arbitrary Ansible module.
+
 ```
 commcare-cloud <env> run-module [--use-pem] inventory_group module module_args
 ```
-
-Run an arbitrary Ansible module.
 
 #### Positional Arguments
 
@@ -285,11 +285,11 @@ uses the pem file commcare_cloud_pem specified in public.vars
 
 ### `run-shell-command`
 
+Run an arbitrary command via the Ansible shell module.
+
 ```
 commcare-cloud <env> run-shell-command [--silence-warnings] [--use-pem] inventory_group shell_command
 ```
-
-Run an arbitrary command via the Ansible shell module.
 
 #### Positional Arguments
 
@@ -380,11 +380,15 @@ uses the pem file commcare_cloud_pem specified in public.vars
 
 ### `django-manage`
 
+Run a django management command.
+
 ```
 commcare-cloud <env> django-manage [--tmux] [--release RELEASE]
 ```
 
-Run a django management command. `commcare-cloud <env> django-manage ...` runs `./manage.py ...` on the first webworker of &lt;env&gt;. Omit &lt;command&gt; to see a full list of possible commands.
+`commcare-cloud <env> django-manage ...`
+runs `./manage.py ...` on the first webworker of &lt;env&gt;.
+Omit &lt;command&gt; to see a full list of possible commands.
 
 #### Optional Arguments
 
@@ -396,11 +400,11 @@ Name of release to run under. E.g. '2018-04-13_18.16'
 
 ### `tmux`
 
+Connect to a remote host with ssh and open a tmux session
+
 ```
 commcare-cloud <env> tmux server [remote_command]
 ```
-
-Connect to a remote host with ssh and open a tmux session
 
 #### Positional Arguments
 
@@ -416,11 +420,13 @@ command to run in new tmux session
 
 ### `ansible-playbook`
 
+Run a playbook as you would with ansible-playbook
+
 ```
 commcare-cloud <env> ansible-playbook playbook
 ```
 
-Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your &lt;environment&gt;. By default, you will see --check output and then asked whether to apply. 
+By default, you will see --check output and then asked whether to apply.
 
 #### Positional Arguments
 
@@ -504,27 +510,27 @@ The ansible playbook .yml file to run.
 
 ### `deploy-stack`
 
+Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
+
 ```
 commcare-cloud <env> deploy-stack
 ```
 
-Run the ansible playbook for deploying the entire stack. Often used in conjunction with --limit and/or --tag for a more specific update.
-
 ### `update-config`
+
+Run the ansible playbook for updating app config such as django localsettings.py and formplayer application.properties.
 
 ```
 commcare-cloud <env> update-config
 ```
 
-Run the ansible playbook for updating app config such as django localsettings.py and formplayer application.properties.
-
 ### `after-reboot`
+
+Bring a just-rebooted machine back into operation. Includes mounting the encrypted drive.
 
 ```
 commcare-cloud <env> after-reboot inventory_group
 ```
-
-Bring a just-rebooted machine back into operation. Includes mounting the encrypted drive.
 
 #### Positional Arguments
 
@@ -535,43 +541,43 @@ hosts.
 
 ### `restart-elasticsearch`
 
+Do a rolling restart of elasticsearch.
+
 ```
 commcare-cloud <env> restart-elasticsearch
 ```
 
-Do a rolling restart of elasticsearch.
-
 ### `bootstrap-users`
+
+Add users to a set of new machines as root. This must be done before any other user can log in.
 
 ```
 commcare-cloud <env> bootstrap-users
 ```
 
-Add users to a set of new machines as root. This must be done before any other user can log in.
-
 ### `update-users`
+
+Bring users up to date with the current CommCare Cloud settings.
 
 ```
 commcare-cloud <env> update-users
 ```
 
-Bring users up to date with the current CommCare Cloud settings.
-
 ### `update-supervisor-confs`
+
+Updates the supervisor configuration files for services required by CommCare. These services are defined in app-processes.yml.
 
 ```
 commcare-cloud <env> update-supervisor-confs
 ```
 
-Updates the supervisor configuration files for services required by CommCare. These services are defined in app-processes.yml.
-
 ### `fab`
+
+Run a fab command as you would with fab
 
 ```
 commcare-cloud <env> fab [fab_command]
 ```
-
-Run a fab command as you would with fab
 
 #### Positional Arguments
 
@@ -666,11 +672,11 @@ Use 'help' action to list all options.
 
 ### `migrate-couchdb`
 
+Perform a CouchDB migration
+
 ```
 commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commit}
 ```
-
-Perform a CouchDB migration
 
 #### Positional Arguments
 
@@ -683,11 +689,11 @@ Action to perform
 
 ### `downtime`
 
+Manage downtime for the selected environment.
+
 ```
 commcare-cloud <env> downtime [-m MESSAGE] {start,end}
 ```
-
-Manage downtime for the selected environment.
 
 #### Positional Arguments
 

@@ -11,7 +11,9 @@ from six.moves import shlex_quote
 
 class Lookup(CommandBase):
     command = 'lookup'
-    help = "Lookup remote hostname or IP address"
+    help = """
+    Lookup remote hostname or IP address
+    """
     arguments = (
         Argument("server", nargs="?", help=(
             "Server name/group: postgresql, proxy, webworkers, ... The server "
@@ -132,10 +134,13 @@ class Tmux(_Ssh):
 
 class DjangoManage(CommandBase):
     command = 'django-manage'
-    help = ("Run a django management command. "
-            "`commcare-cloud <env> django-manage ...` "
-            "runs `./manage.py ...` on the first webworker of <env>. "
-            "Omit <command> to see a full list of possible commands.")
+    help = """
+    Run a django management command.
+
+    `commcare-cloud <env> django-manage ...`
+    runs `./manage.py ...` on the first webworker of <env>.
+    Omit <command> to see a full list of possible commands.
+    """
 
     arguments = (
         Argument('--tmux', action='store_true', default=False, help=(

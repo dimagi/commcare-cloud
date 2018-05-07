@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import cgi
+import inspect
 import os
 import re
 import textwrap
@@ -70,14 +71,34 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
             parts[i] = cgi.escape(parts[i])
         return '`'.join(parts)
 
-    def add_text(self, text):
-        if text:
-            text = re.sub(r'({{|}})', r"{{ '\1' }}", text)
-            text = self.escape_html_outside_backticks(text)
-            text = self._reformat_help(text)
-        return super(MarkdownFormatterBase, self).add_text(text)
+    def _stick_first_line_above_last_usage_and_return_the_rest(self, text):
+        """
+        stick the first line of :text: before the usage
+        and return the rest if condition met, otherwise just return all the text.
 
-    def _reformat_help(self, text):
+        to trigger the interesting behavior both of the following must be true
+        - the previous item added must be a usage
+        - text must be only one line OR text must have a blank line after the first line
+
+        """
+        if text and self._current_section.items and self._current_section.items[-1][0] == self._format_usage:
+            lines = inspect.cleandoc(text).splitlines()
+            if len(lines) == 1 or lines[1] == '':
+                last_usage = self._current_section.items.pop(-1)
+                head = lines[0]
+                tail = '\n'.join(lines[2:])
+                super(MarkdownFormatterBase, self).add_text(head)
+                self._current_section.items.append(last_usage)
+                return tail
+        return text
+
+    def add_text(self, text):
+        text = self._stick_first_line_above_last_usage_and_return_the_rest(text)
+        super(MarkdownFormatterBase, self).add_text(text)
+
+    def _format_text(self, text):
+        text = re.sub(r'({{|}})', r"{{ '\1' }}", text)
+        text = self.escape_html_outside_backticks(text)
         in_lines = text.strip().splitlines()
 
         if in_lines and in_lines[0].endswith(':'):
@@ -114,9 +135,9 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
 
             parser = Parser(formatter=self)
             parser.parse(in_lines)
-            return parser.get_output()
-        else:
-            return text
+            text = parser.get_output()
+
+        return super(MarkdownFormatterBase, self)._format_text(text)
 
 
 class MarkdownFormatter(MarkdownFormatterBase):
