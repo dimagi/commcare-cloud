@@ -25,7 +25,7 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
@@ -110,9 +110,21 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
     parser.add_argument('env_name', help=(
         "server environment to run against"
     ), **env_name_kwargs)
-    parser.add_argument('--control', action='store_true', help=(
-        "include to run command remotely on the control machine"
-    ))
+    Argument('--control', action='store_true', help="""
+        Run command remotely on the control machine.
+
+        You can add `--control` _directly after_ `commcare-cloud` to any command
+        in order to run the command not from the local machine
+        using the local code,
+        but from from the control machine for that environment,
+        using the latest version of `commcare-cloud` available.
+
+        It works by issuing a command to ssh into the control machine,
+        update the code, and run the same command entered locally but with
+        `--control` removed. For long-running commands,
+        you will have to remain connected to the the control machine
+        for the entirety of the run.
+    """).add_to_parser(parser)
     subparsers = parser.add_subparsers(dest='command')
 
     commands = {}

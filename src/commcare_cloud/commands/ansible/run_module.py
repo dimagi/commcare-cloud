@@ -22,8 +22,11 @@ NON_POSITIONAL_ARGUMENTS = (
     Argument('--become-user', help=(
         "run operations as this user (default=root)"
     ), include_in_docs=False),
-    Argument('--use-pem', action='store_true', help=(
-        "uses the pem file commcare_cloud_pem specified in public.vars")),
+    Argument('--use-pem', action='store_true', help="""
+        Rarely used argument to use pem file specified by `commcare_cloud_pem` when connecting.
+        Only useful on a new machine where the hosting provider gives you a pem file to connect with,
+        and before you've run bootstrap-users.
+    """),
     shared_args.SKIP_CHECK_ARG,
     shared_args.QUIET_ARG,
     shared_args.STDOUT_CALLBACK_ARG,
@@ -32,13 +35,28 @@ NON_POSITIONAL_ARGUMENTS = (
 
 class RunAnsibleModule(CommandBase):
     command = 'run-module'
-    help = (
-        'Run an arbitrary Ansible module.'
-    )
+    help = """
+    Run an arbitrary Ansible module.
+
+    Example:
+
+    To print out the `inventory_hostname` ansible variable for each machine, run
+    ```
+    commcare-cloud <env> run-module all debug "msg={{ inventory_hostname }}"
+    ```
+    """
     arguments = (
         shared_args.INVENTORY_GROUP_ARG,
-        Argument('module', help="The module to run"),
-        Argument('module_args', help="The arguments to pass to the module"),
+        Argument('module', help="""
+            The name of the ansible module to run. Complete list of built-in modules
+            can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
+        """),
+        Argument('module_args', help="""
+            Args for the module, formatted as a single string.
+            (Tip: put quotes around it, as it will likely contain spaces.)
+            Both `arg1=value1 arg2=value2` syntax
+            and `{"arg1": "value1", "arg2": "value2"}` syntax are accepted.
+        """),
     ) + NON_POSITIONAL_ARGUMENTS
 
     def modify_parser(self):
@@ -135,13 +153,27 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
 class RunShellCommand(CommandBase):
     command = 'run-shell-command'
-    help = 'Run an arbitrary command via the Ansible shell module.'
+    help = """
+    Run an arbitrary command via the Ansible shell module.
+
+    Example:
+
+    ```
+    commcare-cloud <env> run-shell-command all 'df -h | grep /opt/data'
+    ```
+
+    to get disk usage stats for `/opt/data` on every machine.
+    """
 
     arguments = (
         shared_args.INVENTORY_GROUP_ARG,
-        Argument('shell_command', help="The shell command you want to run"),
+        Argument('shell_command', help="""
+            Command to run remotely.
+            (Tip: put quotes around it, as it will likely contain spaces.)
+            Cannot being with `sudo`; to do that use the ansible `--become` option.
+        """),
         Argument('--silence-warnings', action='store_true',
-                 help="Silence shell warnings (such as to use another module instead)"),
+                 help="Silence shell warnings (such as to use another module instead)."),
     ) + NON_POSITIONAL_ARGUMENTS
 
     def modify_parser(self):

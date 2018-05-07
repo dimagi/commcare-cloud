@@ -97,11 +97,12 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
         super(MarkdownFormatterBase, self).add_text(text)
 
     def _format_text(self, text):
-        text = re.sub(r'({{|}})', r"{{ '\1' }}", text)
+        text = text.replace("{{", "{{ '{{' }}")
         text = self.escape_html_outside_backticks(text)
         in_lines = text.strip().splitlines()
 
-        if in_lines and in_lines[0].endswith(':'):
+        if in_lines and in_lines[0].endswith(':') \
+                and any(line.startswith('  ') for line in in_lines):
             class Parser(object):
                 def __init__(self, formatter):
                     self.section = []
@@ -136,7 +137,8 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
             parser = Parser(formatter=self)
             parser.parse(in_lines)
             text = parser.get_output()
-
+        else:
+            text = text.replace('Example:\n', '#### Example\n')
         return super(MarkdownFormatterBase, self)._format_text(text)
 
 
