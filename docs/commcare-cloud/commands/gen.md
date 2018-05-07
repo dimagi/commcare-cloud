@@ -1,5 +1,4 @@
 # Commands
-{:.no_toc}
 
 * TOC
 {:toc}
@@ -12,19 +11,13 @@ commcare-cloud [--control]
 ```
 
 ## Positional Arguments
-{:.no_toc}
 
 ### `{<env>}`
-{:.no_toc}
-
 server environment to run against
 
 ## Optional Arguments
-{:.no_toc}
 
 ### `--control`
-{:.no_toc}
-
 include to run command remotely on the control machine
 
 
@@ -95,7 +88,6 @@ The callback plugin to use for generating output. See
 ansible-doc -t callback -l and ansible-doc -t callback.
 
 ## Available Commands
-{:.no_toc}
 
 ### `validate-environment-settings`
 
@@ -131,11 +123,8 @@ commcare-cloud {<env>} lookup [server]
 Lookup remote hostname or IP address
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `server`
-{:.no_toc}
-
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with ':<n>' to choose one of
@@ -157,11 +146,8 @@ when `<server>` is `control`.
 All trailing arguments are passed directly to `ssh`.
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `server`
-{:.no_toc}
-
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with ':<n>' to choose one of
@@ -184,11 +170,8 @@ All trailing arguments are passed directly to `mosh`
 (or `ssh` in the edge case described above).
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `server`
-{:.no_toc}
-
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with ':<n>' to choose one of
@@ -205,32 +188,23 @@ commcare-cloud {<env>} run-module [--use-pem] inventory_group module module_args
 Run an arbitrary Ansible module.
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `inventory_group`
-{:.no_toc}
 
 The inventory group to run the command on. Use 'all' for all
 hosts.
 ##### `module`
-{:.no_toc}
-
 The module to run
 ##### `module_args`
-{:.no_toc}
 
 The arguments to pass to the module
 
 #### Optional Arguments
-{:.no_toc}
 
 ##### `--use-pem`
-{:.no_toc}
-
 uses the pem file commcare_cloud_pem specified in public.vars
 
 #### The ansible options below are available as well
-{:.no_toc}
 ```
   -B SECONDS, --background=SECONDS
                         run asynchronously, failing after X seconds
@@ -262,7 +236,6 @@ uses the pem file commcare_cloud_pem specified in public.vars
 
 ```
 ####   Connection Options
-{:.no_toc}
 ```
     control as whom and how to connect to hosts
 
@@ -289,7 +262,6 @@ uses the pem file commcare_cloud_pem specified in public.vars
 
 ```
 ####   Privilege Escalation Options
-{:.no_toc}
 ```
     control how and which user you become as on target hosts
 
@@ -310,32 +282,24 @@ commcare-cloud {<env>} run-shell-command [--silence-warnings] [--use-pem] invent
 Run an arbitrary command via the Ansible shell module.
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `inventory_group`
-{:.no_toc}
 
 The inventory group to run the command on. Use 'all' for all
 hosts.
 ##### `shell_command`
-{:.no_toc}
 
 The shell command you want to run
 
 #### Optional Arguments
-{:.no_toc}
 
 ##### `--silence-warnings`
-{:.no_toc}
 
 Silence shell warnings (such as to use another module instead)
 ##### `--use-pem`
-{:.no_toc}
-
 uses the pem file commcare_cloud_pem specified in public.vars
 
 #### The ansible options below are available as well
-{:.no_toc}
 ```
   -B SECONDS, --background=SECONDS
                         run asynchronously, failing after X seconds
@@ -367,7 +331,6 @@ uses the pem file commcare_cloud_pem specified in public.vars
 
 ```
 ####   Connection Options
-{:.no_toc}
 ```
     control as whom and how to connect to hosts
 
@@ -394,7 +357,6 @@ uses the pem file commcare_cloud_pem specified in public.vars
 
 ```
 ####   Privilege Escalation Options
-{:.no_toc}
 ```
     control how and which user you become as on target hosts
 
@@ -415,14 +377,10 @@ commcare-cloud {<env>} django-manage [--tmux] [--release RELEASE]
 Run a django management command. `commcare-cloud <env> django-manage ...` runs `./manage.py ...` on the first webworker of &lt;env&gt;. Omit &lt;command&gt; to see a full list of possible commands.
 
 #### Optional Arguments
-{:.no_toc}
 
 ##### `--tmux`
-{:.no_toc}
-
 Run this command in a tmux and stay connected
 ##### `--release RELEASE`
-{:.no_toc}
 
 Name of release to run under. E.g. '2018-04-13_18.16'
 
@@ -435,15 +393,11 @@ commcare-cloud {<env>} tmux server [remote_command]
 Connect to a remote host with ssh and open a tmux session
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `server`
-{:.no_toc}
-
 server to run tmux session on. Use '-' to for default
 (webworkers:0)
 ##### `remote_command`
-{:.no_toc}
 
 command to run in new tmux session
 
@@ -456,15 +410,11 @@ commcare-cloud {<env>} ansible-playbook playbook
 Run a playbook as you would with ansible-playbook, but with boilerplate settings already set based on your &lt;environment&gt;. By default, you will see --check output and then asked whether to apply. 
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `playbook`
-{:.no_toc}
-
 The ansible playbook .yml file to run.
 
 #### The ansible-playbook options below are available as well
-{:.no_toc}
 ```
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
@@ -498,7 +448,6 @@ The ansible playbook .yml file to run.
 
 ```
 ####   Connection Options
-{:.no_toc}
 ```
     control as whom and how to connect to hosts
 
@@ -525,7 +474,6 @@ The ansible playbook .yml file to run.
 
 ```
 ####   Privilege Escalation Options
-{:.no_toc}
 ```
     control how and which user you become as on target hosts
 
@@ -566,10 +514,8 @@ commcare-cloud {<env>} after-reboot inventory_group
 Bring a just-rebooted machine back into operation. Includes mounting the encrypted drive.
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `inventory_group`
-{:.no_toc}
 
 The inventory group to run the command on. Use 'all' for all
 hosts.
@@ -615,15 +561,12 @@ commcare-cloud {<env>} fab [fab_command]
 Run a fab command as you would with fab
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `fab_command`
-{:.no_toc}
 
 fab command
 
 #### Available commands
-{:.no_toc}
 ```
 
     apply_patch                       Used to apply a git patch created via `...
@@ -690,24 +633,19 @@ Usage examples:   cchq &lt;env&gt; service postgresql status
    cchq &lt;env&gt; service pillowtop restart --limit &lt;host&gt; --only &lt;pillow-name&gt;
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,n
 ginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webwo
 rker}`
-{:.no_toc}
 
 The services to run the command on
 ##### `{start,stop,restart,status,help}`
-{:.no_toc}
 
 What action to take
 
 #### Optional Arguments
-{:.no_toc}
 
 ##### `--only PROCESS_PATTERN`
-{:.no_toc}
 
 Sub-service name to limit action to.
 Format as 'name' or 'name:number'.
@@ -722,14 +660,11 @@ commcare-cloud {<env>} migrate-couchdb migration_plan {describe,plan,migrate,com
 Perform a CouchDB migration
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `migration_plan`
-{:.no_toc}
 
 Path to migration plan file
 ##### `{describe,plan,migrate,commit}`
-{:.no_toc}
 
 Action to perform
 
@@ -742,15 +677,11 @@ commcare-cloud {<env>} downtime [-m MESSAGE] {start,end}
 Manage downtime for the selected environment.
 
 #### Positional Arguments
-{:.no_toc}
 
 ##### `{start,end}`
-{:.no_toc}
 
 #### Optional Arguments
-{:.no_toc}
 
 ##### `-m MESSAGE, --message MESSAGE`
-{:.no_toc}
 
 Optional message to set on Datadog
