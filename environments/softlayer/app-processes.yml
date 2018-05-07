@@ -23,6 +23,7 @@ celery_processes:
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1
+      optimize: True
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
