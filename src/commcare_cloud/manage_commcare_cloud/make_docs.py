@@ -156,7 +156,7 @@ class MakeDocs(CommandBase):
         j2.filters['print_help'] = do_print_help
 
         parser, subparsers, commands = make_parser(
-            available_envs=('<env>',),
+            available_envs=None,
             prog='commcare-cloud',
             formatter_class=MarkdownFormatter,
             subparser_formatter_class=SubparserMarkdownFormatter,
