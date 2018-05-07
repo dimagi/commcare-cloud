@@ -860,7 +860,12 @@ Path to migration plan file
 
 ##### `{describe,plan,migrate,commit}`
 
-Action to perform.
+Action to perform
+
+- describe: Print out cluster info
+- plan: generate plan details from migration plan
+- migrate: stop nodes and copy shard data according to plan
+- commit: update database docs with new shard allocation
 
 
 ### `downtime`

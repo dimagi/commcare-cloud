@@ -140,7 +140,7 @@ def get_celery_workers(environment):
             continue
         for comma_separated_queue_names, config in queues.items():
             for queue in comma_separated_queue_names.split(','):
-                for worker_num in range(config.get('num_workers', 1)):
+                for worker_num in range(config.num_workers):
                     process_name = get_celery_worker_name(environment, comma_separated_queue_names, worker_num)
                     yield ProcessDescriptor(host, queue, worker_num, process_name)
 
