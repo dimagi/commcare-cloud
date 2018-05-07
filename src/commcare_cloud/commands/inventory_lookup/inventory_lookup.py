@@ -15,13 +15,14 @@ class Lookup(CommandBase):
     Lookup remote hostname or IP address
     """
     arguments = (
-        Argument("server", nargs="?", help=(
-            "Server name/group: postgresql, proxy, webworkers, ... The server "
-             "name/group may be prefixed with 'username@' to login as a specific "
-             "user and may be terminated with ':<n>' to choose one of "
-             "multiple servers if there is more than one in the group. "
-             "For example: webworkers:0 will pick the first webworker. May also "
-             "be omitted for environments with only a single server.")),
+        Argument("server", nargs="?", help="""
+            Server name/group: postgresql, proxy, webworkers, ... The server
+            name/group may be prefixed with 'username@' to login as a
+            specific user and may be terminated with ':<n>' to choose one of
+            multiple servers if there is more than one in the group. For
+            example: webworkers:0 will pick the first webworker. May also be
+            omitted for environments with only a single server.
+        """),
     )
 
     def lookup_server_address(self, args):

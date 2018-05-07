@@ -2,9 +2,15 @@ import os
 
 from commcare_cloud.commands.command_base import Argument
 
-INVENTORY_GROUP_ARG = Argument('inventory_group', help=(
-    "The inventory group to run the command on. Use 'all' for all hosts."
-))
+INVENTORY_GROUP_ARG = Argument('inventory_group', help="""
+Machines to run on. Is anything that could be used in as a value for
+`hosts` in an playbook "play", e.g.
+`all` for all machines,
+`webworkers` for a single group,
+`celery:pillowtop` for multiple groups, etc.
+See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
+for more detail in what can go here.
+""")
 
 SKIP_CHECK_ARG = Argument('--skip-check', action='store_true', default=False, help=(
     "skip the default of viewing --check output first"

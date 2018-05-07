@@ -1,4 +1,6 @@
 import abc
+import inspect
+
 import six
 
 
@@ -32,6 +34,8 @@ class Argument(object):
         self.include_in_docs = kwargs.pop('include_in_docs', True)
         self._args = args
         self._kwargs = kwargs
+        if 'help' in self._kwargs:
+            self._kwargs['help'] = inspect.cleandoc(self._kwargs['help'])
 
     @property
     def name_in_docs(self):
