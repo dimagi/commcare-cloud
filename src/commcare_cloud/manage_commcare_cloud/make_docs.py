@@ -188,7 +188,7 @@ class MakeDocs(CommandBase):
         )
 
         subparsers_by_group = [
-            (group, [(cmd.command, subparsers.choices[cmd.command]) for cmd in command_types])
+            (group, [(cmd, subparsers.choices[cmd.command]) for cmd in command_types])
             for group, command_types in COMMAND_GROUPS.items()
         ]
         template = j2.get_template('commands.md.j2')
