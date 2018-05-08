@@ -1,6 +1,7 @@
 import getpass
 
 import yaml
+from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
 
@@ -50,9 +51,14 @@ class Environment(object):
         if isinstance(vault_vars, dict):
             return vault_vars
 
-        vault = Vault(self.get_ansible_vault_password())
-        with open(self.paths.vault_yml, 'r') as vf:
-            return vault.load(vf.read())
+        while True:
+            try:
+                vault = Vault(self.get_ansible_vault_password())
+                with open(self.paths.vault_yml, 'r') as vf:
+                    return vault.load(vf.read())
+            except AnsibleVaultError:
+                print('incorrect password')
+                self.get_ansible_vault_password.reset_cache(self)
 
     def get_vault_var(self, var):
         path = var.split('.')

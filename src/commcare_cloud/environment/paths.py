@@ -110,7 +110,7 @@ def get_role_defaults(role):
         return yaml.load(f)
 
 
-def get_available_envs():
+def get_available_envs(exclude_symlinks=False):
     if not os.path.exists(ENVIRONMENTS_DIR):
         print("The directory {!r} does not exist.\n"
               "Set COMMCARE_CLOUD_ENVIRONMENTS to a directory that exists."
@@ -120,6 +120,7 @@ def get_available_envs():
         env for env in os.listdir(ENVIRONMENTS_DIR)
         if os.path.exists(DefaultPaths(env).public_yml)
         and os.path.exists(DefaultPaths(env).inventory_ini)
+        and not (exclude_symlinks and os.path.islink(os.path.join(ENVIRONMENTS_DIR, env)))
     )
 
 
