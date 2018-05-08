@@ -29,6 +29,7 @@ class AnsiblePlaybook(CommandBase):
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
+        shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
         Argument('playbook', help=(
             "The ansible playbook .yml file to run."
@@ -74,7 +75,7 @@ class AnsiblePlaybook(CommandBase):
             else:
                 return ()
 
-        def ansible_playbook(environment, playbook, *cmd_args):
+        def ansible_playbook(environment, playbook, factory_auth, *cmd_args):
             cmd_parts = (
                 'ansible-playbook',
                 os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
@@ -98,7 +99,7 @@ class AnsiblePlaybook(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts += get_common_ssh_args(environment)
+            cmd_parts += get_common_ssh_args(environment, use_factory_auth=factory_auth)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             if ask_vault_pass:
@@ -111,10 +112,10 @@ class AnsiblePlaybook(CommandBase):
             return p.returncode
 
         def run_check():
-            return ansible_playbook(environment, args.playbook, '--check', *unknown_args)
+            return ansible_playbook(environment, args.playbook, args.factory_auth, '--check', *unknown_args)
 
         def run_apply():
-            return ansible_playbook(environment, args.playbook, *unknown_args)
+            return ansible_playbook(environment, args.playbook, args.factory_auth, *unknown_args)
 
         return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet, always_skip_check)
 
@@ -204,6 +205,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
+        args.factory_auth = True
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
