@@ -212,9 +212,13 @@ Run an arbitrary command via the Ansible shell module:
 commcare-cloud <env> run-shell-command <inventory_group> <shell_command> [--silence-warnings]
 ```
 
-##########
-TODO: Add an entry for factory-ping here.
-##########
+#### `factory-ping`
+
+Ping specified or all machines to see if they have been provisioned yet:
+
+```
+commcare-cloud <env> factory-ping <inventory_group> [--silence-warnings]
+```
 
 ##### `<inventory_group>`
 
