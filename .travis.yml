@@ -18,4 +18,5 @@ script:
   - "diff <(ansible -h) src/commcare_cloud/help_cache/ansible.txt"
   - "diff <(ansible-playbook -h) src/commcare_cloud/help_cache/ansible-playbook.txt"
   - "nosetests"
-  - "./tests/test_command_docs.sh"
+  - "git diff"
+  - "./tests/test_command_docs.sh || git diff"
