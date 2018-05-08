@@ -37,40 +37,5 @@ class Argument(object):
         if 'help' in self._kwargs:
             self._kwargs['help'] = inspect.cleandoc(self._kwargs['help'])
 
-    @property
-    def name_in_docs(self):
-        flag = None
-        if not self._args:
-            if 'dest' in self._kwargs:
-                dest = self._kwargs['dest']
-        elif not self._args[0].startswith('-'):
-            # positional arg
-            if 'dest' in self._kwargs:
-                dest = self._kwargs['dest']
-            else:
-                dest = self._args[0]
-        else:
-            # non-positional arg
-            if self._args[0].startswith('--'):
-                # first arg is the long form
-                flag = self._args[0]
-            elif len(self._args) > 1 and self._args[1].startswith('--'):
-                # second arg is the long form
-                flag = self._args[1]
-            else:
-                # use the short form then
-                flag = self._args[0]
-            if 'dest' in self._kwargs:
-                dest = self._kwargs['dest']
-            else:
-                dest = flag.lstrip('-')
-
-        if flag and self._kwargs.get('action') in ('store_true', 'store_false'):
-            return flag
-        if flag:
-            return '{} <{}>'.format(flag, dest.replace('-', '_'))
-        else:
-            return '<{}>'.format(dest.replace('-', '_'))
-
     def add_to_parser(self, parser):
         parser.add_argument(*self._args, **self._kwargs)
