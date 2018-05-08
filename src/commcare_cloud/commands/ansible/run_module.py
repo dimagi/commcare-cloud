@@ -96,6 +96,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
         '--diff',
     ) + tuple(extra_args)
 
+    environment.create_generated_yml()
     public_vars = environment.public_vars
     cmd_parts += get_user_arg(public_vars, extra_args)
 

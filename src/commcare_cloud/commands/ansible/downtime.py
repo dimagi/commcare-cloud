@@ -96,7 +96,7 @@ def wait_for_all_processes_to_stop(environment, ansible_context):
 
 
 def kill_remaining_processes(environment, ansible_context):
-    command = 'pkill -u cchq -s 9; test $? -eq 0 -o $? -eq 1'
+    command = 'pkill -u cchq -9; test $? -eq 0 -o $? -eq 1'
     return _run_command(environment, ansible_context, command, become=True)
 
 

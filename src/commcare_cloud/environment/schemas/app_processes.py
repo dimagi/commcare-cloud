@@ -75,7 +75,6 @@ CELERY_PROCESSES = [
     CeleryProcess("ils_gateway_sms_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
-    CeleryProcess("pillow_retry_queue"),
     CeleryProcess("reminder_case_update_queue"),
     CeleryProcess("reminder_queue", required=False),
     CeleryProcess("reminder_rule_queue"),

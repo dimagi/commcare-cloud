@@ -69,6 +69,7 @@ from .operations import (
     formplayer,
     release,
     offline as offline_ops,
+    airflow
 )
 from .utils import (
     DeployMetadata,
@@ -232,6 +233,7 @@ def env_common():
     rabbitmq = servers['rabbitmq']
     # if no server specified, just don't run pillowtop
     pillowtop = servers.get('pillowtop', [])
+    airflow = servers.get('airflow', [])
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
@@ -255,7 +257,8 @@ def env_common():
         'deploy': deploy,
         # fab complains if this doesn't exist
         'django_monolith': [],
-        'control': servers.get('control')[:1]
+        'control': servers.get('control')[:1],
+        'airflow': airflow
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
@@ -902,6 +905,11 @@ def check_status():
 @task
 def perform_system_checks():
     execute(check_servers.perform_system_checks, True)
+
+    
+@task
+def deploy_airflow():
+    execute(airflow.update_airflow)
 
 
 def make_tasks_for_envs(available_envs):
