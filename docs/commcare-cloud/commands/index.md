@@ -107,10 +107,10 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 ## Available Commands
 
-## Internal Housekeeping for your `commcare-cloud` environments
+### Internal Housekeeping for your `commcare-cloud` environments
 
 
-### `validate-environment-settings`
+#### `validate-environment-settings`
 
 Validate your environment's configuration files
 
@@ -122,7 +122,7 @@ As you make changes to your environment files, you can use this
 command to check for validation errors or incompatibilities.
 
 
-### `update-local-known-hosts`
+#### `update-local-known-hosts`
 
 Update the local known_hosts file of the environment configuration.
 
@@ -136,10 +136,10 @@ trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
 
-## Ad-hoc
+### Ad-hoc
 
 
-### `lookup`
+#### `lookup`
 
 Lookup remote hostname or IP address
 
@@ -147,9 +147,9 @@ Lookup remote hostname or IP address
 commcare-cloud <env> lookup [server]
 ```
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `server`
+###### `server`
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
@@ -159,7 +159,7 @@ example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
 
-### `ssh`
+#### `ssh`
 
 Connect to a remote host with ssh.
 
@@ -172,9 +172,9 @@ when `<server>` is `control`.
 
 All trailing arguments are passed directly to `ssh`.
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `server`
+###### `server`
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
@@ -184,7 +184,7 @@ example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
 
-### `mosh`
+#### `mosh`
 
 Connect to a remote host with mosh.
 
@@ -198,9 +198,9 @@ when `<server>` is `control` (because `mosh` doesn't support `-A`).
 All trailing arguments are passed directly to `mosh`
 (or `ssh` in the edge case described above).
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `server`
+###### `server`
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
@@ -210,7 +210,7 @@ example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
 
-### `run-module`
+#### `run-module`
 
 Run an arbitrary Ansible module.
 
@@ -225,9 +225,9 @@ To print out the `inventory_hostname` ansible variable for each machine, run
 commcare-cloud <env> run-module all debug "msg={{ '{{' }} inventory_hostname }}"
 ```
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `inventory_group`
+###### `inventory_group`
 
 Machines to run on. Is anything that could be used in as a value for
 `hosts` in an playbook "play", e.g.
@@ -237,27 +237,27 @@ Machines to run on. Is anything that could be used in as a value for
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
 
-##### `module`
+###### `module`
 
 The name of the ansible module to run. Complete list of built-in modules
 can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
 
-##### `module_args`
+###### `module_args`
 
 Args for the module, formatted as a single string.
 (Tip: put quotes around it, as it will likely contain spaces.)
 Both `arg1=value1 arg2=value2` syntax
 and `{"arg1": "value1", "arg2": "value2"}` syntax are accepted.
 
-#### Optional Arguments
+##### Optional Arguments
 
-##### `--use-pem`
+###### `--use-pem`
 
 Rarely used argument to use pem file specified by `commcare_cloud_pem` when connecting.
 Only useful on a new machine where the hosting provider gives you a pem file to connect with,
 and before you've run bootstrap-users.
 
-#### The ansible options below are available as well
+##### The ansible options below are available as well
 ```
   -B SECONDS, --background=SECONDS
                         run asynchronously, failing after X seconds
@@ -288,7 +288,7 @@ and before you've run bootstrap-users.
   --version             show program's version number and exit
 
 ```
-####   Connection Options
+#####   Connection Options
 ```
     control as whom and how to connect to hosts
 
@@ -314,7 +314,7 @@ and before you've run bootstrap-users.
                         specify extra arguments to pass to ssh only (e.g. -R)
 
 ```
-####   Privilege Escalation Options
+#####   Privilege Escalation Options
 ```
     control how and which user you become as on target hosts
 
@@ -327,7 +327,7 @@ and before you've run bootstrap-users.
 ```
 
 
-### `run-shell-command`
+#### `run-shell-command`
 
 Run an arbitrary command via the Ansible shell module.
 
@@ -343,9 +343,9 @@ commcare-cloud <env> run-shell-command all 'df -h | grep /opt/data'
 
 to get disk usage stats for `/opt/data` on every machine.
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `inventory_group`
+###### `inventory_group`
 
 Machines to run on. Is anything that could be used in as a value for
 `hosts` in an playbook "play", e.g.
@@ -355,25 +355,25 @@ Machines to run on. Is anything that could be used in as a value for
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
 
-##### `shell_command`
+###### `shell_command`
 
 Command to run remotely.
 (Tip: put quotes around it, as it will likely contain spaces.)
 Cannot being with `sudo`; to do that use the ansible `--become` option.
 
-#### Optional Arguments
+##### Optional Arguments
 
-##### `--silence-warnings`
+###### `--silence-warnings`
 
 Silence shell warnings (such as to use another module instead).
 
-##### `--use-pem`
+###### `--use-pem`
 
 Rarely used argument to use pem file specified by `commcare_cloud_pem` when connecting.
 Only useful on a new machine where the hosting provider gives you a pem file to connect with,
 and before you've run bootstrap-users.
 
-#### The ansible options below are available as well
+##### The ansible options below are available as well
 ```
   -B SECONDS, --background=SECONDS
                         run asynchronously, failing after X seconds
@@ -404,7 +404,7 @@ and before you've run bootstrap-users.
   --version             show program's version number and exit
 
 ```
-####   Connection Options
+#####   Connection Options
 ```
     control as whom and how to connect to hosts
 
@@ -430,7 +430,7 @@ and before you've run bootstrap-users.
                         specify extra arguments to pass to ssh only (e.g. -R)
 
 ```
-####   Privilege Escalation Options
+#####   Privilege Escalation Options
 ```
     control how and which user you become as on target hosts
 
@@ -443,7 +443,7 @@ and before you've run bootstrap-users.
 ```
 
 
-### `django-manage`
+#### `django-manage`
 
 Run a django management command.
 
@@ -463,23 +463,23 @@ To open a django shell in a tmux window using the `2018-04-13_18.16` release.
 commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
 ```
 
-#### Optional Arguments
+##### Optional Arguments
 
-##### `--tmux`
+###### `--tmux`
 
 If this option is included, the management command will be
 run in a new tmux window under the `cchq` user. You may then exit using
 the customary tmux command `^b` `d`, and resume the session later.
 This is especially useful for long-running commands.
 
-##### `--release RELEASE`
+###### `--release RELEASE`
 
 Name of release to run under.
 E.g. '2018-04-13_18.16'.
 If none is specified, the `current` release will be used.
 
 
-### `tmux`
+#### `tmux`
 
 Connect to a remote host with ssh and open a tmux session.
 
@@ -495,14 +495,14 @@ Rejoin last open tmux window.
 commcare-cloud <env> tmux -
 ```
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `server`
+###### `server`
 
 Server to run tmux session on.
 Use '-' to for default (webworkers:0)
 
-##### `remote_command`
+###### `remote_command`
 
 Command to run in the tmux.
 If a command specified, then it will always run in a new window.
@@ -510,10 +510,10 @@ If a command is *not* specified, then a it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
 
-## Operational
+### Operational
 
 
-### `ansible-playbook`
+#### `ansible-playbook`
 (Alias `ap`)
 
 Run a playbook as you would with ansible-playbook
@@ -530,16 +530,16 @@ By default, you will see --check output and then asked whether to apply.
 commcare-cloud <env> ansible-playbook deploy_proxy.yml --limit=proxy
 ```
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `playbook`
+###### `playbook`
 
 The ansible playbook .yml file to run.
 Options are the `*.yml` files located under `commcare_cloud/ansible`
 which is under `src` for an egg install and under
 `<virtualenv>/lib/python2.7/site-packages` for a wheel install.
 
-#### The ansible-playbook options below are available as well
+##### The ansible-playbook options below are available as well
 ```
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
@@ -572,7 +572,7 @@ which is under `src` for an egg install and under
   --version             show program's version number and exit
 
 ```
-####   Connection Options
+#####   Connection Options
 ```
     control as whom and how to connect to hosts
 
@@ -598,7 +598,7 @@ which is under `src` for an egg install and under
                         specify extra arguments to pass to ssh only (e.g. -R)
 
 ```
-####   Privilege Escalation Options
+#####   Privilege Escalation Options
 ```
     control how and which user you become as on target hosts
 
@@ -615,7 +615,7 @@ which is under `src` for an egg install and under
 ```
 
 
-### `deploy-stack`
+#### `deploy-stack`
 (Alias `aps`)
 
 Run the ansible playbook for deploying the entire stack.
@@ -628,7 +628,7 @@ Often used in conjunction with --limit and/or --tag
 for a more specific update.
 
 
-### `update-config`
+#### `update-config`
 
 Run the ansible playbook for updating app config.
 
@@ -639,7 +639,7 @@ commcare-cloud <env> update-config
 This includes django `localsettings.py` and formplayer `application.properties`.
 
 
-### `after-reboot`
+#### `after-reboot`
 
 Bring a just-rebooted machine back into operation.
 
@@ -650,9 +650,9 @@ commcare-cloud <env> after-reboot inventory_group
 Includes mounting the encrypted drive.
 This command never runs in check mode.
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `inventory_group`
+###### `inventory_group`
 
 Machines to run on. Is anything that could be used in as a value for
 `hosts` in an playbook "play", e.g.
@@ -663,7 +663,7 @@ See the description in [this blog](http://goinbigdata.com/understanding-ansible-
 for more detail in what can go here.
 
 
-### `restart-elasticsearch`
+#### `restart-elasticsearch`
 
 Do a rolling restart of elasticsearch.
 
@@ -680,7 +680,7 @@ commcare-cloud <env> service elasticsearch restart
 instead.
 
 
-### `bootstrap-users`
+#### `bootstrap-users`
 
 Add users to a set of new machines as root.
 
@@ -697,7 +697,7 @@ per machine; if after running it you would like to run it again,
 you have to use `update-users` below instead.
 
 
-### `update-users`
+#### `update-users`
 
 Bring users up to date with the current CommCare Cloud settings.
 
@@ -710,7 +710,7 @@ to keep machine user accounts, permissions, and login information
 up to date.
 
 
-### `update-supervisor-confs`
+#### `update-supervisor-confs`
 
 Updates the supervisor configuration files for services required by CommCare.
 
@@ -721,7 +721,7 @@ commcare-cloud <env> update-supervisor-confs
 These services are defined in app-processes.yml.
 
 
-### `fab`
+#### `fab`
 
 Run a fab command as you would with fab
 
@@ -729,21 +729,21 @@ Run a fab command as you would with fab
 commcare-cloud <env> fab [-l] [fab_command]
 ```
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `fab_command`
+###### `fab_command`
 
 The name of the fab task to run. It and all following arguments
 will be passed on without modification to `fab`, so all normal `fab`
 syntax rules apply.
 
-#### Optional Arguments
+##### Optional Arguments
 
-##### `-l`
+###### `-l`
 
 Use `-l` instead of a command to see the full list of commands.
 
-#### Available commands
+##### Available commands
 ```
 
     apply_patch                       Used to apply a git patch created via `...
@@ -792,7 +792,7 @@ Use `-l` instead of a command to see the full list of commands.
 ```
 
 
-### `service`
+#### `service`
 
 Manage services.
 
@@ -820,29 +820,29 @@ Thus the `postgresql` service group applies to both the `postgresql`
 service and the `pgbouncer` service. We'll call the actual services
 "subservices" here.
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
 More than one service may be supplied as separate arguments in a row.
 
-##### `{start,stop,restart,status,help}`
+###### `{start,stop,restart,status,help}`
 
 Action can be `status`, `start`, `stop`, or `restart`.
 This action is applied to every matching service.
 
-#### Optional Arguments
+##### Optional Arguments
 
-##### `--only PROCESS_PATTERN`
+###### `--only PROCESS_PATTERN`
 
 Sub-service name to limit action to.
 Format as 'name' or 'name:number'.
 Use 'help' action to list all options.
 
 
-### `migrate-couchdb`
+#### `migrate-couchdb`
 (Alias `migrate_couchdb`)
 
 Perform a CouchDB migration
@@ -855,13 +855,13 @@ This is a recent and advanced addition to the capabilities,
 and is not yet ready for widespread use. At such a time as it is
 ready, it will be more thoroughly documented.
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `migration_plan`
+###### `migration_plan`
 
 Path to migration plan file
 
-##### `{describe,plan,migrate,commit}`
+###### `{describe,plan,migrate,commit}`
 
 Action to perform
 
@@ -871,7 +871,7 @@ Action to perform
 - commit: update database docs with new shard allocation
 
 
-### `downtime`
+#### `downtime`
 
 Manage downtime for the selected environment.
 
@@ -882,12 +882,12 @@ commcare-cloud <env> downtime [-m MESSAGE] {start,end}
 This notifies Datadog of the planned downtime so that is is recorded
 in the history, and so that during it service alerts are silenced.
 
-#### Positional Arguments
+##### Positional Arguments
 
-##### `{start,end}`
+###### `{start,end}`
 
-#### Optional Arguments
+##### Optional Arguments
 
-##### `-m MESSAGE, --message MESSAGE`
+###### `-m MESSAGE, --message MESSAGE`
 
 Optional message to set on Datadog.
