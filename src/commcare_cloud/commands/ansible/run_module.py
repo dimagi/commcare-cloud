@@ -86,7 +86,6 @@ class RunAnsibleModule(CommandBase):
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
                        become, become_user, factory_auth, *extra_args):
-    print("############################ PREETHI: IN run_ansible_module ############################")
     cmd_parts = (
         'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
