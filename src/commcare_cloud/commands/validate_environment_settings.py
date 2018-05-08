@@ -8,8 +8,11 @@ from .command_base import CommandBase
 class ValidateEnvironmentSettings(CommandBase):
     command = 'validate-environment-settings'
     help = (
-        "Validate your environment's configuration files"
+        "Validate your environment's configuration files\n\n"
+        "As you make changes to your environment files, you can use this\n"
+        "command to check for validation errors or incompatibilities."
     )
+    description = """"""
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
