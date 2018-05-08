@@ -157,7 +157,7 @@ class MarkdownFormatter(MarkdownFormatterBase):
 
 
 class SubparserMarkdownFormatter(MarkdownFormatterBase):
-    header_level = 3
+    header_level = 4
 
 
 class MakeDocs(CommandBase):

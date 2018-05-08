@@ -78,17 +78,17 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 ## Available Commands
 {% for group, subparsers in subparsers_by_group -%}
 {% if group == 'housekeeping' %}
-## Internal Housekeeping for your `commcare-cloud` environments
+### Internal Housekeeping for your `commcare-cloud` environments
 {% elif group == 'ad-hoc' %}
-## Ad-hoc
+### Ad-hoc
 {% elif group == 'operational' %}
-## Operational
+### Operational
 {% else %}
-## {{ group }}
+### {{ group }}
 {% endif -%}
 {% for command, subparser in subparsers %}
 
-### `{{ command.command }}`
+#### `{{ command.command }}`
 {%- if command.aliases %}
 (Alias `{{ '`, `'.join(command.aliases) }}`)
 {%- endif %}
