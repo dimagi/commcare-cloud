@@ -165,3 +165,36 @@ class RunShellCommand(CommandBase):
         args.quiet = True
         del args.shell_command
         return RunAnsibleModule(self.parser).run(args, unknown_args)
+
+
+class FactoryPing(CommandBase):
+    command = 'factory-ping'
+    help = 'Run an arbitrary command via the Ansible shell module.'
+
+    arguments = (
+        shared_args.INVENTORY_GROUP_ARG,
+        Argument('shell_command', help="The shell command you want to run"),
+        Argument('--silence-warnings', action='store_true',
+                 help="Silence shell warnings (such as to use another module instead)"),
+    ) + NON_POSITIONAL_ARGUMENTS
+
+    def modify_parser(self):
+        RunAnsibleModule(self.parser).modify_parser()
+
+    def run(self, args, unknown_args):
+        if args.shell_command.strip().startswith('sudo '):
+            puts(colored.yellow(
+                "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
+                "Using 'sudo' directly in the command is non-standard practice."))
+            if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):
+                return 0  # exit code
+
+        args.module = 'shell'
+        if args.silence_warnings:
+            args.module_args = 'warn=false ' + args.shell_command
+        else:
+            args.module_args = args.shell_command
+        args.skip_check = True
+        args.quiet = True
+        del args.shell_command
+        return RunAnsibleModule(self.parser).run(args, unknown_args)
