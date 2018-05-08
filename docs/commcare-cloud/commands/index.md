@@ -514,6 +514,7 @@ tmux windows will a new one be opened.
 
 
 ### `ansible-playbook`
+(Alias `ap`)
 
 Run a playbook as you would with ansible-playbook
 
@@ -615,6 +616,7 @@ which is under `src` for an egg install and under
 
 
 ### `deploy-stack`
+(Alias `aps`)
 
 Run the ansible playbook for deploying the entire stack.
 
@@ -841,6 +843,7 @@ Use 'help' action to list all options.
 
 
 ### `migrate-couchdb`
+(Alias `migrate_couchdb`)
 
 Perform a CouchDB migration
 
