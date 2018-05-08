@@ -1,4 +1,6 @@
 import abc
+import inspect
+
 import six
 
 
@@ -12,8 +14,10 @@ class CommandBase(object):
     def __init__(self, parser):
         self.parser = parser
 
-    def make_parser(self):
+    def make_parser(self, for_docs=False):
         for argument in self.arguments:
+            if for_docs and not argument.include_in_docs:
+                continue
             argument.add_to_parser(self.parser)
         self.modify_parser()
 
@@ -30,41 +34,8 @@ class Argument(object):
         self.include_in_docs = kwargs.pop('include_in_docs', True)
         self._args = args
         self._kwargs = kwargs
-
-    @property
-    def name_in_docs(self):
-        flag = None
-        if not self._args:
-            if 'dest' in self._kwargs:
-                dest = self._kwargs['dest']
-        elif not self._args[0].startswith('-'):
-            # positional arg
-            if 'dest' in self._kwargs:
-                dest = self._kwargs['dest']
-            else:
-                dest = self._args[0]
-        else:
-            # non-positional arg
-            if self._args[0].startswith('--'):
-                # first arg is the long form
-                flag = self._args[0]
-            elif len(self._args) > 1 and self._args[1].startswith('--'):
-                # second arg is the long form
-                flag = self._args[1]
-            else:
-                # use the short form then
-                flag = self._args[0]
-            if 'dest' in self._kwargs:
-                dest = self._kwargs['dest']
-            else:
-                dest = flag.lstrip('-')
-
-        if flag and self._kwargs.get('action') in ('store_true', 'store_false'):
-            return flag
-        if flag:
-            return '{} <{}>'.format(flag, dest.replace('-', '_'))
-        else:
-            return '<{}>'.format(dest.replace('-', '_'))
+        if 'help' in self._kwargs:
+            self._kwargs['help'] = inspect.cleandoc(self._kwargs['help'])
 
     def add_to_parser(self, parser):
         parser.add_argument(*self._args, **self._kwargs)
