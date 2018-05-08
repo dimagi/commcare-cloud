@@ -3,11 +3,15 @@ import os
 from commcare_cloud.commands.command_base import Argument
 
 INVENTORY_GROUP_ARG = Argument('inventory_group', help=(
-    "The inventory group to run the command on. Use 'all' for all hosts."
+    "the inventory group to run the command on, use 'all' for all hosts"
 ))
 
 SKIP_CHECK_ARG = Argument('--skip-check', action='store_true', default=False, help=(
     "skip the default of viewing --check output first"
+))
+
+FACTORY_AUTH_ARG = Argument('--use-factory-auth', action='store_true', default=False, help=(
+    "authenticate using the pem file (or prompt for root password if there is no pem file)"
 ))
 
 QUIET_ARG = Argument('--quiet', action='store_true', default=False, help=(

@@ -22,9 +22,8 @@ NON_POSITIONAL_ARGUMENTS = (
     Argument('--become-user', help=(
         "run operations as this user (default=root)"
     ), include_in_docs=False),
-    Argument('--use-pem', action='store_true', help=(
-        "uses the pem file commcare_cloud_pem specified in public.vars")),
     shared_args.SKIP_CHECK_ARG,
+    shared_args.FACTORY_AUTH_ARG,
     shared_args.QUIET_ARG,
     shared_args.STDOUT_CALLBACK_ARG,
 )
@@ -72,7 +71,7 @@ class RunAnsibleModule(CommandBase):
             return run_ansible_module(
                 environment, ansible_context,
                 args.inventory_group, args.module, args.module_args,
-                args.become, args.become_user, args.use_pem,
+                args.become, args.become_user, args.factory_auth,
                 *unknown_args
             )
 
@@ -86,7 +85,8 @@ class RunAnsibleModule(CommandBase):
 
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become, become_user, use_pem, *extra_args):
+                       become, become_user, factory_auth, *extra_args):
+    print("############################ PREETHI: IN run_ansible_module ############################")
     cmd_parts = (
         'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
@@ -123,7 +123,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
         cmd_parts += ('--vault-password-file=/bin/cat',)
-    cmd_parts += get_common_ssh_args(environment, use_pem)
+    cmd_parts += get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
@@ -169,11 +169,10 @@ class RunShellCommand(CommandBase):
 
 class FactoryPing(CommandBase):
     command = 'factory-ping'
-    help = 'Run an arbitrary command via the Ansible shell module.'
+    help = 'Ping specified or all machines to see if they have been provisioned yet.'
 
     arguments = (
         shared_args.INVENTORY_GROUP_ARG,
-        Argument('shell_command', help="The shell command you want to run"),
         Argument('--silence-warnings', action='store_true',
                  help="Silence shell warnings (such as to use another module instead)"),
     ) + NON_POSITIONAL_ARGUMENTS
@@ -182,19 +181,15 @@ class FactoryPing(CommandBase):
         RunAnsibleModule(self.parser).modify_parser()
 
     def run(self, args, unknown_args):
-        if args.shell_command.strip().startswith('sudo '):
-            puts(colored.yellow(
-                "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
-                "Using 'sudo' directly in the command is non-standard practice."))
-            if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):
-                return 0  # exit code
+        ping_shell_command = 'echo {{ inventory_hostname }}'
 
         args.module = 'shell'
         if args.silence_warnings:
-            args.module_args = 'warn=false ' + args.shell_command
+            args.module_args = 'warn=false ' + ping_shell_command
         else:
-            args.module_args = args.shell_command
+            args.module_args = ping_shell_command
         args.skip_check = True
         args.quiet = True
-        del args.shell_command
+        args.factory_auth = True
+        del ping_shell_command
         return RunAnsibleModule(self.parser).run(args, unknown_args)
