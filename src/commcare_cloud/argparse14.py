@@ -18,5 +18,6 @@ site_packages = get_python_lib()
 argparse = pkgutil.get_importer(site_packages).find_module('argparse').load_module('argparse')
 
 ArgumentParser = argparse.ArgumentParser
+RawTextHelpFormatter = argparse.RawTextHelpFormatter
 
-__all__ = ['ArgumentParser']
+__all__ = ['ArgumentParser', 'RawTextHelpFormatter']
