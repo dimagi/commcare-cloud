@@ -14,7 +14,7 @@ _AVAILABLE_HELP_CACHES = {
 def _get_help_text(command):
     if command in _AVAILABLE_HELP_CACHES:
         with open(_AVAILABLE_HELP_CACHES[command]) as f:
-            return f.read().replace("/home/travis", os.path.expanduser('~'))
+            return f.read()
     else:
         return subprocess.check_output(command, shell=True)
 

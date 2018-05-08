@@ -274,7 +274,7 @@ and before you've run bootstrap-users.
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
+                        (default=[u'~/.ansible/plugins/modules',
                         u'/usr/share/ansible/plugins/modules'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
@@ -390,7 +390,7 @@ and before you've run bootstrap-users.
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
+                        (default=[u'~/.ansible/plugins/modules',
                         u'/usr/share/ansible/plugins/modules'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
@@ -555,7 +555,7 @@ which is under `src` for an egg install and under
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'/Users/droberts/.ansible/plugins/modules',
+                        (default=[u'~/.ansible/plugins/modules',
                         u'/usr/share/ansible/plugins/modules'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these

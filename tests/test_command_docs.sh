@@ -1,9 +1,10 @@
 #! /bin/bash
 
 
-rm docs/commcare-cloud/commands/index.md
+make clean
 make
 
+git diff
 git update-index -q --refresh
 if git diff-index --quiet HEAD --; then
     # No changes
