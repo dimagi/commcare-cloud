@@ -9,6 +9,9 @@ virtualenv_home: "{{ code_home }}/python_env"
 encrypted_root: "/opt/data"
 project: "commcare-hq"
 
+airflow_home: "{{ cchq_home }}/airflow"
+airflow_virtualenv: "{{ airflow_home }}/env"
+
 shared_drive_enabled: true
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
@@ -86,6 +89,7 @@ datadog_integration_kafka_consumer: false
 datadog_integration_nginx: false
 datadog_integration_pgbouncer: false
 datadog_integration_postgres: false
+datadog_integration_postgres_receiver: false
 datadog_integration_rabbitmq: false
 datadog_integration_redisdb: false
 datadog_integration_riak: false
@@ -192,4 +196,14 @@ aws_region: None
 aws_endpoint: '{{ aws_region and "s3." + aws_region + ".amazonaws.com" }}'
 aws_versioning_enabled: true
 
+airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
+airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
+
+hq_main_db_host: "{% for config in postgresql_dbs -%}
+  {%- if config.name == commcarehq_main_db_name -%}
+    {{ config.host }}
+  {%- endif -%}
+{%- endfor %}"
+
 nofile_limit: 4096
+

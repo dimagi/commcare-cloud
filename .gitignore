@@ -11,6 +11,7 @@ DimagiKeyStore
 **/ansible/*.retry
 *.pyc
 *.egg-info
+*~
 /build
 /dist
 couchdb@*_files

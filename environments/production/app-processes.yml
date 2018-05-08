@@ -6,8 +6,6 @@ celery_processes:
     celery_periodic:
       server_whitelist: hqcelery0.internal-va.commcarehq.org
       concurrency: 4
-    pillow_retry_queue:
-      concurrency: 1
     submission_reprocessing_queue:
       concurrency: 1
     email_queue:
@@ -66,6 +64,7 @@ celery_processes:
     saved_exports_queue:
       concurrency: 4
       max_tasks_per_child: 1
+      optimize: True
     background_queue:
       concurrency: 4
       max_tasks_per_child: 1
