@@ -20,7 +20,7 @@ from .commands.ansible.ansible_playbook import (
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
-from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
+from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, FactoryPing
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from commcare_cloud.commands.command_base import CommandBase
@@ -52,6 +52,7 @@ COMMAND_TYPES = [
     UpdateLocalKnownHosts,
     MigrateCouchdb,
     Downtime,
+    FactoryPing
 ]
 
 
