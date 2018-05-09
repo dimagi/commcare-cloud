@@ -320,7 +320,7 @@ def hotfix_deploy():
     _require_target()
     run('echo ping!')  # workaround for delayed console response
     try:
-        execute(release.update_code, env.deploy_metadata.deploy_ref, True)
+        execute(release.update_code(full_cluster=True), env.deploy_metadata.deploy_ref)
     except Exception:
         execute(
             mail_admins,
