@@ -1,0 +1,160 @@
+---
+- name: Elasticsearch
+  hosts: elasticsearch
+  become: true
+  vars_files:
+    - roles/elasticsearch/defaults/main.yml
+  serial: 1
+
+  tasks:
+
+  - name: Set fact es_host
+    set_fact:
+      es_host: "{% if inventory_hostname|ipaddr %}{{ inventory_hostname }}{% else %}{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}{% endif %}"
+
+  - name: disable cluster routing
+    shell: "curl -XPUT {{ inventory_hostname }}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'"
+    register: result
+    until: result.stdout.find('"acknowledged"') != -1
+    retries: 20
+    delay: 3
+    changed_when: result.stdout.find('"acknowledged":true') != -1
+    ignore_errors: '{{ ansible_check_mode }}'
+    tags: es_routing_enabled
+
+  - name: stop node
+    become: true
+    service: name=elasticsearch state=stopped
+
+  - name: wait for a few seconds for ES to stop
+    pause: seconds=10
+    when: not ansible_check_mode
+
+  - name: Downloads Directory
+    file: path="/home/{{ cchq_user }}/downloads/" state=directory
+
+  - name: Create elasticsearch user
+    user: name=elasticsearch createhome=no password=no state=present
+
+  - name: Elasticsearch User
+    user: name=elasticsearch state=present
+
+  - name: Download Elasticsearch
+    become: yes
+    get_url:
+      url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+      dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+      sha256sum: "{{ elasticsearch_download_sha256 }}"
+
+  - name: Unarchive Elasticsearch
+    become: yes
+    unarchive:
+      src: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+      dest: /opt/
+      copy: no
+
+  - name: Chown Elasticsearch
+    become: yes
+    file:
+      state: directory
+      owner: elasticsearch
+      group: elasticsearch
+      recurse: yes
+      path: "{{ elasticsearch_home }}"
+
+  - name: Create /etc/elasticsearch
+    become: yes
+    file: path="{{ elasticsearch_conf_dir }}" state=directory
+
+  - name: Copy Elasticsearch Config
+    become: yes
+    template:
+      src: roles/elasticsearch/templates/config/elasticsearch.yml.j2
+      dest: "{{ elasticsearch_conf_dir }}/elasticsearch.yml"
+    register: copy_elasticsearch_conf_result
+    tags:
+      - es_conf
+
+  - name: Copy Elasticsearch logging config
+    become: yes
+    template:
+      src: roles/elasticsearch/templates/config/logging.yml.j2
+      dest: "{{ elasticsearch_conf_dir }}/logging.yml"
+    register: copy_elasticsearch_logging_result
+    tags:
+      - es_conf
+
+  - name: Copy Elasticsearch Upstart Conf
+    become: yes
+    template:
+      src: roles/elasticsearch/templates/upstart/elasticsearch.conf.j2
+      dest: "/etc/init/elasticsearch.conf"
+    register: copy_elasticsearch_upstart_result
+    tags:
+      - es_conf
+
+  - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
+    when: copy_elasticsearch_conf_result.changed
+
+  - name: Create Elasticsearch data directories
+    become: yes
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: elasticsearch
+      group: elasticsearch
+      mode: 0755
+    with_items:
+      - "{{ elasticsearch_data_dir }}"
+      - "{{ elasticsearch_data_dir }}/data"
+      - "{{ elasticsearch_data_dir }}/logs"
+
+  - name: Install elasticsearch python client
+    become: yes
+    pip:
+      name: elasticsearch
+      version: 1.9.0
+
+  - name: Check for installed plugins
+    shell: "{{ elasticsearch_home }}/bin/plugin --list"
+    register: installed_plugins
+
+  - name: Install elasticsearch aws plugin
+    become: yes
+    shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
+    when: (backup_es) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout)
+
+  - name: Reload upstart
+    become: yes
+    shell: initctl reload-configuration
+
+  - name: start node
+    become: true
+    service: name=elasticsearch state=started
+
+  - debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
+
+  - name: wait for node to restart
+    shell: "curl -I -s -m 2 http://{{es_host}}:9200 | head -n 1"
+    register: result
+    until: result.stdout == "HTTP/1.1 200 OK"
+    retries: 200
+    delay: 3
+    when: not ansible_check_mode
+
+  - name: enable cluster routing
+    shell: "curl -XPUT {{es_host}}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
+    register: result
+    until: result.stdout.find('"acknowledged"') != -1
+    retries: 20
+    delay: 3
+    changed_when: result.stdout.find('"acknowledged":true') != -1
+    ignore_errors: '{{ ansible_check_mode }}'
+
+  - name: wait for cluster to stabilize
+    shell: "curl -s -m 2 {{es_host}}:9200/_cat/health | cut -d ' ' -f 4"
+    register: result
+    until: result.stdout.find("green") != -1
+    retries: 200
+    delay: 30
+    when: not ansible_check_mode
