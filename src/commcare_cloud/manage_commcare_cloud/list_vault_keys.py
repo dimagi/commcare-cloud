@@ -8,7 +8,11 @@ from commcare_cloud.environment.paths import get_available_envs
 
 class ListVaultKeys(CommandBase):
     command = 'list-vault-keys'
-    help = ''
+    help = """
+    Audit the structure of vault.yml files.
+
+    A password will be required for each encrypted vault file in the env.
+    """
 
     def run(self, args, unknown_args):
         envs = sorted(get_available_envs(exclude_symlinks=True))
