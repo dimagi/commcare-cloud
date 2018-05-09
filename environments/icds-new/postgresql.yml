@@ -1,4 +1,4 @@
-DEFAULT_POSTGRESQL_HOST: pgmain
+DEFAULT_POSTGRESQL_HOST: pgmain1
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr:
