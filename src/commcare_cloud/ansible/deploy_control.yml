@@ -1,6 +1,5 @@
 - name: Bootstrap Control
-  hosts: localhost
-  gather_facts: no
+  hosts: control
   become: true
   gather_facts: true
   roles:
