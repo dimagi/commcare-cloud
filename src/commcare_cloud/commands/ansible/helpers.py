@@ -58,7 +58,7 @@ def get_common_ssh_args(environment, use_factory_auth=False):
 
 def add_factory_auth_cmd(environment, common_ssh_args, cmd_parts):
     root_user = environment.public_vars.get('commcare_cloud_root_user', 'root')
-    cmd_parts += ('--tags=users', '-u', root_user)
+    cmd_parts += ('-u', root_user)
     if not environment.public_vars.get('commcare_cloud_pem'):
         cmd_parts += ('--ask-pass',)
     else:
