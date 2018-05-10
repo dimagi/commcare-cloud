@@ -40,12 +40,10 @@ def get_common_ssh_args(environment, use_factory_auth=False):
 
     common_ssh_args = []
 
+    cmd_parts = tuple()
+
     if use_factory_auth:
-        if not environment.public_vars.get('commcare_cloud_pem'):
-            common_ssh_args += ('--ask-pass',)
-        else:
-            pem = environment.public_vars.get('commcare_cloud_pem', None)
-            common_ssh_args.extend(['-i', pem])
+        cmd_parts, common_ssh_args = add_factory_auth_cmd(environment, common_ssh_args, cmd_parts)
     if not strict_host_key_checking:
         common_ssh_args.append('-o StrictHostKeyChecking=no')
 
@@ -53,10 +51,19 @@ def get_common_ssh_args(environment, use_factory_auth=False):
     if os.path.exists(known_hosts_filepath):
         common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
 
-    cmd_parts = tuple()
     if common_ssh_args:
         cmd_parts += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
     return cmd_parts
+
+
+def add_factory_auth_cmd(environment, common_ssh_args, cmd_parts):
+    if not environment.public_vars.get('commcare_cloud_pem'):
+        cmd_parts += ('--ask-pass',)
+    else:
+        pem = environment.public_vars.get('commcare_cloud_pem', None)
+        common_ssh_args.extend(['-i', pem])
+
+    return cmd_parts, common_ssh_args
 
 
 def get_django_webworker_name(environment):
