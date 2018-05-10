@@ -108,7 +108,7 @@ class AnsiblePlaybook(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts += get_common_ssh_args(environment, use_factory_auth=factory_auth)
+            cmd_parts = get_common_ssh_args(cmd_parts, environment, use_factory_auth=factory_auth)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             if ask_vault_pass:
