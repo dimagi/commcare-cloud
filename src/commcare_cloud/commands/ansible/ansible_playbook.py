@@ -112,10 +112,10 @@ class AnsiblePlaybook(CommandBase):
             return p.returncode
 
         def run_check():
-            return ansible_playbook(environment, args.playbook, args.factory_auth, '--check', *unknown_args)
+            return ansible_playbook(environment, args.playbook, args.use_factory_auth, '--check', *unknown_args)
 
         def run_apply():
-            return ansible_playbook(environment, args.playbook, args.factory_auth, *unknown_args)
+            return ansible_playbook(environment, args.playbook, args.use_factory_auth, *unknown_args)
 
         return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet, always_skip_check)
 
@@ -205,7 +205,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        args.factory_auth = True
+        args.use_factory_auth = True
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
