@@ -21,8 +21,9 @@ celery_processes:
       concurrency: 1
     async_restore_queue:
       concurrency: 1
-    celery:
+    celery_periodic:
       concurrency: 1
+      server_whitelist: pnaserver1
     flower: {}
   None:
     # todo: create these queues?
