@@ -6,7 +6,7 @@ SPEC=$3
 
 commcare-cloud-bootstrap provision $SPEC --env $ENV
 while
-    commcare-cloud $ENV factory-ping all -u ubuntu
+    commcare-cloud $ENV ping all -u ubuntu --use-factory-auth
     [ $? = 4 ]
 do :
 done
