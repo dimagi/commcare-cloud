@@ -71,10 +71,8 @@ def check_branch(args):
         if args.branch != 'master':
             puts(colored.red("You are not in a git repo. To deploy, remove --branch={}".format(branch)))
     elif args.branch != branch:
-        if branch != 'master':
-            puts(colored.red("You are not on branch master. To deploy anyway, use --branch={}".format(branch)))
-        else:
-            puts(colored.red("You are on branch master. To deploy, remove --branch={}".format(args.branch)))
+        puts(colored.red("You are not currently on the branch specified with the --branch tag. To deploy on "
+                         "this branch, use --branch={}, otherwise, change branches".format(branch)))
         exit(-1)
 
 
