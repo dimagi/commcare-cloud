@@ -166,8 +166,8 @@ class RunShellCommand(CommandBase):
         return RunAnsibleModule(self.parser).run(args, unknown_args)
 
 
-class FactoryPing(CommandBase):
-    command = 'factory-ping'
+class Ping(CommandBase):
+    command = 'ping'
     help = 'Ping specified or all machines to see if they have been provisioned yet.'
 
     arguments = (
@@ -189,6 +189,5 @@ class FactoryPing(CommandBase):
             args.module_args = ping_shell_command
         args.skip_check = True
         args.quiet = True
-        args.factory_auth = True
         del ping_shell_command
         return RunAnsibleModule(self.parser).run(args, unknown_args)
