@@ -35,12 +35,10 @@ class AnsibleContext(object):
         return env
 
 
-def get_common_ssh_args(environment, use_factory_auth=False):
+def get_common_ssh_args(cmd_parts, environment, use_factory_auth=False):
     strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
 
     common_ssh_args = []
-
-    cmd_parts = tuple()
 
     if use_factory_auth:
         cmd_parts, common_ssh_args = add_factory_auth_cmd(environment, common_ssh_args, cmd_parts)
@@ -58,7 +56,8 @@ def get_common_ssh_args(environment, use_factory_auth=False):
 
 def add_factory_auth_cmd(environment, common_ssh_args, cmd_parts):
     root_user = environment.public_vars.get('commcare_cloud_root_user', 'root')
-    cmd_parts += ('-u', root_user)
+    if '-u' not in cmd_parts:
+        cmd_parts += ('-u', root_user)
     if not environment.public_vars.get('commcare_cloud_pem'):
         cmd_parts += ('--ask-pass',)
     else:
