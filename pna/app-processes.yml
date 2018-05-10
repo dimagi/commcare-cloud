@@ -23,7 +23,7 @@ celery_processes:
       concurrency: 1
     celery_periodic:
       concurrency: 1
-      server_whitelist: pnaserver1
+      server_whitelist: 196.207.230.171
     flower: {}
   None:
     # todo: create these queues?
