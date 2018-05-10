@@ -341,7 +341,7 @@ class CommCare(SingleSupervisorService):
 
     @property
     def supervisor_process_name(self):
-        return ''  # control all supervisor processes
+        return 'all'
 
 
 class Webworker(SingleSupervisorService):
