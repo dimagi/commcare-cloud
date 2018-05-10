@@ -25,16 +25,24 @@ RSYNC_FILE_LIST_NAME = 'couchdb_migration_rsync_file_list'
 class MigrateCouchdb(CommandBase):
     command = 'migrate-couchdb'
     aliases = ('migrate_couchdb',)  # deprecated
-    help = 'Perform a CouchDB migration'
+    help = """
+    Perform a CouchDB migration
+
+    This is a recent and advanced addition to the capabilities,
+    and is not yet ready for widespread use. At such a time as it is
+    ready, it will be more thoroughly documented.
+    """
 
     arguments = (
         Argument(dest='migration_plan', help="Path to migration plan file"),
-        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'],
-                 help="Action to perform\n"
-                      "    describe: Print out cluster info\n"
-                      "    plan: generate plan details from migration plan\n"
-                      "    migrate: stop nodes and copy shard data according to plan\n"
-                      "    commit: update database docs with new shard allocation"),
+        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'], help="""
+            Action to perform
+
+            - describe: Print out cluster info
+            - plan: generate plan details from migration plan
+            - migrate: stop nodes and copy shard data according to plan
+            - commit: update database docs with new shard allocation
+        """),
         shared_args.SKIP_CHECK_ARG,
     )
 
