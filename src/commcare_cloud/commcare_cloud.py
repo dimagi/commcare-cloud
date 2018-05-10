@@ -47,6 +47,7 @@ COMMAND_GROUPS = OrderedDict([
         Tmux,
     ]),
     ('operational', [
+        FactoryPing,
         AnsiblePlaybook,
         DeployStack,
         UpdateConfig,
