@@ -32,12 +32,13 @@ class MigrateCouchdb(CommandBase):
 
     arguments = (
         Argument(dest='migration_plan', help="Path to migration plan file"),
-        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'],
+        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit', 'clean'],
                  help="Action to perform\n"
                       "    describe: Print out cluster info\n"
                       "    plan: generate plan details from migration plan\n"
                       "    migrate: stop nodes and copy shard data according to plan\n"
-                      "    commit: update database docs with new shard allocation"),
+                      "    commit: update database docs with new shard allocation\n"
+                      "    clean: remove shard files from hosts where they aren't needed"),
         shared_args.SKIP_CHECK_ARG,
     )
 
