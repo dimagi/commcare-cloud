@@ -1,23 +1,24 @@
-DEFAULT_POSTGRESQL_HOST: pgmain
+DEFAULT_POSTGRESQL_HOST: pgmain1
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr:
     WRITE: icds-ucr
     READ:
-      - [icds-ucr, 3]
-      - [icds-ucr-standby1, 7]
+      - [icds-ucr, 1]
+      - [icds-ucr-standby1, 1]
+      - [icds-ucr-standby2, 1]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
   auth:
-    - [default, 5]
-    - [pgmainstandby, 5]
+    - [default, 1]
+    - [pgmainstandby, 1]
   accounting:
-    - [default, 5]
-    - [pgmainstandby, 5]
+    - [default, 1]
+    - [pgmainstandby, 1]
   locations:
-    - [default, 5]
-    - [pgmainstandby, 5]
+    - [default, 1]
+    - [pgmainstandby, 1]
 
 override:
   pgbouncer_pool_mode: transaction
@@ -80,6 +81,11 @@ dbs:
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby
+      create: False
+      django_migrate: False
+    - django_alias: icds-ucr-standby2
+      name: commcarehq_icds_aggregatedata
+      host: pgucrstandby1
       create: False
       django_migrate: False
     - django_alias: pgmainstandby

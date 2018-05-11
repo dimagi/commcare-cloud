@@ -63,7 +63,7 @@
           -D {{ postgresql_home }} \
           -S {{ replication_slot }} \
           -R -v --xlog-method=stream 2>&1
-      async: 7200
+      async: 36000
       poll: 0
       register: async_results
       when: not ansible_check_mode
