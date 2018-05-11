@@ -187,6 +187,19 @@ class Environment(object):
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 
+    @memoized_property
+    def hostname_map(self):
+        """Mapping of inventory hostname (IP) to assigned hostname"""
+        mapping = {}
+        for host in self.inventory_manager.hosts.values():
+            if 'hostname' in host.vars:
+                mapping[host.name] = host.vars['hostname']
+            for group in host.groups:
+                if len(group.hosts) == 1 and 'hostname' in group.vars:
+                    mapping[host.name] = group.vars['hostname']
+
+        return mapping
+
     def _run_last_minute_checks(self):
         assert len(self.groups.get('rabbitmq', [])) == 1, \
             "You must have exactly one host in the [rabbitmq] group"
@@ -218,6 +231,15 @@ class Environment(object):
                 'Unable to translate host referenced '
                 'in {} to a single host name: {}'.format(filename_for_error, host))
             return group[0]
+
+    def get_hostname(self, inventory_host, full=True):
+        hostname = self.hostname_map.get(inventory_host)
+        if not hostname:
+            return inventory_host
+        if full and 'internal_domain_name' in self.public_vars:
+            return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
+        return hostname
+
 
 
 @memoized
