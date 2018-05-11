@@ -66,7 +66,7 @@ def test_migration_plan(plan_name):
         with open(script_path, 'r') as exp:
             script_source = exp.read()
 
-        assert expected_script == script_source, script_source
+        assert expected_script == script_source, "'{}'".format(script_source)
 
 
 def _generate_rsync_lists(migration, plan_name):
