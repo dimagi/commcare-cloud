@@ -1,3 +1,4 @@
+internal_domain_name: "india.commcarehq.org"
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
