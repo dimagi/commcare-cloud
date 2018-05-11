@@ -20,7 +20,7 @@ class ListVaultKeys(CommandBase):
         for env in envs:
             print('[{}] '.format(env), end='')
             environment = get_environment(env)
-            var_keys[env] = set(recursive_keys(environment.get_vault_variables()))
+            var_keys[env] = set(get_flat_list_of_keys(environment.get_vault_variables()))
 
         for env in envs:
             print('\t{}'.format(env), end='')
@@ -32,14 +32,14 @@ class ListVaultKeys(CommandBase):
             print()
 
 
-def recursive_keys(o, path=()):
-    if isinstance(o, dict):
-        for key, value in o.items():
-            for key_ in recursive_keys(value, path=path + (key,)):
+def get_flat_list_of_keys(nested_config, path=()):
+    if isinstance(nested_config, dict):
+        for key, value in nested_config.items():
+            for key_ in get_flat_list_of_keys(value, path=path + (key,)):
                 yield key_
-    elif isinstance(o, list):
-        for value in o:
-            for key_ in recursive_keys(value, path=path + (None,)):
+    elif isinstance(nested_config, list):
+        for value in nested_config:
+            for key_ in get_flat_list_of_keys(value, path=path + (None,)):
                 yield key_
     else:
         yield path
