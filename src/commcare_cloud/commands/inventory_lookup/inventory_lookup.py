@@ -11,15 +11,18 @@ from six.moves import shlex_quote
 
 class Lookup(CommandBase):
     command = 'lookup'
-    help = "Lookup remote hostname or IP address"
+    help = """
+    Lookup remote hostname or IP address
+    """
     arguments = (
-        Argument("server", nargs="?", help=(
-            "Server name/group: postgresql, proxy, webworkers, ... The server "
-             "name/group may be prefixed with 'username@' to login as a specific "
-             "user and may be terminated with ':<n>' to choose one of "
-             "multiple servers if there is more than one in the group. "
-             "For example: webworkers:0 will pick the first webworker. May also"
-             "be ommitted for environments with only a single server.")),
+        Argument("server", nargs="?", help="""
+            Server name/group: postgresql, proxy, webworkers, ... The server
+            name/group may be prefixed with 'username@' to login as a
+            specific user and may be terminated with ':<n>' to choose one of
+            multiple servers if there is more than one in the group. For
+            example: webworkers:0 will pick the first webworker. May also be
+            omitted for environments with only a single server.
+        """),
     )
 
     def lookup_server_address(self, args):
@@ -52,7 +55,14 @@ class _Ssh(Lookup):
 
 class Ssh(_Ssh):
     command = 'ssh'
-    help = "Connect to a remote host with ssh"
+    help = """
+    Connect to a remote host with ssh.
+
+    This will also automatically add the ssh argument `-A`
+    when `<server>` is `control`.
+
+    All trailing arguments are passed directly to `ssh`.
+    """
 
     def run(self, args, ssh_args):
         if args.server == 'control' and '-A' not in ssh_args:
@@ -67,7 +77,15 @@ class Ssh(_Ssh):
 
 class Mosh(_Ssh):
     command = 'mosh'
-    help = "Connect to a remote host with mosh"
+    help = """
+    Connect to a remote host with mosh.
+
+    This will also automatically switch to using ssh with `-A`
+    when `<server>` is `control` (because `mosh` doesn't support `-A`).
+
+    All trailing arguments are passed directly to `mosh`
+    (or `ssh` in the edge case described above).
+    """
 
     def run(self, args, ssh_args):
         if args.server == 'control' or '-A' in ssh_args:
@@ -79,11 +97,29 @@ class Mosh(_Ssh):
 
 class Tmux(_Ssh):
     command = 'tmux'
-    help = "Connect to a remote host with ssh and open a tmux session"
+    help = """
+    Connect to a remote host with ssh and open a tmux session.
+
+    Example:
+
+    Rejoin last open tmux window.
+
+    ```
+    commcare-cloud <env> tmux -
+    ```
+    """
     arguments = (
-        Argument('server', help=(
-            "server to run tmux session on. Use '-' to for default (webworkers:0)")),
-        Argument('remote_command', nargs='?', help="command to run in new tmux session"),
+        Argument('server', help="""
+            Server to run tmux session on.
+            Use '-' to for default (webworkers:0)
+        """),
+        Argument('remote_command', nargs='?', help="""
+            Command to run in the tmux.
+            If a command specified, then it will always run in a new window.
+            If a command is *not* specified, then a it will rejoin the most
+            recently visited tmux window; only if there are no currently open
+            tmux windows will a new one be opened.
+        """),
     )
 
     def run(self, args, ssh_args):
@@ -117,16 +153,34 @@ class Tmux(_Ssh):
 
 class DjangoManage(CommandBase):
     command = 'django-manage'
-    help = ("Run a django management command. "
-            "`commcare-cloud <env> django-manage ...` "
-            "runs `./manage.py ...` on the first webworker of <env>. "
-            "Omit <command> to see a full list of possible commands.")
+    help = """
+    Run a django management command.
+
+    `commcare-cloud <env> django-manage ...`
+    runs `./manage.py ...` on the first webworker of <env>.
+    Omit <command> to see a full list of possible commands.
+
+    Example:
+
+    To open a django shell in a tmux window using the `2018-04-13_18.16` release.
+
+    ```
+    commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
+    ```
+    """
 
     arguments = (
-        Argument('--tmux', action='store_true', default=False, help=(
-            "Run this command in a tmux and stay connected")),
-        Argument('--release', help=(
-            "Name of release to run under. E.g. '2018-04-13_18.16'")),
+        Argument('--tmux', action='store_true', default=False, help="""
+            If this option is included, the management command will be
+            run in a new tmux window under the `cchq` user. You may then exit using
+            the customary tmux command `^b` `d`, and resume the session later.
+            This is especially useful for long-running commands.
+        """),
+        Argument('--release', help="""
+            Name of release to run under.
+            E.g. '2018-04-13_18.16'.
+            If none is specified, the `current` release will be used.
+        """),
     )
 
     def run(self, args, manage_args):
