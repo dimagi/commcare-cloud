@@ -1,4 +1,5 @@
 # coding: utf-8
+import inspect
 import os
 import time
 from datetime import datetime
@@ -81,12 +82,16 @@ def wait_for_all_processes_to_stop(environment, ansible_context):
         if not still_running:
             break
 
-        options = ['abort', 'wait', 'kill']
-        response = ask_option(
-            "Some processes are still running.\n"
-            "Do you with do abort, wait or kill running processes?\n   ",
+        options = ['abort', 'wait', 'continue', 'kill',]
+        response = ask_option(inspect.cleandoc(
+            """Some processes are still running. Do you want to:"
+             - abort downtime"
+             - wait for processes to stop"
+             - continue with downtime regardless"
+             - kill running processes   
+            """),
             options,
-            options + ['a', 'w', 'k']
+            options + ['a', 'w', 'c', 'k']
         )
         if response in ('a', 'abort'):
             downtime = get_downtime_record(environment)
@@ -94,6 +99,10 @@ def wait_for_all_processes_to_stop(environment, ansible_context):
             return
         elif response in ('w', 'wait'):
             time.sleep(30)
+        elif response in ('c', 'continue'):
+            if ask('Are you sure you want to continue with downtime even though there '
+                   'are still some processes running?'):
+                return
         elif response in ('k', 'kill'):
             kill = ask('Are you sure you want to kill all remaining processes?', strict=True)
             if kill:
