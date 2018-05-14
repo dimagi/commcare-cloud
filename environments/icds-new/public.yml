@@ -231,6 +231,8 @@ localsettings:
             - 'static-dashboard_delivery_forms'
             - 'static-dashboard_thr_forms'
             - 'static-dashboard_growth_monitoring_forms'
+            - 'dashboard_child_health_daily_feeding_forms'
+            - 'static-dashboard_birth_preparedness_forms'
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
