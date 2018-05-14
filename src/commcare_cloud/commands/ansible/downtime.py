@@ -94,9 +94,11 @@ def wait_for_all_processes_to_stop(environment, ansible_context):
             options + ['a', 'w', 'c', 'k']
         )
         if response in ('a', 'abort'):
-            downtime = get_downtime_record(environment)
-            cancel_downtime_record(environment, downtime)
-            return
+            if ask('This will start all CommCare processes again. Do you want to proceed?'):
+                downtime = get_downtime_record(environment)
+                supervisor_services(environment, ansible_context, 'start')
+                cancel_downtime_record(environment, downtime)
+                return
         elif response in ('w', 'wait'):
             time.sleep(30)
         elif response in ('c', 'continue'):
