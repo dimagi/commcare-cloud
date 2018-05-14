@@ -1,22 +1,10 @@
 commcarehq:
   by_range:
-    00000000-7fffffff:
-    - couchdb@10.247.164.76
-    - couchdb@10.247.164.74
-    - couchdb@10.247.164.75
-    80000000-ffffffff:
-    - couchdb@10.247.164.76
-    - couchdb@10.247.164.74
-    - couchdb@10.247.164.75
+    00000000-7fffffff: [couchdb@10.247.164.74, couchdb@10.247.164.76, couchdb@10.247.164.75]
+    80000000-ffffffff: [couchdb@10.247.164.74, couchdb@10.247.164.76, couchdb@10.247.164.75]
   shard_suffix: '.1495824481'
 commcarehq__apps:
   by_range:
-    00000000-7fffffff:
-    - couchdb@10.247.164.76
-    - couchdb@10.247.164.74
-    - couchdb@10.247.164.75
-    80000000-ffffffff:
-    - couchdb@10.247.164.76
-    - couchdb@10.247.164.74
-    - couchdb@10.247.164.75
+    00000000-7fffffff: [couchdb@10.247.164.74, couchdb@10.247.164.76, couchdb@10.247.164.75]
+    80000000-ffffffff: [couchdb@10.247.164.74, couchdb@10.247.164.76, couchdb@10.247.164.75]
   shard_suffix: '.1495824505'

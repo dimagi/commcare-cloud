@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import os
 import shutil
-import subprocess
 
 import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
@@ -11,7 +10,7 @@ from nose_parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
-    COUCHDB_RSYNC_SCRIPT
+    COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan
 from commcare_cloud.environment.main import get_environment
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
@@ -39,7 +38,7 @@ def get_shard_allocation_func(mock_shard_allocation):
 
 @parameterized(TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
-def test_migration_plan(plan_name):
+def test_generate_rsync_lists(plan_name):
     migration = _get_migration(plan_name)
     assert not migration.separate_source_and_target
     with open(os.path.join(PLANS_DIR, plan_name, 'expected_couch_config.yml')) as f:
@@ -69,10 +68,35 @@ def test_migration_plan(plan_name):
         assert expected_script == script_source, "'{}'".format(script_source)
 
 
+@parameterized(TEST_PLANS)
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
+def test_generate_shard_prune_playbook(plan_name):
+    migration = _get_migration(plan_name)
+    with open(os.path.join(PLANS_DIR, plan_name, 'mock_shard_allocation.yml')) as f:
+        mock_shard_allocation = yaml.load(f)
+    mock_func = get_shard_allocation_func(mock_shard_allocation)
+    with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
+        nodes = generate_shard_prune_playbook(migration)
+
+    if nodes:
+        with open(migration.prune_playbook_path, 'r') as f:
+            playbook_content = f.read()
+    else:
+        assert not os.path.exists(migration.prune_playbook_path), migration.prune_playbook_path
+
+
 def _generate_rsync_lists(migration, plan_name):
     with open(os.path.join(PLANS_DIR, plan_name, 'mock_shard_allocation.yml')) as f:
         mock_shard_allocation = yaml.load(f)
     mock_func = get_shard_allocation_func(mock_shard_allocation)
+
+    db_info = [
+        (allocation['_id'], 10, {'a': 10}, sorted(allocation['by_range']), ShardAllocationDoc.wrap(allocation))
+        for allocation in mock_shard_allocation
+    ]
+    with patch('couchdb_cluster_admin.suggest_shard_allocation.get_db_info', return_value=db_info):
+        generate_shard_plan(migration)
+
     with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
         files_by_host = generate_rsync_lists(migration)
     return files_by_host

@@ -6,7 +6,7 @@ from contextlib import contextmanager
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source
+from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
@@ -45,6 +45,7 @@ class MigrateCouchdb(CommandBase):
             - plan: generate plan details from migration plan
             - migrate: stop nodes and copy shard data according to plan
             - commit: update database docs with new shard allocation
+            - clean: remove shard files from hosts where they aren't needed
         """),
         shared_args.SKIP_CHECK_ARG,
     )
@@ -72,6 +73,37 @@ class MigrateCouchdb(CommandBase):
 
         if args.action == 'commit':
             return commit(migration)
+
+        if args.actoin == 'clean':
+            return clean(migration)
+
+
+def clean(migration):
+    nodes = generate_shard_prune_playbook(migration)
+
+
+def generate_shard_prune_playbook(migration):
+    """Create a playbook for deleting unused files.
+    :returns: List of nodes that have files to remove
+    """
+    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
+    _, deletable_files_by_node = get_node_files(migration.source_couch_config, full_plan)
+    if not any(deletable_files_by_node.values()):
+        return None
+
+    deletable_files_by_node = {
+        node.split('@')[1]: files
+        for node, files in deletable_files_by_node.items()
+        if files
+    }
+    prune_playbook = _render_template('prune.yml.j2', {
+        'deletable_files_by_node': deletable_files_by_node,
+        'couch_data_dir': '/opt/data/couchdb2/'
+    })
+    with open(migration.prune_playbook_path, 'w') as f:
+        f.write(prune_playbook)
+
+    return list(deletable_files_by_node)
 
 
 def commit(migration):
@@ -102,21 +134,25 @@ def plan(migration):
     if os.path.exists(migration.shard_plan_path):
         new_plan = ask("Plan already exists. Do you want to overwrite it?")
     if new_plan:
-        shard_allocations = generate_shard_allocation(
-            migration.source_couch_config, migration.plan.target_allocation
-        )
-
-        with open(migration.shard_plan_path, 'w') as f:
-            plan = {
-                shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
-                for shard_allocation_doc in shard_allocations
-            }
-            # hack - yaml didn't want to dump this directly
-            yaml.safe_dump(json.loads(json.dumps(plan)), f, indent=2)
+        shard_allocations = generate_shard_plan(migration)
     else:
         shard_allocations = migration.shard_plan
     print_shard_table([shard_allocation_doc for shard_allocation_doc in shard_allocations])
     return 0
+
+
+def generate_shard_plan(migration):
+    shard_allocations = generate_shard_allocation(
+        migration.source_couch_config, migration.plan.target_allocation
+    )
+    with open(migration.shard_plan_path, 'w') as f:
+        plan = {
+            shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
+            for shard_allocation_doc in shard_allocations
+        }
+        # hack - yaml didn't want to dump this directly
+        yaml.safe_dump(json.loads(json.dumps(plan)), f, indent=2)
+    return shard_allocations
 
 
 def describe(migration):
