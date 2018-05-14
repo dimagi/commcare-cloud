@@ -19,4 +19,5 @@
   shell: 'service nginx status'
   register: nginx_status
   changed_when: false
-  failed_when: nginx_status.rc != 0 or nginx_status.stdout.find('start/running') == -1
+  # new versions have `* nginx is running`, old have something containing `start/running`
+  failed_when: nginx_status.rc != 0 or nginx_status.stdout.find('running') == -1
