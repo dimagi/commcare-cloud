@@ -275,7 +275,7 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     command = 'update-local-known-hosts'
     help = (
         "Update the local known_hosts file of the environment configuration.\n\n"
-        "You can run this on a regualar basis to avoid having to `yes` through\n"
+        "You can run this on a regular basis to avoid having to `yes` through\n"
         "the ssh prompts. Note that when you run this, you are implicitly\n"
         "trusting that at the moment you run it, there is no man-in-the-middle\n"
         "attack going on, the type of security breech that the SSH prompt\n"
@@ -285,4 +285,11 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'add-ssh-keys.yml'
         args.quiet = True
-        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        environment = get_environment(args.env_name)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        with open(environment.paths.known_hosts, 'r') as f:
+            known_hosts = f.readlines()
+        known_hosts.sort()
+        with open(environment.paths.known_hosts, 'w') as f:
+            f.writelines(known_hosts)
+        return rc
