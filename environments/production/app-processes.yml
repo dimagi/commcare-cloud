@@ -66,7 +66,7 @@ celery_processes:
       max_tasks_per_child: 1
       optimize: True
     background_queue:
-      concurrency: 4
+      concurrency: 8
       max_tasks_per_child: 1
     send_report_throttled:
       concurrency: 2
