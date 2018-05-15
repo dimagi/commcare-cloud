@@ -1,3 +1,4 @@
+internal_domain_name: "india.commcarehq.org"
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -19,6 +20,9 @@ backup_blobdb: False
 backup_postgres: plain
 backup_es: True
 postgres_s3: True
+postgresql_backup_weeks: 1
+postgresql_backup_days: 1
+
 
 aws_region: 'ap-south-1'
 
