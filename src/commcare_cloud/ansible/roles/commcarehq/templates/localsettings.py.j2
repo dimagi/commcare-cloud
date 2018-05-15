@@ -37,7 +37,7 @@ DATABASES = { {% for config in postgresql_dbs %}
         'OPTIONS': {{ config.options|to_json }},
         {% if not config.django_migrate -%}
         'MIGRATE': False,
-        {% endif -%},
+        {% endif -%}
         {% if 'hq_acceptable_standby_delay' in config -%}
         'HQ_ACCEPTABLE_STANDBY_DELAY': {{ config.hq_acceptable_standby_delay }},
         {% endif -%}
