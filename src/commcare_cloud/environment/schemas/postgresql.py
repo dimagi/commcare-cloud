@@ -106,7 +106,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.main, self.dbs.synclogs,
         ] + (
             self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
-        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom)
+        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom + self.dbs.standby)
 
     def _check_reporting_databases(self):
         referenced_django_aliases = set()
@@ -151,6 +151,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
 
     custom = jsonobject.ListProperty(lambda: CustomDBOptions)
+    standby = jsonobject.ListProperty(lambda: StandbyDBOptions)
 
 
 class DBOptions(jsonobject.JsonObject):
@@ -218,6 +219,10 @@ class PartitionDBOptions(DBOptions):
 
 class CustomDBOptions(PartitionDBOptions):
     django_migrate = jsonobject.BooleanProperty(required=True)
+
+
+class StandbyDBOptions(PartitionDBOptions):
+    hq_acceptable_standby_delay = jsonobject.IntegerProperty(default=None)
 
 
 class StrictPartitionDBOptions(PartitionDBOptions):
