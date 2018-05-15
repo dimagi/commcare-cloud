@@ -54,6 +54,8 @@ Cons:
 To mitigate this con, the command will also explain itself beforehand,
 and print out the command you could run to execute the narrower command,
 and ask for confirmation before continuing.
+See https://github.com/dimagi/commcare-cloud/pull/1721#discussion_r187730933
+for a short exchange that demonstrates this trade-off.
 
 ## Consequences
 
