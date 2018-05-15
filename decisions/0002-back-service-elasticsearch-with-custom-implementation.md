@@ -28,7 +28,7 @@ which we currently do not benefit from because we do not store data in duplicate
 
 ## Decision
 
-We will be changing `... service elasticsearch ...` from using simply using the default
+We will be changing `... service elasticsearch ...` from using the default
 behavior to performing a more targeted set of actions that are guaranteed to achieve the
 stop/start/restart/status action, and we will also be deprecating the `restart-elasticsearch`
 entry point. In particular, `... service elasticsearch stop` will
