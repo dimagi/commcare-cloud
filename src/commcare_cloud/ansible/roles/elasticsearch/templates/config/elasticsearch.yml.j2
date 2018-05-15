@@ -21,7 +21,7 @@ transport.tcp.port: {{ elasticsearch_tcp_port }}
 http.port: {{ elasticsearch_http_port }}
 
 http.cors.enabled: true
-
+# read data from older 1.7.3 directory if ES is upgraded to 1.7.6 . Untill rename is done on softlayer 
 path.data: {{ elasticsearch_old_data_dir }}/data
 path.logs: {{ elasticsearch_old_data_dir }}/logs
 
