@@ -11,6 +11,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.fab import exec_fab_command
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -268,7 +269,12 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
+        if ask("Some celery configs are still updated through fab. "
+               "Do you want to run that as well (recommended)?"):
+            exec_fab_command(args.env_name, 'update_current_supervisor_config')
+        else:
+            return rc
 
 
 class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
