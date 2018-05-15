@@ -5,12 +5,14 @@ from ..argparse14 import ArgumentParser
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.manage_commcare_cloud.configure import Configure
 from commcare_cloud.manage_commcare_cloud.get import Get
+from commcare_cloud.manage_commcare_cloud.list_vault_keys import ListVaultKeys
 from commcare_cloud.manage_commcare_cloud.install import Install
 from commcare_cloud.manage_commcare_cloud.make_docs import MakeDocs
 
 COMMAND_TYPES = [
     Install,
     Get,
+    ListVaultKeys,
     Configure,
     MakeDocs,
 ]

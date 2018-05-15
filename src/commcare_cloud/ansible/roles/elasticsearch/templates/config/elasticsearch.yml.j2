@@ -21,9 +21,9 @@ transport.tcp.port: {{ elasticsearch_tcp_port }}
 http.port: {{ elasticsearch_http_port }}
 
 http.cors.enabled: true
-
-path.data: {{ elasticsearch_data_dir }}/data
-path.logs: {{ elasticsearch_data_dir }}/logs
+# read data from older 1.7.3 directory if ES is upgraded to 1.7.6 . Untill rename is done on softlayer 
+path.data: {{ elasticsearch_old_data_dir }}/data
+path.logs: {{ elasticsearch_old_data_dir }}/logs
 
 discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
@@ -62,7 +62,7 @@ cloud:
     access_key: "{{ AMAZON_S3_ACCESS_KEY }}"
     secret_key: "{{ AMAZON_S3_SECRET_KEY }}"
     {% if aws_region is defined %}region: "{{ aws_region }}" {% endif %}
-    
+
     s3:
       endpoint: "{{ aws_endpoint }}"
 
