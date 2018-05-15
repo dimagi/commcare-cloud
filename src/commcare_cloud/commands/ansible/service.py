@@ -341,7 +341,7 @@ class CommCare(SingleSupervisorService):
 
     @property
     def supervisor_process_name(self):
-        return ''  # control all supervisor processes
+        return 'all'
 
 
 class Webworker(SingleSupervisorService):
@@ -501,29 +501,37 @@ def validate_pattern(pattern):
 
 class Service(CommandBase):
     command = 'service'
-    help = (
-        "Manage services.\n"
-        "Usage examples:"
-        "   cchq <env> service postgresql status\n"
-        "   cchq <env> service riakcs restart --only riak,riakcs\n"
-        "   cchq <env> service celery help\n"
-        "   cchq <env> service celery restart --limit <host>\n"
-        "   cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>\n"
-        "   cchq <env> service pillowtop restart --limit <host> --only <pillow-name>\n"
-        "\n"
-    )
+    # todo: auto-generate tables of service => subservices
+    help = """
+    Manage services.
+
+    Example:
+
+    ```
+    cchq <env> service postgresql status
+    cchq <env> service riakcs restart --only riak,riakcs
+    cchq <env> service celery help
+    cchq <env> service celery restart --limit <host>
+    cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
+    cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
+    ```
+
+    Services are grouped together to form conceptual service groups.
+    Thus the `postgresql` service group applies to both the `postgresql`
+    service and the `pgbouncer` service. We'll call the actual services
+    "subservices" here.
+    """
 
     arguments = (
-        Argument(
-            'services',
-            nargs="+",
-            choices=SERVICE_NAMES,
-            help="The services to run the command on"
-        ),
-        Argument(
-            'action', choices=ACTIONS,
-            help="What action to take"
-        ),
+        Argument('services', nargs="+", choices=SERVICE_NAMES, help="""
+        The name of the service group(s) to apply the action to.
+        There is a preset list of service groups that are supported.
+        More than one service may be supplied as separate arguments in a row.
+        """),
+        Argument('action', choices=ACTIONS, help="""
+        Action can be `status`, `start`, `stop`, or `restart`.
+        This action is applied to every matching service.
+        """),
         Argument('--limit', help=(
             "Restrict the hosts to run the command on."
             "\nUse 'help' action to list all options."

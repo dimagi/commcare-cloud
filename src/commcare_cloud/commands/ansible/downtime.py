@@ -19,12 +19,17 @@ HQ_PROCESSES_SCOPE = 'webworkers,celery,pillowtop,touchforms,formplayer,proxy'
 
 class Downtime(CommandBase):
     command = 'downtime'
-    help = (
-        'Manage downtime for the selected environment.'
-    )
+    help = """
+    Manage downtime for the selected environment.
+
+    This notifies Datadog of the planned downtime so that is is recorded
+    in the history, and so that during it service alerts are silenced.
+    """
     arguments = (
         Argument('action', choices=('start', 'end')),
-        Argument('-m', '--message', help='Optional message to set on Datadog'),
+        Argument('-m', '--message', help="""
+            Optional message to set on Datadog.
+        """),
     )
 
     def run(self, args, unknown_args):
