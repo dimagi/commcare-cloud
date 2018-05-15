@@ -40,4 +40,4 @@ def test_hostnames(env):
                 hostname = environment.get_hostname(host)
                 if hostname == host:
                     missing_hostnames.add(host)
-    assert len(missing_hostnames) == 0, "Envornment hosts missing hostnames".format(list(missing_hostnames))
+    assert len(missing_hostnames) == 0, "Environment hosts missing hostnames {}".format(list(missing_hostnames))
