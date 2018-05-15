@@ -7,9 +7,9 @@ service_blacklist:
 celery_processes:
   'pnaserver1':
     repeat_record_queue,celery,export_download_queue:
-      concurrency: 1
+      concurrency: 3
     background_queue,case_rule_queue:
-      concurrency: 1
+      concurrency: 2
     email_queue:
       concurrency: 1
     saved_exports_queue:
@@ -22,7 +22,7 @@ celery_processes:
     async_restore_queue:
       concurrency: 1
     celery_periodic:
-      concurrency: 1
+      concurrency: 2
       server_whitelist: 196.207.230.171
     flower: {}
   None:
