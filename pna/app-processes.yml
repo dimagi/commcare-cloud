@@ -8,21 +8,20 @@ celery_processes:
   'pnaserver1':
     repeat_record_queue,celery,export_download_queue:
       concurrency: 3
+      max_tasks_per_child: 1
     background_queue,case_rule_queue:
       concurrency: 2
-    email_queue:
-      concurrency: 1
+      max_tasks_per_child: 1
     saved_exports_queue:
       concurrency: 1
+      max_tasks_per_child: 1
       optimize: True
-    submission_reprocessing_queue:
-      concurrency: 1
-    ucr_queue:
-      concurrency: 1
-    async_restore_queue:
-      concurrency: 1
+    submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue:
+      concurrency: 3
+      max_tasks_per_child: 1
     celery_periodic:
       concurrency: 2
+      max_tasks_per_child: 1
       server_whitelist: 196.207.230.171
     flower: {}
   None:
