@@ -211,8 +211,9 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
     @property
     def inventory_groups(self):
         return [
-            inventory_group.split(',')
+            group
             for service, inventory_group in self.service_process_mapping.values()
+            for group in inventory_group.split(',')
         ]
 
     @property
