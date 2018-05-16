@@ -136,6 +136,7 @@ class _AnsiblePlaybookAlias(CommandBase):
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
+        shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
     )
 
