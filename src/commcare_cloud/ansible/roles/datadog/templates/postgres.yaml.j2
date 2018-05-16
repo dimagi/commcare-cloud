@@ -14,7 +14,7 @@ instances:
        custom_metrics:
          - query: SELECT datname, state, %s FROM pg_stat_activity WHERE datname != 'postgres' GROUP BY datname, state;
            metrics:
-             count(pid) as count: [postgresql.connections.state, GAUGE]
+             count(pid): [postgresql.connections.state, GAUGE]
            relation: false
            descriptors:  # map columns to tags
              - [datname, database]
