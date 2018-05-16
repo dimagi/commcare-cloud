@@ -1,6 +1,7 @@
 import getpass
 
 import yaml
+from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
 
@@ -50,9 +51,14 @@ class Environment(object):
         if isinstance(vault_vars, dict):
             return vault_vars
 
-        vault = Vault(self.get_ansible_vault_password())
-        with open(self.paths.vault_yml, 'r') as vf:
-            return vault.load(vf.read())
+        while True:
+            try:
+                vault = Vault(self.get_ansible_vault_password())
+                with open(self.paths.vault_yml, 'r') as vf:
+                    return vault.load(vf.read())
+            except AnsibleVaultError:
+                print('incorrect password')
+                self.get_ansible_vault_password.reset_cache(self)
 
     def get_vault_var(self, var):
         path = var.split('.')
@@ -187,9 +193,24 @@ class Environment(object):
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
 
+    @memoized_property
+    def hostname_map(self):
+        """Mapping of inventory hostname (IP) to assigned hostname"""
+        mapping = {}
+        for host in self.inventory_manager.hosts.values():
+            if 'hostname' in host.vars:
+                mapping[host.name] = host.vars['hostname']
+            for group in host.groups:
+                if len(group.hosts) == 1 and 'hostname' in group.vars:
+                    mapping[host.name] = group.vars['hostname']
+
+        return mapping
+
     def _run_last_minute_checks(self):
         assert len(self.groups.get('rabbitmq', [])) == 1, \
             "You must have exactly one host in the [rabbitmq] group"
+        assert len(self.groups.get('redis', [])) == 1, \
+            "You must have exactly one host in the [redis] group"
 
     def create_generated_yml(self):
         self._run_last_minute_checks()
@@ -218,6 +239,15 @@ class Environment(object):
                 'Unable to translate host referenced '
                 'in {} to a single host name: {}'.format(filename_for_error, host))
             return group[0]
+
+    def get_hostname(self, inventory_host, full=True):
+        hostname = self.hostname_map.get(inventory_host)
+        if not hostname:
+            return inventory_host
+        if full and 'internal_domain_name' in self.public_vars:
+            return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
+        return hostname
+
 
 
 @memoized

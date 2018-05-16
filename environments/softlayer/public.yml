@@ -1,3 +1,4 @@
+internal_domain_name: "india.commcarehq.org"
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -10,6 +11,8 @@ DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
 supervisor_http_enabled: True
 
@@ -19,6 +22,9 @@ backup_blobdb: False
 backup_postgres: plain
 backup_es: True
 postgres_s3: True
+postgresql_backup_weeks: 1
+postgresql_backup_days: 1
+
 
 aws_region: 'ap-south-1'
 
