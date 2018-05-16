@@ -493,7 +493,7 @@ SERVICES_BY_NAME = {
 
 
 def validate_pattern(pattern):
-    match = re.match(r'^[\w]+(:[\d]+)?(?:,[\w]+(:[\d]+)?)*$', pattern)
+    match = re.match(r'^[\w_-]+(:[\d]+)?(?:,[\w_-]+(:[\d]+)?)*$', pattern)
     if not match:
         raise ValueError
     return pattern
