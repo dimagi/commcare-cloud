@@ -11,6 +11,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.fab import exec_fab_command
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -268,14 +269,19 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
+        if ask("Some celery configs are still updated through fab. "
+               "Do you want to run that as well (recommended)?"):
+            exec_fab_command(args.env_name, 'update_current_supervisor_config')
+        else:
+            return rc
 
 
 class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     command = 'update-local-known-hosts'
     help = (
         "Update the local known_hosts file of the environment configuration.\n\n"
-        "You can run this on a regualar basis to avoid having to `yes` through\n"
+        "You can run this on a regular basis to avoid having to `yes` through\n"
         "the ssh prompts. Note that when you run this, you are implicitly\n"
         "trusting that at the moment you run it, there is no man-in-the-middle\n"
         "attack going on, the type of security breech that the SSH prompt\n"
@@ -285,4 +291,11 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'add-ssh-keys.yml'
         args.quiet = True
-        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        environment = get_environment(args.env_name)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        with open(environment.paths.known_hosts, 'r') as f:
+            known_hosts = f.readlines()
+        known_hosts.sort()
+        with open(environment.paths.known_hosts, 'w') as f:
+            f.writelines(known_hosts)
+        return rc

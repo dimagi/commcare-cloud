@@ -236,6 +236,10 @@ def terminate_instances(instance_ids):
 
 
 def get_inventory_from_file(environment):
+    """Parse inventory file created from ``inventory.ini.j2``.
+
+    This is not a general inventory parser and only handles a subset
+    of inventory features."""
     inventory = Inventory()
     state = None
     with open(environment.paths.inventory_ini) as f:

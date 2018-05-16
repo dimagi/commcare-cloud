@@ -10,3 +10,34 @@
     owner: ansible
     group: "{{ dev_group }}"
     state: touch
+
+- name: Pull commcare-cloud source
+  become: yes
+  become_user: "{{ item }}"
+  git:
+    repo: "{{ commcare_cloud_repository }}"
+    dest: "/home/{{ item }}/commcare-cloud"
+    version: "{{ commcare_cloud_version }}"
+    recursive: yes
+    accept_hostkey: yes
+    update: no
+  tags:
+    - git
+    - slow
+  with_items: "{{ dev_users.present }}"
+
+- name: install python env basics
+  become: yes
+  pip:
+    name:
+      - virtualenv
+      - virtualenvwrapper
+    extra_args: '--ignore-installed six'
+
+- name: run init script
+  become: yes
+  become_user: "{{ item }}"
+  shell: "yes | bash commcare-cloud/control/init.sh"
+  args:
+    chdir: "/home/{{ item }}"
+  with_items: "{{ dev_users.present }}"
