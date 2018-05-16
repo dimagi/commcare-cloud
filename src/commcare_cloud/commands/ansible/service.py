@@ -204,14 +204,14 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
     def service_process_mapping(self):
         """
         Return a mapping of service names (as passed in by the user) to
-        a tuple of (Linux service name, inventory group)
+        a tuple of (linux_service_name, inventory_group1,inventory_group2)
         """
         raise NotImplementedError
 
     @property
     def inventory_groups(self):
         return [
-            inventory_group
+            inventory_group.split(',')
             for service, inventory_group in self.service_process_mapping.values()
         ]
 
@@ -312,7 +312,7 @@ class Kafka(MultiAnsibleService):
 class Postgresql(MultiAnsibleService):
     name = 'postgresql'
     service_process_mapping = {
-        'postgres': ('postgresql', 'postgresql,pg_standby'),
+        'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
 
