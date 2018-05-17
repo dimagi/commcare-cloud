@@ -59,8 +59,7 @@ COMMAND_GROUPS = OrderedDict([
         Fab,
         Service,
         MigrateCouchdb,
-        Downtime,
-        Ping
+        Downtime
     ])
 ])
 
