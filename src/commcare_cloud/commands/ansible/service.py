@@ -204,15 +204,16 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
     def service_process_mapping(self):
         """
         Return a mapping of service names (as passed in by the user) to
-        a tuple of (Linux service name, inventory group)
+        a tuple of (linux_service_name, inventory_group1,inventory_group2)
         """
         raise NotImplementedError
 
     @property
     def inventory_groups(self):
         return [
-            inventory_group
+            group
             for service, inventory_group in self.service_process_mapping.values()
+            for group in inventory_group.split(',')
         ]
 
     @property
@@ -312,7 +313,7 @@ class Kafka(MultiAnsibleService):
 class Postgresql(MultiAnsibleService):
     name = 'postgresql'
     service_process_mapping = {
-        'postgres': ('postgresql', 'postgresql,pg_standby'),
+        'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
 
@@ -493,7 +494,7 @@ SERVICES_BY_NAME = {
 
 
 def validate_pattern(pattern):
-    match = re.match(r'^[\w]+(:[\d]+)?(?:,[\w]+(:[\d]+)?)*$', pattern)
+    match = re.match(r'^[\w_-]+(:[\d]+)?(?:,[\w_-]+(:[\d]+)?)*$', pattern)
     if not match:
         raise ValueError
     return pattern

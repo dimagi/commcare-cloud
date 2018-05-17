@@ -130,7 +130,7 @@ Update the local known_hosts file of the environment configuration.
 commcare-cloud <env> update-local-known-hosts
 ```
 
-You can run this on a regualar basis to avoid having to `yes` through
+You can run this on a regular basis to avoid having to `yes` through
 the ssh prompts. Note that when you run this, you are implicitly
 trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
