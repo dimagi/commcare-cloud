@@ -70,5 +70,6 @@
   failed_when: result.rc > 1
   changed_when: result.rc == 0
 
-- become: yes
-  command: start supervisord
+- name: start supervisord
+  become: yes
+  service: name=supervisord state=started
