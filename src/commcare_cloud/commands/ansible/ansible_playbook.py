@@ -85,7 +85,7 @@ class AnsiblePlaybook(CommandBase):
             else:
                 return ()
 
-        def ansible_playbook(environment, playbook, factory_auth, *cmd_args):
+        def ansible_playbook(environment, playbook, *cmd_args):
             cmd_parts = (
                 'ansible-playbook',
                 os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
@@ -109,7 +109,9 @@ class AnsiblePlaybook(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts = get_common_ssh_args(cmd_parts, environment, use_factory_auth=factory_auth)
+            cmd_parts_with_common_ssh_args = get_common_ssh_args(environment,
+                                                                 use_factory_auth=args.use_factory_auth)
+            cmd_parts += cmd_parts_with_common_ssh_args
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             if ask_vault_pass:
@@ -122,10 +124,10 @@ class AnsiblePlaybook(CommandBase):
             return p.returncode
 
         def run_check():
-            return ansible_playbook(environment, args.playbook, args.use_factory_auth, '--check', *unknown_args)
+            return ansible_playbook(environment, args.playbook, '--check', *unknown_args)
 
         def run_apply():
-            return ansible_playbook(environment, args.playbook, args.use_factory_auth, *unknown_args)
+            return ansible_playbook(environment, args.playbook, *unknown_args)
 
         return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet, always_skip_check)
 
