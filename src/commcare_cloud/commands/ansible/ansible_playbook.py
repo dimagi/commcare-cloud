@@ -36,7 +36,6 @@ class AnsiblePlaybook(CommandBase):
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
-        shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
         Argument('playbook', help="""
             The ansible playbook .yml file to run.
@@ -109,9 +108,7 @@ class AnsiblePlaybook(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts_with_common_ssh_args = get_common_ssh_args(environment,
-                                                                 use_factory_auth=args.use_factory_auth)
-            cmd_parts += cmd_parts_with_common_ssh_args
+            cmd_parts += get_common_ssh_args(environment)
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             if ask_vault_pass:
@@ -138,7 +135,6 @@ class _AnsiblePlaybookAlias(CommandBase):
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
-        shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
     )
 
@@ -238,7 +234,6 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        args.use_factory_auth = True
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
