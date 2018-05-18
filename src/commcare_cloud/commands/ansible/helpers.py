@@ -35,14 +35,14 @@ class AnsibleContext(object):
         return env
 
 
-def get_common_ssh_args(cmd_parts, environment, use_factory_auth=False):
+def get_common_ssh_args(environment, use_factory_auth=False):
     strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
 
     common_ssh_args = []
     cmd_parts_with_common_ssh_args = ()
 
     if use_factory_auth:
-        auth_cmd_parts, auth_ssh_args = add_factory_auth_cmd(environment, cmd_parts)
+        auth_cmd_parts, auth_ssh_args = add_factory_auth_cmd(environment)
         cmd_parts_with_common_ssh_args += auth_cmd_parts
         common_ssh_args.extend(auth_ssh_args)
     if not strict_host_key_checking:
@@ -57,12 +57,9 @@ def get_common_ssh_args(cmd_parts, environment, use_factory_auth=False):
     return cmd_parts_with_common_ssh_args
 
 
-def add_factory_auth_cmd(environment, cmd_parts):
+def add_factory_auth_cmd(environment):
     auth_cmd_parts = ()
     auth_ssh_args = []
-    root_user = environment.public_vars.get('commcare_cloud_root_user', 'root')
-    if '-u' not in cmd_parts:
-        auth_cmd_parts += ('-u', root_user)
     pem = environment.public_vars.get('commcare_cloud_pem', None)
     if not pem:
         auth_cmd_parts += ('--ask-pass',)
@@ -99,10 +96,14 @@ def get_formplayer_spring_instance_name(environment):
     )
 
 
-def get_user_arg(public_vars, unknown_args):
+def get_user_arg(public_vars, unknown_args, use_factory_auth=False):
     cmd_parts = tuple()
+    if use_factory_auth:
+        default_user = public_vars.get('commcare_cloud_root_user', 'root')
+    else:
+        default_user = 'ansible'
     if not has_arg(unknown_args, '-u', '--user'):
-        user = public_vars.get('commcare_cloud_remote_user', 'ansible')
+        user = public_vars.get('commcare_cloud_remote_user', default_user)
         cmd_parts += ('-u', user)
     return cmd_parts
 
