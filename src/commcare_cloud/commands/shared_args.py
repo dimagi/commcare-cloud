@@ -16,6 +16,10 @@ SKIP_CHECK_ARG = Argument('--skip-check', action='store_true', default=False, he
     "skip the default of viewing --check output first"
 ), include_in_docs=False)
 
+FACTORY_AUTH_ARG = Argument('--use-factory-auth', action='store_true', default=False, help=(
+    "authenticate using the pem file (or prompt for root password if there is no pem file)"
+))
+
 QUIET_ARG = Argument('--quiet', action='store_true', default=False, help=(
     "skip all user prompts and proceed as if answered in the affirmative"
 ), include_in_docs=False)
