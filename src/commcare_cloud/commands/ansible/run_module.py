@@ -196,7 +196,7 @@ class RunShellCommand(CommandBase):
         return RunAnsibleModule(self.parser).run(args, unknown_args)
 
 
-class Ping(CommandBase):
+class Ping(RunShellCommand):
     command = 'ping'
     help = 'Ping specified or all machines to see if they have been provisioned yet.'
 
@@ -204,20 +204,5 @@ class Ping(CommandBase):
         shared_args.INVENTORY_GROUP_ARG,
         Argument('--silence-warnings', action='store_true',
                  help="Silence shell warnings (such as to use another module instead)"),
+        Argument('--shell-command', default='echo {{ inventory_hostname }}'),
     ) + NON_POSITIONAL_ARGUMENTS
-
-    def modify_parser(self):
-        RunAnsibleModule(self.parser).modify_parser()
-
-    def run(self, args, unknown_args):
-        ping_shell_command = 'echo {{ inventory_hostname }}'
-
-        args.module = 'shell'
-        if args.silence_warnings:
-            args.module_args = 'warn=false ' + ping_shell_command
-        else:
-            args.module_args = ping_shell_command
-        args.skip_check = True
-        args.quiet = True
-        del ping_shell_command
-        return RunAnsibleModule(self.parser).run(args, unknown_args)
