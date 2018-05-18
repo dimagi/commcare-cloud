@@ -33,17 +33,15 @@ import os
 import posixpath
 from getpass import getpass
 
-import yaml
 import pipes
 import pytz
 from distutils.util import strtobool
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel, local
+from fabric.api import run, roles, execute, task, sudo, env, parallel
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
-from fabric.decorators import runs_once
 from fabric.operations import require
 
 from commcare_cloud.environment.main import get_environment
@@ -52,15 +50,10 @@ from commcare_cloud.environment.paths import get_available_envs
 from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
-    ROLES_CELERY,
     ROLES_PILLOWTOP,
     ROLES_DJANGO,
-    ROLES_STATIC,
     ROLES_DEPLOY,
-    RELEASE_RECORD,
-    RSYNC_EXCLUDE,
-    PROJECT_ROOT,
-    REPO_BASE)
+)
 from .exceptions import PreindexNotFinished
 from .operations import (
     db,
@@ -80,7 +73,6 @@ from .utils import (
     retrieve_cached_deploy_env,
     traceback_string,
 )
-from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 from .checks import (
     check_servers,
 )
