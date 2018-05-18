@@ -6,7 +6,7 @@ SPEC=$3
 
 commcare-cloud-bootstrap provision $SPEC --env $ENV
 while
-    commcare-cloud $ENV run-shell-command all 'echo {{ inventory_hostname }}' -u ubuntu --use-factory-auth
+    commcare-cloud $ENV ping all --use-factory-auth
     [ $? = 4 ]
 do :
 done

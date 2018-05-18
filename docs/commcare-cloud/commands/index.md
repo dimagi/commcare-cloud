@@ -520,7 +520,7 @@ tmux windows will a new one be opened.
 Ping specified or all machines to see if they have been provisioned yet.
 
 ```
-commcare-cloud <env> ping [--silence-warnings] [--use-factory-auth] inventory_group
+commcare-cloud <env> ping [--use-factory-auth] inventory_group
 ```
 
 ##### Positional Arguments
@@ -537,82 +537,9 @@ for more detail in what can go here.
 
 ##### Optional Arguments
 
-###### `--silence-warnings`
-
-Silence shell warnings (such as to use another module instead)
-
 ###### `--use-factory-auth`
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
-
-##### The ansible options below are available as well
-```
-  -B SECONDS, --background=SECONDS
-                        run asynchronously, failing after X seconds
-                        (default=N/A)
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=5)
-  -l SUBSET, --limit=SUBSET
-                        further limit selected hosts to an additional pattern
-  --list-hosts          outputs a list of matching hosts; does not execute
-                        anything else
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
-  -o, --one-line        condense output
-  -P POLL_INTERVAL, --poll=POLL_INTERVAL
-                        set the poll interval if using -B (default=15)
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
-  -t TREE, --tree=TREE  log output to this directory
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
-  --version             show program's version number and exit
-
-```
-#####   Connection Options
-```
-    control as whom and how to connect to hosts
-
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
-                        use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=10)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
-                        specify extra arguments to pass to sftp only (e.g. -f,
-                        -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
-                        specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-#####   Privilege Escalation Options
-```
-    control how and which user you become as on target hosts
-
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
-    -K, --ask-become-pass
-                        ask for privilege escalation password
-```
 
 
 #### `ansible-playbook`
@@ -918,7 +845,6 @@ Use `-l` instead of a command to see the full list of commands.
     preindex_views                    Creates a new release that runs preinde...
     prepare_offline_deploy
     production                        www.commcarehq.org
-    pvtest                            {{ '{{' }} hostvars[groups.proxy.0].ansible_hos...
     reset_mvp_pillows
     restart_services
     reverse_patch                     Used to reverse a git patch created via...
@@ -1042,103 +968,3 @@ in the history, and so that during it service alerts are silenced.
 ###### `-m MESSAGE, --message MESSAGE`
 
 Optional message to set on Datadog.
-
-
-#### `ping`
-
-Ping specified or all machines to see if they have been provisioned yet.
-
-```
-commcare-cloud <env> ping [--silence-warnings] [--use-factory-auth] inventory_group
-```
-
-##### Positional Arguments
-
-###### `inventory_group`
-
-Machines to run on. Is anything that could be used in as a value for
-`hosts` in an playbook "play", e.g.
-`all` for all machines,
-`webworkers` for a single group,
-`celery:pillowtop` for multiple groups, etc.
-See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
-for more detail in what can go here.
-
-##### Optional Arguments
-
-###### `--silence-warnings`
-
-Silence shell warnings (such as to use another module instead)
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
-##### The ansible options below are available as well
-```
-  -B SECONDS, --background=SECONDS
-                        run asynchronously, failing after X seconds
-                        (default=N/A)
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=5)
-  -l SUBSET, --limit=SUBSET
-                        further limit selected hosts to an additional pattern
-  --list-hosts          outputs a list of matching hosts; does not execute
-                        anything else
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
-  -o, --one-line        condense output
-  -P POLL_INTERVAL, --poll=POLL_INTERVAL
-                        set the poll interval if using -B (default=15)
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
-  -t TREE, --tree=TREE  log output to this directory
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
-  --version             show program's version number and exit
-
-```
-#####   Connection Options
-```
-    control as whom and how to connect to hosts
-
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
-                        use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=10)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
-                        specify extra arguments to pass to sftp only (e.g. -f,
-                        -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
-                        specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-#####   Privilege Escalation Options
-```
-    control how and which user you become as on target hosts
-
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
-    -K, --ask-become-pass
-                        ask for privilege escalation password
-```
