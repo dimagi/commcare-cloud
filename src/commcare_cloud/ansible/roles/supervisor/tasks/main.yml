@@ -59,7 +59,7 @@
 
 - name: stop supervisor to pick up configuration changes
   become: yes
-  command: stop supervisord
+  service: name=supervisord state=stopped
 
 - name: pkill supervisord if run by cchq
   command: pkill -9 -U cchq supervisord
