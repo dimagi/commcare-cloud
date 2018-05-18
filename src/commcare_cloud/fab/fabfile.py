@@ -167,6 +167,7 @@ def _setup_env(env_name):
     _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
+    _confirm_deploying_same_code()
 
 
 def _confirm_branch(default_branch='master'):
@@ -199,6 +200,19 @@ def _confirm_environment_time(env_name):
         "The current local time is %s.\n"
         "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
     ) % (env_name, d.strftime("%-I:%M%p on %h. %d %Z"))
+    if not console.confirm(message, default=False):
+        utils.abort('Action aborted.')
+
+
+def _confirm_deploying_same_code():
+    if env.deploy_metadata.current_ref_is_different_than_last:
+        return
+
+    message = (
+        "Whoa there bud! You're deploying the same code as was previously deployed.\n"
+        "Perhaps you meant to specify --set code_branch=<branch> or should merge some PRs\n"
+        "Is this intentional?"
+    )
     if not console.confirm(message, default=False):
         utils.abort('Action aborted.')
 
