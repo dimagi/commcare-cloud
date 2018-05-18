@@ -63,10 +63,10 @@ def add_factory_auth_cmd(environment, cmd_parts):
     root_user = environment.public_vars.get('commcare_cloud_root_user', 'root')
     if '-u' not in cmd_parts:
         auth_cmd_parts += ('-u', root_user)
-    if not environment.public_vars.get('commcare_cloud_pem'):
+    pem = environment.public_vars.get('commcare_cloud_pem', None)
+    if not pem:
         auth_cmd_parts += ('--ask-pass',)
     else:
-        pem = environment.public_vars.get('commcare_cloud_pem', None)
         auth_ssh_args.extend(['-i', pem])
 
     return auth_cmd_parts, auth_ssh_args
