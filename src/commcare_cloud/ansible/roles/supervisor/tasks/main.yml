@@ -60,6 +60,7 @@
 - name: stop supervisor to pick up configuration changes
   become: yes
   command: stop supervisord
+  failed_when: no
 
 - name: pkill supervisord if run by cchq
   command: pkill -9 -U cchq supervisord
@@ -72,3 +73,4 @@
 
 - become: yes
   command: start supervisord
+  failed_when: no
