@@ -17,3 +17,4 @@ commcare-cloud $ENV deploy-stack --skip-check --quiet -e 'CCHQ_IS_FRESH_INSTALL=
 ## This next line is a temp fix to allow supervisor to actually get installed.
 commcare-cloud $ENV deploy-stack --tags=supervisor --quiet --branch=$BRANCH --skip-check
 commcare-cloud $ENV fab deploy:confirm=no --show=debug --set ignore_kafka_checkpoint_warning=true
+
