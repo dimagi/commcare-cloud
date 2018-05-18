@@ -22,7 +22,7 @@ from .commands.ansible.ansible_playbook import (
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
-from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
+from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -31,6 +31,7 @@ from .environment.paths import (
     put_virtualenv_bin_on_the_path,
 )
 from six.moves import shlex_quote
+
 
 COMMAND_GROUPS = OrderedDict([
     ('housekeeping', [
@@ -47,7 +48,6 @@ COMMAND_GROUPS = OrderedDict([
         Tmux,
     ]),
     ('operational', [
-        Ping,
         AnsiblePlaybook,
         DeployStack,
         UpdateConfig,
@@ -59,7 +59,7 @@ COMMAND_GROUPS = OrderedDict([
         Fab,
         Service,
         MigrateCouchdb,
-        Downtime
+        Downtime,
     ])
 ])
 
