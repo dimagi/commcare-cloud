@@ -112,8 +112,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
     environment.create_generated_yml()
     public_vars = environment.public_vars
-    cmd_parts += get_user_arg(public_vars, extra_args)
-
+    cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=factory_auth)
     become = become or bool(become_user)
     become_user = become_user
     include_vars = False
@@ -137,7 +136,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
         cmd_parts += ('--vault-password-file=/bin/cat',)
-    cmd_parts_with_common_ssh_args = get_common_ssh_args(cmd_parts, environment, use_factory_auth=factory_auth)
+    cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
