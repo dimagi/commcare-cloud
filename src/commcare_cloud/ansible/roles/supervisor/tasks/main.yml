@@ -59,7 +59,7 @@
 
 - name: stop supervisor to pick up configuration changes
   become: yes
-  command: stop supervisord
+  service: name=supervisord state=stopped
 
 - name: pkill supervisord if run by cchq
   command: pkill -9 -U cchq supervisord
@@ -70,5 +70,7 @@
   failed_when: result.rc > 1
   changed_when: result.rc == 0
 
-- become: yes
-  command: start supervisord
+- name: start supervisord
+  become: yes
+  service: name=supervisord state=started
+  when: which_supervisord.stdout
