@@ -71,6 +71,7 @@ CELERY_PROCESSES = [
     CeleryProcess("email_queue"),
     CeleryProcess("export_download_queue"),
     CeleryProcess("flower"),
+    CeleryProcess("icds_aggregation_queue", required=False),
     CeleryProcess("icds_dashboard_reports_queue", required=False),
     CeleryProcess("ils_gateway_sms_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
