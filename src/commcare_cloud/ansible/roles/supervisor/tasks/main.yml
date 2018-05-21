@@ -73,3 +73,4 @@
 - name: start supervisord
   become: yes
   service: name=supervisord state=started
+  failed_when: no
