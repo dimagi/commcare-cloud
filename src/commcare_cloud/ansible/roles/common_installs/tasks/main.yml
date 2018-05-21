@@ -12,10 +12,6 @@
   apt_repository: repo='ppa:chris-lea/node.js' state=present
   register: add_nodejs_repo
 
-- name: Add gradle repo
-  apt_repository: repo='ppa:cwchien/gradle' state=present
-  register: add_gradle_repo
-
 - name: Add PostreSQL apt repository
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
@@ -25,7 +21,7 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_nodejs_repo|changed or add_mosh_repo|changed or add_git_repo|changed or add_postgres_repo|changed or add_gradle_repo|changed
+  when: add_nodejs_repo|changed or add_mosh_repo|changed or add_git_repo|changed or add_postgres_repo|changed
 
 # Install base packages, common to all servers
 - name: Install common packages
@@ -58,7 +54,6 @@
     - mosh
     - libjpeg-dev
     - libfreetype6-dev
-    - gradle
     - ranger  # cmdline file browser
     - libffi-dev  # Required for installing github3py
     - libssl-dev  # Required for pip setup tools
