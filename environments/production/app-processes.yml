@@ -59,7 +59,7 @@ celery_processes:
     flower: {}
   hqcelery2.internal-va.commcarehq.org:
     celery,export_download_queue:
-      concurrency: 8
+      concurrency: 6
       max_tasks_per_child: 5
     saved_exports_queue:
       concurrency: 4
