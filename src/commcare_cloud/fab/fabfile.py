@@ -33,17 +33,15 @@ import os
 import posixpath
 from getpass import getpass
 
-import yaml
 import pipes
 import pytz
 from distutils.util import strtobool
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel, local
+from fabric.api import run, roles, execute, task, sudo, env, parallel
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
-from fabric.decorators import runs_once
 from fabric.operations import require
 
 from commcare_cloud.environment.main import get_environment
@@ -52,15 +50,10 @@ from commcare_cloud.environment.paths import get_available_envs
 from .const import (
     ROLES_ALL_SRC,
     ROLES_ALL_SERVICES,
-    ROLES_CELERY,
     ROLES_PILLOWTOP,
     ROLES_DJANGO,
-    ROLES_STATIC,
     ROLES_DEPLOY,
-    RELEASE_RECORD,
-    RSYNC_EXCLUDE,
-    PROJECT_ROOT,
-    REPO_BASE)
+)
 from .exceptions import PreindexNotFinished
 from .operations import (
     db,
@@ -80,7 +73,6 @@ from .utils import (
     retrieve_cached_deploy_env,
     traceback_string,
 )
-from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 from .checks import (
     check_servers,
 )
@@ -175,6 +167,7 @@ def _setup_env(env_name):
     _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
+    _confirm_deploying_same_code()
 
 
 def _confirm_branch(default_branch='master'):
@@ -207,6 +200,19 @@ def _confirm_environment_time(env_name):
         "The current local time is %s.\n"
         "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
     ) % (env_name, d.strftime("%-I:%M%p on %h. %d %Z"))
+    if not console.confirm(message, default=False):
+        utils.abort('Action aborted.')
+
+
+def _confirm_deploying_same_code():
+    if env.deploy_metadata.current_ref_is_different_than_last:
+        return
+
+    message = (
+        "Whoa there bud! You're deploying the same code as was previously deployed.\n"
+        "Perhaps you meant to specify --set code_branch=<branch> or should merge some PRs\n"
+        "Is this intentional?"
+    )
     if not console.confirm(message, default=False):
         utils.abort('Action aborted.')
 
