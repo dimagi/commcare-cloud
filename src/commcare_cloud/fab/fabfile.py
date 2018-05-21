@@ -167,7 +167,7 @@ def _setup_env(env_name):
     _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
-    _confirm_deploying_same_code()
+    execute(_confirm_deploying_same_code)
 
 
 def _confirm_branch(default_branch='master'):
