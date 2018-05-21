@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -127,7 +127,7 @@ command to check for validation errors or incompatibilities.
 Update the local known_hosts file of the environment configuration.
 
 ```
-commcare-cloud <env> update-local-known-hosts [--use-factory-auth]
+commcare-cloud <env> update-local-known-hosts
 ```
 
 You can run this on a regular basis to avoid having to `yes` through
@@ -135,12 +135,6 @@ the ssh prompts. Note that when you run this, you are implicitly
 trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ### Ad-hoc
 
@@ -221,7 +215,7 @@ omitted for environments with only a single server.
 Run an arbitrary Ansible module.
 
 ```
-commcare-cloud <env> run-module [--use-factory-auth] inventory_group module module_args
+commcare-cloud <env> run-module [--use-pem] inventory_group module module_args
 ```
 
 #### Example
@@ -257,9 +251,11 @@ and `{"arg1": "value1", "arg2": "value2"}` syntax are accepted.
 
 ##### Optional Arguments
 
-###### `--use-factory-auth`
+###### `--use-pem`
 
-authenticate using the pem file (or prompt for root password if there is no pem file)
+Rarely used argument to use pem file specified by `commcare_cloud_pem` when connecting.
+Only useful on a new machine where the hosting provider gives you a pem file to connect with,
+and before you've run bootstrap-users.
 
 ##### The ansible options below are available as well
 ```
@@ -336,7 +332,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run an arbitrary command via the Ansible shell module.
 
 ```
-commcare-cloud <env> run-shell-command [--silence-warnings] [--use-factory-auth] inventory_group shell_command
+commcare-cloud <env> run-shell-command [--silence-warnings] [--use-pem] inventory_group shell_command
 ```
 
 #### Example
@@ -371,9 +367,11 @@ Cannot being with `sudo`; to do that use the ansible `--become` option.
 
 Silence shell warnings (such as to use another module instead).
 
-###### `--use-factory-auth`
+###### `--use-pem`
 
-authenticate using the pem file (or prompt for root password if there is no pem file)
+Rarely used argument to use pem file specified by `commcare_cloud_pem` when connecting.
+Only useful on a new machine where the hosting provider gives you a pem file to connect with,
+and before you've run bootstrap-users.
 
 ##### The ansible options below are available as well
 ```
@@ -515,40 +513,13 @@ tmux windows will a new one be opened.
 ### Operational
 
 
-#### `ping`
-
-Ping specified or all machines to see if they have been provisioned yet.
-
-```
-commcare-cloud <env> ping [--use-factory-auth] inventory_group
-```
-
-##### Positional Arguments
-
-###### `inventory_group`
-
-Machines to run on. Is anything that could be used in as a value for
-`hosts` in an playbook "play", e.g.
-`all` for all machines,
-`webworkers` for a single group,
-`celery:pillowtop` for multiple groups, etc.
-See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
-for more detail in what can go here.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
-
 #### `ansible-playbook`
 (Alias `ap`)
 
 Run a playbook as you would with ansible-playbook
 
 ```
-commcare-cloud <env> ansible-playbook [--use-factory-auth] playbook
+commcare-cloud <env> ansible-playbook playbook
 ```
 
 By default, you will see --check output and then asked whether to apply.
@@ -567,12 +538,6 @@ The ansible playbook .yml file to run.
 Options are the `*.yml` files located under `commcare_cloud/ansible`
 which is under `src` for an egg install and under
 `<virtualenv>/lib/python2.7/site-packages` for a wheel install.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ##### The ansible-playbook options below are available as well
 ```
@@ -656,17 +621,11 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for deploying the entire stack.
 
 ```
-commcare-cloud <env> deploy-stack [--use-factory-auth]
+commcare-cloud <env> deploy-stack
 ```
 
 Often used in conjunction with --limit and/or --tag
 for a more specific update.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 
 #### `update-config`
@@ -674,16 +633,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for updating app config.
 
 ```
-commcare-cloud <env> update-config [--use-factory-auth]
+commcare-cloud <env> update-config
 ```
 
 This includes django `localsettings.py` and formplayer `application.properties`.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 
 #### `after-reboot`
@@ -691,7 +644,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Bring a just-rebooted machine back into operation.
 
 ```
-commcare-cloud <env> after-reboot [--use-factory-auth] inventory_group
+commcare-cloud <env> after-reboot inventory_group
 ```
 
 Includes mounting the encrypted drive.
@@ -709,19 +662,13 @@ Machines to run on. Is anything that could be used in as a value for
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
 
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
 
 #### `restart-elasticsearch`
 
 Do a rolling restart of elasticsearch.
 
 ```
-commcare-cloud <env> restart-elasticsearch [--use-factory-auth]
+commcare-cloud <env> restart-elasticsearch
 ```
 
 **This command is deprecated.** Use
@@ -732,19 +679,13 @@ commcare-cloud <env> service elasticsearch restart
 
 instead.
 
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
 
 #### `bootstrap-users`
 
 Add users to a set of new machines as root.
 
 ```
-commcare-cloud <env> bootstrap-users [--use-factory-auth]
+commcare-cloud <env> bootstrap-users
 ```
 
 This must be done before any other user can log in.
@@ -755,30 +696,18 @@ you have specified in your environment. This can only be run once
 per machine; if after running it you would like to run it again,
 you have to use `update-users` below instead.
 
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
 
 #### `update-users`
 
 Bring users up to date with the current CommCare Cloud settings.
 
 ```
-commcare-cloud <env> update-users [--use-factory-auth]
+commcare-cloud <env> update-users
 ```
 
 In steady state this command (and not `bootstrap-users`) should be used
 to keep machine user accounts, permissions, and login information
 up to date.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 
 #### `update-supervisor-confs`
@@ -786,16 +715,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Updates the supervisor configuration files for services required by CommCare.
 
 ```
-commcare-cloud <env> update-supervisor-confs [--use-factory-auth]
+commcare-cloud <env> update-supervisor-confs
 ```
 
 These services are defined in app-processes.yml.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 
 #### `fab`
