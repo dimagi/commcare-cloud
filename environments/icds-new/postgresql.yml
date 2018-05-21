@@ -5,8 +5,8 @@ REPORTING_DATABASES:
     WRITE: icds-ucr
     READ:
       - [icds-ucr, 1]
-      - [icds-ucr-standby1, 1]
-      - [icds-ucr-standby2, 1]
+      - [icds-ucr-standby1, 2]
+      - [icds-ucr-standby2, 2]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
