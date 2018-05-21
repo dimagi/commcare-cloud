@@ -58,27 +58,42 @@ class DeployMetadata(object):
         self._last_tag = None
         self._code_branch = code_branch
         self._environment = environment
+        self._repo = None
+
+    @property
+    def repo(self):
+        if self._repo is not None:
+            return self._repo
+
+        github = _get_github()
+        self._repo = github.get_organization('dimagi').get_repo('commcare-hq')
+        return self._repo
+
+    @property
+    def last_tag(self):
+        if self._last_tag is not None:
+            return self._last_tag
+
+        pattern = ".*-{}-deploy".format(re.escape(self._environment))
+        for tag in self.repo.get_tags()[:self._max_tags]:
+            if re.match(pattern, tag.name):
+                self._last_tag = tag
+                break
+
+        return self._last_tag
 
     def tag_commit(self):
         if env.offline:
             self._offline_tag_commit()
             return
 
-        pattern = ".*-{}-deploy".format(re.escape(self._environment))
-        github = _get_github()
-        repo = github.get_organization('dimagi').get_repo('commcare-hq')
-        for tag in repo.get_tags()[:self._max_tags]:
-            if re.match(pattern, tag.name):
-                self._last_tag = tag.name
-                break
-
-        if not self._last_tag:
+        if not self.last_tag.name:
             print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
                 self._max_tags,
                 self._environment
             )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        repo.create_git_ref(
+        self.repo.create_git_ref(
             ref='refs/tags/' + tag_name,
             sha=self.deploy_ref,
         )
@@ -111,10 +126,10 @@ class DeployMetadata(object):
 
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
-        if not self._last_tag:
+        if not self.last_tag.name:
             return '"Previous deploy not found, cannot make comparison"'
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
-            self._last_tag,
+            self.last_tag.name,
             self._deploy_tag,
         )
 
@@ -127,15 +142,12 @@ class DeployMetadata(object):
             self._deploy_ref = env.code_branch
             return self._deploy_ref
 
-        github = _get_github()
-        repo = github.get_organization('dimagi').get_repo('commcare-hq')
-
         # turn whatever `code_branch` is into a commit hash
-        branch = repo.get_branch(self._code_branch)
+        branch = self.repo.get_branch(self._code_branch)
         self._deploy_ref = branch.commit.sha
 
         try:
-            repo.create_git_ref(
+            self.repo.create_git_ref(
                 ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
                 sha=self._deploy_ref,
             )
@@ -146,6 +158,10 @@ class DeployMetadata(object):
             )
 
         return self._deploy_ref
+
+    @property
+    def current_ref_is_different_than_last(self):
+        return self.deploy_ref != self.last_tag.commit.sha
 
 
 def _get_github():
