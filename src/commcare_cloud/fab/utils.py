@@ -6,7 +6,7 @@ import pickle
 import sys
 import traceback
 from fabric.operations import sudo
-from fabric.context_managers import settings
+from fabric.context_managers import cd, settings
 from fabric.api import local
 import re
 from getpass import getpass
@@ -21,6 +21,7 @@ from .const import (
     CACHED_DEPLOY_ENV_FILENAME,
     DATE_FMT,
     OFFLINE_STAGING_DIR,
+    RELEASE_RECORD,
 )
 
 from six.moves import input
@@ -68,6 +69,14 @@ class DeployMetadata(object):
         github = _get_github()
         self._repo = github.get_organization('dimagi').get_repo('commcare-hq')
         return self._repo
+
+    @property
+    def last_commit_sha(self):
+        if self.last_tag:
+            return self.last_tag.commit.sha
+
+        with cd(env.code_current):
+            return sudo('git rev-parse HEAD')
 
     @property
     def last_tag(self):
@@ -161,7 +170,7 @@ class DeployMetadata(object):
 
     @property
     def current_ref_is_different_than_last(self):
-        return self.deploy_ref != self.last_tag.commit.sha
+        return self.deploy_ref != self.last_commit_sha
 
 
 def _get_github():
