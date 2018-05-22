@@ -58,10 +58,6 @@ celery_processes:
       max_tasks_per_child: 5
     flower: {}
   hqcelery2.internal-va.commcarehq.org:
-    saved_exports_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
-      optimize: True
     background_queue:
       concurrency: 8
       max_tasks_per_child: 1
@@ -72,6 +68,10 @@ celery_processes:
     async_restore_queue:
       concurrency: 8
       max_tasks_per_child: 5
+    saved_exports_queue:
+      concurrency: 4
+      max_tasks_per_child: 1
+      optimize: True
   hqcelery4.internal-va.commcarehq.org:
     celery:
       concurrency: 6
