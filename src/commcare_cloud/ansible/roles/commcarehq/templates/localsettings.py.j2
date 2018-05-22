@@ -780,7 +780,7 @@ EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
 CONTACT_EMAIL = '{{ contact_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
 DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
-{% if localsettings_private.get("TRANSIFEX_API_TOKEN") %}
+{% if TRANSIFEX_API_TOKEN %}
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
     'project': {
@@ -792,6 +792,6 @@ TRANSIFEX_DETAILS = {
             'ori': 'https://www.transifex.com/dimagi/teams/86537/or/'
         }
     },
-    'token': '{{ localsettings_private.get("TRANSIFEX_API_TOKEN") }}'
+    'token': '{{ TRANSIFEX_API_TOKEN }}'
 }
 {% endif %}
