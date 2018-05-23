@@ -46,7 +46,7 @@ localsettings:
     - echis.moh.gov.et  # TODO
     - 172.19.0.160
     - 172.19.0.161
-    - 172.19.3.30
+    - 172.19.3.40
     - localhost
     - 127.0.0.1
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
