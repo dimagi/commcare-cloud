@@ -5,8 +5,8 @@
 # If not, commit will fail with an error message
 #
 # File should be .git/hooks/pre-commit and executable
-FILES_PATTERN_CONTAIN='(/vault.yml|.*.vault)$'
-FILES_PATTERN_NOT_CONTAINS='^((?!development|^tests).)*$'
+VAULT_FILE_INCLUDE_PATTERN='(/vault.yml|.*.vault)$'
+VAULT_FILE_EXCLUDE_PATTERN='^((?!development|^tests).)*$'
 REQUIRED='ANSIBLE_VAULT'
 
 EXIT_STATUS=0
@@ -15,7 +15,7 @@ yellow='\033[1;33m'
 # carriage return hack. Leave it on 2 lines.
 cr='
 '
-for f in $(git diff --cached --name-only | grep -E "$FILES_PATTERN_CONTAIN" | grep -E "$FILES_PATTERN_NOT_CONTAIN")
+for f in $(git diff --cached --name-only | grep -E "VAULT_FILE_INCLUDE_PATTERN" | grep -E "VAULT_FILE_EXCLUDE_PATTERN")
 do
   MATCH=`grep -L $REQUIRED $f | head -n 1`
   if [ -n "${MATCH// }" ] ; then
