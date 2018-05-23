@@ -20,7 +20,7 @@ couch_s3: False
 
 KSPLICE_ACTIVE: yes
 
-shared_drive_enabled: false
+shared_drive_enabled: True
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
