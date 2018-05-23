@@ -35,8 +35,6 @@ datadog_extra_host_checks:
 
 file_email: False
 
-shared_drive_enabled: true
-
 touchforms_enabled: false
 
 etc_hosts_lines:

@@ -88,7 +88,7 @@ UCR_EXCEPTION_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME
 MAIN_COUCH_SQL_DATAMIGRATION = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-couch_sql_migration.log")
 
 # Shared Drive Setup
-{% if shared_drive_enabled|default(true) %}
+{% if shared_drive_enabled %}
 SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
 {% else %}
 SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
