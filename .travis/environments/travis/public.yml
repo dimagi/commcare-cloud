@@ -78,7 +78,6 @@ postgres_users:
 
 encrypted_root: '/opt/data'
 
-shared_drive_enabled: True
 backup_postgres: dump
 backup_blobdb: True
 postgresql_backup_master: True

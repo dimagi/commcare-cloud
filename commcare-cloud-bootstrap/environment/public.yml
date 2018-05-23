@@ -70,7 +70,6 @@ postgres_users:
 
 encrypted_root: '/opt/data'
 
-shared_drive_enabled: True
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
