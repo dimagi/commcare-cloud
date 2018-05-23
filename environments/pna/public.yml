@@ -49,8 +49,6 @@ nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
-shared_drive_enabled: false
-
 touchforms_enabled: false
 
 localsettings:

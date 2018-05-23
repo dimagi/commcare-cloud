@@ -45,9 +45,6 @@ control_machine_ip: 10.162.36.196
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 
-shared_drive_enabled: true
-
-
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy[0] }}"
