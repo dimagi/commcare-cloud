@@ -1,7 +1,7 @@
 aws_config:
   pem: /path/to/cert.pem
   ami: ami-7dce6507
-  type: t2.xlarge
+  type: m4.4xlarge
   key_name: aws_key_name
   security_group_id: sg-xxxxxxxx
   subnet: subnet-xxxxxxxx
