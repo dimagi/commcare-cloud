@@ -11,6 +11,7 @@ celery_processes:
   None:
     repeat_record_queue:
     async_restore_queue:
+    ucr_queue:
   echis_server1:
     celery,export_download_queue,email_queue:
       concurrency: 1
@@ -20,16 +21,13 @@ celery_processes:
       max_tasks_per_child: 1
     celery_periodic:
       concurrency: 1
-      server_whitelist: todo
+      server_whitelist: 172.19.0.160
     saved_exports_queue:
       concurrency: 1
       max_tasks_per_child: 1
       optimize: True
     submission_reprocessing_queue:
       concurrency: 1
-    ucr_queue:
-      concurrency: 1
-      max_tasks_per_child: 5
     reminder_case_update_queue:
       concurrency: 1
     reminder_queue:
@@ -77,6 +75,8 @@ pillows:
     XFormToElasticsearchPillow:
       num_processes: 1
     kafka-ucr-static:
+      num_processes: 1
+    kafka-ucr-main:
       num_processes: 1
    #CaseSearchToElasticsearchPillow
    #LedgerToElasticsearchPillow
