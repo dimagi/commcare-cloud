@@ -10,7 +10,7 @@
 - name: define django worker service
   become: cchq
   template:
-    src: "../templates/supervisor_django.conf"
+    src: "../templates/supervisor_django.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
   tags:
     - services
