@@ -1,3 +1,4 @@
+newrelic_djangoagent: True
 newrelic_javaagent: True
 
 celery_processes:
@@ -5,13 +6,11 @@ celery_processes:
     celery_periodic:
       server_whitelist: hqcelery0.internal-va.commcarehq.org
       concurrency: 4
-    pillow_retry_queue:
-      concurrency: 1
     submission_reprocessing_queue:
       concurrency: 1
     email_queue:
       concurrency: 2
-    repeat_record_queue:
+    repeat_record_queue,sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
       num_workers: 4
@@ -33,8 +32,8 @@ celery_processes:
       num_workers: 2
     reminder_queue:
       pooling: gevent
-      concurrency: 5
-      num_workers: 2
+      concurrency: 10
+      num_workers: 3
     reminder_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
@@ -59,18 +58,27 @@ celery_processes:
       max_tasks_per_child: 5
     flower: {}
   hqcelery2.internal-va.commcarehq.org:
-    celery,export_download_queue:
+    background_queue:
+      concurrency: 8
+      max_tasks_per_child: 1
+    send_report_throttled:
+      concurrency: 2
+      max_tasks_per_child: 1
+  hqcelery3.internal-va.commcarehq.org:
+    async_restore_queue:
       concurrency: 8
       max_tasks_per_child: 5
     saved_exports_queue:
       concurrency: 4
       max_tasks_per_child: 1
-    background_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
-    send_report_throttled:
-      concurrency: 2
-      max_tasks_per_child: 1
+      optimize: True
+  hqcelery4.internal-va.commcarehq.org:
+    celery:
+      concurrency: 6
+      max_tasks_per_child: 5
+    export_download_queue:
+      concurrency: 6
+      max_tasks_per_child: 5
 pillows:
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:

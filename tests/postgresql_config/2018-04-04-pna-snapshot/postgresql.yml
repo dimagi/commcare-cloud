@@ -1,0 +1,24 @@
+
+dbs:
+  form_processing:
+    partitions:
+      p1:
+        shards: [0, 103]
+      p2:
+        shards: [104, 205]
+      p3:
+        shards: [206, 308]
+      p4:
+        shards: [309, 411]
+      p5:
+        shards: [412, 514]
+      p6:
+        shards: [515, 617]
+      p7:
+        shards: [618, 720]
+      p8:
+        shards: [721, 823]
+      p9:
+        shards: [824, 926]
+      p10:
+        shards: [927, 1023]

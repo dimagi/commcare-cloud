@@ -4,14 +4,12 @@ celery_processes:
     # so that no SMSes, etc. ever come from staging.
     celery_periodic:
   'hqdb1-staging.internal-va.commcarehq.org':
-    enikshay_queue,repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue:
+    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue:
       concurrency: 4
       max_tasks_per_child: 5
     background_queue,case_rule_queue:
       concurrency: 2
       max_tasks_per_child: 1
-    pillow_retry_queue:
-      concurrency: 1
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1

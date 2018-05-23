@@ -1,0 +1,45 @@
+_completion_props() {
+    if [[ -z "${COMPLETION_PROPS}" ]]
+    then
+        COMPLETION_PROPS="$(manage-commcare-cloud get environments commands ANSIBLE_DIR)"
+    fi
+    echo "$COMPLETION_PROPS"
+}
+
+
+_commcare_cloud()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="--help --version"
+
+    export COMPLETION_PROPS="$(_completion_props)"
+    envs=$(echo "${COMPLETION_PROPS}" | head -n1)
+    cmds=$(echo "${COMPLETION_PROPS}" | head -n2 | tail -n1)
+    ansible_dir=$(echo "${COMPLETION_PROPS}" | head -n3 | tail -n1)
+
+    # only include .yml files that don't contain a space
+    files=$(echo $(ls ${ansible_dir} | grep -v ' ' | grep '.*.yml$'))
+
+    case $COMP_CWORD in
+    1)
+        if [[ ${cur} == -* ]] ; then
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        else
+            COMPREPLY=( $(compgen -W "${envs}" -- ${cur}) )
+        fi
+        ;;
+    2)
+        if [[ ${cur} == * ]] ; then
+            COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
+        fi
+        ;;
+    3)
+        COMPREPLY=( $(compgen -W "${files}" -- ${cur}) )
+        ;;
+    esac
+}
+complete -F _commcare_cloud commcare-cloud
+complete -F _commcare_cloud cchq

@@ -1,0 +1,2 @@
+SITE_HOST: '{{ groups.proxy.0 }}'
+fake_ssl_cert: yes

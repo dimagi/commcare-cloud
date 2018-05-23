@@ -1,0 +1,23 @@
+- name: define airflow webserver service
+  become: cchq
+  template:
+    src: "../templates/supervisor_airflow_webserver.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_webserver.conf"
+  tags:
+    - services
+  register: airflow_webserver_conf_file
+
+- name: define airflow scheduler service
+  become: cchq
+  template:
+    src: "../templates/supervisor_airflow_scheduler.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_scheduler.conf"
+  tags:
+    - services
+  register: airflow_scheduler_conf_file
+
+- set_fact:
+    airflow_supervisor_files: "{{ airflow_webserver_conf_file.get('results', []) + airflow_scheduler_conf_file.get('results', []) }}"
+
+- set_fact:
+    airflow_managed_files: "{{ airflow_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + airflow_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"

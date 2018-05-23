@@ -1,55 +1,12 @@
-SITE_HOST: 'www.icds-cas.gov.in'
-CAS_SITE_HOST: 'cas.commcarehq.org'
-NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 internal_domain_name: 'internal-icds-new.commcarehq.org'
 cluster_ip_range: '10.247.164.0/23'
-
-tableau_server: 10.247.24.11:80
 daily_deploy_email: tech-announce-daily@dimagi.com
-
-TABLEAU_HOST: 'reports.icds-cas.gov.in'
-
-nginx_combined_cert_value: "{{ ssl_secrets.certs.icds_cas_gov_in }}"
-nginx_key_value: '{{ ssl_secrets.private_keys.icds_cas_gov_in }}'
-
-cas_nginx_combined_cert_value: "{{ ssl_secrets.certs.cas_commcarehq_org }}"
-cas_key_value: '{{ ssl_secrets.private_keys.cas_commcarehq_org }}'
-
-tableau_nginx_combined_cert_value: "{{ ssl_secrets.certs.reports_icds_cas_gov_in }}"
-tableau_key_value: '{{ ssl_secrets.private_keys.reports_icds_cas_gov_in }}'
-
-active_sites:
-  cchq_ssl: True
-  cchq_www_redirect_secure: True
-  cchq_http: True
-  cchq_www_redirect_insecure: True
-  cchq_http_j2me: False
-  commtrack_ssl: False
-  commtrack_http: False
-  tableau: False
-  icds_tableau: True
-  dhis: False
-  wiki: False
-  wiki_http: False
-  motech: False
-  motech1: False
-  motech2: False
-  riakcs: True
-  cas_ssl: True
 
 riak_backend: "bitcask"
 riak_ring_size: 64
 
-
-primary_ssl_env: "cas"
-nginx_max_clients: 1024
-nginx_worker_rlimit_nofile : 16384
-
-fake_ssl_cert: no
-
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
-
 
 supervisor_http_enabled: True
 
@@ -61,101 +18,20 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
-
-postgresql_version: '9.6'
-postgresql_shared_buffers: '8GB'
-postgresql_max_stack_depth: '6MB'
-postgresql_effective_cache_size: '16GB'
-postgresql_slow_log_threshold: 1000
-pgbouncer_reserve_pool: 5
-pgbouncer_pool_timeout: 1
-pgbouncer_pool_mode: transaction
-pg_query_stats: True
-
-formplayer_db_name: formplayer
-
 nofile_limit: 65536
 
-postgresql_dbs:
-  - django_alias: default
-    name: "{{localsettings.PG_DATABASE_NAME}}"
-    host: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-  - django_alias: "{{localsettings.SYNCLOGS_SQL_DB_ALIAS}}"
-    name: commcarehq_synclogs
-    host: "{{ hostvars[groups.pgsynclog.0].inventory_hostname }}"
-  - django_alias: proxy
-    name: commcarehq_proxy
-    host: "{{ hostvars[groups.plproxy1.0].inventory_hostname }}"
-  - django_alias: p1
-    name: commcarehq_p1
-    shards: [0, 103]
-    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
-  - django_alias: p2
-    name: commcarehq_p2
-    shards: [104, 205]
-    host: "{{ hostvars[groups.pgshard5.0].inventory_hostname }}"
-  - django_alias: p3
-    name: commcarehq_p3
-    shards: [206, 308]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
-  - django_alias: p4
-    name: commcarehq_p4
-    shards: [309, 411]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
-  - django_alias: p5
-    name: commcarehq_p5
-    shards: [412, 514]
-    host: "{{ hostvars[groups.pgshard2.0].inventory_hostname }}"
-  - django_alias: p6
-    name: commcarehq_p6
-    shards: [515, 617]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
-  - django_alias: p7
-    name: commcarehq_p7
-    shards: [618, 720]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
-  - django_alias: p8
-    name: commcarehq_p8
-    shards: [721, 823]
-    host: "{{ hostvars[groups.pgshard1.0].inventory_hostname }}"
-  - django_alias: p9
-    name: commcarehq_p9
-    shards: [824, 926]
-    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
-  - django_alias: p10
-    name: commcarehq_p10
-    shards: [927, 1023]
-    host: "{{ hostvars[groups.pgshard3.0].inventory_hostname }}"
-  - name: commcarehq_ucr
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-    django_alias: ucr
-    django_migrate: False
-  - django_alias: icds-ucr
-    name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-    query_stats: True
-  - name: commcarehq_icds_testdata
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-  - name: "{{ formplayer_db_name }}"
-    host: "{{ hostvars[groups.pgucr.0].inventory_hostname }}"
-  - django_alias: icds-ucr-standby1
-    name: commcarehq_icds_aggregatedata
-    host: "{{ hostvars[groups.pgucrstandby.0].inventory_hostname }}"
-    create: False
-    django_migrate: False
-
-redis_appendonly: 'no'
+redis_appendonly: 'yes'
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
 KSPLICE_ACTIVE: no
 
-AMQP_HOST: "{{ groups.rabbit0.0 }}"
-AMQP_NAME: commcarehq
 
 DATADOG_ENABLED: True
 datadog_integration_cloudant: False
 datadog_integration_vmware: True
+datadog_extra_host_checks:
+  - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
 
 file_email: False
 
@@ -259,19 +135,11 @@ localsettings:
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []
-  BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER }}"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-  BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH }}"
-  BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE }}"
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
-  BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY }}"
-  BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN }}"
-  BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS }}"
-  BROKER_URL: 'amqp://{{ secrets.AMQP_USER }}:{{ secrets.AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-  CELERY_FLOWER_URL: "http://{{ groups.celery0.0 }}:5555"
   CELERY_PERIODIC_QUEUE: 'celery_periodic'
   CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
   CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
@@ -283,25 +151,15 @@ localsettings:
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
-  COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME }}"
-  COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD }}"
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  DROPBOX_APP_NAME: 'CommCareHQFiles'
-  DROPBOX_KEY: "{{ localsettings_private.DROPBOX_KEY }}"
-  DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET }}"
   ELASTICSEARCH_HOST: "{{ groups.es0.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN }}"
   EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
-  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
-  GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
-  GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
   HQ_INSTANCE: 'icds'
-  HQ_PRIVATE_KEY: "{{ localsettings_private.HQ_PRIVATE_KEY }}"
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -315,9 +173,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  JAR_KEY_ALIAS: javarosakey
-  JAR_KEY_PASS: "{{ localsettings_private.JAR_KEY_PASS }}"
-  JAR_STORE_PASS: "{{ localsettings_private.JAR_STORE_PASS }}"
   KAFKA_URL: "{{ groups.kafka0.0 }}:9092"
   LOCAL_PILLOWS:
     icds:
@@ -349,6 +204,9 @@ localsettings:
             - 'static-ccs_record_cases_monthly_v2'
             - 'static-ccs_record_cases_monthly_tableau_v2'
             - 'static-person_cases_v2'
+            - 'static-commcare_user_cases'
+            - 'static-pregnant-tasks_cases'
+            - 'static-child_tasks_cases'
       - name: 'kafka-ucr-static-forms'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
@@ -365,19 +223,16 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-postnatal_care_forms'
-            - 'static-thr_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
             - 'static-vhnd_form'
             - 'static-visitorbook_forms'
             - 'static-it_report_follow_issue'
-  MIA_THE_DEPLOY_BOT_API: "{{ localsettings_private.MIA_THE_DEPLOY_BOT_API }}"
-  OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID }}"
-  PG_DATABASE_HOST: "{{ hostvars[groups.pgmain.0].inventory_hostname }}"
-  PG_DATABASE_NAME: commcarehq
-  PG_DATABASE_PASSWORD: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-  PG_DATABASE_USER: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-  PG_DATABASE_PORT: 6432
+            - 'static-dashboard_delivery_forms'
+            - 'static-dashboard_thr_forms'
+            - 'static-dashboard_growth_monitoring_forms'
+            - 'dashboard_child_health_daily_feeding_forms'
+            - 'static-dashboard_birth_preparedness_forms'
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -385,30 +240,11 @@ localsettings:
   REDIS_PORT: '6379'
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
-  REPORTING_DATABASES:
-    ucr: ucr
-    icds-ucr:
-      WRITE: icds-ucr
-      READ:
-        - [icds-ucr, 5]
-        - [icds-ucr-standby1, 5]
-    icds-test-ucr: icds-ucr
-  SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
-  SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY }}"
-  SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY }}"
-  SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID }}"
-  SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL }}"
-  SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY }}"
-  SMS_GATEWAY_PARAMS:
-  SMS_GATEWAY_URL: 
+  SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
-  STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY }}"
-  STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY }}"
-  SYNCLOGS_SQL_DB_ALIAS: "synclogs"
   TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-  USE_PARTITIONED_DATABASE: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
@@ -416,3 +252,4 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
+  USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
