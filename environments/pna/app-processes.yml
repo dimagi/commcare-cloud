@@ -15,7 +15,8 @@ celery_processes:
     background_queue,export_download_queue,saved_exports_queue:
       concurrency: 4
       max_tasks_per_child: 1
-      optimize: True
+# wait until background_queue,export_download_queue have been verified to work with optimize
+#      optimize: True
     submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
