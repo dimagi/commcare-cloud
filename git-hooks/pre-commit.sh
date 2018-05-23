@@ -15,7 +15,7 @@ yellow='\033[1;33m'
 # carriage return hack. Leave it on 2 lines.
 cr='
 '
-for f in $(git diff --cached --name-only | grep -E "FILES_PATTERN_CONTAIN" | grep -E "FILES_PATTERN_NOT_CONTAIN")
+for f in $(git diff --cached --name-only | grep -E "$FILES_PATTERN_CONTAIN" | grep -E "$FILES_PATTERN_NOT_CONTAIN")
 do
   MATCH=`grep -L $REQUIRED $f | head -n 1`
   if [ -n "${MATCH// }" ] ; then
