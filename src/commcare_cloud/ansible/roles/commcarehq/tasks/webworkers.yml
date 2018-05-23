@@ -7,8 +7,17 @@
     - services
   register: webworker_errand_boy_conf_file
 
+- name: define django worker service
+  become: cchq
+  template:
+    src: "../templates/supervisor_django.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+  tags:
+    - services
+  register: webworker_django_worker_conf_file
+
 - set_fact:
-    webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }}"
+    webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }} + {{ webworker_django_worker_conf_file.get('results', []) }}"
 
 - set_fact:
     webworker_managed_files: "{{ webworker_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + webworker_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
