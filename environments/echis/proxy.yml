@@ -1,6 +1,6 @@
 SITE_HOST: 'echis.moh.gov.et' # TODO
-nginx_key_value: '{{ ssl_secrets.private_keys.echis }}'
-nginx_combined_cert_value: '{{ ssl_secrets.certs.echis }}'
+#nginx_key_value: '{{ ssl_secrets.private_keys.echis }}'
+#nginx_combined_cert_value: '{{ ssl_secrets.certs.echis }}'
 nginx_max_clients: 1024
 nginx_worker_rlimit_nofile : 16384
 primary_ssl_env: "echis"
