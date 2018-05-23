@@ -91,14 +91,17 @@ class Group(StrictJsonObject):
     vars = jsonobject.DictProperty()
 
 
-def provision_machines(spec, env_name=None):
+def provision_machines(spec, env_name=None, create_machines=True):
     if env_name is None:
         env_name = u'hq-{}'.format(
             ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
     environment = get_environment(env_name)
     inventory = bootstrap_inventory(spec, env_name)
-    instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
+    if create_machines:
+        instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
+    else:
+        instance_ids = None
 
     while True:
         instance_ip_addresses = poll_for_aws_state(env_name, instance_ids)
@@ -304,22 +307,26 @@ def update_inventory_public_ips(inventory, new_hosts):
         host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
 
 
-def poll_for_aws_state(env_name, instance_ids):
+def poll_for_aws_state(env_name, instance_ids=None):
     describe_instances = raw_describe_instances(env_name)
     print_describe_instances(describe_instances)
 
     instances = [instance
                  for reservation in describe_instances['Reservations']
                  for instance in reservation['Instances']]
-    unfinished_instances = instance_ids - {
-        instance['InstanceId'] for instance in instances
-        if instance.get('PublicIpAddress') and instance.get('PublicDnsName')
-    }
+    if instance_ids is not None:
+        unfinished_instances = instance_ids - {
+            instance['InstanceId'] for instance in instances
+            if instance.get('PublicIpAddress') and instance.get('PublicDnsName')
+        }
+    else:
+        unfinished_instances = ()
+
     if not unfinished_instances:
         return {
             instance['InstanceId']: (instance['PublicIpAddress'], instance['PrivateIpAddress'])
             for instance in instances
-            if instance['InstanceId'] in instance_ids
+            if instance_ids is None or instance['InstanceId'] in instance_ids
         }
 
 
@@ -376,6 +383,7 @@ def copy_default_vars(environment, aws_config):
                     aws_config.pem, os.path.join(TEMPLATE_DIR, 'public.yml')))
                 sys.exit(1)
 
+
 class Provision(object):
     command = 'provision'
     help = """Provision a new environment based on a spec yaml file. (See example_spec.yml.)"""
@@ -384,6 +392,8 @@ class Provision(object):
     def make_parser(parser):
         parser.add_argument('spec')
         parser.add_argument('--env')
+        parser.add_argument('--skip-create', dest='create_machines', action='store_false',
+                            default=True)
 
     @staticmethod
     def run(args):
@@ -391,7 +401,7 @@ class Provision(object):
             spec = yaml.load(f)
 
         spec = Spec.wrap(spec)
-        provision_machines(spec, args.env)
+        provision_machines(spec, args.env, create_machines=args.create_machines)
 
 
 class Show(object):
