@@ -1,0 +1,47 @@
+aws_config:
+  pem: /path/to/cert.pem
+  ami: ami-7dce6507
+  type: t2.xlarge
+  key_name: aws_key_name
+  security_group_id: sg-xxxxxxxx
+  subnet: subnet-xxxxxxxx
+  volume:
+    DeviceName: /dev/xvdb
+    Ebs:
+      DeleteOnTermination: yes
+      VolumeSize: 100
+      VolumeType: standard
+      Encrypted: false
+
+
+allocations:
+  proxy: 1
+  webworkers:
+    from: proxy
+  postgresql:
+    from: proxy
+  rabbitmq:
+    from: proxy
+  kafka:
+    from: proxy
+  zookeeper:
+    from: proxy
+  celery:
+    from: proxy
+  pillowtop:
+      from: proxy
+  formplayer:
+      from: proxy
+  touchforms: 0
+  redis:
+      from: proxy
+  elasticsearch:
+      from: proxy
+  shared_dir_host: 0
+  riakcs: 0
+  stanchion: 0
+  couchdb2:
+      from: proxy
+  couchdb2_proxy:
+      from: proxy
+  pg_standby: 0
