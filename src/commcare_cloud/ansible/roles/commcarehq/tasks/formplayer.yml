@@ -1,0 +1,14 @@
+- name: define formplayer spring services
+  become: cchq
+  template:
+    src: "../templates/supervisor_formplaaer_spring.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+  tags:
+    - services
+  register: formplayer_files
+
+- set_fact:
+    formplayer_supervisor_files: "{{ formplayer_files.get('results', [])"
+
+- set_fact:
+    formplayer_managed_files: "{{ formplayer_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }"
