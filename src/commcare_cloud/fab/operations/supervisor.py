@@ -39,7 +39,6 @@ def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     set_celery_supervisorconf()
     set_formsplayer_supervisorconf()
-    set_formplayer_spring_supervisorconf()
 
 
 def _get_celery_queues():
@@ -147,15 +146,6 @@ def set_formsplayer_supervisorconf():
                                       'supervisor_formsplayer.conf',
                                       {'formplayer_instance_name':
                                            get_formplayer_instance_name(env.ccc_environment)}
-                                      )
-
-
-def set_formplayer_spring_supervisorconf():
-    if _check_in_roles(ROLES_FORMPLAYER):
-        _rebuild_supervisor_conf_file('make_supervisor_conf',
-                                      'supervisor_formplayer_spring.conf',
-                                      {'formplayer_spring_instance_name':
-                                           get_formplayer_spring_instance_name(env.ccc_environment)}
                                       )
 
 

@@ -1,0 +1,11 @@
+[program:{{ project }}-{{ deploy_env }}-formsplayer-spring]
+environment={% for name, value in supervisor_env_vars.items %}{{ name }}="{{ value }}"{% if not forloop.last %},{% endif %}{% endfor %}
+command=java {% if app_processes_config.newrelic_javaagent %}-javaagent:/home/cchq/www/{{ deploy_env }}/newrelic/newrelic.jar{% endif %} -jar -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=9998 -Xmx{{ app_processes_config.formplayer_memory }} -XX:MaxPermSize=128m -XX:-OmitStackTraceInFastThrow -Xss1024k {{ code_home }}/formplayer_build/formplayer.jar
+user={{ cchq_user }}
+autostart=true
+autorestart=true
+stdout_logfile={{ log_home }}/formplayer-spring.log
+redirect_stderr=true
+stderr_logfile={{ log_home }}/formplayer-spring.error.log
+directory={{ code_home }}/formplayer_build
+startsecs=10
