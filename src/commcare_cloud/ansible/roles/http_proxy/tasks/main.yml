@@ -30,14 +30,19 @@
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
-    line: "{{ item }}={{ groups['all']|sort|join(',') }},127.0.0.1,localhost,relay.nic.in,smsgw.sms.gov.in,{{ NO_WWW_SITE_HOST|default(SITE_HOST) }},{{ internal_domain_name }}"
-    regexp: "{{item }}="
+    line: "{{ item.0 }}={{ item.1|regex_replace('\\s','') }}"
+    regexp: "{{item.0 }}="
     create: yes
     state: present
   become: yes
-  with_items:
-    - 'no_proxy'
-    - 'NO_PROXY'
+  with_nested:
+    - ['no_proxy', 'NO_PROXY']
+    - >-
+      {{ groups['all']|sort|join(',') }},
+      127.0.0.1,localhost,
+      relay.nic.in,smsgw.sms.gov.in,
+      {{ NO_WWW_SITE_HOST|default(SITE_HOST) }},
+      {{ internal_domain_name }}
 
 - name: Bower proxy
   template:
