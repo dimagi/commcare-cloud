@@ -222,7 +222,7 @@ def _confirm_deploying_same_code():
         )
     else:
         branch_specific_msg = (
-            "Did you specify the correct branch using --set cod_branch=<branch> ?"
+            "Did you specify the correct branch using --set code_branch=<branch> ?"
         )
 
     message = (

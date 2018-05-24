@@ -12,12 +12,12 @@ project: "commcare-hq"
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
 
-shared_drive_enabled: true
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
 shared_mount_dir: "/mnt/{{ shared_dir_name }}"
 is_monolith: '{{ groups["all"]|length == 1 }}'
+shared_drive_enabled: '{{ not is_monolith }}'
 transfer_payload_dir_name: "transfer_payloads"
 restore_payload_dir_name: "restore_payloads"
 shared_temp_dir_name: "temp"
@@ -25,6 +25,7 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
+touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
