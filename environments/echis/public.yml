@@ -9,6 +9,7 @@ elasticsearch_cluster_name: 'echis-es'
 elastcsearch_backup_days: 3
 
 nofile_limit: 65536
+ssh_allow_password: True
 
 backup_blobdb: False
 backup_postgres: False
