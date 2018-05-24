@@ -42,9 +42,6 @@ ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
 shared_drive_enabled: true
 
 
