@@ -72,3 +72,5 @@ pillows:
       num_processes: 1
     XFormToElasticsearchPillow:
       num_processes: 1
+    kafka-ucr-static:
+      num_processes: 1
