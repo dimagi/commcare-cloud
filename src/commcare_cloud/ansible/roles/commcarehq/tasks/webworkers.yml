@@ -12,6 +12,11 @@
   template:
     src: "../templates/supervisor_django.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+  with_items:
+    - supervisor_env_vars:
+        http_proxy: "http://{{ http_proxy }}"
+        https_proxy: "https://{{ http_proxy }}"
+        no_proxy: "{{ groups['all'] | map('extract', hostvars, ['ansible_ssh_host']) | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}"
   tags:
     - services
   register: webworker_django_worker_conf_file
