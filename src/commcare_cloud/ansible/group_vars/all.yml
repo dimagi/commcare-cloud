@@ -25,6 +25,7 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
+touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 
 ssh_allow_password: False
 django_port: 9010
