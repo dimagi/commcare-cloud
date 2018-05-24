@@ -18,7 +18,7 @@ postgres_s3: False
 blobdb_s3: False
 couch_s3: False
 
-KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVE: no
 
 shared_drive_enabled: False
 
