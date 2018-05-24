@@ -8,18 +8,27 @@
   register: webworker_errand_boy_conf_file
 
 - name: define django worker service
-  become: cchq
+  become: yes
+  become_user: cchq
   template:
     src: "../templates/supervisor_django.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
   with_items:
-    - supervisor_env_vars:
-        http_proxy: "http://{{ http_proxy }}"
-        https_proxy: "https://{{ http_proxy }}"
-        no_proxy: "{{ groups['all'] | map('extract', hostvars, ['ansible_ssh_host']) | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}"
+    - env_vars:
+        http_proxy: "http://{{ http_proxy_address }}:{{ http_proxy_port }}"
+        https_proxy: "https://{{ http_proxy_address }}:{{ http_proxy_port }}"
+        no_proxy: "{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}"
+      gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
   tags:
     - services
   register: webworker_django_worker_conf_file
+
+- name: Remove old django worker
+  become: yes
+  become_user: cchq
+  file:
+    state: absent
+    path: "{{ legacy_service_home }}/supervisor/{{ deploy_env }}_supervisor_django.conf"
 
 - set_fact:
     webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }} + {{ webworker_django_worker_conf_file.get('results', []) }}"
