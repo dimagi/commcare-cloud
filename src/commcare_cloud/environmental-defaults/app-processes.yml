@@ -29,4 +29,5 @@ jython_memory: "3584m"
 formplayer_memory: "3584m"
 http_proxy: null
 newrelic_djangoagent: False
+newrelic_django_prefix: ''
 newrelic_javaagent: False
