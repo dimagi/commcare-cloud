@@ -44,12 +44,9 @@ default_from_email: commcare@pna.sn
 
 KSPLICE_ACTIVE: yes
 
-
 nameservers:
   - 8.8.8.8
   - 8.8.4.4
-
-touchforms_enabled: false
 
 localsettings:
   ALLOWED_HOSTS:
