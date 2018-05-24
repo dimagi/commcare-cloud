@@ -19,3 +19,4 @@ commcare-cloud $ENV deploy-stack --tags=supervisor --quiet --branch=$BRANCH --sk
 commcare-cloud $ENV update-users --quiet --branch=$BRANCH --skip-check
 
 commcare-cloud $ENV fab deploy:confirm=no --show=debug --set ignore_kafka_checkpoint_warning=true
+
