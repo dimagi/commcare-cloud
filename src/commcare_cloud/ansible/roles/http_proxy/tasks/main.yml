@@ -40,7 +40,7 @@
     - >-
       {{ groups['all']|sort|join(',') }},
       127.0.0.1,localhost,
-      relay.nic.in,smsgw.sms.gov.in,
+      {{ no_proxy_hosts|default()|join(',') }}{{ ',' if no_proxy_hosts|default() else ''}}
       {{ NO_WWW_SITE_HOST|default(SITE_HOST) }},
       {{ internal_domain_name }}
 

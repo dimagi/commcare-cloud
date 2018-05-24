@@ -49,6 +49,9 @@ nameservers:
 
 http_proxy_address: '10.247.63.132'
 http_proxy_port: '3128'
+no_proxy_hosts:
+  - relay.nic.in
+  - smsgw.sms.gov.in
 
 commcare_errors_branch: "master-icds"
 site_locations:
