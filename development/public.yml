@@ -11,8 +11,6 @@ http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
 http_proxy_parent_port: '3128'
 
-touchforms_enabled: false
-
 riak_backend: "bitcask"
 riak_ring_size: 64
 
