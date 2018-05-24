@@ -7,8 +7,22 @@
     - services
   register: webworker_errand_boy_conf_file
 
+- name: define django worker service
+  become: cchq
+  template:
+    src: "../templates/supervisor_django.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+  with_items:
+    - supervisor_env_vars:
+        http_proxy: "http://{{ http_proxy }}"
+        https_proxy: "https://{{ http_proxy }}"
+        no_proxy: "{{ groups['all'] | map('extract', hostvars, ['ansible_ssh_host']) | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}"
+  tags:
+    - services
+  register: webworker_django_worker_conf_file
+
 - set_fact:
-    webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }}"
+    webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }} + {{ webworker_django_worker_conf_file.get('results', []) }}"
 
 - set_fact:
     webworker_managed_files: "{{ webworker_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + webworker_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
