@@ -26,6 +26,8 @@ commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
 
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
 ssh_allow_password: False
 django_port: 9010
 riakcs_port: 8080

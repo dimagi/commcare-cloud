@@ -2,9 +2,6 @@
 # should be e.g. 'www.commcarehq.org'
 internal_domain_name: 'localdomain'
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
 touchforms_enabled: false
 
 riak_backend: "bitcask"
