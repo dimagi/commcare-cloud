@@ -30,6 +30,20 @@ which may be hours later. To check if preindex is complete...
 
 # Advanced
 
+## Run a pre-index
+When there are changes that require a reindex of some database indexes
+it is possible to do that indexing prior to the deploy so that the deploy
+goes more smoothly.
+
+Examples of change that woud result in a reindex are changes to a
+CouchDB view, changes to an Elasticsearch index.
+
+To perform a pre-index:
+
+```
+$ commcare-cloud <env> fab preindex_views
+```
+
 ## Resume failed deploy
 If something goes wrong and the deploy fails part way through you may
 be able to resume it as follows:
