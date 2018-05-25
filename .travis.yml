@@ -8,7 +8,7 @@ env:
     - TRAVIS_TEST=1
   matrix:
     - TEST=main
-    - TEST=prove-deploy
+#    - TEST=prove-deploy
 
 matrix:
   fast_finish: true
