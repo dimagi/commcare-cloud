@@ -31,9 +31,6 @@ aws_versioning_enabled: false
 
 KSPLICE_ACTIVE: yes
 
-
-shared_drive_enabled: false
-
 couch_dbs:
   default:
     host: 185.12.7.167
