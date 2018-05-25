@@ -9,6 +9,7 @@ env:
   matrix:
     - TEST=main
     - klsdjfkjsdlkfjslkdf #"if [[$TRAVIS_COMMIT_MESSAGE = 'sdfsdfsdf']]; then TEST=prove-deploy; fi"
+    - fnkjndkfjnsdf
 
 matrix:
   fast_finish: true
