@@ -6,7 +6,7 @@
       become: yes
       become_user: "{{ cchq_user }}"
       django_manage:
-        command: migrate
+        command: migrate_multi
         app_path: "{{ code_home }}"
         virtualenv: "{{ virtualenv_home }}"
       environment:
