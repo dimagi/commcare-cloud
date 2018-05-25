@@ -62,7 +62,7 @@ localsettings:
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_SMTP_HOST: ''
+  EMAIL_SMTP_HOST:
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
