@@ -23,6 +23,9 @@ then
     test_help_cache
     nosetests
 
+echo "TRAVIS CMT MSG: "
+echo ${TRAVIS_COMMIT_MESSAGE}
+
 elif [[ ${TEST} = 'prove-deploy' ]] && [[ ${TRAVIS_COMMIT_MESSAGE} = *'prove-deploy'* ]]
 then
     bootstrap() {
