@@ -15,6 +15,10 @@ matrix:
   allow_failures:
     - env: TEST=prove-deploy
 
+deploy:
+  on:
+    condition: [[ $TEST = 'prove-deploy' && $TRAVIS_COMMIT_MESSAGE = 'prove-deploy' ]] OR [[$TEST = 'main']]
+
 before_install:
   - openssl aes-256-cbc -K $encrypted_ab59a62b4b29_key -iv $encrypted_ab59a62b4b29_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
   - tar xvf .travis/secrets.tar
@@ -30,7 +34,7 @@ install:
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
   - "pip install -e .[test]"
-  - "if [[ $TEST = 'prove-deploy' && $TRAVIS_COMMIT_MESSAGE = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
+  - "if [[ $TEST = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
 
 script:
   - ".travis/tests.sh"
@@ -39,4 +43,4 @@ script:
   - "./tests/test_command_docs.sh"
 
 after_script:
-  - "if [[ $TEST = 'prove-deploy' && $TRAVIS_COMMIT_MESSAGE = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"
+  - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"
