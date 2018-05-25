@@ -21,7 +21,7 @@ celery_processes:
       max_tasks_per_child: 1
     celery_periodic:
       concurrency: 1
-      server_whitelist: 172.19.0.160
+      server_whitelist: 172.19.3.41
     saved_exports_queue:
       concurrency: 1
       max_tasks_per_child: 1
