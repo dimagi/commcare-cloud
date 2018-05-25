@@ -57,8 +57,6 @@ localsettings:
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
-  ELASTICSEARCH_PORT: '9200'
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
