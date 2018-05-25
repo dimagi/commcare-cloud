@@ -44,7 +44,7 @@ couch_dbs:
 
 localsettings:
   ALLOWED_HOSTS:
-    - echis.moh.gov.et  # TODO
+    - '{{ SITE_HOST }}'
     - 172.19.0.160
     - 172.19.0.161
     - 172.19.3.40
@@ -62,7 +62,7 @@ localsettings:
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
-  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_HOST:
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   FORMPLAYER_URL: "/formplayer"
