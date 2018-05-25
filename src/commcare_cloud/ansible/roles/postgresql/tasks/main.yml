@@ -160,7 +160,7 @@
 
 - name: Restart postgresql (after reboot)
   command: /bin/true
-  notify: Restart postgres
+  notify: Start postgres
   when: no_tags is not defined
   tags: after-reboot
 
