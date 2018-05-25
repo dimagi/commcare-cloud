@@ -27,7 +27,7 @@ before_install:
 
 install:
 ######
-  - "if [ $TEST == 'prove-deploy' ] && [ $TRAVIS_COMMIT_MESSAGE == *'pv-deploy'* ]; then pip install -e commcare-cloud-bootstrap; fi"
+  - "if [ $TEST == 'prove-deploy' ] && [ $TRAVIS_COMMIT_MESSAGE == *'pv-deploy'* ]; then pip install -e commcare-cloud-bootstrap; fi" 
 ######
 #  - "source control/init.sh"
 #  # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
