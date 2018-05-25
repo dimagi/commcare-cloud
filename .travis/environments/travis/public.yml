@@ -116,9 +116,6 @@ localsettings:
     - 127.0.0.1
     - "{{ SITE_HOST }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
-  ELASTICSEARCH_PORT: '9200'
-
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'
