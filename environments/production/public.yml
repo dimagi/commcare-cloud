@@ -35,9 +35,6 @@ KSPLICE_ACTIVE: yes
 
 ufw_private_interface: eth1
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
 couch_dbs:
   default:
     host: commcarehq.cloudant.com

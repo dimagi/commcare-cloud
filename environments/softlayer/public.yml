@@ -42,9 +42,6 @@ ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy[0] }}"
