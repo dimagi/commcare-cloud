@@ -23,7 +23,7 @@ then
     test_help_cache
     nosetests
 
-elif [[ ${TEST} = 'prove-deploy' ]]
+elif [[ ${TEST} = 'prove-deploy' ]] && [[ ${TRAVIS_COMMIT_MESSAGE} = *'prove-deploy'* ]]
 then
     bootstrap() {
         ssh-keygen -f ~/.ssh/id_rsa -N "" -q
