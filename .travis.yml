@@ -9,6 +9,7 @@ env:
   matrix:
     - TEST=main
     - TEST=prove-deploy
+      if branch = pv/travis-deploy-test
 
 matrix:
   fast_finish: true
