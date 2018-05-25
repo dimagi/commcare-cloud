@@ -44,7 +44,7 @@ couch_dbs:
 
 localsettings:
   ALLOWED_HOSTS:
-    - echis.moh.gov.et  # TODO
+    - '{{ SITE_HOST }}'
     - 172.19.0.160
     - 172.19.0.161
     - 172.19.3.40
