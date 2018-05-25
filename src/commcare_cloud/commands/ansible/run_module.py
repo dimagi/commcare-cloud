@@ -206,4 +206,4 @@ class Ping(CommandBase):
     def run(self, args, unknown_args):
         args.shell_command = 'echo {{ inventory_hostname }}'
         args.silence_warnings = False
-        RunShellCommand(self.parser).run(args, unknown_args)
+        return RunShellCommand(self.parser).run(args, unknown_args)
