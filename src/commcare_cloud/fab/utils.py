@@ -131,7 +131,7 @@ class DeployMetadata(object):
 
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
-        if not self.last_tag.name:
+        if not self.last_tag or not self.last_tag.name:
             return '"Previous deploy not found, cannot make comparison"'
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
             self.last_tag.name,
