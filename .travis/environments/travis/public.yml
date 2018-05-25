@@ -115,8 +115,6 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-  CELERY_PERIODIC_QUEUE: 'celery_periodic'
-  CELERY_RESULT_BACKEND: 'database'
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
