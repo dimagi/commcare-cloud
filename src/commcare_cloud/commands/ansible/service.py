@@ -148,10 +148,13 @@ class SupervisorService(SubServicesMixin, ServiceBase):
 
         non_zero_exits = []
         for hosts, processes in process_host_mapping.items():
-            command = 'supervisorctl {} {}'.format(
-                action,
-                ' '.join(processes)
-            )
+            if action == 'status' and 'all' in processes:
+                command = 'supervisorctl status'
+            else:
+                command = 'supervisorctl {} {}'.format(
+                    action,
+                    ' '.join(processes)
+                )
             exit_code = self._run_ansible_module(
                 ','.join(hosts),
                 'shell',
