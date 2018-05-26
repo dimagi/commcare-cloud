@@ -8,7 +8,7 @@ from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from mock.mock import patch
 from nose_parameterized import parameterized
 
-from commcare_cloud.commands.migrations.config import CouchMigration
+from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
     COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan
 from commcare_cloud.environment.main import get_environment
@@ -80,7 +80,10 @@ def test_generate_shard_prune_playbook(plan_name):
 
     if nodes:
         with open(migration.prune_playbook_path, 'r') as f:
-            playbook_content = f.read()
+            actual = yaml.load(f)
+        with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(PRUNE_PLAYBOOK_NAME))) as exp:
+            expected = yaml.load(exp)
+            assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
     else:
         assert not os.path.exists(migration.prune_playbook_path), migration.prune_playbook_path
 
