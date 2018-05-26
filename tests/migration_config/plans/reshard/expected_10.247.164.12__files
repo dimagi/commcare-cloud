@@ -1,4 +1,4 @@
-.shards/00000000-7fffffff/commcarehq.1495824481_design
-.shards/00000000-7fffffff/commcarehq__apps.1495824505_design
-shards/00000000-7fffffff/commcarehq.1495824481.couch
-shards/00000000-7fffffff/commcarehq__apps.1495824505.couch
+.shards/s1/commcarehq.1495824481_design
+.shards/s1/commcarehq__apps.1495824505_design
+shards/s1/commcarehq.1495824481.couch
+shards/s1/commcarehq__apps.1495824505.couch
