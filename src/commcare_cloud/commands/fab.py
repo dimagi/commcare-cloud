@@ -37,14 +37,20 @@ class Fab(CommandBase):
         self.parser.__class__ = _Parser
 
     def run(self, args, unknown_args):
-        cmd_parts = (
-            'fab', '-f', FABFILE,
-            args.env_name,
-        ) + (
-            (args.fab_command,) if args.fab_command else ()
-        ) + (
-            ('-l',) if args.l else ()
-        ) + tuple(unknown_args)
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print_command(cmd)
-        os.execvp('fab', cmd_parts)
+        fab_args = []
+        if args.fab_command:
+            fab_args.append(args.fab_command)
+        fab_args.extend(unknown_args)
+        if args.l:
+            fab_args.append('-l')
+        return exec_fab_command(args.env_name, *fab_args)
+
+
+def exec_fab_command(env_name, *extra_args):
+    cmd_parts = (
+        'fab', '-f', FABFILE,
+        env_name,
+    ) + tuple(extra_args)
+    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+    print_command(cmd)
+    os.execvp('fab', cmd_parts)

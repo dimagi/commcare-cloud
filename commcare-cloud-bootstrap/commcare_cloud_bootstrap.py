@@ -235,7 +235,18 @@ def terminate_instances(instance_ids):
     return json.loads(subprocess.check_output(cmd_parts))
 
 
+def stop_instances(instance_ids):
+    cmd_parts = [
+        'aws', 'ec2', 'stop-instances', '--instance-ids',
+    ] + instance_ids
+    return json.loads(subprocess.check_output(cmd_parts))
+
+
 def get_inventory_from_file(environment):
+    """Parse inventory file created from ``inventory.ini.j2``.
+
+    This is not a general inventory parser and only handles a subset
+    of inventory features."""
     inventory = Inventory()
     state = None
     with open(environment.paths.inventory_ini) as f:
@@ -396,6 +407,22 @@ class Terminate(object):
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
         terminate_instances_result = terminate_instances(instance_ids)
         print(terminate_instances_result)
+        print(instance_ids)
+
+class Stop(object):
+    command = 'stop'
+    help = """Stop instances for a given env"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
+        stop_instances_result = stop_instances(instance_ids)
+        print(stop_instances_result)
         print(instance_ids)
 
 

@@ -1,4 +1,8 @@
 ---
+- name: Start postgres
+  become: yes
+  action: service name=postgresql args="{{ postgresql_version }}" state=started
+
 - name: Restart postgres
   become: yes
   action: service name=postgresql args="{{ postgresql_version }}" state=restarted

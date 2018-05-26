@@ -6,8 +6,16 @@ init_config:
 instances:
    -   host: localhost
        port: 5432
-       username: {{ postgres_users.devreadonly.username }}
-       password: {{ postgres_users.devreadonly.password }}
+       username: {{ postgres_users.commcare.username }}
+       password: {{ postgres_users.commcare.password }}
        ssl: False
        tags:
-            - environment:{{ env_monitoring_id }}
+         - environment:{{ env_monitoring_id }}
+       custom_metrics:
+         - query: SELECT datname, state, %s FROM pg_stat_activity WHERE datname != 'postgres' GROUP BY datname, state;
+           metrics:
+             count(pid): [postgresql.connections.state, GAUGE]
+           relation: false
+           descriptors:  # map columns to tags
+             - [datname, database]
+             - [state, state]

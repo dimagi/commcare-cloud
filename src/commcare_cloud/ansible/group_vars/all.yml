@@ -12,12 +12,12 @@ project: "commcare-hq"
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
 
-shared_drive_enabled: true
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
 shared_mount_dir: "/mnt/{{ shared_dir_name }}"
 is_monolith: '{{ groups["all"]|length == 1 }}'
+shared_drive_enabled: '{{ not is_monolith }}'
 transfer_payload_dir_name: "transfer_payloads"
 restore_payload_dir_name: "restore_payloads"
 shared_temp_dir_name: "temp"
@@ -25,7 +25,10 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
+touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
 ssh_allow_password: False
 django_port: 9010
 riakcs_port: 8080
@@ -135,6 +138,7 @@ BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE | d
 BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY | default('') }}"
 BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN | default('') }}"
 BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS | default(None) }}"
+CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
 COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD | default(None) }}"
 COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME | default(None) }}"
 DRIFT_ID: "{{ localsettings_private.DRIFT_ID | default('', true) }}"
@@ -170,6 +174,7 @@ STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None)
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
 TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD | default('') }}"
 TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER | default('') }}"
+TRANSIFEX_API_TOKEN: "{{ localsettings_private.TRANSIFEX_API_TOKEN | default(None) }}"
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY | default(None) }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY | default(None) }}"
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD | default(None) }}"

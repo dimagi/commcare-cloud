@@ -25,10 +25,6 @@ KSPLICE_ACTIVE: yes
 
 ufw_private_interface: eth1
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
-
 couch_dbs:
   default:
     host: commcarehq.cloudant.com
@@ -53,9 +49,6 @@ localsettings:
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
-  CELERY_REMINDER_CASE_UPDATE_QUEUE:
-  CELERY_REMINDER_RULE_QUEUE:
-  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"

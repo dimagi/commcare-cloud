@@ -11,6 +11,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.fab import exec_fab_command
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -35,6 +36,7 @@ class AnsiblePlaybook(CommandBase):
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
+        shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
         Argument('playbook', help="""
             The ansible playbook .yml file to run.
@@ -107,7 +109,9 @@ class AnsiblePlaybook(CommandBase):
             if ask_vault_pass:
                 cmd_parts += ('--vault-password-file=/bin/cat',)
 
-            cmd_parts += get_common_ssh_args(environment)
+            cmd_parts_with_common_ssh_args = get_common_ssh_args(environment,
+                                                                 use_factory_auth=args.use_factory_auth)
+            cmd_parts += cmd_parts_with_common_ssh_args
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
             if ask_vault_pass:
@@ -134,6 +138,7 @@ class _AnsiblePlaybookAlias(CommandBase):
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
         shared_args.STDOUT_CALLBACK_ARG,
+        shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
     )
 
@@ -233,6 +238,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
+        args.use_factory_auth = True
         public_vars = environment.public_vars
         root_user = public_vars.get('commcare_cloud_root_user', 'root')
         unknown_args += ('--tags=users', '-u', root_user)
@@ -268,14 +274,19 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
+        if ask("Some celery configs are still updated through fab. "
+               "Do you want to run that as well (recommended)?"):
+            exec_fab_command(args.env_name, 'update_current_supervisor_config')
+        else:
+            return rc
 
 
 class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     command = 'update-local-known-hosts'
     help = (
         "Update the local known_hosts file of the environment configuration.\n\n"
-        "You can run this on a regualar basis to avoid having to `yes` through\n"
+        "You can run this on a regular basis to avoid having to `yes` through\n"
         "the ssh prompts. Note that when you run this, you are implicitly\n"
         "trusting that at the moment you run it, there is no man-in-the-middle\n"
         "attack going on, the type of security breech that the SSH prompt\n"
@@ -285,4 +296,11 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'add-ssh-keys.yml'
         args.quiet = True
-        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        environment = get_environment(args.env_name)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        with open(environment.paths.known_hosts, 'r') as f:
+            known_hosts = f.readlines()
+        known_hosts.sort()
+        with open(environment.paths.known_hosts, 'w') as f:
+            f.writelines(known_hosts)
+        return rc

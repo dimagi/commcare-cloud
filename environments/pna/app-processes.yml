@@ -6,23 +6,23 @@ service_blacklist:
 
 celery_processes:
   'pnaserver1':
-    repeat_record_queue,celery,export_download_queue:
+    repeat_record_queue:
+      concurrency: 2
+      max_tasks_per_child: 1
+    celery:
+      concurrency: 2
+      max_tasks_per_child: 1
+    background_queue,export_download_queue,saved_exports_queue:
+      concurrency: 4
+      max_tasks_per_child: 1
+# wait until background_queue,export_download_queue have been verified to work with optimize
+#      optimize: True
+    submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
-    background_queue,case_rule_queue:
-      concurrency: 1
-    email_queue:
-      concurrency: 1
-    saved_exports_queue:
-      concurrency: 1
-      optimize: True
-    submission_reprocessing_queue:
-      concurrency: 1
-    ucr_queue:
-      concurrency: 1
-    async_restore_queue:
-      concurrency: 1
+      max_tasks_per_child: 1
     celery_periodic:
-      concurrency: 1
+      concurrency: 2
+      max_tasks_per_child: 1
       server_whitelist: 196.207.230.171
     flower: {}
   None:
@@ -71,4 +71,6 @@ pillows:
     UserPillow:
       num_processes: 1
     XFormToElasticsearchPillow:
+      num_processes: 1
+    kafka-ucr-static:
       num_processes: 1

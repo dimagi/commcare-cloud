@@ -1,3 +1,4 @@
+internal_domain_name: "india.commcarehq.org"
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -10,6 +11,8 @@ DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '8192m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
 supervisor_http_enabled: True
 
@@ -19,6 +22,9 @@ backup_blobdb: False
 backup_postgres: plain
 backup_es: True
 postgres_s3: True
+postgresql_backup_weeks: 1
+postgresql_backup_days: 1
+
 
 aws_region: 'ap-south-1'
 
@@ -35,12 +41,6 @@ kafka_log_dir: "{{ encrypted_root }}/kafka"
 ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
-
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
-shared_drive_enabled: true
-
 
 couch_dbs:
   default:
@@ -70,11 +70,6 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-  CELERY_PERIODIC_QUEUE: 'celery_periodic'
-  CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
-  CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
-  CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
-  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
