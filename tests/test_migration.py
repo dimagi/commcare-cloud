@@ -8,7 +8,7 @@ from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from mock.mock import patch
 from nose_parameterized import parameterized
 
-from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME
+from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME, COUCH_SHARD_PLAN
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
     COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan
 from commcare_cloud.environment.main import get_environment
@@ -46,7 +46,7 @@ def test_generate_rsync_lists(plan_name):
 
     assert expected_couch_config_json == migration.target_couch_config.to_json(), migration.target_couch_config.to_json()
 
-    files_by_host = _generate_rsync_lists(migration, plan_name)
+    files_by_host = _generate_plan_and_rsync_lists(migration, plan_name)
 
     with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(COUCHDB_RSYNC_SCRIPT))) as exp:
         expected_script = exp.read()
@@ -66,6 +66,20 @@ def test_generate_rsync_lists(plan_name):
             script_source = exp.read()
 
         assert expected_script == script_source, "'{}'".format(script_source)
+
+
+
+@parameterized(TEST_PLANS)
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
+def test_generate_rsync_lists(plan_name):
+    migration = _get_migration(plan_name)
+    _generate_plan_and_rsync_lists(migration, plan_name)
+
+    with open(migration.shard_plan_path, 'r') as f:
+        actual = yaml.load(f)
+    with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(COUCH_SHARD_PLAN))) as exp:
+        expected = yaml.load(exp)
+        assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
 
 @parameterized(TEST_PLANS)
@@ -88,7 +102,7 @@ def test_generate_shard_prune_playbook(plan_name):
         assert not os.path.exists(migration.prune_playbook_path), migration.prune_playbook_path
 
 
-def _generate_rsync_lists(migration, plan_name):
+def _generate_plan_and_rsync_lists(migration, plan_name):
     with open(os.path.join(PLANS_DIR, plan_name, 'mock_shard_allocation.yml')) as f:
         mock_shard_allocation = yaml.load(f)
     mock_func = get_shard_allocation_func(mock_shard_allocation)
