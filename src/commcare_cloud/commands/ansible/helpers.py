@@ -35,14 +35,16 @@ class AnsibleContext(object):
         return env
 
 
-def get_common_ssh_args(environment, use_pem=False):
+def get_common_ssh_args(environment, use_factory_auth=False):
     strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
 
     common_ssh_args = []
-    if use_pem:
-        pem = environment.public_vars.get('commcare_cloud_pem', None)
-        if pem:
-            common_ssh_args.extend(['-i', pem])
+    cmd_parts_with_common_ssh_args = ()
+
+    if use_factory_auth:
+        auth_cmd_parts, auth_ssh_args = add_factory_auth_cmd(environment)
+        cmd_parts_with_common_ssh_args += auth_cmd_parts
+        common_ssh_args.extend(auth_ssh_args)
     if not strict_host_key_checking:
         common_ssh_args.append('-o StrictHostKeyChecking=no')
 
@@ -50,10 +52,21 @@ def get_common_ssh_args(environment, use_pem=False):
     if os.path.exists(known_hosts_filepath):
         common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
 
-    cmd_parts = tuple()
     if common_ssh_args:
-        cmd_parts += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
-    return cmd_parts
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
+    return cmd_parts_with_common_ssh_args
+
+
+def add_factory_auth_cmd(environment):
+    auth_cmd_parts = ()
+    auth_ssh_args = []
+    pem = environment.public_vars.get('commcare_cloud_pem', None)
+    if not pem:
+        auth_cmd_parts += ('--ask-pass',)
+    else:
+        auth_ssh_args.extend(['-i', pem])
+
+    return auth_cmd_parts, auth_ssh_args
 
 
 def get_django_webworker_name(environment):
@@ -83,10 +96,14 @@ def get_formplayer_spring_instance_name(environment):
     )
 
 
-def get_user_arg(public_vars, unknown_args):
+def get_user_arg(public_vars, unknown_args, use_factory_auth=False):
     cmd_parts = tuple()
+    if use_factory_auth:
+        default_user = public_vars.get('commcare_cloud_root_user', 'root')
+    else:
+        default_user = 'ansible'
     if not has_arg(unknown_args, '-u', '--user'):
-        user = public_vars.get('commcare_cloud_remote_user', 'ansible')
+        user = public_vars.get('commcare_cloud_remote_user', default_user)
         cmd_parts += ('-u', user)
     return cmd_parts
 
@@ -140,7 +157,12 @@ def get_celery_workers(environment):
             continue
         for comma_separated_queue_names, config in queues.items():
             for queue in comma_separated_queue_names.split(','):
-                for worker_num in range(config.num_workers):
+                if queue == 'flower':
+                    # there's always only one, so worker_num doesn't factor into the name
+                    worker_range = [None]
+                else:
+                    worker_range = range(config.num_workers)
+                for worker_num in worker_range:
                     process_name = get_celery_worker_name(environment, comma_separated_queue_names, worker_num)
                     yield ProcessDescriptor(host, queue, worker_num, process_name)
 
@@ -148,11 +170,11 @@ def get_celery_workers(environment):
 def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
-    return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
+    return "{project}-{environment}-celery_{comma_separated_queue_name}{worker_num_suffix}".format(
         project=project,
         environment=environment_environment,
         comma_separated_queue_name=comma_separated_queue_name,
-        worker_num=worker_num
+        worker_num_suffix="_{}".format(worker_num) if worker_num is not None else ''
     )
 
 

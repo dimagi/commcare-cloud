@@ -35,10 +35,6 @@ datadog_extra_host_checks:
 
 file_email: False
 
-shared_drive_enabled: true
-
-touchforms_enabled: false
-
 etc_hosts_lines:
   - '10.247.164.31		cas.commcarehq.org'
   - '10.247.164.31		reports.icds-cas.gov.in'
@@ -51,6 +47,9 @@ nameservers:
 
 http_proxy_address: '10.247.63.132'
 http_proxy_port: '3128'
+no_proxy_hosts:
+  - relay.nic.in
+  - smsgw.sms.gov.in
 
 commcare_errors_branch: "master-icds"
 site_locations:
@@ -140,11 +139,6 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
-  CELERY_PERIODIC_QUEUE: 'celery_periodic'
-  CELERY_REMINDER_CASE_UPDATE_QUEUE: 'reminder_case_update_queue'
-  CELERY_REMINDER_RULE_QUEUE: 'reminder_rule_queue'
-  CELERY_REPEAT_RECORD_QUEUE: 'repeat_record_queue'
-  CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
   CELERY_TIMEZONE: 'Asia/Kolkata'
   COMMCARE_HQ_NAME: 'ICDS-CAS Server'
   COMMCARE_NAME: 'ICDS-CAS'
@@ -231,6 +225,8 @@ localsettings:
             - 'static-dashboard_delivery_forms'
             - 'static-dashboard_thr_forms'
             - 'static-dashboard_growth_monitoring_forms'
+            - 'dashboard_child_health_daily_feeding_forms'
+            - 'static-dashboard_birth_preparedness_forms'
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'

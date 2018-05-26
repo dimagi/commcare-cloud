@@ -237,7 +237,6 @@ def _format_env(current_env, extra=None):
         'code_current',
         'log_dir',
         'sudo_user',
-        'host_string',
         'project',
         'es_endpoint',
         'jython_home',
@@ -274,6 +273,7 @@ def _format_env(current_env, extra=None):
     for prop in important_props:
         ret[prop] = current_env.get(prop, '')
 
+    ret['host_string'] = env.ccc_environment.get_hostname(env.host_string)
     ret['environment'] = current_env.get('deploy_env', '')
 
     if extra:

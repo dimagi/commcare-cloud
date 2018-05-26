@@ -179,3 +179,4 @@ postgresql_dbs:
   port: 6432
   query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+  hq_acceptable_standby_delay: 30

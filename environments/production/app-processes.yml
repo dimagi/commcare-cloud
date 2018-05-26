@@ -58,15 +58,8 @@ celery_processes:
       max_tasks_per_child: 5
     flower: {}
   hqcelery2.internal-va.commcarehq.org:
-    celery,export_download_queue:
-      concurrency: 8
-      max_tasks_per_child: 5
-    saved_exports_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
-      optimize: True
     background_queue:
-      concurrency: 4
+      concurrency: 8
       max_tasks_per_child: 1
     send_report_throttled:
       concurrency: 2
@@ -74,6 +67,17 @@ celery_processes:
   hqcelery3.internal-va.commcarehq.org:
     async_restore_queue:
       concurrency: 8
+      max_tasks_per_child: 5
+    saved_exports_queue:
+      concurrency: 4
+      max_tasks_per_child: 1
+      optimize: True
+  hqcelery4.internal-va.commcarehq.org:
+    celery:
+      concurrency: 6
+      max_tasks_per_child: 5
+    export_download_queue:
+      concurrency: 6
       max_tasks_per_child: 5
 pillows:
   hqpillowtop2.internal-va.commcarehq.org:

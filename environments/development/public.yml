@@ -2,16 +2,10 @@
 # should be e.g. 'www.commcarehq.org'
 internal_domain_name: 'localdomain'
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-# - "169.38.74.104   commcarehq-india.cloudant.com"
-
 http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
 http_proxy_parent_port: '3128'
-
-touchforms_enabled: false
 
 riak_backend: "bitcask"
 riak_ring_size: 64
@@ -77,7 +71,6 @@ postgres_users:
 
 encrypted_root: '/opt/data'
 
-shared_drive_enabled: True
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -132,11 +125,6 @@ localsettings:
 #  BANK_ADDRESS:
 #  BANK_NAME:
 #  BANK_SWIFT_CODE:
-  CELERY_PERIODIC_QUEUE: 'celery_periodic'
-#  CELERY_REMINDER_CASE_UPDATE_QUEUE:
-#  CELERY_REMINDER_RULE_QUEUE:
-#  CELERY_REPEAT_RECORD_QUEUE:
-  CELERY_RESULT_BACKEND: 'database'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
