@@ -41,70 +41,55 @@ def get_shard_allocation_func(mock_shard_allocation):
 def test_generate_rsync_lists(plan_name):
     migration = _get_migration(plan_name)
     assert not migration.separate_source_and_target
-    with open(os.path.join(PLANS_DIR, plan_name, 'expected_couch_config.yml')) as f:
-        expected_couch_config_json = yaml.load(f)
+    expected_couch_config_json = _get_expected_yml(plan_name, 'expected_couch_config.yml')
 
     assert expected_couch_config_json == migration.target_couch_config.to_json(), migration.target_couch_config.to_json()
 
     files_by_host = _generate_plan_and_rsync_lists(migration, plan_name)
-
-    with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(COUCHDB_RSYNC_SCRIPT))) as exp:
-        expected_script = exp.read()
+    expected_script = _get_test_file(plan_name, 'expected_{}'.format(COUCHDB_RSYNC_SCRIPT))
 
     for host, file_paths in files_by_host.items():
         for file_path in file_paths:
             file_name = file_path.split('/')[-1]
-            with open(file_path, 'r') as f:
-                actual = f.read()
 
-            with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(file_name))) as exp:
-                expected = exp.read()
+            actual = _get_file_contents(file_path)
+            expected = _get_test_file(plan_name, 'expected_{}'.format(file_name))
             assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
-        script_path = os.path.join(migration.rsync_files_path, host, COUCHDB_RSYNC_SCRIPT)
-        with open(script_path, 'r') as exp:
-            script_source = exp.read()
-
+        script_source = _get_file_contents(os.path.join(migration.rsync_files_path, host, COUCHDB_RSYNC_SCRIPT))
         assert expected_script == script_source, "'{}'".format(script_source)
-
 
 
 @parameterized(TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
-def test_generate_rsync_lists(plan_name):
+def test_generated_plan(plan_name):
     migration = _get_migration(plan_name)
     _generate_plan_and_rsync_lists(migration, plan_name)
 
-    with open(migration.shard_plan_path, 'r') as f:
-        actual = yaml.load(f)
-    with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(COUCH_SHARD_PLAN))) as exp:
-        expected = yaml.load(exp)
-        assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
+    actual = _get_yml(migration.shard_plan_path)
+    expected = _get_expected_yml(plan_name, 'expected_{}'.format(COUCH_SHARD_PLAN))
+    assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
 
 @parameterized(TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_generate_shard_prune_playbook(plan_name):
     migration = _get_migration(plan_name)
-    with open(os.path.join(PLANS_DIR, plan_name, 'mock_shard_allocation.yml')) as f:
-        mock_shard_allocation = yaml.load(f)
+    mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation.yml')
     mock_func = get_shard_allocation_func(mock_shard_allocation)
     with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
         nodes = generate_shard_prune_playbook(migration)
 
     if nodes:
-        with open(migration.prune_playbook_path, 'r') as f:
-            actual = yaml.load(f)
-        with open(os.path.join(PLANS_DIR, plan_name, 'expected_{}'.format(PRUNE_PLAYBOOK_NAME))) as exp:
-            expected = yaml.load(exp)
-            assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
+        actual = _get_yml(migration.prune_playbook_path)
+        expected = _get_expected_yml(plan_name, 'expected_{}'.format(PRUNE_PLAYBOOK_NAME))
+        assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
     else:
         assert not os.path.exists(migration.prune_playbook_path), migration.prune_playbook_path
 
 
 def _generate_plan_and_rsync_lists(migration, plan_name):
-    with open(os.path.join(PLANS_DIR, plan_name, 'mock_shard_allocation.yml')) as f:
-        mock_shard_allocation = yaml.load(f)
+    mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation.yml')
     mock_func = get_shard_allocation_func(mock_shard_allocation)
 
     db_info = [
@@ -123,3 +108,21 @@ def _get_migration(plan_name):
     plan_path = os.path.join(PLANS_DIR, plan_name, 'plan.yml')
     migration = CouchMigration(get_environment('env1'), plan_path)
     return migration
+
+
+def _get_expected_yml(plan_name, filename):
+    return _get_yml(os.path.join(PLANS_DIR, plan_name, filename))
+
+
+def _get_yml(path):
+    with open(path, 'r') as exp:
+        return yaml.load(exp)
+
+
+def _get_test_file(plan_name, filename):
+    return _get_file_contents(os.path.join(PLANS_DIR, plan_name, filename))
+
+
+def _get_file_contents(path):
+    with open(path, 'r') as f:
+        return f.read()
