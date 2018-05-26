@@ -54,7 +54,6 @@ class MigrateCouchdb(CommandBase):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
-        environment.get_ansible_vault_password()
 
         migration = CouchMigration(environment, args.migration_plan)
         check_connection(migration.target_couch_config.get_control_node())
