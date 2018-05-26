@@ -14,6 +14,7 @@ from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocati
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands import shared_args
+from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -38,7 +39,7 @@ class MigrateCouchdb(CommandBase):
 
     arguments = (
         Argument(dest='migration_plan', help="Path to migration plan file"),
-        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'], help="""
+        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit', 'clean'], help="""
             Action to perform
 
             - describe: Print out cluster info
@@ -75,11 +76,16 @@ class MigrateCouchdb(CommandBase):
             return commit(migration)
 
         if args.actoin == 'clean':
-            return clean(migration)
+            return clean(migration, ansible_context, args.skip_check)
 
 
-def clean(migration):
+def clean(migration, ansible_context, skip_check):
     nodes = generate_shard_prune_playbook(migration)
+    if nodes:
+        run_ansible_playbook(
+            migration.target_environment, migration.prune_playbook_path, ansible_context,
+            skip_check=skip_check
+        )
 
 
 def generate_shard_prune_playbook(migration):
