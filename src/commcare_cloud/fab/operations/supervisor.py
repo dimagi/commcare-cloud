@@ -38,7 +38,6 @@ from six.moves import range
 def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     set_celery_supervisorconf()
-    set_djangoapp_supervisorconf()
     set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
 
@@ -140,15 +139,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
                 host=env.host,
                 env_name=env.env_name)
     )
-
-
-def set_djangoapp_supervisorconf():
-    django_worker_name = get_django_webworker_name(env.ccc_environment)
-    if _check_in_roles(ROLES_DJANGO):
-        _rebuild_supervisor_conf_file('make_supervisor_conf',
-                                      'supervisor_django.conf',
-                                      {"django_worker_name": django_worker_name}
-                                      )
 
 
 def set_formsplayer_supervisorconf():

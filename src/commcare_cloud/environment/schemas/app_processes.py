@@ -33,6 +33,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     formplayer_memory = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
     newrelic_djangoagent = jsonobject.BooleanProperty()
+    newrelic_django_prefix = jsonobject.StringProperty()
     newrelic_javaagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
