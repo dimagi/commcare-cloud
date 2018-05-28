@@ -12,15 +12,6 @@
     - services
   register: formplayer_files
 
-- name: remove old formplayer spring services
-  become: yes
-  become_user: cchq
-  file:
-    state: absent
-    path: "{{ legacy_service_home }}/supervisor/{{ deploy_env }}_supervisor_formplayer_spring.conf"
-  tags:
-    - services
-
 - set_fact:
     formplayer_supervisor_files: "{{ formplayer_files.get('results', []) }}"
 
