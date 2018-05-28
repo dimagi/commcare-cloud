@@ -1,5 +1,6 @@
 newrelic_djangoagent: True
 newrelic_javaagent: True
+newrelic_django_prefix: '{{ virtualenv_home }}/bin/newrelic-admin run-program '
 
 celery_processes:
   hqcelery0.internal-va.commcarehq.org:
