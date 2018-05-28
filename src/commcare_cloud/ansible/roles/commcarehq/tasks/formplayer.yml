@@ -22,7 +22,7 @@
     - services
 
 - set_fact:
-    formplayer_supervisor_files: "{{ formplayer_files.get('results', [])"
+    formplayer_supervisor_files: "{{ formplayer_files.get('results', []) }}"
 
 - set_fact:
-    formplayer_managed_files: "{{ formplayer_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }"
+    formplayer_managed_files: "{{ formplayer_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }}"

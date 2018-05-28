@@ -88,8 +88,8 @@
 - name: define celery workers
   become: cchq
   template:
-    src: "../templates/supervisor_celery_worker.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_worker.conf"
+    src: "../templates/supervisor_celery_workers.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
   when: app_processes_config.celery_processes.get(inventory_hostname) is defined
   with_items:
     - env_vars:

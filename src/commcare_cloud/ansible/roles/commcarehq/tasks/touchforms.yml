@@ -8,7 +8,7 @@
   register: touchforms_files
 
 - set_fact:
-    touchforms_supervisor_files: "{{ touchforms_files.get('results', [])"
+    touchforms_supervisor_files: "{{ touchforms_files.get('results', []) }}"
 
 - set_fact:
-    touchforms_managed_files: "{{ touchforms_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }"
+    touchforms_managed_files: "{{ touchforms_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }}"
