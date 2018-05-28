@@ -91,13 +91,6 @@ def set_celery_supervisorconf():
                 conf_destination_filename,
             )
 
-        if 'celery_periodic' in queue_names:
-            _rebuild_supervisor_conf_file(
-                'make_supervisor_conf',
-                'supervisor_celery_beat.conf',
-                {'celery_params': params}
-            )
-
 
 def show_periodic_server_whitelist_message_and_abort(env):
     utils.abort(
