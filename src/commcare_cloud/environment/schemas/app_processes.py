@@ -27,6 +27,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     django_bind = IpAddressProperty()
     django_port = PortProperty()
     flower_port = PortProperty()
+    gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
     jython_memory = MemorySpecProperty()
     formplayer_memory = MemorySpecProperty()

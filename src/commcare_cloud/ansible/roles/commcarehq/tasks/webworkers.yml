@@ -17,7 +17,7 @@
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
         https_proxy: "{% if http_proxy_address is defined %}https://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
-      gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + ansible_processor_vcpus }}"
+      gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
   tags:
     - services
   register: webworker_django_worker_conf_file
