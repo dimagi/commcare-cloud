@@ -1,39 +1,20 @@
 from __future__ import absolute_import
 from __future__ import print_function
-import json
-import os
 import time
-import posixpath
 from contextlib import contextmanager
-import uuid
 
-from commcare_cloud.commands.ansible.helpers import get_celery_worker_name
 from fabric.api import roles, parallel, env, sudo, serial, execute
-from fabric.colors import magenta
 from fabric.context_managers import cd
 from fabric.contrib import files
-from fabric.decorators import task
-from fabric.operations import put, run
 
 from ..const import (
     ROLES_CELERY,
     ROLES_DJANGO,
-    ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
     ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
 )
-from fabric import utils
-from six.moves import range
-
-
-@task
-@roles(ROLES_ALL_SERVICES)
-@parallel
-def set_supervisor_config():
-    """Upload and link Supervisor configuration from the template."""
-    pass
 
 
 @roles(ROLES_PILLOWTOP)

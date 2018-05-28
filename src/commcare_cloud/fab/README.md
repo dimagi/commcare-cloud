@@ -92,7 +92,6 @@ manage                 run a management command
 preindex_views         Creates a new release that runs preindex_everything. Clones code from
 restart_services
 rollback               Rolls back the servers to the previous release if it exists and is same
-set_supervisor_config
 setup_release          Setup a release in the releases directory with the most recent code.
 start_pillows
 stop_pillows
