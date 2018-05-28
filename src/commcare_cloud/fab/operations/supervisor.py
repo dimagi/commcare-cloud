@@ -59,11 +59,6 @@ def set_celery_supervisorconf():
     for comma_separated_queue_names, params in queues.items():
         queue_names = comma_separated_queue_names.split(',')
         if queue_names == ['flower']:
-            _rebuild_supervisor_conf_file(
-                'make_supervisor_conf',
-                'supervisor_celery_flower.conf',
-                {'celery_params': params}
-            )
             continue
 
         pooling = params['pooling']
