@@ -274,12 +274,7 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
-        rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
-        if ask("Some celery configs are still updated through fab. "
-               "Do you want to run that as well (recommended)?"):
-            exec_fab_command(args.env_name, 'update_current_supervisor_config')
-        else:
-            return rc
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
 class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
