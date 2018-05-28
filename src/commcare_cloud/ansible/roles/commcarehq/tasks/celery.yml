@@ -53,8 +53,32 @@
     - services
   register: celery_errand_boy_files
 
+- name: Add celery_bash_runner files
+  template:
+    src: "../templates/celery_bash_runner.sh.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+  with_items:
+    - file_name: "celery_bash_runner.sh"
+    - file_name: "celery_bash_runner_optimized.sh"
+      python_options: "-O"
+  tags:
+    - services
+  register: celery_bash_runner_files
+
+- name: remove old celery services
+  become: yes
+  become_user: cchq
+  file:
+    state: absent
+    path: "{{ legacy_service_home }}/supervisor/{{ deploy_env }}_{{ item }}"
+  with_items:
+    - "celery_bash_runner.sh"
+    - "celery_bash_runner_optimized.sh"
+  tags:
+    - services
+
 - set_fact:
-    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }}"
+    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }} + celery_bash_runner_files.get('results', [])"
 
 - set_fact:
     celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"

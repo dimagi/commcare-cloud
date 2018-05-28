@@ -56,12 +56,6 @@ def set_celery_supervisorconf():
     if 'celery_periodic' in queues and env.host != queues['celery_periodic'].get('server_whitelist'):
         show_periodic_server_whitelist_message_and_abort(env)
 
-    _rebuild_supervisor_conf_file('make_supervisor_conf', 'celery_bash_runner.sh')
-    _rebuild_supervisor_conf_file(
-        'make_supervisor_conf', 'celery_bash_runner.sh',
-        params={'python_options': '-O'}, conf_destination_filename='celery_bash_runner_optimized.sh'
-    )
-
     for comma_separated_queue_names, params in queues.items():
         queue_names = comma_separated_queue_names.split(',')
         if queue_names == ['flower']:
