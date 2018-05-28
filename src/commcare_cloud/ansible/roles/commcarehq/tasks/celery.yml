@@ -100,20 +100,6 @@
     - services
   register: celery_worker_files
 
-- name: remove old celery services
-  become: yes
-  become_user: cchq
-  file:
-    state: absent
-    path: "{{ legacy_service_home }}/supervisor/{{ deploy_env }}_{{ item }}"
-  with_items:
-    - "celery_bash_runner.sh"
-    - "celery_bash_runner_optimized.sh"
-    - "supervisor_celery_flower.conf"
-    - "supervisor_celery_beat.conf"
-  tags:
-    - services
-
 - set_fact:
     celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }} + celery_bash_runner_files.get('results', []) + celery_flower_files.get('results', []) + celery_beat_files.get('results', []) + celery_worker_files.get('results', [])"
 
