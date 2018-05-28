@@ -15,9 +15,9 @@
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
   with_items:
     - env_vars:
-        http_proxy: "http://{{ http_proxy_address }}:{{ http_proxy_port }}"
-        https_proxy: "https://{{ http_proxy_address }}:{{ http_proxy_port }}"
-        no_proxy: "{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}"
+        http_proxy: "{% if http_proxy_address %}http://{{ http_proxy_address }}:{{ http_proxy_port }} {% endif %}"
+        https_proxy: "{% if http_proxy_address %}https://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
+        no_proxy: "{% if http_proxy_address %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
       gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
   tags:
     - services
