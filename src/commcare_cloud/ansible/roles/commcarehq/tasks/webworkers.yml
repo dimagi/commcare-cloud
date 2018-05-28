@@ -22,13 +22,6 @@
     - services
   register: webworker_django_worker_conf_file
 
-- name: Remove old django worker
-  become: yes
-  become_user: cchq
-  file:
-    state: absent
-    path: "{{ legacy_service_home }}/supervisor/{{ deploy_env }}_supervisor_django.conf"
-
 - set_fact:
     webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }} + {{ webworker_django_worker_conf_file.get('results', []) }}"
 
