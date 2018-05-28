@@ -85,6 +85,16 @@
     - services
   register: celery_beat_files
 
+- name: define celery workers
+  become: cchq
+  template:
+    src: "../templates/supervisor_celery_worker.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_worker.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname) is defined
+  tags:
+    - services
+  register: celery_worker_files
+
 - name: remove old celery services
   become: yes
   become_user: cchq
@@ -100,7 +110,7 @@
     - services
 
 - set_fact:
-    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }} + celery_bash_runner_files.get('results', []) + celery_flower_files.get('results', []) + celery_beat_files.get('results', [])"
+    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }} + celery_bash_runner_files.get('results', []) + celery_flower_files.get('results', []) + celery_beat_files.get('results', []) + celery_worker_files.get('results', [])"
 
 - set_fact:
     celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
