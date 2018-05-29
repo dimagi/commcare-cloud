@@ -27,7 +27,8 @@ before_install:
 
 install:
 ######
-  - "if [[ $TRAVIS_COMMIT_MESSAGE = *'pv-deploy'* ]]; then source control/init.sh; fi"
+  - "if [[ $TEST = 'prove-deploy' ]]; then source control/init.sh; fi"
+  - "echo [[ $TRAVIS_COMMIT_MESSAGE ]]"
   - "if [[ $TRAVIS_COMMIT_MESSAGE = *'pv-deploy'* ]]; then pip install -e .[test]; fi"
 ######
 #  - "source control/init.sh"
