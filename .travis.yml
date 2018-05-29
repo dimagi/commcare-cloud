@@ -27,10 +27,10 @@ before_install:
 
 install:
 ######
-  - "if [[ $TRAVIS_COMMIT_MESSAGE == *'pv-deploy'* ]]; then source control/init.sh; fi"
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"pv-deploy"* ]]; then source control/init.sh; fi
   - "echo [[ $TRAVIS_COMMIT_MESSAGE ]]"
   - "echo [[ $TRAVIS_BRANCH ]]"
-  - "if [[ $TRAVIS_COMMIT_MESSAGE == *'pv-deploy'* ]]; then pip install -e .[test]; fi" 
+  - if [[ "$TRAVIS_COMMIT_MESSAGE" == *"pv-deploy"* ]]; then pip install -e .[test]; fi
 ######
 #  - "source control/init.sh"
 #  # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
