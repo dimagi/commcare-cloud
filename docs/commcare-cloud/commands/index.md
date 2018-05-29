@@ -926,7 +926,7 @@ Use 'help' action to list all options.
 Perform a CouchDB migration
 
 ```
-commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commit}
+commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commit,clean}
 ```
 
 This is a recent and advanced addition to the capabilities,
@@ -939,7 +939,7 @@ ready, it will be more thoroughly documented.
 
 Path to migration plan file
 
-###### `{describe,plan,migrate,commit}`
+###### `{describe,plan,migrate,commit,clean}`
 
 Action to perform
 
@@ -947,6 +947,7 @@ Action to perform
 - plan: generate plan details from migration plan
 - migrate: stop nodes and copy shard data according to plan
 - commit: update database docs with new shard allocation
+- clean: remove shard files from hosts where they aren't needed
 
 
 #### `downtime`
