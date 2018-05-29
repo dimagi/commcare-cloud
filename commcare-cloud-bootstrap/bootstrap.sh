@@ -8,7 +8,7 @@ commcare-cloud-bootstrap provision $SPEC --env $ENV
 while
     commcare-cloud $ENV ping all --use-factory-auth
     [ $? = 4 ]
-do :
+do : 
 done
 
 commcare-cloud $ENV bootstrap-users --quiet --branch=$BRANCH
