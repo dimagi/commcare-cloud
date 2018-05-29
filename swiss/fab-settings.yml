@@ -1,2 +1,1 @@
 ignore_kafka_checkpoint_warning: True
-default_branch: enterprise
