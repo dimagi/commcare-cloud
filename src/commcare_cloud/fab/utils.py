@@ -10,6 +10,7 @@ from fabric.context_managers import cd, settings
 from fabric.api import local
 import re
 from getpass import getpass
+from memoized import memoized_property
 
 from github import Github, UnknownObjectException
 from fabric.api import execute, env
@@ -78,29 +79,24 @@ class DeployMetadata(object):
         with cd(env.code_current):
             return sudo('git rev-parse HEAD')
 
-    @property
+    @memoized_property
     def last_tag(self):
-        if self._last_tag is not None:
-            return self._last_tag
-
         pattern = ".*-{}-deploy".format(re.escape(self._environment))
         for tag in self.repo.get_tags()[:self._max_tags]:
             if re.match(pattern, tag.name):
-                self._last_tag = tag
-                break
+                return tag
 
-        return self._last_tag
+        print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
+            self._max_tags,
+            self._environment
+        )))
+        return None
 
     def tag_commit(self):
         if env.offline:
             self._offline_tag_commit()
             return
 
-        if not self.last_tag.name:
-            print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
-                self._max_tags,
-                self._environment
-            )))
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
         self.repo.create_git_ref(
             ref='refs/tags/' + tag_name,
@@ -135,7 +131,7 @@ class DeployMetadata(object):
 
         if self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
-        if not self.last_tag.name:
+        if not self.last_tag or not self.last_tag.name:
             return '"Previous deploy not found, cannot make comparison"'
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
             self.last_tag.name,

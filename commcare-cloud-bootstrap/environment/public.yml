@@ -2,11 +2,6 @@
 # should be e.g. 'www.commcarehq.org'
 internal_domain_name: 'localdomain'
 
-etc_hosts_lines: []
-etc_hosts_lines_removed: []
-
-touchforms_enabled: false
-
 riak_backend: "bitcask"
 riak_ring_size: 64
 
@@ -70,7 +65,6 @@ postgres_users:
 
 encrypted_root: '/opt/data'
 
-shared_drive_enabled: True
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -122,12 +116,7 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-  CELERY_PERIODIC_QUEUE: 'celery_periodic'
-  CELERY_RESULT_BACKEND: 'database'
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
-  ELASTICSEARCH_PORT: '9200'
-
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'

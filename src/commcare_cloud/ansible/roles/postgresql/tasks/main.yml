@@ -153,6 +153,17 @@
 # restart / reload if necessary to make sure replication slot config updated
 - meta: flush_handlers
 
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
+- name: Restart postgresql (after reboot)
+  command: /bin/true
+  notify: Start postgres
+  when: no_tags is not defined
+  tags: after-reboot
+
 - name: Create replication slots
   pg_replication_slot:
     name: "{{ item }}"
@@ -205,11 +216,6 @@
   notify: Restart pgbouncer
   tags:
     - pgbouncer
-
-# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
-- shell: /bin/true
-  changed_when: false
-  register: no_tags
 
 - name: Restarts pgbouncer (affect max open files limit)
   command: /bin/true

@@ -32,7 +32,7 @@ DATABASES = { {% for config in postgresql_dbs %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
-        'HOST': '{{ config.host }}',
+        'HOST': '{% if config.host == inventory_hostname %}127.0.0.1{% else %}{{ config.host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
         {% if not config.django_migrate -%}
@@ -88,7 +88,7 @@ UCR_EXCEPTION_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME
 MAIN_COUCH_SQL_DATAMIGRATION = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-couch_sql_migration.log")
 
 # Shared Drive Setup
-{% if shared_drive_enabled|default(true) %}
+{% if shared_drive_enabled %}
 SHARED_DRIVE_ROOT = '{{ shared_mount_dir }}'
 {% else %}
 SHARED_DRIVE_ROOT = '{{ shared_data_dir }}'
@@ -114,6 +114,9 @@ EMAIL_PASSWORD = None
 {% endif %}
 EMAIL_SMTP_HOST = "{{ localsettings.EMAIL_SMTP_HOST }}"
 EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
+{% endif %}
+{% if not localsettings.EMAIL_SMTP_HOST %}
+EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 {% endif %}
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
@@ -307,23 +310,10 @@ CUSTOM_REPORT_MAP = {
 
 CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMAILS', False) }}
 
-CELERY_RESULT_BACKEND = '{{ localsettings.CELERY_RESULT_BACKEND }}'
-CELERY_PERIODIC_QUEUE = '{{ localsettings.CELERY_PERIODIC_QUEUE }}'
+CELERY_RESULT_BACKEND = '{{ CELERY_RESULT_BACKEND }}'
 CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 {% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
-{% endif %}
-
-{% if localsettings.get('CELERY_REMINDER_RULE_QUEUE') %}
-CELERY_REMINDER_RULE_QUEUE = '{{ localsettings.CELERY_REMINDER_RULE_QUEUE }}'
-{% endif %}
-
-{% if localsettings.get('CELERY_REMINDER_CASE_UPDATE_QUEUE') %}
-CELERY_REMINDER_CASE_UPDATE_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_QUEUE }}'
-{% endif %}
-
-{% if localsettings.get('CELERY_REPEAT_RECORD_QUEUE') %}
-CELERY_REPEAT_RECORD_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_QUEUE }}'
 {% endif %}
 
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
@@ -373,8 +363,7 @@ ELASTICSEARCH_HOSTS = [
     '{{ es_host }}',
     {% endfor -%}
 ]
-ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
-ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
+ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 SECRET_KEY = "{{ SECRET_KEY }}"
 
 PRIME_VIEWS_INTERVAL = 2

@@ -157,7 +157,12 @@ def get_celery_workers(environment):
             continue
         for comma_separated_queue_names, config in queues.items():
             for queue in comma_separated_queue_names.split(','):
-                for worker_num in range(config.num_workers):
+                if queue == 'flower':
+                    # there's always only one, so worker_num doesn't factor into the name
+                    worker_range = [None]
+                else:
+                    worker_range = range(config.num_workers)
+                for worker_num in worker_range:
                     process_name = get_celery_worker_name(environment, comma_separated_queue_names, worker_num)
                     yield ProcessDescriptor(host, queue, worker_num, process_name)
 
@@ -165,11 +170,11 @@ def get_celery_workers(environment):
 def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
-    return "{project}-{environment}-celery_{comma_separated_queue_name}_{worker_num}".format(
+    return "{project}-{environment}-celery_{comma_separated_queue_name}{worker_num_suffix}".format(
         project=project,
         environment=environment_environment,
         comma_separated_queue_name=comma_separated_queue_name,
-        worker_num=worker_num
+        worker_num_suffix="_{}".format(worker_num) if worker_num is not None else ''
     )
 
 
