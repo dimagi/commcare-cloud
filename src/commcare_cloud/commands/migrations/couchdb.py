@@ -233,11 +233,10 @@ def prepare_to_sync_files(migration, ansible_context):
     return rsync_files_by_host
 
 
-def generate_rsync_lists(migration, validate_suffixes=True):
+def generate_rsync_lists(migration):
     full_plan = {plan.db_name: plan for plan in migration.shard_plan}
     important_files_by_node = get_node_files(
-        migration.source_couch_config, full_plan, validate_suffixes=validate_suffixes
-    )
+        migration.source_couch_config, full_plan)
     paths_by_host = {}
     for node, file_list in important_files_by_node.items():
         files = sorted(file_list)

@@ -32,7 +32,7 @@ def test_migration_plan(plan_name):
 
     assert expected_couch_config_json == migration.target_couch_config.to_json()
 
-    files_by_host = generate_rsync_lists(migration, validate_suffixes=False)
+    files_by_host = generate_rsync_lists(migration)
 
     with open(os.path.join(PLANS_DIR, plan_name, 'expected_rsync_file.txt')) as exp:
         expected = exp.read()
