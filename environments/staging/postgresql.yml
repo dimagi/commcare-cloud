@@ -1,5 +1,7 @@
 override:
   pgbouncer_pool_mode: transaction
+  pgbouncer_max_connections: 400
+  postgresql_max_connections: 300
 
 dbs:
   main:
