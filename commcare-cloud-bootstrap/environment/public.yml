@@ -89,14 +89,14 @@ couchdb_bind:
 couch_dbs:
   default:
     host: "{{ groups.couchdb2.0 }}"
-    port: 15984
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
   users:
     host: "{{ groups.couchdb2.0 }}"
-    port: 15984
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq__users
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
