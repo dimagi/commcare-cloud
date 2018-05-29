@@ -5,7 +5,7 @@ from contextlib import contextmanager
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.file_plan import get_important_files
+from couchdb_cluster_admin.file_plan import get_node_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
@@ -235,7 +235,7 @@ def prepare_to_sync_files(migration, ansible_context):
 
 def generate_rsync_lists(migration, validate_suffixes=True):
     full_plan = {plan.db_name: plan for plan in migration.shard_plan}
-    important_files_by_node = get_important_files(
+    important_files_by_node = get_node_files(
         migration.source_couch_config, full_plan, validate_suffixes=validate_suffixes
     )
     paths_by_host = {}
