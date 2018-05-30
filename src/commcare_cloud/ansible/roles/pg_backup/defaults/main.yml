@@ -6,8 +6,8 @@ postgresql_dir_path: "{{ encrypted_root }}/postgresql"
 postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 
 nadir_hour: 0
-postgresql_backup_days: 3
-postgresql_backup_weeks: 3
+postgresql_backup_days: 2
+postgresql_backup_weeks: 2
 backup_postgres: plain
 postgres_s3: false
 hot_standby_server: false
