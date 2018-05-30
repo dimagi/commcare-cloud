@@ -16,6 +16,12 @@ matrix:
     - env: TEST=prove-deploy
 
 before_install:
+  # Skip build if the commit message contains [skip travis] or [travis skip]
+  - >
+      echo "$TRAVIS_COMMIT_MESSAGE"
+      | grep -E  '\[(skip travis|travis skip)\]'
+      && echo "[skip travis] has been found, exiting."
+      && exit 0 || true
   - openssl aes-256-cbc -K $encrypted_ab59a62b4b29_key -iv $encrypted_ab59a62b4b29_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
   - tar xvf .travis/secrets.tar
   - mkdir -p ~/.aws ~/.ssh
@@ -30,7 +36,7 @@ install:
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"[pv-deploy]"* ]]; then source control/init.sh; fi
   - "echo [[ $TRAVIS_COMMIT_MESSAGE ]]"
   - "echo [[ $TRAVIS_BRANCH ]]"
-  - if [[ "$TRAVIS_COMMIT_MESSAGE" == *"[pv-deploy]"* ]]; then pip install -e .[test]; fi 
+  - if [[ "$TRAVIS_COMMIT_MESSAGE" == *"[pv-deploy]"* ]]; then pip install -e .[test]; fi
 ######
 #  - "source control/init.sh"
 #  # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
