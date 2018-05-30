@@ -3,4 +3,3 @@ acceptable_maintenance_window:
   hour_end: 7
   timezone: Asia/Kolkata
 email_enabled: False
-default_branch: enterprise
