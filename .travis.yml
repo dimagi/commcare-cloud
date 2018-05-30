@@ -18,3 +18,4 @@ script:
   - "nosetests"
   - "git diff"
   - "./tests/test_command_docs.sh"
+ 
