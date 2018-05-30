@@ -39,7 +39,7 @@ ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
@@ -158,5 +158,4 @@ root_email: /dev/null
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
-commcare_cloud_use_vault: no
 commcare_cloud_pem: /Users/droberts/.ssh/commcarehq_testing.pem
