@@ -32,7 +32,7 @@ DATABASES = { {% for config in postgresql_dbs %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
-        'HOST': '{{ config.host }}',
+        'HOST': '{% if config.host == inventory_hostname %}127.0.0.1{% else %}{{ config.host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
         {% if not config.django_migrate -%}
@@ -363,8 +363,7 @@ ELASTICSEARCH_HOSTS = [
     '{{ es_host }}',
     {% endfor -%}
 ]
-ELASTICSEARCH_HOST = '{{ localsettings.ELASTICSEARCH_HOST }}'
-ELASTICSEARCH_PORT = {{ localsettings.ELASTICSEARCH_PORT }}
+ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 SECRET_KEY = "{{ SECRET_KEY }}"
 
 PRIME_VIEWS_INTERVAL = 2
