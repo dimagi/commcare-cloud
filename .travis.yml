@@ -18,6 +18,7 @@ matrix:
 before_install:
   # Skip build if the commit message contains  [skip travis] or [travis skip]
   - echo "$TRAVIS_COMMIT_MESSAGE"
+  - echo git log --format=%B -n 1
   - >
       echo "$TRAVIS_COMMIT_MESSAGE"
       | grep -E  '\[(skip travis|travis skip)\]'
