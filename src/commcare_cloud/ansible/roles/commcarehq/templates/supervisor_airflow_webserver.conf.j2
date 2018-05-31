@@ -1,0 +1,12 @@
+[program:{{ project }}-{{ deploy_env }}-airflow_webserver]
+command={{ airflow_virtualenv }}/bin/airflow webserver
+directory={{ code_home }}
+user={{ cchq_user }}
+numprocs=1
+autostart=true
+autorestart=true
+stdout_logfile={{ log_home }}/airflow_webserver.log
+redirect_stderr=true
+stderr_logfile={{ log_home }}/airflow_webserver.error.log
+startsecs=10
+environment=PATH="{{ airflow_virtualenv }}/bin"

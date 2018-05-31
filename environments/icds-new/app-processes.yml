@@ -1,16 +1,15 @@
 http_proxy: 10.247.63.132:3128
 additional_no_proxy_hosts: "relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"
-gunicorn_workers_factor: 2
-formplayer_memory: "16000m"
-gunicorn_workers_static_factor: 1
+formplayer_memory: "8000m"
+gunicorn_workers_static_factor: 4
 celery_processes:
   None:
     repeat_record_queue:
   'celery0':
     # The celery workers which have less cpu intensive tasks
     # are meant to go on this machine. Try to avoid putting
-    # ucr_indicator_queue, reminder_case_update_queue, or
-    # pillow_retry_queue workers here so that the workers
+    # ucr_indicator_queue, reminder_case_update_queue
+    # workers here so that the workers
     # on this machine have the cpu they need to perform their tasks.
     flower: {}
     celery,export_download_queue:
@@ -29,9 +28,13 @@ celery_processes:
     saved_exports_queue:
       concurrency: 3
       max_tasks_per_child: 1
+      optimize: True
     background_queue:
       concurrency: 6
       max_tasks_per_child: 1
+    icds_aggregation_queue:
+      pooling: gevent
+      concurrency: 4
     case_rule_queue:
       concurrency: 2
       max_tasks_per_child: 1
@@ -49,7 +52,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 3
+      num_workers: 1
     ucr_indicator_queue:
       concurrency: 6
   'celery2':
@@ -60,7 +63,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 3
+      num_workers: 1
     ucr_indicator_queue:
       concurrency: 6
   'celery3':
@@ -86,57 +89,29 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 6
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 3
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery5':
-    pillow_retry_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
       num_workers: 6
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 3
   'celery6':
-    pillow_retry_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
       num_workers: 6
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 3
   'celery7':
-    pillow_retry_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
       num_workers: 6
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 3
   'web0':
     ucr_indicator_queue:
       concurrency: 3
