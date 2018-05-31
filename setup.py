@@ -30,7 +30,7 @@ setup(
         'argparse>=1.4',
         'attrs==17.4.0',
         'clint',
-        'couchdb-cluster-admin==0.2.1',
+        'couchdb-cluster-admin>=0.4.1',
         'cryptography==2.1.4',
         'datadog==0.2.0',
         'dimagi-memoized>=1.1.0',

@@ -211,5 +211,11 @@ hq_main_db_host: "{% for config in postgresql_dbs -%}
   {%- endif -%}
 {%- endfor %}"
 
+formplayer_db_host: "{% for config in postgresql_dbs -%}
+  {%- if config.name == formplayer_db_name  -%}
+    {{ config.host }}
+  {%- endif -%}
+{%- endfor %}"
+
 nofile_limit: 4096
 
