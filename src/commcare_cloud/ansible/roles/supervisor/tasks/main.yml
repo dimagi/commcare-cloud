@@ -21,7 +21,7 @@
   when: not which_supervisord.stdout
 
 - set_fact: which_supervisord = which_supervisord_retry
-  when: which_supervisord_retry.skipped is defined and which_supervisord_retry.skipped
+  when: not which_supervisord.stdout
 
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
