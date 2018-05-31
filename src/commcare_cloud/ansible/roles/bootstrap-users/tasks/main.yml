@@ -4,7 +4,7 @@
   group: name="{{ dev_group }}" state=present
   tags: commcarehq
 
-- name: Add bootstrap-users for current devs
+- name: Add users for current devs
   become: yes
   user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
