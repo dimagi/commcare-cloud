@@ -17,10 +17,10 @@ and *pg2*. *pg1* has two partitioned databases and *pg2* has none:
 
 *pg1* databases:
 
-* *partition1*
-* *partition2*
+* *commcarehq_p1* (with django alias *p1*)
+* *commcarehq_p2* (with django alias *p2*)
 
-*pg2* is a newly deployed server and we want to move *partition2* onto *pg2*.
+*pg2* is a newly deployed server and we want to move *commcarehq_p2* onto *pg2*.
 
 ## Assumptions
 
@@ -34,7 +34,7 @@ and *pg2*. *pg1* has two partitioned databases and *pg2* has none:
 
 1. Setup *pg2* node as a standby node of *pg1*
 3. Promote *pg2* to a master node
-4. Update the configuration so that requests for *partition2* go to *pg2* instead
+4. Update the configuration so that requests for *p2* go to *pg2* instead
 of *pg1*.
 
 ## Process detail
@@ -70,7 +70,7 @@ prevent connections from pgbouncer:
 ```bash
 pg1 $ psql -p 6432 -U someuser pgbouncer
 
-> PAUSE partition1
+> PAUSE commcarehq_p1
 ```
 
 ### 3. Check document counts in the databases
@@ -83,21 +83,25 @@ commcare-cloud <env> django-manage print_approximate_doc_distribution --csv
 
 **Update ansible config**
 
-Update the *postgresql_dbs* configuration in the environment's *public.yml* file
-to show that the *partition2* database is now on *pg2*:
+Update the *dbs* variable in the environment's *postgresql.yml* file
+to show that the *p2* database is now on *pg2*:
 
 
 ```diff
-    postgresql_dbs:
-        - django_alias: partition1
-          name: partition1
-          shards: [0, 1]
-          host: "pg1"
-        - django_alias: partition2
-          name: partition2
-          shards: [2, 3]
--         host: pg1
-+         host: pg2
+...
+ dbs:
+ ...
+   form_processing:
+     ...
+     partitions:
+       p1:
+         shards: [0, 1]
+         host: pg1
+       p2:
+         shards: [2, 3]
+-        host: pg1
++        host: pg2
+       ...
 ```
 
 **Deploy changes**
@@ -114,7 +118,7 @@ commcare-cloud <env> ap deploy_db.yml --limit=pg2
 commcare-cloud <env> django-manage print_approximate_doc_distribution --csv
 ```
 
-This should show that the *partition2* database is now on the *pg2* host.
+This should show that the *p2* database is now on the *pg2* host.
 
 ### 6. Promote *pg2* to master
 
@@ -150,7 +154,7 @@ commcare-cloud <env> django-manage configure_pl_proxy_cluster
 ```bash
 pg1 $ psql -p 6543 -U someuser pgbouncer
 
-> RESUME partition1
+> RESUME commcarehq_p1
 ```
 
 **Restart services**
@@ -166,18 +170,18 @@ connections to the databases.
 SELECT client_addr, datname as database, count(*) AS connections FROM pg_stat_activity GROUP BY client_addr, datname;
 ```
 
-*pg1* should only have connections to the *partition1* database
+*pg1* should only have connections to the *commcarehq_p1* database
 ```
   client_addr   | database   | connections
 ----------------+------------+------------
- <client IP>    | partition1 |   3
+ <client IP>    | commcarehq_p1 |   3
 ```
 
-*pg2* should only have connections to the *partition2* database
+*pg2* should only have connections to the *commcarehq_p2* database
 ```
   client_addr   | database   | connections
 ----------------+------------+------------
- <client IP>    | partition2 |   3
+ <client IP>    | commcarehq_p2 |   3
 ```
 
 ### 11. Cleanup
@@ -189,13 +193,13 @@ and delete the duplicate databases on *pg1* and *pg2*.
 *pg1*
 
 ```sql
-DROP DATABASE partition2;
+DROP DATABASE commcarehq_p2;
 ```
 
 *pg2*
 
 ```sql
-DROP DATABASE partition1;
+DROP DATABASE commcarehq_p1;
 ```
 
 
