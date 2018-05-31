@@ -70,66 +70,80 @@ class AnsiblePlaybook(CommandBase):
         environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
         check_branch(args)
+        run_ansible_playbook(
+            environment, args.playbook, ansible_context, args.skip_check, args.quiet,
+            always_skip_check, args.limit, args.use_factory_auth, unknown_args
+        )
+
+
+def run_ansible_playbook(
+        environment, playbook, ansible_context,
+        skip_check=False, quiet=False, always_skip_check=False, limit=None,
+        use_factory_auth=False, unknown_args=None
+    ):
+
+    def get_limit():
+        limit_parts = []
+        if limit:
+            limit_parts.append(limit)
+        if 'ansible_skip' in environment.sshable_hostnames_by_group:
+            limit_parts.append('!ansible_skip')
+
+        if limit_parts:
+            return '--limit', ':'.join(limit_parts)
+        else:
+            return ()
+
+    def ansible_playbook(environment, playbook, *cmd_args):
+        if os.path.isabs(playbook):
+            playbook_path = playbook
+        else:
+            playbook_path = os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook))
+        cmd_parts = (
+            'ansible-playbook',
+            playbook_path,
+            '-i', environment.paths.inventory_ini,
+            '-e', '@{}'.format(environment.paths.vault_yml),
+            '-e', '@{}'.format(environment.paths.public_yml),
+            '-e', '@{}'.format(environment.paths.generated_yml),
+            '--diff',
+        ) + get_limit() + cmd_args
+
         public_vars = environment.public_vars
+        cmd_parts += get_user_arg(public_vars, unknown_args)
+
+        if not has_arg(unknown_args, '-f', '--forks'):
+            cmd_parts += ('--forks', '15')
+
+        if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
+            puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
+            puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
+            return 2  # exit code
+
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
+        if ask_vault_pass:
+            cmd_parts += ('--vault-password-file=/bin/cat',)
 
-        def get_limit():
-            limit_parts = []
-            if args.limit:
-                limit_parts.append(args.limit)
-            if 'ansible_skip' in environment.sshable_hostnames_by_group:
-                limit_parts.append('!ansible_skip')
+        cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
+        cmd_parts += cmd_parts_with_common_ssh_args
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print_command(cmd)
+        if ask_vault_pass:
+            environment.get_ansible_vault_password()
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
+        if ask_vault_pass:
+            p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
+        else:
+            p.communicate()
+        return p.returncode
 
-            if limit_parts:
-                return '--limit', ':'.join(limit_parts)
-            else:
-                return ()
+    def run_check():
+        return ansible_playbook(environment, playbook, '--check', *unknown_args)
 
-        def ansible_playbook(environment, playbook, *cmd_args):
-            cmd_parts = (
-                'ansible-playbook',
-                os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook)),
-                '-i', environment.paths.inventory_ini,
-                '-e', '@{}'.format(environment.paths.vault_yml),
-                '-e', '@{}'.format(environment.paths.public_yml),
-                '-e', '@{}'.format(environment.paths.generated_yml),
-                '--diff',
-            ) + get_limit() + cmd_args
+    def run_apply():
+        return ansible_playbook(environment, playbook, *unknown_args)
 
-            cmd_parts += get_user_arg(public_vars, unknown_args)
-
-            if not has_arg(unknown_args, '-f', '--forks'):
-                cmd_parts += ('--forks', '15')
-
-            if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
-                puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
-                puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
-                return 2  # exit code
-
-            if ask_vault_pass:
-                cmd_parts += ('--vault-password-file=/bin/cat',)
-
-            cmd_parts_with_common_ssh_args = get_common_ssh_args(environment,
-                                                                 use_factory_auth=args.use_factory_auth)
-            cmd_parts += cmd_parts_with_common_ssh_args
-            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-            print_command(cmd)
-            if ask_vault_pass:
-                environment.get_ansible_vault_password()
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
-            if ask_vault_pass:
-                p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
-            else:
-                p.communicate()
-            return p.returncode
-
-        def run_check():
-            return ansible_playbook(environment, args.playbook, '--check', *unknown_args)
-
-        def run_apply():
-            return ansible_playbook(environment, args.playbook, *unknown_args)
-
-        return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet, always_skip_check)
+    return run_action_with_check_mode(run_check, run_apply, skip_check, quiet, always_skip_check)
 
 
 class _AnsiblePlaybookAlias(CommandBase):
