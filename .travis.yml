@@ -19,7 +19,7 @@ before_install:
 
   - echo $(echo $(git log --pretty=format:'%s %b' -n1 $(git rev-parse HEAD^2)) | grep -v '\[(pv-deploy|Pv-deploy|PV-deploy)\]')
   - echo $([ $TEST == prove-deploy ])
-  - [ $TEST == prove-deploy ]
+  - $([ $TEST == prove-deploy ])
   - $?
 
   - echo $(git log --pretty=format:'%s %b' -n1 $(git rev-parse HEAD^2)) | grep -v '\[(pv-deploy|Pv-deploy|PV-deploy)\]' && [ $TEST == prove-deploy ] && exit 0 || true
