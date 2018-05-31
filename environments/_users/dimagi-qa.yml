@@ -14,7 +14,6 @@ dev_users:
     - jemord
     - jroth
     - jschweers
-    - jwilson
     - mkangia
     - nclark
     - nhooper
@@ -34,3 +33,4 @@ dev_users:
     - brudolph
     - ncarnahan
     - jhoffman
+    - jwilson
