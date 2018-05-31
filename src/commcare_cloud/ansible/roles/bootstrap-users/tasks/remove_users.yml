@@ -22,7 +22,7 @@
   shell: "kill -9 {{ item }}"
   with_items: "{{ killed_processes.results|default([]) | select('failed') | map(attribute='item') | list }}"
 
-- name: Remove users of former devs
+- name: Remove bootstrap-users of former devs
   become: yes
   user: name="{{ item }}" state=absent
   with_items: '{{ dev_users.absent }}'
