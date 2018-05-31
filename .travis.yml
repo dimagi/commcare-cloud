@@ -3,18 +3,45 @@ language: python
 python: "2.7"
 
 env:
-  - ANSIBLE_ROLES_PATH="~/.ansible/roles" TRAVIS_TEST=1
+  global:
+    - ANSIBLE_ROLES_PATH="~/.ansible/roles"
+    - TRAVIS_TEST=1
+  matrix:
+#    - TEST=main
+    - TEST=prove-deploy
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: TEST=prove-deploy
 
 before_install:
+
+#  - echo $(echo $(git log --pretty=format:'%s %b' -n1 $(git rev-parse HEAD^2)) | grep -v '\[(pv-deploy|Pv-deploy|PV-deploy)\]')
+#  - "[[ $TEST = 'prove-deploy' ]] && echo 'returned true' || echo 'returned false'"
+  - if [[ $TEST = 'prove-deploy' ]] && git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -iv '\[pv-deploy\]'; then exit 0; fi
+  - openssl aes-256-cbc -K $encrypted_ab59a62b4b29_key -iv $encrypted_ab59a62b4b29_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+  - tar xvf .travis/secrets.tar
+  - mkdir -p ~/.aws ~/.ssh
+  - mv .travis/secrets/config ~/.aws
+  - mv .travis/secrets/credentials ~/.aws
+  - mv .travis/secrets/commcarehq_testing.pem ~/.ssh
   # Make sure everything's up to date.
   - sudo apt-get update -qq
-  - pip install virtualenv virtualenvwrapper
 
 install:
   - "source control/init.sh"
+  # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
+  # tries to install from the commcare-cloud-bootstrap.egg_info directory
   - "pip install -e .[test]"
+  - "if [[ $TEST = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
+
 script:
   - ".travis/tests.sh"
   - "nosetests"
   - "git diff"
   - "./tests/test_command_docs.sh"
+
+after_script:
+  - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"
+

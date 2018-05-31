@@ -5,4 +5,5 @@ dev_users:
     - jwilson
     - nsharma
     - npellegrino
+    - travis
   absent: []
