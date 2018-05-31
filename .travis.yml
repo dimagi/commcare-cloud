@@ -20,7 +20,7 @@ before_install:
 #  - echo $(echo $(git log --pretty=format:'%s %b' -n1 $(git rev-parse HEAD^2)) | grep -v '\[(pv-deploy|Pv-deploy|PV-deploy)\]')
   - "[[ $TEST = 'prove-deploy' ]] && echo 'returned true' || echo 'returned false'"
 
-  - "echo $(git log --pretty=format:'%s %b' -n1 $(git rev-parse HEAD^2)) | grep -v '\[(pv-deploy|Pv-deploy|PV-deploy)\]' && [[ $TEST = 'prove-deploy' ]] && exit 0 || true"
+  - "git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -v '\[(pv-deploy|Pv-deploy|PV-deploy)\]' && [[ $TEST = 'prove-deploy' ]] && exit 0 || true"
   - openssl aes-256-cbc -K $encrypted_ab59a62b4b29_key -iv $encrypted_ab59a62b4b29_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
   - tar xvf .travis/secrets.tar
   - mkdir -p ~/.aws ~/.ssh
