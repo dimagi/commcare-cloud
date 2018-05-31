@@ -1,0 +1,31 @@
+DEFAULT_POSTGRESQL_HOST: hqdb0
+
+dbs:
+  main:
+    host: hqdb0
+  formplayer:
+    host: hqdb0
+  ucr:
+      host: hqdb0
+      query_stats: True
+  synclogs:
+    host: pgsynclog
+  form_processing:
+    proxy:
+      host: hqdb1
+    partitions:
+      p1:
+        shards: [0, 204]
+        host: hqdb1
+      p2:
+        shards: [205, 409]
+        host: hqdb1
+      p3:
+        shards: [410, 614]
+        host: hqdb2
+      p4:
+        shards: [615, 819]
+        host: hqdb2
+      p5:
+        shards: [820, 1023]
+        host: hqdb2

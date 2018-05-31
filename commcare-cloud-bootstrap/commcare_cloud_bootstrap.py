@@ -235,7 +235,18 @@ def terminate_instances(instance_ids):
     return json.loads(subprocess.check_output(cmd_parts))
 
 
+def stop_instances(instance_ids):
+    cmd_parts = [
+        'aws', 'ec2', 'stop-instances', '--instance-ids',
+    ] + instance_ids
+    return json.loads(subprocess.check_output(cmd_parts))
+
+
 def get_inventory_from_file(environment):
+    """Parse inventory file created from ``inventory.ini.j2``.
+
+    This is not a general inventory parser and only handles a subset
+    of inventory features."""
     inventory = Inventory()
     state = None
     with open(environment.paths.inventory_ini) as f:
@@ -335,12 +346,20 @@ def save_fab_settings_yml(environment):
 def copy_default_vars(environment, aws_config):
     vars_public = environment.paths.public_yml
     vars_vault = environment.paths.vault_yml
+    vars_postgresql = environment.paths.postgresql_yml
+    vars_proxy = environment.paths.proxy_yml
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
-        with open(vars_public, 'a') as f:
-            f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
-
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
+        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'proxy.yml'), vars_proxy)
+        with open(vars_public, 'a+') as f:
+            if os.path.isfile(os.path.expanduser(aws_config.pem)):
+                f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
+            else:
+                print("The pem file {} specified in {} does not exist. Exiting.".format(
+                    aws_config.pem, os.path.join(TEMPLATE_DIR, 'public.yml')))
+                sys.exit(1)
 
 class Provision(object):
     command = 'provision'
@@ -388,6 +407,22 @@ class Terminate(object):
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
         terminate_instances_result = terminate_instances(instance_ids)
         print(terminate_instances_result)
+        print(instance_ids)
+
+class Stop(object):
+    command = 'stop'
+    help = """Stop instances for a given env"""
+
+    @staticmethod
+    def make_parser(parser):
+        parser.add_argument('env')
+
+    @staticmethod
+    def run(args):
+        describe_instances = raw_describe_instances(args.env)
+        instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
+        stop_instances_result = stop_instances(instance_ids)
+        print(stop_instances_result)
         print(instance_ids)
 
 

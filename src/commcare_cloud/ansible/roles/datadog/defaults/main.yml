@@ -1,0 +1,12 @@
+couchdb2_first_host: "{{ groups['couchdb2'][0] if 'couchdb2' in groups else 'NO HOST SHOULD MATCH THIS' }}"
+
+# git commit to download
+datadog_cloudant_version: 638521b89c7cae89f4f804bb71c3480a08bb81fa
+# checksum of file
+datadog_cloudant_sha256sum: 023980ad65115f498c2b9c43bae87955937354fdf1379703fe20a5ef6dbf5782
+
+datadog_celery_version: 06a2d801a8eed79812456224cea692e4407a237a
+datadog_celery_sha256sum: b9e9516822446d1e64ac0c45546dca0829d4566974f52b5be4d1cb0bc03087e8
+
+datadog_shell_version: a468595913fa30abeea0bb3bba16448157871481
+datadog_shell_sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848c7183ad10

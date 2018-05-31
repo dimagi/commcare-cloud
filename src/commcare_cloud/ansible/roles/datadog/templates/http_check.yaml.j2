@@ -1,0 +1,25 @@
+init_config:
+
+instances:
+  - name: {{ env_monitoring_id }}
+    url: https://{{ SITE_HOST }}/serverup.txt
+    disable_ssl_validation: false
+    check_certificate_expiration: true
+    days_warning: 28
+    days_critical: 14
+    timeout: 30
+    include_content: true
+  - name: {{ env_monitoring_id }} Heartbeat
+    url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat
+    check_certificate_expiration: false
+    timeout: 30
+{% for host in datadog_extra_host_checks %}
+  - name: {{ host.url|urlsplit('hostname') }}
+    url: {{ host.url }}
+    disable_ssl_validation: {{ host.disable_ssl_validation|default('false') }}
+    check_certificate_expiration: {{ host.check_certificate_expiration|default('true') }}
+    days_warning: 28
+    days_critical: 14
+    timeout: 30
+    include_content: false
+{% endfor %}

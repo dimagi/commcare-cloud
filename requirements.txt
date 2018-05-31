@@ -1,3 +1,0 @@
--e commcare-cloud
--r ansible/requirements.txt
--r fab/requirements.txt
