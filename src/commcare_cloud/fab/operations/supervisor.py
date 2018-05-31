@@ -44,8 +44,9 @@ def set_supervisor_config():
 
 def _get_celery_queues():
     queues = {}
-    queues.update(env.celery_processes.get(env.get('host_string').split(':')[0], {}))
-
+    inventory_hostname = env.ccc_environment.inventory_hostname_map[env.host_string]
+    queues.update(env.celery_processes.get(inventory_hostname))
+    print(queues)
     return queues
 
 
