@@ -1,0 +1,12 @@
+{% for node, files in deletable_files_by_node.items() %}
+- hosts:
+  - {{ node }}
+  tasks:
+  - file:
+      path: '{{ couch_data_dir }}{{ '{{' }} item {{ '}}' }}'
+      state: absent
+    with_items:
+      {% for file in files -%}
+      - {{ file }}
+      {% endfor -%}
+{% endfor %}

@@ -1,11 +1,12 @@
 import json
 import os
+from collections import defaultdict
 from contextlib import contextmanager
 
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.file_plan import get_important_files
+from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
@@ -13,13 +14,16 @@ from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocati
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands import shared_args
+from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.environment.main import get_environment
 
-RSYNC_FILE_LIST_NAME = 'couchdb_migration_rsync_file_list'
+COUCHDB_RSYNC_SCRIPT = 'couchdb_rsync.sh'
+
+RSYNC_FILE_LIST_FOLDER_NAME = 'couchdb_migration_rsync_file_list'
 
 
 class MigrateCouchdb(CommandBase):
@@ -35,13 +39,14 @@ class MigrateCouchdb(CommandBase):
 
     arguments = (
         Argument(dest='migration_plan', help="Path to migration plan file"),
-        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit'], help="""
+        Argument(dest='action', choices=['describe', 'plan', 'migrate', 'commit', 'clean'], help="""
             Action to perform
 
             - describe: Print out cluster info
             - plan: generate plan details from migration plan
             - migrate: stop nodes and copy shard data according to plan
             - commit: update database docs with new shard allocation
+            - clean: remove shard files from hosts where they aren't needed
         """),
         shared_args.SKIP_CHECK_ARG,
     )
@@ -49,7 +54,6 @@ class MigrateCouchdb(CommandBase):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
-        environment.get_ansible_vault_password()
 
         migration = CouchMigration(environment, args.migration_plan)
         check_connection(migration.target_couch_config.get_control_node())
@@ -59,86 +63,137 @@ class MigrateCouchdb(CommandBase):
         ansible_context = AnsibleContext(args)
 
         if args.action == 'describe':
-            print u'\nMembership'
-            with indent():
-                puts(get_membership(migration.target_couch_config).get_printable())
-
-            print u'\nDB Info'
-            print_db_info(migration.target_couch_config)
-
-            print u'\nShards'
-            print_shard_table([
-                get_shard_allocation(migration.target_couch_config, db_name)
-                for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
-            ])
-
-            return 0
+            return describe(migration)
 
         if args.action == 'plan':
-            new_plan = True
-            if os.path.exists(migration.shard_plan_path):
-                new_plan = ask("Plan already exists. Do you want to overwrite it?")
-
-            if new_plan:
-                shard_allocations = generate_shard_allocation(
-                    migration.source_couch_config, migration.plan.target_allocation
-                )
-
-                with open(migration.shard_plan_path, 'w') as f:
-                    plan = {
-                        shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
-                        for shard_allocation_doc in shard_allocations
-                    }
-                    # hack - yaml didn't want to dump this directly
-                    yaml.safe_dump(json.loads(json.dumps(plan)), f, indent=2)
-            else:
-                shard_allocations = migration.shard_plan
-
-            print_shard_table([shard_allocation_doc for shard_allocation_doc in shard_allocations])
-            return 0
+            return plan(migration)
 
         if args.action == 'migrate':
-            def run_check():
-                return self._run_migration(migration, ansible_context, check_mode=True)
-
-            def run_apply():
-                return self._run_migration(migration, ansible_context, check_mode=False)
-
-            return run_action_with_check_mode(run_check, run_apply, args.skip_check)
+            return migrate(migration, ansible_context, args.skip_check)
 
         if args.action == 'commit':
-            if ask("Are you sure you want to update the Couch Database config?"):
-                commit_migration(migration)
+            return commit(migration)
 
-                # TODO: verify that shard config in DB matches what we expect
-                puts(colored.yellow("New shard allocation:\n"))
-                print_shard_table([
-                    get_shard_allocation(migration.target_couch_config, db_name)
-                    for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
-                ])
+        if args.actoin == 'clean':
+            return clean(migration, ansible_context, args.skip_check)
 
-            return 0
 
-    def _run_migration(self, migration, ansible_context, check_mode):
-        puts(colored.blue('Give ansible user access to couchdb files:'))
-        user_args = "user=ansible groups=couchdb append=yes"
-        run_ansible_module(
-            migration.source_environment, ansible_context, 'couchdb2', 'user', user_args,
-            True, None, False
+def clean(migration, ansible_context, skip_check):
+    nodes = generate_shard_prune_playbook(migration)
+    if nodes:
+        run_ansible_playbook(
+            migration.target_environment, migration.prune_playbook_path, ansible_context,
+            skip_check=skip_check
         )
 
-        file_args = "path=/opt/data/couchdb2 mode=0755"
-        run_ansible_module(
-            migration.source_environment, ansible_context, 'couchdb2', 'file', file_args,
-            True, None, False
-        )
 
-        puts(colored.blue('Copy file lists to nodes:'))
-        rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
+def generate_shard_prune_playbook(migration):
+    """Create a playbook for deleting unused files.
+    :returns: List of nodes that have files to remove
+    """
+    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
+    _, deletable_files_by_node = get_node_files(migration.source_couch_config, full_plan)
+    if not any(deletable_files_by_node.values()):
+        return None
 
-        puts(colored.blue('Stop couch and reallocate shards'))
-        with stop_couch(migration.all_environments, ansible_context, check_mode):
-            sync_files_to_dest(migration, rsync_files_by_host, check_mode)
+    deletable_files_by_node = {
+        node.split('@')[1]: files
+        for node, files in deletable_files_by_node.items()
+        if files
+    }
+    prune_playbook = _render_template('prune.yml.j2', {
+        'deletable_files_by_node': deletable_files_by_node,
+        'couch_data_dir': '/opt/data/couchdb2/'
+    })
+    with open(migration.prune_playbook_path, 'w') as f:
+        f.write(prune_playbook)
+
+    return list(deletable_files_by_node)
+
+
+def commit(migration):
+    if ask("Are you sure you want to update the Couch Database config?"):
+        commit_migration(migration)
+
+        # TODO: verify that shard config in DB matches what we expect
+        puts(colored.yellow("New shard allocation:\n"))
+        print_shard_table([
+            get_shard_allocation(migration.target_couch_config, db_name)
+            for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+        ])
+    return 0
+
+
+def migrate(migration, ansible_context, skip_check):
+    def run_check():
+        return _run_migration(migration, ansible_context, check_mode=True)
+
+    def run_apply():
+        return _run_migration(migration, ansible_context, check_mode=False)
+
+    return run_action_with_check_mode(run_check, run_apply, skip_check)
+
+
+def plan(migration):
+    new_plan = True
+    if os.path.exists(migration.shard_plan_path):
+        new_plan = ask("Plan already exists. Do you want to overwrite it?")
+    if new_plan:
+        shard_allocations = generate_shard_plan(migration)
+    else:
+        shard_allocations = migration.shard_plan
+    print_shard_table([shard_allocation_doc for shard_allocation_doc in shard_allocations])
+    return 0
+
+
+def generate_shard_plan(migration):
+    shard_allocations = generate_shard_allocation(
+        migration.source_couch_config, migration.plan.target_allocation
+    )
+    with open(migration.shard_plan_path, 'w') as f:
+        plan = {
+            shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
+            for shard_allocation_doc in shard_allocations
+        }
+        # hack - yaml didn't want to dump this directly
+        yaml.safe_dump(json.loads(json.dumps(plan)), f, indent=2)
+    return shard_allocations
+
+
+def describe(migration):
+    print u'\nMembership'
+    with indent():
+        puts(get_membership(migration.target_couch_config).get_printable())
+    print u'\nDB Info'
+    print_db_info(migration.target_couch_config)
+    print u'\nShards'
+    print_shard_table([
+        get_shard_allocation(migration.target_couch_config, db_name)
+        for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+    ])
+    return 0
+
+
+def _run_migration(migration, ansible_context, check_mode):
+    puts(colored.blue('Give ansible user access to couchdb files:'))
+    user_args = "user=ansible groups=couchdb append=yes"
+    run_ansible_module(
+        migration.source_environment, ansible_context, 'couchdb2', 'user', user_args,
+        True, None, False
+    )
+
+    file_args = "path=/opt/data/couchdb2 mode=0755"
+    run_ansible_module(
+        migration.source_environment, ansible_context, 'couchdb2', 'file', file_args,
+        True, None, False
+    )
+
+    puts(colored.blue('Copy file lists to nodes:'))
+    rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
+
+    puts(colored.blue('Stop couch and reallocate shards'))
+    with stop_couch(migration.all_environments, ansible_context, check_mode):
+        sync_files_to_dest(migration, rsync_files_by_host, check_mode)
 
         return 0
 
@@ -179,21 +234,14 @@ def commit_migration(migration):
 
 
 def sync_files_to_dest(migration, rsync_files_by_host, check_mode=True):
-    rsync_cmd = (
-        "rsync -e 'ssh -oStrictHostKeyChecking=no' "
-        "--append-verify -aH --info=progress2 "
-        "ansible@{source}:{couch_data_dir} {couch_data_dir} "
-        "--files-from {file_list} -r {extra_args}"
-    ).format(
-        source=migration.source_couch_config.control_node_ip,
-        couch_data_dir='/opt/data/couchdb2/',
-        file_list=os.path.join('/tmp', RSYNC_FILE_LIST_NAME),
-        extra_args='--dry-run' if check_mode else ''
-    )
+    file_root = os.path.join('/tmp', RSYNC_FILE_LIST_FOLDER_NAME)
     run_parallel_command(
         migration.target_environment,
         list(rsync_files_by_host),
-        rsync_cmd
+        "{}{}".format(
+            os.path.join(file_root, COUCHDB_RSYNC_SCRIPT),
+            ' --dry-run' if check_mode else ''
+        )
     )
 
 
@@ -218,33 +266,82 @@ def run_parallel_command(environment, hosts, command):
 def prepare_to_sync_files(migration, ansible_context):
     rsync_files_by_host = generate_rsync_lists(migration)
 
-    for host, path in rsync_files_by_host.items():
-        copy_args = "src={src} dest={dest} owner={owner} group={group} mode={mode}".format(
-            src=path,
-            dest=os.path.join('/tmp', RSYNC_FILE_LIST_NAME),
+    for host_ip in rsync_files_by_host:
+        host_files_root = os.path.join(migration.rsync_files_path, host_ip)
+
+        destination_path = os.path.join('/tmp', RSYNC_FILE_LIST_FOLDER_NAME)
+
+        # remove destination path to ensure we're starting fresh
+        file_args = "path={} state=absent".format(destination_path)
+        run_ansible_module(
+            migration.target_environment, ansible_context, host_ip, 'file', file_args,
+            True, None, False
+        )
+
+        # recursively copy all rsync file lists to destination
+        copy_args = "src={src}/ dest={dest} owner={owner} group={group} mode={mode}".format(
+            src=host_files_root,
+            dest=destination_path,
             owner='couchdb',  # TODO: get from vars
             group='couchdb',
             mode='0644'
         )
         run_ansible_module(
-            migration.target_environment, ansible_context, host, 'copy', copy_args,
+            migration.target_environment, ansible_context, host_ip, 'copy', copy_args,
+            True, None, False
+        )
+
+        # make script executable
+        file_args = "path={path} mode='0744'".format(
+            path=os.path.join(destination_path, COUCHDB_RSYNC_SCRIPT)
+        )
+        run_ansible_module(
+            migration.target_environment, ansible_context, host_ip, 'file', file_args,
             True, None, False
         )
     return rsync_files_by_host
 
 
-def generate_rsync_lists(migration, validate_suffixes=True):
-    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
-    important_files_by_node = get_important_files(
-        migration.source_couch_config, full_plan, validate_suffixes=validate_suffixes
-    )
-    paths_by_host = {}
-    for node, file_list in important_files_by_node.items():
-        files = sorted(file_list)
-        path = os.path.join(migration.rsync_files_path, '{}_files'.format(node))
-        with open(path, 'w') as f:
-            f.write('{}\n'.format('\n'.join(files)))
+def _render_template(name, context):
+    from jinja2 import Environment, FileSystemLoader
+    env = Environment(loader=FileSystemLoader(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+    ))
+    return env.get_template(name).render(context)
 
-        paths_by_host[node.split('@')[1]] = path
+
+def generate_rsync_lists(migration):
+    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
+    missing_files = get_missing_files_by_node_and_source(
+        migration.source_couch_config, full_plan
+    )
+    paths_by_host = defaultdict(list)
+    for node, source_file_list in missing_files.items():
+        node_ip = node.split('@')[1]
+        node_files_path = os.path.join(migration.rsync_files_path, node_ip)
+        if not os.path.exists(node_files_path):
+            os.makedirs(node_files_path)
+
+        files_for_node = []
+        for source, file_list in source_file_list.items():
+            source_ip = source.split('@')[1]
+            files = sorted([f.filename for f in file_list])
+            filename = '{}__files'.format(source_ip)
+            path = os.path.join(node_files_path, filename)
+            with open(path, 'w') as f:
+                f.write('{}\n'.format('\n'.join(files)))
+
+            files_for_node.append((source_ip, filename))
+            paths_by_host[node_ip].append(path)
+
+        if files_for_node:
+            # create rsync script
+            rsync_script = _render_template('couchdb_rsync.sh.j2', {
+                'rsync_file_list': files_for_node,
+                'couch_data_dir': '/opt/data/couchdb2/',
+                'rsync_file_root': os.path.join('/tmp', RSYNC_FILE_LIST_FOLDER_NAME)
+            })
+            with open(os.path.join(node_files_path, COUCHDB_RSYNC_SCRIPT), 'w') as f:
+                f.write(rsync_script)
 
     return paths_by_host
