@@ -13,6 +13,7 @@ from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 lazy_immutable_property = memoized_property
 
 COUCH_SHARD_PLAN = 'shard_plan.yml'
+PRUNE_PLAYBOOK_NAME = 'prune_couch_files.yml'
 
 
 class CouchMigration(object):
@@ -88,6 +89,10 @@ class CouchMigration(object):
     @lazy_immutable_property
     def shard_plan_path(self):
         return os.path.join(self.working_dir, COUCH_SHARD_PLAN)
+
+    @lazy_immutable_property
+    def prune_playbook_path(self):
+        return os.path.join(self.working_dir, PRUNE_PLAYBOOK_NAME)
 
     @memoized_property
     def shard_plan(self):
