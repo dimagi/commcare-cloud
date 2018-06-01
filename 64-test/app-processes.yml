@@ -1,5 +1,3 @@
-newrelic_javaagent: True
-
 celery_processes:
   64-test-proxy-0:
     celery_periodic:
