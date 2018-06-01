@@ -10,26 +10,6 @@ postgresql_dbs:
   query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
-  django_alias: proxy
-  django_migrate: true
-  host: 172.25.3.5
-  name: commcarehq_proxy
-  options: {}
-  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
-  port: 6432
-  query_stats: false
-  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-- create: true
-  django_alias: synclogs
-  django_migrate: true
-  host: 172.25.3.5
-  name: commcarehq_synclogs
-  options: {}
-  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
-  port: 6432
-  query_stats: false
-  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-- create: true
   django_alias: p1
   django_migrate: true
   host: 172.25.3.5
@@ -39,6 +19,17 @@ postgresql_dbs:
   port: 6432
   query_stats: false
   shards: [0, 103]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: p10
+  django_migrate: true
+  host: 172.25.3.5
+  name: commcarehq_p10
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  shards: [927, 1023]
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
   django_alias: p2
@@ -129,15 +120,24 @@ postgresql_dbs:
   shards: [824, 926]
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
-  django_alias: p10
+  django_alias: proxy
   django_migrate: true
   host: 172.25.3.5
-  name: commcarehq_p10
+  name: commcarehq_proxy
   options: {}
   password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
   port: 6432
   query_stats: false
-  shards: [927, 1023]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: synclogs
+  django_migrate: true
+  host: 172.25.3.5
+  name: commcarehq_synclogs
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
   django_alias: ucr
