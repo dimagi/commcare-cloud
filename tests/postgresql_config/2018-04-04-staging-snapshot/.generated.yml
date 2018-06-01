@@ -10,26 +10,6 @@ postgresql_dbs:
   query_stats: true
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
-  django_alias: proxy
-  django_migrate: true
-  host: hqdb1-staging.internal-va.commcarehq.org
-  name: commcarehq_proxy
-  options: {}
-  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
-  port: 6432
-  query_stats: false
-  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-- create: true
-  django_alias: synclogs
-  django_migrate: true
-  host: hqdb1-staging.internal-va.commcarehq.org
-  name: commcarehq_synclogs
-  options: {}
-  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
-  port: 6432
-  query_stats: false
-  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-- create: true
   django_alias: p1
   django_migrate: true
   host: hqdb1-staging.internal-va.commcarehq.org
@@ -83,6 +63,26 @@ postgresql_dbs:
   port: 6432
   query_stats: true
   shards: [400, 511]
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: proxy
+  django_migrate: true
+  host: hqdb1-staging.internal-va.commcarehq.org
+  name: commcarehq_proxy
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: synclogs
+  django_migrate: true
+  host: hqdb1-staging.internal-va.commcarehq.org
+  name: commcarehq_synclogs
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
   django_alias: ucr
