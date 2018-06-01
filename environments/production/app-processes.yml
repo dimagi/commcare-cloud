@@ -4,6 +4,7 @@ newrelic_django_prefix: '{{ virtualenv_home }}/bin/newrelic-admin run-program '
 
 celery_processes:
   hqcelery0.internal-va.commcarehq.org:
+    beat: {}
     celery_periodic:
       server_whitelist: hqcelery0.internal-va.commcarehq.org
       concurrency: 4

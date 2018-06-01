@@ -2,6 +2,7 @@ newrelic_javaagent: True
 
 celery_processes:
   {{ celery_host.name }}:
+    beat: {}
     celery_periodic:
       server_whitelist: {{ celery_host.public_ip }}
       concurrency: 4
