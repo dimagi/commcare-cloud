@@ -14,20 +14,14 @@ TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
 
 @parameterized(TEST_ENVIRONMENTS)
 def test_postgresql_config(env_name):
-    def map_json(db_list):
-        return [db.to_json() for db in db_list]
-
-    def get_normalized(db_json_list):
-        return sorted(db_json_list, key=lambda db: db['name'])
-
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
 
     with open(env.paths.generated_yml) as f:
         generated = yaml.load(f)
         assert generated.keys() == ['postgresql_dbs']
 
-    expected_json = get_normalized(generated['postgresql_dbs'])
+    expected_json = generated['postgresql_dbs']
 
-    actual_json = get_normalized(env.postgresql_config.to_generated_variables()['postgresql_dbs'])
+    actual_json = env.postgresql_config.to_generated_variables()['postgresql_dbs']
 
     assert actual_json == expected_json, "{} != {}".format(actual_json, expected_json)
