@@ -409,6 +409,7 @@ class Terminate(object):
         print(terminate_instances_result)
         print(instance_ids)
 
+
 class Stop(object):
     command = 'stop'
     help = """Stop instances for a given env"""
@@ -450,6 +451,7 @@ STANDARD_ARGS = [
     Show,
     Reip,
     Terminate,
+    Stop,
 ]
 
 
