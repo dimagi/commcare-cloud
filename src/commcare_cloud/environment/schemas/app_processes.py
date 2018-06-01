@@ -100,9 +100,9 @@ def validate_app_processes_config(app_processes_config):
     for machine, queues_config in app_processes_config.celery_processes.items():
         for comma_separated_queue_names, celery_options in queues_config.items():
             queue_names = comma_separated_queue_names.split(',')
-            if 'flower' in queue_names:
+            if 'flower' in queue_names or 'beat' in queue_names:
                 assert len(queue_names) == 1, \
-                    "The special 'flower' process may not be grouped with other processes"
+                    "The special processes 'flower' and 'beat' may not be grouped with other processes"
             for queue_name in queue_names:
                 assert queue_name in CELERY_PROCESS_NAMES, \
                     "Celery process not recognized: {}".format(queue_name)
@@ -111,8 +111,8 @@ def validate_app_processes_config(app_processes_config):
                                   if count == 0 and queue_name not in OPTIONAL_CELERY_PROCESSES]
     assert len(required_but_not_mentioned) == 0, \
         "The following queues were not mentioned: {}".format(', '.join(required_but_not_mentioned))
-    assert all_queues_mentioned['celery_periodic'] <= 1, \
-        'You cannot run the periodic celery queue on more than one machine because it implies celery beat.'
+    assert all_queues_mentioned['beat'] <= 1, \
+        'You cannot run beat on more than one machine.'
     assert all_queues_mentioned['flower'] <= 1, \
         'You cannot run flower on more than one machine because CELERY_FLOWER_URL assumes one endpoint.'
 
