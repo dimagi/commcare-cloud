@@ -127,11 +127,9 @@ localsettings:
   ELASTICSEARCH_HOST: "{{ groups.elasticsearch.0 }}"
   ELASTICSEARCH_PORT: '9200'
 
-  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
-  EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
-  EMAIL_SMTP_PORT: '1025'
-  # use True in prod!
-  EMAIL_USE_TLS: no
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
@@ -154,7 +152,25 @@ localsettings:
   STATIC_CDN: ""
   FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
 
-root_email: /dev/null
+root_email: droberts+root@dimagi.com
+server_email: droberts+commcarehq-noreply@dimagi.com
+default_from_email: droberts+commcarehq-noreply@dimagi.com
+support_email: droberts+support@dimagi.com
+probono_support_email: droberts+pro-bono@dimagi.com
+cchq_bug_report_email: droberts+commcarehq-bug-reports@dimagi.com
+accounts_email: droberts+accounts@dimagi.com
+data_email: droberts+datatree@dimagi.com
+subscription_change_email: droberts+accounts+subchange@dimagi.com
+internal_subscription_change_email: droberts+accounts+subchange+internal@dimagi.com
+billing_email: droberts+billing-comm@dimagi.com
+invoicing_contact_email: droberts+billing-support@dimagi.com
+growth_email: droberts+growth@dimagi.com
+master_list_email: droberts+master-list@dimagi.com
+report_builder_add_on_email: droberts+sales@dimagi.com
+eula_change_email: droberts+eula-notifications@dimagi.com
+contact_email: droberts+info@dimagi.com
+soft_assert_email: droberts+commcarehq-ops+soft_asserts@dimagi.com
+daily_deploy_email: null
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
