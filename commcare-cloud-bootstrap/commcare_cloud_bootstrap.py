@@ -450,6 +450,7 @@ STANDARD_ARGS = [
     Show,
     Reip,
     Terminate,
+    Stop,
 ]
 
 
