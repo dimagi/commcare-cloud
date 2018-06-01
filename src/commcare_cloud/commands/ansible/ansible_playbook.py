@@ -274,7 +274,12 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=supervisor,services',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
+        if ask("Would you like to update supervisor to use the new configurations?"):
+            exec_fab_command(args.env_name, 'supervisorctl:"reread"')
+            exec_fab_command(args.env_name, 'supervisorctl:"update"')
+        else:
+            return rc
 
 
 class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
