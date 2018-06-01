@@ -18,7 +18,6 @@ celery_processes:
     beat: {}
     celery_periodic:
        concurrency: 4
-       server_whitelist: 10.247.164.40
     submission_reprocessing_queue:
        concurrency: 1
     email_queue:

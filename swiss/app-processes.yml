@@ -15,7 +15,6 @@ celery_processes:
     beat: {}
     celery_periodic:
       concurrency: 1
-      server_whitelist: swiss.commcarehq.org
     repeat_record_queue:
       pooling: gevent
       concurrency: 1

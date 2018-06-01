@@ -24,7 +24,6 @@ celery_processes:
     celery_periodic:
       concurrency: 2
       max_tasks_per_child: 1
-      server_whitelist: 196.207.230.171
     flower: {}
   None:
     # todo: create these queues?
