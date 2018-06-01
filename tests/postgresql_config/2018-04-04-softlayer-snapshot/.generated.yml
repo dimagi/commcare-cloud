@@ -10,26 +10,6 @@ postgresql_dbs:
   query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
-  django_alias: proxy
-  django_migrate: true
-  host: 10.162.36.205
-  name: commcarehq_proxy
-  options: {}
-  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
-  port: 6432
-  query_stats: false
-  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-- create: true
-  django_alias: synclogs
-  django_migrate: true
-  host: 10.162.36.205
-  name: commcarehq_synclogs
-  options: {}
-  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
-  port: 6432
-  query_stats: false
-  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-- create: true
   django_alias: p1
   django_migrate: true
   host: 10.162.36.205
@@ -85,6 +65,26 @@ postgresql_dbs:
   shards: [820, 1023]
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
+  django_alias: proxy
+  django_migrate: true
+  host: 10.162.36.205
+  name: commcarehq_proxy
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
+  django_alias: synclogs
+  django_migrate: true
+  host: 10.162.36.205
+  name: commcarehq_synclogs
+  options: {}
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+  port: 6432
+  query_stats: false
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+- create: true
   django_alias: ucr
   django_migrate: true
   host: 10.162.36.205
@@ -95,20 +95,20 @@ postgresql_dbs:
   query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
-  django_alias: icds-ucr
+  django_alias: null
   django_migrate: true
   host: 10.162.36.205
-  name: icds-ucr
+  name: formplayer
   options: {}
   password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
   port: 6432
   query_stats: false
   user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
-  django_alias: null
+  django_alias: icds-ucr
   django_migrate: true
   host: 10.162.36.205
-  name: formplayer
+  name: icds-ucr
   options: {}
   password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
   port: 6432
