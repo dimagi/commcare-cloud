@@ -24,13 +24,4 @@ dev_users:
     - skelly
     - sravfeyn
     - wpride
-  absent:
-    - preseed
-    - twymer
-    - tsheffels
-    - dmyung
-    - jenkins_slave
-    - brudolph
-    - ncarnahan
-    - jhoffman
-    - jwilson
+  absent: []
