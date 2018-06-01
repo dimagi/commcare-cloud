@@ -6,7 +6,6 @@ celery_processes:
   hqcelery0.internal-va.commcarehq.org:
     beat: {}
     celery_periodic:
-      server_whitelist: hqcelery0.internal-va.commcarehq.org
       concurrency: 4
     submission_reprocessing_queue:
       concurrency: 1
