@@ -1,4 +1,4 @@
 deploy_env: production
 env_monitoring_id: production
-users: dimagi
+users: dimagi, g2
 slack_alerts_channel: alerts-production
