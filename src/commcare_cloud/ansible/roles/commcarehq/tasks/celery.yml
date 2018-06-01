@@ -80,7 +80,7 @@
   template:
     src: "../templates/supervisor_celery_beat.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
-  when: app_processes_config.celery_processes.get(inventory_hostname).celery_periodic is defined
+  when: app_processes_config.celery_processes.get(inventory_hostname).beat is defined
   tags:
     - services
   register: celery_beat_files

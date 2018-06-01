@@ -20,6 +20,7 @@ celery_processes:
     submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
+    beat: {}
     celery_periodic:
       concurrency: 2
       max_tasks_per_child: 1

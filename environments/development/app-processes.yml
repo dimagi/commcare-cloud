@@ -2,6 +2,7 @@ newrelic_javaagent: True
 
 celery_processes:
   celery:
+    beat: {}
     celery_periodic:
       server_whitelist: 192.168.33.16
       concurrency: 4
