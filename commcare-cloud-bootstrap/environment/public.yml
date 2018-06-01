@@ -12,8 +12,7 @@ dev_users:
     - dmiller
     - droberts
     - npellegrino
-  absent:
-    - jwilson
+  absent: []
 
 # use this value to switch between nginx and apache
 proxy_type: nginx
