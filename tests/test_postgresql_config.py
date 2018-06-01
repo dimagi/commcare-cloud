@@ -28,6 +28,6 @@ def test_postgresql_config(env_name):
 
     expected_json = get_normalized(generated['postgresql_dbs'])
 
-    actual_json = get_normalized(map_json(env.postgresql_config.generate_postgresql_dbs()))
+    actual_json = get_normalized(env.postgresql_config.to_generated_variables()['postgresql_dbs'])
 
     assert actual_json == expected_json, "{} != {}".format(actual_json, expected_json)
