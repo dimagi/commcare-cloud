@@ -147,12 +147,6 @@ celery_processes:
   'web9':
     ucr_indicator_queue:
       concurrency: 4
-  'web10':
-    ucr_indicator_queue:
-      concurrency: 4
-  'web11':
-    ucr_indicator_queue:
-      concurrency: 4
 pillows:
   'pillow0':
     kafka-ucr-static-cases:
