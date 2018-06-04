@@ -1,6 +1,6 @@
 aws_config:
   pem: /path/to/cert.pem
-  ami: ami-58167327
+  ami: ami-e317729c
   type: t2.micro
   key_name: aws_key_name
   security_group_id: sg-xxxxxxxx
