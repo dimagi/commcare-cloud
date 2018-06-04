@@ -652,6 +652,9 @@ TWO_FACTOR_SMS_GATEWAY = '{{ localsettings.TWO_FACTOR_SMS_GATEWAY }}'
 TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
 {% endif %}
 
+{% if localsettings.get('ENFORCE_TWO_FACTOR_FOR_SUPERUSERS') %}
+ENFORCE_TWO_FACTOR_FOR_SUPERUSERS = '{{ localsettings.ENFORCE_TWO_FACTOR_FOR_SUPERUSERS }}
+{% endif %}
 
 {% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
 CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
