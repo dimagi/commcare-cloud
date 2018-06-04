@@ -88,5 +88,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
+  TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
+  TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
 #  STATIC_ROOT:
   XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"
