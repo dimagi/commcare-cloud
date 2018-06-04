@@ -105,9 +105,16 @@ class Environment(object):
 
     @memoized_property
     def users_config(self):
-        with open(self.paths.get_users_yml(self.meta_config.users)) as f:
-            users_json = yaml.load(f)
-        return UsersConfig.wrap(users_json)
+        user_groups_from_yml = self.meta_config.users
+        absent_users = []
+        present_users = []
+        for user_group_from_yml in user_groups_from_yml:
+            with open(self.paths.get_users_yml(user_group_from_yml)) as f:
+                user_group_json = yaml.load(f)
+                present_users += user_group_json['dev_users']['present']
+                absent_users += user_group_json['dev_users']['absent']
+        all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
+        return UsersConfig.wrap(all_users_json)
 
     @memoized_property
     def raw_app_processes_config(self):
