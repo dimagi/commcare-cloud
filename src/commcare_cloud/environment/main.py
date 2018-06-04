@@ -4,6 +4,7 @@ import yaml
 from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
+from collections import Counter
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
@@ -115,6 +116,12 @@ class Environment(object):
                 user_group_json = yaml.load(f)
             present_users += user_group_json['dev_users']['present']
             absent_users += user_group_json['dev_users']['absent']
+        # Verify no overlaps between present_users and absent_users
+        if not set(present_users).isdisjoint(absent_users):
+            repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
+            raise EnvironmentException('The user(s) {} appear in both the absent and present users list for '
+                                       'the environment {}. Please fix this and try again.'.format((', '.join(
+                                        map(str, repeated_users))), self.meta_config.deploy_env))
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)
 
