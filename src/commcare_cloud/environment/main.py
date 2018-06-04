@@ -119,7 +119,7 @@ class Environment(object):
         # Verify no overlaps between present_users and absent_users
         if not set(present_users).isdisjoint(absent_users):
             repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
-            raise EnvironmentException('The user(s) {} appear in both the absent and present users list for '
+            raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
                                        'the environment {}. Please fix this and try again.'.format((', '.join(
                                         map(str, repeated_users))), self.meta_config.deploy_env))
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
