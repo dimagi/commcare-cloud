@@ -19,6 +19,8 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
+class EnvironmentException(Exception):
+    pass
 
 class Environment(object):
     def __init__(self, paths):
