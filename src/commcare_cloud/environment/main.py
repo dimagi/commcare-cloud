@@ -120,6 +120,12 @@ class Environment(object):
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)
 
+    def check_user_group_absent_present_overlaps(self, absent_users, present_users):
+        if not set(present_users).isdisjoint(absent_users):
+            repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
+            raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
+                                       'the environment {}. Please fix this and try again.'.format((', '.join(
+                                        map(str, repeated_users))), self.meta_config.deploy_env))
 
     @memoized_property
     def raw_app_processes_config(self):
@@ -260,13 +266,6 @@ class Environment(object):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
 
-
-def check_user_group_absent_present_overlaps(self, absent_users, present_users):
-    if not set(present_users).isdisjoint(absent_users):
-        repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
-        raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
-                                   'the environment {}. Please fix this and try again.'.format((', '.join(
-                                    map(str, repeated_users))), self.meta_config.deploy_env))
 
 
 @memoized
