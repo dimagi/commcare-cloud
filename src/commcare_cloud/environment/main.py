@@ -111,8 +111,8 @@ class Environment(object):
         for user_group_from_yml in user_groups_from_yml:
             with open(self.paths.get_users_yml(user_group_from_yml)) as f:
                 user_group_json = yaml.load(f)
-                present_users += user_group_json['dev_users']['present']
-                absent_users += user_group_json['dev_users']['absent']
+            present_users += user_group_json['dev_users']['present']
+            absent_users += user_group_json['dev_users']['absent']
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)
 
