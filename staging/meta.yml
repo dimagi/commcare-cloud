@@ -2,4 +2,5 @@ deploy_env: staging
 env_monitoring_id: staging
 users:
   - dimagi
+  - dimagi-qa
   - g2
