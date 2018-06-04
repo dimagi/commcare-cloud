@@ -53,7 +53,16 @@ class AwsConfig(StrictJsonObject):
     key_name = jsonobject.StringProperty()
     security_group_id = jsonobject.StringProperty()
     subnet = jsonobject.StringProperty()
-    volume = jsonobject.DictProperty(exclude_if_none=True)
+    data_volume = jsonobject.DictProperty(exclude_if_none=True)
+    boot_volume = jsonobject.DictProperty(exclude_if_none=True)
+
+    @classmethod
+    def wrap(cls, data):
+        if 'data_volume' in data:
+            assert data['data_volume']['DeviceName'] == '/dev/xvdb'
+        if 'boot_volume' in data:
+            assert data['boot_volume']['DeviceName'] == '/dev/sda1'
+        return super(AwsConfig, cls).wrap(data)
 
 
 class Settings(StrictJsonObject):
@@ -122,14 +131,14 @@ def provision_machines(spec, env_name=None, create_machines=True):
     for host_name in inventory.all_groups['elasticsearch'].host_names:
         hosts_by_name[host_name].vars['elasticsearch_node_name'] = host_name
 
-    if spec.aws_config.volume:
+    if spec.aws_config.data_volume:
         inventory.all_groups['lvm'] = Group(name='lvm')
         for group in inventory.all_groups:
             for host_name in inventory.all_groups[group].host_names:
                 hosts_by_name[host_name].vars.update({
                     'datavol_device': '/dev/mapper/consolidated-data',
-                    'devices': "'{}'".format(json.dumps([spec.aws_config.volume['DeviceName']])),
-                    'partitions': "'{}'".format(json.dumps(['{}1'.format(spec.aws_config.volume['DeviceName'])])),
+                    'devices': "'{}'".format(json.dumps([spec.aws_config.data_volume['DeviceName']])),
+                    'partitions': "'{}'".format(json.dumps(['{}1'.format(spec.aws_config.data_volume['DeviceName'])])),
                 })
                 if host_name not in inventory.all_groups['lvm'].host_names:
                     inventory.all_groups['lvm'].host_names.append(host_name)
@@ -206,8 +215,12 @@ def ask_aws_for_instances(env_name, aws_config, count):
             '--subnet-id', aws_config.subnet,
             '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
         ]
-        if aws_config.volume:
-            cmd_parts.extend(['--block-device-mappings', json.dumps(aws_config.volume)])
+        block_device_mappings = []
+        if aws_config.boot_volume:
+            block_device_mappings.append(aws_config.boot_volume)
+        if aws_config.data_volume:
+            block_device_mappings.append(aws_config.data_volume)
+        cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
         aws_response = subprocess.check_output(cmd_parts)
         with open(cache_file, 'w') as f:
             f.write(aws_response)
