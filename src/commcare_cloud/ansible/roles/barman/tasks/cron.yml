@@ -1,0 +1,26 @@
+- name: Create cron for `barman cron`
+  cron:
+    user: "{{ barman_user }}"
+    name: "barman cron"
+    cron_file: barman_backup
+    job: "barman cron >> {{ barman_log_directory }}/cron.log"
+    state: present
+    minute: "*"
+    hour: "*"
+    day: "*"
+    month: "*"
+    weekday: "*"
+
+- name: Create cron job for backups
+  cron:
+    user: "{{ barman_user }}"
+    name: "barman backup server {{ item }}"
+    cron_file: barman_backup
+    job: "barman backup {{ item }} >> {{ barman_log_directory }}/{{ item }}.log"
+    state: present
+    minute: "0"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "*"
+  with_items: "{{ groups['barman_source'] }}"
