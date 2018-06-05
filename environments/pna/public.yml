@@ -48,6 +48,8 @@ nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
+TWO_FACTOR_GATEWAY_ENABLED: True
+
 localsettings:
   ALLOWED_HOSTS:
     - "{{ PNA_SITE_HOST }}"
