@@ -21,7 +21,7 @@ then
     test_syntax
     test_localsettings
     test_help_cache
-    nosetests
+    nosetests -v
 
 elif [[ ${TEST} = 'prove-deploy' ]]
 then
