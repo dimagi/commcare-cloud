@@ -5,7 +5,7 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
-{% if postgres_users.get('barman') and groups['barman'].0 %}
+{% if postgres_users.get('barman') and len(groups['barman'] %}
 # Barman Configuration
 host    all             barman        {{groups['barman'].0}}/32            md5
 {% endif %}
