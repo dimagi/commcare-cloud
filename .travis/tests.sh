@@ -14,8 +14,8 @@ then
     }
 
     test_help_cache() {
-        diff <(ansible -h) commcare-cloud/commcare_cloud/help_cache/ansible.txt
-        diff <(ansible-playbook -h) commcare-cloud/commcare_cloud/help_cache/ansible-playbook.txt
+        diff <(ansible -h) src/commcare_cloud/help_cache/ansible.txt
+        diff <(ansible-playbook -h) src/commcare_cloud/help_cache/ansible-playbook.txt
     }
 
     test_syntax
