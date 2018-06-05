@@ -40,6 +40,8 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
+TWO_FACTOR_GATEWAY_ENABLED: True
+
 localsettings:
   ALLOWED_HOSTS:
     - swiss.commcarehq.org
