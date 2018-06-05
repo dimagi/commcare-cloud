@@ -117,6 +117,8 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
+TWO_FACTOR_GATEWAY_ENABLED: True
+
 localsettings:
   ALLOWED_HOSTS:
     - localhost
@@ -235,8 +237,6 @@ localsettings:
   SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
-  TWO_FACTOR_SMS_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-  TWO_FACTOR_CALL_GATEWAY: 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
