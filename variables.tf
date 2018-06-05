@@ -67,6 +67,94 @@ module "network" {
   # internal_ssl_cert_arn = "${var.internal_ssl_cert_arn}"
 #}
 
+module "django" {
+  source                = "../modules/server"
+  server_name		= "django"
+  server_image       	= "${var.server_image}"
+  environment           = "${var.environment}"
+  company           	= "${var.company}"
+  server_instance_type 	= "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-a-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+
+module "django1" {
+  source                = "../modules/server"
+  server_name           = "django1"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-b-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+
+module "celery" {
+  source                = "../modules/server"
+  server_name           = "celery"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-b-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+
+module "pillowtop" {
+  source                = "../modules/server"
+  server_name           = "pillowtop"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-c-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+
+module "formplayer" {
+  source                = "../modules/server"
+  server_name           = "formplayer"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-a-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+
+module "kafka" {
+  source                = "../modules/server"
+  server_name           = "kafka"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-a-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+#module "celery" {
+#  source                = "../modules/server"
+#  server_image       = "${var.server_image}"
+#  environment           = "${var.environment}"
+#  company           = "${var.company}"
+#  server_instance_type = "${var.server_instance_type}"
+#  g2-access-sg          = "${module.network.g2-access-sg}"
+  #openvpn-access-sg     = "${module.openvpn.openvpn-access-sg}"
+#  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+#  instance_subnet       = "${module.network.subnet-c-public}"
+#  vpc_id                = "${module.network.vpc-id}"
+ # lb_subnets            = ["${module.network.subnet-a-public}", "${module.network.subnet-b-public}", "${module.network.subnet-c-public}"]
+  # dns_zone_id           = "${var.dns_zone_id}"
+  # dns_domain            = "${var.dns_domain}"
+  # shared-alb-dns-name   = "${module.shared-alb.alb-dns-name}"
+#}
+
 #module "bastion" {
 #  source                = "../modules/bastion"
 #  bastion_image       = "${var.bastion_image}"

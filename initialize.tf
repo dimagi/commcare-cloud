@@ -9,6 +9,7 @@ variable "azs" {
   type = "list"
 }
 variable "vpc_begin_range" {}
+variable "server_instance_type" {}
 #variable "bastion_instance_type" {}
 #variable "jenkins_instance_type" {}
 #variable "openvpn_instance_type" {}
@@ -17,6 +18,7 @@ variable "vpc_begin_range" {}
 # To do so please visit http://aws.amazon.com/marketplace/pp?sku=3ihdqli79gl9v2jnlzs6nq60h
 #variable "openvpn_image" {}
 #variable "bastion_image" {}
+variable "server_image" {}
 variable "dns_zone_id" {}
 variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}
