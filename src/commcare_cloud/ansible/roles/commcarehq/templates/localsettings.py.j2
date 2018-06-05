@@ -644,14 +644,14 @@ WS4REDIS_CONNECTION = {
 }
 {% endif %}
 
-{% if localsettings.get('TWO_FACTOR_SMS_GATEWAY') %}
-TWO_FACTOR_SMS_GATEWAY = '{{ localsettings.TWO_FACTOR_SMS_GATEWAY }}'
+{% if TWO_FACTOR_GATEWAY_ENABLED %}
+TWO_FACTOR_SMS_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
+TWO_FACTOR_CALL_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
 {% endif %}
 
-{% if localsettings.get('TWO_FACTOR_CALL_GATEWAY') %}
-TWO_FACTOR_CALL_GATEWAY = '{{ localsettings.TWO_FACTOR_CALL_GATEWAY }}'
+{% if 'ENFORCE_TWO_FACTOR_FOR_SUPERUSERS' in localsettings %}
+ENFORCE_TWO_FACTOR_FOR_SUPERUSERS = {{ localsettings.ENFORCE_TWO_FACTOR_FOR_SUPERUSERS }}
 {% endif %}
-
 
 {% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
 CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
