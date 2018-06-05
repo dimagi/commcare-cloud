@@ -67,6 +67,11 @@ postgres_users:
       username: 'hqrepl'
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
+  barman:
+      username: 'barman'
+      password: 'barman'
+      role_attr_flags: 'SUPERUSER'
+
 
 encrypted_root: '/opt/data'
 

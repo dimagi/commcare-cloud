@@ -5,6 +5,11 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
+{% if postgres_users.get('barman') and groups['barman'].0 %}
+# Barman Configuration
+host    all             barman        {{groups['barman'].0}}/32            md5
+{% endif %}
+
 {% if postgres_users.get('netvault') %}
 # Netvault required configuration
 host    all             netvault        127.0.0.1/32            trust

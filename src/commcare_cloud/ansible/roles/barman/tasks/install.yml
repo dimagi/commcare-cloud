@@ -3,21 +3,21 @@
     pkg: ca-certificates
     state: present
 
-- name: Add Barma apt repository
-  apt_repository: repo='deb [arch=amd64] https://apt.2ndquadrant.com/ {{ ansible_lsb.codename }}-2ndquadrant main' state=present
-  register: add_barman_repo
+- name: Add PostreSQL apt repository
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
+  register: add_postgres_repo
 
-- name: Add Barman apt key
-  apt_key: url=https://apt.2ndquadrant.com/site/keys/9904CD4BD6BAF0C3.asc state=present
+- name: Add PosgreSQL apt key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_barman_repo
+  when: add_postgres_repo
 
 - name: Install Barman
   apt:
     name: "barman"
-    state: present
+    state: latest
     update_cache: yes
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
 
