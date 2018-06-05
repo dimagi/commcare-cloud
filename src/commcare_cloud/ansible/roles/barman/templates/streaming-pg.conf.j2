@@ -1,7 +1,7 @@
 [{{ item }}]
 description =  "{{ item }} (Streaming-Only)"
-conninfo = "host= {{ item }} user={{ postgres_users.barman.username }} dbname=postgres password={{ postgres_users.barman.username }}"
-streaming_conninfo = "host= {{ item }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}"
+conninfo = "host={{ item }} user={{ postgres_users.barman.username }} dbname=postgres password={{ postgres_users.barman.username }}"
+streaming_conninfo = "host={{ item }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}"
 backup_method = postgres
 streaming_archiver = on
 slot_name = barman

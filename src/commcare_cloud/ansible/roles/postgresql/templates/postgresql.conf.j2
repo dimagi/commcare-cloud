@@ -35,7 +35,7 @@ dynamic_shared_memory_type = posix
 
 
 # WRITE AHEAD LOG
-{% if len(groups['barman'] and not is_pg_standby %}
+{% if len(groups['barman']) and not is_pg_standby %}
 archive_mode = on
 archive_command = 'rsync -a %p barman@{{groups['barman'].0}}:{{encrypted_root}}/barman/{{ hostname }}/wals/%f'
 archive_timeout = 300
