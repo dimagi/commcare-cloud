@@ -1,4 +1,5 @@
 deploy_env: softlayer
 env_monitoring_id: softlayer
-users: dimagi
+users:
+  - dimagi
 slack_alerts_channel: alerts-softlayer
