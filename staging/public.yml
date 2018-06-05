@@ -57,6 +57,7 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   EULA_COMPLIANCE: True
   FORMPLAYER_URL: "/formplayer"
   HQ_INSTANCE: 'staging'
