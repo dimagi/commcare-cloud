@@ -84,7 +84,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
         data = self.to_json()
         del data['dbs']
         del data['override']
-        data['postgresql_dbs'] = [db.to_json() for db in self.generate_postgresql_dbs()]
+
+        data['postgresql_dbs'] = sorted(
+            (db.to_json() for db in self.generate_postgresql_dbs()),
+            key=lambda db: db['name']
+        )
         data.update(self.override.to_json())
         return data
 

@@ -1,19 +1,19 @@
 postgresql_dbs:
 - create: true
-  django_alias: ucr
-  django_migrate: false
+  django_alias: default
+  django_migrate: true
   host: 192.168.33.16
-  name: commcarehq_ucr
+  name: commcarehq
   options: {}
   password: commcarehq
   port: 6432
   query_stats: false
   user: commcarehq
 - create: true
-  django_alias: default
-  django_migrate: true
+  django_alias: ucr
+  django_migrate: false
   host: 192.168.33.16
-  name: commcarehq
+  name: commcarehq_ucr
   options: {}
   password: commcarehq
   port: 6432
