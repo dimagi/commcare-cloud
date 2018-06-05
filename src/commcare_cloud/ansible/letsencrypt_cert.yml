@@ -51,7 +51,7 @@
             }
 
             http {
-              # fake the log_format declarations that the modified site we're testing references
+              # fake the log_format declarations that the modified site references
               log_format rt_cache 'x';
               log_format timing 'x';
               include %s;
