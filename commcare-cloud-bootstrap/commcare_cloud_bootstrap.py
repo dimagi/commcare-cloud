@@ -122,6 +122,7 @@ def provision_machines(spec, env_name=None, create_machines=True):
     for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
         host.public_ip = public_ip
         host.private_ip = private_ip
+        host.vars['hostname'] = host.name
         hosts_by_name[host.name] = host
 
     for i, host_name in enumerate(inventory.all_groups['kafka'].host_names):
