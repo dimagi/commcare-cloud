@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -v
+set -ve
 
 if [[ ${TEST} = 'main' ]]
 then
