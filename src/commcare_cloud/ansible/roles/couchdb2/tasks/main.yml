@@ -1,11 +1,13 @@
 ---
 - name: set couchdb username and password
-  uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/_node/couchdb@{{ inventory_hostname|ipaddr }}/_config/admins/{{ couchdb2.username }}"
-    method: PUT
-    status_code: 200, 401 # 401 means this is already set up
-    body: '"{{ couchdb2.password }}"'
-    body_format: raw
+  blockinfile:
+    path: "{{ couchdb_etc_local_dir }}/admins.ini"
+    block: |
+      [admins]
+      {{ couchdb2.username }} = -pbkdf2-{{ item.hash }},{{ item.salt }},10
+  with_items:
+    - "{{ lookup('pbkdf2_hmac', '{{ couchdb2.password }} hash_name=sha1 iterations=10') }}") }}
+  notify: restart couchdb2
 
 - name: Add nodes
   uri:
