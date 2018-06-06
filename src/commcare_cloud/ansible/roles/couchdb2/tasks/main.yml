@@ -22,6 +22,7 @@
     block: |
       [couch_httpd_auth]
       require_valid_user = true
+      secret = {{ inventory_hostname | to_uuid }}
     marker: "; {mark} ANSIBLE MANAGED BLOCK"
 
 - name: Add nodes

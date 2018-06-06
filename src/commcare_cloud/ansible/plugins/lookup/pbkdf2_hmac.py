@@ -43,11 +43,13 @@ RETURN = """
 """
 import random
 import string
-import hashlib
 import binascii
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
+
+from passlib.hash import pbkdf2_sha1, pbkdf2_sha256, pbkdf2_sha512
+from passlib.utils import binary
 
 try:
     from __main__ import display
@@ -95,14 +97,22 @@ class LookupModule(LookupBase):
             salt_chars = string.ascii_lowercase + string.digits
             salt = ''.join(random.SystemRandom().choice(salt_chars) for _ in range(salt_length))
 
+            hashers = {
+                'sha1': pbkdf2_sha1,
+                'sha256': pbkdf2_sha256,
+                'sha512': pbkdf2_sha512,
+            }
+
             hash_name = paramvals['hash_name']
-            if hash_name not in hashlib.algorithms:
+            if hash_name not in hashers:
                 raise AnsibleError('%s not supported hash algorithm' % hash_name)
 
-            dk = hashlib.pbkdf2_hmac(hash_name, input_value, salt, paramvals['iterations'])
+            dk = hashers[hash_name].using(rounds=paramvals['iterations'], salt=salt).hash(input_value)
+            decoded = binary.ab64_decode(dk.split('$')[-1])
             ret.append({
-                'hash': binascii.hexlify(dk),
-                'salt': salt
+                'hash': binascii.hexlify(decoded),
+                'salt': salt,
+                'raw': dk
             })
 
         return ret
