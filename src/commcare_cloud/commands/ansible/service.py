@@ -281,6 +281,11 @@ class Elasticsearch(AnsibleService):
 
 class Couchdb(AnsibleService):
     name = 'couchdb'
+    inventory_groups = ['couchdb']
+
+
+class Couchdb2(AnsibleService):
+    name = 'couchdb2'
     inventory_groups = ['couchdb2']
 
 
@@ -474,6 +479,7 @@ SERVICES = [
     Postgresql,
     Nginx,
     Couchdb,
+    Couchdb2,
     RabbitMq,
     Elasticsearch,
     Redis,
