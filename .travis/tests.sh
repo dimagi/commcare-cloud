@@ -6,7 +6,7 @@ if [[ ${TEST} = 'main' ]]
 then
 
     test_syntax() {
-        ansible-playbook -i .travis/environments/travis/inventory.ini src/commcare-cloud/ansible/deploy_stack.yml --syntax-check
+        ansible-playbook -i .travis/environments/travis/inventory.ini src/commcare_cloud/ansible/deploy_stack.yml --syntax-check
     }
 
     test_localsettings() {
