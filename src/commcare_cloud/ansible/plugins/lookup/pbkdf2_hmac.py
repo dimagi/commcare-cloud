@@ -62,7 +62,7 @@ class LookupModule(LookupBase):
         for term in terms:
             params = term.split()
             input_value = params[0]
-            print(input_value)
+
             paramvals = {
                 'hash_name': 'sha256',
                 'salt_length': 32,
