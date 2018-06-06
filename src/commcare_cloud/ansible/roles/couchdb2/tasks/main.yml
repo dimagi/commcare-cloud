@@ -10,6 +10,20 @@
     - "{{ lookup('pbkdf2_hmac', '{{ couchdb2.password }} hash_name=sha1 iterations=10') }}"
   notify: restart couchdb2
 
+- name: set require valid user
+  lineinfile:
+    path: "{{ couchdb_etc_local_dir }}/chttpd.ini"
+    regexp: "^require_valid_user"
+    line: 'require_valid_user = true'
+
+- name: set require valid user for node-local
+  blockinfile:
+    path: "{{ couchdb_etc_local_dir }}/couch_httpd_auth.ini"
+    block: |
+      [couch_httpd_auth]
+      require_valid_user = true
+    marker: "; {mark} ANSIBLE MANAGED BLOCK"
+
 - name: Add nodes
   uri:
     url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
