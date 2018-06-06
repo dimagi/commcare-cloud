@@ -1,29 +1,12 @@
 ---
-- name: set couchdb username and password
-  blockinfile:
-    path: "{{ couchdb_etc_local_dir }}/admins.ini"
-    block: |
-      [admins]
-      {{ couchdb2.username }} = -pbkdf2-{{ item.hash }},{{ item.salt }},10
-    marker: "; {mark} ANSIBLE MANAGED BLOCK"
-  with_items:
-    - "{{ lookup('pbkdf2_hmac', '{{ couchdb2.password }} hash_name=sha1 iterations=10') }}"
+- name: add generated config
+  template:
+    src: "auto_gen.ini.j2"
+    dest: "{{ couchdb_etc_local_dir }}/auto_gen.ini"
+    owner: '{{couchdb_user}}'
+    group: '{{couchdb_group}}'
+    mode: '{{item.m|default("0644")}}'
   notify: restart couchdb2
-
-- name: set require valid user
-  lineinfile:
-    path: "{{ couchdb_etc_local_dir }}/chttpd.ini"
-    regexp: "^require_valid_user"
-    line: 'require_valid_user = true'
-
-- name: set require valid user for node-local
-  blockinfile:
-    path: "{{ couchdb_etc_local_dir }}/couch_httpd_auth.ini"
-    block: |
-      [couch_httpd_auth]
-      require_valid_user = true
-      secret = {{ inventory_hostname | to_uuid }}
-    marker: "; {mark} ANSIBLE MANAGED BLOCK"
 
 - name: Add nodes
   uri:
