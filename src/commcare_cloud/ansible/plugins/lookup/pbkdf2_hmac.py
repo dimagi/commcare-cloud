@@ -17,6 +17,9 @@ DOCUMENTATION = """
       salt_length:
         description: length of the salt value to use
         default: 32
+      salt:
+        description: value to use for salt
+        default: None
       iterations:
         description: number of iterations to perform
         default: 100
@@ -27,6 +30,7 @@ EXAMPLES = """
   with_items:
     - "{{ lookup('pbkdf2_hmac', '123abc') }}"
     - "{{ lookup('pbkdf2_hmac', '{{ password_var }} hash_name=sha1 salt_length=64 iterations=100000') }}") }}
+    - "{{ lookup('pbkdf2_hmac', '{{ password_var }} hash_name=sha1 salt=mysalt iterations=10') }}"
 """
 
 RETURN = """
@@ -68,6 +72,7 @@ class LookupModule(LookupBase):
             paramvals = {
                 'hash_name': 'sha256',
                 'salt_length': 32,
+                'salt': '',
                 'iterations': 100,
             }
 
@@ -91,11 +96,14 @@ class LookupModule(LookupBase):
             except (ValueError, AssertionError) as e:
                 raise AnsibleError("Error parsing '%s': %s" % (term, e))
 
-            salt_length = paramvals['salt_length']
-            if not 0 < salt_length <= 256:
-                raise AnsibleError('salt_length must be in range 1-256')
-            salt_chars = string.ascii_lowercase + string.digits
-            salt = ''.join(random.SystemRandom().choice(salt_chars) for _ in range(salt_length))
+            if paramvals['salt']:
+                salt = str(paramvals['salt'])
+            else:
+                salt_length = paramvals['salt_length']
+                if not 0 < salt_length <= 256:
+                    raise AnsibleError('salt_length must be in range 1-256')
+                salt_chars = string.ascii_lowercase + string.digits
+                salt = ''.join(random.SystemRandom().choice(salt_chars) for _ in range(salt_length))
 
             hashers = {
                 'sha1': pbkdf2_sha1,
