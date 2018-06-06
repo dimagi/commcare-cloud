@@ -42,7 +42,6 @@
         dest: /etc/nginx/sites-enabled/{{ deploy_env }}_commcare
         regexp: "}$"
         line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
-        backup: yes
         # thanks to https://github.com/ansible/ansible/issues/9112#issuecomment-256483099
         validate: >
           bash -c 'nginx -t -c /dev/stdin <<< "
