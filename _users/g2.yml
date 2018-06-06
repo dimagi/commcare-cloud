@@ -1,5 +1,6 @@
 dev_users:
   present:
-    - scao
     - kdubrovsky
+    - nking
+    - scao
   absent: []
