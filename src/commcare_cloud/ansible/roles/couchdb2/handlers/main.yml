@@ -1,1 +1,4 @@
 ---
+- name: restart couchdb2
+  become: yes
+  service: name=couchdb2 state=restarted
