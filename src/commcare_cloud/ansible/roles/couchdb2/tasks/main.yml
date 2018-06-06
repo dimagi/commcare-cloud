@@ -5,7 +5,7 @@
     dest: "{{ couchdb_etc_local_dir }}/auto_gen.ini"
     owner: '{{couchdb_user}}'
     group: '{{couchdb_group}}'
-    mode: '{{item.m|default("0644")}}'
+    mode: '0644'
   notify: restart couchdb2
 
 - name: Add nodes
