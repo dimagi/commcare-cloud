@@ -6,7 +6,7 @@
       [admins]
       {{ couchdb2.username }} = -pbkdf2-{{ item.hash }},{{ item.salt }},10
   with_items:
-    - "{{ lookup('pbkdf2_hmac', '{{ couchdb2.password }} hash_name=sha1 iterations=10') }}") }}
+    - "{{ lookup('pbkdf2_hmac', '{{ couchdb2.password }} hash_name=sha1 iterations=10') }}"
   notify: restart couchdb2
 
 - name: Add nodes
