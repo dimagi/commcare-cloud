@@ -44,6 +44,7 @@ an understanding of the system's architecture and each of the system's underlyin
 
 ## System installation basics
 
+- [Getting started guide](basics)
 - You've run through the steps to set up CommCare HQ in production,
   and you're facing inscrutable problems.
   Check out [Troubleshooting first time setup](basics/troubleshooting.md).
