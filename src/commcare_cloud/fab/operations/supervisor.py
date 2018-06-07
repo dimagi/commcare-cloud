@@ -46,7 +46,6 @@ def _get_celery_queues():
     queues = {}
     inventory_hostname = env.ccc_environment.inventory_hostname_map[env.host_string]
     queues.update(env.celery_processes.get(inventory_hostname))
-    print(queues)
     return queues
 
 
