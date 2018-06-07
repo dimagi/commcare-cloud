@@ -58,10 +58,11 @@ class AwsConfig(StrictJsonObject):
 
     @classmethod
     def wrap(cls, data):
-        if 'data_volume' in data:
-            assert data['data_volume']['DeviceName'] == '/dev/xvdb'
         if 'boot_volume' in data:
-            assert data['boot_volume']['DeviceName'] == '/dev/sda1'
+            assert data['boot_volume']['DeviceName'] == '/dev/sda1', (
+                "AWS EC2 instances always use /dev/sda1 as the boot volume, "
+                "so please set your spec's boot_volume.DeviceName to '/dev/sda1'."
+            )
         return super(AwsConfig, cls).wrap(data)
 
 
