@@ -1,6 +1,5 @@
-{% set hash_info = lookup('pbkdf2_hmac', '{{ couchdb2.password }} hash_name=sha1 salt={{ couchdb_password_salt }} iterations=10') -%}
 [admins]
-{{ couchdb2.username }} = -pbkdf2-{{ hash_info.hash }},{{ hash_info.salt }},10
+{{ couchdb2.username }} = {{ couchdb2.password|couchdb_password_hash(couchdb_password_salt) }}
 
 [couchdb]
 uuid = {{ couchdb_instance_uuid }}
