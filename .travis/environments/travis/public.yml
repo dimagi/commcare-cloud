@@ -70,8 +70,6 @@ postgres_users:
       password: 'hqbackup'
       role_attr_flags: 'SUPERUSER'
 
-encrypted_root: '/opt/data'
-
 backup_postgres: dump
 backup_blobdb: True
 postgresql_backup_master: True
