@@ -17,8 +17,8 @@ then
     }
 
     test_help_cache() {
-        diff <(ansible -h) src/commcare_cloud/help_cache/ansible.txt
-        diff <(ansible-playbook -h) src/commcare_cloud/help_cache/ansible-playbook.txt
+        diff <(ansible -h | sed "s#$HOME#\~#g") src/commcare_cloud/help_cache/ansible.txt
+        diff <(ansible-playbook -h | sed "s#$HOME#\~#g") src/commcare_cloud/help_cache/ansible-playbook.txt
     }
 
     test_syntax
