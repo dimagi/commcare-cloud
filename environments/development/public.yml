@@ -25,14 +25,10 @@ elasticsearch_cluster_name: 'deves'
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
@@ -59,8 +55,6 @@ postgres_users:
       password: 'hqrepl'
       role_attr_flags: 'LOGIN,REPLICATION'
 
-encrypted_root: '/opt/data'
-
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -70,10 +64,6 @@ nadir_hour: 18
 nofile_limit: 65536
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
-
-mailrelay: 'relay.example.com'
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
