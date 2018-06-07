@@ -5,12 +5,13 @@ set -ve
 if [[ ${TEST} = 'main' ]]
 then
 
+    cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
+
     test_syntax() {
-        ansible-playbook -i .travis/environments/travis/inventory.ini src/commcare_cloud/ansible/deploy_stack.yml --syntax-check
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=FETCH_HEAD  --skip-check --quiet --syntax-check
     }
 
     test_localsettings() {
-        cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
         COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=FETCH_HEAD  --skip-check --quiet --tags=commcarehq
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
