@@ -5,13 +5,6 @@ riak_ring_size: 64
 
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
 
-dev_users:
-  present:
-    - dmiller
-    - droberts
-    - npellegrino
-  absent: []
-
 # use this value to switch between nginx and apache
 proxy_type: nginx
 
