@@ -110,7 +110,6 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   STATIC_CDN: ""
-  FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
 
 root_email: /dev/null
 

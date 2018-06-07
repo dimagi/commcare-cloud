@@ -327,9 +327,7 @@ BROKER_URL = '{{ BROKER_URL }}'
 
 XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
 
-{% if 'FORMPLAYER_URL' in localsettings %}
-FORMPLAYER_URL = "{{ localsettings.FORMPLAYER_URL }}"
-{% endif %}
+FORMPLAYER_URL = "/formplayer"
 
 {% if FORMPLAYER_INTERNAL_AUTH_KEY %}
 FORMPLAYER_INTERNAL_AUTH_KEY = "{{ FORMPLAYER_INTERNAL_AUTH_KEY }}"
