@@ -35,19 +35,19 @@ allocations:
   celery:
     from: proxy
   pillowtop:
-      from: proxy
+    from: proxy
   formplayer:
-      from: proxy
+    from: proxy
   touchforms: 0
   redis:
-      from: proxy
+    from: proxy
   elasticsearch:
-      from: proxy
+    from: proxy
   shared_dir_host: 0
   riakcs: 0
   stanchion: 0
   couchdb2:
-      from: proxy
+    from: proxy
   couchdb2_proxy:
-      from: proxy
+    from: proxy
   pg_standby: 0
