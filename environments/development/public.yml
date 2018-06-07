@@ -1,6 +1,4 @@
-# For a real deployment
-# should be e.g. 'www.commcarehq.org'
-internal_domain_name: 'localdomain'
+internal_domain_name: null
 
 http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
