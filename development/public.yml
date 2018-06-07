@@ -132,7 +132,6 @@ localsettings:
 #  STAGING_DOMAINS:
 #  STATIC_ROOT:
 #  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
-  FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
 root_email: /dev/null
