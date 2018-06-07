@@ -1,6 +1,4 @@
-# For a real deployment
-# should be e.g. 'www.commcarehq.org'
-internal_domain_name: 'localdomain'
+internal_domain_name: null
 
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
