@@ -1,6 +1,4 @@
-# For a real deployment
-# should be e.g. 'www.commcarehq.org'
-internal_domain_name: 'localdomain'
+internal_domain_name: null
 
 riak_backend: "bitcask"
 riak_ring_size: 64

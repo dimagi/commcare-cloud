@@ -291,10 +291,9 @@ class Environment(object):
         hostname = self.hostname_map.get(self.inventory_hostname_map[sshable_hostname])
         if not hostname:
             return sshable_hostname
-        if full and 'internal_domain_name' in self.public_vars:
+        if full and self.public_vars.get('internal_domain_name'):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
-
 
 
 @memoized
