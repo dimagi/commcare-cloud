@@ -4,6 +4,7 @@ import yaml
 from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
+from collections import Counter
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
@@ -19,6 +20,8 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
+class EnvironmentException(Exception):
+    pass
 
 class Environment(object):
     def __init__(self, paths):
@@ -105,9 +108,24 @@ class Environment(object):
 
     @memoized_property
     def users_config(self):
-        with open(self.paths.get_users_yml(self.meta_config.users)) as f:
-            users_json = yaml.load(f)
-        return UsersConfig.wrap(users_json)
+        user_groups_from_yml = self.meta_config.users
+        absent_users = []
+        present_users = []
+        for user_group_from_yml in user_groups_from_yml:
+            with open(self.paths.get_users_yml(user_group_from_yml)) as f:
+                user_group_json = yaml.load(f)
+            present_users += user_group_json['dev_users']['present']
+            absent_users += user_group_json['dev_users']['absent']
+        self.check_user_group_absent_present_overlaps(absent_users, present_users)
+        all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
+        return UsersConfig.wrap(all_users_json)
+
+    def check_user_group_absent_present_overlaps(self, absent_users, present_users):
+        if not set(present_users).isdisjoint(absent_users):
+            repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
+            raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
+                                       'the environment {}. Please fix this and try again.'.format((', '.join(
+                                        map(str, repeated_users))), self.meta_config.deploy_env))
 
     @memoized_property
     def raw_app_processes_config(self):

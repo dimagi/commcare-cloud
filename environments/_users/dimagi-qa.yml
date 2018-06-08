@@ -1,27 +1,4 @@
 dev_users:
   present:
-    - astone
-    - biyeun
-    - cellowitz
-    - ctsims
-    - czue
-    - dmiller
-    - droberts
-    - esoergel
-    - frener
-    - gbova
-    - gcapalbo
-    - jemord
-    - jroth
-    - jschweers
-    - mkangia
     - nclark
-    - nhooper
-    - npellegrino
-    - nsharma
-    - pvaidyanathan
-    - sgoyal
-    - skelly
-    - sravfeyn
-    - wpride
   absent: []

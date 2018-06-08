@@ -70,3 +70,4 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"

@@ -1,3 +1,4 @@
 deploy_env: echis
 env_monitoring_id: echis
-users: echis
+users:
+  - echis
