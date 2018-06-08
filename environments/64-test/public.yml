@@ -62,13 +62,6 @@ couch_dbs:
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
-  users:
-    host: "{{ groups.couchdb2.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__users
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
 
 couchdb_cluster_settings:
   q: 8
