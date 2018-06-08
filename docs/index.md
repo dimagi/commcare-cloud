@@ -42,6 +42,12 @@ CommCare Cloud will help you stand up a system like the one described on that pa
 but maintaining it---even with the help of CommCare Cloud's helpful tooling---will require
 an understanding of the system's architecture and each of the system's underlying technologies.
 
+## System installation basics
+
+- You've run through the steps to set up CommCare HQ in production,
+  and you're facing inscrutable problems.
+  Check out [Troubleshooting first time setup](basics/troubleshooting.md).
+
 ## Miscellaneous Links
 - The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
 - The [ansible README](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md) (somewhat outdated)

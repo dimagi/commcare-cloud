@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Add certbot apt repo
-      apt_repository: repo='ppa:certbot/certbo' state=present
+      apt_repository: repo='ppa:certbot/certbot' state=present
       register: add_cert_repo
 
     - name: Update package list
@@ -25,11 +25,13 @@
         path: '/var/www/letsencrypt/.well-known/acme-challenge'
         owner: www-data
         group: www-data
+        state: directory
         recurse: yes
 
     - name: Create a test file
-      file:
-        path: '/var/www/letsencrypt/.well-known/acme-challenge/test.txt'
+      copy:
+        content: ""
+        dest: '/var/www/letsencrypt/.well-known/acme-challenge/test.txt'
         owner: www-data
         group: www-data
       ignore_errors: '{{ ansible_check_mode }}'
@@ -40,8 +42,20 @@
         dest: /etc/nginx/sites-enabled/{{ deploy_env }}_commcare
         regexp: "}$"
         line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
-        backup: yes
-        validate: 'nginx -t'
+        # thanks to https://github.com/ansible/ansible/issues/9112#issuecomment-256483099
+        validate: >
+          bash -c 'nginx -t -c /dev/stdin <<< "
+            events {
+              worker_connections 1;
+            }
+
+            http {
+              # fake the log_format declarations that the modified site references
+              log_format rt_cache 'x';
+              log_format timing 'x';
+              include %s;
+            }
+          "'
 
     - name: Reload Nginx
       service:
@@ -51,9 +65,8 @@
 
     - name: Check that a test page returns a status 200
       uri:
-        url: 'https://{{SITE_HOST}}.well-known/acme-challenge/test.txt'
-        return_content: yes
-        register: webpage
+        url: 'https://{{SITE_HOST}}/.well-known/acme-challenge/test.txt'
+        validate_certs: no
 
     - name: 'Verify that there exists a certbot Directory /etc/letsencrypt/live/{{ SITE_HOST }}'
       stat:
@@ -65,12 +78,12 @@
       when: certdir.stat.exists
 
     - name: Run Certbot command when there is a www host
-      command: 'sudo certbot certonly --webroot -w /var/www/letsencrypt/ -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
-      when: NO_WWW_SITE_HOST is defined
+      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
+      when: NO_WWW_SITE_HOST
 
     - name: Run Certbot command when there is no www host
-      command: 'sudo certbot certonly --webroot -w /var/www/letsencrypt/ -d {{SITE_HOST}}'
-      when: NO_WWW_SITE_HOST is not defined
+      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}}'
+      when: not NO_WWW_SITE_HOST
 
     - name: 'Copy Certificate /etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem to /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt'
       copy:
@@ -98,3 +111,15 @@
       service:
         name: nginx
         state: reloaded
+
+    - name: Final instructions
+      pause:
+        prompt: |
+
+          Hello person who ran letsencrypt_cert.yml.
+
+          Now you just have to finalize things by
+            - making sure `fake_ssl_cert` is set to `no` (or is absent) in `proxy.yml`
+            - running `commcare-cloud <env> ansible-playbook deploy_proxy.yml`
+            - optionally, copying the important files from `proxy` `/etc/pki/tls/`
+              to an encrypted file in the environment settings.
