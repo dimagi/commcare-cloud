@@ -1,0 +1,5 @@
+- name: Barman
+  hosts: barman
+  become: true
+  roles:
+    - {role: barman}

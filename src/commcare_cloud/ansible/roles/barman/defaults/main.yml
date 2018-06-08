@@ -1,0 +1,8 @@
+## Barman Config
+barman_configuration_file: "/etc/barman.conf"
+barman_user: "barman"
+barman_configuration_files_directory: "/etc/barman.d"
+barman_home: "{{encrypted_root}}/barman"
+barman_log_directory: "{{encrypted_root}}/barman/log"
+barman_log_file: "{{ barman_log_directory }}/barman.log"
+barman_log_level: "INFO"
