@@ -31,24 +31,6 @@ CLOUDANT_CLUSTER_NAME: null
 #keystore_file: 'DimagiKeyStore'
 
 backup_es: False
-
-postgres_users:
-  commcare:
-    username: commcarehq
-    password: commcarehq
-  devreadonly:
-    username: "devreadonly"
-    password: devreadonly
-    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
-    privs:
-      -
-        privs: SELECT
-        objs: ALL_IN_SCHEMA
-  replication:
-      username: 'hqrepl'
-      password: 'hqrepl'
-      role_attr_flags: 'LOGIN,REPLICATION'
-
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
