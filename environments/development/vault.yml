@@ -16,7 +16,7 @@ localsettings_private:
   BOOKKEEPER_CONTACT_EMAILS: []
   BITLY_APIKEY: ''
   BITLY_LOGIN: ''
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   DROPBOX_KEY: ''
   DROPBOX_SECRET: ''
@@ -36,7 +36,7 @@ localsettings_private:
 postgres_users:
   commcare:
     username: commcarehq
-    password: commcarehq
+    password: LLkDYfDXbdnCzhgXMITCDs4s
   devreadonly:
     username: "devreadonly"
     password: devreadonly
