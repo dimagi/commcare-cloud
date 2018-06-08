@@ -10,7 +10,7 @@ secrets:
   SUPERVISOR_HTTP_PASSWORD: 123
 
 localsettings_private:
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   FORMPLAYER_INTERNAL_AUTH_KEY: 'QkGxkCZ2cfT20gI901l8bxzNgspibBnx741me7Soa38BsjiPmmrAEuLw4SM5LBOQG8PQo'
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
@@ -20,7 +20,7 @@ localsettings_private:
 postgres_users:
   commcare:
     username: commcarehq
-    password: commcarehq
+    password: LLkDYfDXbdnCzhgXMITCDs4s
   devreadonly:
     username: "devreadonly"
     password: devreadonly
