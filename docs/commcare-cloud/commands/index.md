@@ -832,7 +832,7 @@ Use `-l` instead of a command to see the full list of commands.
     deploy_airflow
     deploy_formplayer
     development                       {{ '{{' }} hostvars[groups.proxy.0].ansible_hos...
-    echis                             echis.moh.gov.et
+    echis                             172.19.3.41
     force_update_static
     hotfix_deploy                     deploy ONLY the code with no extra clea...
     icds                              www.icds-cas.gov.in
