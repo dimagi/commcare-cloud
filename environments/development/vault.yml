@@ -33,4 +33,21 @@ localsettings_private:
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
 
+postgres_users:
+  commcare:
+    username: commcarehq
+    password: commcarehq
+  devreadonly:
+    username: "devreadonly"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+  replication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
+
 ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9
