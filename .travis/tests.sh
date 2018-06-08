@@ -16,14 +16,8 @@ then
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
 
-    test_help_cache() {
-        diff <(ansible -h | sed "s#$HOME#\~#g") src/commcare_cloud/help_cache/ansible.txt
-        diff <(ansible-playbook -h | sed "s#$HOME#\~#g") src/commcare_cloud/help_cache/ansible-playbook.txt
-    }
-
     test_syntax
     test_localsettings
-    test_help_cache
     nosetests -v
 
 elif [[ ${TEST} = 'prove-deploy' ]]
