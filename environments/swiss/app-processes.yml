@@ -38,8 +38,6 @@ celery_processes:
       max_tasks_per_child: 1
     sms_queue:
       concurrency: 1
-    async_restore_queue:
-      concurrency: 1
     flower: {}
 pillows:
   'swiss.commcarehq.org':
