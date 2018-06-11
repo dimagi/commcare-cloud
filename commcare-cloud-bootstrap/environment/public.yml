@@ -3,8 +3,6 @@ internal_domain_name: null
 riak_backend: "bitcask"
 riak_ring_size: 64
 
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
-
 # use this value to switch between nginx and apache
 proxy_type: nginx
 
