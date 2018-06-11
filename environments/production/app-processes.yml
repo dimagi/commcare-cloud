@@ -54,9 +54,6 @@ celery_processes:
     logistics_background_queue:
       concurrency: 2
       max_tasks_per_child: 5
-    async_restore_queue:
-      concurrency: 2
-      max_tasks_per_child: 5
     flower: {}
   hqcelery2.internal-va.commcarehq.org:
     background_queue:
@@ -65,6 +62,9 @@ celery_processes:
     send_report_throttled:
       concurrency: 2
       max_tasks_per_child: 1
+    async_restore_queue:
+      concurrency: 2
+      max_tasks_per_child: 5
   hqcelery3.internal-va.commcarehq.org:
     async_restore_queue:
       concurrency: 8
