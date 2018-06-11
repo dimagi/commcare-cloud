@@ -10,11 +10,28 @@ secrets:
   SUPERVISOR_HTTP_PASSWORD: 123
 
 localsettings_private:
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   FORMPLAYER_INTERNAL_AUTH_KEY: 'QkGxkCZ2cfT20gI901l8bxzNgspibBnx741me7Soa38BsjiPmmrAEuLw4SM5LBOQG8PQo'
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+postgres_users:
+  commcare:
+    username: commcarehq
+    password: LLkDYfDXbdnCzhgXMITCDs4s
+  devreadonly:
+    username: "devreadonly"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+  replication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
 
 ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9

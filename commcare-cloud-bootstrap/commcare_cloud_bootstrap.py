@@ -53,6 +53,17 @@ class AwsConfig(StrictJsonObject):
     key_name = jsonobject.StringProperty()
     security_group_id = jsonobject.StringProperty()
     subnet = jsonobject.StringProperty()
+    data_volume = jsonobject.DictProperty(exclude_if_none=True)
+    boot_volume = jsonobject.DictProperty(exclude_if_none=True)
+
+    @classmethod
+    def wrap(cls, data):
+        if 'boot_volume' in data:
+            assert data['boot_volume']['DeviceName'] == '/dev/sda1', (
+                "AWS EC2 instances always use /dev/sda1 as the boot volume, "
+                "so please set your spec's boot_volume.DeviceName to '/dev/sda1'."
+            )
+        return super(AwsConfig, cls).wrap(data)
 
 
 class Settings(StrictJsonObject):
@@ -90,14 +101,17 @@ class Group(StrictJsonObject):
     vars = jsonobject.DictProperty()
 
 
-def provision_machines(spec, env_name=None):
+def provision_machines(spec, env_name=None, create_machines=True):
     if env_name is None:
         env_name = u'hq-{}'.format(
             ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
     environment = get_environment(env_name)
     inventory = bootstrap_inventory(spec, env_name)
-    instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
+    if create_machines:
+        instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
+    else:
+        instance_ids = None
 
     while True:
         instance_ip_addresses = poll_for_aws_state(env_name, instance_ids)
@@ -109,6 +123,7 @@ def provision_machines(spec, env_name=None):
     for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
         host.public_ip = public_ip
         host.private_ip = private_ip
+        host.vars['hostname'] = host.name
         hosts_by_name[host.name] = host
 
     for i, host_name in enumerate(inventory.all_groups['kafka'].host_names):
@@ -117,6 +132,18 @@ def provision_machines(spec, env_name=None):
 
     for host_name in inventory.all_groups['elasticsearch'].host_names:
         hosts_by_name[host_name].vars['elasticsearch_node_name'] = host_name
+
+    if spec.aws_config.data_volume:
+        inventory.all_groups['lvm'] = Group(name='lvm')
+        for group in inventory.all_groups:
+            for host_name in inventory.all_groups[group].host_names:
+                hosts_by_name[host_name].vars.update({
+                    'datavol_device': '/dev/mapper/consolidated-data',
+                    'devices': "'{}'".format(json.dumps([spec.aws_config.data_volume['DeviceName']])),
+                    'partitions': "'{}'".format(json.dumps(['{}1'.format(spec.aws_config.data_volume['DeviceName'])])),
+                })
+                if host_name not in inventory.all_groups['lvm'].host_names:
+                    inventory.all_groups['lvm'].host_names.append(host_name)
 
     save_inventory(environment, inventory)
     copy_default_vars(environment, spec.aws_config)
@@ -190,6 +217,12 @@ def ask_aws_for_instances(env_name, aws_config, count):
             '--subnet-id', aws_config.subnet,
             '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
         ]
+        block_device_mappings = []
+        if aws_config.boot_volume:
+            block_device_mappings.append(aws_config.boot_volume)
+        if aws_config.data_volume:
+            block_device_mappings.append(aws_config.data_volume)
+        cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
         aws_response = subprocess.check_output(cmd_parts)
         with open(cache_file, 'w') as f:
             f.write(aws_response)
@@ -289,22 +322,26 @@ def update_inventory_public_ips(inventory, new_hosts):
         host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
 
 
-def poll_for_aws_state(env_name, instance_ids):
+def poll_for_aws_state(env_name, instance_ids=None):
     describe_instances = raw_describe_instances(env_name)
     print_describe_instances(describe_instances)
 
     instances = [instance
                  for reservation in describe_instances['Reservations']
                  for instance in reservation['Instances']]
-    unfinished_instances = instance_ids - {
-        instance['InstanceId'] for instance in instances
-        if instance.get('PublicIpAddress') and instance.get('PublicDnsName')
-    }
+    if instance_ids is not None:
+        unfinished_instances = instance_ids - {
+            instance['InstanceId'] for instance in instances
+            if instance.get('PublicIpAddress') and instance.get('PublicDnsName')
+        }
+    else:
+        unfinished_instances = ()
+
     if not unfinished_instances:
         return {
             instance['InstanceId']: (instance['PublicIpAddress'], instance['PrivateIpAddress'])
             for instance in instances
-            if instance['InstanceId'] in instance_ids
+            if instance_ids is None or instance['InstanceId'] in instance_ids
         }
 
 
@@ -361,6 +398,7 @@ def copy_default_vars(environment, aws_config):
                     aws_config.pem, os.path.join(TEMPLATE_DIR, 'public.yml')))
                 sys.exit(1)
 
+
 class Provision(object):
     command = 'provision'
     help = """Provision a new environment based on a spec yaml file. (See example_spec.yml.)"""
@@ -369,6 +407,8 @@ class Provision(object):
     def make_parser(parser):
         parser.add_argument('spec')
         parser.add_argument('--env')
+        parser.add_argument('--skip-create', dest='create_machines', action='store_false',
+                            default=True)
 
     @staticmethod
     def run(args):
@@ -376,7 +416,7 @@ class Provision(object):
             spec = yaml.load(f)
 
         spec = Spec.wrap(spec)
-        provision_machines(spec, args.env)
+        provision_machines(spec, args.env, create_machines=args.create_machines)
 
 
 class Show(object):
