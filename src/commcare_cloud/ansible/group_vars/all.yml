@@ -183,8 +183,10 @@ ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD | default(None) }}"
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY | default(None) }}"
 NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY | default(None) }}"
 
+# use https://v-punk.com/automate-password-changes-with-ansible/ to generate hash
 ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 | default(None) }}"
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN | default(None) }}'
+internal_domain_name: null
 old_s3_blob_db_access_key: "{{ secrets.OLD_S3_BLOB_DB_ACCESS_KEY | default(None) }}"
 old_s3_blob_db_secret_key: "{{ secrets.OLD_S3_BLOB_DB_SECRET_KEY | default(None) }}"
 postgres_users: "{{ secrets.POSTGRES_USERS | default(None) }}"
@@ -219,4 +221,3 @@ formplayer_db_host: "{% for config in postgresql_dbs -%}
 {%- endfor %}"
 
 nofile_limit: 4096
-

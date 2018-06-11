@@ -1,11 +1,12 @@
 import os
+import re
 import subprocess
 
 from memoized import memoized
 
 from commcare_cloud.cli_utils import print_command
 from .command_base import CommandBase, Argument
-from ..environment.paths import FABFILE
+from ..environment.paths import FABFILE, get_available_envs
 from six.moves import shlex_quote
 
 
@@ -32,7 +33,11 @@ class Fab(CommandBase):
             @property
             @memoized
             def epilog(self):
-                return subprocess.check_output(['fab', '-f', FABFILE, '-l'])
+                lines = subprocess.check_output(['fab', '-f', FABFILE, '-l']).splitlines()
+                return '\n'.join(
+                    line for line in lines
+                    if not re.match(r'^\s+({})'.format('|'.join(get_available_envs())), line)
+                )
 
         self.parser.__class__ = _Parser
 

@@ -10,8 +10,29 @@ secrets:
   SUPERVISOR_HTTP_PASSWORD: 123
 
 localsettings_private:
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+postgres_users:
+  commcare:
+    username: "{{ DEFAULT_POSTGRESQL_USER }}"
+    password: LLkDYfDXbdnCzhgXMITCDs4s
+  devreadonly:
+    username: "devreadonly"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+  replication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
+  backup:
+      username: 'hqbackup'
+      password: 'hqbackup'
+      role_attr_flags: 'SUPERUSER'
