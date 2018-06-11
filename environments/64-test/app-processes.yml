@@ -1,30 +1,26 @@
 celery_processes:
-  celery:
+  64-test-proxy-0:
     celery_periodic:
-      server_whitelist: 192.168.33.16
+      server_whitelist: 52.202.74.182
       concurrency: 4
     async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue:
       concurrency: 1
     email_queue,reminder_case_update_queue:
-      concurrency: 1
+      concurrency: 5
     reminder_rule_queue,reminder_queue,repeat_record_queue,saved_exports_queue:
       concurrency: 1
     sms_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
       concurrency: 1
     flower: {}
 pillows:
-  pillowtop:
+  64-test-proxy-0:
     kafka-ucr-main:
       num_processes: 1
     kafka-ucr-static:
       num_processes: 1
     AppDbChangeFeedPillow:
       num_processes: 1
-    ApplicationBlobDeletionPillow:
-      num_processes: 1
     ApplicationToElasticsearchPillow:
-      num_processes: 1
-    BlobDeletionPillow:
       num_processes: 1
     CacheInvalidatePillow:
       num_processes: 1

@@ -152,7 +152,6 @@ localsettings:
   EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
-  FORMPLAYER_URL: "/formplayer"
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:

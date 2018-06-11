@@ -36,10 +36,8 @@ install:
 
 script:
   - ".travis/tests.sh"
-  - "nosetests"
   - "git diff"
   - "./tests/test_command_docs.sh"
 
 after_script:
   - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"
-  

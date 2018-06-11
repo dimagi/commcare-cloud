@@ -1,5 +1,10 @@
 internal_domain_name: null
 
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
+
+touchforms_enabled: false
+
 riak_backend: "bitcask"
 riak_ring_size: 64
 
@@ -22,7 +27,7 @@ elasticsearch_cluster_name: 'deves'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
 
 CLOUDANT_CLUSTER_NAME: null
 
@@ -72,11 +77,9 @@ localsettings:
     - 127.0.0.1
     - "{{ SITE_HOST }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
-  EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
-  EMAIL_SMTP_PORT: '1025'
-  # use True in prod!
-  EMAIL_USE_TLS: no
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
@@ -86,8 +89,26 @@ localsettings:
   REDIS_PORT: '6379'
   STATIC_CDN: ""
 
-root_email: /dev/null
+root_email: droberts+root@dimagi.com
+server_email: droberts+commcarehq-noreply@dimagi.com
+default_from_email: droberts+commcarehq-noreply@dimagi.com
+support_email: droberts+support@dimagi.com
+probono_support_email: droberts+pro-bono@dimagi.com
+cchq_bug_report_email: droberts+commcarehq-bug-reports@dimagi.com
+accounts_email: droberts+accounts@dimagi.com
+data_email: droberts+datatree@dimagi.com
+subscription_change_email: droberts+accounts+subchange@dimagi.com
+internal_subscription_change_email: droberts+accounts+subchange+internal@dimagi.com
+billing_email: droberts+billing-comm@dimagi.com
+invoicing_contact_email: droberts+billing-support@dimagi.com
+growth_email: droberts+growth@dimagi.com
+master_list_email: droberts+master-list@dimagi.com
+report_builder_add_on_email: droberts+sales@dimagi.com
+eula_change_email: droberts+eula-notifications@dimagi.com
+contact_email: droberts+info@dimagi.com
+soft_assert_email: droberts+commcarehq-ops+soft_asserts@dimagi.com
+daily_deploy_email: null
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
-commcare_cloud_use_vault: no
+commcare_cloud_pem: /Users/droberts/.ssh/commcarehq_testing.pem
