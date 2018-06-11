@@ -1,5 +1,5 @@
 /commcare-cloud-bootstrap/specs
-!/commcare-cloud-bootstrap/specs/example_spec.yml
+!/commcare-cloud-bootstrap/specs/example*.yml
 .generated.yml
 !tests/postgresql_config/*/.generated.yml
 *.swp
