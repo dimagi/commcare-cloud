@@ -16,7 +16,7 @@ localsettings_private:
   BOOKKEEPER_CONTACT_EMAILS: []
   BITLY_APIKEY: ''
   BITLY_LOGIN: ''
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   DROPBOX_KEY: ''
   DROPBOX_SECRET: ''
@@ -32,5 +32,22 @@ localsettings_private:
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+postgres_users:
+  commcare:
+    username: commcarehq
+    password: LLkDYfDXbdnCzhgXMITCDs4s
+  devreadonly:
+    username: "devreadonly"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+  replication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
 
 ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9
