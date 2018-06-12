@@ -17,7 +17,7 @@
   # n - new partition
   # p - primary partition
   # 1 - partition number 1
-  #   - default - start at beginning of disk 
+  #   - default - start at beginning of disk
   #   - default - use entire disk
   # w - write the partition table
   when: datavol_device is defined and partition_check.rc == 0 and ansible_hostname not in groups['lvm']
@@ -87,6 +87,30 @@
   file: path="{{ encrypted_root }}/blobdb" owner=nobody group="{{ shared_dir_gid }}" mode=0775 state=directory
   tags:
     - ecryptfs-blobdb
+
+- name: Create {{ encrypted_root }}/tmp_storage to use for /tmp data.
+  become: yes
+  file:
+    path: "{{ encrypted_root }}/tmp_storage"
+    mode: "u=rwx,g=rwx,o=rwx"
+    state: directory
+  tags:
+    - mount-ecryptfs
+    - after-reboot
+    - tmp-encrypt
+
+- name: mount {{ encrypted_root }}/tmp_storage directory on /tmp
+  become: yes
+  mount:
+    path: /tmp/
+    src: "{{ encrypted_root }}/tmp_storage"
+    opts: bind
+    fstype: none
+    state: mounted
+  tags:
+    - mount-ecryptfs
+    - after-reboot
+    - tmp-encrypt
 
 - name: Create shared data dir
   become: yes
