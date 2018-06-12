@@ -138,7 +138,7 @@
   with_items:
     - "'{{ encrypted_root }}/README"
     - "'{{ encrypted_tmp }}/README"
-  tags: test45
+  tags: mount-ecryptfs
 
 - name: Create purging cron jobs
   become: yes
