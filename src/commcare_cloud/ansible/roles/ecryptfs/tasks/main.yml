@@ -68,7 +68,7 @@
   become: yes
   shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
   register: password_hash
-  when: encrypted_root  not in mtab_contents.stdout
+  when: encrypted_root  not in mtab_contents.stdout or encrypted_tmp not in mtab_contents.stdout
   tags:
     - mount-ecryptfs
     - after-reboot
@@ -88,29 +88,24 @@
   tags:
     - ecryptfs-blobdb
 
-- name: Create {{ encrypted_root }}/tmp_storage to use for /tmp data.
+- name: Create {{encrypted_tmp}} to use for as tmp directory.
   become: yes
   file:
-    path: "{{ encrypted_root }}/tmp_storage"
-    mode: "u=rwx,g=rwx,o=rwx"
+    path: "{{ encrypted_tmp }}"
+    mode: "u=rwx,g=rwx,o=rx"
     state: directory
   tags:
     - mount-ecryptfs
     - after-reboot
     - tmp-encrypt
 
-- name: mount {{ encrypted_root }}/tmp_storage directory on /tmp
+- name: Mount tmp drive
   become: yes
-  mount:
-    path: /tmp/
-    src: "{{ encrypted_root }}/tmp_storage"
-    opts: bind
-    fstype: none
-    state: mounted
+  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_tmp }}/ {{ encrypted_tmp }}/"
+  when: (password_hash.stdout is defined) and ( encrypted_tmp not in mtab_contents.stdout )
   tags:
     - mount-ecryptfs
     - after-reboot
-    - tmp-encrypt
 
 - name: Create shared data dir
   become: yes
