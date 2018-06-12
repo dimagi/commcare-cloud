@@ -1,17 +1,16 @@
 internal_domain_name: null
 
-http_proxy_address: '192.168.33.14'
-http_proxy_port: '3128'
-http_proxy_parent_address: '192.168.33.1'
-http_proxy_parent_port: '3128'
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
+
+touchforms_enabled: false
 
 riak_backend: "bitcask"
 riak_ring_size: 64
 
 # use this value to switch between nginx and apache
 proxy_type: nginx
-elasticsearch_version: 1.7.6
-elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'
@@ -26,12 +25,12 @@ elasticsearch_cluster_name: 'deves'
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
 
 CLOUDANT_CLUSTER_NAME: null
 
 
-# This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
+# This dumps the dummy keystore, but allows the ansible script to continue, should be overridden for real deploys
 #keystore_file: 'DimagiKeyStore'
 
 backup_es: False
@@ -56,7 +55,7 @@ couchdb_bind:
 couch_dbs:
   default:
     host: "{{ groups.couchdb2.0 }}"
-    port: 15984
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -75,41 +74,39 @@ localsettings:
     - localhost
     - 127.0.0.1
     - "{{ SITE_HOST }}"
-#  BANK_ADDRESS:
-#  BANK_NAME:
-#  BANK_SWIFT_CODE:
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
-  EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
-  EMAIL_SMTP_PORT: '1025'
-  # use True in prod!
-  EMAIL_USE_TLS: no
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
-#  INVOICE_FROM_ADDRESS:
-#  INVOICE_PREFIX:
-#  INVOICE_STARTING_NUMBER:
   J2ME_ADDRESS: ''
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
-#  MEDIA_ROOT:
-#  PILLOWTOP_MACHINE_ID:
-#  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
-#  REMINDERS_QUEUE_ENABLED:
   STATIC_CDN: ""
-#  SMS_QUEUE_ENABLED: ''
-#  STAGING_DOMAINS:
-#  STATIC_ROOT:
-#  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
-#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
-root_email: /dev/null
+root_email: droberts+root@dimagi.com
+server_email: droberts+commcarehq-noreply@dimagi.com
+default_from_email: droberts+commcarehq-noreply@dimagi.com
+support_email: droberts+support@dimagi.com
+probono_support_email: droberts+pro-bono@dimagi.com
+cchq_bug_report_email: droberts+commcarehq-bug-reports@dimagi.com
+accounts_email: droberts+accounts@dimagi.com
+data_email: droberts+datatree@dimagi.com
+subscription_change_email: droberts+accounts+subchange@dimagi.com
+internal_subscription_change_email: droberts+accounts+subchange+internal@dimagi.com
+billing_email: droberts+billing-comm@dimagi.com
+invoicing_contact_email: droberts+billing-support@dimagi.com
+growth_email: droberts+growth@dimagi.com
+master_list_email: droberts+master-list@dimagi.com
+report_builder_add_on_email: droberts+sales@dimagi.com
+eula_change_email: droberts+eula-notifications@dimagi.com
+contact_email: droberts+info@dimagi.com
+soft_assert_email: droberts+commcarehq-ops+soft_asserts@dimagi.com
+daily_deploy_email: null
 
-commcare_cloud_remote_user: vagrant
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
-commcare_cloud_use_vault: no
+commcare_cloud_pem: /Users/droberts/.ssh/commcarehq_testing.pem

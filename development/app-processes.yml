@@ -1,5 +1,3 @@
-newrelic_javaagent: True
-
 celery_processes:
   celery:
     beat: {}
