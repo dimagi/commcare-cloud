@@ -147,5 +147,5 @@
     special_time: daily
     job: "/usr/sbin/tmpreaper {{ encrypted_tmp }} 2d"
     user: root
-    cron_file: purge_formplayer_files
+    cron_file: purge_tmp_files
   tags: cron
