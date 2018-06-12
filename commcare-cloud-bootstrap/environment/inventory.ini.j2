@@ -1,7 +1,7 @@
 {% for machine in inventory.all_hosts -%}
 [{{ machine.name }}]
 {{ machine.private_ip }} ansible_host={{ machine.public_ip }}
-{%- for key, value in machine.vars.items() %} {{ key }}={{ value }}{% endfor %}
+{%- for key, value in machine.vars.items()|sort %} {{ key }}={{ value }}{% endfor %}
 
 {% endfor -%}
 {% for _, group in inventory.all_groups.items()|sort %}

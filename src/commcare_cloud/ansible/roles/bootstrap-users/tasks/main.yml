@@ -38,7 +38,7 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Add ansible user
-  user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_user_password_sha_512 }}"
+  user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_sudo_pass|password_hash('sha512') }}"
 
 - name: Authorize current devs to login as ansible
   become: yes

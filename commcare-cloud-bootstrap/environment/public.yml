@@ -1,18 +1,7 @@
-# For a real deployment
-# should be e.g. 'www.commcarehq.org'
-internal_domain_name: 'localdomain'
+internal_domain_name: null
 
 riak_backend: "bitcask"
 riak_ring_size: 64
-
-ansible_user_password_sha_512: "{{ secrets.ANSIBLE_USER_PASSWORD_SHA_512 }}"
-
-dev_users:
-  present:
-    - dmiller
-    - droberts
-    - npellegrino
-  absent: []
 
 # use this value to switch between nginx and apache
 proxy_type: nginx
@@ -28,14 +17,10 @@ elasticsearch_cluster_name: 'deves'
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
 
-ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD }}"
-
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
-DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY }}"
-DATADOG_APP_KEY: "{{ secrets.DATADOG_API_KEY }}"
 
 CLOUDANT_CLUSTER_NAME: null
 
@@ -44,26 +29,6 @@ CLOUDANT_CLUSTER_NAME: null
 #keystore_file: 'DimagiKeyStore'
 
 backup_es: False
-
-postgres_users:
-  commcare:
-    username: commcarehq
-    password: commcarehq
-  devreadonly:
-    username: "devreadonly"
-    password: devreadonly
-    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
-    privs:
-      -
-        privs: SELECT
-        objs: ALL_IN_SCHEMA
-  replication:
-      username: 'hqrepl'
-      password: 'hqrepl'
-      role_attr_flags: 'LOGIN,REPLICATION'
-
-encrypted_root: '/opt/data'
-
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -73,10 +38,6 @@ nadir_hour: 18
 nofile_limit: 65536
 
 supervisor_http_enabled: True
-supervisor_http_username: "{{ secrets.SUPERVISOR_HTTP_USERNAME }}"
-supervisor_http_password: "{{ secrets.SUPERVISOR_HTTP_PASSWORD }}"
-
-mailrelay: 'relay.example.com'
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -89,15 +50,8 @@ couchdb_bind:
 couch_dbs:
   default:
     host: "{{ groups.couchdb2.0 }}"
-    port: 15984
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  users:
-    host: "{{ groups.couchdb2.0 }}"
-    port: 15984
-    name: commcarehq__users
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
@@ -125,23 +79,10 @@ localsettings:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
-  LOCAL_PILLOWS:
-    custom:
-      - name: 'kafka-ucr-main-custom-1'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          ucr_division: '09'
-      - name: 'kafka-ucr-main-custom-2'
-        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
-        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
-        params:
-          ucr_division: 'af'
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   STATIC_CDN: ""
-  FORMPLAYER_URL: "http://{{ groups.formplayer.0 }}:8181"
 
 root_email: /dev/null
 

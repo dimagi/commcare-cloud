@@ -63,7 +63,7 @@ class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
 
 
 CELERY_PROCESSES = [
-    CeleryProcess("async_restore_queue"),
+    CeleryProcess("async_restore_queue", required=False),
     CeleryProcess("background_queue"),
     CeleryProcess("beat", required=False),
     CeleryProcess("case_rule_queue"),
@@ -87,7 +87,7 @@ CELERY_PROCESSES = [
     CeleryProcess("sms_queue"),
     CeleryProcess("submission_reprocessing_queue", required=False),
     CeleryProcess("ucr_indicator_queue", required=False),
-    CeleryProcess("ucr_queue"),
+    CeleryProcess("ucr_queue", required=False),
 ]
 
 
