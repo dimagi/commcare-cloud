@@ -129,9 +129,13 @@
 - name: Drop unencrypted readme in directory
   become: yes
   lineinfile:
-    dest: '{{ encrypted_root }}/README'
+    dest: "{{ item }}"
     line: 'If you can read this file the directory is unencrypted'
     create: yes
     owner: root
     group: root
     mode: 0770
+  with_items:
+    - "'{{ encrypted_root }}/README"
+    - "'{{ encrypted_tmp }}/README"
+  tags: test45
