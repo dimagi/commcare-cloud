@@ -139,3 +139,13 @@
     - "'{{ encrypted_root }}/README"
     - "'{{ encrypted_tmp }}/README"
   tags: test45
+
+- name: Create purging cron jobs
+  become: yes
+  cron:
+    name: "Purge files in {{ encrypted_tmp }}"
+    special_time: daily
+    job: "/usr/sbin/tmpreaper {{ encrypted_tmp }} 2d"
+    user: root
+    cron_file: purge_formplayer_files
+  tags: cron
