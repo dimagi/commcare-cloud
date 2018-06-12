@@ -4,6 +4,7 @@ import yaml
 from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
+from collections import Counter
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
@@ -19,6 +20,8 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
+class EnvironmentException(Exception):
+    pass
 
 class Environment(object):
     def __init__(self, paths):
@@ -105,9 +108,24 @@ class Environment(object):
 
     @memoized_property
     def users_config(self):
-        with open(self.paths.get_users_yml(self.meta_config.users)) as f:
-            users_json = yaml.load(f)
-        return UsersConfig.wrap(users_json)
+        user_groups_from_yml = self.meta_config.users
+        absent_users = []
+        present_users = []
+        for user_group_from_yml in user_groups_from_yml:
+            with open(self.paths.get_users_yml(user_group_from_yml)) as f:
+                user_group_json = yaml.load(f)
+            present_users += user_group_json['dev_users']['present']
+            absent_users += user_group_json['dev_users']['absent']
+        self.check_user_group_absent_present_overlaps(absent_users, present_users)
+        all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
+        return UsersConfig.wrap(all_users_json)
+
+    def check_user_group_absent_present_overlaps(self, absent_users, present_users):
+        if not set(present_users).isdisjoint(absent_users):
+            repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
+            raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
+                                       'the environment {}. Please fix this and try again.'.format((', '.join(
+                                        map(str, repeated_users))), self.meta_config.deploy_env))
 
     @memoized_property
     def raw_app_processes_config(self):
@@ -157,6 +175,10 @@ class Environment(object):
                                 sources=self.paths.inventory_ini)
 
     @memoized_property
+    def _ansible_inventory_variable_manager(self):
+        return VariableManager(self._ansible_inventory_data_loader, self.inventory_manager)
+
+    @memoized_property
     def groups(self):
         """
         mimics ansible's `groups` variable
@@ -166,6 +188,13 @@ class Environment(object):
         return {group: [
             host for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
+
+    @staticmethod
+    def format_sshable_host(ansible_host, ansible_port):
+        if ansible_port is None:
+            return ansible_host
+        else:
+            return '{}:{}'.format(ansible_host, ansible_port)
 
     @memoized_property
     def sshable_hostnames_by_group(self):
@@ -179,7 +208,7 @@ class Environment(object):
 
         """
         inventory = self.inventory_manager
-        var_manager = VariableManager(self._ansible_inventory_data_loader, inventory)
+        var_manager = self._ansible_inventory_variable_manager
         # use the ip address specified by ansible_host to ssh in if it's given
         ssh_addr_map = {
             host.name: var_manager.get_vars(host=host).get('ansible_host', host.name)
@@ -188,10 +217,28 @@ class Environment(object):
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
                     for host in inventory.get_hosts()}
         return {group: [
-            '{}:{}'.format(ssh_addr_map[host], port_map[host])
-            if port_map[host] is not None else ssh_addr_map[host]
+            self.format_sshable_host(ssh_addr_map[host], port_map[host])
             for host in hosts
         ] for group, hosts in self.inventory_manager.get_groups_dict().items()}
+
+    @memoized_property
+    def inventory_hostname_map(self):
+        """
+        sshable hostname (including optional port) => inventory_hostname
+
+        in the common case, sshable hostname _is_ inventory_hostname, but if you have
+        the optional ansible_port or ansible_host set, then it will be different,
+        and the same format as used in sshable_hostnames_by_group
+        """
+        var_manager = self._ansible_inventory_variable_manager
+
+        mapping = {}
+        for host in self.inventory_manager.hosts.values():
+            ansible_port = var_manager.get_vars(host=host).get('ansible_port')
+            ansible_host = var_manager.get_vars(host=host).get('ansible_host', host.name)
+            mapping[self.format_sshable_host(ansible_host, ansible_port)] = host.name
+        return mapping
+
 
     @memoized_property
     def hostname_map(self):
@@ -240,14 +287,13 @@ class Environment(object):
                 'in {} to a single host name: {}'.format(filename_for_error, host))
             return group[0]
 
-    def get_hostname(self, inventory_host, full=True):
-        hostname = self.hostname_map.get(inventory_host)
+    def get_hostname(self, sshable_hostname, full=True):
+        hostname = self.hostname_map.get(self.inventory_hostname_map[sshable_hostname])
         if not hostname:
-            return inventory_host
-        if full and 'internal_domain_name' in self.public_vars:
+            return sshable_hostname
+        if full and self.public_vars.get('internal_domain_name'):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
-
 
 
 @memoized
