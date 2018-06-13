@@ -16,10 +16,13 @@
 
 - name: Install Barman
   apt:
-    name: "barman"
+    name: "{{item}}"
     state: latest
     update_cache: yes
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
+  with_items:
+    - barman
+    - "postgresql-client-{{ postgresql_version }}"
 
 - name: Create Barman home directory
   file:
