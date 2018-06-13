@@ -1,7 +1,12 @@
-[ {{ item }} ]
-description =  "{{ item }} (Streaming-Only)"
-conninfo = "host={{ groups[item].0 }} user={{ postgres_users.barman.username }} dbname=postgres password={{ postgres_users.barman.username }}"
-streaming_conninfo = "host={{ groups[item].0 }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}"
+{% if hostname is defined %}
+[ {{ hostvars[item]['hostname'] }} ]
+description =  "{{ hostvars[item]['hostname'] }} (Streaming-Only)"
+{% else %}
+[ {{ hostvars[item]['inventory_hostname_short'] }} ]
+description =  "{{ hostvars[item]['inventory_hostname_short'] }} (Streaming-Only)"
+{% endif %}
+conninfo = "host={{ item }} user={{ postgres_users.barman.username }} dbname=postgres password={{ postgres_users.barman.username }}"
+streaming_conninfo = "host={{ item }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}"
 backup_method = postgres
 streaming_archiver = on
 slot_name = barman

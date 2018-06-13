@@ -5,10 +5,15 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
-{% if postgres_users.get('barman') and groups['barman']|length %}
+{% for host in groups['barman'] %}
 # Barman Configuration
-host    all             barman        {{groups['barman'].0}}/32            md5
+{% if host | ipaddr %}
+host   all	barman	{{ host }}/32   md5
+{% else %}
+host   all	barman	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {% endif %}
+
+{%endfor%}
 
 {% if postgres_users.get('netvault') %}
 # Netvault required configuration
