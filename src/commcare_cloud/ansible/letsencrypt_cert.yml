@@ -128,7 +128,9 @@
     - name: Add certbot cron
       cron:
         name: "Certbot Renew"
-        job: "certbot -q renew"
+        job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew"
+        minute: "0"
+        hour: "0/12"
         user: root
         cron_file: certbot
         state: absent
