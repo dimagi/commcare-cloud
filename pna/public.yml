@@ -103,3 +103,5 @@ localsettings:
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True
+
+letsencrypt_cchq_ssl: True
