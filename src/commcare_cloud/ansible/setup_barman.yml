@@ -3,3 +3,17 @@
   become: true
   roles:
     - {role: barman}
+
+- name: Setup auth for postgres
+  hosts:
+    - barman
+  vars:
+    - userFrom: barman
+    - hostTo: "{{ groups['barman'].0 }}"
+    - userTo: postgres
+    - state: 'present'
+  tasks:
+    - import_tasks: roles/setup_auth_keys.yml
+      when: groups['barman_source']|length
+  tags:
+    - pg_barman
