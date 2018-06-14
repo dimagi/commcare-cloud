@@ -2,7 +2,7 @@
 [{{ hostvars[item]['hostname'] }}]
 description =  "{{ hostvars[item]['hostname'] }} (Streaming-Only)"
 {% else %}
-[ {{ hostvars[item]['inventory_hostname_short'] }} ]
+[{{ hostvars[item]['inventory_hostname_short'] }}]
 description =  "{{ hostvars[item]['inventory_hostname_short'] }} (Streaming-Only)"
 {% endif %}
 conninfo = "host={{ item }} user={{ postgres_users.barman.username }} dbname=postgres password={{ postgres_users.barman.password }}"
