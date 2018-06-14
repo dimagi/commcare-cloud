@@ -14,7 +14,6 @@
   apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
   with_items: "{{ nginx_ubuntu_pkg }}"
   when: nginx_install == True
-  tags: skipme
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -78,7 +77,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and nginx_combined_cert_value is defined and nginx_combined_cert_value != ''
+  when: not fake_ssl_cert and nginx_combined_cert_value|default(None)
   tags:
     - update-cert
 
@@ -91,7 +90,7 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and nginx_key_value is defined and nginx_key_value != ''
+  when: not fake_ssl_cert and nginx_key_value | default(None)
   tags:
     - update-cert
 
@@ -102,7 +101,7 @@
     src: "/etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl|default(False)
   tags:
     - update-cert
     - letsencrypt
@@ -113,7 +112,7 @@
     src: "/etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl|default(False)
   tags:
     - update-cert
     - letsencrypt
