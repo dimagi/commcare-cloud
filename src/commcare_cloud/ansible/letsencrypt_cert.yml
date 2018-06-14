@@ -123,3 +123,12 @@
             - running `commcare-cloud <env> ansible-playbook deploy_proxy.yml`
             - optionally, copying the important files from `proxy` `/etc/pki/tls/`
               to an encrypted file in the environment settings.
+
+
+    - name: Add certbot cron
+      cron:
+        name: "Certbot Renew"
+        job: "certbot -q renew"
+        user: root
+        cron_file: certbot
+        state: absent
