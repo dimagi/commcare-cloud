@@ -14,6 +14,7 @@
   apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
   with_items: "{{ nginx_ubuntu_pkg }}"
   when: nginx_install == True
+  tags: skipme
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -77,7 +78,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and nginx_combined_cert_value
+  when: not fake_ssl_cert and nginx_combined_cert_value is defined and nginx_combined_cert_value != ''
   tags:
     - update-cert
 
@@ -90,9 +91,32 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and nginx_key_value
+  when: not fake_ssl_cert and nginx_key_value is defined and nginx_key_value != ''
   tags:
     - update-cert
+
+
+- name: Link CCHQ SSL cert
+  become: yes
+  file:
+    src: "/etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem"
+    dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
+    state: link
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
+  tags:
+    - update-cert
+    - letsencrypt
+
+- name: Link CCHQ SSL Key
+  become: yes
+  file:
+    src: "/etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem"
+    dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
+    state: link
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
+  tags:
+    - update-cert
+    - letsencrypt
 
 - name: Copy commtrack SSL cert
   become: yes
@@ -157,25 +181,20 @@
   no_log: true
   when: not fake_ssl_cert and cas_key_value is defined
 
-- name: Copy PNA SSL cert
+- name: Link PNA SSL cert
   become: yes
-  copy:
-    content: "{{ pna_nginx_combined_cert_value }}"
+  file:
+    src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and pna_nginx_combined_cert_value is defined
+    state: link
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
 
-- name: Copy PNA SSL Key
+- name: Link PNA SSL Key
   become: yes
-  copy:
-    content: "{{ pna_key_value }}"
+  file:
+    src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and pna_key_value is defined
+    state: link
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
 
 - set_fact: nginx_installed=True

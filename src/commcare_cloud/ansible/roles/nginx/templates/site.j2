@@ -101,4 +101,9 @@ server {
     {% endfor %}
   }
 {% endfor %}
+
+# For Letsencrypt
+  location ^~ /.well-known/acme-challenge/ {
+            root         /var/www/letsencrypt;
+            }
 }
