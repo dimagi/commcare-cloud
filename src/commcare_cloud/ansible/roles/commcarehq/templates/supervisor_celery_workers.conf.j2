@@ -1,6 +1,7 @@
 {% for queue_names, celery_params in app_processes_config.celery_processes.get(inventory_hostname).items() %}
 {% for worker_num in range(celery_params.num_workers) %}
 
+{% if queue_names != "flower" %}
 [program:{{ project }}-{{ deploy_env }}-celery_{{ queue_names }}_{{worker_num}}]
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
 
@@ -19,5 +20,6 @@ startsecs=10
 ; shutdown only waits for the bash runner to exit
 stopwaitsecs = 30
 
+{% endif %}
 {% endfor %}
 {% endfor %}
