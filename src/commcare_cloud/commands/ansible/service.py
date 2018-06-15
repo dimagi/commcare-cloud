@@ -281,6 +281,17 @@ class Elasticsearch(AnsibleService):
 
 class Couchdb(AnsibleService):
     name = 'couchdb'
+    inventory_groups = ['couchdb']
+
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if not self.environment.groups.get('couchdb', None):
+            puts(colored.red("Inventory has no 'couchdb' hosts. Do you mean 'couchdb2'?"))
+            return 1
+        super(Couchdb, self).execute_action(action, host_pattern, process_pattern)
+
+
+class Couchdb2(AnsibleService):
+    name = 'couchdb2'
     inventory_groups = ['couchdb2']
 
 
@@ -474,6 +485,7 @@ SERVICES = [
     Postgresql,
     Nginx,
     Couchdb,
+    Couchdb2,
     RabbitMq,
     Elasticsearch,
     Redis,

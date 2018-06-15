@@ -6,6 +6,7 @@ log_home: "{{ www_home }}/log"
 service_home: "{{ www_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
 encrypted_root: "/opt/data"
+encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
 
 airflow_home: "{{ cchq_home }}/airflow"
