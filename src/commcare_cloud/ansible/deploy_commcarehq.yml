@@ -8,6 +8,7 @@
    - pillowtop
    - couchdb2_proxy
    - airflow
+   - django_manage
   become: true
   roles:
     - {role: commcarehq, tags: commcarehq}
