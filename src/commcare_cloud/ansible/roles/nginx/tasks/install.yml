@@ -101,7 +101,7 @@
     src: "/etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl|default(False)
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl
   tags:
     - update-cert
     - letsencrypt
@@ -112,7 +112,7 @@
     src: "/etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl|default(False)
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl
   tags:
     - update-cert
     - letsencrypt
@@ -186,7 +186,7 @@
     src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl
 
 - name: Link PNA SSL Key
   become: yes
@@ -194,6 +194,6 @@
     src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl is defined
+  when: not fake_ssl_cert and letsencrypt_cchq_ssl
 
 - set_fact: nginx_installed=True
