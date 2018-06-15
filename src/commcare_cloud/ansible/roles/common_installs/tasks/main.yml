@@ -12,11 +12,11 @@
   apt_repository: repo='ppa:chris-lea/node.js' state=present
   register: add_nodejs_repo
 
-- name: Add PostreSQL apt repository
+- name: Add PostgreSQL apt repository
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add PosgreSQL apt key
+- name: Add PostgreSQL apt key
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: Update package list
