@@ -77,7 +77,7 @@
     mode: 0400
     owner: root
     group: root
-  when: not fake_ssl_cert and nginx_combined_cert_value|default(None)
+  when: not fake_ssl_cert and nginx_combined_cert_value
   tags:
     - update-cert
 
@@ -90,7 +90,7 @@
     owner: root
     group: root
   no_log: true
-  when: not fake_ssl_cert and nginx_key_value | default(None)
+  when: not fake_ssl_cert and nginx_key_value
   tags:
     - update-cert
 
