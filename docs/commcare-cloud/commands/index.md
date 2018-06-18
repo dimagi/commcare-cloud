@@ -502,7 +502,7 @@ commcare-cloud <env> tmux -
 ###### `server`
 
 Server to run tmux session on.
-Use '-' to for default (webworkers:0)
+Use '-' to for default (django_manage:0, which depends on env)
 
 ###### `remote_command`
 
