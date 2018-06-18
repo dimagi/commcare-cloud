@@ -45,6 +45,7 @@ couchdb2_proxy_port: 25984
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
+s3_blob_db_s3_bucket: 'blobdb'
 
 # Process for migrating from old to new riak cluster:
 #
@@ -76,6 +77,7 @@ s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'B
 # - remove `localsettings.TEMP_RIAKCS_PROXY: True` from environments/$ENV/public.yml
 # - deploy proxy (new=8080)
 old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
+old_s3_blob_db_s3_bucket: 'blobdb'
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory
