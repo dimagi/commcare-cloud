@@ -111,7 +111,7 @@ class Tmux(_Ssh):
     arguments = (
         Argument('server', help="""
             Server to run tmux session on.
-            Use '-' to for default (webworkers:0)
+            Use '-' to for default (django_manage, which depends on env)
         """),
         Argument('remote_command', nargs='?', help="""
             Command to run in the tmux.
@@ -126,7 +126,7 @@ class Tmux(_Ssh):
         environment = get_environment(args.env_name)
         public_vars = environment.public_vars
         if args.server == '-':
-            args.server = 'webworkers:0'
+            args.server = 'django_manage'
         # the default 'cchq' is redundant with ansible/group_vars/all.yml
         cchq_user = public_vars.get('cchq_user', 'cchq')
         # Name tabs like "droberts (2018-04-13)"
@@ -204,7 +204,7 @@ class DjangoManage(CommandBase):
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
         )
-        args.server = 'webworkers:0'
+        args.server = 'django_manage'
         if args.tmux:
             args.remote_command = remote_command
             Tmux(self.parser).run(args, [])
