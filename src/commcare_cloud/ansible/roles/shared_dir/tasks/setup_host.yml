@@ -69,6 +69,7 @@
     - "{{ groups.proxy }}"
     - "{{ groups.celery }}"
     - "{{ groups.pillowtop }}"
+    - "{{ groups.django_manage }}"
     - "{{ groups.shared_dir_host }}"
   tags:
     - nfs
