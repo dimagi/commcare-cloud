@@ -18,11 +18,11 @@ You should see a prompt like
 admin@control.example.com:~$
 ```
 
-Run this command to verify that you are in the home directory of the `commcare-cloud` user.
+Run this command to verify that you are in the home directory of the `admin` user.
 
 ```bash
 admin@control.example.com:~$ pwd
-/home/commcare-cloud
+/home/admin
 ```
 
 ### Step 2.
@@ -49,7 +49,10 @@ If you see something like
 ls: cannot access commcare-cloud: No such file or directory
 ```
 
-then the `git clone` command did not run correctly
+then the `git clone` command did not run correctly.
+Make sure you have git installed and run it again
+with `--verbose` to give more logging output.
+
 ### Step 3.
 
 Run the install script.
