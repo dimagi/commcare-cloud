@@ -831,21 +831,15 @@ Use `-l` instead of a command to see the full list of commands.
     deploy                            Preindex and deploy if it completes qui...
     deploy_airflow
     deploy_formplayer
-    development                       {{ '{{' }} hostvars[groups.proxy.0].ansible_hos...
-    echis                             echis.moh.gov.et
     force_update_static
     hotfix_deploy                     deploy ONLY the code with no extra clea...
-    icds                              www.icds-cas.gov.in
-    icds-new                          www.icds-cas.gov.in
     kill_stale_celery_workers         Kills celery workers that failed to pro...
     manage                            run a management command
     offline_setup_release
     perform_system_checks
     pillowtop
-    pna                               commcare.pna.sn
     preindex_views                    Creates a new release that runs preinde...
     prepare_offline_deploy
-    production                        www.commcarehq.org
     reset_mvp_pillows
     restart_services
     reverse_patch                     Used to reverse a git patch created via...
@@ -854,14 +848,11 @@ Use `-l` instead of a command to see the full list of commands.
     set_supervisor_config
     setup_limited_release             Sets up a release on a single machine
     setup_release                     Sets up a full release across the clust...
-    softlayer                         india.commcarehq.org
-    staging                           staging.commcarehq.org
     start_celery
     start_pillows
     stop_celery
     stop_pillows
     supervisorctl
-    swiss                             swiss.commcarehq.org
     unlink_current                    Unlinks the current code directory. Use...
     update_current
     update_current_supervisor_config  This only writes the supervisor config....
@@ -877,8 +868,8 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                             [{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
+                             {celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
+                             [{celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
                              {start,stop,restart,status,help}
 ```
 
@@ -900,7 +891,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.

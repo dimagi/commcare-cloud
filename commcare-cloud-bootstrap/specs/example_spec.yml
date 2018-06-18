@@ -1,6 +1,7 @@
 aws_config:
   pem: /path/to/cert.pem
-  ami: ami-7dce6507
+  # us-east-1	trusty	14.04 LTS	amd64	hvm:ebs	20180522	ami-58167327	hvm
+  ami: ami-58167327
   type: t2.micro
   key_name: aws_key_name
   security_group_id: sg-xxxxxxxx
