@@ -31,6 +31,8 @@ install:
   - "source control/init.sh"
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
+  - "pip install pip-tools"
+  - "pip-sync"
   - "pip install -e .[test]"
   - "if [[ $TEST = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
 
