@@ -138,6 +138,19 @@ module "kafka" {
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
 }
+
+module "ES" {
+  source                = "../modules/server"
+  server_name           = "ES"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-a-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+}
+
 #module "celery" {
 #  source                = "../modules/server"
 #  server_image       = "${var.server_image}"

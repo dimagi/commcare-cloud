@@ -1,7 +1,7 @@
 #Initialize.tf contains empty variable declarations for the variables that will be populated in each env’s .tfvars file
 variable "region" {}
 variable "state_region" {
-  default = "us-east-2"
+  default = "us-east-1"
 }
 variable "environment" {}
 variable "company" {}
