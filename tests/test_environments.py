@@ -33,4 +33,6 @@ def test_hostnames(env):
 @parameterized(get_available_envs())
 def test_pickle_environment(env):
     environment = get_environment(env)
-    pickle.dumps(environment)
+    print("environemnent: ", environment)
+    pickled_env = pickle.dumps(environment)
+    pickle.loads(pickled_env)
