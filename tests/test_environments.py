@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import pickle
 from ipaddress import ip_address
 from parameterized import parameterized
 
@@ -28,3 +29,8 @@ def test_hostnames(env):
                 if hostname == host:
                     missing_hostnames.add(host)
     assert len(missing_hostnames) == 0, "Environment hosts missing hostnames {}".format(list(missing_hostnames))
+
+@parameterized(get_available_envs())
+def test_pickle_environment(env):
+    environment = get_environment(env)
+    pickle.dumps(environment)
