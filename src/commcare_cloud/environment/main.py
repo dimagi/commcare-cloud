@@ -174,9 +174,9 @@ class Environment(object):
         return InventoryManager(loader=self._ansible_inventory_data_loader,
                                 sources=self.paths.inventory_ini)
 
-    @property
+    @memoized_property
     def _ansible_inventory_variable_manager(self):
-        return get_variable_manager(self._ansible_inventory_data_loader, self.inventory_manager)
+        return VariableManager(self._ansible_inventory_data_loader, self.inventory_manager)
 
     @memoized_property
     def groups(self):
@@ -299,8 +299,3 @@ class Environment(object):
 @memoized
 def get_environment(env_name):
     return Environment(DefaultPaths(env_name))
-
-
-@memoized
-def get_variable_manager(data_loader, inventory_manager):
-    return VariableManager(data_loader, inventory_manager)
