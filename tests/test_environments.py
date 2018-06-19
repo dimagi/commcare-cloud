@@ -4,7 +4,7 @@ import pickle
 from ipaddress import ip_address
 from parameterized import parameterized
 
-from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.main import Environment, get_environment
 from commcare_cloud.environment.paths import get_available_envs
 
 
@@ -30,9 +30,16 @@ def test_hostnames(env):
                     missing_hostnames.add(host)
     assert len(missing_hostnames) == 0, "Environment hosts missing hostnames {}".format(list(missing_hostnames))
 
+
 @parameterized(get_available_envs())
 def test_pickle_environment(env):
     environment = get_environment(env)
-    print("environemnent: ", environment)
+    properties = [property_name for property_name in dir(Environment) if
+                  isinstance(getattr(Environment, property_name), property)]
+    # Call each property so it will get pickled
+    for prop in properties:
+        getattr(environment, prop)
+
     pickled_env = pickle.dumps(environment)
-    pickle.loads(pickled_env)
+    loaded_env = pickle.loads(pickled_env)
+    pickle.dumps(loaded_env)
