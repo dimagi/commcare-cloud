@@ -30,7 +30,7 @@
 - name: No proxy for local IPs
   lineinfile:
     dest: "/etc/environment"
-    line: "{{ item.0 }}={{ item.1|regex_replace('\\s','') }}"
+    line: "{{ item.0 }}=\"{{ item.1|regex_replace('\\s','') }}\""
     regexp: "{{item.0 }}="
     create: yes
     state: present

@@ -1,5 +1,4 @@
 secrets:
-  ANSIBLE_USER_PASSWORD_SHA_512: '$6$rounds=100000$RWPYPUrVgX0D.eFY$uy.9JHUZbrzsVFlf4tO80xabnZARcZ/.ye5t3ln/jP4WBj343kwngpLGxlgMWS7SFzVNaiSgPj0Om4/37FGBv1'
   ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
@@ -16,7 +15,7 @@ localsettings_private:
   BOOKKEEPER_CONTACT_EMAILS: []
   BITLY_APIKEY: ''
   BITLY_LOGIN: ''
-  COUCH_PASSWORD: commcarehq
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   DROPBOX_KEY: ''
   DROPBOX_SECRET: ''
@@ -32,5 +31,22 @@ localsettings_private:
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+postgres_users:
+  commcare:
+    username: commcarehq
+    password: LLkDYfDXbdnCzhgXMITCDs4s
+  devreadonly:
+    username: "devreadonly"
+    password: devreadonly
+    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+    privs:
+      -
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+  replication:
+      username: 'hqrepl'
+      password: 'hqrepl'
+      role_attr_flags: 'LOGIN,REPLICATION'
 
 ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9

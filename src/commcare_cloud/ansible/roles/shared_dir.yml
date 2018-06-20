@@ -11,7 +11,13 @@
     - import_tasks: shared_dir/tasks/setup_host.yml
 
 - name: SharedDirClient
-  hosts: webworkers:proxy:celery:pillowtop:shared_dir_host
+  hosts:
+    - celery
+    - django_manage
+    - proxy
+    - pillowtop
+    - shared_dir_host
+    - webworkers
   become: yes
   vars_files:
     - ../group_vars/all.yml
