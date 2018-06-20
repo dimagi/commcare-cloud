@@ -59,7 +59,6 @@ localsettings:
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
-  FORMPLAYER_URL: "/formplayer"
   HQ_INSTANCE: 'echis'
   INACTIVITY_TIMEOUT: 20160
   KAFKA_URL: "{{ groups.kafka.0 }}:9092"
@@ -70,3 +69,4 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
