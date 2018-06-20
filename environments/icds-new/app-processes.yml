@@ -147,6 +147,12 @@ celery_processes:
   'web9':
     ucr_indicator_queue:
       concurrency: 4
+  'web10':
+    ucr_indicator_queue:
+      concurrency: 4
+  'web11':
+    ucr_indicator_queue:
+      concurrency: 4
 pillows:
   'pillow0':
     kafka-ucr-static-cases:
@@ -213,12 +219,22 @@ pillows:
       num_processes: 1
     XFormToElasticsearchPillow:
       num_processes: 4
+    kafka-ucr-static-forms:
+      start_process: 8
+      num_processes: 4
+      total_processes: 16
   'pillow7':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 8
+    kafka-ucr-static-forms:
+      start_process: 12
+      num_processes: 4
+      total_processes: 16
   'pillow8':
     kafka-ucr-static-forms:
+      start_process: 0
       num_processes: 8
+      total_processes: 16
   'pillow9':
     AppDbChangeFeedPillow:
       num_processes: 1

@@ -1,0 +1,112 @@
+internal_domain_name: null
+
+etc_hosts_lines: []
+etc_hosts_lines_removed: []
+
+touchforms_enabled: false
+
+riak_backend: "bitcask"
+riak_ring_size: 64
+
+# use this value to switch between nginx and apache
+proxy_type: nginx
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '128m'
+elasticsearch_cluster_name: 'deves'
+
+# uncomment to only allow access to eth1
+#ufw_private_interface: eth1
+
+# uncomment and change to the control machine IP when using ufw
+# this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
+#control_machine_ip: 127.0.0.1
+
+KSPLICE_ACTIVE: no
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
+
+DATADOG_ENABLED: True
+
+CLOUDANT_CLUSTER_NAME: null
+
+
+# This dumps the dummy keystore, but allows the ansible script to continue, should be overridden for real deploys
+#keystore_file: 'DimagiKeyStore'
+
+backup_es: False
+backup_postgres: plain
+backup_blobdb: True
+postgresql_backup_master: True
+postgres_s3: False
+nadir_hour: 18
+
+nofile_limit: 65536
+
+supervisor_http_enabled: True
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_bind:
+  ty: static
+  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+localsettings:
+  ALLOWED_HOSTS:
+    - localhost
+    - 127.0.0.1
+    - "{{ SITE_HOST }}"
+  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  FULLSTORY_ID:
+  HQ_INSTANCE: 'dev'
+  J2ME_ADDRESS: ''
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+  STATIC_CDN: ""
+
+root_email: droberts+root@dimagi.com
+server_email: droberts+commcarehq-noreply@dimagi.com
+default_from_email: droberts+commcarehq-noreply@dimagi.com
+support_email: droberts+support@dimagi.com
+probono_support_email: droberts+pro-bono@dimagi.com
+cchq_bug_report_email: droberts+commcarehq-bug-reports@dimagi.com
+accounts_email: droberts+accounts@dimagi.com
+data_email: droberts+datatree@dimagi.com
+subscription_change_email: droberts+accounts+subchange@dimagi.com
+internal_subscription_change_email: droberts+accounts+subchange+internal@dimagi.com
+billing_email: droberts+billing-comm@dimagi.com
+invoicing_contact_email: droberts+billing-support@dimagi.com
+growth_email: droberts+growth@dimagi.com
+master_list_email: droberts+master-list@dimagi.com
+report_builder_add_on_email: droberts+sales@dimagi.com
+eula_change_email: droberts+eula-notifications@dimagi.com
+contact_email: droberts+info@dimagi.com
+soft_assert_email: droberts+commcarehq-ops+soft_asserts@dimagi.com
+daily_deploy_email: null
+
+commcare_cloud_root_user: ubuntu
+commcare_cloud_strict_host_key_checking: no
+commcare_cloud_pem: /Users/droberts/.ssh/commcarehq_testing.pem

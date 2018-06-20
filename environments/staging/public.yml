@@ -59,7 +59,6 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   EULA_COMPLIANCE: True
-  FORMPLAYER_URL: "/formplayer"
   HQ_INSTANCE: 'staging'
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."

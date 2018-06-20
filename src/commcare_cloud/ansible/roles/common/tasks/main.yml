@@ -71,7 +71,7 @@
     dest: /etc/hosts
     regexp: '^{{ ansible_default_ipv4.address }}\s'
     line: '{{ ansible_default_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}'
-  when: hostname is defined and internal_domain_name is defined and not etc_hosts_lines|join(',')|search(ansible_default_ipv4.address)
+  when: hostname is defined and hostname and internal_domain_name and not etc_hosts_lines|join(',')|search(ansible_default_ipv4.address)
   tags:
     - hostname
     - after-reboot

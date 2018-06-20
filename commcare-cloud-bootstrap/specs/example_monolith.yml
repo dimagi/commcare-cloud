@@ -1,0 +1,53 @@
+aws_config:
+  pem: /path/to/cert.pem
+  # us-east-1	trusty	14.04 LTS	amd64	hvm:ebs	20180522	ami-58167327	hvm
+  ami: ami-58167327
+  type: m4.4xlarge
+  key_name: aws_key_name
+  security_group_id: sg-xxxxxxxx
+  subnet: subnet-xxxxxxxx
+  data_volume:
+    DeviceName: /dev/xvdb
+    Ebs:
+      DeleteOnTermination: yes
+      VolumeSize: 100
+      VolumeType: standard
+      Encrypted: false
+  boot_volume:
+    DeviceName: /dev/sda1
+    Ebs:
+      DeleteOnTermination: yes
+      VolumeSize: 32
+      VolumeType: standard
+
+allocations:
+  proxy: 1
+  webworkers:
+    from: proxy
+  postgresql:
+    from: proxy
+  rabbitmq:
+    from: proxy
+  kafka:
+    from: proxy
+  zookeeper:
+    from: proxy
+  celery:
+    from: proxy
+  pillowtop:
+    from: proxy
+  formplayer:
+    from: proxy
+  touchforms: 0
+  redis:
+    from: proxy
+  elasticsearch:
+    from: proxy
+  shared_dir_host: 0
+  riakcs: 0
+  stanchion: 0
+  couchdb2:
+    from: proxy
+  couchdb2_proxy:
+    from: proxy
+  pg_standby: 0
