@@ -111,7 +111,7 @@ class Tmux(_Ssh):
     arguments = (
         Argument('server', help="""
             Server to run tmux session on.
-            Use '-' to for default (django_manage:0, which depends on env)
+            Use '-' for default (django_manage:0)
         """),
         Argument('remote_command', nargs='?', help="""
             Command to run in the tmux.
