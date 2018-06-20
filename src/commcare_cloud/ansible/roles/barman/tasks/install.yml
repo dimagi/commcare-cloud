@@ -3,13 +3,6 @@
     pkg: ca-certificates
     state: present
 
-- name: Add PostreSQL apt repository
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
-  register: add_postgres_repo
-
-- name: Add PosgreSQL apt key
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
-
 - name: Update package list
   apt: update_cache=yes
   when: add_postgres_repo
@@ -22,7 +15,6 @@
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   with_items:
     - barman
-    - "postgresql-client-{{ postgresql_version }}"
 
 - name: Create Barman home directory
   file:
