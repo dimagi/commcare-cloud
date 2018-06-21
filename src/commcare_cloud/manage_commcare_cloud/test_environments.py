@@ -8,4 +8,5 @@ class TestEnvironments(CommandBase):
 
     def run(self, args, unknown_args):
         import nose
-        nose.runmodule('commcare_cloud.manage_commcare_cloud', argv=['manage-commcare-cloud'])
+        nose.runmodule('commcare_cloud.manage_commcare_cloud',
+                       argv=['manage-commcare-cloud', '-v'])
