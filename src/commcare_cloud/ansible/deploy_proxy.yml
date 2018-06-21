@@ -106,6 +106,7 @@
         hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
         riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
         site_config: {name: riakcs, vars_file: riakcs}
+      when: 'riakcs_new' in groups
 
     - name: Restart nginx
       include_role:
