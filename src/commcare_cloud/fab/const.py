@@ -41,7 +41,7 @@ ROLES_AIRFLOW = ['airflow']
 
 RELEASE_RECORD = 'RELEASES.txt'
 KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
-DATE_FMT = '%Y-%m-%d_%H.%M'
+DATE_FMT = '%Y-%m-%d_%H.%M.%S'
 
 RSYNC_EXCLUDE = (
     '.DS_Store',
