@@ -31,7 +31,6 @@
 
 - name: copy airflow settings
   become: yes
-  become_user: "{{ cchq_user }}"
   template:
     src: airflow.cfg.j2
     dest: "{{ airflow_home }}/airflow.cfg"
@@ -52,9 +51,13 @@
   shell: "{{ airflow_virtualenv }}/bin/airflow initdb"
   become: yes
   become_user: "{{ cchq_user }}"
+  environment:
+    AIRFLOW_HOME: "{{ airflow_home }}"
 
 - name: set cchq home variable
   shell: "{{ airflow_virtualenv }}/bin/airflow variables --set CCHQ_HOME {{ code_home }}"
   become: yes
   become_user: "{{ cchq_user }}"
+  environment:
+    AIRFLOW_HOME: "{{ airflow_home }}"
 
