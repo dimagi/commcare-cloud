@@ -47,12 +47,12 @@
     - postgresql
   vars:
     - userFrom: postgres
-    - hostTo: "{{ groups['barman'].0 }}"
+    - hostTo: "{{ groups['pg_barman'].0 }}"
     - userTo: barman
     - state: 'present'
   tasks:
     - import_tasks: roles/setup_auth_keys.yml
-      when: groups['barman']|length
+      when: groups['pg_barman']|length
   tags:
     - pg_barman
 

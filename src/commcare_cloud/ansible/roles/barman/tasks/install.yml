@@ -5,7 +5,6 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_postgres_repo
 
 - name: Install Barman
   apt:

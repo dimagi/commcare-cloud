@@ -5,7 +5,7 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
-{% for host in groups['barman'] %}
+{% for host in groups['pg_barman'] %}
 # Barman Configuration
 {% if host | ipaddr %}
 host   all	barman	{{ host }}/32   md5
