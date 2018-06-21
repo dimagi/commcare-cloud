@@ -1,16 +1,16 @@
 - name: Barman
-  hosts: barman
+  hosts: pg_barman
   become: true
   roles:
     - {role: barman}
 
 - name: Setup auth for postgres
   hosts:
-    - barman
+    - barman_source
   vars:
-    - userFrom: barman
-    - hostTo: "{{ groups['barman'].0 }}"
-    - userTo: postgres
+    - userFrom: postgres
+    - hostTo: "{{ groups['pg_barman'].0 }}"
+    - userTo: barman
     - state: 'present'
   tasks:
     - import_tasks: roles/setup_auth_keys.yml

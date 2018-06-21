@@ -35,12 +35,12 @@ dynamic_shared_memory_type = posix
 
 
 # WRITE AHEAD LOG
-{% if groups['barman']|length and not is_pg_standby %}
+{% if groups['pg_barman']|length and not is_pg_standby %}
 archive_mode = on
 {% if 'hostname' in hostvars[item] %}
-archive_command = 'rsync -a %p barman@{{groups['barman'].0}}:{{encrypted_root}}/barman/{{ hostname }}/wals/%f'
+archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ hostname }}/wals/%f'
 {% else %}
-archive_command = 'rsync -a %p barman@{{groups['barman'].0}}:{{encrypted_root}}/barman/{{ inventory_hostname_short }}/wals/%f'
+archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ inventory_hostname_short }}/wals/%f'
 {% endif %}
 archive_timeout = 300
 {% endif %}
