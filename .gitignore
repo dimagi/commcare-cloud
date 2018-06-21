@@ -2,6 +2,7 @@
 !/commcare-cloud-bootstrap/specs/example*.yml
 .generated.yml
 !tests/postgresql_config/*/.generated.yml
+tests/migration_config/plans/new_node/migration_build_env1_plan/
 *.swp
 /config
 .vagrant/
