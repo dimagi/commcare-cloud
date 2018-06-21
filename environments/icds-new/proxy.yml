@@ -4,6 +4,7 @@ primary_ssl_env: "cas"
 
 #nginx_combined_cert_value: "{{ ssl_secrets.certs.icds_cas_gov_in }}"
 #nginx_key_value: '{{ ssl_secrets.private_keys.icds_cas_gov_in }}'
+
 nginx_max_clients: 1024
 nginx_worker_rlimit_nofile : 16384
 
@@ -19,3 +20,5 @@ tableau_server: 10.247.24.11:80
 special_sites:
   - icds_tableau
   - cas_ssl
+
+letsencrypt_cchq_ssl: True
