@@ -260,3 +260,7 @@ pillows:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
+  'pillow10':
+
+  'pillow11':
+    
