@@ -46,35 +46,8 @@ couchdb2_proxy_port: 25984
 s3_blob_db_enabled: "{{ 'true' if groups.get('riakcs') else '' }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
 
-# Process for migrating from old to new riak cluster:
-#
-# - add [riakcs_new] hosts (of new riak cluster) to inventory
-# - add `localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3: True` in environments/$ENV/public.yml
-# - add/update settings in environments/$ENV/vault.yml
-#   - secrets.RIAKCS_S3_ACCESS_KEY        # new cluster
-#   - secrets.RIAKCS_S3_SECRET_KEY        # new cluster
-#   - secrets.OLD_S3_BLOB_DB_ACCESS_KEY   # old cluster
-#   - secrets.OLD_S3_BLOB_DB_SECRET_KEY   # old cluster
-# - deploy proxy (old=8080, new=8081)
-# - deploy localsettings
-#   during this deploy hosts with old localsettings will continue to talk
-#   to old riak cluster on port 8080
-#
-# - run migration
-#
-# - move [riakcs_new] hosts to [riakcs] (and delete old hosts) in inventory
-# - update environments/$ENV/public.yml
-#   - remove `localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3: True`
-#   - add    `localsettings.TEMP_RIAKCS_PROXY: True`
-# - deploy proxy (new=8080, new=8081)
-# - deploy localsettings
-#   during this deploy hosts with old localsettings will continue to talk
-#   to new riak cluster on port 8081, and once updated will talk to new riak
-#   cluster proxied on port 8080. There is a slight chance of MigratingBlobDB
-#   failover from new to new, but this should be rare and benign.
-#
-# - remove `localsettings.TEMP_RIAKCS_PROXY: True` from environments/$ENV/public.yml
-# - deploy proxy (new=8080)
+# For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
+# or http://dimagi.github.io/commcare-cloud/howto/migrate-s3-to-s3
 old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 
 # To use these vars without deploying the riak control machine

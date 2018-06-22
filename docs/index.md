@@ -55,3 +55,5 @@ an understanding of the system's architecture and each of the system's underlyin
 
 ## HowTos
 - [Moving partitioned databases](howto/move-partitioned-database)
+- [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node)
+- [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
