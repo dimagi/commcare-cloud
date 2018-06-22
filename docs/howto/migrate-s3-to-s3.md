@@ -30,7 +30,7 @@ or from a Riak CS cluster to Amazon S3, for example.
 
 ## Back-fill all existing data
 
-1. Run migration
+1. Run migration to copy objects from old to new S3 backend
 2. Move `[riakcs_new]` hosts to `[riakcs]` (and delete old hosts) in inventory
 3. Update `environments/<env>/public.yml`
    - Remove `localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3: True`
