@@ -7,8 +7,9 @@
     group: '{{couchdb_group}}'
     mode: '0644'
   notify: restart couchdb2
-  tasks:
-  - meta: flush_handlers
+
+- name: flush handlers
+  meta: flush_handlers
 
 - name: Add nodes
   uri:
