@@ -36,7 +36,7 @@ couch_dbs:
 
 DROPBOX_APP_NAME: 'CommCareHQFiles - Staging'
 
-s3_blob_db_enabled: 'true'
+s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-staging-blobdb'
 
