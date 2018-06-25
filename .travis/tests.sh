@@ -17,7 +17,7 @@ then
     }
 
     test_dimagi_environments() {
-        git clone git@github.com:dimagi/commcare-environments.git
+        git clone https://github.com/dimagi/commcare-environments.git
         ln -s commcare-environments/environments environments
         manage-commcare-cloud test-environments
     }
