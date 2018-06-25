@@ -21,7 +21,7 @@ allocations:
   touchforms: 0
   redis: 1
   elasticsearch: 1
-  shared-dir-host: 1
+  shared_dir_host: 1
   riakcs: 1
   stanchion:
     count: 1
