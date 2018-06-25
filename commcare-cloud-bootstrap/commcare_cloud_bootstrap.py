@@ -187,7 +187,8 @@ def bootstrap_inventory(spec, env_name):
             else:
                 new_host_names = set()
                 for i in range(allocation.count):
-                    host_name = '{env}_{group}_{i}'.format(env=env_name, group=role, i=i)
+                    host_name = '{env}-{group}-{i}'.format(env=env_name, group=role, i=i)
+                    host_name.replace(host_name, '_', '-')
                     new_host_names.add(host_name)
                     inventory.all_hosts.append(
                         Host(name=host_name, public_ip=None, private_ip=None, vars={}))
