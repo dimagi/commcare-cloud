@@ -46,6 +46,8 @@ couch_dbs:
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
+redis_maxmemory: 6gb
+
 localsettings:
   ALLOWED_HOSTS:
     - www.commcarehq.org
