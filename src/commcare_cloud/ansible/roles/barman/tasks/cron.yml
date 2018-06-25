@@ -24,7 +24,7 @@
     month: "*"
     weekday: "*"
   when: hostvars[item]['hostname'] is defined
-  with_items: "{{ groups['barman_source'] }}"
+  with_items: "{{ groups['pg_barman_source'] }}"
 
 
 - name: Create cron jobs for backups
@@ -40,4 +40,4 @@
     month: "*"
     weekday: "*"
   when: hostvars[item]['hostname'] is not defined
-  with_items: "{{ groups['barman_source'] }}"
+  with_items: "{{ groups['pg_barman_source'] }}"

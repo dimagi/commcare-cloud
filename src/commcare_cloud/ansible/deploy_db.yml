@@ -42,20 +42,6 @@
   tags:
     - pg_standby
 
-- name: Setup auth for barman
-  hosts:
-    - postgresql
-  vars:
-    - userFrom: postgres
-    - hostTo: "{{ groups['pg_barman'].0 }}"
-    - userTo: barman
-    - state: 'present'
-  tasks:
-    - import_tasks: roles/setup_auth_keys.yml
-      when: groups['pg_barman']|length
-  tags:
-    - pg_barman
-
 - name: Couchdb
   hosts: couchdb
   become: true
