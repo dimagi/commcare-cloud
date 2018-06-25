@@ -9,4 +9,4 @@
     src: streaming-pg.conf.j2
     dest: "{{ barman_configuration_files_directory }}/{{ item }}.conf"
     mode: 0644
-  with_items: "{{ groups['barman_source'] }}"
+  with_items: "{{ groups['pg_barman_source'] }}"
