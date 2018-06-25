@@ -8,6 +8,9 @@
     mode: '0644'
   notify: restart couchdb2
 
+- name: flush handlers
+  meta: flush_handlers
+
 - name: Add nodes
   uri:
     url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
