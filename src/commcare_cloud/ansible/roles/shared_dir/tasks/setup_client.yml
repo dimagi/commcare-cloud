@@ -12,8 +12,6 @@
   tags:
     - nfs
 
-- debug: msg="{{ groups['shared-dir-host'][0] }}:{{ shared_data_dir }}"
-
 - name: Mount directory in /etc/fstab
   become: yes
   when: shared_drive_enabled
