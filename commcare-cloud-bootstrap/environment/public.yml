@@ -1,4 +1,4 @@
-internal_domain_name: null
+internal_domain_name: 'fullstack-deploy.commcarehq.org'
 
 riak_backend: "bitcask"
 riak_ring_size: 64
