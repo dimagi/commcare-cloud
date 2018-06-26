@@ -5,17 +5,22 @@ environment           = "staging"
 company               = "dimagi"
 azs                   = ["us-east-1a","us-east-1b","us-east-1c"]
 vpc_begin_range       = "10.200"
-server_instance_type = "t2.micro"
-#bastion_instance_type = "t2.micro"
-#openvpn_instance_type = "t2.small"
-#jenkins_instance_type = "t2.small"
-server_image		= "ami-0d3e7972"
-#openvpn_image           = "ami-f575bf88"                                          # OpenVPN 5 users us-east-1
-#bastion_image           = "ami-40ce433f"
-# openvpn_image           = "ami-cde8f721"                                          # OpenVPN 5 users us-east-2
-dns_domain            = ""                                                      # Set the DNS Domain name to be used (should match the name for the Zone ID)
-dns_zone_id           = ""                                                      # Select the correct DNS Zone ID from Route 53
-internal_ssl_cert_arn = ""                                                      # This will be used to reference SSL Certificate in AWS Certificate Manager
+server_instance_type  = "t2.micro"
+bastion_instance_type = "t2.micro"
+openvpn_instance_type = "t2.small"
+server_image          = "ami-0d3e7972"
+bastion_image         = "ami-14c5486b"
+openvpn_image         = "ami-169e4b6b" 
+dns_domain            = ""                        # Set the DNS Domain name to be used (should match the name for the Zone ID)
+dns_zone_id           = ""                        # Select the correct DNS Zone ID from Route 53
+internal_ssl_cert_arn = ""                        # This will be used to reference SSL Certificate in AWS Certificate Manager
+
+# Redis/ElastiCache variables
+redis_node_type      = "cache.t2.small"
+num_redis_nodes      = 1
+engine_version       = "4.0.10"
+redis_subnet_group   = "g2-tf-a-util-private-staging"
+parameter_group_name = "default.redis4.0" 
 
 # If using RDS, uncomment and update as necessary
 # #######
