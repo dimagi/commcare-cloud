@@ -144,7 +144,7 @@
     src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and CAS_SITE_HOST | default(None) and letsencrypt_cchq_ssl
+  when: not fake_ssl_cert and CAS_SITE_HOST | default(None)
   tags:
     - link_ssl_cas
 
@@ -154,7 +154,7 @@
     src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
     state: link
-  when: not fake_ssl_cert and CAS_SITE_HOST | default(None) and letsencrypt_cchq_ssl
+  when: not fake_ssl_cert and CAS_SITE_HOST | default(None)
   tags:
     - link_ssl_cas
 
@@ -164,7 +164,7 @@
     src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and PNA_SITE_HOST | default(None) and letsencrypt_cchq_ssl
+  when: not fake_ssl_cert and PNA_SITE_HOST | default(None)
   tags:
     - link_pna_cas
 
@@ -174,7 +174,7 @@
     src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
     state: link
-  when: not fake_ssl_cert and PNA_SITE_HOST | default(None) and letsencrypt_cchq_ssl
+  when: not fake_ssl_cert and PNA_SITE_HOST | default(None)
   tags:
     - link_pna_cas
 
