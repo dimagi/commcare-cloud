@@ -14,7 +14,8 @@ ROLES_ALL_SRC = [
     'formsplayer',
     'formplayer',
     'staticfiles',
-    'airflow'
+    'airflow',
+    'django_manage'
 ]
 ROLES_ALL_SERVICES = [
     'django_monolith',
