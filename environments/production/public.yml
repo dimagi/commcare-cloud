@@ -46,6 +46,10 @@ couch_dbs:
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
+
 localsettings:
   ALLOWED_HOSTS:
     - www.commcarehq.org
@@ -60,6 +64,7 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
