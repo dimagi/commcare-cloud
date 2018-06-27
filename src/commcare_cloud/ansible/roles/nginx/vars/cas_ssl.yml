@@ -32,7 +32,7 @@ nginx_sites:
     - name: "app_downloads"
       zone: "$server_name"
       size: "10m"
-      rate: "50r/s"
+      rate: "150r/s"
    proxy_cache_path:
     - name: "app_cache"
       path: "{{ www_home }}/app_downloads/cache"
@@ -73,7 +73,7 @@ nginx_sites:
        proxy_ignore_headers: Set-Cookie
        limit_reqs:
         - zone_name: app_downloads
-          burst: 10
+          burst: 100
           nodelay: True
      - name: "/accounts/login"
        balancer: "{{ deploy_env }}_cas_commcare"
