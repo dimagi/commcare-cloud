@@ -29,5 +29,5 @@ allocations:
   couchdb2: 1
   couchdb2_proxy:
     count: 1
-    from: couchdb2
+    from: proxy
   pg_standby: 0
