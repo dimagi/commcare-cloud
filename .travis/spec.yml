@@ -16,6 +16,9 @@ allocations:
     count: 1
     from: proxy
   webworkers: 1
+  django_manage:
+    count: 1
+    from: webworkers
   postgresql: 1
   rabbitmq: 1
   kafka: 1
