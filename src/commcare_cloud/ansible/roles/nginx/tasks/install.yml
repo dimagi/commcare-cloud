@@ -138,47 +138,25 @@
   no_log: true
   when: not fake_ssl_cert and commtrack_key_value is defined
 
-- name: Copy icds tableau SSL cert
+- name: Link CAS SSL cert
   become: yes
-  copy:
-    content: "{{ tableau_nginx_combined_cert_value }}"
-    dest: "{{ ssl_certs_dir }}/{{ tableau_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and tableau_nginx_combined_cert_value is defined
-
-- name: Copy icds tableau SSL Key
-  become: yes
-  copy:
-    content: "{{ tableau_key_value }}"
-    dest: "{{ ssl_keys_dir }}/{{ tableau_nginx_ssl_key }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and tableau_key_value is defined
-
-- name: Copy CAS SSL cert
-  become: yes
-  copy:
-    content: "{{ cas_nginx_combined_cert_value }}"
+  file:
+    src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and cas_nginx_combined_cert_value is defined
+    state: link
+  when: not fake_ssl_cert and CAS_SITE_HOST | default(None)
+  tags:
+    - link_ssl_cas
 
-- name: Copy CAS SSL Key
+- name: Link CAS SSL Key
   become: yes
-  copy:
-    content: "{{ cas_key_value }}"
+  file:
+    src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and cas_key_value is defined
+    state: link
+  when: not fake_ssl_cert and CAS_SITE_HOST | default(None)
+  tags:
+    - link_ssl_cas
 
 - name: Link PNA SSL cert
   become: yes
@@ -186,7 +164,9 @@
     src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl
+  when: not fake_ssl_cert and PNA_SITE_HOST | default(None)
+  tags:
+    - link_pna_cas
 
 - name: Link PNA SSL Key
   become: yes
@@ -194,6 +174,8 @@
     src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
     state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl
+  when: not fake_ssl_cert and PNA_SITE_HOST | default(None)
+  tags:
+    - link_pna_cas
 
 - set_fact: nginx_installed=True
