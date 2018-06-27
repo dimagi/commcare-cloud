@@ -205,20 +205,9 @@ def bootstrap_inventory(spec, env_name):
 def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
-        cache_file_response = raw_input("\n{} already exists. Enter: "
-                                        "\n(d) to delete the file and terminate the existing aws instances or "
-                                        "\n(anything) to continue using this file and these instances."
-                                        "\n Enter selection: ".format(cache_file))
-        if cache_file_response == 'd':
-            # Remove old cache file and terminate existing instances for this env
-            print("Terminating existing instances for {}".format(env_name))
-            subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
-            print("Deleting file: {}".format(cache_file))
-            os.remove(cache_file)
-
-    if not os.path.exists(cache_file):
-        # Provision new instances for this env
-        print("Provisioning new instances.")
+        with open(cache_file, 'r') as f:
+            aws_response = f.read()
+    else:
         cmd_parts = [
             'aws', 'ec2', 'run-instances',
             '--image-id', aws_config.ami,
@@ -238,10 +227,6 @@ def ask_aws_for_instances(env_name, aws_config, count):
         aws_response = subprocess.check_output(cmd_parts)
         with open(cache_file, 'w') as f:
             f.write(aws_response)
-    else:
-        # Use the existing instances
-        with open(cache_file, 'r') as f:
-            aws_response = f.read()
     aws_response = json.loads(aws_response)
     return {instance['InstanceId'] for instance in aws_response["Instances"]}
 

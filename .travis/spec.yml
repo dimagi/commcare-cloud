@@ -12,6 +12,9 @@ settings:
 
 allocations:
   proxy: 1
+  couchdb2_proxy:
+    count: 1
+    from: proxy
   webworkers: 1
   postgresql: 1
   rabbitmq: 1
@@ -30,7 +33,4 @@ allocations:
     count: 1
     from: riakcs
   couchdb2: 1
-  couchdb2_proxy:
-    count: 1
-    from: proxy
   pg_standby: 0
