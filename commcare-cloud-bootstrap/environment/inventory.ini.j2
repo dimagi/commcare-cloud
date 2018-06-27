@@ -11,4 +11,10 @@
 {%- endfor %}
 {% endfor %}
 
+{% for _, group in inventory.all_groups.items()|sort %}
+[{{ group.name }}:vars]
+hostname='{{ group.name }}'
+{{ host_name }}
+{%- endfor %}
+
 [control]
