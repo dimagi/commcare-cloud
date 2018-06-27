@@ -13,6 +13,9 @@ settings:
 allocations:
   proxy: 1
   webworkers: 1
+  django_manage:
+    count: 1
+    from: webworkers
   postgresql: 1
   rabbitmq: 1
   kafka: 1
