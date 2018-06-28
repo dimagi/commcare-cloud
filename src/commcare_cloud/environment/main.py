@@ -267,6 +267,7 @@ class Environment(object):
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
+            'commcarehq_repository': self.fab_settings_config.code_repo,
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables())
