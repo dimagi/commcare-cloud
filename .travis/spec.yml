@@ -12,7 +12,13 @@ settings:
 
 allocations:
   proxy: 1
+  couchdb2_proxy:
+    count: 1
+    from: proxy
   webworkers: 1
+  django_manage:
+    count: 1
+    from: webworkers
   postgresql: 1
   rabbitmq: 1
   kafka: 1
@@ -30,7 +36,4 @@ allocations:
     count: 1
     from: riakcs
   couchdb2: 1
-  couchdb2_proxy:
-    count: 1
-    from: couchdb2
   pg_standby: 0
