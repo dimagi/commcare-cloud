@@ -1,0 +1,8 @@
+---
+nfs_exports: [
+  {
+    dir: "/var/nfs-backup" ,
+    ip_allowed: "192.168.0.0/16",
+    options: "rw,sync,no_subtree_check"
+  }
+]

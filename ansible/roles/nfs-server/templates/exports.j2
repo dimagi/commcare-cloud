@@ -1,0 +1,10 @@
+# /etc/exports: the access control list for filesystems which may be exported
+#   to NFS clients.  See exports(5).
+
+# Example for NFSv4:
+# /srv/nfs4        gss/krb5i(rw,sync,fsid=0,crossmnt,no_subtree_check)
+# /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
+#
+{% for export in nfs_exports %}
+{{ export.dir }} {{export.ip_allowed}}({{export.options}})
+{% endfor %}
