@@ -1,4 +1,4 @@
 ignore_kafka_checkpoint_warning: True
-code_repo: 'git://github.com/dimagi/commcare-hq.git'
+code_repo: 'https://github.com/dimagi/commcare-hq.git'
 default_branch: master
 project: 'commcare-hq'
