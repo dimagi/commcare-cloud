@@ -10,7 +10,7 @@ from fabric.context_managers import cd, settings
 from fabric.api import local
 import re
 from getpass import getpass
-from memoized import memoized_property
+from memoized import memoized_property, memoized
 
 from github import Github, UnknownObjectException
 from fabric.api import execute, env
@@ -26,9 +26,6 @@ from .const import (
 )
 
 from six.moves import input
-
-
-global_github = None
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -54,22 +51,15 @@ def get_pillow_env_config():
 class DeployMetadata(object):
     def __init__(self, code_branch, environment):
         self.timestamp = datetime.datetime.utcnow().strftime(DATE_FMT)
-        self._deploy_ref = None
         self._deploy_tag = None
         self._max_tags = 100
         self._last_tag = None
         self._code_branch = code_branch
         self._environment = environment
-        self._repo = None
 
-    @property
+    @memoized_property
     def repo(self):
-        if self._repo is not None:
-            return self._repo
-
-        github = _get_github()
-        self._repo = github.get_organization('dimagi').get_repo('commcare-hq')
-        return self._repo
+        return _get_github().get_organization('dimagi').get_repo('commcare-hq')
 
     @property
     def last_commit_sha(self):
@@ -138,23 +128,19 @@ class DeployMetadata(object):
             self._deploy_tag,
         )
 
-    @property
+    @memoized_property
     def deploy_ref(self):
-        if self._deploy_ref is not None:
-            return self._deploy_ref
-
         if env.offline:
-            self._deploy_ref = env.code_branch
-            return self._deploy_ref
+            return env.code_branch
 
         # turn whatever `code_branch` is into a commit hash
         branch = self.repo.get_branch(self._code_branch)
-        self._deploy_ref = branch.commit.sha
+        deploy_ref = branch.commit.sha
 
         try:
             self.repo.create_git_ref(
                 ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
-                sha=self._deploy_ref,
+                sha=deploy_ref,
             )
         except UnknownObjectException:
             raise Exception(
@@ -162,23 +148,15 @@ class DeployMetadata(object):
                 'Please create an API key with the public_repo scope enabled.'
             )
 
-        return self._deploy_ref
+        return deploy_ref
 
     @property
     def current_ref_is_different_than_last(self):
         return self.deploy_ref != self.last_commit_sha
 
 
+@memoized
 def _get_github():
-    """
-    This grabs the dimagi github account and stores the state in a global variable.
-    We do not store it in `env` or `DeployMetadata` so that it's possible to
-    unpickle the `env` object without hitting the recursion limit.
-    """
-    global global_github
-
-    if global_github is not None:
-        return global_github
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
@@ -189,16 +167,14 @@ def _get_github():
         ).format(project_root=PROJECT_ROOT))
         username = input('Github username: ')
         password = getpass('Github password: ')
-        global_github = Github(
+        return Github(
             login_or_token=username,
             password=password,
         )
     else:
-        global_github = Github(
+        return Github(
             login_or_token=GITHUB_APIKEY,
         )
-
-    return global_github
 
 
 def _get_checkpoint_filename():
