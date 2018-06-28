@@ -101,7 +101,7 @@ TRANSFER_SERVER = 'nginx'
 
 # Email setup
 # email settings: these ones are the custom hq ones
-{% if file_email or not EMAIL_LOGIN %}
+{% if EMAIL_LOGIN %}
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/django_email'
 {% else %}
