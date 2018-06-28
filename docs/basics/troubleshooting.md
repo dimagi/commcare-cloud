@@ -75,3 +75,114 @@ or, you can use the output from the status command above and run it through the 
 commcare-cloud <env> ssh <machine>
 $ sudo supervisorctl tail -f <supervisor process name>
 ```
+
+## One of the setup commands is showing...
+### `RequestError: socket.error: [Errno 111] Connection refused`
+
+This means that CouchDB is unreachable.
+
+
+#### Breakdown of a request to CouchDB
+
+Note: if you are running on a recommended single-machine setup,
+then you can ignore the host groups (denoted `[in brackets]`):
+all services will be running on the same machine.
+
+
+Requests to CouchDB are made over HTTP,
+and are normally routed the following way:
+1. They start at the originator of the request,
+   such as a Django web worker
+2. They are made to port 25984 on host `[couchdb_proxy]`,
+   which is served by the `nginx` web server, acting as a load balancer.
+3. `nginx` passed them through to one of the `couchdb2` nodes
+   (or _the_ `couchdb2` node if you have only one),
+   which handles the requests.
+
+```
+[webworkers] [couchdb2_proxy] [couchdb2]
+django  -->  nginx  -------->  couchdb2
+             port 25984        port 15984
+```
+
+The following table represents the general case
+and includes variables that may be overriding the default port values:
+
+|   |  host group  |  service  |  port (default value) |  port (variable name) |
+|---|--------------|-----------|-----------------------|-----------------------|
+| Originator | various | various |  |  |
+|  | ⇩ |  |  |
+| CouchDB Load Balancer | `[couchdb2_proxy]` | `nginx` | 25984 | `couchdb2_proxy_port` |
+|  | ⇩ |  |  |
+| CouchDB Node | `[couchdb2]` | `couchdb2` | 15984 | `couchdb2_port` |
+
+
+#### How to confirm the issue
+
+To confirm the issue, that django processes cannot reach CouchDB, run
+
+```bash
+commcare-cloud <env> django-manage check_services
+```
+
+It should tell you that CouchDB is unreachable.
+
+#### How to solve
+
+The first thing to check is whether couchdb2 and couchdb2_proxy
+services are up, which you can do with the single command:
+
+```bash
+commcare-cloud <env> service couchdb2 status
+```
+
+If one of the services is reporting down, you can use the following
+to start it:
+
+```bash
+# Start both
+commcare-cloud <env> service couchdb2 start
+
+# or start only couchdb2
+commcare-cloud <env> service couchdb2 start --only couchdb2
+
+# or start only couchdb2_proxy
+commcare-cloud <env> service couchdb2 start couchdb2_proxy
+```
+
+If CouchDB is still unreachable, try hitting each of the individual
+parts.
+
+1. Test whether `couchdb2` is responding
+    ```bash
+    commcare-cloud <env> ssh couchdb2
+    curl <couchdb2-internal-IP-address>:15984
+    ```
+2. Test whether the load balancer on `couchdb2_proxy` is responding
+    ```bash
+    commcare-cloud <env> ssh couchdb2_proxy
+    curl <couchdb2-internal-IP-address>:25984
+    ```
+
+Notes:
+- You will often see the value for `<couchdb2-internal-IP-address>`
+printed out next to `eth0` upon `ssh`ing into the machine.
+- For a single-machine setup, no need to separately ssh for each step.
+
+
+##### Is the CouchDB `nginx` site on `couchdb2_proxy` enabled? 
+
+```bash
+commcare-cloud <env> ssh ansible@couchdb2_proxy
+ls /etc/nginx/sites-enabled
+```
+This should contain a file with "couchdb" in the name.
+
+
+##### Are there errors in the `couchdb2` logs?
+```bash
+commcare-cloud <env> ssh ansible@couchdb2
+ls /usr/local/couchdb2/couchdb/var/log/
+```
+There should be some logs in there that you can tail
+or grep through for errors.
