@@ -95,7 +95,7 @@ and are normally routed the following way:
    such as a Django web worker
 2. They are made to port 25984 on host `[couchdb_proxy]`,
    which is served by the `nginx` web server, acting as a load balancer.
-3. `nginx` passed them through to one of the `couchdb2` nodes
+3. `nginx` passes them through to one of the `couchdb2` nodes
    (or _the_ `couchdb2` node if you have only one),
    which handles the requests.
 
