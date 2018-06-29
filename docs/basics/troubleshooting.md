@@ -122,7 +122,7 @@ and includes variables that may be overriding the default port values:
 To confirm the issue, that django processes cannot reach CouchDB, run
 
 ```bash
-commcare-cloud <env> django-manage check_services
+commcare-cloud <env> django-manage check_services couch
 ```
 
 It should tell you that CouchDB is unreachable.
