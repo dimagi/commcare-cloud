@@ -69,12 +69,10 @@ nginx_sites:
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
        proxy_cache: app_cache
+       proxy_cache_lock: on
+       proxy_cache_lock_timeout: 30s
        client_body_buffer_size: 5m
        proxy_ignore_headers: Set-Cookie
-       limit_reqs:
-        - zone_name: app_downloads
-          burst: 100
-          nodelay: True
      - name: "/accounts/login"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
