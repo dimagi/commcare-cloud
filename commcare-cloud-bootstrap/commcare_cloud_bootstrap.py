@@ -315,13 +315,14 @@ def get_inventory_from_file(environment):
                     current_host_name = section_name
             else:
                 if state == 'parsing-host':
-                    line_groups = list(re.split(r'\s+', line.strip()))
-                    private_ip, variables = line_groups[0], line_groups[1:]
-                    variables = dict(var.strip().split('=') for var in variables)
-                    public_ip = variables.pop('ansible_host')
-                    host = Host(name=current_host_name, private_ip=private_ip, public_ip=public_ip,
-                                vars=variables)
-                    inventory.all_hosts.append(host)
+                    if 'ansible_host' in line:
+                        line_groups = list(re.split(r'\s+', line.strip()))
+                        private_ip, variables = line_groups[0], line_groups[1:]
+                        variables = dict(var.strip().split('=') for var in variables)
+                        public_ip = variables.pop('ansible_host')
+                        host = Host(name=current_host_name, private_ip=private_ip, public_ip=public_ip,
+                                    vars=variables)
+                        inventory.all_hosts.append(host)
                 elif state == 'parsing-group':
                     host_name = line.strip()
                     current_group.host_names.append(host_name)
