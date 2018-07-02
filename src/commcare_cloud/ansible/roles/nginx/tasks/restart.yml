@@ -6,10 +6,6 @@
   check_mode: no
   failed_when: "result.rc != 0"
 
-- name: start the nginx service
-  become: yes
-  service: name=nginx state=started enabled=yes
-
 - name: restart the nginx service
   become: yes
   service: name=nginx state=restarted enabled=yes
@@ -17,6 +13,8 @@
 - name: Assert nginx is running
   become: yes
   shell: 'service nginx status'
+  args:
+    warn: no
   register: nginx_status
   changed_when: false
   # new versions have `* nginx is running`, old have something containing `start/running`
