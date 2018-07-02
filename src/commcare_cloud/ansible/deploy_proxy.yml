@@ -107,11 +107,6 @@
         riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
         site_config: {name: riakcs, vars_file: riakcs}
 
-    - name: Restart nginx
-      include_role:
-        name: nginx
-        tasks_from: restart
-
 - name: CAS Proxy
   hosts: cas_proxy
   tasks:

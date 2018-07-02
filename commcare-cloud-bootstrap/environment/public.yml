@@ -49,7 +49,7 @@ couchdb_bind:
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2.0 }}"
+    host: "{{ groups.couchdb2_proxy.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
