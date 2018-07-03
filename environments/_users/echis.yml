@@ -2,5 +2,6 @@ dev_users:
   present:
     - ctsims
     - skelly
+    - sravfeyn
     - administrator
   absent: []
