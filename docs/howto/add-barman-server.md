@@ -4,7 +4,7 @@ Allows your company to implement disaster recovery solutions for PostgreSQL data
 
 Taking an online hot backup of PostgreSQL is now as easy as ordering a good espresso coffee."  ~ https://www.pgbarman.org/
 
-##Before you begin.
+## Before you begin.
 Adding a new Barman Server requires following configuration to be done in ansible .
 
 * Add a barman user in the `environments/<env>/vault.yml`
@@ -28,8 +28,8 @@ POSTGRES_USERS:
 <barman_server_ip>
 ```
 
-##Installation: 
-**(Do not forget to schedule downtime. )**
+## Installation: 
+** (Do not forget to schedule downtime. ) **
 
 * Deploy PostgreSQL server . It does following.
 
@@ -50,7 +50,7 @@ Installs and Configure Barman
 user@local$ cchq development ansible-playbook setup_barman.yml 
 ```
 
-##Troubleshooting 
+## Troubleshooting 
 
 * Start Wal Shipping.
 ```
