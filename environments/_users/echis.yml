@@ -4,4 +4,9 @@ dev_users:
     - skelly
     - sravfeyn
     - administrator
+    - echis_anteneh
+    - echis_esubalew
+    - echis_melese
+    - echis_robel
+    - echis_siraj
   absent: []
