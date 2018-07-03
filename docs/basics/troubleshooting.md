@@ -161,7 +161,7 @@ parts.
 2. Test whether the load balancer on `couchdb2_proxy` is responding
     ```bash
     commcare-cloud <env> ssh couchdb2_proxy
-    curl <couchdb2-internal-IP-address>:25984
+    curl <couchdb2_proxy-internal-IP-address>:25984
     ```
 
 Notes:
