@@ -144,7 +144,7 @@
     src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/fullchain.pem"
     dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
     state: link
-  when: not fake_ssl_cert and CAS_SITE_HOST | default(None)
+  when: not fake_ssl_cert and CAS_SITE_HOST | default(None) and letsencrypt_cas_ssl
   tags:
     - link_ssl_cas
 
@@ -154,7 +154,7 @@
     src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/privkey.pem"
     dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
     state: link
-  when: not fake_ssl_cert and CAS_SITE_HOST | default(None)
+  when: not fake_ssl_cert and CAS_SITE_HOST | default(None) and letsencrypt_cas_ssl
   tags:
     - link_ssl_cas
 

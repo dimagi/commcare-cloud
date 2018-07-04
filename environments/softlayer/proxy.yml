@@ -5,7 +5,6 @@ tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 primary_ssl_env: "softlayer"
 
-nginx_key_value: '{{ ssl_secrets.private_keys.india_commcarehq_org }}'
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
-nginx_combined_cert_value: '{{ ssl_secrets.certs.india_commcarehq_org }}'
+letsencrypt_cchq_ssl: True
