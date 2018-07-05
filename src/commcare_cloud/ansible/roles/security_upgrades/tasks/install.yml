@@ -1,5 +1,0 @@
----
-
-- include_tasks: update.yml
-- include_tasks: upgrade.yml
-- include_tasks: dependencies.yml

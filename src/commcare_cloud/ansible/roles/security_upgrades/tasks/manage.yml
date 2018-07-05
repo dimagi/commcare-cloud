@@ -1,5 +1,0 @@
----
-
-- include_tasks: keys.yml
-- include_tasks: repositories.yml
-- include_tasks: packages.yml
