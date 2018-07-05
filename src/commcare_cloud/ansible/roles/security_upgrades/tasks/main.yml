@@ -1,0 +1,22 @@
+---
+
+- import_tasks: config.yml
+  tags:
+    - system
+    - apt
+    - config
+    - apt-config
+
+- import_tasks: install.yml
+  tags:
+    - system
+    - apt
+    - install
+    - apt-install
+
+- import_tasks: manage.yml
+  tags:
+    - system
+    - apt
+    - manage
+    - apt-manage

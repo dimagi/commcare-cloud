@@ -1,0 +1,88 @@
+---
+# apt_unattended_upgrades_blacklist:
+#   - vim
+#   - libc6
+# apt_mails:
+#   - root
+#   - foo@dev.null
+# apt_keys:
+#   - keyserver: keyserver.ubuntu.com
+#     id: 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+# sets the amount of time the cache is valid
+apt_cache_valid_time: 3600
+# upgrade system: safe | full | dist
+apt_upgrade: no
+# packages to install
+apt_packages: []
+# remove packages that are no longer needed for dependencies
+apt_autoremove: yes
+# remove .deb files for packages no longer on your system
+apt_autoclean: yes
+
+# whether or not suggested packages should be installed.
+apt_install_suggests: no
+# do not install Recommended packages by default
+apt_install_recommends: no
+# allow 'apt-get autoremove' to remove recommended packages
+apt_remove_recommends: no
+# Enable the update/upgrade script
+apt_periodic: yes
+# Do “apt-get update” automatically every n-days (0=disable)
+apt_update_package_lists: 1
+# Do “apt-get upgrade –download-only” every n-days (0=disable)
+apt_download_upgradeable_packages: 0
+# Do “apt-get autoclean” every n-days (0=disable)
+apt_auto_clean_interval: 0
+
+# enable unattended-upgrades
+apt_unattended_upgrades: yes
+# list of packages to not update (regexp are supported)
+apt_unattended_upgrades_blacklist: []
+# Split the upgrade into the smallest possible chunks so that
+# they can be interrupted with SIGUSR1. This makes the upgrade
+# a bit slower but it has the benefit that shutdown while a upgrade
+# is running is possible (with a small delay)
+apt_unattended_upgrades_minimal_steps: no
+# Send email to this address for problems or packages upgrades
+# If empty or unset then no email is sent, make sure that you
+# have a working mail setup on your system. A package that provides
+# 'mailx' must be installed. E.g. "user@example.com"
+apt_mails: []
+# Set this value to "true" to get emails only on errors. Default
+# is to always send a mail if Unattended-Upgrade::Mail is set
+apt_unattended_upgrades_notify_error_only: yes
+# Do automatic removal of new unused dependencies after the upgrade
+# (equivalent to apt-get autoremove)
+apt_unattended_upgrades_autoremove: yes
+# Automatically reboot *WITHOUT CONFIRMATION*
+# if the file /var/run/reboot-required is found after the upgrade
+apt_unattended_upgrades_automatic_reboot: no
+# If automatic reboot is enabled and needed, reboot at the specific
+# time instead of immediately
+# Values: now | 02:00 | ...
+apt_unattended_upgrades_automatic_reboot_time: now
+
+# remount file system: rootfs | tmpfs
+#   tmpfs:  remount tmp before running if mounted noexec
+#   rootfs: remount root filesystem r/w before running if mounted r/o
+apt_remount_filesystem:
+apt_remount_filesystems:
+
+# repositories to register
+apt_repositories: []
+# gpg keys for external repositories
+apt_keys: []
+# HTTP proxy server (optional)
+# apt_http_proxy_address:
+# HTTP pipeline depth (optional)
+# apt_http_pipeline_depth: 5
+
+# Change Aptitudes solution costs, default is not to change anything
+# Mirror https://lists.debian.org/543FF3BD.1020609@zen.co.uk
+# apt_aptitude_solution_cost:
+#   - priority
+#   - removals
+#   - canceled-actions
+apt_aptitude_solution_cost: []
+

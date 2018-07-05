@@ -1,0 +1,7 @@
+// {{ ansible_managed }}
+
+DPkg {
+  // Auto re-mounting of a readonly /
+  Pre-Invoke { "mount -o remount,rw LABEL=ROOTFS /"; };
+  Post-Invoke { "test ${NO_APT_REMOUNT:-no} = yes || mount -o remount,ro LABEL=ROOTFS / || true"; };
+};

@@ -1,0 +1,69 @@
+---
+
+- name: Configuring APT
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  with_items:
+    - "etc/apt/apt.conf.d/10general"
+    - "etc/apt/apt.conf.d/10periodic"
+
+- name: Configuring APT
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: apt_unattended_upgrades
+  with_items:
+    - "etc/apt/apt.conf.d/50unattended-upgrades"
+
+# TODO to be depricated
+- name: Configuring remount filesystem
+  template:
+    src: "etc/apt/apt.conf.d/10remount_{{ item }}.j2"
+    dest: "/etc/apt/apt.conf.d/10remount_{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: apt_remount_filesystem
+  with_items:
+    - "{{ apt_remount_filesystem }}"
+
+- name: Configuring remount filesystems
+  template:
+    src: "etc/apt/apt.conf.d/10remount_{{ item }}.j2"
+    dest: "/etc/apt/apt.conf.d/10remount_{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: apt_remount_filesystems
+  with_items:
+    - "{{ apt_remount_filesystems }}"
+
+- name: Configuring APT proxy behavior
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: apt_http_proxy_address is defined or apt_https_proxy_address is defined
+  with_items:
+    - "etc/apt/apt.conf.d/00proxy"
+
+- name: Alter Aptitude solution costs
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: apt_aptitude_solution_cost
+  with_items:
+    - "etc/apt/apt.conf.d/20alter-aptitude-solution-cost"
+

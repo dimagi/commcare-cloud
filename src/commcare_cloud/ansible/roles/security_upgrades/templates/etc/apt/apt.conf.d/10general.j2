@@ -1,0 +1,12 @@
+// {{ ansible_managed }}
+
+// Install Recommended packages by default
+APT::Install-Recommends "{{ apt_install_recommends | to_nice_json }}";
+
+// Allow 'apt-get autoremove' to remove recommended packages
+APT::AutoRemove::RecommendsImportant "{{ apt_remove_recommends | to_nice_json }}";
+
+// Install Suggested packages by default
+APT::Install-Suggests "{{ apt_install_suggests | to_nice_json }}";
+
+APT::Get::Show-Upgraded "true";

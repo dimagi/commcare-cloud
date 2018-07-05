@@ -1,0 +1,8 @@
+---
+
+- name: Installing packages
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    autoremove: "{{ apt_autoremove }}"
+  with_items: "{{ apt_packages }}"
