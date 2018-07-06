@@ -40,7 +40,7 @@
   when: datavol_device is defined
 
 - name: Check for already mounted encrypted drive
-  shell: grep '{{ encrypted_root }} \| {{ encrypted_tmp }} ecryptfs' /etc/mtab
+  shell: grep '{{ encrypted_root }} ecryptfs \| {{ encrypted_tmp }} ecryptfs' /etc/mtab
   register: mtab_contents
   failed_when: false
   changed_when: false
