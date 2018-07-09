@@ -5,27 +5,27 @@ postgresql_dbs:
   host: 192.168.33.16
   name: commcarehq
   options: {}
-  password: commcarehq
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
   port: 6432
   query_stats: false
-  user: commcarehq
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
   django_alias: ucr
   django_migrate: false
   host: 192.168.33.16
   name: commcarehq_ucr
   options: {}
-  password: commcarehq
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
   port: 6432
   query_stats: false
-  user: commcarehq
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
 - create: true
   django_alias: null
   django_migrate: true
   host: 192.168.33.16
   name: formplayer
   options: {}
-  password: commcarehq
+  password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
   port: 6432
   query_stats: false
-  user: commcarehq
+  user: '{{ secrets.POSTGRES_USERS.commcare.username }}'

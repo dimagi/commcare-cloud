@@ -53,6 +53,9 @@ def validate_shards(shard_ranges_by_partition_name):
     assert _is_power_of_2(num_shards), \
         'Total number of shards must be a power of 2: {}'.format(num_shards)
 
+DEFAULT_POSTGRESQL_USER = "{{ secrets.POSTGRES_USERS.commcare.username }}"
+DEFAULT_POSTGRESQL_PASSWORD = "{{ secrets.POSTGRES_USERS.commcare.password }}"
+
 
 class PostgresqlConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -60,8 +63,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
     SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
     SEPARATE_FORM_PROCESSING_DBS = jsonobject.BooleanProperty(default=True)
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
-    DEFAULT_POSTGRESQL_USER = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.username }}")
-    DEFAULT_POSTGRESQL_PASSWORD = jsonobject.StringProperty(default="{{ secrets.POSTGRES_USERS.commcare.password }}")
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
@@ -75,9 +76,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
         self = super(PostgresqlConfig, cls).wrap(data)
         for db in self.generate_postgresql_dbs():
             if not db.user:
-                db.user = self.DEFAULT_POSTGRESQL_USER
+                db.user = DEFAULT_POSTGRESQL_USER
             if not db.password:
-                db.password = self.DEFAULT_POSTGRESQL_PASSWORD
+                db.password = DEFAULT_POSTGRESQL_PASSWORD
         return self
 
     def to_generated_variables(self):
