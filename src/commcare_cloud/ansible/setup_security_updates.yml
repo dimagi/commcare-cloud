@@ -2,14 +2,12 @@
 - hosts: all
   become: yes
   roles:
-   - security_upgrades
+   - weareinteractive.apt
   vars:
    apt_cache_valid_time: 7200
-   apt_unattended_upgrades_blacklist: 
+   apt_unattended_upgrades_blacklist:
     - postgresql-9.6
     - postgresql-9.6-plproxy
-    - postgresql-client-9.6
-    - postgresql-client-9.6
     - postgresql-contrib-9.6
     - postgresql-server-dev-9.6
     - rabbitmq-server
