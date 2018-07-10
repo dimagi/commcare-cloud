@@ -2,7 +2,7 @@
 CCHQ deployment uses encrypted temporary directory. which is encrypted by `ecryptfs`
 
 configuration of `encrypted_tmp` directory is integral part of the `deploy_stack` playbook.
-Environments where `encrypted_tmp` is not configured can execute the command below to configure the same.
+Environments where `encrypted_tmp` is not configured can be configured by executing the command below.
 
 ```bash
 commcare-cloud <env> ansible-playbook deploy_stack.yml --tags=ecryptf
