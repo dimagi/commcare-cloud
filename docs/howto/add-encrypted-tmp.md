@@ -10,7 +10,7 @@ commcare-cloud <env> ansible-playbook deploy_stack.yml --tags=ecryptfs
 
 ## Changelog
 
-13-7-2018 Nitigya Sharma <nsharma@dimagi.com>
+13-6-2018 Nitigya Sharma <nsharma@dimagi.com>
 * src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml: Create {{encrypted_tmp}} to use for as tmp directory
 
 * src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml: Mount tmp drive
