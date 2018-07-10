@@ -9,7 +9,7 @@ secrets:
   SUPERVISOR_HTTP_PASSWORD: 123
   POSTGRES_USERS:
     commcare:
-      username: "{{ DEFAULT_POSTGRESQL_USER }}"
+      username: commcarehq
       password: LLkDYfDXbdnCzhgXMITCDs4s
     devreadonly:
       username: "devreadonly"
