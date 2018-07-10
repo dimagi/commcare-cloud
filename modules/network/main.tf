@@ -144,6 +144,18 @@ resource "aws_route_table" "g2-tf-private" {
     nat_gateway_id = "${aws_nat_gateway.g2-tf-ngw.id}"
   }
 
+  # Rackspace routing
+  route {
+    cidr_block = "172.24.16.0/22"
+    gateway_id = "vgw-8dd726e4"
+  }
+
+  route {
+    cidr_block = "172.24.32.0/22"
+    gateway_id = "vgw-8dd726e4"
+  }
+  # /Rackspace routing
+
   tags {
     Name = "g2-tf-private"
   }
@@ -156,6 +168,18 @@ resource "aws_route_table" "g2-tf-public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.g2-tf-igw.id}"
   }
+
+  # Rackspace routing
+  route {
+    cidr_block = "172.24.16.0/22"
+    gateway_id = "vgw-8dd726e4"
+  }
+
+  route {
+    cidr_block = "172.24.32.0/22"
+    gateway_id = "vgw-8dd726e4"
+  }
+  # /Rackspace routing
 
   tags {
     Name = "g2-tf-public"
