@@ -263,7 +263,7 @@
     name: plproxy
     db: "{{postgresql_dbs.form_processing.proxy.name}}"
     port: "{{ postgresql_port }}"
-  when: postgresql_dbs.form_processing.proxy.host == inventory_hostname or is_monolith|bool
+  when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname or is_monolith|bool
 
 - name: Create pghashlib extension
   become: yes
@@ -288,7 +288,7 @@
     trust: True
     db: "{{postgresql_dbs.form_processing.proxy.name}}"
     port: "{{ postgresql_port }}"
-  when: postgresql_dbs.form_processing.proxy.host == inventory_hostname or is_monolith|bool
+  when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname or is_monolith|bool
 
 - name: Grant usage on plproxy FDW
   become: yes
@@ -296,7 +296,7 @@
   vars:
     ansible_ssh_pipelining: true
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{postgresql_dbs.form_processing.proxy.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{postgresql_dbs.form_processing.proxy.user}}\""
-  when: postgresql_dbs.form_processing.proxy.host == inventory_hostname or is_monolith|bool
+  when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname or is_monolith|bool
 
 - name: Enable query stat collection
   become: yes
