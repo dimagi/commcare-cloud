@@ -244,7 +244,9 @@ def _format_env(current_env, extra=None):
 
     all_hosts = env.ccc_environment.sshable_hostnames_by_group['all']
 
-    ret['supervisor_env_vars'] = {}
+    ret['supervisor_env_vars'] = {
+        "TMPDIR": "/opt/tmp"
+    }
 
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
