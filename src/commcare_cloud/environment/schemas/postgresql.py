@@ -53,6 +53,7 @@ def validate_shards(shard_ranges_by_partition_name):
     assert _is_power_of_2(num_shards), \
         'Total number of shards must be a power of 2: {}'.format(num_shards)
 
+
 DEFAULT_POSTGRESQL_USER = "{{ secrets.POSTGRES_USERS.commcare.username }}"
 DEFAULT_POSTGRESQL_PASSWORD = "{{ secrets.POSTGRES_USERS.commcare.password }}"
 
