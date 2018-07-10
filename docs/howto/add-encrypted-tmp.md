@@ -5,7 +5,7 @@ configuration of `encrypted_tmp` directory is integral part of the `deploy_stack
 Environments where `encrypted_tmp` is not configured can be configured by executing the command below.
 
 ```bash
-commcare-cloud <env> ansible-playbook deploy_stack.yml --tags=ecryptf
+commcare-cloud <env> ansible-playbook deploy_stack.yml --tags=ecryptfs
 ```
 
 ## Changelog
