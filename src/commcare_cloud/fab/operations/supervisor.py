@@ -246,13 +246,6 @@ def _format_env(current_env, extra=None):
 
     ret['supervisor_env_vars'] = {}
 
-    if env.newrelic_djangoagent:
-        host = current_env.get('host_string')
-        webworkers = env.ccc_environment.groups['webworkers']
-        if host in webworkers:
-            ret['supervisor_env_vars']['NEW_RELIC_CONFIG_FILE'] = '%(root)s/newrelic.ini' % env
-            ret['supervisor_env_vars']['NEW_RELIC_ENVIRONMENT'] = current_env.get('deploy_env', '')
-
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
         ret['supervisor_env_vars']['https_proxy'] = 'https://{}'.format(env.http_proxy)
