@@ -2,6 +2,7 @@
 {% for num_process in range(params.get('start_process', 0), params.get('start_process', 0) + params.get('num_processes', 1)) %}
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
+environment=TMPDIR="{{ encrypted_tmp }}"
 command={{ virtualenv_home }}/bin/python {{ code_home }}/manage.py run_ptop --pillow-name {{ pillow_name }} --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }} --process-number={{ num_process }}
 directory={{ code_home }}
 user=cchq
