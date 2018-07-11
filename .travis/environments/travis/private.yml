@@ -7,6 +7,26 @@ secrets:
   AMQP_PASSWORD: '******'
   SUPERVISOR_HTTP_USERNAME: user
   SUPERVISOR_HTTP_PASSWORD: 123
+  POSTGRES_USERS:
+    commcare:
+      username: "{{ DEFAULT_POSTGRESQL_USER }}"
+      password: LLkDYfDXbdnCzhgXMITCDs4s
+    devreadonly:
+      username: "devreadonly"
+      password: devreadonly
+      role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+      privs:
+        -
+          privs: SELECT
+          objs: ALL_IN_SCHEMA
+    replication:
+        username: 'hqrepl'
+        password: 'hqrepl'
+        role_attr_flags: 'LOGIN,REPLICATION'
+    backup:
+        username: 'hqbackup'
+        password: 'hqbackup'
+        role_attr_flags: 'SUPERUSER'
 
 localsettings_private:
   COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
@@ -15,23 +35,3 @@ localsettings_private:
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
 
-postgres_users:
-  commcare:
-    username: "{{ DEFAULT_POSTGRESQL_USER }}"
-    password: LLkDYfDXbdnCzhgXMITCDs4s
-  devreadonly:
-    username: "devreadonly"
-    password: devreadonly
-    role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
-    privs:
-      -
-        privs: SELECT
-        objs: ALL_IN_SCHEMA
-  replication:
-      username: 'hqrepl'
-      password: 'hqrepl'
-      role_attr_flags: 'LOGIN,REPLICATION'
-  backup:
-      username: 'hqbackup'
-      password: 'hqbackup'
-      role_attr_flags: 'SUPERUSER'

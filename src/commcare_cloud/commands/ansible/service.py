@@ -290,9 +290,12 @@ class Couchdb(AnsibleService):
         super(Couchdb, self).execute_action(action, host_pattern, process_pattern)
 
 
-class Couchdb2(AnsibleService):
+class Couchdb2(MultiAnsibleService):
     name = 'couchdb2'
-    inventory_groups = ['couchdb2']
+    service_process_mapping = {
+        'couchdb2': ('couchdb2', 'couchdb2'),
+        'couchdb2_proxy': ('nginx', 'couchdb2_proxy'),
+    }
 
 
 class RabbitMq(AnsibleService):

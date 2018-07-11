@@ -35,10 +35,14 @@ dynamic_shared_memory_type = posix
 
 
 # WRITE AHEAD LOG
-{% if backup_postgres == 'pgbackrest' and not is_pg_standby %}
+{% if groups['pg_barman']|default(False) and not is_pg_standby %}
 archive_mode = on
-archive_command = '/usr/local/sbin/pgbackrest_archive_command.sh %p %f'
-archive_timeout = 60
+{% if 'hostname' in hostvars[item] %}
+archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ hostname }}/wals/%f'
+{% else %}
+archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ inventory_hostname_short }}/wals/%f'
+{% endif %}
+archive_timeout = 300
 {% endif %}
 
 wal_level = hot_standby

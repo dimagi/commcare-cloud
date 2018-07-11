@@ -3,4 +3,5 @@ dev_users:
     - kdubrovsky
     - nking
     - scao
+    - aivanov
   absent: []

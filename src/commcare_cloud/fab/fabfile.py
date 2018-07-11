@@ -344,7 +344,7 @@ def hotfix_deploy():
     _require_target()
     run('echo ping!')  # workaround for delayed console response
     try:
-        execute(release.update_code(full_cluster=True), env.deploy_metadata.deploy_ref)
+        execute(release.update_code(full_cluster=True), env.deploy_metadata.deploy_ref, True)
     except Exception:
         execute(
             mail_admins,
@@ -526,14 +526,15 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
 
 
 def announce_deploy_start():
-    execute_with_timing(
-        mail_admins,
-        "{user} has initiated a deploy to {environment}.".format(
-            user=env.user,
-            environment=env.deploy_env,
-        ),
-        ''
-    )
+    if env.email_enabled:
+        execute_with_timing(
+            mail_admins,
+            "{user} has initiated a deploy to {environment}.".format(
+                user=env.user,
+                environment=env.deploy_env,
+            ),
+            ''
+        )
 
 
 def announce_formplayer_deploy_start():

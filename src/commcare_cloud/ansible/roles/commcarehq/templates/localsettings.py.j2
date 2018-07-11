@@ -101,7 +101,7 @@ TRANSFER_SERVER = 'nginx'
 
 # Email setup
 # email settings: these ones are the custom hq ones
-{% if file_email or not EMAIL_LOGIN %}
+{% if not EMAIL_LOGIN %}
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/django_email'
 {% else %}
@@ -184,6 +184,7 @@ S3_BLOB_DB_SETTINGS = {
     'url': '{{ s3_blob_db_url }}',
     'access_key': '{{ s3_blob_db_access_key }}',
     'secret_key': '{{ s3_blob_db_secret_key }}',
+    's3_bucket': '{{ s3_blob_db_s3_bucket }}',
     'config': {'signature_version': 's3'},
 }
 {% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
@@ -191,6 +192,7 @@ OLD_S3_BLOB_DB_SETTINGS = {
     'url': '{{ old_s3_blob_db_url }}',
     'access_key': '{{ old_s3_blob_db_access_key }}',
     'secret_key': '{{ old_s3_blob_db_secret_key }}',
+    's3_bucket': '{{ old_s3_blob_db_s3_bucket }}',
     'config': {'signature_version': 's3'},
 }
 BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
@@ -624,7 +626,11 @@ SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
 SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
 {% endif %}
 
-ENVIRONMENT_HOSTS = {{ groups | to_json }}
+ENVIRONMENT_HOSTS = {
+{% for group, hosts in groups.items() | sort %}
+    {{ group | to_json }}: {{ hosts | to_json }},
+{% endfor %}
+}
 
 {% if HQ_PRIVATE_KEY %}
 HQ_PRIVATE_KEY = \

@@ -32,8 +32,9 @@
   hosts:
     - postgresql
   vars:
-    - username: postgres
+    - userFrom: postgres
     - hostTo: "{{ hot_standby_server }}"
+    - userTo: postgres
     - state: 'present'
   tasks:
     - import_tasks: roles/setup_auth_keys.yml
