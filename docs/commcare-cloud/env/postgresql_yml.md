@@ -201,24 +201,6 @@ A value of `False` may lose support in the near future and is not recommended.
 This value will be used as the host for any database
 without a different host explicitly set in [`dbs`](#dbs).
 
-## `DEFAULT_POSTGRESQL_USER`
-
-- Type: string
-- Default: the value of `secrets.POSTGRES_USERS.commcare.username`
-
-This value will be used as the username to use to access any database
-without a different username explicitly set in [`dbs`](#dbs).
-It is unusual to need to override this property.
-
-## `DEFAULT_POSTGRESQL_PASSWORD`
-
-- Type: string
-- Default: the value of `secrets.POSTGRES_USERS.commcare.password`)
-
-This value will be used as the password to use to access any database
-without a different password explicitly set in [`dbs`](#dbs).
-It is unusual to need to override this property.
-
 ## `REPORTING_DATABASES`
 
 - Type: dict

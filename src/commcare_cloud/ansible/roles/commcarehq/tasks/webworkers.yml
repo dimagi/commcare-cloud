@@ -19,6 +19,7 @@
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
         NEW_RELIC_CONFIG_FILE: '{% if app_processes_config.newrelic_djangoagent %}{{ www_home }}/newrelic.ini{% endif %}'
         NEW_RELIC_ENVIRONMENT: '{% if app_processes_config.newrelic_djangoagent %}{{ env_monitoring_id }}{% endif %}'
+        TMPDIR: '{{ encrypted_tmp }}'
       gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
   tags:
     - services
