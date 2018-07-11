@@ -9,7 +9,6 @@ import uuid
 
 from commcare_cloud.commands.ansible.helpers import (
     get_django_webworker_name,
-    get_formplayer_instance_name,
     get_formplayer_spring_instance_name,
     get_celery_worker_name)
 from fabric.api import roles, parallel, env, sudo, serial, execute
@@ -38,7 +37,6 @@ from six.moves import range
 def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     set_celery_supervisorconf()
-    set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
 
 
@@ -139,15 +137,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
                 host=env.host,
                 env_name=env.env_name)
     )
-
-
-def set_formsplayer_supervisorconf():
-    if _check_in_roles(ROLES_TOUCHFORMS):
-        _rebuild_supervisor_conf_file('make_supervisor_conf',
-                                      'supervisor_formsplayer.conf',
-                                      {'formplayer_instance_name':
-                                           get_formplayer_instance_name(env.ccc_environment)}
-                                      )
 
 
 def set_formplayer_spring_supervisorconf():
