@@ -22,11 +22,16 @@
       tags: ['commcarehq', 'celery_hq', 'tmpreaper', 'cron']
       tmpreaper_time: '2d'
 
-- name: Pillows Supervisor Config
-  hosts: pillowtop
-  tasks:
-    - include_tasks: roles/commcarehq/tasks/pillowtop.yml
-      tags: services
+- name: Temporary task to remove old service directory
+  hosts:
+    - webworkers
+    - touchforms
+    - formplayer
+    - celery
+    - proxy
+  file:
+    path: {{ legacy_supervisor_task_conf }}
+    state: absent
 
 - name: Celery Supervisor Config
   hosts: celery
