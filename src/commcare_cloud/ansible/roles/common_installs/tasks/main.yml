@@ -102,6 +102,15 @@
     - httplib2
     - pexpect
 
+- name: Install pip packages for fixing python<2.7.9 ssl issue
+  pip: name="{{ item }}"
+  become: yes
+  with_items:
+    - urllib3
+    - pyOpenSSL
+    - ndg-httpsclient
+    - pyasn1
+
 - name: Install virtualenv-clone
   become: yes
   pip:

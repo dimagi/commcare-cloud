@@ -9,7 +9,6 @@ import uuid
 
 from commcare_cloud.commands.ansible.helpers import (
     get_django_webworker_name,
-    get_formplayer_instance_name,
     get_formplayer_spring_instance_name,
     get_celery_worker_name)
 from fabric.api import roles, parallel, env, sudo, serial, execute
@@ -38,7 +37,6 @@ from six.moves import range
 def set_supervisor_config():
     """Upload and link Supervisor configuration from the template."""
     set_celery_supervisorconf()
-    set_formsplayer_supervisorconf()
     set_formplayer_spring_supervisorconf()
 
 
@@ -141,15 +139,6 @@ def show_periodic_server_whitelist_message_and_abort(env):
     )
 
 
-def set_formsplayer_supervisorconf():
-    if _check_in_roles(ROLES_TOUCHFORMS):
-        _rebuild_supervisor_conf_file('make_supervisor_conf',
-                                      'supervisor_formsplayer.conf',
-                                      {'formplayer_instance_name':
-                                           get_formplayer_instance_name(env.ccc_environment)}
-                                      )
-
-
 def set_formplayer_spring_supervisorconf():
     if _check_in_roles(ROLES_FORMPLAYER):
         _rebuild_supervisor_conf_file('make_supervisor_conf',
@@ -244,16 +233,9 @@ def _format_env(current_env, extra=None):
 
     all_hosts = env.ccc_environment.sshable_hostnames_by_group['all']
 
-    ret['supervisor_env_vars'] = {}
-    ret['command_prefix'] = ''
-
-    if env.newrelic_djangoagent:
-        host = current_env.get('host_string')
-        webworkers = env.ccc_environment.groups['webworkers']
-        if host in webworkers:
-            ret['command_prefix'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
-            ret['supervisor_env_vars']['NEW_RELIC_CONFIG_FILE'] = '%(root)s/newrelic.ini' % env
-            ret['supervisor_env_vars']['NEW_RELIC_ENVIRONMENT'] = current_env.get('deploy_env', '')
+    ret['supervisor_env_vars'] = {
+        "TMPDIR": "/opt/tmp"
+    }
 
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
