@@ -135,11 +135,5 @@ pillows:
       num_processes: 1
     UserPillow:
       num_processes: 1
-    WorldVisionChildFluffPillow:
-      num_processes: 1
-    WorldVisionHierarchyFluffPillow:
-      num_processes: 1
-    WorldVisionMotherFluffPillow:
-      num_processes: 1
     XFormToElasticsearchPillow:
       num_processes: 1
