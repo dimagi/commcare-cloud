@@ -244,16 +244,9 @@ def _format_env(current_env, extra=None):
 
     all_hosts = env.ccc_environment.sshable_hostnames_by_group['all']
 
-    ret['supervisor_env_vars'] = {}
-    ret['command_prefix'] = ''
-
-    if env.newrelic_djangoagent:
-        host = current_env.get('host_string')
-        webworkers = env.ccc_environment.groups['webworkers']
-        if host in webworkers:
-            ret['command_prefix'] = '%(virtualenv_root)s/bin/newrelic-admin run-program ' % env
-            ret['supervisor_env_vars']['NEW_RELIC_CONFIG_FILE'] = '%(root)s/newrelic.ini' % env
-            ret['supervisor_env_vars']['NEW_RELIC_ENVIRONMENT'] = current_env.get('deploy_env', '')
+    ret['supervisor_env_vars'] = {
+        "TMPDIR": "/opt/tmp"
+    }
 
     if env.http_proxy:
         ret['supervisor_env_vars']['http_proxy'] = 'http://{}'.format(env.http_proxy)
