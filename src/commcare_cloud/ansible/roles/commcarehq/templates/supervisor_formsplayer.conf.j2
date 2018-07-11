@@ -1,8 +1,0 @@
-[program:{{ project }}-{{ deploy_env }}-formsplayer]
-command=java -Xmx{{ app_processes_config.jython_memory }} -Xss1024k -classpath /usr/local/lib/jython/jython.jar: -Dpython.home=/usr/local/lib/jython -Dpython.executable=/usr/local/lib/jython/bin/jython org.python.util.jython {{ code_home }}/submodules/touchforms-src/touchforms/backend/xformserver.py
-user={{ cchq_user }}
-autostart=true
-autorestart=true
-stdout_logfile={{ log_home }}/formsplayer.log
-redirect_stderr=true
-stderr_logfile={{ log_home }}/formsplayer.error.log
