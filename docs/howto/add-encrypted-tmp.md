@@ -1,8 +1,8 @@
 # How to add encrypted temporary directory
-CCHQ deployment uses encrypted temporary directory. which is encrypted by `ecryptfs`
+A CommCare deployment uses an encrypted temp directory, which is encrypted by `ecryptfs`.
 
-configuration of `encrypted_tmp` directory is integral part of the `deploy_stack` playbook.
-Environments where `encrypted_tmp` is not configured can be configured by executing the command below.
+Configuration of the `encrypted_tmp` directory is an integral part of the `deploy_stack` playbook.
+On environments where `encrypted_tmp` is not yet configured, it can be configured by executing the command below.
 
 ```bash
 commcare-cloud <env> ansible-playbook deploy_stack.yml --tags=ecryptfs
