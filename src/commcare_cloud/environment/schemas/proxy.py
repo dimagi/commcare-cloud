@@ -13,6 +13,8 @@ class ProxyConfig(jsonobject.JsonObject):
     nginx_max_clients = jsonobject.IntegerProperty(default=512)
     nginx_worker_rlimit_nofile = jsonobject.IntegerProperty()
     fake_ssl_cert = jsonobject.BooleanProperty(default=False)
+    letsencrypt_cchq_ssl = jsonobject.BooleanProperty(default=False)
+    letsencrypt_cas_ssl = jsonobject.BooleanProperty(default=False)
     primary_ssl_env = jsonobject.StringProperty()
 
     special_sites = jsonobject.ListProperty(str)

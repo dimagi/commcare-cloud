@@ -5,6 +5,7 @@ import subprocess
 from memoized import memoized
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.environment.main import get_environment
 from .command_base import CommandBase, Argument
 from ..environment.paths import FABFILE, get_available_envs
 from six.moves import shlex_quote
@@ -48,6 +49,10 @@ class Fab(CommandBase):
         fab_args.extend(unknown_args)
         if args.l:
             fab_args.append('-l')
+        else:
+            env = get_environment(args.env_name)
+            fab_args.extend(['--disable-known-hosts',
+                             '--system-known-hosts', env.paths.known_hosts])
         return exec_fab_command(args.env_name, *fab_args)
 
 

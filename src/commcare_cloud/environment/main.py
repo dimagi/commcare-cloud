@@ -174,9 +174,9 @@ class Environment(object):
         return InventoryManager(loader=self._ansible_inventory_data_loader,
                                 sources=self.paths.inventory_ini)
 
-    @memoized_property
+    @property
     def _ansible_inventory_variable_manager(self):
-        return VariableManager(self._ansible_inventory_data_loader, self.inventory_manager)
+        return get_variable_manager(self._ansible_inventory_data_loader, self.inventory_manager)
 
     @memoized_property
     def groups(self):
@@ -267,6 +267,7 @@ class Environment(object):
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
             'known_hosts_file': self.paths.known_hosts,
+            'commcarehq_repository': self.fab_settings_config.code_repo,
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables())
@@ -299,3 +300,8 @@ class Environment(object):
 @memoized
 def get_environment(env_name):
     return Environment(DefaultPaths(env_name))
+
+
+@memoized
+def get_variable_manager(data_loader, inventory_manager):
+    return VariableManager(data_loader, inventory_manager)

@@ -3,6 +3,7 @@ import jsonobject
 GitUriProperty = jsonobject.StringProperty
 TimezoneProperty = jsonobject.StringProperty
 
+
 class FabSettingsConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     sudo_user = jsonobject.StringProperty()

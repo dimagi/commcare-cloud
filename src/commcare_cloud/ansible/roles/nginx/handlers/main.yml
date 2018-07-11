@@ -1,16 +1,3 @@
 ---
-- name: start nginx
-  become: yes
-  service: name=nginx state=started
-
 - name: restart nginx
-  become: yes
-  service: name=nginx state=restarted
-
-- name: reload nginx
-  become: yes
-  service: name=nginx state=reloaded
-
-- name: stop nginx
-  become: yes
-  service: name=nginx state=stopped
+  include_tasks: restart.yml
