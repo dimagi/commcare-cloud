@@ -6,6 +6,7 @@
     - {role: users, tags: users}
     - {role: ssh, tags: ssh}
     - role: edit
+    - {role: common_installs, tags: common_installs}
     - {role: ksplice, tags: ksplice}
     - {role: ansible-control, tags: ansible-control}
     - role: ansible-logrotate

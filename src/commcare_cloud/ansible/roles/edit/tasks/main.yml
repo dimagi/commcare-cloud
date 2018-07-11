@@ -3,10 +3,6 @@
   become: yes
   apt: name=vim state=present
 
-- name: Install Emacs
-  become: yes
-  apt: name=emacs23 state=present
-
 - name: Include vimrc
   become: yes
   copy:
