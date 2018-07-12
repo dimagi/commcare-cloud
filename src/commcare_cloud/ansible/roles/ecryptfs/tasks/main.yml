@@ -145,7 +145,7 @@
   cron:
     name: "Purge files in {{ encrypted_tmp }}"
     special_time: daily
-    job: "/usr/sbin/tmpreaper {{ encrypted_tmp }} 2d"
+    job: "/usr/sbin/tmpreaper 2d {{ encrypted_tmp }}"
     user: root
     cron_file: purge_tmp_files
-  tags: cron
+  tags: cron-encrypted-tmp
