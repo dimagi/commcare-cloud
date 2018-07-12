@@ -31,7 +31,7 @@
     - proxy
   tasks:
     - file:
-        path: {{ legacy_supervisor_task_conf }}
+        path: "{{ legacy_service_home }}"
         state: absent
       tags: services
 
