@@ -1,7 +1,7 @@
 celery_processes:
   pvtest-celery-0:
     celery_periodic:
-      server_whitelist: 54.88.225.234
+      server_whitelist: 52.91.61.204
       concurrency: 4
     async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue:
       concurrency: 1
