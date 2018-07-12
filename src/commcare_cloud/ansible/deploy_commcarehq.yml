@@ -29,9 +29,11 @@
     - formplayer
     - celery
     - proxy
-  file:
-    path: {{ legacy_supervisor_task_conf }}
-    state: absent
+  tasks:
+    - file:
+        path: {{ legacy_supervisor_task_conf }}
+        state: absent
+      tags: services
 
 - name: Celery Supervisor Config
   hosts: celery
