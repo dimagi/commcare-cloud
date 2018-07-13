@@ -1,0 +1,13 @@
+---
+- name: Unmount Mount tmp drive
+  become: yes
+  mount:
+    path: "{{ encrypted_tmp }}"
+    state: absent
+
+- name: Remove cron job
+  become: yes
+  cron:
+    name: "Purge files in {{ encrypted_tmp }}"
+    cron_file: purge_tmp_files
+    state: absent
