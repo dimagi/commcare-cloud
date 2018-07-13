@@ -23,6 +23,8 @@
       tmpreaper_time: '2d'
 
 - name: Temporary task to remove old service directory
+  become: true
+  become_user: "{{ cchq_user }}"
   hosts:
     - webworkers
     - touchforms
@@ -31,7 +33,7 @@
     - proxy
   tasks:
     - file:
-        path: "{{ legacy_service_home }}"
+        path: "{{ legacy_service_home }}/"
         state: absent
       tags: services
 
