@@ -1,7 +1,7 @@
 {% for queue_names, celery_params in app_processes_config.celery_processes.get(inventory_hostname).items() %}
 {% for worker_num in range(celery_params.num_workers) %}
 
-{% if queue_names != "flower" %}
+{% if queue_names not in ("flower", "beat") %}
 [program:{{ project }}-{{ deploy_env }}-celery_{{ queue_names }}_{{worker_num}}]
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
 
