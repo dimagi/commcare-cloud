@@ -2,8 +2,8 @@ formplayer_memory: "7000m"
 newrelic_javaagent: True
 celery_processes:
   'celery0':
+    beat: {}
     celery_periodic:
-      server_whitelist: '10.162.36.233'
       concurrency: 2
     submission_reprocessing_queue:
       concurrency: 1
