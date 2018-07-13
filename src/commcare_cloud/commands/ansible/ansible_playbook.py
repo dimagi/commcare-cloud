@@ -289,9 +289,9 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=services',)
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
-        if ask("Some celery configs are still updated through fab. "
-               "Do you want to run that as well (recommended)?"):
-            exec_fab_command(args.env_name, 'update_current_supervisor_config')
+        if ask("Would you like to update supervisor to use the new configurations?"):
+            exec_fab_command(args.env_name, 'supervisorctl:"reread"')
+            exec_fab_command(args.env_name, 'supervisorctl:"update"')
         else:
             return rc
 

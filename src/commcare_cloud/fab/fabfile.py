@@ -804,22 +804,6 @@ def silent_services_restart(use_current_release=False):
 
 
 @task
-def set_supervisor_config():
-    _setup_release()
-    execute_with_timing(supervisor.set_supervisor_config)
-
-
-@task
-def update_current_supervisor_config():
-    """This only writes the supervisor config. To make the new configs take
-    affect you must restart services
-    """
-    _override_code_root_to_current()
-    with cd(env.code_current):
-        execute_with_timing(supervisor.set_supervisor_config)
-
-
-@task
 def stop_celery():
     execute(supervisor.stop_celery_tasks, True)
 
@@ -885,7 +869,6 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    supervisor.set_supervisor_config,
     formplayer.build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
@@ -905,7 +888,6 @@ OFFLINE_DEPLOY_COMMANDS = [
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    supervisor.set_supervisor_config,
     formplayer.offline_build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,

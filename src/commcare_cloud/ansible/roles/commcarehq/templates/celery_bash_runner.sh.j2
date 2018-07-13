@@ -15,7 +15,7 @@
 # the Celery process to do a warm shutdown and we are
 # free to start another bash process under supervisor.
 trap 'echo "Killing: celery@${HOSTNAME} - $PID";
-    {{ virtualenv_current }}/bin/python {{ code_current }}/manage.py shutdown_celery_worker_by_hostname celery@${HOSTNAME};
+    {{ virtualenv_home }}/bin/python {{ code_home }}/manage.py shutdown_celery_worker_by_hostname celery@${HOSTNAME};
     echo "Killed: $PID";' TERM INT
 
 HOSTNAME_ARG=""
@@ -44,7 +44,7 @@ HOSTNAME_ARG+=".${TIMESTAMP}_timestamp"
 HOSTNAME_PARTS=(${HOSTNAME_ARG//=/ })
 HOSTNAME=${HOSTNAME_PARTS[1]}
 
-{{ virtualenv_current }}/bin/python {{ python_options }} {{ code_current }}/manage.py celery worker ${HOSTNAME_ARG} ${ARGS}  &
+{{ virtualenv_home }}/bin/python {{ item.get('python_options', '') }} {{ code_home }}/manage.py celery worker ${HOSTNAME_ARG} ${ARGS}  &
 PID=$!
 BASH_PID=$$
 echo "Started ${HOSTNAME} on PID: ${PID}"
