@@ -11,8 +11,8 @@ docs/commcare-cloud/commands/index.md : src/commcare_cloud/* src/commcare_cloud/
 
 requirements : requirements.txt
 
-requirements.txt : requirements-python-lt-2.7.9-ssl-issue.in setup.py update-requirements.sh
-	bash update-requirements.sh
+requirements.txt : requirements-*.in setup.py
+	pip-compile --output-file requirements.txt setup.py requirements*.in --upgrade
 
 clean:
 	rm docs/commcare-cloud/commands/index.md src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt
