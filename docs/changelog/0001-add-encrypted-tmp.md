@@ -9,6 +9,12 @@
 ## Change Context
 Some of the CommCare processes make use of temporary files to store client data (such as data exports) so in order to keep that data protected we have modified the setup to use an encrypted temporary directory.
 
+## Details
+
+Temp folder location: /opt/tmp
+
+Cleaup policy: Delete files older than 2 days
+
 ## Steps to update
 
 1. Create the encrypted temporary directory

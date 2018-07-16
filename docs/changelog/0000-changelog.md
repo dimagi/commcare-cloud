@@ -11,5 +11,8 @@ that requires this change.
 ## Change Context
 Description of the change.
 
+## Details
+Details of the change.
+
 ## Steps to update
 Configuration changes and command that should be run to apply the update.
