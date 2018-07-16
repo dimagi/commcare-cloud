@@ -25,7 +25,7 @@ SYNCLOGS_SQL_DB_ALIAS = "synclogs"
 SYNCLOGS_SQL_DB_ALIAS = "default"
 {% endif %}
 
-DATABASES = { {% for config in postgresql_dbs %}
+DATABASES = { {% for config in postgresql_dbs.all %}
 {%- if config.django_alias %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -51,18 +51,16 @@ USE_PARTITIONED_DATABASE = {{ SEPARATE_FORM_PROCESSING_DBS }}
 {% if SEPARATE_FORM_PROCESSING_DBS %}
 PARTITION_DATABASE_CONFIG = {
     'shards': {
-        {% for config in postgresql_dbs %}
-            {%- if config.get('shards') %}'{{config.django_alias}}': {{config.shards|to_json}},
-        {% endif -%}
+        {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
+            '{{config.django_alias}}': {{config.shards|to_json}},
         {% endfor %}
     },
     'groups': {
         'main': ['default'],
         'proxy': ['proxy'],
         'form_processing': [
-            {% for config in postgresql_dbs %}
-                {%- if config.get('shards') %}'{{config.django_alias}}',
-            {% endif -%}
+            {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
+                '{{config.django_alias}}',
             {% endfor %}
         ]
     }
