@@ -13,7 +13,7 @@ Some of the CommCare processes make use of temporary files to store client data 
 
 Temp folder location: /opt/tmp
 
-Cleaup policy: Delete files older than 2 days
+Retention policy: Delete files older than 2 days
 
 ## Steps to update
 
