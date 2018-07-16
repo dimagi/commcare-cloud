@@ -52,5 +52,6 @@ name: Link ENV SSL Key
 
 Once we have added the configuration for the new environment. we can proceed with deploying the same using
 
-```commcare-cloud <env> ansible-playbook deploy_proxy.yml
+```
+commcare-cloud <env> ansible-playbook deploy_proxy.yml
 ```
