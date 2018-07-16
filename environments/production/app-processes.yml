@@ -83,12 +83,10 @@ celery_processes:
 pillows:
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
-      num_processes: 1
+      num_processes: 2
     kafka-ucr-static:
-      num_processes: 1
+      num_processes: 2
     CaseToElasticsearchPillow:
-      num_processes: 1
-    XFormToElasticsearchPillow:
       num_processes: 1
   hqpillowtop0.internal-va.commcarehq.org:
     AppDbChangeFeedPillow:
@@ -106,7 +104,7 @@ pillows:
     FarmerRecordFluffPillow:
       num_processes: 1
     FormSubmissionMetadataTrackerPillow:
-      num_processes: 1
+      num_processes: 2
     GeographyFluffPillow:
       num_processes: 1
     GroupPillow:
@@ -136,4 +134,6 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
     UserPillow:
+      num_processes: 1
+    XFormToElasticsearchPillow:
       num_processes: 1
