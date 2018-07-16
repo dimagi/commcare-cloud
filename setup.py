@@ -42,6 +42,7 @@ setup(
         'jsonobject>=0.9.0',
         'netaddr',
         'passlib',
+        'pycryptodome',
         'PyGithub==1.40a1',
         'pytz==2017.2',
         'six',
