@@ -84,10 +84,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     def to_generated_variables(self):
         data = self.to_json()
-        del data['dbs']
         del data['override']
-
-        data['postgresql_dbs'] = sorted(
+        data['postgresql_dbs'] = data.pop('dbs')
+        data['postgresql_dbs']['all'] = sorted(
             (db.to_json() for db in self.generate_postgresql_dbs()),
             key=lambda db: db['name']
         )

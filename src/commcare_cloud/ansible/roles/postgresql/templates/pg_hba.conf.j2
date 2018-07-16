@@ -38,7 +38,7 @@ host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_serv
 {% endif %}
 
 {% if cluster_ip_range is defined %}
-{% for db_name, db_list in postgresql_dbs|groupby('name') %}
+{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
 {% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
 {% for user_key in postgres_users | reject('in', ['netvault', 'replication'])  %}
@@ -51,7 +51,7 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.us
 {%  else %}
 {% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups['pg_standby']) | unique %}
 # {{ host }}
-{% for db_name, db_list in postgresql_dbs|groupby('name') %}
+{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
 {% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
 {% if host | ipaddr %}
