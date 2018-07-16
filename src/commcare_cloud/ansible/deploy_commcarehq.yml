@@ -46,6 +46,12 @@
     - include_tasks: roles/commcarehq/tasks/celery.yml
       tags: services
 
+- name: Pillowtop Supervisor Config
+  hosts: pillowtop
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/pillowtop.yml
+      tags: services
+
 - name: Proxy Supervisor Config
   hosts: proxy
   tasks:
