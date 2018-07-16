@@ -18,13 +18,17 @@ The expiry of certificates is monitored via external monitoring tools.
 ---
 
 ## How to setup.
+To setup the automate renewal we can use commcare-cloud command after making following changes.
 * Add `letsencrypt_cchq_ssl: True` variable in `proxy.yml`
 
 * Add configuration to create symlink to `privkey.pem` and `fullchain.pem` in `src/commcare_cloud/ansible/roles/nginx/tasks/install.yml`
 
 Following variables are predefined
-ENV_SITE_HOT: Site for which certificate is renewed
-ssl_keys_dir: Directory to keep ssl certificate and keys links for nginx.  
+* ENV_SITE_HOT: Site for which certificate is renewed
+* ssl_keys_dir: Directory to keep ssl certificate and keys links for nginx.
+
+
+
 ```
 name: Link ENV SSL cert
   become: yes
@@ -44,4 +48,9 @@ name: Link ENV SSL Key
   when: not fake_ssl_cert and ENV_SITE_HOST | default(None)
 
 
+```
+
+Once we have added the configuration for the new environment. we can proceed with deploying the same using
+
+```commcare-cloud <env> ansible-playbook deploy_proxy.yml
 ```
