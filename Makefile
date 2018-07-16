@@ -9,5 +9,10 @@ src/commcare_cloud/help_cache/ansible-playbook.txt:
 docs/commcare-cloud/commands/index.md : src/commcare_cloud/* src/commcare_cloud/*/* src/commcare_cloud/*/*/*
 	manage-commcare-cloud make-docs > docs/commcare-cloud/commands/index.md
 
+requirements : requirements.txt
+
+requirements.txt : requirements-python-lt-2.7.9-ssl-issue.in setup.py update-requirements.sh
+	bash update-requirements.sh
+
 clean:
 	rm docs/commcare-cloud/commands/index.md src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt
