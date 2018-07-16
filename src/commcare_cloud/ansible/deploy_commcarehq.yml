@@ -12,6 +12,9 @@
   become: true
   roles:
     - {role: commcarehq, tags: commcarehq}
+  tasks:
+    - import_tasks: roles/ecryptfs/tasks/tmp.yml
+      tags: ecryptfs
 
 - name: Celery cron jobs for HQ
   hosts:
