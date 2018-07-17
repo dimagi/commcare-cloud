@@ -786,3 +786,7 @@ TRANSIFEX_DETAILS = {
     'token': '{{ TRANSIFEX_API_TOKEN }}'
 }
 {% endif %}
+
+{% if localsettings.UCR_COMPARISONS %}
+UCR_COMPARISONS = json.loads('{{ localsettings.UCR_COMPARISONS|to_json }}')
+{% endif %}
