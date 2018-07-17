@@ -37,7 +37,7 @@ you will have to remain connected to the the control machine
 for the entirety of the run.
 
 
-** `cchq` alias **
+**`cchq` alias**
 
 Additionally, `commcare-cloud` is aliased to the easier-to-type `cchq`
 (short for "CommCare HQ"), so any command you see here can also be run
