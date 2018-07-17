@@ -14,6 +14,9 @@ configuration files. This change decouples the process definitions from code.
 All services are now defined separately from a code deploy and outside of our
 the directory where code runs.
 
+Important Note: Any code deploys before running the following command will cause
+celery and formplayer services to stop running
+
 ## Steps to update
 1. Run the following to update the supervisor configuration:
 
