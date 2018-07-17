@@ -788,5 +788,9 @@ TRANSIFEX_DETAILS = {
 {% endif %}
 
 {% if localsettings.UCR_COMPARISONS %}
-UCR_COMPARISONS = json.loads('{{ localsettings.UCR_COMPARISONS|to_json }}')
+UCR_COMPARISONS = {
+{% for old_config, new_config in localsettings.UCR_COMPARISONS.items() %}
+    '{{ old_config }}': '{{ new_config }}',
+{% endfor %}
+}
 {% endif %}
