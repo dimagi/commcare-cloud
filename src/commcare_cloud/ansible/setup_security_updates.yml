@@ -1,3 +1,4 @@
+# For more information to customize kindly refer. https://github.com/weareinteractive/ansible-apt
 ---
 - hosts: all
   become: yes
@@ -14,3 +15,12 @@
     - riak
     - riak-cs
     - zookeeper
+   # Some Relevent default variabls.
+   # enable unattended-upgrades
+   apt_unattended_upgrades: yes
+   # Do “apt-get update” automatically every n-days (0=disable)
+   apt_update_package_lists: 1
+   # Do “apt-get upgrade –download-only” every n-days (0=disable)
+   apt_download_upgradeable_packages: 0
+   # Do “apt-get autoclean” every n-days (0=disable)
+   apt_auto_clean_interval: 0
