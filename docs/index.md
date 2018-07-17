@@ -48,6 +48,7 @@ an understanding of the system's architecture and each of the system's underlyin
 - You've run through the steps to set up CommCare HQ in production,
   and you're facing inscrutable problems.
   Check out [Troubleshooting first time setup](basics/troubleshooting.md).
+- [Changelog](changelog)
 
 ## Miscellaneous Links
 - The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
