@@ -10,7 +10,8 @@ from nose_parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME, COUCH_SHARD_PLAN
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
-    COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan
+    COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan, get_migration_file_configs
+from commcare_cloud.commands.migrations.files import get_file_list_filename, FILE_MIGRATION_RSYNC_SCRIPT
 from commcare_cloud.environment.main import get_environment
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
@@ -45,18 +46,19 @@ def test_generate_rsync_lists(plan_name):
 
     assert expected_couch_config_json == migration.target_couch_config.to_json(), migration.target_couch_config.to_json()
 
-    files_by_host = _generate_plan_and_rsync_lists(migration, plan_name)
-    expected_script = _get_test_file(plan_name, 'expected_{}'.format(COUCHDB_RSYNC_SCRIPT))
+    migration_file_configs = _generate_plan_and_rsync_lists(migration, plan_name)
+    expected_script = _get_test_file(plan_name, 'expected_{}'.format(FILE_MIGRATION_RSYNC_SCRIPT))
 
-    for host, file_paths in files_by_host.items():
-        for file_path in file_paths:
-            file_name = file_path.split('/')[-1]
+    for target_host, migration_configs in migration_file_configs.items():
+        print(migration_configs)
+        for config in migration_configs:
+            file_name = get_file_list_filename(config)
 
-            actual = _get_file_contents(file_path)
+            actual = _get_file_contents(os.path.join(migration.rsync_files_path, target_host, file_name))
             expected = _get_test_file(plan_name, 'expected_{}'.format(file_name))
             assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
-        script_source = _get_file_contents(os.path.join(migration.rsync_files_path, host, COUCHDB_RSYNC_SCRIPT))
+        script_source = _get_file_contents(os.path.join(migration.rsync_files_path, target_host, FILE_MIGRATION_RSYNC_SCRIPT))
         assert expected_script == script_source, "'{}'".format(script_source)
 
 
@@ -100,8 +102,10 @@ def _generate_plan_and_rsync_lists(migration, plan_name):
         generate_shard_plan(migration)
 
     with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
-        files_by_host = generate_rsync_lists(migration)
-    return files_by_host
+        # this also get's called in generate_rsync_lists but we want the result to test against
+        migration_file_configs = get_migration_file_configs(migration)
+        generate_rsync_lists(migration)
+    return migration_file_configs
 
 
 def _get_migration(plan_name):
