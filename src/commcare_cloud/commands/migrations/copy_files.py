@@ -30,7 +30,28 @@ class CopyFiles(CommandBase):
     Copy files from multiple sources to targets.
 
     This is a general purpose command that can be used to copy files between
-    nodes in the cluster.
+    hosts in the cluster.
+    
+    The plan file must be formatted as follows:
+    
+    ```yml
+    copy_files:
+      - <target-host>:
+          - source_host: <source-host>
+            source_dir: <source-dir>
+            target_dir: <target-dir>
+            files:
+              - test/
+              - test1/test-file.txt
+    ```       
+    - **copy_files**: Multiple target hosts can be listed. 
+    - **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
+    listed for each target host.
+    - **source-host**: Hostname or IP of the source host
+    - **source-dir**: The base directory from which all source files referenced
+    - **target-dir**: Directory on the target host to copy the files to
+    - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
+    end with a `/`
     """
 
     arguments = (
@@ -38,8 +59,8 @@ class CopyFiles(CommandBase):
         Argument(dest='action', choices=['prepare', 'copy'], help="""
             Action to perform
 
-            - prepare: generate the copy scripts and push them to the target servers
-            - migrate: execute the copy scripts
+            - prepare: generate the scripts and push them to the target servers
+            - migrate: execute the scripts
         """),
         shared_args.SKIP_CHECK_ARG,
     )

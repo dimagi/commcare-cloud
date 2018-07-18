@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -958,3 +958,49 @@ in the history, and so that during it service alerts are silenced.
 ###### `-m MESSAGE, --message MESSAGE`
 
 Optional message to set on Datadog.
+
+
+#### `copy-files`
+
+Copy files from multiple sources to targets.
+
+```
+commcare-cloud <env> copy-files plan {prepare,copy}
+```
+
+This is a general purpose command that can be used to copy files between
+hosts in the cluster.
+
+The plan file must be formatted as follows:
+
+```yml
+copy_files:
+  - <target-host>:
+      - source_host: <source-host>
+        source_dir: <source-dir>
+        target_dir: <target-dir>
+        files:
+          - test/
+          - test1/test-file.txt
+```       
+- **copy_files**: Multiple target hosts can be listed. 
+- **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
+listed for each target host.
+- **source-host**: Hostname or IP of the source host
+- **source-dir**: The base directory from which all source files referenced
+- **target-dir**: Directory on the target host to copy the files to
+- **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
+end with a `/`
+
+##### Positional Arguments
+
+###### `plan`
+
+Path to plan file
+
+###### `{prepare,copy}`
+
+Action to perform
+
+- prepare: generate the scripts and push them to the target servers
+- migrate: execute the scripts
