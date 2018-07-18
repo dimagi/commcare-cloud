@@ -11,7 +11,7 @@ from nose_parameterized import parameterized
 from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME, COUCH_SHARD_PLAN
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
     COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan, get_migration_file_configs
-from commcare_cloud.commands.migrations.files import get_file_list_filename, FILE_MIGRATION_RSYNC_SCRIPT
+from commcare_cloud.commands.migrations.copy_files import get_file_list_filename, FILE_MIGRATION_RSYNC_SCRIPT
 from commcare_cloud.environment.main import get_environment
 from tests.test_utils import get_file_contents
 

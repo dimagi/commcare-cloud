@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from commcare_cloud.commands.migrations.files import prepare_migration_scripts, MigrationFiles, \
+from commcare_cloud.commands.migrations.copy_files import prepare_migration_scripts, MigrationFiles, \
     FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename
 from tests.test_utils import get_file_contents
 
