@@ -36,8 +36,11 @@ def test_prepare_migration_scripts():
         )
     ]
     target_host = 'target_host1'
-    script_path = prepare_file_copy_scripts(target_host, configs, SCRIPT_ROOT)
-    check_file_contents(script_path, os.path.join(TEST_DATA_DIR, FILE_MIGRATION_RSYNC_SCRIPT))
+    prepare_file_copy_scripts(target_host, configs, SCRIPT_ROOT)
+    check_file_contents(
+        os.path.join(SCRIPT_ROOT, target_host, FILE_MIGRATION_RSYNC_SCRIPT),
+        os.path.join(TEST_DATA_DIR, FILE_MIGRATION_RSYNC_SCRIPT)
+    )
 
     for config in configs:
         file_list_filename = get_file_list_filename(config)
