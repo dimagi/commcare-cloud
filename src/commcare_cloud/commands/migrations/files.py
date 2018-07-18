@@ -2,9 +2,14 @@ import hashlib
 import os
 
 import attr
+import yaml
 
+from commcare_cloud.commands import shared_args
+from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.utils import render_template
+from commcare_cloud.environment.main import get_environment
 
 FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -17,6 +22,71 @@ class MigrationFiles(object):
     source_dir = attr.ib()
     target_dir = attr.ib()
     files = attr.ib(factory=list)
+
+
+class CopyFiles(CommandBase):
+    command = 'copy-files'
+    help = """
+    Copy files from multiple sources to targets.
+
+    This is a general purpose command that can be used to copy files between
+    nodes in the cluster.
+    """
+
+    arguments = (
+        Argument(dest='plan', help="Path to plan file"),
+        Argument(dest='action', choices=['prepare', 'copy'], help="""
+            Action to perform
+
+            - prepare: generate the copy scripts and push them to the target servers
+            - migrate: execute the copy scripts
+        """),
+        shared_args.SKIP_CHECK_ARG,
+    )
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        environment.create_generated_yml()
+
+        plan = _read_plan(args.plan)
+        working_directory = _get_working_dir(args.plan, environment)
+        ansible_context = AnsibleContext(args)
+
+        if args.action == 'prepare':
+            for target_host, migration_configs in plan.items():
+                prepare_migration_scripts(target_host, migration_configs, working_directory)
+                copy_scripts_to_target_host(target_host, working_directory, environment, ansible_context)
+
+        if args.action == 'copy':
+            def run_check():
+                return migrate_files(environment, list(plan), check_mode=True)
+
+            def run_apply():
+                return migrate_files(environment, list(plan), check_mode=False)
+
+            return run_action_with_check_mode(run_check, run_apply, args.skip_check)
+
+
+def _read_plan(plan_path):
+    with open(plan_path, 'r') as f:
+        plan_dict = yaml.load(f)
+
+    return {
+        target_host: [
+                MigrationFiles(**config_dict) for config_dict in config_dicts
+            ]
+        for target in plan_dict['copy_files']
+        for target_host, config_dicts in target.items()
+    }
+
+
+def _get_working_dir(plan_path, environment):
+    plan_name = os.path.splitext(os.path.basename(plan_path))[0]
+    dirname = "copy_file_scripts_{}_{}_tmp".format(environment.meta_config.deploy_env, plan_name)
+    dir_path = os.path.join(os.path.dirname(self.plan_path), dirname)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    return dir_path
 
 
 def prepare_migration_scripts(target_host, migration_configs, script_root):
@@ -43,8 +113,6 @@ def prepare_migration_scripts(target_host, migration_configs, script_root):
         rsync_script_path = os.path.join(target_script_root, FILE_MIGRATION_RSYNC_SCRIPT)
         with open(rsync_script_path, 'w') as f:
             f.write(rsync_script_contents)
-
-        return rsync_script_path
 
 
 def copy_scripts_to_target_host(target_host, script_root, environment, ansible_context):
