@@ -20,7 +20,7 @@ from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_scripts, REMOTE_MIGRATION_ROOT, \
-    FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host
+    FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host, migrate_files
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
@@ -194,9 +194,9 @@ def _run_migration(migration, ansible_context, check_mode):
 
     puts(colored.blue('Stop couch and reallocate shards'))
     with stop_couch(migration.all_environments, ansible_context, check_mode):
-        sync_files_to_dest(migration, rsync_files_by_host, check_mode)
+        migrate_files(migration.target_environment, list(rsync_files_by_host), check_mode)
 
-        return 0
+    return 0
 
 
 @contextmanager
@@ -232,36 +232,6 @@ def commit_migration(migration):
     for shard_allocation_doc in shard_allocations:
         response = put_shard_allocation(migration.target_couch_config, shard_allocation_doc)
         print(response)
-
-
-def sync_files_to_dest(migration, rsync_files_by_host, check_mode=True):
-    file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
-    run_parallel_command(
-        migration.target_environment,
-        list(rsync_files_by_host),
-        "{}{}".format(
-            os.path.join(file_root, FILE_MIGRATION_RSYNC_SCRIPT),
-            ' --dry-run' if check_mode else ''
-        )
-    )
-
-
-def run_parallel_command(environment, hosts, command):
-    from fabric.api import execute, sudo, env, parallel
-    if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
-        env.use_ssh_config = True
-    env.forward_agent = True
-    env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
-    env.user = 'ansible'
-    env.password = environment.get_ansible_user_password()
-    env.hosts = hosts
-    env.warn_only = True
-
-    @parallel(pool_size=10)
-    def _task():
-        sudo(command)
-
-    execute(_task)
 
 
 def prepare_to_sync_files(migration, ansible_context):
