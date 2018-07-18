@@ -13,6 +13,7 @@ from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
     COUCHDB_RSYNC_SCRIPT, clean, generate_shard_prune_playbook, plan, generate_shard_plan, get_migration_file_configs
 from commcare_cloud.commands.migrations.files import get_file_list_filename, FILE_MIGRATION_RSYNC_SCRIPT
 from commcare_cloud.environment.main import get_environment
+from tests.test_utils import get_file_contents
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
@@ -54,11 +55,11 @@ def test_generate_rsync_lists(plan_name):
         for config in migration_configs:
             file_name = get_file_list_filename(config)
 
-            actual = _get_file_contents(os.path.join(migration.rsync_files_path, target_host, file_name))
+            actual = get_file_contents(os.path.join(migration.rsync_files_path, target_host, file_name))
             expected = _get_test_file(plan_name, 'expected_{}'.format(file_name))
             assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
-        script_source = _get_file_contents(os.path.join(migration.rsync_files_path, target_host, FILE_MIGRATION_RSYNC_SCRIPT))
+        script_source = get_file_contents(os.path.join(migration.rsync_files_path, target_host, FILE_MIGRATION_RSYNC_SCRIPT))
         assert expected_script == script_source, "'{}'".format(script_source)
 
 
@@ -124,9 +125,6 @@ def _get_yml(path):
 
 
 def _get_test_file(plan_name, filename):
-    return _get_file_contents(os.path.join(PLANS_DIR, plan_name, filename))
+    return get_file_contents(os.path.join(PLANS_DIR, plan_name, filename))
 
 
-def _get_file_contents(path):
-    with open(path, 'r') as f:
-        return f.read()

@@ -18,7 +18,7 @@ class MigrationFiles(object):
     files = attr.ib(factory=list)
 
 
-def prepare_migration_script(target_host, migration_configs, script_root):
+def prepare_migration_scripts(target_host, migration_configs, script_root):
     target_script_root = os.path.join(script_root, target_host)
     if not os.path.exists(target_script_root):
         os.makedirs(target_script_root)
