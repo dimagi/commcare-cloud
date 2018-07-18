@@ -80,6 +80,36 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
     )
 
 
+def migrate_files(environment, target_hosts, check_mode=True):
+    file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
+    run_parallel_command(
+        environment,
+        target_hosts,
+        "{}{}".format(
+            os.path.join(file_root, FILE_MIGRATION_RSYNC_SCRIPT),
+            ' --dry-run' if check_mode else ''
+        )
+    )
+
+
+def run_parallel_command(environment, hosts, command):
+    from fabric.api import execute, sudo, env, parallel
+    if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
+        env.use_ssh_config = True
+    env.forward_agent = True
+    env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
+    env.user = 'ansible'
+    env.password = environment.get_ansible_user_password()
+    env.hosts = hosts
+    env.warn_only = True
+
+    @parallel(pool_size=10)
+    def _task():
+        sudo(command)
+
+    execute(_task)
+
+
 def get_file_list_filename(config):
     dir_hash = hashlib.sha1('{}_{}'.format(config.source_dir, config.target_dir)).hexdigest()[:8]
     filename = '{}_{}__files'.format(config.source_host, dir_hash)
