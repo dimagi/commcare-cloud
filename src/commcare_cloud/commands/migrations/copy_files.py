@@ -48,7 +48,7 @@ class CopyFiles(CommandBase):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
-        plan = _read_plan(args.plan)
+        plan = read_plan(args.plan)
         working_directory = _get_working_dir(args.plan, environment)
         ansible_context = AnsibleContext(args)
 
@@ -67,7 +67,7 @@ class CopyFiles(CommandBase):
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
 
 
-def _read_plan(plan_path):
+def read_plan(plan_path):
     with open(plan_path, 'r') as f:
         plan_dict = yaml.load(f)
 
