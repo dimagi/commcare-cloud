@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from commcare_cloud.commands.migrations.copy_files import prepare_migration_scripts, MigrationFiles, \
+from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \
     FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename
 from tests.test_utils import get_file_contents
 
@@ -16,19 +16,19 @@ def tearDown():
 
 def test_prepare_migration_scripts():
     configs = [
-        MigrationFiles(
+        SourceFiles(
             'source_host1',
             'source_dir1',
             'target_dir1',
             ['file1', 'file2']
         ),
-        MigrationFiles(
+        SourceFiles(
             'source_host1',
             'source_dir2',
             'target_dir2',
             ['file3', 'file4']
         ),
-        MigrationFiles(
+        SourceFiles(
             'source_host2',
             'source_dir1',
             'target_dir1',
@@ -36,7 +36,7 @@ def test_prepare_migration_scripts():
         )
     ]
     target_host = 'target_host1'
-    script_path = prepare_migration_scripts(target_host, configs, SCRIPT_ROOT)
+    script_path = prepare_file_copy_scripts(target_host, configs, SCRIPT_ROOT)
     check_file_contents(script_path, os.path.join(TEST_DATA_DIR, FILE_MIGRATION_RSYNC_SCRIPT))
 
     for config in configs:

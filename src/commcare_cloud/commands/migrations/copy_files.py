@@ -17,7 +17,7 @@ REMOTE_MIGRATION_ROOT = 'file_migration'
 
 
 @attr.s
-class MigrationFiles(object):
+class SourceFiles(object):
     source_host = attr.ib()
     source_dir = attr.ib()
     target_dir = attr.ib()
@@ -53,16 +53,16 @@ class CopyFiles(CommandBase):
         ansible_context = AnsibleContext(args)
 
         if args.action == 'prepare':
-            for target_host, migration_configs in plan.items():
-                prepare_migration_scripts(target_host, migration_configs, working_directory)
+            for target_host, source_configs in plan.items():
+                prepare_file_copy_scripts(target_host, source_configs, working_directory)
                 copy_scripts_to_target_host(target_host, working_directory, environment, ansible_context)
 
         if args.action == 'copy':
             def run_check():
-                return migrate_files(environment, list(plan), check_mode=True)
+                return execute_file_copy_scripts(environment, list(plan), check_mode=True)
 
             def run_apply():
-                return migrate_files(environment, list(plan), check_mode=False)
+                return execute_file_copy_scripts(environment, list(plan), check_mode=False)
 
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
 
@@ -73,7 +73,7 @@ def _read_plan(plan_path):
 
     return {
         target_host: [
-                MigrationFiles(**config_dict) for config_dict in config_dicts
+                SourceFiles(**config_dict) for config_dict in config_dicts
             ]
         for target in plan_dict['copy_files']
         for target_host, config_dicts in target.items()
@@ -89,13 +89,13 @@ def _get_working_dir(plan_path, environment):
     return dir_path
 
 
-def prepare_migration_scripts(target_host, migration_configs, script_root):
+def prepare_file_copy_scripts(target_host, soucre_file_configs, script_root):
     target_script_root = os.path.join(script_root, target_host)
     if not os.path.exists(target_script_root):
         os.makedirs(target_script_root)
 
     files_for_node = []
-    for config in migration_configs:
+    for config in soucre_file_configs:
         files = sorted(config.files)
         filename = get_file_list_filename(config)
         path = os.path.join(target_script_root, filename)
@@ -148,7 +148,7 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
     )
 
 
-def migrate_files(environment, target_hosts, check_mode=True):
+def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
     file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
     run_parallel_command(
         environment,
