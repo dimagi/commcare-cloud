@@ -20,7 +20,7 @@ from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_scripts, REMOTE_MIGRATION_ROOT, \
-    FILE_MIGRATION_RSYNC_SCRIPT
+    FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
@@ -268,37 +268,11 @@ def prepare_to_sync_files(migration, ansible_context):
     rsync_files_by_host = generate_rsync_lists(migration)
 
     for host_ip in rsync_files_by_host:
-        host_files_root = os.path.join(migration.rsync_files_path, host_ip)
-
-        destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
-
-        # remove destination path to ensure we're starting fresh
-        file_args = "path={} state=absent".format(destination_path)
-        run_ansible_module(
-            migration.target_environment, ansible_context, host_ip, 'file', file_args,
-            True, None, False
-        )
-
-        # recursively copy all rsync file lists to destination
-        copy_args = "src={src}/ dest={dest} owner={owner} group={group} mode={mode}".format(
-            src=host_files_root,
-            dest=destination_path,
-            owner='couchdb',  # TODO: get from vars
-            group='couchdb',
-            mode='0644'
-        )
-        run_ansible_module(
-            migration.target_environment, ansible_context, host_ip, 'copy', copy_args,
-            True, None, False
-        )
-
-        # make script executable
-        file_args = "path={path} mode='0744'".format(
-            path=os.path.join(destination_path, FILE_MIGRATION_RSYNC_SCRIPT)
-        )
-        run_ansible_module(
-            migration.target_environment, ansible_context, host_ip, 'file', file_args,
-            True, None, False
+        copy_scripts_to_target_host(
+            host_ip,
+            migration.rsync_files_path,
+            migration.target_environment,
+            ansible_context
         )
     return rsync_files_by_host
 

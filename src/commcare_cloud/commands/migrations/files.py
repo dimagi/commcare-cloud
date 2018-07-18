@@ -3,6 +3,7 @@ import os
 
 import attr
 
+from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.utils import render_template
 
 FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
@@ -44,6 +45,39 @@ def prepare_migration_scripts(target_host, migration_configs, script_root):
             f.write(rsync_script_contents)
 
         return rsync_script_path
+
+
+def copy_scripts_to_target_host(target_host, script_root, environment, ansible_context):
+    local_files_path = os.path.join(script_root, target_host)
+
+    destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
+
+    # remove destination path to ensure we're starting fresh
+    file_args = "path={} state=absent".format(destination_path)
+    run_ansible_module(
+        environment, ansible_context, target_host, 'file', file_args,
+        True, None, False
+    )
+
+    # recursively copy all rsync file lists to destination
+    copy_args = "src={src}/ dest={dest} mode={mode}".format(
+        src=local_files_path,
+        dest=destination_path,
+        mode='0644'
+    )
+    run_ansible_module(
+        environment, ansible_context, target_host, 'copy', copy_args,
+        True, None, False
+    )
+
+    # make script executable
+    file_args = "path={path} mode='0744'".format(
+        path=os.path.join(destination_path, FILE_MIGRATION_RSYNC_SCRIPT)
+    )
+    run_ansible_module(
+        environment, ansible_context, target_host, 'file', file_args,
+        True, None, False
+    )
 
 
 def get_file_list_filename(config):
