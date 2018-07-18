@@ -19,7 +19,11 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_w
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
+from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_script
+from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
+
+TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
 COUCHDB_RSYNC_SCRIPT = 'couchdb_rsync.sh'
 
@@ -101,10 +105,10 @@ def generate_shard_prune_playbook(migration):
         for node, files in deletable_files_by_node.items()
         if files
     }
-    prune_playbook = _render_template('prune.yml.j2', {
+    prune_playbook = render_template('prune.yml.j2', {
         'deletable_files_by_node': deletable_files_by_node,
         'couch_data_dir': '/opt/data/couchdb2/'
-    })
+    }, TEMPLATE_DIR)
     with open(migration.prune_playbook_path, 'w') as f:
         f.write(prune_playbook)
 
@@ -302,46 +306,35 @@ def prepare_to_sync_files(migration, ansible_context):
     return rsync_files_by_host
 
 
-def _render_template(name, context):
-    from jinja2 import Environment, FileSystemLoader
-    env = Environment(loader=FileSystemLoader(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-    ))
-    return env.get_template(name).render(context)
-
-
 def generate_rsync_lists(migration):
+    migration_file_configs = get_migration_file_configs(migration)
+    for target_host, files_for_node in migration_file_configs.items():
+        prepare_migration_script(target_host, files_for_node, migration.rsync_files_path)
+    return list(migration_file_configs)
+
+
+def get_migration_file_configs(migration):
     full_plan = {plan.db_name: plan for plan in migration.shard_plan}
     missing_files = get_missing_files_by_node_and_source(
         migration.source_couch_config, full_plan
     )
-    paths_by_host = defaultdict(list)
+    migration_file_configs = {}
     for node, source_file_list in missing_files.items():
-        node_ip = node.split('@')[1]
-        node_files_path = os.path.join(migration.rsync_files_path, node_ip)
-        if not os.path.exists(node_files_path):
-            os.makedirs(node_files_path)
+        target_host = node.split('@')[1]
 
         files_for_node = []
         for source, file_list in source_file_list.items():
-            source_ip = source.split('@')[1]
-            files = sorted([f.filename for f in file_list])
-            filename = '{}__files'.format(source_ip)
-            path = os.path.join(node_files_path, filename)
-            with open(path, 'w') as f:
-                f.write('{}\n'.format('\n'.join(files)))
-
-            files_for_node.append((source_ip, filename))
-            paths_by_host[node_ip].append(path)
+            source_host = source.split('@')[1]
+            files_for_node.append(
+                MigrationFiles(
+                    source_host=source_host,
+                    source_dir='/opt/data/couchdb2/',
+                    target_dir='/opt/data/couchdb2/',
+                    files=[f.filename for f in file_list]
+                )
+            )
 
         if files_for_node:
-            # create rsync script
-            rsync_script = _render_template('couchdb_rsync.sh.j2', {
-                'rsync_file_list': files_for_node,
-                'couch_data_dir': '/opt/data/couchdb2/',
-                'rsync_file_root': os.path.join('/tmp', RSYNC_FILE_LIST_FOLDER_NAME)
-            })
-            with open(os.path.join(node_files_path, COUCHDB_RSYNC_SCRIPT), 'w') as f:
-                f.write(rsync_script)
+            migration_file_configs[target_host] = files_for_node
 
-    return paths_by_host
+    return migration_file_configs
