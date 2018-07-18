@@ -19,7 +19,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_w
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_scripts, REMOTE_MIGRATION_ROOT, \
+from commcare_cloud.commands.migrations.copy_files import MigrationFiles, prepare_migration_scripts, REMOTE_MIGRATION_ROOT, \
     FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host, migrate_files
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
