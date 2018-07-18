@@ -19,15 +19,12 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_w
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_scripts
+from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_scripts, REMOTE_MIGRATION_ROOT, \
+    FILE_MIGRATION_RSYNC_SCRIPT
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-
-COUCHDB_RSYNC_SCRIPT = 'couchdb_rsync.sh'
-
-RSYNC_FILE_LIST_FOLDER_NAME = 'couchdb_migration_rsync_file_list'
 
 
 class MigrateCouchdb(CommandBase):
@@ -238,12 +235,12 @@ def commit_migration(migration):
 
 
 def sync_files_to_dest(migration, rsync_files_by_host, check_mode=True):
-    file_root = os.path.join('/tmp', RSYNC_FILE_LIST_FOLDER_NAME)
+    file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
     run_parallel_command(
         migration.target_environment,
         list(rsync_files_by_host),
         "{}{}".format(
-            os.path.join(file_root, COUCHDB_RSYNC_SCRIPT),
+            os.path.join(file_root, FILE_MIGRATION_RSYNC_SCRIPT),
             ' --dry-run' if check_mode else ''
         )
     )
@@ -273,7 +270,7 @@ def prepare_to_sync_files(migration, ansible_context):
     for host_ip in rsync_files_by_host:
         host_files_root = os.path.join(migration.rsync_files_path, host_ip)
 
-        destination_path = os.path.join('/tmp', RSYNC_FILE_LIST_FOLDER_NAME)
+        destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
 
         # remove destination path to ensure we're starting fresh
         file_args = "path={} state=absent".format(destination_path)
@@ -297,7 +294,7 @@ def prepare_to_sync_files(migration, ansible_context):
 
         # make script executable
         file_args = "path={path} mode='0744'".format(
-            path=os.path.join(destination_path, COUCHDB_RSYNC_SCRIPT)
+            path=os.path.join(destination_path, FILE_MIGRATION_RSYNC_SCRIPT)
         )
         run_ansible_module(
             migration.target_environment, ansible_context, host_ip, 'file', file_args,
