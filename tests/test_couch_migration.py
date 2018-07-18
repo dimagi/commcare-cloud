@@ -15,7 +15,7 @@ from commcare_cloud.commands.migrations.files import get_file_list_filename, FIL
 from commcare_cloud.environment.main import get_environment
 from tests.test_utils import get_file_contents
 
-TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'migration_config')
+TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'couch_migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
 TEST_PLANS = os.listdir(PLANS_DIR)
 
