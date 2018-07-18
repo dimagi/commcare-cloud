@@ -40,27 +40,28 @@ def get_shard_allocation_func(mock_shard_allocation):
 
 @parameterized(TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
-def test_generate_rsync_lists(plan_name):
+def test_couch_config(plan_name):
     migration = _get_migration(plan_name)
     assert not migration.separate_source_and_target
-    expected_couch_config_json = _get_expected_yml(plan_name, 'expected_couch_config.yml')
 
+    expected_couch_config_json = _get_expected_yml(plan_name, 'expected_couch_config.yml')
     assert expected_couch_config_json == migration.target_couch_config.to_json(), migration.target_couch_config.to_json()
 
+
+@parameterized(TEST_PLANS)
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
+def test_get_migration_file_configs(plan_name):
+    migration = _get_migration(plan_name)
+
     migration_file_configs = _generate_plan_and_rsync_lists(migration, plan_name)
-    expected_script = _get_test_file(plan_name, 'expected_{}'.format(FILE_MIGRATION_RSYNC_SCRIPT))
 
     for target_host, migration_configs in migration_file_configs.items():
-        print(migration_configs)
         for config in migration_configs:
             file_name = get_file_list_filename(config)
 
             actual = get_file_contents(os.path.join(migration.rsync_files_path, target_host, file_name))
             expected = _get_test_file(plan_name, 'expected_{}'.format(file_name))
             assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
-
-        script_source = get_file_contents(os.path.join(migration.rsync_files_path, target_host, FILE_MIGRATION_RSYNC_SCRIPT))
-        assert expected_script == script_source, "'{}'".format(script_source)
 
 
 @parameterized(TEST_PLANS)
