@@ -19,8 +19,8 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_w
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.copy_files import MigrationFiles, prepare_migration_scripts, REMOTE_MIGRATION_ROOT, \
-    FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host, migrate_files
+from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_file_copy_scripts, REMOTE_MIGRATION_ROOT, \
+    FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host, execute_file_copy_scripts
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
@@ -194,7 +194,7 @@ def _run_migration(migration, ansible_context, check_mode):
 
     puts(colored.blue('Stop couch and reallocate shards'))
     with stop_couch(migration.all_environments, ansible_context, check_mode):
-        migrate_files(migration.target_environment, list(rsync_files_by_host), check_mode)
+        execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
 
     return 0
 
@@ -250,7 +250,7 @@ def prepare_to_sync_files(migration, ansible_context):
 def generate_rsync_lists(migration):
     migration_file_configs = get_migration_file_configs(migration)
     for target_host, files_for_node in migration_file_configs.items():
-        prepare_migration_scripts(target_host, files_for_node, migration.rsync_files_path)
+        prepare_file_copy_scripts(target_host, files_for_node, migration.rsync_files_path)
     return list(migration_file_configs)
 
 
@@ -267,7 +267,7 @@ def get_migration_file_configs(migration):
         for source, file_list in source_file_list.items():
             source_host = source.split('@')[1]
             files_for_node.append(
-                MigrationFiles(
+                SourceFiles(
                     source_host=source_host,
                     source_dir='/opt/data/couchdb2/',
                     target_dir='/opt/data/couchdb2/',
