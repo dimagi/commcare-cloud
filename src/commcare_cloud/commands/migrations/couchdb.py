@@ -19,7 +19,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_w
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_script
+from commcare_cloud.commands.migrations.files import MigrationFiles, prepare_migration_scripts
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
@@ -309,7 +309,7 @@ def prepare_to_sync_files(migration, ansible_context):
 def generate_rsync_lists(migration):
     migration_file_configs = get_migration_file_configs(migration)
     for target_host, files_for_node in migration_file_configs.items():
-        prepare_migration_script(target_host, files_for_node, migration.rsync_files_path)
+        prepare_migration_scripts(target_host, files_for_node, migration.rsync_files_path)
     return list(migration_file_configs)
 
 
