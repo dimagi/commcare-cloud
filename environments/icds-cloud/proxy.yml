@@ -7,11 +7,7 @@ nginx_worker_rlimit_nofile : 16384
 
 CAS_SITE_HOST: 'cas.commcarehq.org'
 
-TABLEAU_HOST: 'reports.icds-cas.gov.in'
-tableau_server: 10.247.24.11:80
-
 special_sites:
-  - icds_tableau
   - cas_ssl
 
 letsencrypt_cchq_ssl: True
