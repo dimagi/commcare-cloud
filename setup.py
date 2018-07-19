@@ -28,7 +28,7 @@ setup(
         'ansible-vault==1.1.1',
         'ansible==2.4.3',
         'argparse>=1.4',
-        'attrs==17.4.0',
+        'attrs>=18.1.0',
         'clint',
         'couchdb-cluster-admin>=0.4.1',
         'cryptography>=2.2.1',

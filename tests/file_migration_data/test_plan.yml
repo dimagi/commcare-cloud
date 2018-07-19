@@ -1,0 +1,13 @@
+copy_files:
+  - target_host1:
+      - source_host: source_host1
+        source_dir: /opt/data/
+        target_dir: /opt/data/
+        files:
+          - test/
+  - target_host2:
+      - source_host: source_host2
+        source_dir: /opt/data/test/
+        target_dir: /opt/data/
+        files:
+          - test/file1
