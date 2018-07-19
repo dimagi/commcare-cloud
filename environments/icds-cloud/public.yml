@@ -239,7 +239,6 @@ localsettings:
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
   UCR_COMPARISONS:
     'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
