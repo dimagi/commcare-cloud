@@ -1,0 +1,70 @@
+copy_files:
+  - target_host:
+      - source_host: pgshard1
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard1/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard2
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard2/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard3
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard3/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard4
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard4/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard5
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard5/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard6
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard6/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard7
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard7/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard8
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard8/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard9
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard9/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgshard10
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgshard10/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgucr
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgucr/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgmain
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgmain/postgres/9.6/
+        files:
+          - data/
+      - source_host: pgsynclog
+        source_dir: /opt/data/postgresql/9.6/
+        target_dir: <target_root>/pgsynclog/postgres/9.6/
+        files:
+          - data/
+      # ES
+      # RIAK
+      # COUCH
