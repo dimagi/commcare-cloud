@@ -11,5 +11,4 @@ special_sites:
   - cas_ssl
 
 letsencrypt_cchq_ssl: True
-# CAS configurations are also present on softlayer
 letsencrypt_cas_ssl: True
