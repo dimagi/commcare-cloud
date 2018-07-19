@@ -182,6 +182,4 @@ aws_versioning_enabled: true
 airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
 airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
 
-hq_main_db_host: "{{ postgresql_dbs.main.host }}"
-formplayer_db_host: "{{ postgresql_dbs.formplayer.host }}"
 nofile_limit: 4096
