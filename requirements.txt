@@ -9,7 +9,7 @@ ansible==2.4.3
 argparse==1.4.0
 args==0.1.0               # via clint
 asn1crypto==0.24.0        # via cryptography
-attrs==17.4.0
+attrs==18.1.0
 bcrypt==3.1.4             # via paramiko
 certifi==2018.4.16        # via requests
 cffi==1.11.5              # via bcrypt, cryptography, pynacl

@@ -1,4 +1,0 @@
-deploy_env: env1
-env_monitoring_id: env1
-users:
-  - dimagi

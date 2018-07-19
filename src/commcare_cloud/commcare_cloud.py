@@ -13,6 +13,7 @@ from collections import OrderedDict
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
+from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
@@ -59,7 +60,8 @@ COMMAND_GROUPS = OrderedDict([
         Fab,
         Service,
         MigrateCouchdb,
-        Downtime
+        Downtime,
+        CopyFiles,
     ])
 ])
 
