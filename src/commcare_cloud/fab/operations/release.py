@@ -259,6 +259,10 @@ def update_virtualenv(full_cluster=True):
         with cd(env.code_root):
             cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
                 env.sudo_user, env.virtualenv_root)
+
+            sudo("%s pip install --upgrade pip" % cmd_prefix,
+                 user=env.sudo_user)
+
             # uninstall requirements in uninstall-requirements.txt
             # but only the ones that are actually installed (checks pip freeze)
             sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
