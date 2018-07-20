@@ -104,7 +104,7 @@ def read_plan(plan_path):
 def _get_working_dir(plan_path, environment):
     plan_name = os.path.splitext(os.path.basename(plan_path))[0]
     dirname = "copy_file_scripts_{}_{}_tmp".format(environment.meta_config.deploy_env, plan_name)
-    dir_path = os.path.join(os.path.dirname(self.plan_path), dirname)
+    dir_path = os.path.join(os.path.dirname(plan_path), dirname)
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     return dir_path
