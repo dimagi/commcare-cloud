@@ -171,7 +171,7 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
 
 def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
     file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
-    run_parallel_command(
+    return run_parallel_command(
         environment,
         target_hosts,
         "{}{}".format(
@@ -194,9 +194,12 @@ def run_parallel_command(environment, hosts, command):
 
     @parallel(pool_size=10)
     def _task():
-        sudo(command)
+        res = sudo(command)
+        return res.return_code
 
-    execute(_task)
+    res = execute(_task)
+    non_zero_returns = [ret for ret in res.values() if ret]
+    return non_zero_returns[0] if non_zero_returns else 0
 
 
 def get_file_list_filename(config):
