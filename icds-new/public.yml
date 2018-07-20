@@ -23,6 +23,7 @@ nadir_hour: 16
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
+redis_maxmemory: 6gb
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
