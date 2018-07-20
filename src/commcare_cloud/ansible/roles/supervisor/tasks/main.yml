@@ -1,5 +1,9 @@
 ---
 
+- name: remove supervisor 3.0b
+  apt: name=supervisor state=absent
+  become: yes
+
 - name: find supervisord path
   shell: 'which supervisord'
   register: which_supervisord
@@ -7,10 +11,19 @@
   failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
   check_mode: no
 
-- name: install supervisor
-  apt: name=supervisor state=present
+- name: install supervisor 3.3.4
+  pip: name=supervisor state=present version=3.3.4
   become: yes
   when: not which_supervisord.stdout
+
+- name: link supervisor
+  file:
+    path: /usr/bin/{{ item }}
+    state: link
+    src: /usr/local/bin/{{ item }}
+  with_items:
+    - supervisord
+    - supervisorctl
 
 - name: retry finding supervisord path
   shell: 'which supervisord'
