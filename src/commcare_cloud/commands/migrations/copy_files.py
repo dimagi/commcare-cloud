@@ -1,10 +1,12 @@
 import hashlib
 import os
+import shutil
 
 import attr
 import yaml
 
 from commcare_cloud.commands import shared_args
+from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -20,6 +22,7 @@ REMOTE_MIGRATION_ROOT = 'file_migration'
 class SourceFiles(object):
     source_host = attr.ib()
     source_dir = attr.ib()
+    source_user = attr.ib()
     target_dir = attr.ib()
     files = attr.ib(factory=list)
 
@@ -56,7 +59,7 @@ class CopyFiles(CommandBase):
 
     arguments = (
         Argument(dest='plan', help="Path to plan file"),
-        Argument(dest='action', choices=['prepare', 'copy'], help="""
+        Argument(dest='action', choices=['prepare', 'copy', 'cleanup'], help="""
             Action to perform
 
             - prepare: generate the scripts and push them to the target servers
@@ -77,6 +80,7 @@ class CopyFiles(CommandBase):
             for target_host, source_configs in plan.items():
                 prepare_file_copy_scripts(target_host, source_configs, working_directory)
                 copy_scripts_to_target_host(target_host, working_directory, environment, ansible_context)
+            setup_auth(plan, environment, ansible_context)
 
         if args.action == 'copy':
             def run_check():
@@ -86,6 +90,10 @@ class CopyFiles(CommandBase):
                 return execute_file_copy_scripts(environment, list(plan), check_mode=False)
 
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
+
+        if args.action == 'cleanup':
+            teardown_auth(plan, environment, ansible_context)
+            shutil.rmtree(working_directory)
 
 
 def read_plan(plan_path):
@@ -206,3 +214,31 @@ def get_file_list_filename(config):
     dir_hash = hashlib.sha1('{}_{}'.format(config.source_dir, config.target_dir)).hexdigest()[:8]
     filename = '{}_{}__files'.format(config.source_host, dir_hash)
     return filename
+
+
+def setup_auth(plan, environment, ansible_context):
+    _run_auth_playbook(plan, environment, ansible_context, 'add')
+
+
+def teardown_auth(plan, environment, ansible_context):
+    _run_auth_playbook(plan, environment, ansible_context, 'remove')
+
+
+def _run_auth_playbook(plan, environment, ansible_context, action):
+    auth_pairs = set()
+    for target_host, source_configs in plan.items():
+        auth_pairs.update({
+            (target_host, config.source_host, config.source_user) for config in source_configs
+        })
+
+    for target_host, source_host, source_user in auth_pairs:
+        run_ansible_playbook(
+            environment, 'setup_bidirectional_auth.yml', ansible_context, skip_check=True,
+            unknown_args=[
+                '-e', 'hostA={}'.format(target_host),
+                '-e', 'hostB={}'.format(source_host),
+                '-e', 'usernameA=root',
+                '-e', 'usernameB={}'.format(source_user),
+                '-e', 'action={}'.format(action),
+                '-e', 'bidirectional=False',
+            ])

@@ -1,6 +1,6 @@
 #!/bin/bash
 {%- for config, file_list_filename in rsync_file_list %}
 rsync -e 'ssh -oStrictHostKeyChecking=no' --append-verify -aH --info=progress2 \
-    ansible@{{ config.source_host }}:{{ config.source_dir }} {{ config.target_dir }} \
+    {{ config.source_user }}@{{ config.source_host }}:{{ config.source_dir }} {{ config.target_dir }} \
     --files-from {{ rsync_file_root }}/{{ file_list_filename }} -r $@
 {% endfor %}
