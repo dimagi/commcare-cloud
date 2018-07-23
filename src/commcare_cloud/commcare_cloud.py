@@ -6,6 +6,7 @@ import inspect
 import os
 
 import sys
+import re
 import textwrap
 import warnings
 from collections import OrderedDict
@@ -163,7 +164,6 @@ def make_changelog_parser():
                 action_required = False
                 for line_number, line in enumerate(file):
                     if line_number == 0:
-                        import re
                         summary = re.search('(?<=\.).*', line).group().strip()
                     if '**Date:**' in line:
                         changelog_date = line.split('**Date:**')[1].strip()
@@ -187,8 +187,12 @@ def make_changelog_parser():
     return changelog_contents
 
 def _sort_files(changelog_dir):
+    def _natural_keys(text):
+        retval = [int(c) if c.isdigit() else c for c in text[:4]]
+        return retval
     unsorted_files = os.listdir(changelog_dir)
-
+    unsorted_files.sort(key=_natural_keys, reverse=True)
+    return unsorted_files
 
 def main():
     put_virtualenv_bin_on_the_path()
