@@ -11,6 +11,12 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
-### **2018-06-11** [Added encrypted temporary directory](0001-add-encrypted-tmp.md) (_action required_)
+### **2018-07-13** [Changelog](0002-supervisor-service-definitions.md)  (_action required_) 
+
+There are several CommCare specific processes that are defined in supervisorconfiguration files. This change decouples the process definitions from code.
+
+### **2018-06-11** [Added encrypted temporary directory](0001-add-encrypted-tmp.md)  (_action required_) 
 
 Some of the CommCare processes make use of temporary files to store client data (such as data exports) so in order to keep that data protected we have modified the setup to use an encrypted temporary directory.
+
+
