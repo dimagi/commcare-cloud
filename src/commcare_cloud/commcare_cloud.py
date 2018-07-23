@@ -7,7 +7,6 @@ import os
 
 import sys
 import re
-import textwrap
 import warnings
 from collections import OrderedDict
 
@@ -186,6 +185,7 @@ def make_changelog_parser():
             changelog_contents.append(this_changelog)
     return changelog_contents
 
+
 def _sort_files(changelog_dir):
     def _natural_keys(text):
         retval = [int(c) if c.isdigit() else c for c in text[:4]]
@@ -193,6 +193,7 @@ def _sort_files(changelog_dir):
     unsorted_files = os.listdir(changelog_dir)
     unsorted_files.sort(key=_natural_keys, reverse=True)
     return unsorted_files
+
 
 def main():
     put_virtualenv_bin_on_the_path()
