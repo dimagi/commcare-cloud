@@ -3,7 +3,6 @@ from __future__ import print_function
 import cgi
 import inspect
 import os
-import re
 import textwrap
 from StringIO import StringIO
 
