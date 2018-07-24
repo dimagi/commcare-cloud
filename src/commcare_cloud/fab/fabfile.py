@@ -549,7 +549,7 @@ def announce_formplayer_deploy_start():
     )
 
 
-def _deploy_without_asking():
+def _deploy_without_asking(skip_record):
     if env.offline:
         commands = OFFLINE_DEPLOY_COMMANDS
     else:
@@ -579,8 +579,9 @@ def _deploy_without_asking():
         execute(check_servers.perform_system_checks)
         execute_with_timing(release.update_current)
         silent_services_restart()
-        execute_with_timing(release.record_successful_release)
-        execute_with_timing(release.record_successful_deploy)
+        if skip_record == 'no':
+            execute_with_timing(release.record_successful_release)
+            execute_with_timing(release.record_successful_deploy)
         clear_cached_deploy()
 
 
@@ -699,11 +700,12 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no', offline='no'):
+def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
     fab <env> deploy:offline=yes  # offline deploy
+    fab <env> deploy:skip_record=yes  # skip record_successful_release
     """
     _require_target()
     if strtobool(confirm) and (
@@ -760,7 +762,7 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
         print('┃┃┃┃┃┃')
         print('┻┻┻┻┻┻')
 
-    _deploy_without_asking()
+    _deploy_without_asking(skip_record)
 
 
 @task
