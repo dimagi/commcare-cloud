@@ -197,7 +197,7 @@ class MakeDocs(CommandBase):
 
 class MakeChangelog(CommandBase):
     command = 'make-changelog-index'
-    help = "Build the commcare-cloud CLI tool changelog"
+    help = "Build the commcare-cloud CLI tool's changelog"
 
     def make_parser(self):
         pass
