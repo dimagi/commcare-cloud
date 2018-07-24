@@ -37,7 +37,7 @@ celery_processes:
       pooling: gevent
       concurrency: 10
     async_restore_queue:
-      concurrency: 4
+      concurrency: 1
     background_queue,case_rule_queue,icds_dashboard_reports_queue,icds_aggregation_queue:
       concurrency: 2
       max_tasks_per_child: 1
