@@ -27,9 +27,9 @@ Options:
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'~/.ansible/plugins/mo
-                        dules', u'/usr/share/ansible/plugins/modules'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'~/.ansible/plugins/modules',
+                        u'/usr/share/ansible/plugins/modules'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
