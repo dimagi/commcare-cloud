@@ -178,6 +178,10 @@ class Environment(object):
     def _ansible_inventory_variable_manager(self):
         return get_variable_manager(self._ansible_inventory_data_loader, self.inventory_manager)
 
+    def get_host_vars(self, host):
+        host_object, = [h for h in self.inventory_manager.get_hosts() if h.name == host]
+        return self._ansible_inventory_variable_manager.get_vars(host=host_object)
+
     @memoized_property
     def groups(self):
         """
