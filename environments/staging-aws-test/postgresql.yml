@@ -1,3 +1,5 @@
+DEFAULT_POSTGRESQL_HOST: rds_pg0
+
 override:
   pgbouncer_pool_mode: transaction
   pgbouncer_max_connections: 600
@@ -29,4 +31,3 @@ dbs:
   custom:
     - name: airflow
       django_migrate: False
-
