@@ -26,10 +26,10 @@ celery_processes:
       optimize: True
     reminder_case_update_queue:
       pooling: gevent
-      concurrency: 1
+      concurrency: 5
     reminder_queue:
       pooling: gevent
-      concurrency: 2
+      concurrency: 5
     reminder_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
