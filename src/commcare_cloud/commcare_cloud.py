@@ -6,7 +6,7 @@ import inspect
 import os
 
 import sys
-import textwrap
+import re
 import warnings
 from collections import OrderedDict
 
@@ -100,8 +100,8 @@ def add_backwards_compatibility_to_args(args):
     args.__class__ = NamespaceWrapper
 
 
-def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
-                subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
+def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
+                        subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
     if subparser_formatter_class is None:
         subparser_formatter_class = formatter_class
     parser = ArgumentParser(formatter_class=formatter_class, prog=prog, add_help=add_help)
@@ -148,9 +148,59 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
     return parser, subparsers, commands
 
 
+def make_changelog_parser():
+    # Parse the contents of the changelog dir
+    changelog_contents = []
+    files_to_ignore = ['0000-changelog.md', 'index.md']
+    changelog_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'docs', 'changelog')
+    sorted_files = _sort_files(changelog_dir)
+    for changelog_file_name in sorted_files:
+        if changelog_file_name not in files_to_ignore:
+            with open(os.path.join(changelog_dir, changelog_file_name)) as file:
+                change_context = ''
+                changelog_date = ''
+                in_change_context = False
+                action_required = False
+                for line_number, line in enumerate(file):
+                    if line_number == 0:
+                        summary = re.search('(?<=\.).*', line).group().strip()
+                    if '**Date:**' in line:
+                        changelog_date = line.split('**Date:**')[1].strip()
+                    if '**Optional per env:**' in line:
+                        option = line.split('**Optional per env:**')[1].strip().lower()
+                        if "no" in option:
+                            action_required = True
+                    if '## Details' in line:
+                        in_change_context = False
+                    if in_change_context:
+                        change_context += line.replace('\n', '')
+                    if '## Change Context' in line:
+                        in_change_context = True
+                this_changelog = {'filename': changelog_file_name,
+                                  'context': change_context,
+                                  'date': changelog_date,
+                                  'summary': summary,
+                                  'action_required': action_required}
+
+            changelog_contents.append(this_changelog)
+    return changelog_contents
+
+
+def _sort_files(directory):
+    """
+    Sorts filenames by descending alphanumeric order, userful for organizing the changelog index.md
+    """
+    def _natural_keys(text):
+        retval = [int(c) if c.isdigit() else c for c in text[:4]]
+        return retval
+    unsorted_files = os.listdir(directory)
+    unsorted_files.sort(key=_natural_keys, reverse=True)
+    return unsorted_files
+
+
 def main():
     put_virtualenv_bin_on_the_path()
-    parser, subparsers, commands = make_parser(available_envs=get_available_envs())
+    parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args()
 
     add_backwards_compatibility_to_args(args)
