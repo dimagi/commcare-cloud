@@ -1,0 +1,8 @@
+
+- name: Copy db_verification scripts to /usr/local/sbin
+  template:
+    src: db-verification.py.j2
+    dest: /usr/local/sbin/db-verification.py
+    owner: postgres
+    group: postgres
+    mode: "u=rwx,g=rwx,o=r"
