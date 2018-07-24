@@ -154,35 +154,43 @@ def make_changelog_parser():
     files_to_ignore = ['0000-changelog.md', 'index.md']
     changelog_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'docs', 'changelog')
     sorted_files = _sort_files(changelog_dir)
-    for changelog_file_name in sorted_files:
-        if changelog_file_name not in files_to_ignore:
-            with open(os.path.join(changelog_dir, changelog_file_name)) as file:
-                change_context = ''
-                changelog_date = ''
-                in_change_context = False
-                action_required = False
-                for line_number, line in enumerate(file):
-                    if line_number == 0:
-                        summary = re.search('(?<=\.).*', line).group().strip()
-                    if '**Date:**' in line:
-                        changelog_date = line.split('**Date:**')[1].strip()
-                    if '**Optional per env:**' in line:
-                        option = line.split('**Optional per env:**')[1].strip().lower()
-                        if "no" in option:
-                            action_required = True
-                    if '## Details' in line:
-                        in_change_context = False
-                    if in_change_context:
-                        change_context += line.replace('\n', '')
-                    if '## Change Context' in line:
-                        in_change_context = True
-                this_changelog = {'filename': changelog_file_name,
-                                  'context': change_context,
-                                  'date': changelog_date,
-                                  'summary': summary,
-                                  'action_required': action_required}
+    for change_file_name in sorted_files:
+        if change_file_name not in files_to_ignore:
+            try:
+                with open(os.path.join(changelog_dir, change_file_name)) as change_file:
+                    change_context = ''
+                    change_date = ''
+                    in_change_context = False
+                    change_action_required = False
+                    reached_details_line = False
+                    for line_number, line in enumerate(change_file):
+                        if line_number == 0:
+                            change_summary = re.search('(?<=\.).*', line).group().strip()
+                        if '**Date:**' in line:
+                            change_date = line.split('**Date:**')[1].strip()
+                        if '**Optional per env:**' in line:
+                            option = line.split('**Optional per env:**')[1].strip().lower()
+                            if "no" in option:
+                                change_action_required = True
+                        if '## Details' in line:
+                            in_change_context = False
+                            reached_details_line = True
+                        if in_change_context:
+                            change_context += line.replace('\n', '')
+                        if '## Change Context' in line:
+                            in_change_context = True
+                    assert change_file_name and change_context and change_date and change_summary and\
+                           change_action_required and reached_details_line
+                    this_changelog = {'filename': change_file_name,
+                                      'context': change_context,
+                                      'date': change_date,
+                                      'summary': change_summary,
+                                      'action_required': change_action_required}
 
-            changelog_contents.append(this_changelog)
+                changelog_contents.append(this_changelog)
+            except (AttributeError, AssertionError):
+                print("Error parsing the file {}.".format(change_file_name))
+                sys.exit(1)
     return changelog_contents
 
 
