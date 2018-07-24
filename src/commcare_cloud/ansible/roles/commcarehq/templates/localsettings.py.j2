@@ -626,7 +626,7 @@ SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
 
 ENVIRONMENT_HOSTS = {
 {% for group, hosts in groups.items() | sort %}
-    {{ group | to_json }}: {{ hosts | to_json }},
+    {{ group | to_json }}: {{ hosts | sort | to_json }},
 {% endfor %}
 }
 
