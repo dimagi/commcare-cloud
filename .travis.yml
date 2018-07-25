@@ -25,6 +25,7 @@ before_install:
   - mv .travis/secrets/credentials ~/.aws
   - mv .travis/secrets/commcarehq_testing.pem ~/.ssh
   # Make sure everything's up to date.
+  - sudo apt-get clean
   - sudo apt-get update -qq
 
 install:
