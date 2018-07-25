@@ -37,26 +37,6 @@
       ignore_errors: '{{ ansible_check_mode }}'
 
 
-    - name: Add configuration in Nginx to fulfill challenge.
-      lineinfile:
-        dest: /etc/nginx/sites-enabled/{{ deploy_env }}_commcare
-        regexp: "}$"
-        line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
-        # thanks to https://github.com/ansible/ansible/issues/9112#issuecomment-256483099
-        validate: >
-          bash -c 'nginx -t -c /dev/stdin <<< "
-            events {
-              worker_connections 1;
-            }
-
-            http {
-              # fake the log_format declarations that the modified site references
-              log_format rt_cache 'x';
-              log_format timing 'x';
-              include %s;
-            }
-          "'
-
     - name: Reload Nginx
       service:
         name: nginx
