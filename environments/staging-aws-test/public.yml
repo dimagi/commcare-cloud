@@ -93,4 +93,4 @@ localsettings:
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
 
 commcare_cloud_root_user: ubuntu
-commcare_cloud_pem: /Users/droberts/.ssh/g2-access.pem
+commcare_cloud_pem: ~/.ssh/g2-access.pem
