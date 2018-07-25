@@ -12,7 +12,7 @@ from ..argparse14 import RawTextHelpFormatter
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commcare_cloud import make_command_parser, make_changelog_parser, COMMAND_TYPES, COMMAND_GROUPS
+from commcare_cloud.commcare_cloud import make_command_parser, compile_changelog, COMMAND_TYPES, COMMAND_GROUPS
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -213,7 +213,7 @@ class MakeChangelog(CommandBase):
 
         j2.filters['print_help'] = do_print_help
 
-        changelog_contents = make_changelog_parser()
+        changelog_contents = compile_changelog()
 
         template = j2.get_template('changelog.md.j2')
         print(template.render(changelog_contents=changelog_contents))

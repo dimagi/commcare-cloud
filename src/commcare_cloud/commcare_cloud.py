@@ -148,7 +148,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
     return parser, subparsers, commands
 
 
-def make_changelog_parser():
+def compile_changelog():
     # Parse the contents of the changelog dir
     changelog_contents = []
     files_to_ignore = ['0000-changelog.md', 'index.md']
