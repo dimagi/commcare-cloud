@@ -19,7 +19,6 @@ Retention policy: Delete files older than 2 days
 
 1. Create the encrypted temporary directory
 ```bash
-
 commcare-cloud <env> ansible-playbook deploy_commcarehq.yml --tags=ecryptfs
 ```
 
