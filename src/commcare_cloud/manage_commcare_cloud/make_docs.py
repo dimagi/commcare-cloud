@@ -205,14 +205,6 @@ class MakeChangelog(CommandBase):
     def run(self, args, unknown_args):
         j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
 
-        def do_print_help(parser):
-            """Capture output of parser.print_help()"""
-            string_io = StringIO()
-            parser.print_help(file=string_io)
-            return string_io.getvalue()
-
-        j2.filters['print_help'] = do_print_help
-
         changelog_contents = compile_changelog()
 
         template = j2.get_template('changelog.md.j2')
