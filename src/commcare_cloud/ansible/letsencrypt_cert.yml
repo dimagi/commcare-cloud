@@ -80,13 +80,6 @@
     - name: Dump Certificate and keys
       command: 'cat /etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt '
 
-    - name: Remove the letsencrypt line from nginx
-      lineinfile:
-        dest: /etc/nginx/sites-enabled/{{ deploy_env }}_commcare
-        line: " # For Letsencrypt \n location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; } \n}"
-        state: absent
-        validate: 'nginx -t'
-
     - name: Reload Nginx
       service:
         name: nginx
