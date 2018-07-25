@@ -67,8 +67,7 @@ class AwsConfig(StrictJsonObject):
 
 
 class Settings(StrictJsonObject):
-    users = jsonobject.StringProperty(default='dimagi')
-
+    users = jsonobject.ListProperty(unicode, default='dimagi', required=True)
 
 class Allocation(StrictJsonObject):
     count = jsonobject.IntegerProperty(default=None)  # None means all here
