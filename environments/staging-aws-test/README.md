@@ -16,7 +16,11 @@ bash environments/staging-aws-test/make-inventory.sh
 
 From control machine
 ```bash
+cchq staging-aws-test ssh control
 git checkout dmr/staging-aws-test
+git pull  # if you are going back to it
 vim environments/staging-aws-test/public.yml
 # edit `commcare_cloud_pem: ~/.ssh/g2-access.pem`
+cchq staging-aws-test update-local-known-hosts --branch=dmr/staging-aws-test
+cchq staging-aws-test bootstrap-users --limit '!control' --branch=dmr/staging-aws-test
 ```
