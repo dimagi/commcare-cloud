@@ -7,8 +7,7 @@ aws_config:
   subnet: subnet-ea62acc5
 
 settings:
-  users:
-  - travis
+  users: travis
 
 allocations:
   proxy: 1
