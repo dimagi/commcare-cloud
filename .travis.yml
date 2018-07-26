@@ -24,7 +24,7 @@ before_install:
   - mv .travis/secrets/config ~/.aws
   - mv .travis/secrets/credentials ~/.aws
   - mv .travis/secrets/commcarehq_testing.pem ~/.ssh
-  - rm hq--aws-new-instances.json
+#  - rm hq--aws-new-instances.json
   # Make sure everything's up to date.
   - sudo apt-get update -qq
 
