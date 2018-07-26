@@ -23,6 +23,9 @@ KSPLICE_ACTIVE: no
 
 shared_drive_enabled: False
 
+etc_hosts_lines:
+  - "{{ groups.proxy.0 }}		{{ SITE_HOST }}"
+
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
