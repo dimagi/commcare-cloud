@@ -67,8 +67,7 @@ class AwsConfig(StrictJsonObject):
 
 
 class Settings(StrictJsonObject):
-    users = jsonobject.StringProperty(default='dimagi')
-
+    users = jsonobject.ListProperty(unicode, default='dimagi', required=True)
 
 class Allocation(StrictJsonObject):
     count = jsonobject.IntegerProperty(default=None)  # None means all here
@@ -204,7 +203,8 @@ def bootstrap_inventory(spec, env_name):
 
 def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
-    if os.path.exists(cache_file):
+    skip_delete_cache = True
+    if not skip_delete_cache or os.path.exists(cache_file):
         cache_file_response = raw_input("\n{} already exists. Enter: "
                                         "\n(d) to delete the file and terminate the existing aws instances or "
                                         "\n(anything) to continue using this file and these instances."
@@ -461,9 +461,12 @@ class Terminate(object):
     def run(args):
         describe_instances = raw_describe_instances(args.env)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
-        terminate_instances_result = terminate_instances(instance_ids)
-        print(terminate_instances_result)
-        print(instance_ids)
+        if instance_ids:
+            terminate_instances_result = terminate_instances(instance_ids)
+            print(terminate_instances_result)
+            print(instance_ids)
+        else:
+            print("No instances found to terminate.")
 
 
 class Stop(object):
@@ -478,9 +481,12 @@ class Stop(object):
     def run(args):
         describe_instances = raw_describe_instances(args.env)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
-        stop_instances_result = stop_instances(instance_ids)
-        print(stop_instances_result)
-        print(instance_ids)
+        if instance_ids:
+            stop_instances_result = stop_instances(instance_ids)
+            print(stop_instances_result)
+            print(instance_ids)
+        else:
+            print("No instances found to stop.")
 
 
 class Reip(object):
