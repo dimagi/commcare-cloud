@@ -207,27 +207,3 @@ class Ping(CommandBase):
         args.shell_command = 'echo {{ inventory_hostname }}'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
-
-class DatabaseVerification(CommandBase):
-    command = 'db-verification'
-    help="""
-    Verify databases on postgresql servers.
-
-    `commcare-cloud <env> db-verification`
-    runs `/usr/local/sbin/db-verification.py` on postgresql servers.
-
-    Example:
-    To see database that should not be on server after migrations.
-
-    ```
-    commcare-cloud <env> db-verification
-    ```
-    """
-    arguments = (
-        shared_args.INVENTORY_GROUP_ARG,
-    ) + NON_POSITIONAL_ARGUMENTS
-
-    def run(self, args, unknown_args):
-        args.shell_command = 'su postgres -c /usr/local/sbin/db-verification.py'
-        args.silence_warnings = False
-        return RunShellCommand(self.parser).run(args, unknown_args)

@@ -23,9 +23,10 @@ from .commands.ansible.ansible_playbook import (
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
-from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, DatabaseVerification
+from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
+from .commands.ansible.ops_tool import ListDatabases
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from .environment.paths import (
     get_available_envs,
@@ -62,7 +63,7 @@ COMMAND_GROUPS = OrderedDict([
         MigrateCouchdb,
         Downtime,
         CopyFiles,
-        DatabaseVerification,
+        ListDatabases,
     ])
 ])
 
