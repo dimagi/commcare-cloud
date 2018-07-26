@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -1004,3 +1004,12 @@ Action to perform
 
 - prepare: generate the scripts and push them to the target servers
 - migrate: execute the scripts
+
+
+#### `list-dbs`
+
+List out databases by host
+
+```
+commcare-cloud <env> list-dbs
+```
