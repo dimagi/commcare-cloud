@@ -29,8 +29,6 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - pip install pip-tools
-  - pip-sync  # installs strictly what's in requirements.txt, so versions are pre-pinned
   - "source control/init.sh"
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
