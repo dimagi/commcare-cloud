@@ -21,5 +21,6 @@ git checkout dmr/staging-aws-test
 git pull  # if you are going back to it
 cchq staging-aws-test update-local-known-hosts --branch=dmr/staging-aws-test
 cchq staging-aws-test bootstrap-users --limit '!control' --branch=dmr/staging-aws-test
-commcare-cloud $ENV deploy-stack --skip-check --quiet -e 'CCHQ_IS_FRESH_INSTALL=1' --branch=dmr/staging-aws-test
+commcare-cloud staging-aws-test deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1' --branch=dmr/staging-aws-test
+commcare-cloud staging-aws-test deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1' --branch=dmr/staging-aws-test --start-at-task='PostgreSQL access configuration'
 ```
