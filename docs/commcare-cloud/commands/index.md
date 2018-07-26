@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -277,9 +277,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'~/.ansible/plugins/mo
-                        dules', u'/usr/share/ansible/plugins/modules'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'~/.ansible/plugins/modules',
+                        u'/usr/share/ansible/plugins/modules'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -391,9 +391,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'~/.ansible/plugins/mo
-                        dules', u'/usr/share/ansible/plugins/modules'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'~/.ansible/plugins/modules',
+                        u'/usr/share/ansible/plugins/modules'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -589,9 +589,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'~/.ansible/plugins/mo
-                        dules', u'/usr/share/ansible/plugins/modules'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'~/.ansible/plugins/modules',
+                        u'/usr/share/ansible/plugins/modules'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -1004,3 +1004,12 @@ Action to perform
 
 - prepare: generate the scripts and push them to the target servers
 - migrate: execute the scripts
+
+
+#### `list-dbs`
+
+List out databases by host
+
+```
+commcare-cloud <env> list-dbs
+```
