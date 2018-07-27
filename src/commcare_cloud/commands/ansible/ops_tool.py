@@ -43,7 +43,7 @@ class ListDatabases(CommandBase):
     To list all database on a particular server or group
 
     ```
-    commcare-cloud staging list-databases
+    commcare-cloud <ev> list-databases
     ```
     """
 
@@ -66,7 +66,8 @@ class ListDatabases(CommandBase):
         for host_address in host_addresses:
             output = privileged_command.run(host_address)
             for database in output:
-                dbs_present_in_host[host_address].append(database)
+                if database not in ['postgres', 'template0', 'template1']:
+                    dbs_present_in_host[host_address].append(database)
 
         # List from Generated Mapping
         dbs = environment.postgresql_config.to_generated_variables()['postgresql_dbs']['all']
