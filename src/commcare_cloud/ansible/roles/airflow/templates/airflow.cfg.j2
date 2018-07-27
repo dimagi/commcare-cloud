@@ -63,5 +63,26 @@ fernet_key = {{ airflow_secret_key }}
 secret_key = {{ airflow_flask_key }}
 
 
+[email]
+email_backend = airflow.utils.email.send_email_smtp
+
+
+[smtp]
+# If you want airflow to send emails on retries, failure, and you want to use
+# the airflow.utils.email.send_email_smtp function, you have to configure an
+# smtp server here
+smtp_host = {{ localsettings.EMAIL_SMTP_HOST }}
+smtp_starttls = True
+smtp_ssl = False
+
+{% if EMAIL_PASSWORD %}
+smtp_user = "{{ EMAIL_LOGIN }}"
+smtp_password = "{{ EMAIL_PASSWORD }}"
+{% endif %}
+
+smtp_port = {{ localsettings.EMAIL_SMTP_PORT }}
+smtp_mail_from = airflow@dimagi.com
+
+
 [scheduler]
 child_process_log_directory = {{ airflow_home }}/logs/scheduler
