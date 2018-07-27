@@ -1,25 +1,14 @@
+import collections
 import paramiko
-from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
-from commcare_cloud.commands.inventory_lookup.inventory_lookup import Lookup
 from commcare_cloud.environment.main import get_environment
-
-NON_POSITIONAL_ARGUMENTS = (
-    Argument('-b', '--become', action='store_true', help=(
-        "run operations with become (implies vault password prompting if necessary)"
-    ), include_in_docs=False),
-    Argument('--become-user', help=(
-        "run operations as this user (default=root)"
-    ), include_in_docs=False),
-    shared_args.SKIP_CHECK_ARG,
-    shared_args.FACTORY_AUTH_ARG,
-    shared_args.QUIET_ARG,
-    shared_args.STDOUT_CALLBACK_ARG,
-)
 
 
 class PrivilegedCommands():
+    """
+    This Class allows to execute sudo commands over ssh.
+    """
     def __init__(self, user_name, password, privleged_command):
         self.user_name = user_name
         self.password = password
@@ -27,17 +16,25 @@ class PrivilegedCommands():
             else 'sudo ' + privleged_command
 
     def run(self, host_address):
+        """
+
+        :param host_address: Address of host where command should be run.
+        :type host_address: str
+        :return: output of command in list format
+        """
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(host_address, username=self.user_name, password=self.password)
         stdin, stdout , stderr = ssh.exec_command(self.privileged_command, get_pty=True)
         stdin.write(self.password + '\n')
         stdin.flush()
-        print(stdout.read())
-        return stdout
+        output = stdout.read().splitlines()
+        if output[0].startswith('[sudo]'):
+            output = output[1:]  # Ignore sudo prompt.
+        return output
 
 
-class ListDatabases(Lookup):
+class ListDatabases(CommandBase):
     command = 'list-databases'
     help = """
 
@@ -46,21 +43,46 @@ class ListDatabases(Lookup):
     To list all database on a particular server or group
 
     ```
-    commcare-cloud staging list-databases <group_name|server_name>
+    commcare-cloud staging list-databases
     ```
     """
 
     def run(self, args, manage_args):
-        environment = get_environment(args.env_name)
+        # Initialize variables
+        dbs_expected_on_host = collections.defaultdict(list) # Database that should be in host
+        dbs_present_in_host = collections.defaultdict(list) # Database that are in host
+
+        args.server = 'postgresql'
         ansible_username = 'ansible'
+        command = "sudo -iu postgres python /tmp/db-tools.py  --list-all"
+
+        environment = get_environment(args.env_name)
         ansible_password = environment.get_ansible_user_password()
         host_addresses = get_instance_group(args.env_name, args.server)
-        command = "sudo -iu postgres python /usr/local/sbin/db-tools.py  --list-all"
+
         privileged_command = PrivilegedCommands(ansible_username, ansible_password, command)
+
+        # List from Postgresql query.
         for host_address in host_addresses:
-            print("Database in " + host_address + " are: ")
             output = privileged_command.run(host_address)
-            for database in output.read().splitlines():
-                print(database)
+            for database in output:
+                dbs_present_in_host[host_address].append(database)
+
+        # List from Generated Mapping
+        dbs = environment.postgresql_config.to_generated_variables()['postgresql_dbs']['all']
+        for db in dbs:
+            dbs_expected_on_host[db['host']].append(db['name'])
+
+        # Printing
+        for host_address in dbs_present_in_host.keys():
+            print(host_address+ ":")
+            print(" "*4 + "Expected Databases:")
+            for database in dbs_expected_on_host[host_address]:
+                print(" "*8 + "- " + database)
+
+            print(" "*4 + "Additional Databases:")
+            for database in dbs_present_in_host[host_address]:
+                if database not in dbs_expected_on_host[host_address]:
+                    print(" "*8 + "- " + database)
 
 
