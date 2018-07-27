@@ -23,6 +23,9 @@ KSPLICE_ACTIVE: no
 
 shared_drive_enabled: False
 
+etc_hosts_lines:
+  - "{{ groups.proxy.0 }}		{{ SITE_HOST }}"
+
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -55,7 +58,7 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  EMAIL_SMTP_HOST:
+  EMAIL_SMTP_HOST: 'in-v3.mailjet.com'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
@@ -70,3 +73,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  ENABLE_PRELOGIN_SITE: False
+  ENTERPRISE_MODE: True
+  RESTRICT_DOMAIN_CREATION: True
