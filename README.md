@@ -57,6 +57,8 @@ the set up is pretty simple. Just run:
 ```
 $ mkvirtualenv ansible
 (ansible)$ git clone https://github.com/dimagi/commcare-cloud.git
+(ansible)$ pip install pip-tools
+(ansible)$ pip-sync commcare-cloud/requirements.txt
 (ansible)$ pip install -e commcare-cloud/
 (ansible)$ manage-commcare-cloud install
 (ansible)$ manage-commcare-cloud configure  # and copy the line from here into your ~/.bash_profile
