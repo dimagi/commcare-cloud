@@ -40,7 +40,7 @@ class ListDatabases(CommandBase):
 
     Example:
 
-    To list all database on a particular server or group
+    To list all database on a particular environment.
 
     ```
     commcare-cloud <ev> list-databases
