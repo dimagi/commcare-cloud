@@ -18,7 +18,7 @@ src/commcare_cloud/help_cache/ansible-playbook.txt:
 docs/commcare-cloud/commands/index.md : src/commcare_cloud/* src/commcare_cloud/*/* src/commcare_cloud/*/*/*
 	manage-commcare-cloud make-docs > docs/commcare-cloud/commands/index.md
 
-docs/changelog/index.md : src/commcare_cloud/* src/commcare_cloud/*/* src/commcare_cloud/*/*/*
+docs/changelog/index.md : docs/changelog/0*.md
 	manage-commcare-cloud make-changelog-index > docs/changelog/index.md
 
 requirements: requirements-*.in setup.py
