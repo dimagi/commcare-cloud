@@ -58,9 +58,10 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  EMAIL_SMTP_HOST: 'in-v3.mailjet.com'
-  EMAIL_SMTP_PORT: 25
-  EMAIL_USE_TLS: no
+  EMAIL_SMTP_HOST: 'smtp.gmail.com'
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  ENABLE_SOFT_ASSERT_EMAILS: no
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   HQ_INSTANCE: 'echis'
   INACTIVITY_TIMEOUT: 20160
