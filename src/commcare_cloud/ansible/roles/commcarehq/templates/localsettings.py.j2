@@ -118,6 +118,9 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 {% endif %}
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
+
+ENABLE_SOFT_ASSERT_EMAILS = localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(True)
+
 SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
