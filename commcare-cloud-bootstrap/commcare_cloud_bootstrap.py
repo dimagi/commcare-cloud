@@ -461,9 +461,12 @@ class Terminate(object):
     def run(args):
         describe_instances = raw_describe_instances(args.env)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
-        terminate_instances_result = terminate_instances(instance_ids)
-        print(terminate_instances_result)
-        print(instance_ids)
+        if instance_ids:
+            terminate_instances_result = terminate_instances(instance_ids)
+            print(terminate_instances_result)
+            print(instance_ids)
+        else:
+            print("No instances found to terminate.")
 
 
 class Stop(object):
@@ -478,9 +481,12 @@ class Stop(object):
     def run(args):
         describe_instances = raw_describe_instances(args.env)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
-        stop_instances_result = stop_instances(instance_ids)
-        print(stop_instances_result)
-        print(instance_ids)
+        if instance_ids:
+            stop_instances_result = stop_instances(instance_ids)
+            print(stop_instances_result)
+            print(instance_ids)
+        else:
+            print("No instances found to stop.")
 
 
 class Reip(object):
