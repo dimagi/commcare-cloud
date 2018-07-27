@@ -54,7 +54,7 @@ class ListDatabases(CommandBase):
 
         args.server = 'postgresql'
         ansible_username = 'ansible'
-        command = "sudo -iu postgres python /tmp/db-tools.py  --list-all"
+        command = "sudo -iu postgres python /usr/local/sbin/db-tools.py  --list-all"
 
         environment = get_environment(args.env_name)
         ansible_password = environment.get_ansible_user_password()
