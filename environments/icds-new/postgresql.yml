@@ -80,7 +80,8 @@ dbs:
       django_migrate: True  # the dashboard models are stored here
     - name: airflow
       django_migrate: False
-    - name: warehouse
+    - django_alias: warehouse
+      name: warehouse
       django_migrate: True
       host: pgwarehouse0
   standby:
