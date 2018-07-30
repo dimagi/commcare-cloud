@@ -15,7 +15,7 @@ COMMAND_TYPES = [
     ListVaultKeys,
     Configure,
     MakeDocs,
-    MakeChangelog
+    MakeChangelog,
 ]
 
 
