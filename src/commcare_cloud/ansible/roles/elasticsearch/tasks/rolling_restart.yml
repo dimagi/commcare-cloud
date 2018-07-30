@@ -17,6 +17,16 @@
   pause: seconds=10
   tag: action_stop
 
+- name: get es instances to kill
+  shell: "ps aux | pgrep 'elasticsearc[h]' | awk '{print $2}'"
+  register: es_instances
+  tag: action_stop
+
+- name: kill elasticsearch instances
+  shell: "pkill {{item}}"
+  with_items: es_instances.stdout
+  when: es_instances.stdout
+
 - name: start node
   become: true
   service: name=elasticsearch state=started
