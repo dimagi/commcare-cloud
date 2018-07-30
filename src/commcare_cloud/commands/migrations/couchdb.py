@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import os
 from collections import defaultdict
@@ -162,12 +164,12 @@ def generate_shard_plan(migration):
 
 
 def describe(migration):
-    print u'\nMembership'
+    print(u'\nMembership')
     with indent():
         puts(get_membership(migration.target_couch_config).get_printable())
-    print u'\nDB Info'
+    print(u'\nDB Info')
     print_db_info(migration.target_couch_config)
-    print u'\nShards'
+    print(u'\nShards')
     print_shard_table([
         get_shard_allocation(migration.target_couch_config, db_name)
         for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))

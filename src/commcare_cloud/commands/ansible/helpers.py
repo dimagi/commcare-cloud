@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import absolute_import
 import os
 from collections import namedtuple
 
@@ -8,6 +9,7 @@ from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH
 from six.moves import shlex_quote
+from six.moves import range
 
 DEPRECATED_ANSIBLE_ARGS = [
     '--sudo',
@@ -161,7 +163,7 @@ def get_celery_workers(environment):
                     # there's always only one, so worker_num doesn't factor into the name
                     worker_range = [None]
                 else:
-                    worker_range = range(config.num_workers)
+                    worker_range = list(range(config.num_workers))
                 for worker_num in worker_range:
                     process_name = get_celery_worker_name(environment, comma_separated_queue_names, worker_num)
                     yield ProcessDescriptor(host, queue, worker_num, process_name)

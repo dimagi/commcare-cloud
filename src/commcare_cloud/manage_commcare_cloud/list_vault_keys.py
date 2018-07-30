@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import absolute_import
 from itertools import chain
 
 from commcare_cloud.commands.command_base import CommandBase
@@ -25,7 +26,7 @@ class ListVaultKeys(CommandBase):
         for env in envs:
             print('\t{}'.format(env), end='')
         print()
-        for key in sorted(set(chain.from_iterable(var_keys.values()))):
+        for key in sorted(set(chain.from_iterable(list(var_keys.values())))):
             print('.'.join(part if part is not None else '*' for part in key), end='')
             for env in envs:
                 print('\t{}'.format('x' if key in var_keys[env] else ''), end='')

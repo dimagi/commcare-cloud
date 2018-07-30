@@ -9,6 +9,8 @@
 
 
 
+from __future__ import absolute_import
+from __future__ import print_function
 import getpass
 import logging
 import os
@@ -66,7 +68,7 @@ class CallbackModule(CallbackBase):
             log.propagate = False
         except Exception as e:
             # We don't want Ansible to fail on an API error
-            print("Couldn't get logger - %s" % name)
+            print(("Couldn't get logger - %s" % name))
             print(e)
 
     # Set host to match datadog agent
@@ -104,7 +106,7 @@ class CallbackModule(CallbackBase):
             )
         except Exception as e:
             # We don't want Ansible to fail on an API error
-            print('Couldn\'t send event "{0}" to Datadog'.format(title))
+            print(('Couldn\'t send event "{0}" to Datadog'.format(title)))
             print(e)
 
     # Send event, aggregated with other task-level events from the same host
@@ -149,7 +151,7 @@ class CallbackModule(CallbackBase):
             )
         except Exception as e:
             # We don't want Ansible to fail on an API error
-            print('Couldn\'t send metric "{0}" to Datadog'.format(metric))
+            print(('Couldn\'t send metric "{0}" to Datadog'.format(metric)))
             print(e)
 
     # Start timer to measure playbook running time

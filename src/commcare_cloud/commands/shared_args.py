@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 
 from commcare_cloud.commands.command_base import Argument

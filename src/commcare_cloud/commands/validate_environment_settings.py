@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import absolute_import
 from clint.textui import puts, colored
 
 from commcare_cloud.environment.main import get_environment

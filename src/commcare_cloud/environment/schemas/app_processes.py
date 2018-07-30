@@ -1,8 +1,10 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
 from collections import Counter, namedtuple
 
 import jsonobject
+import six
 
 
 IpAddressProperty = jsonobject.StringProperty
@@ -36,7 +38,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     django_command_prefix = jsonobject.StringProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
-    service_blacklist = jsonobject.ListProperty(unicode)
+    service_blacklist = jsonobject.ListProperty(six.text_type)
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
 
