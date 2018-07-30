@@ -12,7 +12,7 @@ from ..argparse14 import RawTextHelpFormatter
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commcare_cloud import make_command_parser, compile_changelog, COMMAND_TYPES, COMMAND_GROUPS
+from commcare_cloud.commcare_cloud import make_command_parser, COMMAND_GROUPS
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -194,18 +194,3 @@ class MakeDocs(CommandBase):
         print(template.render(parser=parser, subparsers_by_group=subparsers_by_group,
                               commands=commands), end='')
 
-
-class MakeChangelog(CommandBase):
-    command = 'make-changelog-index'
-    help = "Build the commcare-cloud CLI tool's changelog"
-
-    def make_parser(self):
-        pass
-
-    def run(self, args, unknown_args):
-        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
-
-        changelog_contents = compile_changelog()
-
-        template = j2.get_template('changelog.md.j2')
-        print(template.render(changelog_contents=changelog_contents))
