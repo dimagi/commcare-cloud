@@ -321,3 +321,344 @@ resource "aws_security_group" "g2-access-sg" {
     Name = "g2-access"
   }
 }
+
+#Create proxy-sg
+resource "aws_security_group" "proxy-sg" {
+  name   = "proxy-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "proxy-sg-${var.env}"
+  }
+}
+
+#Create pg-proxy-sg
+resource "aws_security_group" "pg-proxy-sg" {
+  name   = "pg-proxy-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "pg-proxy-sg-${var.env}"
+  }
+}
+
+#Create django-sg
+resource "aws_security_group" "django-sg" {
+  name   = "django-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "django-sg-${var.env}"
+  }
+}
+
+#Create airflow-sg
+resource "aws_security_group" "airflow-sg" {
+  name   = "airflow-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "airflow-sg-${var.env}"
+  }
+}
+
+#Create celery-sg
+resource "aws_security_group" "celery-sg" {
+  name   = "celery-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "celery-sg-${var.env}"
+  }
+}
+
+#Create rabbitmq-sg
+resource "aws_security_group" "rabbitmq-sg" {
+  name   = "rabbitmq-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "rabbitmq-sg-${var.env}"
+  }
+}
+
+#Create touchforms-sg
+resource "aws_security_group" "touchforms-sg" {
+  name   = "touchforms-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "touchforms-sg-${var.env}"
+  }
+}
+
+#Create es-sg
+resource "aws_security_group" "es-sg" {
+  name   = "es-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "es-sg-${var.env}"
+  }
+}
+
+#Create formplayer-sg
+resource "aws_security_group" "formplayer-sg" {
+  name   = "formplayer-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "formplayer-sg-${var.env}"
+  }
+}
+
+#Create kafka-sg
+resource "aws_security_group" "kafka-sg" {
+  name   = "kafka-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "kafka-sg-${var.env}"
+  }
+}
+
+#Create pillowtop-sg
+resource "aws_security_group" "pillowtop-sg" {
+  name   = "pillowtop-sg-${var.env}"
+  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
+    #security_groups = ["${var.openvpn-access-sg}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "pillowtop-sg-${var.env}"
+  }
+}
