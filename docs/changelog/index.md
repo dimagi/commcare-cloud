@@ -11,6 +11,10 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-07-25** [Update Supervisor](0003-update-supervisor.md) 
+
+Ubuntu 14.04 `apt-get install supervisor` installs supervisor 3.0b.We occasionally have issues that could be related to supervisor,such as processes not stopping correctly.To rule it out as a possible cause,we decided it was better to be on a later version of supervisor,and one that's not in beta.
+
 ### **2018-07-13** [Changelog](0002-supervisor-service-definitions.md) (_action required_)
 
 There are several CommCare specific processes that are defined in supervisorconfiguration files. This change decouples the process definitions from code.
