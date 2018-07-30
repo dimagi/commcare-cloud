@@ -54,7 +54,7 @@ module "network" {
 }
 
 module "django" {
-  source                = "../modules/server"
+  source                = "../modules/django"
   server_name		= "django"
   server_image       	= "${var.server_image}"
   environment           = "${var.environment}"
@@ -63,10 +63,11 @@ module "django" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  django-sg             = "${module.network.django-sg}"
 }
 
 module "django1" {
-  source                = "../modules/server"
+  source                = "../modules/django"
   server_name           = "django1"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -75,10 +76,11 @@ module "django1" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-b-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  django-sg             = "${module.network.django-sg}"
 }
 
 module "celery" {
-  source                = "../modules/server"
+  source                = "../modules/celery"
   server_name           = "celery"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -87,10 +89,11 @@ module "celery" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-b-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  celery-sg             = "${module.network.celery-sg}"
 }
 
 module "pillowtop" {
-  source                = "../modules/server"
+  source                = "../modules/pillowtop"
   server_name           = "pillowtop"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -99,10 +102,12 @@ module "pillowtop" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-c-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  pillowtop-sg             = "${module.network.pillowtop-sg}"
 }
 
+
 module "formplayer" {
-  source                = "../modules/server"
+  source                = "../modules/formplayer"
   server_name           = "formplayer"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -111,10 +116,11 @@ module "formplayer" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  formplayer-sg         = "${module.network.formplayer-sg}"
 }
 
 module "kafka" {
-  source                = "../modules/server"
+  source                = "../modules/kafka"
   server_name           = "kafka"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -123,10 +129,11 @@ module "kafka" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  kafka-sg             = "${module.network.kafka-sg}"
 }
 
 module "ES" {
-  source                = "../modules/server"
+  source                = "../modules/es"
   server_name           = "ES"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -135,10 +142,11 @@ module "ES" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  es-sg                 = "${module.network.es-sg}"
 }
 
 module "Airflow" {
-  source                = "../modules/server"
+  source                = "../modules/airflow"
   server_name           = "Airflow"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -147,10 +155,11 @@ module "Airflow" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  airflow-sg            = "${module.network.airflow-sg}"
 }
 
 module "Touchforms" {
-  source                = "../modules/server"
+  source                = "../modules/touchforms"
   server_name           = "Touchforms"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -159,10 +168,11 @@ module "Touchforms" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  touchforms-sg         = "${module.network.touchforms-sg}"
 }
 
 module "RabbitMQ" {
-  source                = "../modules/server"
+  source                = "../modules/rabbitmq"
   server_name           = "RabbitMQ"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -171,10 +181,11 @@ module "RabbitMQ" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  rabbitmq-sg             = "${module.network.rabbitmq-sg}"
 }
 
 module "PG_Proxy" {
-  source                = "../modules/server"
+  source                = "../modules/pg-proxy"
   server_name           = "PG_Proxy"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -183,6 +194,20 @@ module "PG_Proxy" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
+  pg-proxy-sg           = "${module.network.pg-proxy-sg}"
+}
+
+module "Proxy" {
+  source                = "../modules/proxy"
+  server_name           = "Proxy"
+  server_image          = "${var.server_image}"
+  environment           = "${var.environment}"
+  company               = "${var.company}"
+  server_instance_type  = "${var.server_instance_type}"
+  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
+  instance_subnet       = "${module.network.subnet-a-app-private}"
+  vpc_id                = "${module.network.vpc-id}"
+  proxy-sg		= "${module.network.proxy-sg}"
 }
 
 module "Redis" {
@@ -257,3 +282,5 @@ module "Redis" {
 #  rds_subnet_c                   = "${module.network.subnet-c-db-private}"
 #  rds_instance_count             = "${var.rds_instance_count}"
 #}
+
+#variable "proxy-sg"{}
