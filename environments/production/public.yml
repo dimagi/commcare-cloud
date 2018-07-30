@@ -17,8 +17,6 @@ nofile_limit: 65536
 
 supervisor_http_enabled: True
 
-keystore_file: '../environments/{{ deploy_env }}/DimagiKeyStore.vault'
-
 backup_blobdb: False
 backup_postgres: plain
 backup_es: True
