@@ -289,19 +289,18 @@ class Elasticsearch(ServiceBase):
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
             return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
-        elif action == 'start' or action == 'restart':
-            print("PV: At start")
-            self._run_rolling_restart_yml(tags='action_start')
         elif action == 'stop' or action == 'restart':
-            print("PV: At stop")
             self._run_rolling_restart_yml(tags='action_stop')
+        elif action == 'start' or action == 'restart':
+            self._run_rolling_restart_yml(tags='action_start')
 
     def _run_rolling_restart_yml(self, tags):
         from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
         run_ansible_playbook(environment=self.environment,
                              playbook='es_rolling_restart.yml',
                              ansible_context=AnsibleContext(args=None),
-                             unknown_args=['--tags={}'.format(tags)])
+                             unknown_args=['--tags={}'.format(tags)],
+                             skip_check=True)
 
 
 class Couchdb(AnsibleService):
