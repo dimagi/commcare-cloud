@@ -47,8 +47,19 @@ def _parse_changelog_file(changelog_contents, changelog_dir, change_file_name):
                 change_context += line.replace('\n', '')
             if '## Change Context' in line:
                 in_change_context = True
-        assert change_file_name and change_context and change_date and change_summary and \
-               change_action_required and reached_details_line
+        assert (
+            change_file_name and change_context and change_date and change_summary and
+            change_action_required is not None and reached_details_line
+        ), "The following variables shouldn't be falsely during parse:\n{}".format('\n'.join([
+            "{}: {!r}".format(name, value)
+            for name, value in [('change_file_name', change_file_name),
+            ('change_context', change_context),
+            ('change_date', change_date),
+            ('change_summary', change_summary),
+            ('change_action_required', change_action_required is not None),
+            ('reached_details_line', reached_details_line)]
+            if value is None
+        ]))
         this_changelog = {'filename': change_file_name,
                           'context': change_context,
                           'date': change_date,
