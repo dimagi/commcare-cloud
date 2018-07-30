@@ -44,7 +44,7 @@ def _parse_changelog_file(changelog_contents, changelog_dir, change_file_name):
                 in_change_context = False
                 reached_details_line = True
             if in_change_context:
-                change_context += line.replace('\n', '')
+                change_context += line
             if '## Change Context' in line:
                 in_change_context = True
         assert (
@@ -61,7 +61,7 @@ def _parse_changelog_file(changelog_contents, changelog_dir, change_file_name):
             if value is None
         ]))
         this_changelog = {'filename': change_file_name,
-                          'context': change_context,
+                          'context': change_context.strip(),
                           'date': change_date,
                           'summary': change_summary,
                           'action_required': change_action_required}
