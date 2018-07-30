@@ -2,9 +2,9 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import jinja2
-
 import os
 import re
+import sys
 from commcare_cloud.commands.command_base import CommandBase
 
 
@@ -19,7 +19,7 @@ def compile_changelog():
             try:
                 _parse_changelog_file(changelog_contents, changelog_dir, change_file_name)
             except Exception:
-                print("Error parsing the file {}.".format(change_file_name))
+                print("Error parsing the file {}.".format(change_file_name), file=sys.stderr)
                 raise
     return changelog_contents
 
