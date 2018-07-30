@@ -64,9 +64,7 @@ class ListDatabases(CommandBase):
 
     arguments = (
         Argument('--compare', action='store_true', help=(
-            "Sub-service name to limit action to."
-            "\nFormat as 'name' or 'name:number'."
-            "\nUse 'help' action to list all options."
+            "Gives additional databases on the server."
         )),
     )
 
