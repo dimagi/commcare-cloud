@@ -19,7 +19,7 @@ dbs:
     host: hqdb3
     query_stats: True
   synclogs:
-    host: pgsynclog
+    host: pgsynclog1
   form_processing:
     proxy:
       host: hqdb1
