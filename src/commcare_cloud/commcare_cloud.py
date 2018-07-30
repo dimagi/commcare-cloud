@@ -15,7 +15,6 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from commcare_cloud.commands.dbs import ListDbs
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
@@ -65,7 +64,6 @@ COMMAND_GROUPS = OrderedDict([
         Downtime,
         CopyFiles,
         ListDatabases,
-        ListDbs,
     ])
 ])
 
