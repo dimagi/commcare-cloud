@@ -1,6 +1,6 @@
 aws_config:
   pem: /home/travis/.ssh/commcarehq_testing.pem
-  ami: ami-e317729c
+  ami: ami-58167327
   type: t2.micro
   key_name: commcarehq_testing
   security_group_id: sg-8f9a57fa
