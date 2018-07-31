@@ -26,8 +26,6 @@
   register: es_instances
   tags: action_stop
 
-- debug: msg="HI! {{ es_instances }}"
-
 - name: kill elasticsearch instances
   shell: "pkill {{item}}"
   with_items: es_instances
