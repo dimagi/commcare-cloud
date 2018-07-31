@@ -158,19 +158,6 @@ module "Airflow" {
   airflow-sg            = "${module.network.airflow-sg}"
 }
 
-module "Touchforms" {
-  source                = "../modules/touchforms"
-  server_name           = "Touchforms"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  company               = "${var.company}"
-  server_instance_type  = "${var.server_instance_type}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  touchforms-sg         = "${module.network.touchforms-sg}"
-}
-
 module "RabbitMQ" {
   source                = "../modules/rabbitmq"
   server_name           = "RabbitMQ"
