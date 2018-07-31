@@ -17,45 +17,51 @@
   with_items: "{{ postgres_users.values() }}"
   tags:
     - postgres_users
-#
-#- name: Add user privs
-#  become: yes
-#  become_user: postgres
-#  vars:
-#    ansible_ssh_pipelining: true
-#  postgresql_privs:
-#    db: postgres
-#    state: present
-#    privs: "{{ item.1.privs }}"
-#    objs: "{{ item.1.objs }}"
-#    roles: "{{ item.0.username }}"
-#    port: "{{ postgresql_port }}"
-#  when: not is_pg_standby
-#  with_subelements:
-#    - "{{ postgres_users.values() }}"
-#    - privs
-#    - flags:
-#      skip_missing: True
-#  tags:
-#    - postgres_users
-#
-#- name: check postgres database hosts
-#  assert: { that: "item.host in groups.postgresql or item.host in groups.pg_standby or item.host == '127.0.0.1'" }
-#  with_items: "{{ postgresql_dbs.all }}"
-#
-#- name: Create PostgreSQL databases
-#  become: yes
-#  become_user: postgres
-#  vars:
-#    ansible_ssh_pipelining: true
-#  postgresql_db:
-#    name: "{{ item.name }}"
-#    state: present
-#    port: "{{ postgresql_port }}"
-#    owner: "{{ item.user }}"
-#    encoding: 'UTF-8'
-#    lc_collate: 'en_US.UTF-8'
-#    lc_ctype: 'en_US.UTF-8'
-#    template: 'template0'
-#  with_items: "{{ postgresql_dbs.all }}"
-#  when: item.create and ((item.host == inventory_hostname) or is_monolith|bool)
+
+- name: Add user privs
+  become: yes
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_privs:
+    db: postgres
+    state: present
+    privs: "{{ item.1.privs }}"
+    objs: "{{ item.1.objs }}"
+    roles: "{{ item.0.username }}"
+    port: "{{ postgresql_port }}"
+    login_host: "{{ db_is_remote and postgresql_host or 'localhost' }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or None }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or None }}"
+  when: not is_pg_standby
+  with_subelements:
+    - "{{ postgres_users.values() }}"
+    - privs
+    - flags:
+      skip_missing: True
+  tags:
+    - postgres_users
+
+- name: check postgres database hosts
+  assert: { that: "item.host in groups.postgresql or item.host in groups.pg_standby or item.host == '127.0.0.1'" }
+  with_items: "{{ postgresql_dbs.all }}"
+
+- name: Create PostgreSQL databases
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_db:
+    name: "{{ item.name }}"
+    state: present
+    port: "{{ postgresql_port }}"
+    owner: "{{ item.user }}"
+    encoding: 'UTF-8'
+    lc_collate: 'en_US.UTF-8'
+    lc_ctype: 'en_US.UTF-8'
+    template: 'template0'
+    login_host: "{{ db_is_remote and postgresql_host or 'localhost' }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or None }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or None }}"
+
+  with_items: "{{ postgresql_dbs.all }}"
+  when: item.create and ((item.host == inventory_hostname) or is_monolith|bool)

@@ -96,7 +96,8 @@
 
 - meta: flush_handlers
 
-- include_tasks: set_up_dbs.yml
+- name: Set up PostgreSQL DBs
+  include_tasks: set_up_dbs.yml
   vars:
     db_is_remote: no
 
