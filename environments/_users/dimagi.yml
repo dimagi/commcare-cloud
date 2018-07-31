@@ -22,6 +22,6 @@ dev_users:
     - sgoyal
     - skelly
     - sravfeyn
-  absent: []
+  absent:
     - astone
     - wpride
