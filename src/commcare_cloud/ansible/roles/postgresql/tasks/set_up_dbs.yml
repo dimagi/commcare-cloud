@@ -9,9 +9,9 @@
     role_attr_flags: "{{ item.role_attr_flags|default('CREATEDB') }}"
     state: present
     port: "{{ postgresql_port }}"
-    login_host: "{{ db_is_remote and postgresql_host or 'localhost' }}"
-    login_user: "{{ db_is_remote and postgres_users.root.username or None }}"
-    login_password: "{{ db_is_remote and postgres_users.root.password or None }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
     db: 'postgres'
   when: not is_pg_standby
   with_items: "{{ postgres_users.values() }}"
@@ -30,9 +30,9 @@
     objs: "{{ item.1.objs }}"
     roles: "{{ item.0.username }}"
     port: "{{ postgresql_port }}"
-    login_host: "{{ db_is_remote and postgresql_host or 'localhost' }}"
-    login_user: "{{ db_is_remote and postgres_users.root.username or None }}"
-    login_password: "{{ db_is_remote and postgres_users.root.password or None }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
   when: not is_pg_standby
   with_subelements:
     - "{{ postgres_users.values() }}"
@@ -59,9 +59,9 @@
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
-    login_host: "{{ db_is_remote and postgresql_host or 'localhost' }}"
-    login_user: "{{ db_is_remote and postgres_users.root.username or None }}"
-    login_password: "{{ db_is_remote and postgres_users.root.password or None }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
 
   with_items: "{{ postgresql_dbs.all }}"
   when: item.create and ((item.host == inventory_hostname) or is_monolith|bool)
