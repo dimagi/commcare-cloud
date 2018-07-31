@@ -22,9 +22,10 @@ REMOTE_MIGRATION_ROOT = 'file_migration'
 class SourceFiles(object):
     source_host = attr.ib()
     source_dir = attr.ib()
-    source_user = attr.ib()
     target_dir = attr.ib()
+    source_user = attr.ib(default='ansible')
     files = attr.ib(factory=list)
+    exclude = attr.ib(factory=list)
 
 
 class CopyFiles(CommandBase):
@@ -51,10 +52,12 @@ class CopyFiles(CommandBase):
     - **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
     listed for each target host.
     - **source-host**: Hostname or IP of the source host
+    - **source-user**: User to ssh as from target to source.
     - **source-dir**: The base directory from which all source files referenced
     - **target-dir**: Directory on the target host to copy the files to
     - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
     end with a `/`
+    - **exclude**: List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. logs/*
     """
 
     arguments = (
