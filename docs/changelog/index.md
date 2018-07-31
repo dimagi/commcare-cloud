@@ -19,7 +19,7 @@ To rule it out as a possible cause,
 we decided it was better to be on a later version of supervisor,
 and one that's not in beta.
 
-### **2018-07-13** [Changelog](0002-supervisor-service-definitions.md) (_action required_)
+### **2018-07-13** [Update supervisor service definitions](0002-supervisor-service-definitions.md) (_action required_)
 There are several CommCare specific processes that are defined in supervisor
 configuration files. This change decouples the process definitions from code.
 
