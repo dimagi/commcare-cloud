@@ -2,7 +2,7 @@ import re
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict, OrderedDict
 from itertools import groupby
-import subprocess
+import sys
 
 import attr
 import six
@@ -289,12 +289,30 @@ class Elasticsearch(ServiceBase):
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
             return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
-        elif action == 'stop' or action == 'restart':
-            exit_code = self._act_on_pillows(action=action)
-            self._run_rolling_restart_yml(tags='action_stop')
-        elif action == 'start' or action == 'restart':
-            exit_code = self._act_on_pillows(action=action)
-            self._run_rolling_restart_yml(tags='action_start')
+        else:
+            response = six.moves.input("This function does more than stop and start the elasticsearch service. For that, use elasticsearch-classic."
+                                       "\nStop will: stop pillows, stop es, and kill -9 if any processes still exist after a period of time. "
+                                       "\nStart will start pillows and start elasticsearch "
+                                       "\nRestart is a stop followed by a start.\n Continue? [y/n]: ")
+            if response.lower() == "n":
+                print("Exiting.")
+                sys.exit(1)
+            elif not response.lower == 'y':
+                print("Unknown response. Exiting.")
+                sys.exit(1)
+
+            if action == 'stop' or action == 'restart':
+                exit_code = self._act_on_pillows(action=action)
+                if not exit_code == 0:
+                    print("ERROR while stopping pillows. Exiting.")
+                    sys.exit(1)
+                self._run_rolling_restart_yml(tags='action_stop')
+            elif action == 'start' or action == 'restart':
+                exit_code = self._act_on_pillows(action=action)
+                if not exit_code == 0:
+                    print("ERROR while starting pillows. Exiting.")
+                    sys.exit(1)
+                self._run_rolling_restart_yml(tags='action_start')
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
