@@ -20,19 +20,22 @@ def test_prepare_migration_scripts():
             'source_host1',
             'source_dir1',
             'target_dir1',
-            ['file1', 'file2']
+            files=['file1', 'file2'],
+            exclude=[]
         ),
         SourceFiles(
             'source_host1',
             'source_dir2',
             'target_dir2',
-            ['file3', 'file4']
+            files=['file3', 'file4'],
+            exclude=[]
         ),
         SourceFiles(
             'source_host2',
             'source_dir1',
             'target_dir1',
-            ['file5', 'file6']
+            files=['file5', 'file6'],
+            exclude=['logs/*', 'file.conf']
         )
     ]
     target_host = 'target_host1'
@@ -56,7 +59,7 @@ def test_parse_plan():
                 'source_host1',
                 '/opt/data/',
                 '/opt/data/',
-                ['test/']
+                files=['test/']
             )
         ],
         'target_host2': [
@@ -64,7 +67,8 @@ def test_parse_plan():
                 'source_host2',
                 '/opt/data/test/',
                 '/opt/data/',
-                ['test/file1']
+                files=['test/file1'],
+                exclude=['logs/*']
             )
         ]
     }
