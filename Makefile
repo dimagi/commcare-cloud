@@ -22,6 +22,9 @@ docs/changelog/index.md : docs/changelog/0*.md
 	manage-commcare-cloud make-changelog-index > docs/changelog/index.md
 
 requirements: requirements-*.in setup.py
+	pip-compile --output-file requirements.txt setup.py requirements*.in
+
+upgrade-requirements: requirements-*.in setup.py
 	pip-compile --output-file requirements.txt setup.py requirements*.in --upgrade
 
 clean:
