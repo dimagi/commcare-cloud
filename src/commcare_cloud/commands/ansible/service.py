@@ -290,9 +290,19 @@ class Elasticsearch(ServiceBase):
         if action == 'status':
             return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
         elif action == 'stop' or action == 'restart':
+            exit_code = self._act_on_pillows(action=action)
             self._run_rolling_restart_yml(tags='action_stop')
         elif action == 'start' or action == 'restart':
+            exit_code = self._act_on_pillows(action=action)
             self._run_rolling_restart_yml(tags='action_start')
+
+    def _act_on_pillows(self, action):
+        # Used to stop or start pillows
+        ansible_context = AnsibleContext(None)
+        service_cls = SERVICES_BY_NAME['pillowtop']
+        service = service_cls(self.environment, ansible_context)
+        exit_code = service.run(action=action)
+        return exit_code
 
     def _run_rolling_restart_yml(self, tags):
         from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
