@@ -25,11 +25,10 @@ before_install:
   - mv .travis/secrets/credentials ~/.aws
   - mv .travis/secrets/commcarehq_testing.pem ~/.ssh
   # Make sure everything's up to date.
+  - sudo apt-get clean
   - sudo apt-get update -qq
 
 install:
-  - pip install pip-tools
-  - pip-sync  # installs strictly what's in requirements.txt, so versions are pre-pinned
   - "source control/init.sh"
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
@@ -39,7 +38,7 @@ install:
 script:
   - ".travis/tests.sh"
   - "git diff"
-  - "./tests/test_command_docs.sh"
+  - "./tests/test_autogen_docs.sh"
 
 after_script:
   - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"

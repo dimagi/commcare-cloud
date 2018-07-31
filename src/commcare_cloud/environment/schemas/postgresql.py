@@ -6,7 +6,10 @@ import six
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
 
-PostgresqlOverride = get_defaults_jsonobject('postgresql')
+PostgresqlOverride = get_defaults_jsonobject(
+    'postgresql',
+    allow_dump_from_pgstandby=jsonobject.BooleanProperty,
+)
 
 
 def alphanum_key(key):

@@ -11,9 +11,30 @@ Anyone willing to dedicate the considerable amount of effort
 and system administration knowledge necessary to stand up and manage a CommCare server
 cluster will be able to do so using the same tools that we do.
 
-## `commcare-cloud` Documentation
-If you're looking for documentation on how to use the `commcare-cloud` tool,
-check out the [`commcare-cloud` documentation](commcare-cloud).
+## System installation basics
+
+- [Getting started guide](basics)
+- For manual install instructions see the [README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
+- [Troubleshooting first time setup](basics/troubleshooting.md).
+- [Changelog](changelog)
+
+## HowTos
+- CouchDB
+    - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node)
+- PostgreSQL
+    - [Backup PostgreSQL](howto/add-barman-server.md)
+    - [Moving partitioned databases](howto/move-partitioned-database)
+- Proxy
+    - [Enable HTTPS](howto/enable-https.md)
+- RiakCS/S3
+    - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
+
+
+## Reference material
+
+- [Command Usage](commcare-cloud/commands)
+- [Telling `commcare-cloud` about your environments](commcare-cloud/env)
+- [Server Management Basics](commcare-cloud/basics)
 
 ## A word of caution
 
@@ -41,20 +62,3 @@ by consulting our [System Overview](system-overview) page.
 CommCare Cloud will help you stand up a system like the one described on that page,
 but maintaining it---even with the help of CommCare Cloud's helpful tooling---will require
 an understanding of the system's architecture and each of the system's underlying technologies.
-
-## System installation basics
-
-- [Getting started guide](basics)
-- You've run through the steps to set up CommCare HQ in production,
-  and you're facing inscrutable problems.
-  Check out [Troubleshooting first time setup](basics/troubleshooting.md).
-- [Changelog](changelog)
-
-## Miscellaneous Links
-- The [commcare-cloud Repo README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
-- The [ansible README](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md) (somewhat outdated)
-
-## HowTos
-- [Moving partitioned databases](howto/move-partitioned-database)
-- [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node)
-- [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
