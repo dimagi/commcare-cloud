@@ -297,7 +297,7 @@ class Elasticsearch(ServiceBase):
             if response.lower() == "n":
                 print("Exiting.")
                 sys.exit(1)
-            elif not response.lower == 'y':
+            elif not response.lower() == 'y':
                 print("Unknown response. Exiting.")
                 sys.exit(1)
 
@@ -317,8 +317,7 @@ class Elasticsearch(ServiceBase):
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
         ansible_context = AnsibleContext(None)
-        service_cls = SERVICES_BY_NAME['pillowtop']
-        service = service_cls(self.environment, ansible_context)
+        service = SERVICES_BY_NAME['pillowtop'](self.environment, ansible_context)
         exit_code = service.run(action=action)
         return exit_code
 
