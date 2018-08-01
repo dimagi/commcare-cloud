@@ -1,16 +1,7 @@
 ---
 # deploy-stack.yml
 
-- name: update apt cache
-  hosts: all
-  gather_facts: no
-  become: true
-  tasks:
-    - apt: update_cache=true cache_valid_time=3600
-  tags:
-    - common
-    - aptcache
-
+- import_playbook: update_apt_cache.yml
 - import_playbook: deploy_common.yml
 - import_playbook: deploy_lvm.yml
 - import_playbook: deploy_db.yml
