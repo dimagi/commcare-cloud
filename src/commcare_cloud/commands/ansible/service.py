@@ -15,6 +15,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_celery_workers,
     get_pillowtop_processes
 )
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
@@ -290,17 +291,13 @@ class Elasticsearch(ServiceBase):
         if action == 'status':
             return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
         else:
-            response = six.moves.input("This function does more than stop and start the elasticsearch service. For that, use elasticsearch-classic."
-                                       "\nStop will: stop pillows, stop es, and kill -9 if any processes still exist after a period of time. "
-                                       "\nStart will start pillows and start elasticsearch "
-                                       "\nRestart is a stop followed by a start.\n Continue? [y/n]: ")
-            if response.lower() == "n":
-                print("Exiting.")
-                sys.exit(1)
-            elif not response.lower() == 'y':
-                print("Unknown response. Exiting.")
-                sys.exit(1)
-
+            if not ask("This function does more than stop and start the elasticsearch service. "
+                       "For that, use elasticsearch-classic."
+                       "\nStop will: stop pillows, stop es, and kill -9 if any processes still exist "
+                       "after a period of time. "
+                       "\nStart will start pillows and start elasticsearch "
+                       "\nRestart is a stop followed by a start.\n Continue?", strict=False):
+                return 0  # exit code
             if action == 'stop' or action == 'restart':
                 exit_code = self._act_on_pillows(action=action)
                 if not exit_code == 0:
