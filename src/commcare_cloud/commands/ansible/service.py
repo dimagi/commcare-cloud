@@ -291,12 +291,13 @@ class Elasticsearch(ServiceBase):
         if action == 'status':
             return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
         else:
-            if not ask("This function does more than stop and start the elasticsearch service. "
-                       "For that, use elasticsearch-classic."
-                       "\nStop will: stop pillows, stop es, and kill -9 if any processes still exist "
-                       "after a period of time. "
-                       "\nStart will start pillows and start elasticsearch "
-                       "\nRestart is a stop followed by a start.\n Continue?", strict=False):
+            if not ask(
+                    "This function does more than stop and start the elasticsearch service. "
+                    "For that, use elasticsearch-classic."
+                    "\nStop will: stop pillows, stop es, and kill -9 if any processes still exist "
+                    "after a period of time. "
+                    "\nStart will start pillows and start elasticsearch "
+                    "\nRestart is a stop followed by a start.\n Continue?", strict=False):
                 return 0  # exit code
             if action == 'stop' or action == 'restart':
                 exit_code = self._act_on_pillows(action=action)
