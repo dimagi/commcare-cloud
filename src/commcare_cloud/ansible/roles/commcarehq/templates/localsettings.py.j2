@@ -25,7 +25,7 @@ SYNCLOGS_SQL_DB_ALIAS = "synclogs"
 SYNCLOGS_SQL_DB_ALIAS = "default"
 {% endif %}
 
-DATABASES = { {% for config in postgresql_dbs %}
+DATABASES = { {% for config in postgresql_dbs.all %}
 {%- if config.django_alias %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -51,18 +51,16 @@ USE_PARTITIONED_DATABASE = {{ SEPARATE_FORM_PROCESSING_DBS }}
 {% if SEPARATE_FORM_PROCESSING_DBS %}
 PARTITION_DATABASE_CONFIG = {
     'shards': {
-        {% for config in postgresql_dbs %}
-            {%- if config.get('shards') %}'{{config.django_alias}}': {{config.shards|to_json}},
-        {% endif -%}
+        {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
+            '{{config.django_alias}}': {{config.shards|to_json}},
         {% endfor %}
     },
     'groups': {
         'main': ['default'],
         'proxy': ['proxy'],
         'form_processing': [
-            {% for config in postgresql_dbs %}
-                {%- if config.get('shards') %}'{{config.django_alias}}',
-            {% endif -%}
+            {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
+                '{{config.django_alias}}',
             {% endfor %}
         ]
     }
@@ -120,6 +118,9 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 {% endif %}
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
+
+ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(True) }}
+
 SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
@@ -628,7 +629,7 @@ SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
 
 ENVIRONMENT_HOSTS = {
 {% for group, hosts in groups.items() | sort %}
-    {{ group | to_json }}: {{ hosts | to_json }},
+    {{ group | to_json }}: {{ hosts | sort | to_json }},
 {% endfor %}
 }
 
@@ -786,5 +787,13 @@ TRANSIFEX_DETAILS = {
         }
     },
     'token': '{{ TRANSIFEX_API_TOKEN }}'
+}
+{% endif %}
+
+{% if localsettings.UCR_COMPARISONS is defined %}
+UCR_COMPARISONS = {
+{% for old_config, new_config in localsettings.UCR_COMPARISONS.items() %}
+    '{{ old_config }}': '{{ new_config }}',
+{% endfor %}
 }
 {% endif %}

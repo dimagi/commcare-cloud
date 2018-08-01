@@ -146,11 +146,8 @@ Under each `<queue-name>` goes the following params
 - num_workers: default 1; the number of workers to create
   consuming from this queue on this host
 
-The special queue names `flower`, `celery_periodic` can appear _only_
-once. Additionally, `flower` takes no parameters (can leave as simply `{}`),
-and `celery_periodic` takes an extra, required, parameter
-`server_whitelist`, which must match the IP addess or DNS for that host
-as given in the [`inventory.ini`](#inventoryini) file.
+The special queue names `flower`, `beat` can appear _only_
+once. These queues take no parameters (can leave as simply `{}`).
 
 Each `<ETL-processor-name>` must be one of the following values:
 `kafka-ucr-main`, `kafka-ucr-static`, `AppDbChangeFeedPillow`,

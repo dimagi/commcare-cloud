@@ -1,7 +1,7 @@
 celery_processes:
   64-test-proxy-0:
+    beat: {}
     celery_periodic:
-      server_whitelist: 52.202.74.182
       concurrency: 4
     async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue:
       concurrency: 1
