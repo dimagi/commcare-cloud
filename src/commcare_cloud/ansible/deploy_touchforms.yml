@@ -3,5 +3,4 @@
   hosts: touchforms
   become: true
   roles:
-    - {role: touchforms, tags: 'touchforms'}
-  when: touchforms_enabled|default(true)
+    - {role: touchforms, tags: 'touchforms', when: touchforms_enabled|default(true)}
