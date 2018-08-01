@@ -3,7 +3,6 @@
 
 # Read credentials from environment variables
 provider "aws" {
-  profile = "${var.aws_profile}"
   region  = "${var.region}"
 }
 
@@ -15,11 +14,6 @@ data "terraform_remote_state" "master_state" {
     region = "${var.state_region}"
     key    = "${var.master_state_file}"
   }
-}
-
-variable "aws_profile" {
-  description = "Which AWS profile is should be used? Defaults to \"default\""
-  default     = "default"
 }
 
 # This should be changed to reflect the service / stack defined by this repo
