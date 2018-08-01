@@ -18,14 +18,15 @@
   tags: action_stop
 
 - name: get es instances to kill
-  shell: "ps aux | pgrep 'elasticsearc[h]' | awk '{print $2}'"
+  shell: "ps aux | pgrep -f 'elasticsearc[h]'"
   register: es_pids
+  failed_when: es_pids.rc != 0 and es_pids.rc != 1
   tags: action_stop
 
 - name: kill elasticsearch instances
-  shell: "pkill {{item}}"
-  with_items: es_pids
-  when: es_pids
+  shell: "pkill -f 'elasticsearc[h]'"
+  when: es_pids.rc != 0 and es_pids.rc != 1
+  tags: action_stop
 
 - name: start node
   become: true
