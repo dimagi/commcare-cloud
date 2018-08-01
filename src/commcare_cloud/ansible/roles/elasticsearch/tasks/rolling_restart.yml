@@ -19,13 +19,13 @@
 
 - name: get es instances to kill
   shell: "ps aux | pgrep 'elasticsearc[h]' | awk '{print $2}'"
-  register: es_instances
+  register: es_pids
   tags: action_stop
 
 - name: kill elasticsearch instances
   shell: "pkill {{item}}"
-  with_items: es_instances
-  when: es_instances
+  with_items: es_pids
+  when: es_pids
 
 - name: start node
   become: true
