@@ -1,4 +1,0 @@
-- For install instructions see the [README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
-- [Telling `commcare-cloud` about your environments](env)
-- [Overview of commands](commands)
-- [Server Management Basics](basics.html)

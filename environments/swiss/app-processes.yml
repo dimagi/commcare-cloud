@@ -12,11 +12,8 @@ celery_processes:
     background_queue,case_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
+    beat: {}
     celery_periodic,email_queue:
-      concurrency: 1
-      server_whitelist: swiss.commcarehq.org
-    repeat_record_queue:
-      pooling: gevent
       concurrency: 1
     email_queue,sms_queue:
       concurrency: 1

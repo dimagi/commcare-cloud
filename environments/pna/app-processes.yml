@@ -20,10 +20,10 @@ celery_processes:
     submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
+    beat: {}
     celery_periodic:
       concurrency: 2
       max_tasks_per_child: 1
-      server_whitelist: 196.207.230.171
     flower: {}
   None:
     # todo: create these queues?
@@ -50,13 +50,9 @@ pillows:
       num_processes: 1
     GroupToUserPillow:
       num_processes: 1
-    IntraHealthFormFluffPillow:
-      num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
-      num_processes: 1
-    RecouvrementFluffPillow:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1

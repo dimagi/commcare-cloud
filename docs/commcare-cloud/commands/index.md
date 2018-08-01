@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -823,41 +823,38 @@ Use `-l` instead of a command to see the full list of commands.
 ##### Available commands
 ```
 
-    apply_patch                       Used to apply a git patch created via `...
-    awesome_deploy                    Preindex and deploy if it completes qui...
+    apply_patch                Used to apply a git patch created via `git for...
+    awesome_deploy             Preindex and deploy if it completes quickly en...
     check_status
-    clean_offline_releases            Cleans all releases in home directory
-    clean_releases                    Cleans old and failed deploys from the ...
-    deploy                            Preindex and deploy if it completes qui...
+    clean_offline_releases     Cleans all releases in home directory
+    clean_releases             Cleans old and failed deploys from the ~/www/<...
+    deploy                     Preindex and deploy if it completes quickly en...
     deploy_airflow
     deploy_formplayer
     force_update_static
-    hotfix_deploy                     deploy ONLY the code with no extra clea...
-    kill_stale_celery_workers         Kills celery workers that failed to pro...
-    manage                            run a management command
+    hotfix_deploy              deploy ONLY the code with no extra cleanup or ...
+    kill_stale_celery_workers  Kills celery workers that failed to properly g...
+    manage                     run a management command
     offline_setup_release
     perform_system_checks
     pillowtop
-    preindex_views                    Creates a new release that runs preinde...
+    preindex_views             Creates a new release that runs preindex_every...
     prepare_offline_deploy
     reset_mvp_pillows
     restart_services
-    reverse_patch                     Used to reverse a git patch created via...
-    rollback                          Rolls back the servers to the previous ...
+    reverse_patch              Used to reverse a git patch created via `git f...
+    rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
-    set_supervisor_config
-    setup_limited_release             Sets up a release on a single machine
-    setup_release                     Sets up a full release across the clust...
+    setup_limited_release      Sets up a release on a single machine
+    setup_release              Sets up a full release across the cluster
     start_celery
     start_pillows
     stop_celery
     stop_pillows
     supervisorctl
-    unlink_current                    Unlinks the current code directory. Use...
+    unlink_current             Unlinks the current code directory. Use with c...
     update_current
-    update_current_supervisor_config  This only writes the supervisor config....
     webworkers
-    supervisor.set_supervisor_config  Upload and link Supervisor configuratio...
 ```
 
 
@@ -961,3 +958,69 @@ in the history, and so that during it service alerts are silenced.
 ###### `-m MESSAGE, --message MESSAGE`
 
 Optional message to set on Datadog.
+
+
+#### `copy-files`
+
+Copy files from multiple sources to targets.
+
+```
+commcare-cloud <env> copy-files plan {prepare,copy,cleanup}
+```
+
+This is a general purpose command that can be used to copy files between
+hosts in the cluster.
+
+Files are copied using `rsync` from the target host. This tool assumes that the
+specified user on the source host has permissions to read the files being copied.
+
+The plan file must be formatted as follows:
+
+```yml
+copy_files:
+  - <target-host>:
+      - source_host: <source-host>
+        source_user: <user>
+        source_dir: <source-dir>
+        target_dir: <target-dir>
+        files:
+          - test/
+          - test1/test-file.txt
+        exclude:
+          - logs/*
+          - test/temp.txt
+```       
+- **copy_files**: Multiple target hosts can be listed. 
+- **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
+listed for each target host.
+- **source-host**: Hostname or IP of the source host.
+- **source-user**: (optional) User to ssh as from target to source. Defaults to 'ansible'. This user must have permissions
+to read the files being copied.
+- **source-dir**: The base directory from which all source files referenced.
+- **target-dir**: Directory on the target host to copy the files to.
+- **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
+end with a `/`.
+- **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
+
+##### Positional Arguments
+
+###### `plan`
+
+Path to plan file
+
+###### `{prepare,copy,cleanup}`
+
+Action to perform
+
+- prepare: generate the scripts and push them to the target servers
+- migrate: execute the scripts
+- cleanup: remove temporary files and remote auth
+
+
+#### `list-dbs`
+
+List out databases by host
+
+```
+commcare-cloud <env> list-dbs
+```

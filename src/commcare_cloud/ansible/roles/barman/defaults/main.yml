@@ -7,3 +7,5 @@ barman_log_directory: "{{encrypted_root}}/barman/log"
 barman_log_file: "{{ barman_log_directory }}/barman.log"
 barman_log_level: "INFO"
 postgresql_version: 9.6
+# It will keep n+1 backups : n older and 1 current. 
+barman_backup_to_keep: 4

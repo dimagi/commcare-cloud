@@ -53,8 +53,56 @@
     - services
   register: celery_errand_boy_files
 
+- name: Add celery_bash_runner files
+  template:
+    src: "../templates/celery_bash_runner.sh.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+  with_items:
+    - file_name: "celery_bash_runner.sh"
+    - file_name: "celery_bash_runner_optimized.sh"
+      python_options: "-O"
+  tags:
+    - services
+  register: celery_bash_runner_files
+
+- name: define celery_flower services
+  become: cchq
+  template:
+    src: "../templates/supervisor_celery_flower.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname).flower is defined
+  tags:
+    - services
+  register: celery_flower_files
+
+- name: define celery beat service
+  become: cchq
+  template:
+    src: "../templates/supervisor_celery_beat.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname).beat is defined
+  tags:
+    - services
+  register: celery_beat_files
+
+- name: define celery workers
+  become: cchq
+  template:
+    src: "../templates/supervisor_celery_workers.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+  when: app_processes_config.celery_processes.get(inventory_hostname) is defined
+  with_items:
+    - env_vars:
+        http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
+        https_proxy: "{% if http_proxy_address is defined %}https://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
+        no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
+        TMPDIR: '{{ encrypted_tmp }}'
+  tags:
+    - services
+  register: celery_worker_files
+
 - set_fact:
-    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }}"
+    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }} + celery_bash_runner_files.get('results', []) + celery_flower_files.get('results', []) + celery_beat_files.get('results', []) + celery_worker_files.get('results', [])"
 
 - set_fact:
     celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
