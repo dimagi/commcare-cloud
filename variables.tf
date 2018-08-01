@@ -98,7 +98,7 @@ module "pillowtop" {
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
   company               = "${var.company}"
-  server_instance_type  = "t2.medium"
+  server_instance_type  = "t2.large"
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-c-app-private}"
   vpc_id                = "${module.network.vpc-id}"
