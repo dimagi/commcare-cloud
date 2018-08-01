@@ -59,6 +59,7 @@ def validate_shards(shard_ranges_by_partition_name):
 
 DEFAULT_POSTGRESQL_USER = "{{ secrets.POSTGRES_USERS.commcare.username }}"
 DEFAULT_POSTGRESQL_PASSWORD = "{{ secrets.POSTGRES_USERS.commcare.password }}"
+DEFAULT_PORT = 6432
 
 
 class PostgresqlConfig(jsonobject.JsonObject):
@@ -69,6 +70,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
+    host_settings = jsonobject.DictProperty(lambda: HostSettings)
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
 
     override = jsonobject.ObjectProperty(PostgresqlOverride)
@@ -103,11 +105,21 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.DEFAULT_POSTGRESQL_HOST = environment.translate_host(
                 self.DEFAULT_POSTGRESQL_HOST, environment.paths.postgresql_yml)
 
+        host_settings = {
+            environment.translate_host(host, environment.paths.postgresql_yml): value
+            for host, value in self.host_settings.items()
+        }
+
         for db in self.generate_postgresql_dbs():
             if db.host is None:
                 db.host = self.DEFAULT_POSTGRESQL_HOST
             elif db.host != '127.0.0.1':
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
+            if db.port is None:
+                if db.host in host_settings:
+                    db.port = host_settings[db.host].port
+                else:
+                    db.port = DEFAULT_PORT
 
     def generate_postgresql_dbs(self):
         return filter(None, [
@@ -149,6 +161,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
             'form_processing should be None if and only if SEPARATE_FORM_PROCESSING_DBS is False'
 
 
+class HostSettings(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    port = jsonobject.IntegerProperty(DEFAULT_PORT)
+
+
 class SmartDBConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
@@ -167,7 +184,7 @@ class DBOptions(jsonobject.JsonObject):
 
     name = jsonobject.StringProperty(required=True)
     host = jsonobject.StringProperty()
-    port = jsonobject.IntegerProperty(default=6432)
+    port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
     options = jsonobject.DictProperty(unicode)
