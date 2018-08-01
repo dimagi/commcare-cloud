@@ -4,3 +4,4 @@
   become: true
   roles:
     - {role: touchforms, tags: 'touchforms'}
+  when: touchforms_enabled|default(true)
