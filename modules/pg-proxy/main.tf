@@ -3,8 +3,7 @@
 
 resource aws_instance "pg-proxy" {
   ami                    = "${var.server_image}"
-#  instance_type          = "${var.server_instance_type}"
-  instance_type          = "t2.medium"
+  instance_type          = "${var.server_instance_type}"
   subnet_id              = "${var.instance_subnet}"
   key_name               = "g2-access"
   vpc_security_group_ids = ["${var.pg-proxy-sg}"]
