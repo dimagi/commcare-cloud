@@ -8,10 +8,6 @@
   changed_when: result.stdout.find('"acknowledged":true') != -1
   tags: action_stop
 
-- debug: msg="{{ result }}"
-  tags: action_stop
-
-
 - name: stop node
   become: true
   service: name=elasticsearch state=stopped
