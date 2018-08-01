@@ -52,6 +52,7 @@
   # rc = 1: no processes match
   failed_when: result.rc > 1
   changed_when: result.rc == 0
+  tags: skipme
 
 - name: remove /etc/init.d/supervisor
   file: state=absent path=/etc/init.d/supervisor
@@ -82,6 +83,7 @@
   # rc = 1: no processes match
   failed_when: result.rc > 1
   changed_when: result.rc == 0
+  tags: skipme
 
 - name: start supervisord
   become: yes
