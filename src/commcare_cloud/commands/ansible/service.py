@@ -305,7 +305,7 @@ class Elasticsearch(ServiceBase):
                     print("ERROR while stopping pillows. Exiting.")
                     sys.exit(1)
                 self._run_rolling_restart_yml(tags='action_stop')
-            elif action == 'start' or action == 'restart':
+            if action == 'start' or action == 'restart':
                 exit_code = self._act_on_pillows(action=action)
                 if not exit_code == 0:
                     print("ERROR while starting pillows. Exiting.")
