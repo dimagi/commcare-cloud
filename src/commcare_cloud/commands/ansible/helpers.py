@@ -130,6 +130,7 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
             user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
                                       quiet=quiet)
 
+    exit_code = 0
     if user_wants_to_apply:
         exit_code = run_apply()
         if exit_code == 0:

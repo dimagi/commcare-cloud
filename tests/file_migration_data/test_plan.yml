@@ -11,3 +11,5 @@ copy_files:
         target_dir: /opt/data/
         files:
           - test/file1
+        exclude:
+          - logs/*
