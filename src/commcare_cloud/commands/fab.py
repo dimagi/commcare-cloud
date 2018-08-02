@@ -57,7 +57,7 @@ class Fab(CommandBase):
             fab_args.extend(['--disable-known-hosts',
                              '--system-known-hosts', env.paths.known_hosts])
         # Create known_hosts file if it doesn't exist
-        known_hosts_file = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'environments', args.env_name, 'known_hosts')
+        known_hosts_file = env.paths.known_hosts
         if not os.path.isfile(known_hosts_file):
             open(known_hosts_file, 'a').close()
         return exec_fab_command(args.env_name, *fab_args)
