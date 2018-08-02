@@ -300,12 +300,12 @@ class Elasticsearch(ServiceBase):
                     "\nRestart is a stop followed by a start.\n Continue?", strict=False):
                 return 0  # exit code
             if action == 'stop' or action == 'restart':
-                self._act_on_pillows(action=action)
+                self._act_on_pillows(action='stop')
                 self._run_rolling_restart_yml(tags='action_stop')
 
             if action == 'start' or action == 'restart':
                 self._run_rolling_restart_yml(tags='action_start')
-                self._act_on_pillows(action=action)
+                self._act_on_pillows(action='start')
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
