@@ -71,7 +71,7 @@
     tags:
       - static-routes
       - after-reboot
-    tags: common
+  tags: common
 
 - name: DNS configuration
   hosts: all
@@ -87,7 +87,6 @@
     tags:
       - dns
       - after-reboot
-    tags: common
 
   - name: set resolvconf base configuration
     become: yes
@@ -99,4 +98,4 @@
     tags:
       - dns
       - after-reboot
-    tags: common
+  tags: common
