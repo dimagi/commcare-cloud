@@ -1,0 +1,5 @@
+- name: RabbitMQ
+  hosts: rabbitmq
+  become: true
+  roles:
+    - {role: rabbitmq, tags: 'rabbitmq'}

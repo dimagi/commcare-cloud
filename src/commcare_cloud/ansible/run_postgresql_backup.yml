@@ -1,0 +1,5 @@
+- name: PostgreSQL Backup
+  hosts: postgresql:pg_backup
+  become: true
+  roles:
+    - {role: pg_backup, tags: ['postgresql', 'backups', 'pg_backup']}

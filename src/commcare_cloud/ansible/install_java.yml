@@ -1,0 +1,7 @@
+# Note other machines also have java installed, but are initiated through the meta task
+- name: Java
+  become: true
+  hosts:
+    - celery
+  roles:
+    - {role: java, tags: java}

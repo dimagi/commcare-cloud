@@ -1,0 +1,11 @@
+- name: Redis
+  hosts: redis
+  become: true
+  roles:
+    - {role: redis, tags: 'redis'}
+
+- name: Redis Monitoring
+  hosts: redis
+  become: true
+  roles:
+    - redis_monitoring
