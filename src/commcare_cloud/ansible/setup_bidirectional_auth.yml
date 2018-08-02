@@ -9,7 +9,9 @@
 #        -e usernameB=user_B \
 #        -e action=add
 #
-- name: Setup auth from {{ hostA }} to {{ hostB }}
+#   To only setup auth in a single direction (hostA -> hostB) add the following:
+#        -e bidirectional=False
+- name: Setup auth from {{ hostA }} -> {{ hostB }}
   gather_facts: True
   hosts:
     - "{{ hostA }}"
@@ -21,7 +23,7 @@
   tasks:
     - import_tasks: roles/setup_auth_keys.yml
 
-- name: Setup auth from {{ hostB }} to {{ hostA }}
+- name: Setup auth from {{ hostB }} -> {{ hostA }}
   gather_facts: True
   hosts:
     - "{{ hostB }}"
@@ -32,3 +34,4 @@
     - state: "{{ 'present' if action == 'add' else 'absent' }}"
   tasks:
     - import_tasks: roles/setup_auth_keys.yml
+      when: bidirectional|default(True)|bool

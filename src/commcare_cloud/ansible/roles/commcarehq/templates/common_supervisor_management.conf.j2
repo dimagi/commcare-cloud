@@ -1,5 +1,6 @@
 [program:{{ project }}-{{ deploy_env }}-{{ item.process_name }}]
 directory={{ code_home }}
+environment=TMPDIR="{{ encrypted_tmp }}"
 command={{ virtualenv_home }}/bin/python manage.py {{ item.management_command }}
 user={{ cchq_user }}
 numprocs=1

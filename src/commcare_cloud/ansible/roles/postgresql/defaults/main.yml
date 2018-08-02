@@ -14,6 +14,7 @@ postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
 
+allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 
 pgbouncer_port: 6432
 pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"

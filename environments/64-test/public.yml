@@ -29,10 +29,6 @@ DATADOG_ENABLED: True
 
 CLOUDANT_CLUSTER_NAME: null
 
-
-# This dumps the dummy keystore, but allows the ansible script to continue, should be overridden for real deploys
-#keystore_file: 'DimagiKeyStore'
-
 backup_es: False
 backup_postgres: plain
 backup_blobdb: True

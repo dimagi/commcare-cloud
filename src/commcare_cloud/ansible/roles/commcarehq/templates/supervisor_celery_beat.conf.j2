@@ -1,0 +1,16 @@
+[program:{{ project }}-{{ deploy_env }}-celerybeat]
+command={{ virtualenv_home }}/bin/python {{ code_home }}/manage.py celery beat --loglevel=INFO
+directory={{ code_home }}
+user={{ cchq_user }}
+numprocs=1
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stdout_logfile={{ log_home }}/celerybeat.log
+redirect_stderr=true
+stderr_logfile={{ log_home }}/celerybeat.err.log
+startsecs=10
+; if rabbitmq is supervised, set its priority higher
+; so it starts first
+priority=999

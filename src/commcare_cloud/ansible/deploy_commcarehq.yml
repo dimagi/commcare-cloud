@@ -12,6 +12,9 @@
   become: true
   roles:
     - {role: commcarehq, tags: commcarehq}
+  tasks:
+    - import_tasks: roles/ecryptfs/tasks/tmp.yml
+      tags: ecryptfs
 
 - name: Celery cron jobs for HQ
   hosts:
@@ -22,16 +25,31 @@
       tags: ['commcarehq', 'celery_hq', 'tmpreaper', 'cron']
       tmpreaper_time: '2d'
 
-- name: Pillows Supervisor Config
-  hosts: pillowtop
+- name: Temporary task to remove old service directory
+  become: true
+  become_user: "{{ cchq_user }}"
+  hosts:
+    - webworkers
+    - touchforms
+    - formplayer
+    - celery
+    - proxy
   tasks:
-    - include_tasks: roles/commcarehq/tasks/pillowtop.yml
+    - file:
+        path: "{{ legacy_service_home }}/"
+        state: absent
       tags: services
 
 - name: Celery Supervisor Config
   hosts: celery
   tasks:
     - include_tasks: roles/commcarehq/tasks/celery.yml
+      tags: services
+
+- name: Pillowtop Supervisor Config
+  hosts: pillowtop
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/pillowtop.yml
       tags: services
 
 - name: Proxy Supervisor Config
@@ -46,6 +64,12 @@
     - include_tasks: roles/commcarehq/tasks/webworkers.yml
       tags: services
 
+- name: Formplayer Supervisor Config
+  hosts: formplayer
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/formplayer.yml
+      tags: services
+
 - name: Airflow Supervisor Config
   hosts: airflow
   tasks:
@@ -56,12 +80,13 @@
 - name: Remove old supervisor files
   hosts:
     - celery
+    - formplayer
     - pillowtop
     - proxy
     - webworkers
   tasks:
     - set_fact:
-        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) + airflow_managed_files|default([]) }}"
+        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) + airflow_managed_files|default([]) + formplayer_managed_files|default([]) }}"
       tags: services
     - shell: ls -1 {{ service_home|quote }}
       register: contents

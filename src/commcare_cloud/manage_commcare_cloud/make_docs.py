@@ -3,7 +3,6 @@ from __future__ import print_function
 import cgi
 import inspect
 import os
-import re
 import textwrap
 from StringIO import StringIO
 
@@ -13,7 +12,7 @@ from ..argparse14 import RawTextHelpFormatter
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.commcare_cloud import make_parser, COMMAND_TYPES, COMMAND_GROUPS
+from commcare_cloud.commcare_cloud import make_command_parser, COMMAND_GROUPS
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -178,7 +177,7 @@ class MakeDocs(CommandBase):
 
         j2.filters['print_help'] = do_print_help
 
-        parser, subparsers, commands = make_parser(
+        parser, subparsers, commands = make_command_parser(
             available_envs=None,
             prog='commcare-cloud',
             formatter_class=MarkdownFormatter,
@@ -194,3 +193,4 @@ class MakeDocs(CommandBase):
         template = j2.get_template('commands.md.j2')
         print(template.render(parser=parser, subparsers_by_group=subparsers_by_group,
                               commands=commands), end='')
+

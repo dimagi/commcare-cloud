@@ -9,7 +9,7 @@ secrets:
   SUPERVISOR_HTTP_PASSWORD: 123
   POSTGRES_USERS:
     commcare:
-      username: "{{ DEFAULT_POSTGRESQL_USER }}"
+      username: commcarehq
       password: LLkDYfDXbdnCzhgXMITCDs4s
     devreadonly:
       username: "devreadonly"
@@ -34,4 +34,3 @@ localsettings_private:
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
   TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
   TOUCHFORMS_API_USER: 'touchforms@example.com'
-
