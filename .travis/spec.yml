@@ -1,17 +1,23 @@
 aws_config:
   pem: /home/travis/.ssh/commcarehq_testing.pem
-  ami: ami-7dce6507
+  ami: ami-e317729c
   type: t2.micro
   key_name: commcarehq_testing
   security_group_id: sg-8f9a57fa
   subnet: subnet-ea62acc5
-
-settings:
-  users: travis
+  boot_volume:
+    DeviceName: /dev/sda1
+    Ebs:
+      DeleteOnTermination: yes
+      VolumeSize: 8
+      VolumeType: standard
 
 allocations:
   proxy: 1
   couchdb2_proxy:
+    count: 1
+    from: proxy
+  pg_backup:
     count: 1
     from: proxy
   webworkers: 1
