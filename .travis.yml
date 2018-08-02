@@ -27,6 +27,10 @@ install:
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
   - "pip install -e .[test]"
+  - mkdir ~/.aws
+  - touch ~/.aws/config
+  - touch ~/.aws/credentials
+  - touch ~/.ssh/commcarehq_testing.pem
   - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/config --output=~/.aws/config
   - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
   - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
