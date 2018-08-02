@@ -300,24 +300,21 @@ class Elasticsearch(ServiceBase):
                     "\nRestart is a stop followed by a start.\n Continue?", strict=False):
                 return 0  # exit code
             if action == 'stop' or action == 'restart':
-                exit_code = self._act_on_pillows(action=action)
-                if not exit_code == 0:
-                    print("ERROR while stopping pillows. Exiting.")
-                    sys.exit(1)
+                self._act_on_pillows(action=action)
                 self._run_rolling_restart_yml(tags='action_stop')
+
             if action == 'start' or action == 'restart':
-                exit_code = self._act_on_pillows(action=action)
-                if not exit_code == 0:
-                    print("ERROR while starting pillows. Exiting.")
-                    sys.exit(1)
                 self._run_rolling_restart_yml(tags='action_start')
+                self._act_on_pillows(action=action)
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
         ansible_context = AnsibleContext(None)
         service = SERVICES_BY_NAME['pillowtop'](self.environment, ansible_context)
         exit_code = service.run(action=action)
-        return exit_code
+        if not exit_code == 0:
+            print("ERROR while trying to {} pillows. Exiting.".format(action))
+            sys.exit(1)
 
     def _run_rolling_restart_yml(self, tags):
         from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
