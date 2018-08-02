@@ -1,0 +1,51 @@
+secrets:
+  ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
+  KSPLICE_ACTIVATION_KEY:
+  DATADOG_API_KEY: null
+  DATADOG_APP_KEY: null
+  AMQP_USER: "{{ deploy_env }}_worker"
+  AMQP_PASSWORD: '******'
+  SUPERVISOR_HTTP_USERNAME: user
+  SUPERVISOR_HTTP_PASSWORD: 123
+  POSTGRES_USERS:
+    commcare:
+      username: commcarehq
+      password: LLkDYfDXbdnCzhgXMITCDs4s
+    devreadonly:
+      username: "devreadonly"
+      password: devreadonly
+      role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+      privs:
+        -
+          privs: SELECT
+          objs: ALL_IN_SCHEMA
+    replication:
+        username: 'hqrepl'
+        password: 'hqrepl'
+        role_attr_flags: 'LOGIN,REPLICATION'
+
+localsettings_private:
+  BANK_ACCOUNT_NUMBER:
+  BANK_ROUTING_NUMBER_ACH: ''
+  BANK_ROUTING_NUMBER_WIRE: ''
+  BOOKKEEPER_CONTACT_EMAILS: []
+  BITLY_APIKEY: ''
+  BITLY_LOGIN: ''
+  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
+  COUCH_USERNAME: commcarehq
+  DROPBOX_KEY: ''
+  DROPBOX_SECRET: ''
+  EMAIL_LOGIN: ''
+  EMAIL_PASSWORD: ''
+  FORMPLAYER_INTERNAL_AUTH_KEY: 'QkGxkCZ2cfT20gI901l8bxzNgspibBnx741me7Soa38BsjiPmmrAEuLw4SM5LBOQG8PQo'
+  GMAPS_API_KEY: ''
+  GOOGLE_ANALYTICS_API_ID: ''
+  HUBSPOT_API_ID: ''
+  HUBSPOT_API_KEY: ''
+  JAR_KEY_PASS: ''
+  JAR_STORE_PASS: ''
+  SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
+  TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
+  TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9

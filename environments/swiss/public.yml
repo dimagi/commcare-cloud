@@ -1,0 +1,93 @@
+msp_users: "{{ secrets.MSP_USERS }}"
+
+DATADOG_ENABLED: True
+DATADOG_INTEGRATIONS_ENABLED: False
+
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '4096m'
+elasticsearch_cluster_name: 'deves'
+#elasticsearch_node_name: '??'
+elastcsearch_backup_days: 2
+
+ssh_allow_password: True
+
+backup_blobdb: True
+backup_postgres: plain
+backup_es: False
+backup_couch: True
+postgres_s3: True
+blobdb_s3: True
+couch_s3: True
+
+es_local_repo: False
+
+aws_endpoint: https://sos-ch-dk-2.exo.io
+es_snapshot_bucket:   commcare-almanach-backup
+postgres_snapshot_bucket: commcare-almanach-backup
+blobdb_snapshot_bucket: commcare-almanach-backup
+couchdb_snapshot_bucket: commcare-almanach-backup
+
+aws_versioning_enabled: false
+
+KSPLICE_ACTIVE: yes
+
+couch_dbs:
+  default:
+    host: 185.12.7.167
+    port: 5984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+TWO_FACTOR_GATEWAY_ENABLED: True
+
+localsettings:
+  ALLOWED_HOSTS:
+    - swiss.commcarehq.org
+    - 185.12.7.167
+    - localhost
+    - 127.0.0.1
+    - testserver
+  BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: 'CTZIUS33'
+  CLOUDCARE_BASE_URL: http://localhost:9010
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+# swiss is not hosted by Cloudant
+  COUCH_STALE_QUERY: 'update_after'
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  EULA_COMPLIANCE: True
+  HQ_INSTANCE: 'swiss'
+  HUBSPOT_API_ID:
+  HUBSPOT_API_KEY:
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: INC-
+  INVOICE_STARTING_NUMBER: 5000
+  J2ME_ADDRESS: ''
+#  KAFKA_HOST:
+  #  PILLOWTOP_MACHINE_ID:
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "localhost"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: False
+  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_QUEUE_ENABLED: False
+#  STATIC_ROOT:
+  XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"

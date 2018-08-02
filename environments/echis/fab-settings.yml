@@ -1,0 +1,5 @@
+ignore_kafka_checkpoint_warning: True
+code_repo: 'https://github.com/dimagi/commcare-hq.git'
+default_branch: master
+project: 'commcare-hq'
+email_enabled: False

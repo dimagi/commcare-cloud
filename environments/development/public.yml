@@ -1,0 +1,111 @@
+internal_domain_name: null
+
+http_proxy_address: '192.168.33.14'
+http_proxy_port: '3128'
+http_proxy_parent_address: '192.168.33.1'
+http_proxy_parent_port: '3128'
+
+riak_backend: "bitcask"
+riak_ring_size: 64
+
+# use this value to switch between nginx and apache
+proxy_type: nginx
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_memory: '128m'
+elasticsearch_cluster_name: 'deves'
+
+# uncomment to only allow access to eth1
+#ufw_private_interface: eth1
+
+# uncomment and change to the control machine IP when using ufw
+# this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
+#control_machine_ip: 127.0.0.1
+
+KSPLICE_ACTIVE: no
+KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
+
+DATADOG_ENABLED: False
+
+CLOUDANT_CLUSTER_NAME: null
+
+backup_es: False
+backup_postgres: plain
+backup_blobdb: True
+postgresql_backup_master: True
+postgres_s3: False
+nadir_hour: 18
+
+nofile_limit: 65536
+
+supervisor_http_enabled: True
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_bind:
+  ty: static
+  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2.0 }}"
+    port: 15984
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+TOUCHFORMS_API_USER: 'touchforms@example.com'
+
+localsettings:
+  ALLOWED_HOSTS:
+    - localhost
+    - 127.0.0.1
+    - "{{ SITE_HOST }}"
+#  BANK_ADDRESS:
+#  BANK_NAME:
+#  BANK_SWIFT_CODE:
+#  COUCH_CACHE_DOCS:
+#  COUCH_CACHE_VIEWS:
+  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
+  EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
+  EMAIL_SMTP_PORT: '1025'
+  # use True in prod!
+  EMAIL_USE_TLS: no
+  FULLSTORY_ID:
+  HQ_INSTANCE: 'dev'
+#  INVOICE_FROM_ADDRESS:
+#  INVOICE_PREFIX:
+#  INVOICE_STARTING_NUMBER:
+  J2ME_ADDRESS: ''
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+#  MEDIA_ROOT:
+#  PILLOWTOP_MACHINE_ID:
+#  PILLOW_RETRY_QUEUE_ENABLED:
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+#  REMINDERS_QUEUE_ENABLED:
+  STATIC_CDN: ""
+#  SMS_QUEUE_ENABLED: ''
+#  STAGING_DOMAINS:
+#  STATIC_ROOT:
+#  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
+#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+
+root_email: /dev/null
+
+commcare_cloud_remote_user: vagrant
+commcare_cloud_root_user: ubuntu
+commcare_cloud_strict_host_key_checking: no
+commcare_cloud_use_vault: no

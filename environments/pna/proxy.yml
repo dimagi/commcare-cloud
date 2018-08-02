@@ -1,0 +1,8 @@
+SITE_HOST: 'commcare.pna.sn'
+
+special_sites:
+  - pna_ssl
+letsencrypt_cchq_ssl: True
+PNA_SITE_HOST: 'pna.commcarehq.org'
+pna_nginx_combined_cert_value: '{{ ssl_secrets.certs.pna_commcarehq_org }}'
+pna_key_value: '{{ ssl_secrets.private_keys.pna_commcarehq_org }}'

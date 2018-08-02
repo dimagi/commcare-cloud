@@ -1,0 +1,5 @@
+deploy_env: pna
+env_monitoring_id: pna
+users:
+  - dimagi
+slack_alerts_channel: alerts-pna
