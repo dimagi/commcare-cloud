@@ -103,17 +103,17 @@
   roles:
     - {role: redis, tags: 'redis'}
 
-- name: Elasticsearch
-  hosts: elasticsearch
-  become: true
-  roles:
-    - {role: elasticsearch, tags: 'elasticsearch'}
-
 - name: Redis Monitoring
   hosts: redis
   become: true
   roles:
     - redis_monitoring
+
+- name: Elasticsearch
+  hosts: elasticsearch
+  become: true
+  roles:
+    - {role: elasticsearch, tags: 'elasticsearch'}
 
 - name: RabbitMQ
   hosts: rabbitmq
