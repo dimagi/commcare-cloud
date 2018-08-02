@@ -2,8 +2,3 @@ formplayer_build_dir: "{{ code_home }}/formplayer_build"
 formplayer_data_dir: "{{ encrypted_root }}/formplayer"
 # formplayer_sentry_dsn: ..defined in secret file
 # formplayer_db_name: ..defined in secret file
-hq_main_db_host: "{% for config in postgresql_dbs -%}
-  {%- if config.name == commcarehq_main_db_name and config.django_migrate -%}
-    {{ config.host }}
-  {%- endif -%}
-{%- endfor %}"

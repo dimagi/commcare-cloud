@@ -15,6 +15,9 @@
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
+  tasks:
+    - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
+      tags: ecryptfs-cleanup
 
 - name: PostgreSQL
   hosts: postgresql:pg_standby

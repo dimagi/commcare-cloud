@@ -7,6 +7,8 @@ riak_ring_size: 64
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
 supervisor_http_enabled: True
 
@@ -21,6 +23,7 @@ nadir_hour: 16
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
+redis_maxmemory: 5gb
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
@@ -55,11 +58,11 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: '/etc/nginx/.htpasswd'
-  - name: /bihar_ls_files 
+  - name: /bihar_ls_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_bihar"
-  - name: /maharashtra_icds-cas_files 
+  - name: /maharashtra_icds-cas_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
@@ -67,27 +70,27 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_mp"
-  - name: /ls_hindi 
+  - name: /ls_hindi
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_hindi"
-  - name: /ls_marathi 
+  - name: /ls_marathi
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_marathi"
-  - name: /ls_telugu 
+  - name: /ls_telugu
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_telugu"
-  - name: /hindi_files 
+  - name: /hindi_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files"
-  - name: /marathi_files 
+  - name: /marathi_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_marathi_files"
-  - name: /telugu_files 
+  - name: /telugu_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
@@ -211,6 +214,7 @@ localsettings:
             - 'static-gm_forms'
             - 'static-home_visit_forms'
             - 'static-infrastructure_form'
+            - 'static-infrastructure_form_v2'
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-postnatal_care_forms'
@@ -241,4 +245,6 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
+  UCR_COMPARISONS:
+    'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6

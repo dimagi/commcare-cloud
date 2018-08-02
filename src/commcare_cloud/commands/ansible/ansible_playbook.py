@@ -65,28 +65,29 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args, always_skip_check=False):
+    def run(self, args, unknown_args, always_skip_check=False, respect_ansible_skip=True):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
         check_branch(args)
-        run_ansible_playbook(
+        return run_ansible_playbook(
             environment, args.playbook, ansible_context, args.skip_check, args.quiet,
-            always_skip_check, args.limit, args.use_factory_auth, unknown_args
+            always_skip_check, args.limit, args.use_factory_auth, unknown_args,
+            respect_ansible_skip=respect_ansible_skip,
         )
 
 
 def run_ansible_playbook(
         environment, playbook, ansible_context,
         skip_check=False, quiet=False, always_skip_check=False, limit=None,
-        use_factory_auth=False, unknown_args=None
+        use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
     ):
 
     def get_limit():
         limit_parts = []
         if limit:
             limit_parts.append(limit)
-        if 'ansible_skip' in environment.sshable_hostnames_by_group:
+        if 'ansible_skip' in environment.sshable_hostnames_by_group and respect_ansible_skip:
             limit_parts.append('!ansible_skip')
 
         if limit_parts:
@@ -289,9 +290,9 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         unknown_args += ('--tags=services',)
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
-        if ask("Some celery configs are still updated through fab. "
-               "Do you want to run that as well (recommended)?"):
-            exec_fab_command(args.env_name, 'update_current_supervisor_config')
+        if ask("Would you like to update supervisor to use the new configurations?"):
+            exec_fab_command(args.env_name, 'supervisorctl:"reread"')
+            exec_fab_command(args.env_name, 'supervisorctl:"update"')
         else:
             return rc
 
@@ -311,7 +312,8 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
         args.playbook = 'add-ssh-keys.yml'
         args.quiet = True
         environment = get_environment(args.env_name)
-        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
+                                              respect_ansible_skip=False)
         with open(environment.paths.known_hosts, 'r') as f:
             known_hosts = f.readlines()
         known_hosts.sort()
