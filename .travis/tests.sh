@@ -17,9 +17,11 @@ then
     }
 
     test_dimagi_environments() {
-        git clone https://github.com/dimagi/commcare-environments.git
-        ln -s commcare-environments/environments environments
-        manage-commcare-cloud test-environments
+        # Eventually here we will run something like
+        #   git clone https://github.com/dimagi/commcare-environments.git
+        # to get the environments (once environments/ is removed from this repo).
+        ln -s environments commcare-environments
+        COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments manage-commcare-cloud test-environments
     }
 
     test_syntax
