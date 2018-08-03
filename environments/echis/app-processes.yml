@@ -29,14 +29,17 @@ celery_processes:
     submission_reprocessing_queue:
       concurrency: 1
     reminder_case_update_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 5
     reminder_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 5
     reminder_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
     sms_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 10
     flower: {}
 pillows:
   echis_server0:
