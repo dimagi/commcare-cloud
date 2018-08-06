@@ -215,7 +215,7 @@ def ask_aws_for_instances(env_name, aws_config, count):
             subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
             print("Deleting file: {}".format(cache_file))
             os.remove(cache_file)
-        env_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'environments', env_name)
+        env_dir = get_environment(env_name).paths.get_env_file_path('')
         if os.path.isdir(env_dir):
             print("Deleting environment dir: {}".format(env_name))
             shutil.rmtree(env_dir)
