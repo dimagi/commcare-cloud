@@ -309,8 +309,7 @@ class Elasticsearch(ServiceBase):
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
-        ansible_context = AnsibleContext(None)
-        service = SERVICES_BY_NAME['pillowtop'](self.environment, ansible_context)
+        service = Pillowtop(self.environment, AnsibleContext(None))
         exit_code = service.run(action=action)
         if not exit_code == 0:
             print("ERROR while trying to {} pillows. Exiting.".format(action))
