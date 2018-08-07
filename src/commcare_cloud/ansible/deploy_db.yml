@@ -1,6 +1,6 @@
 ---
 
-- import_playbook: update_apt_cache.yml
+- import_playbook: common_db_machine_setup.yml
 - import_playbook: run_postgresql.yml
 - import_playbook: run_postgresql_backup.yml
 - import_playbook: setup_standby_auth.yml
