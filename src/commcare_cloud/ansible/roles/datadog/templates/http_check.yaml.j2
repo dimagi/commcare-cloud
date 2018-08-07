@@ -5,8 +5,8 @@ instances:
     url: https://{{ SITE_HOST }}/serverup.txt
     disable_ssl_validation: false
     check_certificate_expiration: true
-    days_warning: 28
-    days_critical: 14
+    days_warning: 20
+    days_critical: 10
     timeout: 30
     include_content: true
   - name: {{ env_monitoring_id }} Heartbeat
