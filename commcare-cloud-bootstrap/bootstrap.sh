@@ -18,5 +18,5 @@ commcare-cloud $ENV fab deploy:confirm=no,skip_record=yes --show=debug --set ign
 
 commcare-cloud $ENV django-manage check_services
 
-proxy=$(grep -A1 '\[pvtest-proxy-0\]' environments/pvtest/inventory.ini | tail -n 1| awk '{print $2}' | awk -F'=' '{print $2}')
+proxy=$(grep -A1 "\[$ENV-proxy-0\]" environments/$ENV/inventory.ini | tail -n 1| awk '{print $2}' | awk -F'=' '{print $2}')
 curl https://${proxy}/serverup.txt --insecure
