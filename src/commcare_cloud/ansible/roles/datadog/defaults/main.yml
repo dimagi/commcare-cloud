@@ -10,3 +10,19 @@ datadog_celery_sha256sum: b9e9516822446d1e64ac0c45546dca0829d4566974f52b5be4d1cb
 
 datadog_shell_version: a468595913fa30abeea0bb3bba16448157871481
 datadog_shell_sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848c7183ad10
+
+monitoring_groups:
+  - webworkers
+  - proxy
+  - elasticsearch
+  - postgresql
+  - pg_standby
+  - riakcs
+  - formplayer
+  - pillowtop
+  - celery
+  - rabbitmq
+  - kafka
+  - redis
+  - couchdb2
+  - couchdb
