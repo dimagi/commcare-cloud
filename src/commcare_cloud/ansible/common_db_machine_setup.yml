@@ -1,0 +1,19 @@
+- name: Common Database Machine Setup
+  hosts:
+    - postgresql
+    - couchdb
+    - couchdb2
+    - redis
+    - elasticsearch
+    - rabbitmq
+    - zookeeper
+    - riakcs
+    - formplayer
+    - pg_standby
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+    - {role: backups, tags: 'backups'}
+  tasks:
+    - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
+      tags: ecryptfs-cleanup
