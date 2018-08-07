@@ -23,6 +23,8 @@ secrets:
         username: 'hqrepl'
         password: 'hqrepl'
         role_attr_flags: 'LOGIN,REPLICATION'
+  S3_BLOB_DB_ACCESS_KEY: klJUt0LPbSuC+EOPz0Fxx53q
+  S3_BLOB_DB_SECRET_KEY: Qg8qO3kBFnB2jzMpZRwco0cP
 
 localsettings_private:
   COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
