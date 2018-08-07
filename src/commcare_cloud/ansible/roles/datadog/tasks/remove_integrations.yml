@@ -25,6 +25,15 @@
   tags:
     - datadog_integrations
 
+- name: remove shell check
+  file:
+    path: /etc/dd-agent/checks.d/shell.py
+    state: absent
+  notify: restart datadog
+  when: not datadog_integration_vmware or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  tags:
+    - datadog_integrations
+
 - name: remove datadog integration configs
   file:
     path: "/etc/dd-agent/conf.d/{{ item.name }}.yaml"

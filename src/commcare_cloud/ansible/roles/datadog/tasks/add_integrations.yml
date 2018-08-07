@@ -26,6 +26,7 @@
     dest: /etc/dd-agent/checks.d/shell.py
     sha256sum: "{{ datadog_shell_sha256sum }}"
     force: yes
+  when: datadog_integration_vmware
   notify: restart datadog
   tags:
     - datadog_integrations
