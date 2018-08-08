@@ -8,7 +8,6 @@ override:
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
   postgresql_effective_cache_size: '4GB'
-  postgresql_log_directory: "{{ encrypted_root }}/pg_log"
   postgresql_max_connections: 300
   postgresql_max_stack_depth: '6MB'
   postgresql_shared_buffers: '128MB'
