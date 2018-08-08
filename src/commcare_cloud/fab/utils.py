@@ -59,7 +59,7 @@ class DeployMetadata(object):
 
     @memoized_property
     def repo(self):
-        return _get_github().get_organization('dimagi').get_repo('commcare-hq')
+        return _get_github().get_repo('dimagi/commcare-hq')
 
     @property
     def last_commit_sha(self):
