@@ -166,14 +166,14 @@ def _get_github():
         from .config import GITHUB_APIKEY
     except ImportError:
         print((
-            "You can add a GitHub API key to automate this step:\n"
+            "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username: ')
-        password = getpass('Github password: ')
+        username = input('Github username (leave blank for no auth): ')
+        password = getpass('Github password: ') if username else None
         return Github(
-            login_or_token=username,
+            login_or_token=username or None,
             password=password,
         )
     else:
