@@ -162,6 +162,12 @@ class DeployMetadata(object):
 
 @memoized
 def _get_github():
+    def _show_no_auth_message():
+        print(magenta(
+            "Warning: Creation of release tags is disabled. "
+            "Provide Github auth details to enable release tags."
+        ))
+
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
@@ -172,11 +178,15 @@ def _get_github():
         ).format(project_root=PROJECT_ROOT))
         username = input('Github username (leave blank for no auth): ')
         password = getpass('Github password: ') if username else None
+        if not username:
+            _show_no_auth_message()
         return Github(
             login_or_token=username or None,
             password=password,
         )
     else:
+        if GITHUB_APIKEY is None:
+            _show_no_auth_message()
         return Github(
             login_or_token=GITHUB_APIKEY,
         )
