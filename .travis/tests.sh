@@ -24,10 +24,15 @@ then
         COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments manage-commcare-cloud test-environments
     }
 
+    test_autogen_docs() {
+        ./tests/test_autogen_docs.sh
+    }
+
     test_syntax
     test_localsettings
     test_dimagi_environments
     nosetests -v
+    test_autogen_docs
 
 elif [[ ${TEST} = 'prove-deploy' ]]
 then
