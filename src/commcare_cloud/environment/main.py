@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import getpass
+import os
 
 import yaml
 from ansible.parsing.vault import AnsibleVaultError
@@ -280,6 +281,9 @@ class Environment(object):
         generated_variables.update(self.postgresql_config.to_generated_variables())
         generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
+
+        if os.path.exists(self.paths.dimagi_key_store_vault):
+            generated_variables.update({'keystore_file': self.paths.dimagi_key_store_vault})
 
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))

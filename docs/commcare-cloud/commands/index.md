@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -716,29 +716,6 @@ for more detail in what can go here.
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
 
-#### `restart-elasticsearch`
-
-Do a rolling restart of elasticsearch.
-
-```
-commcare-cloud <env> restart-elasticsearch [--use-factory-auth]
-```
-
-**This command is deprecated.** Use
-
-```
-commcare-cloud <env> service elasticsearch restart
-```
-
-instead.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
-
 #### `bootstrap-users`
 
 Add users to a set of new machines as root.
@@ -865,8 +842,8 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
+                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
+                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
                              {start,stop,restart,status,help}
 ```
 
@@ -888,7 +865,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
@@ -965,11 +942,14 @@ Optional message to set on Datadog.
 Copy files from multiple sources to targets.
 
 ```
-commcare-cloud <env> copy-files plan {prepare,copy}
+commcare-cloud <env> copy-files plan {prepare,copy,cleanup}
 ```
 
 This is a general purpose command that can be used to copy files between
 hosts in the cluster.
+
+Files are copied using `rsync` from the target host. This tool assumes that the
+specified user on the source host has permissions to read the files being copied.
 
 The plan file must be formatted as follows:
 
@@ -977,20 +957,27 @@ The plan file must be formatted as follows:
 copy_files:
   - <target-host>:
       - source_host: <source-host>
+        source_user: <user>
         source_dir: <source-dir>
         target_dir: <target-dir>
         files:
           - test/
           - test1/test-file.txt
+        exclude:
+          - logs/*
+          - test/temp.txt
 ```       
 - **copy_files**: Multiple target hosts can be listed. 
 - **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
 listed for each target host.
-- **source-host**: Hostname or IP of the source host
-- **source-dir**: The base directory from which all source files referenced
-- **target-dir**: Directory on the target host to copy the files to
+- **source-host**: Hostname or IP of the source host.
+- **source-user**: (optional) User to ssh as from target to source. Defaults to 'ansible'. This user must have permissions
+to read the files being copied.
+- **source-dir**: The base directory from which all source files referenced.
+- **target-dir**: Directory on the target host to copy the files to.
 - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
-end with a `/`
+end with a `/`.
+- **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
 
 ##### Positional Arguments
 
@@ -998,12 +985,13 @@ end with a `/`
 
 Path to plan file
 
-###### `{prepare,copy}`
+###### `{prepare,copy,cleanup}`
 
 Action to perform
 
 - prepare: generate the scripts and push them to the target servers
 - migrate: execute the scripts
+- cleanup: remove temporary files and remote auth
 
 
 #### `list-dbs`

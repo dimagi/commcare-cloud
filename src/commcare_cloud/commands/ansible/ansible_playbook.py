@@ -211,32 +211,6 @@ class AfterReboot(_AnsiblePlaybookAlias):
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
-class RestartElasticsearch(_AnsiblePlaybookAlias):
-    command = 'restart-elasticsearch'
-    help = """
-    Do a rolling restart of elasticsearch.
-
-    **This command is deprecated.** Use
-
-    ```
-    commcare-cloud <env> service elasticsearch restart
-    ```
-
-    instead.
-    """
-
-    def run(self, args, unknown_args):
-        args.playbook = 'es_rolling_restart.yml'
-        if not ask('Have you stopped all the elastic pillows?', strict=True, quiet=args.quiet):
-            return 0  # exit code
-        puts(colored.yellow(
-            "This will cause downtime on the order of seconds to minutes,\n"
-            "except in a few cases where an index is replicated across multiple nodes."))
-        if not ask('Do a rolling restart of the ES cluster?', strict=True, quiet=args.quiet):
-            return 0  # exit code
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-
 class BootstrapUsers(_AnsiblePlaybookAlias):
     command = 'bootstrap-users'
     help = """

@@ -85,6 +85,10 @@ class DefaultPaths(object):
         return os.path.join(PACKAGE_BASE, 'environmental-defaults', 'fab-settings.yml')
 
     @lazy_immutable_property
+    def dimagi_key_store_vault(self):
+        return self.get_env_file_path('DimagiKeyStore.vault')
+
+    @lazy_immutable_property
     def generated_yml(self):
         return self.get_env_file_path('.generated.yml')
 
