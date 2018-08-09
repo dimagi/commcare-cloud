@@ -34,7 +34,7 @@ then
     bootstrap() {
         ssh-keygen -f ~/.ssh/id_rsa -N "" -q
         cp ~/.ssh/id_rsa.pub environments/_authorized_keys/travis.pub
-        bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} FETCH_HEAD .travis/spec.yml
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} FETCH_HEAD .travis/spec.yml
     }
     bootstrap
 fi
