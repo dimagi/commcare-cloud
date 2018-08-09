@@ -19,8 +19,20 @@
    # enable unattended-upgrades
    apt_unattended_upgrades: yes
    # Do “apt-get update” automatically every n-days (0=disable)
-   apt_update_package_lists: 1
+   apt_update_package_lists: 0
    # Do “apt-get upgrade –download-only” every n-days (0=disable)
    apt_download_upgradeable_packages: 0
    # Do “apt-get autoclean” every n-days (0=disable)
    apt_auto_clean_interval: 0
+   # Send email to this address for problems or packages upgrades
+   apt_mails: ['devops@dimagi.com']
+   # Set this value to "true" to get emails only on errors. Default is to always send a mail
+   apt_unattended_upgrades_notify_error_only: false
+
+  tasks:
+    - name: Create a cron job to execute unattended-upgrades every week on Monday.
+      cron:
+        name: run unattended-upgrades on monday
+        weekday: 1
+        user: root
+        job: "unattended-upgrades -v"
