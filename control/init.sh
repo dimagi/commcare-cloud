@@ -89,6 +89,9 @@ pip install pip --upgrade &
 manage-commcare-cloud install & # includes ansible-galaxy install
 wait
 
+# workaround for some envs that got in a bad state
+python -c 'import Crypto' || { cd ${COMMCARE_CLOUD_REPO} && pip uninstall pycryptodome pycrypto --yes &&  pip-sync && pip install -e . && cd - ; }
+
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
 cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
