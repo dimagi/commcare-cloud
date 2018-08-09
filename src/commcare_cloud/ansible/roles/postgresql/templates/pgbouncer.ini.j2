@@ -45,7 +45,9 @@ unix_socket_dir = /var/run/postgresql
 ;;; Authentication settings
 ;;;
 
-auth_type = md5
+auth_type = hba
+auth_hba_file = /etc/pgbouncer/pgbouncer_hba.conf
+
 auth_file = /etc/pgbouncer/userlist.txt
 
 ;;;
