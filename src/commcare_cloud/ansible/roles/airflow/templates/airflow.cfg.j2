@@ -72,7 +72,7 @@ email_backend = airflow.utils.email.send_email_smtp
 # the airflow.utils.email.send_email_smtp function, you have to configure an
 # smtp server here
 smtp_host = {{ localsettings.EMAIL_SMTP_HOST }}
-smtp_starttls = True
+smtp_starttls = {{ localsettings.EMAIL_USE_TLS }}
 smtp_ssl = False
 
 {% if EMAIL_PASSWORD %}
@@ -81,7 +81,7 @@ smtp_password = "{{ EMAIL_PASSWORD }}"
 {% endif %}
 
 smtp_port = {{ localsettings.EMAIL_SMTP_PORT }}
-smtp_mail_from = airflow@dimagi.com
+smtp_mail_from = airflow-noreply@dimagi.com
 
 
 [scheduler]
