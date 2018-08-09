@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 import re
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict, OrderedDict
@@ -313,7 +314,7 @@ class Elasticsearch(ServiceBase):
         service = Pillowtop(self.environment, AnsibleContext(None))
         exit_code = service.run(action=action)
         if not exit_code == 0:
-            print("ERROR while trying to {} pillows. Exiting.".format(action))
+            print(("ERROR while trying to {} pillows. Exiting.".format(action)))
             sys.exit(1)
 
     def _run_rolling_restart_yml(self, tags):
