@@ -19,7 +19,7 @@ from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
-    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
+    UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
@@ -53,7 +53,6 @@ COMMAND_GROUPS = OrderedDict([
         DeployStack,
         UpdateConfig,
         AfterReboot,
-        RestartElasticsearch,
         BootstrapUsers,
         UpdateUsers,
         UpdateSupervisorConfs,
