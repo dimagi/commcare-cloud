@@ -87,7 +87,6 @@ localsettings:
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
-  KAFKA_URL: ''
   LOCAL_PILLOWS:
     custom:
       - name: 'kafka-ucr-main-custom-1'
