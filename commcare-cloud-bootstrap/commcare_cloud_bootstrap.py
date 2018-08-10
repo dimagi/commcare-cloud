@@ -216,10 +216,10 @@ def ask_aws_for_instances(env_name, aws_config, count):
             subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
             print("Deleting file: {}".format(cache_file))
             os.remove(cache_file)
-        env_dir = get_environment(env_name).paths.get_env_file_path('')
-        if os.path.isdir(env_dir):
-            print("Deleting environment dir: {}".format(env_name))
-            shutil.rmtree(env_dir)
+            env_dir = get_environment(env_name).paths.get_env_file_path('')
+            if os.path.isdir(env_dir):
+                print("Deleting environment dir: {}".format(env_name))
+                shutil.rmtree(env_dir)
 
     if not os.path.exists(cache_file):
         # Provision new instances for this env
