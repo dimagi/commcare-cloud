@@ -206,7 +206,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
         cache_file_response = raw_input("\n{} already exists. Enter: "
-                                        "\n(d) to delete the file and terminate the existing aws instances or "
+                                        "\n(d) to delete the file AND environment directory containing it, and"
+                                        " terminate the existing aws instances or "
                                         "\n(anything) to continue using this file and these instances."
                                         "\n Enter selection: ".format(cache_file))
         if cache_file_response == 'd':
@@ -215,6 +216,10 @@ def ask_aws_for_instances(env_name, aws_config, count):
             subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
             print("Deleting file: {}".format(cache_file))
             os.remove(cache_file)
+        env_dir = get_environment(env_name).paths.get_env_file_path('')
+        if os.path.isdir(env_dir):
+            print("Deleting environment dir: {}".format(env_name))
+            shutil.rmtree(env_dir)
 
     if not os.path.exists(cache_file):
         # Provision new instances for this env
