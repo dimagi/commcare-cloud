@@ -1,8 +1,0 @@
-dev_users:
-  present:
-    - dmiller
-    - droberts
-    - nsharma
-    - npellegrino
-    - travis
-  absent: []

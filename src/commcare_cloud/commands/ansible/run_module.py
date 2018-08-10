@@ -118,11 +118,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     include_vars = False
     if become:
         cmd_parts += ('--become',)
-        if become_user not in ('cchq',):
-            # ansible user can do things as cchq without a password,
-            # but needs the ansible user password in order to do things as other users.
-            # In that case, we need to pull in the vault variable containing this password
-            include_vars = True
+        include_vars = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
 

@@ -2,6 +2,7 @@ import re
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict, OrderedDict
 from itertools import groupby
+import sys
 
 import attr
 import six
@@ -14,6 +15,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_celery_workers,
     get_pillowtop_processes
 )
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
@@ -274,9 +276,52 @@ class Nginx(AnsibleService):
     inventory_groups = ['proxy']
 
 
-class Elasticsearch(AnsibleService):
-    name = 'elasticsearch'
+class ElasticsearchClassic(AnsibleService):
+    name = 'elasticsearch-classic'
+    service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
+
+
+class Elasticsearch(ServiceBase):
+    name = 'elasticsearch'
+    service_name = 'elasticsearch'
+    inventory_groups = ['elasticsearch']
+
+    def execute_action(self, action, host_pattern=None, process_pattern=None):
+        if action == 'status':
+            return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
+        else:
+            if not ask(
+                    "This function does more than stop and start the elasticsearch service. "
+                    "For that, use elasticsearch-classic."
+                    "\nStop will: stop pillows, stop es, and kill -9 if any processes still exist "
+                    "after a period of time. "
+                    "\nStart will start pillows and start elasticsearch "
+                    "\nRestart is a stop followed by a start.\n Continue?", strict=False):
+                return 0  # exit code
+            if action == 'stop' or action == 'restart':
+                self._act_on_pillows(action='stop')
+                self._run_rolling_restart_yml(tags='action_stop')
+
+            if action == 'start' or action == 'restart':
+                self._run_rolling_restart_yml(tags='action_start')
+                self._act_on_pillows(action='start')
+
+    def _act_on_pillows(self, action):
+        # Used to stop or start pillows
+        service = Pillowtop(self.environment, AnsibleContext(None))
+        exit_code = service.run(action=action)
+        if not exit_code == 0:
+            print("ERROR while trying to {} pillows. Exiting.".format(action))
+            sys.exit(1)
+
+    def _run_rolling_restart_yml(self, tags):
+        from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+        run_ansible_playbook(environment=self.environment,
+                             playbook='es_rolling_restart.yml',
+                             ansible_context=AnsibleContext(args=None),
+                             unknown_args=['--tags={}'.format(tags)],
+                             skip_check=True)
 
 
 class Couchdb(AnsibleService):
@@ -491,6 +536,7 @@ SERVICES = [
     Couchdb2,
     RabbitMq,
     Elasticsearch,
+    ElasticsearchClassic,
     Redis,
     Riakcs,
     Kafka,

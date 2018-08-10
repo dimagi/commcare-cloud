@@ -1,6 +1,5 @@
 dev_users:
   present:
-    - astone
     - biyeun
     - cellowitz
     - ctsims
@@ -23,5 +22,6 @@ dev_users:
     - sgoyal
     - skelly
     - sravfeyn
+  absent:
+    - astone
     - wpride
-  absent: []
