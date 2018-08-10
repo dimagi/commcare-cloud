@@ -206,7 +206,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
         cache_file_response = raw_input("\n{} already exists. Enter: "
-                                        "\n(d) to delete the file and terminate the existing aws instances or "
+                                        "\n(d) to delete the file AND environment directory containing it, and"
+                                        " terminate the existing aws instances or "
                                         "\n(anything) to continue using this file and these instances."
                                         "\n Enter selection: ".format(cache_file))
         if cache_file_response == 'd':
