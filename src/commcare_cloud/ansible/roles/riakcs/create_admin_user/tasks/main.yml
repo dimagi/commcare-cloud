@@ -53,9 +53,16 @@
   when: "not riak_create_user_result.get('skipped') and
       ('key_id' not in riakcs_admin_user or 'key_secret' not in riakcs_admin_user)"
 
+# (PV) 4
 # Set key facts last. Otherwise additional tasks in this file would be
 # skipped because of the `when` condition on the `include` of this file.
 - set_fact:
     riak_key: "{{ riakcs_admin_user.key_id }}"
     riak_secret: "{{ riakcs_admin_user.key_secret }}"
   when: riakcs_admin_user.key_id is defined and riakcs_admin_user.key_secret is defined
+
+- name: create riak secret file
+  shell: touch riak_creds.txt
+
+- name: write to riak secret file
+  shell: echo riak_key:{{riak_key}} > riak_creds.txt ; echo riak_secret:{{riak_secret}} >> riak_creds.txt

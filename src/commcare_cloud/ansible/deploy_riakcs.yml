@@ -149,6 +149,7 @@
   roles:
     - {role: riakcs/configure, name: riakcs, service: riak-cs}
 
+# (PV) 3
 - name: Create admin user
   become: true
   hosts: riakcs_control_host
