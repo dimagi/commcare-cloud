@@ -4,4 +4,4 @@
   roles:
     - {role: devops_scripts}
   tags:
-    - barman_deploy
+    - devops_script
