@@ -1,5 +1,6 @@
 # coding: utf-8
 import os
+import yaml
 import subprocess
 from six.moves import shlex_quote
 from clint.textui import puts, colored
@@ -13,7 +14,8 @@ from commcare_cloud.commands.ansible.helpers import (
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.environment.paths import ANSIBLE_DIR, DefaultPaths
+from commcare_cloud.commands.inventory_lookup.inventory_lookup import Lookup
 
 NON_POSITIONAL_ARGUMENTS = (
     Argument('-b', '--become', action='store_true', help=(
@@ -203,3 +205,44 @@ class Ping(CommandBase):
         args.shell_command = 'echo {{ inventory_hostname }}'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
+
+
+class UpdateRiakSecrets(CommandBase):
+    command = 'update-riak'
+    help = 'Update the vault file with the values from from the file in the riak machine.'
+
+    arguments = NON_POSITIONAL_ARGUMENTS
+
+    def run(self, args, unknown_args):
+
+        # # Encrypt the vault file
+        # subprocess.call("echo 123 | ansible-vault encrypt /Users/preethivaidyanathan/commcare-cloud/environments/pvtest/vault.yml --vault-password-file=/bin/cat",
+        #                 shell=True)
+
+        # Define the key and secret to add
+        args.server = "riakcs"
+        riak_ip = Lookup(CommandBase).lookup_server_address(args)
+
+        riak_key = subprocess.check_output("ssh %s 'cat /home/ansible/riak_creds.txt' |"
+                                           " grep 'riak_key' |"
+                                           " awk -F':' '{print $2}'" % riak_ip,
+                                           shell=True).strip()
+
+        riak_secret = subprocess.check_output("ssh %s 'cat /home/ansible/riak_creds.txt' |"
+                                              " grep 'riak_secret' |"
+                                              " awk -F':' '{print $2}'" % riak_ip,
+                                              shell=True).strip()
+
+        # Add the key and secret
+        with open(DefaultPaths(args.env_name).vault_yml, 'r+') as f:
+            vault_contents = yaml.load(f)
+            vault_contents['secrets']['S3_BLOB_DB_ACCESS_KEY'] = riak_key
+            vault_contents['secrets']['S3_BLOB_DB_SECRET_KEY'] = riak_secret
+            f.seek(0)
+            yaml.safe_dump(vault_contents, f, default_flow_style=False)
+
+
+        # # Decrypt the vault file
+        # subprocess.call(
+        #     "echo 123 | ansible-vault decrypt /Users/preethivaidyanathan/commcare-cloud/environments/pvtest/vault.yml --vault-password-file=/bin/cat",
+        #     shell=True)

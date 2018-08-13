@@ -27,8 +27,11 @@ commcare-cloud $ENV ansible-playbook deploy_db.yml $PLAYBOOK_TAGS
 #=-=-=-=-=-=-=-=-=-=-=
 echo "(PV): 5"
 commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS
+echo "(PV): 5.1"
+cchq pvtest update-riak
+
 #=-=-=-=-=-=-=-=-=-=-=
-echo "(PV): 5.5 (THP task!!)"
+echo "(PV): 5.2 (THP task!!)"
 commcare-cloud $ENV ansible-playbook disable_thp.yml $PLAYBOOK_TAGS
 #=-=-=-=-=-=-=-=-=-=-=
 echo "(PV): 6"
