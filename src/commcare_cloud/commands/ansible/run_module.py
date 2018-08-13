@@ -241,8 +241,8 @@ class UpdateRiakSecrets(CommandBase):
             f.seek(0)
             yaml.safe_dump(vault_contents, f, default_flow_style=False)
 
-
         # # Decrypt the vault file
         # subprocess.call(
         #     "echo 123 | ansible-vault decrypt /Users/preethivaidyanathan/commcare-cloud/environments/pvtest/vault.yml --vault-password-file=/bin/cat",
         #     shell=True)
+
