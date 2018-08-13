@@ -1,0 +1,5 @@
+- name: Elasticsearch
+  hosts: elasticsearch
+  become: true
+  roles:
+    - {role: elasticsearch, tags: 'elasticsearch'}

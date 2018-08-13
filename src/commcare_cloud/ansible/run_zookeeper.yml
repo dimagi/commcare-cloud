@@ -1,0 +1,5 @@
+- name: Zookeeper
+  hosts: zookeeper
+  become: true
+  roles:
+    - {role: zookeeper, tags: 'zookeeper'}

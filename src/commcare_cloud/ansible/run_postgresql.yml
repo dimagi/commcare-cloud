@@ -1,0 +1,5 @@
+- name: PostgreSQL
+  hosts: postgresql:pg_standby
+  become: true
+  roles:
+    - {role: postgresql, tags: 'postgresql'}

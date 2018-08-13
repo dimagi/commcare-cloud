@@ -38,3 +38,4 @@ commcare-cloud $ENV django-manage check_services
 
 proxy=$(grep -A1 "\[$ENV-proxy-0\]" environments/$ENV/inventory.ini | tail -n 1| awk '{print $2}' | awk -F'=' '{print $2}')
 curl https://${proxy}/serverup.txt --insecure
+
