@@ -23,7 +23,7 @@ from .commands.ansible.ansible_playbook import (
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
-from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
+from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, UpdateRiakSecrets
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -48,6 +48,7 @@ COMMAND_GROUPS = OrderedDict([
         Tmux,
     ]),
     ('operational', [
+        UpdateRiakSecrets,
         Ping,
         AnsiblePlaybook,
         DeployStack,
