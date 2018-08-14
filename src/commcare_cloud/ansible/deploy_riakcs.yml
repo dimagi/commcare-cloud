@@ -155,7 +155,7 @@
   hosts: riakcs_control_host
   roles:
     - role: riakcs/create_admin_user
-      when: riak_key is undefined or riak_secret is undefined
+#      when: riak_key is undefined or riak_secret is undefined
 
 - name: Write riak secrets to file
   become: true
@@ -164,7 +164,7 @@
     - file:
         path: riak_creds.txt
         state: touch
-        when: riak_key is defined and riak_secret is defined
+      when: riak_key is defined and riak_secret is defined
     - shell: echo riak_key:{{riak_key}} > riak_creds.txt ; echo riak_secret:{{riak_secret}} >> riak_creds.txt
       when: riak_key is defined and riak_secret is defined
 
@@ -175,7 +175,7 @@
     - file:
         path: riak_creds.txt
         state: absent
-        tags: delete_riak_secret
+      tags: delete_riak_secret
 
 - name: Sync admin user keys to Riak CS cluster
   become: true
