@@ -456,6 +456,7 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
+    env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
     execute_with_timing(release.update_code(full_cluster), deploy_ref)
     execute_with_timing(release.update_virtualenv(full_cluster))
