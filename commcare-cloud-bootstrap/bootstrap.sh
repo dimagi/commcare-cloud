@@ -5,34 +5,34 @@ BRANCH=$2
 SPEC=$3
 PLAYBOOK_TAGS="--skip-check --quiet --branch=$BRANCH -e 'CCHQ_IS_FRESH_INSTALL=1'"
 
-#commcare-cloud-bootstrap provision $SPEC --env $ENV
-#while
-#    commcare-cloud $ENV ping all --use-factory-auth
-#    [ $? = 4 ]
-#do :
-#done
-#
-#echo "(PV): 0"
-#commcare-cloud $ENV bootstrap-users --quiet --branch=$BRANCH
-#echo "(PV): 1"
-#commcare-cloud $ENV ansible-playbook update_apt_cache.yml $PLAYBOOK_TAGS
-#echo "(PV): 2"
-#commcare-cloud $ENV ansible-playbook deploy_common.yml $PLAYBOOK_TAGS
-#echo "(PV): 3"
-#commcare-cloud $ENV ansible-playbook deploy_lvm.yml $PLAYBOOK_TAGS
-## (PV) 1
-#echo "(PV): 4"
-#commcare-cloud $ENV ansible-playbook deploy_db.yml $PLAYBOOK_TAGS
-##=-=-=-=-=-=-=-=-=-=-=
-#echo "(PV): 5"
-#commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS
-#echo "(PV): 5.1"
-#cchq pvtest update-riak
-####TODO: Remember to clear the file on the riakcs host machine.
-##=-=-=-=-=-=-=-=-=-=-=
-#echo "(PV): 5.15
-#commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS --tags=delete_riak_secret
-##=-=-=-=-=-=-=-=-=-=-=
+commcare-cloud-bootstrap provision $SPEC --env $ENV
+while
+    commcare-cloud $ENV ping all --use-factory-auth
+    [ $? = 4 ]
+do :
+done
+
+echo "(PV): 0"
+commcare-cloud $ENV bootstrap-users --quiet --branch=$BRANCH
+echo "(PV): 1"
+commcare-cloud $ENV ansible-playbook update_apt_cache.yml $PLAYBOOK_TAGS
+echo "(PV): 2"
+commcare-cloud $ENV ansible-playbook deploy_common.yml $PLAYBOOK_TAGS
+echo "(PV): 3"
+commcare-cloud $ENV ansible-playbook deploy_lvm.yml $PLAYBOOK_TAGS
+# (PV) 1
+echo "(PV): 4"
+commcare-cloud $ENV ansible-playbook deploy_db.yml $PLAYBOOK_TAGS
+#=-=-=-=-=-=-=-=-=-=-=
+echo "(PV): 5"
+commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS --skip-tags=delete_riak_secret
+echo "(PV): 5.1"
+cchq pvtest update-riak
+#=-=-=-=-=-=-=-=-=-=-=
+echo "(PV): 5.15"
+#This clears the file on the riakcs host machine.
+commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS --tags=delete_riak_secret
+#=-=-=-=-=-=-=-=-=-=-=
 echo "(PV): 5.2"
 commcare-cloud $ENV ansible-playbook disable_thp.yml $PLAYBOOK_TAGS
 #=-=-=-=-=-=-=-=-=-=-=
