@@ -34,7 +34,7 @@ celery_processes:
       max_tasks_per_child: 1
     icds_aggregation_queue:
       pooling: gevent
-      concurrency: 4
+      concurrency: 10
     case_rule_queue:
       concurrency: 2
       max_tasks_per_child: 1
