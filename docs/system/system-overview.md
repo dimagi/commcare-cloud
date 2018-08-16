@@ -9,6 +9,10 @@ system and how they fit together.
 
 This page will cover the high level system overview as well as where to look for each
 component or technology to learn more.
+  
+{::comment}
+Would be nice to get a diagram in here.
+{:/comment}
 
 ## Basic Machine Configuration
 
