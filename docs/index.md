@@ -31,10 +31,10 @@ that machine is also the control machine.
 
 ## HowTos
 - CouchDB
-    - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node)
+    - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node.md)
 - PostgreSQL
     - [Backup PostgreSQL](howto/add-barman-server.md)
-    - [Moving partitioned databases](howto/move-partitioned-database)
+    - [Moving partitioned databases](howto/move-partitioned-database.md)
 - Proxy
     - [Enable HTTPS](howto/enable-https.md)
 - RiakCS/S3
@@ -62,14 +62,14 @@ but in steady state as well.
 
 If you or your organization is hosting or interested in hosting
 its own CommCare server environment,
-we strongly suggested you read our [Hosting Considerations](system/hosting-considerations) page
+we strongly suggested you read our [Hosting Considerations](system/hosting-considerations.md) page
 before going any further.
 
 ## CommCare HQ in Production: System Overview
 
 Before proceeding, we highly recommend that you gain a high-level understanding
 of what a CommCare HQ production system looks like
-by consulting our [System Overview](system/system-overview) page.
+by consulting our [System Overview](system/system-overview.md) page.
 CommCare Cloud will help you stand up a system like the one described on that page,
 but maintaining it---even with the help of CommCare Cloud's helpful tooling---will require
 an understanding of the system's architecture and each of the system's underlying technologies.

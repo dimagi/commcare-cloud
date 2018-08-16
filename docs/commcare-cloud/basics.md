@@ -7,7 +7,7 @@ To deploy a new version of CommCare HQ
 $ commcare-cloud <env> fab deploy
 ```
 
-For more detailed deploy details see [Deploy](deploy.html)
+For more detailed deploy details see [Deploy](deploy.md)
 
 ## Stop all CommCare HQ services
 ```
