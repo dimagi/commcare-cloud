@@ -6,7 +6,6 @@ import inspect
 import os
 
 import sys
-import textwrap
 import warnings
 from collections import OrderedDict
 
@@ -19,7 +18,7 @@ from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
-    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
+    UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
@@ -54,7 +53,6 @@ COMMAND_GROUPS = OrderedDict([
         DeployStack,
         UpdateConfig,
         AfterReboot,
-        RestartElasticsearch,
         BootstrapUsers,
         UpdateUsers,
         UpdateSupervisorConfs,
@@ -102,8 +100,8 @@ def add_backwards_compatibility_to_args(args):
     args.__class__ = NamespaceWrapper
 
 
-def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
-                subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
+def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
+                        subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
     if subparser_formatter_class is None:
         subparser_formatter_class = formatter_class
     parser = ArgumentParser(formatter_class=formatter_class, prog=prog, add_help=add_help)
@@ -152,7 +150,7 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
 def main():
     put_virtualenv_bin_on_the_path()
-    parser, subparsers, commands = make_parser(available_envs=get_available_envs())
+    parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args()
 
     add_backwards_compatibility_to_args(args)

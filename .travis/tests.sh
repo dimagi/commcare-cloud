@@ -16,8 +16,17 @@ then
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
 
+    test_dimagi_environments() {
+        # Eventually here we will run something like
+        #   git clone https://github.com/dimagi/commcare-environments.git
+        # to get the environments (once environments/ is removed from this repo).
+        ln -s environments commcare-environments
+        COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments manage-commcare-cloud test-environments
+    }
+
     test_syntax
     test_localsettings
+    test_dimagi_environments
     nosetests -v
 
 elif [[ ${TEST} = 'prove-deploy' ]]

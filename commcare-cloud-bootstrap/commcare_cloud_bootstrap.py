@@ -206,7 +206,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
         cache_file_response = raw_input("\n{} already exists. Enter: "
-                                        "\n(d) to delete the file and terminate the existing aws instances or "
+                                        "\n(d) to delete the file AND environment directory containing it, and"
+                                        " terminate the existing aws instances or "
                                         "\n(anything) to continue using this file and these instances."
                                         "\n Enter selection: ".format(cache_file))
         if cache_file_response == 'd':
@@ -215,6 +216,10 @@ def ask_aws_for_instances(env_name, aws_config, count):
             subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
             print("Deleting file: {}".format(cache_file))
             os.remove(cache_file)
+            env_dir = get_environment(env_name).paths.get_env_file_path('')
+            if os.path.isdir(env_dir):
+                print("Deleting environment dir: {}".format(env_name))
+                shutil.rmtree(env_dir)
 
     if not os.path.exists(cache_file):
         # Provision new instances for this env
@@ -461,9 +466,12 @@ class Terminate(object):
     def run(args):
         describe_instances = raw_describe_instances(args.env)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
-        terminate_instances_result = terminate_instances(instance_ids)
-        print(terminate_instances_result)
-        print(instance_ids)
+        if instance_ids:
+            terminate_instances_result = terminate_instances(instance_ids)
+            print(terminate_instances_result)
+            print(instance_ids)
+        else:
+            print("No instances found to terminate.")
 
 
 class Stop(object):
@@ -478,9 +486,12 @@ class Stop(object):
     def run(args):
         describe_instances = raw_describe_instances(args.env)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
-        stop_instances_result = stop_instances(instance_ids)
-        print(stop_instances_result)
-        print(instance_ids)
+        if instance_ids:
+            stop_instances_result = stop_instances(instance_ids)
+            print(stop_instances_result)
+            print(instance_ids)
+        else:
+            print("No instances found to stop.")
 
 
 class Reip(object):

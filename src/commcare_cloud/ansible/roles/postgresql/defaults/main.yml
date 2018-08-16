@@ -9,12 +9,12 @@ postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
 postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
-postgresql_archive_dir: "{{ postgresql_dir_path }}/wal_archive"
 postgresql_log_directory: "{{ postgresql_home }}/pg_log"
 postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
 
+allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 
 pgbouncer_port: 6432
 pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"

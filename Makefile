@@ -1,4 +1,5 @@
-all : src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt docs/commcare-cloud/commands/index.md
+autogen = src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt docs/commcare-cloud/commands/index.md docs/changelog/index.md
+all : $(autogen)
 
 
 # The length of the home directory affects
@@ -17,8 +18,14 @@ src/commcare_cloud/help_cache/ansible-playbook.txt:
 docs/commcare-cloud/commands/index.md : src/commcare_cloud/* src/commcare_cloud/*/* src/commcare_cloud/*/*/*
 	manage-commcare-cloud make-docs > docs/commcare-cloud/commands/index.md
 
+docs/changelog/index.md : docs/changelog/0*.md src/commcare_cloud/manage_commcare_cloud/*
+	manage-commcare-cloud make-changelog-index > docs/changelog/index.md
+
 requirements: requirements-*.in setup.py
+	pip-compile --output-file requirements.txt setup.py requirements*.in
+
+upgrade-requirements: requirements-*.in setup.py
 	pip-compile --output-file requirements.txt setup.py requirements*.in --upgrade
 
 clean:
-	rm docs/commcare-cloud/commands/index.md src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt
+	rm $(autogen)

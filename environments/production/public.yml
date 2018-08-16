@@ -5,6 +5,7 @@ riak_ring_size: 128
 
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
+datadog_integration_cloudant: true
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
@@ -16,8 +17,6 @@ redis_maxmemory: 8gb
 nofile_limit: 65536
 
 supervisor_http_enabled: True
-
-keystore_file: '../environments/{{ deploy_env }}/DimagiKeyStore.vault'
 
 backup_blobdb: False
 backup_postgres: plain
