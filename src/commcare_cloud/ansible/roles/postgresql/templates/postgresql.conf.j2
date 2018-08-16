@@ -51,6 +51,7 @@ max_wal_senders = 8
 checkpoint_segments = {{ postgresql_checkpoint_segments }}
 {%  elif postgresql_version == '9.6' %}
 max_wal_size = {{ postgresql_max_wal_size }}
+random_page_cost = {{ postgresql_random_page_cost }}
 {% endif %}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
