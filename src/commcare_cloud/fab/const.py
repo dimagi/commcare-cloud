@@ -24,7 +24,8 @@ ROLES_ALL_SERVICES = [
     'django_pillowtop',
     'formsplayer',
     'formplayer',
-    'staticfiles'
+    'staticfiles',
+    'airflow'
 ]
 ROLES_CELERY = ['django_monolith', 'django_celery']
 ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
