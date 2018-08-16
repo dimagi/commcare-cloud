@@ -10,7 +10,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -1006,10 +1006,22 @@ Action to perform
 - migrate: execute the scripts
 
 
-#### `list-dbs`
+#### `list-postgresql-dbs`
 
-List out databases by host
+Example:
 
 ```
-commcare-cloud <env> list-dbs
+commcare-cloud <env> list-postgresql-dbs [--compare]
 ```
+
+To list all database on a particular environment.
+
+```
+commcare-cloud <ev> list-databases
+```
+
+##### Optional Arguments
+
+###### `--compare`
+
+Gives additional databases on the server.
