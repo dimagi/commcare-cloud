@@ -59,7 +59,7 @@ but in steady state as well.
 
 If you or your organization is hosting or interested in hosting
 its own CommCare server environment,
-we strongly suggested you read our [Hosting Considerations](system/hosting-considerations.md) page
+we strongly suggest you read our [Hosting Considerations](system/hosting-considerations.md) page
 before going any further.
 
 ## CommCare HQ in Production: System Overview
