@@ -12,7 +12,7 @@ celery_processes:
     celery:
       concurrency: 2
       max_tasks_per_child: 1
-    background_queue,export_download_queue,saved_exports_queue:
+    background_queue,export_download_queue,saved_exports_queue,analytics_queue:
       concurrency: 4
       max_tasks_per_child: 1
 # wait until background_queue,export_download_queue have been verified to work with optimize

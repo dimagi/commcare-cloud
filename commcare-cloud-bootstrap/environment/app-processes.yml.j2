@@ -1,7 +1,7 @@
 celery_processes:
   {{ celery_host.name }}:
     beat: {}
-    background_queue,case_rule_queue,celery:
+    background_queue,case_rule_queue,celery,analytics_queue:
       concurrency: 1
     email_queue,reminder_case_update_queue:
       concurrency: 1
