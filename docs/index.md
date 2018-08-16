@@ -35,12 +35,10 @@ that machine is also the control machine.
 - [Telling `commcare-cloud` about your environments](commcare-cloud/env)
 - [Server Management Basics](commcare-cloud/basics)
 
-## HowTos
+## Services
 - CouchDB
     - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node.md)
-- PostgreSQL
-    - [Backup PostgreSQL](howto/add-barman-server.md)
-    - [Moving partitioned databases](howto/move-partitioned-database.md)
+- [PostgreSQL](services/postgresql.md)
 - Proxy
     - [Enable HTTPS](howto/enable-https.md)
 - RiakCS/S3
