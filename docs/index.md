@@ -28,6 +28,8 @@ cluster will be able to do so using the same tools that we do.
     - [Enable HTTPS](howto/enable-https.md)
 - RiakCS/S3
     - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
+- Firewall
+    - [Configure a firewall on the servers](howto/firewall.md)
 
 
 ## Reference material
