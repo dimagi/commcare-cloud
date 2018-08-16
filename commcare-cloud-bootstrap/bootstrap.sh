@@ -3,7 +3,7 @@ set -e
 ENV=$1
 BRANCH=$2
 SPEC=$3
-PLAYBOOK_TAGS="--skip-check --quiet --branch=$BRANCH -e 'CCHQ_IS_FRESH_INSTALL=1'"
+PLAYBOOK_TAGS="--skip-check --quiet --branch=$BRANCH -e CCHQ_IS_FRESH_INSTALL=1"
 
 commcare-cloud-bootstrap provision $SPEC --env $ENV
 while
