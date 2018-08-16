@@ -1,6 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: hqdb0
 
 override:
+  allow_dump_from_pgstandby: yes
   pgbouncer_default_pool: 290
   pgbouncer_max_connections: 800
   pgbouncer_pool_mode: transaction
@@ -18,7 +19,7 @@ dbs:
     host: hqdb3
     query_stats: True
   synclogs:
-    host: pgsynclog
+    host: pgsynclog1
   form_processing:
     proxy:
       host: hqdb1

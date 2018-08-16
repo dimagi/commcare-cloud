@@ -1,4 +1,4 @@
-# 0. Changelog
+# 2. Update supervisor service definitions
 
 **Date:**  2018-07-13
 

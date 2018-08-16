@@ -6,19 +6,35 @@
   retries: 20
   delay: 3
   changed_when: result.stdout.find('"acknowledged":true') != -1
+  tags: action_stop
 
 - name: stop node
   become: true
   service: name=elasticsearch state=stopped
+  tags: action_stop
 
 - name: wait for a few seconds for ES to stop
   pause: seconds=10
+  tags: action_stop
+
+- name: get es instances to kill
+  shell: "ps aux | pgrep -f 'elasticsearc[h]'"
+  register: es_pids
+  failed_when: es_pids.rc != 0 and es_pids.rc != 1
+  tags: action_stop
+
+- name: kill elasticsearch instances
+  shell: "pkill -f 'elasticsearc[h]'"
+  when: es_pids.rc != 0 and es_pids.rc != 1
+  tags: action_stop
 
 - name: start node
   become: true
   service: name=elasticsearch state=started
+  tags: action_start
 
 - debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
+  tags: action_start
 
 - name: wait for node to restart
   shell: "curl -I -s -m 2 http://{{es_host}}:9200 | head -n 1"
@@ -26,6 +42,7 @@
   until: result.stdout == "HTTP/1.1 200 OK"
   retries: 200
   delay: 3
+  tags: action_start
 
 - name: enable cluster routing
   shell: "curl -XPUT {{es_host}}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
@@ -34,6 +51,7 @@
   retries: 20
   delay: 3
   changed_when: result.stdout.find('"acknowledged":true') != -1
+  tags: action_start
 
 - name: wait for cluster to stabilize
   shell: "curl -s -m 2 {{es_host}}:9200/_cat/health | cut -d ' ' -f 4"
@@ -41,3 +59,4 @@
   until: result.stdout.find("green") != -1
   retries: 200
   delay: 30
+  tags: action_start
