@@ -100,7 +100,7 @@ class ListDatabases(CommandBase):
         # List from Postgresql query.
 
         for host_address in present_db_op.keys():
-            dbs_present_in_host[host_address] = present_db_op[host_address].split("\n")
+            dbs_present_in_host[host_address] = present_db_op[host_address].split("\r\n")
 
         return dbs_present_in_host
 
