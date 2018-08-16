@@ -21,7 +21,7 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
-ACTIONS = ['start', 'stop', 'restart', 'status', 'help']
+ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
 
 STATES = {
     'start': 'started',
@@ -576,6 +576,7 @@ class Service(CommandBase):
     cchq <env> service postgresql status
     cchq <env> service riakcs restart --only riak,riakcs
     cchq <env> service celery help
+    cchq <env> service celery logs
     cchq <env> service celery restart --limit <host>
     cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
     cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
@@ -594,7 +595,7 @@ class Service(CommandBase):
         More than one service may be supplied as separate arguments in a row.
         """),
         Argument('action', choices=ACTIONS, help="""
-        Action can be `status`, `start`, `stop`, or `restart`.
+        Action can be `status`, `start`, `stop`, `restart`, or `logs`.
         This action is applied to every matching service.
         """),
         Argument('--limit', help=(
