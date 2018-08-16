@@ -29,6 +29,12 @@ that machine is also the control machine.
 - [Troubleshooting first time setup](setup/troubleshooting.md)
 - [Changelog](changelog)
 
+## Usage
+
+- [Command Usage](commcare-cloud/commands)
+- [Telling `commcare-cloud` about your environments](commcare-cloud/env)
+- [Server Management Basics](commcare-cloud/basics)
+
 ## HowTos
 - CouchDB
     - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node.md)
@@ -39,13 +45,6 @@ that machine is also the control machine.
     - [Enable HTTPS](howto/enable-https.md)
 - RiakCS/S3
     - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
-
-
-## Reference material
-
-- [Command Usage](commcare-cloud/commands)
-- [Telling `commcare-cloud` about your environments](commcare-cloud/env)
-- [Server Management Basics](commcare-cloud/basics)
 
 ## A word of caution
 
