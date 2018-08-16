@@ -6,7 +6,7 @@
 
 ## Usage in CommCare
 
-PostgreSQL is one of the primary databases that CommCare users. 
+PostgreSQL is one of the primary databases that CommCare uses. 
 
 There are a few different categories of data that are stored in PostgreSQL:
 
