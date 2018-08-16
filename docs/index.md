@@ -1,5 +1,3 @@
-# Overview
-
 Dimagi is proud to be able to share **CommCare Cloud**,
 our toolkit for deploying and maintaining CommCare servers,
 with our fabulous developer community.
@@ -11,11 +9,24 @@ Anyone willing to dedicate the considerable amount of effort
 and system administration knowledge necessary to stand up and manage a CommCare server
 cluster will be able to do so using the same tools that we do.
 
-## System installation basics
+## What is commcare-cloud?
 
-- [Getting started guide](basics)
-- For manual install instructions see the [README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
-- [Troubleshooting first time setup](basics/troubleshooting.md).
+`commcare-cloud` is a python-based command line tool that uses
+the open source technologies Ansible and Fabric to automate everything
+you need in order to run a production CommCare cluster.
+
+While it is possible to install on a laptop with a linux-like command line interface,
+it is primarily designed to be run on the machine that is hosting CommCare.
+(If you are hosting CommCare on more than one machine,
+`commcare-cloud` only needs to be installed on one of them.)
+In this documentation, we will call the machine on which `commcare-cloud` is installed
+the "control machine". If you are hosting CommCare on a single machine,
+that machine is also the control machine.
+
+## System installation
+
+- [Installation](basics/installation.md)
+- [Troubleshooting first time setup](basics/troubleshooting.md)
 - [Changelog](changelog)
 
 ## HowTos
