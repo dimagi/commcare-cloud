@@ -41,7 +41,7 @@ couchdb2:
 
 couchdb_bind:
   ty: static
-  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+  host: '{{ internal_ipv4.address }}'
 
 couch_dbs:
   default:

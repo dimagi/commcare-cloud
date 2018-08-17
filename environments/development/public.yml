@@ -47,7 +47,7 @@ couchdb2:
 
 couchdb_bind:
   ty: static
-  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+  host: '{{ internal_ipv4.address }}'
 
 couch_dbs:
   default:
@@ -111,3 +111,4 @@ commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
 
 rabbitmq_create_cluster: true
+ansible_network_interface: eth1
