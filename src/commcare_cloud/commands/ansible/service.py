@@ -64,31 +64,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             self.print_help()
             return 0
         elif action == 'logs':
-            log_locations = {
-                'celery': '/home/cchq/www/{env}/log/celery_*.log',
-                'commcare': '/home/cchq/www/{env}/log/django.log',
-                'couchdb': '/usr/local/var/log/couchdb',
-                'couchdb2': '/usr/local/couchdb2/couchdb/var/log/',
-                'elasticsearch': '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs',
-                'elasticsearch-classic': '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs',
-                'formplayer': '/home/cchq/www/[production/staging/india]/log/formplayer-spring.log',
-                'kafka': '/opt/data/kafka/controller.log',
-                'nginx': '/home/cchq/www/{env}/log/{env}_commcare-nginx_error.log',
-                'pillowtop': '/home/cchq/www/{env}/log/pillowtop-{pillow_name}-{num_process}.log',
-                'postgresql': 'Postgres: /opt/data/postgresql/9.4/main/pg_log\n'
-                              'Pgbouncer: /var/log/postgresql/pgbouncer.log',
-                'rabbitmq': '/var/log/rabbitmq/rabbit@{rabbitmq machine}.log',
-                'redis': '/var/log/syslog',
-                'riakcs': '/var/log/riak-cs/',
-                'touchforms': '/home/cchq/www/{env}/log/formsplayer.log\n'
-                              '/home/cchq/www/{env}/log/formplayer.clean-{host}.log',
-                'webworker': 'Regular logger: /home/cchq/www/{env}/log/{host}-commcarehq.django.log\n'
-                             'Accounting logger: /home/cchq/www/{env}/log/{host}-commcarehq.accounting.log'}
-            log_location = log_locations[self.name]
-            if log_location:
-                print("Logs can be found at:\n{}".format(log_locations[self.name]))
-            else:
-                print("No associated log files for service {}.".format(self.name))
+            print("Logs can be found at:\n{}".format(self.log_location))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
@@ -305,18 +281,21 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 class Nginx(AnsibleService):
     name = 'nginx'
     inventory_groups = ['proxy']
+    log_location = '/home/cchq/www/{env}/log/{env}_commcare-nginx_error.log'
 
 
 class ElasticsearchClassic(AnsibleService):
     name = 'elasticsearch-classic'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
+    log_location = '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs'
 
 
 class Elasticsearch(ServiceBase):
     name = 'elasticsearch'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
+    log_location = '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
@@ -358,6 +337,7 @@ class Elasticsearch(ServiceBase):
 class Couchdb(AnsibleService):
     name = 'couchdb'
     inventory_groups = ['couchdb']
+    log_location = '/usr/local/var/log/couchdb'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if not self.environment.groups.get('couchdb', None):
@@ -372,18 +352,21 @@ class Couchdb2(MultiAnsibleService):
         'couchdb2': ('couchdb2', 'couchdb2'),
         'couchdb2_proxy': ('nginx', 'couchdb2_proxy'),
     }
+    log_location = '/usr/local/couchdb2/couchdb/var/log/'
 
 
 class RabbitMq(AnsibleService):
     name = 'rabbitmq'
     inventory_groups = ['rabbitmq']
     service_name = 'rabbitmq-server'
+    log_location = '/var/log/rabbitmq/rabbit@{rabbitmq machine}.log'
 
 
 class Redis(AnsibleService):
     name = 'redis'
     inventory_groups = ['redis']
     service_name = 'redis-server'
+    log_location = '/var/log/syslog'
 
 
 class Riakcs(MultiAnsibleService):
@@ -393,6 +376,7 @@ class Riakcs(MultiAnsibleService):
         'riakcs': ('riak-cs', 'riakcs'),
         'stanchion': ('stanchion', 'stanchion'),
     }
+    log_location = '/var/log/riak-cs/'
 
 
 class Kafka(MultiAnsibleService):
@@ -401,6 +385,7 @@ class Kafka(MultiAnsibleService):
         'kafka': ('kafka-server', 'kafka'),
         'zookeeper': ('zookeeper', 'zookeeper')
     }
+    log_location = '/opt/data/kafka/controller.log'
 
 
 class Postgresql(MultiAnsibleService):
@@ -409,6 +394,8 @@ class Postgresql(MultiAnsibleService):
         'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
+    log_location = 'Postgres: /opt/data/postgresql/9.4/main/pg_log\n' \
+                   'Pgbouncer: /var/log/postgresql/pgbouncer.log'
 
 
 class SingleSupervisorService(SupervisorService):
@@ -432,6 +419,7 @@ class SingleSupervisorService(SupervisorService):
 class CommCare(SingleSupervisorService):
     name = 'commcare'
     inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
+    log_location = '/home/cchq/www/{env}/log/django.log'
 
     @property
     def supervisor_process_name(self):
@@ -441,6 +429,8 @@ class CommCare(SingleSupervisorService):
 class Webworker(SingleSupervisorService):
     name = 'webworker'
     inventory_groups = ['webworkers']
+    log_location = 'Regular logger: /home/cchq/www/{env}/log/{host}-commcarehq.django.log\n' \
+                   'Accounting logger: /home/cchq/www/{env}/log/{host}-commcarehq.accounting.log'
 
     @property
     def supervisor_process_name(self):
@@ -450,6 +440,7 @@ class Webworker(SingleSupervisorService):
 class Formplayer(SingleSupervisorService):
     name = 'formplayer'
     inventory_groups = ['formplayer']
+    log_location = '/home/cchq/www/{env}/log/formplayer-spring.log'
 
     @property
     def supervisor_process_name(self):
@@ -459,6 +450,8 @@ class Formplayer(SingleSupervisorService):
 class Touchforms(SingleSupervisorService):
     name = 'touchforms'
     inventory_groups = ['touchforms']
+    log_location = '/home/cchq/www/{env}/log/formsplayer.log\n' \
+                   '/home/cchq/www/{env}/log/formplayer.clean-{host}.log'
 
     @property
     def supervisor_process_name(self):
@@ -468,6 +461,7 @@ class Touchforms(SingleSupervisorService):
 class Celery(SupervisorService):
     name = 'celery'
     inventory_groups = ['celery']
+    log_location = '/home/cchq/www/{env}/log/celery_*.log'
 
     def _get_processes_by_host(self, process_pattern=None):
         return get_processes_by_host(
@@ -484,6 +478,7 @@ class Celery(SupervisorService):
 class Pillowtop(SupervisorService):
     name = 'pillowtop'
     inventory_groups = ['pillowtop']
+    log_location = '/home/cchq/www/{env}/log/pillowtop-{pillow_name}-{num_process}.log'
 
     @property
     def managed_services(self):
