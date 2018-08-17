@@ -22,5 +22,3 @@
 
 - include: join-cluster.yml
   when: (rabbitmq_create_cluster == true) and ( ansible_fqdn != hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )
-
-- meta: flush_handlers
