@@ -10,6 +10,3 @@ couchdb_user: couchdb
 couchdb_group: couchdb
 couchdb_backup_days: 2
 couchdb_backup_weeks: 2
-couchdb_password_salt: "{{ inventory_hostname|hash('sha1') }}"
-couchdb_httpd_auth_secret: "{{ ansible_product_uuid|hash('sha256') }}"
-couchdb_instance_uuid: "{{ inventory_hostname|to_uuid|replace('-', '') }}"
