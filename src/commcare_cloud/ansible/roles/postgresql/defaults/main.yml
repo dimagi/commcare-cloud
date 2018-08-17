@@ -35,6 +35,7 @@ postgresql_wal_buffers: '-1'
 postgresql_default_statistics_target: '100'
 postgresql_max_wal_size: '256MB'
 postgresql_slow_log_threshold: 300
+postgresql_random_page_cost: 4.0
 
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15

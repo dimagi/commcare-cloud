@@ -44,6 +44,7 @@ archive_timeout = 300
 wal_level = hot_standby
 max_wal_senders = 8
 max_wal_size = {{ postgresql_max_wal_size }}
+random_page_cost = {{ postgresql_random_page_cost }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
