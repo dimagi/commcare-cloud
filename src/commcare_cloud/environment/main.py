@@ -259,8 +259,8 @@ class Environment(object):
         return mapping
 
     def _run_last_minute_checks(self):
-        assert len(self.groups.get('rabbitmq', [])) == 1, \
-            "You must have exactly one host in the [rabbitmq] group"
+        assert len(self.groups.get('rabbitmq', [])) > 0, \
+            "You need at least one rabbitmq host in the [rabbitmq] group"
         assert len(self.groups.get('redis', [])) == 1, \
             "You must have exactly one host in the [redis] group"
 
