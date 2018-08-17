@@ -295,7 +295,7 @@ class Elasticsearch(ServiceBase):
     name = 'elasticsearch'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs'
+    log_location = '/opt/data/{ecrypt}/elasticsearch-{version}/logs'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
@@ -394,7 +394,7 @@ class Postgresql(MultiAnsibleService):
         'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
-    log_location = 'Postgres: /opt/data/postgresql/9.4/main/pg_log\n' \
+    log_location = 'Postgres: /opt/data/postgresql/{version}/main/pg_log\n' \
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
 
 
