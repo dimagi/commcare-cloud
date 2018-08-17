@@ -1,11 +1,6 @@
 ---
 # Create Erlang distributed app
 
-- name: start rabbitmq server
-  service:
-    name: rabbitmq-server
-    state: started
-
 - name: stop rabbitmq app
   shell: rabbitmqctl stop_app
 
