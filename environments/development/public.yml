@@ -1,5 +1,8 @@
 internal_domain_name: null
 
+rabbitmq_create_cluster: true
+internal_network_interface: eth1
+
 http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
@@ -109,6 +112,3 @@ commcare_cloud_remote_user: vagrant
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
-
-rabbitmq_create_cluster: true
-ansible_network_interface: eth1
