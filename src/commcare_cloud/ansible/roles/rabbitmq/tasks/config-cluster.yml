@@ -31,5 +31,3 @@
     backup: yes
   become: true
   when: inventory_hostname != rabbitmq_cluster_master
-  notify:
-    restart rabbitmq
