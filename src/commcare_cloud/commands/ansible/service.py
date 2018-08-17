@@ -61,25 +61,24 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         elif action == 'logs':
             log_locations = {
                 'celery': '/home/cchq/www/{env}/log/celery_*.log',
-                'commcare': None,
+                'commcare': '/home/cchq/www/{{ env }}/log/django.log',
                 'couchdb': '/usr/local/var/log/couchdb',
                 'couchdb2': '/usr/local/couchdb2/couchdb/var/log/',
                 'elasticsearch': '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs',
                 'elasticsearch-classic': '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs',
                 'formplayer': '/home/cchq/www/[production/staging/india]/log/formplayer-spring.log',
-                'kafka': None,
-                'nginx': 'Production: /home/cchq/www/production/log/production_commcare-nginx_error.log\n'
-                         'Staging: /home/cchq/www/staging/log/staging_commcare-nginx_error.log',
-                'pillowtop': None,
+                'kafka': '/opt/data/kafka/controller.log',
+                'nginx': '/home/cchq/www/{{ env }}/log/{{ env }}_commcare-nginx_error.log',
+                'pillowtop': '/home/cchq/www/{{ env }}/log/pillowtop-{{ pillow_name }}-{{ num_process }}.log',
                 'postgresql': 'Postgres: /opt/data/postgresql/9.4/main/pg_log\n'
                               'Pgbouncer: /var/log/postgresql/pgbouncer.log',
                 'rabbitmq': '/var/log/rabbitmq/rabbit@{rabbitmq machine}.log',
-                'redis': None,
+                'redis': '/var/log/syslog',
                 'riakcs': '/var/log/riak-cs/',
-                'touchforms': '/home/cchq/www/[production/staging/india]/log/formsplayer.log\n'
-                              '/home/cchq/www/[production/staging/india]/log/formplayer.clean-{{ host }}.log',
-                'webworker': 'Regular logger: /home/cchq/www/[production/staging/india]/log/{{ host }}-commcarehq.django.log\n'
-                             'Accounting logger: /home/cchq/www/[production/staging/india]/log/{{ host }}-commcarehq.accounting.log'}
+                'touchforms': '/home/cchq/www/{{ env }}/log/formsplayer.log\n'
+                              '/home/cchq/www/{{ env }}/log/formplayer.clean-{{ host }}.log',
+                'webworker': 'Regular logger: /home/cchq/www/{{ env }}/log/{{ host }}-commcarehq.django.log\n'
+                             'Accounting logger: /home/cchq/www/{{ env }}/log/{{ host }}-commcarehq.accounting.log'}
             log_location = log_locations[self.name]
             if log_location:
                 print("Logs can be found at:\n{}".format(log_locations[self.name]))
