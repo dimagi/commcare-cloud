@@ -50,6 +50,11 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         """Inventory groups that are applicable to this service."""
         raise NotImplementedError
 
+    @abstractproperty
+    def log_location(self):
+        """Location of the service's logs shown on the command line."""
+        raise NotImplementedError
+
     def __init__(self, environment, ansible_context):
         self.environment = environment
         self.ansible_context = ansible_context
