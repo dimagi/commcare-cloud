@@ -4,7 +4,7 @@
 
 **Optional per env:** Yes
 
-**Dependant CommCare version:** None
+**Dependant CommCare version:** a507757628bc5c087fd1badc0145e39c5bf790ae
 
 ## Change Context
 Tasks for analytics reporting have been separated into a new analytics celery queue.
