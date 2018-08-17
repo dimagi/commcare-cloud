@@ -1,0 +1,32 @@
+---
+- name: Install rabbitmq plugins
+  become: true
+  rabbitmq_plugin: >
+    names=rabbitmq_management
+    state=enabled
+
+- name: Ensure vhost commcarehq is present
+  become: true
+  rabbitmq_vhost: name=commcarehq state=present
+  notify:
+  - restart rabbitmq
+
+- name: Add users
+  become: true
+  rabbitmq_user: >
+    user={{ AMQP_USER }}
+    password={{ AMQP_PASSWORD }}
+    tags='administrator'
+    vhost=commcarehq
+    configure_priv=.*
+    write_priv=.*
+    read_priv=.*
+    state=present
+  notify:
+  - restart rabbitmq
+
+- name: Remove default guest user
+  become: true
+  rabbitmq_user: user=guest state=absent
+  notify:
+  - restart rabbitmq
