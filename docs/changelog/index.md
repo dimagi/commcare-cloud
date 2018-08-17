@@ -11,6 +11,9 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-08-16** [Add queue for analytics tasks](0004-add-analytics-queue.md)
+Tasks for analytics reporting have been separated into a new analytics celery queue.
+
 ### **2018-07-25** [Update Supervisor](0003-update-supervisor.md)
 Ubuntu 14.04 `apt-get install supervisor` installs supervisor 3.0b.
 We occasionally have issues that could be related to supervisor,
