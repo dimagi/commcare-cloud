@@ -419,7 +419,7 @@ class SingleSupervisorService(SupervisorService):
 
 class CommCare(SingleSupervisorService):
     name = 'commcare'
-    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
+    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
     log_location = '/home/cchq/www/{env}/log/django.log'
 
     @property
@@ -446,17 +446,6 @@ class Formplayer(SingleSupervisorService):
     @property
     def supervisor_process_name(self):
         return get_formplayer_spring_instance_name(self.environment)
-
-
-class Touchforms(SingleSupervisorService):
-    name = 'touchforms'
-    inventory_groups = ['touchforms']
-    log_location = '/home/cchq/www/{env}/log/formsplayer.log\n' \
-                   '/home/cchq/www/{env}/log/formplayer.clean-{host}.log'
-
-    @property
-    def supervisor_process_name(self):
-        return get_formplayer_instance_name(self.environment)
 
 
 class Celery(SupervisorService):
@@ -569,7 +558,6 @@ SERVICES = [
     Kafka,
     Webworker,
     Formplayer,
-    Touchforms,
     Celery,
     CommCare,
     Pillowtop,
