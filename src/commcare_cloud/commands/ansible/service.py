@@ -281,7 +281,8 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 class Nginx(AnsibleService):
     name = 'nginx'
     inventory_groups = ['proxy']
-    log_location = '/home/cchq/www/{env}/log/{env}_commcare-nginx_error.log'
+    log_location = '/home/cchq/www/{env}/log/{env}_commcare-nginx_error.log\n' \
+                   '/home/cchq/www/{env}/log/{env}_commcare-nginx_access.log'
 
 
 class ElasticsearchClassic(AnsibleService):
