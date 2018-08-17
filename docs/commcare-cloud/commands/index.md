@@ -1,4 +1,5 @@
 # Commands
+{:.no_toc}
 
 * TOC
 {:toc}

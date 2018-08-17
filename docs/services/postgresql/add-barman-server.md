@@ -84,3 +84,7 @@ barman@backup$ barman list-backup $db_name
 ```bash
 barman delete $db_name $backup_id
 ```
+
+---
+
+[︎⬅︎ PostgreSQL](../postgresql.md) | [︎⬅︎ Overview](../..)
