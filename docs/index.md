@@ -43,6 +43,8 @@ that machine is also the control machine.
     - [Enable HTTPS](howto/enable-https.md)
 - RiakCS/S3
     - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
+- Firewall
+    - [Configure a firewall on the servers](howto/firewall.md)
 
 ## A word of caution
 
