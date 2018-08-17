@@ -215,10 +215,6 @@ class UpdateRiakSecrets(CommandBase):
 
     def run(self, args, unknown_args):
 
-        # # Encrypt the vault file
-        # subprocess.call("echo 123 | ansible-vault encrypt /Users/preethivaidyanathan/commcare-cloud/environments/pvtest/vault.yml --vault-password-file=/bin/cat",
-        #                 shell=True)
-
         # Define the key and secret to add
         args.server = "riakcs"
         riak_ip = Lookup(CommandBase).lookup_server_address(args)
@@ -240,9 +236,3 @@ class UpdateRiakSecrets(CommandBase):
             vault_contents['secrets']['S3_BLOB_DB_SECRET_KEY'] = riak_secret
             f.seek(0)
             yaml.safe_dump(vault_contents, f, default_flow_style=False)
-
-        # # Decrypt the vault file
-        # subprocess.call(
-        #     "echo 123 | ansible-vault decrypt /Users/preethivaidyanathan/commcare-cloud/environments/pvtest/vault.yml --vault-password-file=/bin/cat",
-        #     shell=True)
-
