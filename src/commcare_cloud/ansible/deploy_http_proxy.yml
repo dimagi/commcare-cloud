@@ -11,14 +11,10 @@
         options: 'no-query no-digest'
     pri_domain_name: "{{ internal_domain_name }}"
   roles:
-    - role: squid
-      tags:
-        - 'squid'
+    - {role: squid, tags: 'squid', when: http_proxy_address|default(false)}
 
 - name: HTTP proxy for external calls
   hosts: all
   become: yes
   roles:
-    - role: http_proxy
-      tags:
-        - 'http_proxy'
+    - {role: http_proxy, tags: 'http_proxy', when: http_proxy_address|default(false)}
