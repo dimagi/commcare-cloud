@@ -842,9 +842,9 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                             {start,stop,restart,status,help}
+                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}
+                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker} ...]
+                             {start,stop,restart,status,logs,help}
 ```
 
 #### Example
@@ -853,6 +853,7 @@ commcare-cloud <env> service [--only PROCESS_PATTERN]
 cchq <env> service postgresql status
 cchq <env> service riakcs restart --only riak,riakcs
 cchq <env> service celery help
+cchq <env> service celery logs
 cchq <env> service celery restart --limit <host>
 cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
 cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
@@ -865,15 +866,15 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
 More than one service may be supplied as separate arguments in a row.
 
-###### `{start,stop,restart,status,help}`
+###### `{start,stop,restart,status,logs,help}`
 
-Action can be `status`, `start`, `stop`, or `restart`.
+Action can be `status`, `start`, `stop`, `restart`, or `logs`.
 This action is applied to every matching service.
 
 ##### Optional Arguments
