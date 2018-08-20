@@ -11,6 +11,10 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-08-20** [Change celery beat name](0005-change-celery-beat-name.md) (_action required_)
+The celery beat name was  inconsistent with the names of the other celery workers, which
+broke a function that tried to parse all of the celery names.
+
 ### **2018-08-16** [Add queue for analytics tasks](0004-add-analytics-queue.md)
 Tasks for analytics reporting have been separated into a new analytics celery queue.
 
