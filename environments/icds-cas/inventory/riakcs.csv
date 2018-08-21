@@ -1,0 +1,12 @@
+hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device
+riak0,,riakcs,lvm,stanchion,MUMGCCWDCPRDR000,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak1,,riakcs,lvm,,MUMGCCWDCPRDR001,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak2,,riakcs,lvm,,MUMGCCWDCPRDR002,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak3,,riakcs,lvm,,MUMGCCWDCPRDR003,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak4,,riakcs,lvm,,MUMGCCWDCPRDR004,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak5,,riakcs,lvm,,MUMGCCWDCPRDR005,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak6,,riakcs,lvm,,MUMGCCWDCPRDR006,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak7,,riakcs,lvm,,MUMGCCWDCPRDR007,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak8,,riakcs,lvm,,MUMGCCWDCPRDR008,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak9,,riakcs,lvm,,MUMGCCWDCPRDR009,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+redis,,riakcs,lvm,,MUMGCCWDCPRDRD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
