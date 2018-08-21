@@ -149,7 +149,11 @@ def get_available_envs(exclude_symlinks=False):
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
         if os.path.exists(DefaultPaths(env).public_yml)
-        and os.path.exists(DefaultPaths(env).inventory_ini)
+        and (
+            os.path.exists(DefaultPaths(env).inventory_ini)
+            or os.path.exists(DefaultPaths(env).inventory_csv)
+            or os.path.exists(DefaultPaths(env).inventory_directory)
+        )
         and not (exclude_symlinks and os.path.islink(os.path.join(ENVIRONMENTS_DIR, env)))
     )
 
