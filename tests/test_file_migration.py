@@ -23,7 +23,7 @@ def test_prepare_migration_scripts():
             'source_host1',
             'source_dir1',
             'target_dir1',
-            files=['file1', 'file2'],
+            files=[],
             exclude=[]
         ),
         SourceFiles(
@@ -48,7 +48,7 @@ def test_prepare_migration_scripts():
         os.path.join(TEST_DATA_DIR, FILE_MIGRATION_RSYNC_SCRIPT)
     )
 
-    for config in configs:
+    for config in configs[1:]:  # first config has no files list
         file_list_filename = get_file_list_filename(config)
         file_path = os.path.join(SCRIPT_ROOT, target_host, file_list_filename)
         file_list = get_file_contents(file_path).splitlines()

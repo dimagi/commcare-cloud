@@ -149,12 +149,15 @@ def prepare_file_copy_scripts(target_host, soucre_file_configs, script_root):
     files_for_node = []
     for config in soucre_file_configs:
         files = sorted(config.files)
-        filename = get_file_list_filename(config)
-        path = os.path.join(target_script_root, filename)
-        with open(path, 'w') as f:
-            f.write('{}\n'.format('\n'.join(files)))
+        if not files:
+            files_for_node.append((config, None))
+        else:
+            filename = get_file_list_filename(config)
+            path = os.path.join(target_script_root, filename)
+            with open(path, 'w') as f:
+                f.write('{}\n'.format('\n'.join(files)))
 
-        files_for_node.append((config, filename))
+            files_for_node.append((config, filename))
 
     if files_for_node:
         # create rsync script
