@@ -1,4 +1,4 @@
-hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions,var: hot_standby_server,var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
+hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
 pgucr,192.168.33.26,postgres,lvm,ucr_dbs,MUMGCCWDCPRDPU00,"[""/dev/sdb""]","[""/dev/sdb1""]",pgucrstandby0,,"[""standby0"",""standby1"",""standby2"",""standby3"",""spare""]",
 pgucrstandby0,192.168.33.27,pg_standby,lvm,ucr_dbs,MUMGCCWDCPRDPUS0,"[""/dev/sdb""]","[""/dev/sdb1""]",,pgucr,,standby0
 pgucrstandby1,192.168.33.28,pg_standby,lvm,ucr_dbs,MUMGCCWDCPRDPUS1,"[""/dev/sdb""]","[""/dev/sdb1""]",,pgucr,,standby1
