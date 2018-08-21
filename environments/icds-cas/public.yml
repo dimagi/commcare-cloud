@@ -124,7 +124,7 @@ localsettings:
     - 127.0.0.1
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
-    - '{{ hostvars[groups.proxy.0].public_ip }}'
+      # - '{{ hostvars[groups.proxy.0].public_ip }}' TODO: hostvars seems to not work?
   ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':
