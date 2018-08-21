@@ -55,6 +55,24 @@ class DefaultPaths(object):
         return self.get_env_file_path('inventory.ini')
 
     @lazy_immutable_property
+    def inventory_csv(self):
+        return self.get_env_file_path('inventory.csv')
+
+    @lazy_immutable_property
+    def inventory_directory(self):
+        return self.get_env_file_path('inventory')
+
+    @lazy_immutable_property
+    def inventory_sources(self):
+        sources = []
+        for path in [self.inventory_ini, self.inventory_csv]:
+            if os.path.exists(path) and os.access(path, os.R_OK):
+                sources.append(path)
+        if os.path.exists(self.inventory_directory) and os.path.isdir(self.inventory_directory):
+            sources.append(self.inventory_directory)
+        return sources
+
+    @lazy_immutable_property
     def meta_yml(self):
         return self.get_env_file_path('meta.yml')
 
