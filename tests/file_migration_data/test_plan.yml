@@ -1,3 +1,4 @@
+source_env: source_env
 copy_files:
   - target_host1:
       - source_host: source_host1
