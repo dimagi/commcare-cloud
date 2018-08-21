@@ -1,0 +1,11 @@
+hostname,host_address,group 1,group 2,group3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device
+airflow0,,,,,MUMGCCWCDPRDAF00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+formplayer0,,formplayer,,lvm,MUMGCCWCDPRDFP00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+rabbit0,,rabbitmq,,,MUMGCCWCDPRDRB00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+kafka0,100.71.184.15,kafka,zookeeper,lvm,MUMGCCWCDPRDKF00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+kafka1,,kafka,,lvm,MUMGCCWCDPRDKF01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+redis0,,redis,,,MUMGCCWCDPRDRD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+redis1,,redis,,,MUMGCCWCDPRDRD01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+patch0,,patch,control,,MUMGCCWCDPRDPT00,,,
+proxy0,,proxy,cas_proxy,,MUMGCCWCDPRDPX01,,,
+proxy1,,proxy,cas_proxy,,MUMGCCWCDPRDPX02,,,
