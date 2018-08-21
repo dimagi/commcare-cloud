@@ -8,6 +8,7 @@ from memoized import memoized, memoized_property
 from collections import Counter
 
 from commcare_cloud.environment.constants import constants
+from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
@@ -21,8 +22,6 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
-class EnvironmentException(Exception):
-    pass
 
 class Environment(object):
     def __init__(self, paths):
@@ -174,7 +173,7 @@ class Environment(object):
     def inventory_manager(self):
         return InventoryManager(
             loader=self._ansible_inventory_data_loader,
-            sources=self.paths.inventory_sources
+            sources=self.paths.inventory_source
         )
 
     @property
