@@ -154,7 +154,7 @@
   hosts: riakcs_control_host
   roles:
     - role: riakcs/create_admin_user
-#      when: riak_key is undefined or riak_secret is undefined
+      when: riak_key is undefined or riak_secret is undefined
 
 - name: Write riak secrets to file
   become: true
