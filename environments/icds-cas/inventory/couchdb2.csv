@@ -1,5 +1,5 @@
 hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device
-couch0,100.71.184.25,couchdb2,couchdb2_proxy,lvm,MUMGCCWCDPRDCD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+couch0,100.71.184.25,couchdb2,couchdb2_proxy,lvm,MUMGCCWCDPRDCD00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/vg_data-lv_data
 couch1,100.71.184.8,couchdb2,,lvm,MUMGCCWCDPRDCD01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 couch2,100.71.184.9,couchdb2,,lvm,MUMGCCWCDPRDCD02,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 couch3,100.71.184.6,couchdb2,,lvm,MUMGCCWCDPRDCD03,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
