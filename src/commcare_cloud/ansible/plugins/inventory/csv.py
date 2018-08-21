@@ -155,8 +155,8 @@ class InventoryModule(BaseInventoryPlugin):
         for row in rows:
             group = row['group']
             self.inventory.add_group(group)
-            var_name, type_, raw_val = row['var'], row['type'], row['val']
-            self.inventory.set_variable(group, var_name, conv_str2value(type_, raw_val))
+            var_name, item_type, raw_val = row['var'], row['type'], row['val']
+            self.inventory.set_variable(group, var_name, conv_str2value(item_type, raw_val))
 
     def _parse_row_groups(self, csv_lines):
         """Parse CSV lines into groups each with their own header column"""
