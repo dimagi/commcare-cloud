@@ -1,24 +1,26 @@
-DEFAULT_POSTGRESQL_HOST: pgmain1
+DEFAULT_POSTGRESQL_HOST: pgmain0
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr:
     WRITE: icds-ucr
     READ:
       - [icds-ucr, 1]
+      - [icds-ucr-standby0, 2]
       - [icds-ucr-standby1, 2]
       - [icds-ucr-standby2, 2]
+      - [icds-ucr-standby3, 2]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
   auth:
     - [default, 1]
-    - [pgmainstandby, 1]
+    - [pgmainstandby0, 1]
   accounting:
     - [default, 1]
-    - [pgmainstandby, 1]
+    - [pgmainstandby0, 1]
   locations:
     - [default, 1]
-    - [pgmainstandby, 1]
+    - [pgmainstandby0, 1]
 
 override:
   pgbouncer_pool_mode: transaction
@@ -31,47 +33,47 @@ override:
 
 dbs:
   main:
-    host: pgmain1
+    host: pgmain0
   formplayer:
     host: pgucr
   ucr:
     host: pgucr
   synclogs:
-    host: pgsynclog
+    host: pgsynclog0
   form_processing:
     proxy:
-      host: plproxy1
+      host: plproxy0
     partitions:
       p1:
         shards: [0, 103]
-        host: pgshard5
+        host: pgshard0
       p2:
         shards: [104, 205]
-        host: pgshard8
+        host: pgshard1
       p3:
         shards: [206, 308]
-        host: pgshard11
+        host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard12
+        host: pgshard3
       p5:
         shards: [412, 514]
-        host: pgshard6
+        host: pgshard4
       p6:
         shards: [515, 617]
-        host: pgshard1
+        host: pgshard5
       p7:
         shards: [618, 720]
-        host: pgshard10
+        host: pgshard6
       p8:
         shards: [721, 823]
-        host: pgshard4
+        host: pgshard7
       p9:
         shards: [824, 926]
-        host: pgshard3
+        host: pgshard8
       p10:
         shards: [927, 1023]
-        host: pgshard7
+        host: pgshard9
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
@@ -79,6 +81,12 @@ dbs:
       query_stats: True
       django_migrate: True  # the dashboard models are stored here
   standby:
+    - django_alias: icds-ucr-standby0
+      name: commcarehq_icds_aggregatedata
+      host: pgucrstandby
+      create: False
+      django_migrate: False
+      hq_acceptable_standby_delay: 1800
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby
@@ -91,9 +99,15 @@ dbs:
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 1800
-    - django_alias: pgmainstandby
+    - django_alias: icds-ucr-standby3
+      name: commcarehq_icds_aggregatedata
+      host: pgucrstandby
+      create: False
+      django_migrate: False
+      hq_acceptable_standby_delay: 1800
+    - django_alias: pgmainstandby0
       name: commcarehq
-      host: pgmainstandby1
+      host: pgmainstandby0
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 30
