@@ -172,8 +172,10 @@ class Environment(object):
 
     @memoized_property
     def inventory_manager(self):
-        return InventoryManager(loader=self._ansible_inventory_data_loader,
-                                sources=self.paths.inventory_ini)
+        return InventoryManager(
+            loader=self._ansible_inventory_data_loader,
+            sources=self.paths.inventory_sources
+        )
 
     @property
     def _ansible_inventory_variable_manager(self):
