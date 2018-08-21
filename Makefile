@@ -9,9 +9,11 @@ all : $(autogen)
 # (Directly using escaped '~' does not work.)
 STANDARD_HOME=/!
 
+src/commcare_cloud/help_cache/ansible.txt: export ANSIBLE_CONFIG=src/commcare_cloud/ansible/ansible.cfg
 src/commcare_cloud/help_cache/ansible.txt:
 	COLUMNS=80 HOME="${STANDARD_HOME}" ansible -h | sed "s|${STANDARD_HOME}|~|g" > src/commcare_cloud/help_cache/ansible.txt
 
+src/commcare_cloud/help_cache/ansible-playbook.txt: export ANSIBLE_CONFIG=src/commcare_cloud/ansible/ansible.cfg
 src/commcare_cloud/help_cache/ansible-playbook.txt:
 	COLUMNS=80 HOME="${STANDARD_HOME}" ansible-playbook -h | sed "s|${STANDARD_HOME}|~|g" > src/commcare_cloud/help_cache/ansible-playbook.txt
 
