@@ -1,0 +1,10 @@
+hostname,host_address,group 1,group 2,group3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device
+airflow0,,,,,MUMGCCWDCPRDAF00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+formplayer0,,formplayer,,lvm,MUMGCCWDCPRDFP00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+rabbit0,,rabbitmq,,,MUMGCCWDCPRDRB00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+kafka0,,kafka,zookeeper,lvm,MUMGCCWDCPRDKF00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+kafka1,,kafka,,lvm,MUMGCCWDCPRDKF01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+redis1,,redis,,,MUMGCCWDCPRDRD01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+patch0,,patch,control,,MUMGCCWDCPRDPT00,,,
+proxy0,,proxy,cas_proxy,,MUMGCCWDCPRDPX01,,,
+proxy1,,proxy,cas_proxy,,MUMGCCWDCPRDPX02,,,
