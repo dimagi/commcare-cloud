@@ -112,6 +112,9 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 6
+  'celery8':
+  'celery9':
+  'celery10':
   'web0':
     ucr_indicator_queue:
       concurrency: 3
@@ -151,6 +154,9 @@ celery_processes:
     ucr_indicator_queue:
       concurrency: 4
   'web11':
+    ucr_indicator_queue:
+      concurrency: 4
+  'web12':
     ucr_indicator_queue:
       concurrency: 4
 pillows:
@@ -270,3 +276,8 @@ pillows:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
+  'pillow10':
+  'pillow11':
+  'pillow12':
+  'pillow13':
+  'pillow14':
