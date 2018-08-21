@@ -3,5 +3,6 @@
 rsync -e 'ssh -oStrictHostKeyChecking=no' --append-verify -aH --info=progress2 \
     {{ config.source_user }}@{{ config.source_host }}:{{ config.source_dir }} {{ config.target_dir }} \
     {% for exclude in config.exclude -%}--exclude {{ exclude }} {% endfor %} \
-    --files-from {{ rsync_file_root }}/{{ file_list_filename }} -r $@
+    {% if file_list_filename %}--files-from {{ rsync_file_root }}/{{ file_list_filename }}{% endif %} \
+    -r $@
 {% endfor %}
