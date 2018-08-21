@@ -9,4 +9,3 @@ riak6,,riakcs,lvm,,MUMGCCWDCPRDR006,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapp
 riak7,,riakcs,lvm,,MUMGCCWDCPRDR007,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 riak8,,riakcs,lvm,,MUMGCCWDCPRDR008,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 riak9,,riakcs,lvm,,MUMGCCWDCPRDR009,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-redis,,riakcs,lvm,,MUMGCCWDCPRDRD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
