@@ -8,7 +8,6 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
     inventory: csv
-    version_added: "2.4"
     short_description: Uses CSV files and inventory source.
     description: |
         - CSV file based inventory, lines are split into groups by a blank line.
@@ -46,12 +45,12 @@ EXAMPLES = '''
 
   example2: |
       # separate groups of hosts can have their own headers
-      hostname,  host_address,   group 1,   group 2,  var: v1,  I.var: v2, L.var: v3
-      host1,     192.168.33.21,  web,       ,         val1,     23,
-      host2,     192.168.33.22,  proxy,     nginx,    val2,     23,
+      hostname,  host_address,   group 1,   group 2,  var: v1
+      host1,     192.168.33.21,  web,       ,         val1
+      host2,     192.168.33.22,  proxy,     nginx,    val2
 
       # comments are ignored
-      # groups are separated by a blank line (or a line of all blank cells)
+      # groups are separated by a blank line (or a line where the first cell is cells)
       hostname,  host_address,   group 1,   I.var: db_port,  var: root_path
       host3,     192.168.33.23,  db,        1234,            /opt/data/db
 '''
