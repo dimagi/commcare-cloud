@@ -78,6 +78,3 @@ copy_files:
         target_dir: /opt/data/postgresql/9.6/
         files:
           - data/
-      # ES
-      # RIAK
-      # COUCH
