@@ -13,11 +13,11 @@ DOCUMENTATION = '''
         - CSV file based inventory, lines are split into groups by a blank line.
         - Each group of lines can either be a list of hosts or a list of group var definitions.
         - Hosts are listed with the following required fields (hostname, host_address)
-        - Host groups are specified in group columns e.g. "group 1", "group 2" etc.
-        - Host vars are listed in individual colums with headers formatted as follows - "{type}.var: {name}".
+        - Host groups are specified in group columns e.g. C(group 1), C(group 2) etc.
+        - Host vars are listed in individual colums with headers formatted as follows - C({type}.var: {name}).
         - The 'type' field must be one of the following (or blank for the default)
             - S: string (default if no type specified)
-            - B: boolean ('true' or 't' (case insensitive), anything else if false)
+            - B: boolean ('true' or 't' (case insensitive), anything else is false)
             - I: integer
             - F: float
             - L: list (formatted as JSON)
