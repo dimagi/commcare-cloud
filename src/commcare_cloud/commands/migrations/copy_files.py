@@ -42,6 +42,7 @@ class CopyFiles(CommandBase):
     The plan file must be formatted as follows:
     
     ```yml
+    source_env: env1 (optional if source is different from target)
     copy_files:
       - <target-host>:
           - source_host: <source-host>
@@ -84,7 +85,8 @@ class CopyFiles(CommandBase):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
-        plan = read_plan(args.plan)
+
+        plan = read_plan(args.plan, environment)
         working_directory = _get_working_dir(args.plan, environment)
         ansible_context = AnsibleContext(args)
 
@@ -108,14 +110,23 @@ class CopyFiles(CommandBase):
             shutil.rmtree(working_directory)
 
 
-def read_plan(plan_path):
+def read_plan(plan_path, target_env):
     with open(plan_path, 'r') as f:
         plan_dict = yaml.load(f)
 
+    source_env = None
+    if 'source_env' in plan_dict:
+        source_env = get_environment(plan_dict['source_env'])
+
+    def _get_source_files(config_dict):
+        if source_env:
+            config_dict['source_host'] = source_env.translate_host(config_dict['source_host'])
+        return SourceFiles(**config_dict)
+
     return {
-        target_host: [
-                SourceFiles(**config_dict) for config_dict in config_dicts
-            ]
+        target_env.translate_host(target_host): [
+            _get_source_files(config_dict) for config_dict in config_dicts
+        ]
         for target in plan_dict['copy_files']
         for target_host, config_dicts in target.items()
     }
