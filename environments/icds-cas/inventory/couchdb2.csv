@@ -1,6 +1,6 @@
 hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device
-couch0,,couchdb2,couchdb2_proxy,lvm,MUMGCCWDCPRDCD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-couch1,,couchdb2,,lvm,MUMGCCWDCPRDCD01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-couch2,,couchdb2,,lvm,MUMGCCWDCPRDCD02,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-couch3,,couchdb2,,lvm,MUMGCCWDCPRDCD03,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-couch4,,couchdb2,,lvm,MUMGCCWDCPRDCD04,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+couch0,100.71.184.25,couchdb2,couchdb2_proxy,lvm,MUMGCCWCDPRDCD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+couch1,,couchdb2,,lvm,MUMGCCWCDPRDCD01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+couch2,,couchdb2,,lvm,MUMGCCWCDPRDCD02,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+couch3,,couchdb2,,lvm,MUMGCCWCDPRDCD03,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+couch4,,couchdb2,,lvm,MUMGCCWCDPRDCD04,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
