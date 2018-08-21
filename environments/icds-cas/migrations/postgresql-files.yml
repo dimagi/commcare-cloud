@@ -2,79 +2,66 @@ source_env: icds-new
 copy_files:
   - pgshard0:
       - source_host: pgshard5
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard1:
       - source_host: pgshard8
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard2:
       - source_host: pgshard11
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard3:
       - source_host: pgshard12
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard4:
       - source_host: pgshard6
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard5:
       - source_host: pgshard1
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard6:
       - source_host: pgshard10
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard7:
       - source_host: pgshard4
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard8:
       - source_host: pgshard3
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgshard9:
       - source_host: pgshard7
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgucr:
       - source_host: pgucr
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgmain:
       - source_host: pgmain1
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
   - pgsynclog0:
       - source_host: pgsynclog
-        source_dir: /opt/data/postgresql/9.6/
-        target_dir: /opt/data/postgresql/9.6/
-        files:
-          - data/
+        source_user: postgres
+        source_dir: /opt/data/postgresql/9.6/data/
+        target_dir: /opt/data/postgresql/9.6/data/
