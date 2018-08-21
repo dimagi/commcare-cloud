@@ -956,6 +956,7 @@ specified user on the source host has permissions to read the files being copied
 The plan file must be formatted as follows:
 
 ```yml
+source_env: env1 (optional if source is different from target)
 copy_files:
   - <target-host>:
       - source_host: <source-host>
