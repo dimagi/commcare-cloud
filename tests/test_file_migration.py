@@ -1,8 +1,11 @@
 import os
 import shutil
 
+from mock import patch
+
 from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \
     FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename, read_plan
+from commcare_cloud.environment.main import get_environment
 from tests.test_utils import get_file_contents
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'file_migration_data')
@@ -52,19 +55,20 @@ def test_prepare_migration_scripts():
         assert file_list == config.files
 
 
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_DATA_DIR)
 def test_parse_plan():
     expected = {
-        'target_host1': [
+        '10.0.0.1': [
             SourceFiles(
-                'source_host1',
+                '192.168.33.15',
                 '/opt/data/',
                 '/opt/data/',
                 files=['test/']
             )
         ],
-        'target_host2': [
+        '10.0.0.2': [
             SourceFiles(
-                'source_host2',
+                '192.168.33.16',
                 '/opt/data/test/',
                 '/opt/data/',
                 files=['test/file1'],
@@ -72,7 +76,8 @@ def test_parse_plan():
             )
         ]
     }
-    plan = read_plan(os.path.join(TEST_DATA_DIR, 'test_plan.yml'))
+    target_env = get_environment('target_env')
+    plan = read_plan(os.path.join(TEST_DATA_DIR, 'test_plan.yml'), target_env)
     assert plan == expected, "mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, plan)
 
 

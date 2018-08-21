@@ -120,11 +120,11 @@ def read_plan(plan_path, target_env):
 
     def _get_source_files(config_dict):
         if source_env:
-            config_dict['source_host'] = source_env.translate_host(config_dict['source_host'])
+            config_dict['source_host'] = source_env.translate_host(config_dict['source_host'], plan_path)
         return SourceFiles(**config_dict)
 
     return {
-        target_env.translate_host(target_host): [
+        target_env.translate_host(target_host, plan_path): [
             _get_source_files(config_dict) for config_dict in config_dicts
         ]
         for target in plan_dict['copy_files']
