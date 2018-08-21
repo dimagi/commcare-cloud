@@ -208,7 +208,7 @@ class Ping(CommandBase):
 
 
 class UpdateRiakSecrets(CommandBase):
-    command = 'update-riak'
+    command = 'update-riak-secrets'
     help = 'Update the vault file with the values from from the file in the riak machine.'
 
     arguments = NON_POSITIONAL_ARGUMENTS

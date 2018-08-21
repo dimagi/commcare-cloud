@@ -17,7 +17,7 @@ commcare-cloud $ENV ansible-playbook deploy_common.yml $PLAYBOOK_TAGS
 commcare-cloud $ENV ansible-playbook deploy_lvm.yml $PLAYBOOK_TAGS
 commcare-cloud $ENV ansible-playbook deploy_db.yml $PLAYBOOK_TAGS
 commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS --skip-tags=delete_riak_secret
-cchq $ENV update-riak
+cchq $ENV update-riak-secrets
 #This clears the file on the riakcs host machine.
 commcare-cloud $ENV ansible-playbook deploy_riakcs.yml $PLAYBOOK_TAGS --tags=delete_riak_secret
 commcare-cloud $ENV ansible-playbook disable_thp.yml $PLAYBOOK_TAGS
