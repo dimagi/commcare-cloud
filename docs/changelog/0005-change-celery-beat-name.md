@@ -20,7 +20,7 @@ It has been changed to: {{ project }}-{{ deploy_env }}-celery_beat_0.
 1. Stop the beat service
 
 ```bash
-cchq <env> fab supervisorctl:"stop {{ project }}-{{ deploy_env }}-celerybeat"
+cchq <env> service celery stop --only beat
 ```
 
 2. Update the supervisor configs
@@ -32,5 +32,5 @@ cchq <env> update-supervisor-confs
 3. Start the beat service
 
 ```bash
-cchq <env> fab supervisorctl:"start {{ project }}-{{ deploy_env }}-celerybeat"
+cchq <env> service celery start --only beat
 ```
