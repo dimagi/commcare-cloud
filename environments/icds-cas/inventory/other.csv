@@ -4,6 +4,7 @@ formplayer0,,formplayer,,lvm,MUMGCCWDCPRDFP00,"[""/dev/sdb""]","[""/dev/sdb1""]"
 rabbit0,,rabbitmq,,,MUMGCCWDCPRDRB00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 kafka0,,kafka,zookeeper,lvm,MUMGCCWDCPRDKF00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 kafka1,,kafka,,lvm,MUMGCCWDCPRDKF01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+redis0,,redis,,,MUMGCCWDCPRDRD00,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 redis1,,redis,,,MUMGCCWDCPRDRD01,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
 patch0,,patch,control,,MUMGCCWDCPRDPT00,,,
 proxy0,,proxy,cas_proxy,,MUMGCCWDCPRDPX01,,,
