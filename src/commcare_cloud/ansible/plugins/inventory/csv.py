@@ -21,6 +21,7 @@ DOCUMENTATION = '''
             - I: integer
             - F: float
             - L: list (formatted as JSON)
+            - H: host (resolve to an ansible host. Only supported in host lists within the same block)
         - Group vars are defined in a block with the following fields
             - group: name of the get_group
             - var: name of the variable
@@ -66,6 +67,7 @@ TYPE_INTEGER = 'I'
 TYPE_BOOLEAN = 'B'
 TYPE_FLOAT = 'F'
 TYPE_LIST = 'L'
+TYPE_HOST = 'H'
 
 
 class InventoryModule(BaseInventoryPlugin):
@@ -116,9 +118,14 @@ class InventoryModule(BaseInventoryPlugin):
                 self._parse_groups(rows)
 
     def _parse_hosts(self, rows):
+        hosts_aliases = {
+            row['hostname']: row['host_address']
+            for row in rows
+        }
+
         for row in rows:
             groups = self._get_host_groups(row)
-            host_vars = self._get_host_vars(row)
+            host_vars = self._get_host_vars(row, hosts_aliases)
             host = row['host_address']
             host_group = row['hostname']
             self.inventory.add_group(host_group)
@@ -135,13 +142,13 @@ class InventoryModule(BaseInventoryPlugin):
             if key.startswith('group') and val.strip()
         ]
 
-    def _get_host_vars(self, row):
+    def _get_host_vars(self, row, hosts_aliases):
         vars = {'hostname': row['hostname']}
         for key, val in row.items():
             if 'var' in key and val:
                 item_type, name = key.split('.') if '.' in key else ('S', key)
                 name = name.split(' ')[1]
-                vars[name] = conv_str2value(item_type, val)
+                vars[name] = conv_str2value(item_type, val, hosts_aliases)
         return vars
 
     def _parse_groups(self, rows):
@@ -169,7 +176,7 @@ class InventoryModule(BaseInventoryPlugin):
         return row_groups
 
 
-def conv_str2value(item_type, item):
+def conv_str2value(item_type, item, hosts_aliases=None):
     """
     Convert a character string to a specified data type.
 
@@ -192,4 +199,9 @@ def conv_str2value(item_type, item):
         return float(item)
     elif TYPE_LIST == item_type:
         return json.loads(item)
+    elif TYPE_HOST == item_type:
+        if hosts_aliases is None:
+            raise AnsibleParserError("Var of type host not supported: {}".format(item))
+        return hosts_aliases.get(item, item)
+
     return item
