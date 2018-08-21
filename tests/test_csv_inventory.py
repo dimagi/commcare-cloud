@@ -17,7 +17,7 @@ EXPECTED_OUTPUT = {
                 "spare"
             ],
             "hostname": "pgucr",
-            "hot_standby_server": "pgucrstandby0",
+            "hot_standby_server": "192.168.33.27",
             "devices": [
                 "/dev/sdb"
             ],
@@ -28,7 +28,7 @@ EXPECTED_OUTPUT = {
         },
         "192.168.33.27": {
             "datavol_device": "/dev/mapper/consolidated-data",
-            "hot_standby_master": "pgucr",
+            "hot_standby_master": "192.168.33.26",
             "hostname": "pgucrstandby0",
             "replication_slot": "standby",
             "devices": [
