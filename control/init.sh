@@ -131,7 +131,7 @@ function ansible-deploy-control() {
     if [ -z "$1" ]; then
         echo "Usage:"
         echo "  ansible-deploy-control [environment]"
-        exit 1
+        return
     fi
     env="$1"
     echo "You must be root to deploy the control machine"
