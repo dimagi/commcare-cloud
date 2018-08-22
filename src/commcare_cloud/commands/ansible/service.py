@@ -64,7 +64,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             self.print_help()
             return 0
         elif action == 'logs':
-            print("Logs can be found at:\n{}".format(self.log_location.format(env_name)))
+            print("Logs can be found at:\n{}".format(self.log_location.format(env=env_name)))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
@@ -281,8 +281,8 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 class Nginx(AnsibleService):
     name = 'nginx'
     inventory_groups = ['proxy']
-    log_location = '/home/cchq/www/{0}/log/{0}_commcare-nginx_error.log\n' \
-                   '/home/cchq/www/{0}/log/{0}_commcare-nginx_access.log'
+    log_location = '/home/cchq/www/{env}/log/{env}_commcare-nginx_error.log\n' \
+                   '/home/cchq/www/{env}/log/{env}_commcare-nginx_access.log'
 
 
 class ElasticsearchClassic(AnsibleService):
@@ -420,7 +420,7 @@ class SingleSupervisorService(SupervisorService):
 class CommCare(SingleSupervisorService):
     name = 'commcare'
     inventory_groups = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
-    log_location = '/home/cchq/www/{0}/log/django.log'
+    log_location = '/home/cchq/www/{env}/log/django.log'
 
     @property
     def supervisor_process_name(self):
@@ -430,8 +430,8 @@ class CommCare(SingleSupervisorService):
 class Webworker(SingleSupervisorService):
     name = 'webworker'
     inventory_groups = ['webworkers']
-    log_location = 'Regular logger: /home/cchq/www/{0}/log/<host>-commcarehq.django.log\n' \
-                   'Accounting logger: /home/cchq/www/{0}/log/<host>-commcarehq.accounting.log'
+    log_location = 'Regular logger: /home/cchq/www/{env}/log/<host>-commcarehq.django.log\n' \
+                   'Accounting logger: /home/cchq/www/{env}/log/<host>-commcarehq.accounting.log'
 
     @property
     def supervisor_process_name(self):
@@ -441,7 +441,7 @@ class Webworker(SingleSupervisorService):
 class Formplayer(SingleSupervisorService):
     name = 'formplayer'
     inventory_groups = ['formplayer']
-    log_location = '/home/cchq/www/{0}/log/formplayer-spring.log'
+    log_location = '/home/cchq/www/{env}/log/formplayer-spring.log'
 
     @property
     def supervisor_process_name(self):
@@ -451,7 +451,7 @@ class Formplayer(SingleSupervisorService):
 class Celery(SupervisorService):
     name = 'celery'
     inventory_groups = ['celery']
-    log_location = '/home/cchq/www/{0}/log/celery_*.log'
+    log_location = '/home/cchq/www/{env}/log/celery_*.log'
 
     def _get_processes_by_host(self, process_pattern=None):
         return get_processes_by_host(
@@ -468,7 +468,7 @@ class Celery(SupervisorService):
 class Pillowtop(SupervisorService):
     name = 'pillowtop'
     inventory_groups = ['pillowtop']
-    log_location = '/home/cchq/www/{0}/log/pillowtop-<pillow_name>-<num_process>.log'
+    log_location = '/home/cchq/www/{env}/log/pillowtop-<pillow_name>-<num_process>.log'
 
     @property
     def managed_services(self):
