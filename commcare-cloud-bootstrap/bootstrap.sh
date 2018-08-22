@@ -35,7 +35,12 @@ commcare-cloud $ENV ansible-playbook migrate_on_fresh_install.yml $PLAYBOOK_TAGS
 commcare-cloud $ENV ansible-playbook deploy_touchforms.yml $PLAYBOOK_TAGS
 commcare-cloud $ENV ansible-playbook deploy_http_proxy.yml $PLAYBOOK_TAGS
 commcare-cloud $ENV fab deploy:confirm=no,skip_record=yes --show=debug --set ignore_kafka_checkpoint_warning=true --branch=$BRANCH
+
+# Make the test superuser test_superuser@test.com, so the postgres service check passes
+echo -e "123\n123" | cchq $ENV django-manage make_superuser test_superuser@test.com
+
 commcare-cloud $ENV django-manage check_services
+
 proxy=$(grep -A1 "\[$ENV-proxy-0\]" environments/$ENV/inventory.ini | tail -n 1| awk '{print $2}' | awk -F'=' '{print $2}')
 curl https://${proxy}/serverup.txt --insecure
 

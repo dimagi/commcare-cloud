@@ -1,5 +1,4 @@
 ---
-# Add and configure rabbitmq
 - name: Add rabbitmq official apt repository
   become: true
   apt_repository: repo='deb http://www.rabbitmq.com/debian/ testing main' state=present
@@ -10,39 +9,16 @@
   notify:
   - restart rabbitmq
 
-- name: Install rabbitmq plugins
-  become: true
-  rabbitmq_plugin: >
-    names=rabbitmq_management
-    state=enabled
+- include: config-cluster.yml
+  when: rabbitmq_create_cluster
 
-- name: Ensure vhost commcarehq is present
-  become: true
-  rabbitmq_vhost: name=commcarehq state=present
-  notify:
-  - restart rabbitmq
-
-- name: Add users
-  become: true
-  rabbitmq_user: >
-    user={{ AMQP_USER }}
-    password={{ AMQP_PASSWORD }}
-    tags='administrator'
-    vhost=commcarehq
-    configure_priv=.*
-    write_priv=.*
-    read_priv=.*
-    state=present
-  notify:
-  - restart rabbitmq
-
-- name: Remove default guest user
-  become: true
-  rabbitmq_user: user=guest state=absent
-  notify:
-  - restart rabbitmq
+- include: config.yml
+  when: not rabbitmq_create_cluster or ( ansible_fqdn == hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )
 
 - name: Enable and start RabbitMQ service
   become: yes
   service: name=rabbitmq-server state=started
   tags: after-reboot
+
+- include: join-cluster.yml
+  when: (rabbitmq_create_cluster == true) and ( ansible_fqdn != hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )

@@ -1,5 +1,7 @@
 ## How do I install it?
 
+For manual install instructions see the [README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
+
 ### Step 1.
 Make sure that you have a non-root user account on the control machine.
 
@@ -88,4 +90,4 @@ If you get to this point, congratulations! `commcare-cloud` is installed.
 
 ---
 
-[︎⬅︎ Overview](0001-overview.md) | Installation
+[︎⬅︎ Overview](..)
