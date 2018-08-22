@@ -1,5 +1,5 @@
 internal_domain_name: 'internal-icds-cloud.commcarehq.org'
-cluster_ip_range: '10.247.164.0/23'  # TODO: cluster ip range
+cluster_ip_range: '100.71.184.0/22'  # TODO: cluster ip range
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 riak_backend: "bitcask"
