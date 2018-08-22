@@ -34,10 +34,23 @@
       - virtualenvwrapper
     extra_args: '--ignore-installed six'
 
-- name: run init script
+- name: Check whether init has been run
   become: yes
   become_user: "{{ item }}"
+  command: "grep -q 'init-ansible' /home/{{ item }}/.profile"
+  register: check_init
+  check_mode: no
+  changed_when: check_init.rc == 1
+  failed_when: check_init.rc not in [ 0, 1 ]
+  with_items: "{{ dev_users.present }}"
+
+- name: run init script
+  become: yes
+  become_user: "{{ item.item }}"
   shell: "yes | bash commcare-cloud/control/init.sh"
   args:
-    chdir: "/home/{{ item }}"
-  with_items: "{{ dev_users.present }}"
+    chdir: "/home/{{ item.item }}"
+  when: item.rc != 0
+  with_items: "{{ check_init.results }}"
+  loop_control:
+    label: "{{ item.item }}"
