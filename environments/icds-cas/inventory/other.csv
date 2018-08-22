@@ -1,5 +1,5 @@
 hostname,host_address,group 1,group 2,group3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device,var: public_ip
-airflow0,100.71.188.10,,,,MUMGCCWCDPRDAF00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,
+airflow0,100.71.188.10,airflow,,,MUMGCCWCDPRDAF00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,
 formplayer0,100.71.188.27,formplayer,,lvm,MUMGCCWCDPRDFP00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,
 rabbit0,100.71.188.43,rabbitmq,,,MUMGCCWCDPRDRB00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,
 kafka0,100.71.184.15,kafka,zookeeper,lvm,MUMGCCWCDPRDKF00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,
