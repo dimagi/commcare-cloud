@@ -2,9 +2,14 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
-import inspect
 import os
 
+# set ansible config before other imports so that it's present when `ansible.constants` is imported
+if 'ANSIBLE_CONFIG' not in os.environ:
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    os.environ['ANSIBLE_CONFIG'] = os.path.join(ROOT_DIR, 'src/commcare_cloud/ansible/ansible.cfg')
+
+import inspect
 import sys
 import warnings
 from collections import OrderedDict
