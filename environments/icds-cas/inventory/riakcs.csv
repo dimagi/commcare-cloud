@@ -1,11 +1,11 @@
 hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device
-riak0,,riakcs,lvm,stanchion,MUMGCCWCDPRDR000,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak1,,riakcs,lvm,,MUMGCCWCDPRDR001,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak2,,riakcs,lvm,,MUMGCCWCDPRDR002,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak3,,riakcs,lvm,,MUMGCCWCDPRDR003,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak4,,riakcs,lvm,,MUMGCCWCDPRDR004,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak5,,riakcs,lvm,,MUMGCCWCDPRDR005,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak6,,riakcs,lvm,,MUMGCCWCDPRDR006,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak7,,riakcs,lvm,,MUMGCCWCDPRDR007,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak8,,riakcs,lvm,,MUMGCCWCDPRDR008,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
-riak9,,riakcs,lvm,,MUMGCCWCDPRDR009,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak0,100.71.184.33,riakcs,lvm,stanchion,MUMGCCWCDPRDR000,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak1,100.71.184.43,riakcs,lvm,,MUMGCCWCDPRDR001,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak2,100.71.184.13,riakcs,lvm,,MUMGCCWCDPRDR002,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak3,100.71.184.44,riakcs,lvm,,MUMGCCWCDPRDR003,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak4,100.71.184.50,riakcs,lvm,,MUMGCCWCDPRDR004,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak5,100.71.184.37,riakcs,lvm,,MUMGCCWCDPRDR005,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak6,100.71.184.48,riakcs,lvm,,MUMGCCWCDPRDR006,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak7,100.71.184.40,riakcs,lvm,,MUMGCCWCDPRDR007,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak8,100.71.184.46,riakcs,lvm,,MUMGCCWCDPRDR008,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
+riak9,100.71.184.35,riakcs,lvm,,MUMGCCWCDPRDR009,"[""/dev/sdb""]","[""/dev/sdb1""]",/dev/mapper/consolidated-data
