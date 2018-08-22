@@ -8,7 +8,7 @@
 
 ## Change Context
 Large scale deployments of CommCare require scaling out Kafka brokers to support the high
-traffic volume (as well as for high availability). Up until now CommCare has only 
+traffic volume (as well as for high availability). Up until now CommCare has only
 supported a single broker.
 
 
