@@ -12,7 +12,7 @@ DOCUMENTATION = '''
     description: |
         - CSV file based inventory, lines are split into groups by a blank line.
         - Each group of lines can either be a list of hosts or a list of group var definitions.
-        - Hosts are listed with the following required fields (hostname, host_address)
+        - Hosts are listed with the following required fields (C(hostname), C(host_address))
         - Host groups are specified in group columns e.g. C(group 1), C(group 2) etc.
         - Host vars are listed in individual colums with headers formatted as follows - C({type}.var: {name}).
         - The 'type' field must be one of the following (or blank for the default)
@@ -22,11 +22,10 @@ DOCUMENTATION = '''
             - F: float
             - L: list (formatted as JSON)
             - H: host (resolve to an ansible host. Only supported in host lists within the same block)
-        - Group vars are defined in a block with the following fields
-            - group: name of the get_group
-            - var: name of the variable
-            - va: value
-            - type: type of the value (see host var types)
+        - Group vars can be defined in two formats. The first is similar to hosts where each row is a group
+        and columns are variables. The second format has 4 columns, C(group), C(var), C(val), C(type) and
+        each row represents a single variable value for a single group.
+        - In both formats the first column header must be C(group).
 '''
 
 EXAMPLES = '''
@@ -37,7 +36,7 @@ EXAMPLES = '''
       host2,     192.168.33.22,  proxy,     nginx,    val2,     23,
       host3,     192.168.33.23,  db,        lvm,      val3,     ,          ["v1", "v2"]
 
-      # group vars definition table
+      # group vars definition table (row format)
       group,   var,         val,             type
       web,     gvar1,       1,               I
       web,     gvar2,       foo,             S
@@ -54,6 +53,11 @@ EXAMPLES = '''
       # groups are separated by a blank line (or a line where the first cell is cells)
       hostname,  host_address,   group 1,   I.var: db_port,  var: root_path
       host3,     192.168.33.23,  db,        1234,            /opt/data/db
+      
+      # group table (column format)
+      group,  var: port,  var: relay
+      g1,     9010,       True
+      g2,     8000,       False
 '''
 
 
@@ -152,15 +156,24 @@ class InventoryModule(BaseInventoryPlugin):
         return vars
 
     def _parse_groups(self, rows):
-        for row in rows:
-            group = row['group']
-            del row['group']
-            self.inventory.add_group(group)
-            for key, raw_val in row.items():
-                if 'var' in key and raw_val:
-                    item_type, name = key.split('.') if '.' in key else ('S', key)
-                    name = name.split(' ')[1]
-                    self.inventory.set_variable(group, name, conv_str2value(item_type, raw_val))
+        if 'var' in rows[0] and 'val' in rows[0]:
+            # vertical listing
+            for row in rows:
+                group = row['group']
+                self.inventory.add_group(group)
+                var_name, item_type, raw_val = row['var'], row['type'], row['val']
+                self.inventory.set_variable(group, var_name, conv_str2value(item_type, raw_val))
+        else:
+            # horizontal listing
+            for row in rows:
+                group = row['group']
+                del row['group']
+                self.inventory.add_group(group)
+                for key, raw_val in row.items():
+                    if 'var' in key and raw_val:
+                        item_type, name = key.split('.') if '.' in key else ('S', key)
+                        name = name.split(' ')[1]
+                        self.inventory.set_variable(group, name, conv_str2value(item_type, raw_val))
 
     def _parse_row_groups(self, csv_lines):
         """Parse CSV lines into groups each with their own header column"""
