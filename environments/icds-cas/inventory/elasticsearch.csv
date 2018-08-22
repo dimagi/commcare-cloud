@@ -1,6 +1,6 @@
-hostname,host_address,group 1,group 2,var: host_alias,L.var: devices,L.var: partitions,var: datavol_device,var: elasticsearch_node_name
-es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,es0
-es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,es1
-es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,es2
-es3,100.71.184.10,elasticsearch,,MUMGCCWCDPRDES03,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,es3
-es4,100.71.184.16,elasticsearch,,MUMGCCWCDPRDES04,"[""/dev/vdb""]","[""/dev/vdb1""]",/dev/mapper/consolidated-data,es4
+hostname,host_address,group 1,group 2,var: host_alias,L.var: devices,L.var: partitions,var: elasticsearch_node_name
+es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,["/dev/vdb"],["/dev/vdb1"],es0
+es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,["/dev/vdb"],["/dev/vdb1"],es1
+es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,["/dev/vdb"],["/dev/vdb1"],es2
+es3,100.71.184.10,elasticsearch,,MUMGCCWCDPRDES03,["/dev/vdb"],["/dev/vdb1"],es3
+es4,100.71.184.16,elasticsearch,,MUMGCCWCDPRDES04,["/dev/vdb"],["/dev/vdb1"],es4
