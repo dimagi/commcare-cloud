@@ -44,10 +44,9 @@ class AppProcessesConfig(jsonobject.JsonObject):
         validate_app_processes_config(self)
 
     def check_and_translate_hosts(self, environment):
-        # self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
-        # self.pillows = check_and_translate_hosts(environment, self.pillows)
-        # _validate_all_required_machines_mentioned(environment, self)
-        return
+        self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
+        self.pillows = check_and_translate_hosts(environment, self.pillows)
+        _validate_all_required_machines_mentioned(environment, self)
 
     def to_generated_variables(self):
         flower_host, = [machine for machine, queues_config in self.celery_processes.items()
