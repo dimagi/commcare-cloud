@@ -232,7 +232,7 @@ class UpdateRiakSecrets(CommandBase):
         # Add the key and secret
         with open(DefaultPaths(args.env_name).vault_yml, 'r+') as f:
             vault_contents = yaml.load(f)
-            vault_contents['secrets']['S3_BLOB_DB_ACCESS_KEY'] = riak_key
-            vault_contents['secrets']['S3_BLOB_DB_SECRET_KEY'] = riak_secret
+            vault_contents['secrets']['RIAKCS_S3_ACCESS_KEY'] = riak_key
+            vault_contents['secrets']['RIAKCS_S3_SECRET_KEY'] = riak_secret
             f.seek(0)
             yaml.safe_dump(vault_contents, f, default_flow_style=False)
