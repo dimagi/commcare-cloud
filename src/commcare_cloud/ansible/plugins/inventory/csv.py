@@ -148,28 +148,30 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _get_host_vars(self, row, hosts_aliases):
         vars = {'hostname': row['hostname']}
-        for key, val in row.items():
-            if 'var' in key and val:
+        for key, raw_val in row.items():
+            raw_val = raw_val.strip()
+            if 'var' in key and raw_val:
                 item_type, name = key.split('.') if '.' in key else ('S', key)
                 name = name.split(' ')[1]
-                vars[name] = conv_str2value(item_type, val, hosts_aliases)
+                vars[name] = conv_str2value(item_type, raw_val, hosts_aliases)
         return vars
 
     def _parse_groups(self, rows):
         if 'var' in rows[0] and 'val' in rows[0]:
-            # vertical listing
+            # row format
             for row in rows:
                 group = row['group']
                 self.inventory.add_group(group)
-                var_name, item_type, raw_val = row['var'], row['type'], row['val']
+                var_name, item_type, raw_val = row['var'], row['type'], row['val'].strip()
                 self.inventory.set_variable(group, var_name, conv_str2value(item_type, raw_val))
         else:
-            # horizontal listing
+            # column format
             for row in rows:
                 group = row['group']
                 del row['group']
                 self.inventory.add_group(group)
                 for key, raw_val in row.items():
+                    raw_val = raw_val.strip()
                     if 'var' in key and raw_val:
                         item_type, name = key.split('.') if '.' in key else ('S', key)
                         name = name.split(' ')[1]
