@@ -27,7 +27,7 @@ couch_dbs:
   default:
     host: commcarehq.cloudant.com
     port: 443
-    name: staging_commcarehq
+    name: test_staging_commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: True
