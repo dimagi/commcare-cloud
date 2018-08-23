@@ -16,6 +16,8 @@ dbs:
   ucr:
     query_stats: True
   form_processing:
+    proxy:
+      host: pgproxy0
     partitions:
       p1:
         shards: [0, 99]
