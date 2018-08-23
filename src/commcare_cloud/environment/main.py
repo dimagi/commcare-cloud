@@ -44,7 +44,7 @@ class Environment(object):
 
     @memoized
     def get_ansible_vault_password(self):
-        return getpass.getpass("Vault Password: ")
+        return getpass.getpass("Vault Password for '{}': ".format(self.paths.env_name))
 
     @memoized
     def get_vault_variables(self):
