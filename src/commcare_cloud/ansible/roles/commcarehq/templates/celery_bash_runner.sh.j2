@@ -44,8 +44,7 @@ HOSTNAME_ARG+=".${TIMESTAMP}_timestamp"
 HOSTNAME_PARTS=(${HOSTNAME_ARG//=/ })
 HOSTNAME=${HOSTNAME_PARTS[1]}
 
-source {{ virtualenv_home }}/bin/activate
-celery -A corehq worker ${HOSTNAME_ARG} ${ARGS}  &
+{{ virtualenv_home }}/bin/celery -A corehq worker ${HOSTNAME_ARG} ${ARGS}  &
 PID=$!
 BASH_PID=$$
 echo "Started ${HOSTNAME} on PID: ${PID}"
