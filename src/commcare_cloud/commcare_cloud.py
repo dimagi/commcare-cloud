@@ -4,10 +4,6 @@ from __future__ import absolute_import
 
 import inspect
 import os
-
-from commcare_cloud.patch_environ import patch_environ
-patch_environ()
-
 import sys
 import warnings
 from collections import OrderedDict
