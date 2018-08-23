@@ -23,7 +23,7 @@ class PrivilegedCommand():
         self.command = command
         self.user_as = user_as
 
-    def run_parallel_command(self, hosts):
+    def run_command(self, hosts):
         from fabric.api import execute, sudo, env
         if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
             env.use_ssh_config = True
