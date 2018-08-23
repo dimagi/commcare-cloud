@@ -226,7 +226,7 @@ def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
     )
     piv_command = PrivilegedCommand('ansible', environment.get_ansible_user_password(), command)
     results = piv_command.run_command(target_hosts, parallel_pool_size=10)
-    non_zero_returns = [ret.status_code for ret in results.values() if ret.status_code]
+    non_zero_returns = [ret.return_code for ret in results.values() if ret.return_code]
     return non_zero_returns[0] if non_zero_returns else 0
 
 
