@@ -277,9 +277,9 @@ def _run_auth_playbook(plan, environment, ansible_context, action):
         if action == 'add':
             _genearate_and_fetch_key(environment, target_host, 'root', ansible_context)
             _set_auth_key(plan.source_env, source_host, source_user, ansible_context)
-            os.remove(ID_RSA_TMP)
         elif action == 'remove':
             _set_auth_key(plan.source_env, source_host, source_user, ansible_context)
+            os.remove(ID_RSA_TMP)
 
 
 def _genearate_and_fetch_key(env, host, user, ansible_context):
