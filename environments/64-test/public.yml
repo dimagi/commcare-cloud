@@ -77,7 +77,6 @@ localsettings:
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
