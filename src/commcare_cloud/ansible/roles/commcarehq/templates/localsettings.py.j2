@@ -212,7 +212,27 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
-LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
+LOCAL_PILLOWTOPS = {
+{% for group, pillows in localsettings.LOCAL_PILLOWS.items() %}
+    "{{ group }}": [
+    {% for pillow in pillows %}
+        {
+            "name": "{{ pillow.name }}",
+            "class": "{{ pillow.class }}",
+            "instance": "{{ pillow.instance }}",
+            "params": {
+                "topics": {{ pillow.params.topics }},
+                "include_ucrs": [
+                {% for ucr in pillow.params.include_ucrs %}
+                     "{{ ucr }}",
+                {% endfor %}
+                ]
+            }
+        },
+    {% endfor %}
+    ]
+{% endfor %}
+}
 {% endif %}
 
 
