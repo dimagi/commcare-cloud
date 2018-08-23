@@ -104,7 +104,7 @@ def run_ansible_playbook(
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
-            '-i', environment.paths.inventory_ini,
+            '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.vault_yml),
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),

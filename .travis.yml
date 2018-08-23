@@ -5,6 +5,7 @@ python: "2.7"
 env:
   global:
     - ANSIBLE_ROLES_PATH="~/.ansible/roles"
+    - ANSIBLE_CONFIG="src/commcare_cloud/ansible/ansible.cfg"
     - TRAVIS_TEST=1
   matrix:
     - TEST=main

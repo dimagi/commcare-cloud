@@ -1,19 +1,19 @@
 secrets:
-  ECRYPTFS_PASSWORD: 'xxBvYiMZ3YVIVkFR'
+  ECRYPTFS_PASSWORD: '{{ generate_uuid() }}'
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
   AMQP_USER: "{{ deploy_env }}_worker"
-  AMQP_PASSWORD: '******'
+  AMQP_PASSWORD: '{{ generate_uuid() }}'
   SUPERVISOR_HTTP_USERNAME: user
-  SUPERVISOR_HTTP_PASSWORD: 123
+  SUPERVISOR_HTTP_PASSWORD: '{{ generate_uuid() }}'
   POSTGRES_USERS:
     commcare:
       username: commcarehq
-      password: LLkDYfDXbdnCzhgXMITCDs4s
+      password: '{{ generate_uuid() }}'
     devreadonly:
       username: "devreadonly"
-      password: devreadonly
+      password: '{{ generate_uuid() }}'
       role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
       privs:
         -
@@ -21,15 +21,13 @@ secrets:
           objs: ALL_IN_SCHEMA
     replication:
         username: 'hqrepl'
-        password: 'hqrepl'
+        password: '{{ generate_uuid() }}'
         role_attr_flags: 'LOGIN,REPLICATION'
 
 localsettings_private:
-  COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
+  COUCH_PASSWORD: '{{ generate_uuid() }}'
   COUCH_USERNAME: commcarehq
-  FORMPLAYER_INTERNAL_AUTH_KEY: 'QkGxkCZ2cfT20gI901l8bxzNgspibBnx741me7Soa38BsjiPmmrAEuLw4SM5LBOQG8PQo'
-  SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
-  TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
-  TOUCHFORMS_API_USER: 'touchforms@example.com'
+  FORMPLAYER_INTERNAL_AUTH_KEY: '{{ generate_uuid() }}'
+  SECRET_KEY: '{{ generate_uuid() }}'
 
 ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9

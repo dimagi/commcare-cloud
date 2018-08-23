@@ -23,7 +23,7 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
-ACTIONS = ['start', 'stop', 'restart', 'status', 'help']
+ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
 
 STATES = {
     'start': 'started',
@@ -52,6 +52,11 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         """Inventory groups that are applicable to this service."""
         raise NotImplementedError
 
+    @abstractproperty
+    def log_location(self):
+        """Location of the service's logs shown on the command line."""
+        raise NotImplementedError
+
     def __init__(self, environment, ansible_context):
         self.environment = environment
         self.ansible_context = ansible_context
@@ -60,7 +65,9 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         if action == 'help':
             self.print_help()
             return 0
-
+        elif action == 'logs':
+            print("Logs can be found at:\n{}".format(self.log_location))
+            return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
         except NoHostsMatch:
@@ -276,18 +283,22 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 class Nginx(AnsibleService):
     name = 'nginx'
     inventory_groups = ['proxy']
+    log_location = '/home/cchq/www/{env}/log/{env}_commcare-nginx_error.log\n' \
+                   '/home/cchq/www/{env}/log/{env}_commcare-nginx_access.log'
 
 
 class ElasticsearchClassic(AnsibleService):
     name = 'elasticsearch-classic'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
+    log_location = '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs'
 
 
 class Elasticsearch(ServiceBase):
     name = 'elasticsearch'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
+    log_location = '/opt/data/{ecrypt}/elasticsearch-{version}/logs'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
@@ -329,6 +340,7 @@ class Elasticsearch(ServiceBase):
 class Couchdb(AnsibleService):
     name = 'couchdb'
     inventory_groups = ['couchdb']
+    log_location = '/usr/local/var/log/couchdb'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if not self.environment.groups.get('couchdb', None):
@@ -343,18 +355,21 @@ class Couchdb2(MultiAnsibleService):
         'couchdb2': ('couchdb2', 'couchdb2'),
         'couchdb2_proxy': ('nginx', 'couchdb2_proxy'),
     }
+    log_location = '/usr/local/couchdb2/couchdb/var/log/'
 
 
 class RabbitMq(AnsibleService):
     name = 'rabbitmq'
     inventory_groups = ['rabbitmq']
     service_name = 'rabbitmq-server'
+    log_location = '/var/log/rabbitmq/rabbit@{rabbitmq machine}.log'
 
 
 class Redis(AnsibleService):
     name = 'redis'
     inventory_groups = ['redis']
     service_name = 'redis-server'
+    log_location = '/var/log/syslog'
 
 
 class Riakcs(MultiAnsibleService):
@@ -364,6 +379,7 @@ class Riakcs(MultiAnsibleService):
         'riakcs': ('riak-cs', 'riakcs'),
         'stanchion': ('stanchion', 'stanchion'),
     }
+    log_location = '/var/log/riak-cs/'
 
 
 class Kafka(MultiAnsibleService):
@@ -372,6 +388,7 @@ class Kafka(MultiAnsibleService):
         'kafka': ('kafka-server', 'kafka'),
         'zookeeper': ('zookeeper', 'zookeeper')
     }
+    log_location = '/opt/data/kafka/controller.log'
 
 
 class Postgresql(MultiAnsibleService):
@@ -380,6 +397,8 @@ class Postgresql(MultiAnsibleService):
         'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
+    log_location = 'Postgres: /opt/data/postgresql/{version}/main/pg_log\n' \
+                   'Pgbouncer: /var/log/postgresql/pgbouncer.log'
 
 
 class SingleSupervisorService(SupervisorService):
@@ -402,7 +421,8 @@ class SingleSupervisorService(SupervisorService):
 
 class CommCare(SingleSupervisorService):
     name = 'commcare'
-    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'touchforms', 'formplayer', 'proxy']
+    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
+    log_location = '/home/cchq/www/{env}/log/django.log'
 
     @property
     def supervisor_process_name(self):
@@ -412,6 +432,8 @@ class CommCare(SingleSupervisorService):
 class Webworker(SingleSupervisorService):
     name = 'webworker'
     inventory_groups = ['webworkers']
+    log_location = 'Regular logger: /home/cchq/www/{env}/log/{host}-commcarehq.django.log\n' \
+                   'Accounting logger: /home/cchq/www/{env}/log/{host}-commcarehq.accounting.log'
 
     @property
     def supervisor_process_name(self):
@@ -421,24 +443,17 @@ class Webworker(SingleSupervisorService):
 class Formplayer(SingleSupervisorService):
     name = 'formplayer'
     inventory_groups = ['formplayer']
+    log_location = '/home/cchq/www/{env}/log/formplayer-spring.log'
 
     @property
     def supervisor_process_name(self):
         return get_formplayer_spring_instance_name(self.environment)
 
 
-class Touchforms(SingleSupervisorService):
-    name = 'touchforms'
-    inventory_groups = ['touchforms']
-
-    @property
-    def supervisor_process_name(self):
-        return get_formplayer_instance_name(self.environment)
-
-
 class Celery(SupervisorService):
     name = 'celery'
     inventory_groups = ['celery']
+    log_location = '/home/cchq/www/{env}/log/celery_*.log'
 
     def _get_processes_by_host(self, process_pattern=None):
         return get_processes_by_host(
@@ -455,6 +470,7 @@ class Celery(SupervisorService):
 class Pillowtop(SupervisorService):
     name = 'pillowtop'
     inventory_groups = ['pillowtop']
+    log_location = '/home/cchq/www/{env}/log/pillowtop-{pillow_name}-{num_process}.log'
 
     @property
     def managed_services(self):
@@ -544,7 +560,6 @@ SERVICES = [
     Kafka,
     Webworker,
     Formplayer,
-    Touchforms,
     Celery,
     CommCare,
     Pillowtop,
@@ -578,6 +593,7 @@ class Service(CommandBase):
     cchq <env> service postgresql status
     cchq <env> service riakcs restart --only riak,riakcs
     cchq <env> service celery help
+    cchq <env> service celery logs
     cchq <env> service celery restart --limit <host>
     cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
     cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
@@ -596,7 +612,7 @@ class Service(CommandBase):
         More than one service may be supplied as separate arguments in a row.
         """),
         Argument('action', choices=ACTIONS, help="""
-        Action can be `status`, `start`, `stop`, or `restart`.
+        Action can be `status`, `start`, `stop`, `restart`, or `logs`.
         This action is applied to every matching service.
         """),
         Argument('--limit', help=(

@@ -10,6 +10,7 @@ from memoized import memoized, memoized_property
 from collections import Counter
 
 from commcare_cloud.environment.constants import constants
+from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
@@ -24,8 +25,6 @@ from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 from six.moves import map
 
-class EnvironmentException(Exception):
-    pass
 
 class Environment(object):
     def __init__(self, paths):
@@ -175,8 +174,10 @@ class Environment(object):
 
     @memoized_property
     def inventory_manager(self):
-        return InventoryManager(loader=self._ansible_inventory_data_loader,
-                                sources=self.paths.inventory_ini)
+        return InventoryManager(
+            loader=self._ansible_inventory_data_loader,
+            sources=self.paths.inventory_source
+        )
 
     @property
     def _ansible_inventory_variable_manager(self):
@@ -262,8 +263,8 @@ class Environment(object):
         return mapping
 
     def _run_last_minute_checks(self):
-        assert len(self.groups.get('rabbitmq', [])) == 1, \
-            "You must have exactly one host in the [rabbitmq] group"
+        assert len(self.groups.get('rabbitmq', [])) > 0, \
+            "You need at least one rabbitmq host in the [rabbitmq] group"
         assert len(self.groups.get('redis', [])) == 1, \
             "You must have exactly one host in the [redis] group"
 
