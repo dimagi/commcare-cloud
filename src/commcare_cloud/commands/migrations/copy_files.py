@@ -95,16 +95,19 @@ class CopyFiles(CommandBase):
         ansible_context = AnsibleContext(args)
 
         environment.get_ansible_vault_password()
-        if plan.source_env != environment and args.action in ('prepare', 'clean'):
+        if plan.source_env != environment and args.action in ('prepare', 'cleanup'):
             plan.source_env.get_ansible_vault_password()
 
         if args.action == 'prepare':
             for target_host, source_configs in plan.configs.items():
+                self.log("Creating scripts to copy files.")
                 prepare_file_copy_scripts(target_host, source_configs, working_directory)
+                self.log("Moving scripts to target hosts.")
                 copy_scripts_to_target_host(target_host, working_directory, environment, ansible_context)
+            self.log("Establishing auth between target and source.")
             setup_auth(plan, environment, ansible_context)
 
-        if args.action == 'copy':
+        if args.action == 'cleanup':
             def run_check():
                 return execute_file_copy_scripts(environment, list(plan.configs), check_mode=True)
 
