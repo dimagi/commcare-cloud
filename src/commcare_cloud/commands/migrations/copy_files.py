@@ -9,7 +9,7 @@ from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.commands.utils import render_template
+from commcare_cloud.commands.utils import render_template, PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
 
 ID_RSA_TMP = '/tmp/id_rsa.tmp'
@@ -303,36 +303,3 @@ def _set_auth_key(env, host, user, ansible_context, remove=False):
     state = 'absent' if remove else 'present'
     args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(user, state, ID_RSA_TMP)
     run_ansible_module(env, ansible_context, host, 'authorized_key', args, True, None, None)
-
-
-class PrivilegedCommand():
-    """
-    This Class allows to execute sudo commands over ssh.
-    """
-    def __init__(self, user_name, password, command, user_as=None):
-        """
-        :param user_name: Username to login with
-        :param password: Password of the user
-        :param command: command to execute (This command will be executed using sudo. )
-        """
-        self.user_name = user_name
-        self.password = password
-        self.command = command
-        self.user_as = user_as
-
-    def run_parallel_command(self, hosts):
-        from fabric.api import execute, sudo, env
-        if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
-            env.use_ssh_config = True
-        env.forward_agent = True
-        env.user = self.user_name
-        env.password = self.password
-        env.hosts = hosts
-        env.warn_only = True
-
-        def _task():
-            result = sudo(self.command, user=self.user_as )
-            return result
-
-        res = execute(_task)
-        return res
