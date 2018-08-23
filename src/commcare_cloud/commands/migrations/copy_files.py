@@ -107,7 +107,7 @@ class CopyFiles(CommandBase):
             self.log("Establishing auth between target and source.")
             setup_auth(plan, environment, ansible_context)
 
-        if args.action == 'cleanup':
+        if args.action == 'copy':
             def run_check():
                 return execute_file_copy_scripts(environment, list(plan.configs), check_mode=True)
 
