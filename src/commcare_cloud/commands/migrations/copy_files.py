@@ -75,7 +75,7 @@ class CopyFiles(CommandBase):
     """
 
     arguments = (
-        Argument(dest='plan', help="Path to plan file"),
+        Argument(dest='plan_path', help="Path to plan file"),
         Argument(dest='action', choices=['prepare', 'copy', 'cleanup'], help="""
             Action to perform
 
