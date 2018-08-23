@@ -42,6 +42,7 @@ class CopyFiles(CommandBase):
     The plan file must be formatted as follows:
     
     ```yml
+    source_env: env1 (optional if source is different from target)
     copy_files:
       - <target-host>:
           - source_host: <source-host>
@@ -84,7 +85,8 @@ class CopyFiles(CommandBase):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
-        plan = read_plan(args.plan)
+
+        plan = read_plan(args.plan, environment)
         working_directory = _get_working_dir(args.plan, environment)
         ansible_context = AnsibleContext(args)
 
@@ -108,14 +110,23 @@ class CopyFiles(CommandBase):
             shutil.rmtree(working_directory)
 
 
-def read_plan(plan_path):
+def read_plan(plan_path, target_env):
     with open(plan_path, 'r') as f:
         plan_dict = yaml.load(f)
 
+    source_env = None
+    if 'source_env' in plan_dict:
+        source_env = get_environment(plan_dict['source_env'])
+
+    def _get_source_files(config_dict):
+        if source_env:
+            config_dict['source_host'] = source_env.translate_host(config_dict['source_host'], plan_path)
+        return SourceFiles(**config_dict)
+
     return {
-        target_host: [
-                SourceFiles(**config_dict) for config_dict in config_dicts
-            ]
+        target_env.translate_host(target_host, plan_path): [
+            _get_source_files(config_dict) for config_dict in config_dicts
+        ]
         for target in plan_dict['copy_files']
         for target_host, config_dicts in target.items()
     }
@@ -130,20 +141,23 @@ def _get_working_dir(plan_path, environment):
     return dir_path
 
 
-def prepare_file_copy_scripts(target_host, soucre_file_configs, script_root):
+def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
     target_script_root = os.path.join(script_root, target_host)
     if not os.path.exists(target_script_root):
         os.makedirs(target_script_root)
 
     files_for_node = []
-    for config in soucre_file_configs:
+    for config in source_file_configs:
         files = sorted(config.files)
-        filename = get_file_list_filename(config)
-        path = os.path.join(target_script_root, filename)
-        with open(path, 'w') as f:
-            f.write('{}\n'.format('\n'.join(files)))
+        if not files:
+            files_for_node.append((config, None))
+        else:
+            filename = get_file_list_filename(config)
+            path = os.path.join(target_script_root, filename)
+            with open(path, 'w') as f:
+                f.write('{}\n'.format('\n'.join(files)))
 
-        files_for_node.append((config, filename))
+            files_for_node.append((config, filename))
 
     if files_for_node:
         # create rsync script

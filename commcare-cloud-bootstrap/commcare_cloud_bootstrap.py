@@ -7,6 +7,7 @@ import string
 import subprocess
 import sys
 import shutil
+import uuid
 
 import re
 
@@ -378,6 +379,18 @@ def save_inventory(environment, inventory):
           file=sys.stderr)
 
 
+def save_vault_yml(environment):
+    def generate_uuid():
+        return str(uuid.uuid4())
+    j2.globals.update(generate_uuid=generate_uuid)
+    template = j2.get_template('private.yml.j2')
+    vault_file_contents = template.render(deploy_env=environment.paths.env_name)
+    vault_file = environment.paths.vault_yml
+    with open(vault_file, 'w') as f:
+        f.write(vault_file_contents)
+    print('vault file saved to {}'.format(vault_file),
+          file=sys.stderr)
+
 def save_app_processes_yml(environment, inventory):
     template = j2.get_template('app-processes.yml.j2')
     celery_host_name = inventory.all_groups['celery'].host_names[0]
@@ -402,12 +415,12 @@ def save_fab_settings_yml(environment):
 
 
 def copy_default_vars(environment, aws_config):
+    save_vault_yml(environment)
+
     vars_public = environment.paths.public_yml
-    vars_vault = environment.paths.vault_yml
     vars_postgresql = environment.paths.postgresql_yml
     vars_proxy = environment.paths.proxy_yml
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
-        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'proxy.yml'), vars_proxy)
