@@ -136,8 +136,8 @@ function ansible-deploy-control() {
     env="$1"
     echo "You must be root to deploy the control machine"
     echo "Run \`su\` to become the root user, then paste in this command to deploy:"
-    echo 'ENV=$env \
-    && USER='`whoami` \
+    echo 'ENV='$env' \
+    && USER='`whoami`' \
     && ANSIBLE_DIR=/home/$USER/commcare-cloud/src/commcare_cloud/ansible \
     && ANSIBLE_CONFIG=$ANSIBLE_DIR/ansible.cfg \
     && ENV_DIR=/home/$USER/commcare-cloud/environments \
