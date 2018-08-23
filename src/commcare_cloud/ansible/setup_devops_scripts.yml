@@ -1,0 +1,7 @@
+- name: DevOps Scripts
+  hosts: postgresql
+  become: true
+  roles:
+    - {role: devops_scripts}
+  tags:
+    - devops_script
