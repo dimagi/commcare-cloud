@@ -290,7 +290,7 @@ def _genearate_and_fetch_key(env, host, user, ansible_context):
         'ansible',
         env.get_ansible_user_password(),
         "getent passwd {} | cut -d: -f6".format(user)
-    ).run_parallel_command(host)
+    ).run_command(host)
     user_home = user_home_output[host]
 
     fetch_args = "src={user_home}/.ssh/id_rsa.pub dest={key_tmp} flat=yes fail_on_missing=yes".format(

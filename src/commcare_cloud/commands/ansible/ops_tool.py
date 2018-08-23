@@ -57,7 +57,7 @@ class ListDatabases(CommandBase):
 
         privileged_command = PrivilegedCommand(ansible_username, ansible_password, command, user_as)
 
-        present_db_op = privileged_command.run_parallel_command(host_addresses)
+        present_db_op = privileged_command.run_command(host_addresses)
 
         # List from Postgresql query.
 
