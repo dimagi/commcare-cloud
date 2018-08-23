@@ -1,5 +1,5 @@
 - name: Bootstrap Control
-  hosts: control
+  hosts: "{{ target|default(control) }}"
   become: true
   gather_facts: true
   roles:
