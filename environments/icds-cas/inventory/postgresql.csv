@@ -14,7 +14,7 @@ pgshard4,100.71.184.32,postgresql,,shard_dbs,MUMGCCWCDPRDPS04,"[""/dev/vdb""]","
 pgshard5,100.71.184.20,postgresql,,shard_dbs,MUMGCCWCDPRDPS05,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard5standby,,"[""standby0"",""spare""]",
 pgshard6,100.71.184.30,postgresql,,shard_dbs,MUMGCCWCDPRDPS06,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard6standby,,"[""standby0"",""spare""]",
 pgshard7,100.71.184.31,postgresql,,shard_dbs,MUMGCCWCDPRDPS07,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard7standby,,"[""standby0"",""spare""]",
-pgshard8,100.71.184.34,postgresql,,shard_dbs,MUMGCCWCDPRDPS08,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard8tandby,,"[""standby0"",""spare""]",
+pgshard8,100.71.184.34,postgresql,,shard_dbs,MUMGCCWCDPRDPS08,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard8standby,,"[""standby0"",""spare""]",
 pgshard9,100.71.184.26,postgresql,,shard_dbs,MUMGCCWCDPRDPS09,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard9standby,,"[""standby0"",""spare""]",
 pgshard0standby,100.71.184.47,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS00,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard0,,standby0
 pgshard1standby,100.71.184.51,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS01,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard1,,standby0
@@ -24,7 +24,7 @@ pgshard4standby,100.71.184.60,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS04,"["
 pgshard5standby,100.71.184.52,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS05,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard5,,standby0
 pgshard6standby,100.71.184.58,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS06,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard6,,standby0
 pgshard7standby,100.71.184.61,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS07,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard7,,standby0
-pgshard8tandby,100.71.184.56,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS08,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard8,,standby0
+pgshard8standby,100.71.184.56,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS08,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard8,,standby0
 pgshard9standby,100.71.184.59,pg_standby,,shard_standby_dbs,MUMGCCWCDPRDSS09,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard9,,standby0
 plproxy0,100.71.184.18,postgresql,,,MUMGCCWCDPRDPLP0,"[""/dev/vdb""]","[""/dev/vdb1""]",,,,
 pgsynclog0,100.71.184.39,postgresql,,synclog_dbs,MUMGCCWCDPRDPSL0,"[""/dev/vdb""]","[""/dev/vdb1""]",pgsynclog0standby,,"[""standby0"",""spare""]",
