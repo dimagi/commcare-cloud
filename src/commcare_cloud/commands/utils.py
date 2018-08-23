@@ -23,8 +23,8 @@ class PrivilegedCommand():
         self.command = command
         self.user_as = user_as
 
-    def run_command(self, hosts):
-        from fabric.api import execute, sudo, env
+    def run_command(self, hosts, parallel_pool_size=1):
+        from fabric.api import execute, sudo, env, parallel
         if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
             env.use_ssh_config = True
         env.forward_agent = True
@@ -39,5 +39,9 @@ class PrivilegedCommand():
             result = sudo(self.command, user=self.user_as)
             return result
 
-        res = execute(_task)
+        task = _task
+        if parallel_pool_size > 1:
+            task = parallel(pool_size=parallel_pool_size)(_task)
+
+        res = execute(task)
         return res

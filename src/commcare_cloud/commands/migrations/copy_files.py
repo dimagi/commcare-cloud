@@ -220,35 +220,13 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
 
 def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
     file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
-    return run_parallel_command(
-        environment,
-        target_hosts,
-        "{}{}".format(
-            os.path.join(file_root, FILE_MIGRATION_RSYNC_SCRIPT),
-            ' --dry-run' if check_mode else ''
-        )
+    command = "{}{}".format(
+        os.path.join(file_root, FILE_MIGRATION_RSYNC_SCRIPT),
+        ' --dry-run' if check_mode else ''
     )
-
-
-def run_parallel_command(environment, hosts, command):
-    from fabric.api import execute, sudo, env, parallel
-    if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
-        env.use_ssh_config = True
-    env.forward_agent = True
-    # pass `-E` to sudo to preserve environment for ssh agent forwarding
-    env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
-    env.user = 'ansible'
-    env.password = environment.get_ansible_user_password()
-    env.hosts = hosts
-    env.warn_only = True
-
-    @parallel(pool_size=10)
-    def _task():
-        res = sudo(command)
-        return res.return_code
-
-    res = execute(_task)
-    non_zero_returns = [ret for ret in res.values() if ret]
+    piv_command = PrivilegedCommand('ansible', environment.get_ansible_user_password(), command)
+    results = piv_command.run_command(target_hosts, parallel_pool_size=10)
+    non_zero_returns = [ret.status_code for ret in results.values() if ret.status_code]
     return non_zero_returns[0] if non_zero_returns else 0
 
 
