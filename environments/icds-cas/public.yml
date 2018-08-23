@@ -32,11 +32,10 @@ DATADOG_ENABLED: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
 
-# TODO etc host lines
-#etc_hosts_lines:
-#  - 'TODO_proxy_ip		cas.commcarehq.org'
-#  - 'TODO_proxy_ip		reports.icds-cas.gov.in'
-#  - 'TODO_proxy_ip		www.icds-cas.gov.in'
+etc_hosts_lines:
+  - '100.71.181.10		cas.commcarehq.org'
+  - '100.71.181.10		reports.icds-cas.gov.in'
+  - '100.71.181.10		www.icds-cas.gov.in'
 etc_hosts_lines_removed: []
 
 # TODO nameservers
