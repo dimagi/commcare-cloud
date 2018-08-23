@@ -118,6 +118,8 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
+couchdb_reduce_limit: False
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
@@ -167,7 +169,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  KAFKA_URL: "{{ groups.kafka0.0 }}:9092"
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'
@@ -248,3 +249,5 @@ localsettings:
   UCR_COMPARISONS:
     'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+

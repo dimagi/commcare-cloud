@@ -46,7 +46,7 @@ couchdb2:
 
 couchdb_bind:
   ty: static
-  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+  host: '{{ internal_ipv4.address }}'
 
 couch_dbs:
   default:
@@ -77,7 +77,6 @@ localsettings:
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

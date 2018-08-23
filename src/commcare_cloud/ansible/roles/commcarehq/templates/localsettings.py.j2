@@ -324,7 +324,7 @@ FORMTRANSLATE_TIMEOUT = 5
 TOUCHFORMS_API_USER = "{{ TOUCHFORMS_API_USER }}"
 TOUCHFORMS_API_PASSWORD = "{{ TOUCHFORMS_API_PASSWORD }}"
 
-BROKER_URL = '{{ BROKER_URL }}'
+CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 
 XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
 
@@ -530,8 +530,12 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
-{% if localsettings.get('KAFKA_URL') %}
-KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
+{% if groups.kafka %}
+KAFKA_BROKERS = [
+    {%- for host in groups.kafka -%}
+    '{{ host }}:9092',
+    {%- endfor -%}
+]
 {% endif %}
 
 INVOICE_TERMS = "Net 30"

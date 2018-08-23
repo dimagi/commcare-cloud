@@ -186,3 +186,7 @@ ls /usr/local/couchdb2/couchdb/var/log/
 ```
 There should be some logs in there that you can tail
 or grep through for errors.
+
+---
+
+[︎⬅︎ Overview](..)

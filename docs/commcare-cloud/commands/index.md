@@ -1,4 +1,5 @@
 # Commands
+{:.no_toc}
 
 * TOC
 {:toc}
@@ -305,7 +306,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -419,7 +420,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -620,7 +621,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -842,9 +843,9 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                             {start,stop,restart,status,help}
+                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}
+                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker} ...]
+                             {start,stop,restart,status,logs,help}
 ```
 
 #### Example
@@ -853,6 +854,7 @@ commcare-cloud <env> service [--only PROCESS_PATTERN]
 cchq <env> service postgresql status
 cchq <env> service riakcs restart --only riak,riakcs
 cchq <env> service celery help
+cchq <env> service celery logs
 cchq <env> service celery restart --limit <host>
 cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
 cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
@@ -865,15 +867,15 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
 More than one service may be supplied as separate arguments in a row.
 
-###### `{start,stop,restart,status,help}`
+###### `{start,stop,restart,status,logs,help}`
 
-Action can be `status`, `start`, `stop`, or `restart`.
+Action can be `status`, `start`, `stop`, `restart`, or `logs`.
 This action is applied to every matching service.
 
 ##### Optional Arguments
@@ -954,6 +956,7 @@ specified user on the source host has permissions to read the files being copied
 The plan file must be formatted as follows:
 
 ```yml
+source_env: env1 (optional if source is different from target)
 copy_files:
   - <target-host>:
       - source_host: <source-host>
