@@ -289,14 +289,14 @@ class ElasticsearchClassic(AnsibleService):
     name = 'elasticsearch-classic'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/<ecrypt>/elasticsearch-<version>/logs'
+    log_location = '/opt/data/(ecrypt)/elasticsearch-<version>/logs'
 
 
 class Elasticsearch(ServiceBase):
     name = 'elasticsearch'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/<ecrypt>/elasticsearch-<version>/logs'
+    log_location = '/opt/data/(ecrypt)/elasticsearch-<version>/logs'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
