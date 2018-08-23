@@ -1,4 +1,4 @@
-http_proxy: 10.247.63.132:3128  # TODO http_proxy
+#http_proxy: 10.247.63.132:3128  # TODO http_proxy
 additional_no_proxy_hosts: "relay.nic.in,smsgw.sms.gov.in,icds-cas.gov.in"  # TODO: no proxy hosts
 formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
