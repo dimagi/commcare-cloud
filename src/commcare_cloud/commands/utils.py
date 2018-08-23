@@ -28,6 +28,8 @@ class PrivilegedCommand():
         if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
             env.use_ssh_config = True
         env.forward_agent = True
+        # pass `-E` to sudo to preserve environment for ssh agent forwarding
+        env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
         env.user = self.user_name
         env.password = self.password
         env.hosts = hosts
