@@ -59,12 +59,12 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         self.environment = environment
         self.ansible_context = ansible_context
 
-    def run(self, action, env_name, host_pattern=None, process_pattern=None):
+    def run(self, action, host_pattern=None, process_pattern=None):
         if action == 'help':
             self.print_help()
             return 0
         elif action == 'logs':
-            print("Logs can be found at:\n{}".format(self.log_location.format(env=env_name)))
+            print("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.paths.env_name)))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
@@ -636,7 +636,7 @@ class Service(CommandBase):
         non_zero_exits = []
         for service_cls in services:
             service = service_cls(environment, ansible_context)
-            exit_code = service.run(args.action, args.env_name, args.limit, args.process_pattern)
+            exit_code = service.run(args.action, args.limit, args.process_pattern)
             if exit_code != 0:
                 non_zero_exits.append(exit_code)
         return non_zero_exits[0] if non_zero_exits else 0
