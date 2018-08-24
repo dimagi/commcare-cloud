@@ -51,28 +51,31 @@ $ ./kafka-topics.sh --describe --zookeeper=<zookeeper host>:2181 --topic <topic>
 $ ./kafka-topics.sh --alter --zookeeper=<zookeeper host>:2181 --topic <topci> --partitions N
 ```
 
+**Note**: Adding partitions to a topic should be done in conjunction with updating the CommCare
+Pillowtop process configurations as described in the [CommCare docs](https://commcare-hq.readthedocs.io/pillows.html#parallel-processors).
+
 ### Move partitions
 **NOTE**: All processes accessing Kafka should be shutdown prior to following this process to avoid
  errors publishing or consuming Kafka messages.
 
 1. Create file listing partitions to move and their new brokers:
 
-In the JSON below `replicas` refers to the broker IDs that the partition should appear on. In the example
-below this will put the `("case", 0)` partition on broker 0 (with no replicas).
-```
-$ cat partitions-to-move.json
-{
-  "version":1,
-  "partitions":[
-    {"topic":"case","partition":0,"replicas":[0]},
-    ...
-  ]
-}
-```
+    In the JSON below `replicas` refers to the broker IDs that the partition should appear on. In the example
+    below this will put the `("case", 0)` partition on broker 0 (with no replicas).
+    ```
+    $ cat partitions-to-move.json
+    {
+      "version":1,
+      "partitions":[
+        {"topic":"case","partition":0,"replicas":[0]},
+        ...
+      ]
+    }
+    ```
 
 2. Reassign the partitions and verify the change:
-```
-$ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --execute
-
-$ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --verify
-```
+    ```
+    $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --execute
+    
+    $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --verify
+    ```
