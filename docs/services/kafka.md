@@ -60,22 +60,22 @@ Pillowtop process configurations as described in the [CommCare docs](https://com
 
 1. Create file listing partitions to move and their new brokers:
 
-In the JSON below `replicas` refers to the broker IDs that the partition should appear on. In the example
-below this will put the `("case", 0)` partition on broker 0 (with no replicas).
-```
-$ cat partitions-to-move.json
-{
-  "version":1,
-  "partitions":[
-    {"topic":"case","partition":0,"replicas":[0]},
-    ...
-  ]
-}
-```
+    In the JSON below `replicas` refers to the broker IDs that the partition should appear on. In the example
+    below this will put the `("case", 0)` partition on broker 0 (with no replicas).
+    ```
+    $ cat partitions-to-move.json
+    {
+      "version":1,
+      "partitions":[
+        {"topic":"case","partition":0,"replicas":[0]},
+        ...
+      ]
+    }
+    ```
 
 2. Reassign the partitions and verify the change:
-```
-$ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --execute
-
-$ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --verify
-```
+    ```
+    $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --execute
+    
+    $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --verify
+    ```
