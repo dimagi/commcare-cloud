@@ -93,11 +93,13 @@ localsettings:
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
+          topics: ['case-sql']
           ucr_division: '09'
       - name: 'kafka-ucr-main-custom-2'
         class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
         instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
         params:
+          topics: ['case-sql']
           ucr_division: 'af'
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
