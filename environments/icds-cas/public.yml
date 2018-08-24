@@ -1,5 +1,5 @@
-internal_domain_name: 'internal-icds-new.commcarehq.org'
-db_vlan_ip_range: '10.247.164.0/23'
+internal_domain_name: 'internal-icds-cloud.commcarehq.org'
+db_vlan_ip_range: '100.71.184.0/22'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 riak_backend: "bitcask"
@@ -10,10 +10,10 @@ elasticsearch_cluster_name: 'icds-2.0'
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
-supervisor_http_enabled: True
+supervisor_http_enabled: False
 
 backup_blobdb: False
-backup_postgres: plain
+backup_postgres: False
 backup_es: False
 postgres_s3: False
 couch_s3: False
@@ -23,34 +23,32 @@ nadir_hour: 16
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
-redis_maxmemory: 5gb
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
 KSPLICE_ACTIVE: no
 
-
 DATADOG_ENABLED: True
-datadog_integration_cloudant: False
-datadog_integration_vmware: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
 
 etc_hosts_lines:
-  - '10.247.164.31		cas.commcarehq.org'
-  - '10.247.164.31		reports.icds-cas.gov.in'
-  - '10.247.164.31		www.icds-cas.gov.in'
+  - '100.71.181.10		cas.commcarehq.org'
+  - '100.71.181.10		reports.icds-cas.gov.in'
+  - '100.71.181.10		www.icds-cas.gov.in'
 etc_hosts_lines_removed: []
 
-nameservers:
-  - 164.100.17.3
-  - 164.100.3.1
+# TODO nameservers
+#nameservers:
+#  - 164.100.17.3
+#  - 164.100.3.1
 
-http_proxy_address: '10.247.63.132'
-http_proxy_port: '3128'
-no_proxy_hosts:
-  - relay.nic.in
-  - smsgw.sms.gov.in
+# TODO http_proxy setup
+#http_proxy_address: '10.247.63.132'
+#http_proxy_port: '3128'
+#no_proxy_hosts:
+#  - relay.nic.in
+#  - smsgw.sms.gov.in
 
 commcare_errors_branch: "master-icds"
 site_locations:
@@ -58,11 +56,11 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: '/etc/nginx/.htpasswd'
-  - name: /bihar_ls_files
+  - name: /bihar_ls_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_bihar"
-  - name: /maharashtra_icds-cas_files
+  - name: /maharashtra_icds-cas_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
@@ -70,27 +68,27 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_mp"
-  - name: /ls_hindi
+  - name: /ls_hindi 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_hindi"
-  - name: /ls_marathi
+  - name: /ls_marathi 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_marathi"
-  - name: /ls_telugu
+  - name: /ls_telugu 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_ls_telugu"
-  - name: /hindi_files
+  - name: /hindi_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files"
-  - name: /marathi_files
+  - name: /marathi_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_marathi_files"
-  - name: /telugu_files
+  - name: /telugu_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
@@ -99,6 +97,7 @@ site_locations:
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
+couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
   r: 2
@@ -109,6 +108,10 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb_admins: "{
+  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
+}"
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy.0 }}"
@@ -117,8 +120,6 @@ couch_dbs:
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
-
-couchdb_reduce_limit: False
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
@@ -152,7 +153,7 @@ localsettings:
   COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_HOST: 'localhost'  # TODO email setup
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   HQ_INSTANCE: 'icds'
@@ -244,10 +245,7 @@ localsettings:
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  TABLEAU_URL_ROOT: "https://{{ TABLEAU_HOST }}/"
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
   UCR_COMPARISONS:
     'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-
