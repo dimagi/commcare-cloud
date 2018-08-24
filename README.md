@@ -89,7 +89,7 @@ pip install -e .[test]
 and then run
 
 ```
-ANSIBLE_CONFIG="src/commcare_cloud/ansible/ansible.cfg" nosetests
+nosetests
 ```
 
 Tests include tests of your own specific environments dir.
