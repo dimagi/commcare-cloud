@@ -191,6 +191,7 @@ celery_processes:
       concurrency: 4
 pillows:
   'pillow0':
+  'pillow1':
     kafka-ucr-static-cases:
       start_process: 0
       num_processes: 6
@@ -199,7 +200,7 @@ pillows:
       start_process: 0
       num_processes: 4
       total_processes: 36
-  'pillow1':
+  'pillow2':
     kafka-ucr-static-cases:
       start_process: 6
       num_processes: 6
@@ -208,7 +209,7 @@ pillows:
       start_process: 4
       num_processes: 4
       total_processes: 36
-  'pillow2':
+  'pillow3':
     kafka-ucr-static-cases:
       start_process: 12
       num_processes: 6
@@ -217,7 +218,7 @@ pillows:
       start_process: 8
       num_processes: 4
       total_processes: 36
-  'pillow3':
+  'pillow4':
     kafka-ucr-static-cases:
       start_process: 18
       num_processes: 6
@@ -226,7 +227,7 @@ pillows:
       start_process: 12
       num_processes: 4
       total_processes: 36
-  'pillow4':
+  'pillow5':
     kafka-ucr-static-cases:
       start_process: 24
       num_processes: 6
@@ -235,7 +236,7 @@ pillows:
       start_process: 16
       num_processes: 4
       total_processes: 36
-  'pillow5':
+  'pillow6':
     kafka-ucr-static-cases:
       start_process: 30
       num_processes: 6
@@ -244,17 +245,17 @@ pillows:
       start_process: 20
       num_processes: 4
       total_processes: 36
-  'pillow10':
+  'pillow11':
     CaseToElasticsearchPillow:
       start_process: 24
       num_processes: 6
       total_processes: 36
-  'pillow11':
+  'pillow12':
     CaseToElasticsearchPillow:
       start_process: 30
       num_processes: 6
       total_processes: 36
-  'pillow6':
+  'pillow7':
     kafka-ucr-main:
       num_processes: 1
     KafkaDomainPillow:
@@ -269,19 +270,19 @@ pillows:
       start_process: 8
       num_processes: 4
       total_processes: 16
-  'pillow7':
+  'pillow8':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 8
     kafka-ucr-static-forms:
       start_process: 12
       num_processes: 4
       total_processes: 16
-  'pillow8':
+  'pillow9':
     kafka-ucr-static-forms:
       start_process: 0
       num_processes: 8
       total_processes: 16
-  'pillow9':
+  'pillow10':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
@@ -306,8 +307,5 @@ pillows:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
-  'pillow10':
-  'pillow11':
-  'pillow12':
   'pillow13':
   'pillow14':
