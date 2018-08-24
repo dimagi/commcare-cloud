@@ -1,3 +1,7 @@
+- name: Update setuptools
+  pip: name=setuptools state=latest
+  become: yes
+
 - name: Install ndg-httpsclient so we can download couch
   pip: name="{{ item }}"
   become: yes
