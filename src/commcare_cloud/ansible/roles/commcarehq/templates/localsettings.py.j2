@@ -215,7 +215,7 @@ LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 LOCAL_PILLOWTOPS = {
 {% for group, pillows in localsettings.LOCAL_PILLOWS.items() %}
     "{{ group }}": [
-    {% for pillow in pillows %}
+{% for pillow in pillows %}
         {
             "name": "{{ pillow.name }}",
             "class": "{{ pillow.class }}",
@@ -223,13 +223,13 @@ LOCAL_PILLOWTOPS = {
             "params": {
                 "topics": {{ pillow.params.topics }},
                 "include_ucrs": [
-                {% for ucr in pillow.params.include_ucrs %}
+{% for ucr in pillow.params.include_ucrs %}
                      "{{ ucr }}",
-                {% endfor %}
+{% endfor %}
                 ]
             }
         },
-    {% endfor %}
+{% endfor %}
     ]
 {% endfor %}
 }
