@@ -944,7 +944,7 @@ Optional message to set on Datadog.
 Copy files from multiple sources to targets.
 
 ```
-commcare-cloud <env> copy-files plan {prepare,copy,cleanup}
+commcare-cloud <env> copy-files plan_path {prepare,copy,cleanup}
 ```
 
 This is a general purpose command that can be used to copy files between
@@ -984,7 +984,7 @@ end with a `/`.
 
 ##### Positional Arguments
 
-###### `plan`
+###### `plan_path`
 
 Path to plan file
 
