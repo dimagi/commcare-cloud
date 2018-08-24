@@ -51,6 +51,9 @@ $ ./kafka-topics.sh --describe --zookeeper=<zookeeper host>:2181 --topic <topic>
 $ ./kafka-topics.sh --alter --zookeeper=<zookeeper host>:2181 --topic <topci> --partitions N
 ```
 
+**Note**: Adding partitions to a topic should be done in conjunction with updating the CommCare
+Pillowtop process configurations as described in the [CommCare docs](https://commcare-hq.readthedocs.io/pillows.html#parallel-processors).
+
 ### Move partitions
 **NOTE**: All processes accessing Kafka should be shutdown prior to following this process to avoid
  errors publishing or consuming Kafka messages.
