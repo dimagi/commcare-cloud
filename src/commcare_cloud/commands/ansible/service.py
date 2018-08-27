@@ -64,7 +64,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             self.print_help()
             return 0
         elif action == 'logs':
-            print("Logs can be found at:\n{}".format(self.log_location))
+            print("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.paths.env_name)))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
@@ -289,14 +289,14 @@ class ElasticsearchClassic(AnsibleService):
     name = 'elasticsearch-classic'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs'
+    log_location = '/opt/data/(ecrypt)/elasticsearch-<version>/logs'
 
 
 class Elasticsearch(ServiceBase):
     name = 'elasticsearch'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/{ecrypt}/elasticsearch-{version}/logs'
+    log_location = '/opt/data/(ecrypt)/elasticsearch-<version>/logs'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
@@ -360,7 +360,7 @@ class RabbitMq(AnsibleService):
     name = 'rabbitmq'
     inventory_groups = ['rabbitmq']
     service_name = 'rabbitmq-server'
-    log_location = '/var/log/rabbitmq/rabbit@{rabbitmq machine}.log'
+    log_location = '/var/log/rabbitmq/rabbit@<rabbitmq machine>.log'
 
 
 class Redis(AnsibleService):
@@ -395,7 +395,7 @@ class Postgresql(MultiAnsibleService):
         'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
-    log_location = 'Postgres: /opt/data/postgresql/{version}/main/pg_log\n' \
+    log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
 
 
@@ -430,8 +430,8 @@ class CommCare(SingleSupervisorService):
 class Webworker(SingleSupervisorService):
     name = 'webworker'
     inventory_groups = ['webworkers']
-    log_location = 'Regular logger: /home/cchq/www/{env}/log/{host}-commcarehq.django.log\n' \
-                   'Accounting logger: /home/cchq/www/{env}/log/{host}-commcarehq.accounting.log'
+    log_location = 'Regular logger: /home/cchq/www/{env}/log/<host>-commcarehq.django.log\n' \
+                   'Accounting logger: /home/cchq/www/{env}/log/<host>-commcarehq.accounting.log'
 
     @property
     def supervisor_process_name(self):
@@ -468,7 +468,7 @@ class Celery(SupervisorService):
 class Pillowtop(SupervisorService):
     name = 'pillowtop'
     inventory_groups = ['pillowtop']
-    log_location = '/home/cchq/www/{env}/log/pillowtop-{pillow_name}-{num_process}.log'
+    log_location = '/home/cchq/www/{env}/log/pillowtop-<pillow_name>-<num_process>.log'
 
     @property
     def managed_services(self):

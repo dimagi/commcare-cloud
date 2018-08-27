@@ -2,9 +2,10 @@ import os
 import shutil
 
 from mock import patch
+from nose.tools import assert_multi_line_equal, assert_equal
 
 from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \
-    FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename, read_plan
+    FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename, read_plan, Plan
 from commcare_cloud.environment.main import get_environment
 from tests.test_utils import get_file_contents
 
@@ -43,7 +44,7 @@ def test_prepare_migration_scripts():
     ]
     target_host = 'target_host1'
     prepare_file_copy_scripts(target_host, configs, SCRIPT_ROOT)
-    check_file_contents(
+    _check_file_contents(
         os.path.join(SCRIPT_ROOT, target_host, FILE_MIGRATION_RSYNC_SCRIPT),
         os.path.join(TEST_DATA_DIR, FILE_MIGRATION_RSYNC_SCRIPT)
     )
@@ -52,36 +53,40 @@ def test_prepare_migration_scripts():
         file_list_filename = get_file_list_filename(config)
         file_path = os.path.join(SCRIPT_ROOT, target_host, file_list_filename)
         file_list = get_file_contents(file_path).splitlines()
-        assert file_list == config.files
+        assert_equal(file_list, config.files)
 
 
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_DATA_DIR)
 def test_parse_plan():
-    expected = {
-        '10.0.0.1': [
-            SourceFiles(
-                '192.168.33.15',
-                '/opt/data/',
-                '/opt/data/',
-                files=['test/']
-            )
-        ],
-        '10.0.0.2': [
-            SourceFiles(
-                '192.168.33.16',
-                '/opt/data/test/',
-                '/opt/data/',
-                files=['test/file1'],
-                exclude=['logs/*']
-            )
-        ]
-    }
     target_env = get_environment('target_env')
+    expected = Plan(
+        source_env=get_environment('source_env'),
+        configs={
+            '10.0.0.1': [
+                SourceFiles(
+                    '192.168.33.15',
+                    '/opt/data/',
+                    '/opt/data/',
+                    files=['test/']
+                )
+            ],
+            '10.0.0.2': [
+                SourceFiles(
+                    '192.168.33.16',
+                    '/opt/data/test/',
+                    '/opt/data/',
+                    files=['test/file1'],
+                    exclude=['logs/*']
+                )
+            ]
+        }
+    )
+
     plan = read_plan(os.path.join(TEST_DATA_DIR, 'test_plan.yml'), target_env)
-    assert plan == expected, "mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, plan)
+    assert_equal(plan, expected)
 
 
-def check_file_contents(generated_path, expected_path):
+def _check_file_contents(generated_path, expected_path):
     expected_script = get_file_contents(expected_path)
     script_source = get_file_contents(generated_path)
-    assert expected_script == script_source, "'{}'".format(script_source)
+    assert_multi_line_equal(expected_script.strip(), script_source.strip())
