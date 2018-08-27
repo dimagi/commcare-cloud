@@ -1,4 +1,4 @@
-internal_domain_name: 'internal-icds-cloud.commcarehq.org'
+internal_domain_name: 'internal-icds.commcarehq.org'
 db_vlan_ip_range: '100.71.184.0/22'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
