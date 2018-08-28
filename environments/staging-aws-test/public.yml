@@ -85,7 +85,7 @@ localsettings:
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
-  STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
+#  STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
 
 commcare_cloud_root_user: ubuntu
