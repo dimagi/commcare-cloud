@@ -12,7 +12,7 @@
   check_mode: no
 
 - name: install supervisor 3.3.4
-  pip: name=supervisor state=present version=3.3.4
+  pip: name=supervisor state=present version=3.3.4 executable=pip2
   become: yes
   when: not which_supervisord.stdout
 

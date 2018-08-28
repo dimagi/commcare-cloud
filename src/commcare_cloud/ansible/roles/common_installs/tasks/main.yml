@@ -96,9 +96,8 @@
   tags:
     - npm
 
-
 - name: Install pip packages
-  pip: name="{{ item }}"
+  pip: name="{{ item }}" executable=pip2
   become: yes
   with_items:
     - virtualenv
@@ -111,3 +110,4 @@
   pip:
     name: virtualenv-clone
     version: 0.2.6
+    executable: pip2

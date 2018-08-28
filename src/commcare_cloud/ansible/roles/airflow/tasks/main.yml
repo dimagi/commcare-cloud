@@ -28,6 +28,7 @@
     requirements: "{{ airflow_code_dir }}/requirements.txt"
     virtualenv: "{{ airflow_virtualenv }}"
     chdir: "{{ airflow_code_dir }}"
+    executable: pip2
 
 - name: copy airflow settings
   become: yes
