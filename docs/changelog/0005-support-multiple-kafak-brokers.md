@@ -1,4 +1,4 @@
-# 5. Support multiple Kafka borkers
+# 5. Support multiple Kafka brokers
 
 **Date:** 2018-08-16
 
