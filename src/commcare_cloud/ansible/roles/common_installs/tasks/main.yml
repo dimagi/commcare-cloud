@@ -11,17 +11,12 @@
   apt_repository: repo='ppa:git-core/ppa' state=present
   register: add_git_repo
 
-# http://stackoverflow.com/a/16303380/835696
-- name: Add git nodejs repo
-  apt_repository: repo='ppa:chris-lea/node.js' state=present
-  register: add_nodejs_repo
+- name: Add PostgreSQL apt key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: Add PostgreSQL apt repository
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
-
-- name: Add PostgreSQL apt key
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: Update package list
   apt: update_cache=yes
