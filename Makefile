@@ -9,13 +9,15 @@ all : $(autogen)
 # (Directly using escaped '~' does not work.)
 STANDARD_HOME=/!
 
+REPLACE_PATHS = | sed "s|${STANDARD_HOME}|~|g" | sed "s|`pwd`|.|g"
+
 src/commcare_cloud/help_cache/ansible.txt: export ANSIBLE_CONFIG=src/commcare_cloud/ansible/ansible.cfg
 src/commcare_cloud/help_cache/ansible.txt:
-	COLUMNS=80 HOME="${STANDARD_HOME}" ansible -h | sed "s|${STANDARD_HOME}|~|g" | sed "s|`pwd`|.|g" > src/commcare_cloud/help_cache/ansible.txt
+	COLUMNS=80 HOME="${STANDARD_HOME}" ansible -h $(REPLACE_PATHS) > src/commcare_cloud/help_cache/ansible.txt
 
 src/commcare_cloud/help_cache/ansible-playbook.txt: export ANSIBLE_CONFIG=src/commcare_cloud/ansible/ansible.cfg
 src/commcare_cloud/help_cache/ansible-playbook.txt:
-	COLUMNS=80 HOME="${STANDARD_HOME}" ansible-playbook -h | sed "s|${STANDARD_HOME}|~|g" | sed "s|`pwd`|.|g" > src/commcare_cloud/help_cache/ansible-playbook.txt
+	COLUMNS=80 HOME="${STANDARD_HOME}" ansible-playbook -h $(REPLACE_PATHS) > src/commcare_cloud/help_cache/ansible-playbook.txt
 
 docs/commcare-cloud/commands/index.md : src/commcare_cloud/* src/commcare_cloud/*/* src/commcare_cloud/*/*/*
 	manage-commcare-cloud make-docs > docs/commcare-cloud/commands/index.md
