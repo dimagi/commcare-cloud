@@ -278,9 +278,8 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'./src/commcare_cloud/
-                        ansible/library'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -392,9 +391,8 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'./src/commcare_cloud/
-                        ansible/library'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -590,9 +588,8 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=[u'./src/commcare_cloud/
-                        ansible/library'])
+                        prepend colon-separated path(s) to module library
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
