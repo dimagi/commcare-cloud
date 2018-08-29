@@ -32,4 +32,6 @@ There are several CommCare specific processes that are defined in supervisor
 configuration files. This change decouples the process definitions from code.
 
 ### **2018-06-11** [Added encrypted temporary directory](0001-add-encrypted-tmp.md) (_action required_)
-Some of the CommCare processes make use of temporary files to store client data (such as data exports) so in order to keep that data protected we have modified the setup to use an encrypted temporary directory.
+Some of the CommCare processes make use of temporary files to store client data
+(such as data exports) so in order to keep that data protected we have modified
+the setup to use an encrypted temporary directory.

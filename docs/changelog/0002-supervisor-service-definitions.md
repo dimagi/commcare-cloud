@@ -1,6 +1,6 @@
 # 2. Update supervisor service definitions
 
-**Date:**  2018-07-13
+**Date:** 2018-07-13
 
 **Optional per env:** No
 
