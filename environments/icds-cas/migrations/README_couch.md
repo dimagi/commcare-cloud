@@ -32,7 +32,7 @@
     
     2. Update database
         ```
-        python environments/icds-cas/migrations/couchdb-files-post.py <username> <password>
+        python environments/icds-cas/migrations/couchdb-files-post.py <username>
         ```
     
     3. Run migration to copy data to 5th node
