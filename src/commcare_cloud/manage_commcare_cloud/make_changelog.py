@@ -15,32 +15,47 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 
 
 GitVersionProperty = jsonobject.StringProperty
+MarkdownProperty = jsonobject.StringProperty
 
 
 class ChangelogEntry(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     # filename is the only property that is populated from outside the yaml file
     filename = jsonobject.StringProperty()
+
     title = jsonobject.StringProperty()
+
     key = jsonobject.StringProperty()
+
+    # Date when this change was added (purely for informational purposes)
     date = jsonobject.DateProperty()
+
     optional_per_env = jsonobject.BooleanProperty()
+
+    # Min version of HQ that MUST be deployed before this change can be rolled out
     min_commcare_version = GitVersionProperty()
+
+    # Max version of HQ that can be deployed before this change MUST be rolled out
     max_commcare_version = GitVersionProperty()
-    context = jsonobject.StringProperty()
-    details = jsonobject.StringProperty()
-    update_steps = jsonobject.StringProperty()
+
+    # Description of the change
+    # This will be shown as a sort of "preview" in the index
+    context = MarkdownProperty()
+
+    # Details of the change
+    details = MarkdownProperty()
+
+    # Steps to update
+    update_steps = MarkdownProperty()
 
 
 def compile_changelog():
     # Parse the contents of the changelog dir
     changelog_contents = []
-    files_to_ignore = ['0000-changelog.yml.example']
     changelog_dir = 'changelog'
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
-        if change_file_name not in files_to_ignore:
-            changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
+        changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
     return changelog_contents
 
 
