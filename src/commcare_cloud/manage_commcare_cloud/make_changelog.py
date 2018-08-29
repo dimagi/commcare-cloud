@@ -36,7 +36,7 @@ def compile_changelog():
     # Parse the contents of the changelog dir
     changelog_contents = []
     files_to_ignore = ['0000-changelog.yml.example']
-    changelog_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..', 'changelog')
+    changelog_dir = 'changelog'
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
         if change_file_name not in files_to_ignore:
