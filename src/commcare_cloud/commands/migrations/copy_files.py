@@ -31,6 +31,7 @@ class SourceFiles(object):
     source_user = attr.ib(default='ansible')
     files = attr.ib(factory=list)
     exclude = attr.ib(factory=list)
+    rsync_args = attr.ib(factory=list)
 
 
 class CopyFiles(CommandBase):
@@ -54,6 +55,7 @@ class CopyFiles(CommandBase):
             source_user: <user>
             source_dir: <source-dir>
             target_dir: <target-dir>
+            rsync_args: []
             files:
               - test/
               - test1/test-file.txt
@@ -69,6 +71,7 @@ class CopyFiles(CommandBase):
     to read the files being copied.
     - **source-dir**: The base directory from which all source files referenced.
     - **target-dir**: Directory on the target host to copy the files to.
+    - **rsync_args**: Additional arguments to pass to rsync.
     - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
     end with a `/`.
     - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
