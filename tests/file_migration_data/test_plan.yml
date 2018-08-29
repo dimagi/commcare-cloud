@@ -10,6 +10,8 @@ copy_files:
       - source_host: source_host2
         source_dir: /opt/data/test/
         target_dir: /opt/data/
+        rsync_args:
+          - "--checksum"
         files:
           - test/file1
         exclude:

@@ -963,6 +963,7 @@ copy_files:
         source_user: <user>
         source_dir: <source-dir>
         target_dir: <target-dir>
+        rsync_args: []
         files:
           - test/
           - test1/test-file.txt
@@ -978,6 +979,7 @@ listed for each target host.
 to read the files being copied.
 - **source-dir**: The base directory from which all source files referenced.
 - **target-dir**: Directory on the target host to copy the files to.
+- **rsync_args**: Additional arguments to pass to rsync.
 - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
 end with a `/`.
 - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
