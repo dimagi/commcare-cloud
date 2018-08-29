@@ -1,6 +1,7 @@
 autogen = src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt docs/commcare-cloud/commands/index.md docs/changelog/index.md
 all : $(autogen)
 
+PIP_COMPILE = pip-compile --output-file requirements.txt setup.py requirements*.in
 
 # The length of the home directory affects
 # how help text gets wrapped in ansible/ansible-playbook -h output.
@@ -26,10 +27,10 @@ docs/changelog/index.md : docs/changelog/0*.md src/commcare_cloud/manage_commcar
 	manage-commcare-cloud make-changelog-index > docs/changelog/index.md
 
 requirements: requirements-*.in setup.py
-	pip-compile --output-file requirements.txt setup.py requirements*.in
+	$(PIP_COMPILE)
 
 upgrade-requirements: requirements-*.in setup.py
-	pip-compile --output-file requirements.txt setup.py requirements*.in --upgrade
+	$(PIP_COMPILE) --upgrade
 
 clean:
 	rm $(autogen)
