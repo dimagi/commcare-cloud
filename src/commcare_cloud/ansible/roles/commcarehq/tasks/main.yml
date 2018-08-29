@@ -69,8 +69,8 @@
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
         virtualenv: "{{ virtualenv_source }}"
+        virtualenv_python: "python2.7
         chdir: "{{ code_home }}"
-        executable: pip2
       tags:
         - slow
       when: not testing|default(False)
@@ -94,7 +94,6 @@
     name: "{{ item }}"
     state: latest
     virtualenv: "{{ virtualenv_home }}"
-    executable: pip2
   with_items:
     - six
     - pip
