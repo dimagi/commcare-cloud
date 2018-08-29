@@ -1,10 +1,10 @@
 # 4. Add queue for analytics tasks
 
-**Date:**  2018-08-16
+**Date:** 2018-08-16
 
 **Optional per env:** Yes
 
-**Dependant CommCare version:** a507757628bc5c087fd1badc0145e39c5bf790ae
+**Dependant CommCare version:** [a507757628bc5c087fd1badc0145e39c5bf790ae](https://github.com/dimagi/commcare-hq/commit/a507757628bc5c087fd1badc0145e39c5bf790ae)
 
 ## Change Context
 Tasks for analytics reporting have been separated into a new analytics celery queue.

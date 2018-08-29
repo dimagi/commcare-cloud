@@ -1,18 +1,16 @@
-# About this changelog
+# {{ ordinal }}. {{ changelog_entry.title }}
 
-The following changes to `commcare-cloud` that require your attention,
-newest first.
+**Date:** {{ changelog_entry.date }}
 
-Changes that will require an action from anyone choosing
-to update on or after the date listed will be maked "_action required_".
-Those which are worth taking a look at but which may or may not require
-an action on your part will be marked "_action optional_".
+**Optional per env:** {% if changelog_entry.optional_per_env %}Yes{% else %}No{% endif %}
 
+**Dependant CommCare version:** {% if changelog_entry.max_commcare_version -%}
+[{{ changelog_entry.max_commcare_version }}](https://github.com/dimagi/commcare-hq/commit/{{ changelog_entry.max_commcare_version }})
+{%- else %}None{% endif %}
 
-## Changelog
-{%- for changelog_entry in changelog_contents %}
-
-### **{{ changelog_entry['date'] }}** [{{ changelog_entry['summary'] }}]({{ changelog_entry['filename'] }}){% if changelog_entry['action_required'] %} (_action required_)
-{%- endif %}
-{{ changelog_entry['context'] }}
-{%- endfor -%}
+## Change Context
+{{ changelog_entry.context }}
+## Details
+{{ changelog_entry.details }}
+## Steps to update
+{{ changelog_entry.update_steps }}

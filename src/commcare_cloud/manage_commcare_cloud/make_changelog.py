@@ -1,11 +1,16 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+from decimal import Decimal
+
 import jinja2
 import os
 import re
 import sys
-from commcare_cloud.commands.command_base import CommandBase
+
+import yaml
+
+from commcare_cloud.commands.command_base import CommandBase, Argument
 
 
 def compile_changelog():
@@ -81,17 +86,33 @@ def _sort_files(directory):
     return unsorted_files
 
 
-class MakeChangelog(CommandBase):
+class MakeChangelogIndex(CommandBase):
     command = 'make-changelog-index'
-    help = "Build the commcare-cloud CLI tool's changelog"
-
-    def make_parser(self):
-        pass
+    help = "Build the commcare-cloud CLI tool's changelog index"
+    arguments = ()
 
     def run(self, args, unknown_args):
         j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
 
         changelog_contents = compile_changelog()
 
-        template = j2.get_template('changelog.md.j2')
+        template = j2.get_template('changelog-index.md.j2')
         print(template.render(changelog_contents=changelog_contents))
+
+
+class MakeChangelog(CommandBase):
+    command = 'make-changelog'
+    help = "Build the commcare-cloud CLI tool's individual changelog files"
+    arguments = (
+        Argument(dest='changelog_yml', help="""Path to the yaml changelog file"""),
+    )
+
+    def run(self, args, unknown_args):
+        changelog_yml = args.changelog_yml
+        ordinal = int(Decimal(changelog_yml.split('/')[-1].split('-')[0]))
+        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
+        with open(changelog_yml) as f:
+            changelog_entry = yaml.load(f)
+        template = j2.get_template('changelog.md.j2')
+
+        print(template.render(changelog_entry=changelog_entry, ordinal=ordinal).rstrip())

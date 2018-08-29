@@ -11,7 +11,6 @@ Large scale deployments of CommCare require scaling out Kafka brokers to support
 traffic volume (as well as for high availability). Up until now CommCare has only
 supported a single broker.
 
-
 ## Details
 This changes updates the CommCare settings to allow specifying multiple brokers.
 

@@ -15,7 +15,6 @@ we decided it was better to be on a later version of supervisor,
 and one that's not in beta.
 
 ## Details
-
 We updated our scripts to install `supervisor` via `pip` in the global env
 rather than through `apt-get`, and also to remove any existing `supervisor` installed
 via `apt-get`. They now install supervisor 3.3.4.
