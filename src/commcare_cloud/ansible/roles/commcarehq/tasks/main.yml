@@ -69,7 +69,7 @@
       pip:
         requirements: "{{ code_home }}/requirements/{{ item }}"
         virtualenv: "{{ virtualenv_source }}"
-        virtualenv_python: "python2.7
+        virtualenv_python: "python2.7"
         chdir: "{{ code_home }}"
       tags:
         - slow
