@@ -37,6 +37,8 @@ etc_hosts_lines:
   - '100.71.181.10		reports.icds-cas.gov.in'
   - '100.71.181.10		www.icds-cas.gov.in'
 etc_hosts_lines_removed: []
+ssh_allow_password_users:
+  - unixadmin
 
 # TODO nameservers
 #nameservers:
