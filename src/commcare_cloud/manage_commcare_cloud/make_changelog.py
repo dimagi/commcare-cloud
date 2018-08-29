@@ -40,17 +40,20 @@ def compile_changelog():
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
         if change_file_name not in files_to_ignore:
-            try:
-                with open(os.path.join(changelog_dir, change_file_name)) as f:
-                    change_yaml = yaml.load(f)
-                    change_yaml['filename'] = re.sub(r'\.yml$', '.md', change_file_name)
-                    # yaml.load already parses dates, using this instead of ChangelogEntry.wrap
-                    changelog_entry = ChangelogEntry(**change_yaml)
-                changelog_contents.append(changelog_entry)
-            except Exception:
-                print("Error parsing the file {}.".format(change_file_name), file=sys.stderr)
-                raise
+            changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
     return changelog_contents
+
+
+def load_changelog_entry(path):
+    try:
+        with open(path) as f:
+            change_yaml = yaml.load(f)
+            change_yaml['filename'] = re.sub(r'\.yml$', '.md', path.split('/')[-1])
+            # yaml.load already parses dates, using this instead of ChangelogEntry.wrap
+            return ChangelogEntry(**change_yaml)
+    except Exception:
+        print("Error parsing the file {}.".format(path), file=sys.stderr)
+        raise
 
 
 def _sort_files(directory):
@@ -90,8 +93,8 @@ class MakeChangelog(CommandBase):
         changelog_yml = args.changelog_yml
         ordinal = int(Decimal(changelog_yml.split('/')[-1].split('-')[0]))
         j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
-        with open(changelog_yml) as f:
-            changelog_entry = yaml.load(f)
+
+        changelog_entry = load_changelog_entry(changelog_yml)
         template = j2.get_template('changelog.md.j2')
 
         print(template.render(changelog_entry=changelog_entry, ordinal=ordinal).rstrip())
