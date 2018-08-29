@@ -31,3 +31,26 @@
     ```
     cchq icds-cas run-shell-command postgresql "vacuumdb -a -f -z -w" -b --become-user=postgres
     ```
+
+6. Setup standby nodes
+    ```
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgmainstandby0
+
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgucrstandby0
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgucrstandby1
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgucrstandby2
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgucrstandby3
+
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard0standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard1standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard2standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard3standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard4standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard5standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard6standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard7standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard8standby
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgshard9standby
+
+    cchq icds-cas ap setup_pg_standby.yml -e standby=pgsynclog0standby
+    ```
