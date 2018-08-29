@@ -24,6 +24,7 @@ def test_prepare_migration_scripts():
             'source_host1',
             'source_dir1',
             'target_dir1',
+            rsync_args=['--checksum'],
             files=[],
             exclude=[]
         ),
@@ -75,6 +76,7 @@ def test_parse_plan():
                     '192.168.33.16',
                     '/opt/data/test/',
                     '/opt/data/',
+                    rsync_args=['--checksum'],
                     files=['test/file1'],
                     exclude=['logs/*']
                 )
@@ -89,4 +91,5 @@ def test_parse_plan():
 def _check_file_contents(generated_path, expected_path):
     expected_script = get_file_contents(expected_path)
     script_source = get_file_contents(generated_path)
+    assert_multi_line_equal.__self__.maxDiff = None
     assert_multi_line_equal(expected_script.strip(), script_source.strip())

@@ -5,6 +5,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+          - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -13,6 +15,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -21,6 +25,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -29,6 +35,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -37,14 +45,18 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
-            - pg_log/*
+          - pg_log/*
           - backup_label
   - pgshard5:
       - source_host: pgshard1
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -53,6 +65,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -61,6 +75,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -69,6 +85,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -77,6 +95,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -85,6 +105,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -93,6 +115,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
@@ -101,6 +125,8 @@ copy_files:
         source_user: postgres
         source_dir: /opt/data/postgresql/9.6/main/
         target_dir: /opt/data/postgresql/9.6/main/
+        rsync_args:
+        - "--checksum"
         exclude:
           - pg_log/*
           - backup_label
