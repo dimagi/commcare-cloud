@@ -4,6 +4,8 @@
 
 **Optional per env:** No
 
+## CommCare Version Dependency
+This change is not known to be dependent on any particular version of CommCare.
 
 
 ## Change Context

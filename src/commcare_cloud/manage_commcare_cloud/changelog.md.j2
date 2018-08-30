@@ -4,16 +4,19 @@
 
 **Optional per env:** {% if changelog_entry.optional_per_env %}Yes{% else %}No{% endif %}
 
-{% if changelog_entry.max_commcare_version -%}
 ## CommCare Version Dependency
+{% if changelog_entry.max_commcare_version -%}
 CommCare versions beyond this commit require this change to function correctly:
 [{{ changelog_entry.max_commcare_version[:8] }}](https://github.com/dimagi/commcare-hq/commit/{{ changelog_entry.max_commcare_version }})
 {% endif %}
 
 {%- if changelog_entry.min_commcare_version -%}
-## CommCare Version Dependency
 This version of CommCare must be deployed before rolling out this change:
 [{{ changelog_entry.min_commcare_version[:8] }}](https://github.com/dimagi/commcare-hq/commit/{{ changelog_entry.min_commcare_version }})
+{% endif %}
+
+{%- if not changelog_entry.min_commcare_version and not changelog_entry.max_commcare_version -%}
+This change is not known to be dependent on any particular version of CommCare.
 {% endif %}
 
 ## Change Context
