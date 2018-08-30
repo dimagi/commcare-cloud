@@ -2,7 +2,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import jsonobject
-from decimal import Decimal
 
 import jinja2
 import os
@@ -106,7 +105,7 @@ class MakeChangelog(CommandBase):
 
     def run(self, args, unknown_args):
         changelog_yml = args.changelog_yml
-        ordinal = int(Decimal(changelog_yml.split('/')[-1].split('-')[0]))
+        ordinal = int(changelog_yml.split('/')[-1].split('-')[0])
         j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
 
         changelog_entry = load_changelog_entry(changelog_yml)
