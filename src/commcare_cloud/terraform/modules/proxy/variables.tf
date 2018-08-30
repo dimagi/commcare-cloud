@@ -18,7 +18,6 @@ variable "security_group" {}
 variable "server_image" {}
 variable "server_name" {}
 variable "environment" {}
-variable "company" {}
 #variable "g2-access-sg" {}
 variable "vpc-all-hosts-sg" {}
 variable "instance_subnet" {}
