@@ -1,4 +1,4 @@
-hostname,host_address,group 1,group 2,var: host_alias,L.var: devices,L.var: partitions,var: elasticsearch_node_name
+hostname,host_address,group 1,group 2,var: hostname,L.var: devices,L.var: partitions,var: elasticsearch_node_name
 es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,["/dev/vdb"],["/dev/vdb1"],es0
 es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,["/dev/vdb"],["/dev/vdb1"],es1
 es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,["/dev/vdb"],["/dev/vdb1"],es2
