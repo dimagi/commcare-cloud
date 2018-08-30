@@ -38,3 +38,7 @@ dogstreams: {% for parser in datadog_parsers -%}
     {%- endif -%}
 {%- endfor %}
 {% endif %}
+
+{% if host_alias is defined %}
+hostname: {{ hostname }}.{{ internal_domain_name }}
+{% endif %}
