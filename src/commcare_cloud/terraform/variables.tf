@@ -23,19 +23,19 @@ variable "stack" {
 
 variable "tf_s3_bucket" {
   description = "S3 bucket Terraform can use for state"
-  default     = "g2-tf-commcarehq"
+  default     = "dimagi-terraform"
 }
 
 variable "master_state_file" {
-  default = "g2-tf-commcarehq/state/base/base.tfstate"
+  default = "state/base.tfstate"
 }
 
 variable "prod_state_file" {
-  default = "g2-tf-commcarehq/state/prod/prod.tfstate"
+  default = "state/production.tfstate"
 }
 
 variable "staging_state_file" {
-  default = "g2-tf-commcarehq/state/staging/staging.tfstate"
+  default = "state/staging.tfstate"
 }
 
 module "network" {
