@@ -1,7 +1,7 @@
 # This module will build out a bastion instance using the G2 custom image.
 # NOTE: This image needs to be shared from the G2 account.
 
-resource aws_instance "bastion_host" {
+resource aws_instance "server" {
   ami                    = "${var.bastion_image}"
   instance_type          = "${var.bastion_instance_type}"
   subnet_id              = "${var.instance_subnet}"

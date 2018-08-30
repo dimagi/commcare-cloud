@@ -1,4 +1,4 @@
-resource aws_instance "proxy" {
+resource aws_instance "server" {
   ami                    = "${var.server_image}"
   instance_type          = "${var.server_instance_type}"
   subnet_id              = "${var.instance_subnet}"
@@ -25,6 +25,6 @@ resource aws_instance "proxy" {
 
 resource "aws_eip" "proxy" {
   vpc = true
-  instance = "${aws_instance.proxy.id}"
-  associate_with_private_ip = "${aws_instance.proxy.private_ip}"
+  instance = "${aws_instance.server.id}"
+  associate_with_private_ip = "${aws_instance.server.private_ip}"
 }

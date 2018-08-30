@@ -1,7 +1,7 @@
 # This module will build out a Jenkins instance using the G2 custom image.
 # NOTE: This image needs to be shared from the G2 account.
 
-resource aws_instance "jenkins_host" {
+resource aws_instance "server" {
   ami                    = "${data.aws_ami.jenkins_image.id}"
   instance_type          = "${var.jenkins_instance_type}"
   subnet_id              = "${var.instance_subnet}"
