@@ -65,7 +65,6 @@ localsettings:
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   HQ_INSTANCE: 'echis'
   INACTIVITY_TIMEOUT: 20160
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"

@@ -11,6 +11,11 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-08-16** [Support multiple Kafka brokers](0005-support-multiple-kafak-brokers.md) (_action required_)
+Large scale deployments of CommCare require scaling out Kafka brokers to support the high
+traffic volume (as well as for high availability). Up until now CommCare has only
+supported a single broker.
+
 ### **2018-08-16** [Add queue for analytics tasks](0004-add-analytics-queue.md)
 Tasks for analytics reporting have been separated into a new analytics celery queue.
 

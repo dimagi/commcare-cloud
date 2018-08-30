@@ -1,5 +1,5 @@
-internal_domain_name: 'internal-icds-cloud.commcarehq.org'
-cluster_ip_range: '100.71.184.0/22'  # TODO: cluster ip range
+internal_domain_name: 'internal-icds.commcarehq.org'
+db_vlan_ip_range: '100.71.184.0/22'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 riak_backend: "bitcask"
@@ -10,7 +10,7 @@ elasticsearch_cluster_name: 'icds-2.0'
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
-supervisor_http_enabled: True
+supervisor_http_enabled: False
 
 backup_blobdb: False
 backup_postgres: False
@@ -32,12 +32,13 @@ DATADOG_ENABLED: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
 
-# TODO etc host lines
-#etc_hosts_lines:
-#  - 'TODO_proxy_ip		cas.commcarehq.org'
-#  - 'TODO_proxy_ip		reports.icds-cas.gov.in'
-#  - 'TODO_proxy_ip		www.icds-cas.gov.in'
+etc_hosts_lines:
+  - '100.71.181.10		cas.commcarehq.org'
+  - '100.71.181.10		reports.icds-cas.gov.in'
+  - '100.71.181.10		www.icds-cas.gov.in'
 etc_hosts_lines_removed: []
+ssh_allow_password_users:
+  - unixadmin
 
 # TODO nameservers
 #nameservers:
@@ -130,7 +131,7 @@ localsettings:
     - 127.0.0.1
     - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
-      # - '{{ hostvars[groups.proxy.0].public_ip }}' TODO: hostvars seems to not work?
+    - '{{ hostvars[groups.proxy.0].public_ip }}'
   ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':
@@ -171,7 +172,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  KAFKA_URL: "{{ groups.kafka0.0 }}:9092"
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'
