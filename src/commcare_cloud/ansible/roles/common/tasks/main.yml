@@ -59,17 +59,8 @@
 - name: "Sets hostname"
   become: yes
   hostname:
-    name: "{{ hostname }}"
-  when: hostname is defined and host_alias is not defined
-  tags:
-    - hostname
-    - after-reboot
-
-- name: "Sets hostname to host_alias"
-  become: yes
-  hostname:
-    name: "{{ host_alias }}"
-  when: host_alias is defined
+    name: "{{ host_alias|default(hostname) }}"
+  when: hostname is defined
   tags:
     - hostname
     - after-reboot
