@@ -59,7 +59,7 @@
 - name: "Sets hostname"
   become: yes
   hostname:
-    name: "{{ hostname }}"
+    name: "{{ host_alias|default(hostname) }}"
   when: hostname is defined
   tags:
     - hostname
