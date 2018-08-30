@@ -52,6 +52,8 @@ ssh_allow_password_users:
 #  - relay.nic.in
 #  - smsgw.sms.gov.in
 
+default_from_email: "admin@sq.endmile.co.in"
+
 commcare_errors_branch: "master-icds"
 site_locations:
   - name: /files
@@ -155,9 +157,9 @@ localsettings:
   COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  EMAIL_SMTP_HOST: 'localhost'  # TODO email setup
-  EMAIL_SMTP_PORT: 25
-  EMAIL_USE_TLS: no
+  EMAIL_SMTP_HOST: 'relay.historymile.com'  # TODO email setup
+  EMAIL_SMTP_PORT: 26
+  EMAIL_USE_TLS: yes
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
