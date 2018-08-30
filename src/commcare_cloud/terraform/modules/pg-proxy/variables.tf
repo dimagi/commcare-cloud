@@ -14,7 +14,7 @@
 #  }
 #  owners = ["137112412989"]
 #}
-variable "pg-proxy-sg" {}
+variable "security_group" {}
 variable "server_image" {}
 variable "server_name" {}
 variable "environment" {}

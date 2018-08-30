@@ -14,7 +14,7 @@
 #  }
 #  owners = ["137112412989"]
 #}
-variable "pillowtop-sg" {}
+variable "security_group" {}
 variable "server_image" {}
 variable "server_name" {}
 variable "environment" {}
