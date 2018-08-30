@@ -4,7 +4,7 @@
   lineinfile:
     dest: "/etc/bash.bashrc"
     regexp: "^PS1=.*"
-    line: "PS1={{ PS1 }}"
+    line: "PS1={{ bash_PS1 }}"
     state: present
 
 - name: Set bash prompt in bashrc skeleton
@@ -12,7 +12,7 @@
   lineinfile:
     dest: "/etc/skel/.bashrc"
     regexp: "^PS1=.*"
-    line: "PS1={{ PS1 }}"
+    line: "PS1={{ bash_PS1 }}"
     state: present
 
 - name: Add dev group
