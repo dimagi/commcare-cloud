@@ -9,7 +9,7 @@
 2. Remove postgresql data
 
     ```
-    $ cchq icds-cas run-shell-command postgresql "rm -rf /opt/data/postgresql/9.6/main/*" -b
+    $ cchq icds-cas run-shell-command postgresql:!plproxy0 "rm -rf /opt/data/postgresql/9.6/main/*" -b
     ```
 
 3. Copy data
