@@ -48,7 +48,7 @@ module "network" {
 }
 
 module "django" {
-  source                = "../modules/django"
+  source                = "../modules/generic-server"
   server_name		= "django"
   server_image       	= "${var.server_image}"
   environment           = "${var.environment}"
@@ -61,7 +61,7 @@ module "django" {
 }
 
 module "django1" {
-  source                = "../modules/django"
+  source                = "../modules/generic-server"
   server_name           = "django1"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -74,7 +74,7 @@ module "django1" {
 }
 
 module "celery" {
-  source                = "../modules/celery"
+  source                = "../modules/generic-server"
   server_name           = "celery"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -87,7 +87,7 @@ module "celery" {
 }
 
 module "pillowtop" {
-  source                = "../modules/pillowtop"
+  source                = "../modules/generic-server"
   server_name           = "pillowtop"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -101,7 +101,7 @@ module "pillowtop" {
 
 
 module "formplayer" {
-  source                = "../modules/formplayer"
+  source                = "../modules/generic-server"
   server_name           = "formplayer"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -114,7 +114,7 @@ module "formplayer" {
 }
 
 module "kafka" {
-  source                = "../modules/kafka"
+  source                = "../modules/generic-server"
   server_name           = "kafka"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -127,7 +127,7 @@ module "kafka" {
 }
 
 module "ES" {
-  source                = "../modules/es"
+  source                = "../modules/generic-server"
   server_name           = "ES"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -140,7 +140,7 @@ module "ES" {
 }
 
 module "Airflow" {
-  source                = "../modules/airflow"
+  source                = "../modules/generic-server"
   server_name           = "Airflow"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -153,7 +153,7 @@ module "Airflow" {
 }
 
 module "RabbitMQ" {
-  source                = "../modules/rabbitmq"
+  source                = "../modules/generic-server"
   server_name           = "RabbitMQ"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -166,7 +166,7 @@ module "RabbitMQ" {
 }
 
 module "PG_Proxy" {
-  source                = "../modules/pg-proxy"
+  source                = "../modules/generic-server"
   server_name           = "PG_Proxy"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
