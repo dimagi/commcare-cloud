@@ -31,8 +31,15 @@
     ```
     cchq icds-cas run-shell-command postgresql "vacuumdb -a -f -z -w" -b --become-user=postgres
     ```
+    
+6. Cleanup replication slots
 
-6. Setup standby nodes
+    ```
+    cchq icds-cas run-module postgresql pg_replication_slot "name=standby state=absent" -b --become-user postgres
+    cchq icds-cas ap deploy_proxy --tags replication --limit postgresql
+    ```
+
+7. Setup standby nodes
     ```
     cchq icds-cas ap setup_pg_standby.yml -e standby=pgmainstandby0
 
