@@ -1,9 +1,9 @@
 # couchdb2,,,,,,,,,,,,
-hostname,host_alias,host_address,group 1,group 2,group 3,,,,,,,
-couch1,ALIAS_CD01,192.168.33.22,couchdb2,lvm,,,,,,,,
+hostname,host_address,group 1,group 2,group 3,,,,,,,
+couch1,192.168.33.22,couchdb2,lvm,,,,,,,,
 ,,,,,,,,,,,,
 # postgres,,,,,,,,,,,,
-hostname,host_alias,host_address,group 1,group 2,group 3,L.var: devices,L.var: partitions,var: datavol_device,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
+hostname,var: hostname,host_address,group 1,group 2,group 3,L.var: devices,L.var: partitions,var: datavol_device,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
 pgucr,ALIAS_PU00,192.168.33.26,postgres,lvm,test_group1,"[""/dev/sdb""]","[""/dev/sdb1"",""/dev/sdc""]",/dev/mapper/consolidated-data,pgucrstandby0,,"[""standby"",""spare""]",
 pgucrstandby0,ALIAS_PUS0,192.168.33.27,pg_standby,lvm,test_group2,"[""/dev/sda""]","[""/dev/sdb1"",""/dev/sdc1""]",/dev/mapper/consolidated-data,,pgucr,,standby
 ,,,,,,,,,,,,
@@ -18,8 +18,8 @@ test_group2,boolean_var2,FALSE,B,,,,,,,,,
 postgres,var1,val1,S,,,,,,,,,
 
 # couchdb2 cont,,,,,,,,,,,,
-hostname,host_alias,host_address,group 1,group 2
-couch0,ALIAS_CD00,192.168.33.21,couchdb2,lvm
+hostname,host_address,group 1,group 2
+couch0,192.168.33.21,couchdb2,lvm
 
 # more group vars
 group,var,val,type
