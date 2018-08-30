@@ -369,37 +369,6 @@ resource "aws_security_group" "proxy-sg" {
   }
 }
 
-#Create pg-proxy-sg
-resource "aws_security_group" "pg-proxy-sg" {
-  name   = "pg-proxy-sg-${var.env}"
-  vpc_id = "${aws_vpc.g2-tf-vpc.id}"
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
-    #security_groups = ["${var.openvpn-access-sg}"]
-  }
-
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags {
-    Name = "pg-proxy-sg-${var.env}"
-  }
-}
-
 #Create django-sg
 resource "aws_security_group" "django-sg" {
   name   = "django-sg-${var.env}"

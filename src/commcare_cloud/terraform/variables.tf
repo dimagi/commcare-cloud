@@ -156,6 +156,14 @@ module "RabbitMQ" {
   security_group             = "${module.network.rabbitmq-sg}"
 }
 
+module "pg-proxy-sg" {
+  source                = "../modules/security_group"
+  group_name            = "pg-proxy"
+  environment           = "${var.environment}"
+  vpc_id                = "${module.network.vpc-id}"
+  vpc_begin_range       = "${var.vpc_begin_range}"
+}
+
 module "PG_Proxy" {
   source                = "../modules/generic-server"
   server_name           = "PG_Proxy"
@@ -165,7 +173,7 @@ module "PG_Proxy" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group           = "${module.network.pg-proxy-sg}"
+  security_group           = "${module.pg-proxy-sg.security_group}"
 }
 
 module "Proxy" {
