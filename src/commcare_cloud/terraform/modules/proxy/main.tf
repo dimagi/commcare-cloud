@@ -3,7 +3,7 @@ resource aws_instance "server" {
   instance_type          = "${var.server_instance_type}"
   subnet_id              = "${var.instance_subnet}"
   key_name               = "g2-access"
-  vpc_security_group_ids = ["${var.proxy-sg}"]
+  vpc_security_group_ids = ["${var.security_group}"]
   source_dest_check      = false
   root_block_device {
     volume_size           = 20

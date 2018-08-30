@@ -14,7 +14,7 @@
 #  }
 #  owners = ["137112412989"]
 #}
-variable "airflow-sg" {}
+variable "security_group" {}
 variable "server_image" {}
 variable "server_name" {}
 variable "environment" {}
