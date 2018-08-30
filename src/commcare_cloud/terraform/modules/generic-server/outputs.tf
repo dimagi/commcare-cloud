@@ -1,3 +1,7 @@
-#output "jenkins_tg" {
-#  value = "${aws_lb_target_group.jenkins_tg.arn}"
-#}
+output "server" {
+  value = "${aws_instance.server.id}"
+}
+
+output "server_private_ip" {
+  value = "${aws_instance.server.private_ip}"
+}
