@@ -169,7 +169,7 @@ module "PG_Proxy" {
 }
 
 module "Proxy" {
-  source                = "../modules/proxy"
+  source                = "../modules/generic-server"
   server_name           = "Proxy"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -179,6 +179,13 @@ module "Proxy" {
   vpc_id                = "${module.network.vpc-id}"
   security_group		= "${module.network.proxy-sg}"
 }
+
+resource "aws_eip" "proxy" {
+  vpc = true
+  instance = "${module.Proxy.server}"
+  associate_with_private_ip = "${module.Proxy.server_private_ip}"
+}
+
 
 module "Redis" {
   source               = "../modules/elasticache"
