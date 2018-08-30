@@ -4,7 +4,10 @@
 
 **Optional per env:** Yes
 
-**Dependant CommCare version:** [a507757628bc5c087fd1badc0145e39c5bf790ae](https://github.com/dimagi/commcare-hq/commit/a507757628bc5c087fd1badc0145e39c5bf790ae)
+## CommCare Version Dependency
+CommCare versions beyond this commit require this change to function correctly:
+[a5077576](https://github.com/dimagi/commcare-hq/commit/a507757628bc5c087fd1badc0145e39c5bf790ae)
+
 
 ## Change Context
 Tasks for analytics reporting have been separated into a new analytics celery queue.

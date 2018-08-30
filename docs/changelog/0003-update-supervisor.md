@@ -4,7 +4,7 @@
 
 **Optional per env:** Yes
 
-**Dependant CommCare version:** None
+
 
 ## Change Context
 Ubuntu 14.04 `apt-get install supervisor` installs supervisor 3.0b.

@@ -4,7 +4,7 @@
 
 **Optional per env:** No
 
-**Dependant CommCare version:** None
+
 
 ## Change Context
 There are several CommCare specific processes that are defined in supervisor

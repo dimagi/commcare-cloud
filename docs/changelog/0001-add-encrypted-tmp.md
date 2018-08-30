@@ -4,7 +4,7 @@
 
 **Optional per env:** No
 
-**Dependant CommCare version:** None
+
 
 ## Change Context
 Some of the CommCare processes make use of temporary files to store client data
