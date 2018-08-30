@@ -1,4 +1,20 @@
 ---
+- name: Set bash prompt in bash.bashrc
+  become: yes
+  lineinfile:
+    dest: "/etc/bash.bashrc"
+    regexp: "^PS1=.*"
+    line: "PS1={{ PS1 }}"
+    state: present
+
+- name: Set bash prompt in bashrc skeleton
+  become: yes
+  lineinfile:
+    dest: "/etc/skel/.bashrc"
+    regexp: "^PS1=.*"
+    line: "PS1={{ PS1 }}"
+    state: present
+
 - name: Add dev group
   become: yes
   group: name="{{ dev_group }}" state=present
