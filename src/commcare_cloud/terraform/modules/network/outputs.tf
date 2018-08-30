@@ -94,6 +94,3 @@ output "touchforms-sg" {
 output "rabbitmq-sg" {
   value = "${aws_security_group.rabbitmq-sg.id}"
 }
-output "pg-proxy-sg" {
-  value = "${aws_security_group.pg-proxy-sg.id}"
-}
