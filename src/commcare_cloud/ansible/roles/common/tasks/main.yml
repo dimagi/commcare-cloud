@@ -79,7 +79,7 @@
   lineinfile:
     dest: /etc/hosts
     regexp: '^{{ internal_ipv4.address }}\s'
-    line: '{{ internal_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}{%if host_alias is defined %} {{ host_alias|lower }}{% endif %}'
+    line: "{{ internal_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}{%if host_alias|default('') %} {{ host_alias|lower }}{% endif %}"
   when: hostname is defined and hostname and internal_domain_name and not etc_hosts_lines|join(',')|search(internal_ipv4.address)
   tags:
     - hostname

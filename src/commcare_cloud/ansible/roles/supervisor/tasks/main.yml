@@ -12,7 +12,7 @@
   check_mode: no
 
 - name: install supervisor 3.3.4
-  pip: name=supervisor state=present version=3.3.4
+  pip: name=supervisor state=present version=3.3.4 executable=pip2
   become: yes
   when: not which_supervisord.stdout
 
@@ -69,6 +69,14 @@
   template:
     src: supervisord.upstart.conf.j2
     dest: /etc/init/supervisord.conf
+  when: ansible_distribution_version == '14.04'
+
+- name: Add Systemd Conf
+  become: yes
+  template:
+    src: supervisord.systemd.service.j2
+    dest: /etc/systemd/system/supervisord.service
+  when: ansible_distribution_version == '18.04'
 
 - name: stop supervisor to pick up configuration changes
   become: yes

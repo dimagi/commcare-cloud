@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -279,8 +279,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -393,8 +392,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -591,8 +589,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -944,7 +941,7 @@ Optional message to set on Datadog.
 Copy files from multiple sources to targets.
 
 ```
-commcare-cloud <env> copy-files plan {prepare,copy,cleanup}
+commcare-cloud <env> copy-files plan_path {prepare,copy,cleanup}
 ```
 
 This is a general purpose command that can be used to copy files between
@@ -963,6 +960,7 @@ copy_files:
         source_user: <user>
         source_dir: <source-dir>
         target_dir: <target-dir>
+        rsync_args: []
         files:
           - test/
           - test1/test-file.txt
@@ -978,13 +976,14 @@ listed for each target host.
 to read the files being copied.
 - **source-dir**: The base directory from which all source files referenced.
 - **target-dir**: Directory on the target host to copy the files to.
+- **rsync_args**: Additional arguments to pass to rsync.
 - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
 end with a `/`.
 - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
 
 ##### Positional Arguments
 
-###### `plan`
+###### `plan_path`
 
 Path to plan file
 
@@ -997,10 +996,22 @@ Action to perform
 - cleanup: remove temporary files and remote auth
 
 
-#### `list-dbs`
+#### `list-postgresql-dbs`
 
-List out databases by host
+Example:
 
 ```
-commcare-cloud <env> list-dbs
+commcare-cloud <env> list-postgresql-dbs [--compare]
 ```
+
+To list all database on a particular environment.
+
+```
+commcare-cloud <ev> list-databases
+```
+
+##### Optional Arguments
+
+###### `--compare`
+
+Gives additional databases on the server.

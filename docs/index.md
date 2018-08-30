@@ -45,6 +45,7 @@ that machine is also the control machine.
     - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
 - Firewall
     - [Configure a firewall on the servers](howto/firewall.md)
+- [Kafka](services/kafka.md)
 
 ## A word of caution
 
