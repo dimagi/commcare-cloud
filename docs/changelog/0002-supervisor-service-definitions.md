@@ -1,10 +1,12 @@
 # 2. Update supervisor service definitions
 
-**Date:**  2018-07-13
+**Date:** 2018-07-13
 
 **Optional per env:** No
 
-**Dependant CommCare version:** None
+## CommCare Version Dependency
+This change is not known to be dependent on any particular version of CommCare.
+
 
 ## Change Context
 There are several CommCare specific processes that are defined in supervisor

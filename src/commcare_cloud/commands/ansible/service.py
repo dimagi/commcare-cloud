@@ -30,6 +30,8 @@ STATES = {
     'status': 'status'
 }
 
+MONIT_MANAGED_SERVICES = ['postgresql', 'pgbouncer', 'redis', 'couchdb2']
+
 
 @attr.s
 class ServiceOption(object):
@@ -181,7 +183,21 @@ class SupervisorService(SubServicesMixin, ServiceBase):
         :param process_pattern: process pattern from the args or None
         :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
         """
-        raise NotImplemented
+        raise NotImplementedError
+
+
+def _service_status_helper(service_name):
+    if service_name in MONIT_MANAGED_SERVICES:
+        return 'monit status {}'.format(service_name)
+
+    return 'service {} status'.format(service_name)
+
+
+def _ansible_module_helper(service_name):
+    if service_name in MONIT_MANAGED_SERVICES:
+        return 'monit'
+
+    return 'service'
 
 
 class AnsibleService(ServiceBase):
@@ -202,11 +218,11 @@ class AnsibleService(ServiceBase):
         host_pattern = host_pattern or ','.join(self.inventory_groups)
 
         if action == 'status':
-            command = 'service {} status'.format(self.service_name)
+            command = _service_status_helper(self.service_name)
             return self._run_ansible_module(host_pattern, 'shell', command)
 
         service_args = 'name={} state={}'.format(self.service_name, STATES[action])
-        return self._run_ansible_module(host_pattern, 'service', service_args)
+        return self._run_ansible_module(host_pattern, _ansible_module_helper(self.service_name), service_args)
 
 
 class MultiAnsibleService(SubServicesMixin, AnsibleService):
@@ -234,7 +250,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 
     def check_status(self, host_pattern=None, process_pattern=None):
         def _status(service_name, run_on):
-            command = 'service {} status'.format(service_name)
+            command = _service_status_helper(service_name)
             return self._run_ansible_module(run_on, 'shell', command)
 
         return self._run_action_on_hosts(_status, host_pattern, process_pattern)
@@ -245,7 +261,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 
         def _change_state(service_name, run_on, action=action):
             service_args = 'name={} state={}'.format(service_name, STATES[action])
-            return self._run_ansible_module(run_on, 'service', service_args)
+            return self._run_ansible_module(run_on, _ansible_module_helper(service_name), service_args)
 
         return self._run_action_on_hosts(_change_state, host_pattern, process_pattern)
 

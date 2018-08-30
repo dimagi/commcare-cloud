@@ -11,7 +11,7 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
-### **2018-08-16** [Support multiple Kafka borkers](0005-support-multiple-kafak-brokers.md) (_action required_)
+### **2018-08-16** [Support multiple Kafka brokers](0005-support-multiple-kafak-brokers.md) (_action required_)
 Large scale deployments of CommCare require scaling out Kafka brokers to support the high
 traffic volume (as well as for high availability). Up until now CommCare has only
 supported a single broker.
@@ -32,4 +32,6 @@ There are several CommCare specific processes that are defined in supervisor
 configuration files. This change decouples the process definitions from code.
 
 ### **2018-06-11** [Added encrypted temporary directory](0001-add-encrypted-tmp.md) (_action required_)
-Some of the CommCare processes make use of temporary files to store client data (such as data exports) so in order to keep that data protected we have modified the setup to use an encrypted temporary directory.
+Some of the CommCare processes make use of temporary files to store client data
+(such as data exports) so in order to keep that data protected we have modified
+the setup to use an encrypted temporary directory.

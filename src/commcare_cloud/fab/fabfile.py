@@ -250,7 +250,7 @@ def env_common():
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
-    touchforms = servers['touchforms']
+    touchforms = servers.get('touchforms', [])
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']

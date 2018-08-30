@@ -85,7 +85,7 @@ CELERY_PROCESSES = [
     CeleryProcess("saved_exports_queue"),
     CeleryProcess("sumologic_logs_queue", required=False),
     CeleryProcess("send_report_throttled", required=False),
-    CeleryProcess("sms_queue"),
+    CeleryProcess("sms_queue", required=False), # TODO remove required
     CeleryProcess("submission_reprocessing_queue", required=False),
     CeleryProcess("ucr_indicator_queue", required=False),
     CeleryProcess("ucr_queue", required=False),
