@@ -234,6 +234,7 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -253,3 +254,4 @@ localsettings:
   UCR_COMPARISONS:
     'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  WAREHOUSE_DATABASE_ALIAS: 'warehouse'
