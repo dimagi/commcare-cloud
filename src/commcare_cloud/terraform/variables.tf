@@ -64,7 +64,7 @@ module "django" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "django1" {
@@ -76,7 +76,7 @@ module "django1" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-b-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "celery" {
@@ -88,7 +88,7 @@ module "celery" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-b-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "pillowtop" {
@@ -100,7 +100,7 @@ module "pillowtop" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-c-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 
@@ -113,7 +113,7 @@ module "formplayer" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "kafka" {
@@ -125,7 +125,7 @@ module "kafka" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "ES" {
@@ -137,7 +137,7 @@ module "ES" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "Airflow" {
@@ -149,7 +149,7 @@ module "Airflow" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "RabbitMQ" {
@@ -161,7 +161,7 @@ module "RabbitMQ" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "PG_Proxy" {
@@ -173,7 +173,7 @@ module "PG_Proxy" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group        = "${module.generic-sg.security_group}"
+  security_groups       = ["${module.generic-sg.security_group}"]
 }
 
 module "Proxy" {
@@ -185,7 +185,7 @@ module "Proxy" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group		= "${module.network.proxy-sg}"
+  security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
 }
 
 resource "aws_eip" "proxy" {

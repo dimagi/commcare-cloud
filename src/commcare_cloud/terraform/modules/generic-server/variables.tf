@@ -14,7 +14,9 @@
 #  }
 #  owners = ["137112412989"]
 #}
-variable "security_group" {}
+variable "security_groups" {
+  type = "list"
+}
 variable "server_image" {}
 variable "server_name" {}
 variable "environment" {}
