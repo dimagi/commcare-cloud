@@ -12,5 +12,4 @@ variable "subnet_options" {
 
 variable "server_image" {}
 variable "environment" {}
-variable "vpc-all-hosts-sg" {}
 variable "vpc_id" {}

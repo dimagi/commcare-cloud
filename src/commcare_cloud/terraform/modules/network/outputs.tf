@@ -46,10 +46,6 @@ output "subnet-c-db-private" {
   value = "${aws_subnet.subnet-c-db-private.id}"
 }
 
-output "vpc-all-hosts-sg" {
-  value = "${aws_security_group.vpc-all-hosts-sg.id}"
-}
-
 output "g2-access-sg" {
   value = "${aws_security_group.g2-access-sg.id}"
 }

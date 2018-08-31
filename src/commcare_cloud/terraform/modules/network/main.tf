@@ -268,38 +268,6 @@ resource "aws_internet_gateway" "main" {
   vpc_id = "${aws_vpc.main.id}"
 }
 
-# Create an All Hosts security group that allows traffic to flow freely within the VPC
-# NOTE: Depending upon requirements, this may need to be adjusted to be more restrictive.
-resource "aws_security_group" "vpc-all-hosts-sg" {
-  name   = "all-hosts-${var.env}"
-  vpc_id = "${aws_vpc.main.id}"
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
-    #security_groups = ["${var.openvpn-access-sg}"]
-  }
-
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags {
-    Name = "all-hosts-${var.env}"
-  }
-}
-
 resource "aws_security_group" "g2-access-sg" {
   name   = "g2-access-${var.env}"
   vpc_id = "${aws_vpc.main.id}"

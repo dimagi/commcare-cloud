@@ -71,7 +71,6 @@ module "servers" {
   servers               = "${var.servers}"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}"]
   subnet_options        = ["${module.network.subnet-a-app-private}",
@@ -84,7 +83,6 @@ module "proxy_servers" {
   servers               = "${var.proxy_servers}"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
   subnet_options        = ["${module.network.subnet-a-app-private}",
@@ -109,7 +107,7 @@ module "Redis" {
   parameter_group_name = "${var.parameter_group_name}"
   port                 = 6379
   elasticache_subnets  = ["${module.network.subnet-a-util-private}","${module.network.subnet-b-util-private}","${module.network.subnet-c-util-private}"]
-  security_group_ids   = ["${module.network.vpc-all-hosts-sg}"]
+  security_group_ids   = ["${module.generic-sg.security_group}"]
 }
 
 #module "bastion" {
@@ -120,7 +118,6 @@ module "Redis" {
 #  bastion_instance_type = "${var.bastion_instance_type}"
 #  g2-access-sg          = "${module.network.g2-access-sg}"
 #  #openvpn-access-sg     = "${module.openvpn.openvpn-access-sg}"
-#  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
 #  instance_subnet       = "${module.network.subnet-c-public}"
 #  vpc_id                = "${module.network.vpc-id}"
 #}
@@ -129,10 +126,9 @@ module "Redis" {
 #  source           = "../modules/openvpn"
 #  openvpn_image    = "${var.openvpn_image}"
 #  environment      = "${var.environment}"
-#  company          = "${var.company}"  
+#  company          = "${var.company}"
 #  vpn_size         = "${var.openvpn_instance_type}"
 #  g2-access-sg     = "${module.network.g2-access-sg}"
-#  vpc-all-hosts-sg = "${module.network.vpc-all-hosts-sg}"
 #  instance_subnet  = "${module.network.subnet-b-public}"
 #  vpc_id           = "${module.network.vpc-id}"
 #  # dns_zone_id      = "${var.dns_zone_id}"
@@ -165,7 +161,7 @@ module "Redis" {
 #  rds_password                   = "${var.rds_password}"
 #  rds_prevent_destroy            = "${var.rds_prevent_destroy}"
 #  rds_instance_count             = "${var.rds_instance_count}"
-#  rds_sg_ip_ingress              = ["${module.network.vpc-all-hosts-sg}","${module.network.g2-access-sg}","${module.openvpn.openvpn-access-sg}"]
+#  rds_sg_ip_ingress              = ["${module.generic-sg.security_group}","${module.network.g2-access-sg}","${module.openvpn.openvpn-access-sg}"]
 #  rds_subnet_a                   = "${module.network.subnet-a-db-private}"
 #  rds_subnet_b                   = "${module.network.subnet-b-db-private}"
 #  rds_subnet_c                   = "${module.network.subnet-c-db-private}"
