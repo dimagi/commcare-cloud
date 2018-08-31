@@ -43,3 +43,7 @@ class Argument(object):
 
     def add_to_parser(self, parser):
         parser.add_argument(*self._args, **self._kwargs)
+
+
+class CommandError(Exception):
+    pass

@@ -8,7 +8,7 @@ import yaml
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from commcare_cloud.commands.utils import render_template, PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
 
@@ -152,6 +152,9 @@ def read_plan(plan_path, target_env, limit=None):
             for host, config in configs.items()
             if host in subset
         }
+    if not configs:
+        raise CommandError("Limit pattern did not match any hosts: {}".format(limit))
+
     return Plan(
         source_env = source_env or target_env,
         configs=configs
