@@ -55,11 +55,11 @@ output "g2-access-sg" {
 }
 
 output "vpc-id" {
-  value = "${aws_vpc.g2-tf-vpc.id}"
+  value = "${aws_vpc.main.id}"
 }
 
 output "vpc-cidr" {
-  value = "${aws_vpc.g2-tf-vpc.cidr_block}"
+  value = "${aws_vpc.main.cidr_block}"
 }
 
 output "proxy-sg" {
