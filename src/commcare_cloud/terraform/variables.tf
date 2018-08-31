@@ -55,6 +55,11 @@ module "generic-sg" {
   vpc_begin_range       = "${var.vpc_begin_range}"
 }
 
+variable "servers" {
+  type = "list"
+  default = []
+}
+
 module "django" {
   source                = "../modules/generic-server"
   server_name		= "django"
