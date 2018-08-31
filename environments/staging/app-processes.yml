@@ -8,7 +8,7 @@ celery_processes:
     repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue:
       concurrency: 4
       max_tasks_per_child: 5
-    background_queue,case_rule_queue:
+    background_queue,case_rule_queue,analytics_queue:
       concurrency: 2
       max_tasks_per_child: 1
     saved_exports_queue:

@@ -65,28 +65,29 @@ class AnsiblePlaybook(CommandBase):
             )
         ))
 
-    def run(self, args, unknown_args, always_skip_check=False):
+    def run(self, args, unknown_args, always_skip_check=False, respect_ansible_skip=True):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
         check_branch(args)
-        run_ansible_playbook(
+        return run_ansible_playbook(
             environment, args.playbook, ansible_context, args.skip_check, args.quiet,
-            always_skip_check, args.limit, args.use_factory_auth, unknown_args
+            always_skip_check, args.limit, args.use_factory_auth, unknown_args,
+            respect_ansible_skip=respect_ansible_skip,
         )
 
 
 def run_ansible_playbook(
         environment, playbook, ansible_context,
         skip_check=False, quiet=False, always_skip_check=False, limit=None,
-        use_factory_auth=False, unknown_args=None
+        use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
     ):
 
     def get_limit():
         limit_parts = []
         if limit:
             limit_parts.append(limit)
-        if 'ansible_skip' in environment.sshable_hostnames_by_group:
+        if 'ansible_skip' in environment.sshable_hostnames_by_group and respect_ansible_skip:
             limit_parts.append('!ansible_skip')
 
         if limit_parts:
@@ -102,7 +103,7 @@ def run_ansible_playbook(
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
-            '-i', environment.paths.inventory_ini,
+            '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.vault_yml),
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
@@ -209,32 +210,6 @@ class AfterReboot(_AnsiblePlaybookAlias):
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
-class RestartElasticsearch(_AnsiblePlaybookAlias):
-    command = 'restart-elasticsearch'
-    help = """
-    Do a rolling restart of elasticsearch.
-
-    **This command is deprecated.** Use
-
-    ```
-    commcare-cloud <env> service elasticsearch restart
-    ```
-
-    instead.
-    """
-
-    def run(self, args, unknown_args):
-        args.playbook = 'es_rolling_restart.yml'
-        if not ask('Have you stopped all the elastic pillows?', strict=True, quiet=args.quiet):
-            return 0  # exit code
-        puts(colored.yellow(
-            "This will cause downtime on the order of seconds to minutes,\n"
-            "except in a few cases where an index is replicated across multiple nodes."))
-        if not ask('Do a rolling restart of the ES cluster?', strict=True, quiet=args.quiet):
-            return 0  # exit code
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-
 class BootstrapUsers(_AnsiblePlaybookAlias):
     command = 'bootstrap-users'
     help = """
@@ -311,7 +286,8 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
         args.playbook = 'add-ssh-keys.yml'
         args.quiet = True
         environment = get_environment(args.env_name)
-        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
+                                              respect_ansible_skip=False)
         with open(environment.paths.known_hosts, 'r') as f:
             known_hosts = f.readlines()
         known_hosts.sort()

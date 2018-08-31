@@ -1,5 +1,8 @@
 internal_domain_name: null
 
+rabbitmq_create_cluster: true
+internal_network_interface: eth1
+
 http_proxy_address: '192.168.33.14'
 http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
@@ -30,10 +33,6 @@ DATADOG_ENABLED: False
 
 CLOUDANT_CLUSTER_NAME: null
 
-
-# This dumps the dummy keystore, but allows the ansible script to continue, should be overriden for real deploys
-#keystore_file: 'DimagiKeyStore'
-
 backup_es: False
 backup_postgres: plain
 backup_blobdb: True
@@ -51,7 +50,7 @@ couchdb2:
 
 couchdb_bind:
   ty: static
-  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+  host: '{{ internal_ipv4.address }}'
 
 couch_dbs:
   default:
@@ -92,7 +91,6 @@ localsettings:
 #  INVOICE_PREFIX:
 #  INVOICE_STARTING_NUMBER:
   J2ME_ADDRESS: ''
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
 #  MEDIA_ROOT:
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:

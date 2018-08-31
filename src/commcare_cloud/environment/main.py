@@ -1,4 +1,5 @@
 import getpass
+import os
 
 import yaml
 from ansible.parsing.vault import AnsibleVaultError
@@ -7,6 +8,7 @@ from memoized import memoized, memoized_property
 from collections import Counter
 
 from commcare_cloud.environment.constants import constants
+from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
@@ -20,8 +22,6 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.users import UsersConfig
 
-class EnvironmentException(Exception):
-    pass
 
 class Environment(object):
     def __init__(self, paths):
@@ -44,7 +44,7 @@ class Environment(object):
 
     @memoized
     def get_ansible_vault_password(self):
-        return getpass.getpass("Vault Password: ")
+        return getpass.getpass("Vault Password for '{}': ".format(self.paths.env_name))
 
     @memoized
     def get_vault_variables(self):
@@ -171,8 +171,10 @@ class Environment(object):
 
     @memoized_property
     def inventory_manager(self):
-        return InventoryManager(loader=self._ansible_inventory_data_loader,
-                                sources=self.paths.inventory_ini)
+        return InventoryManager(
+            loader=self._ansible_inventory_data_loader,
+            sources=self.paths.inventory_source
+        )
 
     @property
     def _ansible_inventory_variable_manager(self):
@@ -258,10 +260,8 @@ class Environment(object):
         return mapping
 
     def _run_last_minute_checks(self):
-        assert len(self.groups.get('rabbitmq', [])) == 1, \
-            "You must have exactly one host in the [rabbitmq] group"
-        assert len(self.groups.get('redis', [])) == 1, \
-            "You must have exactly one host in the [redis] group"
+        assert len(self.groups.get('rabbitmq', [])) > 0, \
+            "You need at least one rabbitmq host in the [rabbitmq] group"
 
     def create_generated_yml(self):
         self._run_last_minute_checks()
@@ -277,6 +277,9 @@ class Environment(object):
         generated_variables.update(self.postgresql_config.to_generated_variables())
         generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
+
+        if os.path.exists(self.paths.dimagi_key_store_vault):
+            generated_variables.update({'keystore_file': self.paths.dimagi_key_store_vault})
 
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))

@@ -2,11 +2,12 @@
 #
 # {{ ansible_managed }}
 #
+{% set group_tags = group_names|select('in', monitoring_groups)|sort %}
 
 [Main]
 dd_url: https://app.datadoghq.com
 api_key: {{ DATADOG_API_KEY }}
-tags: environment:{{ env_monitoring_id }}, group:{{ group_names|sort|join(', group:') }}
+tags: environment:{{ env_monitoring_id }}{% if group_tags %}, group:{{ group_tags|join(', group:') }}{% endif %}
 
 {% if http_proxy_address is defined and http_proxy_address %}
 proxy_host: {{ http_proxy_address }}
@@ -36,4 +37,8 @@ dogstreams: {% for parser in datadog_parsers -%}
         {%- endif -%}
     {%- endif -%}
 {%- endfor %}
+{% endif %}
+
+{% if alt_hostname is defined %}
+hostname: {{ alt_hostname }}.{{ internal_domain_name }}
 {% endif %}

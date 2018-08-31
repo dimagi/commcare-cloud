@@ -4,9 +4,7 @@ from __future__ import absolute_import
 
 import inspect
 import os
-
 import sys
-import textwrap
 import warnings
 from collections import OrderedDict
 
@@ -15,18 +13,18 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from commcare_cloud.commands.dbs import ListDbs
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
-    UpdateConfig, AfterReboot, RestartElasticsearch, BootstrapUsers, DeployStack,
+    UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
+from .commands.ansible.ops_tool import ListDatabases
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from .environment.paths import (
     get_available_envs,
@@ -54,7 +52,6 @@ COMMAND_GROUPS = OrderedDict([
         DeployStack,
         UpdateConfig,
         AfterReboot,
-        RestartElasticsearch,
         BootstrapUsers,
         UpdateUsers,
         UpdateSupervisorConfs,
@@ -63,7 +60,7 @@ COMMAND_GROUPS = OrderedDict([
         MigrateCouchdb,
         Downtime,
         CopyFiles,
-        ListDbs,
+        ListDatabases,
     ])
 ])
 
@@ -102,8 +99,8 @@ def add_backwards_compatibility_to_args(args):
     args.__class__ = NamespaceWrapper
 
 
-def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
-                subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
+def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
+                        subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
     if subparser_formatter_class is None:
         subparser_formatter_class = formatter_class
     parser = ArgumentParser(formatter_class=formatter_class, prog=prog, add_help=add_help)
@@ -152,7 +149,7 @@ def make_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
 def main():
     put_virtualenv_bin_on_the_path()
-    parser, subparsers, commands = make_parser(available_envs=get_available_envs())
+    parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args()
 
     add_backwards_compatibility_to_args(args)

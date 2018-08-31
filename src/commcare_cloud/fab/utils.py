@@ -59,9 +59,9 @@ class DeployMetadata(object):
 
     @memoized_property
     def repo(self):
-        return _get_github().get_organization('dimagi').get_repo('commcare-hq')
+        return _get_github().get_repo('dimagi/commcare-hq')
 
-    @property
+    @memoized_property
     def last_commit_sha(self):
         if self.last_tag:
             return self.last_tag.commit.sha
@@ -88,11 +88,12 @@ class DeployMetadata(object):
             return
 
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        self.repo.create_git_ref(
-            ref='refs/tags/' + tag_name,
-            sha=self.deploy_ref,
-        )
-        self._deploy_tag = tag_name
+        if _github_auth_provided():
+            self.repo.create_git_ref(
+                ref='refs/tags/' + tag_name,
+                sha=self.deploy_ref,
+            )
+            self._deploy_tag = tag_name
 
     def _offline_tag_commit(self):
         commit = local('cd {}/commcare-hq && git show-ref --hash --heads {}'.format(
@@ -119,13 +120,16 @@ class DeployMetadata(object):
         if env.offline:
             return '"No diff url for offline deploy"'
 
-        if self._deploy_tag is None:
+        if _github_auth_provided() and self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
-        if not self.last_tag or not self.last_tag.name:
+
+        from_ = self.last_tag.name if self.last_tag and self.last_tag.name else self.last_commit_sha
+        if not from_:
             return '"Previous deploy not found, cannot make comparison"'
+
         return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
-            self.last_tag.name,
-            self._deploy_tag,
+            from_,
+            self._deploy_tag or self.deploy_ref,
         )
 
     @memoized_property
@@ -135,20 +139,22 @@ class DeployMetadata(object):
 
         # turn whatever `code_branch` is into a commit hash
         branch = self.repo.get_branch(self._code_branch)
-        deploy_ref = branch.commit.sha
+        return branch.commit.sha
 
-        try:
-            self.repo.create_git_ref(
-                ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
-                sha=deploy_ref,
-            )
-        except UnknownObjectException:
-            raise Exception(
-                'Github API key does not have the right settings. '
-                'Please create an API key with the public_repo scope enabled.'
-            )
-
-        return deploy_ref
+    def tag_setup_release(self):
+        if _github_auth_provided():
+            try:
+                self.repo.create_git_ref(
+                    ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
+                    sha=self.deploy_ref,
+                )
+            except UnknownObjectException:
+                raise Exception(
+                    'Github API key does not have the right settings. '
+                    'Please create an API key with the public_repo scope enabled.'
+                )
+            return True
+        return False
 
     @property
     def current_ref_is_different_than_last(self):
@@ -157,24 +163,44 @@ class DeployMetadata(object):
 
 @memoized
 def _get_github():
+    def _show_no_auth_message():
+        print(magenta(
+            "Warning: Creation of release tags is disabled. "
+            "Provide Github auth details to enable release tags."
+        ))
+
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
         print((
-            "You can add a GitHub API key to automate this step:\n"
+            "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username: ')
-        password = getpass('Github password: ')
+        username = input('Github username (leave blank for no auth): ')
+        password = getpass('Github password: ') if username else None
+        if not username:
+            _show_no_auth_message()
         return Github(
-            login_or_token=username,
+            login_or_token=username or None,
             password=password,
         )
     else:
+        if GITHUB_APIKEY is None:
+            _show_no_auth_message()
         return Github(
             login_or_token=GITHUB_APIKEY,
         )
+
+
+@memoized
+def _github_auth_provided():
+    try:
+        from .config import GITHUB_APIKEY
+    except ImportError:
+        return True  # user is prompted for auth
+    else:
+        return GITHUB_APIKEY is not None
 
 
 def _get_checkpoint_filename():

@@ -250,7 +250,7 @@ def env_common():
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
-    touchforms = servers['touchforms']
+    touchforms = servers.get('touchforms', [])
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']
@@ -456,6 +456,7 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
+    env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
     execute_with_timing(release.update_code(full_cluster), deploy_ref)
     execute_with_timing(release.update_virtualenv(full_cluster))
@@ -549,7 +550,7 @@ def announce_formplayer_deploy_start():
     )
 
 
-def _deploy_without_asking():
+def _deploy_without_asking(skip_record):
     if env.offline:
         commands = OFFLINE_DEPLOY_COMMANDS
     else:
@@ -579,8 +580,9 @@ def _deploy_without_asking():
         execute(check_servers.perform_system_checks)
         execute_with_timing(release.update_current)
         silent_services_restart()
-        execute_with_timing(release.record_successful_release)
-        execute_with_timing(release.record_successful_deploy)
+        if skip_record == 'no':
+            execute_with_timing(release.record_successful_release)
+            execute_with_timing(release.record_successful_deploy)
         clear_cached_deploy()
 
 
@@ -699,11 +701,12 @@ def manage(cmd):
 
 
 @task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no', offline='no'):
+def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
     fab <env> deploy:offline=yes  # offline deploy
+    fab <env> deploy:skip_record=yes  # skip record_successful_release
     """
     _require_target()
     if strtobool(confirm) and (
@@ -760,7 +763,7 @@ def awesome_deploy(confirm="yes", resume='no', offline='no'):
         print('┃┃┃┃┃┃')
         print('┻┻┻┻┻┻')
 
-    _deploy_without_asking()
+    _deploy_without_asking(skip_record)
 
 
 @task

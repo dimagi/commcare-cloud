@@ -5,6 +5,7 @@ riak_ring_size: 128
 
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
+datadog_integration_cloudant: true
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
@@ -16,8 +17,6 @@ redis_maxmemory: 8gb
 nofile_limit: 65536
 
 supervisor_http_enabled: True
-
-keystore_file: '../environments/{{ deploy_env }}/DimagiKeyStore.vault'
 
 backup_blobdb: False
 backup_postgres: plain
@@ -89,7 +88,6 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   PILLOWTOP_MACHINE_ID: hqdb0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'

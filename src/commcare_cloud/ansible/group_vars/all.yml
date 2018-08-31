@@ -13,6 +13,10 @@ project: "commcare-hq"
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
 
+internal_network_interface: "{{ ansible_default_ipv4.interface }}"
+internal_network_interface_fact: "ansible_{{ internal_network_interface }}"
+internal_ipv4: "{{ hostvars[inventory_hostname][internal_network_interface_fact].ipv4 }}"
+
 shared_dir_gid: 1500  # This GID cannot already be allocated
 shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
@@ -31,6 +35,7 @@ touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 ssh_allow_password: False
+ssh_allow_password_users: []
 django_port: 9010
 riakcs_port: 8080
 riakcs_proxy_port_override: "{{ riakcs_port }}"  # use this to override in env vars
