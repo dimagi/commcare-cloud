@@ -1,4 +1,4 @@
-hostname,host_address,group 1,group 2,group 3,var: host_alias
+hostname,host_address,group 1,group 2,group 3,var: hostname
 celery0,100.71.188.5,celery,,,MUMGCCWCDPRDC000
 celery1,100.71.188.11,celery,,,MUMGCCWCDPRDC001
 celery2,100.71.188.6,celery,,,MUMGCCWCDPRDC002

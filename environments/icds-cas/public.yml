@@ -156,7 +156,7 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
-  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
   EMAIL_SMTP_HOST: 'relay.historymile.com'  # TODO email setup
   EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
