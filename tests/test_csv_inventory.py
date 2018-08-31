@@ -16,7 +16,8 @@ EXPECTED_OUTPUT = {
                 "standby",
                 "spare"
             ],
-            "hostname": "pgucr",
+            "hostname": "ALIAS_PU00",
+            "alt_hostname": "pgucr",
             "hot_standby_server": "192.168.33.27",
             "devices": [
                 "/dev/sdb"
@@ -29,7 +30,8 @@ EXPECTED_OUTPUT = {
         "192.168.33.27": {
             "datavol_device": "/dev/mapper/consolidated-data",
             "hot_standby_master": "192.168.33.26",
-            "hostname": "pgucrstandby0",
+            "hostname": "ALIAS_PUS0",
+            "alt_hostname": "pgucrstandby0",
             "replication_slot": "standby",
             "devices": [
                 "/dev/sda"
