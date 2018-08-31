@@ -22,6 +22,67 @@ engine_version       = "4.0.10"
 redis_subnet_group   = "g2-tf-a-util-private-staging"
 parameter_group_name = "default.redis4.0" 
 
+variable "servers" {
+  default =   [
+    {
+      server_name           = "django"
+      server_instance_type  = "${var.server_instance_type}"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "django1"
+      server_instance_type  = "${var.server_instance_type}"
+      instance_subnet       = "${module.network.subnet-b-app-private}"
+    },
+    {
+      server_name           = "celery"
+      server_instance_type  = "t2.large"
+      instance_subnet       = "${module.network.subnet-b-app-private}"
+    },
+    {
+      server_name           = "pillowtop"
+      server_instance_type  = "t2.large"
+      instance_subnet       = "${module.network.subnet-c-app-private}"
+    },
+    {
+      server_name           = "formplayer"
+      server_instance_type  = "${var.server_instance_type}"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "kafka"
+      server_instance_type  = "t2.medium"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "ES"
+      server_instance_type  = "${var.server_instance_type}"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "Airflow"
+      server_instance_type  = "${var.server_instance_type}"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "RabbitMQ"
+      server_instance_type  = "${var.server_instance_type}"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "PG_Proxy"
+      server_instance_type  = "t2.medium"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+    },
+    {
+      server_name           = "Proxy"
+      server_instance_type  = "t2.medium"
+      instance_subnet       = "${module.network.subnet-a-app-private}"
+      extra_security_groups = ["${module.network.proxy-sg}"]
+    }
+  ]
+}
+
 # If using RDS, uncomment and update as necessary
 # #######
 # # RDS #
