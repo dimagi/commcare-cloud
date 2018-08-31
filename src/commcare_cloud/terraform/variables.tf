@@ -60,145 +60,38 @@ variable "servers" {
   default = []
 }
 
-module "django" {
-  source                = "../modules/generic-server"
-  server_name		= "django"
-  server_image       	= "${var.server_image}"
+variable "proxy_servers" {
+  type = "list"
+  default = []
+}
+
+
+module "servers" {
+  source                = "../modules/servers"
+  servers               = "${var.servers}"
+  server_image          = "${var.server_image}"
   environment           = "${var.environment}"
-  server_instance_type 	= "${var.server_instance_type}"
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}"]
 }
 
-module "django1" {
-  source                = "../modules/generic-server"
-  server_name           = "django1"
+module "proxy_servers" {
+  source                = "../modules/servers"
+  servers               = "${var.proxy_servers}"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
-  server_instance_type  = "${var.server_instance_type}"
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-b-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "celery" {
-  source                = "../modules/generic-server"
-  server_name           = "celery"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "t2.large"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-b-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "pillowtop" {
-  source                = "../modules/generic-server"
-  server_name           = "pillowtop"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "t2.large"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-c-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-
-module "formplayer" {
-  source                = "../modules/generic-server"
-  server_name           = "formplayer"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "${var.server_instance_type}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "kafka" {
-  source                = "../modules/generic-server"
-  server_name           = "kafka"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "t2.medium"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "ES" {
-  source                = "../modules/generic-server"
-  server_name           = "ES"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "${var.server_instance_type}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "Airflow" {
-  source                = "../modules/generic-server"
-  server_name           = "Airflow"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "${var.server_instance_type}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "RabbitMQ" {
-  source                = "../modules/generic-server"
-  server_name           = "RabbitMQ"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "${var.server_instance_type}"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "PG_Proxy" {
-  source                = "../modules/generic-server"
-  server_name           = "PG_Proxy"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "t2.medium"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-}
-
-module "Proxy" {
-  source                = "../modules/generic-server"
-  server_name           = "Proxy"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  server_instance_type  = "t2.medium"
-  vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
-  instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
 }
 
 resource "aws_eip" "proxy" {
+  count = "${module.proxy_servers.count}"
   vpc = true
-  instance = "${module.Proxy.server}"
-  associate_with_private_ip = "${module.Proxy.server_private_ip}"
+  instance = "${module.proxy_servers.server[count.index]}"
+  associate_with_private_ip = "${module.proxy_servers.server_private_ip[count.index]}"
 }
-
 
 module "Redis" {
   source               = "../modules/elasticache"
