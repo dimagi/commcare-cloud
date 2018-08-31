@@ -86,6 +86,7 @@ class CopyFiles(CommandBase):
             - migrate: execute the scripts
             - cleanup: remove temporary files and remote auth
         """),
+        shared_args.LIMIT_ARG,
         shared_args.SKIP_CHECK_ARG,
     )
 
@@ -93,7 +94,7 @@ class CopyFiles(CommandBase):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
-        plan = read_plan(args.plan_path, environment)
+        plan = read_plan(args.plan_path, environment, args.limit)
         working_directory = _get_working_dir(args.plan_path, environment)
         ansible_context = AnsibleContext(args)
 
@@ -124,7 +125,7 @@ class CopyFiles(CommandBase):
             shutil.rmtree(working_directory)
 
 
-def read_plan(plan_path, target_env):
+def read_plan(plan_path, target_env, limit=None):
     with open(plan_path, 'r') as f:
         plan_dict = yaml.load(f)
 
@@ -144,6 +145,13 @@ def read_plan(plan_path, target_env):
         for target in plan_dict['copy_files']
         for target_host, config_dicts in target.items()
     }
+    if limit:
+        subset = [host.name for host in target_env.inventory_manager.get_hosts(limit)]
+        configs = {
+            host: config
+            for host, config in configs.items()
+            if host in subset
+        }
     return Plan(
         source_env = source_env or target_env,
         configs=configs
