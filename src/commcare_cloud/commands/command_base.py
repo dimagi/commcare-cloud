@@ -2,6 +2,7 @@ import abc
 import inspect
 
 import six
+from clint.textui import puts, colored
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -27,6 +28,9 @@ class CommandBase(object):
     @abc.abstractmethod
     def run(self, args, unknown_args):
         pass
+
+    def log(self, message):
+        puts(colored.magenta("[{}] {}".format(self.command, message)))
 
 
 class Argument(object):

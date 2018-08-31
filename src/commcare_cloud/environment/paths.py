@@ -5,6 +5,8 @@ from distutils.sysconfig import get_python_lib
 import yaml
 from memoized import memoized_property, memoized
 
+from commcare_cloud.environment.exceptions import EnvironmentException
+
 
 def get_virtualenv_bin_path():
     """
@@ -55,6 +57,30 @@ class DefaultPaths(object):
         return self.get_env_file_path('inventory.ini')
 
     @lazy_immutable_property
+    def inventory_csv(self):
+        return self.get_env_file_path('inventory.csv')
+
+    @lazy_immutable_property
+    def inventory_directory(self):
+        return self.get_env_file_path('inventory')
+
+    @lazy_immutable_property
+    def inventory_source(self):
+        sources = []
+        for path in [self.inventory_ini, self.inventory_csv]:
+            if os.path.exists(path) and os.access(path, os.R_OK):
+                sources.append(path)
+        if os.path.exists(self.inventory_directory) and os.path.isdir(self.inventory_directory):
+            sources.append(self.inventory_directory)
+
+        if not sources or len(sources) > 1:
+            raise EnvironmentException(
+                "Exactly one inventory source must be provided. Either a single 'inventory.ini' file "
+                "or a single 'inventory.csv' file or an 'inventory' folder containing inventory files."
+            )
+        return sources[0]
+
+    @lazy_immutable_property
     def meta_yml(self):
         return self.get_env_file_path('meta.yml')
 
@@ -81,6 +107,10 @@ class DefaultPaths(object):
     @lazy_immutable_property
     def fab_settings_yml_default(self):
         return os.path.join(PACKAGE_BASE, 'environmental-defaults', 'fab-settings.yml')
+
+    @lazy_immutable_property
+    def dimagi_key_store_vault(self):
+        return self.get_env_file_path('DimagiKeyStore.vault')
 
     @lazy_immutable_property
     def generated_yml(self):
@@ -119,7 +149,11 @@ def get_available_envs(exclude_symlinks=False):
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
         if os.path.exists(DefaultPaths(env).public_yml)
-        and os.path.exists(DefaultPaths(env).inventory_ini)
+        and (
+            os.path.exists(DefaultPaths(env).inventory_ini)
+            or os.path.exists(DefaultPaths(env).inventory_csv)
+            or os.path.exists(DefaultPaths(env).inventory_directory)
+        )
         and not (exclude_symlinks and os.path.islink(os.path.join(ENVIRONMENTS_DIR, env)))
     )
 

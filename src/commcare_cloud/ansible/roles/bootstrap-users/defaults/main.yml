@@ -1,0 +1,3 @@
+# this adds the env name to the prompt and also overrides the hostname if `alt_hostname` is defined
+bash_PS1: |
+  '\[\e]0;({{ env_monitoring_id }}) \u@{{ alt_hostname|default('\h') }}: \w\a\]\[\033[01;33m\]({{ env_monitoring_id }})\[\033[00m\] \[\033[01;32m\]\u@{{ alt_hostname|default('\h') }}\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '

@@ -11,22 +11,18 @@ set eventqueue
     basedir /var/lib/monit/events # set the base directory where events will be stored
     slots 100                     # optionally limit the queue size
 
-## --8<--
-## set mail-format {
-##      from: monit@$HOST
-##   subject: monit alert --  $EVENT $SERVICE
-##   message: $EVENT Service $SERVICE
-##                 Date:        $DATE
-##                 Action:      $ACTION
-##                 Host:        $HOST
-##                 Description: $DESCRIPTION
-##
-##            Your faithful employee,
-##            Monit
-## }
-## --8<--
-##
-# set mail-format { from: monit@foo.bar }
+set mail-format {
+     from: monit@$HOST
+  subject: [{{ env_monitoring_id }}] monit alert -- {{ alt_hostname|default(ansible_hostname) }}: $EVENT $SERVICE
+  message: $EVENT Service $SERVICE
+                Date:        $DATE
+                Action:      $ACTION
+                Host:        $HOST
+                Environment: {{ env_monitoring_id }}
+                Description: $DESCRIPTION
+           Your faithful employee,
+           Monit
+}
 
 set alert root@localhost                       # receive all alerts
 # set alert manager@foo.bar not on { instance, action } 

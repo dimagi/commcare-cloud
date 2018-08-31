@@ -7,7 +7,7 @@ To deploy a new version of CommCare HQ
 $ commcare-cloud <env> fab deploy
 ```
 
-For more detailed deploy details see [Deploy](deploy.html)
+For more detailed deploy details see [Deploy](deploy.md)
 
 ## Stop all CommCare HQ services
 ```
@@ -50,3 +50,7 @@ $ commcare-cloud <env> update-config
 
 Note that you will need to restart the services in order for the changes
 to be picked up by the processes.
+
+---
+
+[︎⬅︎ Overview](..)

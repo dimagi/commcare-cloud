@@ -1,0 +1,9 @@
+- name: update apt cache
+  hosts: all
+  gather_facts: no
+  become: true
+  tasks:
+    - apt: update_cache=true cache_valid_time=3600
+  tags:
+    - common
+    - aptcache

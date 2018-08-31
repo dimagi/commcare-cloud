@@ -118,6 +118,9 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 {% endif %}
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
+
+ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(True) }}
+
 SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
 XFORMS_FORM_TRANSLATE_JAR = os.path.join(_ROOT_DIR, "lib", "form_translate.jar")
@@ -209,7 +212,27 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
-LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
+LOCAL_PILLOWTOPS = {
+{% for group, pillows in localsettings.LOCAL_PILLOWS.items() %}
+    "{{ group }}": [
+{% for pillow in pillows %}
+        {
+            "name": "{{ pillow.name }}",
+            "class": "{{ pillow.class }}",
+            "instance": "{{ pillow.instance }}",
+            "params": {
+                "topics": {{ pillow.params.topics }},
+                "include_ucrs": [
+{% for ucr in pillow.params.include_ucrs %}
+                     "{{ ucr }}",
+{% endfor %}
+                ]
+            }
+        },
+{% endfor %}
+    ]
+{% endfor %}
+}
 {% endif %}
 
 
@@ -308,8 +331,6 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMAILS', False) }}
-
 CELERY_RESULT_BACKEND = '{{ CELERY_RESULT_BACKEND }}'
 CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 {% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
@@ -323,7 +344,7 @@ FORMTRANSLATE_TIMEOUT = 5
 TOUCHFORMS_API_USER = "{{ TOUCHFORMS_API_USER }}"
 TOUCHFORMS_API_PASSWORD = "{{ TOUCHFORMS_API_PASSWORD }}"
 
-BROKER_URL = '{{ BROKER_URL }}'
+CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 
 XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
 
@@ -529,8 +550,12 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
-{% if localsettings.get('KAFKA_URL') %}
-KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
+{% if groups.kafka %}
+KAFKA_BROKERS = [
+    {%- for host in groups.kafka -%}
+    '{{ host }}:9092',
+    {%- endfor -%}
+]
 {% endif %}
 
 INVOICE_TERMS = "Net 30"
@@ -775,7 +800,7 @@ DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
     'project': {
-        'icds-cas': ['icds-cas-english', 'test-project-211'],
+        'icds-cas': ['test-project-211'],
     },
     'teams': {
         'icds-cas': {

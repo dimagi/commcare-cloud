@@ -1,15 +1,5 @@
 ---
-- name: add generated config
-  template:
-    src: "auto_gen.ini.j2"
-    dest: "{{ couchdb_etc_local_dir }}/auto_gen.ini"
-    owner: '{{couchdb_user}}'
-    group: '{{couchdb_group}}'
-    mode: '0644'
-  notify: restart couchdb2
-
-- name: flush handlers
-  meta: flush_handlers
+- meta: flush_handlers
 
 - name: Add nodes
   uri:

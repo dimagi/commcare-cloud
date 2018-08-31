@@ -1,4 +1,5 @@
 # Commands
+{:.no_toc}
 
 * TOC
 {:toc}
@@ -10,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,restart-elasticsearch,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -278,8 +279,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -305,7 +305,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -392,8 +392,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -419,7 +418,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -590,8 +589,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -620,7 +618,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -708,29 +706,6 @@ Machines to run on. Is anything that could be used in as a value for
 `celery:pillowtop` for multiple groups, etc.
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
-
-#### `restart-elasticsearch`
-
-Do a rolling restart of elasticsearch.
-
-```
-commcare-cloud <env> restart-elasticsearch [--use-factory-auth]
-```
-
-**This command is deprecated.** Use
-
-```
-commcare-cloud <env> service elasticsearch restart
-```
-
-instead.
 
 ##### Optional Arguments
 
@@ -865,9 +840,9 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                             {start,stop,restart,status,help}
+                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}
+                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker} ...]
+                             {start,stop,restart,status,logs,help}
 ```
 
 #### Example
@@ -876,6 +851,7 @@ commcare-cloud <env> service [--only PROCESS_PATTERN]
 cchq <env> service postgresql status
 cchq <env> service riakcs restart --only riak,riakcs
 cchq <env> service celery help
+cchq <env> service celery logs
 cchq <env> service celery restart --limit <host>
 cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
 cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
@@ -888,15 +864,15 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
 More than one service may be supplied as separate arguments in a row.
 
-###### `{start,stop,restart,status,help}`
+###### `{start,stop,restart,status,logs,help}`
 
-Action can be `status`, `start`, `stop`, or `restart`.
+Action can be `status`, `start`, `stop`, `restart`, or `logs`.
 This action is applied to every matching service.
 
 ##### Optional Arguments
@@ -965,51 +941,77 @@ Optional message to set on Datadog.
 Copy files from multiple sources to targets.
 
 ```
-commcare-cloud <env> copy-files plan {prepare,copy}
+commcare-cloud <env> copy-files plan_path {prepare,copy,cleanup}
 ```
 
 This is a general purpose command that can be used to copy files between
 hosts in the cluster.
 
+Files are copied using `rsync` from the target host. This tool assumes that the
+specified user on the source host has permissions to read the files being copied.
+
 The plan file must be formatted as follows:
 
 ```yml
+source_env: env1 (optional if source is different from target)
 copy_files:
   - <target-host>:
       - source_host: <source-host>
+        source_user: <user>
         source_dir: <source-dir>
         target_dir: <target-dir>
+        rsync_args: []
         files:
           - test/
           - test1/test-file.txt
+        exclude:
+          - logs/*
+          - test/temp.txt
 ```       
 - **copy_files**: Multiple target hosts can be listed. 
 - **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
 listed for each target host.
-- **source-host**: Hostname or IP of the source host
-- **source-dir**: The base directory from which all source files referenced
-- **target-dir**: Directory on the target host to copy the files to
+- **source-host**: Hostname or IP of the source host.
+- **source-user**: (optional) User to ssh as from target to source. Defaults to 'ansible'. This user must have permissions
+to read the files being copied.
+- **source-dir**: The base directory from which all source files referenced.
+- **target-dir**: Directory on the target host to copy the files to.
+- **rsync_args**: Additional arguments to pass to rsync.
 - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
-end with a `/`
+end with a `/`.
+- **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
 
 ##### Positional Arguments
 
-###### `plan`
+###### `plan_path`
 
 Path to plan file
 
-###### `{prepare,copy}`
+###### `{prepare,copy,cleanup}`
 
 Action to perform
 
 - prepare: generate the scripts and push them to the target servers
 - migrate: execute the scripts
+- cleanup: remove temporary files and remote auth
 
 
-#### `list-dbs`
+#### `list-postgresql-dbs`
 
-List out databases by host
+Example:
 
 ```
-commcare-cloud <env> list-dbs
+commcare-cloud <env> list-postgresql-dbs [--compare]
 ```
+
+To list all database on a particular environment.
+
+```
+commcare-cloud <ev> list-databases
+```
+
+##### Optional Arguments
+
+###### `--compare`
+
+Gives additional databases on the server.
