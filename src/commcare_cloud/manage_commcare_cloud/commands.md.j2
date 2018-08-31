@@ -88,12 +88,13 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 ### {{ group }}
 {% endif -%}
 {% for command, subparser in subparsers %}
-
+{% if loop.index0 == 0 %}---{% endif %}
 #### `{{ command.command }}`
 {%- if command.aliases %}
 (Alias `{{ '`, `'.join(command.aliases) }}`)
 {%- endif %}
 
 {{ subparser|print_help }}
+---
 {%- endfor -%}
 {%- endfor -%}
