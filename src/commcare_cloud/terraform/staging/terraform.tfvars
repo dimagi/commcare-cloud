@@ -25,53 +25,53 @@ parameter_group_name = "default.redis4.0"
 servers = [
   {
     server_name           = "django"
-    server_instance_type  = "${var.server_instance_type}"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    server_instance_type  = "t2.micro"
+    subnet_index          = 0
   },
   {
     server_name           = "django1"
-    server_instance_type  = "${var.server_instance_type}"
-    instance_subnet       = "${module.network.subnet-b-app-private}"
+    server_instance_type  = "t2.micro"
+    subnet_index          = 1
   },
   {
     server_name           = "celery"
     server_instance_type  = "t2.large"
-    instance_subnet       = "${module.network.subnet-b-app-private}"
+    subnet_index          = 1
   },
   {
     server_name           = "pillowtop"
     server_instance_type  = "t2.large"
-    instance_subnet       = "${module.network.subnet-c-app-private}"
+    subnet_index          = 2
   },
   {
     server_name           = "formplayer"
-    server_instance_type  = "${var.server_instance_type}"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    server_instance_type  = "t2.micro"
+    subnet_index          = 0
   },
   {
     server_name           = "kafka"
     server_instance_type  = "t2.medium"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    subnet_index          = 0
   },
   {
     server_name           = "ES"
-    server_instance_type  = "${var.server_instance_type}"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    server_instance_type  = "t2.micro"
+    subnet_index          = 0
   },
   {
     server_name           = "Airflow"
-    server_instance_type  = "${var.server_instance_type}"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    server_instance_type  = "t2.micro"
+    subnet_index          = 0
   },
   {
     server_name           = "RabbitMQ"
-    server_instance_type  = "${var.server_instance_type}"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    server_instance_type  = "t2.micro"
+    subnet_index          = 0
   },
   {
     server_name           = "PG_Proxy"
     server_instance_type  = "t2.medium"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    subnet_index          = 0
   }
 ]
 
@@ -79,7 +79,7 @@ proxy_servers = [
   {
     server_name           = "Proxy"
     server_instance_type  = "t2.medium"
-    instance_subnet       = "${module.network.subnet-a-app-private}"
+    subnet_index          = 0
   }
 ]
 

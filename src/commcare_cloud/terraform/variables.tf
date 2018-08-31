@@ -74,6 +74,9 @@ module "servers" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}"]
+  subnet_options        = ["${module.network.subnet-a-app-private}",
+                           "${module.network.subnet-b-app-private}",
+                           "${module.network.subnet-c-app-private}"]
 }
 
 module "proxy_servers" {
@@ -84,6 +87,9 @@ module "proxy_servers" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
+  subnet_options        = ["${module.network.subnet-a-app-private}",
+                           "${module.network.subnet-b-app-private}",
+                           "${module.network.subnet-c-app-private}"]
 }
 
 resource "aws_eip" "proxy" {
