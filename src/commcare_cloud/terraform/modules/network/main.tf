@@ -328,21 +328,6 @@ resource "aws_security_group" "proxy-sg" {
   vpc_id = "${aws_vpc.g2-tf-vpc.id}"
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["${var.vpc_begin_range}.0.0/16"]
-    #security_groups = ["${var.openvpn-access-sg}"]
-  }
-
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
-  }
-
-  ingress {
     from_port =         "80"
     to_port =           "80"
     protocol =          "tcp"
@@ -359,11 +344,12 @@ resource "aws_security_group" "proxy-sg" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
   }
+
   tags {
     Name = "proxy-sg-${var.env}"
   }
