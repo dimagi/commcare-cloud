@@ -47,6 +47,14 @@ module "network" {
   #openvpn-access-sg = "${module.openvpn.openvpn-access-sg}"
 }
 
+module "generic-sg" {
+  source                = "../modules/security_group"
+  group_name            = "generic"
+  environment           = "${var.environment}"
+  vpc_id                = "${module.network.vpc-id}"
+  vpc_begin_range       = "${var.vpc_begin_range}"
+}
+
 module "django" {
   source                = "../modules/generic-server"
   server_name		= "django"
@@ -56,7 +64,7 @@ module "django" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group             = "${module.network.django-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "django1" {
@@ -68,7 +76,7 @@ module "django1" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-b-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group             = "${module.network.django-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "celery" {
@@ -80,7 +88,7 @@ module "celery" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-b-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group             = "${module.network.celery-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "pillowtop" {
@@ -92,7 +100,7 @@ module "pillowtop" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-c-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group             = "${module.network.pillowtop-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 
@@ -105,7 +113,7 @@ module "formplayer" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group         = "${module.network.formplayer-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "kafka" {
@@ -117,7 +125,7 @@ module "kafka" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group             = "${module.network.kafka-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "ES" {
@@ -129,7 +137,7 @@ module "ES" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group                 = "${module.network.es-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "Airflow" {
@@ -141,7 +149,7 @@ module "Airflow" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group            = "${module.network.airflow-sg}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "RabbitMQ" {
@@ -153,15 +161,7 @@ module "RabbitMQ" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group             = "${module.network.rabbitmq-sg}"
-}
-
-module "pg-proxy-sg" {
-  source                = "../modules/security_group"
-  group_name            = "pg-proxy"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  vpc_begin_range       = "${var.vpc_begin_range}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "PG_Proxy" {
@@ -173,7 +173,7 @@ module "PG_Proxy" {
   vpc-all-hosts-sg      = "${module.network.vpc-all-hosts-sg}"
   instance_subnet       = "${module.network.subnet-a-app-private}"
   vpc_id                = "${module.network.vpc-id}"
-  security_group           = "${module.pg-proxy-sg.security_group}"
+  security_group        = "${module.generic-sg.security_group}"
 }
 
 module "Proxy" {
@@ -267,5 +267,3 @@ module "Redis" {
 #  rds_subnet_c                   = "${module.network.subnet-c-db-private}"
 #  rds_instance_count             = "${var.rds_instance_count}"
 #}
-
-#variable "proxy-sg"{}
