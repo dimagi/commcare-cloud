@@ -5,7 +5,6 @@ variable "company" {}
 variable "azs" {
   type = "list"
 }
-variable "redis_subnet_group" {}
 variable "vpc_begin_range" {}
 
 # OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe.
@@ -21,10 +20,15 @@ variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}
 
 # Redis/ElastiCache variables
-variable "redis_node_type" {}
-variable "num_redis_nodes" {}
-variable "parameter_group_name" {}
-variable "engine_version" {}
+variable "redis" {
+  type = "map"
+  default = {
+    node_type             = "cache.t2.small"
+    num_cache_nodes       = 1
+    engine_version        = "4.0.10"
+    parameter_group_name  = "default.redis4.0"
+  }
+}
 
 # Uncomment these if you are building an RDS instance.
 # variable "rds_database_name" {}
