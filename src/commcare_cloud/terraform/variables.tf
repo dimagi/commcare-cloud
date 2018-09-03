@@ -66,6 +66,15 @@ variable "proxy_servers" {
 }
 
 
+locals {
+  subnet_options  = ["${module.network.subnet-a-app-private}",
+                     "${module.network.subnet-b-app-private}",
+                     "${module.network.subnet-c-app-private}",
+                     "${module.network.subnet-a-public}",
+                     "${module.network.subnet-b-public}",
+                     "${module.network.subnet-c-public}"]
+}
+
 module "servers" {
   source                = "../modules/servers"
   servers               = "${var.servers}"
@@ -73,9 +82,7 @@ module "servers" {
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}"]
-  subnet_options        = ["${module.network.subnet-a-app-private}",
-                           "${module.network.subnet-b-app-private}",
-                           "${module.network.subnet-c-app-private}"]
+  subnet_options        = "${local.subnet_options}"
 }
 
 module "proxy_servers" {
@@ -85,9 +92,7 @@ module "proxy_servers" {
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
   security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
-  subnet_options        = ["${module.network.subnet-a-app-private}",
-                           "${module.network.subnet-b-app-private}",
-                           "${module.network.subnet-c-app-private}"]
+  subnet_options        = "${local.subnet_options}"
 }
 
 resource "aws_eip" "proxy" {
@@ -109,18 +114,6 @@ module "Redis" {
   elasticache_subnets  = ["${module.network.subnet-a-util-private}","${module.network.subnet-b-util-private}","${module.network.subnet-c-util-private}"]
   security_group_ids   = ["${module.generic-sg.security_group}"]
 }
-
-#module "bastion" {
-#  source                = "../modules/bastion"
-#  bastion_image         = "${var.bastion_image}"
-#  environment           = "${var.environment}"
-#  company               = "${var.company}"
-#  bastion_instance_type = "${var.bastion_instance_type}"
-#  g2-access-sg          = "${module.network.g2-access-sg}"
-#  #openvpn-access-sg     = "${module.openvpn.openvpn-access-sg}"
-#  instance_subnet       = "${module.network.subnet-c-public}"
-#  vpc_id                = "${module.network.vpc-id}"
-#}
 
 #module "openvpn" {
 #  source           = "../modules/openvpn"

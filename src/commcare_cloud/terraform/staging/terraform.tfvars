@@ -72,6 +72,12 @@ servers = [
     server_name           = "PG_Proxy"
     server_instance_type  = "t2.medium"
     subnet_index          = 0
+  },
+  {
+    server_name           = "control"
+    server_instance_type  = "t2.medium"
+    subnet_index          = 3
+    volume_size           = 8
   }
 ]
 
