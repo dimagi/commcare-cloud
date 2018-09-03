@@ -1,4 +1,4 @@
-var:encrypted_root,var:encrypted_root,var:encrypted_root,var:encrypted_root,var:encrypted_root,var:encrypted_root,var:encrypted_root,var:encrypted_root,var:encrypted_root
+hostname,host_address,group 1,group 2,group 3,var: hostname,L.var: devices,L.var: partitions,var: encrypted_root
 riak0,100.71.184.33,riakcs,,stanchion,MUMGCCWCDPRDR000,"[""/dev/vdb""]","[""/dev/vdb1""]",/opt/data1
 riak1,100.71.184.43,riakcs,,,MUMGCCWCDPRDR001,"[""/dev/vdb""]","[""/dev/vdb1""]",/opt/data1
 riak2,100.71.184.13,riakcs,,,MUMGCCWCDPRDR002,"[""/dev/vdb""]","[""/dev/vdb1""]",/opt/data1
