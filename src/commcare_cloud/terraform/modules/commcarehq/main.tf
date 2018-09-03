@@ -1,21 +1,6 @@
 #  Variables.tf declares the default variables that are shared by all environments
 # $var.region, $var.domain, $var.tf_s3_bucket
 
-# Read credentials from environment variables
-provider "aws" {
-  region  = "${var.region}"
-}
-
-data "terraform_remote_state" "master_state" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.tf_s3_bucket}"
-    region = "${var.state_region}"
-    key    = "${var.master_state_file}"
-  }
-}
-
 # This should be changed to reflect the service / stack defined by this repo
 variable "stack" {
   default = "commcarehq"
@@ -26,20 +11,8 @@ variable "tf_s3_bucket" {
   default     = "dimagi-terraform"
 }
 
-variable "master_state_file" {
-  default = "state/base.tfstate"
-}
-
-variable "prod_state_file" {
-  default = "state/production.tfstate"
-}
-
-variable "staging_state_file" {
-  default = "state/staging.tfstate"
-}
-
 module "network" {
-  source            = "../modules/network"
+  source            = "../network"
   vpc_begin_range   = "${var.vpc_begin_range}"
   env               = "${var.environment}"
   company           = "${var.company}"
@@ -48,7 +21,7 @@ module "network" {
 }
 
 module "generic-sg" {
-  source                = "../modules/security_group"
+  source                = "../security_group"
   group_name            = "generic"
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
@@ -76,7 +49,7 @@ locals {
 }
 
 module "servers" {
-  source                = "../modules/servers"
+  source                = "../servers"
   servers               = "${var.servers}"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -86,7 +59,7 @@ module "servers" {
 }
 
 module "proxy_servers" {
-  source                = "../modules/servers"
+  source                = "../servers"
   servers               = "${var.proxy_servers}"
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
@@ -103,7 +76,7 @@ resource "aws_eip" "proxy" {
 }
 
 module "Redis" {
-  source               = "../modules/elasticache"
+  source               = "../elasticache"
   cluster_id           = "${var.environment}-redis"
   engine               = "redis"
   engine_version       = "${var.engine_version}"
@@ -116,7 +89,7 @@ module "Redis" {
 }
 
 #module "openvpn" {
-#  source           = "../modules/openvpn"
+#  source           = "../openvpn"
 #  openvpn_image    = "${var.openvpn_image}"
 #  environment      = "${var.environment}"
 #  company          = "${var.company}"
@@ -130,7 +103,7 @@ module "Redis" {
 
 # If an RDS instance or cluster is needed, uncomment this.
 #module "database" {
-#  source                         = "../modules/rds"
+#  source                         = "../rds"
 #  vpc_id                         = "${module.network.vpc-id}"
 #  environment                    = "${var.environment}"
 #  dns_zone_id                    = "${var.dns_zone_id}"
