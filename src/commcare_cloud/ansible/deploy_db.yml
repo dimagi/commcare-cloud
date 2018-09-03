@@ -11,9 +11,6 @@
 - import_playbook: run_rabbitmq.yml
 - import_playbook: run_zookeeper.yml
 - import_playbook: run_kafka.yml
-# (PV) 2
-#- import_playbook: deploy_riakcs.yml
 - import_playbook: install_java.yml
-#- import_playbook: disable_thp.yml
 - import_playbook: move_logrotate.yml
 
