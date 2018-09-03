@@ -4,7 +4,6 @@ from __future__ import absolute_import
 
 import inspect
 import os
-
 import sys
 import warnings
 from collections import OrderedDict
@@ -14,7 +13,6 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from commcare_cloud.commands.dbs import ListDbs
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
@@ -26,6 +24,7 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, UpdateRiakSecrets
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
+from .commands.ansible.ops_tool import ListDatabases
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from .environment.paths import (
     get_available_envs,
@@ -62,7 +61,7 @@ COMMAND_GROUPS = OrderedDict([
         MigrateCouchdb,
         Downtime,
         CopyFiles,
-        ListDbs,
+        ListDatabases,
     ])
 ])
 

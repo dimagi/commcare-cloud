@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,update-riak-secrets,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,update-riak-secrets,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                ...
 ```
 
@@ -959,7 +959,7 @@ Optional message to set on Datadog.
 Copy files from multiple sources to targets.
 
 ```
-commcare-cloud <env> copy-files plan {prepare,copy,cleanup}
+commcare-cloud <env> copy-files plan_path {prepare,copy,cleanup}
 ```
 
 This is a general purpose command that can be used to copy files between
@@ -999,7 +999,7 @@ end with a `/`.
 
 ##### Positional Arguments
 
-###### `plan`
+###### `plan_path`
 
 Path to plan file
 
@@ -1012,10 +1012,22 @@ Action to perform
 - cleanup: remove temporary files and remote auth
 
 
-#### `list-dbs`
+#### `list-postgresql-dbs`
 
-List out databases by host
+Example:
 
 ```
-commcare-cloud <env> list-dbs
+commcare-cloud <env> list-postgresql-dbs [--compare]
 ```
+
+To list all database on a particular environment.
+
+```
+commcare-cloud <ev> list-databases
+```
+
+##### Optional Arguments
+
+###### `--compare`
+
+Gives additional databases on the server.
