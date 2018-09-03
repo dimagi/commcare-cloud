@@ -14,27 +14,27 @@ copy_files:
       - source_host: riak2
         source_user: riak
         source_dir: /opt/data/riak/
-        target_dir: /opt/data/riak.from.NIC/
+        target_dir: /opt/data1/riak.from.NIC/
   - riak3:
       - source_host: riak3
         source_user: riak
         source_dir: /opt/data/riak/
-        target_dir: /opt/data/riak.from.NIC/
+        target_dir: /opt/data1/riak.from.NIC/
   - riak4:
       - source_host: riak4
         source_user: riak
         source_dir: /opt/data/riak/
-        target_dir: /opt/data/riak.from.NIC/
+        target_dir: /opt/data1/riak.from.NIC/
   - riak5:
       - source_host: riak5
         source_user: riak
         source_dir: /opt/data/riak/
-        target_dir: /opt/data/riak.from.NIC/
+        target_dir: /opt/data1/riak.from.NIC/
   - riak6:
       - source_host: riak6
         source_user: riak
         source_dir: /opt/data/riak/
-        target_dir: /opt/data/riak.from.NIC/
+        target_dir: /opt/data1/riak.from.NIC/
   - riak7:
       - source_host: riak7
         source_user: riak
