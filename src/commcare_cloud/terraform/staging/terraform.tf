@@ -23,13 +23,6 @@ module "commcarehq" {
   dns_zone_id           = ""                        # Select the correct DNS Zone ID from Route 53
   internal_ssl_cert_arn = ""                        # This will be used to reference SSL Certificate in AWS Certificate Manager
 
-  # Redis/ElastiCache variables
-  redis_node_type      = "cache.t2.small"
-  num_redis_nodes      = 1
-  engine_version       = "4.0.10"
-  redis_subnet_group   = "g2-tf-a-util-private-staging"
-  parameter_group_name = "default.redis4.0"
-
   servers = [
     {
       server_name           = "django"

@@ -79,10 +79,10 @@ module "Redis" {
   source               = "../elasticache"
   cluster_id           = "${var.environment}-redis"
   engine               = "redis"
-  engine_version       = "${var.engine_version}"
-  node_type            = "${var.redis_node_type}"
-  num_cache_nodes      = "${var.num_redis_nodes}"
-  parameter_group_name = "${var.parameter_group_name}"
+  engine_version       = "${var.redis["engine_version"]}"
+  node_type            = "${var.redis["node_type"]}"
+  num_cache_nodes      = "${var.redis["num_cache_nodes"]}"
+  parameter_group_name = "${var.redis["parameter_group_name"]}"
   port                 = 6379
   elasticache_subnets  = ["${module.network.subnet-a-util-private}","${module.network.subnet-b-util-private}","${module.network.subnet-c-util-private}"]
   security_group_ids   = ["${module.generic-sg.security_group}"]
