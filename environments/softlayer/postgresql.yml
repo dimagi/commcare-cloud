@@ -30,4 +30,3 @@ dbs:
       django_migrate: True  # ICDS dashboard models are stored here
     - name: airflow
       django_migrate: False
-

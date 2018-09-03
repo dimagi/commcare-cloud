@@ -1,4 +1,4 @@
-internal_domain_name: 'internal-icds-cloud.commcarehq.org'
+internal_domain_name: 'internal-icds.commcarehq.org'
 db_vlan_ip_range: '100.71.184.0/22'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
@@ -36,7 +36,10 @@ etc_hosts_lines:
   - '100.71.181.10		cas.commcarehq.org'
   - '100.71.181.10		reports.icds-cas.gov.in'
   - '100.71.181.10		www.icds-cas.gov.in'
+  - '100.126.21.226     mowcdmum.ipstorage.tatacommunications.com'
 etc_hosts_lines_removed: []
+ssh_allow_password_users:
+  - unixadmin
 
 # TODO nameservers
 #nameservers:
@@ -49,6 +52,8 @@ etc_hosts_lines_removed: []
 #no_proxy_hosts:
 #  - relay.nic.in
 #  - smsgw.sms.gov.in
+
+default_from_email: "admin@sq.endmile.co.in"
 
 commcare_errors_branch: "master-icds"
 site_locations:
@@ -152,10 +157,10 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
-  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  EMAIL_SMTP_HOST: 'localhost'  # TODO email setup
-  EMAIL_SMTP_PORT: 25
-  EMAIL_USE_TLS: no
+  DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
+  EMAIL_SMTP_HOST: 'relay.historymile.com'  # TODO email setup
+  EMAIL_SMTP_PORT: 26
+  EMAIL_USE_TLS: yes
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
@@ -230,6 +235,7 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -249,3 +255,4 @@ localsettings:
   UCR_COMPARISONS:
     'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  WAREHOUSE_DATABASE_ALIAS: 'warehouse'

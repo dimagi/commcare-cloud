@@ -110,7 +110,7 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 ### Internal Housekeeping for your `commcare-cloud` environments
 
-
+---
 #### `validate-environment-settings`
 
 Validate your environment's configuration files
@@ -122,6 +122,7 @@ commcare-cloud <env> validate-environment-settings
 As you make changes to your environment files, you can use this
 command to check for validation errors or incompatibilities.
 
+---
 
 #### `update-local-known-hosts`
 
@@ -143,9 +144,10 @@ is meant to mitigate against in the first place.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 ### Ad-hoc
 
-
+---
 #### `lookup`
 
 Lookup remote hostname or IP address
@@ -165,6 +167,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
+---
 
 #### `ssh`
 
@@ -190,6 +193,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
+---
 
 #### `mosh`
 
@@ -216,6 +220,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
+---
 
 #### `run-module`
 
@@ -279,8 +284,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -331,6 +335,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         ask for privilege escalation password
 ```
 
+---
 
 #### `run-shell-command`
 
@@ -393,8 +398,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
@@ -445,6 +449,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         ask for privilege escalation password
 ```
 
+---
 
 #### `django-manage`
 
@@ -481,6 +486,7 @@ Name of release to run under.
 E.g. '2018-04-13_18.16'.
 If none is specified, the `current` release will be used.
 
+---
 
 #### `tmux`
 
@@ -513,8 +519,9 @@ If a command is *not* specified, then a it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
 
-### Operational
+---
 
+### Operational
 
 #### `update-riak-secrets`
 
@@ -529,7 +536,6 @@ commcare-cloud <env> update-riak-secrets [--use-factory-auth]
 ###### `--use-factory-auth`
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
-
 
 #### `ping`
 
@@ -557,6 +563,7 @@ for more detail in what can go here.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `ansible-playbook`
 (Alias `ap`)
@@ -606,8 +613,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -665,6 +671,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         ask for privilege escalation password
 ```
 
+---
 
 #### `deploy-stack`
 (Alias `aps`)
@@ -684,6 +691,7 @@ for a more specific update.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `update-config`
 
@@ -701,6 +709,7 @@ This includes django `localsettings.py` and formplayer `application.properties`.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `after-reboot`
 
@@ -731,6 +740,7 @@ for more detail in what can go here.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `bootstrap-users`
 
@@ -754,6 +764,7 @@ you have to use `update-users` below instead.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `update-users`
 
@@ -773,6 +784,7 @@ up to date.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `update-supervisor-confs`
 
@@ -790,6 +802,7 @@ These services are defined in app-processes.yml.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `fab`
 
@@ -850,6 +863,7 @@ Use `-l` instead of a command to see the full list of commands.
     webworkers
 ```
 
+---
 
 #### `service`
 
@@ -901,6 +915,7 @@ Sub-service name to limit action to.
 Format as 'name' or 'name:number'.
 Use 'help' action to list all options.
 
+---
 
 #### `migrate-couchdb`
 (Alias `migrate_couchdb`)
@@ -931,6 +946,7 @@ Action to perform
 - commit: update database docs with new shard allocation
 - clean: remove shard files from hosts where they aren't needed
 
+---
 
 #### `downtime`
 
@@ -953,6 +969,7 @@ in the history, and so that during it service alerts are silenced.
 
 Optional message to set on Datadog.
 
+---
 
 #### `copy-files`
 
@@ -978,6 +995,7 @@ copy_files:
         source_user: <user>
         source_dir: <source-dir>
         target_dir: <target-dir>
+        rsync_args: []
         files:
           - test/
           - test1/test-file.txt
@@ -993,6 +1011,7 @@ listed for each target host.
 to read the files being copied.
 - **source-dir**: The base directory from which all source files referenced.
 - **target-dir**: Directory on the target host to copy the files to.
+- **rsync_args**: Additional arguments to pass to rsync.
 - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
 end with a `/`.
 - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
@@ -1011,6 +1030,7 @@ Action to perform
 - migrate: execute the scripts
 - cleanup: remove temporary files and remote auth
 
+---
 
 #### `list-postgresql-dbs`
 
@@ -1031,3 +1051,5 @@ commcare-cloud <ev> list-databases
 ###### `--compare`
 
 Gives additional databases on the server.
+
+---

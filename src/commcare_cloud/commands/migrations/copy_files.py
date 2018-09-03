@@ -8,7 +8,7 @@ import yaml
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from commcare_cloud.commands.utils import render_template, PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
 
@@ -31,6 +31,7 @@ class SourceFiles(object):
     source_user = attr.ib(default='ansible')
     files = attr.ib(factory=list)
     exclude = attr.ib(factory=list)
+    rsync_args = attr.ib(factory=list)
 
 
 class CopyFiles(CommandBase):
@@ -54,6 +55,7 @@ class CopyFiles(CommandBase):
             source_user: <user>
             source_dir: <source-dir>
             target_dir: <target-dir>
+            rsync_args: []
             files:
               - test/
               - test1/test-file.txt
@@ -69,6 +71,7 @@ class CopyFiles(CommandBase):
     to read the files being copied.
     - **source-dir**: The base directory from which all source files referenced.
     - **target-dir**: Directory on the target host to copy the files to.
+    - **rsync_args**: Additional arguments to pass to rsync.
     - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
     end with a `/`.
     - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
@@ -83,6 +86,7 @@ class CopyFiles(CommandBase):
             - migrate: execute the scripts
             - cleanup: remove temporary files and remote auth
         """),
+        shared_args.LIMIT_ARG,
         shared_args.SKIP_CHECK_ARG,
     )
 
@@ -90,7 +94,7 @@ class CopyFiles(CommandBase):
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
-        plan = read_plan(args.plan_path, environment)
+        plan = read_plan(args.plan_path, environment, args.limit)
         working_directory = _get_working_dir(args.plan_path, environment)
         ansible_context = AnsibleContext(args)
 
@@ -121,7 +125,7 @@ class CopyFiles(CommandBase):
             shutil.rmtree(working_directory)
 
 
-def read_plan(plan_path, target_env):
+def read_plan(plan_path, target_env, limit=None):
     with open(plan_path, 'r') as f:
         plan_dict = yaml.load(f)
 
@@ -141,6 +145,16 @@ def read_plan(plan_path, target_env):
         for target in plan_dict['copy_files']
         for target_host, config_dicts in target.items()
     }
+    if limit:
+        subset = [host.name for host in target_env.inventory_manager.get_hosts(limit)]
+        configs = {
+            host: config
+            for host, config in configs.items()
+            if host in subset
+        }
+    if not configs:
+        raise CommandError("Limit pattern did not match any hosts: {}".format(limit))
+
     return Plan(
         source_env = source_env or target_env,
         configs=configs

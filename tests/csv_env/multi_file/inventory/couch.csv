@@ -1,7 +1,7 @@
 # couchdb2,,,,,,,,,,,,
-hostname,host_alias,host_address,group 1,group 2,group 3,,,,,,,
-couch0,ALIAS_CD00,192.168.33.21,couchdb2,lvm,,,,,,,,
-couch1,ALIAS_CD01,192.168.33.22,couchdb2,lvm,,,,,,,,
+hostname,host_address,group 1,group 2,group 3,,,,,,,
+couch0,192.168.33.21,couchdb2,lvm,,,,,,,,
+couch1,192.168.33.22,couchdb2,lvm,,,,,,,,
 
 # group vars,,,,,,,,,,,,
 group,var,val,type,,,,,,,,,
