@@ -84,6 +84,11 @@ celery_processes:
       concurrency: 6
       max_tasks_per_child: 5
 pillows:
+  hqpillowtop3.internal-va.commcarehq.org:
+    CaseToElasticsearchPillow:
+      num_processes: 8
+    CaseSearchToElasticsearchPillow:
+      num_processes: 4
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
       num_processes: 4
@@ -95,10 +100,6 @@ pillows:
     ApplicationToElasticsearchPillow:
       num_processes: 1
     CacheInvalidatePillow:
-      num_processes: 1
-    CaseSearchToElasticsearchPillow:
-      num_processes: 1
-    CaseToElasticsearchPillow:
       num_processes: 1
     DefaultChangeFeedPillow:
       num_processes: 1
