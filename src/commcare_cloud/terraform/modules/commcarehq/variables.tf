@@ -1,8 +1,5 @@
 #Initialize.tf contains empty variable declarations for the variables that will be populated in each env’s .tfvars file
 variable "region" {}
-variable "state_region" {
-  default = "us-east-1"
-}
 variable "environment" {}
 variable "company" {}
 variable "azs" {
@@ -28,7 +25,7 @@ variable "redis_node_type" {}
 variable "num_redis_nodes" {}
 variable "parameter_group_name" {}
 variable "engine_version" {}
- 
+
 # Uncomment these if you are building an RDS instance.
 # variable "rds_database_name" {}
 # variable "rds_engine" {}

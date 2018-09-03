@@ -1,6 +1,5 @@
 # This file (*.tfvars) defines the override variables for the environment.
 region                = "us-east-1"
-state_region          = "${var.region}"
 environment           = "prod"
 azs                   = ["{var.region}a","{var.region}b","{var.region}c"]
 vpc_begin_range       = "10.20"
