@@ -11,15 +11,11 @@ resource aws_instance "server" {
     volume_type           = "gp2"
     delete_on_termination = true
   }
+  lifecycle {
+    ignore_changes = ["user_data"]
+  }
   tags {
     Name        = "${lookup(var.servers[count.index], "server_name")}"
     Environment = "${var.environment}"
-#    Service    = "${var.service}"
   }
-  user_data = <<-EOF
-    #!/bin/bash
-    hostnamectl set-hostname "${lookup(var.servers[count.index], "server_name")}"
-    yum update -y
-    reboot
-    EOF
 }

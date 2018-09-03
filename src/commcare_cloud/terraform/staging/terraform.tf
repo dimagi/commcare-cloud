@@ -25,57 +25,57 @@ module "commcarehq" {
 
   servers = [
     {
-      server_name           = "django"
+      server_name           = "web0-staging"
       server_instance_type  = "t2.micro"
       subnet_index          = 0
     },
     {
-      server_name           = "django1"
+      server_name           = "web1-staging"
       server_instance_type  = "t2.micro"
       subnet_index          = 1
     },
     {
-      server_name           = "celery"
+      server_name           = "celery0-staging"
       server_instance_type  = "t2.large"
       subnet_index          = 1
     },
     {
-      server_name           = "pillowtop"
+      server_name           = "pillow0-staging"
       server_instance_type  = "t2.large"
       subnet_index          = 2
     },
     {
-      server_name           = "formplayer"
+      server_name           = "formplayer0-staging"
       server_instance_type  = "t2.micro"
       subnet_index          = 0
     },
     {
-      server_name           = "kafka"
+      server_name           = "kafka0-staging"
       server_instance_type  = "t2.medium"
       subnet_index          = 0
     },
     {
-      server_name           = "ES"
+      server_name           = "es0-staging"
       server_instance_type  = "t2.micro"
       subnet_index          = 0
     },
     {
-      server_name           = "Airflow"
+      server_name           = "airflow0-staging"
       server_instance_type  = "t2.micro"
       subnet_index          = 0
     },
     {
-      server_name           = "RabbitMQ"
+      server_name           = "rabbit0-staging"
       server_instance_type  = "t2.micro"
       subnet_index          = 0
     },
     {
-      server_name           = "PG_Proxy"
+      server_name           = "pgproxy0-staging"
       server_instance_type  = "t2.medium"
       subnet_index          = 0
     },
     {
-      server_name           = "control"
+      server_name           = "control-staging"
       server_instance_type  = "t2.medium"
       subnet_index          = 3
       volume_size           = 8
@@ -84,7 +84,7 @@ module "commcarehq" {
 
   proxy_servers = [
     {
-      server_name           = "Proxy"
+      server_name           = "proxy1-staging"
       server_instance_type  = "t2.medium"
       subnet_index          = 0
     }
