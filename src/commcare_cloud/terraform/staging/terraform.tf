@@ -19,12 +19,6 @@ module "commcarehq" {
   company               = "dimagi"
   azs                   = ["us-east-1a","us-east-1b","us-east-1c"]
   vpc_begin_range       = "10.200"
-  server_instance_type  = "t2.micro"
-  bastion_instance_type = "t2.micro"
-  openvpn_instance_type = "t2.small"
-  server_image          = "ami-0d3e7972"
-  bastion_image         = "ami-0d3e7972"
-  openvpn_image         = "ami-169e4b6b"
   dns_domain            = ""                        # Set the DNS Domain name to be used (should match the name for the Zone ID)
   dns_zone_id           = ""                        # Select the correct DNS Zone ID from Route 53
   internal_ssl_cert_arn = ""                        # This will be used to reference SSL Certificate in AWS Certificate Manager

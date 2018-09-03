@@ -7,15 +7,15 @@ variable "azs" {
 }
 variable "redis_subnet_group" {}
 variable "vpc_begin_range" {}
-variable "server_instance_type" {}
-variable "bastion_instance_type" {}
-variable "openvpn_instance_type" {}
 
 # OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe.
 # To do so please visit http://aws.amazon.com/marketplace/pp?sku=3ihdqli79gl9v2jnlzs6nq60h
-variable "openvpn_image" {}
-variable "bastion_image" {}
-variable "server_image" {}
+variable "openvpn_image" {
+  default = "ami-169e4b6b"
+}
+variable "server_image" {
+  default = "ami-0d3e7972"
+}
 variable "dns_zone_id" {}
 variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}
