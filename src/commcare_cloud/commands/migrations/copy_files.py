@@ -12,7 +12,6 @@ from commcare_cloud.commands.command_base import CommandBase, Argument, CommandE
 from commcare_cloud.commands.utils import render_template, PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
 
-ID_RSA_TMP = '/tmp/id_rsa.tmp'
 
 FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -272,7 +271,7 @@ def _run_auth_playbook(plan, environment, ansible_context, action, working_direc
         elif action == 'remove':
             _set_auth_key(plan.source_env, source_host, source_user, ansible_context, working_directory, True)
 
-    os.remove(ID_RSA_TMP)
+    os.remove(os.path.join(working_directory, 'id_rsa.tmp')
 
 
 def _genearate_and_fetch_key(env, host, user, ansible_context, working_directory):
