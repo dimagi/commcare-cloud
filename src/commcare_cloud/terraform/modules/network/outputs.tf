@@ -46,54 +46,18 @@ output "subnet-c-db-private" {
   value = "${aws_subnet.subnet-c-db-private.id}"
 }
 
-output "vpc-all-hosts-sg" {
-  value = "${aws_security_group.vpc-all-hosts-sg.id}"
-}
-
 output "g2-access-sg" {
   value = "${aws_security_group.g2-access-sg.id}"
 }
 
 output "vpc-id" {
-  value = "${aws_vpc.g2-tf-vpc.id}"
+  value = "${aws_vpc.main.id}"
 }
 
 output "vpc-cidr" {
-  value = "${aws_vpc.g2-tf-vpc.cidr_block}"
+  value = "${aws_vpc.main.cidr_block}"
 }
-
-#Sang - New
 
 output "proxy-sg" {
   value = "${aws_security_group.proxy-sg.id}"
-}
-output "django-sg" {
-  value = "${aws_security_group.django-sg.id}"
-}
-output "celery-sg" {
-  value = "${aws_security_group.celery-sg.id}"
-}
-output "pillowtop-sg" {
-  value = "${aws_security_group.pillowtop-sg.id}"
-}
-output "formplayer-sg" {
-  value = "${aws_security_group.formplayer-sg.id}"
-}
-output "kafka-sg" {
-  value = "${aws_security_group.kafka-sg.id}"
-}
-output "es-sg" {
-  value = "${aws_security_group.es-sg.id}"
-}
-output "airflow-sg" {
-  value = "${aws_security_group.airflow-sg.id}"
-}
-output "touchforms-sg" {
-  value = "${aws_security_group.touchforms-sg.id}"
-}
-output "rabbitmq-sg" {
-  value = "${aws_security_group.rabbitmq-sg.id}"
-}
-output "pg-proxy-sg" {
-  value = "${aws_security_group.pg-proxy-sg.id}"
 }
