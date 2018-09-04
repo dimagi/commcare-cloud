@@ -45,6 +45,7 @@ localsettings:
     - localhost
     - 127.0.0.1
     - testserver
+    - '{{ hostvars[groups.proxy.0].public_ip }}'
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
