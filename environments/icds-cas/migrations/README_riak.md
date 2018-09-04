@@ -35,7 +35,7 @@ On the new cluster:
 3. Re-IP first node
 
     ```
-    $ riak-admin reip riak-100@10.247.164.48 riak-100@100.71.184.33
+    $ riak-admin reip riak-10@10.247.164.48 riak-100@100.71.184.33
     ```
 
 4. Start node
