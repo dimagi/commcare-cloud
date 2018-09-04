@@ -61,13 +61,6 @@
   authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
-- name: De-authorize ansible & cchq pubkey  # todo: remove after applied to all envs
-  become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
-  with_items:
-    - ansible
-    - cchq
-
 - import_tasks: remove_users.yml
   when: dev_users.absent
 
