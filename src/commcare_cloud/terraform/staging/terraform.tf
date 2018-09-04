@@ -86,7 +86,7 @@ module "commcarehq" {
     {
       server_name           = "proxy1-staging"
       server_instance_type  = "t2.medium"
-      subnet_index          = 0
+      subnet_index          = 4
     }
   ]
 }
