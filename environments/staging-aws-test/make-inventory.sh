@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 cat <(
-    AWS_PROFILE=prod aws ec2 describe-instances \
+    AWS_PROFILE=dimagi aws ec2 describe-instances \
         --filter \
             "Name=tag-key,Values=Name" "Name=tag-value,Values=*$name_tag*" \
             "Name=instance-state-name,Values=running" \
@@ -8,7 +8,7 @@ cat <(
         --query "Reservations[*].Instances[*][Tags[?Key=='Name'].Value[],NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress]" \
         --output text --region us-east-1
     ) <(
-    AWS_PROFILE=prod aws ec2 describe-instances \
+    AWS_PROFILE=dimagi aws ec2 describe-instances \
         --filter \
             "Name=tag-key,Values=Name" "Name=tag-value,Values=g2-bastion" \
             "Name=instance-state-name,Values=running" \

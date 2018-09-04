@@ -1,27 +1,27 @@
 [proxy1]
-{{ Proxy }} hostname=proxy1-staging
+{{ proxy1-staging }} hostname=proxy1-staging
 
 [proxy:children]
 proxy1
 
 [web0]
-{{ django }} swap_size=1G hostname=web0-staging
+{{ web0-staging }} swap_size=1G hostname=web0-staging
 
 [web1]
-{{ django1 }} swap_size=1G hostname=web1-staging
+{{ web1-staging }} swap_size=1G hostname=web1-staging
 
 [webworkers:children]
 web0
 web1
 
 [rabbit0]
-{{ RabbitMQ }} hostname=rabbit0-staging
+{{ rabbit0-staging }} hostname=rabbit0-staging
 
 [rabbitmq:children]
 rabbit0
 
 [kafka0]
-{{ kafka }} kafka_broker_id=0 hostname=kafka0-staging
+{{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging
 
 [zookeeper:children]
 kafka0
@@ -30,25 +30,25 @@ kafka0
 kafka0
 
 [celery0]
-{{ celery }} hostname=celery0-staging
+{{ celery0-staging }} hostname=celery0-staging
 
 [celery:children]
 celery0
 
 [pillow0]
-{{ pillowtop }} hostname=pillow0-staging
+{{ pillow0-staging }} hostname=pillow0-staging
 
 [pillowtop:children]
 pillow0
 
 [formplayer0]
-{{ formplayer }} hostname=formplayer0-staging
+{{ formplayer0-staging }} hostname=formplayer0-staging
 
 [formplayer:children]
 formplayer0
 
 [es0]
-{{ ES }} elasticsearch_node_name=es0-staging hostname=es0-staging
+{{ es0-staging }} elasticsearch_node_name=es0-staging hostname=es0-staging
 
 [elasticsearch:children]
 es0
@@ -57,13 +57,13 @@ es0
 rabbit0
 
 [airflow0]
-{{ Airflow }} hostname=airflow0-staging
+{{ airflow0-staging }} hostname=airflow0-staging
 
 [airflow:children]
 airflow0
 
 [control]
-{{ g2-bastion }} hostname=control-staging
+{{ control-staging }} hostname=control-staging
 
 [pg_standby]
 
@@ -71,15 +71,18 @@ airflow0
 web0
 
 [pgproxy0]
-{{ PG_Proxy }} hostname=pgproxy0-staging
+{{ pgproxy0-staging }} hostname=pgproxy0-staging
 
 [rds_pg0]
 # RDS
 staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
 
+[remote_postgresql:children]
+rds_pg0
+
 [postgresql:children]
 pgproxy0
-rds_pg0
+remote_postgresql
 
 [redis]
 # ElastiCache
