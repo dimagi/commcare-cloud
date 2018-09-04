@@ -26,7 +26,7 @@ setup(
     },
     install_requires=(
         'ansible-vault==1.1.1',
-        'ansible==2.4.3',
+        'ansible>=2.6',
         'argparse>=1.4',
         'attrs>=18.1.0',
         'clint',
