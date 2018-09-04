@@ -10,7 +10,7 @@
 2. Clear data directores on new cluster
    
     ```
-    $ cchq icds-cas run-shell-command riakcs "rm -rf /opt/data/elasticsearch-1.7.6/*" -b
+    $ cchq icds-cas run-shell-command elasticsearch "rm -rf /opt/data/elasticsearch-1.7.6/*" -b
     ```
 
 3. Copy data
