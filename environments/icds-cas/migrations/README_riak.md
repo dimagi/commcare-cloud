@@ -45,15 +45,15 @@ On the new cluster:
 
 5. Mark all other nodes as down
     ```
-    $ riak-admin down riak-100@100.71.184.43
-    $ riak-admin down riak-100@100.71.184.13
-    $ riak-admin down riak-100@100.71.184.44
-    $ riak-admin down riak-100@100.71.184.50
-    $ riak-admin down riak-100@100.71.184.37
-    $ riak-admin down riak-100@100.71.184.48
-    $ riak-admin down riak-100@100.71.184.40
-    $ riak-admin down riak-100@100.71.184.46
-    $ riak-admin down riak-100@100.71.184.35
+    $ riak-admin down riak-10@10.247.164.13
+    $ riak-admin down riak-10@10.247.164.18
+    $ riak-admin down riak-10@10.247.164.39
+    $ riak-admin down riak-10@10.247.164.49
+    $ riak-admin down riak-10@10.247.164.50
+    $ riak-admin down riak-10@10.247.164.51
+    $ riak-admin down riak-10@10.247.164.53
+    $ riak-admin down riak-10@10.247.164.54
+    $ riak-admin down riak-10@10.247.164.55
     ```
 
 6. Check member status to verify all down except for first node
@@ -65,15 +65,15 @@ On the new cluster:
     Status     Ring        Pending    Node
     -----------------------------------------------------------
     valid       X%      --      'riak-100@100.71.184.33'
-    down        X%      --      'riak-100@100.71.184.43'
-    down        X%      --      'riak-100@100.71.184.13'
-    down        X%      --      'riak-100@100.71.184.44'
-    down        X%      --      'riak-100@100.71.184.50'
-    down        X%      --      'riak-100@100.71.184.37'
-    down        X%      --      'riak-100@100.71.184.48'
-    down        X%      --      'riak-100@100.71.184.40'
-    down        X%      --      'riak-100@100.71.184.46'
-    down        X%      --      'riak-100@100.71.184.35'
+    down        X%      --      'riak-10@10.247.164.13'
+    down        X%      --      'riak-10@10.247.164.18'
+    down        X%      --      'riak-10@10.247.164.39'
+    down        X%      --      'riak-10@10.247.164.49'
+    down        X%      --      'riak-10@10.247.164.50'
+    down        X%      --      'riak-10@10.247.164.51'
+    down        X%      --      'riak-10@10.247.164.53'
+    down        X%      --      'riak-10@10.247.164.54'
+    down        X%      --      'riak-10@10.247.164.55'
     ------------------------------------------------------------
     Valid:1 / Leaving:0 / Exiting:0 / Joining:0 / Down:9
     
