@@ -109,7 +109,7 @@ class CopyFiles(CommandBase):
                 self.log("Moving scripts to target hosts.")
                 copy_scripts_to_target_host(target_host, working_directory, environment, ansible_context)
             self.log("Establishing auth between target and source.")
-            setup_auth(plan, environment, ansible_context)
+            setup_auth(plan, environment, ansible_context, working_directory)
 
         if args.action == 'copy':
             def run_check():
@@ -121,7 +121,7 @@ class CopyFiles(CommandBase):
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
 
         if args.action == 'cleanup':
-            teardown_auth(plan, environment, ansible_context)
+            teardown_auth(plan, environment, ansible_context, working_directory)
             shutil.rmtree(working_directory)
 
 
@@ -250,15 +250,15 @@ def get_file_list_filename(config):
     return filename
 
 
-def setup_auth(plan, environment, ansible_context):
-    _run_auth_playbook(plan, environment, ansible_context, 'add')
+def setup_auth(plan, environment, ansible_context, working_directory):
+    _run_auth_playbook(plan, environment, ansible_context, 'add', working_directory)
 
 
-def teardown_auth(plan, environment, ansible_context):
-    _run_auth_playbook(plan, environment, ansible_context, 'remove')
+def teardown_auth(plan, environment, ansible_context, working_directory):
+    _run_auth_playbook(plan, environment, ansible_context, 'remove', working_directory)
 
 
-def _run_auth_playbook(plan, environment, ansible_context, action):
+def _run_auth_playbook(plan, environment, ansible_context, action, working_directory):
     auth_pairs = set()
     for target_host, source_configs in plan.configs.items():
         auth_pairs.update({
@@ -267,15 +267,15 @@ def _run_auth_playbook(plan, environment, ansible_context, action):
 
     for target_host, source_host, source_user in auth_pairs:
         if action == 'add':
-            _genearate_and_fetch_key(environment, target_host, 'root', ansible_context)
-            _set_auth_key(plan.source_env, source_host, source_user, ansible_context)
+            _genearate_and_fetch_key(environment, target_host, 'root', ansible_context, working_directory)
+            _set_auth_key(plan.source_env, source_host, source_user, ansible_context, working_directory)
         elif action == 'remove':
-            _set_auth_key(plan.source_env, source_host, source_user, ansible_context)
+            _set_auth_key(plan.source_env, source_host, source_user, ansible_context, working_directory, True)
 
     os.remove(ID_RSA_TMP)
 
 
-def _genearate_and_fetch_key(env, host, user, ansible_context):
+def _genearate_and_fetch_key(env, host, user, ansible_context, working_directory):
     user_args = "name={} generate_ssh_key=yes".format(user)
     run_ansible_module(env, ansible_context, host, 'user', user_args, True, None, None)
 
@@ -287,12 +287,13 @@ def _genearate_and_fetch_key(env, host, user, ansible_context):
     user_home = user_home_output[host]
 
     fetch_args = "src={user_home}/.ssh/id_rsa.pub dest={key_tmp} flat=yes fail_on_missing=yes".format(
-        user_home=user_home, key_tmp=ID_RSA_TMP
+        user_home=user_home, key_tmp=os.path.join(working_directory, 'id_rsa.tmp')
     )
     run_ansible_module(env, ansible_context, host, 'fetch', fetch_args, True, None, None)
 
 
-def _set_auth_key(env, host, user, ansible_context, remove=False):
+def _set_auth_key(env, host, user, ansible_context, working_directory, remove=False):
     state = 'absent' if remove else 'present'
-    args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(user, state, ID_RSA_TMP)
+    key_path = os.path.join(working_directory, 'id_rsa.tmp')
+    args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(user, state, key_path)
     run_ansible_module(env, ansible_context, host, 'authorized_key', args, True, None, None)
