@@ -51,7 +51,6 @@ postgres_s3: False
 nadir_hour: 18
 
 nofile_limit: 65536
-nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
 
 supervisor_http_enabled: True
 
