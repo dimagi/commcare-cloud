@@ -1,5 +1,5 @@
 resource "aws_rds_cluster" "default_cluster" {
-  cluster_identifier              = "${var.environment}-aurora" 
+  cluster_identifier              = "${var.environment}-${var.rds_engine}"
   engine                          = "${var.rds_engine}"
   engine_version                  = "${var.rds_engine_version}"
   availability_zones              = ["${var.azs}"]
@@ -11,7 +11,7 @@ resource "aws_rds_cluster" "default_cluster" {
   port                            = "${var.rds_port}"
   storage_encrypted               = true
   skip_final_snapshot             = true
-  final_snapshot_identifier       = "final-snapshot-aurora-cluster"
+  final_snapshot_identifier       = "final-snapshot-${var.rds_engine}-cluster"
   vpc_security_group_ids          = ["${aws_security_group.rds_allow.id}"]
   db_subnet_group_name            = "${aws_db_subnet_group.rds_subnet_group.name}"
 }
