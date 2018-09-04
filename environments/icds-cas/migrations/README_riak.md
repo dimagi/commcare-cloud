@@ -122,15 +122,15 @@ On the new cluster:
 12. Force replace each node with its old node name.
 
     ```
-    $ riak-admin cluster force-replace riak-10@10.247.164.49 riak100@100.71.184.43
-    $ riak-admin cluster force-replace riak-10@10.247.164.50 riak100@100.71.184.13
-    $ riak-admin cluster force-replace riak-10@10.247.164.51 riak100@100.71.184.44
-    $ riak-admin cluster force-replace riak-10@10.247.164.18 riak100@100.71.184.50
-    $ riak-admin cluster force-replace riak-10@10.247.164.53 riak100@100.71.184.37
-    $ riak-admin cluster force-replace riak-10@10.247.164.54 riak100@100.71.184.48
-    $ riak-admin cluster force-replace riak-10@10.247.164.55 riak100@100.71.184.40
-    $ riak-admin cluster force-replace riak-10@10.247.164.39 riak100@100.71.184.46
-    $ riak-admin cluster force-replace riak-10@10.247.164.13 riak100@100.71.184.35
+    $ riak-admin cluster force-replace riak-10@10.247.164.49 riak-100@100.71.184.43
+    $ riak-admin cluster force-replace riak-10@10.247.164.50 riak-100@100.71.184.13
+    $ riak-admin cluster force-replace riak-10@10.247.164.51 riak-100@100.71.184.44
+    $ riak-admin cluster force-replace riak-10@10.247.164.18 riak-100@100.71.184.50
+    $ riak-admin cluster force-replace riak-10@10.247.164.53 riak-100@100.71.184.37
+    $ riak-admin cluster force-replace riak-10@10.247.164.54 riak-100@100.71.184.48
+    $ riak-admin cluster force-replace riak-10@10.247.164.55 riak-100@100.71.184.40
+    $ riak-admin cluster force-replace riak-10@10.247.164.39 riak-100@100.71.184.46
+    $ riak-admin cluster force-replace riak-10@10.247.164.13 riak-100@100.71.184.35
     ```
 
 13. Check cluster plan
@@ -141,35 +141,35 @@ On the new cluster:
     =============== Staged Changes ===============
     Action         Details(s)
     ----------------------------------------------------------
-    force-replace  'riak-10@10.247.164.49' with 'riak100@100.71.184.43'
-    force-replace  'riak-10@10.247.164.50' with 'riak100@100.71.184.13'
-    force-replace  'riak-10@10.247.164.51' with 'riak100@100.71.184.44'
-    force-replace  'riak-10@10.247.164.18' with 'riak100@100.71.184.50'
-    force-replace  'riak-10@10.247.164.53' with 'riak100@100.71.184.37'
-    force-replace  'riak-10@10.247.164.54' with 'riak100@100.71.184.48'
-    force-replace  'riak-10@10.247.164.55' with 'riak100@100.71.184.40'
-    force-replace  'riak-10@10.247.164.39' with 'riak100@100.71.184.46'
-    force-replace  'riak-10@10.247.164.13' with 'riak100@100.71.184.35'
-    join           'riak100@100.71.184.43'
-    join           'riak100@100.71.184.13'
-    join           'riak100@100.71.184.44'
-    join           'riak100@100.71.184.50'
-    join           'riak100@100.71.184.37'
-    join           'riak100@100.71.184.48'
-    join           'riak100@100.71.184.40'
-    join           'riak100@100.71.184.46'
-    join           'riak100@100.71.184.35'
+    force-replace  'riak-10@10.247.164.49' with 'riak100@-100.71.184.43'
+    force-replace  'riak-10@10.247.164.50' with 'riak100@-100.71.184.13'
+    force-replace  'riak-10@10.247.164.51' with 'riak100@-100.71.184.44'
+    force-replace  'riak-10@10.247.164.18' with 'riak100@-100.71.184.50'
+    force-replace  'riak-10@10.247.164.53' with 'riak100@-100.71.184.37'
+    force-replace  'riak-10@10.247.164.54' with 'riak100@-100.71.184.48'
+    force-replace  'riak-10@10.247.164.55' with 'riak100@-100.71.184.40'
+    force-replace  'riak-10@10.247.164.39' with 'riak100@-100.71.184.46'
+    force-replace  'riak-10@10.247.164.13' with 'riak100@-100.71.184.35'
+    join           'riak-100@100.71.184.43'
+    join           'riak-100@100.71.184.13'
+    join           'riak-100@100.71.184.44'
+    join           'riak-100@100.71.184.50'
+    join           'riak-100@100.71.184.37'
+    join           'riak-100@100.71.184.48'
+    join           'riak-100@100.71.184.40'
+    join           'riak-100@100.71.184.46'
+    join           'riak-100@100.71.184.35'
     ----------------------------------------------------------
     
-    WARNING: All of 'riak100@100.71.184.43' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.13' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.44' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.50' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.37' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.48' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.40' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.46' replicas will be lost
-    WARNING: All of 'riak100@100.71.184.35' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.43' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.13' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.44' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.50' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.37' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.48' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.40' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.46' replicas will be lost
+    WARNING: All of 'riak-100@100.71.184.35' replicas will be lost
     
     NOTE: Applying these changes will result in 1 cluster transition
     
