@@ -98,7 +98,7 @@ On the new cluster:
 8. Rename ring dir on all other nodes
     
     ```
-    $ cchq icds-cas run-shell-command riakcs -b "mv /opt/data/riak/ring /opt/data/ring.bak" --limit 'all:!100.71.184.33'
+    $ cchq icds-cas run-shell-command riakcs -b "mv {{ encrypted_root }}/riak/ring {{ encrypted_root }}/ring.bak" --limit 'all:!100.71.184.33'
     ```
 
 9. Start other nodes
