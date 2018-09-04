@@ -286,6 +286,11 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         prepend colon-separated path(s) to module library
                         (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
+  --playbook-dir=BASEDIR
+                        Since this tool does not use playbooks, use this as a
+                        subsitute playbook directory.This sets the relative
+                        path for many features including roles/ group_vars/
+                        etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
@@ -330,7 +335,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     -K, --ask-become-pass
                         ask for privilege escalation password
 ```
@@ -400,6 +405,11 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         prepend colon-separated path(s) to module library
                         (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
+  --playbook-dir=BASEDIR
+                        Since this tool does not use playbooks, use this as a
+                        subsitute playbook directory.This sets the relative
+                        path for many features including roles/ group_vars/
+                        etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
@@ -444,7 +454,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     -K, --ask-become-pass
                         ask for privilege escalation password
 ```
@@ -588,7 +598,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
                         filename prepend with @
-  --flush-cache         clear the fact cache
+  --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
@@ -650,7 +660,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     --become-user=BECOME_USER
                         run operations as this user (default=root)
     -K, --ask-become-pass

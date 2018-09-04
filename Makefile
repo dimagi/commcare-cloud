@@ -10,7 +10,7 @@ PIP_COMPILE = pip-compile --output-file requirements.txt setup.py requirements*.
 # Pick a standard (but arbitrary) value for $HOME to be used across all environments.
 # Make it short but unlikely to occur otherwise, so that we can safely find/replace it with ~.
 # (Directly using escaped '~' does not work.)
-STANDARD_HOME=/!
+STANDARD_HOME=/tmp
 # ANSIBLE_LIBRARY cannot be set to a relative path,
 # because it gets expanded to an absolute path.
 # Instead we prefix it with a fake absolute prefix we can replace later in ansible -h output.
