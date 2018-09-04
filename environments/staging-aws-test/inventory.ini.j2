@@ -1,5 +1,5 @@
 [proxy1]
-{{ proxy1-staging }} hostname=proxy1-staging
+{{ proxy1-staging }} hostname=proxy1-staging public_ip={{ proxy1-staging.public_ip }}
 
 [proxy:children]
 proxy1
