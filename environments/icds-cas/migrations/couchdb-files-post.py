@@ -61,13 +61,13 @@ def main():
     for db in dbs:
         res = requests.get(dbs_url.format(db), auth=auth)
         db_doc = res.text
-        new_db_doc = ''
+        new_db_doc = db_doc
         for old_node, new_node in node_map.items():
-            new_db_doc = db_doc.replace(old_node, new_node)
+            if old_node:
+                new_db_doc = new_db_doc.replace(old_node, new_node)
         if db_doc != new_db_doc:
-          res = requests.put(dbs_url.format( db), data=db_doc, auth=auth)
+          res = requests.put(dbs_url.format( db), data=new_db_doc, auth=auth)
           print('UPDATE DB {}'.format(db), res.status_code)
-
 
     print('\nRE-CREATING SYSTEM DATABASES\n')
     system_dbs = [
