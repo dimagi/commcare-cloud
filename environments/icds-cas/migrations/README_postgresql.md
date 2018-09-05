@@ -36,7 +36,7 @@
 
     ```
     cchq icds-cas run-module postgresql pg_replication_slot "name=standby state=absent" -b --become-user postgres
-    cchq icds-cas ap deploy_proxy --tags replication --limit postgresql
+    cchq icds-cas ap deploy_db.yml --tags replication --limit postgresql
     ```
 
 7. Setup standby nodes
