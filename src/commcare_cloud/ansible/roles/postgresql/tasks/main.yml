@@ -200,6 +200,7 @@
   notify: Reload pgbouncer
   tags:
     - pgbouncer
+    - postgres_users
 
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
