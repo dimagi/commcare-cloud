@@ -142,7 +142,7 @@ class InventoryModule(BaseInventoryPlugin):
                 self.inventory.add_group(group)
                 self.inventory.add_child(group, host_group)
 
-            self.populate_host_vars([host], host_vars)
+            self._populate_host_vars([host], host_vars)
 
     def _get_host_groups(self, row):
         return [
