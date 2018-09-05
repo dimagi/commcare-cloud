@@ -91,7 +91,7 @@ class CouchMigration(object):
 
     @lazy_immutable_property
     def prune_playbook_path(self):
-        return os.path.join(self.working_dir, PRUNE_PLAYBOOK_NAME)
+        return os.path.abspath(os.path.join(self.working_dir, PRUNE_PLAYBOOK_NAME))
 
     @memoized_property
     def shard_plan(self):
