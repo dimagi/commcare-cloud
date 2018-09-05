@@ -83,6 +83,8 @@ def run_ansible_playbook(
         use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
     ):
 
+    unknown_args = unknown_args or []
+
     def get_limit():
         limit_parts = []
         if limit:
