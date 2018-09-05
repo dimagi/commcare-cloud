@@ -65,11 +65,6 @@ celery_processes:
     ucr_indicator_queue:
       concurrency: 6
   'celery3':
-    # Still waiting on whitelisting from celery3
-    # sms_queue:
-    #   pooling: gevent
-    #   concurrency: 10
-    #   num_workers: 4
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -98,6 +93,10 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
   'celery6':
     ucr_indicator_queue:
       concurrency: 4
@@ -107,6 +106,10 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
   'celery7':
     ucr_indicator_queue:
       concurrency: 4
@@ -146,11 +149,6 @@ celery_processes:
   'web0':
     ucr_indicator_queue:
       concurrency: 3
-    # Temporarily run the sms_queue worker here as web0 is whitelisted
-#    sms_queue:
-#      pooling: gevent
-#      concurrency: 20
-#      num_workers: 1
   'web1':
     ucr_indicator_queue:
       concurrency: 4
