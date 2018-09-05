@@ -49,9 +49,20 @@
       delegate_to: "{{ hot_standby_master }}"
       shell: du -s {{ postgresql_home }}
       register: master_size_output
+      set_fact: master_size={{ master_size_output.stdout.split()[0]|int }}
+
+    - name: get standby size
+      shell: du -s {{ postgresql_home }}
+      register: standby_size_output
+      set_fact: standby_size={{ standby_size_output.stdout.split()[0]|int }}
+
+    - assert:
+        that:
+          - standby_size * 100 / master_size < 90
+        msg: "Are you sure the standby is not already setup? Master size: {{ master_size }}, Standby size: {{ standby_size }} "
 
     - debug:
-        msg: "Master DB Size: {{ master_size_output.stdout.split()[0]|int }}"
+        msg: "Master DB Size: {{ master_size }}"
       when: not ansible_check_mode
 
     - name: execute base backup
