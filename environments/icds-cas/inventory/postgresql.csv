@@ -29,7 +29,7 @@ pgshard9standby,100.71.184.59,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS09,,pgs
 plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,,,,
 pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,pgsynclog0standby,,"[""standby0"",""spare""]",
 pgsynclog0standby,100.71.184.41,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL1,,pgsynclog0,,standby0
-pgwarehouse0,100.71.184.23,,warehouse_dbs,MUMGCCWCDPRDPW00,,,,
+pgwarehouse0,100.71.184.23,postgresql,warehouse_dbs,MUMGCCWCDPRDPW00,,,,
 pgwarehouse1,100.71.184.73,,warehouse_dbs,MUMGCCWCDPRDPW01,,,,
 pgwarehouse2,100.71.184.78,,warehouse_dbs,MUMGCCWCDPRDPW02,,,,
 pgmainstandby1,100.71.184.83,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,,pgmain0,,standby1
