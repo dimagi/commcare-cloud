@@ -3,7 +3,6 @@ gunicorn_workers_static_factor: 4
 celery_processes:
   None:
     repeat_record_queue:
-    beat: {}
   'celery0':
     # The celery workers which have less cpu intensive tasks
     # are meant to go on this machine. Try to avoid putting
@@ -11,6 +10,7 @@ celery_processes:
     # workers here so that the workers
     # on this machine have the cpu they need to perform their tasks.
     flower: {}
+    beat: {}
     celery,export_download_queue:
       concurrency: 8
       max_tasks_per_child: 5
