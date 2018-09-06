@@ -1,6 +1,10 @@
 module "postgresql" {
   source = "terraform-aws-modules/rds/aws"
 
+  create_db_instance = "${var.create}"
+  create_db_option_group = "${var.create}"
+  create_db_parameter_group = "${var.create}"
+  create_db_subnet_group = "${var.create}"
   identifier = "${var.rds_instance["identifier"]}"
 
   engine            = "postgres"
