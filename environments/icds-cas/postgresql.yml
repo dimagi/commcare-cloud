@@ -21,6 +21,9 @@ LOAD_BALANCED_APPS:
   locations:
     - [default, 1]
     - [pgmainstandby0, 4]
+  userreports:
+    - [default, 1]
+    - [pgmainstandby0, 4]
 
 override:
   pgbouncer_pool_mode: transaction
