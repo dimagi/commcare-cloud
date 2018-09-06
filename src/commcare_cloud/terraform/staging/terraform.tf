@@ -11,7 +11,6 @@ provider "aws" {
   region  = "us-east-1"
 }
 
-
 module "commcarehq" {
   source = "../modules/commcarehq"
   region                = "us-east-1"
@@ -89,4 +88,11 @@ module "commcarehq" {
       subnet_index          = 4
     }
   ]
+
+  rds = {
+    password = "${var.rds_password}"
+    identifier = "staging"
+    database_name = "staging"
+    instance_type = "db.t2.medium"
+  }
 }
