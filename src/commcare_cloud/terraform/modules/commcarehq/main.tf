@@ -40,12 +40,14 @@ variable "proxy_servers" {
 
 
 locals {
-  subnet_options  = ["${module.network.subnet-a-app-private}",
-                     "${module.network.subnet-b-app-private}",
-                     "${module.network.subnet-c-app-private}",
-                     "${module.network.subnet-a-public}",
-                     "${module.network.subnet-b-public}",
-                     "${module.network.subnet-c-public}"]
+  subnet_options = {
+    private-a = "${module.network.subnet-a-app-private}"
+    private-b = "${module.network.subnet-b-app-private}"
+    private-c = "${module.network.subnet-c-app-private}"
+    public-a = "${module.network.subnet-a-public}"
+    public-b = "${module.network.subnet-b-public}"
+    public-c = "${module.network.subnet-c-public}"
+  }
 }
 
 module "servers" {
