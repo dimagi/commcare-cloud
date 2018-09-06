@@ -1,3 +1,33 @@
+# This task file is dedicated to the last layer of setup that occurs
+# after postgresql has been installed and presented as a running service:
+#   - Create pg users
+#   - Set pg user privileges
+#   - Create pg databases
+#
+# There are two ways of running this task file:
+#
+# A. Run directly from the VM that hosts PostgreSQL (db_is_remote = false)
+#   Use case:
+#     postgresql instance that we installed via this role
+#   Target:
+#     current machine
+#   Authentication:
+#     run on-VM as privileged `postgres` user
+#
+# OR
+#
+# B. Run from a second machine against a black-box PostgreSQL service (db_is_remote = true)
+#   Use case:
+#     black-box PostgreSQL service like Amazon RDS
+#   Target:
+#     remote host
+#   Authentication:
+#     use a root pg username/password created via the third-party console (or terraform).
+#
+# Throughout the file, each task uses the passed-in `db_is_remote` variable to decide
+# how to authenticate and how to target the pg instance.
+
+
 - name: Create PostgreSQL users
   become: yes
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
