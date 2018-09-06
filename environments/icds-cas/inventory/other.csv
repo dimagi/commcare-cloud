@@ -1,7 +1,9 @@
 hostname,host_address,group 1,group 2,group3,var: hostname,var: public_ip,I.var: kafka_broker_id
 airflow0,100.71.188.10,airflow,,,MUMGCCWCDPRDAF00,,
 formplayer0,100.71.188.27,formplayer,,,MUMGCCWCDPRDFP00,,
+formplayer1,100.71.188.70,formplayer,,,MUMGCCWCDPRDFP01,,
 rabbit0,100.71.188.43,rabbitmq,,,MUMGCCWCDPRDRB00,,
+rabbit1,100.71.188.77,rabbitmq,,,MUMGCCWCDPRDRB01,,
 kafka0,100.71.184.15,kafka,zookeeper,,MUMGCCWCDPRDKF00,,0
 kafka1,100.71.184.12,kafka,,,MUMGCCWCDPRDKF01,,1
 kafka2,100.71.184.76,kafka,,,MUMGCCWCDPRDKF02,,
