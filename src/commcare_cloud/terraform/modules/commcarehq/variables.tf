@@ -29,25 +29,30 @@ variable "redis" {
     parameter_group_name  = "default.redis4.0"
   }
 }
+variable "rds" {
+  type = "map"
+  default = {}
+}
 
-# Uncomment these if you are building an RDS instance.
-# variable "rds_database_name" {}
-# variable "rds_engine" {}
-# variable "rds_engine_version" {}
-# variable "rds_username" {}
-# variable "rds_password" {}
-# variable "rds_instance_type" {}
-# variable "rds_backup_window" {}
-# variable "rds_backup_retention" {}
-# variable "rds_maintenance_window" {}
-# variable "rds_auto_minor_version_upgrade" {}
-# variable "rds_multi_az" {}
-# variable "rds_storage" {}
-# variable "rds_storage_type" {}
-# variable "rds_storage_encrypted" {}
-# variable "rds_port" {}
-# variable "rds_prevent_destroy" {}
-# variable "rds_instance_count" {}
-# variable "rds_sg_ip_ingress" {
-#   type = "list"
-# }
+locals {
+  default_rds = {
+    storage = 300
+    instance_type = "db.t2.medium"
+    identifier = ""
+    database_name = ""
+    username = "root"
+    storage_type = "gp2"
+    backup_window = "06:27-06:57"
+    backup_retention = 30
+    maintenance_window = "thu:04:47-thu:05:17"
+    auto_minor_version_upgrade = false
+    multi_az = false
+    storage_encrypted = true
+    port = 5432
+    password = ""  # must be overridden
+    prevent_destroy = true
+    instance_count = 1
+    parameter_group_name = "dimagi-postgres9-6"
+  }
+  rds = "${merge(local.default_rds, var.rds)}"
+}

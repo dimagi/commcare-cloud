@@ -61,3 +61,7 @@ output "vpc-cidr" {
 output "proxy-sg" {
   value = "${aws_security_group.proxy-sg.id}"
 }
+
+output "rds-sg" {
+  value = "${aws_security_group.rds.id}"
+}
