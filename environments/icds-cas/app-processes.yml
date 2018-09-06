@@ -16,8 +16,8 @@ celery_processes:
       max_tasks_per_child: 5
     celery_periodic:
        concurrency: 4
-#    submission_reprocessing_queue:
-#       concurrency: 1
+    submission_reprocessing_queue:
+       concurrency: 2
     email_queue:
       concurrency: 2
     reminder_rule_queue:
