@@ -41,7 +41,8 @@ etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
 
-default_from_email: "admin@sq.endmile.co.in"
+# TODO: uncomment  when switching back to TCL SMTP
+# default_from_email: "admin@sq.endmile.co.in"
 
 commcare_errors_branch: "master-icds"
 site_locations:
