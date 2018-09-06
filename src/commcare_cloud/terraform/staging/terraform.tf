@@ -93,7 +93,6 @@ module "commcarehq" {
     {
       password = "${var.rds_password}"
       identifier = "staging"
-      database_name = "staging"
       instance_type = "db.t2.medium"
       storage = 300
     }
