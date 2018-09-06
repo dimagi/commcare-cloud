@@ -39,7 +39,6 @@ locals {
     storage = ""
     instance_type = "db.t2.medium"
     identifier = ""
-    database_name = ""
     username = "root"
     storage_type = "gp2"
     backup_window = "06:27-06:57"
