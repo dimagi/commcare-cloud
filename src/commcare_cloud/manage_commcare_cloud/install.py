@@ -24,7 +24,7 @@ class Install(CommandBase):
             os.makedirs(ANSIBLE_ROLES_PATH)
 
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
-        cmd_parts = ['ansible-galaxy', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
+        cmd_parts = ['ansible-galaxy', 'install', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
