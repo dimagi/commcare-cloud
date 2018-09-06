@@ -42,6 +42,7 @@ setup(
         # can remove once requests bumps its version requirement
         # https://github.com/requests/requests/issues/4681
         'idna==2.6',
+        'jinja2-cli',
         'jsonobject>=0.9.0',
         'netaddr',
         'passlib',

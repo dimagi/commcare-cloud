@@ -102,11 +102,3 @@ module "Redis" {
 #  # dns_zone_id      = "${var.dns_zone_id}"
 #  # dns_domain       = "${var.dns_domain}"
 #}
-
-
-module "postgresql-0" {
-  source = "../postgresql"
-  rds_instance = "${local.rds_instances[0]}"
-  subnet_ids = "${local.rds_subnet_ids}"
-  vpc_security_group_ids = "${local.rds_vpc_security_group_ids}"
-}

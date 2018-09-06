@@ -61,7 +61,4 @@ locals {
     "${module.network.subnet-c-db-private}"
   ]
   rds_vpc_security_group_ids = ["${module.network.rds-sg}"]
-  rds_instances = [
-    "${merge(local.default_rds, var.rds_instances[0])}"
-  ]
 }
