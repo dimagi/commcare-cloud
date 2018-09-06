@@ -103,50 +103,10 @@ module "Redis" {
 #  # dns_domain       = "${var.dns_domain}"
 #}
 
-module "postgresql" {
-  source = "terraform-aws-modules/rds/aws"
 
-  identifier = "${local.rds["identifier"]}"
-
-  engine            = "postgres"
-  engine_version    = "9.6.6"
-  instance_class    = "${local.rds["instance_type"]}"
-  allocated_storage = "${local.rds["storage"]}"
-
-  name     = ""
-  username = "${local.rds["username"]}"
-  password = "${local.rds["password"]}"
-  port     = "${local.rds["port"]}"
-
-  iam_database_authentication_enabled = false
-
-  vpc_security_group_ids = ["${module.network.rds-sg}"]
-
-  maintenance_window = "${local.rds["maintenance_window"]}"
-  backup_window      = "${local.rds["backup_window"]}"
-  backup_retention_period = "${local.rds["backup_retention"]}"
-
-  # DB subnet group
-  subnet_ids = ["${module.network.subnet-a-db-private}",
-                "${module.network.subnet-b-db-private}",
-                "${module.network.subnet-c-db-private}"]
-
-  # DB parameter group
-  family = "postgresql9.6"
-
-  # DB option group
-  major_engine_version = "9.6"
-
-  # Snapshot name upon DB deletion
-  final_snapshot_identifier = "${local.rds["identifier"]}"
-  copy_tags_to_snapshot = true
-
-  parameter_group_name = "${local.rds["parameter_group_name"]}"
-  parameters = []
-
-  options = []
-  storage_encrypted = true
-  tags {
-    workload-type = "other"
-  }
+module "postgresql-0" {
+  source = "../postgresql"
+  rds_instance = "${local.rds_instances[0]}"
+  subnet_ids = "${local.rds_subnet_ids}"
+  vpc_security_group_ids = "${local.rds_vpc_security_group_ids}"
 }
