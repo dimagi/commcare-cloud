@@ -1,0 +1,19 @@
+id: 4498268
+env_key: host.environment
+message: |
+  {{check_message}}
+  << notification_block >>
+name: SITE DOWN
+options:
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 10
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 4, ok: 2, warning: 1}
+  timeout_h: 0
+query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat").by("host","instance","url").last(5).count_by_status()'
+tags: [serverup]
+type: service check

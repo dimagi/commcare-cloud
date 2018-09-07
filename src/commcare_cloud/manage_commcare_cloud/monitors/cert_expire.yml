@@ -1,0 +1,22 @@
+id: 4498244
+env_key: host.environment
+message: |
+  {{#is_warning}}SSL Cert will expire in less than 28 days{{/is_warning}}
+  {{#is_alert}}SSL Cert will expire in less than 14 days{{/is_alert}}
+  {{check_message}}
+  << notification_block >>
+name: SSL Cert Expiry
+options:
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 10
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 1, ok: 1, warning: 1}
+  timeout_h: 0
+query: '"http.ssl_cert".over("*").exclude("environment:64-test").by("host","instance","url").last(2).count_by_status()'
+tags: []
+type: service check

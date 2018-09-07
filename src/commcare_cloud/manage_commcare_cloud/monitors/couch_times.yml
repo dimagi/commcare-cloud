@@ -1,0 +1,28 @@
+id: 677672
+env_key: environment.name
+message: |
+  {{#is_alert}}
+  {{environment}} couch response times are averaging {{value}}s.{{/is_alert}}
+  {{#is_no_data}}Couch timing data is missing.{{/is_no_data}}
+  {{#is_match "environment.name" "icds-new"}}
+  Restart Couch!
+  @slack-alerts-icds
+  {{/is_match}}
+  << notification_block >>
+name: Couch response times are higher than {{threshold}}
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 50
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 3.0}
+  timeout_h: 0
+query: min(last_10m):avg:couch.timings{!environment:staging} by {environment} > 3
+tags: ['*']
+type: metric alert

@@ -1,0 +1,20 @@
+id: 5091653
+env_key: environment.name
+message: |
+  {{#is_alert}}
+  High number of error from sentry.
+  {{/is_alert}}
+  << notification_block >>
+name: '{{service.name}} causing errors in {{environment.name}}'
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+query: 5091620 && 4848214
+tags: []
+type: composite
