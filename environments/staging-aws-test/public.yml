@@ -42,8 +42,6 @@ localsettings:
   ALLOWED_HOSTS:
     - staging.commcarehq.org
     - j2mestaging.commcarehq.org
-    - localhost
-    - 127.0.0.1
     - testserver
     - '{{ hostvars[groups.proxy.0].public_ip }}'
   ANALYTICS_DEBUG: True
