@@ -7,7 +7,7 @@ variable "security_groups" {
 }
 
 variable "subnet_options" {
-  type = "list"
+  type = "map"
 }
 
 variable "server_image" {}
