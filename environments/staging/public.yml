@@ -40,10 +40,7 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-staging-blobdb'
 
 localsettings:
   ALLOWED_HOSTS:
-    - staging.commcarehq.org
     - j2mestaging.commcarehq.org
-    - localhost
-    - 127.0.0.1
     - testserver
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"

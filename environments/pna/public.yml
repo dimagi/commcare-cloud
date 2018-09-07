@@ -53,9 +53,6 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 localsettings:
   ALLOWED_HOSTS:
     - "{{ PNA_SITE_HOST }}"
-    - "{{ SITE_HOST }}"
-    - localhost
-    - 127.0.0.1
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'

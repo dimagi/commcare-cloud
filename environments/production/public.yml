@@ -52,10 +52,7 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
 
 localsettings:
   ALLOWED_HOSTS:
-    - www.commcarehq.org
     - www.commtrack.org
-    - localhost
-    - 127.0.0.1
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"

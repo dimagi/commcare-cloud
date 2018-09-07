@@ -44,10 +44,7 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
   ALLOWED_HOSTS:
-    - swiss.commcarehq.org
     - 185.12.7.167
-    - localhost
-    - 127.0.0.1
     - testserver
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."

@@ -70,10 +70,6 @@ couchdb_cluster_settings:
 TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
-  ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - "{{ SITE_HOST }}"
 #  BANK_ADDRESS:
 #  BANK_NAME:
 #  BANK_SWIFT_CODE:
