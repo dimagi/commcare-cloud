@@ -35,7 +35,7 @@ module "postgresql" {
   major_engine_version = "9.6"
 
   # Snapshot name upon DB deletion
-  final_snapshot_identifier = "${var.rds_instance["identifier"]}"
+  final_snapshot_identifier = "final-snapshot-${var.rds_instance["identifier"]}"
   copy_tags_to_snapshot = true
 
   parameter_group_name = "${var.rds_instance["parameter_group_name"]}"
