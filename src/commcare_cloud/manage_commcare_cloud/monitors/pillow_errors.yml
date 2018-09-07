@@ -1,0 +1,39 @@
+id: 5569064
+env_key: environment.name
+message: |
+  The Pillow Erros on {{environment.name}} has been above {{#is_warning}} {{warn_threshold}} {{/is_warning}}{{#is_alert}} {{threshold}} {{/is_alert}}for the past 1 hour.
+  This could be the result of an outage.
+  {{#is_match "environment.name" "icds-new"}}
+  https://www.icds-cas.gov.in/hq/admin/pillow_errors
+  @slack-alerts-icds
+  {{/is_match}}
+  {{#is_match "environment.name" "pna"}}
+  https://pna.commcarehq.org/hq/admin/pillow_errors
+  @slack-alerts-pna
+  {{/is_match}}
+  {{#is_match "environment.name" "softlayer"}}
+  https://india.commcarehq.org/hq/admin/pillow_errors
+  @slack-alerts-softlayer
+  {{/is_match}}
+  {{#is_match "environment.name" "production"}}
+  https://pna.commcarehq.org/hq/admin/pillow_errors
+  @slack-alerts-production
+  {{/is_match}}
+  << notification_block >>
+name: Pillow Error on {{environment.name}} are very high!
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 10000.0, warning: 5000.0}
+  timeout_h: 0
+query: avg(last_1h):sum:commcare.pillowtop.error_queue{*} by {environment} > 10000
+tags: []
+type: metric alert

@@ -1,0 +1,25 @@
+id: 4847367
+env_key: environment.name
+message: |
+  {{#is_alert}}
+  Postgresql Connection percentage is {{value}} which is more than 90%.
+  {{/is_alert}}
+  << notification_block >>
+name: PostgreSQL connection % high on {{host.name}}
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 90.0, warning: 70.0}
+  timeout_h: 0
+query: avg(last_5m):avg:postgresql.percent_usage_connections{*} by {host,environment}
+  * 100 > 90
+tags: []
+type: query alert

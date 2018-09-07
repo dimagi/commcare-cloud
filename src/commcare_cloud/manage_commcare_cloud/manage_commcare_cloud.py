@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from commcare_cloud.manage_commcare_cloud.datadog_monitors import DatadogMonitors
 from commcare_cloud.manage_commcare_cloud.test_environments import TestEnvironments
 from ..argparse14 import ArgumentParser
 
@@ -21,6 +22,7 @@ COMMAND_TYPES = [
     MakeChangelogIndex,
     MakeDocs,
     TestEnvironments,
+    DatadogMonitors,
 ]
 
 
