@@ -14,7 +14,7 @@ provider "aws" {
 module "commcarehq" {
   source = "../modules/commcarehq"
   region                = "us-east-1"
-  environment           = "staging"
+  environment           = "staging-test"
   company               = "dimagi"
   azs                   = ["us-east-1a","us-east-1b","us-east-1c"]
   vpc_begin_range       = "10.200"
