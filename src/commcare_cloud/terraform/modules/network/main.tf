@@ -327,11 +327,15 @@ resource "aws_security_group" "rds" {
   vpc_id = "${aws_vpc.main.id}"
 
   ingress {
-    from_port =         "5432"
-    to_port =           "5432"
-    protocol =          "tcp"
-    cidr_blocks =       ["${var.vpc_begin_range}.10.0/24"]
-    ipv6_cidr_blocks =  ["::/0"]
+    from_port = "5432"
+    to_port = "5432"
+    protocol = "tcp"
+    cidr_blocks = [
+      "${aws_subnet.subnet-a-app-private.cidr_block}",
+      "${aws_subnet.subnet-b-app-private.cidr_block}",
+      "${aws_subnet.subnet-c-app-private.cidr_block}"
+    ]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
