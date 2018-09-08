@@ -34,7 +34,7 @@ setup(
         'attrs>=18.1.0',
         'clint',
         'couchdb-cluster-admin>=0.4.1',
-        'cryptography>=2.2.1',
+        'cryptography>=2.3',  # security update
         'datadog==0.2.0',
         'dimagi-memoized>=1.1.0',
         'dnspython',
@@ -45,7 +45,7 @@ setup(
         'jsonobject>=0.9.0',
         'netaddr',
         'passlib',
-        'pycryptodome',
+        'pycryptodome>=3.6.6',  # security update
         'PyGithub==1.40a1',
         'pytz==2017.2',
         'six',

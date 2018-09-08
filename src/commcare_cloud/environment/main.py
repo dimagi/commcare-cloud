@@ -269,7 +269,7 @@ class Environment(object):
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
-            'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
+            'authorized_keys_dir': '{}/'.format(os.path.realpath(self.paths.authorized_keys_dir)),
             'known_hosts_file': self.paths.known_hosts,
             'commcarehq_repository': self.fab_settings_config.code_repo,
         }

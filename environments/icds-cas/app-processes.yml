@@ -3,7 +3,6 @@ gunicorn_workers_static_factor: 4
 celery_processes:
   None:
     repeat_record_queue:
-    beat: {}
   'celery0':
     # The celery workers which have less cpu intensive tasks
     # are meant to go on this machine. Try to avoid putting
@@ -11,13 +10,14 @@ celery_processes:
     # workers here so that the workers
     # on this machine have the cpu they need to perform their tasks.
     flower: {}
+    beat: {}
     celery,export_download_queue:
       concurrency: 8
       max_tasks_per_child: 5
     celery_periodic:
        concurrency: 4
-#    submission_reprocessing_queue:
-#       concurrency: 1
+    submission_reprocessing_queue:
+       concurrency: 2
     email_queue:
       concurrency: 2
     reminder_rule_queue:
@@ -65,11 +65,6 @@ celery_processes:
     ucr_indicator_queue:
       concurrency: 6
   'celery3':
-    # Still waiting on whitelisting from celery3
-    # sms_queue:
-    #   pooling: gevent
-    #   concurrency: 10
-    #   num_workers: 4
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -98,6 +93,10 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
   'celery6':
     ucr_indicator_queue:
       concurrency: 4
@@ -107,6 +106,10 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
   'celery7':
     ucr_indicator_queue:
       concurrency: 4
@@ -146,11 +149,6 @@ celery_processes:
   'web0':
     ucr_indicator_queue:
       concurrency: 3
-    # Temporarily run the sms_queue worker here as web0 is whitelisted
-#    sms_queue:
-#      pooling: gevent
-#      concurrency: 20
-#      num_workers: 1
   'web1':
     ucr_indicator_queue:
       concurrency: 4

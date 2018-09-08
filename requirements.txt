@@ -16,7 +16,7 @@ cffi==1.11.5              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 clint==0.5.1
 couchdb-cluster-admin==0.4.2
-cryptography==2.2.2
+cryptography==2.3.1
 datadog==0.2.0
 decorator==4.3.0          # via datadog
 dimagi-memoized==1.1.0
@@ -36,7 +36,7 @@ paramiko==2.4.1           # via ansible, fabric
 passlib==1.7.1
 pyasn1==0.4.3             # via ndg-httpsclient, paramiko
 pycparser==2.18           # via cffi
-pycryptodome==3.6.4
+pycryptodome==3.6.6
 pygithub==1.40a1
 pyjwt==1.6.4              # via pygithub
 pynacl==1.2.1             # via paramiko

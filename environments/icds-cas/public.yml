@@ -41,7 +41,8 @@ etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
 
-default_from_email: "admin@sq.endmile.co.in"
+# TODO: uncomment  when switching back to TCL SMTP
+# default_from_email: "admin@sq.endmile.co.in"
 
 commcare_errors_branch: "master-icds"
 site_locations:
@@ -150,8 +151,8 @@ localsettings:
   COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
-  EMAIL_SMTP_HOST: 'relay.historymile.com'  # TODO email setup
-  EMAIL_SMTP_PORT: 26
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com # Temp till we get TCL
+  EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160

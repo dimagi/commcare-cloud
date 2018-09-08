@@ -290,7 +290,6 @@ resource "aws_security_group" "g2-access-sg" {
   }
 }
 
-#Create proxy-sg
 resource "aws_security_group" "proxy-sg" {
   name   = "proxy-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
@@ -320,5 +319,32 @@ resource "aws_security_group" "proxy-sg" {
 
   tags {
     Name = "proxy-sg-${var.env}"
+  }
+}
+
+resource "aws_security_group" "rds" {
+  name   = "rds-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
+    from_port =         "5432"
+    to_port =           "5432"
+    protocol =          "tcp"
+    cidr_blocks =       ["${var.vpc_begin_range}.10.0/24"]
+    ipv6_cidr_blocks =  ["::/0"]
+  }
+
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = ["name", "description"]
+  }
+  tags {
+    Name = "rds-${var.env}"
   }
 }
