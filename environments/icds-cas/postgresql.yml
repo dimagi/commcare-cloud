@@ -14,13 +14,16 @@ REPORTING_DATABASES:
 LOAD_BALANCED_APPS:
   auth:
     - [default, 1]
-    - [pgmainstandby0, 1]
+    - [pgmainstandby0, 4]
   accounting:
     - [default, 1]
-    - [pgmainstandby0, 1]
+    - [pgmainstandby0, 4]
   locations:
     - [default, 1]
-    - [pgmainstandby0, 1]
+    - [pgmainstandby0, 4]
+  userreports:
+    - [default, 1]
+    - [pgmainstandby0, 4]
 
 override:
   pgbouncer_pool_mode: transaction
