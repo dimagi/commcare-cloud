@@ -2,8 +2,8 @@ variable "servers" {
   type = "list"
 }
 
-variable "security_groups" {
-  type = "list"
+variable "security_group_options" {
+  type = "map"
 }
 
 variable "subnet_options" {
