@@ -188,6 +188,34 @@ resource "aws_security_group" "app-private" {
   }
 }
 
+resource "aws_security_group" "db-private" {
+  /* Allow traffic on all ports coming from the app-private subnets
+  (i.e. the non-db ec2 instances) */
+
+  name   = "db-private-sg-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress = "${local.default_egress}"
+
+  tags {
+    Name = "db-private-sg-${var.env}"
+  }
+}
+
 
 resource "aws_security_group" "rds" {
   name   = "rds-${var.env}"

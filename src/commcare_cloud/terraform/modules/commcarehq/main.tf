@@ -34,33 +34,41 @@ variable "proxy_servers" {
 
 locals {
   subnet_options = {
-    private-a = "${module.network.subnet-a-app-private}"
-    private-b = "${module.network.subnet-b-app-private}"
-    private-c = "${module.network.subnet-c-app-private}"
+    app-private-a = "${module.network.subnet-a-app-private}"
+    app-private-b = "${module.network.subnet-b-app-private}"
+    app-private-c = "${module.network.subnet-c-app-private}"
+    db-private-a = "${module.network.subnet-a-db-private}"
+    db-private-b = "${module.network.subnet-b-db-private}"
+    db-private-c = "${module.network.subnet-c-db-private}"
     public-a = "${module.network.subnet-a-public}"
     public-b = "${module.network.subnet-b-public}"
     public-c = "${module.network.subnet-c-public}"
   }
+  security_group_options = {
+    "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}"]
+    "app-private" = ["${module.network.app-private-sg}", "${module.network.ssh-sg}"]
+    "db-private" = ["${module.network.db-private-sg}", "${module.network.ssh-sg}"]
+  }
 }
 
 module "servers" {
-  source                = "../servers"
-  servers               = "${var.servers}"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.network.app-private-sg}", "${module.network.ssh-sg}"]
-  subnet_options        = "${local.subnet_options}"
+  source = "../servers"
+  servers = "${var.servers}"
+  server_image = "${var.server_image}"
+  environment = "${var.environment}"
+  vpc_id = "${module.network.vpc-id}"
+  subnet_options = "${local.subnet_options}"
+  security_group_options = "${local.security_group_options}"
 }
 
 module "proxy_servers" {
-  source                = "../servers"
-  servers               = "${var.proxy_servers}"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.network.app-private-sg}", "${module.network.ssh-sg}", "${module.network.proxy-sg}"]
-  subnet_options        = "${local.subnet_options}"
+  source = "../servers"
+  servers = "${var.proxy_servers}"
+  server_image = "${var.server_image}"
+  environment = "${var.environment}"
+  vpc_id = "${module.network.vpc-id}"
+  subnet_options = "${local.subnet_options}"
+  security_group_options = "${local.security_group_options}"
 }
 
 resource "aws_eip" "proxy" {

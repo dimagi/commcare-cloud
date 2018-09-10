@@ -58,6 +58,10 @@ output "app-private-sg" {
   value = "${aws_security_group.app-private.id}"
 }
 
+output "db-private-sg" {
+  value = "${aws_security_group.db-private.id}"
+}
+
 output "ssh-sg" {
   value = "${aws_security_group.ssh.id}"
 }
