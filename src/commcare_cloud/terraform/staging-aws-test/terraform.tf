@@ -21,6 +21,16 @@ module "commcarehq" {
   dns_domain            = ""                        # Set the DNS Domain name to be used (should match the name for the Zone ID)
   dns_zone_id           = ""                        # Select the correct DNS Zone ID from Route 53
   internal_ssl_cert_arn = ""                        # This will be used to reference SSL Certificate in AWS Certificate Manager
+  external_routes       = [
+    {
+      cidr_block = "172.24.16.0/22"
+      gateway_id = "vgw-8dd726e4"
+    },
+    {
+      cidr_block = "172.24.32.0/22"
+      gateway_id = "vgw-8dd726e4"
+    }
+  ]
 
   servers = [
     {
