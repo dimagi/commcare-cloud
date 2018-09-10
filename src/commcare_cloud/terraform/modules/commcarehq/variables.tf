@@ -29,17 +29,16 @@ variable "redis" {
     parameter_group_name  = "default.redis4.0"
   }
 }
-variable "rds" {
-  type = "map"
-  default = {}
+variable "rds_instances" {
+  type = "list"
+  default = []
 }
 
 locals {
   default_rds = {
-    storage = 300
+    storage = ""
     instance_type = "db.t2.medium"
     identifier = ""
-    database_name = ""
     username = "root"
     storage_type = "gp2"
     backup_window = "06:27-06:57"
@@ -54,5 +53,12 @@ locals {
     instance_count = 1
     parameter_group_name = "dimagi-postgres9-6"
   }
-  rds = "${merge(local.default_rds, var.rds)}"
+  # todo: fold these two into default_rds once terraform 0.12 comes out
+  # todo: allow heterogeneous maps as module variables
+  rds_subnet_ids = [
+    "${module.network.subnet-a-db-private}",
+    "${module.network.subnet-b-db-private}",
+    "${module.network.subnet-c-db-private}"
+  ]
+  rds_vpc_security_group_ids = ["${module.network.rds-sg}"]
 }
