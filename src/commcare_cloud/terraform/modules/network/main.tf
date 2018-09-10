@@ -227,3 +227,22 @@ resource "aws_security_group" "rds" {
     Name = "rds-${var.env}"
   }
 }
+
+resource "aws_security_group" "elasticache" {
+  name   = "elasticache-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
+    from_port = "6379"
+    to_port = "6379"
+    protocol = "tcp"
+    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress = "${local.default_egress}"
+
+  tags {
+    Name = "elasticache-${var.env}"
+  }
+}

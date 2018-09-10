@@ -62,6 +62,10 @@ output "rds-sg" {
   value = "${aws_security_group.rds.id}"
 }
 
+output "elasticache-sg" {
+  value = "${aws_security_group.elasticache.id}"
+}
+
 output "app-private-sg" {
   value = "${aws_security_group.app-private.id}"
 }

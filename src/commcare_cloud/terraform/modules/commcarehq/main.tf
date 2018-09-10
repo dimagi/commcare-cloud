@@ -79,8 +79,12 @@ module "Redis" {
   num_cache_nodes      = "${var.redis["num_cache_nodes"]}"
   parameter_group_name = "${var.redis["parameter_group_name"]}"
   port                 = 6379
-  elasticache_subnets  = ["${module.network.subnet-a-util-private}","${module.network.subnet-b-util-private}","${module.network.subnet-c-util-private}"]
-  security_group_ids   = ["${module.network.app-private-sg}"]
+  elasticache_subnets  = [
+    "${module.network.subnet-a-db-private}",
+    "${module.network.subnet-b-db-private}",
+    "${module.network.subnet-c-db-private}"
+  ]
+  security_group_ids   = ["${module.network.elasticache-sg}"]
 }
 
 #module "openvpn" {
