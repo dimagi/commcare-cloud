@@ -96,7 +96,6 @@ module "Redis" {
 #  environment      = "${var.environment}"
 #  company          = "${var.company}"
 #  vpn_size         = "${var.openvpn_instance_type}"
-#  g2-access-sg     = "${module.network.g2-access-sg}"
 #  instance_subnet  = "${module.network.subnet-b-public}"
 #  vpc_id           = "${module.network.vpc-id}"
 #  # dns_zone_id      = "${var.dns_zone_id}"

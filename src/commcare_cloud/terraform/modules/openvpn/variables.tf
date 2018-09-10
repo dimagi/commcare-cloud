@@ -15,7 +15,6 @@
 variable "openvpn_image" {}
 variable "environment" {}
 variable "company" {}
-variable "g2-access-sg" {}
 variable "vpc-all-hosts-sg" {}
 variable "instance_subnet" {}
 variable "vpn_size" {}
