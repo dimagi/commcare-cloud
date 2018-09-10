@@ -6,4 +6,9 @@ variable "company" {}
 variable "azs" {
   type = "list"
 }
+
+variable "az_codes" {
+  type = "list"
+  default = ["a", "b", "c"]
+}
 #variable "openvpn-access-sg" {}
