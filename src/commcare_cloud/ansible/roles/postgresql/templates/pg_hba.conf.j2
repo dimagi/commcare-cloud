@@ -16,10 +16,10 @@ host   all	barman	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
 {%endfor%}
 {% endif %}
 
-{% if postgres_users.get('netvault') %}
-# Netvault required configuration
-host    all             netvault        127.0.0.1/32            trust
-local   all             netvault                                trust
+{% if postgres_users.get('tcl_backup_agent') %}
+# TCL_BACKUP required configuration
+host    all             tcl_backup_agent        127.0.0.1/32            trust
+local   all             tcl_backup_agent                                trust
 {% endif %}
 
 # Allow replication connections from localhost, by a user with the replication privilege.
