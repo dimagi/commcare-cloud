@@ -180,6 +180,40 @@ resource "aws_security_group" "proxy-sg" {
   }
 }
 
+resource "aws_security_group" "app-private" {
+  name   = "app-private-sg-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.main.cidr_block}"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  lifecycle {
+    ignore_changes = ["name", "description"]
+  }
+
+  tags {
+    Name = "app-private-sg-${var.env}"
+  }
+}
+
+
 resource "aws_security_group" "rds" {
   name   = "rds-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
