@@ -8,130 +8,48 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Define the private subnets across 3 availability zones
-resource "aws_subnet" "subnet-a-app-private" {
-  cidr_block        = "${var.vpc_begin_range}.10.0/24"
-  availability_zone = "${var.azs[0]}"
+resource "aws_subnet" "subnet-app-private" {
+  count = "${length(var.azs)}"
+  cidr_block        = "${var.vpc_begin_range}.1${count.index}.0/24"
+  availability_zone = "${var.azs[count.index]}"
   vpc_id            = "${aws_vpc.main.id}"
 
   tags {
-    Name = "subnet-a-app-private-${var.env}"
+    Name = "subnet-${var.az_codes[count.index]}-app-private-${var.env}"
   }
 }
 
-resource "aws_subnet" "subnet-b-app-private" {
-  cidr_block        = "${var.vpc_begin_range}.11.0/24"
-  availability_zone = "${var.azs[1]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-b-app-private-${var.env}"
-  }
-}
-
-resource "aws_subnet" "subnet-c-app-private" {
-  cidr_block        = "${var.vpc_begin_range}.12.0/24"
-  availability_zone = "${var.azs[2]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-c-app-private-${var.env}"
-  }
-}
-
-# Define the public subnets across 3 availability zones
-resource "aws_subnet" "subnet-a-public" {
-  cidr_block              = "${var.vpc_begin_range}.20.0/24"
-  availability_zone       = "${var.azs[0]}"
+resource "aws_subnet" "subnet-public" {
+  count = "${length(var.azs)}"
+  cidr_block              = "${var.vpc_begin_range}.2${count.index}.0/24"
+  availability_zone       = "${var.azs[count.index]}"
   vpc_id                  = "${aws_vpc.main.id}"
   map_public_ip_on_launch = "true"
 
   tags {
-    Name = "subnet-a-public-${var.env}"
+    Name = "subnet-${var.az_codes[count.index]}-public-${var.env}"
   }
 }
 
-resource "aws_subnet" "subnet-b-public" {
-  cidr_block              = "${var.vpc_begin_range}.21.0/24"
-  availability_zone       = "${var.azs[1]}"
-  vpc_id                  = "${aws_vpc.main.id}"
-  map_public_ip_on_launch = "true"
-
-  tags {
-    Name = "subnet-b-public-${var.env}"
-  }
-}
-
-resource "aws_subnet" "subnet-c-public" {
-  cidr_block              = "${var.vpc_begin_range}.22.0/24"
-  availability_zone       = "${var.azs[2]}"
-  vpc_id                  = "${aws_vpc.main.id}"
-  map_public_ip_on_launch = "true"
-
-  tags {
-    Name = "subnet-c-public-${var.env}"
-  }
-}
-
-# Define the utility server subnets across 3 availability zones
-resource "aws_subnet" "subnet-a-util-private" {
-  cidr_block        = "${var.vpc_begin_range}.30.0/24"
-  availability_zone = "${var.azs[0]}"
+resource "aws_subnet" "subnet-util-private" {
+  count = "${length(var.azs)}"
+  cidr_block        = "${var.vpc_begin_range}.3${count.index}.0/24"
+  availability_zone = "${var.azs[count.index]}"
   vpc_id            = "${aws_vpc.main.id}"
 
   tags {
-    Name = "subnet-a-util-private-${var.env}"
+    Name = "subnet-${var.az_codes[count.index]}-util-private-${var.env}"
   }
 }
 
-resource "aws_subnet" "subnet-b-util-private" {
-  cidr_block        = "${var.vpc_begin_range}.31.0/24"
-  availability_zone = "${var.azs[1]}"
+resource "aws_subnet" "subnet-db-private" {
+  count = "${length(var.azs)}"
+  cidr_block        = "${var.vpc_begin_range}.4${count.index}.0/24"
+  availability_zone = "${var.azs[count.index]}"
   vpc_id            = "${aws_vpc.main.id}"
 
   tags {
-    Name = "subnet-b-util-private-${var.env}"
-  }
-}
-
-resource "aws_subnet" "subnet-c-util-private" {
-  cidr_block        = "${var.vpc_begin_range}.32.0/24"
-  availability_zone = "${var.azs[2]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-c-util-private-${var.env}"
-  }
-}
-
-# Define the database server subnets across 3 availability zones
-resource "aws_subnet" "subnet-a-db-private" {
-  cidr_block        = "${var.vpc_begin_range}.40.0/24"
-  availability_zone = "${var.azs[0]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-a-db-private-${var.env}"
-  }
-}
-
-resource "aws_subnet" "subnet-b-db-private" {
-  cidr_block        = "${var.vpc_begin_range}.41.0/24"
-  availability_zone = "${var.azs[1]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-b-db-private-${var.env}"
-  }
-}
-
-resource "aws_subnet" "subnet-c-db-private" {
-  cidr_block        = "${var.vpc_begin_range}.42.0/24"
-  availability_zone = "${var.azs[2]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-c-db-private-${var.env}"
+    Name = "subnet-${var.az_codes[count.index]}-db-private-${var.env}"
   }
 }
 
@@ -188,66 +106,28 @@ resource "aws_route_table" "public" {
 
 # Associate the private subnets with the appropriate route tables
 # Generic private subnets associate to the private route table
-resource "aws_route_table_association" "prv-a" {
-  subnet_id      = "${aws_subnet.subnet-a-app-private.id}"
+
+resource "aws_route_table_association" "app-private" {
+  count = "${length(var.azs)}"
+  subnet_id      = "${aws_subnet.subnet-app-private.*.id[count.index]}"
   route_table_id = "${aws_route_table.private.id}"
 }
 
-resource "aws_route_table_association" "prv-b" {
-  subnet_id      = "${aws_subnet.subnet-b-app-private.id}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_route_table_association" "prv-c" {
-  subnet_id      = "${aws_subnet.subnet-c-app-private.id}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-# Generic public subnets associate to the public route table
-resource "aws_route_table_association" "pub-a" {
-  subnet_id      = "${aws_subnet.subnet-a-public.id}"
+resource "aws_route_table_association" "public" {
+  count = "${length(var.azs)}"
+  subnet_id      = "${aws_subnet.subnet-public.*.id[count.index]}"
   route_table_id = "${aws_route_table.public.id}"
 }
 
-resource "aws_route_table_association" "pub-b" {
-  subnet_id      = "${aws_subnet.subnet-b-public.id}"
-  route_table_id = "${aws_route_table.public.id}"
-}
-
-resource "aws_route_table_association" "pub-c" {
-  subnet_id      = "${aws_subnet.subnet-c-public.id}"
-  route_table_id = "${aws_route_table.public.id}"
-}
-
-# Database private subnets associate to the private route table
-resource "aws_route_table_association" "prv-db-a" {
-  subnet_id      = "${aws_subnet.subnet-a-db-private.id}"
+resource "aws_route_table_association" "db-private" {
+  count = "${length(var.azs)}"
+  subnet_id      = "${aws_subnet.subnet-db-private.*.id[count.index]}"
   route_table_id = "${aws_route_table.private.id}"
 }
 
-resource "aws_route_table_association" "prv-db-b" {
-  subnet_id      = "${aws_subnet.subnet-b-db-private.id}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_route_table_association" "prv-db-c" {
-  subnet_id      = "${aws_subnet.subnet-c-db-private.id}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-# Utility server private subnets associate to the private route table
-resource "aws_route_table_association" "prv-util-a" {
-  subnet_id      = "${aws_subnet.subnet-a-util-private.id}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_route_table_association" "prv-util-b" {
-  subnet_id      = "${aws_subnet.subnet-b-util-private.id}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_route_table_association" "prv-util-c" {
-  subnet_id      = "${aws_subnet.subnet-c-util-private.id}"
+resource "aws_route_table_association" "util-private" {
+  count = "${length(var.azs)}"
+  subnet_id      = "${aws_subnet.subnet-util-private.*.id[count.index]}"
   route_table_id = "${aws_route_table.private.id}"
 }
 
@@ -259,7 +139,7 @@ resource "aws_eip" "nat_gateway" {
 # Create a NAT Gateway, which will be in public subnet a
 resource "aws_nat_gateway" "main" {
   allocation_id = "${aws_eip.nat_gateway.id}"
-  subnet_id     = "${aws_subnet.subnet-a-public.id}"
+  subnet_id     = "${aws_subnet.subnet-public.*.id[0]}"
   depends_on    = ["aws_internet_gateway.main", "aws_eip.nat_gateway"]
 }
 
@@ -308,11 +188,7 @@ resource "aws_security_group" "rds" {
     from_port = "5432"
     to_port = "5432"
     protocol = "tcp"
-    cidr_blocks = [
-      "${aws_subnet.subnet-a-app-private.cidr_block}",
-      "${aws_subnet.subnet-b-app-private.cidr_block}",
-      "${aws_subnet.subnet-c-app-private.cidr_block}"
-    ]
+    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}"]
     ipv6_cidr_blocks = ["::/0"]
   }
 
