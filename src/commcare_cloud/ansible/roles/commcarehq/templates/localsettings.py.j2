@@ -17,7 +17,7 @@ from celery.schedules import crontab
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
-ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list) | unique | to_json }}
+ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS|default([]) + [SITE_HOST, 'localhost', '127.0.0.1'] + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list) | unique | to_json }}
 
 {% if SEPARATE_SYNCLOGS_DB %}
 SYNCLOGS_SQL_DB_ALIAS = "synclogs"
