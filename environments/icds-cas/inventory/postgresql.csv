@@ -27,19 +27,19 @@ pgshard7standby,100.71.184.61,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS07,,pgs
 pgshard8standby,100.71.184.56,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS08,,pgshard8,,standby0
 pgshard9standby,100.71.184.59,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS09,,pgshard9,,standby0
 plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,,,,
-plproxy1,100.71.184.80,postgresql,,MUMGCCWCDPRDPLP1,,,,
+plproxy1,100.71.184.69,postgresql,,MUMGCCWCDPRDPLP1,,,,
 pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,pgsynclog0standby,,"[""standby0"",""spare""]",
 pgsynclog0standby,100.71.184.41,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL1,,pgsynclog0,,standby0
 pgwarehouse0,100.71.184.23,postgresql,warehouse_dbs,MUMGCCWCDPRDPW00,,,,
-pgwarehouse1,100.71.184.73,,warehouse_dbs,MUMGCCWCDPRDPW01,,,,
-pgwarehouse2,100.71.184.78,,warehouse_dbs,MUMGCCWCDPRDPW02,,,,
-pgmainstandby1,100.71.184.83,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,,pgmain0,,standby1
-pgmainstandby2,100.71.184.81,pg_standby,main_dbs,MUMGCCWCDPRDPMS2,,pgmain0,,standby2
-pgucrstandby4,100.71.184.85,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS4,,pgucrstandby0,,standby0
-pgucrstandby5,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS5,,pgucrstandby0,,standby1
-pgucrstandby6,100.71.184.88,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,,pgucrstandby1,,standby0
-pgucrstandby7,100.71.184.84,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS7,,pgucrstandby2,,standby0
-pgucrstandby8,100.71.184.79,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS8,,pgucrstandby3,,standby0
+pgwarehouse1,100.71.184.76,,warehouse_dbs,MUMGCCWCDPRDPW01,,,,
+pgwarehouse2,100.71.184.83,,warehouse_dbs,MUMGCCWCDPRDPW02,,,,
+pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,,pgmain0,,standby1
+pgmainstandby2,100.71.184.85,pg_standby,main_dbs,MUMGCCWCDPRDPMS2,,pgmain0,,standby2
+pgucrstandby4,100.71.184.70,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS4,,pgucrstandby0,,standby0
+pgucrstandby5,100.71.184.64,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS5,,pgucrstandby0,,standby1
+pgucrstandby6,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,,pgucrstandby1,,standby0
+pgucrstandby7,100.71.184.81,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS7,,pgucrstandby2,,standby0
+pgucrstandby8,100.71.184.68,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS8,,pgucrstandby3,,standby0
 ,,,,,,,,
 # group vars for postgres,,,,,,,,
 group,I.var: pgbouncer_max_connections,I.var: pgbouncer_default_pool,I.var: postgresql_max_connections,S.var: postgresql_work_mem,S.var: postgresql_shared_buffers,,,
