@@ -22,18 +22,6 @@ output "subnet-c-public" {
   value = "${aws_subnet.subnet-public.*.id[2]}"
 }
 
-output "subnet-a-util-private" {
-  value = "${aws_subnet.subnet-util-private.*.id[0]}"
-}
-
-output "subnet-b-util-private" {
-  value = "${aws_subnet.subnet-util-private.*.id[1]}"
-}
-
-output "subnet-c-util-private" {
-  value = "${aws_subnet.subnet-util-private.*.id[2]}"
-}
-
 output "subnet-a-db-private" {
   value = "${aws_subnet.subnet-db-private.*.id[0]}"
 }
