@@ -31,17 +31,6 @@ resource "aws_subnet" "subnet-public" {
   }
 }
 
-resource "aws_subnet" "subnet-util-private" {
-  count = "${length(var.azs)}"
-  cidr_block        = "${var.vpc_begin_range}.3${count.index}.0/24"
-  availability_zone = "${var.azs[count.index]}"
-  vpc_id            = "${aws_vpc.main.id}"
-
-  tags {
-    Name = "subnet-${var.az_codes[count.index]}-util-private-${var.env}"
-  }
-}
-
 resource "aws_subnet" "subnet-db-private" {
   count = "${length(var.azs)}"
   cidr_block        = "${var.vpc_begin_range}.4${count.index}.0/24"
@@ -98,12 +87,6 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table_association" "db-private" {
   count = "${length(var.azs)}"
   subnet_id      = "${aws_subnet.subnet-db-private.*.id[count.index]}"
-  route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_route_table_association" "util-private" {
-  count = "${length(var.azs)}"
-  subnet_id      = "${aws_subnet.subnet-util-private.*.id[count.index]}"
   route_table_id = "${aws_route_table.private.id}"
 }
 
