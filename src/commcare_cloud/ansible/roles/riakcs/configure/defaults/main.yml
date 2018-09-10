@@ -37,3 +37,5 @@ riakcs_ebin: "/usr/lib/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin"
 
 stanchion_port: 8085
 stanchion_data_dir: "{{ encrypted_root }}/stanchion"
+
+service: "{{ name }}"
