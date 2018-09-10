@@ -47,7 +47,7 @@
         name: nginx
         tasks_from: set_site_present
       vars:
-        site_present: "{{ NO_WWW_SITE_HOST|default(None) }}"
+        site_present: "{{ NO_WWW_SITE_HOST|default(None) is not none }}"
       with_items:
         - {name: cchq_www_redirect_insecure, vars_file: cchq_www_redirect_insecure}
         - {name: cchq_www_redirect_secure, vars_file: cchq_www_redirect_secure}
@@ -60,7 +60,7 @@
         name: nginx
         tasks_from: set_site_present
       vars:
-        site_present: "{{ J2ME_SITE_HOST|default(None) }}"
+        site_present: "{{ J2ME_SITE_HOST|default(None) is not none }}"
       with_items:
         - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
       loop_control:
