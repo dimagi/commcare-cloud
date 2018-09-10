@@ -57,22 +57,10 @@ resource "aws_subnet" "subnet-db-private" {
 resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.main.id}"
 
-  route {
-    cidr_block     = "0.0.0.0/0"
+  route = [{
+    cidr_block = "0.0.0.0/0"
     nat_gateway_id = "${aws_nat_gateway.main.id}"
-  }
-
-  # Rackspace routing
-  route {
-    cidr_block = "172.24.16.0/22"
-    gateway_id = "vgw-8dd726e4"
-  }
-
-  route {
-    cidr_block = "172.24.32.0/22"
-    gateway_id = "vgw-8dd726e4"
-  }
-  # /Rackspace routing
+  }, "${var.external_routes}"]
 
   tags {
     Name = "private-${var.env}"
@@ -82,22 +70,10 @@ resource "aws_route_table" "private" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  route {
+  route = [{
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.main.id}"
-  }
-
-  # Rackspace routing
-  route {
-    cidr_block = "172.24.16.0/22"
-    gateway_id = "vgw-8dd726e4"
-  }
-
-  route {
-    cidr_block = "172.24.32.0/22"
-    gateway_id = "vgw-8dd726e4"
-  }
-  # /Rackspace routing
+  }, "${var.external_routes}"]
 
   tags {
     Name = "public-${var.env}"

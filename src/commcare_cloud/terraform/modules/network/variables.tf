@@ -12,3 +12,6 @@ variable "az_codes" {
   default = ["a", "b", "c"]
 }
 #variable "openvpn-access-sg" {}
+variable "external_routes" {
+  type = "list"
+}
