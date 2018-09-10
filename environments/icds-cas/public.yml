@@ -123,9 +123,6 @@ s3_blob_db_s3_bucket: 'mowcdmum-c1'
 
 localsettings:
   ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
     - '{{ hostvars[groups.proxy.0].public_ip }}'
   ASYNC_INDICATORS_TO_QUEUE: 60000
