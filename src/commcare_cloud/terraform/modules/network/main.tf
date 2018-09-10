@@ -268,28 +268,6 @@ resource "aws_internet_gateway" "main" {
   vpc_id = "${aws_vpc.main.id}"
 }
 
-resource "aws_security_group" "g2-access-sg" {
-  name   = "g2-access-${var.env}"
-  vpc_id = "${aws_vpc.main.id}"
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["216.236.254.242/32","107.23.51.203/32"]
-  }
-
-  egress {
-    from_port   = -1
-    to_port     = -1
-    protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags {
-    Name = "g2-access-${var.env}"
-  }
-}
-
 resource "aws_security_group" "proxy-sg" {
   name   = "proxy-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
