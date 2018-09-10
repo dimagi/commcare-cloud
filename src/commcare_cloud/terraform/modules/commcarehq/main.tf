@@ -49,7 +49,7 @@ module "servers" {
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.network.app-private-sg}"]
+  security_groups       = ["${module.network.app-private-sg}", "${module.network.ssh-sg}"]
   subnet_options        = "${local.subnet_options}"
 }
 
@@ -59,7 +59,7 @@ module "proxy_servers" {
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.network.app-private-sg}", "${module.network.proxy-sg}"]
+  security_groups       = ["${module.network.app-private-sg}", "${module.network.ssh-sg}", "${module.network.proxy-sg}"]
   subnet_options        = "${local.subnet_options}"
 }
 

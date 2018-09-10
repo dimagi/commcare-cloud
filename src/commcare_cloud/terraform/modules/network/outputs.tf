@@ -65,3 +65,7 @@ output "rds-sg" {
 output "app-private-sg" {
   value = "${aws_security_group.app-private.id}"
 }
+
+output "ssh-sg" {
+  value = "${aws_security_group.ssh.id}"
+}

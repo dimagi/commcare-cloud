@@ -160,6 +160,22 @@ resource "aws_security_group" "proxy-sg" {
   }
 }
 
+resource "aws_security_group" "ssh" {
+  name   = "ssh-sg-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_vpc.main.cidr_block}"]
+  }
+
+  tags {
+    Name = "ssh-sg-${var.env}"
+  }
+}
+
 resource "aws_security_group" "app-private" {
   name   = "app-private-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
