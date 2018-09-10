@@ -20,14 +20,6 @@ module "network" {
   #openvpn-access-sg = "${module.openvpn.openvpn-access-sg}"
 }
 
-module "generic-sg" {
-  source                = "../security_group"
-  group_name            = "generic"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  vpc_begin_range       = "${var.vpc_begin_range}"
-}
-
 variable "servers" {
   type = "list"
   default = []
@@ -56,7 +48,7 @@ module "servers" {
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
+  security_groups       = ["${module.network.app-private-sg}"]
   subnet_options        = "${local.subnet_options}"
 }
 
@@ -66,7 +58,7 @@ module "proxy_servers" {
   server_image          = "${var.server_image}"
   environment           = "${var.environment}"
   vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
+  security_groups       = ["${module.network.app-private-sg}", "${module.network.proxy-sg}"]
   subnet_options        = "${local.subnet_options}"
 }
 
@@ -87,7 +79,7 @@ module "Redis" {
   parameter_group_name = "${var.redis["parameter_group_name"]}"
   port                 = 6379
   elasticache_subnets  = ["${module.network.subnet-a-util-private}","${module.network.subnet-b-util-private}","${module.network.subnet-c-util-private}"]
-  security_group_ids   = ["${module.generic-sg.security_group}"]
+  security_group_ids   = ["${module.network.app-private-sg}"]
 }
 
 #module "openvpn" {

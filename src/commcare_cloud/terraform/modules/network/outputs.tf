@@ -61,3 +61,7 @@ output "proxy-sg" {
 output "rds-sg" {
   value = "${aws_security_group.rds.id}"
 }
+
+output "app-private-sg" {
+  value = "${aws_security_group.app-private.id}"
+}
