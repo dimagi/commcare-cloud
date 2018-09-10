@@ -148,6 +148,15 @@ resource "aws_internet_gateway" "main" {
   vpc_id = "${aws_vpc.main.id}"
 }
 
+locals {
+  default_egress = [{
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }]
+}
+
 resource "aws_security_group" "proxy-sg" {
   name   = "proxy-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
@@ -168,12 +177,7 @@ resource "aws_security_group" "proxy-sg" {
     ipv6_cidr_blocks =  ["::/0"]
   }
 
-  egress {
-      from_port = 0
-      to_port = 0
-      protocol = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-  }
+  egress = "${local.default_egress}"
 
   tags {
     Name = "proxy-sg-${var.env}"
@@ -198,12 +202,8 @@ resource "aws_security_group" "app-private" {
     self      = true
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  egress = "${local.default_egress}"
+
   lifecycle {
     ignore_changes = ["name", "description"]
   }
@@ -226,12 +226,7 @@ resource "aws_security_group" "rds" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  egress {
-      from_port = 0
-      to_port = 0
-      protocol = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-  }
+  egress = "${local.default_egress}"
 
   lifecycle {
     ignore_changes = ["name", "description"]
