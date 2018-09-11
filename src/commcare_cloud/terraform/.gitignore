@@ -1,4 +1,5 @@
 # Compiled files
+/.temp-*
 *.tfstate
 *.backup
 

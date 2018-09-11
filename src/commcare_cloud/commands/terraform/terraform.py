@@ -19,7 +19,7 @@ class Terraform(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        run_dir = os.path.join(TERRAFORM_DIR, args.env_name)
+        run_dir = os.path.join(TERRAFORM_DIR, '.temp-{}'.format(args.env_name))
         if not os.path.isdir(run_dir):
             os.mkdir(run_dir)
         config = environment.terraform_config
