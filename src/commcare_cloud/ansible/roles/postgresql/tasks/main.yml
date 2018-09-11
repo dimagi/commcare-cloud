@@ -130,6 +130,25 @@
   tags:
     - replication
 
+# Only update recovery config if it exists, don't create it
+- name: Check if recovery.conf exists
+  stat:
+    path: "{{ postgresql_recovery_conf }}"
+    register: recovery_file
+  when: is_pg_standby
+  tags:
+    - postgres_users
+    - replication
+
+- name: update "recovery.conf"
+  template:
+    src: roles/postgresql/templates/recovery.conf.j2
+    dest: "{{ postgresql_recovery_conf }}"
+  when: is_pg_standby and recovery_file.stat.exists
+  tags:
+    - postgres_users
+    - replication
+
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
   notify: Start pgbouncer
