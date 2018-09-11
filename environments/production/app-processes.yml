@@ -86,20 +86,14 @@ celery_processes:
 pillows:
   hqpillowtop3.internal-va.commcarehq.org:
     CaseToElasticsearchPillow:
-      num_processes: 8
-    CaseSearchToElasticsearchPillow:
-      num_processes: 4
-    kafka-ucr-static:
-      start_process: 0
       num_processes: 2
-      total_processes: 4
+    CaseSearchToElasticsearchPillow:
+      num_processes: 2
+    kafka-ucr-static:
+      num_processes: 4
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
       num_processes: 4
-    kafka-ucr-static:
-      start_process: 2
-      num_processes: 2
-      total_processes: 4
   hqpillowtop0.internal-va.commcarehq.org:
     AppDbChangeFeedPillow:
       num_processes: 1
