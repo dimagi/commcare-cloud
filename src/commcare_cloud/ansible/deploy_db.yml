@@ -11,6 +11,7 @@
     - riakcs
     - formplayer
     - pg_standby
+    - django_manage
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
