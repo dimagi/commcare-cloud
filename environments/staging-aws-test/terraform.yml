@@ -1,3 +1,4 @@
+aws_profile: dimagi
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
