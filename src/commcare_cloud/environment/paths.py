@@ -121,6 +121,10 @@ class DefaultPaths(object):
         return self.get_env_file_path('.downtime.yml')
 
     @lazy_immutable_property
+    def terraform_yml(self):
+        return self.get_env_file_path('terraform.yml')
+
+    @lazy_immutable_property
     def authorized_keys_dir(self):
         return os.path.join(self.environments_dir, '_authorized_keys')
 

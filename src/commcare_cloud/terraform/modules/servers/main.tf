@@ -9,7 +9,7 @@ resource aws_instance "server" {
   vpc_security_group_ids  = ["${var.security_group_options[lookup(var.servers[count.index], "network_tier")]}"]
   source_dest_check       = false
   root_block_device {
-    volume_size           = "${lookup(var.servers[count.index], "volume_size", 20)}"
+    volume_size           = "${lookup(var.servers[count.index], "volume_size")}"
     volume_type           = "gp2"
     delete_on_termination = true
   }
