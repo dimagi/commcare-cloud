@@ -19,9 +19,16 @@ class Terraform(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        run_dir = os.path.join(TERRAFORM_DIR, '.temp-{}'.format(args.env_name))
+        run_dir_root = environment.paths.get_env_file_path('.generated-terraform')
+        run_dir = os.path.join(run_dir_root, 'entrypoint')
+        modules_dir = os.path.join(TERRAFORM_DIR, 'modules')
+        modules_dest = os.path.join(run_dir_root, 'modules')
+        if not os.path.isdir(run_dir_root):
+            os.mkdir(run_dir_root)
         if not os.path.isdir(run_dir):
             os.mkdir(run_dir)
+        if not (os.path.exists(modules_dest) and os.readlink(modules_dest) == modules_dir):
+            os.symlink(modules_dir, modules_dest)
         config = environment.terraform_config
         with open(os.path.join(run_dir, 'terraform.tf'), 'w') as f:
             print(generate_terraform_entrypoint(config), file=f)
