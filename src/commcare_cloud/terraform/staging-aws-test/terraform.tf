@@ -11,6 +11,10 @@ provider "aws" {
   region  = "us-east-1"
 }
 
+variable "rds_password" {
+  type = "string"
+}
+
 module "commcarehq" {
   source = "../modules/commcarehq"
   region = "us-east-1"

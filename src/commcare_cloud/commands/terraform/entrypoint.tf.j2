@@ -11,6 +11,10 @@ provider "aws" {
   region  = {{ region|tojson }}
 }
 
+variable "rds_password" {
+  type = "string"
+}
+
 module "commcarehq" {
   source = "../modules/commcarehq"
   region = {{ region|tojson }}
