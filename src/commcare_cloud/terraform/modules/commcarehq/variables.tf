@@ -18,6 +18,10 @@ variable "server_image" {
 variable "dns_zone_id" {}
 variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}
+variable "external_routes" {
+  type = "list"
+  default = []
+}
 
 # Redis/ElastiCache variables
 variable "redis" {

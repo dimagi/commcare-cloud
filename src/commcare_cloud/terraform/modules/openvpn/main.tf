@@ -5,7 +5,7 @@ resource aws_instance "server" {
   instance_type          = "${var.vpn_size}"
   subnet_id              = "${var.instance_subnet}"
   key_name               = "g2-access"
-  vpc_security_group_ids = ["${var.vpc-all-hosts-sg}","${var.g2-access-sg}","${aws_security_group.openvpn-access-sg.id}"]
+  vpc_security_group_ids = ["${var.vpc-all-hosts-sg}","${aws_security_group.openvpn-access-sg.id}"]
   source_dest_check      = false
   user_data = <<-EOF
     #!/bin/bash

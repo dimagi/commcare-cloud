@@ -20,6 +20,7 @@ from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
+from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -119,6 +120,16 @@ class Environment(object):
         self.check_user_group_absent_present_overlaps(absent_users, present_users)
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)
+
+    @memoized_property
+    def terraform_config(self):
+        try:
+            with open(self.paths.terraform_yml) as f:
+                config_yml = yaml.load(f)
+        except IOError:
+            return None
+        config_yml['environment'] = config_yml.get('environment', self.meta_config.env_monitoring_id)
+        return TerraformConfig.wrap(config_yml)
 
     def check_user_group_absent_present_overlaps(self, absent_users, present_users):
         if not set(present_users).isdisjoint(absent_users):

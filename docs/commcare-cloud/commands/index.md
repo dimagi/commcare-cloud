@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,terraform,run-shell-command}
                ...
 ```
 
@@ -1047,5 +1047,15 @@ commcare-cloud <ev> list-databases
 ###### `--compare`
 
 Gives additional databases on the server.
+
+---
+
+#### `terraform`
+
+Run terraform for this env with the given arguments
+
+```
+commcare-cloud <env> terraform
+```
 
 ---

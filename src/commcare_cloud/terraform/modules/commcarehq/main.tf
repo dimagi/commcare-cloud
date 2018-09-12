@@ -18,14 +18,7 @@ module "network" {
   company           = "${var.company}"
   azs               = "${var.azs}"
   #openvpn-access-sg = "${module.openvpn.openvpn-access-sg}"
-}
-
-module "generic-sg" {
-  source                = "../security_group"
-  group_name            = "generic"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  vpc_begin_range       = "${var.vpc_begin_range}"
+  external_routes   = "${var.external_routes}"
 }
 
 variable "servers" {
@@ -41,33 +34,41 @@ variable "proxy_servers" {
 
 locals {
   subnet_options = {
-    private-a = "${module.network.subnet-a-app-private}"
-    private-b = "${module.network.subnet-b-app-private}"
-    private-c = "${module.network.subnet-c-app-private}"
+    app-private-a = "${module.network.subnet-a-app-private}"
+    app-private-b = "${module.network.subnet-b-app-private}"
+    app-private-c = "${module.network.subnet-c-app-private}"
+    db-private-a = "${module.network.subnet-a-db-private}"
+    db-private-b = "${module.network.subnet-b-db-private}"
+    db-private-c = "${module.network.subnet-c-db-private}"
     public-a = "${module.network.subnet-a-public}"
     public-b = "${module.network.subnet-b-public}"
     public-c = "${module.network.subnet-c-public}"
   }
+  security_group_options = {
+    "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}"]
+    "app-private" = ["${module.network.app-private-sg}", "${module.network.ssh-sg}"]
+    "db-private" = ["${module.network.db-private-sg}", "${module.network.ssh-sg}"]
+  }
 }
 
 module "servers" {
-  source                = "../servers"
-  servers               = "${var.servers}"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}"]
-  subnet_options        = "${local.subnet_options}"
+  source = "../servers"
+  servers = "${var.servers}"
+  server_image = "${var.server_image}"
+  environment = "${var.environment}"
+  vpc_id = "${module.network.vpc-id}"
+  subnet_options = "${local.subnet_options}"
+  security_group_options = "${local.security_group_options}"
 }
 
 module "proxy_servers" {
-  source                = "../servers"
-  servers               = "${var.proxy_servers}"
-  server_image          = "${var.server_image}"
-  environment           = "${var.environment}"
-  vpc_id                = "${module.network.vpc-id}"
-  security_groups       = ["${module.generic-sg.security_group}", "${module.network.proxy-sg}"]
-  subnet_options        = "${local.subnet_options}"
+  source = "../servers"
+  servers = "${var.proxy_servers}"
+  server_image = "${var.server_image}"
+  environment = "${var.environment}"
+  vpc_id = "${module.network.vpc-id}"
+  subnet_options = "${local.subnet_options}"
+  security_group_options = "${local.security_group_options}"
 }
 
 resource "aws_eip" "proxy" {
@@ -86,8 +87,12 @@ module "Redis" {
   num_cache_nodes      = "${var.redis["num_cache_nodes"]}"
   parameter_group_name = "${var.redis["parameter_group_name"]}"
   port                 = 6379
-  elasticache_subnets  = ["${module.network.subnet-a-util-private}","${module.network.subnet-b-util-private}","${module.network.subnet-c-util-private}"]
-  security_group_ids   = ["${module.generic-sg.security_group}"]
+  elasticache_subnets  = [
+    "${module.network.subnet-a-db-private}",
+    "${module.network.subnet-b-db-private}",
+    "${module.network.subnet-c-db-private}"
+  ]
+  security_group_ids   = ["${module.network.elasticache-sg}"]
 }
 
 #module "openvpn" {
@@ -96,7 +101,6 @@ module "Redis" {
 #  environment      = "${var.environment}"
 #  company          = "${var.company}"
 #  vpn_size         = "${var.openvpn_instance_type}"
-#  g2-access-sg     = "${module.network.g2-access-sg}"
 #  instance_subnet  = "${module.network.subnet-b-public}"
 #  vpc_id           = "${module.network.vpc-id}"
 #  # dns_zone_id      = "${var.dns_zone_id}"
