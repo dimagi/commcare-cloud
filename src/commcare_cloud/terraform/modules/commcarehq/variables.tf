@@ -34,6 +34,10 @@ variable "rds_instances" {
   default = []
 }
 
+variable "users" {
+  type = "list"
+}
+
 locals {
   default_redis = {
     node_type             = "cache.t2.small"

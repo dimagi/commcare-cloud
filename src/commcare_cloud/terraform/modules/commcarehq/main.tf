@@ -107,3 +107,8 @@ module "Redis" {
 #  # dns_zone_id      = "${var.dns_zone_id}"
 #  # dns_domain       = "${var.dns_domain}"
 #}
+
+module "Users" {
+  source = "../iam"
+  users = "${var.users}"
+}

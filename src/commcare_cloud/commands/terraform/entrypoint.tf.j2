@@ -77,4 +77,10 @@ module "commcarehq" {
     create = false
     {%- endif %}
   }
+
+  users = [
+  {%- for user in users %}
+    {username = {{ user.username|tojson }}},
+  {%- endfor %}
+  ]
 }
