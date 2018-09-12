@@ -39,8 +39,8 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-server_email: commcare@pna.sn
-default_from_email: commcare@pna.sn
+server_email: commcare@commcare.pna.sn
+default_from_email: commcare@commcare.pna.sn
 
 KSPLICE_ACTIVE: yes
 
