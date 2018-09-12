@@ -26,19 +26,23 @@ variable "external_routes" {
 # Redis/ElastiCache variables
 variable "redis" {
   type = "map"
-  default = {
-    node_type             = "cache.t2.small"
-    num_cache_nodes       = 1
-    engine_version        = "4.0.10"
-    parameter_group_name  = "default.redis4.0"
-  }
+  default = {}
 }
+
 variable "rds_instances" {
   type = "list"
   default = []
 }
 
 locals {
+  default_redis = {
+    node_type             = "cache.t2.small"
+    num_cache_nodes       = 1
+    engine_version        = "4.0.10"
+    parameter_group_name  = "default.redis4.0"
+  }
+  redis = "${merge(local.default_redis, var.redis)}",
+
   default_rds = {
     storage = ""
     instance_type = "db.t2.medium"

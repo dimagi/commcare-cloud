@@ -1,10 +1,13 @@
+locals {
+  create = "${(var.create && lookup(var.rds_instance, "create", true)) ? 1 : 0}"
+}
 module "postgresql" {
   source = "terraform-aws-modules/rds/aws"
 
-  create_db_instance = "${var.create}"
-  create_db_option_group = "${var.create}"
-  create_db_parameter_group = "${var.create}"
-  create_db_subnet_group = "${var.create}"
+  create_db_instance = "${local.create}"
+  create_db_option_group = "${local.create}"
+  create_db_parameter_group = "${local.create}"
+  create_db_subnet_group = "${local.create}"
   identifier = "${var.rds_instance["identifier"]}"
 
   engine            = "postgres"

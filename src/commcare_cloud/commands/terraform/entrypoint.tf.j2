@@ -68,7 +68,13 @@ module "commcarehq" {
       identifier = {{ rds_instance.identifier|tojson }}
       instance_type = {{ rds_instance.instance_type|tojson }}
       storage = {{ rds_instance.storage|tojson }}
+      create = {{ rds_instance.create|tojson }}
     },
   {%- endfor %}
   ]
+  redis = {
+    {%- if not redis.create %}
+    create = false
+    {%- endif %}
+  }
 }

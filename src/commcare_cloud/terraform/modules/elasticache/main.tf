@@ -1,4 +1,5 @@
 resource "aws_elasticache_cluster" "Redis-Cluster" {
+  count                = "${var.create ? 1 : 0}"
   cluster_id           = "${var.cluster_id}"
   engine               = "${var.engine}"
   engine_version       = "${var.engine_version}"
@@ -11,6 +12,7 @@ resource "aws_elasticache_cluster" "Redis-Cluster" {
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnets" {
+  count                = "${var.create ? 1 : 0}"
   name       = "${var.cluster_id}-subnet-group"
   subnet_ids = ["${var.elasticache_subnets}"]
 }
