@@ -4,7 +4,7 @@ import json
 import os
 import subprocess
 
-from awscli.compat import shlex_quote
+from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase
