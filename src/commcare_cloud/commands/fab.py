@@ -70,4 +70,4 @@ def exec_fab_command(env_name, *extra_args):
     ) + tuple(extra_args)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
-    os.execvp('fab', cmd_parts)
+    os.spawnvp(os.P_WAIT, 'fab', cmd_parts)
