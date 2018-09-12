@@ -69,7 +69,6 @@ proxy_servers:
     az: "b"
 
 rds_instances:
-  - password: "${var.rds_password}"
-    identifier: "staging"
+  - identifier: "staging"
     instance_type: "db.t2.medium"
     storage: 300

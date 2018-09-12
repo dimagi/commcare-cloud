@@ -80,12 +80,13 @@ resource "aws_eip" "proxy" {
 
 module "Redis" {
   source               = "../elasticache"
+  create               = "${lookup(local.redis, "create", true)}"
   cluster_id           = "${var.environment}-redis"
   engine               = "redis"
-  engine_version       = "${var.redis["engine_version"]}"
-  node_type            = "${var.redis["node_type"]}"
-  num_cache_nodes      = "${var.redis["num_cache_nodes"]}"
-  parameter_group_name = "${var.redis["parameter_group_name"]}"
+  engine_version       = "${local.redis["engine_version"]}"
+  node_type            = "${local.redis["node_type"]}"
+  num_cache_nodes      = "${local.redis["num_cache_nodes"]}"
+  parameter_group_name = "${local.redis["parameter_group_name"]}"
   port                 = 6379
   elasticache_subnets  = [
     "${module.network.subnet-a-db-private}",
