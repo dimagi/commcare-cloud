@@ -123,8 +123,11 @@ class Environment(object):
 
     @memoized_property
     def terraform_config(self):
-        with open(self.paths.terraform_yml) as f:
-            config_yml = yaml.load(f)
+        try:
+            with open(self.paths.terraform_yml) as f:
+                config_yml = yaml.load(f)
+        except IOError:
+            return None
         config_yml['environment'] = config_yml.get('environment', self.meta_config.env_monitoring_id)
         return TerraformConfig.wrap(config_yml)
 
