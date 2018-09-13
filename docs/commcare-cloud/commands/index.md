@@ -277,7 +277,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -396,7 +396,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -602,7 +602,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --list-tags           list all available tags

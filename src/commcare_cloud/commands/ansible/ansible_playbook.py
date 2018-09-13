@@ -115,9 +115,6 @@ def run_ansible_playbook(
         public_vars = environment.public_vars
         cmd_parts += get_user_arg(public_vars, unknown_args)
 
-        if not has_arg(unknown_args, '-f', '--forks'):
-            cmd_parts += ('--forks', '15')
-
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
             puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
             puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
