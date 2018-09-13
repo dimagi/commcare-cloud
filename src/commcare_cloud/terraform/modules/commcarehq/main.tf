@@ -111,4 +111,5 @@ module "Redis" {
 module "Users" {
   source = "../iam"
   users = "${var.users}"
+  account_alias = "${var.account_alias}"
 }

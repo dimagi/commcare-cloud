@@ -3,7 +3,8 @@ import jsonobject
 
 class TerraformConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    aws_profile = jsonobject.StringProperty(default='default')
+    aws_profile = jsonobject.StringProperty(required=True)
+    account_alias = jsonobject.StringProperty()
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
     region = jsonobject.StringProperty()
@@ -16,6 +17,12 @@ class TerraformConfig(jsonobject.JsonObject):
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
     redis = jsonobject.ObjectProperty(lambda: RedisConfig)
+
+    @classmethod
+    def wrap(cls, data):
+        if 'aws_profile' not in data:
+            data['aws_profile'] = data.get('account_alias')
+        return super(TerraformConfig, cls).wrap(data)
 
 
 class ExternalRouteConfig(jsonobject.JsonObject):
