@@ -66,6 +66,7 @@ resource "aws_vpn_connection" "vpn_connections" {
   customer_gateway_id = "${aws_customer_gateway.vpn_connections.*.id[count.index]}"
   vpn_gateway_id = "${aws_vpn_gateway.vpn_connections.*.id[count.index]}"
   type = "${lookup(var.vpn_connections[count.index], "type")}"
+  static_routes_only = true
   tags {
     Name = "${lookup(var.vpn_connections[count.index], "name")}-${var.env}"
   }
