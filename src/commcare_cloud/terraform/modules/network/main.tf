@@ -42,6 +42,36 @@ resource "aws_subnet" "subnet-db-private" {
   }
 }
 
+resource "aws_vpn_gateway" "vpn_connections" {
+  count = "${length(var.vpn_connections)}"
+  vpc_id = "${aws_vpc.main.id}"
+  amazon_side_asn = "${lookup(var.vpn_connections[count.index], "amazon_side_asn")}"
+  tags {
+    Name = "${lookup(var.vpn_connections[count.index], "name")}-${var.env}"
+  }
+}
+
+resource "aws_customer_gateway" "vpn_connections" {
+  count = "${length(var.vpn_connections)}"
+  bgp_asn = "${lookup(var.vpn_connections[count.index], "bgp_asn")}"
+  ip_address = "${lookup(var.vpn_connections[count.index], "ip_address")}"
+  type = "${lookup(var.vpn_connections[count.index], "type")}"
+  tags {
+    Name = "${lookup(var.vpn_connections[count.index], "name")}-${var.env}"
+  }
+}
+
+resource "aws_vpn_connection" "vpn_connections" {
+  count = "${length(var.vpn_connections)}"
+  customer_gateway_id = "${aws_customer_gateway.vpn_connections.*.id[count.index]}"
+  vpn_gateway_id = "${aws_vpn_gateway.vpn_connections.*.id[count.index]}"
+  type = "${lookup(var.vpn_connections[count.index], "type")}"
+  tags {
+    Name = "${lookup(var.vpn_connections[count.index], "name")}-${var.env}"
+  }
+}
+
+
 # Define route tables for public and private subnets
 resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.main.id}"

@@ -13,6 +13,7 @@ class TerraformConfig(jsonobject.JsonObject):
     environment = jsonobject.StringProperty()
     azs = jsonobject.ListProperty(str)
     vpc_begin_range = jsonobject.StringProperty()
+    vpn_connections = jsonobject.ListProperty(lambda: VpnConnectionConfig)
     external_routes = jsonobject.ListProperty(lambda: ExternalRouteConfig)
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
@@ -24,6 +25,16 @@ class TerraformConfig(jsonobject.JsonObject):
         if 'aws_profile' not in data:
             data['aws_profile'] = data.get('account_alias')
         return super(TerraformConfig, cls).wrap(data)
+
+
+class VpnConnectionConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty()
+    cidr_blocks = jsonobject.ListProperty(str)
+    type = jsonobject.StringProperty()
+    ip_address = jsonobject.StringProperty()
+    bgp_asn = jsonobject.IntegerProperty()
+    amazon_side_asn = jsonobject.IntegerProperty()
 
 
 class ExternalRouteConfig(jsonobject.JsonObject):

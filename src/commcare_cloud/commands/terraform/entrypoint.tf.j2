@@ -28,6 +28,19 @@ module "commcarehq" {
   # Select the correct DNS Zone ID from Route 53
   internal_ssl_cert_arn = ""
   # This will be used to reference SSL Certificate in AWS Certificate Manager
+
+  vpn_connections = [
+  {%- for vpn_connection in vpn_connections %}
+    {
+      name = {{ vpn_connection.name|tojson }}
+      cidr_blocks = {{ vpn_connection.cidr_blocks|tojson }}
+      ip_address = {{ vpn_connection.ip_address|tojson }}
+      type = {{ vpn_connection.type|tojson }}
+      bgp_asn = {{ vpn_connection.bgp_asn|tojson }}
+      amazon_side_asn = {{ vpn_connection.amazon_side_asn|tojson }}
+    },
+  {%- endfor %}
+  ]
   external_routes = [
   {%- for external_route in external_routes %}
     {

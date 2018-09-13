@@ -23,6 +23,11 @@ variable "external_routes" {
   default = []
 }
 
+variable "vpn_connections" {
+  type = "list"
+  default = []
+}
+
 # Redis/ElastiCache variables
 variable "redis" {
   type = "map"
