@@ -65,3 +65,7 @@ output "db-private-sg" {
 output "ssh-sg" {
   value = "${aws_security_group.ssh.id}"
 }
+
+output "vpn-connections-sg" {
+  value = "${aws_security_group.vpn_connections.id}"
+}

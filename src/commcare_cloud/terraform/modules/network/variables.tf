@@ -19,3 +19,7 @@ variable "external_routes" {
 variable "vpn_connections" {
   type = "list"
 }
+
+variable "vpn_connection_routes" {
+  type = "list"
+}

@@ -19,6 +19,7 @@ module "network" {
   azs               = "${var.azs}"
   #openvpn-access-sg = "${module.openvpn.openvpn-access-sg}"
   vpn_connections   = "${var.vpn_connections}"
+  vpn_connection_routes = "${var.vpn_connection_routes}"
   external_routes   = "${var.external_routes}"
 }
 
@@ -36,9 +37,9 @@ locals {
     public-c = "${module.network.subnet-c-public}"
   }
   security_group_options = {
-    "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}"]
-    "app-private" = ["${module.network.app-private-sg}", "${module.network.ssh-sg}"]
-    "db-private" = ["${module.network.db-private-sg}", "${module.network.ssh-sg}"]
+    "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+    "app-private" = ["${module.network.app-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+    "db-private" = ["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
   }
 }
 
@@ -91,7 +92,7 @@ module "Redis" {
     "${module.network.subnet-b-db-private}",
     "${module.network.subnet-c-db-private}"
   ]
-  security_group_ids   = ["${module.network.elasticache-sg}"]
+  security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
 }
 
 #module "openvpn" {

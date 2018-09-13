@@ -41,6 +41,17 @@ module "commcarehq" {
     },
   {%- endfor %}
   ]
+  vpn_connection_routes = [
+  {%- for vpn_connection in vpn_connections %}
+    {% set vpn_connection_index = loop.index0 %}
+    {%- for cidr_block in vpn_connection.cidr_blocks %}
+    {
+      vpn_connection_index = {{ vpn_connection_index|tojson }},
+      destination_cidr_block = {{ cidr_block|tojson }}
+    },
+    {%- endfor %}
+  {%- endfor %}
+  ]
   external_routes = [
   {%- for external_route in external_routes %}
     {

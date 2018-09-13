@@ -28,6 +28,11 @@ variable "vpn_connections" {
   default = []
 }
 
+variable "vpn_connection_routes" {
+  type = "list"
+  default = []
+}
+
 # Redis/ElastiCache variables
 variable "redis" {
   type = "map"
@@ -92,5 +97,5 @@ locals {
     "${module.network.subnet-b-db-private}",
     "${module.network.subnet-c-db-private}"
   ]
-  rds_vpc_security_group_ids = ["${module.network.rds-sg}"]
+  rds_vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
 }
