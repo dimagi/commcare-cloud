@@ -1055,7 +1055,15 @@ Gives additional databases on the server.
 Run terraform for this env with the given arguments
 
 ```
-commcare-cloud <env> terraform
+commcare-cloud <env> terraform [--skip-secrets]
 ```
+
+##### Optional Arguments
+
+###### `--skip-secrets`
+
+Skip regenerating the secrets file.
+
+Good for not having to enter vault password again.
 
 ---
