@@ -17,7 +17,6 @@ module "network" {
   env               = "${var.environment}"
   company           = "${var.company}"
   azs               = "${var.azs}"
-  #openvpn-access-sg = "${module.openvpn.openvpn-access-sg}"
   vpn_connections   = "${var.vpn_connections}"
   vpn_connection_routes = "${var.vpn_connection_routes}"
   external_routes   = "${var.external_routes}"
@@ -95,17 +94,15 @@ module "Redis" {
   security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
 }
 
-#module "openvpn" {
-#  source           = "../openvpn"
-#  openvpn_image    = "${var.openvpn_image}"
-#  environment      = "${var.environment}"
-#  company          = "${var.company}"
-#  vpn_size         = "${var.openvpn_instance_type}"
-#  instance_subnet  = "${module.network.subnet-b-public}"
-#  vpc_id           = "${module.network.vpc-id}"
-#  # dns_zone_id      = "${var.dns_zone_id}"
-#  # dns_domain       = "${var.dns_domain}"
-#}
+module "openvpn" {
+  source = "../openvpn"
+  openvpn_image = "${var.openvpn_image}"
+  environment = "${var.environment}"
+  vpn_size = "${var.openvpn_instance_type}"
+  instance_subnet = "${module.network.subnet-a-public}"
+  vpc_id = "${module.network.vpc-id}"
+  vpc_cidr = "${module.network.vpc-cidr}"
+}
 
 module "Users" {
   source = "../iam"

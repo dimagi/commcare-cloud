@@ -14,10 +14,7 @@
 
 variable "openvpn_image" {}
 variable "environment" {}
-variable "company" {}
-variable "vpc-all-hosts-sg" {}
 variable "instance_subnet" {}
 variable "vpn_size" {}
 variable "vpc_id" {}
-#variable "dns_zone_id" {}
-#variable "dns_domain" {}
+variable "vpc_cidr" {}

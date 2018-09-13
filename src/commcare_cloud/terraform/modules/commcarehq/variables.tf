@@ -12,6 +12,9 @@ variable "vpc_begin_range" {}
 variable "openvpn_image" {
   default = "ami-169e4b6b"
 }
+variable "openvpn_instance_type" {
+  default = "t2.small"
+}
 variable "server_image" {
   default = "ami-0d3e7972"
 }
