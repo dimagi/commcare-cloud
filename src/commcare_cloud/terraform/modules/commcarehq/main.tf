@@ -18,6 +18,7 @@ module "network" {
   company           = "${var.company}"
   azs               = "${var.azs}"
   #openvpn-access-sg = "${module.openvpn.openvpn-access-sg}"
+  vpn_connections   = "${var.vpn_connections}"
   external_routes   = "${var.external_routes}"
 }
 
