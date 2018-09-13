@@ -71,6 +71,26 @@ resource "aws_vpn_connection" "vpn_connections" {
   }
 }
 
+resource "aws_vpn_connection_route" "vpn_connections" {
+  count = "${length(var.vpn_connection_routes)}"
+  destination_cidr_block = "${lookup(var.vpn_connection_routes[count.index], "destination_cidr_block")}"
+  vpn_connection_id = "${aws_vpn_connection.vpn_connections.*.id[lookup(var.vpn_connection_routes[count.index], "vpn_connection_index")]}"
+}
+
+resource "aws_security_group" "vpn_connections" {
+  name = "vpn-connections-sg-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpn_connection_route.vpn_connections.*.destination_cidr_block}"]
+  }
+  tags {
+    Name = "vpn-connections-sg-${var.env}"
+  }
+}
+
 
 # Define route tables for public and private subnets
 resource "aws_route_table" "private" {
