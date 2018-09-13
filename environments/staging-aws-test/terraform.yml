@@ -72,3 +72,5 @@ rds_instances:
   - identifier: "staging"
     instance_type: "db.t2.medium"
     storage: 300
+
+manage_users: no
