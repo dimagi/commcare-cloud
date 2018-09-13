@@ -5,6 +5,7 @@ class TerraformConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     aws_profile = jsonobject.StringProperty(required=True)
     account_alias = jsonobject.StringProperty()
+    manage_users = jsonobject.BooleanProperty(default=True)
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
     region = jsonobject.StringProperty()

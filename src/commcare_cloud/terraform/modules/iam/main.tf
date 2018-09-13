@@ -17,11 +17,13 @@ resource "aws_iam_user_group_membership" "group_memberships" {
 }
 
 resource "aws_iam_group" "administrators" {
+  count = "${length(var.users) == 0 ? 0 : 1}"
   name = "Administrators"
 
 }
 
 resource "aws_iam_group_policy_attachment" "administrators" {
+  count = "${length(var.users) == 0 ? 0 : 1}"
   group = "${aws_iam_group.administrators.name}"
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }

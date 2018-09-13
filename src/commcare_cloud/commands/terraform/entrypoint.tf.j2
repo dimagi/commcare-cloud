@@ -81,7 +81,7 @@ module "commcarehq" {
   account_alias = {{ (account_alias or "")|tojson }}
 
   users = [
-  {%- for user in users %}
+  {%- for user in (users if manage_users else []) %}
     {username = {{ user.username|tojson }}},
   {%- endfor %}
   ]
