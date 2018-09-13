@@ -1,6 +1,12 @@
+resource "aws_iam_account_alias" "alias" {
+  count = "${var.account_alias == "" ? 0 : 1}"
+  account_alias = "${var.account_alias}"
+}
+
 resource "aws_iam_user" "users" {
   count = "${length(var.users)}"
   name = "${lookup(var.users[count.index], "username")}"
+  force_destroy = true
 }
 
 resource "aws_iam_user_group_membership" "group_memberships" {

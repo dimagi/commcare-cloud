@@ -1,4 +1,4 @@
-aws_profile: dimagi-staging
+account_alias: commcare-staging
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"

@@ -38,6 +38,8 @@ variable "users" {
   type = "list"
 }
 
+variable "account_alias" {}
+
 locals {
   default_redis = {
     node_type             = "cache.t2.small"
