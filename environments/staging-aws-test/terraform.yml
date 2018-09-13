@@ -20,6 +20,8 @@ vpn_connections:
     bgp_asn: 65000
     amazon_side_asn: 7224
 
+key_name: droberts
+
 external_routes:
   - cidr_block: "172.24.16.0/22"
     gateway_id: "vgw-8dd726e4"

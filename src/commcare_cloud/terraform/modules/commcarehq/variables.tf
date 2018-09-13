@@ -45,6 +45,19 @@ variable "users" {
 
 variable "account_alias" {}
 
+variable "key_name" {}
+variable "public_key" {}
+variable "servers" {
+  type = "list"
+  default = []
+}
+
+variable "proxy_servers" {
+  type = "list"
+  default = []
+}
+
+
 locals {
   default_redis = {
     node_type             = "cache.t2.small"

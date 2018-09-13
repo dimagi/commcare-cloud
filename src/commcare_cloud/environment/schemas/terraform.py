@@ -15,6 +15,7 @@ class TerraformConfig(jsonobject.JsonObject):
     vpc_begin_range = jsonobject.StringProperty()
     vpn_connections = jsonobject.ListProperty(lambda: VpnConnectionConfig)
     external_routes = jsonobject.ListProperty(lambda: ExternalRouteConfig)
+    key_name = jsonobject.StringProperty()
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)

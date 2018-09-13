@@ -50,6 +50,9 @@ module "commcarehq" {
   {%- endfor %}
   ]
 
+  key_name = {{ key_name|tojson }}
+  public_key = {{ public_key|tojson }}
+
   servers = [
   {%- for server in servers %}
     {

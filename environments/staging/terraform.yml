@@ -26,6 +26,8 @@ external_routes:
   - cidr_block: "172.24.32.0/22"
     gateway_id: "vgw-0145d51bea1e4a505"
 
+key_name: droberts
+
 servers:
   - server_name: "control-staging"
     server_instance_type: "t2.medium"
