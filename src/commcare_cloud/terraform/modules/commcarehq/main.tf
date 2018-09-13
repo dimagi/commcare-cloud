@@ -22,16 +22,6 @@ module "network" {
   external_routes   = "${var.external_routes}"
 }
 
-variable "servers" {
-  type = "list"
-  default = []
-}
-
-variable "proxy_servers" {
-  type = "list"
-  default = []
-}
-
 
 locals {
   subnet_options = {
@@ -52,6 +42,11 @@ locals {
   }
 }
 
+resource "aws_key_pair" "main" {
+  key_name = "${var.key_name}"
+  public_key = "${var.public_key}"
+}
+
 module "servers" {
   source = "../servers"
   servers = "${var.servers}"
@@ -60,6 +55,7 @@ module "servers" {
   vpc_id = "${module.network.vpc-id}"
   subnet_options = "${local.subnet_options}"
   security_group_options = "${local.security_group_options}"
+  key_name = "${var.key_name}"
 }
 
 module "proxy_servers" {
@@ -70,6 +66,7 @@ module "proxy_servers" {
   vpc_id = "${module.network.vpc-id}"
   subnet_options = "${local.subnet_options}"
   security_group_options = "${local.security_group_options}"
+  key_name = "${var.key_name}"
 }
 
 resource "aws_eip" "proxy" {

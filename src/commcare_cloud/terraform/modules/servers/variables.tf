@@ -2,6 +2,8 @@ variable "servers" {
   type = "list"
 }
 
+variable "key_name" {}
+
 variable "security_group_options" {
   type = "map"
 }

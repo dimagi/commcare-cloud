@@ -62,6 +62,7 @@ def generate_terraform_entrypoint(environment):
     context = environment.terraform_config.to_json()
     context.update({
         'users': [{'username': username}
-                  for username in environment.users_config.dev_users.present]
+                  for username in environment.users_config.dev_users.present],
+        'public_key': environment.get_authorized_key(environment.terraform_config.key_name)
     })
     return render_template('entrypoint.tf.j2', context, os.path.dirname(__file__))
