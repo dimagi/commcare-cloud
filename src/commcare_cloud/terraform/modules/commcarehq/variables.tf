@@ -10,7 +10,7 @@ variable "vpc_begin_range" {}
 # OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe.
 # To do so please visit http://aws.amazon.com/marketplace/pp?sku=3ihdqli79gl9v2jnlzs6nq60h
 variable "openvpn_image" {
-  default = "ami-169e4b6b"
+  default = ""  # will be auto-assigned by openvpn module if not set
 }
 variable "openvpn_instance_type" {
   default = "t2.small"

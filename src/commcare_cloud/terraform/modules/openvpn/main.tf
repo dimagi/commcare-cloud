@@ -1,7 +1,7 @@
 # This module will build out an initial OpenVPN server.
 
 resource aws_instance "vpn_host" {
-  ami                    = "${var.openvpn_image}"
+  ami                    = "${local.openvpn_image}"
   instance_type          = "${var.vpn_size}"
   subnet_id              = "${var.instance_subnet}"
   key_name               = "g2-access"
