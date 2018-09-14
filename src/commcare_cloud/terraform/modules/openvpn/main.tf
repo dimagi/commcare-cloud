@@ -78,7 +78,7 @@ resource "aws_security_group" "openvpn-access-sg" {
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
-    cidr_blocks = ["104.130.188.4/32", "172.24.16.0/22", "172.24.32.0/22", "${var.vpc_cidr}"]
+    cidr_blocks = ["${var.vpc_cidr}"]
   }
 
   egress {
