@@ -48,3 +48,59 @@ To "activate" an account:
     and have them log in and reset their password.
 7. Have them to go to My Security Credentials to create an access key
     and write it in their ~/.aws/credentials under [<aws_profile>].
+
+
+## VPN Setup
+
+The first time you run `cchq <env> terraform apply`,
+it will fail with a link to a terms of service you need to accept.
+To do so:
+1. First, make sure you are logged into https://console.aws.amazon.com/console/home
+    _under the correct account_.
+    (Each environment is it's own linked account,
+    so be careful you're not logged into the
+    e.g. staging account if you're doing this for production) 
+2. Then click on the link in the output
+3. Accept the terms and click "Continue to Subscribe".
+
+Once the VM is created, you still need to create a VPN user before you can use the VPN.
+To do this, go into the console, find the vpn ec2 instance, go to its security group,
+and click Inbound Traffic > Edit > Add Rule. Select Type "SSH" and Source "My IP",
+and click Save. Now you will be able to SSH into the VM.
+
+```
+ssh openvpnas@<openvpn-public-ip>
+sudo ovpn-init --ec2
+...
+Please enter 'yes' to indicate your agreement [no]: yes
+... 
+```
+Make sure to type `yes` for the first prompt, and then just hit enter until it's done. 
+Then set a password with
+```
+sudo passwd openvpn
+```
+This is the password you'll use to enter the admin web UI.
+
+Go to `https://<vpn-ip>/admin` in your browser and log in with `openvpn`/`<password from above>`.
+Under User Permissions, you can add other users.
+(Passwords are set by clicking the edit button under More Settings.)
+Create a user/password for yourself.
+
+Download the openvpn client and connect to the public IP with your username and password.
+
+Finally once you've proven you can get on the VPN and log into VMs with their private IPs,
+run `cchq <env> terraform apply` again to undo the temporary change you made via the console
+that allowed you to SSH into the openvpn machine from the public internet. 
+
+To give others SSH access to the VPN machine
+(right now your access is because terraform created the VM with your public key) add
+```
++[openvpn]
++<vpn-private-ip>
+```
+to your env's inventory file and run
+```
+cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas --skip-check
+``` 
+You can then undo the above change to the inventory file.
