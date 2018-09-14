@@ -23,22 +23,55 @@ variable "external_routes" {
   default = []
 }
 
+variable "vpn_connections" {
+  type = "list"
+  default = []
+}
+
+variable "vpn_connection_routes" {
+  type = "list"
+  default = []
+}
+
 # Redis/ElastiCache variables
 variable "redis" {
   type = "map"
-  default = {
-    node_type             = "cache.t2.small"
-    num_cache_nodes       = 1
-    engine_version        = "4.0.10"
-    parameter_group_name  = "default.redis4.0"
-  }
+  default = {}
 }
+
 variable "rds_instances" {
   type = "list"
   default = []
 }
 
+variable "users" {
+  type = "list"
+}
+
+variable "account_alias" {}
+
+variable "key_name" {}
+variable "public_key" {}
+variable "servers" {
+  type = "list"
+  default = []
+}
+
+variable "proxy_servers" {
+  type = "list"
+  default = []
+}
+
+
 locals {
+  default_redis = {
+    node_type             = "cache.t2.small"
+    num_cache_nodes       = 1
+    engine_version        = "4.0.10"
+    parameter_group_name  = "default.redis4.0"
+  }
+  redis = "${merge(local.default_redis, var.redis)}",
+
   default_rds = {
     storage = ""
     instance_type = "db.t2.medium"
@@ -64,5 +97,5 @@ locals {
     "${module.network.subnet-b-db-private}",
     "${module.network.subnet-c-db-private}"
   ]
-  rds_vpc_security_group_ids = ["${module.network.rds-sg}"]
+  rds_vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
 }

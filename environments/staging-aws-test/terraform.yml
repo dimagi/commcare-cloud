@@ -9,6 +9,19 @@ azs:
   - "us-east-1b"
   - "us-east-1c"
 vpc_begin_range: "10.200"
+
+vpn_connections:
+  - name: rackspace
+    cidr_blocks:
+      - "172.24.16.0/22"
+      - "172.24.32.0/22"
+    ip_address: "104.130.188.4"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+key_name: droberts
+
 external_routes:
   - cidr_block: "172.24.16.0/22"
     gateway_id: "vgw-8dd726e4"
@@ -69,7 +82,8 @@ proxy_servers:
     az: "b"
 
 rds_instances:
-  - password: "${var.rds_password}"
-    identifier: "staging"
+  - identifier: "staging"
     instance_type: "db.t2.medium"
     storage: 300
+
+manage_users: no
