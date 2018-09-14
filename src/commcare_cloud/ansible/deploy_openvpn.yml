@@ -1,0 +1,17 @@
+- name: Configure OpenVPN
+  hosts: openvpn
+  tasks:
+    - name: Configure HTTPS Cert
+      become: yes
+      # this was copy-paste-modified from
+      # https://github.com/lmammino/terraform-openvpn/blob/792ca775b308386816d0f74113e1b6d38c784d1c/main.tf#L206-L214
+      shell: |
+        apt-get install -y curl vim libltdl7 python3 python3-pip python software-properties-common unattended-upgrades
+        add-apt-repository -y ppa:certbot/certbot
+        apt-get -y update
+        apt-get -y install python-certbot certbot
+        service openvpnas stop
+        certbot certonly --standalone --non-interactive --agree-tos --domains {{ subdomain_name }} --pre-hook 'service openvpnas stop' --post-hook 'service openvpnas start'
+        ln -s -f /etc/letsencrypt/live/{{ subdomain_name }}/cert.pem /usr/local/openvpn_as/etc/web-ssl/server.crt
+        ln -s -f /etc/letsencrypt/live/{{ subdomain_name }}/privkey.pem /usr/local/openvpn_as/etc/web-ssl/server.key
+        service openvpnas start

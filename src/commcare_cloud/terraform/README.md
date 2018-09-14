@@ -52,6 +52,8 @@ To "activate" an account:
 
 ## VPN Setup
 
+
+### Create the OpenVPN EC2 instance with Terraform
 The first time you run `cchq <env> terraform apply`,
 it will fail with a link to a terms of service you need to accept.
 To do so:
@@ -63,10 +65,19 @@ To do so:
 2. Then click on the link in the output
 3. Accept the terms and click "Continue to Subscribe".
 
+
+### Gain temporary SSH access via your own IP
 Once the VM is created, you still need to create a VPN user before you can use the VPN.
 To do this, go into the console, find the vpn ec2 instance, go to its security group,
 and click Inbound Traffic > Edit > Add Rule. Select Type "SSH" and Source "My IP",
-and click Save. Now you will be able to SSH into the VM.
+and click Save.
+
+Now you will be able to SSH into the VM.
+
+To make a cert, you'll also need to open port 80, so click Add Rule again,
+select Type HTTP, and Source "Anywhere", and click Save.
+
+### Run the ovpn-init script
 
 ```
 ssh openvpnas@<openvpn-public-ip>
@@ -82,25 +93,49 @@ sudo passwd openvpn
 ```
 This is the password you'll use to enter the admin web UI.
 
+
+### Create a user from the Admin Web UI
 Go to `https://<vpn-ip>/admin` in your browser and log in with `openvpn`/`<password from above>`.
 Under User Permissions, you can add other users.
 (Passwords are set by clicking the edit button under More Settings.)
 Create a user/password for yourself.
 
+### Connect to the VPN
 Download the openvpn client and connect to the public IP with your username and password.
 
-Finally once you've proven you can get on the VPN and log into VMs with their private IPs,
-run `cchq <env> terraform apply` again to undo the temporary change you made via the console
-that allowed you to SSH into the openvpn machine from the public internet. 
 
+### Give others SSH access to the VPN machine
 To give others SSH access to the VPN machine
-(right now your access is because terraform created the VM with your public key) add
+(right now your access is because terraform created the VM with your public key)
+
 ```
-+[openvpn]
-+<vpn-private-ip>
-```
-to your env's inventory file and run
-```
-cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas --skip-check
+cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas --skip-check \
+  -i @<(printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>")
 ``` 
 You can then undo the above change to the inventory file.
+
+### Set up DNS and HTTPS cert
+
+By whatever means you have, make a DNS entry that points a subdomain name
+to the openvpn machine's public IP. 
+
+Then run
+```
+cchq staging ansible-playbook deploy_openvpn.yml --branch=dmr/openvpn --skip-check -vvv \
+  -i @<(printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>")
+```
+
+
+### Un-whitelist SSH traffic from your IP address
+Finally once you've proven you can get on the VPN and log into VMs with their private IPs,
+and once you've created a cert,
+run `cchq <env> terraform apply` again to undo the temporary change you made via the console
+that allowed you to SSH into the openvpn machine from the public internet,
+and that allowed letsencrypt to make a request to port 80.
+
+From here on out if you need to ssh into the VPN machine,
+you can either manually whitelist yourself again, or else you'll have to connect to the VPN
+and use the VPN machine's private IP address. Note that if you are using the private IP
+and you run `sudo service openvpnas stop`, it will disconnect you from the VPN and you
+won't be able to connect again. Then you will be forced to whitelist your IP
+and use the public IP to ssh in and bring it back up. 
