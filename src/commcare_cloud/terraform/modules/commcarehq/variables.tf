@@ -1,7 +1,6 @@
 #Initialize.tf contains empty variable declarations for the variables that will be populated in each env’s .tfvars file
 variable "region" {}
 variable "environment" {}
-variable "company" {}
 variable "azs" {
   type = "list"
 }

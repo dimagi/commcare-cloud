@@ -15,7 +15,6 @@ module "network" {
   source            = "../network"
   vpc_begin_range   = "${var.vpc_begin_range}"
   env               = "${var.environment}"
-  company           = "${var.company}"
   azs               = "${var.azs}"
   vpn_connections   = "${var.vpn_connections}"
   vpn_connection_routes = "${var.vpn_connection_routes}"
