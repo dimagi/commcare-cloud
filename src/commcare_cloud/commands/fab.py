@@ -70,4 +70,4 @@ def exec_fab_command(env_name, *extra_args):
     ) + tuple(extra_args)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
-    subprocess.call(cmd_parts)
+    return subprocess.call(cmd_parts)
