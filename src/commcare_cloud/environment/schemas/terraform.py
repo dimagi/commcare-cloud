@@ -9,7 +9,6 @@ class TerraformConfig(jsonobject.JsonObject):
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
     region = jsonobject.StringProperty()
-    company = jsonobject.StringProperty()
     environment = jsonobject.StringProperty()
     openvpn_image = jsonobject.StringProperty()
     azs = jsonobject.ListProperty(str)
