@@ -15,6 +15,7 @@ data "aws_ami" "openvpn_image" {
 variable "openvpn_image" {
   default = ""
 }
+variable "key_name" {}
 variable "environment" {}
 variable "instance_subnet" {}
 variable "vpn_size" {}

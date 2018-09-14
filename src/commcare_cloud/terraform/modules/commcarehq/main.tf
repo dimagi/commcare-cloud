@@ -101,6 +101,7 @@ module "openvpn" {
   instance_subnet = "${module.network.subnet-a-public}"
   vpc_id = "${module.network.vpc-id}"
   vpc_cidr = "${module.network.vpc-cidr}"
+  key_name = "${var.key_name}"
 }
 
 module "Users" {

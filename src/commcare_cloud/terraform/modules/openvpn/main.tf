@@ -4,7 +4,7 @@ resource aws_instance "vpn_host" {
   ami                    = "${local.openvpn_image}"
   instance_type          = "${var.vpn_size}"
   subnet_id              = "${var.instance_subnet}"
-  key_name               = "g2-access"
+  key_name               = "${var.key_name}"
   vpc_security_group_ids = ["${aws_security_group.openvpn-access-sg.id}"]
   source_dest_check      = false
   user_data = <<-EOF
