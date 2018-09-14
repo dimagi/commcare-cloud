@@ -5,7 +5,7 @@ resource aws_instance "server" {
   subnet_id               = "${var.subnet_options[
     format("%s-%s", lookup(var.servers[count.index], "network_tier"), lookup(var.servers[count.index], "az"))
   ]}"
-  key_name                = "g2-access"
+  key_name                = "${var.key_name}"
   vpc_security_group_ids  = ["${var.security_group_options[lookup(var.servers[count.index], "network_tier")]}"]
   source_dest_check       = false
   root_block_device {

@@ -5,6 +5,9 @@ variable "node_type" {}
 variable "num_cache_nodes" {}
 variable "parameter_group_name" {}
 variable "port" {}
+variable "create" {
+  default = true
+}
 variable "elasticache_subnets" {
   type = "list"
 }

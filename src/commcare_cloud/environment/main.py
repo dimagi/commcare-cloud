@@ -131,6 +131,10 @@ class Environment(object):
         config_yml['environment'] = config_yml.get('environment', self.meta_config.env_monitoring_id)
         return TerraformConfig.wrap(config_yml)
 
+    def get_authorized_key(self, user):
+        with open(self.paths.get_authorized_key_file(user)) as f:
+            return f.read()
+
     def check_user_group_absent_present_overlaps(self, absent_users, present_users):
         if not set(present_users).isdisjoint(absent_users):
             repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())

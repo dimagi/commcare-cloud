@@ -129,6 +129,9 @@ class DefaultPaths(object):
     def authorized_keys_dir(self):
         return os.path.join(self.environments_dir, '_authorized_keys')
 
+    def get_authorized_key_file(self, user):
+        return os.path.join(self.authorized_keys_dir, '{}.pub'.format(user))
+
     @memoized
     def get_users_yml(self, org):
         return os.path.join(self.environments_dir, '_users', '{}.yml'.format(org))
