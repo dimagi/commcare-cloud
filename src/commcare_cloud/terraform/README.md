@@ -50,8 +50,22 @@ To "activate" an account:
     and write it in their `~/.aws/credentials` under `[<aws_profile>]`.
 
 
-## VPN Setup
+## First terraform run
 
+You can run terraform with
+```
+cchq <env> terraform apply
+```
+
+Because of a slight defect in our code, if you're using a site-to-site VPN
+as configured through `vpn_connections` and `external_routes` in `terraform.yml`,
+you have to hard-code VPN Gateway in `external_routes`. This means that first you have to
+run terraform (to create the gateway), look up its id at
+https://console.aws.amazon.com/vpc/home?#VpnGateways:sort=VpnGatewayId,
+and edit `external_routes`  to
+hardcode the gateway, and then run terraform again.
+
+## VPN Setup
 
 ### Create the OpenVPN EC2 instance with Terraform
 The first time you run `cchq <env> terraform apply`,
@@ -79,9 +93,13 @@ select Type HTTP, and Source "Anywhere", and click Save.
 
 ### Run the ovpn-init script
 
+Find the public ip of the vpn machine by running `cchq <env> aws-list`. Then run
+
 ```
 ssh openvpnas@<openvpn-public-ip>
 sudo ovpn-init --ec2
+...
+Please enter 'DELETE' to delete existing configuration:DELETE
 ...
 Please enter 'yes' to indicate your agreement [no]: yes
 ... 
@@ -93,26 +111,16 @@ sudo passwd openvpn
 ```
 This is the password you'll use to enter the admin web UI.
 
-
-### Create a user from the Admin Web UI
-Go to `https://<vpn-ip>/admin` in your browser and log in with `openvpn`/`<password from above>`.
-Under User Permissions, you can add other users.
-(Passwords are set by clicking the edit button under More Settings.)
-Create a user/password for yourself.
-
-### Connect to the VPN
-Download the openvpn client and connect to the public IP with your username and password.
-
-
 ### Give others SSH access to the VPN machine
 To give others SSH access to the VPN machine
 (right now your access is because terraform created the VM with your public key)
 
 ```
-cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas --skip-check \
-  -i @<(printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>")
+printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name> certificate_email=<your-email>" > openvpn-tmp
+cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas -i openvpn-tmp --skip-check
 ``` 
 You can then undo the above change to the inventory file.
+
 
 ### Set up DNS and HTTPS cert
 
@@ -121,9 +129,18 @@ to the openvpn machine's public IP.
 
 Then run
 ```
-cchq staging ansible-playbook deploy_openvpn.yml --branch=dmr/openvpn --skip-check -vvv \
-  -i @<(printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>")
+# printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>" > openvpn-tmp
+cchq <env> ansible-playbook deploy_openvpn.yml --skip-check -vvv -i openvpn-tmp
 ```
+
+### Create a user from the Admin Web UI
+Go to `https://<vpn-subdomain-name>/admin` in your browser and log in with `openvpn`/`<password from above>`.
+Under User Permissions, you can add other users.
+(Passwords are set by clicking the edit button under More Settings.)
+Create a user/password for yourself.
+
+### Connect to the VPN
+Download the openvpn client and connect to the public IP with your username and password.
 
 
 ### Un-whitelist SSH traffic from your IP address
