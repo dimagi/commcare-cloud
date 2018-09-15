@@ -21,9 +21,9 @@ vpn_connections:
 
 external_routes:
   - cidr_block: "172.24.16.0/22"
-    gateway_id: "vgw-0145d51bea1e4a505"
+    gateway_id: "vgw-04585c3d515d0589b"
   - cidr_block: "172.24.32.0/22"
-    gateway_id: "vgw-0145d51bea1e4a505"
+    gateway_id: "vgw-04585c3d515d0589b"
 
 key_name: droberts
 
