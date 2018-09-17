@@ -3,7 +3,7 @@ state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
 environment: "staging-test"
-company: dimagi
+openvpn_image: ami-169e4b6b
 azs:
   - "us-east-1a"
   - "us-east-1b"

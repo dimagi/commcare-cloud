@@ -19,7 +19,9 @@ module "commcarehq" {
   source = "../modules/commcarehq"
   region = {{ region|tojson }}
   environment = {{ environment|tojson }}
-  company = "dimagi"
+  {%- if openvpn_image %}
+  openvpn_image = {{ openvpn_image|tojson }}
+  {%- endif %}
   azs = {{ azs|tojson }}
   vpc_begin_range = "10.200"
   dns_domain = ""

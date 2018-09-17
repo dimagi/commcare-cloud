@@ -1,29 +1,32 @@
 # This module will build out an initial OpenVPN server.
 
-resource aws_instance "server" {
-  ami                    = "${var.openvpn_image}"
+resource aws_instance "vpn_host" {
+  ami                    = "${local.openvpn_image}"
   instance_type          = "${var.vpn_size}"
   subnet_id              = "${var.instance_subnet}"
-  key_name               = "g2-access"
-  vpc_security_group_ids = ["${var.vpc-all-hosts-sg}","${aws_security_group.openvpn-access-sg.id}"]
+  key_name               = "${var.key_name}"
+  vpc_security_group_ids = ["${aws_security_group.openvpn-access-sg.id}"]
   source_dest_check      = false
   user_data = <<-EOF
     #!/bin/bash
-    hostnamectl set-hostname "${var.company}-vpn"
+    hostnamectl set-hostname "vpn-${var.environment}"
     yum update -y
     reboot
     EOF
 
   root_block_device {
-    volume_size           = 20
+    volume_size           = 40
     volume_type           = "gp2"
     delete_on_termination = true
   }
 
+  lifecycle {
+    ignore_changes = ["root_block_device.0.volume_type", "user_data"]
+  }
+
   tags {
-    Name        = "${var.company}-vpn"
-    Environment = "${var.company}"
-    Service     = "VPN"
+    Name        = "vpn-${var.environment}"
+    Environment = "${var.environment}"
   }
 }
 
@@ -32,9 +35,8 @@ resource aws_eip "vpn_ip" {
   instance = "${aws_instance.vpn_host.id}"
 
   tags {
-    Name        = "${var.company}-vpn-public-ip"
-    Environment = "${var.company}"
-    Service     = "VPN"
+    Name        = "vpn-public-ip-${var.environment}"
+    Environment = "${var.environment}"
   }
 }
 
@@ -45,10 +47,24 @@ resource "aws_security_group" "openvpn-access-sg" {
   vpc_id      = "${var.vpc_id}"
 
   ingress {
+    from_port   = 1194
+    to_port     = 1194
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.200.0.0/16"]
+  }
+
+  ingress {
     from_port   = 943
     to_port     = 943
     protocol    = "tcp"
-    cidr_blocks = ["216.236.254.242/32","107.23.51.203/32","73.186.144.149/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -58,11 +74,22 @@ resource "aws_security_group" "openvpn-access-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["${var.vpc_cidr}"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = ["key_name", "description", "name"]
   }
 }
 
