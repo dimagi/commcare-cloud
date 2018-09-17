@@ -78,5 +78,7 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
-node.master: {{ es_master_eligible }}
+node.master: {{ elasticsearch_master|default('false') }}
 {% endif %}
+
+node.data = {{ elasticsearch_data|default('true') }}
