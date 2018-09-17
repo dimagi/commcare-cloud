@@ -75,3 +75,8 @@ action.auto_create_index: false
 {% if es_local_repo and not backup_es%}
 path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 {% endif %}
+
+{# only include master eligibility if it is set on at least one node in the cluster #}
+{% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
+node.master: {{ es_master_eligible }}
+{% endif %}
