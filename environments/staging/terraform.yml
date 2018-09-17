@@ -3,7 +3,6 @@ state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
 environment: "staging"
-company: dimagi
 azs:
   - "us-east-1a"
   - "us-east-1b"
@@ -22,9 +21,9 @@ vpn_connections:
 
 external_routes:
   - cidr_block: "172.24.16.0/22"
-    gateway_id: "vgw-0145d51bea1e4a505"
+    gateway_id: "vgw-04585c3d515d0589b"
   - cidr_block: "172.24.32.0/22"
-    gateway_id: "vgw-0145d51bea1e4a505"
+    gateway_id: "vgw-04585c3d515d0589b"
 
 key_name: droberts
 

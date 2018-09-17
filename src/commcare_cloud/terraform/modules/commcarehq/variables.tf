@@ -1,7 +1,6 @@
 #Initialize.tf contains empty variable declarations for the variables that will be populated in each env’s .tfvars file
 variable "region" {}
 variable "environment" {}
-variable "company" {}
 variable "azs" {
   type = "list"
 }
@@ -10,7 +9,10 @@ variable "vpc_begin_range" {}
 # OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe.
 # To do so please visit http://aws.amazon.com/marketplace/pp?sku=3ihdqli79gl9v2jnlzs6nq60h
 variable "openvpn_image" {
-  default = "ami-169e4b6b"
+  default = ""  # will be auto-assigned by openvpn module if not set
+}
+variable "openvpn_instance_type" {
+  default = "t2.small"
 }
 variable "server_image" {
   default = "ami-0d3e7972"
