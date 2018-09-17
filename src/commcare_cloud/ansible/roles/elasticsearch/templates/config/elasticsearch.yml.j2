@@ -81,4 +81,4 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 node.master: {{ elasticsearch_master|default('false') }}
 {% endif %}
 
-node.data = {{ elasticsearch_data|default('true') }}
+node.data: {{ elasticsearch_data|default('true') }}
