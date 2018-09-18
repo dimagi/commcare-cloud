@@ -288,29 +288,30 @@ pillows:
   'pillow10':
     kafka-ucr-static-cases:
       start_process: 30
-      num_processes: 6
+      num_processes: 9
       total_processes: 60
     CaseToElasticsearchPillow:
       start_process: 30
-      num_processes: 6
+      num_processes: 9
       total_processes: 60
-  'pillow11':
-    kafka-ucr-static-cases:
-      start_process: 36
-      num_processes: 6
-      total_processes: 60
-    CaseToElasticsearchPillow:
-      start_process: 36
-      num_processes: 6
-      total_processes: 60
+  # commented out until read only mount fixed
+  # 'pillow11':
+  #   kafka-ucr-static-cases:
+  #     start_process: 36
+  #     num_processes: 6
+  #     total_processes: 60
+  #   CaseToElasticsearchPillow:
+  #     start_process: 36
+  #     num_processes: 6
+  #     total_processes: 60
   'pillow12':
     kafka-ucr-static-cases:
-      start_process: 42
-      num_processes: 6
+      start_process: 39
+      num_processes: 9
       total_processes: 60
     CaseToElasticsearchPillow:
-      start_process: 42
-      num_processes: 6
+      start_process: 39
+      num_processes: 9
       total_processes: 60
   'pillow13':
     kafka-ucr-static-cases:
