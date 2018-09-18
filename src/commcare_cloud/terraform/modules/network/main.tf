@@ -298,7 +298,7 @@ resource "aws_security_group" "elasticache" {
     from_port = "6379"
     to_port = "6379"
     protocol = "tcp"
-    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}"]
+    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}", "${aws_subnet.subnet-public.*.cidr_block}"]
     ipv6_cidr_blocks = ["::/0"]
   }
 

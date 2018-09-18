@@ -38,7 +38,7 @@ servers:
     network_tier: "app-private"
     az: "b"
   - server_name: "celery0-staging"
-    server_instance_type: "t2.large"
+    server_instance_type: "t2.xlarge"
     network_tier: "app-private"
     az: "b"
   - server_name: "pillow0-staging"
