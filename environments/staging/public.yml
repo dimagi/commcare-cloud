@@ -75,6 +75,7 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_CACHE_CLASS: "dimagi.utils.couch.cache.cache_core.lib.HQRedisCache"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
