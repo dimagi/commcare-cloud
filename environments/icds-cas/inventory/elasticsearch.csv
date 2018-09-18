@@ -1,4 +1,4 @@
-hostname,host_address,group 1,group 2,var: hostname,var: elasticsearch_node_name,var: elasticsearch_master, var: elasticsearch_data
+hostname,host_address,group 1,group 2,var: hostname,var: elasticsearch_node_name,var: elasticsearch_master,var: elasticsearch_data
 es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,es0,,
 es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,es1,true,
 es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,es2,,
