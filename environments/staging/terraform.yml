@@ -7,7 +7,7 @@ azs:
   - "us-east-1a"
   - "us-east-1b"
   - "us-east-1c"
-vpc_begin_range: "10.200"
+vpc_begin_range: "10.201"
 
 vpn_connections:
   - name: rackspace
