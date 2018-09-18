@@ -21,7 +21,7 @@ resource aws_instance "vpn_host" {
   }
 
   lifecycle {
-    ignore_changes = ["root_block_device.0.volume_type", "user_data"]
+    ignore_changes = ["root_block_device.0.volume_type", "user_data", "key_name"]
   }
 
   tags {
