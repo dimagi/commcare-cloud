@@ -14,7 +14,6 @@
 - import_playbook: deploy_tmpreaper.yml
 - import_playbook: deploy_etckeeper.yml
 - import_playbook: deploy_airflow.yml
-# migrate must happen before first fab, and also before touchforms can create its special user
+# migrate must happen before first fab
 - import_playbook: migrate_on_fresh_install.yml
-- import_playbook: deploy_touchforms.yml
 - import_playbook: deploy_http_proxy.yml

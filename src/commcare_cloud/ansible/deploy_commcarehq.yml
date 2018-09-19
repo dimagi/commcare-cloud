@@ -1,7 +1,6 @@
 - name: CommcareHQ
   hosts:
    - webworkers
-   - touchforms
    - formplayer
    - celery
    - proxy
@@ -30,7 +29,6 @@
   become_user: "{{ cchq_user }}"
   hosts:
     - webworkers
-    - touchforms
     - formplayer
     - celery
     - proxy
