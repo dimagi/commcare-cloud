@@ -11,7 +11,6 @@ ROLES_ALL_SRC = [
     'django_app',
     'django_celery',
     'django_pillowtop',
-    'formsplayer',
     'formplayer',
     'staticfiles',
     'airflow',
@@ -22,7 +21,6 @@ ROLES_ALL_SERVICES = [
     'django_app',
     'django_celery',
     'django_pillowtop',
-    'formsplayer',
     'formplayer',
     'staticfiles',
     'airflow'
