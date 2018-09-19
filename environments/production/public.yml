@@ -97,4 +97,3 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"

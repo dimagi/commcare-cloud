@@ -87,4 +87,3 @@ localsettings:
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
-  XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"
