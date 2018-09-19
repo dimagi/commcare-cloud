@@ -104,7 +104,6 @@ localsettings:
 #  STATIC_ROOT:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
 
 site_locations:

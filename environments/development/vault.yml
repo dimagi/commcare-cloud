@@ -45,7 +45,5 @@ localsettings_private:
   JAR_KEY_PASS: ''
   JAR_STORE_PASS: ''
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
-  TOUCHFORMS_API_PASSWORD: 'TsyasEivKf4GtbQX'
-  TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9

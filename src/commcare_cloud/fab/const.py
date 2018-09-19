@@ -30,7 +30,6 @@ ROLES_ALL_SERVICES = [
 ROLES_CELERY = ['django_monolith', 'django_celery']
 ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
 ROLES_DJANGO = ['django_monolith', 'django_app']
-ROLES_TOUCHFORMS = ['django_monolith', 'formsplayer']
 ROLES_FORMPLAYER = ['django_monolith', 'formplayer']
 ROLES_STATIC = ['django_monolith', 'staticfiles']
 ROLES_POSTGRESQL = ['pg', 'pgstandby', 'django_monolith']
