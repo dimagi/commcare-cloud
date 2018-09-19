@@ -1,0 +1,22 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances: 
+# debug; Todo
+{{ hostvars[groups['webworkers'][0]].ansible_hostname }}
+{% for tcp_check in datadog_tcp_checks_list %}
+  {% if tcp_check.from_host_groups | intersect(group_names) | length > 0 %}
+    {% for to_group in tcp_check.to_host_groups %}
+      {% for to_host in groups[to_group] %}
+        {% if hostvars[to_host].ansible_hostname == inventory_hostname %}
+  - name: {{ tcp_check.name }}
+    host: {{ hostvars[to_host]['ansible_eth0']['ipv4']['address'] }}
+    port: {{ tcp_check.port }}
+    collect_response_time: true
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}

@@ -31,6 +31,44 @@ KSPLICE_ACTIVE: no
 DATADOG_ENABLED: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
+datadog_integration_tcp_check: True
+datadog_tcp_checks_list:
+  - name: 'webworkers to pgbouncer'
+    from_host_groups: ['webworkers']
+    to_host_groups: ['postgresql', 'pg_standby']
+    port: 6432 # pgbouncer_port
+  - name: 'webworkers to elasticsearch'
+    from_host_groups: ['webworkers']
+    to_host_groups: ['elasticsearch']
+    port: '{{ ELASTICSEARCH_PORT }}'
+  - name: 'webworkers to couchdb2 proxy'
+    from_host_groups: ['webworkers']
+    to_host_groups: ['couchdb2_proxy']
+    port: '{{ couchdb2_proxy_port }}'
+  - name: 'webworkers to Redis'
+    from_host_groups: ['webworkers']
+    to_host_groups: ['redis']
+    port: '{{ localsettings.REDIS_PORT }}'
+  - name: 'webworkers to kafka'
+    from_host_groups: ['webworkers']
+    to_host_groups: ['kafka']
+    port: 9092
+  - name: 'pgbouncer to postgresql'
+    from_host_groups: ['postgresql', 'pg_standby']
+    to_host_groups: ['postgresql', 'pg_standby']
+    port: 5432 # postgresql_port
+  - name: 'couchdb2 internal nodes'
+    from_host_groups: ['couchdb2']
+    to_host_groups: ['couchdb2']
+    port: 4369 # erlang port
+  - name: 'couchdb2 proxy to couchdb2 nodes'
+    from_host_groups: ['couchdb2_proxy']
+    to_host_groups: ['couchdb2']
+    port: '{{ couchdb2_port }}'
+  - name: 'elasticsearch internal nodes'
+    from_host_groups: ['elasticsearch']
+    to_host_groups: ['elasticsearch']
+    port: 9300 # elasticsearch_tcp_port
 
 etc_hosts_lines:
   - '100.71.181.10		cas.commcarehq.org'

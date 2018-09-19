@@ -57,3 +57,7 @@
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http }}"}
+    - {"name": "tcp_check", "enabled": "{{
+            datadog_integration_tcp_check and
+            datadog_tcp_checks_list|map(attribute='from_host_groups')|list|flatten | intersect(group_names) | length > 0
+          }}"}
