@@ -93,6 +93,10 @@ pillows:
       num_processes: 4
     XFormToElasticsearchPillow:
       num_processes: 2
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 2
+    kafka-ucr-main:
+      num_processes: 1
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
       num_processes: 4
