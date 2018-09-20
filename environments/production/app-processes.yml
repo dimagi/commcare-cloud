@@ -94,13 +94,23 @@ pillows:
     XFormToElasticsearchPillow:
       num_processes: 2
     FormSubmissionMetadataTrackerPillow:
-      num_processes: 2
-    kafka-ucr-main:
+      start_process: 0
       num_processes: 1
+      total_processes: 2
+    kafka-ucr-main:
+      start_process: 0
+      num_processes: 2
+      total_processes: 7
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
+      start_process: 2
       num_processes: 4
+      total_processes: 7
   hqpillowtop0.internal-va.commcarehq.org:
+    kafka-ucr-main:
+      start_process: 6
+      num_processes: 1
+      total_processes: 7
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
@@ -114,7 +124,9 @@ pillows:
     FarmerRecordFluffPillow:
       num_processes: 1
     FormSubmissionMetadataTrackerPillow:
+      start_processes: 1
       num_processes: 1
+      total_processes: 2
     GeographyFluffPillow:
       num_processes: 1
     GroupPillow:
