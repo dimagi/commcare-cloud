@@ -9,3 +9,7 @@ redis_maxmemory: 4gb
 redis_maxmemory_policy: volatile-lru
 redis_save: []
 redis_appendonly: "yes"
+cluster_config:
+  cluster-enabled: "yes"
+  cluster-config-file: "nodes.conf" # Redis internal filename, never change this
+  cluster-node-timeout: "5000"
