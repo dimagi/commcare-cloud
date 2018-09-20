@@ -91,6 +91,8 @@ pillows:
       num_processes: 2
     kafka-ucr-static:
       num_processes: 4
+    XFormToElasticsearchPillow:
+      num_processes: 2
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
       num_processes: 4
@@ -138,6 +140,4 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
     UserPillow:
-      num_processes: 1
-    XFormToElasticsearchPillow:
       num_processes: 1
