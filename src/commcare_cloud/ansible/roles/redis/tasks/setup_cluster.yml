@@ -1,6 +1,6 @@
 ---
-- set_fact:
-    first_master_ip: "{{ hostvars[hostvars.keys()[0]].ansible_default_ipv4.address }}"
+- set_fact: first_master_ip="{{ hostvars[hostvars.keys()[0]].ansible_default_ipv4.address }}"
+  debugger: on_failed
 
 - name: Add cluster config
   lineinfile:
@@ -9,8 +9,7 @@
   with_dict: "{{ cluster_config }}"
 
 - name: start the redis service
-  service: name="{{ redis_service_name }}" state=started enabled=yes
-  tags: after-reboot
+  service: name="{{ redis_service_name }}" state=restarted enabled=yes
 
 - name: Join nodes to cluster
   shell: "redis-cli cluster meet {{ first_master_ip }} 6379"
