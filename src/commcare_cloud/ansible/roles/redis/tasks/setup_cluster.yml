@@ -1,16 +1,22 @@
 ---
-- set_fact: first_master_ip="{{ hostvars[hostvars.keys()[0]].ansible_default_ipv4.address }}"
-  debugger: on_failed
+- include: roles/common/tasks/install_ruby.yml
+
+- name: Install redis gem
+  command: 'gem install redis'
+  become: yes
+
+- set_fact: first_master_ip="{{ hostvars[groups.redis_cluster_master[0]][internal_network_interface_fact].ipv4.address }}"
 
 - name: Add cluster config
+  become: yes
   lineinfile:
     dest: /etc/redis/{{ redis_port }}.conf
     line: '{{ item.key }} {{ item.value }}'
   with_dict: "{{ cluster_config }}"
 
-- name: start the redis service
+- name: Start redis service
   service: name="{{ redis_service_name }}" state=restarted enabled=yes
 
 - name: Join nodes to cluster
   shell: "redis-cli cluster meet {{ first_master_ip }} 6379"
-  when: ansible_eth0["ipv4"]["address"] != first_master_ip
+  when: internal_ipv4.address != first_master_ip
