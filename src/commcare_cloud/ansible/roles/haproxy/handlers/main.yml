@@ -1,0 +1,21 @@
+---
+- name: Regenerate haproxy configuration
+  assemble:
+    src: "/etc/haproxy/conf.d"
+    dest: "/etc/haproxy/haproxy.cfg"
+    validate: "/usr/sbin/haproxy -c -V -f %s"
+  notify: Restart haproxy
+  tags:
+    - haproxy-general-config
+
+- name: Restart haproxy
+  service:
+    name: "haproxy"
+    state: "restarted"
+    enabled: yes
+
+- name: Restart rsyslog
+  service:
+    name: "rsyslog"
+    state: "restarted"
+    enabled: yes
