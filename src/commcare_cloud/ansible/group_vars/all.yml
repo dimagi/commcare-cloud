@@ -46,6 +46,9 @@ zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb2_port: 15984
 couchdb2_proxy_port: 25984
+couchdb_admins: "{
+  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
+}"
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
