@@ -1,0 +1,34 @@
+---
+- name: Common Database Machine Setup
+  hosts:
+    - couchdb2
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+    - {role: backups, tags: 'backups'}
+
+- name: Couchdb 2.0
+  hosts: couchdb2
+  become: true
+  roles:
+    - {role: couchdb2, tags: 'couchdb2'}
+
+- name: Couchdb2 log rolling configurations
+  hosts: couchdb2
+  become: true
+  roles:
+    - role: ansible-logrotate
+      tags: couchdb2
+      logrotate_scripts:
+        - name: "{{ deploy_env }}_couchdb2"
+          path: "{{ couchdb_dir }}/var/log/*.stderr"
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
