@@ -1,0 +1,38 @@
+---
+- name: Drop base haproxy config
+  template:
+    src: "haproxy.cfg.j2"
+    dest: "/etc/haproxy/conf.d/00-haproxy"
+  notify: Regenerate haproxy configuration
+  tags:
+    - haproxy-base-config
+
+- name: Drop haproxy logging config
+  copy:
+    src: "haproxy-logging.cfg"
+    dest: "/etc/rsyslog.d/10-haproxy-local-logging.conf"
+  notify: Restart rsyslog
+  tags:
+    - haproxy-logging-config
+
+- name: Enable haproxy service
+  lineinfile:
+    dest: /etc/default/haproxy
+    regexp: '^ENABLED='
+    line: 'ENABLED=1'
+    state: present
+
+- name: "Create haproxy service config files"
+  template:
+    src: service.j2
+    dest: "/etc/haproxy/conf.d/{{ item.service.haproxy_service_name }}"
+  with_items: "{{ haproxy_service_configs | default([]) }}"
+  when:
+    - (item.service.haproxy_backend_nodes is defined and
+      item.service.haproxy_backend_nodes | length > 0) or
+      (item.service.haproxy_backup_nodes is defined and
+      item.service.haproxy_backup_nodes | length > 0)
+    - item.service.haproxy_service_enabled | default('True') | bool
+  notify: Regenerate haproxy configuration
+  tags:
+    - haproxy-service-config

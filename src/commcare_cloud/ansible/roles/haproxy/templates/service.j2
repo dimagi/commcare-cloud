@@ -1,0 +1,92 @@
+## {{ ansible_managed }}
+
+{% set request_option = item.service.haproxy_balance_type | default("http") -%}
+{% set haproxy_backend_port = item.service.haproxy_backend_port is defined | ternary(item.service.haproxy_backend_port, item.service.haproxy_port) %}
+{% set haproxy_check_port = item.service.haproxy_check_port is defined | ternary(item.service.haproxy_check_port, haproxy_backend_port) %}
+{% set haproxy_check_interval = item.service.haproxy_interval is defined | ternary(item.service.haproxy_interval, haproxy_interval) %}
+
+frontend {{ item.service.haproxy_service_name }}-front
+    bind *:{{ item.service.haproxy_port }}
+
+{% if request_option == "http" %}
+    option httplog
+    option forwardfor except 127.0.0.0/8
+    option http-server-close
+{% elif request_option == "tcp" %}
+    option tcplog
+{% endif %}
+{% if item.service.haproxy_timeout_client is defined %}
+    timeout client {{ item.service.haproxy_timeout_client }}
+{% endif %}
+    mode {{ item.service.haproxy_balance_type }}
+    default_backend {{ item.service.haproxy_service_name }}-back
+
+{% set backend_options = item.service.haproxy_backend_options|default([]) %}
+{% set backend_arguments = item.service.haproxy_backend_arguments|default([]) %}
+
+backend {{ item.service.haproxy_service_name }}-back
+    mode {{ item.service.haproxy_balance_type }}
+    balance {{ item.service.haproxy_balance_alg|default("leastconn") }}
+{% if item.service.haproxy_timeout_server is defined %}
+    timeout server {{ item.service.haproxy_timeout_server }}
+{% endif %}
+    stick store-request src
+    stick-table type ip size 256k expire 30m
+{% if request_option == "http" %}
+    option forwardfor
+    option httplog
+{% elif request_option == "tcp" %}
+    option tcplog
+{% endif %}
+{% for option in backend_options %}
+    option {{ option }}
+{% endfor %}
+{% for argument in backend_arguments %}
+    {{ argument }}
+{% endfor %}
+{% set backend_httpcheck_options = item.service.haproxy_backend_httpcheck_options|default([]) %}
+{% for option in backend_httpcheck_options %}
+    http-check {{ option }}
+{% endfor %}
+
+
+{% for host_name in item.service.haproxy_backend_nodes %}
+{% if hostvars[host_name] is defined %}
+{%   set ip_addr = hostvars[host_name][internal_network_interface_fact].ipv4.address %}
+{% endif %}
+{% set entry = [] %}
+{% set _ = entry.append("server") %}
+{% set _ = entry.append((host_name.name | default(host_name)) | string) %}
+{% set _ = entry.append((host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string) %}
+{% set _ = entry.append("check") %}
+{% set _ = entry.append("port") %}
+{% set _ = entry.append(haproxy_check_port | string) %}
+{% set _ = entry.append("inter") %}
+{% set _ = entry.append(haproxy_check_interval | string) %}
+{% set _ = entry.append("rise") %}
+{% set _ = entry.append(item.service.haproxy_backend_nodes | count | string) %}
+{% set _ = entry.append("fall") %}
+{% set _ = entry.append(item.service.haproxy_backend_nodes | count | string) %}
+    {{ entry | join(' ') }}
+{% endfor %}
+
+{% for host_name in item.service.haproxy_backup_nodes|default([]) %}
+{% if hostvars[host_name] is defined %}
+{%   set ip_addr = hostvars[host_name].internal_ipv4.address %}
+{% endif %}
+{% set entry = [] %}
+{% set _ = entry.append("server") %}
+{% set _ = entry.append((host_name.name | default(host_name)) | string) %}
+{% set _ = entry.append((host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string) %}
+{% set _ = entry.append("check") %}
+{% set _ = entry.append("port") %}
+{% set _ = entry.append(haproxy_check_port | string) %}
+{% set _ = entry.append("inter") %}
+{% set _ = entry.append(haproxy_check_interval | string) %}
+{% set _ = entry.append("rise") %}
+{% set _ = entry.append(item.service.haproxy_backup_nodes | count | string) %}
+{% set _ = entry.append("fall") %}
+{% set _ = entry.append(item.service.haproxy_backup_nodes | count | string) %}
+{% set _ = entry.append("backup") %}
+    {{ entry | join(' ') }}
+{% endfor %}
