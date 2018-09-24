@@ -92,7 +92,7 @@
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
   with_items:
-    - {name: 'npm', version: '3.6.0'}
+    - {name: 'npm', version: '6.4.1'}
   tags:
     - npm
 
