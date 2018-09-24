@@ -146,6 +146,11 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+  'celery11':
+  'celery12':
+  'celery13':
+  'celery14':
+  'celery15':
   'web0':
     ucr_indicator_queue:
       concurrency: 3
@@ -185,6 +190,17 @@ celery_processes:
   'web12':
     ucr_indicator_queue:
       concurrency: 4
+  'web13':
+  'web14':
+  'web15':
+  'web16':
+  'web17':
+  'web18':
+  'web19':
+  'web20':
+  'web21':
+  'web22':
+  'web23':
 pillows:
   'pillow0':
     # Catch all server for low volume pillows
@@ -330,3 +346,10 @@ pillows:
       start_process: 54
       num_processes: 6
       total_processes: 60
+  'pillow15':
+  'pillow16':
+  'pillow17':
+  'pillow18':
+  'pillow19':
+  'pillow20':
+
