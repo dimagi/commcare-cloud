@@ -86,7 +86,7 @@ celery_processes:
 pillows:
   hqpillowtop3.internal-va.commcarehq.org:
     CaseToElasticsearchPillow:
-      num_processes: 2
+      num_processes: 3
     CaseSearchToElasticsearchPillow:
       num_processes: 2
     kafka-ucr-static:
@@ -124,7 +124,7 @@ pillows:
     M4ChangeFormFluffPillow:
       num_processes: 1
     ReportCaseToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 2
     ReportXFormToElasticsearchPillow:
       num_processes: 1
     SqlSMSPillow:
