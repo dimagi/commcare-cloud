@@ -288,8 +288,7 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
                                               respect_ansible_skip=False)
         with open(environment.paths.known_hosts, 'r') as f:
-            known_hosts = f.readlines()
-        known_hosts.sort()
+            known_hosts = sorted(set(f.readlines()))
         with open(environment.paths.known_hosts, 'w') as f:
             f.writelines(known_hosts)
         return rc
