@@ -10,6 +10,21 @@ override:
   postgresql_max_connections: 300
   postgresql_version: '9.6'
 
+
+LOAD_BALANCED_APPS:
+  auth:
+    - [default, 1]
+    - [pgmainstandby0, 1]
+  accounting:
+    - [default, 1]
+    - [pgmainstandby0, 1]
+  locations:
+    - [default, 1]
+    - [pgmainstandby0, 1]
+  userreports:
+    - [default, 1]
+    - [pgmainstandby0, 1]
+
 dbs:
   main:
     host: hqdb0
@@ -39,3 +54,10 @@ dbs:
       p5:
         shards: [820, 1023]
         host: hqdb2
+  standby:
+    - django_alias: pgmainstandby0
+      name: commcarehq
+      host: hqstandby0.internal-va.commcarehq.org
+      create: False
+      django_migrate: False
+      hq_acceptable_standby_delay: 30
