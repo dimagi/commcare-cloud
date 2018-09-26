@@ -1,0 +1,48 @@
+account_alias: commcare-production
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "us-east-1"
+environment: "production"
+azs:
+  - "us-east-1a"
+  - "us-east-1b"
+  - "us-east-1c"
+vpc_begin_range: "10.202"
+
+vpn_connections:
+  - name: rackspace
+    cidr_blocks:
+      - "172.24.16.0/22"
+      - "172.24.32.0/22"
+    ip_address: "104.130.188.4"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+external_routes:
+  - cidr_block: "172.24.16.0/22"
+    gateway_id: "vgw-05c8c22d05e33c5bf"
+  - cidr_block: "172.24.32.0/22"
+    gateway_id: "vgw-05c8c22d05e33c5bf"
+
+key_name: droberts
+
+servers:
+  - server_name: "control-production"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 8
+
+proxy_servers: []
+
+rds_instances:
+  # dummy entry that doesn't get created
+  # See: https://github.com/hashicorp/terraform/issues/9858#issuecomment-263654145
+  - create: no
+    identifier: "pg0"
+    instance_type: "db.t2.medium"
+    storage: 300
+
+redis:
+  create: no
