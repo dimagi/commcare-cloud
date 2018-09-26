@@ -144,6 +144,9 @@ resource "aws_route_table_association" "db-private" {
 # Setup an Elastic IP to associate with the NAT Gateway.
 resource "aws_eip" "nat_gateway" {
   vpc = true
+  tags {
+    Name = "nat-gateway-ip-${var.env}"
+  }
 }
 
 # Create a NAT Gateway, which will be in public subnet a
