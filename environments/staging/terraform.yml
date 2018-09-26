@@ -33,6 +33,16 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 8
+  - server_name: "web0-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "web1-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
 
 proxy_servers: []
 
