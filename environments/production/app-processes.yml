@@ -76,12 +76,15 @@ celery_processes:
       concurrency: 6
       max_tasks_per_child: 1
       optimize: True
+    export_download_queue:
+      concurrency: 4
+      max_tasks_per_child: 5
   hqcelery4.internal-va.commcarehq.org:
     celery:
       concurrency: 6
       max_tasks_per_child: 5
     export_download_queue:
-      concurrency: 8
+      concurrency: 6
       max_tasks_per_child: 5
 pillows:
   hqpillowtop3.internal-va.commcarehq.org:
