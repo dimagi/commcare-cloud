@@ -24,7 +24,7 @@ http.cors.enabled: true
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
-discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch | length] | min }}
+discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list | length] | min }}
 discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
