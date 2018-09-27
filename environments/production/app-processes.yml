@@ -100,12 +100,12 @@ pillows:
       num_processes: 4
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
-      start_processes: 0
+      start_process: 0
       num_processes: 4
       total_processes: 6
   hqpillowtop0.internal-va.commcarehq.org:
     kafka-ucr-main:
-      start_processes: 4
+      start_process: 4
       num_processes: 2
       total_processes: 6
     AppDbChangeFeedPillow:
