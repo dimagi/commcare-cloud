@@ -13,7 +13,7 @@ broke a function that tried to parse all of the celery names.
 ## Details
 
 The celery beat name was name in the following pattern: {{ project }}-{{ deploy_env }}-celerybeat. 
-It has been changed to: {{ project }}-{{ deploy_env }}-celery_beat_0.
+It has been changed to: {{ project }}-{{ deploy_env }}-celery_beat.
 
 ## Steps to update
 
