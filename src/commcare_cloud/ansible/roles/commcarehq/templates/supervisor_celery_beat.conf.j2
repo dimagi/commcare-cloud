@@ -7,9 +7,9 @@ autostart=true
 autorestart=true
 stopasgroup=true
 killasgroup=true
-stdout_logfile={{ log_home }}/celery_beat_0.log
+stdout_logfile={{ log_home }}/celerybeat.log
 redirect_stderr=true
-stderr_logfile={{ log_home }}/celery_beat_0.err.log
+stderr_logfile={{ log_home }}/celerybeat.err.log
 startsecs=10
 ; if rabbitmq is supervised, set its priority higher
 ; so it starts first
