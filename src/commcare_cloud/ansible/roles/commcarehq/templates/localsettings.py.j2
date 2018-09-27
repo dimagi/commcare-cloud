@@ -25,6 +25,13 @@ SYNCLOGS_SQL_DB_ALIAS = "synclogs"
 SYNCLOGS_SQL_DB_ALIAS = "default"
 {% endif %}
 
+{% if SEPARATE_PHONELOGS_DB %}
+PHONELOG_SQL_DB_ALIAS = "phonelogs"
+{% else %}
+PHONELOG_SQL_DB_ALIAS = "default"
+{% endif %}
+
+
 DATABASES = { {% for config in postgresql_dbs.all %}
 {%- if config.django_alias %}
     '{{config.django_alias}}': {

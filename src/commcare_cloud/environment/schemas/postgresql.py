@@ -67,6 +67,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
     SEPARATE_FORM_PROCESSING_DBS = jsonobject.BooleanProperty(default=True)
+    SEPARATE_PHONELOGS_DB = jsonobject.BooleanProperty(default=True)
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
@@ -159,6 +160,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
         assert (self.SEPARATE_FORM_PROCESSING_DBS if self.dbs.form_processing is not None
                 else not self.SEPARATE_FORM_PROCESSING_DBS), \
             'form_processing should be None if and only if SEPARATE_FORM_PROCESSING_DBS is False'
+        assert (self.SEPARATE_PHONELOGS_DB if self.dbs.phonelogs is not None
+                else not self.SEPARATE_PHONELOGS_DB), \
+            'phonelogs should be None if and only if SEPARATE_PHONELOGS_DB is False'
 
 
 class HostSettings(jsonobject.JsonObject):

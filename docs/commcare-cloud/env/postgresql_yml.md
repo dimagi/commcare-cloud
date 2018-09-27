@@ -183,6 +183,15 @@ in the defaults file linked above.
 Whether to save synclogs to a separate postgresql db.
 A value of `False` may lose support in the near future and is not recommended.
 
+## `SEPARATE_PHONELOGS_DB`
+
+- Type: boolean
+- Default: `True`
+- Status: Deprecated
+
+Whether to save phonelogs to a separate postgresql db.
+A value of `False` may lose support in the near future and is not recommended.
+
 
 ## `SEPARATE_FORM_PROCESSING_DBS`
 

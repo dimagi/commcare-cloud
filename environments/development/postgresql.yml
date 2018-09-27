@@ -1,5 +1,6 @@
 SEPARATE_SYNCLOGS_DB: False
 SEPARATE_FORM_PROCESSING_DBS: False
+SEPARATE_PHONELOGS_DB: False
 
 override:
   postgresql_effective_cache_size: 4GB
