@@ -174,6 +174,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions, required=True)
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
+    phone_logs = jsonobject.ObjectProperty(lambda: PhonelogsDBOptions, required=False)
 
     custom = jsonobject.ListProperty(lambda: CustomDBOptions)
     standby = jsonobject.ListProperty(lambda: StandbyDBOptions)
@@ -213,6 +214,11 @@ class UcrDBOptions(DBOptions):
 class SynclogsDBOptions(DBOptions):
     name = constants.synclogs_db_name
     django_alias = 'synclogs'
+
+
+class PhonelogsDBOptions(DBOptions):
+    name = constants.phonelogs_db_name
+    django_alias = 'phonelogs'
 
 
 class FormProcessingConfig(jsonobject.JsonObject):

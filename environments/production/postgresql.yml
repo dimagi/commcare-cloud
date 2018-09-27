@@ -35,6 +35,8 @@ dbs:
     query_stats: True
   synclogs:
     host: pgsynclog1
+  phonelogs:
+    host: pgphonelog1
   form_processing:
     proxy:
       host: hqdb1
