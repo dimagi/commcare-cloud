@@ -6,6 +6,7 @@ class _Constants(jsonobject.JsonObject):
     formplayer_db_name = jsonobject.StringProperty(default='formplayer')
     ucr_db_name = jsonobject.StringProperty(default='commcarehq_ucr')
     synclogs_db_name = jsonobject.StringProperty(default='commcarehq_synclogs')
+    phonelogs_db_name = jsonobject.StringProperty(default='commcarehq_phonelogs')
     form_processing_proxy_db_name = jsonobject.StringProperty(default='commcarehq_proxy')
 
 
