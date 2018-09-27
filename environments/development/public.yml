@@ -70,10 +70,6 @@ couchdb_cluster_settings:
 TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
-  ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - "{{ SITE_HOST }}"
 #  BANK_ADDRESS:
 #  BANK_NAME:
 #  BANK_SWIFT_CODE:
@@ -91,7 +87,6 @@ localsettings:
 #  INVOICE_PREFIX:
 #  INVOICE_STARTING_NUMBER:
   J2ME_ADDRESS: ''
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
 #  MEDIA_ROOT:
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:

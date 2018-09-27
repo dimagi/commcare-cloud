@@ -83,6 +83,8 @@ def run_ansible_playbook(
         use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
     ):
 
+    unknown_args = unknown_args or []
+
     def get_limit():
         limit_parts = []
         if limit:
@@ -103,7 +105,7 @@ def run_ansible_playbook(
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
-            '-i', environment.paths.inventory_ini,
+            '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.vault_yml),
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
@@ -112,9 +114,6 @@ def run_ansible_playbook(
 
         public_vars = environment.public_vars
         cmd_parts += get_user_arg(public_vars, unknown_args)
-
-        if not has_arg(unknown_args, '-f', '--forks'):
-            cmd_parts += ('--forks', '15')
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
             puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
@@ -289,8 +288,7 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
                                               respect_ansible_skip=False)
         with open(environment.paths.known_hosts, 'r') as f:
-            known_hosts = f.readlines()
-        known_hosts.sort()
+            known_hosts = sorted(set(f.readlines()))
         with open(environment.paths.known_hosts, 'w') as f:
             f.writelines(known_hosts)
         return rc

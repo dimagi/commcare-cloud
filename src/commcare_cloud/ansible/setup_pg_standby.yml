@@ -16,7 +16,7 @@
         msg: "Standby node ('{{ standby }}') provided does not have 'hot_standby_master var set. Are you sure it's the right node?"
 
     - stat:
-        path: "{{ postgresql_home }}/recovery.conf"
+        path: "{{ postgresql_recovery_conf }}"
       register: recovery_file
 
     - assert:
@@ -94,7 +94,7 @@
     - name: create / update "recovery.conf"
       template:
         src: roles/postgresql/templates/recovery.conf.j2
-        dest: "{{ postgresql_home }}/recovery.conf"
+        dest: "{{ postgresql_recovery_conf }}"
 
     - name: Reset ownership
       file:

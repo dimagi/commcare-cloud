@@ -35,6 +35,7 @@ touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 ssh_allow_password: False
+ssh_allow_password_users: []
 django_port: 9010
 riakcs_port: 8080
 riakcs_proxy_port_override: "{{ riakcs_port }}"  # use this to override in env vars
@@ -93,7 +94,7 @@ accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
-billing_email: billing-comm@dimagi.com
+billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
 master_list_email: master-list@dimagi.com

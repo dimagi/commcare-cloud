@@ -10,6 +10,7 @@ postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
 postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
 postgresql_log_directory: "{{ postgresql_home }}/pg_log"
+postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8

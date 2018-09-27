@@ -4,17 +4,19 @@ from __future__ import absolute_import
 
 import inspect
 import os
-
 import sys
 import warnings
 from collections import OrderedDict
+
+from clint.textui import puts, colored
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.terraform.aws import AwsList
+from commcare_cloud.commands.terraform.terraform import Terraform
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from commcare_cloud.commands.dbs import ListDbs
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
@@ -26,7 +28,8 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from .commands.ansible.ops_tool import ListDatabases
+from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
@@ -61,7 +64,9 @@ COMMAND_GROUPS = OrderedDict([
         MigrateCouchdb,
         Downtime,
         CopyFiles,
-        ListDbs,
+        ListDatabases,
+        Terraform,
+        AwsList,
     ])
 ])
 
@@ -157,7 +162,12 @@ def main():
 
     if args.control:
         run_on_control_instead(args, sys.argv)
-    exit_code = commands[args.command].run(args, unknown_args)
+    try:
+        exit_code = commands[args.command].run(args, unknown_args)
+    except CommandError as e:
+        puts(colored.red(str(e), bold=True))
+        exit(1)
+
     if exit_code is not 0:
         exit(exit_code)
 

@@ -1,0 +1,3 @@
+src_env: icds-new
+target_allocation:
+  - couch0,couch1,couch2,couch3,couch4:3

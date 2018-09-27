@@ -11,6 +11,7 @@
     - riakcs
     - formplayer
     - pg_standby
+    - django_manage
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -24,6 +25,20 @@
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
+
+- name: Remote PostgreSQL (e.g. Amazon RDS)
+  hosts: django_manage
+  tasks:
+    - name: Remote PostgreSQL
+      include_role:
+        name: postgresql
+        tasks_from: set_up_dbs.yml
+      with_items: "{{ groups.remote_postgresql | default([]) }}"
+      loop_control:
+        loop_var: 'postgresql_host'
+      vars:
+        db_is_remote: yes
+        is_pg_standby: no
 
 - name: PostgreSQL Backup
   hosts: postgresql:pg_backup

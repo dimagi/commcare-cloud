@@ -30,6 +30,8 @@ STATES = {
     'status': 'status'
 }
 
+MONIT_MANAGED_SERVICES = ['postgresql', 'pgbouncer', 'redis', 'couchdb2']
+
 
 @attr.s
 class ServiceOption(object):
@@ -64,7 +66,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             self.print_help()
             return 0
         elif action == 'logs':
-            print("Logs can be found at:\n{}".format(self.log_location))
+            print("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.paths.env_name)))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
@@ -181,7 +183,21 @@ class SupervisorService(SubServicesMixin, ServiceBase):
         :param process_pattern: process pattern from the args or None
         :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
         """
-        raise NotImplemented
+        raise NotImplementedError
+
+
+def _service_status_helper(service_name):
+    if service_name in MONIT_MANAGED_SERVICES:
+        return 'monit status {}'.format(service_name)
+
+    return 'service {} status'.format(service_name)
+
+
+def _ansible_module_helper(service_name):
+    if service_name in MONIT_MANAGED_SERVICES:
+        return 'monit'
+
+    return 'service'
 
 
 class AnsibleService(ServiceBase):
@@ -202,11 +218,11 @@ class AnsibleService(ServiceBase):
         host_pattern = host_pattern or ','.join(self.inventory_groups)
 
         if action == 'status':
-            command = 'service {} status'.format(self.service_name)
+            command = _service_status_helper(self.service_name)
             return self._run_ansible_module(host_pattern, 'shell', command)
 
         service_args = 'name={} state={}'.format(self.service_name, STATES[action])
-        return self._run_ansible_module(host_pattern, 'service', service_args)
+        return self._run_ansible_module(host_pattern, _ansible_module_helper(self.service_name), service_args)
 
 
 class MultiAnsibleService(SubServicesMixin, AnsibleService):
@@ -234,7 +250,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 
     def check_status(self, host_pattern=None, process_pattern=None):
         def _status(service_name, run_on):
-            command = 'service {} status'.format(service_name)
+            command = _service_status_helper(service_name)
             return self._run_ansible_module(run_on, 'shell', command)
 
         return self._run_action_on_hosts(_status, host_pattern, process_pattern)
@@ -245,7 +261,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
 
         def _change_state(service_name, run_on, action=action):
             service_args = 'name={} state={}'.format(service_name, STATES[action])
-            return self._run_ansible_module(run_on, 'service', service_args)
+            return self._run_ansible_module(run_on, _ansible_module_helper(service_name), service_args)
 
         return self._run_action_on_hosts(_change_state, host_pattern, process_pattern)
 
@@ -289,14 +305,14 @@ class ElasticsearchClassic(AnsibleService):
     name = 'elasticsearch-classic'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/{ecrypt}/elasticsearch-1.7.3/logs'
+    log_location = '/opt/data/(ecrypt)/elasticsearch-<version>/logs'
 
 
 class Elasticsearch(ServiceBase):
     name = 'elasticsearch'
     service_name = 'elasticsearch'
     inventory_groups = ['elasticsearch']
-    log_location = '/opt/data/{ecrypt}/elasticsearch-{version}/logs'
+    log_location = '/opt/data/(ecrypt)/elasticsearch-<version>/logs'
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
@@ -360,7 +376,7 @@ class RabbitMq(AnsibleService):
     name = 'rabbitmq'
     inventory_groups = ['rabbitmq']
     service_name = 'rabbitmq-server'
-    log_location = '/var/log/rabbitmq/rabbit@{rabbitmq machine}.log'
+    log_location = '/var/log/rabbitmq/rabbit@<rabbitmq machine>.log'
 
 
 class Redis(AnsibleService):
@@ -395,7 +411,7 @@ class Postgresql(MultiAnsibleService):
         'postgresql': ('postgresql', 'postgresql,pg_standby'),
         'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
     }
-    log_location = 'Postgres: /opt/data/postgresql/{version}/main/pg_log\n' \
+    log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
 
 
@@ -430,8 +446,8 @@ class CommCare(SingleSupervisorService):
 class Webworker(SingleSupervisorService):
     name = 'webworker'
     inventory_groups = ['webworkers']
-    log_location = 'Regular logger: /home/cchq/www/{env}/log/{host}-commcarehq.django.log\n' \
-                   'Accounting logger: /home/cchq/www/{env}/log/{host}-commcarehq.accounting.log'
+    log_location = 'Regular logger: /home/cchq/www/{env}/log/<host>-commcarehq.django.log\n' \
+                   'Accounting logger: /home/cchq/www/{env}/log/<host>-commcarehq.accounting.log'
 
     @property
     def supervisor_process_name(self):
@@ -468,7 +484,7 @@ class Celery(SupervisorService):
 class Pillowtop(SupervisorService):
     name = 'pillowtop'
     inventory_groups = ['pillowtop']
-    log_location = '/home/cchq/www/{env}/log/pillowtop-{pillow_name}-{num_process}.log'
+    log_location = '/home/cchq/www/{env}/log/pillowtop-<pillow_name>-<num_process>.log'
 
     @property
     def managed_services(self):

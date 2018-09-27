@@ -1,3 +1,6 @@
 title: <a href="/commcare-cloud/"><img src="https://www.commcarehq.org/static/hqstyle/images/commcare-flower-lg.png" width="40"/></a> CommCare Cloud
 description: Official toolkit for deploying and maintaining CommCare server environment
 author: Dimagi
+
+kramdown:
+  toc_levels: "1..4"

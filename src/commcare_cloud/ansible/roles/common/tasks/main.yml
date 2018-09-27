@@ -70,11 +70,23 @@
   lineinfile:
     dest: /etc/hosts
     regexp: '^{{ internal_ipv4.address }}\s'
-    line: '{{ internal_ipv4.address }} {{ hostname }}.{{ internal_domain_name }} {{ hostname }}'
+    line: "{{ internal_ipv4.address }} {{ alt_hostname|default(hostname) }}.{{ internal_domain_name }} {{ alt_hostname|default(hostname) }}{%if alt_hostname|default('') %} {{ hostname }}{% endif %}"
   when: hostname is defined and hostname and internal_domain_name and not etc_hosts_lines|join(',')|search(internal_ipv4.address)
   tags:
     - hostname
     - after-reboot
+
+- name: "Sets /etc/hosts (no internal_domain_name)"
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^{{ ansible_default_ipv4.address }}\s'
+    line: '{{ ansible_default_ipv4.address }} {{ hostname }}'
+  when: hostname is defined and hostname and not internal_domain_name and not etc_hosts_lines|join(',')|search(ansible_default_ipv4.address)
+  tags:
+    - hostname
+    - after-reboot
+
 
 - name: "Custom host file lines"
   lineinfile: dest=/etc/hosts regexp='^{{ item }}.*' line="{{item}}" state=present

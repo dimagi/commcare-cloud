@@ -76,6 +76,9 @@ celery_processes:
       concurrency: 6
       max_tasks_per_child: 1
       optimize: True
+    export_download_queue:
+      concurrency: 4
+      max_tasks_per_child: 5
   hqcelery4.internal-va.commcarehq.org:
     celery:
       concurrency: 6
@@ -84,29 +87,38 @@ celery_processes:
       concurrency: 6
       max_tasks_per_child: 5
 pillows:
+  hqpillowtop3.internal-va.commcarehq.org:
+    CaseToElasticsearchPillow:
+      num_processes: 4
+    CaseSearchToElasticsearchPillow:
+      num_processes: 2
+    kafka-ucr-static:
+      num_processes: 4
+    XFormToElasticsearchPillow:
+      num_processes: 2
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 4
   hqpillowtop2.internal-va.commcarehq.org:
     kafka-ucr-main:
+      start_processes: 0
       num_processes: 4
+      total_processes: 6
   hqpillowtop0.internal-va.commcarehq.org:
-    kafka-ucr-static:
-      num_processes: 1
+    kafka-ucr-main:
+      start_processes: 4
+      num_processes: 2
+      total_processes: 6
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
       num_processes: 1
     CacheInvalidatePillow:
       num_processes: 1
-    CaseSearchToElasticsearchPillow:
-      num_processes: 1
-    CaseToElasticsearchPillow:
-      num_processes: 1
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
     FarmerRecordFluffPillow:
-      num_processes: 1
-    FormSubmissionMetadataTrackerPillow:
       num_processes: 1
     GeographyFluffPillow:
       num_processes: 1
@@ -121,7 +133,7 @@ pillows:
     M4ChangeFormFluffPillow:
       num_processes: 1
     ReportCaseToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 2
     ReportXFormToElasticsearchPillow:
       num_processes: 1
     SqlSMSPillow:
@@ -137,6 +149,4 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
     UserPillow:
-      num_processes: 1
-    XFormToElasticsearchPillow:
       num_processes: 1

@@ -1,0 +1,21 @@
+title: Update supervisor service definitions
+key: supervisor-service-definitions
+date: 2018-07-13
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  There are several CommCare specific processes that are defined in supervisor
+  configuration files. This change decouples the process definitions from code.
+details: |
+  All services are now defined separately from a code deploy and outside of our
+  the directory where code runs.
+
+  Important Note: Any code deploys before running the following command will cause
+  celery and formplayer services to stop running
+update_steps: |
+  1. Run the following to update the supervisor configuration:
+
+  ```bash
+  commcare-cloud <env> update-supervisor-confs
+  ```

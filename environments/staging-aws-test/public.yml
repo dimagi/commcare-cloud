@@ -1,0 +1,91 @@
+riak_backend: "leveldb"
+riak_ring_size: 64
+
+DATADOG_ENABLED: False
+elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+elasticsearch_cluster_name: 'staginges'
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+
+supervisor_http_enabled: True
+
+backup_blobdb: False
+backup_postgres: plain
+backup_es: False
+postgres_s3: False
+
+aws_region: 'us-east-1'
+
+formplayer_archive_time_spec: '10m'
+
+KSPLICE_ACTIVE: yes
+
+
+ufw_private_interface: eth0
+
+couch_dbs:
+  default:
+    host: commcarehq.cloudant.com
+    port: 443
+    name: test_staging_commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: True
+
+DROPBOX_APP_NAME: 'CommCareHQFiles - Staging'
+
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_s3_bucket: 'dimagi-commcare-staging-test-blobdb'
+
+localsettings:
+  ALLOWED_HOSTS:
+    - staging.commcarehq.org
+    - j2mestaging.commcarehq.org
+    - testserver
+    - '{{ hostvars[groups.proxy.0].public_ip }}'
+  ANALYTICS_DEBUG: True
+  ANALYTICS_LOG_LEVEL: "debug"
+  BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: 'CTZIUS33'
+  CELERY_PERIODIC_QUEUE: 'celery_null'
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
+  EULA_COMPLIANCE: True
+  HQ_INSTANCE: 'staging'
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: INC-
+  INVOICE_STARTING_NUMBER: 5000
+  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
+  PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: False
+  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_QUEUE_ENABLED: True
+  STATIC_ROOT:
+#  STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+
+commcare_cloud_root_user: ubuntu
+commcare_cloud_pem: ~/.ssh/g2-access.pem

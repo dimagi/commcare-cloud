@@ -52,10 +52,7 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
 
 localsettings:
   ALLOWED_HOSTS:
-    - www.commcarehq.org
     - www.commtrack.org
-    - localhost
-    - 127.0.0.1
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
@@ -88,7 +85,6 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   PILLOWTOP_MACHINE_ID: hqdb0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'

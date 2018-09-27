@@ -1,0 +1,117 @@
+terraform {
+  backend "s3" {
+    bucket  = {{ state_bucket|tojson }}
+    key     = "state/{{ environment }}.tfstate"
+    region  = {{ state_bucket_region|tojson }}
+    encrypt = true
+  }
+}
+
+provider "aws" {
+  region  = {{ region|tojson }}
+}
+
+variable "rds_password" {
+  type = "string"
+}
+
+module "commcarehq" {
+  source = "../modules/commcarehq"
+  region = {{ region|tojson }}
+  environment = {{ environment|tojson }}
+  {%- if openvpn_image %}
+  openvpn_image = {{ openvpn_image|tojson }}
+  {%- endif %}
+  azs = {{ azs|tojson }}
+  vpc_begin_range = {{ vpc_begin_range|tojson }}
+  dns_domain = ""
+  # Set the DNS Domain name to be used (should match the name for the Zone ID)
+  dns_zone_id = ""
+  # Select the correct DNS Zone ID from Route 53
+  internal_ssl_cert_arn = ""
+  # This will be used to reference SSL Certificate in AWS Certificate Manager
+
+  vpn_connections = [
+  {%- for vpn_connection in vpn_connections %}
+    {
+      name = {{ vpn_connection.name|tojson }}
+      cidr_blocks = {{ vpn_connection.cidr_blocks|tojson }}
+      ip_address = {{ vpn_connection.ip_address|tojson }}
+      type = {{ vpn_connection.type|tojson }}
+      bgp_asn = {{ vpn_connection.bgp_asn|tojson }}
+      amazon_side_asn = {{ vpn_connection.amazon_side_asn|tojson }}
+    },
+  {%- endfor %}
+  ]
+  vpn_connection_routes = [
+  {%- for vpn_connection in vpn_connections %}
+    {% set vpn_connection_index = loop.index0 %}
+    {%- for cidr_block in vpn_connection.cidr_blocks %}
+    {
+      vpn_connection_index = {{ vpn_connection_index|tojson }},
+      destination_cidr_block = {{ cidr_block|tojson }}
+    },
+    {%- endfor %}
+  {%- endfor %}
+  ]
+  external_routes = [
+  {%- for external_route in external_routes %}
+    {
+      cidr_block = {{ external_route.cidr_block|tojson }}
+      gateway_id = {{ external_route.gateway_id|tojson }}
+    },
+  {%- endfor %}
+  ]
+
+  key_name = {{ key_name|tojson }}
+  public_key = {{ public_key|tojson }}
+
+  servers = [
+  {%- for server in servers %}
+    {
+      server_name = {{ server.server_name|tojson }}
+      server_instance_type = {{ server.server_instance_type|tojson }}
+      network_tier = {{ server.network_tier|tojson }}
+      az = {{ server.az|tojson }}
+      volume_size = {{ server.volume_size|tojson }}
+    },
+  {%- endfor %}
+  ]
+
+  proxy_servers = [
+  {%- for server in proxy_servers %}
+    {
+      server_name = {{ server.server_name|tojson }}
+      server_instance_type = {{ server.server_instance_type|tojson }}
+      network_tier = {{ server.network_tier|tojson }}
+      az = {{ server.az|tojson }}
+      volume_size = {{ server.volume_size|tojson }}
+    },
+  {%- endfor %}
+  ]
+
+  rds_instances = [
+  {%- for rds_instance in rds_instances %}
+    {
+      password = "${var.rds_password}"
+      identifier = {{ rds_instance.identifier|tojson }}
+      instance_type = {{ rds_instance.instance_type|tojson }}
+      storage = {{ rds_instance.storage|tojson }}
+      create = {{ rds_instance.create|tojson }}
+    },
+  {%- endfor %}
+  ]
+  redis = {
+    {%- if not redis.create %}
+    create = false
+    {%- endif %}
+  }
+
+  account_alias = {{ (account_alias or "")|tojson }}
+
+  users = [
+  {%- for user in (users if manage_users else []) %}
+    {username = {{ user.username|tojson }}},
+  {%- endfor %}
+  ]
+}
