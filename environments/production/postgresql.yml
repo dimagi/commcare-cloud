@@ -15,9 +15,6 @@ LOAD_BALANCED_APPS:
   auth:
     - [default, 1]
     - [pgmainstandby0, 3]
-  accounting:
-    - [default, 1]
-    - [pgmainstandby0, 3]
   locations:
     - [default, 1]
     - [pgmainstandby0, 3]
