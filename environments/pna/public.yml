@@ -39,8 +39,8 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-server_email: commcare@pna.sn
-default_from_email: commcare@pna.sn
+server_email: commcare@commcare.pna.sn
+default_from_email: commcare@commcare.pna.sn
 
 KSPLICE_ACTIVE: yes
 
@@ -53,9 +53,6 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 localsettings:
   ALLOWED_HOSTS:
     - "{{ PNA_SITE_HOST }}"
-    - "{{ SITE_HOST }}"
-    - localhost
-    - 127.0.0.1
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'

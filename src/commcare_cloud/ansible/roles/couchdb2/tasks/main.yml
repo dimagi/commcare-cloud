@@ -1,4 +1,14 @@
 ---
+- name: Copy extra config
+  become: yes
+  template:
+    src: extras.ini.j2
+    dest: "{{ couchdb_etc_local_dir }}/extras.ini"
+    owner: '{{ couchdb_user }}'
+    group: '{{ couchdb_group }}'
+    mode: 0644
+  notify: restart couchdb2
+
 - meta: flush_handlers
 
 - name: Add nodes

@@ -1,0 +1,6 @@
+source_env: icds-new
+copy_files:
+  - proxy0:
+      - source_host: web0
+        source_dir: /var/www/html/
+        target_dir: /var/www/html/

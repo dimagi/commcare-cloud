@@ -1,0 +1,5 @@
+deploy_env: icds
+env_monitoring_id: icds
+users:
+  - dimagi
+slack_alerts_channel: alerts-icds

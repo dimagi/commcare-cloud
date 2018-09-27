@@ -5,6 +5,8 @@ from distutils.sysconfig import get_python_lib
 import yaml
 from memoized import memoized_property, memoized
 
+from commcare_cloud.environment.exceptions import EnvironmentException
+
 
 def get_virtualenv_bin_path():
     """
@@ -21,6 +23,7 @@ def get_virtualenv_bin_path():
 PACKAGE_BASE = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 ANSIBLE_ROLES_PATH = os.path.realpath(os.path.join(get_python_lib(), '.ansible/roles'))
 ANSIBLE_DIR = os.path.join(PACKAGE_BASE, 'ansible')
+TERRAFORM_DIR = os.path.join(PACKAGE_BASE, 'terraform')
 # only works with egg install (`pip install -e .`)
 DIMAGI_ENVIRONMENTS_DIR = os.path.realpath(os.path.join(PACKAGE_BASE, '..', '..', 'environments'))
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', DIMAGI_ENVIRONMENTS_DIR)
@@ -53,6 +56,30 @@ class DefaultPaths(object):
     @lazy_immutable_property
     def inventory_ini(self):
         return self.get_env_file_path('inventory.ini')
+
+    @lazy_immutable_property
+    def inventory_csv(self):
+        return self.get_env_file_path('inventory.csv')
+
+    @lazy_immutable_property
+    def inventory_directory(self):
+        return self.get_env_file_path('inventory')
+
+    @lazy_immutable_property
+    def inventory_source(self):
+        sources = []
+        for path in [self.inventory_ini, self.inventory_csv]:
+            if os.path.exists(path) and os.access(path, os.R_OK):
+                sources.append(path)
+        if os.path.exists(self.inventory_directory) and os.path.isdir(self.inventory_directory):
+            sources.append(self.inventory_directory)
+
+        if not sources or len(sources) > 1:
+            raise EnvironmentException(
+                "Exactly one inventory source must be provided. Either a single 'inventory.ini' file "
+                "or a single 'inventory.csv' file or an 'inventory' folder containing inventory files."
+            )
+        return sources[0]
 
     @lazy_immutable_property
     def meta_yml(self):
@@ -95,8 +122,15 @@ class DefaultPaths(object):
         return self.get_env_file_path('.downtime.yml')
 
     @lazy_immutable_property
+    def terraform_yml(self):
+        return self.get_env_file_path('terraform.yml')
+
+    @lazy_immutable_property
     def authorized_keys_dir(self):
         return os.path.join(self.environments_dir, '_authorized_keys')
+
+    def get_authorized_key_file(self, user):
+        return os.path.join(self.authorized_keys_dir, '{}.pub'.format(user))
 
     @memoized
     def get_users_yml(self, org):
@@ -123,7 +157,11 @@ def get_available_envs(exclude_symlinks=False):
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)
         if os.path.exists(DefaultPaths(env).public_yml)
-        and os.path.exists(DefaultPaths(env).inventory_ini)
+        and (
+            os.path.exists(DefaultPaths(env).inventory_ini)
+            or os.path.exists(DefaultPaths(env).inventory_csv)
+            or os.path.exists(DefaultPaths(env).inventory_directory)
+        )
         and not (exclude_symlinks and os.path.islink(os.path.join(ENVIRONMENTS_DIR, env)))
     )
 

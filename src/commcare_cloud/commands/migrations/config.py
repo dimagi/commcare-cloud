@@ -49,14 +49,13 @@ class CouchMigration(object):
     def source_couch_config(self):
         if not self.separate_source_and_target:
             return self.target_couch_config
-        return self._get_couch_config(self.source_environment)
+        return self._get_couch_config(self.source_environment, self.source_environment.groups['couchdb2'])
 
     @memoized_property
     def target_couch_config(self):
-        return self._get_couch_config(self.target_environment)
+        return self._get_couch_config(self.target_environment, list(self.plan.allocation_by_node()))
 
-    def _get_couch_config(self, environment):
-        nodes = list(self.plan.allocation_by_node())
+    def _get_couch_config(self, environment, nodes):
         error = '"get couch IP for env: {}'.format(environment.meta_config.deploy_env)
         config = Config(
             control_node_ip=environment.groups['couchdb2'][0],
@@ -92,7 +91,7 @@ class CouchMigration(object):
 
     @lazy_immutable_property
     def prune_playbook_path(self):
-        return os.path.join(self.working_dir, PRUNE_PLAYBOOK_NAME)
+        return os.path.abspath(os.path.join(self.working_dir, PRUNE_PLAYBOOK_NAME))
 
     @memoized_property
     def shard_plan(self):

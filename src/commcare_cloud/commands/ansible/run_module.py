@@ -105,7 +105,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
         'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
         '-m', module,
-        '-i', environment.paths.inventory_ini,
+        '-i', environment.paths.inventory_source,
         '-a', module_args,
         '--diff',
     ) + tuple(extra_args)

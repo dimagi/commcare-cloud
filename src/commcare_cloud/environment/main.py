@@ -8,6 +8,7 @@ from memoized import memoized, memoized_property
 from collections import Counter
 
 from commcare_cloud.environment.constants import constants
+from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 
@@ -19,10 +20,9 @@ from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
+from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.users import UsersConfig
 
-class EnvironmentException(Exception):
-    pass
 
 class Environment(object):
     def __init__(self, paths):
@@ -45,7 +45,7 @@ class Environment(object):
 
     @memoized
     def get_ansible_vault_password(self):
-        return getpass.getpass("Vault Password: ")
+        return getpass.getpass("Vault Password for '{}': ".format(self.paths.env_name))
 
     @memoized
     def get_vault_variables(self):
@@ -121,6 +121,20 @@ class Environment(object):
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)
 
+    @memoized_property
+    def terraform_config(self):
+        try:
+            with open(self.paths.terraform_yml) as f:
+                config_yml = yaml.load(f)
+        except IOError:
+            return None
+        config_yml['environment'] = config_yml.get('environment', self.meta_config.env_monitoring_id)
+        return TerraformConfig.wrap(config_yml)
+
+    def get_authorized_key(self, user):
+        with open(self.paths.get_authorized_key_file(user)) as f:
+            return f.read()
+
     def check_user_group_absent_present_overlaps(self, absent_users, present_users):
         if not set(present_users).isdisjoint(absent_users):
             repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
@@ -172,8 +186,10 @@ class Environment(object):
 
     @memoized_property
     def inventory_manager(self):
-        return InventoryManager(loader=self._ansible_inventory_data_loader,
-                                sources=self.paths.inventory_ini)
+        return InventoryManager(
+            loader=self._ansible_inventory_data_loader,
+            sources=self.paths.inventory_source
+        )
 
     @property
     def _ansible_inventory_variable_manager(self):
@@ -261,8 +277,6 @@ class Environment(object):
     def _run_last_minute_checks(self):
         assert len(self.groups.get('rabbitmq', [])) > 0, \
             "You need at least one rabbitmq host in the [rabbitmq] group"
-        assert len(self.groups.get('redis', [])) == 1, \
-            "You must have exactly one host in the [redis] group"
 
     def create_generated_yml(self):
         self._run_last_minute_checks()
@@ -270,7 +284,7 @@ class Environment(object):
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
             'dev_users': self.users_config.dev_users.to_json(),
-            'authorized_keys_dir': '{}/'.format(self.paths.authorized_keys_dir),
+            'authorized_keys_dir': '{}/'.format(os.path.realpath(self.paths.authorized_keys_dir)),
             'known_hosts_file': self.paths.known_hosts,
             'commcarehq_repository': self.fab_settings_config.code_repo,
         }

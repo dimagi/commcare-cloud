@@ -1,72 +1,73 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+import jsonobject
+
 import jinja2
 import os
 import re
 import sys
-from commcare_cloud.commands.command_base import CommandBase
+
+import yaml
+
+from commcare_cloud.commands.command_base import CommandBase, Argument
+
+
+GitVersionProperty = jsonobject.StringProperty
+MarkdownProperty = jsonobject.StringProperty
+
+
+class ChangelogEntry(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    # filename is the only property that is populated from outside the yaml file
+    filename = jsonobject.StringProperty()
+
+    title = jsonobject.StringProperty()
+
+    key = jsonobject.StringProperty()
+
+    # Date when this change was added (purely for informational purposes)
+    date = jsonobject.DateProperty()
+
+    optional_per_env = jsonobject.BooleanProperty()
+
+    # Min version of HQ that MUST be deployed before this change can be rolled out
+    min_commcare_version = GitVersionProperty()
+
+    # Max version of HQ that can be deployed before this change MUST be rolled out
+    max_commcare_version = GitVersionProperty()
+
+    # Description of the change
+    # This will be shown as a sort of "preview" in the index
+    context = MarkdownProperty()
+
+    # Details of the change
+    details = MarkdownProperty()
+
+    # Steps to update
+    update_steps = MarkdownProperty()
 
 
 def compile_changelog():
     # Parse the contents of the changelog dir
     changelog_contents = []
-    files_to_ignore = ['0000-changelog.md', 'index.md']
-    changelog_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..', 'docs', 'changelog')
+    changelog_dir = 'changelog'
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
-        if change_file_name not in files_to_ignore:
-            try:
-                _parse_changelog_file(changelog_contents, changelog_dir, change_file_name)
-            except Exception:
-                print("Error parsing the file {}.".format(change_file_name), file=sys.stderr)
-                raise
+        changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
     return changelog_contents
 
 
-def _parse_changelog_file(changelog_contents, changelog_dir, change_file_name):
-    with open(os.path.join(changelog_dir, change_file_name)) as change_file:
-        change_context = ''
-        change_date = ''
-        in_change_context = False
-        change_action_required = False
-        reached_details_line = False
-        for line_number, line in enumerate(change_file):
-            if line_number == 0:
-                change_summary = re.search('(?<=\.).*', line).group().strip()
-            if '**Date:**' in line:
-                change_date = line.split('**Date:**')[1].strip()
-            if '**Optional per env:**' in line:
-                option = line.split('**Optional per env:**')[1].strip().lower()
-                if "no" in option:
-                    change_action_required = True
-            if '## Details' in line:
-                in_change_context = False
-                reached_details_line = True
-            if in_change_context:
-                change_context += line
-            if '## Change Context' in line:
-                in_change_context = True
-        assert (
-            change_file_name and change_context and change_date and change_summary and
-            change_action_required is not None and reached_details_line
-        ), "The following variables shouldn't be falsely during parse:\n{}".format('\n'.join([
-            "{}: {!r}".format(name, value)
-            for name, value in [('change_file_name', change_file_name),
-            ('change_context', change_context),
-            ('change_date', change_date),
-            ('change_summary', change_summary),
-            ('change_action_required', change_action_required is not None),
-            ('reached_details_line', reached_details_line)]
-            if value is None
-        ]))
-        this_changelog = {'filename': change_file_name,
-                          'context': change_context.strip(),
-                          'date': change_date,
-                          'summary': change_summary,
-                          'action_required': change_action_required}
-
-    changelog_contents.append(this_changelog)
+def load_changelog_entry(path):
+    try:
+        with open(path) as f:
+            change_yaml = yaml.load(f)
+            change_yaml['filename'] = re.sub(r'\.yml$', '.md', path.split('/')[-1])
+            # yaml.load already parses dates, using this instead of ChangelogEntry.wrap
+            return ChangelogEntry(**change_yaml)
+    except Exception:
+        print("Error parsing the file {}.".format(path), file=sys.stderr)
+        raise
 
 
 def _sort_files(directory):
@@ -81,17 +82,33 @@ def _sort_files(directory):
     return unsorted_files
 
 
-class MakeChangelog(CommandBase):
+class MakeChangelogIndex(CommandBase):
     command = 'make-changelog-index'
-    help = "Build the commcare-cloud CLI tool's changelog"
-
-    def make_parser(self):
-        pass
+    help = "Build the commcare-cloud CLI tool's changelog index"
+    arguments = ()
 
     def run(self, args, unknown_args):
         j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
 
         changelog_contents = compile_changelog()
 
+        template = j2.get_template('changelog-index.md.j2')
+        print(template.render(changelog_contents=changelog_contents).rstrip())
+
+
+class MakeChangelog(CommandBase):
+    command = 'make-changelog'
+    help = "Build the commcare-cloud CLI tool's individual changelog files"
+    arguments = (
+        Argument(dest='changelog_yml', help="""Path to the yaml changelog file"""),
+    )
+
+    def run(self, args, unknown_args):
+        changelog_yml = args.changelog_yml
+        ordinal = int(changelog_yml.split('/')[-1].split('-')[0])
+        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
+
+        changelog_entry = load_changelog_entry(changelog_yml)
         template = j2.get_template('changelog.md.j2')
-        print(template.render(changelog_contents=changelog_contents))
+
+        print(template.render(changelog_entry=changelog_entry, ordinal=ordinal).rstrip())

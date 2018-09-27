@@ -47,13 +47,10 @@ couch_dbs:
 
 localsettings:
   ALLOWED_HOSTS:
-    - '{{ SITE_HOST }}'
     - 172.19.0.160
     - 172.19.0.161
     - 172.19.3.40
     - 172.19.3.41
-    - localhost
-    - 127.0.0.1
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
@@ -65,7 +62,6 @@ localsettings:
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   HQ_INSTANCE: 'echis'
   INACTIVITY_TIMEOUT: 20160
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"

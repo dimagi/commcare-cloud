@@ -60,10 +60,7 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
   ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
     - "{{ CAS_SITE_HOST }}"
-    - "{{ SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
   ASYNC_INDICATORS_TO_QUEUE: 30000
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
@@ -94,7 +91,6 @@ localsettings:
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  KAFKA_URL: "{{ groups.kafka.0 }}"
   PILLOWTOP_MACHINE_ID: indiacloud
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -109,6 +105,7 @@ localsettings:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
 
 site_locations:
   - name: /data_dumps/export/enikshay/public

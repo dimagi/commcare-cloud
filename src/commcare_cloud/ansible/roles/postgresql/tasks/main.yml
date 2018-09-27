@@ -33,6 +33,13 @@
     - python-psycopg2
     - unzip
 
+- name: Install PostgreSQL & dependencies (bionic)
+  apt: name="{{ item }}" state=present
+  with_items:
+    - python3-docutils  # required for building pghashlib
+    - python3-psycopg2
+  when: ansible_distribution_version == '18.04'
+
 - name: Check for original postgresql directory
   stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
   register: orig_path
@@ -89,63 +96,11 @@
 
 - meta: flush_handlers
 
-- name: Create PostgreSQL users
-  become: yes
-  become_user: postgres
+- name: Set up PostgreSQL DBs
+  import_tasks: set_up_dbs.yml
   vars:
-    ansible_ssh_pipelining: true
-  postgresql_user:
-    name: "{{ item.username }}"
-    password: "{{ item.password }}"
-    role_attr_flags: "{{ item.role_attr_flags|default('CREATEDB') }}"
-    state: present
-    port: "{{ postgresql_port }}"
-  when: not is_pg_standby
-  with_items: "{{ postgres_users.values() }}"
-  tags:
-    - postgres_users
-
-- name: Add user privs
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_privs:
-    db: postgres
-    state: present
-    privs: "{{ item.1.privs }}"
-    objs: "{{ item.1.objs }}"
-    roles: "{{ item.0.username }}"
-    port: "{{ postgresql_port }}"
-  when: not is_pg_standby
-  with_subelements:
-    - "{{ postgres_users.values() }}"
-    - privs
-    - flags:
-      skip_missing: True
-  tags:
-    - postgres_users
-
-- name: check postgres database hosts
-  assert: { that: "item.host in groups.postgresql or item.host in groups.pg_standby or item.host == '127.0.0.1'" }
-  with_items: "{{ postgresql_dbs.all }}"
-
-- name: Create PostgreSQL databases
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_db:
-    name: "{{ item.name }}"
-    state: present
-    port: "{{ postgresql_port }}"
-    owner: "{{ item.user }}"
-    encoding: 'UTF-8'
-    lc_collate: 'en_US.UTF-8'
-    lc_ctype: 'en_US.UTF-8'
-    template: 'template0'
-  with_items: "{{ postgresql_dbs.all }}"
-  when: item.create and ((item.host == inventory_hostname) or is_monolith|bool)
+    db_is_remote: no
+    postgresql_host: "{{ inventory_hostname }}"
 
 # restart / reload if necessary to make sure replication slot config updated
 - meta: flush_handlers
@@ -175,6 +130,25 @@
   tags:
     - replication
 
+# Only update recovery config if it exists, don't create it
+- name: Check if recovery.conf exists
+  stat:
+    path: "{{ postgresql_recovery_conf }}"
+    register: recovery_file
+  when: is_pg_standby
+  tags:
+    - postgres_users
+    - replication
+
+- name: update "recovery.conf"
+  template:
+    src: roles/postgresql/templates/recovery.conf.j2
+    dest: "{{ postgresql_recovery_conf }}"
+  when: is_pg_standby and recovery_file.stat.exists
+  tags:
+    - postgres_users
+    - replication
+
 - name: Install pgbouncer
   apt: name=pgbouncer state=present
   notify: Start pgbouncer
@@ -193,6 +167,7 @@
   notify: Reload pgbouncer
   tags:
     - pgbouncer
+    - postgres_users
 
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
