@@ -1,4 +1,4 @@
-[program:{{ project }}-{{ deploy_env }}-celery_beat]
+[program:{{ project }}-{{ deploy_env }}-celerybeat]
 command={{ virtualenv_home }}/bin/python {{ code_home }}/manage.py celery beat --loglevel=INFO
 directory={{ code_home }}
 user={{ cchq_user }}
