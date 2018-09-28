@@ -28,7 +28,7 @@ nginx_sites:
       proxy_read_timeout: 900s
       proxy_buffers: 8 64k
       proxy_buffer_size: 64k
-      client_body_buffer_size: "128k"
+      client_body_buffer_size: 512k
     - name: "/static"
       alias: "{{ nginx_static_home }}"
       add_header: "Access-Control-Allow-Origin *"
