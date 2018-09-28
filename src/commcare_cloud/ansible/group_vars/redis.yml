@@ -3,6 +3,7 @@ redis_version: 4.0.8
 redis_install_dir: "/opt/redis/{{ redis_version}}"
 redis_dir: "{{ encrypted_root }}/redis"
 redis_local_facts: false
+redis_logfile: "{{ redis_dir }}/redis.log"
 redis_service_name: redis-server
 redis_syslog_enabled: "yes"
 redis_maxmemory: 4gb
