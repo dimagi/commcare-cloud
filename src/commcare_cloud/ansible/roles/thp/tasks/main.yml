@@ -1,6 +1,6 @@
 - stat:
     path: /etc/default/grub
-    register: uses_grub
+  register: uses_grub
 
 - stat:
     path: /sys/kernel/mm/transparent_hugepage/enabled
