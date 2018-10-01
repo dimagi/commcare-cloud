@@ -40,7 +40,6 @@
     - role: "haproxy"
   vars:
     haproxy_stats_enabled: true
-    haproxy_stats_bind_address: "{{ inventory_hostname }}"
     haproxy_service_configs:
     - service:
         haproxy_service_name: couchdb2
