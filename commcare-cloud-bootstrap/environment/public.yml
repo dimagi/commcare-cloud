@@ -41,6 +41,8 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb_admins: "{'{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',}"
+
 couchdb_bind:
   ty: static
   host: '{{ internal_ipv4.address }}'
