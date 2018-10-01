@@ -38,6 +38,16 @@
     file:
       path: /opt/data/ansible-test
       state: touch
+    register: opt_data_readable
+    tags:
+    - opt_data
+
+  - name: Remove the test file
+    become: yes
+    file:
+      path: /opt/data/ansible-test
+      state: absent
+    when: opt_data_readable
     tags:
     - opt_data
 
@@ -60,5 +70,15 @@
     file:
       path: /home/cchq/ansible-test
       state: touch
+    register: home_cchq_readable
+    tags:
+    - home_cchq
+
+  - name: Remove the test file
+    become: yes
+    file:
+      path: /home/cchq/ansible-test
+      state: absent
+    when: home_cchq_readable
     tags:
     - home_cchq
