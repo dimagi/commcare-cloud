@@ -48,45 +48,36 @@ backend {{ item.service.haproxy_service_name }}-back
 {% for option in backend_httpcheck_options %}
     http-check {{ option }}
 {% endfor %}
+{% set rise_fall = item.service.haproxy_backend_nodes | count | string %}
+    default-server {{ [
+        "port", haproxy_check_port | string,
+        "inter", haproxy_check_interval | string,
+        "rise", item.service.haproxy_backend_nodes | count | string,
+        "fall", item.service.haproxy_backend_nodes | count | string
+    ] | join(' ') }}
 
 
 {% for host_name in item.service.haproxy_backend_nodes %}
 {% if hostvars[host_name] is defined %}
 {%   set ip_addr = hostvars[host_name][internal_network_interface_fact].ipv4.address %}
 {% endif %}
-{% set entry = [] %}
-{% set _ = entry.append("server") %}
-{% set _ = entry.append((host_name.name | default(host_name)) | string) %}
-{% set _ = entry.append((host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string) %}
-{% set _ = entry.append("check") %}
-{% set _ = entry.append("port") %}
-{% set _ = entry.append(haproxy_check_port | string) %}
-{% set _ = entry.append("inter") %}
-{% set _ = entry.append(haproxy_check_interval | string) %}
-{% set _ = entry.append("rise") %}
-{% set _ = entry.append(item.service.haproxy_backend_nodes | count | string) %}
-{% set _ = entry.append("fall") %}
-{% set _ = entry.append(item.service.haproxy_backend_nodes | count | string) %}
-    {{ entry | join(' ') }}
+    {{ [
+        "server",
+        (host_name.name | default(host_name)) | string,
+        (host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string,
+        "check",
+    ] | join(' ') }}
 {% endfor %}
 
 {% for host_name in item.service.haproxy_backup_nodes|default([]) %}
 {% if hostvars[host_name] is defined %}
 {%   set ip_addr = hostvars[host_name].internal_ipv4.address %}
 {% endif %}
-{% set entry = [] %}
-{% set _ = entry.append("server") %}
-{% set _ = entry.append((host_name.name | default(host_name)) | string) %}
-{% set _ = entry.append((host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string) %}
-{% set _ = entry.append("check") %}
-{% set _ = entry.append("port") %}
-{% set _ = entry.append(haproxy_check_port | string) %}
-{% set _ = entry.append("inter") %}
-{% set _ = entry.append(haproxy_check_interval | string) %}
-{% set _ = entry.append("rise") %}
-{% set _ = entry.append(item.service.haproxy_backup_nodes | count | string) %}
-{% set _ = entry.append("fall") %}
-{% set _ = entry.append(item.service.haproxy_backup_nodes | count | string) %}
-{% set _ = entry.append("backup") %}
-    {{ entry | join(' ') }}
+    {{ [
+        "server",
+        (host_name.name | default(host_name)) | string,
+        (host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string,
+        "check",
+        "backup"
+    ] | join(' ') }}
 {% endfor %}
