@@ -25,8 +25,8 @@
     tags:
     - opt_data
 
-  - name: Check for already mounted encrypted tmp drive
-    shell: grep '{{ encrypted_tmp }} ecryptfs' /etc/mtab
+  - name: Check for already mounted encrypted root drive
+    shell: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
     failed_when: false
     changed_when: false
     check_mode: no
