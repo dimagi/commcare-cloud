@@ -69,32 +69,6 @@
     - "{{ ssl_certs_dir }}"
     - "{{ ssl_keys_dir }}"
 
-- name: Copy cchq SSL cert
-  become: yes
-  copy:
-    content: '{{ nginx_combined_cert_value }}'
-    dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and nginx_combined_cert_value
-  tags:
-    - update-cert
-
-- name: Copy cchq SSL Key
-  become: yes
-  copy:
-    content: "{{ nginx_key_value }}"
-    dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and nginx_key_value
-  tags:
-    - update-cert
-
-
 - name: Link CCHQ SSL cert
   become: yes
   file:
