@@ -46,7 +46,7 @@
     file:
       path: /opt/data/ansible-test
       state: absent
-    when: opt_data_readable
+    when: opt_data_readable is success
     tags:
     - opt_data
 
@@ -79,6 +79,6 @@
     file:
       path: /home/cchq/ansible-test
       state: absent
-    when: home_cchq_readable
+    when: home_cchq_readable is success
     tags:
     - home_cchq
