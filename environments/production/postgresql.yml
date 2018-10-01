@@ -47,13 +47,13 @@ dbs:
         host: hqdb1
       p3:
         shards: [410, 614]
-        host: hqdb2
+        host: hqdb5
       p4:
         shards: [615, 819]
-        host: hqdb2
+        host: hqdb5
       p5:
         shards: [820, 1023]
-        host: hqdb2
+        host: hqdb5
   standby:
     - django_alias: pgmainstandby0
       name: commcarehq
