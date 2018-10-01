@@ -158,7 +158,7 @@ def get_celery_workers(environment):
             continue
         for comma_separated_queue_names, config in queues.items():
             for queue in comma_separated_queue_names.split(','):
-                if queue == 'flower':
+                if queue == 'flower' or queue == 'beat':
                     # there's always only one, so worker_num doesn't factor into the name
                     worker_range = [None]
                 else:
@@ -171,6 +171,8 @@ def get_celery_workers(environment):
 def get_celery_worker_name(environment, comma_separated_queue_name, worker_num):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
+    if comma_separated_queue_name == 'beat':
+        return "{project}-{environment}-celerybeat".format(project=project, environment=environment_environment)
     return "{project}-{environment}-celery_{comma_separated_queue_name}{worker_num_suffix}".format(
         project=project,
         environment=environment_environment,
