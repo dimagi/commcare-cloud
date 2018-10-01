@@ -1,3 +1,2 @@
 SITE_HOST: 'swiss.commcarehq.org'
-nginx_key_value: '{{ ssl_secrets.private_keys.swiss_commcarehq_org }}'
-nginx_combined_cert_value: '{{ ssl_secrets.certs.swiss_commcarehq_org }}'
+letsencrypt_cchq_ssl: True
