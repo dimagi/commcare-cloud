@@ -41,7 +41,9 @@ etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
 
-default_from_email: "commcarehq-noreply@icds-cas.gov.in"
+default_from_email: commcarehq-noreply@icds-cas.gov.in
+server_email: commcarehq-noreply@icds-cas.gov.in
+cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 
 commcare_errors_branch: "master-icds"
 site_locations:
