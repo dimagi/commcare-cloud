@@ -1,0 +1,64 @@
+- hosts: all
+  gather_facts: no
+  become: no
+  tasks:
+
+  - name: Ping if hosts are up
+    ping:
+    tags:
+     - ping
+
+- hosts:
+   - postgresql
+   - elsaticsearch
+   - riakcs
+   - couchdb2
+   - kafka
+   - redis
+   - rabbitmq
+  gather_facts: no
+  tasks:
+
+  - name: Check if /opt/data is mounted
+    shell: grep '/opt/data ext4 rw' /etc/mtab
+    check_mode: no
+    tags:
+    - opt_data
+
+  - name: Check for already mounted encrypted tmp drive
+    shell: grep '{{ encrypted_tmp }} ecryptfs' /etc/mtab
+    failed_when: false
+    changed_when: false
+    check_mode: no
+    tags:
+    - ecryptfs
+
+  - name: Check /opt/data is not read-only
+    become: yes
+    file:
+      path: /opt/data/ansible-test
+      state: touch
+    tags:
+    - opt_data
+
+- hosts:
+   - celery
+   - pillowtop
+   - webworkers
+   - formplayer
+   - airflow
+  gather_facts: no
+  tasks:
+
+  - name: Check if /home/cchq is mounted
+    shell: grep '/home/cchq ext4 rw' /etc/mtab
+    tags:
+    - home_cchq
+
+  - name: Check /home/cchq is not read-only
+    become: yes
+    file:
+      path: /home/cchq/ansible-test
+      state: touch
+    tags:
+    - home_cchq
