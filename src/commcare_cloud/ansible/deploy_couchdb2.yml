@@ -44,7 +44,7 @@
     haproxy_server_timeout: 1h
     haproxy_client_timeout: 150s
     haproxy_connect_timeout: 500ms
-    haproxy_http_request_timeout: None
+    haproxy_http_request_timeout:
     haproxy_service_configs:
     - service:
         haproxy_service_name: couchdb2
