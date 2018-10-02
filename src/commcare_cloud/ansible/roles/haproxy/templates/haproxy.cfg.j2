@@ -18,7 +18,9 @@ defaults
         retries {{ haproxy_retries }}
         timeout client {{ haproxy_client_timeout }}
         timeout connect {{ haproxy_connect_timeout }}
+{% if haproxy_http_request_timeout %}
         timeout http-request {{ haproxy_http_request_timeout }}
+{% endif %}
         timeout server {{ haproxy_server_timeout }}
         maxconn {{ haproxy_maxconn }}
 
