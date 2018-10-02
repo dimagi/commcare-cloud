@@ -39,10 +39,13 @@
             - nocreate
             - notifempty
 
-- import_playbook: partials/couchdb2_proxy_nginx.yml
-  when: not couchdb_use_haproxy
-  tags: nginx
-
-- import_playbook: partials/couchdb2_proxy_haproxy.yml
-  when: couchdb_use_haproxy
-  tags: haproxy
+- name: Couchdb2 proxy
+  hosts: couchdb2_proxy
+  become: true
+  tasks:
+    - import_tasks: partials/couchdb2_proxy_nginx.yml
+      when: not couchdb_use_haproxy
+      tags: nginx
+    - import_tasks: partials/couchdb2_proxy_haproxy.yml
+      when: couchdb_use_haproxy
+      tags: haproxy

@@ -21,6 +21,7 @@
     path: /etc/default/nginx
     regexp: '^ULIMIT='
     line: 'ULIMIT="-n 65536"'
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Create nginx http user
   become: yes
