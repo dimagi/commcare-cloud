@@ -18,12 +18,10 @@
           - httpchk GET /_up
         backend_httpcheck_options:
           - disable-on-404
-  when: couchdb_use_haproxy
 
 - name: Haproxy log rolling configurations
   hosts: couchdb2
   become: true
-  when: couchdb_use_haproxy
   roles:
     - role: ansible-logrotate
       logrotate_scripts:
