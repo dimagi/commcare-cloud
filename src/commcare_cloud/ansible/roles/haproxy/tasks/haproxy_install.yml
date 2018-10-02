@@ -1,0 +1,51 @@
+---
+- name: Install HAProxy Packages
+  package:
+    name: "{{ haproxy_packages }}"
+    state: latest
+    cache_valid_time: "{{ apt_cache_timeout }}"
+
+- name: Ensure haproxy_hatop_download_path exists
+  file:
+    path: "{{ haproxy_hatop_download_path }}"
+    state: directory
+
+- name: Download extra package
+  get_url:
+    url: "{{ haproxy_hatop_download_url }}"
+    dest: "{{ haproxy_hatop_download_path }}"
+    validate_certs: "{{ haproxy_hatop_download_validate_certs }}"
+  register: fetch_url
+  until: fetch_url is success
+  retries: 3
+  delay: 10
+
+- name: Unarchive HATop
+  unarchive:
+    src: "{{ haproxy_hatop_download_path }}/{{ haproxy_hatop_download_url | basename }}"
+    remote_src: yes
+    dest: "/opt"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Install HATop
+  command: "install -m 755 bin/hatop /usr/local/bin"
+  args:
+    chdir: "/opt/{{ haproxy_hatop_download_url | basename | replace('.tar.gz', '') }}"
+    creates: "/usr/local/bin/hatop"
+
+- name: Create haproxy log dir
+  file:
+    path: "{{ '/var/log/haproxy' | realpath }}"
+    state: directory
+    owner: syslog
+    group: adm
+    mode: "0755"
+  tags:
+    - haproxy-dirs
+    - haproxy-logs
+
+- name: Create haproxy conf.d dir
+  file:
+    path: "/etc/haproxy/conf.d"
+    state: directory
+    mode: "0755"

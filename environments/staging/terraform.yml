@@ -7,7 +7,7 @@ azs:
   - "us-east-1a"
   - "us-east-1b"
   - "us-east-1c"
-vpc_begin_range: "10.200"
+vpc_begin_range: "10.201"
 
 vpn_connections:
   - name: rackspace
@@ -33,6 +33,16 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 8
+  - server_name: "web0-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "web1-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
 
 proxy_servers: []
 
