@@ -44,6 +44,7 @@ nofile_limit: 65536
 
 supervisor_http_enabled: True
 
+couchdb_use_haproxy: True
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"

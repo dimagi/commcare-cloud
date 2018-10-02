@@ -1,0 +1,39 @@
+---
+- name: Setup nginx
+  hosts: couchdb2_proxy
+  tasks:
+    - name: install nginx
+      include_role:
+        name: nginx
+        tasks_from: install
+
+- name: Couchdb 2.0 Nginx Proxy
+  hosts: couchdb2_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: True
+        site_config: {name: couchdb2, vars_file: couchdb2}
+
+- name: Nginx log rolling configurations
+  hosts: couchdb2_proxy
+  become: true
+  roles:
+    - role: ansible-logrotate
+      logrotate_scripts:
+        - name: "{{ deploy_env }}"
+          path: "{{ log_home }}/*.log"
+          options:
+            - monthly
+            - size 750M
+            - rotate 14
+            - missingok
+            - compress
+            - delaycompress
+            - nocreate
+            - notifempty
+            - sharedscripts
+          scripts:
+            postrotate: "[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`"

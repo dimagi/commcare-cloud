@@ -13,6 +13,12 @@
   roles:
     - {role: couchdb2, tags: 'couchdb2'}
 
+- name: Move logrotate to hourly
+  hosts: couchdb2_proxy
+  become: true
+  roles:
+    - role: logrotate
+
 - name: Couchdb2 log rolling configurations
   hosts: couchdb2
   become: true
@@ -33,46 +39,10 @@
             - nocreate
             - notifempty
 
-- name: Couchdb 2.0 Proxy
-  hosts: couchdb2_proxy
-  become: yes
-  roles:
-    - role: "haproxy"
-  vars:
-    haproxy_stats_enabled: true
-    haproxy_service_configs:
-    - service:
-        haproxy_service_name: couchdb2
-        haproxy_backend_nodes: "{{ groups['couchdb2'] | default([]) }}"
-        haproxy_port: "35984"
-        # Use temp port until ready to switch
-        # haproxy_port: "{{ couchdb2_proxy_port }}"
-        haproxy_backend_port: "{{ couchdb2_port }}"
-        haproxy_balance_type: http
-        haproxy_interval: 5s
-        haproxy_backend_options:
-          - httpchk GET /_up
-        backend_httpcheck_options:
-          - disable-on-404
-  tags:
-    - haproxy
+- import_playbook: partials/couchdb2_proxy_nginx.yml
+  when: not couchdb_use_haproxy
+  tags: nginx
 
-- name: Haproxy log rolling configurations
-  hosts: couchdb2
-  become: true
-  roles:
-    - role: ansible-logrotate
-      tags: couchdb2
-      logrotate_scripts:
-        - name: "haproxy"
-          path: "/var/log/haproxy/*"
-          options:
-            - daily
-            - size 100M
-            - rotate 10
-            - missingok
-            - compress
-            - delaycompress
-            - copytruncate
-            - nocreate
-            - notifempty
+- import_playbook: partials/couchdb2_proxy_haproxy.yml
+  when: couchdb_use_haproxy
+  tags: haproxy

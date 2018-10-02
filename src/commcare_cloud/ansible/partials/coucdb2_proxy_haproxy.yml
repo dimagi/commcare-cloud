@@ -1,0 +1,43 @@
+---
+- name: Couchdb 2.0 Proxy
+  hosts: couchdb2_proxy
+  become: yes
+  roles:
+    - role: "haproxy"
+  vars:
+    haproxy_stats_enabled: true
+    haproxy_service_configs:
+    - service:
+        haproxy_service_name: couchdb2
+        haproxy_backend_nodes: "{{ groups['couchdb2'] | default([]) }}"
+        haproxy_port: "35984"
+        # Use temp port until ready to switch
+        # haproxy_port: "{{ couchdb2_proxy_port }}"
+        haproxy_backend_port: "{{ couchdb2_port }}"
+        haproxy_balance_type: http
+        haproxy_interval: 5s
+        haproxy_backend_options:
+          - httpchk GET /_up
+        backend_httpcheck_options:
+          - disable-on-404
+  when: couchdb_use_haproxy
+
+- name: Haproxy log rolling configurations
+  hosts: couchdb2
+  become: true
+  when: couchdb_use_haproxy
+  roles:
+    - role: ansible-logrotate
+      logrotate_scripts:
+        - name: "haproxy"
+          path: "/var/log/haproxy/*"
+          options:
+            - daily
+            - size 100M
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
