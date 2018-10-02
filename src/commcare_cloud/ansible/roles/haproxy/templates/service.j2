@@ -34,7 +34,6 @@ backend {{ item.service.haproxy_service_name }}-back
     stick-table type ip size 256k expire 30m
 {% if request_option == "http" %}
     option forwardfor
-    option httplog
 {% elif request_option == "tcp" %}
     option tcplog
 {% endif %}
