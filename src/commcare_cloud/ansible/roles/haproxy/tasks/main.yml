@@ -1,0 +1,8 @@
+---
+- import_tasks: haproxy_install.yml
+  tags:
+    - haproxy_install
+
+- import_tasks: haproxy_configure.yml
+  tags:
+    - haproxy_config
