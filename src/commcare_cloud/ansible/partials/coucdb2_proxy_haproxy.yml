@@ -10,9 +10,7 @@
     - service:
         haproxy_service_name: couchdb2
         haproxy_backend_nodes: "{{ groups['couchdb2'] | default([]) }}"
-        haproxy_port: "35984"
-        # Use temp port until ready to switch
-        # haproxy_port: "{{ couchdb2_proxy_port }}"
+        haproxy_port: "{{ couchdb2_proxy_port }}"
         haproxy_backend_port: "{{ couchdb2_port }}"
         haproxy_balance_type: http
         haproxy_interval: 5s
