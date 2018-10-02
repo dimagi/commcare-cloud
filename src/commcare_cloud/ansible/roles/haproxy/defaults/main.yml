@@ -1,4 +1,7 @@
 ---
+# Major version to install (don't specify point release)
+haproxy_version: 1.8
+
 # Validate Certificates when downloading hatop. May be set to "no" when proxy server
 # is intercepting the certificates.
 haproxy_hatop_download_validate_certs: yes
