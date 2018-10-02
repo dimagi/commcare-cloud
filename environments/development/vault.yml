@@ -5,6 +5,7 @@ secrets:
   DATADOG_APP_KEY: null
   AMQP_USER: "{{ deploy_env }}_worker"
   AMQP_PASSWORD: '******'
+  HAPROXY_STATS_PASSWORD: secrete
   SUPERVISOR_HTTP_USERNAME: user
   SUPERVISOR_HTTP_PASSWORD: 123
   POSTGRES_USERS:

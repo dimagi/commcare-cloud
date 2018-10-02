@@ -103,10 +103,6 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
-couchdb_admins: "{
-  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
-}"
-
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy.0 }}"

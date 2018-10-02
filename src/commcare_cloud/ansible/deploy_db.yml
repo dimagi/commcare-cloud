@@ -3,7 +3,6 @@
   hosts:
     - postgresql
     - couchdb
-    - couchdb2
     - redis
     - elasticsearch
     - rabbitmq
@@ -86,31 +85,7 @@
             - nocreate
             - notifempty
 
-- name: Couchdb 2.0
-  hosts: couchdb2
-  become: true
-  roles:
-    - {role: couchdb2, tags: 'couchdb2'}
-
-- name: Couchdb2 log rolling configurations
-  hosts: couchdb2
-  become: true
-  roles:
-    - role: ansible-logrotate
-      tags: couchdb2
-      logrotate_scripts:
-        - name: "{{ deploy_env }}_couchdb2"
-          path: "{{ couchdb_dir }}/var/log/*.stderr"
-          options:
-            - daily
-            - size 100M
-            - rotate 10
-            - missingok
-            - compress
-            - delaycompress
-            - copytruncate
-            - nocreate
-            - notifempty
+- import_playbook: deploy_couchdb2.yml
 
 - name: Redis
   hosts: redis
@@ -174,36 +149,12 @@
     - riakcs
     - formplayer
   tags: 'kernel_tuning'
-  tasks:
-    - stat:
-        path: /etc/default/grub
-      register: uses_grub
-    - stat:
-        path: /sys/kernel/mm/transparent_hugepage/enabled
-      register: thp_enabled
-    - stat:
-        path: /sys/kernel/mm/transparent_hugepage/defrag
-      register: thp_defrag
-    - name: Sets THP enabled to never
-      raw: echo never > /sys/kernel/mm/transparent_hugepage/enabled
-      when: thp_enabled.stat.exists
-    - name: Sets THP defrag to never
-      raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
-      when: thp_defrag.stat.exists
-    # do use grub-mkconfig to generate current grub config is you need to
-    - name: Adds transparent_hugepage=never to default grub config
-      lineinfile:
-        dest: /etc/default/grub
-        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=""$'
-        line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
-        backrefs: yes
-        state: present
-      when: uses_grub.stat.exists
+  roles:
+    - role: thp
 
 - name: Move logrotate to hourly
   hosts:
     - proxy
-    - couchdb2_proxy
   become: true
   roles:
     - role: logrotate
