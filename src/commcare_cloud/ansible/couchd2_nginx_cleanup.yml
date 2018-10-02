@@ -1,0 +1,45 @@
+# Run this playbook once migration from nginx to haproxy is complete for couchdb2
+---
+- name: Check using haproxy
+  hosts: couchdb2_proxy
+  tasks:
+    - assert:
+        that: couchdb_use_haproxy
+        msg: "{{ deploy_env }} not configured to use HAProxy"
+
+- name: Remove couchdb2 nginx config
+  hosts: couchdb2_proxy
+  become: true
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: False
+        site_config: {name: couchdb2, vars_file: couchdb2}
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+  when: 'proxy' in group_names
+
+- name: Uninstall nginx and delete config
+  hosts: couchdb2_proxy
+  become: true
+  tasks:
+    - name: stop nginx
+      service:
+        name: nginx
+        state: stopped
+
+    - name: remove nginx
+      package:
+        name: nginx
+        state: absent
+
+    - name: remove nginx config
+      file:
+        path: '/etc/nginx/'
+        state: abesent
+  when: 'proxy' not in group_names
