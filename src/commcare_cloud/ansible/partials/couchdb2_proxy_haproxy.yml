@@ -3,7 +3,7 @@
   hosts: couchdb2_proxy
   become: yes
   roles:
-    - role: "haproxy"
+    - role: "../roles/haproxy"
   vars:
     haproxy_stats_enabled: true
     haproxy_service_configs:
