@@ -39,7 +39,12 @@
   roles:
     - role: "haproxy"
   vars:
+    # https://github.com/apache/couchdb/blob/master/rel/haproxy.cfg
     haproxy_stats_enabled: true
+    haproxy_server_timeout: 1h
+    haproxy_client_timeout: 150s
+    haproxy_connect_timeout: 500ms
+    haproxy_http_request_timeout:
     haproxy_service_configs:
     - service:
         haproxy_service_name: couchdb2
