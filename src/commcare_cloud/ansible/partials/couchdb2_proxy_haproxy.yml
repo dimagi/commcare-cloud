@@ -1,9 +1,7 @@
 ---
 - name: Couchdb 2.0 Proxy
-  hosts: couchdb2_proxy
-  become: yes
-  roles:
-    - role: "../roles/haproxy"
+  include_role:
+    name: "../roles/haproxy"
   vars:
     haproxy_stats_enabled: true
     haproxy_service_configs:
@@ -20,20 +18,21 @@
           - disable-on-404
 
 - name: Haproxy log rolling configurations
-  hosts: couchdb2
-  become: true
-  roles:
-    - role: ansible-logrotate
-      logrotate_scripts:
-        - name: "haproxy"
-          path: "/var/log/haproxy/*"
-          options:
-            - daily
-            - size 100M
-            - rotate 10
-            - missingok
-            - compress
-            - delaycompress
-            - copytruncate
-            - nocreate
-            - notifempty
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: "haproxy"
+        path: "/var/log/haproxy/*"
+        options:
+          - daily
+          - size 100M
+          - rotate 10
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate
+          - nocreate
+          - notifempty
+        scripts:
+          postrotate: "invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true"
