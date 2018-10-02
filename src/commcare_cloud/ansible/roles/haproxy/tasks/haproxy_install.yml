@@ -2,7 +2,7 @@
 - name: Install HAProxy Packages
   package:
     name: "{{ haproxy_packages }}"
-    state: latest
+    state: present
     cache_valid_time: "{{ apt_cache_timeout }}"
 
 - name: Ensure haproxy_hatop_download_path exists
