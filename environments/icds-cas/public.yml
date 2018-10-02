@@ -41,7 +41,9 @@ etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
 
-default_from_email: "commcarehq-noreply@icds-cas.gov.in"
+default_from_email: commcarehq-noreply@icds-cas.gov.in
+server_email: commcarehq-noreply@icds-cas.gov.in
+cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 
 commcare_errors_branch: "master-icds"
 site_locations:
@@ -100,10 +102,6 @@ couchdb_cluster_settings:
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
-
-couchdb_admins: "{
-  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
-}"
 
 couch_dbs:
   default:
@@ -166,6 +164,7 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
+  KAFKA_API_VERSION: [0, 8, 2]
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'

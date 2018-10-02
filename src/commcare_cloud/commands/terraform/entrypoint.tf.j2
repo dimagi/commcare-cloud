@@ -23,7 +23,7 @@ module "commcarehq" {
   openvpn_image = {{ openvpn_image|tojson }}
   {%- endif %}
   azs = {{ azs|tojson }}
-  vpc_begin_range = "10.200"
+  vpc_begin_range = {{ vpc_begin_range|tojson }}
   dns_domain = ""
   # Set the DNS Domain name to be used (should match the name for the Zone ID)
   dns_zone_id = ""

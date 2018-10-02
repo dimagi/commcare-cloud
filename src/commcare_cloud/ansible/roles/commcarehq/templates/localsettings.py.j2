@@ -814,3 +814,7 @@ UCR_COMPARISONS = {
 {% endfor %}
 }
 {% endif %}
+
+{% if localsettings.KAFKA_API_VERSION is defined %}
+KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
+{% endif %}

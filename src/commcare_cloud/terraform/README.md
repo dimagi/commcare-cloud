@@ -3,12 +3,12 @@
 In this example there's a root account for your AWS organization,
 and the new environment will live in it's own linked account.
 
-1. From the root account go to organizations and create a new account.
+1. From the root account go to My Organization and create a new account.
     - use an email like `<mainaccount>+<env>@<org>`
 2. Enter in new account email as if to log in and then go through the Forgot Password
     workflow to set password (to something randomized and strong). Save this password.
 3. Log in using the new credentials.
-4. Go to my credentials and enable the root account's access key.
+4. Go to My Security Credentials and enable the root account's access key.
     Copy these to your `~/.aws/credentials` as
     ```
     [<aws_profile>]
@@ -16,9 +16,11 @@ and the new environment will live in it's own linked account.
     aws_secret_access_key = "..."
     ```
 5. Add `aws_profile: <aws_profile>` to `terraform.yml` of your env.
-6. Run `cchq <env> terraform init`
-7. Run `cchq <env> terraform plan -target module.commcarehq.module.Users`
-    and if the user list looks good...
+6. (If the S3 state bucket is under a different account) Go to https://console.aws.amazon.com/iam/home#/security_credential > Account Identifiers
+    to get the Canonical User ID for the account, and then in an incognito tab log in
+    under the account where the S3 state bucket lives, and under Permissions give
+    your account access to the bucket using the Canonical User ID. 
+7. Run `cchq <env> terraform init`
 8. Run `cchq <env> terraform apply -target module.commcarehq.module.Users`
     and respond `yes` when prompted.
 9. In AWS console, go to IAM users and click on your own username.
