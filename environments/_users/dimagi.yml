@@ -9,7 +9,6 @@ dev_users:
     - esoergel
     - frener
     - gbova
-    - gcapalbo
     - jemord
     - jroth
     - jschweers
@@ -25,3 +24,4 @@ dev_users:
   absent:
     - astone
     - wpride
+    - gcapalbo
