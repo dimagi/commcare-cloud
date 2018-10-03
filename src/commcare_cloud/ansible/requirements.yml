@@ -1,7 +1,6 @@
 ---
-- src: git+https://github.com/andrewrothstein/ansible-couchdb-cluster.git
-  version: 1d1558722c30e03cedb641e8bb2abf9ad5bc1fcd
-  name: andrewrothstein.ansible-couchdb-cluster
+- version: v1.1.4
+  name: andrewrothstein.couchdb-cluster
 - src: git+https://github.com/andrewrothstein/ansible-couchdb.git
   version: f0e026e73b8bf6f4ee5cc710f8fdbcdeb7418b2b
   name: andrewrothstein.couchdb
