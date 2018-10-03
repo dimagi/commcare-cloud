@@ -225,6 +225,8 @@ pillows:
       num_processes: 8
     XFormToElasticsearchPillow:
       num_processes: 8
+    XFormToElasticsearchPillow-current:
+      num_processes: 8
   'pillow2':
     kafka-ucr-static-forms:
       start_process: 0
