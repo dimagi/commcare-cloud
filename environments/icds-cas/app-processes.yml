@@ -185,6 +185,17 @@ celery_processes:
   'web12':
     ucr_indicator_queue:
       concurrency: 4
+  'web13':
+  'web14':
+  'web15':
+  'web16':
+  'web17':
+  'web18':
+  'web19':
+  'web20':
+  'web21':
+  'web22':
+  'web23':
 pillows:
   'pillow0':
     # Catch all server for low volume pillows
