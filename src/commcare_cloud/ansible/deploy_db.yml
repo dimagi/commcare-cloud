@@ -6,7 +6,6 @@
     - redis
     - elasticsearch
     - rabbitmq
-    - zookeeper
     - riakcs
     - formplayer
     - pg_standby
@@ -111,19 +110,10 @@
   roles:
     - {role: rabbitmq, tags: 'rabbitmq'}
 
-- name: Zookeeper
-  hosts: zookeeper
-  become: true
-  roles:
-    - {role: zookeeper, tags: 'zookeeper'}
-
-- name: Kafka
-  hosts: kafka
-  become: true
-  environment:
-    JMX_PORT: 9999
-  roles:
-    - {role: kafka, tags: 'kafka'}
+- import_playbook: deploy_kafka.yml
+  tags:
+    - kafka
+    - zookeeper
 
 - import_playbook: deploy_riakcs.yml
   tags: riakcs
@@ -145,7 +135,6 @@
     - redis
     - elasticsearch
     - rabbitmq
-    - zookeeper
     - riakcs
     - formplayer
   tags: 'kernel_tuning'
