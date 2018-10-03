@@ -252,9 +252,9 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
-      - name: 'XFormToElasticsearchPillow-current',
-        class: 'pillowtop.pillow.interface.ConstructedPillow',
-        instance: 'corehq.pillows.xform.get_xform_to_elasticsearch_pillow',
+      - name: 'XFormToElasticsearchPillow-current'
+        class: 'pillowtop.pillow.interface.ConstructedPillow'
+        instance: 'corehq.pillows.xform.get_xform_to_elasticsearch_pillow'
   BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
