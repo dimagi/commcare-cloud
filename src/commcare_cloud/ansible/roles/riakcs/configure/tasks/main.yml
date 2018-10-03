@@ -51,6 +51,9 @@
     mode=0640
   notify: "restart {{ name }}"
 
+- set_fact:
+    advanced_conf: "{{ _backend_vars.bitcask.advanced_conf }}"
+
 - name: Set {{ name }} advanced.config
   template: >
     src={{ advanced_conf }}
