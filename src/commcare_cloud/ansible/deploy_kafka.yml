@@ -1,0 +1,18 @@
+---
+- name: Common Database Machine Setup
+  hosts:
+    - kafka
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+  tasks:
+    - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
+      tags: ecryptfs-cleanup
+
+- name: Kafka
+  hosts: kafka
+  become: true
+  environment:
+    JMX_PORT: 9999
+  roles:
+    - {role: kafka, tags: 'kafka'}
