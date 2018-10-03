@@ -220,6 +220,7 @@ LOCAL_PILLOWTOPS = {
             "name": "{{ pillow.name }}",
             "class": "{{ pillow.class }}",
             "instance": "{{ pillow.instance }}",
+{% if pillow.params is defined %}
             "params": {
                 "topics": {{ pillow.params.topics }},
                 "include_ucrs": [
@@ -228,6 +229,7 @@ LOCAL_PILLOWTOPS = {
 {% endfor %}
                 ]
             }
+{% endif %}
         },
 {% endfor %}
     ]
