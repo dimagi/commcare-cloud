@@ -1,0 +1,41 @@
+# {{ ansible_managed }}
+
+global
+        log 127.0.0.1 local0
+        log 127.0.0.1 local1 notice
+        chroot /var/lib/haproxy
+        user haproxy
+        group haproxy
+        daemon
+        spread-checks 5
+        maxconn {{ haproxy_maxconn }}
+        stats socket /var/run/haproxy.stat level admin mode 600
+
+defaults
+        log global
+        option dontlognull
+        option redispatch
+        retries {{ haproxy_retries }}
+        timeout client {{ haproxy_client_timeout }}
+        timeout connect {{ haproxy_connect_timeout }}
+{% if haproxy_http_request_timeout %}
+        timeout http-request {{ haproxy_http_request_timeout }}
+{% endif %}
+        timeout server {{ haproxy_server_timeout }}
+        maxconn {{ haproxy_maxconn }}
+
+{% if haproxy_stats_enabled | bool %}
+listen stats
+    bind {{ haproxy_stats_bind_address }}:{{ haproxy_stats_port }}
+
+    mode http
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+    stats show-node
+    stats show-legends
+    stats auth {{ haproxy_username }}:{{ haproxy_stats_password }}
+    stats admin if TRUE
+    stats refresh {{ haproxy_stats_refresh_interval }}s
+{% endif %}

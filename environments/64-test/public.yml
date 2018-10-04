@@ -3,8 +3,6 @@ internal_domain_name: null
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 
-touchforms_enabled: false
-
 riak_backend: "bitcask"
 riak_ring_size: 64
 
@@ -62,8 +60,6 @@ couchdb_cluster_settings:
   r: 1
   w: 1
   n: 1
-
-TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"

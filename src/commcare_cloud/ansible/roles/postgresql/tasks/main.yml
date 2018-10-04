@@ -97,7 +97,7 @@
 - meta: flush_handlers
 
 - name: Set up PostgreSQL DBs
-  include_tasks: set_up_dbs.yml
+  import_tasks: set_up_dbs.yml
   vars:
     db_is_remote: no
     postgresql_host: "{{ inventory_hostname }}"
@@ -134,7 +134,7 @@
 - name: Check if recovery.conf exists
   stat:
     path: "{{ postgresql_recovery_conf }}"
-    register: recovery_file
+  register: recovery_file
   when: is_pg_standby
   tags:
     - postgres_users

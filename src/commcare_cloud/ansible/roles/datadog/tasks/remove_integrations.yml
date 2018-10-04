@@ -61,5 +61,6 @@
     - {"name": "couch", "enabled": "{{ datadog_integration_couch or inventory_hostname == couchdb2_first_host }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http }}"}
+    - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     # "Datadog Integration Graveyard": list globally removed integrations below
     - {"name": "couchdb2", "enabled": false}

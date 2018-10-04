@@ -1,0 +1,89 @@
+aws_profile: dimagi
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "us-east-1"
+environment: "staging-test"
+openvpn_image: ami-169e4b6b
+azs:
+  - "us-east-1a"
+  - "us-east-1b"
+  - "us-east-1c"
+vpc_begin_range: "10.200"
+
+vpn_connections:
+  - name: rackspace
+    cidr_blocks:
+      - "172.24.16.0/22"
+      - "172.24.32.0/22"
+    ip_address: "104.130.188.4"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+key_name: droberts
+
+external_routes:
+  - cidr_block: "172.24.16.0/22"
+    gateway_id: "vgw-8dd726e4"
+  - cidr_block: "172.24.32.0/22"
+    gateway_id: "vgw-8dd726e4"
+
+servers:
+  - server_name: "web0-staging"
+    server_instance_type: "t2.micro"
+    network_tier: "app-private"
+    az: "a"
+  - server_name: "web1-staging"
+    server_instance_type: "t2.micro"
+    network_tier: "app-private"
+    az: "b"
+  - server_name: "celery0-staging"
+    server_instance_type: "t2.xlarge"
+    network_tier: "app-private"
+    az: "b"
+  - server_name: "pillow0-staging"
+    server_instance_type: "t2.large"
+    network_tier: "app-private"
+    az: "c"
+  - server_name: "formplayer0-staging"
+    server_instance_type: "t2.micro"
+    network_tier: "app-private"
+    az: "a"
+  - server_name: "kafka0-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "db-private"
+    az: "a"
+  - server_name: "es0-staging"
+    server_instance_type: "t2.micro"
+    network_tier: "db-private"
+    az: "a"
+  - server_name: "airflow0-staging"
+    server_instance_type: "t2.micro"
+    network_tier: "app-private"
+    az: "a"
+  - server_name: "rabbit0-staging"
+    server_instance_type: "t2.micro"
+    network_tier: "db-private"
+    az: "a"
+  - server_name: "pgproxy0-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "a"
+  - server_name: "control-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 8
+
+proxy_servers:
+  - server_name: "proxy1-staging"
+    server_instance_type: "t2.medium"
+    network_tier: "public"
+    az: "b"
+
+rds_instances:
+  - identifier: "staging"
+    instance_type: "db.t2.medium"
+    storage: 300
+
+manage_users: no

@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,migrate-couchdb,terraform,run-shell-command}
                ...
 ```
 
@@ -277,7 +277,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -396,7 +396,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -602,7 +602,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --list-tags           list all available tags
@@ -1047,5 +1047,33 @@ commcare-cloud <ev> list-databases
 ###### `--compare`
 
 Gives additional databases on the server.
+
+---
+
+#### `terraform`
+
+Run terraform for this env with the given arguments
+
+```
+commcare-cloud <env> terraform [--skip-secrets]
+```
+
+##### Optional Arguments
+
+###### `--skip-secrets`
+
+Skip regenerating the secrets file.
+
+Good for not having to enter vault password again.
+
+---
+
+#### `aws-list`
+
+List endpoints (ec2, rds, etc.) on AWS
+
+```
+commcare-cloud <env> aws-list
+```
 
 ---

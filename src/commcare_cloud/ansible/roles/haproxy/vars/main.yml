@@ -1,0 +1,6 @@
+---
+apt_cache_timeout: 86400
+haproxy_packages:
+  - "haproxy={{ haproxy_version }}.*"
+  - netcat # Used for the Ansible haproxy module
+  - rsyslog  # Used for local logging
