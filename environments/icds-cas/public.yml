@@ -225,6 +225,33 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
+      - name: 'kafka-ucr-static-forms-current'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
+          include_ucrs:
+            - 'static-child_delivery_forms'
+            - 'static-complementary_feeding_forms'
+            - 'static-daily_feeding_forms'
+            - 'static-gm_forms'
+            - 'static-home_visit_forms'
+            - 'static-infrastructure_form'
+            - 'static-infrastructure_form_v2'
+            - 'static-awc_mgt_forms'
+            - 'static-ls_home_visit_forms_filled'
+            - 'static-postnatal_care_forms'
+            - 'static-thr_forms_v2'
+            - 'static-usage_forms'
+            - 'static-vhnd_form'
+            - 'static-visitorbook_forms'
+            - 'static-it_report_follow_issue'
+            - 'static-dashboard_delivery_forms'
+            - 'static-dashboard_thr_forms'
+            - 'static-dashboard_growth_monitoring_forms'
+            - 'dashboard_child_health_daily_feeding_forms'
+            - 'static-dashboard_birth_preparedness_forms'
   BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
