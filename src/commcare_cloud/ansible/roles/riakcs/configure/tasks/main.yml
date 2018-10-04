@@ -19,7 +19,12 @@
     mode=0770
   notify: "restart {{ name }}"
   when: item != ""
-  with_items: "{{ data_dirs }}"
+  with_items:
+    - "{{ riak_data_dir }}"
+    - "{{ riak_ring_dir }}"
+    - "{{ riak_data_root_leveldb }}"
+    - "{{ riak_data_root_bitcask if _riak_backend == 'bitcask' else '' }}"
+    - "{{ riak_data_root_blocks if _riak_backend == 'leveldb' else '' }}"
 
 - name: "Copy {{ name }} defaults"
   # works on ubuntu. may need to do other things for other platforms
@@ -45,6 +50,9 @@
     group=riak
     mode=0640
   notify: "restart {{ name }}"
+
+- set_fact:
+    advanced_conf: "{{ _backend_vars.bitcask.advanced_conf }}"
 
 - name: Set {{ name }} advanced.config
   template: >

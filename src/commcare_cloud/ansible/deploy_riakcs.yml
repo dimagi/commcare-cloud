@@ -119,12 +119,6 @@
         name: riak
         drop_conf: "{{ backend_vars.drop_conf }}"
         advanced_conf: "{{ backend_vars.advanced_conf }}"
-        data_dirs:
-          - "{{ riak_data_dir }}"
-          - "{{ riak_ring_dir }}"
-          - "{{ riak_data_root_leveldb }}"
-          - "{{ riak_data_root_bitcask if _riak_backend == 'bitcask' else '' }}"
-          - "{{ riak_data_root_blocks if _riak_backend == 'leveldb' else '' }}"
         when: _force_riak_config | bool
 
 - name: Start Riak
