@@ -25,6 +25,7 @@ nofile_limit: 65536
 redis_appendonly: 'yes'
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
+kafka_log_retention: 1440 # 60 days
 
 KSPLICE_ACTIVE: no
 
