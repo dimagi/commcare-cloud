@@ -64,9 +64,18 @@ class AwsList(CommandBase):
         name_public_ip_pairs = [(item[0][0][0], item[0][1]) for item in public_ip_query
                                 if item[0][1] is not None]
 
+        elasticache_query = aws_cli(environment, [
+            'aws', 'elasticache', 'describe-cache-clusters', '--show-cache-node-info',
+            '--query', 'CacheClusters[0].CacheNodes[0].Endpoint.Address',
+            '--output', 'json', '--region', config.region,
+        ])
+
         for name, ip in name_private_ip_pairs:
             print('{}\t{}'.format(ip, name))
 
         for name, ip in name_public_ip_pairs:
             print('{}\t{}.public_ip'.format(ip, name))
+
+        if elasticache_query:
+            print('{}\tredis-{}'.format(elasticache_query, config.environment))
         return 0
