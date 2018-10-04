@@ -24,7 +24,11 @@ http.cors.enabled: true
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
-discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch | length] | min }}
+# discovery.zen.minimum_master_nodes is the minimum number of
+# MASTER ELIGIBLE nodes that must be reachable before a master may be elected
+# Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
+# but (todo) we DO NOT follow best practice.
+discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list | length] | min }}
 discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
@@ -75,3 +79,14 @@ action.auto_create_index: false
 {% if es_local_repo and not backup_es%}
 path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 {% endif %}
+
+
+# see also discovery.zen.minimum_master_nodes above for how a master gets elected
+{# only include master eligibility if it is set on at least one node in the cluster #}
+{% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
+node.master: {{ elasticsearch_master|default('false') }}
+{% else %}
+# node.master: true
+{% endif %}
+
+node.data: {{ elasticsearch_data|default('true') }}

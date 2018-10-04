@@ -9,6 +9,21 @@ override:
   pgbouncer_reserve_pool: 5
   postgresql_max_connections: 300
   postgresql_version: '9.6'
+  postgresql_checkpoint_completion_target: '0.7'
+  postgresql_wal_buffers: 16MB
+  postgresql_max_wal_size: 2GB
+
+
+LOAD_BALANCED_APPS:
+  auth:
+    - [default, 1]
+    - [pgmainstandby0, 3]
+  locations:
+    - [default, 1]
+    - [pgmainstandby0, 3]
+  userreports:
+    - [default, 1]
+    - [pgmainstandby0, 3]
 
 dbs:
   main:
@@ -32,10 +47,17 @@ dbs:
         host: hqdb1
       p3:
         shards: [410, 614]
-        host: hqdb2
+        host: hqdb5
       p4:
         shards: [615, 819]
-        host: hqdb2
+        host: hqdb5
       p5:
         shards: [820, 1023]
-        host: hqdb2
+        host: hqdb5
+  standby:
+    - django_alias: pgmainstandby0
+      name: commcarehq
+      host: hqstandby0.internal-va.commcarehq.org
+      create: False
+      django_migrate: False
+      hq_acceptable_standby_delay: 30

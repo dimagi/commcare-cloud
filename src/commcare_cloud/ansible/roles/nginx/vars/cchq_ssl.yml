@@ -9,6 +9,11 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
+   proxy_cache_path:
+    - name: "hq_media_cache"
+      path: "{{ www_home }}/hq_media/cache"
+      max_size: "2g"
+      inactive_time: "24h"
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl{{ ' http2' if ansible_distribution_version != '12.04' else '' }}{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    root: "/var/www/html"
@@ -28,7 +33,7 @@ nginx_sites:
       proxy_read_timeout: 900s
       proxy_buffers: 8 64k
       proxy_buffer_size: 64k
-      client_body_buffer_size: "128k"
+      client_body_buffer_size: 512k
     - name: "/static"
       alias: "{{ nginx_static_home }}"
       add_header: "Access-Control-Allow-Origin *"
@@ -49,4 +54,10 @@ nginx_sites:
       balancer: "{{ deploy_env }}_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
+    - name: "/hq/multimedia/file"
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      proxy_cache: hq_media_cache
    extra_locations: "{{ site_locations|default([]) }}"

@@ -60,8 +60,6 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
-TOUCHFORMS_API_USER: 'touchforms@example.com'
-
 localsettings:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
