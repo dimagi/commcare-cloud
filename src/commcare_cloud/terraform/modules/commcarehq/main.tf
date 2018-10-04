@@ -78,7 +78,7 @@ resource "aws_eip" "proxy" {
 module "Redis" {
   source               = "../elasticache"
   create               = "${lookup(local.redis, "create", true)}"
-  cluster_id           = "${var.environment}-redis"
+  cluster_id           = "redis-${var.environment}"
   engine               = "redis"
   engine_version       = "${local.redis["engine_version"]}"
   node_type            = "${local.redis["node_type"]}"

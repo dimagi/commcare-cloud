@@ -30,7 +30,7 @@ kafka0
 kafka0
 
 [celery0]
-{{ celery0-staging }} hostname=celery0-staging
+{{ celery0-staging }} hostname=celery0-staging swap_size=8G
 
 [celery:children]
 celery0
@@ -86,7 +86,7 @@ remote_postgresql
 
 [redis]
 # ElastiCache
-{{ staging-redis }}:6379
+{{ redis-staging-test }}:6379
 
 [ansible_skip:children]
 rds_pg0
