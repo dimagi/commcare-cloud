@@ -3,6 +3,7 @@ from __future__ import print_function
 import json
 import os
 import subprocess
+import textwrap
 
 from six.moves import shlex_quote
 
@@ -99,10 +100,24 @@ class AwsFillInventory(CommandBase):
         environment = get_environment(args.env_name)
         resources = get_aws_resources(environment)
         with open(environment.paths.inventory_ini_j2) as f:
-            template_string = f.read()
+            inventory_ini_j2 = f.read()
 
-        for name, address in resources.items():
-            template_string = template_string.replace('{{ ' + name + ' }}', address)
+        openvpn_ini_j2 = textwrap.dedent("""
+        [openvpn]
+        {{ vpn-staging }}
 
-        with open(environment.paths.inventory_ini, 'w') as f:
-            f.write(template_string)
+        [openvpn_public]
+        {{ vpn-staging.public_ip }}
+        """)
+
+        todo = [(inventory_ini_j2, environment.paths.inventory_ini)]
+        if 'vpn-{}'.format(environment.terraform_config.environment) in resources:
+            todo.append((openvpn_ini_j2, environment.paths.openvpn_ini))
+
+        for template_string, outfile in todo:
+            out_string = template_string
+            for name, address in resources.items():
+                out_string = out_string.replace('{{ ' + name + ' }}', address)
+
+            with open(outfile, 'w') as f:
+                f.write(out_string)
