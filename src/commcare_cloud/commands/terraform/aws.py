@@ -103,12 +103,16 @@ class AwsFillInventory(CommandBase):
             inventory_ini_j2 = f.read()
 
         openvpn_ini_j2 = textwrap.dedent("""
-        [openvpn]
-        {{ vpn-staging }}
+        [openvpn_private]
+        {{ vpn-staging }} subdomain_name={{ vpn_subdomain_name }}
 
         [openvpn_public]
-        {{ vpn-staging.public_ip }}
-        """)
+        {{ vpn-staging.public_ip }} subdomain_name={{ vpn_subdomain_name }}
+
+        [openvpn:children]
+        openvpn_private
+        openvpn_public
+        """.replace("{{ vpn_subdomain_name }}", "vpn.{}".format(environment.proxy_config.SITE_HOST)))
 
         todo = [(inventory_ini_j2, environment.paths.inventory_ini)]
         if 'vpn-{}'.format(environment.terraform_config.environment) in resources:
