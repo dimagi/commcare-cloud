@@ -62,10 +62,6 @@ class DefaultPaths(object):
         return self.get_env_file_path('inventory.ini.j2')
 
     @lazy_immutable_property
-    def openvpn_ini(self):
-        return self.get_env_file_path('openvpn.ini')
-
-    @lazy_immutable_property
     def inventory_csv(self):
         return self.get_env_file_path('inventory.csv')
 

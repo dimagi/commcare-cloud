@@ -103,25 +103,17 @@ class AwsFillInventory(CommandBase):
             inventory_ini_j2 = f.read()
 
         openvpn_ini_j2 = textwrap.dedent("""
-        [openvpn_private]
-        {{ vpn-staging }} subdomain_name={{ vpn_subdomain_name }}
+        [openvpn]
+        {{ vpn-staging }} subdomain_name={{ vpn_subdomain_name }}  # ansible_host={{ vpn-staging.public_ip }}
+        """)
 
-        [openvpn_public]
-        {{ vpn-staging.public_ip }} subdomain_name={{ vpn_subdomain_name }}
-
-        [openvpn:children]
-        openvpn_private
-        openvpn_public
-        """.replace("{{ vpn_subdomain_name }}", "vpn.{}".format(environment.proxy_config.SITE_HOST)))
-
-        todo = [(inventory_ini_j2, environment.paths.inventory_ini)]
         if 'vpn-{}'.format(environment.terraform_config.environment) in resources:
-            todo.append((openvpn_ini_j2, environment.paths.openvpn_ini))
+            inventory_ini_j2 += openvpn_ini_j2
+            resources["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
 
-        for template_string, outfile in todo:
-            out_string = template_string
-            for name, address in resources.items():
-                out_string = out_string.replace('{{ ' + name + ' }}', address)
+        out_string = inventory_ini_j2
+        for name, address in resources.items():
+            out_string = out_string.replace('{{ ' + name + ' }}', address)
 
-            with open(outfile, 'w') as f:
-                f.write(out_string)
+        with open(environment.paths.inventory_ini, 'w') as f:
+            f.write(out_string)
