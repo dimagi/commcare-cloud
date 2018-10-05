@@ -101,11 +101,14 @@ cchq <env> aws-fill-inventory
 
 which will auto-generate an `openvpn.ini` file for your environment.
 Commit this file, as it will be generally useful for scripting the openvpn machine.
+Then, edit the file to temporarily uncomment the `# ansible_host=...` section:
+this will allow you to connect via the public IP address, which you will only need
+until you are able to connect to the VPN.
 
 ### Run the ovpn-init script
 
 ```
-cchq ssh openvpnas@openvpn_public
+cchq <env> ssh openvpnas@openvpn
 sudo ovpn-init --ec2
 ...
 Please enter 'DELETE' to delete existing configuration:DELETE
@@ -125,7 +128,7 @@ To give others SSH access to the VPN machine
 (right now your access is because terraform created the VM with your public key)
 
 ```
-cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn_public -u openvpnas -i <openvpn_ini> --skip-check
+cchq <env> deploy-stack --limit openvpn -u openvpnas --skip-check
 ``` 
 You can then undo the above change to the inventory file.
 
@@ -137,7 +140,7 @@ to the openvpn machine's public IP.
 
 Then run
 ```
-cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv --limit openvpn_public -i <openvpn_ini>
+cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv
 ```
 
 ### Create a user from the Admin Web UI
