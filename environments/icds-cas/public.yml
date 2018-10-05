@@ -20,6 +20,11 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
+# ElasticSearch Backup on Swift API
+backup_es_swift: True
+swift_container: mowcdmumelasticdb
+swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
+
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
