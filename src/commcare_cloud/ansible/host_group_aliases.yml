@@ -6,6 +6,6 @@
         hostname: "{{ item }}"
         groups: all_commcarehq
       with_items: "{{ groups['all'] }}"
-      when: "item not in groups['openvpn']"
+      when: "item not in groups['openvpn']|default([])"
   tags:
     - always
