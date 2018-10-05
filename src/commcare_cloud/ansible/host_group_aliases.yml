@@ -1,0 +1,7 @@
+- name: "Create host group aliases"
+  hosts: local
+  tasks:
+  - name: Create all_commcarehq group alias
+    add_host: hostname={{ item }} groups=all_commcarehq
+    with_items: "{{ groups['all'] }}"
+    when: "item not in groups['openvpn']"

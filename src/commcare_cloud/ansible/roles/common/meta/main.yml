@@ -2,6 +2,5 @@
 dependencies:
   - {role: common_installs, tags: common_installs}
   - {role: users, tags: users}
-  - {role: ssh, tags: ssh}
   - role: edit
   - {role: ksplice, tags: ksplice}
