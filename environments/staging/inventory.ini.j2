@@ -1,8 +1,13 @@
+# This file currently contains a lot of commented-out hosts
+# that refer to presumed eventual hosts that will live on AWS but don't yet exist
+# As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
+# using the aws-fill-inventory command.
+
 [proxy0]
 proxy0-staging.internal-va.commcarehq.org swap_size=1G
 
 [proxy1]
-# 10.200.10.85 hostname=proxy1-staging ec2=yes
+# {{ proxy1-staging }} hostname=proxy1-staging ec2=yes
 
 [proxy:children]
 proxy0
@@ -37,7 +42,7 @@ hqdb1
 # staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
 
 [rabbit0]
-# 10.200.10.107 hostname=rabbit0-staging ec2=yes
+# {{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
 
 
 [rabbitmq:children]
@@ -53,7 +58,7 @@ swap_size=1G
 kafka_broker_id=0
 
 [kafka0]
-# 10.200.10.199 kafka_broker_id=0 hostname=kafka0-staging ec2=yes
+# {{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
 
 [zookeeper:children]
 hqkafka0
@@ -66,7 +71,7 @@ hqkafka0
 # kafka0
 
 [celery0]
-# 10.200.11.168 hostname=celery0-staging ec2=yes
+# {{ celery0-staging }} hostname=celery0-staging ec2=yes
 
 [celery:children]
 hqdb1
@@ -77,7 +82,7 @@ hqdb1
 hqpillow0-staging.internal-va.commcarehq.org
 
 [pillow0]
-# 10.200.12.203 hostname=pillow0-staging ec2=yes
+# {{ pillow0-staging }} hostname=pillow0-staging ec2=yes
 
 [pillowtop:children]
 hqpillow0
@@ -88,7 +93,7 @@ hqpillow0
 hqtouch0-staging.internal-va.commcarehq.org swap_size=1G
 
 [formplayer0]
-# 10.200.10.63 hostname=formplayer0-staging ec2=yes
+# {{ formplayer0-staging }} hostname=formplayer0-staging ec2=yes
 
 [formplayer:children]
 hqtouch0
@@ -97,14 +102,14 @@ hqtouch0
 
 [redis:children]
 hqdb1
-# Amazon ElastiCache (staging-redis)
-# staging-redis.ck3xwy.0001.use1.cache.amazonaws.com:6379
+# Amazon ElastiCache
+# {{ redis-staging }}:6379
 
 [hqes0]
 hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging
 
 [es0]
-# 10.200.10.223 elasticsearch_node_name=hqes0-staging hostname=es0-staging ec2=yes
+# {{ hqes0-staging }} elasticsearch_node_name=hqes0-staging hostname=es0-staging ec2=yes
 
 [elasticsearch:children]
 hqes0
@@ -133,7 +138,7 @@ hqriak01
 hqairflow0-staging.internal-va.commcarehq.org
 
 [airflow0]
-# 10.200.10.110 hostname=airflow0-staging ec2=yes
+# {{ airflow0-staging }} hostname=airflow0-staging ec2=yes
 
 [airflow:children]
 hqairflow0
@@ -142,7 +147,7 @@ hqairflow0
 
 [control]
 # Amazon EC2
-10.201.10.187 hostname=control-staging ec2=yes
+{{ control-staging }} hostname=control-staging ec2=yes
 
 [pg_standby]
 
