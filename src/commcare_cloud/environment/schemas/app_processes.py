@@ -98,16 +98,19 @@ OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
 
 
 def validate_app_processes_config(app_processes_config):
+    # queues specified in solo_queues cannot be combined with other queues in the same processes, otherwise tasks
+    # specific to those queues in celery.yml will get skipped
+    solo_queues = ['flower', 'beat', 'reminder_queue', 'submission_reprocessing_queue', 'sms_queue']
     all_queues_mentioned = Counter({queue_name: 0 for queue_name in CELERY_PROCESS_NAMES})
     for machine, queues_config in app_processes_config.celery_processes.items():
         for comma_separated_queue_names, celery_options in queues_config.items():
             queue_names = comma_separated_queue_names.split(',')
-            if 'flower' in queue_names or 'beat' in queue_names:
-                assert len(queue_names) == 1, \
-                    "The special processes 'flower' and 'beat' may not be grouped with other processes"
             for queue_name in queue_names:
+                if queue_name in solo_queues:
+                    assert len(queue_names) == 1, \
+                        "The special process {} may not be grouped with other processes".format(queue_name)
                 assert queue_name in CELERY_PROCESS_NAMES, \
-                    "Celery process not recognized: {}".format(queue_name)
+                    "Celery process not recognized or has extra whitespace: {}".format(queue_name)
             all_queues_mentioned.update(queue_names)
     required_but_not_mentioned = [queue_name for queue_name, count in all_queues_mentioned.items()
                                   if count == 0 and queue_name not in OPTIONAL_CELERY_PROCESSES]

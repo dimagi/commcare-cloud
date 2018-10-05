@@ -1,17 +1,16 @@
 celery_processes:
   {{ celery_host.name }}:
     beat: {}
+    sms_queue: {}
+    flower: {}
     background_queue,case_rule_queue,celery,analytics_queue:
       concurrency: 1
-    email_queue,reminder_case_update_queue:
+    email_queue,reminder_case_update_queue,export_download_queue:
       concurrency: 1
     reminder_rule_queue,repeat_record_queue,saved_exports_queue:
       concurrency: 1
-    sms_queue,export_download_queue:
-      concurrency: 1
 #    reminder_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue,celery_periodic:
 #      concurrency: 1
-    flower: {}
 pillows:
   {{ pillowtop_host.name }}:
     kafka-ucr-main:
