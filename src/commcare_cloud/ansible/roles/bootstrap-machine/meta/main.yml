@@ -1,5 +1,8 @@
 ---
 dependencies:
-  - {role: bootstrap-users, tags: bootstrap-users}
+  - role: bootstrap-users
+    tags:
+      - users
+      - bootstrap-users
   - {role: ssh, tags: ssh}
   - {role: swap, tags: swap}

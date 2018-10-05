@@ -1,6 +1,5 @@
 ---
 dependencies:
   - {role: common_installs, tags: common_installs}
-  - {role: users, tags: users}
   - role: edit
   - {role: ksplice, tags: ksplice}
