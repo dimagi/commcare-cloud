@@ -1,4 +1,4 @@
-- name: Configure OpenVPN
+- name: Create OpenVPN Cert
   hosts: openvpn
   tasks:
     - name: Configure HTTPS Cert

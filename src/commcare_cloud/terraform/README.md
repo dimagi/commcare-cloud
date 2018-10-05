@@ -137,7 +137,7 @@ to the openvpn machine's public IP.
 
 Then run
 ```
-cchq <env> ansible-playbook deploy_openvpn.yml --skip-check -vvv --limit openvpn_public -i <openvpn_ini>
+cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv --limit openvpn_public -i <openvpn_ini>
 ```
 
 ### Create a user from the Admin Web UI
