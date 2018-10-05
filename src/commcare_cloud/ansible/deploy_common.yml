@@ -1,12 +1,23 @@
-- name: Common
+- name: Bootstrap Machine
   hosts: all
+  become: true
+  roles:
+    - role: bootstrap-machine
+      tags:
+        - bootstrap-machine
+        - common
+
+- import_playbook: host_group_aliases.yml
+
+- name: Common
+  hosts: all_commcarehq
   become: true
   roles:
     - common
   tags: common
 
 - name: ufw (firewall)
-  hosts: '!proxy:!cas_proxy:!pna_proxy:!couchdb2_proxy'
+  hosts: 'all_commcarehq!proxy:!cas_proxy:!pna_proxy:!couchdb2_proxy'
   become: true
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined}
@@ -21,7 +32,7 @@
   tags: common
 
 - name: ufw off (firewall)
-  hosts: all
+  hosts: all_commcarehq
   become: true
   tasks:
     - ufw: state=disabled
@@ -30,26 +41,20 @@
   tags: common
 
 - name: Datadog agent
-  hosts: all
+  hosts: all_commcarehq
   become: true
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
   tags: common
 
-- name: Configure swap
-  hosts: all
-  roles:
-    - {role: swap}
-  tags: common
-
 - name: Configure monit
-  hosts: all
+  hosts: all_commcarehq
   roles:
     - {role: monit, tags: monit}
   tags: common
 
 - name: Configure static routes
-  hosts: all
+  hosts: all_commcarehq
   tasks:
 
   - name: Checks existing static routes
@@ -74,7 +79,7 @@
   tags: common
 
 - name: DNS configuration
-  hosts: all
+  hosts: all_commcarehq
   tasks:
 
   - name: set running configuration
