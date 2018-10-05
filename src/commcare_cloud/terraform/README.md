@@ -93,12 +93,19 @@ Now you will be able to SSH into the VM.
 To make a cert, you'll also need to open port 80, so click Add Rule again,
 select Type HTTP, and Source "Anywhere", and click Save.
 
+Finally, make sure to run
+
+```bash
+cchq <env> aws-fill-inventory
+```
+
+which will auto-generate an `openvpn.ini` file for your environment.
+Commit this file, as it will be generally useful for scripting the openvpn machine.
+
 ### Run the ovpn-init script
 
-Find the public ip of the vpn machine by running `cchq <env> aws-list`. Then run
-
 ```
-ssh openvpnas@<openvpn-public-ip>
+cchq ssh openvpnas@openvpn_public
 sudo ovpn-init --ec2
 ...
 Please enter 'DELETE' to delete existing configuration:DELETE
@@ -118,8 +125,7 @@ To give others SSH access to the VPN machine
 (right now your access is because terraform created the VM with your public key)
 
 ```
-printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name> certificate_email=<your-email>" > openvpn-tmp
-cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas -i openvpn-tmp --skip-check
+cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn_public -u openvpnas -i <openvpn_ini> --skip-check
 ``` 
 You can then undo the above change to the inventory file.
 
@@ -131,8 +137,7 @@ to the openvpn machine's public IP.
 
 Then run
 ```
-# printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>" > openvpn-tmp
-cchq <env> ansible-playbook deploy_openvpn.yml --skip-check -vvv -i openvpn-tmp
+cchq <env> ansible-playbook deploy_openvpn.yml --skip-check -vvv --limit openvpn_public -i <openvpn_ini>
 ```
 
 ### Create a user from the Admin Web UI
