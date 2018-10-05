@@ -102,12 +102,18 @@ class AwsFillInventory(CommandBase):
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
+        env_suffix = environment.terraform_config.environment
+        vpn_name = 'vpn-{}'.format(env_suffix)
         openvpn_ini_j2 = textwrap.dedent("""
         [openvpn]
-        {{ vpn-staging }} subdomain_name={{ vpn_subdomain_name }}  # ansible_host={{ vpn-staging.public_ip }}
-        """)
+        {{ %(vpn_name)s }}  # ansible_host={{ %(vpn_name)s.public_ip }}
 
-        if 'vpn-{}'.format(environment.terraform_config.environment) in resources:
+        [openvpn:vars]
+        subdomain_name={{ vpn_subdomain_name }}
+        hostname=%(vpn_name)s
+        """ % {'vpn_name': vpn_name})
+
+        if vpn_name in resources:
             inventory_ini_j2 += openvpn_ini_j2
             resources["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
 
