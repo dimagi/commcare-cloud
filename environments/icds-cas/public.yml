@@ -14,11 +14,16 @@ supervisor_http_enabled: False
 
 backup_blobdb: False
 backup_postgres: False
-backup_es: False
+backup_es_s3: False
 postgres_s3: False
 couch_s3: False
 backup_couch: False
 nadir_hour: 16
+
+# ElasticSearch Backup on Swift API
+backup_es_swift: True
+swift_container: mowcdmumelasticdb
+swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 
 nofile_limit: 65536
 

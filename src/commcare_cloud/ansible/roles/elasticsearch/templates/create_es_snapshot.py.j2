@@ -28,7 +28,7 @@ def delete_old_snapshots(client):
     for snap in old_snapshots:
         client.delete('{{ es_repository_name }}', snap)
 
-{% if es_local_repo and not backup_es%}
+{% if es_local_repo and not backup_es_s3%}
 def create_snapshot_repo(client):
     body = {
         "type": "fs",
@@ -44,7 +44,7 @@ def main():
 
 
 
-{% if es_local_repo and not backup_es%}
+{% if es_local_repo and not backup_es_s3%}
     # Create Local Repository if es_local_repo enabled
     create_snapshot_repo(client)
 {% endif %}
