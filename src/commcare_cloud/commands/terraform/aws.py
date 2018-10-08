@@ -3,6 +3,7 @@ from __future__ import print_function
 import json
 import os
 import subprocess
+import textwrap
 
 from six.moves import shlex_quote
 
@@ -99,10 +100,26 @@ class AwsFillInventory(CommandBase):
         environment = get_environment(args.env_name)
         resources = get_aws_resources(environment)
         with open(environment.paths.inventory_ini_j2) as f:
-            template_string = f.read()
+            inventory_ini_j2 = f.read()
 
+        env_suffix = environment.terraform_config.environment
+        vpn_name = 'vpn-{}'.format(env_suffix)
+        openvpn_ini_j2 = textwrap.dedent("""
+        [openvpn]
+        {{ %(vpn_name)s }}  # ansible_host={{ %(vpn_name)s.public_ip }}
+
+        [openvpn:vars]
+        subdomain_name={{ vpn_subdomain_name }}
+        hostname=%(vpn_name)s
+        """ % {'vpn_name': vpn_name})
+
+        if vpn_name in resources:
+            inventory_ini_j2 += openvpn_ini_j2
+            resources["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
+
+        out_string = inventory_ini_j2
         for name, address in resources.items():
-            template_string = template_string.replace('{{ ' + name + ' }}', address)
+            out_string = out_string.replace('{{ ' + name + ' }}', address)
 
         with open(environment.paths.inventory_ini, 'w') as f:
-            f.write(template_string)
+            f.write(out_string)

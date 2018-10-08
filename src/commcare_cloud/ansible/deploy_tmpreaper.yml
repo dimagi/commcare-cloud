@@ -1,7 +1,8 @@
 ---
+- import_playbook: host_group_aliases.yml
 
 - name: Deploys tmpreaper - removes files which haven't been accessed for a period of time
-  hosts: all
+  hosts: all_commcarehq
   become: true
   roles:
     - role: tmpreaper

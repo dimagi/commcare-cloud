@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command}
                ...
 ```
 
@@ -1085,5 +1085,59 @@ Fill inventory.ini.j2 using existing AWS resources
 ```
 commcare-cloud <env> aws-fill-inventory
 ```
+
+---
+
+#### `openvpn-activate-user`
+
+Give a OpenVPN user a temporary password (the ansible user password)
+
+```
+commcare-cloud <env> openvpn-activate-user [--use-factory-auth] vpn_user
+```
+
+to allow the user to connect to the VPN, log in, and change their password using
+
+```
+cchq <env> openvpn-claim-user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to activate.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
+#### `openvpn-claim-user`
+
+Claim an OpenVPN user as your own, setting its password
+
+```
+commcare-cloud <env> openvpn-claim-user [--use-factory-auth] vpn_user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to claim.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
