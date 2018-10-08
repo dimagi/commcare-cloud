@@ -100,7 +100,7 @@ cchq <env> aws-fill-inventory
 ```
 
 which will auto-generate an `[openvpn]` section to your inventory.ini.
-For this to work, make sure you're using then inventory templating style. If you aren't,
+For this to work, make sure you're using the inventory templating style. If you aren't,
 you can just move `inventory.ini` to `inventory.ini.j2` before running that command,
 and it'll generate `inventory.ini` for you. You can (can should) commit `inventory.ini`.
 
