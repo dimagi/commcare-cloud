@@ -12,3 +12,4 @@ elasticsearch_http_port: 9200
 #es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 es_repository_name: "{{ deploy_env }}_es_snapshot"
 aws_plugin_version: "2.7.1"
+swift_plugin_version: "1.7.0"
