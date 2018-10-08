@@ -1,0 +1,10 @@
+- name: Mark VPN User Claimed
+  hosts: openvpn
+  tasks:
+    - name: "Assert that {{ vpn_user }} already exists"
+      assert:
+        that: "vpn_user in dev_users.present"
+        fail_msg: "Cannot activate {{ vpn_user }} because user does not exist. User must be in dev_users."
+    - name: "Revoke any auto-expiration"
+      become: yes
+      shell: "passwd {{ vpn_user }} -x -1"
