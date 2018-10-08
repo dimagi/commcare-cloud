@@ -46,13 +46,6 @@ class OpenvpnClaimUser(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-        environment.get_ansible_vault_password()
-        args.server = 'openvpn'
-        rc = Ssh(self.parser).run(args, ['-t', 'passwd'])
-        if rc != 0:
-            return rc
-        del args.server
         args.playbook = 'openvpn_playbooks/mark_vpn_user_claimed.yml'
         unknown_args += ('-e', 'vpn_user={}'.format(args.vpn_user))
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

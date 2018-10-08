@@ -5,6 +5,14 @@
       assert:
         that: "vpn_user in dev_users.present"
         fail_msg: "Cannot activate {{ vpn_user }} because user does not exist. User must be in dev_users."
+    - name: "Set {{ vpn_user }} password"
+      become: yes
+      user:
+        name: "{{ vpn_user }}"
+        password: "{{ vpn_user_password | password_hash('sha512') }}"
     - name: "Revoke any auto-expiration"
       become: yes
       shell: "passwd {{ vpn_user }} -x -1"
+  vars_prompt:
+    - name: vpn_user_password
+      prompt: "Enter new VPN password"

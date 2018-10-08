@@ -122,20 +122,16 @@ def run_ansible_playbook(
 
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
         if ask_vault_pass:
-            cmd_parts += ('--vault-password-file=/bin/cat',)
+            cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
 
         cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
         cmd_parts += cmd_parts_with_common_ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
+        env_vars = ansible_context.env_vars
         if ask_vault_pass:
-            environment.get_ansible_vault_password()
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
-        if ask_vault_pass:
-            p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
-        else:
-            p.communicate()
-        return p.returncode
+            env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
+        return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():
         return ansible_playbook(environment, playbook, '--check', *unknown_args)
