@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 
+from clint.textui import puts, colored
 from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
@@ -23,6 +24,12 @@ class Terraform(CommandBase):
 
             Good for not having to enter vault password again.
         """),
+        Argument('--username', help="""
+            The username of the user whose public key will be put on new servers.
+
+            Normally this would be _your_ username.
+            Defaults to the username of the user running the command. 
+        """),
     )
 
     def run(self, args, unknown_args):
@@ -37,8 +44,23 @@ class Terraform(CommandBase):
             os.mkdir(run_dir)
         if not (os.path.exists(modules_dest) and os.readlink(modules_dest) == modules_dir):
             os.symlink(modules_dir, modules_dest)
+
+        if args.username:
+            key_name = args.username
+        else:
+            import getpass
+            key_name = getpass.getuser()
+
         with open(os.path.join(run_dir, 'terraform.tf'), 'w') as f:
-            print(generate_terraform_entrypoint(environment), file=f)
+            try:
+                print(generate_terraform_entrypoint(environment, key_name), file=f)
+            except UnauthorizedUser as e:
+                allowed_users = environment.users_config.dev_users.present
+                puts(colored.red(
+                    "Unauthorized user {}.\n\n"
+                    "Use --username to pass in one of the allowed ssh users:{}"
+                    .format(e.username, '\n  - '.join([''] + allowed_users))))
+                return -1
 
         if not args.skip_secrets:
             rds_password = environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
@@ -58,11 +80,20 @@ class Terraform(CommandBase):
         return subprocess.call(cmd, shell=True, env=all_env_vars, cwd=run_dir)
 
 
-def generate_terraform_entrypoint(environment):
+class UnauthorizedUser(Exception):
+    def __init__(self, username):
+        self.username = username
+
+
+def generate_terraform_entrypoint(environment, key_name):
     context = environment.terraform_config.to_json()
+    if key_name not in environment.users_config.dev_users.present:
+        raise UnauthorizedUser(key_name)
+
     context.update({
         'users': [{'username': username}
                   for username in environment.users_config.dev_users.present],
-        'public_key': environment.get_authorized_key(environment.terraform_config.key_name)
+        'public_key': environment.get_authorized_key(key_name),
+        'key_name': key_name,
     })
     return render_template('entrypoint.tf.j2', context, os.path.dirname(__file__))
