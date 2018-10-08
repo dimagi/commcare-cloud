@@ -27,7 +27,7 @@ DATADOG_ENABLED: True
 
 CLOUDANT_CLUSTER_NAME: null
 
-backup_es: False
+backup_es_s3: False
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True

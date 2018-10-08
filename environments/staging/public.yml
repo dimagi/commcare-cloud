@@ -11,7 +11,7 @@ supervisor_http_enabled: True
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es: False
+backup_es_s3: False
 postgres_s3: False
 
 aws_region: 'us-east-1'
