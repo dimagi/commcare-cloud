@@ -41,5 +41,5 @@
     - name: remove nginx config
       file:
         path: '/etc/nginx/'
-        state: abesent
+        state: absent
   when: 'proxy' not in group_names
