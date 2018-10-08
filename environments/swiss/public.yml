@@ -13,7 +13,7 @@ ssh_allow_password: True
 
 backup_blobdb: True
 backup_postgres: plain
-backup_es: False
+backup_es_s3: False
 backup_couch: True
 postgres_s3: True
 blobdb_s3: True
@@ -87,4 +87,3 @@ localsettings:
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
-  XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"

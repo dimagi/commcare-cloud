@@ -104,7 +104,6 @@
 
 - hosts:
   - formplayer
-  - touchforms
   tasks:
   - command: supervisorctl status
     become: True

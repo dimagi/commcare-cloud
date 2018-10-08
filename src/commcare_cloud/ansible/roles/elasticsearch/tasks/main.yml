@@ -90,7 +90,12 @@
 - name: Install elasticsearch aws plugin
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: (backup_es) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout)
+  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout)
+
+- name: Install elasticsearch swift plugin
+  become: yes
+  shell: "{{ elasticsearch_home }}/bin/plugin install org.wikimedia.elasticsearch.swift/swift-repository-plugin/{{ swift_plugin_version }}"
+  when: (backup_es_swift) and (installed_plugins.stdout is defined) and ('swift-repository-plugin' not in installed_plugins.stdout)
 
 - name: Reload upstart
   become: yes
@@ -110,18 +115,28 @@
   tags:
     - es_restart
 
-- name: Wait for elastic Search to come up, start checking after 5 second
+- name: Wait for elastic Search to come up, start checking after 20 second
   wait_for:
     host: "{{ groups.elasticsearch.0 }}"
     port: 9200
-    delay: 5
+    delay: 20
 
 - name: Create initial snapshot
   uri:
     url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
     body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{aws_endpoint}}" }}'
-  when: backup_es and inventory_hostname == groups.elasticsearch.0
+  when: backup_es_s3 and inventory_hostname == groups.elasticsearch.0
+  tags:
+    - cron
+    - backups
+
+- name: Create initial snapshot
+  uri:
+    url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
+    method: PUT
+    body: ' {"type": "swift", "settings": {"swift_url": "{{ swift_url }}", "swift_container": "{{ swift_container }}", "swift_username": "{{ secrets.swift_username }}", "swift_password": "{{ secrets.swift_password }}" }}'
+    when: backup_es_swift and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
     - backups
@@ -133,7 +148,7 @@
     owner: elasticsearch
     group: elasticsearch
     mode: 0755
-  when: es_local_repo and not backup_es
+  when: es_local_repo and not backup_es_s3
 
 - name: Remove old backup script
   file:
@@ -152,7 +167,7 @@
     owner: root
     mode: 0700
     backup: yes
-  when: (es_local_repo or backup_es) and inventory_hostname == groups.elasticsearch.0
+  when: (es_local_repo or backup_es_s3 or backup_es_swift) and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
     - backups
@@ -166,7 +181,7 @@
     minute: 0
     user: root
     cron_file: create_es_snapshot
-  when: (es_local_repo or backup_es) and inventory_hostname == groups.elasticsearch.0
+  when: (es_local_repo or backup_es_s3 or backup_es_swift) and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
     - backups

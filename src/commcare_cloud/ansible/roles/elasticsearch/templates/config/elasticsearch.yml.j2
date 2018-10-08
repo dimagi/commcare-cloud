@@ -60,7 +60,7 @@ index.search.slowlog.threshold.query.trace: 500ms
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
 
-{% if backup_es and AMAZON_S3_ACCESS_KEY %}
+{% if backup_es_s3 and AMAZON_S3_ACCESS_KEY %}
 cloud:
   aws:
     access_key: "{{ AMAZON_S3_ACCESS_KEY }}"
@@ -76,7 +76,7 @@ cloud:
 action.auto_create_index: false
 
 
-{% if es_local_repo and not backup_es%}
+{% if es_local_repo and not backup_es_s3%}
 path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 {% endif %}
 

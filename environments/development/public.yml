@@ -68,7 +68,6 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
-TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
 #  BANK_ADDRESS:
@@ -99,7 +98,6 @@ localsettings:
 #  SMS_QUEUE_ENABLED: ''
 #  STAGING_DOMAINS:
 #  STATIC_ROOT:
-#  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
 #  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
 root_email: /dev/null

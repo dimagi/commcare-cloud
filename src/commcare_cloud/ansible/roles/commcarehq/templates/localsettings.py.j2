@@ -220,6 +220,7 @@ LOCAL_PILLOWTOPS = {
             "name": "{{ pillow.name }}",
             "class": "{{ pillow.class }}",
             "instance": "{{ pillow.instance }}",
+{% if pillow.params is defined %}
             "params": {
                 "topics": {{ pillow.params.topics }},
                 "include_ucrs": [
@@ -228,6 +229,7 @@ LOCAL_PILLOWTOPS = {
 {% endfor %}
                 ]
             }
+{% endif %}
         },
 {% endfor %}
     ]
@@ -341,12 +343,7 @@ PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ TOUCHFORMS_API_PASSWORD }}"
-
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
-
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
 
 FORMPLAYER_URL = "/formplayer"
 
