@@ -49,7 +49,7 @@ PermitEmptyPasswords no
 ChallengeResponseAuthentication no
 
 # Change to no to disable tunnelled clear text passwords
-PasswordAuthentication {{ 'yes' if ssh_allow_password else 'no '}}
+PasswordAuthentication {{ 'yes' if ssh_allow_password else 'no' }}
 
 # Kerberos options
 #KerberosAuthentication no
@@ -87,7 +87,7 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM yes
 
-{% for user in ssh_allow_password_users %}
+{%- for user in ssh_allow_password_users %}
 Match User {{ user }}
     PasswordAuthentication yes
-{% endfor %}
+{%- endfor %}

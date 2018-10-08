@@ -93,12 +93,24 @@ Now you will be able to SSH into the VM.
 To make a cert, you'll also need to open port 80, so click Add Rule again,
 select Type HTTP, and Source "Anywhere", and click Save.
 
+Finally, make sure to run
+
+```bash
+cchq <env> aws-fill-inventory
+```
+
+which will auto-generate an `[openvpn]` section to your inventory.ini.
+For this to work, make sure you're using the inventory templating style. If you aren't,
+you can just move `inventory.ini` to `inventory.ini.j2` before running that command,
+and it'll generate `inventory.ini` for you. You can (can should) commit `inventory.ini`.
+
+In order to log in from the public IP address, you'll need to uncomment the ansible_host
+variable of `[openvpn]`. (Don't commit this change with the file!)
+
 ### Run the ovpn-init script
 
-Find the public ip of the vpn machine by running `cchq <env> aws-list`. Then run
-
 ```
-ssh openvpnas@<openvpn-public-ip>
+cchq <env> ssh openvpnas@openvpn
 sudo ovpn-init --ec2
 ...
 Please enter 'DELETE' to delete existing configuration:DELETE
@@ -118,32 +130,51 @@ To give others SSH access to the VPN machine
 (right now your access is because terraform created the VM with your public key)
 
 ```
-printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name> certificate_email=<your-email>" > openvpn-tmp
-cchq <env> ansible-playbook deploy_stack.yml --tags=bootstrap-users --limit openvpn -u openvpnas -i openvpn-tmp --skip-check
-``` 
-You can then undo the above change to the inventory file.
-
+cchq <env> bootstrap-users --limit openvpn -u openvpnas
+cchq <env> deploy-stack --limit openvpn --skip-check
+```
 
 ### Set up DNS and HTTPS cert
 
 By whatever means you have, make a DNS entry that points a subdomain name
-to the openvpn machine's public IP. 
+to the openvpn machine's public IP. The subdomain should be called `vpn.{{ SITE_HOST }}`,
+e.g. if the site is at www.mycchqsite.org, it should be vpn.www.mycchqsite.org
 
 Then run
 ```
-# printf "[openvpn]\n<vpn-public-ip> subdomain_name=<vpn-subdomain-name>" > openvpn-tmp
-cchq <env> ansible-playbook deploy_openvpn.yml --skip-check -vvv -i openvpn-tmp
+cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv
 ```
 
-### Create a user from the Admin Web UI
+### Enable PAM in the web Admin UI
+
+OpenVPN has a number authentication modes, and we're going to use
+[PAM](https://docs.openvpn.net/command-line/authentication-options-and-command-line-configuration/#PAM_authentication),
+which make VPN usernames and passwords mirror linux system user usernames and passwords.
+In PAM authentication mode,
+enabling a user just requires setting their linux user's password with `passwd`.
+
 Go to `https://<vpn-subdomain-name>/admin` in your browser and log in with `openvpn`/`<password from above>`.
-Under User Permissions, you can add other users.
-(Passwords are set by clicking the edit button under More Settings.)
-Create a user/password for yourself.
+Then navigate to /admin/pam_configuration and click Use PAM.
+
+### Activate your user
+
+To activate a user, run
+
+```
+cchq <env> openvpn-activate-user <username>
+```
+
+and then have the user (in this case, yourself) change the password with
+
+```
+cchq <env> ssh openvpn -t passwd
+```
+
+providing first the ansible sudo user password, and then the new (secure!) password
+as prompted.
 
 ### Connect to the VPN
 Download the openvpn client and connect to the public IP with your username and password.
-
 
 ### Un-whitelist SSH traffic from your IP address
 Finally once you've proven you can get on the VPN and log into VMs with their private IPs,
@@ -158,3 +189,20 @@ and use the VPN machine's private IP address. Note that if you are using the pri
 and you run `sudo service openvpnas stop`, it will disconnect you from the VPN and you
 won't be able to connect again. Then you will be forced to whitelist your IP
 and use the public IP to ssh in and bring it back up. 
+
+Finally, re-comment the ansible_host variable of `[openvpn]`
+(or just `git checkout -- ...` this change).
+
+### Make sure everything works
+
+Now that you've turned off your special access, make sure you can
+log on to the VPN again and then run
+
+```
+cchq <env> ssh openvpn
+```
+
+to make sure you can ssh onto the machine.
+
+All done! Now to activate the other users, you can run the steps from "Activate your user"
+above as users ask for access.

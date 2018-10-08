@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os
+import subprocess
 import sys
 
 from commcare_cloud.cli_utils import print_command
@@ -50,7 +50,7 @@ class _Ssh(Lookup):
         cmd_parts = [self.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        os.execvp(self.command, cmd_parts)
+        return subprocess.call(cmd_parts)
 
 
 class Ssh(_Ssh):
@@ -72,7 +72,7 @@ class Ssh(_Ssh):
         if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
             environment = get_environment(args.env_name)
             ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
-        super(Ssh, self).run(args, ssh_args)
+        return super(Ssh, self).run(args, ssh_args)
 
 
 class Mosh(_Ssh):
@@ -92,7 +92,7 @@ class Mosh(_Ssh):
             print("! mosh does not support ssh agent forwarding, using ssh instead.",
                   file=sys.stderr)
             Ssh(self.parser).run(args, ssh_args)
-        super(Mosh, self).run(args, ssh_args)
+        return super(Mosh, self).run(args, ssh_args)
 
 
 class Tmux(_Ssh):
