@@ -1055,7 +1055,7 @@ Gives additional databases on the server.
 Run terraform for this env with the given arguments
 
 ```
-commcare-cloud <env> terraform [--skip-secrets]
+commcare-cloud <env> terraform [--skip-secrets] [--username]
 ```
 
 ##### Optional Arguments
@@ -1065,6 +1065,13 @@ commcare-cloud <env> terraform [--skip-secrets]
 Skip regenerating the secrets file.
 
 Good for not having to enter vault password again.
+
+###### `--username`
+
+The username of the user whose public key will be put on new servers.
+
+Normally this would be _your_ username.
+Defaults to the username of the user running the command.
 
 ---
 

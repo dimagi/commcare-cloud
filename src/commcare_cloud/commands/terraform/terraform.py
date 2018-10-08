@@ -23,6 +23,12 @@ class Terraform(CommandBase):
 
             Good for not having to enter vault password again.
         """),
+        Argument('--username', action='store_true', help="""
+            The username of the user whose public key will be put on new servers.
+
+            Normally this would be _your_ username.
+            Defaults to the username of the user running the command. 
+        """),
     )
 
     def run(self, args, unknown_args):
@@ -37,8 +43,15 @@ class Terraform(CommandBase):
             os.mkdir(run_dir)
         if not (os.path.exists(modules_dest) and os.readlink(modules_dest) == modules_dir):
             os.symlink(modules_dir, modules_dest)
+
+        if args.username:
+            key_name = args.username
+        else:
+            import getpass
+            key_name = getpass.getuser()
+
         with open(os.path.join(run_dir, 'terraform.tf'), 'w') as f:
-            print(generate_terraform_entrypoint(environment), file=f)
+            print(generate_terraform_entrypoint(environment, key_name), file=f)
 
         if not args.skip_secrets:
             rds_password = environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
@@ -58,11 +71,17 @@ class Terraform(CommandBase):
         return subprocess.call(cmd, shell=True, env=all_env_vars, cwd=run_dir)
 
 
-def generate_terraform_entrypoint(environment):
+def generate_terraform_entrypoint(environment, key_name):
     context = environment.terraform_config.to_json()
+    assert key_name in environment.users_config.dev_users.present, \
+        "Unauthorized user {}".format(key_name)
+
+
+
     context.update({
         'users': [{'username': username}
                   for username in environment.users_config.dev_users.present],
-        'public_key': environment.get_authorized_key(environment.terraform_config.key_name)
+        'public_key': environment.get_authorized_key(key_name),
+        'key_name': key_name,
     })
     return render_template('entrypoint.tf.j2', context, os.path.dirname(__file__))
