@@ -28,7 +28,7 @@ class OpenvpnActivateUser(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         args.playbook = 'openvpn_playbooks/activate_vpn_user.yml'
         unknown_args += ('-e', 'vpn_user={}'.format(args.vpn_user))
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 
 
 class OpenvpnClaimUser(_AnsiblePlaybookAlias):
@@ -55,4 +55,4 @@ class OpenvpnClaimUser(_AnsiblePlaybookAlias):
         del args.server
         args.playbook = 'openvpn_playbooks/mark_vpn_user_claimed.yml'
         unknown_args += ('-e', 'vpn_user={}'.format(args.vpn_user))
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
