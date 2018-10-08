@@ -11,11 +11,11 @@ and the new environment will live in it's own linked account.
 4. Go to My Security Credentials and enable the root account's access key.
     Copy these to your `~/.aws/credentials` as
     ```
-    [<aws_profile>]
+    [<account_alias>]
     aws_access_key_id = "..."
     aws_secret_access_key = "..."
     ```
-5. Add `aws_profile: <aws_profile>` to `terraform.yml` of your env.
+5. Add `account_alias: <account_alias>` to `terraform.yml` of your env.
 6. (If the S3 state bucket is under a different account) Go to https://console.aws.amazon.com/iam/home#/security_credential > Account Identifiers
     to get the Canonical User ID for the account, and then in an incognito tab log in
     under the account where the S3 state bucket lives, and under Permissions give
@@ -49,7 +49,7 @@ To "activate" an account:
 6. Send them a link to `https://<account_alias>.signin.aws.amazon.com/console`
     and have them log in and reset their password.
 7. Have them to go to My Security Credentials to create an access key
-    and write it in their `~/.aws/credentials` under `[<aws_profile>]`.
+    and write it in their `~/.aws/credentials` under `[<account_alias>]`.
 
 
 ## First terraform run
