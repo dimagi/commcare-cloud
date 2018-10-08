@@ -28,9 +28,6 @@
   become: yes
   with_items:
     - build-essential
-    - python-pip
-    - python-dev
-    - python-setuptools
     - python-psycopg2
     - postgresql-client-common
     - postgresql-client-{{ postgresql_version }}
