@@ -1,6 +1,6 @@
 ---
 - name: setup nginx
-  hosts: proxy:couchdb2_proxy
+  hosts: proxy
   tasks:
     - name: install nginx
       include_role:
@@ -127,20 +127,9 @@
         site_present: "{{ 'pna_ssl' in special_sites }}"
         site_config: {name: pna_ssl, vars_file: pna_ssl}
 
-- name: Couchdb 2.0 Proxy
-  hosts: couchdb2_proxy
-  tasks:
-    - include_role:
-        name: nginx
-        tasks_from: set_site_present
-      vars:
-        site_present: True
-        site_config: {name: couchdb2, vars_file: couchdb2}
-
 - name: Move logrotate to hourly
   hosts:
     - proxy
-    - couchdb2_proxy
   become: true
   roles:
     - role: logrotate
@@ -148,7 +137,6 @@
 - name: Nginx log rolling configurations
   hosts:
    - proxy
-   - couchdb2_proxy
   become: true
   roles:
     - role: ansible-logrotate
