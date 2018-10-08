@@ -78,15 +78,6 @@ def get_django_webworker_name(environment):
     )
 
 
-def get_formplayer_instance_name(environment):
-    environment_environment = environment.meta_config.deploy_env
-    project = environment.fab_settings_config.project
-    return "{project}-{environment}-formsplayer".format(
-        project=project,
-        environment=environment_environment
-    )
-
-
 def get_formplayer_spring_instance_name(environment):
     environment_environment = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project

@@ -11,7 +11,6 @@ from clint.textui import puts, colored, indent
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,
-    get_formplayer_instance_name,
     get_celery_workers,
     get_pillowtop_processes
 )

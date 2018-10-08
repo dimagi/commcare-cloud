@@ -30,7 +30,6 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
-touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
@@ -158,8 +157,6 @@ SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL | default(None) }}"
 SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS | default(None) }}"
 STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None) }}"
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
-TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD | default('') }}"
-TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER | default('') }}"
 TRANSIFEX_API_TOKEN: "{{ localsettings_private.TRANSIFEX_API_TOKEN | default(None) }}"
 TWO_FACTOR_GATEWAY_ENABLED: False
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY | default(None) }}"
