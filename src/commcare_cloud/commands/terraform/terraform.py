@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 
+from clint.textui import puts, colored
 from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
@@ -23,7 +24,7 @@ class Terraform(CommandBase):
 
             Good for not having to enter vault password again.
         """),
-        Argument('--username', action='store_true', help="""
+        Argument('--username', help="""
             The username of the user whose public key will be put on new servers.
 
             Normally this would be _your_ username.
@@ -51,7 +52,15 @@ class Terraform(CommandBase):
             key_name = getpass.getuser()
 
         with open(os.path.join(run_dir, 'terraform.tf'), 'w') as f:
-            print(generate_terraform_entrypoint(environment, key_name), file=f)
+            try:
+                print(generate_terraform_entrypoint(environment, key_name), file=f)
+            except UnauthorizedUser as e:
+                allowed_users = environment.users_config.dev_users.present
+                puts(colored.red(
+                    "Unauthorized user {}.\n\n"
+                    "Use --username to pass in one of the allowed ssh users:{}"
+                    .format(e.username, '\n  - '.join([''] + allowed_users))))
+                return -1
 
         if not args.skip_secrets:
             rds_password = environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
@@ -71,12 +80,15 @@ class Terraform(CommandBase):
         return subprocess.call(cmd, shell=True, env=all_env_vars, cwd=run_dir)
 
 
+class UnauthorizedUser(Exception):
+    def __init__(self, username):
+        self.username = username
+
+
 def generate_terraform_entrypoint(environment, key_name):
     context = environment.terraform_config.to_json()
-    assert key_name in environment.users_config.dev_users.present, \
-        "Unauthorized user {}".format(key_name)
-
-
+    if key_name not in environment.users_config.dev_users.present:
+        raise UnauthorizedUser(key_name)
 
     context.update({
         'users': [{'username': username}
