@@ -98,3 +98,6 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+
+commcare_cloud_root_user: "{{ ec2|default(false) and 'ubuntu' or omit }}"
+commcare_cloud_pem: "{{ ec2|default(false) and '~/.ssh/id_rsa' or omit }}"
