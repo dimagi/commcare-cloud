@@ -98,3 +98,7 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+
+# comment these two lines out to make a new rackspace machine
+commcare_cloud_root_user: ubuntu
+commcare_cloud_pem: ~/.ssh/id_rsa
