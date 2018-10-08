@@ -12,7 +12,7 @@ elasticsearch_cluster_name: 'pna-es'
 
 backup_blobdb: True
 backup_postgres: dump
-backup_es: True
+backup_es_s3: True
 backup_couch: True
 postgres_s3: True
 blobdb_s3: True

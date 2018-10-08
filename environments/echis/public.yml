@@ -13,7 +13,7 @@ ssh_allow_password: True
 
 backup_blobdb: False
 backup_postgres: False
-backup_es: False
+backup_es_s3: False
 backup_couch: False
 postgres_s3: False
 blobdb_s3: False
