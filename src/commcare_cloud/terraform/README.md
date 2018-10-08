@@ -146,10 +146,15 @@ cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-che
 ```
 
 ### Enable PAM in the web Admin UI
+
+OpenVPN has a number authentication modes, and we're going to use
+[PAM](https://docs.openvpn.net/command-line/authentication-options-and-command-line-configuration/#PAM_authentication),
+which make VPN usernames and passwords mirror linux system user usernames and passwords.
+In PAM authentication mode,
+enabling a user just requires setting their linux user's password with `passwd`.
+
 Go to `https://<vpn-subdomain-name>/admin` in your browser and log in with `openvpn`/`<password from above>`.
 Then navigate to /admin/pam_configuration and click Use PAM.
-This will make VPN usernames and passwords mirror linux system user usernames and passwords.
-Thus, enabling a user just requires giving them a password with `passwd`.
 
 ### Activate your user
 
