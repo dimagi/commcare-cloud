@@ -67,7 +67,7 @@ variable "proxy_servers" {
 
 locals {
   default_redis = {
-    node_type             = "cache.t2.small"
+    node_type             = "cache.t3.small"
     num_cache_nodes       = 1
     engine_version        = "4.0.10"
     parameter_group_name  = "default.redis4.0"
@@ -76,7 +76,7 @@ locals {
 
   default_rds = {
     storage = ""
-    instance_type = "db.t2.medium"
+    instance_type = "db.t3.medium"
     identifier = ""
     username = "root"
     storage_type = "gp2"
