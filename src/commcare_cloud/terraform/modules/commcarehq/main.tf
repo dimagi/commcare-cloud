@@ -41,11 +41,6 @@ locals {
   }
 }
 
-resource "aws_key_pair" "main" {
-  key_name = "${var.key_name}"
-  public_key = "${var.public_key}"
-}
-
 module "servers" {
   source = "../servers"
   servers = "${var.servers}"
@@ -106,6 +101,5 @@ module "openvpn" {
 
 module "Users" {
   source = "../iam"
-  users = "${var.users}"
   account_alias = "${var.account_alias}"
 }
