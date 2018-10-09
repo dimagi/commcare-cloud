@@ -64,7 +64,6 @@ module "commcarehq" {
   ]
 
   key_name = {{ key_name|tojson }}
-  public_key = {{ public_key|tojson }}
 
   servers = [
   {%- for server in servers %}
@@ -111,6 +110,11 @@ module "commcarehq" {
 }
 
 {%- for user in (users if manage_users else []) %}
+resource "aws_key_pair" {{ user.username|tojson }} {
+  key_name = {{ user.username|tojson }}
+  public_key = {{ user.public_key|tojson }}
+}
+
 module "iam_user__{{ user.username }}" {
   source = "../modules/iam/user"
   username = {{ user.username|tojson }}

@@ -91,9 +91,10 @@ def generate_terraform_entrypoint(environment, key_name):
         raise UnauthorizedUser(key_name)
 
     context.update({
-        'users': [{'username': username}
-                  for username in environment.users_config.dev_users.present],
-        'public_key': environment.get_authorized_key(key_name),
+        'users': [{
+            'username': username,
+            'public_key': environment.get_authorized_key(username)
+        } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
     })
     return render_template('entrypoint.tf.j2', context, os.path.dirname(__file__))
