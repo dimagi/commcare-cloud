@@ -27,7 +27,7 @@ external_routes:
 
 servers:
   - server_name: "control-production"
-    server_instance_type: "t2.medium"
+    server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 8
@@ -39,7 +39,7 @@ rds_instances:
   # See: https://github.com/hashicorp/terraform/issues/9858#issuecomment-263654145
   - create: no
     identifier: "pg0"
-    instance_type: "db.t2.medium"
+    instance_type: "db.t3.medium"
     storage: 300
 
 redis:
