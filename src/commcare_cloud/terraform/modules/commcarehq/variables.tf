@@ -46,10 +46,6 @@ variable "rds_instances" {
   default = []
 }
 
-variable "users" {
-  type = "list"
-}
-
 variable "account_alias" {}
 
 variable "key_name" {}
