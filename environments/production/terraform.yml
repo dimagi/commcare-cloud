@@ -30,7 +30,7 @@ servers:
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
-    volume_size: 8
+    volume_size: 40
   # These ES Machines apparently have to be in zone b:
   #   Your requested instance type (h1.2xlarge) is not supported in your requested Availability Zone (us-east-1a).
   #   Please retry your request by not specifying an Availability Zone or choosing us-east-1b, us-east-1f.
