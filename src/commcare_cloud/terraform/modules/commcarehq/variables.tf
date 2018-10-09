@@ -49,7 +49,6 @@ variable "rds_instances" {
 variable "account_alias" {}
 
 variable "key_name" {}
-variable "public_key" {}
 variable "servers" {
   type = "list"
   default = []
