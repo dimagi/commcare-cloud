@@ -108,10 +108,12 @@ module "commcarehq" {
   }
 
   account_alias = {{ (account_alias or "")|tojson }}
-
-  users = [
-  {%- for user in (users if manage_users else []) %}
-    {username = {{ user.username|tojson }}},
-  {%- endfor %}
-  ]
 }
+
+{%- for user in (users if manage_users else []) %}
+module "iam_user__{{ user.username }}" {
+  source = "../modules/iam/user"
+  username = {{ user.username|tojson }}
+  administrators_iam_group = "${module.commcarehq.administrators_iam_group}"
+}
+{%- endfor %}
