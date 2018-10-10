@@ -7,10 +7,6 @@
   apt_repository: repo='ppa:keithw/mosh' state=present
   register: add_mosh_repo
 
-- name: Add git apt repo
-  apt_repository: repo='ppa:git-core/ppa' state=present
-  register: add_git_repo
-
 - name: Add PostgreSQL apt key
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
@@ -20,7 +16,7 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_nodejs_repo|changed or add_mosh_repo|changed or add_git_repo|changed or add_postgres_repo|changed
+  when: add_nodejs_repo|changed or add_mosh_repo|changed or add_postgres_repo|changed
 
 # Install base packages, common to all servers
 - name: Install common packages
@@ -28,15 +24,11 @@
   become: yes
   with_items:
     - build-essential
-    - python-pip
-    - python-dev
-    - python-setuptools
     - python-psycopg2
     - postgresql-client-common
     - postgresql-client-{{ postgresql_version }}
     - libxml2-dev
     - libxslt1-dev
-    - git
     - tig # git browser
     - libpq-dev
     - curl
