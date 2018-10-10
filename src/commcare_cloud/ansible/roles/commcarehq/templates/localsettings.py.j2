@@ -214,8 +214,7 @@ LOCAL_APPS = (
     'gunicorn',
     {% for entry in LOCAL_APPS.apps %}
     {% if inventory_hostname in groups[entry.host] %}
-    '{{ entry.host }}'
-    '{{ entry.name }}''
+    '{{ entry.name }}'
     {% endif %}
     {% endfor %}
 )
