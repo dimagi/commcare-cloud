@@ -209,7 +209,18 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 
 ####### For Constructing Global URLs ########
 
-LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+LOCAL_APPS = (
+    'dimagi.utils',
+    'gunicorn',
+    {% for app_name, host in localsettings.get('LOCAL_APPS', {}).items() %}
+    {% if host == inventory_hostname %}
+    '{{ app }}',
+    {% endif %}
+    {% endfor %}
+)
+ {% if 'DATADOG_TRACE' in localsettings %}
+DATADOG_TRACE = json.loads('{{ localsettings.DATADOG_TRACE|to_json }}')
+{% endif %}
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
 LOCAL_PILLOWTOPS = {

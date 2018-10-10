@@ -7,6 +7,14 @@ DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
 datadog_integration_cloudant: true
 
+DATADOG_TRACE:
+  TAGS:
+    env: production
+
+LOCAL_APPS:
+  apps:
+    - {name: 'ddtrace.contrib.django', host: webworkers}
+
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_memory: '4096m'
