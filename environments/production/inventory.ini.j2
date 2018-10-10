@@ -188,6 +188,32 @@ hqes7.internal-va.commcarehq.org elasticsearch_node_name=hqes7
 [hqesmaster0]
 172.24.32.67 hostname=hqesmaster0 elasticsearch_node_name=hqesmaster0
 
+[es0]
+{{ es0-production }} hostname=es0-production elasticsearch_node_name=es0 ec2=yes
+
+[es1]
+{{ es1-production }} hostname=es1-production elasticsearch_node_name=es1 ec2=yes
+
+[es2]
+{{ es2-production }} hostname=es2-production elasticsearch_node_name=es2 ec2=yes
+
+[es3]
+{{ es3-production }} hostname=es3-production elasticsearch_node_name=es3 ec2=yes
+
+[es4]
+{{ es4-production }} hostname=es4-production elasticsearch_node_name=es4 ec2=yes
+
+[es_data_aws:children]
+es0
+es1
+es2
+es3
+es4
+
+[es_data_aws:vars]
+datavol_device=/dev/xvdb
+elasticsearch_node_zone=aws
+
 [es_master:children]
 hqesmaster0
 
