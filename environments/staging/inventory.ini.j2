@@ -7,7 +7,7 @@
 proxy0-staging.internal-va.commcarehq.org swap_size=1G
 
 [proxy1]
-{{ proxy1-staging }} hostname=proxy1-staging ec2=yes
+{{ proxy1-staging }} hostname=proxy1-staging public_ip={{ proxy1-staging.public_ip }} ec2=yes
 
 [proxy:children]
 proxy0
