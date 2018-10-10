@@ -30,7 +30,7 @@ servers:
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
-    volume_size: 8
+    volume_size: 50
   - server_name: "web0-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
@@ -42,7 +42,13 @@ servers:
     az: "b"
     volume_size: 80
 
-proxy_servers: []
+proxy_servers:
+  - server_name: "proxy1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "public"
+    az: "a"
+    volume_size: 80
+
 
 rds_instances:
   # dummy entry that doesn't get created
