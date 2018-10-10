@@ -136,7 +136,7 @@
     url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
     body: ' {"type": "swift", "settings": {"swift_url": "{{ swift_url }}", "swift_container": "{{ swift_container }}", "swift_username": "{{ secrets.swift_username }}", "swift_password": "{{ secrets.swift_password }}" }}'
-    when: backup_es_swift and inventory_hostname == groups.elasticsearch.0
+  when: backup_es_swift and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
     - backups
