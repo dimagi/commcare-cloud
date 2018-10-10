@@ -40,10 +40,8 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-staging-test-blobdb'
 
 localsettings:
   ALLOWED_HOSTS:
-    - staging.commcarehq.org
     - j2mestaging.commcarehq.org
     - testserver
-    - '{{ hostvars[groups.proxy.0].public_ip }}'
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
