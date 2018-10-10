@@ -37,7 +37,7 @@ class Lookup(CommandBase):
             sys.stderr.write(
                 "Ignoring extra argument(s): {}\n".format(unknown_args)
             )
-        print_command(self.lookup_server_address(args))
+        print(self.lookup_server_address(args))
 
 
 class _Ssh(Lookup):
