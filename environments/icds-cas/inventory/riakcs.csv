@@ -1,7 +1,7 @@
 hostname,host_address,group 1,group 2,group 3,var: hostname,var: encrypted_root
 riak0,100.71.184.33,riakcs,,stanchion,MUMGCCWCDPRDR000,/opt/data
-riak1,100.71.184.43,riakcs,,,MUMGCCWCDPRDR001,/opt/data
-riak2,100.71.184.13,riakcs,,,MUMGCCWCDPRDR002,/opt/data1
+riak1,100.71.184.43,riakcs,,,MUMGCCWCDPRDR001,/opt_new
+riak2,100.71.184.13,riakcs,,,MUMGCCWCDPRDR002,/opt_new
 riak3,100.71.184.44,riakcs,,,MUMGCCWCDPRDR003,/opt/data1
 riak4,100.71.184.50,riakcs,,,MUMGCCWCDPRDR004,/opt/data1
 riak5,100.71.184.37,riakcs,,,MUMGCCWCDPRDR005,/opt/data1
