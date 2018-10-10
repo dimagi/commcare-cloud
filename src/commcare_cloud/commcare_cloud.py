@@ -85,7 +85,7 @@ def run_on_control_instead(args, sys_argv):
     branch = args.branch or 'master'
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control', '-t',
-        'source ~/init-ansible && git checkout master && control/update_code.sh && git checkout {branch} && source ~/init-ansible && {cchq} {cchq_args}'
+        'source ~/init-ansible && git checkout master && control/update_code.sh && git checkout {branch} && git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
         .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))
     ]
 
