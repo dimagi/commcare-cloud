@@ -42,7 +42,8 @@ celery_processes:
       concurrency: 2
       max_tasks_per_child: 1
     icds_aggregation_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 2
     flower: {}
 pillows:
   'pillow1':
