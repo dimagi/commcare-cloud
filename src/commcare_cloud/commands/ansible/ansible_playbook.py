@@ -224,8 +224,8 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.use_factory_auth = True
         public_vars = environment.public_vars
-        root_user = public_vars.get('commcare_cloud_root_user', 'root')
-        unknown_args += ('--tags=bootstrap-users', '-u', root_user)
+        unknown_args += ('--tags=bootstrap-users',) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
+
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
