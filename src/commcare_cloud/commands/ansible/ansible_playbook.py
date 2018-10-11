@@ -113,7 +113,7 @@ def run_ansible_playbook(
         ) + get_limit() + cmd_args
 
         public_vars = environment.public_vars
-        cmd_parts += get_user_arg(public_vars, unknown_args)
+        cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
             puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
