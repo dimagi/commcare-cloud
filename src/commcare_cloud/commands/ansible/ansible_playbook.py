@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import subprocess
+from copy import deepcopy
 
 from six.moves import shlex_quote
 from clint.textui import puts, colored
@@ -163,9 +164,30 @@ class DeployStack(_AnsiblePlaybookAlias):
         for a more specific update.
     """
 
+    arguments = _AnsiblePlaybookAlias.arguments + (
+        Argument('--first-time', action='store_true', help="""
+        Use this flag for running against a newly-created machine.
+
+        It will first use factory auth to set up users,
+        and then will do the rest of deploy-stack normally,
+        but skipping check mode.
+        """),
+    )
+
     def run(self, args, unknown_args):
+        always_skip_check = False
+        if args.first_time:
+            rc = BootstrapUsers(self.parser).run(deepcopy(args), unknown_args)
+            if rc != 0:
+                return rc
+            # the above just ran --tags=users
+            # no need to run it a second time
+            unknown_args += ('--skip-tags=users')
+            args.quiet = True
+            always_skip_check = True
         args.playbook = 'deploy_stack.yml'
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(
+            args, unknown_args, always_skip_check=always_skip_check)
 
 
 class UpdateConfig(_AnsiblePlaybookAlias):
