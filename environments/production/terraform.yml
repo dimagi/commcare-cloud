@@ -61,6 +61,31 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 40
+  - server_name: "es5-production"
+    server_instance_type: i3.xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "es6-production"
+    server_instance_type: i3.xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "es7-production"
+    server_instance_type: i3.xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "es8-production"
+    server_instance_type: i3.xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "es9-production"
+    server_instance_type: i3.xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
 
 proxy_servers: []
 
