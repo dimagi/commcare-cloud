@@ -38,7 +38,9 @@ servers:
     server_instance_type: "h1.2xlarge"
     network_tier: "db-private"
     az: "b"
-    volume_size: 40
+    # While debugging I increased the size of this volume from the console
+    # and it's easiest to leave as is
+    volume_size: 80
   - server_name: "es1-production"
     server_instance_type: "h1.2xlarge"
     network_tier: "db-private"
