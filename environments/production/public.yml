@@ -12,8 +12,7 @@ DATADOG_TRACE:
     env: production
 
 LOCAL_APPS:
-  apps:
-    - {name: 'ddtrace.contrib.django', host: webworkers}
+  - {name: 'ddtrace.contrib.django', host: webworkers}
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'

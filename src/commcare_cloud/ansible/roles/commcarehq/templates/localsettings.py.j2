@@ -212,7 +212,7 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 LOCAL_APPS = (
     'dimagi.utils',
     'gunicorn',
-    {% for entry in LOCAL_APPS.apps %}
+    {% for entry in LOCAL_APPS %}
     {% if inventory_hostname in groups[entry.host] %}
     '{{ entry.name }}',
     {% endif %}
