@@ -213,12 +213,32 @@ elasticsearch_node_zone=rackspace
 [es4]
 {{ es4-production }} hostname=es4-production elasticsearch_node_name=es4 ec2=yes
 
+[es5]
+{{ es5-production }} hostname=es5-production elasticsearch_node_name=es5 ec2=yes
+
+[es6]
+{{ es6-production }} hostname=es6-production elasticsearch_node_name=es6 ec2=yes
+
+[es7]
+{{ es7-production }} hostname=es7-production elasticsearch_node_name=es7 ec2=yes
+
+[es8]
+{{ es8-production }} hostname=es8-production elasticsearch_node_name=es8 ec2=yes
+
+[es9]
+{{ es9-production }} hostname=es9-production elasticsearch_node_name=es9 ec2=yes
+
 [es_data_aws:children]
 es0
 es1
 es2
 es3
 es4
+es5
+es6
+es7
+es8
+es9
 
 [es_data_aws:vars]
 datavol_device=/dev/xvdb
