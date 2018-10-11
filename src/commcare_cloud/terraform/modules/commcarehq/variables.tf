@@ -4,6 +4,9 @@ variable "environment" {}
 variable "azs" {
   type = "list"
 }
+variable "az_codes" {
+  type = "list"
+}
 variable "vpc_begin_range" {}
 
 # OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe.
@@ -89,10 +92,6 @@ locals {
   }
   # todo: fold these two into default_rds once terraform 0.12 comes out
   # todo: allow heterogeneous maps as module variables
-  rds_subnet_ids = [
-    "${module.network.subnet-a-db-private}",
-    "${module.network.subnet-b-db-private}",
-    "${module.network.subnet-c-db-private}"
-  ]
+  rds_subnet_ids = "${values(module.network.subnets-db-private)}"
   rds_vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
 }

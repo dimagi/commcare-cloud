@@ -1,37 +1,13 @@
-output "subnet-a-app-private" {
-  value = "${aws_subnet.subnet-app-private.*.id[0]}"
+output "subnets-app-private" {
+  value = "${zipmap(var.az_codes, aws_subnet.subnet-app-private.*.id)}"
 }
 
-output "subnet-b-app-private" {
-  value = "${aws_subnet.subnet-app-private.*.id[1]}"
+output "subnets-public" {
+  value = "${zipmap(var.az_codes, aws_subnet.subnet-public.*.id)}"
 }
 
-output "subnet-c-app-private" {
-  value = "${aws_subnet.subnet-app-private.*.id[2]}"
-}
-
-output "subnet-a-public" {
-  value = "${aws_subnet.subnet-public.*.id[0]}"
-}
-
-output "subnet-b-public" {
-  value = "${aws_subnet.subnet-public.*.id[1]}"
-}
-
-output "subnet-c-public" {
-  value = "${aws_subnet.subnet-public.*.id[2]}"
-}
-
-output "subnet-a-db-private" {
-  value = "${aws_subnet.subnet-db-private.*.id[0]}"
-}
-
-output "subnet-b-db-private" {
-  value = "${aws_subnet.subnet-db-private.*.id[1]}"
-}
-
-output "subnet-c-db-private" {
-  value = "${aws_subnet.subnet-db-private.*.id[2]}"
+output "subnets-db-private" {
+  value = "${zipmap(var.az_codes, aws_subnet.subnet-db-private.*.id)}"
 }
 
 output "vpc-id" {
