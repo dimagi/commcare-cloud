@@ -270,7 +270,9 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  # sumologic toggle is set to 0 so having this here just incurs another cache hit for nothing
+  # can re-enable if we want to
+  SUMOLOGIC_URL: # "{{ localsettings_private.SUMOLOGIC_URL }}"
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
