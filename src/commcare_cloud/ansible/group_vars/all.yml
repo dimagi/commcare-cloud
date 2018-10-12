@@ -86,6 +86,13 @@ datadog_integration_vmware: false
 datadog_integration_http: false
 datadog_integration_haproxy: false
 datadog_extra_host_checks: []
+datadog_patch_modules:
+  - requests:true
+  - gevent:true
+  - psycopg:true
+  - redis:true
+  - sqlalchemy:true
+  - elasticsearch:true
 
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com

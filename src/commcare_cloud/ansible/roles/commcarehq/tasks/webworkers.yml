@@ -20,6 +20,8 @@
         NEW_RELIC_CONFIG_FILE: '{% if app_processes_config.newrelic_djangoagent %}{{ www_home }}/newrelic.ini{% endif %}'
         NEW_RELIC_ENVIRONMENT: '{% if app_processes_config.newrelic_djangoagent %}{{ env_monitoring_id }}{% endif %}'
         TMPDIR: '{{ encrypted_tmp }}'
+        DATADOG_PATCH_MODULES: "{% if app_processes_config.datadog_pythonagent %}{{ datadog_patch_modules|join(',') }}{% endif %}"
+        DATADOG_ENV: "{% if app_processes_config.datadog_pythonagent %}{{ env_monitoring_id }}{% endif %}"
       gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
   tags:
     - services

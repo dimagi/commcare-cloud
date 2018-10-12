@@ -1,5 +1,6 @@
-newrelic_djangoagent: True
+newrelic_djangoagent: False
 newrelic_javaagent: True
+datadog_pythonagent: True
 django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 
 celery_processes:
