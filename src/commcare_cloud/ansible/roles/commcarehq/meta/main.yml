@@ -1,3 +1,4 @@
 ---
 dependencies:
   - {role: supervisor, tags: supervisor}
+  - {role: nodejs, tags: nodejs}
