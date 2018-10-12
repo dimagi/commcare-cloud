@@ -1,6 +1,6 @@
 newrelic_djangoagent: True
 newrelic_javaagent: True
-django_command_prefix: '{{ virtualenv_home }}/bin/newrelic-admin run-program '
+django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 
 celery_processes:
   hqcelery0.internal-va.commcarehq.org:
