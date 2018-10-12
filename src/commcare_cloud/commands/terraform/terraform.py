@@ -34,12 +34,11 @@ class Terraform(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        run_dir_root = environment.paths.get_env_file_path('.generated-terraform')
-        run_dir = os.path.join(run_dir_root, 'entrypoint')
+        run_dir = environment.paths.get_env_file_path('.generated-terraform')
         modules_dir = os.path.join(TERRAFORM_DIR, 'modules')
-        modules_dest = os.path.join(run_dir_root, 'modules')
-        if not os.path.isdir(run_dir_root):
-            os.mkdir(run_dir_root)
+        modules_dest = os.path.join(run_dir, 'modules')
+        if not os.path.isdir(run_dir):
+            os.mkdir(run_dir)
         if not os.path.isdir(run_dir):
             os.mkdir(run_dir)
         if not (os.path.exists(modules_dest) and os.readlink(modules_dest) == modules_dir):
@@ -97,4 +96,4 @@ def generate_terraform_entrypoint(environment, key_name):
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
     })
-    return render_template('entrypoint.tf.j2', context, os.path.dirname(__file__))
+    return render_template('terraform.tf.j2', context, os.path.dirname(__file__))

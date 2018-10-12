@@ -16,7 +16,7 @@ variable "rds_password" {
 }
 
 module "commcarehq" {
-  source = "../modules/commcarehq"
+  source = "./modules/commcarehq"
   region = {{ region|tojson }}
   environment = {{ environment|tojson }}
   {%- if openvpn_image %}
@@ -117,7 +117,7 @@ resource "aws_key_pair" {{ user.username|tojson }} {
 }
 
 module "iam_user__{{ user.username }}" {
-  source = "../modules/iam/user"
+  source = "./modules/iam/user"
   username = {{ user.username|tojson }}
   administrators_iam_group = "${module.commcarehq.administrators_iam_group}"
 }
