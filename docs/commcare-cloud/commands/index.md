@@ -675,7 +675,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for deploying the entire stack.
 
 ```
-commcare-cloud <env> deploy-stack [--use-factory-auth]
+commcare-cloud <env> deploy-stack [--use-factory-auth] [--first-time]
 ```
 
 Often used in conjunction with --limit and/or --tag
@@ -686,6 +686,14 @@ for a more specific update.
 ###### `--use-factory-auth`
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
+
+###### `--first-time`
+
+Use this flag for running against a newly-created machine.
+
+It will first use factory auth to set up users,
+and then will do the rest of deploy-stack normally,
+but skipping check mode.
 
 ---
 
