@@ -42,3 +42,8 @@ dogstreams: {% for parser in datadog_parsers -%}
 {% if alt_hostname is defined %}
 hostname: {{ alt_hostname }}.{{ internal_domain_name }}
 {% endif %}
+
+{% if app_processes_config.datadog_pythonagent %}
+apm_config:
+  enabled: true
+{% endif %}
