@@ -22,6 +22,8 @@
         TMPDIR: '{{ encrypted_tmp }}'
         DATADOG_PATCH_MODULES: "{% if app_processes_config.datadog_pythonagent %}{{ datadog_patch_modules|join(',') }}{% endif %}"
         DATADOG_ENV: "{% if app_processes_config.datadog_pythonagent %}{{ env_monitoring_id }}{% endif %}"
+        DD_REQUESTS_SERVICE_NAME: "{% if app_processes_config.datadog_pythonagent %}requests{% endif %}"
+        DD_REQUESTS_SPLIT_BY_DOMAIN: "{% if app_processes_config.datadog_pythonagent %}True{% endif %}"
       gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
   tags:
     - services
