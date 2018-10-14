@@ -158,8 +158,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
     return parser, subparsers, commands
 
 
-def main(input_argv=sys.argv):
-    print(input_argv)
+def call_commcare_cloud(input_argv=sys.argv):
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args(input_argv)
@@ -172,8 +171,13 @@ def main(input_argv=sys.argv):
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
         puts(colored.red(str(e), bold=True))
-        exit(1)
+        return 1
 
+    return exit_code
+
+
+def main():
+    exit_code = call_commcare_cloud()
     if exit_code is not 0:
         exit(exit_code)
 
