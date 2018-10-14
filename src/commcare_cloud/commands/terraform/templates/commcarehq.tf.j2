@@ -12,7 +12,7 @@ variable "tf_s3_bucket" {
 }
 
 module "network" {
-  source            = "../network"
+  source            = "./modules/network"
   vpc_begin_range   = "${var.vpc_begin_range}"
   env               = "${var.environment}"
   azs               = "${var.azs}"
@@ -47,7 +47,7 @@ locals {
 }
 
 module "servers" {
-  source = "../servers"
+  source = "./modules/servers"
   servers = "${var.servers}"
   server_image = "${var.server_image}"
   environment = "${var.environment}"
@@ -58,7 +58,7 @@ module "servers" {
 }
 
 module "proxy_servers" {
-  source = "../servers"
+  source = "./modules/servers"
   servers = "${var.proxy_servers}"
   server_image = "${var.server_image}"
   environment = "${var.environment}"
@@ -76,7 +76,7 @@ resource "aws_eip" "proxy" {
 }
 
 module "Redis" {
-  source               = "../elasticache"
+  source               = "./modules/elasticache"
   create               = "${lookup(local.redis, "create", true)}"
   cluster_id           = "redis-${var.environment}"
   engine               = "redis"
@@ -90,7 +90,7 @@ module "Redis" {
 }
 
 module "openvpn" {
-  source = "../openvpn"
+  source = "./modules/openvpn"
   openvpn_image = "${var.openvpn_image}"
   environment = "${var.environment}"
   vpn_size = "${var.openvpn_instance_type}"
@@ -102,6 +102,18 @@ module "openvpn" {
 }
 
 module "Users" {
-  source = "../iam"
+  source = "./modules/iam"
   account_alias = "${var.account_alias}"
 }
+
+{%- for user in (users if manage_users else []) %}
+resource "aws_key_pair" {{ user.username|tojson }} {
+  key_name = {{ user.username|tojson }}
+  public_key = {{ user.public_key|tojson }}
+}
+module "iam_user__{{ user.username }}" {
+  source = "./modules/iam/user"
+  username = {{ user.username|tojson }}
+  administrators_iam_group = "${module.Users.administrators_iam_group}"
+}
+{%- endfor %}
