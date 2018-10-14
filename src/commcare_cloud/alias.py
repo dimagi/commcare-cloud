@@ -23,6 +23,8 @@ def _encode_args(*args, **kwargs):
 
 
 def commcare_cloud(*args, **kwargs):
+    from .cli_utils import print_command
     from .commcare_cloud import call_commcare_cloud
     argv = _encode_args('commcare-cloud', *args, **kwargs)
+    print_command(argv)
     return call_commcare_cloud(argv)
