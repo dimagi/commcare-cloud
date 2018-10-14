@@ -50,9 +50,8 @@ class Terraform(CommandBase):
             import getpass
             key_name = getpass.getuser()
 
-        with open(os.path.join(run_dir, 'terraform.tf'), 'w') as f:
             try:
-                print(generate_terraform_entrypoint(environment, key_name), file=f)
+                generate_terraform_entrypoint(environment, key_name, run_dir)
             except UnauthorizedUser as e:
                 allowed_users = environment.users_config.dev_users.present
                 puts(colored.red(
@@ -84,7 +83,7 @@ class UnauthorizedUser(Exception):
         self.username = username
 
 
-def generate_terraform_entrypoint(environment, key_name):
+def generate_terraform_entrypoint(environment, key_name, run_dir):
     context = environment.terraform_config.to_json()
     if key_name not in environment.users_config.dev_users.present:
         raise UnauthorizedUser(key_name)
@@ -96,4 +95,13 @@ def generate_terraform_entrypoint(environment, key_name):
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
     })
-    return render_template('terraform.tf.j2', context, os.path.dirname(__file__))
+    template_root = os.path.join(os.path.dirname(__file__), 'templates')
+    for template_file, output_file in (
+            ('terraform.tf.j2', 'terraform.tf'),
+            ('commcarehq.tf.j2', 'commcarehq.tf'),
+            ('postgresql.tf.j2', 'postgresql.tf'),
+            ('variables.tf.j2', 'variables.tf'),
+            ('terraform.tfvars.j2', 'terraform.tfvars'),
+    ):
+        with open(os.path.join(run_dir, output_file), 'w') as f:
+            f.write(render_template(template_file, context, template_root).encode('utf-8'))

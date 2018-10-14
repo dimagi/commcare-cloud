@@ -19,7 +19,7 @@ locals {
 
 {% for i in range(count) %}
 module "postgresql-{{ i }}" {
-  source = "../postgresql"
+  source = "./modules/postgresql"
   rds_instance = "${local.rds_instances[{{ i }}]}"
   subnet_ids = "${local.rds_subnet_ids}"
   vpc_security_group_ids = "${local.rds_vpc_security_group_ids}"
