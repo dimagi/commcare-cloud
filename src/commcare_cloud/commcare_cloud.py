@@ -8,6 +8,7 @@ import sys
 import warnings
 from collections import OrderedDict
 
+import six
 from clint.textui import puts, colored
 
 from commcare_cloud.cli_utils import print_command
@@ -158,15 +159,42 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
     return parser, subparsers, commands
 
 
-def main():
+def _encode_args(*args, **kwargs):
+    argv = []
+
+    def encode_string(value):
+        if isinstance(value, six.string_types + six.integer_types):
+            return unicode(value).encode('utf-8')
+        else:
+            TypeError("Do not know how to interpret type {} as a command-line argument: {}"
+                      .format(type(value), value))
+    for arg in args:
+        argv.append(unicode(arg).encode('utf-8'))
+    for key, value in kwargs.items():
+        if value is False:
+            continue
+        elif value is True:
+            argv.append('--{}'.format(key))
+        else:
+            argv.extend(['--{}'.format(key), encode_string(value)])
+    return argv
+
+
+def commcare_cloud(*args, **kwargs):
+    argv = _encode_args('commcare-cloud', *args, **kwargs)
+    main(argv)
+
+
+def main(input_argv=sys.argv):
+    print(input_argv)
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
-    args, unknown_args = parser.parse_known_args()
+    args, unknown_args = parser.parse_known_args(input_argv)
 
     add_backwards_compatibility_to_args(args)
 
     if args.control:
-        run_on_control_instead(args, sys.argv)
+        run_on_control_instead(args, input_argv)
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
