@@ -161,7 +161,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 def call_commcare_cloud(input_argv=sys.argv):
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
-    args, unknown_args = parser.parse_known_args(input_argv)
+    args, unknown_args = parser.parse_known_args(input_argv[1:])
 
     add_backwards_compatibility_to_args(args)
 

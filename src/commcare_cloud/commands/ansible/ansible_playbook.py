@@ -5,6 +5,8 @@ from copy import deepcopy
 
 from six.moves import shlex_quote
 from clint.textui import puts, colored
+
+from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
@@ -190,7 +192,7 @@ class DeployStack(_AnsiblePlaybookAlias):
             args, unknown_args, always_skip_check=always_skip_check)
 
 
-class UpdateConfig(_AnsiblePlaybookAlias):
+class UpdateConfig(CommandBase):
     command = 'update-config'
     help = """
     Run the ansible playbook for updating app config.
@@ -199,9 +201,7 @@ class UpdateConfig(_AnsiblePlaybookAlias):
     """
 
     def run(self, args, unknown_args):
-        args.playbook = 'deploy_localsettings.yml'
-        unknown_args += ('--tags=localsettings',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return commcare_cloud(args.environment, 'ansible-playbook', 'deploy_localsettings.yml', tags='localsettings', *unknown_args)
 
 
 class AfterReboot(_AnsiblePlaybookAlias):
