@@ -1,6 +1,4 @@
 ---
-- include: roles/common/tasks/install_ruby.yml
-
 - name: Install redis gem
   command: 'gem install redis -v 3.3.3' # not the latest, because https://github.com/antirez/redis/issues/4272
   become: yes

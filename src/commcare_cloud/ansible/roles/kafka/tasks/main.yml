@@ -61,9 +61,6 @@
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
 
-- include: roles/common/tasks/install_ruby.yml
-  tags: kafkat
-
 - name: Install kafkat
   command: 'gem install kafkat'
   become: yes
