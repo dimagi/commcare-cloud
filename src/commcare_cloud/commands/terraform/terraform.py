@@ -50,15 +50,15 @@ class Terraform(CommandBase):
             import getpass
             key_name = getpass.getuser()
 
-            try:
-                generate_terraform_entrypoint(environment, key_name, run_dir)
-            except UnauthorizedUser as e:
-                allowed_users = environment.users_config.dev_users.present
-                puts(colored.red(
-                    "Unauthorized user {}.\n\n"
-                    "Use --username to pass in one of the allowed ssh users:{}"
-                    .format(e.username, '\n  - '.join([''] + allowed_users))))
-                return -1
+        try:
+            generate_terraform_entrypoint(environment, key_name, run_dir)
+        except UnauthorizedUser as e:
+            allowed_users = environment.users_config.dev_users.present
+            puts(colored.red(
+                "Unauthorized user {}.\n\n"
+                "Use --username to pass in one of the allowed ssh users:{}"
+                .format(e.username, '\n  - '.join([''] + allowed_users))))
+            return -1
 
         if not args.skip_secrets:
             rds_password = environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
