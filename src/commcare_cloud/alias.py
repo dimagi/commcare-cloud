@@ -13,7 +13,7 @@ def _encode_args(*args, **kwargs):
     for arg in args:
         argv.append(unicode(arg).encode('utf-8'))
     for key, value in kwargs.items():
-        if value is False:
+        if value is False or value is None:
             continue
         elif value is True:
             argv.append('--{}'.format(key))

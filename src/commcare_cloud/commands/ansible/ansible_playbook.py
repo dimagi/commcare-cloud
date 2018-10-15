@@ -200,8 +200,11 @@ class UpdateConfig(CommandBase):
     This includes django `localsettings.py` and formplayer `application.properties`.
     """
 
+    arguments = (shared_args.BRANCH_ARG,)
+
     def run(self, args, unknown_args):
-        return commcare_cloud(args.environment, 'ansible-playbook', 'deploy_localsettings.yml', tags='localsettings', *unknown_args)
+        return commcare_cloud(args.environment, 'ansible-playbook', 'deploy_localsettings.yml',
+                              tags='localsettings', branch=args.branch, *unknown_args)
 
 
 class AfterReboot(_AnsiblePlaybookAlias):
