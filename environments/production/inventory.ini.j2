@@ -25,6 +25,25 @@ hqdjango4.internal-va.commcarehq.org
 [hqdjango7]
 hqdjango7.internal-va.commcarehq.org
 
+[web0]
+{{ web0-production }} hostname=web0-production ec2=yes
+
+[web1]
+{{ web1-production }} hostname=web1-production ec2=yes
+
+[web2]
+{{ web2-production }} hostname=web2-production ec2=yes
+
+[web3]
+{{ web3-production }} hostname=web3-production ec2=yes
+
+[web4]
+{{ web4-production }} hostname=web4-production ec2=yes
+
+[web5]
+{{ web5-production }} hostname=web5-production ec2=yes
+
+
 [webworkers:children]
 hqdjango0
 hqdjango1
@@ -32,6 +51,12 @@ hqdjango2
 hqdjango3
 hqdjango4
 hqdjango7
+web0
+web1
+web2
+web3
+web4
+web5
 
 [hqdb0]
 hqdb0.internal-va.commcarehq.org
@@ -198,9 +223,6 @@ devices=["/dev/xvde"]
 partitions=["/dev/xvde1"]
 elasticsearch_node_zone=rackspace
 
-[es5]
-{{ es5-production }} hostname=es5-production elasticsearch_node_name=es5 ec2=yes
-
 [es6]
 {{ es6-production }} hostname=es6-production elasticsearch_node_name=es6 ec2=yes
 
@@ -214,7 +236,6 @@ elasticsearch_node_zone=rackspace
 {{ es9-production }} hostname=es9-production elasticsearch_node_name=es9 ec2=yes
 
 [es_data_aws:children]
-es5
 es6
 es7
 es8
