@@ -1,15 +1,14 @@
 hostname,host_address,group 1,group 2,var: hostname,L.var: devices,L.var: partitions,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
-pgucr,100.71.184.42,postgresql,ucr_dbs,MUMGCCWCDPRDPU00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgucrstandby0,,"[""standby0"",""standby1"",""standby2"",""standby3"",""standby4"",""standby5"",""standby6"",""standby7"",""standby8"",""spare""]",
+pgucr,100.71.184.42,postgresql,ucr_dbs,MUMGCCWCDPRDPU00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgucrstandby0,,"[""standby0"",""standby1"",""standby2"",""standby3"",""spare""]",
 pgucrstandby0,100.71.184.36,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS0,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby0
 pgucrstandby1,100.71.184.45,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby1
 pgucrstandby2,100.71.184.24,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS2,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby2
-pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby3
-
-pgucrstandby4,100.71.184.70,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS4,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby4
-pgucrstandby5,100.71.184.64,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS5,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby5
-pgucrstandby6,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby6
-pgucrstandby7,100.71.184.81,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS7,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby7
-pgucrstandby8,100.71.184.68,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS8,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby8
+pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,"[""standby4"",""standby5"",""standby6"",""standby7"",""standby8""]",standby3
+pgucrstandby4,100.71.184.70,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS4,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby4
+pgucrstandby5,100.71.184.64,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS5,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby5
+pgucrstandby6,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby6
+pgucrstandby7,100.71.184.81,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS7,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby7
+pgucrstandby8,100.71.184.68,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS8,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby8
 
 pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
 pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby0
