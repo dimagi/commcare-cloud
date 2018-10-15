@@ -5,6 +5,8 @@ import runpy
 import subprocess
 from collections import namedtuple, deque
 
+from commcare_cloud.alias import commcare_cloud
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.command_base import CommandBase
 
 
@@ -23,16 +25,25 @@ class TerraformMigrateState(CommandBase):
                     for migration in unapplied_migrations)
         ))
         print("which will result in the following moves being made:")
+        migration_plans = []
         for migration in unapplied_migrations:
             print('  [{:0>4} {}]'.format(migration.number, migration.slug))
             migration_plan = make_migration_plan(intermediate_state, migration)
             intermediate_state = migration_plan.end_state
             for start_address, end_address in migration_plan.moves:
                 print('    {} => {}'.format(start_address, end_address))
+            migration_plans.append(migration_plan)
+        if ask("Do you want to apply this migration?"):
+            for migration_plan in migration_plans:
+                migration = migration_plan.migration
+                print('  [{:0>4} {}]'.format(migration.number, migration.slug))
+                for start_address, end_address in migration_plan.moves:
+                    print('    {} => {}'.format(start_address, end_address))
+                    commcare_cloud(args.env_name, 'terraform', 'state', 'mv', start_address, end_address)
 
 
 Migration = namedtuple('Migration', 'number slug get_new_resource_address')
-MigrationPlan = namedtuple('MigrationPlan', 'start_state end_state moves')
+MigrationPlan = namedtuple('MigrationPlan', 'migration start_state end_state moves')
 
 
 def terraform_list_state(env_name, unknown_args):
@@ -133,4 +144,4 @@ def make_migration_plan(start_state, migration):
             move_queue.append((resource, new_address))
 
     assert set(state.list()) == set(end_state), (sorted(state.list()), sorted(end_state))
-    return MigrationPlan(start_state=start_state, end_state=end_state, moves=moves)
+    return MigrationPlan(migration=migration, start_state=start_state, end_state=end_state, moves=moves)
