@@ -17,6 +17,7 @@ from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory
 from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
 from commcare_cloud.commands.terraform.terraform import Terraform
+from commcare_cloud.commands.terraform.terraform_migrate_state import TerraformMigrateState
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
@@ -67,6 +68,7 @@ COMMAND_GROUPS = OrderedDict([
         CopyFiles,
         ListDatabases,
         Terraform,
+        TerraformMigrateState,
         AwsList,
         AwsFillInventory,
         OpenvpnActivateUser,
