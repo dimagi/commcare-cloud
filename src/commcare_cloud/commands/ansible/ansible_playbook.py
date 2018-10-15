@@ -203,7 +203,7 @@ class UpdateConfig(CommandBase):
     arguments = (shared_args.BRANCH_ARG,)
 
     def run(self, args, unknown_args):
-        return commcare_cloud(args.environment, 'ansible-playbook', 'deploy_localsettings.yml',
+        return commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
                               tags='localsettings', branch=args.branch, *unknown_args)
 
 
