@@ -182,7 +182,7 @@ class DeployStack(_AnsiblePlaybookAlias):
                 return rc
             # the above just ran --tags=users
             # no need to run it a second time
-            unknown_args += ('--skip-tags=users')
+            unknown_args += ('--skip-tags=users',)
             args.quiet = True
             always_skip_check = True
         args.playbook = 'deploy_stack.yml'
