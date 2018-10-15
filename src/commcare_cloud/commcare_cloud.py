@@ -93,23 +93,6 @@ def run_on_control_instead(args, sys_argv):
     os.execvp(executable, cmd_parts)
 
 
-def add_backwards_compatibility_to_args(args):
-    """
-    make accessing args.environment trigger a DeprecationWarning and return args.env_name
-
-    This function and any calls to it may be deleted once all open PRs using args.environment
-    have been merged and all such usage fixed.
-    """
-    class NamespaceWrapper(args.__class__):
-        @property
-        def environment(self):
-            warnings.warn("args.environment is deprecated. Use args.env_name instead.",
-                          DeprecationWarning)
-            return self.env_name
-
-    args.__class__ = NamespaceWrapper
-
-
 def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
                         subparser_formatter_class=None, prog=None, add_help=True, for_docs=False):
     if subparser_formatter_class is None:
@@ -162,8 +145,6 @@ def main():
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args()
-
-    add_backwards_compatibility_to_args(args)
 
     if args.control:
         run_on_control_instead(args, sys.argv)
