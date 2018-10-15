@@ -702,16 +702,10 @@ but skipping check mode.
 Run the ansible playbook for updating app config.
 
 ```
-commcare-cloud <env> update-config [--use-factory-auth]
+commcare-cloud <env> update-config
 ```
 
 This includes django `localsettings.py` and formplayer `application.properties`.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
 
