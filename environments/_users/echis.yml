@@ -8,7 +8,8 @@ dev_users:
     - echis_anteneh
     - echis_geanaruki
     - echis_esubalew
-    - echis_melese
     - echis_robel
     - echis_siraj
-  absent: []
+    - echis_demisew
+  absent:
+    - echis_melese
