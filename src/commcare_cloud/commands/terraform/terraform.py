@@ -60,7 +60,7 @@ class Terraform(CommandBase):
                 .format(e.username, '\n  - '.join([''] + allowed_users))))
             return -1
 
-        if not args.skip_secrets:
+        if not args.skip_secrets and unknown_args and unknown_args[0] in ('plan', 'apply'):
             rds_password = environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
             with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
