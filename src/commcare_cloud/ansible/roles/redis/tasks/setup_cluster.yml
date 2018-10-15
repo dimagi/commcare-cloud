@@ -5,12 +5,6 @@
   command: 'gem install redis -v 3.3.3' # not the latest, because https://github.com/antirez/redis/issues/4272
   become: yes
 
-- debug: msg="{{ groups.redis_cluster_master | map('extract', hostvars, [internal_network_interface_fact, 'ipv4', 'address']) | join(':6379 ') }}:6379"
-  tags: dingo
-
-- name: Start at
-  debug: msg="hello"
-
 - set_fact: 
     first_master_ip: "{{ hostvars[groups.redis_cluster_master[0]][internal_network_interface_fact].ipv4.address }}"
     redis_trib_path: "/usr/local/src/redis-{{ redis_version }}/src/redis-trib.rb" 
@@ -31,24 +25,3 @@
   shell: 'echo "yes" | {{ redis_trib_path }} create --replicas 0 {{redis_urls}}'
   when: internal_ipv4.address == first_master_ip
   register: slot_output
-
-# Todo; debug slot_output.stdout fails 'dict object has no attrib stdout'
-- name: Verify cluster status
-  assert: 
-    that:
-    - "'[OK] All 16384 slots covered' in {{ slot_output.stdout }}"
-
-# Todo: Possibly move this to redis_cluster_migration.yml, since it's a onetime migration script
-
-# ./redis-trib.rb reshard --from all --to {node_id of first_master_ip} --slots 16384 {first_master_ip}
-- name: Reshard all slots to first redis node
-  shell: '{{ redis_trib_path }} reshard --to'
-
-# Get dump.rdb
-
-
-# Do all of below on first instance (or whichever has all slots)
-# > redis-cli shutdown nosave: shutdown current node
-# copy dump.rdb to /opt/data/redis to first instance (do redis-cli config get dir, to get the dir)
-# > sudo service redis-server start
-# > 
