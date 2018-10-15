@@ -31,14 +31,13 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-  # These ES Machines apparently have to be in zone b:
-  #   Your requested instance type (h1.2xlarge) is not supported in your requested Availability Zone (us-east-1a).
-  #   Please retry your request by not specifying an Availability Zone or choosing us-east-1b, us-east-1f.
-  - server_name: "es5-production"
-    server_instance_type: i3.xlarge
+  # this is a placeholder for a machine that's been deleted.
+  # Working in another branch to make deleting machines from this list less painful
+  - server_name: "es5-production-deleted"
+    server_instance_type: t3.nano
     network_tier: "db-private"
     az: "b"
-    volume_size: 40
+    volume_size: 8
   - server_name: "es6-production"
     server_instance_type: i3.xlarge
     network_tier: "db-private"
@@ -69,6 +68,37 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 40
+  - server_name: "web0-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+  - server_name: "web1-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+  - server_name: "web2-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+  - server_name: "web3-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+  - server_name: "web4-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+  - server_name: "web5-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+
 
 proxy_servers: []
 
