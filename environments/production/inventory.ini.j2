@@ -198,9 +198,6 @@ devices=["/dev/xvde"]
 partitions=["/dev/xvde1"]
 elasticsearch_node_zone=rackspace
 
-[es5]
-{{ es5-production }} hostname=es5-production elasticsearch_node_name=es5 ec2=yes
-
 [es6]
 {{ es6-production }} hostname=es6-production elasticsearch_node_name=es6 ec2=yes
 
@@ -214,7 +211,6 @@ elasticsearch_node_zone=rackspace
 {{ es9-production }} hostname=es9-production elasticsearch_node_name=es9 ec2=yes
 
 [es_data_aws:children]
-es5
 es6
 es7
 es8
