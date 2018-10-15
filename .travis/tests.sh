@@ -2,17 +2,21 @@
 
 set -ve
 
+# pull branch from git status the exact same way that commcare-cloud does
+# so that --branch=${BRANCH} will always match
+BRANCH=$(git status | head -n1 | xargs -n1 echo | tail -n1)
+
 if [[ ${TEST} = 'main' ]]
 then
 
     cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
 
     test_syntax() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=FETCH_HEAD  --skip-check --quiet --syntax-check
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
     }
 
     test_localsettings() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=FETCH_HEAD  --skip-check --quiet --tags=commcarehq
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=commcarehq
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
 
@@ -39,7 +43,17 @@ then
     bootstrap() {
         ssh-keygen -f ~/.ssh/id_rsa -N "" -q
         cp ~/.ssh/id_rsa.pub .travis/environments/_authorized_keys/travis.pub
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} FETCH_HEAD .travis/spec.yml
+        (COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+            timeout 45m \
+            bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} ${BRANCH} .travis/spec.yml)
+        rc=$?
+        if [[ "${rc}" = 124 ]]
+        then
+            echo "The bootstrapping process ran successfully for 45 minutes before being killed."
+            echo "For now, for the purposes of this test, we're calling that a success"
+        else
+            exit ${rc}
+        fi
     }
     bootstrap
 fi

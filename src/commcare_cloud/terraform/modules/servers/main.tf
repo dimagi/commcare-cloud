@@ -8,6 +8,9 @@ resource aws_instance "server" {
   key_name                = "${var.key_name}"
   vpc_security_group_ids  = ["${var.security_group_options[lookup(var.servers[count.index], "network_tier")]}"]
   source_dest_check       = false
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
   root_block_device {
     volume_size           = "${lookup(var.servers[count.index], "volume_size")}"
     volume_type           = "gp2"

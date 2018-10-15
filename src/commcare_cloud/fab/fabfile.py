@@ -97,7 +97,6 @@ env.roledefs = {
     # otherwise deploy() will run multiple times in parallel causing issues
     'django_monolith': [],
 
-    'formsplayer': [],
     'staticfiles': [],
 
     # package level configs that are not quite config'ed yet in this fabfile
@@ -250,7 +249,6 @@ def env_common():
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
-    touchforms = servers.get('touchforms', [])
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']
@@ -272,7 +270,6 @@ def env_common():
         'django_app': webworkers,
         'django_manage': django_manage,
         'django_pillowtop': pillowtop,
-        'formsplayer': touchforms,
         'formplayer': formplayer,
         'staticfiles': proxy,
         'lb': [],
@@ -610,7 +607,6 @@ def unlink_current():
 def copy_release_files(full_cluster=True):
     execute(release.copy_localsettings(full_cluster))
     if full_cluster:
-        execute(release.copy_tf_localsettings)
         execute(release.copy_formplayer_properties)
         execute(release.copy_components)
         execute(release.copy_node_modules)

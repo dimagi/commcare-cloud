@@ -1,14 +1,7 @@
+- import_playbook: host_group_aliases.yml
+
 - name: CommcareHQ
-  hosts:
-   - webworkers
-   - touchforms
-   - formplayer
-   - celery
-   - proxy
-   - pillowtop
-   - couchdb2_proxy
-   - airflow
-   - django_manage
+  hosts: commcarehq
   become: true
   roles:
     - {role: commcarehq, tags: commcarehq}
@@ -30,7 +23,6 @@
   become_user: "{{ cchq_user }}"
   hosts:
     - webworkers
-    - touchforms
     - formplayer
     - celery
     - proxy

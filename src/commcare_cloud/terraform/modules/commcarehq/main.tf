@@ -16,6 +16,7 @@ module "network" {
   vpc_begin_range   = "${var.vpc_begin_range}"
   env               = "${var.environment}"
   azs               = "${var.azs}"
+  az_codes          = "${var.az_codes}"
   vpn_connections   = "${var.vpn_connections}"
   vpn_connection_routes = "${var.vpn_connection_routes}"
   external_routes   = "${var.external_routes}"
@@ -24,26 +25,24 @@ module "network" {
 
 locals {
   subnet_options = {
-    app-private-a = "${module.network.subnet-a-app-private}"
-    app-private-b = "${module.network.subnet-b-app-private}"
-    app-private-c = "${module.network.subnet-c-app-private}"
-    db-private-a = "${module.network.subnet-a-db-private}"
-    db-private-b = "${module.network.subnet-b-db-private}"
-    db-private-c = "${module.network.subnet-c-db-private}"
-    public-a = "${module.network.subnet-a-public}"
-    public-b = "${module.network.subnet-b-public}"
-    public-c = "${module.network.subnet-c-public}"
+    app-private-a = "${lookup(module.network.subnets-app-private, "a", "")}"
+    app-private-b = "${lookup(module.network.subnets-app-private, "b", "")}"
+    app-private-c = "${lookup(module.network.subnets-app-private, "c", "")}"
+    app-private-f = "${lookup(module.network.subnets-app-private, "f", "")}"
+    db-private-a = "${lookup(module.network.subnets-db-private, "a", "")}"
+    db-private-b = "${lookup(module.network.subnets-db-private, "b", "")}"
+    db-private-c = "${lookup(module.network.subnets-db-private, "c", "")}"
+    db-private-f = "${lookup(module.network.subnets-db-private, "f", "")}"
+    public-a = "${lookup(module.network.subnets-public, "a", "")}"
+    public-b = "${lookup(module.network.subnets-public, "b", "")}"
+    public-c = "${lookup(module.network.subnets-public, "c", "")}"
+    public-f = "${lookup(module.network.subnets-public, "f", "")}"
   }
   security_group_options = {
     "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
     "app-private" = ["${module.network.app-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
     "db-private" = ["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
   }
-}
-
-resource "aws_key_pair" "main" {
-  key_name = "${var.key_name}"
-  public_key = "${var.public_key}"
 }
 
 module "servers" {
@@ -78,18 +77,14 @@ resource "aws_eip" "proxy" {
 module "Redis" {
   source               = "../elasticache"
   create               = "${lookup(local.redis, "create", true)}"
-  cluster_id           = "${var.environment}-redis"
+  cluster_id           = "redis-${var.environment}"
   engine               = "redis"
   engine_version       = "${local.redis["engine_version"]}"
   node_type            = "${local.redis["node_type"]}"
   num_cache_nodes      = "${local.redis["num_cache_nodes"]}"
   parameter_group_name = "${local.redis["parameter_group_name"]}"
   port                 = 6379
-  elasticache_subnets  = [
-    "${module.network.subnet-a-db-private}",
-    "${module.network.subnet-b-db-private}",
-    "${module.network.subnet-c-db-private}"
-  ]
+  elasticache_subnets  = "${values(module.network.subnets-db-private)}"
   security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
 }
 
@@ -98,7 +93,8 @@ module "openvpn" {
   openvpn_image = "${var.openvpn_image}"
   environment = "${var.environment}"
   vpn_size = "${var.openvpn_instance_type}"
-  instance_subnet = "${module.network.subnet-a-public}"
+  # hardcoded, should be configurable like the others
+  instance_subnet = "${module.network.subnets-public["a"]}"
   vpc_id = "${module.network.vpc-id}"
   vpc_cidr = "${module.network.vpc-cidr}"
   key_name = "${var.key_name}"
@@ -106,6 +102,5 @@ module "openvpn" {
 
 module "Users" {
   source = "../iam"
-  users = "${var.users}"
   account_alias = "${var.account_alias}"
 }

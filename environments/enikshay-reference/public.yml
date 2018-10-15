@@ -28,7 +28,7 @@ CLOUDANT_CLUSTER_NAME: null
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overridden for real deploys
 #keystore_file: 'DimagiKeyStore'
 
-backup_es: False
+backup_es_s3: False
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -63,8 +63,6 @@ couchdb_cluster_settings:
   r: 1
   w: 1
   n: 1
-
-TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"

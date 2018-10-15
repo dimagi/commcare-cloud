@@ -57,3 +57,4 @@
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http }}"}
+    - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}

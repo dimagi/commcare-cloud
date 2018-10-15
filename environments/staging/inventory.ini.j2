@@ -1,0 +1,156 @@
+# This file currently contains a lot of commented-out hosts
+# that refer to presumed eventual hosts that will live on AWS but don't yet exist
+# As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
+# using the aws-fill-inventory command.
+
+[proxy0]
+proxy0-staging.internal-va.commcarehq.org swap_size=1G
+
+[proxy1]
+{{ proxy1-staging }} hostname=proxy1-staging public_ip={{ proxy1-staging.public_ip }} ec2=yes
+
+[proxy:children]
+proxy0
+# Amazon EC2
+proxy1
+
+[web0]
+{{ web0-staging }} swap_size=1G hostname=web0-staging ec2=yes
+
+[web1]
+{{ web1-staging }} swap_size=1G hostname=web1-staging ec2=yes
+
+[webworkers:children]
+# Amazon EC2
+web0
+web1
+
+[hqdb1]
+hqdb1-staging.internal-va.commcarehq.org swap_size=1G
+
+[postgresql:children]
+hqdb1
+# Amazon RDS Instance
+# staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
+
+[rabbit0]
+# {{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
+
+
+[rabbitmq:children]
+hqdb1
+# Amazon EC2
+# rabbit0
+
+[hqkafka0]
+hqkafka0-staging.internal-va.commcarehq.org
+
+[hqkafka0:vars]
+swap_size=1G
+kafka_broker_id=0
+
+[kafka0]
+# {{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
+
+[zookeeper:children]
+hqkafka0
+# Amazon EC2
+# kafka0
+
+[kafka:children]
+hqkafka0
+# Amazon EC2
+# kafka0
+
+[celery0]
+# {{ celery0-staging }} hostname=celery0-staging ec2=yes
+
+[celery:children]
+hqdb1
+# Amazon EC2
+# celery0
+
+[hqpillow0]
+hqpillow0-staging.internal-va.commcarehq.org
+
+[pillow0]
+# {{ pillow0-staging }} hostname=pillow0-staging ec2=yes
+
+[pillowtop:children]
+hqpillow0
+# Amazon EC2
+# pillow0
+
+[hqtouch0]
+hqtouch0-staging.internal-va.commcarehq.org swap_size=1G
+
+[formplayer0]
+# {{ formplayer0-staging }} hostname=formplayer0-staging ec2=yes
+
+[formplayer:children]
+hqtouch0
+# Amazon EC2
+# formplayer0
+
+[redis:children]
+hqdb1
+# Amazon ElastiCache
+# {{ redis-staging }}:6379
+
+[hqes0]
+hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging elasticsearch_node_zone=rackspace
+
+[es0]
+{{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes
+
+[elasticsearch:children]
+hqes0
+# Amazon EC2
+es0
+
+[shared_dir_host:children]
+hqdb1
+# Amazon EC2
+# rabbit0
+
+[stanchion:children]
+hqkafka0
+
+[hqriak00]
+hqriak00-staging.internal-va.commcarehq.org
+
+[hqriak01]
+hqriak01-staging.internal-va.commcarehq.org
+
+[riakcs:children]
+hqriak00
+hqriak01
+
+[hqairflow0]
+hqairflow0-staging.internal-va.commcarehq.org
+
+[airflow0]
+# {{ airflow0-staging }} hostname=airflow0-staging ec2=yes
+
+[airflow:children]
+hqairflow0
+# Amazon EC2
+# airflow0
+
+[control]
+# Amazon EC2
+{{ control-staging }} hostname=control-staging ec2=yes
+
+[pg_standby]
+
+[ansible_skip:children]
+
+[django_manage:children]
+# Amazon EC2
+web0
+
+[pg_barman:children]
+hqriak00
+
+[pg_barman_source:children]
+postgresql

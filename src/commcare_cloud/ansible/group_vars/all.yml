@@ -30,7 +30,6 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
-touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
@@ -45,7 +44,10 @@ riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb2_port: 15984
-couchdb2_proxy_port: 25984
+couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
+couchdb_admins: "{
+  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
+}"
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
@@ -82,6 +84,7 @@ datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_vmware: false
 datadog_integration_http: false
+datadog_integration_haproxy: false
 datadog_extra_host_checks: []
 
 root_email: commcarehq-ops+root@dimagi.com
@@ -154,8 +157,6 @@ SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL | default(None) }}"
 SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS | default(None) }}"
 STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None) }}"
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
-TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD | default('') }}"
-TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER | default('') }}"
 TRANSIFEX_API_TOKEN: "{{ localsettings_private.TRANSIFEX_API_TOKEN | default(None) }}"
 TWO_FACTOR_GATEWAY_ENABLED: False
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY | default(None) }}"

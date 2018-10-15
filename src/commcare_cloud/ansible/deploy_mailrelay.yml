@@ -1,5 +1,7 @@
+- import_playbook: host_group_aliases.yml
+
 - name: "Install postfix"
-  hosts: all
+  hosts: all_commcarehq
   become: true
   tasks:
     - debconf: name=postfix question="postfix/main_mailer_type" value="Internet Site" vtype="string"
@@ -59,7 +61,7 @@
     - postfix
 
 - name: "mail relay clients deploy"
-  hosts: all:!mailrelay
+  hosts: all_commcarehq:!mailrelay
   become: true
   tasks:
     - name: "sets external relayhost"

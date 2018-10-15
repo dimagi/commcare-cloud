@@ -1,6 +1,13 @@
-hostname,host_address,group 1,group 2,var: hostname,L.var: devices,L.var: partitions,var: elasticsearch_node_name
-es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,["/dev/vdb"],["/dev/vdb1"],es0
-es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,["/dev/vdb"],["/dev/vdb1"],es1
-es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,["/dev/vdb"],["/dev/vdb1"],es2
-es3,100.71.184.10,elasticsearch,,MUMGCCWCDPRDES03,["/dev/vdb"],["/dev/vdb1"],es3
-es4,100.71.184.16,elasticsearch,,MUMGCCWCDPRDES04,["/dev/vdb"],["/dev/vdb1"],es4
+hostname,host_address,group 1,group 2,var: hostname,var: elasticsearch_node_name,var: elasticsearch_master,var: elasticsearch_data
+es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,es0,,
+es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,es1,true,
+es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,es2,,
+es3,100.71.184.10,elasticsearch,,MUMGCCWCDPRDES03,es3,true,
+es4,100.71.184.16,elasticsearch,,MUMGCCWCDPRDES04,es4,,
+es5,100.71.184.73,elasticsearch,,MUMGCCWCDPRDES05,es5,,
+es6,100.71.184.63,elasticsearch,,MUMGCCWCDPRDES06,es6,,
+es7,100.71.184.74,elasticsearch,,MUMGCCWCDPRDES07,es7,,
+es8,100.71.184.77,elasticsearch,,MUMGCCWCDPRDES08,es8,true,
+es9,100.71.184.79,elasticsearch,,MUMGCCWCDPRDES09,es9,,
+es10,100.71.184.66,elasticsearch,,MUMGCCWCDPRDES10,es10,,
+es11,100.71.184.78,elasticsearch,,MUMGCCWCDPRDES11,es11,,

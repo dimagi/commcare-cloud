@@ -11,7 +11,7 @@ supervisor_http_enabled: True
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es: False
+backup_es_s3: False
 postgres_s3: False
 
 aws_region: 'us-east-1'
@@ -21,7 +21,7 @@ formplayer_archive_time_spec: '10m'
 KSPLICE_ACTIVE: yes
 
 
-ufw_private_interface: eth1
+ufw_private_interface: "{{ ec2|default(false) and 'eth0' or 'eth1' }}"
 
 couch_dbs:
   default:
@@ -84,4 +84,7 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+
+# comment these two lines out to make a new rackspace machine
+commcare_cloud_root_user: ubuntu
+commcare_cloud_pem: ~/.ssh/id_rsa

@@ -23,7 +23,8 @@ module "commcarehq" {
   openvpn_image = {{ openvpn_image|tojson }}
   {%- endif %}
   azs = {{ azs|tojson }}
-  vpc_begin_range = "10.200"
+  az_codes = {{ az_codes|tojson }}
+  vpc_begin_range = {{ vpc_begin_range|tojson }}
   dns_domain = ""
   # Set the DNS Domain name to be used (should match the name for the Zone ID)
   dns_zone_id = ""
@@ -64,7 +65,6 @@ module "commcarehq" {
   ]
 
   key_name = {{ key_name|tojson }}
-  public_key = {{ public_key|tojson }}
 
   servers = [
   {%- for server in servers %}
@@ -108,10 +108,17 @@ module "commcarehq" {
   }
 
   account_alias = {{ (account_alias or "")|tojson }}
-
-  users = [
-  {%- for user in (users if manage_users else []) %}
-    {username = {{ user.username|tojson }}},
-  {%- endfor %}
-  ]
 }
+
+{%- for user in (users if manage_users else []) %}
+resource "aws_key_pair" {{ user.username|tojson }} {
+  key_name = {{ user.username|tojson }}
+  public_key = {{ user.public_key|tojson }}
+}
+
+module "iam_user__{{ user.username }}" {
+  source = "../modules/iam/user"
+  username = {{ user.username|tojson }}
+  administrators_iam_group = "${module.commcarehq.administrators_iam_group}"
+}
+{%- endfor %}

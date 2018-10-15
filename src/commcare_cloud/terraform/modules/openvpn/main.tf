@@ -21,7 +21,7 @@ resource aws_instance "vpn_host" {
   }
 
   lifecycle {
-    ignore_changes = ["root_block_device.0.volume_type", "user_data"]
+    ignore_changes = ["root_block_device.0.volume_type", "user_data", "key_name"]
   }
 
   tags {
@@ -57,7 +57,7 @@ resource "aws_security_group" "openvpn-access-sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.200.0.0/16"]
+    cidr_blocks = ["${var.vpc_cidr}"]
   }
 
   ingress {
