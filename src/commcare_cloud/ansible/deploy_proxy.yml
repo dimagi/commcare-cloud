@@ -33,7 +33,7 @@
 
     - name: install cchq sites
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: site
       with_items:
         - {name: cchq_http, vars_file: cchq_http}
@@ -44,7 +44,7 @@
 
     - name: install no www redirect sites
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ NO_WWW_SITE_HOST|default(None) is not none }}"
@@ -57,7 +57,7 @@
 
     - name: install j2me http site
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ J2ME_SITE_HOST|default(None) is not none }}"
@@ -69,7 +69,7 @@
 
     - name: install other sites
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ site_config.name in special_sites }}"
