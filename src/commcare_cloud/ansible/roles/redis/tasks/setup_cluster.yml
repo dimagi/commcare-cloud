@@ -6,7 +6,7 @@
   become: yes
 
 - set_fact: 
-    first_master_ip: "{{ hostvars[groups.redis_cluster_master[0]][internal_network_interface_fact].ipv4.address }}"
+    first_master_ip: "{{ hostvars[groups.redis_cluster_master[0]].internal_ipv4.address }}"
     redis_trib_path: "/usr/local/src/redis-{{ redis_version }}/src/redis-trib.rb" 
     redis_urls: "{{ groups.redis_cluster_master | map('extract', hostvars, [internal_network_interface_fact, 'ipv4', 'address']) | join(':6379 ') }}:6379"
 
