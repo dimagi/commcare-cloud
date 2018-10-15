@@ -1,0 +1,14 @@
+---
+- name: Install software-properties-common
+  become: yes
+  apt: name="software-properties-common" state=present
+
+- name: Add haproxy repository
+  become: yes
+  apt_repository: repo='ppa:vbernat/haproxy-1.8' state=present
+
+- name: Update apt cache
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_timeout }}"

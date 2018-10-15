@@ -1,0 +1,26 @@
+- name: "Create host group aliases"
+  hosts: all
+  tasks:
+    - name: Create all_commcarehq group alias
+      add_host:
+        hostname: "{{ item }}"
+        groups: all_commcarehq
+      with_items: "{{ groups['all'] }}"
+      when: "item not in groups['openvpn']|default([])"
+      changed_when: no
+    - name: Create commcarehq group alias
+      add_host:
+        hostname: "{{ item }}"
+        groups: commcarehq
+      with_items:
+        - "{{ groups['webworkers']|default([]) }}"
+        - "{{ groups['formplayer']|default([]) }}"
+        - "{{ groups['celery']|default([]) }}"
+        - "{{ groups['proxy']|default([]) }}"
+        - "{{ groups['pillowtop']|default([]) }}"
+        - "{{ groups['couchdb2_proxy']|default([]) }}"
+        - "{{ groups['airflow']|default([]) }}"
+        - "{{ groups['django_manage']|default([]) }}"
+      changed_when: no
+  tags:
+    - always

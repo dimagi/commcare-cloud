@@ -209,7 +209,18 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 
 ####### For Constructing Global URLs ########
 
-LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+LOCAL_APPS = (
+    'dimagi.utils',
+    'gunicorn',
+    {% for entry in LOCAL_APPS %}
+    {% if inventory_hostname in groups[entry.host] %}
+    '{{ entry.name }}',
+    {% endif %}
+    {% endfor %}
+)
+{% if 'DATADOG_TRACE' in localsettings %}
+DATADOG_TRACE = json.loads('{{ localsettings.DATADOG_TRACE|to_json }}')
+{% endif %}
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
 LOCAL_PILLOWTOPS = {
@@ -220,6 +231,7 @@ LOCAL_PILLOWTOPS = {
             "name": "{{ pillow.name }}",
             "class": "{{ pillow.class }}",
             "instance": "{{ pillow.instance }}",
+{% if pillow.params is defined %}
             "params": {
                 "topics": {{ pillow.params.topics }},
                 "include_ucrs": [
@@ -228,6 +240,7 @@ LOCAL_PILLOWTOPS = {
 {% endfor %}
                 ]
             }
+{% endif %}
         },
 {% endfor %}
     ]
@@ -341,12 +354,7 @@ PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ TOUCHFORMS_API_PASSWORD }}"
-
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
-
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
 
 FORMPLAYER_URL = "/formplayer"
 
@@ -818,4 +826,8 @@ UCR_COMPARISONS = {
     '{{ old_config }}': '{{ new_config }}',
 {% endfor %}
 }
+{% endif %}
+
+{% if localsettings.KAFKA_API_VERSION is defined %}
+KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
 {% endif %}

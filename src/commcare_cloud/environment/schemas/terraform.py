@@ -12,10 +12,10 @@ class TerraformConfig(jsonobject.JsonObject):
     environment = jsonobject.StringProperty()
     openvpn_image = jsonobject.StringProperty()
     azs = jsonobject.ListProperty(str)
+    az_codes = jsonobject.ListProperty(str, default=['a', 'b', 'c'])
     vpc_begin_range = jsonobject.StringProperty()
     vpn_connections = jsonobject.ListProperty(lambda: VpnConnectionConfig)
     external_routes = jsonobject.ListProperty(lambda: ExternalRouteConfig)
-    key_name = jsonobject.StringProperty()
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
@@ -49,7 +49,7 @@ class ServerConfig(jsonobject.JsonObject):
     server_name = jsonobject.StringProperty()
     server_instance_type = jsonobject.StringProperty()
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
-    az = jsonobject.StringProperty(choices=['a', 'b', 'c'])
+    az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
 
 

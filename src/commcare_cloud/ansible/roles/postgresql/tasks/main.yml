@@ -134,7 +134,7 @@
 - name: Check if recovery.conf exists
   stat:
     path: "{{ postgresql_recovery_conf }}"
-    register: recovery_file
+  register: recovery_file
   when: is_pg_standby
   tags:
     - postgres_users

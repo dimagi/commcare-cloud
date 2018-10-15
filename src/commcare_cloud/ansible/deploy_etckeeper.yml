@@ -1,7 +1,9 @@
 ---
 
+- import_playbook: host_group_aliases.yml
+
 - name: Put /etc under version control using etckeeper
-  hosts: all
+  hosts: all_commcarehq
   become: True
   roles:
     - role: debops-contrib.etckeeper

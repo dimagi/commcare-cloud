@@ -14,7 +14,8 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
-from commcare_cloud.commands.terraform.aws import AwsList
+from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory
+from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
 from commcare_cloud.commands.terraform.terraform import Terraform
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
@@ -67,6 +68,9 @@ COMMAND_GROUPS = OrderedDict([
         ListDatabases,
         Terraform,
         AwsList,
+        AwsFillInventory,
+        OpenvpnActivateUser,
+        OpenvpnClaimUser,
     ])
 ])
 
@@ -78,10 +82,11 @@ def run_on_control_instead(args, sys_argv):
     argv = [arg for arg in sys_argv][1:]
     argv.remove('--control')
     executable = 'commcare-cloud'
+    branch = args.branch or 'master'
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control', '-t',
-        'source ~/init-ansible && git checkout master && control/update_code.sh && source ~/init-ansible && {} {}'
-        .format(executable, ' '.join([shlex_quote(arg) for arg in argv]))
+        'source ~/init-ansible && git checkout master && control/update_code.sh && git checkout {branch} && git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
+        .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))
     ]
 
     print_command(' '.join([shlex_quote(part) for part in cmd_parts]))

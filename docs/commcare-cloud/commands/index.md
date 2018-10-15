@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,migrate-couchdb,terraform,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command}
                ...
 ```
 
@@ -675,7 +675,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for deploying the entire stack.
 
 ```
-commcare-cloud <env> deploy-stack [--use-factory-auth]
+commcare-cloud <env> deploy-stack [--use-factory-auth] [--first-time]
 ```
 
 Often used in conjunction with --limit and/or --tag
@@ -686,6 +686,14 @@ for a more specific update.
 ###### `--use-factory-auth`
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
+
+###### `--first-time`
+
+Use this flag for running against a newly-created machine.
+
+It will first use factory auth to set up users,
+and then will do the rest of deploy-stack normally,
+but skipping check mode.
 
 ---
 
@@ -1055,7 +1063,7 @@ Gives additional databases on the server.
 Run terraform for this env with the given arguments
 
 ```
-commcare-cloud <env> terraform [--skip-secrets]
+commcare-cloud <env> terraform [--skip-secrets] [--username USERNAME]
 ```
 
 ##### Optional Arguments
@@ -1066,6 +1074,13 @@ Skip regenerating the secrets file.
 
 Good for not having to enter vault password again.
 
+###### `--username USERNAME`
+
+The username of the user whose public key will be put on new servers.
+
+Normally this would be _your_ username.
+Defaults to the username of the user running the command.
+
 ---
 
 #### `aws-list`
@@ -1075,5 +1090,69 @@ List endpoints (ec2, rds, etc.) on AWS
 ```
 commcare-cloud <env> aws-list
 ```
+
+---
+
+#### `aws-fill-inventory`
+
+Fill inventory.ini.j2 using existing AWS resources
+
+```
+commcare-cloud <env> aws-fill-inventory
+```
+
+---
+
+#### `openvpn-activate-user`
+
+Give a OpenVPN user a temporary password (the ansible user password)
+
+```
+commcare-cloud <env> openvpn-activate-user [--use-factory-auth] vpn_user
+```
+
+to allow the user to connect to the VPN, log in, and change their password using
+
+```
+cchq <env> openvpn-claim-user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to activate.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
+#### `openvpn-claim-user`
+
+Claim an OpenVPN user as your own, setting its password
+
+```
+commcare-cloud <env> openvpn-claim-user [--use-factory-auth] vpn_user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to claim.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
