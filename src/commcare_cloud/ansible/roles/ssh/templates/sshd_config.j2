@@ -87,8 +87,7 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM yes
 
-{%- for user in ssh_allow_password_users %}
-
+{% for user in ssh_allow_password_users %}
 Match User {{ user }}
     PasswordAuthentication yes
-{%- endfor %}
+{% endfor %}
