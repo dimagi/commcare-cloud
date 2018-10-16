@@ -26,18 +26,15 @@ module "network" {
 
 locals {
   subnet_options = {
-    app-private-a = "${lookup(module.network.subnets-app-private, "a", "")}"
-    app-private-b = "${lookup(module.network.subnets-app-private, "b", "")}"
-    app-private-c = "${lookup(module.network.subnets-app-private, "c", "")}"
-    app-private-f = "${lookup(module.network.subnets-app-private, "f", "")}"
-    db-private-a = "${lookup(module.network.subnets-db-private, "a", "")}"
-    db-private-b = "${lookup(module.network.subnets-db-private, "b", "")}"
-    db-private-c = "${lookup(module.network.subnets-db-private, "c", "")}"
-    db-private-f = "${lookup(module.network.subnets-db-private, "f", "")}"
-    public-a = "${lookup(module.network.subnets-public, "a", "")}"
-    public-b = "${lookup(module.network.subnets-public, "b", "")}"
-    public-c = "${lookup(module.network.subnets-public, "c", "")}"
-    public-f = "${lookup(module.network.subnets-public, "f", "")}"
+  {% for az in az_codes %}
+    app-private-{{ az }} = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+  {% endfor %}
+  {% for az in az_codes %}
+    db-private-{{ az }} = "${lookup(module.network.subnets-db-private, "{{ az }}", "")}"
+  {% endfor %}
+  {% for az in az_codes %}
+    public-{{ az }} = "${lookup(module.network.subnets-public, "{{ az }}", "")}"
+  {% endfor %}
   }
   security_group_options = {
     "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
