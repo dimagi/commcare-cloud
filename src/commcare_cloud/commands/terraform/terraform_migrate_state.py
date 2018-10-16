@@ -1,13 +1,20 @@
+from __future__ import print_function
+import json
+import sys
+import tempfile
+from copy import deepcopy
+
+import jsonobject
 import os
-import random
 import re
 import runpy
 import subprocess
 from collections import namedtuple, deque
 
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.cli_utils import ask, print_command
+from commcare_cloud.commands.command_base import CommandBase, CommandError
+from commcare_cloud.environment.main import get_environment
 
 
 class TerraformMigrateState(CommandBase):
@@ -15,9 +22,26 @@ class TerraformMigrateState(CommandBase):
     help = "Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations"
 
     def run(self, args, unknown_args):
-        migrations = get_migrations(os.path.join(os.path.dirname(__file__), 'migrations'))
-        # todo: apply only unapplied migrations!
-        unapplied_migrations = migrations
+        environment = get_environment(args.env_name)
+        remote_migration_state_manager = RemoteMigrationStateManager(environment.terraform_config)
+        remote_migration_state = remote_migration_state_manager.fetch()
+        migrations = get_migrations()
+
+        applied_migrations = migrations[:remote_migration_state.number]
+        unapplied_migrations = migrations[remote_migration_state.number:]
+
+        # make sure remote checkpoint is consistent with migrations in code
+        if applied_migrations:
+            assert (applied_migrations[-1].number, applied_migrations[-1].slug) == \
+                   (remote_migration_state.number, remote_migration_state.slug), \
+                (remote_migration_state, applied_migrations[-1])
+        else:
+            assert (0, None) == (remote_migration_state.number, remote_migration_state.slug), \
+                remote_migration_state
+
+        if not unapplied_migrations:
+            print("No migrations to apply")
+            return
         state = terraform_list_state(args.env_name, unknown_args)
         intermediate_state = state
         print("Applying the following changes:{}".format(
@@ -40,10 +64,92 @@ class TerraformMigrateState(CommandBase):
                 for start_address, end_address in migration_plan.moves:
                     print('    {} => {}'.format(start_address, end_address))
                     commcare_cloud(args.env_name, 'terraform', 'state', 'mv', start_address, end_address)
+            remote_migration_state_manager.push(RemoteMigrationState(number=migration.number, slug=migration.slug))
 
 
 Migration = namedtuple('Migration', 'number slug get_new_resource_address')
 MigrationPlan = namedtuple('MigrationPlan', 'migration start_state end_state moves')
+
+
+class RemoteMigrationState(jsonobject.JsonObject):
+    checkpoint = jsonobject.StringProperty()
+    slug = jsonobject.StringProperty()
+
+
+class RemoteMigrationStateManager(object):
+    def __init__(self, terraform_config):
+        self.aws_profile = terraform_config.aws_profile
+        self.environment = terraform_config.environment
+        self.state_bucket = terraform_config.state_bucket
+
+    @property
+    def s3_uri(self):
+        return 's3://{state_bucket}/migration-state/{environment}.json'.format(
+            state_bucket=self.state_bucket,
+            environment=self.environment,
+        )
+
+    @property
+    def env_vars(self):
+        env_vars = deepcopy(os.environ)
+        env_vars.update({
+            'AWS_PROFILE': self.aws_profile
+        })
+        return env_vars
+
+    def fetch(self):
+        """
+        Fetch remote migration state from S3
+
+        Essentially:
+
+        AWS_PROFILE={aws_profile} aws s3 cp s3://{state_bucket}/migration-state/{environment}.json {tempfile}
+
+        wrapped as as a RemoteMigrationState object.
+        """
+
+        temp_filename = tempfile.mktemp()
+        try:
+            command = ['aws', 's3', 'cp', self.s3_uri, temp_filename]
+            print_command(command)
+            try:
+                subprocess.check_output(command, env=self.env_vars, stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                if 'does not exist' in e.output:
+                    return RemoteMigrationState(number=0, slug=None)
+                else:
+                    print(e.output, file=sys.stderr)
+                    raise CommandError('aws exited with code {}'.format(e.returncode))
+            else:
+                with open(temp_filename) as f:
+                    return RemoteMigrationState.wrap(json.load(f))
+
+        finally:
+            if os.path.exists(temp_filename):
+                os.remove(temp_filename)
+
+    def push(self, remote_migration_state):
+        """
+        Push RemoteMigrationState object to S3
+
+        Essentially:
+        AWS_PROFILE={aws_profile} aws s3 cp {tempfile} s3://{state_bucket}/migration-state/{environment}.json
+        after dumping the object to tempfile
+        """
+        temp_filename = tempfile.mktemp()
+        try:
+            with open(temp_filename, 'w') as f:
+                json.dump(remote_migration_state.to_json(), f)
+
+            command = ['aws', 's3', 'cp', temp_filename, self.s3_uri]
+            print_command(command)
+            rc = subprocess.call(command, env=self.env_vars)
+            if rc != 0:
+                raise CommandError('aws exited with code {} while updating remote state to {}'
+                                   .format(rc, remote_migration_state.to_json()))
+        finally:
+            if os.path.exists(temp_filename):
+                os.remove(temp_filename)
 
 
 def terraform_list_state(env_name, unknown_args):
