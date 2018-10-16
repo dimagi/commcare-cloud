@@ -9,12 +9,10 @@ pgucrstandby5,100.71.184.64,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS5,"[""/dev/vdb""]"
 pgucrstandby6,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby6
 pgucrstandby7,100.71.184.81,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS7,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby7
 pgucrstandby8,100.71.184.68,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS8,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucrstandby3,,standby8
-
 pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
 pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby0
 pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby1
 pgmainstandby2,100.71.184.85,pg_standby,main_dbs,MUMGCCWCDPRDPMS2,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby2
-
 pgshard0,100.71.184.27,postgresql,shard_dbs,MUMGCCWCDPRDPS00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard0standby,,"[""standby0"",""spare""]",
 pgshard1,100.71.184.29,postgresql,shard_dbs,MUMGCCWCDPRDPS01,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard1standby,,"[""standby0"",""spare""]",
 pgshard2,100.71.184.21,postgresql,shard_dbs,MUMGCCWCDPRDPS02,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard2standby,,"[""standby0"",""spare""]",
@@ -39,9 +37,8 @@ plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,"[""/dev/vdb""]","[""/dev/vd
 pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,"[""/dev/vdb""]","[""/dev/vdb1""]",pgsynclog0standby,,"[""standby0"",""spare""]",
 pgsynclog0standby,100.71.184.41,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgsynclog0,,standby0
 pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,"[""/dev/vdb""]","[""/dev/vdb1""]",,,"[""standby0"",""standby1"",""spare""]",
-pgwarehouse1,100.71.184.76,postgresql,,MUMGCCWCDPRDPW01,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgwarehouse0,standby0,
-pgwarehouse2,100.71.184.83,postgresql,,MUMGCCWCDPRDPW02,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgwarehouse0,standby1,
-
+pgwarehouse1,100.71.184.76,pg_standby,,MUMGCCWCDPRDPW01,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgwarehouse0,,standby1
+pgwarehouse2,100.71.184.83,pg_standby,,MUMGCCWCDPRDPW02,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgwarehouse0,,standby2
 ,,,,,,,,,,,
 # group vars for postgres,,,,,,,,,,
 group,I.var: pgbouncer_max_connections,I.var: pgbouncer_default_pool,I.var: postgresql_max_connections,S.var: postgresql_work_mem,S.var: postgresql_shared_buffers,,,,,
