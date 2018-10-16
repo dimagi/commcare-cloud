@@ -52,8 +52,11 @@ def terraform_list_state(env_name, unknown_args):
     return output.strip().splitlines()
 
 
-def get_migrations(migrations_root):
-    file_names = sorted(os.listdir(migrations_root))
+MIGRATIONS_ROOT = os.path.join(os.path.dirname(__file__), 'migrations')
+
+
+def get_migrations():
+    file_names = sorted(os.listdir(MIGRATIONS_ROOT))
     matcher = re.compile(r'^(\d\d\d\d)_(\w+)\.py')
     migrations = []
     for file_name in file_names:
@@ -63,7 +66,7 @@ def get_migrations(migrations_root):
             number = int(number_string)
             if number == 0:
                 continue
-            get_new_resource_address = runpy.run_path(os.path.join(migrations_root, file_name)).get('get_new_resource_address')
+            get_new_resource_address = runpy.run_path(os.path.join(MIGRATIONS_ROOT, file_name)).get('get_new_resource_address')
             migrations.append(
                 Migration(number=number, slug=slug,
                           get_new_resource_address=get_new_resource_address))
