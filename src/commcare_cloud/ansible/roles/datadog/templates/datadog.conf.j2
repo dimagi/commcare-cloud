@@ -50,6 +50,7 @@ apm_config:
     - name: "http.url"
       pattern: "https?://.+?:.+?@"
       repl: "https://"
-  analyzed_spans:
-    django|django.request: 1
+
+[trace.analyzed_spans]
+django|django.request: 1
 {% endif %}
