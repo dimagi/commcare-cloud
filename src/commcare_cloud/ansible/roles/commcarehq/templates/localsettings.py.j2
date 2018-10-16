@@ -377,6 +377,13 @@ redis_cache = {
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
+{% if is_redis_cluster %}
+        'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
+        'CONNECTION_POOL_CLASS': 'rediscluster.connection.ClusterConnectionPool',
+        'CONNECTION_POOL_KWARGS': {
+            'skip_full_coverage_check': True
+        },
+{% endif %}
     },
 }
 
