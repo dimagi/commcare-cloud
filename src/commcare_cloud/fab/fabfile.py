@@ -813,6 +813,11 @@ def start_celery():
 
 
 @task
+def restart_webworkers():
+    execute(supervisor.restart_webworkers)
+
+
+@task
 def stop_pillows():
     execute(supervisor.stop_pillows, True)
 
