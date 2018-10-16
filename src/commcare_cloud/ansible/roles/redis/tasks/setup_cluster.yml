@@ -22,4 +22,3 @@
 - name: Create cluster with uniform slot distribution
   shell: 'echo "yes" | {{ redis_trib_path }} create --replicas 0 {{redis_urls}}'
   when: internal_ipv4.address == first_master_ip
-  register: slot_output
