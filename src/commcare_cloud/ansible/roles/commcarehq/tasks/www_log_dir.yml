@@ -1,0 +1,16 @@
+# nginx proxy also relies on log home and calls this tasks file directly
+# including couchdb2_proxy, which doesn't run the commcarehq role
+- name: Create www directory and log home
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+    # sometimes the log directory is a symlink to a dir on an encrypted drive
+    follow: yes
+  with_items:
+    - "{{ www_dir }}"
+    - "{{ www_home }}"
+    - "{{ log_home }}"
