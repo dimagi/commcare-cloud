@@ -67,3 +67,5 @@
 - name: Copy sudoers file
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+  tags:
+    - sudoers
