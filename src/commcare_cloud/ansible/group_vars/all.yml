@@ -188,6 +188,7 @@ es_local_repo: false
 blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
+backup_es_s3: False
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"
