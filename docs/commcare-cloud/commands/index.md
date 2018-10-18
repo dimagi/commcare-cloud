@@ -846,6 +846,7 @@ Use `-l` instead of a command to see the full list of commands.
     prepare_offline_deploy
     reset_mvp_pillows
     restart_services
+    restart_webworkers
     reverse_patch              Used to reverse a git patch created via `git f...
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer

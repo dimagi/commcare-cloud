@@ -21,7 +21,7 @@ celery_processes:
       concurrency: 4
       max_tasks_per_child: 5
     ucr_indicator_queue:
-      concurrency: 1
+      concurrency: 2
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
