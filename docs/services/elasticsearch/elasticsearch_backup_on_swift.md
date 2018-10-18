@@ -24,8 +24,8 @@ To install the plugin on the ansible server.
 curl -XPUT 'http://<ip-address>:9200/_snapshot/<env>_es_snapshot' -d '{
 >         "type": "swift",
 >         "settings": {
->             "swift_url": "https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/",
->             "swift_container": "mowcdmumelasticdb",
+>             "swift_url": "https://<aurl-address>/auth/v1.0/",
+>             "swift_container": "nameofthecontainer",
 >             "swift_username": "XXXXXX",
 >             "swift_password": "XXXXX",
 >             "swift_authmethod": ""
