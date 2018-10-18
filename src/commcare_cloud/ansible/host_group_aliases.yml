@@ -2,25 +2,13 @@
   hosts: all
   tasks:
     - name: Create all_commcarehq group alias
-      add_host:
-        hostname: "{{ item }}"
-        groups: all_commcarehq
-      with_items: "{{ groups['all'] }}"
-      when: "item not in groups['openvpn']|default([])"
+      group_by: key=all_commcarehq
+      when: "'openvpn' not in group_names"
       changed_when: no
     - name: Create commcarehq group alias
-      add_host:
-        hostname: "{{ item }}"
-        groups: commcarehq
-      with_items:
-        - "{{ groups['webworkers']|default([]) }}"
-        - "{{ groups['formplayer']|default([]) }}"
-        - "{{ groups['celery']|default([]) }}"
-        - "{{ groups['proxy']|default([]) }}"
-        - "{{ groups['pillowtop']|default([]) }}"
-        - "{{ groups['couchdb2_proxy']|default([]) }}"
-        - "{{ groups['airflow']|default([]) }}"
-        - "{{ groups['django_manage']|default([]) }}"
+      group_by: key=commcarehq
+      when: ('webworkers' in group_names) or ('formplayer' in group_names) or ('celery' in group_names) or ('proxy' in group_names) or ('pillowtop' in group_names) or ('couchdb2_proxy' in group_names) or ('airflow' in group_names) or ('django_manage' in group_names)
       changed_when: no
   tags:
     - always
+
