@@ -1,6 +1,6 @@
 # ElasticSearch Backup on Swift API
 
-"We normally do the backup of ElasticSearch using ElasticSearch backup plugin which allows us to take backup
+We normally do the backup of ElasticSearch using ElasticSearch backup plugin which allows us to take backup
 on external seervices compatible with S3. In Few cases where S3 is not availble we can sort to 
 other solutions.
 This documentaion details the same process for backing up on Swift API of OpenStack
