@@ -5,7 +5,6 @@ on external seervices compatible with S3. In Few cases where S3 is not availble 
 other solutions.
 This documentaion details the same process for backing up on Swift API of OpenStack
 Plugin used : https://github.com/BigDataBoutique/elasticsearch-repository-swift
-"
 
 
 ## Configuring and Testing.
