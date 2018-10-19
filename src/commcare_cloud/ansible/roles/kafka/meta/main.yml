@@ -1,5 +1,5 @@
 ---
 dependencies:
   - role: java
+  - role: ruby_install
   - role: zookeeper
-

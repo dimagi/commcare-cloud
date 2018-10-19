@@ -60,7 +60,11 @@ smtp.from.address=commcarehq-noreply+{{ inventory_hostname_short }}@dimagi.com
 smtp.to.address=commcarehq-ops+formplayer@dimagi.com
 
 // Redis for locking
+{% if is_redis_cluster %}
+redis.clusterString={{ groups.redis_cluster_master | map('extract', hostvars, ['address']) | join(':6379,') }}:6379
+{% else %}
 redis.hostname={{ localsettings.REDIS_HOST }}
+{% endif %}
 
 endpoints.enabled=true
 management.address: 0.0.0.0
