@@ -304,7 +304,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 LESS_DEBUG = DEBUG
 
-ADMINS = (('HQ Dev Team', 'commcarehq-ops+admins@dimagi.com'),)
+ADMINS = (('HQ Dev Team', '{{ server_admin_email }}'),)
 SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
