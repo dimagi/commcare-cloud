@@ -50,6 +50,7 @@ couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
 }"
 couchdb_ver: '2.1.1'
+is_redis_cluster: '{{ "redis_cluster_master" in group_names and groups["redis_cluster_master"]|length > 1 }}'
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
