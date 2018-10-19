@@ -8,6 +8,10 @@ elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'echis-es'
 elastcsearch_backup_days: 3
 
+default_from_email: echismoh@moh.gov.et
+server_email: echismoh@moh.gov.et
+server_admin_email: echis_server_admin@moh.gov.et
+
 nofile_limit: 65536
 ssh_allow_password: True
 
