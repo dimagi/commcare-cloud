@@ -45,7 +45,6 @@ zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb_use_haproxy: False
 couchdb2_port: 15984
-couchdb_use_haproxy: False
 couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
 couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
