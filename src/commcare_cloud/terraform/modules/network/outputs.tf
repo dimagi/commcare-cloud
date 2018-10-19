@@ -1,53 +1,13 @@
-output "subnet-a-app-private" {
-  value = "${aws_subnet.subnet-a-app-private.id}"
+output "subnets-app-private" {
+  value = "${zipmap(var.az_codes, aws_subnet.subnet-app-private.*.id)}"
 }
 
-output "subnet-b-app-private" {
-  value = "${aws_subnet.subnet-b-app-private.id}"
+output "subnets-public" {
+  value = "${zipmap(var.az_codes, aws_subnet.subnet-public.*.id)}"
 }
 
-output "subnet-c-app-private" {
-  value = "${aws_subnet.subnet-c-app-private.id}"
-}
-
-output "subnet-a-public" {
-  value = "${aws_subnet.subnet-a-public.id}"
-}
-
-output "subnet-b-public" {
-  value = "${aws_subnet.subnet-b-public.id}"
-}
-
-output "subnet-c-public" {
-  value = "${aws_subnet.subnet-c-public.id}"
-}
-
-output "subnet-a-util-private" {
-  value = "${aws_subnet.subnet-a-util-private.id}"
-}
-
-output "subnet-b-util-private" {
-  value = "${aws_subnet.subnet-b-util-private.id}"
-}
-
-output "subnet-c-util-private" {
-  value = "${aws_subnet.subnet-c-util-private.id}"
-}
-
-output "subnet-a-db-private" {
-  value = "${aws_subnet.subnet-a-db-private.id}"
-}
-
-output "subnet-b-db-private" {
-  value = "${aws_subnet.subnet-b-db-private.id}"
-}
-
-output "subnet-c-db-private" {
-  value = "${aws_subnet.subnet-c-db-private.id}"
-}
-
-output "g2-access-sg" {
-  value = "${aws_security_group.g2-access-sg.id}"
+output "subnets-db-private" {
+  value = "${zipmap(var.az_codes, aws_subnet.subnet-db-private.*.id)}"
 }
 
 output "vpc-id" {
@@ -64,4 +24,24 @@ output "proxy-sg" {
 
 output "rds-sg" {
   value = "${aws_security_group.rds.id}"
+}
+
+output "elasticache-sg" {
+  value = "${aws_security_group.elasticache.id}"
+}
+
+output "app-private-sg" {
+  value = "${aws_security_group.app-private.id}"
+}
+
+output "db-private-sg" {
+  value = "${aws_security_group.db-private.id}"
+}
+
+output "ssh-sg" {
+  value = "${aws_security_group.ssh.id}"
+}
+
+output "vpn-connections-sg" {
+  value = "${aws_security_group.vpn_connections.id}"
 }

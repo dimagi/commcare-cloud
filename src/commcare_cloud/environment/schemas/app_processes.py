@@ -34,6 +34,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     newrelic_djangoagent = jsonobject.BooleanProperty()
     newrelic_javaagent = jsonobject.BooleanProperty()
     django_command_prefix = jsonobject.StringProperty()
+    datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(unicode)
@@ -117,6 +118,8 @@ def validate_app_processes_config(app_processes_config):
         'You cannot run beat on more than one machine.'
     assert all_queues_mentioned['flower'] <= 1, \
         'You cannot run flower on more than one machine because CELERY_FLOWER_URL assumes one endpoint.'
+    assert not (app_processes_config.newrelic_djangoagent and app_processes_config.datadog_pythonagent), \
+        'You cannot run NewRelic APM and Datadog APM'
 
 
 def _validate_all_required_machines_mentioned(environment, translated_app_process_config):

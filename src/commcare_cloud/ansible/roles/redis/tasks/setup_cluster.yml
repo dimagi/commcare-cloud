@@ -1,0 +1,24 @@
+---
+- name: Install redis gem
+  command: 'gem install redis -v 3.3.3' # not the latest, because https://github.com/antirez/redis/issues/4272
+  become: yes
+
+- set_fact: 
+    first_master_ip: "{{ hostvars[groups.redis_cluster_master[0]][internal_network_interface_fact].ipv4.address }}"
+    redis_trib_path: "/usr/local/src/redis-{{ redis_version }}/src/redis-trib.rb" 
+    redis_urls: "{{ groups.redis_cluster_master | map('extract', hostvars, [internal_network_interface_fact, 'ipv4', 'address']) | join(':6379 ') }}:6379"
+
+- name: Add cluster config
+  become: yes
+  lineinfile:
+    dest: /etc/redis/{{ redis_port }}.conf
+    line: '{{ item.key }} {{ item.value }}'
+  with_dict: "{{ cluster_config }}"
+  tags: redis_config
+
+- name: Start redis service
+  service: name="{{ redis_service_name }}" state=restarted enabled=yes
+
+- name: Create cluster with uniform slot distribution
+  shell: 'echo "yes" | {{ redis_trib_path }} create --replicas 0 {{redis_urls}}'
+  when: internal_ipv4.address == first_master_ip

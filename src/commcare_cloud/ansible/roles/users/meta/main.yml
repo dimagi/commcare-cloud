@@ -1,4 +1,0 @@
----
-dependencies:
-  - {role: supervisor, tags: supervisor}
-  - {role: bootstrap-users, tags: bootstrap-users}

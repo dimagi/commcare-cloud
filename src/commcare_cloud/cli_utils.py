@@ -5,7 +5,7 @@ import subprocess
 import sys
 from clint.textui import puts, colored
 from .environment.paths import ANSIBLE_DIR
-from six.moves import input
+from six.moves import input, shlex_quote
 
 
 def ask(message, strict=False, quiet=False):
@@ -82,4 +82,6 @@ def print_command(command):
 
     Use this function to do so
     """
+    if isinstance(command, (list, tuple)):
+        command = ' '.join(shlex_quote(arg) for arg in command)
     print(colored.cyan(command), file=sys.stderr)

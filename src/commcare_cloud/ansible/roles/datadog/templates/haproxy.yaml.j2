@@ -1,0 +1,9 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+  - url: https://{{ haproxy_stats_bind_address }}:{{ haproxy_stats_port }}/
+    username: {{ haproxy_username }}
+    password: {{ haproxy_stats_password }}

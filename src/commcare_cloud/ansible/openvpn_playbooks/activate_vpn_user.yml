@@ -1,0 +1,15 @@
+- name: Activate VPN User
+  hosts: openvpn
+  tasks:
+    - name: "Assert that {{ vpn_user }} already exists"
+      assert:
+        that: "vpn_user in dev_users.present"
+        fail_msg: "Cannot activate {{ vpn_user }} because user does not exist. User must be in dev_users."
+    - name: "Set {{ vpn_user }} to temporary password"
+      become: yes
+      user:
+        name: "{{ vpn_user }}"
+        password: "{{ ansible_sudo_pass | password_hash('sha512') }}"
+    - name: "Auto-expire after a day if they don't reset password"
+      become: yes
+      shell: "passwd {{ vpn_user }} -x 1"

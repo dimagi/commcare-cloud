@@ -1,9 +1,12 @@
 # coding=utf-8
 import os
 import subprocess
+from copy import deepcopy
 
 from six.moves import shlex_quote
 from clint.textui import puts, colored
+
+from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
@@ -113,10 +116,7 @@ def run_ansible_playbook(
         ) + get_limit() + cmd_args
 
         public_vars = environment.public_vars
-        cmd_parts += get_user_arg(public_vars, unknown_args)
-
-        if not has_arg(unknown_args, '-f', '--forks'):
-            cmd_parts += ('--forks', '15')
+        cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
             puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
@@ -125,20 +125,16 @@ def run_ansible_playbook(
 
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
         if ask_vault_pass:
-            cmd_parts += ('--vault-password-file=/bin/cat',)
+            cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
 
         cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
         cmd_parts += cmd_parts_with_common_ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
+        env_vars = ansible_context.env_vars
         if ask_vault_pass:
-            environment.get_ansible_vault_password()
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
-        if ask_vault_pass:
-            p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
-        else:
-            p.communicate()
-        return p.returncode
+            env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
+        return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():
         return ansible_playbook(environment, playbook, '--check', *unknown_args)
@@ -170,12 +166,33 @@ class DeployStack(_AnsiblePlaybookAlias):
         for a more specific update.
     """
 
+    arguments = _AnsiblePlaybookAlias.arguments + (
+        Argument('--first-time', action='store_true', help="""
+        Use this flag for running against a newly-created machine.
+
+        It will first use factory auth to set up users,
+        and then will do the rest of deploy-stack normally,
+        but skipping check mode.
+        """),
+    )
+
     def run(self, args, unknown_args):
+        always_skip_check = False
+        if args.first_time:
+            rc = BootstrapUsers(self.parser).run(deepcopy(args), unknown_args)
+            if rc != 0:
+                return rc
+            # the above just ran --tags=users
+            # no need to run it a second time
+            unknown_args += ('--skip-tags=users',)
+            args.quiet = True
+            always_skip_check = True
         args.playbook = 'deploy_stack.yml'
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return AnsiblePlaybook(self.parser).run(
+            args, unknown_args, always_skip_check=always_skip_check)
 
 
-class UpdateConfig(_AnsiblePlaybookAlias):
+class UpdateConfig(CommandBase):
     command = 'update-config'
     help = """
     Run the ansible playbook for updating app config.
@@ -183,10 +200,11 @@ class UpdateConfig(_AnsiblePlaybookAlias):
     This includes django `localsettings.py` and formplayer `application.properties`.
     """
 
+    arguments = (shared_args.BRANCH_ARG,)
+
     def run(self, args, unknown_args):
-        args.playbook = 'deploy_localsettings.yml'
-        unknown_args += ('--tags=localsettings',)
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+        return commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
+                              tags='localsettings', branch=args.branch, *unknown_args)
 
 
 class AfterReboot(_AnsiblePlaybookAlias):
@@ -231,8 +249,8 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.use_factory_auth = True
         public_vars = environment.public_vars
-        root_user = public_vars.get('commcare_cloud_root_user', 'root')
-        unknown_args += ('--tags=bootstrap-users', '-u', root_user)
+        unknown_args += ('--tags=bootstrap-users',) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
+
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
@@ -291,8 +309,7 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
                                               respect_ansible_skip=False)
         with open(environment.paths.known_hosts, 'r') as f:
-            known_hosts = f.readlines()
-        known_hosts.sort()
+            known_hosts = sorted(set(f.readlines()))
         with open(environment.paths.known_hosts, 'w') as f:
             f.writelines(known_hosts)
         return rc

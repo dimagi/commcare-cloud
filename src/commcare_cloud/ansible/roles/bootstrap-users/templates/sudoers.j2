@@ -12,8 +12,8 @@ Cmnd_Alias NGINX = /usr/sbin/nginx
 Cmnd_Alias PACKAGES = /usr/bin/apt-get
 Cmnd_Alias GIT = /usr/bin/git
 Cmnd_Alias PYTHON = /home/{{ cchq_user }}/www/{{ deploy_env }}/python_env/bin/python,/home/{{ cchq_user }}/www/{{ deploy_env }}/python_env/bin/pip
-{% if dirname_which_supervisorctl.stdout != '.' %}
-Cmnd_Alias SUPERVISORD = /bin/bash -l -c sudo {{ dirname_which_supervisorctl.stdout }}/supervisorctl*,{{ dirname_which_supervisorctl.stdout }}/supervisorctl*,{{ dirname_which_supervisorctl.stdout }}/echo_supervisord_conf > /tmp/supervisord_deploy.tmp
+{% if inventory_hostname in groups['commcarehq'] %}
+Cmnd_Alias SUPERVISORD = /bin/bash -l -c sudo /usr/bin/supervisorctl*,/usr/bin/supervisorctl*,/usr/bin/echo_supervisord_conf > /tmp/supervisord_deploy.tmp
 {% endif %}
 Cmnd_Alias CHOWN_CONF = /bin/chown -R {{ cchq_user }} /tmp/supervisor*
 Cmnd_Alias CHMOD_CONF = /bin/chmod -R g+w /tmp/supervisor*

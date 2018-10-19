@@ -11,7 +11,6 @@ from clint.textui import puts, colored, indent
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,
-    get_formplayer_instance_name,
     get_celery_workers,
     get_pillowtop_processes
 )
@@ -326,12 +325,15 @@ class Elasticsearch(ServiceBase):
                     "\nStart will start pillows and start elasticsearch "
                     "\nRestart is a stop followed by a start.\n Continue?", strict=False):
                 return 0  # exit code
-            if action == 'stop' or action == 'restart':
+            if action == 'stop':
                 self._act_on_pillows(action='stop')
-                self._run_rolling_restart_yml(tags='action_stop')
-
-            if action == 'start' or action == 'restart':
-                self._run_rolling_restart_yml(tags='action_start')
+                self._run_rolling_restart_yml(tags='action_stop', limit=host_pattern)
+            elif action == 'start':
+                self._run_rolling_restart_yml(tags='action_start', limit=host_pattern)
+                self._act_on_pillows(action='start')
+            elif action == 'restart':
+                self._act_on_pillows(action='stop')
+                self._run_rolling_restart_yml(tags='action_stop,action_start', limit=host_pattern)
                 self._act_on_pillows(action='start')
 
     def _act_on_pillows(self, action):
@@ -342,13 +344,14 @@ class Elasticsearch(ServiceBase):
             print("ERROR while trying to {} pillows. Exiting.".format(action))
             sys.exit(1)
 
-    def _run_rolling_restart_yml(self, tags):
+    def _run_rolling_restart_yml(self, tags, limit):
         from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
         run_ansible_playbook(environment=self.environment,
                              playbook='es_rolling_restart.yml',
                              ansible_context=AnsibleContext(args=None),
-                             unknown_args=['--tags={}'.format(tags)],
-                             skip_check=True)
+                             unknown_args=['--tags={}'.format(tags),
+                                           '--limit={}'.format(limit)],
+                             skip_check=True, quiet=True)
 
 
 class Couchdb(AnsibleService):

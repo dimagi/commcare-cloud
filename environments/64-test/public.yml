@@ -3,8 +3,6 @@ internal_domain_name: null
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 
-touchforms_enabled: false
-
 riak_backend: "bitcask"
 riak_ring_size: 64
 
@@ -29,7 +27,7 @@ DATADOG_ENABLED: True
 
 CLOUDANT_CLUSTER_NAME: null
 
-backup_es: False
+backup_es_s3: False
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -62,8 +60,6 @@ couchdb_cluster_settings:
   r: 1
   w: 1
   n: 1
-
-TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"

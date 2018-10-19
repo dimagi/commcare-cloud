@@ -34,7 +34,6 @@
 
 - hosts:
   - webworkers
-  - touchforms
   - pillowtop
   - formplayer
   tasks:

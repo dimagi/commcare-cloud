@@ -1,7 +1,7 @@
 dev_users:
-  present:
+  present: []
+  absent:
     - kdubrovsky
     - nking
     - scao
     - aivanov
-  absent: []

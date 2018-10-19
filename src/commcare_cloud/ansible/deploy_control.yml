@@ -1,9 +1,9 @@
 - name: Bootstrap Control
-  hosts: "{{ target|default(control) }}"
+  hosts: "{{ target|default('control') }}"
   become: true
   gather_facts: true
   roles:
-    - role: common
+    - role: bootstrap-machine
     - {role: ansible-control, tags: ansible-control}
     - role: ansible-logrotate
       logrotate_scripts:
