@@ -43,6 +43,7 @@ temp_riakcs_proxy_port: 8081
 riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 zookeeper_client_port: 2181
 formplayer_port: 8181
+couchdb_use_haproxy: False
 couchdb2_port: 15984
 couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
 couchdb_admins: "{
