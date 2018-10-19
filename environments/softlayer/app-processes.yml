@@ -38,9 +38,12 @@ celery_processes:
       concurrency: 10
     async_restore_queue:
       concurrency: 1
-    background_queue,case_rule_queue,icds_dashboard_reports_queue,icds_aggregation_queue,analytics_queue:
+    background_queue,case_rule_queue,icds_dashboard_reports_queue,analytics_queue:
       concurrency: 2
       max_tasks_per_child: 1
+    icds_aggregation_queue:
+      pooling: gevent
+      concurrency: 2
     flower: {}
 pillows:
   'pillow1':

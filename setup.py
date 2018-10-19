@@ -5,8 +5,12 @@ test_deps = [
     'nose>=1.3.7',
     'parameterized>=0.6.1',
 ]
+aws_deps = [
+    'awscli'
+]
 extras = {
     'test': test_deps,
+    'aws': aws_deps,
 }
 
 setup(

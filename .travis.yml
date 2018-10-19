@@ -12,12 +12,17 @@ env:
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: TEST=prove-deploy
 
 before_install:
-  # The next line exits out of the prove-deploy test if the last commit that was merged in doesn't contain [pv-test]
-  - if [[ $TEST = 'prove-deploy' ]] && git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -iv '\[pv-deploy\]'; then exit 0; fi
+  # The next line exits out of the prove-deploy test if
+  #   - the test is not running from a cron event
+  #   - the last commit that was merged in doesn't contain [pv-test]
+  - |
+    if [[ $TEST = 'prove-deploy' && $TRAVIS_EVENT_TYPE != 'cron' ]] &&
+      git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -iv '\[pv-deploy\]'
+    then
+      exit 0
+    fi
   # Make sure everything's up to date.
   - sudo apt-get clean
   - sudo apt-get update -qq

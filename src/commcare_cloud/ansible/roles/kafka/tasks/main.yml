@@ -61,28 +61,6 @@
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
 
-- name: Add ruby ppa
-  apt_repository: repo='ppa:brightbox/ruby-ng'
-  register: add_ruby_ppa
-  tags:
-    - kafkat
-
-- name: Update package list for ruby
-  apt: update_cache=yes
-  when: add_ruby_ppa|changed
-  tags:
-    - kafkat
-
-- name: Install ruby
-  apt: name="{{ item }}" state=present
-  become: yes
-  with_items:
-    - ruby2.3
-    - ruby2.3-dev
-  tags:
-    - kafkat
-  ignore_errors: '{{ ansible_check_mode }}'
-
 - name: Install kafkat
   command: 'gem install kafkat'
   become: yes

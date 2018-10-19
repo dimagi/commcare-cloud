@@ -6,14 +6,19 @@ DATADOG_INTEGRATIONS_ENABLED: False
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'deves'
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+
 #elasticsearch_node_name: '??'
 elastcsearch_backup_days: 2
+
+
 
 ssh_allow_password: True
 
 backup_blobdb: True
 backup_postgres: plain
-backup_es: False
+backup_es_s3: False
 backup_couch: True
 postgres_s3: True
 blobdb_s3: True
@@ -87,4 +92,3 @@ localsettings:
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
-  XFORMS_PLAYER_URL: "http://127.0.0.1:4444/"

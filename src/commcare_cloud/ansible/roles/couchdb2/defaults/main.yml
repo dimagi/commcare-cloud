@@ -9,3 +9,4 @@ couchdb_user: couchdb
 couchdb_group: couchdb
 couchdb_backup_days: 2
 couchdb_backup_weeks: 2
+couchdb_auth_cache_size: 200
