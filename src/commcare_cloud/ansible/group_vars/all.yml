@@ -45,6 +45,7 @@ zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb_use_haproxy: False
 couchdb2_port: 15984
+couchdb_use_haproxy: False
 couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
 couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
@@ -191,6 +192,7 @@ es_local_repo: false
 blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
+backup_es_s3: False
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"

@@ -153,4 +153,7 @@
   tags:
     - link_pna_cas
 
+- name: Make sure the log directory exists
+  import_tasks: roles/commcarehq/tasks/www_log_dir.yml
+
 - set_fact: nginx_installed=True
