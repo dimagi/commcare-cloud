@@ -49,7 +49,7 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-
+couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
   r: 1
