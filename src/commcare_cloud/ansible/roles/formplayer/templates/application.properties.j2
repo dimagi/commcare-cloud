@@ -61,7 +61,7 @@ smtp.to.address=commcarehq-ops+formplayer@dimagi.com
 
 // Redis for locking
 {% if is_redis_cluster %}
-redis.clusterString={{ groups.redis_cluster_master | join(":6379,") }}:6379
+redis.clusterString={{ groups.redis_cluster_master | join(":" + localsettings.REDIS_PORT + ",") }}:{{ localsettings.REDIS_PORT }}
 {% else %}
 redis.hostname={{ localsettings.REDIS_HOST }}
 {% endif %}
