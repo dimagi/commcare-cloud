@@ -7,7 +7,7 @@ celery_processes:
       concurrency: 1
     email_queue,reminder_case_update_queue:
       concurrency: 5
-    reminder_rule_queue,reminder_queue,repeat_record_queue,saved_exports_queue:
+    reminder_rule_queue,repeat_record_queue,saved_exports_queue:
       concurrency: 1
     sms_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
       concurrency: 1
