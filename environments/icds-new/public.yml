@@ -125,7 +125,6 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
-    - '{{ hostvars[groups.proxy.0].public_ip }}'
   ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':

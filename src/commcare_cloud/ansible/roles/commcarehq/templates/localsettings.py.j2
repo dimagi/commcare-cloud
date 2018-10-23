@@ -17,7 +17,7 @@ from celery.schedules import crontab
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
-ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS|default([]) + [SITE_HOST, 'localhost', '127.0.0.1'] + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list) | unique | to_json }}
+ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS|default([]) + [SITE_HOST, 'localhost', '127.0.0.1'] + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list + groups.proxy | map('extract', hostvars, 'public_ip') | map('default', 'localhost') | list) | unique | to_json }}
 
 {% if SEPARATE_SYNCLOGS_DB %}
 SYNCLOGS_SQL_DB_ALIAS = "synclogs"
@@ -304,7 +304,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 LESS_DEBUG = DEBUG
 
-ADMINS = (('HQ Dev Team', 'commcarehq-ops+admins@dimagi.com'),)
+ADMINS = (('HQ Dev Team', '{{ server_admin_email }}'),)
 SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
@@ -377,6 +377,13 @@ redis_cache = {
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
+{% if is_redis_cluster %}
+        'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
+        'CONNECTION_POOL_CLASS': 'rediscluster.connection.ClusterConnectionPool',
+        'CONNECTION_POOL_KWARGS': {
+            'skip_full_coverage_check': True
+        },
+{% endif %}
     },
 }
 
