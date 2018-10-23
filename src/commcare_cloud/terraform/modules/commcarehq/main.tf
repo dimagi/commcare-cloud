@@ -20,6 +20,7 @@ module "network" {
   vpn_connections   = "${var.vpn_connections}"
   vpn_connection_routes = "${var.vpn_connection_routes}"
   external_routes   = "${var.external_routes}"
+  openvpn_ip        = "${module.openvpn.openvpn-server-ip}"
 }
 
 

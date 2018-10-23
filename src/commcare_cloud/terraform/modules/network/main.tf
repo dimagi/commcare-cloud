@@ -253,7 +253,20 @@ resource "aws_security_group" "db-private" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}"]
+    cidr_blocks = [
+      // Allow traffic from app-private subnets
+      "${aws_subnet.subnet-app-private.*.cidr_block}",
+    ]
+  }
+
+  ingress {
+    from_port   = 9200
+    to_port     = 9200
+    protocol    = "tcp"
+    cidr_blocks = [
+      // Allow traffic coming from the VPN, i.e. from dev machines, on ES port
+      "${var.openvpn_ip}/32",
+    ]
   }
 
   ingress {
