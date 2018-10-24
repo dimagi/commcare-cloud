@@ -43,6 +43,24 @@ hqdjango7.internal-va.commcarehq.org
 [web5]
 {{ web5-production }} hostname=web5-production ec2=yes
 
+[web6]
+{{ web6-production }} hostname=web6-production ec2=yes
+
+[web7]
+{{ web7-production }} hostname=web7-production ec2=yes datadog_integration_tcp_check=yes
+
+[web8]
+{{ web8-production }} hostname=web8-production ec2=yes
+
+[web9]
+{{ web9-production }} hostname=web9-production ec2=yes
+
+[web10]
+{{ web10-production }} hostname=web10-production ec2=yes
+
+[web11]
+{{ web11-production }} hostname=web11-production ec2=yes
+
 
 [webworkers:children]
 hqdjango0
@@ -57,6 +75,12 @@ web2
 web3
 web4
 web5
+web6
+web7
+web8
+web9
+web10
+web11
 
 [hqdb0]
 hqdb0.internal-va.commcarehq.org
