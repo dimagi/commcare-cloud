@@ -230,27 +230,15 @@ pillows:
       start_process: 0
       num_processes: 8
       total_processes: 24
-    kafka-ucr-static-forms-current:
-      start_process: 0
-      num_processes: 4
-      total_processes: 24
   'pillow3':
     kafka-ucr-static-forms:
       start_process: 8
       num_processes: 8
       total_processes: 24
-    kafka-ucr-static-forms-current:
-      start_process: 4
-      num_processes: 4
-      total_processes: 24
   'pillow4':
     kafka-ucr-static-forms:
       start_process: 16
       num_processes: 8
-      total_processes: 24
-    kafka-ucr-static-forms-current:
-      start_process: 8
-      num_processes: 4
       total_processes: 24
   'pillow5':
     kafka-ucr-static-cases:
@@ -261,10 +249,6 @@ pillows:
       start_process: 0
       num_processes: 6
       total_processes: 60
-    kafka-ucr-static-forms-current:
-      start_process: 12
-      num_processes: 2
-      total_processes: 24
   'pillow6':
     kafka-ucr-static-cases:
       start_process: 6
@@ -274,10 +258,6 @@ pillows:
       start_process: 6
       num_processes: 6
       total_processes: 60
-    kafka-ucr-static-forms-current:
-      start_process: 14
-      num_processes: 2
-      total_processes: 24
   'pillow7':
     kafka-ucr-static-cases:
       start_process: 12
@@ -287,10 +267,6 @@ pillows:
       start_process: 12
       num_processes: 6
       total_processes: 60
-    kafka-ucr-static-forms-current:
-      start_process: 16
-      num_processes: 2
-      total_processes: 24
   'pillow8':
     kafka-ucr-static-cases:
       start_process: 18
@@ -300,10 +276,6 @@ pillows:
       start_process: 18
       num_processes: 6
       total_processes: 60
-    kafka-ucr-static-forms-current:
-      start_process: 18
-      num_processes: 2
-      total_processes: 24
   'pillow9':
     kafka-ucr-static-cases:
       start_process: 24
@@ -313,10 +285,6 @@ pillows:
       start_process: 24
       num_processes: 6
       total_processes: 60
-    kafka-ucr-static-forms-current:
-      start_process: 20
-      num_processes: 2
-      total_processes: 24
   'pillow10':
     kafka-ucr-static-cases:
       start_process: 30
@@ -326,10 +294,6 @@ pillows:
       start_process: 30
       num_processes: 6
       total_processes: 60
-    kafka-ucr-static-forms-current:
-      start_process: 22
-      num_processes: 2
-      total_processes: 24
   'pillow11':
     kafka-ucr-static-cases:
       start_process: 36

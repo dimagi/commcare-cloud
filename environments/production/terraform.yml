@@ -98,6 +98,31 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+  - server_name: "es10-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+  - server_name: "es11-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+  - server_name: "es12-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+  - server_name: "es13-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+  - server_name: "es14-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
 
 
 proxy_servers: []

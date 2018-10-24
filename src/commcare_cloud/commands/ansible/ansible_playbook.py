@@ -179,7 +179,7 @@ class DeployStack(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         always_skip_check = False
         if args.first_time:
-            rc = BootstrapUsers(self.parser).run(deepcopy(args), unknown_args)
+            rc = BootstrapUsers(self.parser).run(deepcopy(args), deepcopy(unknown_args))
             if rc != 0:
                 return rc
             # the above just ran --tags=users
