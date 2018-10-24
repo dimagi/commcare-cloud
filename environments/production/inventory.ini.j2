@@ -235,14 +235,39 @@ elasticsearch_node_zone=rackspace
 [es9]
 {{ es9-production }} hostname=es9-production elasticsearch_node_name=es9 ec2=yes
 
-[es_data_aws:children]
+[es10]
+{{ es10-production }} hostname=es10-production elasticsearch_node_name=es10 ec2=yes
+
+[es11]
+{{ es11-production }} hostname=es11-production elasticsearch_node_name=es11 ec2=yes
+
+[es12]
+{{ es12-production }} hostname=es12-production elasticsearch_node_name=es12 ec2=yes
+
+[es13]
+{{ es13-production }} hostname=es13-production elasticsearch_node_name=es13 ec2=yes
+
+[es14]
+{{ es14-production }} hostname=es14-production elasticsearch_node_name=es14 ec2=yes
+
+[es_data_aws_nvme:children]
 es6
 es7
 es8
 es9
 
-[es_data_aws:vars]
+[es_data_aws:children]
+es_data_aws_nvme
+es10
+es11
+es12
+es13
+es14
+
+[es_data_aws_nvme:vars]
 datavol_device=/dev/nvme0n
+
+[es_data_aws:vars]
 elasticsearch_node_zone=aws
 
 [hqesmaster0]
