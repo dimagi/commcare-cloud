@@ -279,11 +279,15 @@ elasticsearch_node_zone=aws
 [esmaster1]
 {{ esmaster1-production }} hostname=esmaster1-production elasticsearch_node_name=esmaster1 ec2=yes
 
+[esmaster2]
+{{ esmaster2-production }} hostname=esmaster2-production elasticsearch_node_name=esmaster2 ec2=yes
+
 
 [es_master:children]
 hqesmaster0
 esmaster0
 esmaster1
+esmaster2
 
 [es_master:vars]
 elasticsearch_master=true
