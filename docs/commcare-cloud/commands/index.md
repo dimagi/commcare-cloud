@@ -695,6 +695,21 @@ It will first use factory auth to set up users,
 and then will do the rest of deploy-stack normally,
 but skipping check mode.
 
+Running with this flag is equivalent to
+
+```
+commcare-cloud <env> bootstrap-users <...args>
+commcare-cloud <env> deploy-stack --skip-check --skip-tags=users <...args>
+```
+
+If you run and it fails half way, when you're ready to retry, you're probably
+better off running
+```
+commcare-cloud <env> deploy-stack --skip-check --skip-tags=users <...args>
+```
+since if it made it through bootstrap-users
+you won't be able to run bootstrap-users again.
+
 ---
 
 #### `update-config`
