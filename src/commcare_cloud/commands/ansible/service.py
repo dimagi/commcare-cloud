@@ -346,11 +346,13 @@ class Elasticsearch(ServiceBase):
 
     def _run_rolling_restart_yml(self, tags, limit):
         from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+        extra_args = ['--tags={}'.format(tags)]
+        if limit:
+            extra_args.extend(['--limit={}'.format(limit)])
         run_ansible_playbook(environment=self.environment,
                              playbook='es_rolling_restart.yml',
                              ansible_context=AnsibleContext(args=None),
-                             unknown_args=['--tags={}'.format(tags),
-                                           '--limit={}'.format(limit)],
+                             unknown_args=extra_args,
                              skip_check=True, quiet=True)
 
 
