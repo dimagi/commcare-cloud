@@ -6,9 +6,9 @@ rabbit0,100.71.188.43,rabbitmq,,,MUMGCCWCDPRDRB00,["/dev/vdb"],["/dev/vdb1"],,
 kafka0,100.71.184.15,kafka,zookeeper,,MUMGCCWCDPRDKF00,["/dev/vdb"],["/dev/vdb1"],,0
 kafka1,100.71.184.12,kafka,,,MUMGCCWCDPRDKF01,["/dev/vdb"],["/dev/vdb1"],,1
 redis0,100.71.184.53,redis,,,MUMGCCWCDPRDRD00,["/dev/vdb"],["/dev/vdb1"],,
-redis1,100.71.184.55,redis,,,MUMGCCWCDPRDRD01,["/dev/vdb"],["/dev/vdb1"],,
-redis2,100.71.184.89,redis,,,MUMGCCWCDPRDRD02,["/dev/vdb"],["/dev/vdb1"],,
-redis3,100.71.184.94,redis,,,MUMGCCWCDPRDRD03,["/dev/vdb"],["/dev/vdb1"],,
+redis1,100.71.184.55,redis,redis_cluster_master,,MUMGCCWCDPRDRD01,["/dev/vdb"],["/dev/vdb1"],,
+redis2,100.71.184.89,redis,redis_cluster_master,,MUMGCCWCDPRDRD02,["/dev/vdb"],["/dev/vdb1"],,
+redis3,100.71.184.94,redis,redis_cluster_master,,MUMGCCWCDPRDRD03,["/dev/vdb"],["/dev/vdb1"],,
 patch0,100.71.181.8,patch,control,,MUMGCCWCDPRDPT00,,,,
 proxy0,100.71.181.10,proxy,cas_proxy,,MUMGCCWCDPRDPX01,,,14.141.62.10,
 proxy1,100.71.181.14,proxy,cas_proxy,,MUMGCCWCDPRDPX02,,,14.141.62.11,
