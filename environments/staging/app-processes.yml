@@ -27,7 +27,6 @@ celery_processes:
       concurrency: 4
     flower: {}
 pillows:
-  'hqpillow0-staging.internal-va.commcarehq.org': {}
   'pillow0':
     AppDbChangeFeedPillow:
       num_processes: 1
