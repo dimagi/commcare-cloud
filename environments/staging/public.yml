@@ -1,7 +1,7 @@
 riak_backend: "leveldb"
 riak_ring_size: 64
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 1.7.6
