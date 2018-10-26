@@ -9,6 +9,13 @@
       when: not nginx_installed|default(False)
       tags: nginx
 
+    - name: install nginx certs
+      include_role:
+        name: nginx
+        tasks_from: certs
+      when: not nginx_installed|default(False)
+      tags: nginx
+
 - name: Proxy
   hosts: proxy
   tasks:
