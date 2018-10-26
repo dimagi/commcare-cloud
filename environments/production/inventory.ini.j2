@@ -44,19 +44,25 @@ mount_points="[{'partition':'/dev/xvdb1', 'dest':'/mnt/storage', 'fstype':'ext4'
 {{ web11-production }} hostname=web11-production ec2=yes
 
 
-[webworkers:children]
+[hq_webworkers:children]
 web0
 web1
 web2
 web3
 web4
 web5
+
+[mobile_webworkers:children]
 web6
 web7
 web8
 web9
 web10
 web11
+
+[webworkers:children]
+hq_webworkers
+mobile_webworkers
 
 [hqdb0]
 hqdb0.internal-va.commcarehq.org
