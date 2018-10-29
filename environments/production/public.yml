@@ -51,6 +51,19 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: True
 
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+
+couchdb_reduce_limit: False
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 3
+
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 s3_blob_db_enabled: yes
