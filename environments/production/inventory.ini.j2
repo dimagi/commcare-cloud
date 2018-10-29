@@ -249,6 +249,20 @@ es_master
 es_data
 
 
+[couch0]
+{{ couch0-production }} hostname=couch0-production ec2=yes
+
+[couch1]
+{{ couch1-production }} hostname=couch1-production ec2=yes
+
+[couch2]
+{{ couch2-production }} hostname=couch2-production ec2=yes
+
+[couchdb2:children]
+couch0
+couch1
+couch2
+
 [shared_dir_host:children]
 hqdb0
 
