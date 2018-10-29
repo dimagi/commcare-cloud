@@ -63,12 +63,12 @@ hqkafka0
 # kafka0
 
 [celery0]
-# {{ celery0-staging }} hostname=celery0-staging ec2=yes
+{{ celery0-staging }} hostname=celery0-staging ec2=yes
 
 [celery:children]
 hqdb1
 # Amazon EC2
-# celery0
+celery0
 
 [pillow0]
 {{ pillow0-staging }} hostname=pillow0-staging ec2=yes
@@ -76,7 +76,7 @@ hqdb1
 [pillowtop:children]
 hqpillow0
 # Amazon EC2
-# pillow0
+pillow0
 
 [hqtouch0]
 hqtouch0-staging.internal-va.commcarehq.org swap_size=1G
