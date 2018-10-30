@@ -40,7 +40,7 @@ formplayer_purge_time_spec: '8d'
 KSPLICE_ACTIVE: yes
 
 
-ufw_private_interface: "{{ ec2|default(false) and 'eth0' or 'eth1' }}"
+ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
 
 couch_dbs:
   default:
