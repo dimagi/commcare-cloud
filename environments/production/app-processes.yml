@@ -5,11 +5,11 @@ django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 2
 celery_processes:
-  celery0: {}
-  hqcelery0.internal-va.commcarehq.org:
+  celery0:
     beat: {}
     celery_periodic:
       concurrency: 4
+  hqcelery0.internal-va.commcarehq.org:
     submission_reprocessing_queue:
       concurrency: 1
     email_queue:
