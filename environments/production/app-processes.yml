@@ -9,9 +9,9 @@ celery_processes:
     beat: {}
     celery_periodic:
       concurrency: 4
-  hqcelery0.internal-va.commcarehq.org:
     submission_reprocessing_queue:
       concurrency: 1
+  hqcelery0.internal-va.commcarehq.org:
     email_queue:
       concurrency: 2
     repeat_record_queue,sumologic_logs_queue:
@@ -28,6 +28,14 @@ celery_processes:
       max_tasks_per_child: 5
   celery1:
     flower: {}
+    reminder_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 3
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 3
   hqcelery1.internal-va.commcarehq.org:
     case_rule_queue:
       concurrency: 4
@@ -36,17 +44,9 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 2
-    reminder_queue:
-      pooling: gevent
-      concurrency: 10
-      num_workers: 3
     reminder_rule_queue:
       concurrency: 3
       max_tasks_per_child: 1
-    sms_queue:
-      pooling: gevent
-      concurrency: 10
-      num_workers: 3
     ils_gateway_sms_queue:
       # Use 1 worker with concurrency 8 in order to enforce the
       # restriction of having 8 max simultaneous connections with
