@@ -130,6 +130,21 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 40
+  - server_name: "couch0-production"
+    server_instance_type: m5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 4000
+  - server_name: "couch1-production"
+    server_instance_type: m5.4xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 4000
+  - server_name: "couch2-production"
+    server_instance_type: m5.4xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 4000
 
 
 proxy_servers: []
