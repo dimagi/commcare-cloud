@@ -26,7 +26,8 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  celery1: {}
+  celery1:
+    flower: {}
   hqcelery1.internal-va.commcarehq.org:
     case_rule_queue:
       concurrency: 4
@@ -58,7 +59,6 @@ celery_processes:
     logistics_background_queue:
       concurrency: 2
       max_tasks_per_child: 5
-    flower: {}
   celery2: {}
   hqcelery2.internal-va.commcarehq.org:
     background_queue:
