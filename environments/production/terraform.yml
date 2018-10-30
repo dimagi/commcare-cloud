@@ -145,6 +145,36 @@ servers:
     network_tier: "db-private"
     az: "c"
     volume_size: 4000
+  - server_name: "rabbit0-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+  - server_name: "celery0-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+  - server_name: "celery1-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+  - server_name: "celery2-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+  - server_name: "celery3-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+  - server_name: "celery4-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
 
 
 proxy_servers: []
