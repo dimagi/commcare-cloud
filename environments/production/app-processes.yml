@@ -25,21 +25,7 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  hqcelery0.internal-va.commcarehq.org:
-    email_queue:
-      concurrency: 2
-    repeat_record_queue,sumologic_logs_queue:
-      pooling: gevent
-      concurrency: 50
-      num_workers: 4
-    ucr_queue:
-      concurrency: 4
-      max_tasks_per_child: 5
-    ucr_indicator_queue:
-      concurrency: 2
-    async_restore_queue:
-      concurrency: 2
-      max_tasks_per_child: 5
+  hqcelery0.internal-va.commcarehq.org: {}
   celery1:
     flower: {}
     reminder_queue:
@@ -72,37 +58,7 @@ celery_processes:
     logistics_background_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  hqcelery1.internal-va.commcarehq.org:
-    reminder_queue:
-      pooling: gevent
-      concurrency: 10
-      num_workers: 3
-    sms_queue:
-      pooling: gevent
-      concurrency: 10
-      num_workers: 3
-    case_rule_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 2
-    reminder_rule_queue:
-      concurrency: 3
-      max_tasks_per_child: 1
-    ils_gateway_sms_queue:
-      # Use 1 worker with concurrency 8 in order to enforce the
-      # restriction of having 8 max simultaneous connections with
-      # the push sms gateway
-      pooling: gevent
-      concurrency: 8
-    logistics_reminder_queue:
-      concurrency: 2
-      max_tasks_per_child: 5
-    logistics_background_queue:
-      concurrency: 2
-      max_tasks_per_child: 5
+  hqcelery1.internal-va.commcarehq.org: {}
   celery2:
     background_queue:
       concurrency: 8
@@ -116,19 +72,7 @@ celery_processes:
     analytics_queue:
       pooling: gevent
       concurrency: 10
-  hqcelery2.internal-va.commcarehq.org:
-    background_queue:
-      concurrency: 8
-      max_tasks_per_child: 1
-    send_report_throttled:
-      concurrency: 2
-      max_tasks_per_child: 1
-    async_restore_queue:
-      concurrency: 2
-      max_tasks_per_child: 5
-    analytics_queue:
-      pooling: gevent
-      concurrency: 10
+  hqcelery2.internal-va.commcarehq.org: {}
   celery3:
     async_restore_queue:
       concurrency: 8
@@ -140,17 +84,7 @@ celery_processes:
     export_download_queue:
       concurrency: 4
       max_tasks_per_child: 5
-  hqcelery3.internal-va.commcarehq.org:
-    async_restore_queue:
-      concurrency: 8
-      max_tasks_per_child: 5
-    saved_exports_queue:
-      concurrency: 6
-      max_tasks_per_child: 1
-      optimize: True
-    export_download_queue:
-      concurrency: 4
-      max_tasks_per_child: 5
+  hqcelery3.internal-va.commcarehq.org: {}
   celery4:
     celery:
       concurrency: 6
@@ -158,13 +92,7 @@ celery_processes:
     export_download_queue:
       concurrency: 6
       max_tasks_per_child: 5
-  hqcelery4.internal-va.commcarehq.org:
-    celery:
-      concurrency: 6
-      max_tasks_per_child: 5
-    export_download_queue:
-      concurrency: 6
-      max_tasks_per_child: 5
+  hqcelery4.internal-va.commcarehq.org: {}
 pillows:
   hqpillowtop3.internal-va.commcarehq.org:
     CaseToElasticsearchPillow:
