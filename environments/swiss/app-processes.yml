@@ -6,7 +6,7 @@ service_blacklist:
 
 celery_processes:
   'swiss.commcarehq.org':
-    repeat_record_queue,celery,export_download_queue:
+    repeat_record_queue,celery,export_download_queue,case_import_queue:
       concurrency: 1
       max_tasks_per_child: 5
     background_queue,case_rule_queue,analytics_queue:

@@ -9,7 +9,7 @@ celery_processes:
     repeat_record_queue:
       concurrency: 2
       max_tasks_per_child: 1
-    celery:
+    celery,case_import_queue:
       concurrency: 2
       max_tasks_per_child: 1
     background_queue,export_download_queue,saved_exports_queue,analytics_queue:
