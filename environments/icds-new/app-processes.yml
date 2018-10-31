@@ -12,7 +12,7 @@ celery_processes:
     # workers here so that the workers
     # on this machine have the cpu they need to perform their tasks.
     flower: {}
-    celery,export_download_queue:
+    celery,export_download_queue,case_import_queue:
       concurrency: 8
       max_tasks_per_child: 5
     beat: {}

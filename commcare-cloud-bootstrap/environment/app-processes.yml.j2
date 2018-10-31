@@ -3,7 +3,7 @@ celery_processes:
     beat: {}
     sms_queue: {}
     flower: {}
-    background_queue,case_rule_queue,celery,analytics_queue:
+    background_queue,case_rule_queue,celery,analytics_queue,case_import_queue:
       concurrency: 1
     email_queue,reminder_case_update_queue,export_download_queue:
       concurrency: 1
