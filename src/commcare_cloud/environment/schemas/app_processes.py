@@ -101,7 +101,8 @@ OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
 def validate_app_processes_config(app_processes_config):
     # queues specified in solo_queues cannot be combined with other queues in the same processes, otherwise tasks
     # specific to those queues in celery.yml will get skipped
-    solo_queues = ['flower', 'beat', 'reminder_queue', 'submission_reprocessing_queue', 'sms_queue']
+    solo_queues = ['flower', 'beat', 'reminder_queue', 'submission_reprocessing_queue',
+                   'sms_queue', 'queue_schedule_instances', 'handle_survey_actions']
     all_queues_mentioned = Counter({queue_name: 0 for queue_name in CELERY_PROCESS_NAMES})
     for machine, queues_config in app_processes_config.celery_processes.items():
         for comma_separated_queue_names, celery_options in queues_config.items():
