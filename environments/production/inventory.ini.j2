@@ -158,7 +158,7 @@ kafka_broker_id=1
 hqcelery0.internal-va.commcarehq.org
 
 [hqcelery1]
-hqcelery1.internal-va.commcarehq.org datadog_integrations=celery
+hqcelery1.internal-va.commcarehq.org
 
 [hqcelery2]
 hqcelery2.internal-va.commcarehq.org
@@ -174,7 +174,7 @@ hqcelery4.internal-va.commcarehq.org
 {{ celery0-production }} hostname=celery0-production ec2=yes
 
 [celery1]
-{{ celery1-production }} hostname=celery1-production ec2=yes #datadog_integrations=celery
+{{ celery1-production }} hostname=celery1-production ec2=yes
 
 [celery2]
 {{ celery2-production }} hostname=celery2-production ec2=yes
@@ -187,16 +187,16 @@ hqcelery4.internal-va.commcarehq.org
 
 
 [celery:children]
-hqcelery1
-hqcelery0
-hqcelery2
-hqcelery3
-hqcelery4
 celery1
 celery0
 celery2
 celery3
 celery4
+hqcelery1
+hqcelery0
+hqcelery2
+hqcelery3
+hqcelery4
 
 [celery:vars]
 swap_size=8G
