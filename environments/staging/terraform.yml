@@ -45,6 +45,10 @@ servers:
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
+  - server_name: "es1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
     volume_size: 80
   - server_name: "pillow0-staging"
     server_instance_type: "t3.large"
@@ -53,7 +57,7 @@ servers:
     volume_size: 80
   - server_name: "celery0-staging"
     server_instance_type: "t3.large"
-    network_tier: "db-private"
+    network_tier: "app-private"
     az: "a"
     volume_size: 80
 
