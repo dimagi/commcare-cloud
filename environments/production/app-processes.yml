@@ -73,6 +73,14 @@ celery_processes:
       concurrency: 2
       max_tasks_per_child: 5
   hqcelery1.internal-va.commcarehq.org:
+    reminder_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 3
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 3
     case_rule_queue:
       concurrency: 4
       max_tasks_per_child: 1
