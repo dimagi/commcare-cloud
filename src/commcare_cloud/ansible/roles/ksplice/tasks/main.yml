@@ -5,6 +5,7 @@
   ignore_errors: yes
   register: command_result
   when: KSPLICE_ACTIVE
+  changed_when: no
 
 - name: Download install-uptrack
   become: yes

@@ -3,6 +3,7 @@
 - name: Get running processes
   shell: "ps aux | grep -v grep | grep -Ew \"{{ dev_users.absent|join('|') }}\" | awk '{print $2}'"
   register: running_processes
+  changed_when: no
 
 - name: Kill running processes
   become: yes

@@ -40,7 +40,7 @@ formplayer_purge_time_spec: '8d'
 KSPLICE_ACTIVE: yes
 
 
-ufw_private_interface: eth1
+ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
 
 couch_dbs:
   default:
@@ -50,6 +50,33 @@ couch_dbs:
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: True
+  domains:
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq__domains
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+  users:
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq__users
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+
+couchdb_reduce_limit: False
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 3
+
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 

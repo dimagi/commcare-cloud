@@ -2,10 +2,10 @@ newrelic_djangoagent: False
 newrelic_javaagent: True
 datadog_pythonagent: True
 django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
-gunicorn_workers_static_factor: 8
-gunicorn_workers_factor: 0
+gunicorn_workers_static_factor: 0
+gunicorn_workers_factor: 2
 celery_processes:
-  hqcelery0.internal-va.commcarehq.org:
+  celery0:
     beat: {}
     celery_periodic:
       concurrency: 4
@@ -25,7 +25,17 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  hqcelery1.internal-va.commcarehq.org:
+  hqcelery0.internal-va.commcarehq.org: {}
+  celery1:
+    flower: {}
+    reminder_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 3
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 3
     case_rule_queue:
       concurrency: 4
       max_tasks_per_child: 1
@@ -33,17 +43,9 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 2
-    reminder_queue:
-      pooling: gevent
-      concurrency: 10
-      num_workers: 3
     reminder_rule_queue:
       concurrency: 3
       max_tasks_per_child: 1
-    sms_queue:
-      pooling: gevent
-      concurrency: 10
-      num_workers: 3
     ils_gateway_sms_queue:
       # Use 1 worker with concurrency 8 in order to enforce the
       # restriction of having 8 max simultaneous connections with
@@ -56,8 +58,8 @@ celery_processes:
     logistics_background_queue:
       concurrency: 2
       max_tasks_per_child: 5
-    flower: {}
-  hqcelery2.internal-va.commcarehq.org:
+  hqcelery1.internal-va.commcarehq.org: {}
+  celery2:
     background_queue:
       concurrency: 8
       max_tasks_per_child: 1
@@ -70,7 +72,8 @@ celery_processes:
     analytics_queue:
       pooling: gevent
       concurrency: 10
-  hqcelery3.internal-va.commcarehq.org:
+  hqcelery2.internal-va.commcarehq.org: {}
+  celery3:
     async_restore_queue:
       concurrency: 8
       max_tasks_per_child: 5
@@ -81,13 +84,15 @@ celery_processes:
     export_download_queue:
       concurrency: 4
       max_tasks_per_child: 5
-  hqcelery4.internal-va.commcarehq.org:
+  hqcelery3.internal-va.commcarehq.org: {}
+  celery4:
     celery:
       concurrency: 6
       max_tasks_per_child: 5
     export_download_queue:
       concurrency: 6
       max_tasks_per_child: 5
+  hqcelery4.internal-va.commcarehq.org: {}
 pillows:
   hqpillowtop3.internal-va.commcarehq.org:
     CaseToElasticsearchPillow:
