@@ -25,7 +25,6 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  hqcelery0.internal-va.commcarehq.org: {}
   celery1:
     flower: {}
     reminder_queue:
@@ -58,7 +57,6 @@ celery_processes:
     logistics_background_queue:
       concurrency: 2
       max_tasks_per_child: 5
-  hqcelery1.internal-va.commcarehq.org: {}
   celery2:
     background_queue:
       concurrency: 8
@@ -72,7 +70,6 @@ celery_processes:
     analytics_queue:
       pooling: gevent
       concurrency: 10
-  hqcelery2.internal-va.commcarehq.org: {}
   celery3:
     async_restore_queue:
       concurrency: 8
@@ -84,7 +81,6 @@ celery_processes:
     export_download_queue:
       concurrency: 4
       max_tasks_per_child: 5
-  hqcelery3.internal-va.commcarehq.org: {}
   celery4:
     celery:
       concurrency: 6
@@ -92,7 +88,6 @@ celery_processes:
     export_download_queue:
       concurrency: 6
       max_tasks_per_child: 5
-  hqcelery4.internal-va.commcarehq.org: {}
 pillows:
   hqpillowtop3.internal-va.commcarehq.org:
     CaseToElasticsearchPillow:
