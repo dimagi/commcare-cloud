@@ -1,3 +1,6 @@
+# Note: Make sure to add queues with associated tasks to the solo_queues list in
+# validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
+
 - name: define reminder queue services
   become: cchq
   template:

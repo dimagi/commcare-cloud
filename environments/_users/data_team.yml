@@ -3,4 +3,5 @@ dev_users:
     - bderenzi
     - mtheis
     - esu
+    - ymsosa
   absent: []

@@ -17,7 +17,7 @@ celery_processes:
       max_tasks_per_child: 1
 # wait until background_queue,export_download_queue have been verified to work with optimize
 #      optimize: True
-    submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
+    ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
     beat: {}
