@@ -1,0 +1,60 @@
+#!/usr/bin/python
+import time
+import argparse
+from elasticsearch import Elasticsearch
+from elasticsearch.client import SnapshotClient
+from datetime import datetime, date
+from datetime import timedelta
+
+
+def get_snapshot_client():
+    es = Elasticsearch('{{ groups.elasticsearch.0 }}', timeout=3600)
+    snapshot_client = SnapshotClient(es)
+    return snapshot_client
+
+def get_snapshots(client):
+    snapshots = list()
+    today = date.today()
+
+    s_list = client.get('{{ es_repository_name }}','_all')
+    for snapshot_number in range(len(s_list['snapshots'])):
+        snapshot_status = dict()
+        snapshot_status['name'] = s_list['snapshots'][snapshot_number]['snapshot']
+        snapshot_status['state'] = s_list['snapshots'][snapshot_number]['state']
+        snapshots.append(snapshot_status)
+
+    return snapshots
+
+
+def main():
+    parser = argparse.ArgumentParser(description="ElasticSearch Snapshot Status.")
+    parser.add_argument("--all", help="show status of all snapshots.", action="store_true")
+    args = parser.parse_args()
+    client = get_snapshot_client()
+
+
+
+
+# Check if Current snapshot completed or not
+    snapshot_list = get_snapshots(client)
+    if args.all:
+        print "snapshot_list"
+        for snapshot in snapshot_list:
+            print "\t- name: ",snapshot['name']
+            print "\t  state: ",snapshot['state']
+        exit(0)
+    status = snapshot_list[-1]['state']
+    print status
+    if status == 'SUCCESS':
+        exit(0)
+    elif status == 'STARTED':
+        exit(1)
+    elif status == 'PARTIAL':
+        exit(2)
+    elif status == 'FAILED':
+        exit(3)
+    else:
+        exit(-1)
+
+if __name__ == "__main__":
+    main()
