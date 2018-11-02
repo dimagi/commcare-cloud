@@ -129,15 +129,11 @@ pgsynclog1
 postgresql_30gb
 postgresql_15gb
 
-[hqtouch0]
-hqtouch0.internal-va.commcarehq.org
-
 [rabbit0]
 {{ rabbit0-production }} hostname=rabbit0-production ec2=yes
 
 [rabbitmq:children]
 rabbit0
-hqtouch0
 
 [rabbitmq:vars]
 swap_size=2G
@@ -153,22 +149,6 @@ hqes1
 
 [kafka:vars]
 kafka_broker_id=1
-
-[hqcelery0]
-hqcelery0.internal-va.commcarehq.org
-
-[hqcelery1]
-hqcelery1.internal-va.commcarehq.org
-
-[hqcelery2]
-hqcelery2.internal-va.commcarehq.org
-
-[hqcelery3]
-hqcelery3.internal-va.commcarehq.org
-
-[hqcelery4]
-hqcelery4.internal-va.commcarehq.org
-
 
 [celery0]
 {{ celery0-production }} hostname=celery0-production ec2=yes
@@ -192,11 +172,6 @@ celery0
 celery2
 celery3
 celery4
-hqcelery1
-hqcelery0
-hqcelery2
-hqcelery3
-hqcelery4
 
 [celery:vars]
 swap_size=8G
