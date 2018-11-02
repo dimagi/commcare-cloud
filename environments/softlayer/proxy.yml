@@ -8,3 +8,13 @@ primary_ssl_env: "softlayer"
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
 letsencrypt_cchq_ssl: True
+
+site_locations:
+  - name: /data_dumps/export/enikshay/public
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'
+  - name: /data_dumps/export/enikshay/private
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_private'

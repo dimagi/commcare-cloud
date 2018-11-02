@@ -105,13 +105,3 @@ localsettings:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-
-site_locations:
-  - name: /data_dumps/export/enikshay/public
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'
-  - name: /data_dumps/export/enikshay/private
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_private'

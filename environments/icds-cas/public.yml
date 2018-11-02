@@ -52,51 +52,6 @@ server_email: commcarehq-noreply@icds-cas.gov.in
 cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 
 commcare_errors_branch: "master-icds"
-site_locations:
-  - name: /files
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: '/etc/nginx/.htpasswd'
-  - name: /bihar_ls_files 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_bihar"
-  - name: /maharashtra_icds-cas_files 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
-  - name: /mp_ls_files
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_mp"
-  - name: /ls_hindi 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_ls_hindi"
-  - name: /ls_marathi 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_ls_marathi"
-  - name: /ls_telugu 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_ls_telugu"
-  - name: /hindi_files 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files"
-  - name: /marathi_files 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_marathi_files"
-  - name: /telugu_files 
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
-  - name: /adhaar_id_scanner_apk
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
 couchdb_use_haproxy: True
 couchdb_reduce_limit: False
