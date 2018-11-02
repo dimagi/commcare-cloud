@@ -4,8 +4,10 @@ pgucrstandby0,100.71.184.36,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS0,"[""/dev/vdb""]"
 pgucrstandby1,100.71.184.45,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby1
 pgucrstandby2,100.71.184.24,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS2,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby2
 pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby3
-pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgmainstandby0,,"[""standby0"",""standby1"",""spare""]",
+pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
 pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby0
+pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby1
+pgmainstandby2,100.71.184.85,pg_standby,main_dbs,MUMGCCWCDPRDPMS2,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby2
 pgshard0,100.71.184.27,postgresql,shard_dbs,MUMGCCWCDPRDPS00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard0standby,,"[""standby0"",""spare""]",
 pgshard1,100.71.184.29,postgresql,shard_dbs,MUMGCCWCDPRDPS01,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard1standby,,"[""standby0"",""spare""]",
 pgshard2,100.71.184.21,postgresql,shard_dbs,MUMGCCWCDPRDPS02,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard2standby,,"[""standby0"",""spare""]",
@@ -52,3 +54,4 @@ main_dbs,32,0.7,2GB,16MB,100,36GB,,,,
 synclog_dbs,64,0.9,2GB,16MB,100,36GB,,,,
 plproxy0,64,0.9,2GB,16MB,100,24GB,,,,
 pgwarehouse0,170,0.9,1GB,16MB,500,6GB,8GB,,,
+,,,,,,,,,,
