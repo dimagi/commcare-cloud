@@ -12,6 +12,11 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
+   mappings:
+    - name: "$digest_submission"
+      variable: "$http_authorization"
+      value: "$server_name"
+   limit_req_zones: "{{ limit_req_zones|default([]) }}"
    proxy_cache_path:
     - name: "hq_media_cache"
       path: "{{ www_home }}/hq_media/cache"

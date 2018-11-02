@@ -23,3 +23,35 @@ special_sites:
   - wiki_http
   - motech
   - motech2
+
+limit_req_zones:
+  - name: "restore"
+    zone: "$digest_submission"
+    size: "10m"
+    rate: "1r/s"
+  - name: "submissions"
+    zone: "$digest_submission"
+    size: "10m"
+    rate: "10r/s"
+
+site_locations:
+  - name: "/a/sauti-1/phone/restore"
+    balancer: "{{ deploy_env }}_commcare"
+    proxy_next_upstream_tries: 1
+    proxy_buffers: 8 64k
+    proxy_buffer_size: 64k
+    client_body_buffer_size: 512k
+    limit_reqs:
+      - zone_name: "restore"
+        burst: 100
+        nodelay: True
+  - name: "/a/sauti-1/receiver"
+    balancer: "{{ deploy_env }}_commcare_submissions"
+    proxy_next_upstream_tries: 1
+    proxy_buffers: 8 64k
+    proxy_buffer_size: 64k
+    client_body_buffer_size: 512k
+    limit_reqs:
+      - zone_name: "submissions"
+        burst: 100
+        nodelay: True
