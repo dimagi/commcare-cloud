@@ -60,6 +60,11 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+  - server_name: "airflow0-staging"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
 
 proxy_servers:
   - server_name: "proxy1-staging"
