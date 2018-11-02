@@ -89,6 +89,7 @@ celery_processes:
       concurrency: 6
       max_tasks_per_child: 5
 pillows:
+  pillow0: {}
   hqpillowtop3.internal-va.commcarehq.org:
     CaseToElasticsearchPillow:
       num_processes: 4
