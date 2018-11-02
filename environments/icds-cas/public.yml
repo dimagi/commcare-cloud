@@ -236,7 +236,7 @@ localsettings:
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
-  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_HOST: "{{ groups.redis_cluster_master.0 }}"
   REDIS_PORT: '6379'
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
@@ -245,7 +245,7 @@ localsettings:
   # sumologic toggle is set to 0 so having this here just incurs another cache hit for nothing
   # can re-enable if we want to
   SUMOLOGIC_URL: # "{{ localsettings_private.SUMOLOGIC_URL }}"
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  WS4REDIS_CONNECTION_HOST: "{{ groups.ws4redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
