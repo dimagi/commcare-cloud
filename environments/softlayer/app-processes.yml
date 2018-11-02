@@ -3,10 +3,17 @@ newrelic_javaagent: True
 celery_processes:
   'celery0':
     beat: {}
-    celery_periodic:
-      concurrency: 2
+    flower: {}
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
     submission_reprocessing_queue:
       concurrency: 1
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+    celery_periodic:
+      concurrency: 2
     email_queue:
       concurrency: 2
     repeat_record_queue,sumologic_logs_queue:
@@ -27,15 +34,9 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
     reminder_rule_queue:
       concurrency: 1
       max_tasks_per_child: 1
-    sms_queue:
-      pooling: gevent
-      concurrency: 10
     async_restore_queue:
       concurrency: 1
     background_queue,case_rule_queue,icds_dashboard_reports_queue,analytics_queue:
@@ -44,7 +45,6 @@ celery_processes:
     icds_aggregation_queue:
       pooling: gevent
       concurrency: 10
-    flower: {}
 pillows:
   'pillow1':
     AppDbChangeFeedPillow:
