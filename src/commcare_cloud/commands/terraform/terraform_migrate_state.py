@@ -43,28 +43,16 @@ class TerraformMigrateState(CommandBase):
             print("No migrations to apply")
             return
         state = terraform_list_state(args.env_name, unknown_args)
-        intermediate_state = state
         print("Applying the following changes:{}".format(
             ''.join('\n  - {:0>4} {}'.format(migration.number, migration.slug)
                     for migration in unapplied_migrations)
         ))
         print("which will result in the following moves being made:")
-        migration_plans = []
-        for migration in unapplied_migrations:
-            print('  [{:0>4} {}]'.format(migration.number, migration.slug))
-            migration_plan = make_migration_plan(intermediate_state, migration)
-            intermediate_state = migration_plan.end_state
-            for start_address, end_address in migration_plan.moves:
-                print('    {} => {}'.format(start_address, end_address))
-            migration_plans.append(migration_plan)
+        migration_plans = make_migration_plans(environment, state, migrations, log=print)
         if ask("Do you want to apply this migration?"):
-            for migration_plan in migration_plans:
-                migration = migration_plan.migration
-                print('  [{:0>4} {}]'.format(migration.number, migration.slug))
-                for start_address, end_address in migration_plan.moves:
-                    print('    {} => {}'.format(start_address, end_address))
-                    commcare_cloud(args.env_name, 'terraform', 'state', 'mv', start_address, end_address)
-            remote_migration_state_manager.push(RemoteMigrationState(number=migration.number, slug=migration.slug))
+            apply_migration_plans(
+                environment, migration_plans,
+                remote_migration_state_manager=remote_migration_state_manager, log=print)
 
 
 Migration = namedtuple('Migration', 'number slug get_new_resource_address')
@@ -190,6 +178,7 @@ class _SimulatedState(object):
         self._resource_to_address = {
             resource: address for address, resource in self._address_to_resource.items()
         }
+        self._temp_counter = -1
 
     def get_address(self, resource):
         return self._resource_to_address[resource]
@@ -212,24 +201,27 @@ class _SimulatedState(object):
         self._resource_to_address[resource] = new_address
         return [old_address, new_address]
 
+    def temp_counter(self):
+        self._temp_counter += 1
+        return self._temp_counter
 
-def assign_temp_address(new_address, python_id):
-    address_index_syntax_matcher = re.compile(r'(\[\d+\]$)')
-    parts = address_index_syntax_matcher.split(new_address)
-    temp_suffix = '-tmp-{}'.format(python_id)
-    if parts[-1] == '':
-        parts.insert(-3, temp_suffix)
-    else:
-        parts.append(temp_suffix)
-    return ''.join(parts)
+    def assign_temp_address(self, new_address):
+        address_index_syntax_matcher = re.compile(r'(\[\d+\]$)')
+        parts = address_index_syntax_matcher.split(new_address)
+        temp_suffix = '-tmp-{}'.format(self.temp_counter())
+        if parts[-1] == '':
+            parts.insert(-2, temp_suffix)
+        else:
+            parts.append(temp_suffix)
+        return ''.join(parts)
 
 
-def make_migration_plan(start_state, migration):
+def make_migration_plan(environment, start_state, migration):
     state = _SimulatedState(start_state)
 
     theoretical_moves = [
         # A get_new_resource_address(address) of None means no move
-        (state.get_resource(address), migration.get_new_resource_address(address) or address)
+        (state.get_resource(address), migration.get_new_resource_address(environment, address) or address)
         for address in start_state
     ]
 
@@ -246,7 +238,7 @@ def make_migration_plan(start_state, migration):
         elif state.address_is_free(new_address):
             moves.append(state.move(resource, new_address))
         else:
-            temp_address = assign_temp_address(new_address, id(resource))
+            temp_address = state.assign_temp_address(new_address)
             moves.append(state.move(resource, temp_address))
             # put it back on the end of the queue
             # to be moved to the proper location once it frees up
@@ -254,3 +246,29 @@ def make_migration_plan(start_state, migration):
 
     assert set(state.list()) == set(end_state), (sorted(state.list()), sorted(end_state))
     return MigrationPlan(migration=migration, start_state=start_state, end_state=end_state, moves=moves)
+
+
+def make_migration_plans(environment, start_state, migrations, log=lambda x: None):
+    intermediate_state = start_state
+    migration_plans = []
+    for migration in migrations:
+        log('  [{:0>4} {}]'.format(migration.number, migration.slug))
+        migration_plan = make_migration_plan(environment, intermediate_state, migration)
+        intermediate_state = migration_plan.end_state
+        for start_address, end_address in migration_plan.moves:
+            log('    {} => {}'.format(start_address, end_address))
+        migration_plans.append(migration_plan)
+    return migration_plans
+
+
+def apply_migration_plans(environment, migration_plans, remote_migration_state_manager,
+                          log=lambda x: None):
+    for migration_plan in migration_plans:
+        migration = migration_plan.migration
+        log('  [{:0>4} {}]'.format(migration.number, migration.slug))
+        for start_address, end_address in migration_plan.moves:
+            log('    {} => {}'.format(start_address, end_address))
+            commcare_cloud(environment.paths.env_name, 'terraform', 'state', 'mv',
+                           start_address, end_address)
+        remote_migration_state_manager.push(
+            RemoteMigrationState(number=migration.number, slug=migration.slug))
