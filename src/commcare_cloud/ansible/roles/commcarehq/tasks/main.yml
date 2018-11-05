@@ -8,6 +8,8 @@
 #    path: "{{ code_home }}"
 #    state: absent
 
+- import_tasks: www_log_dir.yml
+
 - name: create required directories
   become: yes
   file:
@@ -17,9 +19,6 @@
     mode: 0755
     state: directory
   with_items:
-    - "{{ www_dir }}"
-    - "{{ www_home }}"
-    - "{{ log_home }}"
     - "{{ code_releases }}"
 
 - name: create required directories

@@ -34,6 +34,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     newrelic_djangoagent = jsonobject.BooleanProperty()
     newrelic_javaagent = jsonobject.BooleanProperty()
     django_command_prefix = jsonobject.StringProperty()
+    datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(unicode)
@@ -98,16 +99,20 @@ OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
 
 
 def validate_app_processes_config(app_processes_config):
+    # queues specified in solo_queues cannot be combined with other queues in the same processes, otherwise tasks
+    # specific to those queues in celery.yml will get skipped
+    solo_queues = ['flower', 'beat', 'reminder_queue', 'submission_reprocessing_queue',
+                   'sms_queue', 'queue_schedule_instances', 'handle_survey_actions']
     all_queues_mentioned = Counter({queue_name: 0 for queue_name in CELERY_PROCESS_NAMES})
     for machine, queues_config in app_processes_config.celery_processes.items():
         for comma_separated_queue_names, celery_options in queues_config.items():
             queue_names = comma_separated_queue_names.split(',')
-            if 'flower' in queue_names or 'beat' in queue_names:
-                assert len(queue_names) == 1, \
-                    "The special processes 'flower' and 'beat' may not be grouped with other processes"
             for queue_name in queue_names:
+                if queue_name in solo_queues:
+                    assert len(queue_names) == 1, \
+                        "The special process {} may not be grouped with other processes".format(queue_name)
                 assert queue_name in CELERY_PROCESS_NAMES, \
-                    "Celery process not recognized: {}".format(queue_name)
+                    "Celery process not recognized or has extra whitespace: {}".format(queue_name)
             all_queues_mentioned.update(queue_names)
     required_but_not_mentioned = [queue_name for queue_name, count in all_queues_mentioned.items()
                                   if count == 0 and queue_name not in OPTIONAL_CELERY_PROCESSES]
@@ -117,6 +122,8 @@ def validate_app_processes_config(app_processes_config):
         'You cannot run beat on more than one machine.'
     assert all_queues_mentioned['flower'] <= 1, \
         'You cannot run flower on more than one machine because CELERY_FLOWER_URL assumes one endpoint.'
+    assert not (app_processes_config.newrelic_djangoagent and app_processes_config.datadog_pythonagent), \
+        'You cannot run NewRelic APM and Datadog APM'
 
 
 def _validate_all_required_machines_mentioned(environment, translated_app_process_config):

@@ -45,7 +45,26 @@ servers:
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
+  - server_name: "es1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
     volume_size: 80
+  - server_name: "pillow0-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "celery0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "airflow0-staging"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
 
 proxy_servers:
   - server_name: "proxy1-staging"

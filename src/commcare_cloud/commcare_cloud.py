@@ -84,7 +84,7 @@ def run_on_control_instead(args, sys_argv):
     argv = [arg for arg in sys_argv][1:]
     argv.remove('--control')
     executable = 'commcare-cloud'
-    branch = args.branch or 'master'
+    branch = getattr(args, 'branch', 'master')
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control', '-t',
         'source ~/init-ansible && git checkout master && control/update_code.sh && git checkout {branch} && git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
