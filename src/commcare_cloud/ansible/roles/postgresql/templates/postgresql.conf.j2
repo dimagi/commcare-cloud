@@ -69,6 +69,9 @@ max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
 
 # QUERY TUNING
 effective_cache_size = {{ postgresql_effective_cache_size }}
+{% if enable_nestloop is defined %}
+enable_nestloop = {{ enable_nestloop }}
+{% endif %}
 
 
 # ERROR REPORTING AND LOGGING

@@ -45,15 +45,16 @@ then
         cp ~/.ssh/id_rsa.pub .travis/environments/_authorized_keys/travis.pub
         (COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
             timeout 45m \
-            bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} ${BRANCH} .travis/spec.yml)
-        rc=$?
-        if [[ "${rc}" = 124 ]]
-        then
-            echo "The bootstrapping process ran successfully for 45 minutes before being killed."
-            echo "For now, for the purposes of this test, we're calling that a success"
-        else
-            exit ${rc}
-        fi
+            bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} ${BRANCH} .travis/spec.yml) || {
+                rc=$?
+                if [[ "${rc}" = 124 ]]
+                then
+                    echo "The bootstrapping process ran successfully for 45 minutes before being killed."
+                    echo "For now, for the purposes of this test, we're calling that a success"
+                else
+                    exit ${rc}
+                fi
+            }
     }
     bootstrap
 fi

@@ -1,7 +1,7 @@
 riak_backend: "leveldb"
 riak_ring_size: 64
 
-DATADOG_ENABLED: False
+DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 1.7.6
@@ -21,7 +21,7 @@ formplayer_archive_time_spec: '10m'
 KSPLICE_ACTIVE: yes
 
 
-ufw_private_interface: "{{ ec2|default(false) and 'eth0' or 'eth1' }}"
+ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
 
 couch_dbs:
   default:
@@ -76,14 +76,14 @@ localsettings:
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
-  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_HOST: "{{ groups.redis_cluster_master.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  WS4REDIS_CONNECTION_HOST: "{{ groups.ws4redis.0 }}"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
