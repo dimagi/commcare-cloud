@@ -4,12 +4,16 @@ import sys
 import tempfile
 from copy import deepcopy
 
+import boto3
 import jsonobject
 import os
 import re
 import runpy
 import subprocess
 from collections import namedtuple, deque
+
+from botocore.exceptions import ClientError
+from memoized import memoized_property
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, print_command
@@ -71,19 +75,12 @@ class RemoteMigrationStateManager(object):
         self.state_bucket = terraform_config.state_bucket
 
     @property
-    def s3_uri(self):
-        return 's3://{state_bucket}/migration-state/{environment}.json'.format(
-            state_bucket=self.state_bucket,
-            environment=self.environment,
-        )
+    def s3_filename(self):
+        return 'migration-state/{environment}.json'.format(environment=self.environment)
 
-    @property
-    def env_vars(self):
-        env_vars = deepcopy(os.environ)
-        env_vars.update({
-            'AWS_PROFILE': self.aws_profile
-        })
-        return env_vars
+    @memoized_property
+    def s3_client(self):
+        return boto3.session.Session(profile_name=self.aws_profile).client('s3')
 
     def fetch(self):
         """
@@ -98,16 +95,16 @@ class RemoteMigrationStateManager(object):
 
         temp_filename = tempfile.mktemp()
         try:
-            command = ['aws', 's3', 'cp', self.s3_uri, temp_filename]
-            print_command(command)
+
             try:
-                subprocess.check_output(command, env=self.env_vars, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as e:
-                if 'does not exist' in e.output:
+                self.s3_client.download_file(self.state_bucket, self.s3_filename, temp_filename)
+            except ClientError as e:
+                if 'Not Found' in e.message:
                     return RemoteMigrationState(number=0, slug=None)
                 else:
-                    print(e.output, file=sys.stderr)
-                    raise CommandError('aws exited with code {}'.format(e.returncode))
+                    print(e.message, file=sys.stderr)
+                    error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+                    raise CommandError('Request to S3 exited with code {}'.format(error_code))
             else:
                 with open(temp_filename) as f:
                     return RemoteMigrationState.wrap(json.load(f))
@@ -129,12 +126,13 @@ class RemoteMigrationStateManager(object):
             with open(temp_filename, 'w') as f:
                 json.dump(remote_migration_state.to_json(), f)
 
-            command = ['aws', 's3', 'cp', temp_filename, self.s3_uri]
-            print_command(command)
-            rc = subprocess.call(command, env=self.env_vars)
-            if rc != 0:
+            try:
+                self.s3_client.upload_file(temp_filename, self.state_bucket, self.s3_filename)
+            except ClientError as e:
+                print(e.message, file=sys.stderr)
+                error_code = e.response.get('Error', {}).get('Code', 'Unknown')
                 raise CommandError('aws exited with code {} while updating remote state to {}'
-                                   .format(rc, remote_migration_state.to_json()))
+                                   .format(error_code, remote_migration_state.to_json()))
         finally:
             if os.path.exists(temp_filename):
                 os.remove(temp_filename)
