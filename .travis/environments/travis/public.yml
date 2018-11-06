@@ -61,15 +61,6 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
-couch_dbs:
-  default:
-    host: "{{ groups.couchdb2.0 }}"
-    port: 15984
-    name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-
 TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
