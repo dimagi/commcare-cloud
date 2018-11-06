@@ -226,17 +226,22 @@ pillows:
   'pillow2':
     kafka-ucr-static-forms:
       start_process: 0
-      num_processes: 8
-      total_processes: 24
+      num_processes: 12
+      total_processes: 48
   'pillow3':
     kafka-ucr-static-forms:
-      start_process: 8
-      num_processes: 8
-      total_processes: 24
+      start_process: 12
+      num_processes: 12
+      total_processes: 48
   'pillow4':
     kafka-ucr-static-forms:
-      start_process: 16
-      num_processes: 8
+      start_process: 24
+      num_processes: 12
+      total_processes: 48
+  'pillow16':
+    kafka-ucr-static-forms:
+      start_process: 36
+      num_processes: 12
       total_processes: 48
   'pillow5':
     kafka-ucr-static-cases:
@@ -331,7 +336,6 @@ pillows:
   'pillow15':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 16
-  'pillow16':
   'pillow17':
   'pillow18':
   'pillow19':
