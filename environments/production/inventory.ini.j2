@@ -176,23 +176,11 @@ celery4
 [celery:vars]
 swap_size=8G
 
-[hqpillowtop0]
-hqpillowtop0.internal-va.commcarehq.org
-
-[hqpillowtop2]
-hqpillowtop2.internal-va.commcarehq.org
-
-[hqpillowtop3]
-hqpillowtop3.internal-va.commcarehq.org
-
 [pillow0]
 {{ pillow0-production }} hostname=pillow0-production ec2=yes
 
 [pillowtop:children]
 pillow0
-hqpillowtop0
-hqpillowtop2
-hqpillowtop3
 
 [hqformplayer1]
 hqformplayer1.internal-va.commcarehq.org
