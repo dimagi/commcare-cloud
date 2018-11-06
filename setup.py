@@ -6,7 +6,8 @@ test_deps = [
     'parameterized>=0.6.1',
 ]
 aws_deps = [
-    'awscli'
+    'awscli',
+    'boto3',
 ]
 extras = {
     'test': test_deps,
