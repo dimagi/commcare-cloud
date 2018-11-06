@@ -30,13 +30,13 @@ hqdb1
 # staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
 
 [rabbit0]
-# {{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
+{{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
 
 
 [rabbitmq:children]
 hqdb1
 # Amazon EC2
-# rabbit0
+rabbit0
 
 [hqkafka0]
 hqkafka0-staging.internal-va.commcarehq.org
