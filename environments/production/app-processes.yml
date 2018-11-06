@@ -75,7 +75,8 @@ celery_processes:
       concurrency: 8
       max_tasks_per_child: 5
     saved_exports_queue:
-      concurrency: 6
+      num_workers: 3
+      concurrency: 2
       max_tasks_per_child: 1
       optimize: True
     export_download_queue:
