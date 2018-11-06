@@ -221,10 +221,8 @@ pillows:
     kafka-ucr-static-awc-location:
       num_processes: 1
   'pillow1':
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 8
     XFormToElasticsearchPillow:
-      num_processes: 8
+      num_processes: 16
   'pillow2':
     kafka-ucr-static-forms:
       start_process: 0
@@ -239,7 +237,7 @@ pillows:
     kafka-ucr-static-forms:
       start_process: 16
       num_processes: 8
-      total_processes: 24
+      total_processes: 48
   'pillow5':
     kafka-ucr-static-cases:
       start_process: 0
@@ -330,3 +328,11 @@ pillows:
       start_process: 54
       num_processes: 6
       total_processes: 60
+  'pillow15':
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 16
+  'pillow16':
+  'pillow17':
+  'pillow18':
+  'pillow19':
+  'pillow20':
