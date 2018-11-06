@@ -65,6 +65,11 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+  - server_name: "formplayer0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
   - server_name: "couch0-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
@@ -80,7 +85,6 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 50
-
 
 proxy_servers:
   - server_name: "proxy1-staging"
