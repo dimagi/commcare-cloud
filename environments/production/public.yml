@@ -99,6 +99,20 @@ couch_dbs:
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
+  meta:
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq__meta
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+  receiverwrapper:
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq__receiverwrapper
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
