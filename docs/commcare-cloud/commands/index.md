@@ -1101,6 +1101,17 @@ Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
 commcare-cloud <env> terraform-migrate-state
 ```
 
+This migration tool should exist as a generic tool for terraform,
+but terraform is still not that mature, and it doesn't seem to exist yet.
+
+Terraform assigns each resource an address so that it can map it back to the code.
+However, often when you change the code, the addresses no longer map to the same place.
+For this, terraform offers the terraform state mv &lt;address&gt; &lt;new_address&gt; command,
+so you can tell it how existing resources map to your new code.
+
+This is a tedious task, and often follows a very predictable renaming pattern.
+This command helps fill this gap.
+
 ---
 
 #### `aws-list`

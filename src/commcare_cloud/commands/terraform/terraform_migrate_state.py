@@ -23,7 +23,20 @@ from commcare_cloud.environment.main import get_environment
 
 class TerraformMigrateState(CommandBase):
     command = 'terraform-migrate-state'
-    help = "Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations"
+    help = """
+    Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
+
+    This migration tool should exist as a generic tool for terraform,
+    but terraform is still not that mature, and it doesn't seem to exist yet.
+
+    Terraform assigns each resource an address so that it can map it back to the code.
+    However, often when you change the code, the addresses no longer map to the same place.
+    For this, terraform offers the terraform state mv <address> <new_address> command,
+    so you can tell it how existing resources map to your new code.
+
+    This is a tedious task, and often follows a very predictable renaming pattern.
+    This command helps fill this gap.
+    """
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
