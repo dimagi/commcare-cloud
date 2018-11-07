@@ -6,7 +6,7 @@ test_deps = [
     'parameterized>=0.6.1',
 ]
 aws_deps = [
-    'awscli'
+    'awscli',
 ]
 extras = {
     'test': test_deps,
@@ -36,6 +36,7 @@ setup(
         'ansible==2.5.0',
         'argparse>=1.4',
         'attrs>=18.1.0',
+        'boto3',
         'clint',
         'couchdb-cluster-admin>=0.4.1',
         'cryptography>=2.3',  # security update
