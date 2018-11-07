@@ -43,9 +43,35 @@ locals {
   }
 }
 
-module "servers" {
+{% for server in servers %}
+module "server__{{ server.server_name }}" {
   source = "./modules/servers"
-  servers = "${var.servers}"
+
+  server_name = {{ server.server_name|tojson }}
+  server_instance_type = {{ server.server_instance_type|tojson }}
+  network_tier = {{ server.network_tier|tojson }}
+  az = {{ server.az|tojson }}
+  volume_size = {{ server.volume_size|tojson }}
+
+  server_image = "${var.server_image}"
+  environment = "${var.environment}"
+  vpc_id = "${module.network.vpc-id}"
+  subnet_options = "${local.subnet_options}"
+  security_group_options = "${local.security_group_options}"
+  key_name = "${var.key_name}"
+}
+{% endfor %}
+
+{% for server in proxy_servers %}
+module "proxy_server__{{ server.server_name }}" {
+  source = "./modules/servers"
+
+  server_name = {{ server.server_name|tojson }}
+  server_instance_type = {{ server.server_instance_type|tojson }}
+  network_tier = {{ server.network_tier|tojson }}
+  az = {{ server.az|tojson }}
+  volume_size = {{ server.volume_size|tojson }}
+
   server_image = "${var.server_image}"
   environment = "${var.environment}"
   vpc_id = "${module.network.vpc-id}"
@@ -54,23 +80,13 @@ module "servers" {
   key_name = "${var.key_name}"
 }
 
-module "proxy_servers" {
-  source = "./modules/servers"
-  servers = "${var.proxy_servers}"
-  server_image = "${var.server_image}"
-  environment = "${var.environment}"
-  vpc_id = "${module.network.vpc-id}"
-  subnet_options = "${local.subnet_options}"
-  security_group_options = "${local.security_group_options}"
-  key_name = "${var.key_name}"
-}
-
-resource "aws_eip" "proxy" {
-  count = "${module.proxy_servers.count}"
+resource "aws_eip" "proxy__{{ server.server_name }}" {
   vpc = true
-  instance = "${module.proxy_servers.server[count.index]}"
-  associate_with_private_ip = "${module.proxy_servers.server_private_ip[count.index]}"
+  instance = "${module.proxy_server__{{ server.server_name }}.server}"
+  associate_with_private_ip = "${module.proxy_server__{{ server.server_name }}.server_private_ip}"
 }
+{% endfor %}
+
 
 module "Redis" {
   source               = "./modules/elasticache"
