@@ -29,14 +29,28 @@ hqdb1
 # Amazon RDS Instance
 # staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
 
-[rabbit0]
-# {{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
+[couch0]
+{{ couch0-staging }} hostname=formplayer0-staging ec2=yes
 
+[couch1]
+{{ couch1-staging }} hostname=formplayer0-staging ec2=yes
+
+[couch2]
+{{ couch2-staging }} hostname=formplayer0-staging ec2=yes
+
+[couchdb2:children]
+couch0
+couch1
+couch2
+[couchdb2_proxy:children]
+couch0
+
+[rabbit0]
+{{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
 
 [rabbitmq:children]
-hqdb1
 # Amazon EC2
-# rabbit0
+rabbit0
 
 [hqkafka0]
 hqkafka0-staging.internal-va.commcarehq.org
