@@ -90,13 +90,13 @@ resource "aws_eip" "proxy__{{ server.server_name }}" {
 
 module "Redis" {
   source               = "./modules/elasticache"
-  create               = "${lookup(local.redis, "create", true)}"
+  create               = "{{ redis.create|tojson }}"
   cluster_id           = "redis-${var.environment}"
   engine               = "redis"
-  engine_version       = "${local.redis["engine_version"]}"
-  node_type            = "${local.redis["node_type"]}"
-  num_cache_nodes      = "${local.redis["num_cache_nodes"]}"
-  parameter_group_name = "${local.redis["parameter_group_name"]}"
+  engine_version       = "{{ redis.engine_version }}"
+  node_type            = "{{ redis.node_type }}"
+  num_cache_nodes      = "{{ redis.num_cache_nodes }}"
+  parameter_group_name = "{{ redis.parameter_group_name }}"
   port                 = 6379
   elasticache_subnets  = "${values(module.network.subnets-db-private)}"
   security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]

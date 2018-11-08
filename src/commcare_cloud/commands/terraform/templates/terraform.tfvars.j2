@@ -71,10 +71,5 @@ rds_instances = [
   },
 {%- endfor %}
 ]
-redis = {
-  {%- if not redis.create %}
-  create = false
-  {%- endif %}
-}
 
 account_alias = {{ (account_alias or "")|tojson }}
