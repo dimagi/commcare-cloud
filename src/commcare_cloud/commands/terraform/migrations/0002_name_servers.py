@@ -7,11 +7,11 @@ def get_new_resource_address(environment, old_resource_address):
         index = int(match.group(1) or 0)
         server_config = environment.terraform_config.servers[index]
         return 'module.server__{}.aws_instance.server'.format(server_config.server_name)
-
-    if old_resource_address == 'module.proxy_servers.aws_instance.server':
+    elif old_resource_address == 'module.proxy_servers.aws_instance.server':
         server_config = environment.terraform_config.proxy_servers[0]
         return 'module.proxy_server__{}.aws_instance.server'.format(server_config.server_name)
-
-    if old_resource_address == 'aws_eip.proxy':
+    elif old_resource_address == 'aws_eip.proxy':
         server_config = environment.terraform_config.proxy_servers[0]
         return 'aws_eip.{}-production'.format(server_config.server_name)
+    else:
+        return None
