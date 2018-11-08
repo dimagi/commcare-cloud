@@ -4,7 +4,7 @@ def get_new_resource_address(environment, old_resource_address):
 
     All addresses will be / should be given in the format used in `terraform state list`.
 
-    The migration is then essentially (in peudocode, and with better edge-case management):
+    The migration is then essentially (in pseudocode, and with better edge-case management):
 
     for resource in `terraform state list`:
         `terraform state mv ${resource} ${get_new_resource_address(environment, resource)}`
