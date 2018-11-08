@@ -4,7 +4,7 @@ ENV=$1
 BRANCH=$2
 SPEC=$3
 
-commcare-cloud-bootstrap provision $SPEC --env $ENV
+commcare-cloud-bootstrap provision blahblahblahlbah $SPEC --env $ENV
 while
     commcare-cloud $ENV ping all --use-factory-auth
     [ $? = 4 ]
