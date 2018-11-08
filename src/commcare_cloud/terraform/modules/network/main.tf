@@ -190,6 +190,13 @@ resource "aws_security_group" "proxy-sg" {
     ipv6_cidr_blocks =  ["::/0"]
   }
 
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.main.cidr_block}"]
+  }
+
   egress = "${local.default_egress}"
 
   tags {
