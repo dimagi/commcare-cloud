@@ -1,11 +1,12 @@
 [hqproxy0]
 hqproxy0.internal-va.commcarehq.org
 
-[proxy:children]
-hqproxy0
+[proxy0]
+{{ proxy0-production }} hostname=proxy0-production public_ip={{ proxy0-production.public_ip }} ec2=yes
 
-[proxy:vars]
-mount_points="[{'partition':'/dev/xvdb1', 'dest':'/mnt/storage', 'fstype':'ext4'}]"
+[proxy:children]
+proxy0
+hqproxy0
 
 [web0]
 {{ web0-production }} hostname=web0-production ec2=yes

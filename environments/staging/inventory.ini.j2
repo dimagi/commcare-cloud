@@ -46,12 +46,11 @@ couch2
 couch0
 
 [rabbit0]
-# {{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
+{{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
 
 [rabbitmq:children]
-hqdb1
 # Amazon EC2
-# rabbit0
+rabbit0
 
 [hqkafka0]
 hqkafka0-staging.internal-va.commcarehq.org
