@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -1090,6 +1090,27 @@ The username of the user whose public key will be put on new servers.
 
 Normally this would be _your_ username.
 Defaults to the username of the user running the command.
+
+---
+
+#### `terraform-migrate-state`
+
+Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
+
+```
+commcare-cloud <env> terraform-migrate-state
+```
+
+This migration tool should exist as a generic tool for terraform,
+but terraform is still not that mature, and it doesn't seem to exist yet.
+
+Terraform assigns each resource an address so that it can map it back to the code.
+However, often when you change the code, the addresses no longer map to the same place.
+For this, terraform offers the terraform state mv &lt;address&gt; &lt;new_address&gt; command,
+so you can tell it how existing resources map to your new code.
+
+This is a tedious task, and often follows a very predictable renaming pattern.
+This command helps fill this gap.
 
 ---
 
