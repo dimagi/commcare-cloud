@@ -12,6 +12,6 @@ def get_new_resource_address(environment, old_resource_address):
         return 'module.proxy_server__{}.aws_instance.server'.format(server_config.server_name)
     elif old_resource_address == 'aws_eip.proxy':
         server_config = environment.terraform_config.proxy_servers[0]
-        return 'aws_eip.{}-production'.format(server_config.server_name)
+        return 'aws_eip.proxy__{}'.format(server_config.server_name)
     else:
         return None
