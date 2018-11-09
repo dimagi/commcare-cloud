@@ -26,6 +26,7 @@ then
         # to get the environments (once environments/ is removed from this repo).
         ln -s environments commcare-environments
         COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments manage-commcare-cloud test-environments
+        COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments ./tests/test_autogen_environments.sh
     }
 
     test_autogen_docs() {
