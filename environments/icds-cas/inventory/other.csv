@@ -12,4 +12,4 @@ redis2,100.71.184.89,redis,redis_cluster_master,,MUMGCCWCDPRDRD02,["/dev/vdb"],[
 redis3,100.71.184.94,redis,redis_cluster_master,,MUMGCCWCDPRDRD03,["/dev/vdb"],["/dev/vdb1"],,
 patch0,100.71.181.8,patch,control,,MUMGCCWCDPRDPT00,,,,
 proxy0,100.71.181.10,proxy,cas_proxy,,MUMGCCWCDPRDPX01,,,14.141.62.10,
-proxy1,100.71.181.14,proxy,cas_proxy,,MUMGCCWCDPRDPX02,,,14.141.62.11,
+proxy1,100.71.181.14,proxy,cas_proxy,ssl_nfs_client,MUMGCCWCDPRDPX02,,,14.141.62.11,

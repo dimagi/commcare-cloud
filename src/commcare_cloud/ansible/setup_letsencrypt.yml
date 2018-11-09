@@ -1,0 +1,41 @@
+---
+- name: Setup Nginx dirs
+  hosts: proxy0
+  tasks:
+   - include_tasks: roles/letsencrypt/tasks/configure_nginx_dir.yml
+
+- name: Setup Certbot
+  hosts: proxy0
+  tasks:
+   - include_tasks:  roles/letsencrypt/tasks/configure_certbot.yml
+     tags: certbot
+
+- name: Export SSL validation directory
+  hosts: proxy0
+  become: yes
+  roles:
+  - { role: 'grycap.nfs', nfs_mode: 'front', nfs_exports: [{path: "{{ ssl_validation_dir }}" , export: "*(fsid=1901,ro,sync)"}] }
+
+- name: Export Letsencrypt directory
+  hosts: proxy0
+  become: yes
+  roles:
+  - { role: 'grycap.nfs', nfs_mode: 'front', nfs_exports: [{path: "{{ letsencrypt_dir }}" , export: "*(fsid=1902,ro,sync)"}] }
+
+- name: Mount SSL validation directory
+  hosts: ssl_nfs_client
+  become: yes
+  roles:
+  - { role: 'grycap.nfs', nfs_mode: 'wn', nfs_client_imports: [{ local: "{{ ssl_validation_dir }}" , remote: "{{ ssl_validation_dir }}", server_host: "{{ ssl_nfs_parent_address }}" }] }
+
+- name: Mount Letsencrypt  directory
+  hosts: ssl_nfs_client
+  become: yes
+  roles:
+  - { role: 'grycap.nfs', nfs_mode: 'wn', nfs_client_imports: [{ local: "{{ letsencrypt_dir }}" , remote: "{{ letsencrypt_dir }}", server_host: "{{ ssl_nfs_parent_address }}" }] }
+
+- name: Configure SSL
+  hosts: proxy
+  tasks:
+   - include_tasks:  roles/letsencrypt/tasks/configure_ssl.yml
+     tags: configure_ssl

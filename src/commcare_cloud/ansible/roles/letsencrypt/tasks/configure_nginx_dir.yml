@@ -1,0 +1,30 @@
+---
+- name: Create Challenge Directory
+  file:
+    path: '/var/www/letsencrypt/.well-known/acme-challenge'
+    owner: www-data
+    group: www-data
+    state: directory
+    recurse: yes
+
+- name: Create a test file
+  copy:
+    content: ""
+    dest: '/var/www/letsencrypt/.well-known/acme-challenge/test.txt'
+    owner: www-data
+    group: www-data
+  ignore_errors: '{{ ansible_check_mode }}'
+
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+
+- name: Check that a test page returns a status 200
+  uri:
+    url: 'https://{{SITE_HOST}}/.well-known/acme-challenge/test.txt'
+    validate_certs: no
+
+

@@ -1,0 +1,14 @@
+shared_dir_gid: 1500  # This GID cannot already be allocated
+shared_dir_name: "shared_cert_ssl"
+shared_data_dir: "/opt/{{ shared_dir_name }}"
+shared_mount_dir: "/mnt/{{ shared_dir_name }}"
+
+shared_dir_groupname: nfs
+restore_payload_dir_host: "{{ shared_data_dir }}/{{ restore_payload_dir_name }}"
+transfer_payload_dir_host: "{{ shared_data_dir }}/{{ transfer_payload_dir_name }}"
+shared_temp_dir_host: "{{ shared_data_dir }}/{{ shared_temp_dir_name }}"
+
+#needed for cleanup tasks
+old_shared_dir_name: "shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+old_shared_data_dir:  "/opt/{{ old_shared_dir_name }}"
+old_shared_mount_dir:  "/mnt/{{ old_shared_dir_name }}"

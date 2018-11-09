@@ -29,6 +29,9 @@ nofile_limit: 65536
 
 redis_appendonly: 'yes'
 
+ssl_validation_dir: '/var/www/letsencrypt'
+letsencrypt_dir: '/etc/letsencrypt'
+
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 kafka_log_retention: 1440 # 60 days
 

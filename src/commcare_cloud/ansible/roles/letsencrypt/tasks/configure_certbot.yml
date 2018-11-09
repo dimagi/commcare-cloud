@@ -1,0 +1,35 @@
+---
+
+- name: Add certbot apt repo
+  apt_repository: repo='ppa:certbot/certbot' state=present
+  register: add_cert_repo
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_cert_repo|changed
+
+- name: Install Certbot
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - software-properties-common
+    - certbot
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: 'Verify that there exists a certbot Directory /etc/letsencrypt/live/{{ SITE_HOST }}'
+  stat:
+    path: "/etc/letsencrypt/live/{{ SITE_HOST }}"
+  register: certdir
+
+- name: 'Take Backup of /etc/letsencrypt/live/{{ SITE_HOST }} to /etc/letsencrypt/live/{{ SITE_HOST }}.back'
+  command: "mv /etc/letsencrypt/live/{{ SITE_HOST }} /etc/letsencrypt/live/{{ SITE_HOST }}.back"
+  when: certdir.stat.exists
+
+- name: Run Certbot command when there is a www host
+  command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
+  when: NO_WWW_SITE_HOST is defined
+
+- name: Run Certbot command when there is no www host
+  command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}}'
+  when: not NO_WWW_SITE_HOST
