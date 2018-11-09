@@ -113,6 +113,11 @@ class AwsFillInventory(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
+        if not os.path.exists(environment.paths.inventory_ini_j2):
+            print("Env {} not using templated inventory (inventory.ini.j2). Skipping"
+                  .format(args.env_name))
+            return 0
+
         if not args.cached:
             resources = get_aws_resources(environment)
             with open(environment.paths.aws_resources_yml, 'w') as f:
