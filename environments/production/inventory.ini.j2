@@ -17,15 +17,6 @@ hqproxy0
 [web2]
 {{ web2-production }} hostname=web2-production ec2=yes
 
-[web3]
-{{ web3-production }} hostname=web3-production ec2=yes
-
-[web4]
-{{ web4-production }} hostname=web4-production ec2=yes
-
-[web5]
-{{ web5-production }} hostname=web5-production ec2=yes
-
 [web6]
 {{ web6-production }} hostname=web6-production ec2=yes
 
@@ -49,9 +40,6 @@ hqproxy0
 web0
 web1
 web2
-web3
-web4
-web5
 
 [mobile_webworkers:children]
 web6
