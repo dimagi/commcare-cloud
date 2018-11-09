@@ -256,9 +256,13 @@ localsettings:
     'static-mpr_10b_person_cases': 'static-mpr_10b_person_cases-optimized'
     'static-mpr_1_person_cases': 'static-mpr_1_person_cases-optimized'
     'static-mpr_3ii_person_cases': 'static-mpr_3ii_person_cases-optimized'
+    'static-asr_2_3_person_cases': 'static-asr_2_3_person_cases-optimized'
+    'static-mpr_3i_person_cases': 'static-mpr_3i_person_cases-optimized'
     # new UCR format from LS app
     'static-mpr_10a_children_referred': 'static-mpr_10a_children_referred-optimized'
     'static-mpr_10b_pregnancies_referred': 'static-mpr_10b_pregnancies_referred-optimized'
     'static-mpr_3_children_registered': 'static-mpr_3_children_registered-optimized'
+    'static-asr_2_3_beneficiaries': 'static-asr_2_3_beneficiaries-optimized'
+    'static-mpr_3i_pregnancies': 'static-mpr_3i_pregnancies-optimized'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
