@@ -199,4 +199,4 @@ rds_instances:
     storage: 300
 
 redis:
-  create: no
+  node_type: "cache.r5.large"

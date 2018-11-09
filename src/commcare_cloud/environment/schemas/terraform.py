@@ -64,3 +64,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
 class RedisConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
+    node_type = jsonobject.StringProperty()
+    num_cache_nodes = jsonobject.IntegerProperty(default=1)
+    engine_version = jsonobject.StringProperty(default="4.0.10")
+    parameter_group_name = jsonobject.StringProperty(default="default.redis4.0")
