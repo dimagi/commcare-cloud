@@ -8,17 +8,9 @@ done
 
 wait
 
-git diff
-git update-index -q --refresh
-if git diff-index --quiet HEAD --; then
-    # No changes
-    exit 0
-else
-    # Changes
-    echo "Hey, did you edit inventory.ini when you should have edited inventory.ini.j2?"
-    echo "That's a common cause of this test failure."
-    echo "If so, make your change to inventory.ini.j2 and run"
-    echo "  cchq <env> aws-fill-inventory --cached"
-    echo "to fix this test"
-    exit 1
-fi
+./tests/fail_if_there_is_a_git_diff.sh \
+"Hey, did you edit inventory.ini when you should have edited inventory.ini.j2?
+That's a common cause of this test failure.
+If so, make your change to inventory.ini.j2 and run
+  cchq <env> aws-fill-inventory --cached
+to fix this test"
