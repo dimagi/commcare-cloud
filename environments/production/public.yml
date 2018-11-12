@@ -18,6 +18,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
+elasticsearch_fielddata_cache_size: "40%"
 
 redis_maxmemory: 8gb
 

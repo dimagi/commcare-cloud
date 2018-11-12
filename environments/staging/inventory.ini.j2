@@ -30,13 +30,13 @@ hqdb1
 # staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
 
 [couch0]
-{{ couch0-staging }} hostname=formplayer0-staging ec2=yes
+{{ couch0-staging }} hostname=couch0-staging ec2=yes
 
 [couch1]
-{{ couch1-staging }} hostname=formplayer0-staging ec2=yes
+{{ couch1-staging }} hostname=couch1-staging ec2=yes
 
 [couch2]
-{{ couch2-staging }} hostname=formplayer0-staging ec2=yes
+{{ couch2-staging }} hostname=couch2-staging ec2=yes
 
 [couchdb2:children]
 couch0
@@ -118,9 +118,6 @@ hqredis0
 hqredis1
 hqredis2
 
-[hqes0]
-hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging elasticsearch_node_zone=rackspace elasticsearch_master=true
-
 [es0]
 {{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes elasticsearch_master=true
 
@@ -128,7 +125,6 @@ hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging e
 {{ es1-staging }} elasticsearch_node_name=es1-staging elasticsearch_node_zone=aws hostname=es1-staging ec2=yes elasticsearch_master=true
 
 [elasticsearch:children]
-hqes0
 # Amazon EC2
 es0
 es1
