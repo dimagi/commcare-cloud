@@ -118,9 +118,6 @@ hqredis0
 hqredis1
 hqredis2
 
-[hqes0]
-hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging elasticsearch_node_zone=rackspace elasticsearch_master=true
-
 [es0]
 {{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes elasticsearch_master=true
 
@@ -128,7 +125,6 @@ hqes0-staging.internal-va.commcarehq.org elasticsearch_node_name=hqes0-staging e
 {{ es1-staging }} elasticsearch_node_name=es1-staging elasticsearch_node_zone=aws hostname=es1-staging ec2=yes elasticsearch_master=true
 
 [elasticsearch:children]
-hqes0
 # Amazon EC2
 es0
 es1
