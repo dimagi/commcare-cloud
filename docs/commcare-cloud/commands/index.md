@@ -1126,11 +1126,23 @@ commcare-cloud <env> aws-list
 
 #### `aws-fill-inventory`
 
-Fill inventory.ini.j2 using existing AWS resources
+Fill inventory.ini.j2 using AWS resource values cached in aws-resources.yml
 
 ```
-commcare-cloud <env> aws-fill-inventory
+commcare-cloud <env> aws-fill-inventory [--cached]
 ```
+
+If --cached is not specified, also refresh aws-resources.yml
+to match what is actually in AWS.
+
+##### Optional Arguments
+
+###### `--cached`
+
+Use the values set in aws-resources.yml rather than fetching from AWS.
+
+This runs much more quickly and gives the same result, provided no changes
+have been made to our actual resources in AWS.
 
 ---
 

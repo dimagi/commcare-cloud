@@ -5,10 +5,11 @@ import os
 import subprocess
 import textwrap
 
+import yaml
 from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
-from commcare_cloud.commands.command_base import CommandBase
+from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
 
@@ -94,11 +95,37 @@ class AwsList(CommandBase):
 
 class AwsFillInventory(CommandBase):
     command = 'aws-fill-inventory'
-    help = "Fill inventory.ini.j2 using existing AWS resources"
+    help = """
+        Fill inventory.ini.j2 using AWS resource values cached in aws-resources.yml
+
+        If --cached is not specified, also refresh aws-resources.yml
+        to match what is actually in AWS.
+    """
+
+    arguments = [
+        Argument('--cached', action='store_true', help="""
+            Use the values set in aws-resources.yml rather than fetching from AWS.
+
+            This runs much more quickly and gives the same result, provided no changes
+            have been made to our actual resources in AWS.
+        """)
+    ]
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        resources = get_aws_resources(environment)
+        if not os.path.exists(environment.paths.inventory_ini_j2):
+            print("Env {} not using templated inventory (inventory.ini.j2). Skipping"
+                  .format(args.env_name))
+            return 0
+
+        if not args.cached:
+            resources = get_aws_resources(environment)
+            with open(environment.paths.aws_resources_yml, 'w') as f:
+                f.write(yaml.safe_dump(resources, default_flow_style=False))
+        else:
+            with open(environment.paths.aws_resources_yml, 'r') as f:
+                resources = yaml.load(f.read())
+
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
