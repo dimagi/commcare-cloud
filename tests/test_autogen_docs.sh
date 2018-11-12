@@ -4,12 +4,4 @@ set -e
 make clean
 make
 
-git diff
-git update-index -q --refresh
-if git diff-index --quiet HEAD --; then
-    # No changes
-    exit 0
-else
-    # Changes
-    exit 1
-fi
+./tests/fail_if_there_is_a_git_diff.sh
