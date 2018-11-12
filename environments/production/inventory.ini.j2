@@ -180,11 +180,11 @@ hqformplayer1.internal-va.commcarehq.org
 [formplayer:children]
 formplayer0
 
-[redis1]
-redis1.internal-va.commcarehq.org datavol_device=/dev/xvdb
+[redis0]
+{{ redis0-production }} hostname=redis0-production ec2=yes
 
 [redis:children]
-redis1
+redis0
 
 [es10]
 {{ es10-production }} hostname=es10-production elasticsearch_node_name=es10 ec2=yes
