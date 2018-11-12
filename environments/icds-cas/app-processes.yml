@@ -226,113 +226,149 @@ pillows:
   'pillow2':
     kafka-ucr-static-forms:
       start_process: 0
-      num_processes: 8
-      total_processes: 24
+      num_processes: 12
+      total_processes: 48
   'pillow3':
     kafka-ucr-static-forms:
-      start_process: 8
-      num_processes: 8
-      total_processes: 24
+      start_process: 12
+      num_processes: 12
+      total_processes: 48
   'pillow4':
     kafka-ucr-static-forms:
-      start_process: 16
-      num_processes: 8
-      total_processes: 24
+      start_process: 24
+      num_processes: 12
+      total_processes: 48
+  'pillow16':
+    kafka-ucr-static-forms:
+      start_process: 36
+      num_processes: 12
+      total_processes: 48
   'pillow5':
     kafka-ucr-static-cases:
       start_process: 0
-      num_processes: 6
-      total_processes: 60
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
       start_process: 0
-      num_processes: 6
-      total_processes: 60
+      num_processes: 9
+      total_processes: 120
   'pillow6':
     kafka-ucr-static-cases:
-      start_process: 6
-      num_processes: 6
-      total_processes: 60
+      start_process: 9
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 6
-      num_processes: 6
-      total_processes: 60
+      start_process: 9
+      num_processes: 9
+      total_processes: 120
   'pillow7':
     kafka-ucr-static-cases:
-      start_process: 12
-      num_processes: 6
-      total_processes: 60
+      start_process: 18
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 12
-      num_processes: 6
-      total_processes: 60
+      start_process: 18
+      num_processes: 9
+      total_processes: 120
   'pillow8':
     kafka-ucr-static-cases:
-      start_process: 18
-      num_processes: 6
-      total_processes: 60
+      start_process: 27
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 18
-      num_processes: 6
-      total_processes: 60
+      start_process: 27
+      num_processes: 9
+      total_processes: 120
   'pillow9':
     kafka-ucr-static-cases:
-      start_process: 24
-      num_processes: 6
-      total_processes: 60
+      start_process: 36
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 24
-      num_processes: 6
-      total_processes: 60
+      start_process: 36
+      num_processes: 9
+      total_processes: 120
   'pillow10':
     kafka-ucr-static-cases:
-      start_process: 30
-      num_processes: 6
-      total_processes: 60
+      start_process: 46
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 30
-      num_processes: 6
-      total_processes: 60
+      start_process: 46
+      num_processes: 9
+      total_processes: 120
   'pillow11':
     kafka-ucr-static-cases:
-      start_process: 36
-      num_processes: 6
-      total_processes: 60
+      start_process: 54
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 36
-      num_processes: 6
-      total_processes: 60
+      start_process: 54
+      num_processes: 9
+      total_processes: 120
   'pillow12':
     kafka-ucr-static-cases:
-      start_process: 42
-      num_processes: 6
-      total_processes: 60
+      start_process: 63
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 42
-      num_processes: 6
-      total_processes: 60
+      start_process: 63
+      num_processes: 9
+      total_processes: 120
   'pillow13':
     kafka-ucr-static-cases:
-      start_process: 48
-      num_processes: 6
-      total_processes: 60
+      start_process: 72
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 48
-      num_processes: 6
-      total_processes: 60
+      start_process: 72
+      num_processes: 9
+      total_processes: 120
   'pillow14':
     kafka-ucr-static-cases:
-      start_process: 54
-      num_processes: 6
-      total_processes: 60
+      start_process: 81
+      num_processes: 9
+      total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 54
-      num_processes: 6
-      total_processes: 60
+      start_process: 81
+      num_processes: 9
+      total_processes: 120
+  'pillow17':
+    kafka-ucr-static-cases:
+      start_process: 90
+      num_processes: 9
+      total_processes: 120
+    CaseToElasticsearchPillow:
+      start_process: 90
+      num_processes: 9
+      total_processes: 120
+  'pillow18':
+    kafka-ucr-static-cases:
+      start_process: 99
+      num_processes: 9
+      total_processes: 120
+    CaseToElasticsearchPillow:
+      start_process: 99
+      num_processes: 9
+      total_processes: 120
+  'pillow19':
+    kafka-ucr-static-cases:
+      start_process: 108
+      num_processes: 9
+      total_processes: 120
+    CaseToElasticsearchPillow:
+      start_process: 108
+      num_processes: 9
+      total_processes: 120
+  'pillow20':
+    kafka-ucr-static-cases:
+      start_process: 117
+      num_processes: 3
+      total_processes: 120
+    CaseToElasticsearchPillow:
+      start_process: 117
+      num_processes: 3
+      total_processes: 120
   'pillow15':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 16
-  'pillow16':
-  'pillow17':
-  'pillow18':
-  'pillow19':
-  'pillow20':
