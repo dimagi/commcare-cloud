@@ -31,40 +31,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-  - server_name: "esmaster2-production"
-    server_instance_type: t3.large
-    network_tier: "db-private"
-    az: "a"
-  - server_name: "web6-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web7-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web8-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web9-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "esmaster0-production"
-    server_instance_type: t3.large
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "esmaster1-production"
-    server_instance_type: t3.large
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 40
+
   - server_name: "web0-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
@@ -95,6 +62,53 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+
+  - server_name: "web6-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "web7-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "web8-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "web9-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "web10-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "web11-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+
+  - server_name: "esmaster0-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "esmaster1-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+  - server_name: "esmaster2-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "a"
+
   - server_name: "es10-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
@@ -120,16 +134,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 600
-  - server_name: "web10-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web11-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
+
   - server_name: "couch0-production"
     server_instance_type: m5.4xlarge
     network_tier: "db-private"
@@ -145,11 +150,13 @@ servers:
     network_tier: "db-private"
     az: "c"
     volume_size: 4000
+
   - server_name: "rabbit0-production"
     server_instance_type: t3.large
     network_tier: "db-private"
     az: "c"
     volume_size: 80
+
   - server_name: "celery0-production"
     server_instance_type: t3.xlarge
     network_tier: "app-private"
@@ -175,6 +182,7 @@ servers:
     network_tier: "app-private"
     az: "c"
     volume_size: 150
+
   - server_name: "pillow0-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
@@ -185,6 +193,12 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 50
+
+  - server_name: "redis0-production"
+    server_instance_type: r5.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 60
 
 
 proxy_servers:
@@ -204,4 +218,4 @@ rds_instances:
     storage: 300
 
 redis:
-  node_type: "cache.r5.large"
+  create: no
