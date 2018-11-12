@@ -56,6 +56,10 @@ index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
 index.search.slowlog.threshold.query.trace: 500ms
 
+{% if elasticsearch_fielddata_cache_size|default('') %}
+indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
+{% endif %}
+
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
