@@ -28,7 +28,7 @@
   vars:
     logrotate_scripts:
       - name: "haproxy"
-        path: "/var/log/haproxy/*"
+        path: "/var/log/haproxy/*.log"
         options:
           - daily
           - size 100M
