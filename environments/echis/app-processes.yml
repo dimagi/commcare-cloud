@@ -16,7 +16,7 @@ celery_processes:
     celery,export_download_queue,email_queue:
       concurrency: 1
       max_tasks_per_child: 5
-    background_queue,case_rule_queue:
+    background_queue,case_rule_queue,analytics_queue:
       concurrency: 1
       max_tasks_per_child: 1
     beat: {}

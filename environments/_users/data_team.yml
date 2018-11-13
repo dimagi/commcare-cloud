@@ -1,0 +1,7 @@
+dev_users:
+  present:
+    - bderenzi
+    - mtheis
+    - esu
+    - ymsosa
+  absent: []

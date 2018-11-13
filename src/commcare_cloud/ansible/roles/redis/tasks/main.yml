@@ -1,5 +1,8 @@
 ---
 
+- include: setup_cluster.yml
+  when: is_redis_cluster
+
 - name: start the redis service
   service: name="{{ redis_service_name }}" state=started enabled=yes
   tags: after-reboot

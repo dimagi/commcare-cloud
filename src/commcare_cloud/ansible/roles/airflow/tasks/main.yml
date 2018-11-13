@@ -28,6 +28,7 @@
     requirements: "{{ airflow_code_dir }}/requirements.txt"
     virtualenv: "{{ airflow_virtualenv }}"
     chdir: "{{ airflow_code_dir }}"
+    virtualenv_python: "python2.7"
 
 - name: copy airflow settings
   become: yes

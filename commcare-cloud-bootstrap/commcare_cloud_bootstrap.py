@@ -7,6 +7,7 @@ import string
 import subprocess
 import sys
 import shutil
+import uuid
 
 import re
 
@@ -206,7 +207,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
         cache_file_response = raw_input("\n{} already exists. Enter: "
-                                        "\n(d) to delete the file and terminate the existing aws instances or "
+                                        "\n(d) to delete the file AND environment directory containing it, and"
+                                        " terminate the existing aws instances or "
                                         "\n(anything) to continue using this file and these instances."
                                         "\n Enter selection: ".format(cache_file))
         if cache_file_response == 'd':
@@ -215,6 +217,10 @@ def ask_aws_for_instances(env_name, aws_config, count):
             subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
             print("Deleting file: {}".format(cache_file))
             os.remove(cache_file)
+            env_dir = get_environment(env_name).paths.get_env_file_path('')
+            if os.path.isdir(env_dir):
+                print("Deleting environment dir: {}".format(env_name))
+                shutil.rmtree(env_dir)
 
     if not os.path.exists(cache_file):
         # Provision new instances for this env
@@ -373,6 +379,18 @@ def save_inventory(environment, inventory):
           file=sys.stderr)
 
 
+def save_vault_yml(environment):
+    def generate_uuid():
+        return str(uuid.uuid4())
+    j2.globals.update(generate_uuid=generate_uuid)
+    template = j2.get_template('private.yml.j2')
+    vault_file_contents = template.render(deploy_env=environment.paths.env_name)
+    vault_file = environment.paths.vault_yml
+    with open(vault_file, 'w') as f:
+        f.write(vault_file_contents)
+    print('vault file saved to {}'.format(vault_file),
+          file=sys.stderr)
+
 def save_app_processes_yml(environment, inventory):
     template = j2.get_template('app-processes.yml.j2')
     celery_host_name = inventory.all_groups['celery'].host_names[0]
@@ -397,12 +415,12 @@ def save_fab_settings_yml(environment):
 
 
 def copy_default_vars(environment, aws_config):
+    save_vault_yml(environment)
+
     vars_public = environment.paths.public_yml
-    vars_vault = environment.paths.vault_yml
     vars_postgresql = environment.paths.postgresql_yml
     vars_proxy = environment.paths.proxy_yml
     if os.path.exists(TEMPLATE_DIR) and not os.path.exists(vars_public):
-        shutil.copyfile(os.path.join(TEMPLATE_DIR, 'private.yml'), vars_vault)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'proxy.yml'), vars_proxy)

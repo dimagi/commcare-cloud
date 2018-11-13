@@ -2,10 +2,14 @@ celery_processes:
   None:
     celery_periodic:
     async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue:
-    email_queue,reminder_case_update_queue:
-    reminder_rule_queue,reminder_queue,repeat_record_queue,saved_exports_queue:
-    sms_queue,submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
+    email_queue,reminder_case_update_queue,analytics_queue:
+    reminder_rule_queue,repeat_record_queue,saved_exports_queue:
+    ucr_indicator_queue,ucr_queue:
     flower:
+    submission_reprocessing_queue:
+    sms_queue:
+    reminder_queue:
+
   celery:
 pillows:
   pillowtop:

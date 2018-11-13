@@ -9,8 +9,8 @@ postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
 postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
-postgresql_archive_dir: "{{ postgresql_dir_path }}/wal_archive"
 postgresql_log_directory: "{{ postgresql_home }}/pg_log"
+postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
@@ -35,9 +35,9 @@ postgresql_maintenance_work_mem: '64MB'
 postgresql_checkpoint_completion_target: '0.5'
 postgresql_wal_buffers: '-1'
 postgresql_default_statistics_target: '100'
-postgresql_checkpoint_segments: 16  # V <= 9.4
-postgresql_max_wal_size: '256MB'  # V >= 9.6
+postgresql_max_wal_size: '256MB'
 postgresql_slow_log_threshold: 300
+postgresql_random_page_cost: 4.0
 
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15

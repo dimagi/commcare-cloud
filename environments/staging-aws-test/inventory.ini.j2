@@ -1,0 +1,93 @@
+[proxy1]
+{{ proxy1-staging }} hostname=proxy1-staging public_ip={{ proxy1-staging.public_ip }}
+
+[proxy:children]
+proxy1
+
+[web0]
+{{ web0-staging }} swap_size=1G hostname=web0-staging
+
+[web1]
+{{ web1-staging }} swap_size=1G hostname=web1-staging
+
+[webworkers:children]
+web0
+web1
+
+[rabbit0]
+{{ rabbit0-staging }} hostname=rabbit0-staging
+
+[rabbitmq:children]
+rabbit0
+
+[kafka0]
+{{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging
+
+[zookeeper:children]
+kafka0
+
+[kafka:children]
+kafka0
+
+[celery0]
+{{ celery0-staging }} hostname=celery0-staging swap_size=8G
+
+[celery:children]
+celery0
+
+[pillow0]
+{{ pillow0-staging }} hostname=pillow0-staging
+
+[pillowtop:children]
+pillow0
+
+[formplayer0]
+{{ formplayer0-staging }} hostname=formplayer0-staging
+
+[formplayer:children]
+formplayer0
+
+[es0]
+{{ es0-staging }} elasticsearch_node_name=es0-staging hostname=es0-staging
+
+[elasticsearch:children]
+es0
+
+[shared_dir_host:children]
+rabbit0
+
+[airflow0]
+{{ airflow0-staging }} hostname=airflow0-staging
+
+[airflow:children]
+airflow0
+
+[control]
+{{ control-staging }} hostname=control-staging
+
+[pg_standby]
+
+[django_manage:children]
+web0
+
+[pgproxy0]
+{{ pgproxy0-staging }} hostname=pgproxy0-staging
+
+[rds_pg0]
+# RDS
+staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
+
+[remote_postgresql:children]
+rds_pg0
+
+[postgresql:children]
+pgproxy0
+remote_postgresql
+
+[redis]
+# ElastiCache
+staging-test-redis.ck3xwy.0001.use1.cache.amazonaws.com:6379
+
+[ansible_skip:children]
+rds_pg0
+redis

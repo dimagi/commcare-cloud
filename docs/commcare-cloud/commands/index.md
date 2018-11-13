@@ -1,4 +1,5 @@
 # Commands
+{:.no_toc}
 
 * TOC
 {:toc}
@@ -10,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,list-dbs,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -109,7 +110,7 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 
 ### Internal Housekeeping for your `commcare-cloud` environments
 
-
+---
 #### `validate-environment-settings`
 
 Validate your environment's configuration files
@@ -121,6 +122,7 @@ commcare-cloud <env> validate-environment-settings
 As you make changes to your environment files, you can use this
 command to check for validation errors or incompatibilities.
 
+---
 
 #### `update-local-known-hosts`
 
@@ -142,9 +144,10 @@ is meant to mitigate against in the first place.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 ### Ad-hoc
 
-
+---
 #### `lookup`
 
 Lookup remote hostname or IP address
@@ -164,6 +167,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
+---
 
 #### `ssh`
 
@@ -189,6 +193,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
+---
 
 #### `mosh`
 
@@ -215,6 +220,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
+---
 
 #### `run-module`
 
@@ -271,16 +277,20 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
+  --playbook-dir=BASEDIR
+                        Since this tool does not use playbooks, use this as a
+                        subsitute playbook directory.This sets the relative
+                        path for many features including roles/ group_vars/
+                        etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
@@ -305,7 +315,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -325,11 +335,12 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     -K, --ask-become-pass
                         ask for privilege escalation password
 ```
 
+---
 
 #### `run-shell-command`
 
@@ -385,16 +396,20 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
+  --playbook-dir=BASEDIR
+                        Since this tool does not use playbooks, use this as a
+                        subsitute playbook directory.This sets the relative
+                        path for many features including roles/ group_vars/
+                        etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
@@ -419,7 +434,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -439,11 +454,12 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     -K, --ask-become-pass
                         ask for privilege escalation password
 ```
 
+---
 
 #### `django-manage`
 
@@ -480,6 +496,7 @@ Name of release to run under.
 E.g. '2018-04-13_18.16'.
 If none is specified, the `current` release will be used.
 
+---
 
 #### `tmux`
 
@@ -512,9 +529,10 @@ If a command is *not* specified, then a it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
 
+---
 ### Operational
 
-
+---
 #### `ping`
 
 Ping specified or all machines to see if they have been provisioned yet.
@@ -541,6 +559,7 @@ for more detail in what can go here.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `ansible-playbook`
 (Alias `ap`)
@@ -579,19 +598,18 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
                         filename prepend with @
-  --flush-cache         clear the fact cache
+  --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -620,7 +638,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -642,13 +660,14 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     --become-user=BECOME_USER
                         run operations as this user (default=root)
     -K, --ask-become-pass
                         ask for privilege escalation password
 ```
 
+---
 
 #### `deploy-stack`
 (Alias `aps`)
@@ -656,7 +675,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for deploying the entire stack.
 
 ```
-commcare-cloud <env> deploy-stack [--use-factory-auth]
+commcare-cloud <env> deploy-stack [--use-factory-auth] [--first-time]
 ```
 
 Often used in conjunction with --limit and/or --tag
@@ -668,23 +687,42 @@ for a more specific update.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+###### `--first-time`
+
+Use this flag for running against a newly-created machine.
+
+It will first use factory auth to set up users,
+and then will do the rest of deploy-stack normally,
+but skipping check mode.
+
+Running with this flag is equivalent to
+
+```
+commcare-cloud <env> bootstrap-users <...args>
+commcare-cloud <env> deploy-stack --skip-check --skip-tags=users <...args>
+```
+
+If you run and it fails half way, when you're ready to retry, you're probably
+better off running
+```
+commcare-cloud <env> deploy-stack --skip-check --skip-tags=users <...args>
+```
+since if it made it through bootstrap-users
+you won't be able to run bootstrap-users again.
+
+---
 
 #### `update-config`
 
 Run the ansible playbook for updating app config.
 
 ```
-commcare-cloud <env> update-config [--use-factory-auth]
+commcare-cloud <env> update-config
 ```
 
 This includes django `localsettings.py` and formplayer `application.properties`.
 
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
+---
 
 #### `after-reboot`
 
@@ -715,6 +753,7 @@ for more detail in what can go here.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `bootstrap-users`
 
@@ -738,6 +777,7 @@ you have to use `update-users` below instead.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `update-users`
 
@@ -757,6 +797,7 @@ up to date.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `update-supervisor-confs`
 
@@ -774,6 +815,7 @@ These services are defined in app-processes.yml.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+---
 
 #### `fab`
 
@@ -819,6 +861,7 @@ Use `-l` instead of a command to see the full list of commands.
     prepare_offline_deploy
     reset_mvp_pillows
     restart_services
+    restart_webworkers
     reverse_patch              Used to reverse a git patch created via `git f...
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
@@ -834,6 +877,7 @@ Use `-l` instead of a command to see the full list of commands.
     webworkers
 ```
 
+---
 
 #### `service`
 
@@ -842,9 +886,9 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker} ...]
-                             {start,stop,restart,status,help}
+                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}
+                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker} ...]
+                             {start,stop,restart,status,logs,help}
 ```
 
 #### Example
@@ -853,6 +897,7 @@ commcare-cloud <env> service [--only PROCESS_PATTERN]
 cchq <env> service postgresql status
 cchq <env> service riakcs restart --only riak,riakcs
 cchq <env> service celery help
+cchq <env> service celery logs
 cchq <env> service celery restart --limit <host>
 cchq <env> service celery restart --only <queue-name>,<queue-name>:<queue_num>
 cchq <env> service pillowtop restart --limit <host> --only <pillow-name>
@@ -865,15 +910,15 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,touchforms,webworker}`
+###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
 More than one service may be supplied as separate arguments in a row.
 
-###### `{start,stop,restart,status,help}`
+###### `{start,stop,restart,status,logs,help}`
 
-Action can be `status`, `start`, `stop`, or `restart`.
+Action can be `status`, `start`, `stop`, `restart`, or `logs`.
 This action is applied to every matching service.
 
 ##### Optional Arguments
@@ -884,6 +929,7 @@ Sub-service name to limit action to.
 Format as 'name' or 'name:number'.
 Use 'help' action to list all options.
 
+---
 
 #### `migrate-couchdb`
 (Alias `migrate_couchdb`)
@@ -914,6 +960,7 @@ Action to perform
 - commit: update database docs with new shard allocation
 - clean: remove shard files from hosts where they aren't needed
 
+---
 
 #### `downtime`
 
@@ -936,13 +983,14 @@ in the history, and so that during it service alerts are silenced.
 
 Optional message to set on Datadog.
 
+---
 
 #### `copy-files`
 
 Copy files from multiple sources to targets.
 
 ```
-commcare-cloud <env> copy-files plan {prepare,copy,cleanup}
+commcare-cloud <env> copy-files plan_path {prepare,copy,cleanup}
 ```
 
 This is a general purpose command that can be used to copy files between
@@ -954,12 +1002,14 @@ specified user on the source host has permissions to read the files being copied
 The plan file must be formatted as follows:
 
 ```yml
+source_env: env1 (optional if source is different from target)
 copy_files:
   - <target-host>:
       - source_host: <source-host>
         source_user: <user>
         source_dir: <source-dir>
         target_dir: <target-dir>
+        rsync_args: []
         files:
           - test/
           - test1/test-file.txt
@@ -975,13 +1025,14 @@ listed for each target host.
 to read the files being copied.
 - **source-dir**: The base directory from which all source files referenced.
 - **target-dir**: Directory on the target host to copy the files to.
+- **rsync_args**: Additional arguments to pass to rsync.
 - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
 end with a `/`.
 - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
 
 ##### Positional Arguments
 
-###### `plan`
+###### `plan_path`
 
 Path to plan file
 
@@ -993,11 +1044,158 @@ Action to perform
 - migrate: execute the scripts
 - cleanup: remove temporary files and remote auth
 
+---
 
-#### `list-dbs`
+#### `list-postgresql-dbs`
 
-List out databases by host
+Example:
 
 ```
-commcare-cloud <env> list-dbs
+commcare-cloud <env> list-postgresql-dbs [--compare]
 ```
+
+To list all database on a particular environment.
+
+```
+commcare-cloud <ev> list-databases
+```
+
+##### Optional Arguments
+
+###### `--compare`
+
+Gives additional databases on the server.
+
+---
+
+#### `terraform`
+
+Run terraform for this env with the given arguments
+
+```
+commcare-cloud <env> terraform [--skip-secrets] [--username USERNAME]
+```
+
+##### Optional Arguments
+
+###### `--skip-secrets`
+
+Skip regenerating the secrets file.
+
+Good for not having to enter vault password again.
+
+###### `--username USERNAME`
+
+The username of the user whose public key will be put on new servers.
+
+Normally this would be _your_ username.
+Defaults to the username of the user running the command.
+
+---
+
+#### `terraform-migrate-state`
+
+Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
+
+```
+commcare-cloud <env> terraform-migrate-state
+```
+
+This migration tool should exist as a generic tool for terraform,
+but terraform is still not that mature, and it doesn't seem to exist yet.
+
+Terraform assigns each resource an address so that it can map it back to the code.
+However, often when you change the code, the addresses no longer map to the same place.
+For this, terraform offers the terraform state mv &lt;address&gt; &lt;new_address&gt; command,
+so you can tell it how existing resources map to your new code.
+
+This is a tedious task, and often follows a very predictable renaming pattern.
+This command helps fill this gap.
+
+---
+
+#### `aws-list`
+
+List endpoints (ec2, rds, etc.) on AWS
+
+```
+commcare-cloud <env> aws-list
+```
+
+---
+
+#### `aws-fill-inventory`
+
+Fill inventory.ini.j2 using AWS resource values cached in aws-resources.yml
+
+```
+commcare-cloud <env> aws-fill-inventory [--cached]
+```
+
+If --cached is not specified, also refresh aws-resources.yml
+to match what is actually in AWS.
+
+##### Optional Arguments
+
+###### `--cached`
+
+Use the values set in aws-resources.yml rather than fetching from AWS.
+
+This runs much more quickly and gives the same result, provided no changes
+have been made to our actual resources in AWS.
+
+---
+
+#### `openvpn-activate-user`
+
+Give a OpenVPN user a temporary password (the ansible user password)
+
+```
+commcare-cloud <env> openvpn-activate-user [--use-factory-auth] vpn_user
+```
+
+to allow the user to connect to the VPN, log in, and change their password using
+
+```
+cchq <env> openvpn-claim-user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to activate.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
+#### `openvpn-claim-user`
+
+Claim an OpenVPN user as your own, setting its password
+
+```
+commcare-cloud <env> openvpn-claim-user [--use-factory-auth] vpn_user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to claim.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---

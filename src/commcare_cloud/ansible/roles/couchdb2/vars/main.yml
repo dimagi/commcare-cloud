@@ -18,3 +18,6 @@ couchdb_compaction_settings:
   _default: '[{db_fragmentation, "10%"}, {view_fragmentation, "10%"}, {from, "17:00"}, {to, "22:30"}]'
 
 couchdb_async_io_threads: 64
+
+couchdb_require_valid_user: false
+couchdb_require_valid_user_node_local: false

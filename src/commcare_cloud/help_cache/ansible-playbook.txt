@@ -11,11 +11,11 @@ Options:
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
                         filename prepend with @
-  --flush-cache         clear the fact cache
+  --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -h, --help            show this help message and exit
   -i INVENTORY, --inventory=INVENTORY, --inventory-file=INVENTORY
                         specify inventory host path or comma separated host
@@ -28,8 +28,7 @@ Options:
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
                         prepend colon-separated path(s) to module library
-                        (default=[u'~/.ansible/plugins/modules',
-                        u'/usr/share/ansible/plugins/modules'])
+                        (default=[u'./src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -58,7 +57,7 @@ Options:
                         connection type to use (default=smart)
     -T TIMEOUT, --timeout=TIMEOUT
                         override the connection timeout in seconds
-                        (default=10)
+                        (default=30)
     --ssh-common-args=SSH_COMMON_ARGS
                         specify common arguments to pass to sftp/scp/ssh (e.g.
                         ProxyCommand)
@@ -87,7 +86,7 @@ Options:
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     --become-user=BECOME_USER
                         run operations as this user (default=root)
     --ask-sudo-pass     ask for sudo password (deprecated, use become)
