@@ -1,7 +1,6 @@
 hostname,host_address,group 1,group 2,group 3,var: hostname
 celery0,100.71.188.5,celery,,,MUMGCCWCDPRDC000
 celery1,100.71.188.11,celery,,,MUMGCCWCDPRDC001
-celery2,100.71.188.6,celery,,,MUMGCCWCDPRDC002
 celery3,100.71.188.13,celery,,,MUMGCCWCDPRDC003
 celery4,100.71.188.12,celery,,,MUMGCCWCDPRDC004
 celery5,100.71.188.7,celery,,,MUMGCCWCDPRDC005
