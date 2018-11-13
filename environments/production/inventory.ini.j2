@@ -173,9 +173,6 @@ swap_size=8G
 [pillowtop:children]
 pillow0
 
-[hqformplayer1]
-hqformplayer1.internal-va.commcarehq.org
-
 [formplayer0]
 {{ formplayer0-production }} hostname=formplayer0-production ec2=yes
 
@@ -367,5 +364,9 @@ hqstandby2
 [hqdjangomanage0]
 hqdjangomanage0.internal-va.commcarehq.org
 
+[djangomanage0]
+{{ djangomanage0-production }} hostname=djangomanage0-production ec2=yes
+
 [django_manage:children]
 hqdjangomanage0
+djangomanage0

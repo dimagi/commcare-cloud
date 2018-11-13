@@ -60,17 +60,17 @@ swap_size=1G
 kafka_broker_id=0
 
 [kafka0]
-# {{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
+{{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
 
 [zookeeper:children]
-hqkafka0
+#hqkafka0
 # Amazon EC2
-# kafka0
+kafka0
 
 [kafka:children]
-hqkafka0
+#hqkafka0
 # Amazon EC2
-# kafka0
+kafka0
 
 [celery0]
 {{ celery0-staging }} hostname=celery0-staging ec2=yes
