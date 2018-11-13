@@ -1,27 +1,19 @@
 ---
+
 - name: Add mosh apt repo
   apt_repository: repo='ppa:keithw/mosh' state=present
   register: add_mosh_repo
 
-- name: Add git apt repo
-  apt_repository: repo='ppa:git-core/ppa' state=present
-  register: add_git_repo
-
-# http://stackoverflow.com/a/16303380/835696
-- name: Add git nodejs repo
-  apt_repository: repo='ppa:chris-lea/node.js' state=present
-  register: add_nodejs_repo
+- name: Add PostgreSQL apt key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: Add PostgreSQL apt repository
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add PostgreSQL apt key
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
-
 - name: Update package list
   apt: update_cache=yes
-  when: add_nodejs_repo|changed or add_mosh_repo|changed or add_git_repo|changed or add_postgres_repo|changed
+  when: add_mosh_repo|changed or add_postgres_repo|changed
 
 # Install base packages, common to all servers
 - name: Install common packages
@@ -29,15 +21,11 @@
   become: yes
   with_items:
     - build-essential
-    - python-pip
-    - python-dev
-    - python-setuptools
     - python-psycopg2
     - postgresql-client-common
     - postgresql-client-{{ postgresql_version }}
     - libxml2-dev
     - libxslt1-dev
-    - git
     - tig # git browser
     - libpq-dev
     - curl
@@ -45,12 +33,10 @@
     - tmpreaper # remove files older than x days
     - mailutils
     - ntp
-    - nodejs
     - at
     - screen
     - sysstat
     - gettext
-    - python-software-properties
     - mosh
     - libjpeg-dev
     - libfreetype6-dev
@@ -65,36 +51,14 @@
     - ncdu # 'du' improved
     - monit # service restarter
 
-- name: Set NPM registry
-  command: 'npm config set registry http://registry.npmjs.org/'
-  become: yes
+- include: trusty_apt_installs.yml
+  when: ansible_distribution_version == '14.04'
 
-- name: Install npm items
-  npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
-  become: yes
-  with_items:
-    - {name: 'n', version: '1.3.0'}
-    - {name: 'less', version: '2.7.2'}
-    - {name: 'bower', version: '1.5.3'}
-    - {name: 'uglify-js', version: '2.6.1'}
-  tags:
-    - npm
-
-- name: Update Node
-  command: 'n 0.10.29'
-  become: yes
-
-- name: Install correct npm version
-  npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
-  become: yes
-  with_items:
-    - {name: 'npm', version: '3.6.0'}
-  tags:
-    - npm
-
+- include: bionic_apt_installs.yml
+  when: ansible_distribution_version == '18.04'
 
 - name: Install pip packages
-  pip: name="{{ item }}"
+  pip: name="{{ item }}" executable=pip2
   become: yes
   with_items:
     - virtualenv
@@ -107,3 +71,4 @@
   pip:
     name: virtualenv-clone
     version: 0.2.6
+    executable: pip2

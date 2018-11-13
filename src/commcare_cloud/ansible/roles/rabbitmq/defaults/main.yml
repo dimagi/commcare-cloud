@@ -1,0 +1,3 @@
+rabbitmq_create_cluster: false
+rabbitmq_cluster_master: "{{ groups['rabbitmq'][0] }}"
+rabbitmq_erlang_cookie_file: '/var/lib/rabbitmq/.erlang.cookie'

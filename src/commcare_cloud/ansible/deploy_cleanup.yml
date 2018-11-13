@@ -35,12 +35,3 @@
   become: true
   tasks:
     - {import_tasks: 'roles/backups/tasks/cleanup.yml', tags: ['backups', 'cleanup']}
-
-- name: Cleanup tochforms tasks
-  hosts:
-    - all
-  become: true
-  tasks:
-    - {include_vars: '../roles/touchforms/defaults/main.yml', tags: ['touchforms', 'cleanup']}
-    - {include_vars: '../roles/touchforms/vars/main.yml', tags: ['touchforms', 'cleanup']}
-    - {import_tasks: 'roles/touchforms/tasks/cleanup.yml', tags: ['touchforms', 'cleanup']}

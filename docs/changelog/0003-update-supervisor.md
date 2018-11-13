@@ -4,7 +4,9 @@
 
 **Optional per env:** Yes
 
-**Dependant CommCare version:** None
+## CommCare Version Dependency
+This change is not known to be dependent on any particular version of CommCare.
+
 
 ## Change Context
 Ubuntu 14.04 `apt-get install supervisor` installs supervisor 3.0b.
@@ -15,7 +17,6 @@ we decided it was better to be on a later version of supervisor,
 and one that's not in beta.
 
 ## Details
-
 We updated our scripts to install `supervisor` via `pip` in the global env
 rather than through `apt-get`, and also to remove any existing `supervisor` installed
 via `apt-get`. They now install supervisor 3.3.4.

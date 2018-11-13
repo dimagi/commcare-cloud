@@ -16,11 +16,7 @@ external_pid_file = '{{ postgresql_pid_file }}'
 listen_addresses = '*'
 port = {{ postgresql_port }}
 max_connections = {{ postgresql_max_connections }}
-{% if postgresql_version|float >= 9.3 %}
 unix_socket_directories = '/var/run/postgresql'
-{% else %}
-unix_socket_directory = '/var/run/postgresql'
-{% endif %}
 ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 
@@ -47,11 +43,8 @@ archive_timeout = 300
 
 wal_level = hot_standby
 max_wal_senders = 8
-{% if postgresql_version == '9.4' %}
-checkpoint_segments = {{ postgresql_checkpoint_segments }}
-{%  elif postgresql_version == '9.6' %}
 max_wal_size = {{ postgresql_max_wal_size }}
-{% endif %}
+random_page_cost = {{ postgresql_random_page_cost }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
@@ -76,6 +69,9 @@ max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
 
 # QUERY TUNING
 effective_cache_size = {{ postgresql_effective_cache_size }}
+{% if enable_nestloop is defined %}
+enable_nestloop = {{ enable_nestloop }}
+{% endif %}
 
 
 # ERROR REPORTING AND LOGGING

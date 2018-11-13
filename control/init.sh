@@ -89,6 +89,13 @@ pip install pip --upgrade &
 manage-commcare-cloud install & # includes ansible-galaxy install
 wait
 
+# workaround for some envs that got in a bad state
+python -c 'import Crypto' || {
+    echo "^--- Looks like there's an issue with the pycryptodome install,"
+    echo "     but don't worry, we'll fix that for you."
+    cd ${COMMCARE_CLOUD_REPO} && pip uninstall pycryptodome pycrypto --yes &&  pip-sync && pip install -e . && cd - ;
+}
+
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
 cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
@@ -124,12 +131,24 @@ function ansible-deploy-control() {
     if [ -z "$1" ]; then
         echo "Usage:"
         echo "  ansible-deploy-control [environment]"
-        exit 1
+        return
     fi
     env="$1"
     echo "You must be root to deploy the control machine"
     echo "Run \`su\` to become the root user, then paste in this command to deploy:"
-    echo 'ENV='$env' && USER='`whoami` '&& ANSIBLE_DIR=/home/$USER/commcare-cloud/ansible && /home/$USER/.virtualenvs/ansible/bin/ansible-playbook -u root -i $ANSIBLE_DIR/inventories/localhost $ANSIBLE_DIR/deploy_control.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_vault.yml -e @$ANSIBLE_DIR/vars/$ENV/${ENV}_public.yml --diff --ask-vault-pass'
+    echo 'ENV='$env' \
+    && USER='`whoami`' \
+    && ANSIBLE_DIR=/home/$USER/commcare-cloud/src/commcare_cloud/ansible \
+    && ANSIBLE_CONFIG=$ANSIBLE_DIR/ansible.cfg \
+    && ENV_DIR=/home/$USER/commcare-cloud/environments \
+    && VENV=/home/$USER/.virtualenvs/ansible \
+    && ANSIBLE_ROLES_PATH=$VENV/lib/python2.7/site-packages/.ansible/roles \
+    $VENV/bin/ansible-playbook \
+    -i localhost, $ANSIBLE_DIR/deploy_control.yml \
+    -e @$ENV_DIR/$ENV/vault.yml \
+    -e @$ENV_DIR/$ENV/public.yml \
+    -e @$ENV_DIR/$ENV/.generated.yml \
+    -e target=localhost --connection=local --diff --ask-vault-pass'
 }
 
 function ansible-control-banner() {

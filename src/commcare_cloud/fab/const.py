@@ -11,7 +11,6 @@ ROLES_ALL_SRC = [
     'django_app',
     'django_celery',
     'django_pillowtop',
-    'formsplayer',
     'formplayer',
     'staticfiles',
     'airflow',
@@ -22,14 +21,13 @@ ROLES_ALL_SERVICES = [
     'django_app',
     'django_celery',
     'django_pillowtop',
-    'formsplayer',
     'formplayer',
-    'staticfiles'
+    'staticfiles',
+    'airflow'
 ]
 ROLES_CELERY = ['django_monolith', 'django_celery']
 ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
 ROLES_DJANGO = ['django_monolith', 'django_app']
-ROLES_TOUCHFORMS = ['django_monolith', 'formsplayer']
 ROLES_FORMPLAYER = ['django_monolith', 'formplayer']
 ROLES_STATIC = ['django_monolith', 'staticfiles']
 ROLES_POSTGRESQL = ['pg', 'pgstandby', 'django_monolith']

@@ -1,0 +1,8 @@
+- name: Install common packages (bionic)
+  apt: name="{{ item }}" state=present
+  become: yes
+  with_items:
+    - software-properties-common
+    - npm
+    - python-minimal
+    - python3-pip

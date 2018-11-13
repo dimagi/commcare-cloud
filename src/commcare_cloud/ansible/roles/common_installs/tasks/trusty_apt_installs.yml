@@ -1,0 +1,5 @@
+- name: Install common packages (trusty)
+  apt: name="{{ item }}" state=present
+  become: yes
+  with_items:
+    - python-software-properties

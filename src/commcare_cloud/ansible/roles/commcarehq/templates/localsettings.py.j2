@@ -17,7 +17,7 @@ from celery.schedules import crontab
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
-ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list) | unique | to_json }}
+ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS|default([]) + [SITE_HOST, 'localhost', '127.0.0.1'] + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list + groups.proxy | map('extract', hostvars, 'public_ip') | map('default', 'localhost') | list) | unique | to_json }}
 
 {% if SEPARATE_SYNCLOGS_DB %}
 SYNCLOGS_SQL_DB_ALIAS = "synclogs"
@@ -209,10 +209,43 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 
 ####### For Constructing Global URLs ########
 
-LOCAL_APPS = ('dimagi.utils', 'gunicorn',)
+LOCAL_APPS = (
+    'dimagi.utils',
+    'gunicorn',
+    {% for entry in LOCAL_APPS %}
+    {% if inventory_hostname in groups[entry.host] %}
+    '{{ entry.name }}',
+    {% endif %}
+    {% endfor %}
+)
+{% if 'DATADOG_TRACE' in localsettings %}
+DATADOG_TRACE = json.loads('{{ localsettings.DATADOG_TRACE|to_json }}')
+{% endif %}
 
 {% if 'LOCAL_PILLOWS' in localsettings %}
-LOCAL_PILLOWTOPS = json.loads('{{ localsettings.LOCAL_PILLOWS|to_json }}')
+LOCAL_PILLOWTOPS = {
+{% for group, pillows in localsettings.LOCAL_PILLOWS.items() %}
+    "{{ group }}": [
+{% for pillow in pillows %}
+        {
+            "name": "{{ pillow.name }}",
+            "class": "{{ pillow.class }}",
+            "instance": "{{ pillow.instance }}",
+{% if pillow.params is defined %}
+            "params": {
+                "topics": {{ pillow.params.topics }},
+                "include_ucrs": [
+{% for ucr in pillow.params.include_ucrs %}
+                     "{{ ucr }}",
+{% endfor %}
+                ]
+            }
+{% endif %}
+        },
+{% endfor %}
+    ]
+{% endfor %}
+}
 {% endif %}
 
 
@@ -271,7 +304,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 LESS_DEBUG = DEBUG
 
-ADMINS = (('HQ Dev Team', 'commcarehq-ops+admins@dimagi.com'),)
+ADMINS = (('HQ Dev Team', '{{ server_admin_email }}'),)
 SEND_BROKEN_LINK_EMAILS = True
 
 OVERRIDE_LOCATION = "https://www.commcarehq.org"
@@ -311,8 +344,6 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-CELERY_SEND_TASK_ERROR_EMAILS = {{ localsettings.get('CELERY_SEND_TASK_ERROR_EMAILS', False) }}
-
 CELERY_RESULT_BACKEND = '{{ CELERY_RESULT_BACKEND }}'
 CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 {% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
@@ -323,12 +354,7 @@ PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-TOUCHFORMS_API_USER = "{{ TOUCHFORMS_API_USER }}"
-TOUCHFORMS_API_PASSWORD = "{{ TOUCHFORMS_API_PASSWORD }}"
-
-BROKER_URL = '{{ BROKER_URL }}'
-
-XFORMS_PLAYER_URL = "{{ localsettings.XFORMS_PLAYER_URL|default('') }}"
+CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 
 FORMPLAYER_URL = "/formplayer"
 
@@ -351,6 +377,13 @@ redis_cache = {
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
+{% if is_redis_cluster %}
+        'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
+        'CONNECTION_POOL_CLASS': 'rediscluster.connection.ClusterConnectionPool',
+        'CONNECTION_POOL_KWARGS': {
+            'skip_full_coverage_check': True
+        },
+{% endif %}
     },
 }
 
@@ -532,8 +565,12 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
-{% if localsettings.get('KAFKA_URL') %}
-KAFKA_URL = '{{ localsettings.KAFKA_URL }}'
+{% if groups.kafka %}
+KAFKA_BROKERS = [
+    {%- for host in groups.kafka -%}
+    '{{ host }}:9092',
+    {%- endfor -%}
+]
 {% endif %}
 
 INVOICE_TERMS = "Net 30"
@@ -778,7 +815,7 @@ DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
     'project': {
-        'icds-cas': ['icds-cas-english', 'test-project-211'],
+        'icds-cas': ['test-project-211'],
     },
     'teams': {
         'icds-cas': {
@@ -796,4 +833,8 @@ UCR_COMPARISONS = {
     '{{ old_config }}': '{{ new_config }}',
 {% endfor %}
 }
+{% endif %}
+
+{% if localsettings.KAFKA_API_VERSION is defined %}
+KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
 {% endif %}

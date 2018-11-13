@@ -35,13 +35,15 @@ nofile_limit: 65536
 
 supervisor_http_enabled: True
 
+internal_network_interface: eth0
+
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couchdb_bind:
   ty: static
-  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+  host: '{{ internal_ipv4.address }}'
 
 couch_dbs:
   default:
@@ -58,13 +60,7 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
-TOUCHFORMS_API_USER: 'touchforms@example.com'
-
 localsettings:
-  ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - "{{ SITE_HOST }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
@@ -74,7 +70,6 @@ localsettings:
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

@@ -1,17 +1,8 @@
 ---
 # deploy-stack.yml
 
-- name: update apt cache
-  hosts: all
-  gather_facts: no
-  become: true
-  tasks:
-    - apt: update_cache=true cache_valid_time=3600
-  tags:
-    - common
-    - aptcache
-
-- import_playbook: deploy_common.yml tags=common
+- import_playbook: update_apt_cache.yml
+- import_playbook: deploy_common.yml
 - import_playbook: deploy_lvm.yml
 - import_playbook: deploy_db.yml
 - import_playbook: deploy_commcarehq.yml
@@ -23,9 +14,6 @@
 - import_playbook: deploy_tmpreaper.yml
 - import_playbook: deploy_etckeeper.yml
 - import_playbook: deploy_airflow.yml
-# migrate must happen before first fab, and also before touchforms can create its special user
+# migrate must happen before first fab
 - import_playbook: migrate_on_fresh_install.yml
-- import_playbook: deploy_touchforms.yml
-  when: touchforms_enabled|default(true)
 - import_playbook: deploy_http_proxy.yml
-  when: http_proxy_address|default(false)
