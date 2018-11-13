@@ -201,6 +201,7 @@ localsettings:
             - 'static-ccs_record_cases_monthly_v2'
             - 'static-ccs_record_cases_monthly_tableau_v2'
             - 'static-person_cases_v2'
+            - 'static-person_cases_v3'
             - 'static-commcare_user_cases'
             - 'static-pregnant-tasks_cases'
             - 'static-child_tasks_cases'
