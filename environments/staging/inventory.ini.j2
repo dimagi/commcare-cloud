@@ -106,12 +106,8 @@ hqredis2-staging.internal-va.commcarehq.org
 hqredis0
 hqredis1
 hqredis2
-hqdb1
 # Amazon ElastiCache
 # {{ redis-staging }}:6379
-
-[ws4redis:children]
-hqdb1
 
 [redis_cluster_master:children]
 hqredis0
