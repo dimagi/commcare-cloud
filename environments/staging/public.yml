@@ -93,7 +93,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
-  WS4REDIS_CONNECTION_HOST: "{{ groups.ws4redis.0 }}"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
