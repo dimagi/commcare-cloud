@@ -28,3 +28,4 @@ monitoring_groups:
   - redis
   - couchdb2
   - couchdb
+  - django_manage
