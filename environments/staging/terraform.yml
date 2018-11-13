@@ -91,6 +91,13 @@ servers:
     az: "a"
     volume_size: 80
 
+  - server_name: "kafka0-staging"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+
+
 proxy_servers:
   - server_name: "proxy1-staging"
     server_instance_type: "t3.medium"
