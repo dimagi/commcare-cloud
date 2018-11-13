@@ -36,6 +36,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
+        'CONN_MAX_AGE': 500,
         {% if not config.django_migrate -%}
         'MIGRATE': False,
         {% endif -%}
