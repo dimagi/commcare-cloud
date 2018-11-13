@@ -52,7 +52,7 @@ setup(
         'netaddr',
         'passlib',
         'pycryptodome>=3.6.6',  # security update
-        'PyGithub==1.40a1',
+        'PyGithub>=1.43.3',
         'pytz==2017.2',
         'six',
     ),
