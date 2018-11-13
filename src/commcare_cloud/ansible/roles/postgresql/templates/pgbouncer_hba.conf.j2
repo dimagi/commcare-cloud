@@ -1,5 +1,8 @@
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
+host    all             all             127.0.0.1/32            md5
+local   all             all                                     md5
+
 {% if cluster_ip_range is defined %}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
