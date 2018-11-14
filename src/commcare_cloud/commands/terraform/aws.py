@@ -1,12 +1,16 @@
 from __future__ import print_function
 
+import getpass
 import json
 import os
 import subprocess
 import textwrap
 
+import boto3
 import yaml
 from six.moves import shlex_quote
+from six.moves import configparser
+from six.moves import input
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -27,7 +31,7 @@ def check_output(cmd_parts, env):
 
 def aws_cli(environment, cmd_parts):
     return json.loads(
-        check_output(cmd_parts, env={'AWS_PROFILE': environment.terraform_config.aws_profile}))
+        check_output(cmd_parts, env={'AWS_PROFILE': environment.terraform_config.aws_session_profile}))
 
 
 def get_aws_resources(environment):
@@ -150,3 +154,70 @@ class AwsFillInventory(CommandBase):
 
         with open(environment.paths.inventory_ini, 'w') as f:
             f.write(out_string)
+
+
+class AwsSignIn(CommandBase):
+    command = 'aws-sign-in'
+    help = """
+        Use your MFA device to "sign in" to AWS for <duration> minutes (default 30)
+
+        This will store the temporary session credentials in ~/.aws/credentials
+        under a profile named with the pattern "<aws_profile>:profile".
+        After this you can use other AWS-related commands for up to <duration> minutes
+        before having to sign in again.
+    """
+
+    arguments = [
+        Argument('--duration-minutes', type=int, default=30, help="""
+            Stay signed in for this many minutes
+        """)
+    ]
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        duration_minutes = args.duration_minutes
+        aws_profile = environment.terraform_config.aws_profile
+        default_username = getpass.getuser()
+        username = input("Enter username associated with credentials [{}]: ".format(default_username)) or default_username
+        mfa_token = input("Enter your MFA token: ")
+        generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
+        print("You're sucessfully signed in!")
+        print("You will be able to use AWS from the command line for the next {} minutes."
+              .format(duration_minutes))
+        print("To use this session outside of commcare-cloud,"
+              "prefix your command with AWS_PROFILE={}:session".format(aws_profile))
+
+
+def generate_session_profile(aws_profile, username, mfa_token, duration_minutes):
+    # General idea from https://www.vividcortex.com/blog/setting-up-multi-factor-authentication-with-the-aws-cli
+    boto_session = boto3.session.Session(profile_name=aws_profile)
+    iam = boto_session.client('iam')
+    devices = iam.list_mfa_devices(UserName=username)['MFADevices']
+    device_arn = sorted(devices, key=lambda device: device['EnableDate'])[-1]['SerialNumber']
+    sts = boto_session.client('sts')
+    credentials = sts.get_session_token(
+        SerialNumber=device_arn,
+        TokenCode=mfa_token,
+        DurationSeconds=duration_minutes * 60,
+    )['Credentials']
+    _write_credentials_to_aws_credentials(
+        '{}:session'.format(aws_profile),
+        aws_access_key_id=credentials['AccessKeyId'],
+        aws_secret_access_key=credentials['SecretAccessKey'],
+        aws_session_token=credentials['SessionToken'],
+    )
+
+
+def _write_credentials_to_aws_credentials(
+        aws_profile, aws_access_key_id, aws_secret_access_key, aws_session_token,
+        aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+    # followed code examples from https://gist.github.com/incognick/c121038dbd2180c683fda6ae5e30cba3
+    config = configparser.ConfigParser()
+    config.read(os.path.realpath(aws_credentials_path))
+    if aws_profile not in config.sections():
+        config.add_section(aws_profile)
+    config.set(aws_profile, 'aws_access_key_id', aws_access_key_id)
+    config.set(aws_profile, 'aws_secret_access_key', aws_secret_access_key)
+    config.set(aws_profile, 'aws_session_token', aws_session_token)
+    with open(aws_credentials_path, 'w') as f:
+        config.write(f)
