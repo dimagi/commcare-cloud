@@ -176,6 +176,10 @@ class DjangoManage(CommandBase):
             the customary tmux command `^b` `d`, and resume the session later.
             This is especially useful for long-running commands.
         """),
+        Argument('--server', help="""
+            Server to run tmux session on.
+            Defaults to first server under django-manage inventory group
+        """),
         Argument('--release', help="""
             Name of release to run under.
             E.g. '2018-04-13_18.16'.
@@ -204,11 +208,12 @@ class DjangoManage(CommandBase):
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
         )
-        args.server = 'django_manage:0'
         if args.tmux:
+            args.server = args.server or 'django_manage:0'
             args.remote_command = remote_command
             Tmux(self.parser).run(args, [])
         else:
+            args.server = 'django_manage:0'
             ssh_args = ['sudo -u {cchq_user} {remote_command}'.format(
                 cchq_user=cchq_user,
                 remote_command=remote_command,
