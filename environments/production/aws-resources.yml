@@ -17,6 +17,7 @@ esmaster0-production: 10.202.41.120
 esmaster1-production: 10.202.41.236
 esmaster2-production: 10.202.40.201
 formplayer0-production: 10.202.10.21
+kafka0-production: 10.202.40.70
 pillow0-production: 10.202.12.170
 proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
