@@ -27,6 +27,10 @@ class TerraformConfig(jsonobject.JsonObject):
             data['aws_profile'] = data.get('account_alias')
         return super(TerraformConfig, cls).wrap(data)
 
+    @property
+    def aws_session_profile(self):
+        return '{}:session'.format(self.aws_profile)
+
 
 class VpnConnectionConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False

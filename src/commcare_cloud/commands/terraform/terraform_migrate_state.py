@@ -101,7 +101,7 @@ class RemoteMigrationStateManager(object):
 
         Essentially:
 
-        AWS_PROFILE={aws_profile} aws s3 cp s3://{state_bucket}/migration-state/{environment}.json {tempfile}
+        AWS_PROFILE={aws_session_profile} aws s3 cp s3://{state_bucket}/migration-state/{environment}.json {tempfile}
 
         wrapped as as a RemoteMigrationState object.
         """
@@ -131,7 +131,7 @@ class RemoteMigrationStateManager(object):
         Push RemoteMigrationState object to S3
 
         Essentially:
-        AWS_PROFILE={aws_profile} aws s3 cp {tempfile} s3://{state_bucket}/migration-state/{environment}.json
+        AWS_PROFILE={aws_session_profile} aws s3 cp {tempfile} s3://{state_bucket}/migration-state/{environment}.json
         after dumping the object to tempfile
         """
         temp_filename = tempfile.mktemp()

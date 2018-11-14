@@ -65,7 +65,7 @@ class Terraform(CommandBase):
             with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
-        env_vars = {'AWS_PROFILE': environment.terraform_config.aws_profile}
+        env_vars = {'AWS_PROFILE': environment.terraform_config.aws_session_profile}
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
