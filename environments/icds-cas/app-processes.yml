@@ -53,17 +53,17 @@ celery_processes:
       num_workers: 1
     ucr_indicator_queue:
       concurrency: 6
-  'celery2':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 6
-    reminder_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 1
-    ucr_indicator_queue:
-      concurrency: 6
+  # 'celery2':
+  #   reminder_case_update_queue:
+  #     pooling: gevent
+  #     concurrency: 5
+  #     num_workers: 6
+  #   reminder_queue:
+  #     pooling: gevent
+  #     concurrency: 5
+  #     num_workers: 1
+  #   ucr_indicator_queue:
+  #     concurrency: 6
   'celery3':
     reminder_case_update_queue:
       pooling: gevent
@@ -71,8 +71,12 @@ celery_processes:
       num_workers: 6
     async_restore_queue:
       concurrency: 4
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 1
     ucr_indicator_queue:
-      concurrency: 8
+      concurrency: 4
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery4':
