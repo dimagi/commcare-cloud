@@ -1,9 +1,6 @@
 formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
 
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   None:
     repeat_record_queue:

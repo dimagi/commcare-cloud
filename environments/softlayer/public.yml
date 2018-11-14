@@ -40,6 +40,8 @@ ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
+run_websockets_wsgi: True
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy[0] }}"

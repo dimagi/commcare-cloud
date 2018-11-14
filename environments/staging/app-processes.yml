@@ -1,6 +1,3 @@
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   None:
     # celery_periodic is intentionally absent from here,
