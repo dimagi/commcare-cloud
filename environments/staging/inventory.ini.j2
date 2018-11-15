@@ -93,26 +93,10 @@ pillow0
 # Amazon EC2
 formplayer0
 
-[hqredis0]
-hqredis0-staging.internal-va.commcarehq.org
-
-[hqredis1]
-hqredis1-staging.internal-va.commcarehq.org
-
-[hqredis2]
-hqredis2-staging.internal-va.commcarehq.org
-
 [redis:children]
-hqredis0
-hqredis1
-hqredis2
+hqdb1
 # Amazon ElastiCache
 # {{ redis-staging }}:6379
-
-[redis_cluster_master:children]
-hqredis0
-hqredis1
-hqredis2
 
 [es0]
 {{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes elasticsearch_master=true
