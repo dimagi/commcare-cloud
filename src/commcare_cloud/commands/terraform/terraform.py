@@ -9,6 +9,7 @@ from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR
@@ -65,7 +66,7 @@ class Terraform(CommandBase):
             with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
-        env_vars = {'AWS_PROFILE': environment.terraform_config.aws_profile}
+        env_vars = {'AWS_PROFILE': aws_sign_in(environment.terraform_config.aws_profile)}
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
