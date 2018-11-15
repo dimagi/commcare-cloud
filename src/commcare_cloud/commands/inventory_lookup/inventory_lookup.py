@@ -157,7 +157,8 @@ class DjangoManage(CommandBase):
     Run a django management command.
 
     `commcare-cloud <env> django-manage ...`
-    runs `./manage.py ...` on the first webworker of <env>.
+    runs `./manage.py ...` on the first django_manage machine of <env> or
+    server you specify.
     Omit <command> to see a full list of possible commands.
 
     Example:
@@ -166,6 +167,12 @@ class DjangoManage(CommandBase):
 
     ```
     commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
+    ```
+    
+    To do this on a specific server
+
+    ```
+    commcare-cloud <env> django-manage --tmux shell --server web0
     ```
     """
 
@@ -177,8 +184,8 @@ class DjangoManage(CommandBase):
             This is especially useful for long-running commands.
         """),
         Argument('--server', help="""
-            Server to run tmux session on.
-            Defaults to first server under django-manage inventory group
+            Server to run management command on.
+            Defaults to first server under django_manage inventory group
         """),
         Argument('--release', help="""
             Name of release to run under.
@@ -208,12 +215,11 @@ class DjangoManage(CommandBase):
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
         )
+        args.server = args.server or 'django_manage:0'
         if args.tmux:
-            args.server = args.server or 'django_manage:0'
             args.remote_command = remote_command
             Tmux(self.parser).run(args, [])
         else:
-            args.server = 'django_manage:0'
             ssh_args = ['sudo -u {cchq_user} {remote_command}'.format(
                 cchq_user=cchq_user,
                 remote_command=remote_command,
