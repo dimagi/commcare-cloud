@@ -164,6 +164,17 @@ class AwsFillInventory(CommandBase):
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
 
 
+@memoized
+def get_default_username():
+    return os.environ.get('COMMCARE_CLOUD_DEFAULT_USERNAME', getpass.getuser())
+
+
+def print_help_message_about_the_commcare_cloud_default_username_env_var():
+    puts(colored.blue("Did you know? You can put"))
+    puts(colored.blue("    export COMMCARE_CLOUD_DEFAULT_USERNAME={}".format(username)))
+    puts(colored.blue("in your profile to never have to type that in again! 🌈"))
+
+
 class AwsSignIn(CommandBase):
     command = 'aws-sign-in'
     help = """
@@ -205,9 +216,11 @@ def aws_sign_in(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES,
             and _has_valid_session_credentials(aws_session_profile):
         return aws_session_profile
 
-    default_username = getpass.getuser()
+    default_username = get_default_username()
     username = input("Enter username associated with credentials [{}]: ".format(
         default_username)) or default_username
+    if username != default_username:
+        print_help_message_about_the_commcare_cloud_default_username_env_var()
     mfa_token = input("Enter your MFA token: ")
     generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
 
