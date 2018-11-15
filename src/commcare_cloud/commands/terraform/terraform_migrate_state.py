@@ -18,6 +18,7 @@ from memoized import memoized_property
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, print_command
 from commcare_cloud.commands.command_base import CommandBase, CommandError
+from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
 
 
@@ -93,7 +94,8 @@ class RemoteMigrationStateManager(object):
 
     @memoized_property
     def s3_client(self):
-        return boto3.session.Session(profile_name=self.aws_profile).client('s3')
+
+        return boto3.session.Session(profile_name=aws_sign_in(self.aws_profile)).client('s3')
 
     def fetch(self):
         """

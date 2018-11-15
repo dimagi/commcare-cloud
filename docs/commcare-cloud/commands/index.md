@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -1111,6 +1111,27 @@ so you can tell it how existing resources map to your new code.
 
 This is a tedious task, and often follows a very predictable renaming pattern.
 This command helps fill this gap.
+
+---
+
+#### `aws-sign-in`
+
+Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
+
+```
+commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES]
+```
+
+This will store the temporary session credentials in ~/.aws/credentials
+under a profile named with the pattern "&lt;aws_profile&gt;:profile".
+After this you can use other AWS-related commands for up to &lt;duration&gt; minutes
+before having to sign in again.
+
+##### Optional Arguments
+
+###### `--duration-minutes DURATION_MINUTES`
+
+Stay signed in for this many minutes
 
 ---
 

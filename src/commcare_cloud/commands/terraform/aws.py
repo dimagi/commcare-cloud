@@ -1,12 +1,20 @@
+# coding=utf-8
 from __future__ import print_function
 
+import getpass
 import json
 import os
 import subprocess
 import textwrap
+from datetime import datetime
 
+import boto3
 import yaml
+from clint.textui import puts, colored
+from memoized import memoized
 from six.moves import shlex_quote
+from six.moves import configparser
+from six.moves import input
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -26,8 +34,9 @@ def check_output(cmd_parts, env):
 
 
 def aws_cli(environment, cmd_parts):
+
     return json.loads(
-        check_output(cmd_parts, env={'AWS_PROFILE': environment.terraform_config.aws_profile}))
+        check_output(cmd_parts, env={'AWS_PROFILE': aws_sign_in(environment.terraform_config.aws_profile)}))
 
 
 def get_aws_resources(environment):
@@ -150,3 +159,116 @@ class AwsFillInventory(CommandBase):
 
         with open(environment.paths.inventory_ini, 'w') as f:
             f.write(out_string)
+
+
+DEFAULT_SIGN_IN_DURATION_MINUTES = 30
+
+
+class AwsSignIn(CommandBase):
+    command = 'aws-sign-in'
+    help = """
+        Use your MFA device to "sign in" to AWS for <duration> minutes (default {})
+
+        This will store the temporary session credentials in ~/.aws/credentials
+        under a profile named with the pattern "<aws_profile>:profile".
+        After this you can use other AWS-related commands for up to <duration> minutes
+        before having to sign in again.
+    """.format(DEFAULT_SIGN_IN_DURATION_MINUTES)
+
+    arguments = [
+        Argument('--duration-minutes', type=int, default=DEFAULT_SIGN_IN_DURATION_MINUTES, help="""
+            Stay signed in for this many minutes
+        """)
+    ]
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        duration_minutes = args.duration_minutes
+        aws_profile = environment.terraform_config.aws_profile
+        aws_sign_in(aws_profile, duration_minutes, force_new=True)
+
+
+@memoized
+def aws_sign_in(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES,
+                force_new=False):
+    """
+    Create a temp session through MFA for a given aws profile
+
+    :param aws_profile: The name of an existing aws profile to create a temp session for
+    :param duration_minutes: How long to set the session expiration if a new one is created
+    :param force_new: If set to True, creates new credentials even if valid ones are found
+    :return: The name of temp session profile.
+             (Always the passed in profile followed by ':session')
+    """
+    aws_session_profile = '{}:session'.format(aws_profile)
+    if not force_new \
+            and _has_valid_session_credentials(aws_session_profile):
+        return aws_session_profile
+
+    default_username = getpass.getuser()
+    username = input("Enter username associated with credentials [{}]: ".format(
+        default_username)) or default_username
+    mfa_token = input("Enter your MFA token: ")
+    generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
+
+    puts(colored.green(u"✓ Sign in accepted"))
+    puts(colored.cyan(
+        "You will be able to use AWS from the command line for the next {} minutes."
+        .format(duration_minutes)))
+    puts(colored.cyan(
+        "To use this session outside of commcare-cloud, "
+        "prefix your command with AWS_PROFILE={}:session".format(aws_profile)))
+    return aws_session_profile
+
+
+def generate_session_profile(aws_profile, username, mfa_token, duration_minutes):
+    # General idea from https://www.vividcortex.com/blog/setting-up-multi-factor-authentication-with-the-aws-cli
+    boto_session = boto3.session.Session(profile_name=aws_profile)
+    iam = boto_session.client('iam')
+    devices = iam.list_mfa_devices(UserName=username)['MFADevices']
+    device_arn = sorted(devices, key=lambda device: device['EnableDate'])[-1]['SerialNumber']
+    sts = boto_session.client('sts')
+    credentials = sts.get_session_token(
+        SerialNumber=device_arn,
+        TokenCode=mfa_token,
+        DurationSeconds=duration_minutes * 60,
+    )['Credentials']
+    _write_credentials_to_aws_credentials(
+        '{}:session'.format(aws_profile),
+        aws_access_key_id=credentials['AccessKeyId'],
+        aws_secret_access_key=credentials['SecretAccessKey'],
+        aws_session_token=credentials['SessionToken'],
+        expiration=credentials['Expiration'],
+    )
+
+
+def _write_credentials_to_aws_credentials(
+        aws_profile, aws_access_key_id, aws_secret_access_key, aws_session_token,
+        expiration,
+        aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+    # followed code examples from https://gist.github.com/incognick/c121038dbd2180c683fda6ae5e30cba3
+    config = configparser.ConfigParser()
+    config.read(os.path.realpath(aws_credentials_path))
+    if aws_profile not in config.sections():
+        config.add_section(aws_profile)
+    config.set(aws_profile, 'aws_access_key_id', aws_access_key_id)
+    config.set(aws_profile, 'aws_secret_access_key', aws_secret_access_key)
+    config.set(aws_profile, 'aws_session_token', aws_session_token)
+    config.set(aws_profile, 'expiration', expiration.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    with open(aws_credentials_path, 'w') as f:
+        config.write(f)
+
+
+def _has_valid_session_credentials(
+        aws_profile, aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+    config = configparser.ConfigParser()
+    config.read(os.path.realpath(aws_credentials_path))
+    if aws_profile not in config.sections():
+        return False
+    try:
+        expiration = datetime.strptime(config.get(aws_profile, 'expiration'), "%Y-%m-%dT%H:%M:%SZ")
+    except configparser.NoOptionError:
+        return False
+
+    return datetime.utcnow() < expiration
+
