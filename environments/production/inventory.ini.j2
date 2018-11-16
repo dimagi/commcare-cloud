@@ -361,12 +361,8 @@ hqstandby2
 [control]
 {{ control-production }} hostname=control-production ec2=yes
 
-[hqdjangomanage0]
-hqdjangomanage0.internal-va.commcarehq.org
-
 [djangomanage0]
 {{ djangomanage0-production }} hostname=djangomanage0-production ec2=yes
 
 [django_manage:children]
-hqdjangomanage0
 djangomanage0
