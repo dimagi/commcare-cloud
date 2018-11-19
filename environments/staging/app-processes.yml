@@ -34,43 +34,51 @@ pillows:
       num_processes: 1
     CacheInvalidatePillow:
       num_processes: 1
-    CaseSearchToElasticsearchPillow:
-      num_processes: 1
-    CaseToElasticsearchPillow:
-      num_processes: 1
+    # CaseSearchToElasticsearchPillow:
+    #   num_processes: 1
+    # CaseToElasticsearchPillow:
+    #   num_processes: 1
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 1
-    GroupPillow:
-      num_processes: 1
-    GroupToUserPillow:
-      num_processes: 1
-    kafka-ucr-main:
-      num_processes: 1
-    kafka-ucr-static:
-      num_processes: 1
+    # FormSubmissionMetadataTrackerPillow:
+    #   num_processes: 1
+    # GroupPillow:
+    #   num_processes: 1
+    # GroupToUserPillow:
+    #   num_processes: 1
+    # kafka-ucr-main:
+    #   num_processes: 1
+    # kafka-ucr-static:
+    #   num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
       num_processes: 1
-    ReportCaseToElasticsearchPillow:
-      num_processes: 1
-    ReportXFormToElasticsearchPillow:
-      num_processes: 1
+    # ReportCaseToElasticsearchPillow:
+    #   num_processes: 1
+    # ReportXFormToElasticsearchPillow:
+    #   num_processes: 1
     SqlSMSPillow:
       num_processes: 1
-    UnknownUsersPillow:
-      num_processes: 1
+    # UnknownUsersPillow:
+    #   num_processes: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-    UserPillow:
+    # UserPillow:
+    #   num_processes: 1
+    # XFormToElasticsearchPillow:
+    #   num_processes: 1
+    kafka-case-ucr-es:
+      num_processes: 2
+    kafka-xform-ucr-es:
+      num_processes: 2
+    get_group_es_pillow:
       num_processes: 1
-    XFormToElasticsearchPillow:
+    user-to-es-ucr-pillow:
       num_processes: 1
