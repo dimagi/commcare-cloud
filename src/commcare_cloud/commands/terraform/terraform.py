@@ -48,7 +48,7 @@ class Terraform(CommandBase):
             os.symlink(modules_dir, modules_dest)
 
         if args.username != get_default_username():
-            print_help_message_about_the_commcare_cloud_default_username_env_var()
+            print_help_message_about_the_commcare_cloud_default_username_env_var(args.username)
 
         key_name = args.username
 
