@@ -7,4 +7,4 @@ instances:
   - nginx_status_url: http://localhost/nginx_stub_status/
     tags:
       - environment:{{ env_monitoring_id }}
-    no_proxy: True
+    skip_proxy: True
