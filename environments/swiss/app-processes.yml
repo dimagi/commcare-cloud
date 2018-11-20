@@ -1,9 +1,6 @@
 jython_memory: "1024m"
 formplayer_memory: "1024m"
 
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   'swiss.commcarehq.org':
     repeat_record_queue,celery,export_download_queue,case_import_queue:
