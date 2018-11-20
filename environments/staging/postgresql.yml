@@ -1,3 +1,5 @@
+DEFAULT_POSTGRESQL_HOST: rds_pg0
+
 override:
   pgbouncer_pool_mode: transaction
   pgbouncer_max_connections: 800
@@ -10,6 +12,8 @@ dbs:
   ucr:
     query_stats: True
   form_processing:
+    proxy:
+      host: pgproxy0
     partitions:
       p1:
         shards: [0, 99]
