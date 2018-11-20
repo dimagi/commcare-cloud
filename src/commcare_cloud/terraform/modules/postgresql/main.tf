@@ -32,7 +32,7 @@ module "postgresql" {
   subnet_ids = "${var.subnet_ids}"
 
   # DB parameter group
-  family = "postgresql9.6"
+  family = "postgres9.6"
 
   # DB option group
   major_engine_version = "9.6"
