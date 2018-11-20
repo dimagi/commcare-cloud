@@ -9,6 +9,7 @@ import textwrap
 from datetime import datetime
 
 import boto3
+import six
 import yaml
 from clint.textui import puts, colored
 from memoized import memoized
@@ -164,7 +165,7 @@ class AwsFillInventory(CommandBase):
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
 
 
-class StringIsGuess(unicode):
+class StringIsGuess(six.text_type):
     def __new__(cls, *args, **kwargs):
         is_guess = kwargs.pop('is_guess')
         self = super(StringIsGuess, cls).__new__(cls, *args, **kwargs)
