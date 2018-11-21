@@ -466,11 +466,12 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run a django management command.
 
 ```
-commcare-cloud <env> django-manage [--tmux] [--release RELEASE]
+commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE]
 ```
 
 `commcare-cloud <env> django-manage ...`
-runs `./manage.py ...` on the first webworker of &lt;env&gt;.
+runs `./manage.py ...` on the first django_manage machine of &lt;env&gt; or
+server you specify.
 Omit &lt;command&gt; to see a full list of possible commands.
 
 #### Example
@@ -481,6 +482,12 @@ To open a django shell in a tmux window using the `2018-04-13_18.16` release.
 commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
 ```
 
+To do this on a specific server
+
+```
+commcare-cloud <env> django-manage --tmux shell --server web0
+```
+
 ##### Optional Arguments
 
 ###### `--tmux`
@@ -489,6 +496,11 @@ If this option is included, the management command will be
 run in a new tmux window under the `cchq` user. You may then exit using
 the customary tmux command `^b` `d`, and resume the session later.
 This is especially useful for long-running commands.
+
+###### `--server SERVER`
+
+Server to run management command on.
+Defaults to first server under django_manage inventory group
 
 ###### `--release RELEASE`
 
