@@ -56,7 +56,8 @@
   postgresql_privs:
     db: postgres
     state: present
-    privs: "{{ item.1.privs }}"
+    type: "{{ item.1.type|default(omit) }}"
+    privs: "{{ item.1.privs|default(omit) }}"
     objs: "{{ item.1.objs }}"
     roles: "{{ item.0.username }}"
     port: "{{ postgresql_port }}"
