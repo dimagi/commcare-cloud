@@ -1,7 +1,6 @@
 data_dirs: []
 advanced_conf: ""
 drop_conf: ""
-service: "{{ name }}"
 ulimit_n: 65536
 
 _backend_vars:

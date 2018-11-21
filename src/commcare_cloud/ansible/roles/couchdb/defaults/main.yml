@@ -1,7 +1,7 @@
 ---
 # /roles/couchdb/defaults/main.yml
 couchdb_source_mirror: http://mirrors.ibiblio.org/apache/couchdb/source
-couchdb_version: 1.6.1
+couchdb_version: 1.7.2
 couchdb_distro_filename: "apache-couchdb-{{ couchdb_version }}.tar.gz"
 couchdb_install_path: /usr/local/bin/couchdb
 couch_data_dir: '{{ encrypted_root }}/couchdb'

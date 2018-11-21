@@ -15,3 +15,8 @@ bundle install
  bundle exec jekyll serve
  ```
  to serve the doc site locally.
+
+# Reference Material
+
+- [Kramdown](https://kramdown.gettalong.org/documentation.html)
+- [Conversion to HTML](https://kramdown.gettalong.org/converter/html.html)

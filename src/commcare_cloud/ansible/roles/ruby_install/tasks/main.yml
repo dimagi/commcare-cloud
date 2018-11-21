@@ -1,0 +1,16 @@
+---
+- name: Add ruby ppa
+  apt_repository: repo='ppa:brightbox/ruby-ng'
+  register: add_ruby_ppa
+
+- name: Update package list for ruby
+  apt: update_cache=yes
+  when: add_ruby_ppa is changed
+
+- name: Install ruby
+  apt: name="{{ item }}" state=present
+  become: yes
+  with_items:
+    - ruby2.3
+    - ruby2.3-dev
+  ignore_errors: '{{ ansible_check_mode }}'

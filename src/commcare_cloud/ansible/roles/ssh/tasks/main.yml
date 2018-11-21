@@ -1,31 +1,5 @@
-- name: Disallow root SSH access
-  lineinfile:
+- name: Set sshd configuration
+  template:
+    src: ../templates/sshd_config.j2
     dest: /etc/ssh/sshd_config
-    regexp: "^PermitRootLogin"
-    line: "PermitRootLogin no"
-    state: present
-  notify: Restart ssh
-
-- name: Disable password SSH access
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication {{ 'yes' if ssh_allow_password else 'no' }}"
-    state: present
-  notify: Restart ssh
-
-- name: Ensure challenge response access is disallowed
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^ChallengeResponseAuthentication"
-    line: "ChallengeResponseAuthentication no"
-    state: present
-  notify: Restart ssh
-
-- name: Set SSH logging level to VERBOSE
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^LogLevel"
-    line: "LogLevel VERBOSE"
-    state: present
   notify: Restart ssh

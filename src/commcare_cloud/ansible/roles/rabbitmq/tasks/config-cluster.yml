@@ -1,0 +1,33 @@
+---
+- name: rabbitmq_clustering | ensure hostnames are in the host file
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^{{ hostvars[item][internal_network_interface_fact].ipv4.address }}\\s"
+    line: "{{ hostvars[item][internal_network_interface_fact].ipv4.address }} {{ hostvars[item]['ansible_hostname'] }}"
+  with_items: "{{ groups['rabbitmq'] }}"
+
+- name: rabbitmq_clustering | Capturing Erlang Cookie On Master
+  command: "cat {{ rabbitmq_erlang_cookie_file }}"
+  become: true
+  register: "rabbitmq_erlang_cookie_local"
+
+- name: rabbitmq_clustering | Setting Erlang Cookie Of Master on Non-Master
+  set_fact:
+    rabbitmq_erlang_cookie: "{{ hostvars[rabbitmq_cluster_master]['rabbitmq_erlang_cookie_local']['stdout'] }}"
+  when: inventory_hostname != rabbitmq_cluster_master
+
+- name: rabbitmq_clustering| Stop rabbitmq for cookie update
+  service: name=rabbitmq-server state=stopped
+  when: inventory_hostname != rabbitmq_cluster_master and rabbitmq_erlang_cookie_local.stdout != rabbitmq_erlang_cookie
+
+- name: rabbitmq_clustering | copy erlang cookie
+  template:
+    src: erlang.cookie.j2
+    dest: "{{ rabbitmq_erlang_cookie_file }}"
+    owner: rabbitmq
+    group: rabbitmq
+    mode: 0400
+    # backing up in case the need to recover
+    backup: yes
+  become: true
+  when: inventory_hostname != rabbitmq_cluster_master

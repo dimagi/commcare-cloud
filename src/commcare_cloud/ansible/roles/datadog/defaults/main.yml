@@ -13,6 +13,8 @@ datadog_shell_sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848
 
 monitoring_groups:
   - webworkers
+  - hq_webworkers
+  - mobile_webworkers
   - proxy
   - elasticsearch
   - postgresql

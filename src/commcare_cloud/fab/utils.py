@@ -139,21 +139,22 @@ class DeployMetadata(object):
 
         # turn whatever `code_branch` is into a commit hash
         branch = self.repo.get_branch(self._code_branch)
-        deploy_ref = branch.commit.sha
+        return branch.commit.sha
 
+    def tag_setup_release(self):
         if _github_auth_provided():
             try:
                 self.repo.create_git_ref(
                     ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
-                    sha=deploy_ref,
+                    sha=self.deploy_ref,
                 )
             except UnknownObjectException:
                 raise Exception(
                     'Github API key does not have the right settings. '
                     'Please create an API key with the public_repo scope enabled.'
                 )
-
-        return deploy_ref
+            return True
+        return False
 
     @property
     def current_ref_is_different_than_last(self):

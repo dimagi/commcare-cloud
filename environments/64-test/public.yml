@@ -3,8 +3,6 @@ internal_domain_name: null
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 
-touchforms_enabled: false
-
 riak_backend: "bitcask"
 riak_ring_size: 64
 
@@ -29,7 +27,7 @@ DATADOG_ENABLED: True
 
 CLOUDANT_CLUSTER_NAME: null
 
-backup_es: False
+backup_es_s3: False
 backup_postgres: plain
 backup_blobdb: True
 postgresql_backup_master: True
@@ -46,7 +44,7 @@ couchdb2:
 
 couchdb_bind:
   ty: static
-  host: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+  host: '{{ internal_ipv4.address }}'
 
 couch_dbs:
   default:
@@ -63,13 +61,7 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
-TOUCHFORMS_API_USER: 'touchforms@example.com'
-
 localsettings:
-  ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - "{{ SITE_HOST }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
@@ -77,7 +69,6 @@ localsettings:
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
-  KAFKA_URL: "{{ groups.kafka.0 }}:9092"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

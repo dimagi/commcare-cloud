@@ -1,6 +1,0 @@
----
-- name: Touchforms
-  hosts: touchforms
-  become: true
-  roles:
-    - {role: touchforms, tags: 'touchforms'}

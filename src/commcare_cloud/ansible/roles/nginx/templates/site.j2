@@ -12,7 +12,7 @@ upstream {{ balancer.name }} {
   least_conn;
   {% endif %}
 
-{% for host in groups[balancer.hosts] %}
+{% for host in groups[balancer.hosts] | default(balancer.hosts) %}
   server {{ host }}:{{ balancer.port }};
 {% endfor %}
 }
