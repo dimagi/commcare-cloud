@@ -147,6 +147,7 @@ airflow0
 {{ control-staging }} hostname=control-staging ec2=yes
 
 [ansible_skip:children]
+rds_pg0
 
 [django_manage:children]
 # Amazon EC2
