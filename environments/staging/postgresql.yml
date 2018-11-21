@@ -1,5 +1,9 @@
 DEFAULT_POSTGRESQL_HOST: rds_pg0
 
+host_settings:
+  rds_pg0:
+    port: 5432
+
 override:
   pgbouncer_pool_mode: transaction
   pgbouncer_max_connections: 800
