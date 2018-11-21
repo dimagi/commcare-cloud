@@ -1101,7 +1101,8 @@ Good for not having to enter vault password again.
 The username of the user whose public key will be put on new servers.
 
 Normally this would be _your_ username.
-Defaults to the username of the user running the command.
+Defaults to the value of the COMMCARE_CLOUD_DEFAULT_USERNAME environment variable
+or else the username of the user running the command.
 
 ---
 
