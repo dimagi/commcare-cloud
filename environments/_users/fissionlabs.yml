@@ -1,4 +1,4 @@
 dev_users:
   present:
-  - fission_sanjay
+  - schinthala
   absent: []
