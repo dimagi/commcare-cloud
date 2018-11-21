@@ -147,16 +147,8 @@ airflow0
 # Amazon EC2
 {{ control-staging }} hostname=control-staging ec2=yes
 
-[pg_standby]
-
 [ansible_skip:children]
 
 [django_manage:children]
 # Amazon EC2
 web0
-
-[pg_barman:children]
-hqriak00
-
-[pg_barman_source:children]
-postgresql
