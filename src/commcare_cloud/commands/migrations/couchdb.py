@@ -75,7 +75,7 @@ class MigrateCouchdb(CommandBase):
         if args.action == 'commit':
             return commit(migration)
 
-        if args.actoin == 'clean':
+        if args.action == 'clean':
             return clean(migration, ansible_context, args.skip_check)
 
 

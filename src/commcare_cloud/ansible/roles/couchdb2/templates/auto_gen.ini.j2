@@ -1,9 +1,0 @@
-[admins]
-{{ couchdb2.username }} = {{ couchdb2.password|couchdb_password_hash(couchdb_password_salt) }}
-
-[couchdb]
-uuid = {{ couchdb_instance_uuid }}
-
-[couch_httpd_auth]
-secret = {{ couchdb_httpd_auth_secret }}
-

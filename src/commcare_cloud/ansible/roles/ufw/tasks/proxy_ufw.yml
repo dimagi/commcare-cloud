@@ -1,3 +1,8 @@
+- name: "make sure the specified public interface actually exists"
+  # a bit of a hack, but just hopefully prevents turning off access on all interfaces!
+  shell: "ifconfig | grep {{ ufw_private_interface }}"
+  changed_when: no
+
 # Rules for proxies
 - name: allow web traffic
   ufw:

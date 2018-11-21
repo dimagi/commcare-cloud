@@ -1,5 +1,5 @@
 internal_domain_name: 'internal-icds-new.commcarehq.org'
-cluster_ip_range: '10.247.164.0/23'
+db_vlan_ip_range: '10.247.164.0/23'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 riak_backend: "bitcask"
@@ -14,7 +14,7 @@ supervisor_http_enabled: True
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es: False
+backup_es_s3: False
 postgres_s3: False
 couch_s3: False
 backup_couch: False
@@ -118,15 +118,13 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
+couchdb_reduce_limit: False
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
   ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
-    - '{{ hostvars[groups.proxy.0].public_ip }}'
   ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':
@@ -167,7 +165,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  KAFKA_URL: "{{ groups.kafka0.0 }}:9092"
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'
@@ -247,4 +244,9 @@ localsettings:
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
   UCR_COMPARISONS:
     'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
+    'static-icds-cas-static-mpr_6b_child_health_cases_v2': 'static-icds-cas-static-custom_sql_mpr_6b_child_health_cases_v2'
+    'static-icds-cas-static-mpr_6ac_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_6ac_child_health_cases_v2'
+    'static-icds-cas-static-mpr_5_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_5_child_health_cases_v2'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+  WAREHOUSE_DATABASE_ALIAS: 'warehouse'

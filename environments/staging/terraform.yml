@@ -1,0 +1,111 @@
+account_alias: commcare-staging
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "us-east-1"
+environment: "staging"
+azs:
+  - "us-east-1a"
+  - "us-east-1b"
+  - "us-east-1c"
+vpc_begin_range: "10.201"
+
+vpn_connections:
+  - name: rackspace
+    cidr_blocks:
+      - "172.24.16.0/22"
+      - "172.24.32.0/22"
+    ip_address: "104.130.188.4"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+external_routes:
+  - cidr_block: "172.24.16.0/22"
+    gateway_id: "vgw-04585c3d515d0589b"
+  - cidr_block: "172.24.32.0/22"
+    gateway_id: "vgw-04585c3d515d0589b"
+
+servers:
+  - server_name: "control-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 50
+  - server_name: "web0-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "web1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+  - server_name: "es0-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+  - server_name: "es1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "pillow0-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "celery0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "airflow0-staging"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+  - server_name: "formplayer0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+  - server_name: "couch0-staging"
+    server_instance_type: "t2.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 50
+  - server_name: "couch1-staging"
+    server_instance_type: "t2.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 50
+  - server_name: "couch2-staging"
+    server_instance_type: "t2.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 50
+  - server_name: "rabbit0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+
+proxy_servers:
+  - server_name: "proxy1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "public"
+    az: "a"
+    volume_size: 80
+
+
+rds_instances:
+  # dummy entry that doesn't get created
+  # See: https://github.com/hashicorp/terraform/issues/9858#issuecomment-263654145
+  - create: no
+    identifier: "staging0"
+    instance_type: "db.t3.medium"
+    storage: 300
+
+redis:
+  create: no

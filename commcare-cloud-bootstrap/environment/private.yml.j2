@@ -1,0 +1,33 @@
+secrets:
+  ECRYPTFS_PASSWORD: '{{ generate_uuid() }}'
+  KSPLICE_ACTIVATION_KEY:
+  DATADOG_API_KEY: null
+  DATADOG_APP_KEY: null
+  AMQP_USER: "{{ deploy_env }}_worker"
+  AMQP_PASSWORD: '{{ generate_uuid() }}'
+  SUPERVISOR_HTTP_USERNAME: user
+  SUPERVISOR_HTTP_PASSWORD: '{{ generate_uuid() }}'
+  POSTGRES_USERS:
+    commcare:
+      username: commcarehq
+      password: '{{ generate_uuid() }}'
+    devreadonly:
+      username: "devreadonly"
+      password: '{{ generate_uuid() }}'
+      role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+      privs:
+        -
+          privs: SELECT
+          objs: ALL_IN_SCHEMA
+    replication:
+        username: 'hqrepl'
+        password: '{{ generate_uuid() }}'
+        role_attr_flags: 'LOGIN,REPLICATION'
+
+localsettings_private:
+  COUCH_PASSWORD: '{{ generate_uuid() }}'
+  COUCH_USERNAME: commcarehq
+  FORMPLAYER_INTERNAL_AUTH_KEY: '{{ generate_uuid() }}'
+  SECRET_KEY: '{{ generate_uuid() }}'
+
+ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9

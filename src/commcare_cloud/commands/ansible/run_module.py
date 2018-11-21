@@ -102,10 +102,9 @@ class RunAnsibleModule(CommandBase):
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
                        become, become_user, factory_auth, *extra_args):
     cmd_parts = (
-        'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
         '-m', module,
-        '-i', environment.paths.inventory_ini,
+        '-i', environment.paths.inventory_source,
         '-a', module_args,
         '--diff',
     ) + tuple(extra_args)
@@ -118,11 +117,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     include_vars = False
     if become:
         cmd_parts += ('--become',)
-        if become_user not in ('cchq',):
-            # ansible user can do things as cchq without a password,
-            # but needs the ansible user password in order to do things as other users.
-            # In that case, we need to pull in the vault variable containing this password
-            include_vars = True
+        include_vars = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
 
@@ -135,17 +130,15 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
-        cmd_parts += ('--vault-password-file=/bin/cat',)
+        cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
-    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
+    env_vars = ansible_context.env_vars
     if ask_vault_pass:
-        p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
-    else:
-        p.communicate()
-    return p.returncode
+        env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
+    return subprocess.call(cmd_parts, env=env_vars)
 
 
 class RunShellCommand(CommandBase):

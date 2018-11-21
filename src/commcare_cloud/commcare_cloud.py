@@ -4,17 +4,21 @@ from __future__ import absolute_import
 
 import inspect
 import os
-
 import sys
 import warnings
 from collections import OrderedDict
+
+from clint.textui import puts, colored
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory
+from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
+from commcare_cloud.commands.terraform.terraform import Terraform
+from commcare_cloud.commands.terraform.terraform_migrate_state import TerraformMigrateState
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from commcare_cloud.commands.dbs import ListDbs
 from .argparse14 import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
@@ -26,7 +30,8 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from .commands.ansible.ops_tool import ListDatabases
+from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
@@ -61,7 +66,13 @@ COMMAND_GROUPS = OrderedDict([
         MigrateCouchdb,
         Downtime,
         CopyFiles,
-        ListDbs,
+        ListDatabases,
+        Terraform,
+        TerraformMigrateState,
+        AwsList,
+        AwsFillInventory,
+        OpenvpnActivateUser,
+        OpenvpnClaimUser,
     ])
 ])
 
@@ -73,31 +84,15 @@ def run_on_control_instead(args, sys_argv):
     argv = [arg for arg in sys_argv][1:]
     argv.remove('--control')
     executable = 'commcare-cloud'
+    branch = getattr(args, 'branch', 'master')
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control', '-t',
-        'source ~/init-ansible && git checkout master && control/update_code.sh && source ~/init-ansible && {} {}'
-        .format(executable, ' '.join([shlex_quote(arg) for arg in argv]))
+        'source ~/init-ansible && git checkout master && control/update_code.sh && git checkout {branch} && git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
+        .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))
     ]
 
     print_command(' '.join([shlex_quote(part) for part in cmd_parts]))
     os.execvp(executable, cmd_parts)
-
-
-def add_backwards_compatibility_to_args(args):
-    """
-    make accessing args.environment trigger a DeprecationWarning and return args.env_name
-
-    This function and any calls to it may be deleted once all open PRs using args.environment
-    have been merged and all such usage fixed.
-    """
-    class NamespaceWrapper(args.__class__):
-        @property
-        def environment(self):
-            warnings.warn("args.environment is deprecated. Use args.env_name instead.",
-                          DeprecationWarning)
-            return self.env_name
-
-    args.__class__ = NamespaceWrapper
 
 
 def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
@@ -148,16 +143,24 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
     return parser, subparsers, commands
 
 
-def main():
+def call_commcare_cloud(input_argv=sys.argv):
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
-    args, unknown_args = parser.parse_known_args()
-
-    add_backwards_compatibility_to_args(args)
+    args, unknown_args = parser.parse_known_args(input_argv[1:])
 
     if args.control:
-        run_on_control_instead(args, sys.argv)
-    exit_code = commands[args.command].run(args, unknown_args)
+        run_on_control_instead(args, input_argv)
+    try:
+        exit_code = commands[args.command].run(args, unknown_args)
+    except CommandError as e:
+        puts(colored.red(str(e), bold=True))
+        return 1
+
+    return exit_code
+
+
+def main():
+    exit_code = call_commcare_cloud()
     if exit_code is not 0:
         exit(exit_code)
 

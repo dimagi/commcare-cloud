@@ -1,0 +1,7 @@
+- name: Install Python packages
+  apt: name="{{ item }}" state=present
+  become: yes
+  with_items:
+    - python-pip
+    - python-dev
+    - python-setuptools

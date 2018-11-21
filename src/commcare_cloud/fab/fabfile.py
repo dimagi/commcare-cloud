@@ -97,7 +97,6 @@ env.roledefs = {
     # otherwise deploy() will run multiple times in parallel causing issues
     'django_monolith': [],
 
-    'formsplayer': [],
     'staticfiles': [],
 
     # package level configs that are not quite config'ed yet in this fabfile
@@ -250,7 +249,6 @@ def env_common():
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
-    touchforms = servers['touchforms']
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']
@@ -272,7 +270,6 @@ def env_common():
         'django_app': webworkers,
         'django_manage': django_manage,
         'django_pillowtop': pillowtop,
-        'formsplayer': touchforms,
         'formplayer': formplayer,
         'staticfiles': proxy,
         'lb': [],
@@ -456,6 +453,7 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
+    env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
     execute_with_timing(release.update_code(full_cluster), deploy_ref)
     execute_with_timing(release.update_virtualenv(full_cluster))
@@ -609,7 +607,6 @@ def unlink_current():
 def copy_release_files(full_cluster=True):
     execute(release.copy_localsettings(full_cluster))
     if full_cluster:
-        execute(release.copy_tf_localsettings)
         execute(release.copy_formplayer_properties)
         execute(release.copy_components)
         execute(release.copy_node_modules)
@@ -813,6 +810,11 @@ def stop_celery():
 @task
 def start_celery():
     execute(supervisor.start_celery_tasks, True)
+
+
+@task
+def restart_webworkers():
+    execute(supervisor.restart_webworkers)
 
 
 @task

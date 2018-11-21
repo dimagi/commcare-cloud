@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: jython
-  - {role: supervisor, tags: supervisor}

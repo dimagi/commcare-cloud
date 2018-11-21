@@ -18,7 +18,6 @@ from ..const import (
     OFFLINE_STAGING_DIR,
     ROLES_ALL_SRC,
     RELEASE_RECORD,
-    ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
     ROLES_STATIC,
     ROLES_DEPLOY,
@@ -397,19 +396,6 @@ def copy_localsettings(full_cluster=True):
         sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
 
     return copy
-
-
-@parallel
-@roles(ROLES_TOUCHFORMS)
-def copy_tf_localsettings():
-    hosts_defined = _hosts_in_roles(ROLES_TOUCHFORMS)
-    path_template = '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'
-    if hosts_defined and files.exists(path_template.format(env.code_current)):
-        sudo(
-            'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
-            '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
-                env.code_current, env.code_root
-            ))
 
 
 @parallel

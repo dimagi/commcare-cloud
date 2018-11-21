@@ -21,6 +21,7 @@
     path: /etc/default/nginx
     regexp: '^ULIMIT='
     line: 'ULIMIT="-n 65536"'
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Create nginx http user
   become: yes
@@ -57,125 +58,7 @@
     mode: "u=rwx,g=rwx,o=r"
     state: directory
 
-- name: Create directories for certificates
-  become: yes
-  file:
-    path: "{{ item }}"
-    owner: "root"
-    group: "root"
-    mode: "u=rwx,g=rwx,o=r"
-    state: directory
-  with_items:
-    - "{{ ssl_certs_dir }}"
-    - "{{ ssl_keys_dir }}"
-
-- name: Copy cchq SSL cert
-  become: yes
-  copy:
-    content: '{{ nginx_combined_cert_value }}'
-    dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and nginx_combined_cert_value
-  tags:
-    - update-cert
-
-- name: Copy cchq SSL Key
-  become: yes
-  copy:
-    content: "{{ nginx_key_value }}"
-    dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and nginx_key_value
-  tags:
-    - update-cert
-
-
-- name: Link CCHQ SSL cert
-  become: yes
-  file:
-    src: "/etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem"
-    dest: "{{ ssl_certs_dir }}/{{ nginx_ssl_cert }}"
-    state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl
-  tags:
-    - update-cert
-    - letsencrypt
-
-- name: Link CCHQ SSL Key
-  become: yes
-  file:
-    src: "/etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem"
-    dest: "{{ ssl_keys_dir }}/{{ nginx_ssl_key }}"
-    state: link
-  when: not fake_ssl_cert and letsencrypt_cchq_ssl
-  tags:
-    - update-cert
-    - letsencrypt
-
-- name: Copy commtrack SSL cert
-  become: yes
-  copy:
-    content: "{{ commtrack_nginx_combined_cert_value }}"
-    dest: "{{ ssl_certs_dir }}/{{ commtrack_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and commtrack_nginx_combined_cert_value is defined
-
-- name: Copy commtrack SSL Key
-  become: yes
-  copy:
-    content: "{{ commtrack_key_value }}"
-    dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and commtrack_key_value is defined
-
-- name: Link CAS SSL cert
-  become: yes
-  file:
-    src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/fullchain.pem"
-    dest: "{{ ssl_certs_dir }}/{{ cas_nginx_ssl_cert }}"
-    state: link
-  when: not fake_ssl_cert and CAS_SITE_HOST | default(None) and letsencrypt_cas_ssl
-  tags:
-    - link_ssl_cas
-
-- name: Link CAS SSL Key
-  become: yes
-  file:
-    src: "/etc/letsencrypt/live/{{CAS_SITE_HOST}}/privkey.pem"
-    dest: "{{ ssl_keys_dir }}/{{ cas_nginx_ssl_key  }}"
-    state: link
-  when: not fake_ssl_cert and CAS_SITE_HOST | default(None) and letsencrypt_cas_ssl
-  tags:
-    - link_ssl_cas
-
-- name: Link PNA SSL cert
-  become: yes
-  file:
-    src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/fullchain.pem"
-    dest: "{{ ssl_certs_dir }}/{{ pna_nginx_ssl_cert }}"
-    state: link
-  when: not fake_ssl_cert and PNA_SITE_HOST | default(None)
-  tags:
-    - link_pna_cas
-
-- name: Link PNA SSL Key
-  become: yes
-  file:
-    src: "/etc/letsencrypt/live/{{PNA_SITE_HOST}}/privkey.pem"
-    dest: "{{ ssl_keys_dir }}/{{ pna_nginx_ssl_key  }}"
-    state: link
-  when: not fake_ssl_cert and PNA_SITE_HOST | default(None)
-  tags:
-    - link_pna_cas
+- name: Make sure the log directory exists
+  import_tasks: roles/commcarehq/tasks/www_log_dir.yml
 
 - set_fact: nginx_installed=True

@@ -1,14 +1,27 @@
-- name: Common
+- import_playbook: host_group_aliases.yml
+
+- name: Bootstrap Machine
   hosts: all
   become: true
   roles:
+    - role: bootstrap-machine
+      tags:
+        - bootstrap-machine
+        - common
+
+- name: Common
+  hosts: all_commcarehq
+  become: true
+  roles:
     - common
+  tags: common
 
 - name: ufw (firewall)
-  hosts: '!proxy:!cas_proxy:!pna_proxy:!couchdb2_proxy'
+  hosts: 'all_commcarehq:!proxy:!cas_proxy:!pna_proxy:!couchdb2_proxy'
   become: true
   roles:
     - {role: ufw, tags: ufw, when: ufw_private_interface is defined}
+  tags: common
 
 - name: ufw (proxy firewall)
   hosts: 'proxy:cas_proxy:pna_proxy:couchdb2_proxy'
@@ -16,33 +29,32 @@
   tasks:
     - import_tasks: roles/ufw/tasks/proxy_ufw.yml tags=ufw-proxy
       when: ufw_private_interface is defined or is_monolith|bool
+  tags: common
 
 - name: ufw off (firewall)
-  hosts: all
+  hosts: all_commcarehq
   become: true
   tasks:
     - ufw: state=disabled
       when: ufw_private_interface is not defined and not is_monolith|bool
       tags: ufw
+  tags: common
 
 - name: Datadog agent
-  hosts: all
+  hosts: all_commcarehq
   become: true
   roles:
     - {role: datadog, tags: datadog, when: DATADOG_ENABLED}
-
-- name: Configure swap
-  hosts: all
-  roles:
-    - {role: swap}
+  tags: common
 
 - name: Configure monit
-  hosts: all
+  hosts: all_commcarehq
   roles:
     - {role: monit, tags: monit}
+  tags: common
 
 - name: Configure static routes
-  hosts: all
+  hosts: all_commcarehq
   tasks:
 
   - name: Checks existing static routes
@@ -64,9 +76,10 @@
     tags:
       - static-routes
       - after-reboot
+  tags: common
 
 - name: DNS configuration
-  hosts: all
+  hosts: all_commcarehq
   tasks:
 
   - name: set running configuration
@@ -90,3 +103,4 @@
     tags:
       - dns
       - after-reboot
+  tags: common
