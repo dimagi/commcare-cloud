@@ -11,6 +11,13 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-11-20** [New Case Importer Celery Queue](0006-new-case-importer-celery-queue.md) (_action required_)
+Importing cases is often a time-sensitive task, and prolonged backlogs are
+very visible to users.  It will be useful to have a separate queue
+specifically for case imports, to improve visibility into backups as well as
+typical runtimes.  Additionally, this is a first step towards allocating
+resources specifically for case imports, should that become necessary.
+
 ### **2018-08-16** [Support multiple Kafka brokers](0005-support-multiple-kafak-brokers.md) (_action required_)
 Large scale deployments of CommCare require scaling out Kafka brokers to support the high
 traffic volume (as well as for high availability). Up until now CommCare has only
