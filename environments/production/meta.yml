@@ -4,4 +4,5 @@ users:
   - dimagi
   - dimagi-support
   - g2
+  - fissionlabs
 slack_alerts_channel: alerts-production
