@@ -6,7 +6,7 @@
 
 ## CommCare Version Dependency
 This version of CommCare must be deployed before rolling out this change:
-[asdasdsd](https://github.com/dimagi/commcare-hq/commit/asdasdsd)
+[todo](https://github.com/dimagi/commcare-hq/commit/todo)
 
 
 ## Change Context
