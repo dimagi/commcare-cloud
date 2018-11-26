@@ -37,7 +37,7 @@ pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,"[""/dev/vdb""]","[""/de
 group,I.var: pgbouncer_max_connections,I.var: pgbouncer_default_pool,I.var: postgresql_max_connections,S.var: postgresql_work_mem,S.var: postgresql_shared_buffers,S.var: postgresql_random_page_cost,S.var: postgresql_max_worker_processes,S.var: postgresql_max_parallel_workers_per_gather,S.var: postgresql_max_parallel_degree,
 postgres,,,,,,,,,,
 pg_standby,,,,,,,,,,
-ucr_dbs,3500,775,500,4096kB,12GB,1.1,16,8,1,
+ucr_dbs,3500,775,500,4096kB,12GB,1.1,16,8,2,
 shard_standby_dbs,3500,775,800,41943kB,12GB,,,,,
 shard_dbs,3500,775,800,41943kB,12GB,,,,,
 main_dbs,3500,775,400,41943kB,12GB,,,,,
