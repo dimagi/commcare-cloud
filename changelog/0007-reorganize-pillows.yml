@@ -4,7 +4,7 @@ date: 2018-11-26
 
 optional_per_env: no
 
-min_commcare_version: asdasdsd # to be filled after the main PR gets merged
+min_commcare_version: todo # to be filled after the main PR gets merged
 max_commcare_version: 
 
 context: |
