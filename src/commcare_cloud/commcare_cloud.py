@@ -14,7 +14,7 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
-from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory
+from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
 from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
 from commcare_cloud.commands.terraform.terraform import Terraform
 from commcare_cloud.commands.terraform.terraform_migrate_state import TerraformMigrateState
@@ -69,6 +69,7 @@ COMMAND_GROUPS = OrderedDict([
         ListDatabases,
         Terraform,
         TerraformMigrateState,
+        AwsSignIn,
         AwsList,
         AwsFillInventory,
         OpenvpnActivateUser,

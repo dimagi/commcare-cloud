@@ -79,7 +79,7 @@ locals {
     password = ""  # must be overridden
     prevent_destroy = true
     instance_count = 1
-    parameter_group_name = "dimagi-postgres9-6"
+    parameter_group_name = "default.postgres9.6"
   }
   # todo: fold these two into default_rds once terraform 0.12 comes out
   # todo: allow heterogeneous maps as module variables

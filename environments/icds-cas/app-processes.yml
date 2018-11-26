@@ -1,5 +1,6 @@
 formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
+
 celery_processes:
   None:
     repeat_record_queue:
@@ -11,7 +12,7 @@ celery_processes:
     # on this machine have the cpu they need to perform their tasks.
     flower: {}
     beat: {}
-    celery,export_download_queue:
+    celery,export_download_queue,case_import_queue:
       concurrency: 8
       max_tasks_per_child: 5
     celery_periodic:

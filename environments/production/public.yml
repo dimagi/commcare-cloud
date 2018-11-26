@@ -43,6 +43,8 @@ KSPLICE_ACTIVE: yes
 
 ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
 
+run_websockets_wsgi: True
+
 couch_dbs:
   default:
     host: commcarehq.cloudant.com

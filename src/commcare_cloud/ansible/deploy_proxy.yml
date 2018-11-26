@@ -162,3 +162,7 @@
             - sharedscripts
           scripts:
             postrotate: "[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`"
+
+- name: Setup Letsencrypt
+  import_playbook: letsencrypt_cert.yml
+  tags: setup_letsencrypt

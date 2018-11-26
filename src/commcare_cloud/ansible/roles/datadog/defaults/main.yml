@@ -27,5 +27,6 @@ monitoring_groups:
   - kafka
   - redis
   - couchdb2
+  - couchdb2_proxy
   - couchdb
   - django_manage

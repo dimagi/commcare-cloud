@@ -9,6 +9,8 @@ from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
+    print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR
@@ -24,11 +26,12 @@ class Terraform(CommandBase):
 
             Good for not having to enter vault password again.
         """),
-        Argument('--username', help="""
+        Argument('--username', default=get_default_username(), help="""
             The username of the user whose public key will be put on new servers.
 
             Normally this would be _your_ username.
-            Defaults to the username of the user running the command. 
+            Defaults to the value of the COMMCARE_CLOUD_DEFAULT_USERNAME environment variable
+            or else the username of the user running the command.
         """),
     )
 
@@ -44,11 +47,10 @@ class Terraform(CommandBase):
         if not (os.path.exists(modules_dest) and os.readlink(modules_dest) == modules_dir):
             os.symlink(modules_dir, modules_dest)
 
-        if args.username:
-            key_name = args.username
-        else:
-            import getpass
-            key_name = getpass.getuser()
+        if args.username != get_default_username():
+            print_help_message_about_the_commcare_cloud_default_username_env_var(args.username)
+
+        key_name = args.username
 
         try:
             generate_terraform_entrypoint(environment, key_name, run_dir)
@@ -56,7 +58,7 @@ class Terraform(CommandBase):
             allowed_users = environment.users_config.dev_users.present
             puts(colored.red(
                 "Unauthorized user {}.\n\n"
-                "Use --username to pass in one of the allowed ssh users:{}"
+                "Use COMMCARE_CLOUD_DEFAULT_USERNAME or --username to pass in one of the allowed ssh users:{}"
                 .format(e.username, '\n  - '.join([''] + allowed_users))))
             return -1
 
@@ -65,7 +67,7 @@ class Terraform(CommandBase):
             with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
-        env_vars = {'AWS_PROFILE': environment.terraform_config.aws_profile}
+        env_vars = {'AWS_PROFILE': aws_sign_in(environment.terraform_config.aws_profile)}
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
