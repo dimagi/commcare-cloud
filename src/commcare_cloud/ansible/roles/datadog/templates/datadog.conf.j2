@@ -43,7 +43,7 @@ dogstreams: {% for parser in datadog_parsers -%}
 hostname: {{ alt_hostname }}.{{ internal_domain_name }}
 {% endif %}
 
-{% if app_processes_config.datadog_pythonagent %}
+{% if 'webworkers' in group_names and app_processes_config.datadog_pythonagent %}
 apm_config:
   enabled: true
   replace_tags:
