@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -466,11 +466,12 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run a django management command.
 
 ```
-commcare-cloud <env> django-manage [--tmux] [--release RELEASE]
+commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE]
 ```
 
 `commcare-cloud <env> django-manage ...`
-runs `./manage.py ...` on the first webworker of &lt;env&gt;.
+runs `./manage.py ...` on the first django_manage machine of &lt;env&gt; or
+server you specify.
 Omit &lt;command&gt; to see a full list of possible commands.
 
 #### Example
@@ -481,6 +482,12 @@ To open a django shell in a tmux window using the `2018-04-13_18.16` release.
 commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
 ```
 
+To do this on a specific server
+
+```
+commcare-cloud <env> django-manage --tmux shell --server web0
+```
+
 ##### Optional Arguments
 
 ###### `--tmux`
@@ -489,6 +496,11 @@ If this option is included, the management command will be
 run in a new tmux window under the `cchq` user. You may then exit using
 the customary tmux command `^b` `d`, and resume the session later.
 This is especially useful for long-running commands.
+
+###### `--server SERVER`
+
+Server to run management command on.
+Defaults to first server under django_manage inventory group
 
 ###### `--release RELEASE`
 
@@ -1089,7 +1101,8 @@ Good for not having to enter vault password again.
 The username of the user whose public key will be put on new servers.
 
 Normally this would be _your_ username.
-Defaults to the username of the user running the command.
+Defaults to the value of the COMMCARE_CLOUD_DEFAULT_USERNAME environment variable
+or else the username of the user running the command.
 
 ---
 
@@ -1111,6 +1124,27 @@ so you can tell it how existing resources map to your new code.
 
 This is a tedious task, and often follows a very predictable renaming pattern.
 This command helps fill this gap.
+
+---
+
+#### `aws-sign-in`
+
+Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
+
+```
+commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES]
+```
+
+This will store the temporary session credentials in ~/.aws/credentials
+under a profile named with the pattern "&lt;aws_profile&gt;:profile".
+After this you can use other AWS-related commands for up to &lt;duration&gt; minutes
+before having to sign in again.
+
+##### Optional Arguments
+
+###### `--duration-minutes DURATION_MINUTES`
+
+Stay signed in for this many minutes
 
 ---
 

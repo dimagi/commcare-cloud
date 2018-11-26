@@ -2,5 +2,7 @@ deploy_env: production
 env_monitoring_id: production
 users:
   - dimagi
+  - dimagi-support
   - g2
+  - fissionlabs
 slack_alerts_channel: alerts-production

@@ -4,16 +4,13 @@ formplayer_memory: "1024m"
 gunicorn_workers_factor: 0
 gunicorn_workers_static_factor: 6
 
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   None:
     repeat_record_queue:
     async_restore_queue:
     ucr_queue:
   echis_server0:
-    celery,export_download_queue,email_queue:
+    celery,export_download_queue,email_queue,case_import_queue:
       concurrency: 1
       max_tasks_per_child: 5
     background_queue,case_rule_queue,analytics_queue:
