@@ -277,6 +277,56 @@ resource "aws_security_group" "db-private" {
   }
 
   ingress {
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    cidr_blocks = [
+      // Allow proxy access to nfs shared dir
+      "${aws_subnet.subnet-public.*.cidr_block}",
+    ]
+  }
+
+  ingress {
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "udp"
+    cidr_blocks = [
+      // Allow proxy access to nfs shared dir
+      "${aws_subnet.subnet-public.*.cidr_block}",
+    ]
+  }
+
+  ingress {
+    from_port   = 111
+    to_port     = 111
+    protocol    = "tcp"
+    cidr_blocks = [
+      // Allow proxy access to nfs shared dir
+      "${aws_subnet.subnet-public.*.cidr_block}",
+    ]
+  }
+
+  ingress {
+    from_port   = 111
+    to_port     = 111
+    protocol    = "udp"
+    cidr_blocks = [
+      // Allow proxy access to nfs shared dir
+      "${aws_subnet.subnet-public.*.cidr_block}",
+    ]
+  }
+
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = [
+      // Allow proxy access to redis
+      "${aws_subnet.subnet-public.*.cidr_block}",
+    ]
+  }
+
+  ingress {
     from_port   = 9200
     to_port     = 9200
     protocol    = "tcp"
