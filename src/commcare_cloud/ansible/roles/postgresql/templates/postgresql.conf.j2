@@ -73,6 +73,12 @@ effective_cache_size = {{ postgresql_effective_cache_size }}
 enable_nestloop = {{ enable_nestloop }}
 {% endif %}
 
+# PARALLEL QUERY
+{% if postgresql_max_parallel_degree > 0 %}
+max_parallel_degree = {{ postgresql_max_parallel_degree }}
+max_worker_processes =  {{ postgresql_max_worker_processes }}
+max_parallel_workers_per_gather = {{ postgresql_max_parallel_workers_per_gather }}
+{% endif %}
 
 # ERROR REPORTING AND LOGGING
 
