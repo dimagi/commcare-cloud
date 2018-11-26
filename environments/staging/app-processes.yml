@@ -78,7 +78,7 @@ pillows:
       num_processes: 2
     kafka-xform-ucr-es:
       num_processes: 2
-    get_group_es_pillow:
+    GroupESPillow:
       num_processes: 1
     user-to-es-ucr-pillow:
       num_processes: 1
