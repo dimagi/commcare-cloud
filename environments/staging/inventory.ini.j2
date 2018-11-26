@@ -24,10 +24,19 @@ web1
 [hqdb1]
 hqdb1-staging.internal-va.commcarehq.org swap_size=1G
 
+[pgproxy0]
+{{ pgproxy0-staging }} hostname=pgproxy0-staging ec2=yes
+
+[rds_pg0]
+# RDS
+pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
+
+[remote_postgresql:children]
+rds_pg0
+
 [postgresql:children]
-hqdb1
-# Amazon RDS Instance
-# staging.cibdtdv2q1vz.us-east-1.rds.amazonaws.com
+pgproxy0
+remote_postgresql
 
 [couch0]
 {{ couch0-staging }} hostname=couch0-staging ec2=yes
@@ -93,30 +102,11 @@ pillow0
 # Amazon EC2
 formplayer0
 
-[hqredis0]
-hqredis0-staging.internal-va.commcarehq.org
-
-[hqredis1]
-hqredis1-staging.internal-va.commcarehq.org
-
-[hqredis2]
-hqredis2-staging.internal-va.commcarehq.org
+[redis0]
+{{ redis0-staging }} hostname=redis0-staging ec2=yes
 
 [redis:children]
-hqredis0
-hqredis1
-hqredis2
-hqdb1
-# Amazon ElastiCache
-# {{ redis-staging }}:6379
-
-[ws4redis:children]
-hqdb1
-
-[redis_cluster_master:children]
-hqredis0
-hqredis1
-hqredis2
+redis0
 
 [es0]
 {{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes elasticsearch_master=true
@@ -130,9 +120,7 @@ es0
 es1
 
 [shared_dir_host:children]
-hqdb1
-# Amazon EC2
-# rabbit0
+redis0
 
 [stanchion:children]
 hqkafka0
@@ -158,16 +146,9 @@ airflow0
 # Amazon EC2
 {{ control-staging }} hostname=control-staging ec2=yes
 
-[pg_standby]
-
 [ansible_skip:children]
+rds_pg0
 
 [django_manage:children]
 # Amazon EC2
 web0
-
-[pg_barman:children]
-hqriak00
-
-[pg_barman_source:children]
-postgresql

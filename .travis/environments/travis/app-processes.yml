@@ -1,7 +1,7 @@
 celery_processes:
   None:
     celery_periodic:
-    async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue:
+    async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue,case_import_queue:
     email_queue,reminder_case_update_queue,analytics_queue:
     reminder_rule_queue,repeat_record_queue,saved_exports_queue:
     ucr_indicator_queue,ucr_queue:
