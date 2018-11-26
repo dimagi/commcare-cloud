@@ -83,7 +83,7 @@ celery_processes:
       concurrency: 4
       max_tasks_per_child: 5
   celery4:
-    celery:
+    celery,case_import_queue:
       concurrency: 6
       max_tasks_per_child: 5
     export_download_queue:

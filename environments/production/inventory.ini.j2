@@ -250,8 +250,11 @@ couch2
 [couchdb2:vars]
 swap_size=8G
 
+[couchproxy0]
+{{ couchproxy0-production }} hostname=couchproxy0-production ec2=yes
+
 [couchdb2_proxy:children]
-couch0
+couchproxy0
 
 [shared_dir_host:children]
 hqdb0

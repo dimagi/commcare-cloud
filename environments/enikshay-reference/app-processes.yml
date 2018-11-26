@@ -3,7 +3,7 @@ celery_processes:
     beat: {}
     celery_periodic:
       concurrency: 4
-    async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue,analytics_queue:
+    async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue,analytics_queue,case_import_queue:
       concurrency: 1
     email_queue,reminder_case_update_queue:
       concurrency: 1

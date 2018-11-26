@@ -69,6 +69,7 @@ CELERY_PROCESSES = [
     CeleryProcess("background_queue"),
     CeleryProcess("beat", required=False),
     CeleryProcess("case_rule_queue"),
+    CeleryProcess("case_import_queue"),
     CeleryProcess("celery"),
     CeleryProcess("celery_periodic", required=False),
     CeleryProcess("email_queue"),

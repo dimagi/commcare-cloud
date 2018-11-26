@@ -20,7 +20,7 @@ celery_processes:
     ucr_queue,ucr_indicator_queue:
       concurrency: 1
       max_tasks_per_child: 5
-    celery,export_download_queue,reminder_rule_queue:
+    celery,export_download_queue,reminder_rule_queue,case_import_queue:
       concurrency: 2
       max_tasks_per_child: 5
     saved_exports_queue:

@@ -97,6 +97,18 @@ servers:
     az: "a"
     volume_size: 80
 
+  - server_name: "pgproxy0-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+
+  - server_name: "redis0-staging"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+
 
 proxy_servers:
   - server_name: "proxy1-staging"
@@ -107,12 +119,9 @@ proxy_servers:
 
 
 rds_instances:
-  # dummy entry that doesn't get created
-  # See: https://github.com/hashicorp/terraform/issues/9858#issuecomment-263654145
-  - create: no
-    identifier: "staging0"
-    instance_type: "db.t3.medium"
-    storage: 300
+  - identifier: "pg0-staging"
+    instance_type: "db.t2.large"
+    storage: 160
 
 redis:
   create: no

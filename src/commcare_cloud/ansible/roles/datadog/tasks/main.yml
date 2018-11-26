@@ -42,6 +42,7 @@
     dest: "{{ datadog_parsers_dest }}"
     accept_hostkey: yes
     update: yes
+  when: "inventory_hostname in datadog_parsers|map(attribute='hosts')|join"
   notify: restart datadog
 
 - import_tasks: add_integrations.yml

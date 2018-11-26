@@ -3,7 +3,7 @@ DEFAULT_POSTGRESQL_HOST: hqdb0
 override:
   allow_dump_from_pgstandby: yes
   pgbouncer_default_pool: 290
-  pgbouncer_max_connections: 800
+  pgbouncer_max_connections: 1500
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5

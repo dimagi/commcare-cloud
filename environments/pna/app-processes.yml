@@ -1,15 +1,12 @@
 jython_memory: "1024m"
 formplayer_memory: "1024m"
 
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   'pnaserver1':
     repeat_record_queue:
       concurrency: 2
       max_tasks_per_child: 1
-    celery:
+    celery,case_import_queue:
       concurrency: 2
       max_tasks_per_child: 1
     background_queue,export_download_queue,saved_exports_queue,analytics_queue:
