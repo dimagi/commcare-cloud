@@ -135,6 +135,7 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb2_client_max_body_size: 100M
 
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
