@@ -120,10 +120,12 @@ module "Users" {
 }
 
 {%- for user in (users if manage_users else []) %}
+{%- if user.public_key %}
 resource "aws_key_pair" {{ user.username|tojson }} {
   key_name = {{ user.username|tojson }}
   public_key = {{ user.public_key|tojson }}
 }
+{%- endif %}
 module "iam_user__{{ user.username }}" {
   source = "./modules/iam/user"
   username = {{ user.username|tojson }}
