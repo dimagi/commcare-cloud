@@ -52,6 +52,8 @@ module "server__{{ server.server_name }}" {
   network_tier = {{ server.network_tier|tojson }}
   az = {{ server.az|tojson }}
   volume_size = {{ server.volume_size|tojson }}
+  secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
+  secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
 
   server_image = "${var.server_image}"
   environment = "${var.environment}"

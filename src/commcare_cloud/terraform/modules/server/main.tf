@@ -23,3 +23,17 @@ resource aws_instance "server" {
     Environment = "${var.environment}"
   }
 }
+
+resource "aws_ebs_volume" "ebs_volume" {
+  count = "${var.secondary_volume_size > 0 ? 1 : 0}"
+  availability_zone = "${aws_instance.server.availability_zone}"
+  size = "${var.secondary_volume_size}"
+  type = "${var.secondary_volume_type}"
+}
+
+resource "aws_volume_attachment" "ebs_att" {
+  count = "${var.secondary_volume_size > 0 ? 1 : 0}"
+  device_name = "/dev/sdf"
+  volume_id   = "${aws_ebs_volume.ebs_volume.id}"
+  instance_id = "${aws_instance.server.id}"
+}
