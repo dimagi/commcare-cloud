@@ -95,7 +95,7 @@ update_steps: |
   If all goes well, then the switch to new pillows is complete.
   You may do below checks to make sure the change is deployed succesfully.
 
-  1. Do a `sudo supervisorctl status all` on all pillow machines and make sure that new pillows are running succesfully and old pillows are not.
+  1. Do `cchq <env> service pillowtop status` and make sure that new pillows are running succesfully and old pillows are not.
   2. Look at pillow logs for new pillows and make sure there are no errors.
   3. Do basic QA of various change feeds like
      - Submit few forms, and make sure they appear in the UCR and standard reports
