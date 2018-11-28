@@ -10,15 +10,15 @@
 # Amazon EC2
 proxy1
 
-# Temporarily commenting this out while it's removed from the rotation for the aws migration's couchdb2 reindex
-# [web0]
-# {{ web0-staging }} swap_size=1G hostname=web0-staging ec2=yes
+[web0]
+{{ web0-staging }} swap_size=1G hostname=web0-staging ec2=yes
 
 [web1]
 {{ web1-staging }} swap_size=1G hostname=web1-staging ec2=yes
 
 [webworkers:children]
 # Amazon EC2
+# Temporarily commenting this out while it's removed from the rotation for the aws migration's couchdb2 reindex
 # web0
 web1
 
@@ -152,4 +152,4 @@ rds_pg0
 
 [django_manage:children]
 # Amazon EC2
-# web0
+web0
