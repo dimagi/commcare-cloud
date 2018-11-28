@@ -11,6 +11,17 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-11-26** [Reorganize pillows](0007-reorganize-pillows.md) (_action required_)
+Pillows read changes from kafka and do various processing such as sending them to
+elasticsearch, transforming into a UCR table row etc. A doc for same change is read
+multiple times for each processor, since there are separte pillows for each processor.
+This is inefficient, so we have combined multiple processors that apply for a
+given document type (also called `KAFKA_TOPIC`) such as form/case/user under
+one pillow. For e.g. A new single `kafka-case-ucr-es` pillow replaces
+various old pillows that process case changes such as `CaseToElasticsearchPillow`,
+`CaseSearchToElasticsearchPillow`, `ReportCaseToElasticsearchPillow`,
+and `kafka-ucr-main` etc. 
+
 ### **2018-11-20** [New Case Importer Celery Queue](0006-new-case-importer-celery-queue.md) (_action required_)
 Importing cases is often a time-sensitive task, and prolonged backlogs are
 very visible to users.  It will be useful to have a separate queue
