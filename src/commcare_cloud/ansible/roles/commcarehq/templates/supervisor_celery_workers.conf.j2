@@ -5,7 +5,7 @@
 [program:{{ project }}-{{ deploy_env }}-celery_{{ queue_names }}_{{worker_num}}]
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
 
-command=/bin/bash {{ service_home }}/{{ deploy_env }}_celery_bash_runner{% if celery_params.optimize %}_optimized{% endif %}.sh --queues={{ queue_names }} --events --loglevel=INFO --hostname={{ inventory_hostname }}_{{ queue_names }}_{{ worker_num }} {% if celery_params.pooling == 'prefork' %} --autoscale={{ celery_params.concurrency }},0 -Ofair --maxtasksperchild={{ celery_params.max_tasks_per_child }}{% endif %}{% if celery_params.pooling == 'gevent' %} -P gevent --concurrency={{ celery_params.concurrency }}{% endif %} --without-gossip
+command=/bin/bash {{ service_home }}/{{ deploy_env }}_celery_bash_runner{% if celery_params.optimize %}_optimized{% endif %}.sh --queues={{ queue_names }} --events --loglevel=INFO --hostname={{ inventory_hostname }}_{{ queue_names }}_{{ worker_num }} {% if celery_params.pooling == 'prefork' %} --autoscale={{ celery_params.concurrency }},0 -Ofair --maxtasksperchild={{ celery_params.max_tasks_per_child }}{% if celery_params.prefetch_multiplier %} --worker_prefetch_multiplier={{ celery_params.prefetch_multiplier }}{% endif %}{% endif %}{% if celery_params.pooling == 'gevent' %} -P gevent --concurrency={{ celery_params.concurrency }}{% endif %} --without-gossip
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1
