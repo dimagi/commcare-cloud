@@ -57,6 +57,10 @@ nginx_sites:
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
      - name: '~ /a/[^/]+/(receiver|phone)/'
+       proxy_next_upstream_tries: 1
+       proxy_buffers: 8 64k
+       proxy_buffer_size: 64k
+       client_body_buffer_size: 512k
        limit_reqs:
          - zone_name: "submissions"
            burst: 100
