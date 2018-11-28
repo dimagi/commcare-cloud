@@ -51,6 +51,13 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
+    block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
+
+
+class BlockDevice(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
+    volume_size = jsonobject.IntegerProperty(required=True)
 
 
 class RdsInstanceConfig(jsonobject.JsonObject):
