@@ -295,11 +295,11 @@ pillows:
       total_processes: 120
   'pillow10':
     kafka-ucr-static-cases:
-      start_process: 46
+      start_process: 45
       num_processes: 9
       total_processes: 120
     CaseToElasticsearchPillow:
-      start_process: 46
+      start_process: 45
       num_processes: 9
       total_processes: 120
   'pillow11':
