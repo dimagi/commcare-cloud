@@ -234,13 +234,13 @@ es_data
 
 
 [couch0]
-{{ couch0-production }} hostname=couch0-production ec2=yes datavol_device=/dev/nvme1n
+{{ couch0-production }} hostname=couch0-production ec2=yes
 
 [couch1]
-{{ couch1-production }} hostname=couch1-production ec2=yes datavol_device=/dev/nvme1n
+{{ couch1-production }} hostname=couch1-production ec2=yes
 
 [couch2]
-{{ couch2-production }} hostname=couch2-production ec2=yes datavol_device=/dev/nvme1n
+{{ couch2-production }} hostname=couch2-production ec2=yes
 
 [couchdb2:children]
 couch0
@@ -249,6 +249,7 @@ couch2
 
 [couchdb2:vars]
 swap_size=8G
+datavol_device=/dev/nvme1n
 
 [couchproxy0]
 {{ couchproxy0-production }} hostname=couchproxy0-production ec2=yes
