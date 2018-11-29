@@ -16,6 +16,7 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/pgpool
 PIDFILE=/var/run/postgresql/pgpool.pid
+PGPOOL_PCP_CONFIG_FILE=/etc/pgpool2/pcp.conf
 
 test -x $DAEMON || exit 5
 
@@ -27,6 +28,10 @@ fi
 OPTS=""
 if [ x"$PGPOOL_LOG_DEBUG" = x"yes" ]; then
     OPTS="$OPTS -d"
+fi
+
+if [ -f $PGPOOL_PCP_CONFIG_FILE ]; then
+    OPTS="$OPTS -F $PGPOOL_PCP_CONFIG_FILE"
 fi
 
 . /lib/lsb/init-functions

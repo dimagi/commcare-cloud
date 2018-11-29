@@ -24,7 +24,9 @@ secrets:
         username: 'hqrepl'
         password: 'hqrepl'
         role_attr_flags: 'LOGIN,REPLICATION'
-
+  PGPOOL_PCP_USER:
+    username: hqpcp
+    password: deKqLhNbdnCl8bxzNXMIT7wZ
 localsettings_private:
   BANK_ACCOUNT_NUMBER:
   BANK_ROUTING_NUMBER_ACH: ''
