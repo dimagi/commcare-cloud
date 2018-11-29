@@ -255,6 +255,18 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  UCR_COMPARISONS: {}
+  UCR_COMPARISONS:
+    'static-icds-cas-static-mpr_10a_person_cases': 'static-icds-cas-static-mpr_10a_person_cases-optimized'
+    'static-icds-cas-static-mpr_10b_person_cases': 'static-icds-cas-static-mpr_10b_person_cases-optimized'
+    'static-icds-cas-static-mpr_1_person_cases': 'static-icds-cas-static-mpr_1_person_cases-optimized'
+    'static-icds-cas-static-mpr_3ii_person_cases': 'static-icds-cas-static-mpr_3ii_person_cases-optimized'
+    'static-icds-cas-static-asr_2_3_person_cases': 'static-icds-cas-static-asr_2_3_person_cases-optimized'
+    'static-icds-cas-static-mpr_3i_person_cases': 'static-icds-cas-static-mpr_3i_person_cases-optimized'
+    # new UCR format from LS app
+    'static-icds-cas-static-mpr_10a_children_referred': 'static-icds-cas-static-mpr_10a_children_referred-optimized'
+    'static-icds-cas-static-mpr_10b_pregnancies_referred': 'static-icds-cas-static-mpr_10b_pregnancies_referred-optimized'
+    'static-icds-cas-static-mpr_3_children_registered': 'static-icds-cas-static-mpr_3_children_registered-optimized'
+    'static-icds-cas-static-asr_2_3_beneficiaries': 'static-icds-cas-static-asr_2_3_beneficiaries-optimized'
+    'static-icds-cas-static-mpr_3i_pregnancies': 'static-icds-cas-static-mpr_3i_pregnancies-optimized'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
