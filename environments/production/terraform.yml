@@ -156,6 +156,8 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 6000  # this was a mistake, but it's harder to reduce the size of disk
+    block_device:
+      volume_size: 5000
   - server_name: "couch2-production"
     server_instance_type: m5.4xlarge
     network_tier: "db-private"
