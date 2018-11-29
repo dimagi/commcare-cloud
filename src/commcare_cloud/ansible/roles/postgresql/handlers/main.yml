@@ -26,3 +26,15 @@
 - name: Run ldconfig
   become: yes
   action: command ldconfig
+
+- name: Start pgpool
+  become: yes
+  action: service name=pgpool2 state=started
+
+- name: Restart pgpool
+  become: yes
+  action: service name=pgpool2 state=restarted
+
+- name: Reload pgpool
+  become: yes
+  action: service name=pgpool2 state=reloaded

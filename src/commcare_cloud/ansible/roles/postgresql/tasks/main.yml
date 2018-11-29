@@ -337,3 +337,7 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
+
+- include: pgpool.yml
+  when: "'pgpool' in group_names"
+  tags: pgpool

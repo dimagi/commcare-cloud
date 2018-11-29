@@ -1,0 +1,33 @@
+- name: Install pgpool2 
+  apt: name= state=present
+  with_items:
+    - "postgresql-{{ postgresql_version }}-pgpool2"
+    - pgpool2=3.7.2-1.pgdg16.04+1
+  notify: Start pgpool
+  tags:
+    - pgpool
+
+- name: Configure pgpool app
+  template: src={{ item }}.j2 dest="{{ pgpool_config_home }}/{{ item }}" mode=0644 owner=root group=root
+  with_items:
+   - pcp.conf
+   - pgpool.conf
+   - pool_hba.conf
+  notify: Restart pgpool
+
+- name: Configure pgpool users
+  template: src={{ item }}.j2 dest="{{ pgpool_config_home }}/{{ item }}" mode=0664 owner=postgres group=postgres
+  with_items:
+   - pool_passwd
+  notify: Restart pgpool
+
+# Todo; review whether below will be needed
+# - name: Setup pgpool extensions
+#   sudo_user: postgres
+#   command: "{{postgres_install_dir}}/bin/psql}}" -f /usr/share/postgresql/"{{ postgresql_version }}"/extension/{{ item }} template1
+#   with_items:
+#     - pgpool-recovery.sql
+
+- name: Start pgpool
+  service: name=pgpool2 state=started enabled=yes
+
