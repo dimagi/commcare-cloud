@@ -12,6 +12,10 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
+   mappings:
+    - name: "$digest_submission"
+      variable: "$http_authorization"
+      value: "$server_name"
    limit_req_zones:
     - name: "submissions"
       zone: "$digest_submission"

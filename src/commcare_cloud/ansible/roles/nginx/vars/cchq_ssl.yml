@@ -17,6 +17,10 @@ nginx_sites:
       path: "{{ www_home }}/hq_media/cache"
       max_size: "2g"
       inactive_time: "24h"
+   mappings:
+    - name: "$digest_submission"
+      variable: "$http_authorization"
+      value: "$server_name"
    limit_req_zones:
     - name: "restore"
       zone: "$digest_submission"
