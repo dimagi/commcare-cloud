@@ -13,12 +13,9 @@ nginx_sites:
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    limit_req_zones:
-    - name: "restore"
-      zone: "$digest_submission"
-      rate: "6r/s"
     - name: "submissions"
       zone: "$digest_submission"
-      rate: "30r/s"
+      rate: "50r/s"
    file_name: "{{ deploy_env }}_pna_commcare"
    listen: "443 ssl http2 default_server"
    server_name: "{{ PNA_SITE_HOST }}"
