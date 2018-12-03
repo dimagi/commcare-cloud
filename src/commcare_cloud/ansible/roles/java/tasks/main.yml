@@ -10,11 +10,8 @@
 
 - name: Correct java version selected
   alternatives:
-    name: "{{ item }}"
-    path: "{{ java_bin_path }}/{{ item }}"
-  loop:
-    - java
-    - javac
+    name: java
+    path: "{{ java_bin_path }}/java"
 
 - name: Check the Java version
   command: java -version
