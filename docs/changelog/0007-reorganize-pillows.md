@@ -15,7 +15,7 @@ elasticsearch, transforming into a UCR table row etc. A doc for same change is r
 multiple times for each processor, since there are separte pillows for each processor.
 This is inefficient, so we have combined multiple processors that apply for a
 given document type (also called `KAFKA_TOPIC`) such as form/case/user under
-one pillow. For e.g. A new single `kafka-case-ucr-es` pillow replaces
+one pillow. For e.g. A new single `case-pillow` pillow replaces
 various old pillows that process case changes such as `CaseToElasticsearchPillow`,
 `CaseSearchToElasticsearchPillow`, `ReportCaseToElasticsearchPillow`,
 and `kafka-ucr-main` etc. 
@@ -33,12 +33,12 @@ Exact pillow reorganization is as per below.
 
 Old Pillow | New Pillow
 -- | --
-CaseToElasticsearchPillow | kafka-case-ucr-es
-CaseSearchToElasticsearchPillow | kafka-case-ucr-es
-kafka-ucr-static | kafka-case-ucr-es, kafka-xform-ucr-es, user-to-es-ucr-pillow
-XFormToElasticsearchPillow | kafka-xform-ucr-es
-FormSubmissionMetadataTrackerPillow | kafka-xform-ucr-es
-kafka-ucr-main | kafka-case-ucr-es, kafka-xform-ucr-es, user-to-es-ucr-pillow
+CaseToElasticsearchPillow | case-pillow
+CaseSearchToElasticsearchPillow | case-pillow
+kafka-ucr-static | case-pillow, xform-pillow, user-pillow
+XFormToElasticsearchPillow | xform-pillow
+FormSubmissionMetadataTrackerPillow | xform-pillow
+kafka-ucr-main | case-pillow, xform-pillow, user-pillow
 AppDbChangeFeedPillow | No Change
 ApplicationToElasticsearchPillow | No Change
 CacheInvalidatePillow | No Change
@@ -46,20 +46,20 @@ DefaultChangeFeedPillow | No Change
 DomainDbKafkaPillow | No Change
 FarmerRecordFluffPillow | No Change
 GeographyFluffPillow | No Change
-GroupPillow | GroupESPillow
-GroupToUserPillow | GroupESPillow
+GroupPillow | group-pillow
+GroupToUserPillow | group-pillow
 KafkaDomainPillow | No Change
 LedgerToElasticsearchPillow | No Change
 M4ChangeFormFluffPillow | No Change
-ReportCaseToElasticsearchPillow | kafka-case-ucr-es
-ReportXFormToElasticsearchPillow | kafka-xform-ucr-es
+ReportCaseToElasticsearchPillow | case-pillow
+ReportXFormToElasticsearchPillow | xform-pillow
 SqlSMSPillow | No Change
 UCLAPatientFluffPillow | No Change
-UnknownUsersPillow | kafka-xform-ucr-es
+UnknownUsersPillow | xform-pillow
 UpdateUserSyncHistoryPillow | No Change
 UserCacheInvalidatePillow | No Change
 UserGroupsDbKafkaPillow | No Change
-UserPillow | user-to-es-ucr-pillow  (includes user UCR processor)
+UserPillow | user-pillow  (includes user UCR processor)
 
 ## Steps to update
 Ensure that you have deployed a version of CommCare later than the version mentioned above
