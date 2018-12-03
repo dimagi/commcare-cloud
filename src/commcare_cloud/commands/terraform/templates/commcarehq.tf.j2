@@ -43,7 +43,7 @@ locals {
   }
 }
 
-{% for server in servers %}
+{% for server in servers + proxy_servers %}
 module "server__{{ server.server_name }}" {
   source = "./modules/server"
 
@@ -52,6 +52,8 @@ module "server__{{ server.server_name }}" {
   network_tier = {{ server.network_tier|tojson }}
   az = {{ server.az|tojson }}
   volume_size = {{ server.volume_size|tojson }}
+  secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
+  secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
 
   server_image = "${var.server_image}"
   environment = "${var.environment}"
@@ -63,27 +65,10 @@ module "server__{{ server.server_name }}" {
 {% endfor %}
 
 {% for server in proxy_servers %}
-module "proxy_server__{{ server.server_name }}" {
-  source = "./modules/server"
-
-  server_name = {{ server.server_name|tojson }}
-  server_instance_type = {{ server.server_instance_type|tojson }}
-  network_tier = {{ server.network_tier|tojson }}
-  az = {{ server.az|tojson }}
-  volume_size = {{ server.volume_size|tojson }}
-
-  server_image = "${var.server_image}"
-  environment = "${var.environment}"
-  vpc_id = "${module.network.vpc-id}"
-  subnet_options = "${local.subnet_options}"
-  security_group_options = "${local.security_group_options}"
-  key_name = "${var.key_name}"
-}
-
 resource "aws_eip" "proxy__{{ server.server_name }}" {
   vpc = true
-  instance = "${module.proxy_server__{{ server.server_name }}.server}"
-  associate_with_private_ip = "${module.proxy_server__{{ server.server_name }}.server_private_ip}"
+  instance = "${module.server__{{ server.server_name }}.server}"
+  associate_with_private_ip = "${module.server__{{ server.server_name }}.server_private_ip}"
 }
 {% endfor %}
 
