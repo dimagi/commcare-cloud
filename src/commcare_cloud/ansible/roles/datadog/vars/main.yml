@@ -21,4 +21,4 @@ datadog_parsers:
   - input: "{{ log_home }}/{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log"
     python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
     python_function: parse_couch_logs
-    hosts: "{{ groups['webworkers'] + groups['pillowtop'] + groups['celery'] }}"
+    hosts: "{{ groups['webworkers'] + groups['pillowtop'] + groups['celery'] + groups['django_manage'] }}"
