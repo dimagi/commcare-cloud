@@ -190,7 +190,6 @@ S3_BLOB_DB_SETTINGS = {
     'config': {{ s3_blob_db_s3_config|to_json }},
 }
 {% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
-old_s3_config = {'signature_version': 's3'}
 OLD_S3_BLOB_DB_SETTINGS = {
     'url': '{{ old_s3_blob_db_url }}',
     'access_key': '{{ old_s3_blob_db_access_key }}',
