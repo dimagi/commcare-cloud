@@ -13,6 +13,19 @@ override:
   postgresql_wal_buffers: 16MB
   postgresql_max_wal_size: 2GB
 
+host_settings:
+  hqdb0:
+    port: 5432
+  hqdb1:
+    port: 5432
+  hqdb3:
+    port: 5432
+  hqdb5:
+    port: 5432
+  pgsynclog1:
+    port: 5432
+
+
 
 LOAD_BALANCED_APPS:
   auth:
@@ -38,6 +51,7 @@ dbs:
   form_processing:
     proxy:
       host: hqdb1
+      port: 6432
     partitions:
       p1:
         shards: [0, 204]
