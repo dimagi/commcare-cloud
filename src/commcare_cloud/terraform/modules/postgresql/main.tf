@@ -20,6 +20,8 @@ module "postgresql" {
   password = "${var.rds_instance["password"]}"
   port     = "${var.rds_instance["port"]}"
 
+  deletion_protection = "true"
+
   iam_database_authentication_enabled = false
 
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
