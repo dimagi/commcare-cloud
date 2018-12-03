@@ -1,9 +1,27 @@
 ---
+- name: installing repo for Java 8+ in Ubuntu
+  apt_repository: repo='ppa:openjdk-r/ppa'
+
 - name: Install Java
   become: yes
-  apt: name=openjdk-7-jdk state=present
+  apt:
+    name: "{{ java_packages }}"
+    state: present
 
-- name: Verify Java
-  become: no
-  shell: java -version
-  changed_when: False
+- name: Correct java version selected
+  alternatives:
+    name: "{{ item }}"
+    path: "{{ java_bin_path }}/{{ item }}"
+  loop:
+    - java
+    - javac
+
+- name: Check the Java version
+  command: java -version
+  changed_when: false
+  register: java_version
+
+- name: Display the Java version.
+  debug:
+    var: java_version
+    verbosity: 2
