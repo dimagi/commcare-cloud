@@ -18,8 +18,8 @@ nginx_sites:
       value: "$server_name"
    limit_req_zones:
     - name: "submissions"
-      zone: "$digest_submission"
-      rate: "50r/s"
+      size: "10m"
+      rate: "30r/s"
    file_name: "{{ deploy_env }}_pna_commcare"
    listen: "443 ssl http2 default_server"
    server_name: "{{ PNA_SITE_HOST }}"
@@ -64,5 +64,5 @@ nginx_sites:
        client_body_buffer_size: 512k
        limit_reqs:
          - zone_name: "submissions"
-           burst: 100
+           burst: 60
            nodelay: True
