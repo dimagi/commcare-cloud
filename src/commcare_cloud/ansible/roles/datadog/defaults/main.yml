@@ -19,6 +19,9 @@ monitoring_groups:
   - elasticsearch
   - postgresql
   - pg_standby
+  - shard_dbs
+  - main_dbs
+  - ucr_dbs
   - riakcs
   - formplayer
   - pillowtop
