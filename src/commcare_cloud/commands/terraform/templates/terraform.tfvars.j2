@@ -60,16 +60,4 @@ proxy_servers = [
 {%- endfor %}
 ]
 
-rds_instances = [
-{%- for rds_instance in rds_instances %}
-  {
-    password = "${var.rds_password}"
-    identifier = {{ rds_instance.identifier|tojson }}
-    instance_type = {{ rds_instance.instance_type|tojson }}
-    storage = {{ rds_instance.storage|tojson }}
-    create = {{ rds_instance.create|tojson }}
-  },
-{%- endfor %}
-]
-
 account_alias = {{ (account_alias or "")|tojson }}
