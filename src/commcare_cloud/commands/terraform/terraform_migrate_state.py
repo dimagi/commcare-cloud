@@ -66,7 +66,7 @@ class TerraformMigrateState(CommandBase):
                     for migration in unapplied_migrations)
         ))
         print("which will result in the following moves being made:")
-        migration_plans = make_migration_plans(environment, state, migrations, log=print)
+        migration_plans = make_migration_plans(environment, state, unapplied_migrations, log=print)
         if ask("Do you want to apply this migration?"):
             apply_migration_plans(
                 environment, migration_plans,
