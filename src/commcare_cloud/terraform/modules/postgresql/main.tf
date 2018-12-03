@@ -43,8 +43,7 @@ module "postgresql" {
   final_snapshot_identifier = "final-snapshot-${var.rds_instance["identifier"]}"
   copy_tags_to_snapshot = true
 
-  parameter_group_name = "${var.rds_instance["parameter_group_name"]}"
-  parameters = []
+  parameters = "${var.parameters}"
 
   options = []
   storage_encrypted = true
