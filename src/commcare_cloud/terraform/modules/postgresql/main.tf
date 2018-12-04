@@ -20,6 +20,8 @@ module "postgresql" {
   password = "${var.rds_instance["password"]}"
   port     = "${var.rds_instance["port"]}"
 
+  deletion_protection = "true"
+
   iam_database_authentication_enabled = false
 
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
@@ -41,8 +43,7 @@ module "postgresql" {
   final_snapshot_identifier = "final-snapshot-${var.rds_instance["identifier"]}"
   copy_tags_to_snapshot = true
 
-  parameter_group_name = "${var.rds_instance["parameter_group_name"]}"
-  parameters = []
+  parameters = "${var.parameters}"
 
   options = []
   storage_encrypted = true

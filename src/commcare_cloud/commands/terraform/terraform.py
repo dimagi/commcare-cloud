@@ -13,7 +13,7 @@ from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_usern
     print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.environment.paths import TERRAFORM_DIR
+from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
 
 
 class Terraform(CommandBase):
@@ -85,6 +85,32 @@ class UnauthorizedUser(Exception):
         self.username = username
 
 
+def get_postgresql_params(environment):
+    """
+    Returns postgresql parameters as accepted by terraform
+
+    See aws db_parameter_group "parameter" argument.
+    """
+    postgresql_variables = get_role_defaults('postgresql')
+    postgresql_variables.update(environment.postgresql_config.override)
+    param_values = {
+        'max_connections': postgresql_variables['postgresql_max_connections'],
+    }
+    params_for_terraform = []
+    for param_name, param_value in param_values.items():
+        params_for_terraform.append({
+            'name': param_name,
+            'value': param_value,
+            # Anything listed as "dynamic" in
+            #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
+            # will be applied *immediately*, ignoring this flag. See:
+            #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html
+            'apply_method': 'pending-reboot'
+        })
+    return params_for_terraform
+
+
+
 def generate_terraform_entrypoint(environment, key_name, run_dir):
     context = environment.terraform_config.to_json()
     if key_name not in environment.users_config.dev_users.present:
@@ -96,6 +122,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir):
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
+        'postgresql_params': get_postgresql_params(environment)
     })
     template_root = os.path.join(os.path.dirname(__file__), 'templates')
     for template_file, output_file in (

@@ -12,9 +12,16 @@ module "postgresql__{{ rds_instance.identifier }}" {
     backup_retention = {{ rds_instance.backup_retention|tojson }}
     maintenance_window = {{ rds_instance.maintenance_window|tojson }}
     port = {{ rds_instance.port|tojson }}
-    parameter_group_name = {{ rds_instance.parameter_group_name|tojson }}
-
   }
+  parameters = [
+    {%- for param in postgresql_params %}
+    {
+      name = {{ param.name|tojson }}
+      value = {{ param.value|tojson }}
+      apply_method = {{ param.apply_method|tojson }}
+    },
+    {%- endfor %}
+  ]
   subnet_ids = "${values(module.network.subnets-db-private)}"
   vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
   create = "true"
