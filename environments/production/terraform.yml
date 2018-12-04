@@ -240,9 +240,6 @@ rds_instances:
   - identifier: "pg1"
     instance_type: "db.t2.xlarge"
     storage: 500
-  - identifier: "pg2"
-    instance_type: "db.t2.xlarge"
-    storage: 500
   - identifier: "pg3"
     instance_type: "db.t2.xlarge"
     storage: 500
