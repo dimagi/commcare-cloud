@@ -1,19 +1,22 @@
-{% with count = 5 -%}
-locals {
-  rds_instances = [
-    {%- for i in range(count) %}
-    "${merge(local.default_rds, var.rds_instances[{{ i }} < length(var.rds_instances) ? {{ i }} : 0])}",
-    {%- endfor %}
-  ]
-}
-
-{% for i in range(count) %}
-module "postgresql-{{ i }}" {
+{%- for rds_instance in rds_instances %}
+module "postgresql__{{ rds_instance.identifier }}" {
   source = "./modules/postgresql"
-  rds_instance = "${local.rds_instances[{{ i }}]}"
-  subnet_ids = "${local.rds_subnet_ids}"
-  vpc_security_group_ids = "${local.rds_vpc_security_group_ids}"
-  create = "${ {{ i }} < length(var.rds_instances) ? 1 : 0 }"
+  rds_instance = {
+    password = "${var.rds_password}"
+    identifier = {{ rds_instance.identifier|tojson }}
+    instance_type = {{ rds_instance.instance_type|tojson }}
+    storage = {{ rds_instance.storage|tojson }}
+    create = {{ rds_instance.create|tojson }}
+    username = {{ rds_instance.username|tojson }}
+    backup_window = {{ rds_instance.backup_window|tojson }}
+    backup_retention = {{ rds_instance.backup_retention|tojson }}
+    maintenance_window = {{ rds_instance.maintenance_window|tojson }}
+    port = {{ rds_instance.port|tojson }}
+    parameter_group_name = {{ rds_instance.parameter_group_name|tojson }}
+
+  }
+  subnet_ids = "${values(module.network.subnets-db-private)}"
+  vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
+  create = "true"
 }
 {%- endfor %}
-{%- endwith %}

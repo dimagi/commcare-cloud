@@ -62,10 +62,16 @@ class BlockDevice(jsonobject.JsonObject):
 
 class RdsInstanceConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    identifier = jsonobject.StringProperty()
-    instance_type = jsonobject.StringProperty()  # should start with 'db.'
+    identifier = jsonobject.StringProperty(required=True)
+    instance_type = jsonobject.StringProperty(required=True)  # should start with 'db.'
     storage = jsonobject.IntegerProperty()
     create = jsonobject.BooleanProperty(default=True)
+    username = "root"
+    backup_window = "06:27-06:57"
+    backup_retention = 30
+    maintenance_window = "thu:04:47-thu:05:17"
+    port = 5432
+    parameter_group_name = "default.postgres9.6"
 
 
 class RedisConfig(jsonobject.JsonObject):
