@@ -38,7 +38,7 @@ host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_serv
 {% endif %}
 
 {% if allow_direct_postgresql_access %}
-{% for host in (groups['formplayer'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups.get('django_manage', []) + groups['postgresql'] + groups.get('airflow', [])) | unique %}
+{% for host in (groups['formplayer'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups.get('django_manage', []) + groups['postgresql'] + groups.get('pg_standby', []) + groups.get('airflow', [])) | unique %}
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
