@@ -26,12 +26,12 @@ ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
 
 couch_dbs:
   default:
-    host: commcarehq.cloudant.com
-    port: 443
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: staging_commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
+    is_https: False
 
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
