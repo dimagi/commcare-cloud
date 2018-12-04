@@ -234,12 +234,24 @@ proxy_servers:
 
 
 rds_instances:
-  # dummy entry that doesn't get created
-  # See: https://github.com/hashicorp/terraform/issues/9858#issuecomment-263654145
-  - create: no
-    identifier: "pg0"
-    instance_type: "db.t3.medium"
-    storage: 300
+  - identifier: "pg0"
+    instance_type: "db.t2.xlarge"
+    storage: 500
+  - identifier: "pg1"
+    instance_type: "db.t2.xlarge"
+    storage: 500
+  - identifier: "pg2"
+    instance_type: "db.t2.xlarge"
+    storage: 500
+  - identifier: "pg3"
+    instance_type: "db.t2.xlarge"
+    storage: 500
+  - identifier: "pg5"
+    instance_type: "db.t2.2xlarge"
+    storage: 500
+  - identifier: "pgsynclog1"
+    instance_type: "db.t2.large"
+    storage: 1000
 
 redis:
   create: no

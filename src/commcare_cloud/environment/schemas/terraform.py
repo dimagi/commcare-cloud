@@ -69,7 +69,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     username = "root"
     backup_window = "06:27-06:57"
     backup_retention = 30
-    maintenance_window = "thu:04:47-thu:05:17"
+    maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     parameter_group_name = "default.postgres9.6"
 
