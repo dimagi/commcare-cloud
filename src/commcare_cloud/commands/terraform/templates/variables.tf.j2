@@ -60,29 +60,3 @@ variable "proxy_servers" {
   type = "list"
   default = []
 }
-
-
-locals {
-  default_rds = {
-    storage = ""
-    instance_type = "db.t3.medium"
-    identifier = ""
-    username = "root"
-    storage_type = "gp2"
-    backup_window = "06:27-06:57"
-    backup_retention = 30
-    maintenance_window = "thu:04:47-thu:05:17"
-    auto_minor_version_upgrade = false
-    multi_az = false
-    storage_encrypted = true
-    port = 5432
-    password = ""  # must be overridden
-    prevent_destroy = true
-    instance_count = 1
-    parameter_group_name = "default.postgres9.6"
-  }
-  # todo: fold these two into default_rds once terraform 0.12 comes out
-  # todo: allow heterogeneous maps as module variables
-  rds_subnet_ids = "${values(module.network.subnets-db-private)}"
-  rds_vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
-}
