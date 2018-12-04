@@ -234,19 +234,19 @@ proxy_servers:
 
 
 rds_instances:
-  - identifier: "pg0"
+  - identifier: "pg0-production"
     instance_type: "db.t2.xlarge"
     storage: 500
-  - identifier: "pg1"
+  - identifier: "pg1-production"
     instance_type: "db.t2.xlarge"
     storage: 500
-  - identifier: "pg3"
+  - identifier: "pg3-production"
     instance_type: "db.t2.xlarge"
     storage: 500
-  - identifier: "pg5"
+  - identifier: "pg5-production"
     instance_type: "db.t2.2xlarge"
     storage: 500
-  - identifier: "pgsynclog1"
+  - identifier: "pgsynclog1-production"
     instance_type: "db.t2.large"
     storage: 1000
 
