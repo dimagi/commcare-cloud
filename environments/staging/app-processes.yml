@@ -50,11 +50,11 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-    kafka-case-ucr-es:
+    case-pillow:
       num_processes: 2
-    kafka-xform-ucr-es:
+    xform-pillow:
       num_processes: 2
-    GroupESPillow:
+    group-pillow:
       num_processes: 1
-    user-to-es-ucr-pillow:
+    user-pillow:
       num_processes: 1

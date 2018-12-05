@@ -17,7 +17,7 @@ elasticsearch, transforming into a UCR table row etc. A doc for same change is r
 multiple times for each processor, since there are separte pillows for each processor.
 This is inefficient, so we have combined multiple processors that apply for a
 given document type (also called `KAFKA_TOPIC`) such as form/case/user under
-one pillow. For e.g. A new single `kafka-case-ucr-es` pillow replaces
+one pillow. For e.g. A new single `case-pillow` pillow replaces
 various old pillows that process case changes such as `CaseToElasticsearchPillow`,
 `CaseSearchToElasticsearchPillow`, `ReportCaseToElasticsearchPillow`,
 and `kafka-ucr-main` etc. 
