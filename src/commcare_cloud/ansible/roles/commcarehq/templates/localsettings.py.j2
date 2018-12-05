@@ -187,7 +187,8 @@ S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ s3_blob_db_access_key }}',
     'secret_key': '{{ s3_blob_db_secret_key }}',
     's3_bucket': '{{ s3_blob_db_s3_bucket }}',
-    'config': {{ s3_blob_db_s3_config|to_json }},
+    'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
+    'config': {'signature_version': 's3'},
 }
 {% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
 OLD_S3_BLOB_DB_SETTINGS = {
@@ -195,7 +196,8 @@ OLD_S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ old_s3_blob_db_access_key }}',
     'secret_key': '{{ old_s3_blob_db_secret_key }}',
     's3_bucket': '{{ old_s3_blob_db_s3_bucket }}',
-    'config': {{ old_s3_blob_db_s3_config|to_json }},
+    'bulk_delete_chunksize': {{ old_s3_bulk_delete_chunksize }},
+    'config': {'signature_version': 's3'},
 }
 BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
 {% endif %}
