@@ -324,7 +324,7 @@ allow_sql_comments = off
 # MASTER/SLAVE MODE
 #------------------------------------------------------------------------------
 
-master_slave_mode = off
+master_slave_mode = on
                                    # Activate master/slave mode
                                    # (change requires restart)
 master_slave_sub_mode = 'stream'
@@ -334,20 +334,20 @@ master_slave_sub_mode = 'stream'
                                    # (change requires restart)
 
 # - Streaming -
-
-sr_check_period = 0
+# Todo; read http://www.pgpool.net/docs/latest/en/html/runtime-streaming-replication-check.html
+sr_check_period = 1
                                    # Streaming replication check period
                                    # Disabled (0) by default
-sr_check_user = 'nobody'
+sr_check_user = '{{ secrets.POSTGRES_USERS.replication.username }}'
                                    # Streaming replication check user
                                    # This is necessary even if you disable
                                    # streaming replication delay check with
                                    # sr_check_period = 0
-sr_check_password = ''
+sr_check_password = '{{ secrets.POSTGRES_USERS.replication.password }}'
                                    # Password for streaming replication check user
 sr_check_database = 'postgres'
                                    # Database name for streaming replication check
-delay_threshold = 0
+delay_threshold = 10
                                    # Threshold before not dispatching query to standby node
                                    # Unit is in bytes
                                    # Disabled (0) by default
