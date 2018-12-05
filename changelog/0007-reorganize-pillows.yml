@@ -4,7 +4,7 @@ date: 2018-11-26
 
 optional_per_env: no
 
-min_commcare_version: todo # to be filled after the main PR gets merged
+min_commcare_version: 44615b3a1eea823dc01a09c9809adae0b0f29812
 max_commcare_version: 
 
 context: |
@@ -100,13 +100,13 @@ update_steps: |
   3. Do basic QA of various change feeds like
      - Submit few forms, and make sure they appear in the UCR and standard reports
      - Create few mobile workers and make sure they are searchable in report filters
-  4. Keep an eye on https://<your-domain>/hq/admin/pillow_errors/ and pillow section of
-     https://<your-domain>/hq/admin/system/
+  4. Keep an eye on https://your-domain/hq/admin/pillow_errors/ and pillow section of
+     https://your-domain/hq/admin/system/
 
   At this point if all goes well, the above PR can be merged.
 
-  If anything goes wrong beyond repair, the change can be rolled back, by following
-  the all of above steps can be repeated using master branch instead of 
+  If anything goes wrong beyond repair, the change can be rolled back by repeating
+  all of above steps but using master branch in place of
   your pillow-reorg branch (the third step can be skipped).
 
 
