@@ -69,6 +69,7 @@ backend_port0 = 5432
                                    # Port number for backend 0
 backend_weight0 = 1
                                    # Weight for backend 0 (only in load balancing mode)
+# Todo; to review and update, not needed since we don't use online recovery
 backend_data_directory0 = '/var/lib/pgsql/data'
                                    # Data directory for backend 0
 backend_flag0 = 'ALWAYS_MASTER'
@@ -154,7 +155,7 @@ client_idle_limit = 0
 
 # - Where to log -
 
-log_destination = 'stderr'
+log_destination = 'syslog,stderr'
                                    # Where to log
                                    # Valid values are combinations of stderr,
                                    # and syslog. Default to stderr.
@@ -173,7 +174,7 @@ log_statement = off
 log_per_node_statement = off
                                    # Log all statements
                                    # with node and backend informations
-log_standby_delay = 'none'
+log_standby_delay = 'if_over_threshold'
                                    # Log standby delay
                                    # Valid values are combinations of always,
                                    # if_over_threshold, none
@@ -201,7 +202,7 @@ syslog_ident = 'pgpool'
                                         #   warning
                                         #   error
 
-#log_min_messages = warning             # values in order of decreasing detail:
+log_min_messages = debug1             # values in order of decreasing detail:
                                         #   debug5
                                         #   debug4
                                         #   debug3
