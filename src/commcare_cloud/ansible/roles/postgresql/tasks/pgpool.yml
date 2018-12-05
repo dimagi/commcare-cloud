@@ -15,10 +15,9 @@
    - pool_hba.conf
   notify: Restart pgpool
 
-- name: Configure pgpool users
-  template: src={{ item }}.j2 dest="{{ pgpool_config_home }}/{{ item }}" mode=0664 owner=postgres group=postgres
-  with_items:
-   - pool_passwd
+- name: Setup /etc/pgpool2/pool_passwd file
+  shell: "pg_md5 -m -u {{ item.username }} {{ item.password }}"
+  with_items: "{{ postgres_users.values() }}"
   notify: Restart pgpool
 
 # Todo; review whether below will be needed
