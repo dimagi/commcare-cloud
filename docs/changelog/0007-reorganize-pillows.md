@@ -106,6 +106,6 @@ You may do below checks to make sure the change is deployed succesfully.
 
 At this point if all goes well, the above PR can be merged.
 
-If anything goes wrong beyond repair, the change can be rolled back, by following
-the all of above steps can be repeated using master branch instead of 
+If anything goes wrong beyond repair, the change can be rolled back by repeating
+all of above steps but using master branch in place of
 your pillow-reorg branch (the third step can be skipped).
