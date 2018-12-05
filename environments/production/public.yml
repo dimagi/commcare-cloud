@@ -32,7 +32,6 @@ backup_es_s3: True
 postgres_s3: True
 postgresql_backup_days: 1
 postgresql_backup_weeks: 1
-allow_direct_postgresql_access: yes
 
 aws_region: 'us-east-1'
 
