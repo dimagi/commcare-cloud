@@ -1,48 +1,5 @@
-# Todo; review this file, right now it's just a copy of pg_hba.conf
-{{ ansible_managed|comment }}
-
-# Database administrative login by Unix domain socket
-local   all             postgres                                peer
-
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-{% if groups['pg_barman']|default(None) %}
-{% for host in groups['pg_barman'] %}
-# Barman Configuration
-{% if host | ipaddr %}
-host   all	barman	{{ host }}/32   md5
-{% else %}
-host   all	barman	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
-{% endif %}
-{%endfor%}
-{% endif %}
-
-{% if postgres_users.get('tcl_backup_agent') %}
-# TCL_BACKUP required configuration
-host    all             TCLBKPADMIN        127.0.0.1/32            md5
-local   all             TCLBKPADMIN                                md5
-{% endif %}
-
-# Allow replication connections from localhost, by a user with the replication privilege.
-local   replication     postgres                                peer
-
-{% if postgres_users.get('replication') %}
-host    replication     {{ postgres_users.replication.username }}   {{ db_vlan_ip_range|default('0.0.0.0/0') }}    md5
-{% endif %}
-
-{% if postgres_users.get('backup') %}
-host    all             {{ postgres_users.backup.username }}   {{ db_vlan_ip_range|default('0.0.0.0/0') }}    md5
-{% endif %}
-
-{% if postgres_users.get('tableau_readonly') %}
-host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_server.split(':')[0] }}/32    md5
-{% endif %}
-
-# "local" is for Unix domain socket connections only
-local   all             all                                     peer
-
-# IPv4 local connections:
-host    all             all             127.0.0.1/32            md5
-
-# IPv6 local connections:
-host    all             all             ::1/128                 md5
+# Todo: update for env specific ip
+host    all         all         127.0.0.1/32          md5
+local   all         all                               md5
+# Accept private connections
+host    all         all         192.168.33.0/24        md5
