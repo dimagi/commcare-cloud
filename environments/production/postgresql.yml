@@ -1,6 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: hqdb0
 
 override:
+  allow_direct_postgresql_access: yes
   allow_dump_from_pgstandby: yes
   pgbouncer_default_pool: 290
   pgbouncer_max_connections: 1500
