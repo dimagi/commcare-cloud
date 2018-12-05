@@ -9,9 +9,9 @@
 [databases]
 {% for db in postgresql_dbs.all %}
 {% if db.create %}
-{% set db_host = db.host %}
-{% if db_host == inventory_hostname or db_host == hot_standby_master|default(None) or is_monolith|bool %}
-{{ db.name }} = host=localhost port={{postgresql_port}}
+{% set db_pgbouncer_host = db.host %}
+{% if db_pgbouncer_host == inventory_hostname or db_pgbouncer_host == hot_standby_master|default(None) or is_monolith|bool %}
+{{ db.name }} = host={{ "localhost" if db.host == db_pgbouncer_host else db.host }} port={{postgresql_port}}
 {% endif %}
 {% endif %}
 {% endfor %}
