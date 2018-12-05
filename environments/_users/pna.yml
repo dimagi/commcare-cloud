@@ -1,5 +1,6 @@
 dev_users:
   present:
     - SIG
+    - SIG2
   absent: 
     - mmthiam
