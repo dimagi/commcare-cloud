@@ -151,6 +151,11 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+  'celery11':
+  'celery12':
+  'celery13':
+  'celery14':
+  'celery15':
   'web0':
     ucr_indicator_queue:
       concurrency: 3
@@ -377,3 +382,5 @@ pillows:
   'pillow15':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 16
+  'pillow21':
+  'pillow22':
