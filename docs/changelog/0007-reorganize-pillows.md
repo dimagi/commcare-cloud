@@ -6,7 +6,7 @@
 
 ## CommCare Version Dependency
 This version of CommCare must be deployed before rolling out this change:
-[todo](https://github.com/dimagi/commcare-hq/commit/todo)
+[44615b3a](https://github.com/dimagi/commcare-hq/commit/44615b3a1eea823dc01a09c9809adae0b0f29812)
 
 
 ## Change Context
@@ -101,8 +101,8 @@ You may do below checks to make sure the change is deployed succesfully.
 3. Do basic QA of various change feeds like
    - Submit few forms, and make sure they appear in the UCR and standard reports
    - Create few mobile workers and make sure they are searchable in report filters
-4. Keep an eye on https://<your-domain>/hq/admin/pillow_errors/ and pillow section of
-   https://<your-domain>/hq/admin/system/
+4. Keep an eye on https://your-domain/hq/admin/pillow_errors/ and pillow section of
+   https://your-domain/hq/admin/system/
 
 At this point if all goes well, the above PR can be merged.
 
