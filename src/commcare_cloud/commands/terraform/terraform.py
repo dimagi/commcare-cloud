@@ -9,6 +9,7 @@ from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.utils import render_template
@@ -88,7 +89,7 @@ class UnauthorizedUser(Exception):
 def format_param_for_terraform(param_name, param_value):
     return {
         'name': param_name,
-        'value': param_value,
+        'value': postgresql_units.convert_to_standard_unit(param_name, param_value),
         # Anything listed as "dynamic" in
         #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
         # will be applied *immediately*, ignoring this flag. See:
