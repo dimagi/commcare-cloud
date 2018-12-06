@@ -74,12 +74,12 @@ servers:
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 100
+    volume_size: 400
   - server_name: "couch1-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 100
+    volume_size: 400
   - server_name: "couch2-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
