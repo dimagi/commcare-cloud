@@ -224,6 +224,19 @@ servers:
     az: "a"
     volume_size: 160
 
+  - server_name: "pgproxy0-production"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+
+  - server_name: "pgbouncer0-production"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+
+
 
 proxy_servers:
   - server_name: "proxy0-production"
