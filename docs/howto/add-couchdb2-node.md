@@ -74,3 +74,9 @@ $ commcare-cloud <env> migrate-couchdb myplan.yml commit
 ```
 $ commcare-cloud <env> migrate-couchdb myplan.yml describe
 ```
+
+7. Redeploy Proxy 
+
+```
+$ commcare-cloud <env> ansible-playbook deploy_proxy.yml
+```
