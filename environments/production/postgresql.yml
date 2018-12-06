@@ -1,5 +1,3 @@
-DEFAULT_POSTGRESQL_HOST: hqdb0
-
 override:
   allow_direct_postgresql_access: yes
   allow_dump_from_pgstandby: yes
@@ -30,37 +28,39 @@ override:
 
 dbs:
   main:
-    host: hqdb0
+    host: rds_pgmain0
+    pgbouncer_host: pgbouncer0
   formplayer:
-    host: hqdb0
+    host: rds_pgmain0
+    pgbouncer_host: pgbouncer0
   ucr:
-    host: hqdb3
+    host: rds_pgucr0
+    pgbouncer_host: pgbouncer0
     query_stats: True
   synclogs:
-    host: pgsynclog1
+    host: rds_pgsynclog0
+    pgbouncer_host: pgbouncer0
   form_processing:
     proxy:
-      host: hqdb1
+      host: pgproxy0
     partitions:
       p1:
         shards: [0, 204]
-        host: hqdb1
+        host: rds_pgshard1
+        pgbouncer_host: pgproxy0
       p2:
         shards: [205, 409]
-        host: hqdb1
+        host: rds_pgshard2
+        pgbouncer_host: pgproxy0
       p3:
         shards: [410, 614]
-        host: hqdb5
+        host: rds_pgshard3
+        pgbouncer_host: pgproxy0
       p4:
         shards: [615, 819]
-        host: hqdb5
+        host: rds_pgshard4
+        pgbouncer_host: pgproxy0
       p5:
         shards: [820, 1023]
-        host: hqdb5
-  standby:
-    - django_alias: pgmainstandby0
-      name: commcarehq
-      host: hqstandby0.internal-va.commcarehq.org
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 30
+        host: rds_pgshard5
+        pgbouncer_host: pgproxy0
