@@ -72,9 +72,9 @@ def get_aws_resources(environment):
     name_public_ip_pairs = [(item[0][0][0], item[0][1]) for item in public_ip_query
                             if item[0][1] is not None]
 
-    elasticache_address = aws_cli(environment, [
-        'aws', 'elasticache', 'describe-cache-clusters', '--show-cache-node-info',
-        '--query', 'CacheClusters[0].CacheNodes[0].Endpoint.Address',
+    rds_endpoints = aws_cli(environment, [
+        'aws', 'rds', 'describe-db-instances',
+        '--query', 'DBInstances[*].[DBInstanceIdentifier,Endpoint.Address]',
         '--output', 'json', '--region', config.region,
     ])
 
@@ -85,8 +85,9 @@ def get_aws_resources(environment):
     for name, ip in name_public_ip_pairs:
         resources['{}.public_ip'.format(name)] = ip
 
-    if elasticache_address:
-        resources['redis-{}'.format(config.environment)] = elasticache_address
+    for name, endpoint in rds_endpoints:
+        assert name not in resources
+        resources[name] = endpoint
 
     return resources
 

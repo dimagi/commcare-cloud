@@ -8,6 +8,7 @@ es0-staging: 10.201.40.161
 es1-staging: 10.201.40.108
 formplayer0-staging: 10.201.10.9
 kafka0-staging: 10.201.40.189
+pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy0-staging: 10.201.40.127
 pillow0-staging: 10.201.10.92
 proxy1-staging: 10.201.20.21

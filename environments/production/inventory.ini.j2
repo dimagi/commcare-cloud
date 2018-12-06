@@ -114,15 +114,55 @@ hqdb1
 hqdb3
 pgsynclog1
 
-[postgresql:children]
-postgresql_30gb
-postgresql_15gb
-
 [pgproxy0]
 {{ pgproxy0-production }} hostname=pgproxy0-production ec2=yes
 
 [pgbouncer0]
 {{ pgbouncer0-production }} hostname=pgbouncer0-production ec2=yes
+
+[rds_pgmain0]
+{{ pgmain0-production }}
+
+[rds_pgucr0]
+{{ pgucr0-production }}
+
+[rds_pgshard1]
+{{ pgshard1-production }}
+
+[rds_pgshard2]
+{{ pgshard2-production }}
+
+[rds_pgshard3]
+{{ pgshard3-production }}
+
+[rds_pgshard4]
+{{ pgshard4-production }}
+
+[rds_pgshard5]
+{{ pgshard5-production }}
+
+[rds_pgsynclog0]
+{{ pgsynclog0-production }}
+
+[remote_postgresql:children]
+rds_pgmain0
+rds_pgucr0
+rds_pgshard1
+rds_pgshard2
+rds_pgshard3
+rds_pgshard4
+rds_pgshard5
+rds_pgsynclog0
+
+[postgresql:children]
+postgresql_30gb
+postgresql_15gb
+pgproxy0
+pgbouncer0
+remote_postgresql
+
+[ansible_skip:children]
+remote_postgresql
 
 [rabbit0]
 {{ rabbit0-production }} hostname=rabbit0-production ec2=yes
