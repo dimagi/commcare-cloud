@@ -32,7 +32,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
-        'HOST': '{% if config.host == inventory_hostname %}127.0.0.1{% else %}{{ config.host }}{% endif %}',
+        'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
