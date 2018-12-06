@@ -9,6 +9,7 @@ from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.utils import render_template
@@ -85,30 +86,42 @@ class UnauthorizedUser(Exception):
         self.username = username
 
 
-def get_postgresql_params(environment):
+def format_param_for_terraform(param_name, param_value):
+    return {
+        'name': param_name,
+        'value': postgresql_units.convert_to_standard_unit(param_name, param_value),
+        # Anything listed as "dynamic" in
+        #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
+        # will be applied *immediately*, ignoring this flag. See:
+        #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html
+        'apply_method': 'pending-reboot'
+    }
+
+
+def get_postgresql_params_by_rds_instance(environment):
     """
-    Returns postgresql parameters as accepted by terraform
+    Returns a map from rds_instance identifier to postgresql parameters as accepted by terraform
 
     See aws db_parameter_group "parameter" argument.
     """
     postgresql_variables = get_role_defaults('postgresql')
     postgresql_variables.update(environment.postgresql_config.override)
-    param_values = {
+    environment_default_params = {
         'max_connections': postgresql_variables['postgresql_max_connections'],
     }
-    params_for_terraform = []
-    for param_name, param_value in param_values.items():
-        params_for_terraform.append({
-            'name': param_name,
-            'value': param_value,
-            # Anything listed as "dynamic" in
-            #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
-            # will be applied *immediately*, ignoring this flag. See:
-            #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html
-            'apply_method': 'pending-reboot'
-        })
-    return params_for_terraform
-
+    rds_instance_to_params = {}
+    for rds_instance in environment.terraform_config.rds_instances:
+        param_names = set(environment_default_params.keys()) | set(rds_instance.params.keys())
+        combined_params = {
+            param_name: (rds_instance.params[param_name] if param_name in rds_instance.params
+                         else environment_default_params[param_name])
+            for param_name in param_names
+        }
+        rds_instance_to_params[rds_instance.identifier] = [
+            format_param_for_terraform(param_name, param_value)
+            for param_name, param_value in combined_params.items()
+        ]
+    return rds_instance_to_params
 
 
 def generate_terraform_entrypoint(environment, key_name, run_dir):
@@ -122,7 +135,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir):
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params(environment)
+        'postgresql_params': get_postgresql_params_by_rds_instance(environment)
     })
     template_root = os.path.join(os.path.dirname(__file__), 'templates')
     for template_file, output_file in (
