@@ -14,7 +14,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     port = {{ rds_instance.port|tojson }}
   }
   parameters = [
-    {%- for param in postgresql_params %}
+    {%- for param in postgresql_params[rds_instance.identifier] %}
     {
       name = {{ param.name|tojson }}
       value = {{ param.value|tojson }}
