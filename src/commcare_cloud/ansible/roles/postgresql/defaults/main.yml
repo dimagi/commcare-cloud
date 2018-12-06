@@ -46,3 +46,5 @@ pgbouncer_pool_mode: session
 
 # Parallel processing introduced in 9.6
 postgresql_max_parallel_degree: 0
+postgresql_max_worker_processes: 16
+postgresql_max_parallel_workers_per_gather: 8
