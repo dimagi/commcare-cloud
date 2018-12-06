@@ -234,19 +234,32 @@ proxy_servers:
 
 
 rds_instances:
-  - identifier: "pg0-production"
+  - identifier: "pgmain0-production"  # replaces old hqdb0
     instance_type: "db.t2.xlarge"
     storage: 500
-  - identifier: "pg1-production"
+  - identifier: "pgucr0-production"  # replaces old hqdb3
     instance_type: "db.t2.xlarge"
     storage: 500
-  - identifier: "pg3-production"
-    instance_type: "db.t2.xlarge"
-    storage: 500
-  - identifier: "pg5-production"
-    instance_type: "db.t2.2xlarge"
-    storage: 500
-  - identifier: "pgsynclog1-production"
+
+  # replace old hqdb1, hqdb5
+  - identifier: "pgshard1-production"
+    instance_type: "db.t2.large"
+    storage: 250
+  - identifier: "pgshard2-production"
+    instance_type: "db.t2.large"
+    storage: 250
+  - identifier: "pgshard3-production"
+    instance_type: "db.t2.large"
+    storage: 250
+  - identifier: "pgshard4-production"
+    instance_type: "db.t2.large"
+    storage: 250
+  - identifier: "pgshard5-production"
+    instance_type: "db.t2.large"
+    storage: 250
+
+  # replaces old pgsynclog1
+  - identifier: "pgsynclog0-production"
     instance_type: "db.t2.large"
     storage: 1000
 
