@@ -28,18 +28,18 @@ couch.databaseName={{ couch_dbs.default.name }}
 
 // Properties for HQ db
 datasource.hq.driverClassName=org.postgresql.Driver
-datasource.hq.url=jdbc:postgresql://{{ postgresql_dbs.main.host }}:{{ postgresql_dbs.main.port }}/commcarehq?prepareThreshold=0
+datasource.hq.url=jdbc:postgresql://{{ postgresql_dbs.main.pgbouncer_host }}:{{ postgresql_dbs.main.port }}/commcarehq?prepareThreshold=0
 datasource.hq.username={{ postgres_users.commcare.username }}
 datasource.hq.password={{ postgres_users.commcare.password }}
 
 datasource.formplayer.driverClassName=org.postgresql.Driver
-datasource.formplayer.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.host }}:{{ postgresql_dbs.formplayer.port
+datasource.formplayer.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.pgbouncer_host }}:{{ postgresql_dbs.formplayer.port
 }}/{{ formplayer_db_name }}?prepareThreshold=0
 datasource.formplayer.username={{ postgres_users.commcare.username }}
 datasource.formplayer.password={{ postgres_users.commcare.password }}
 
 // set flyway URL to Formplayer's own DB
-flyway.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.host }}:{{ postgresql_dbs.formplayer.port }}/{{ formplayer_db_name }}?prepareThreshold=0
+flyway.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.pgbouncer_host }}:{{ postgresql_dbs.formplayer.port }}/{{ formplayer_db_name }}?prepareThreshold=0
 flyway.user={{ postgres_users.commcare.username }}
 flyway.password={{ postgres_users.commcare.password }}
 flyway.driverClassName=org.postgresql.Driver
