@@ -161,6 +161,9 @@ pgproxy0
 pgbouncer0
 remote_postgresql
 
+[ansible_skip:children]
+remote_postgresql
+
 [rabbit0]
 {{ rabbit0-production }} hostname=rabbit0-production ec2=yes
 
