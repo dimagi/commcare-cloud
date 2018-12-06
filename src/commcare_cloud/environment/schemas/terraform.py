@@ -71,6 +71,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     backup_retention = 30
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
+    params = jsonobject.DictProperty()
 
 
 class RedisConfig(jsonobject.JsonObject):
