@@ -15,6 +15,8 @@ module "postgresql" {
   instance_class    = "${var.rds_instance["instance_type"]}"
   allocated_storage = "${var.rds_instance["storage"]}"
 
+  apply_immediately     = "${var.apply_immediately}"
+
   name     = ""
   username = "${var.rds_instance["username"]}"
   password = "${var.rds_instance["password"]}"
