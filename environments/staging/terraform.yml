@@ -120,7 +120,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t2.large"
+    instance_type: "db.t2.medium"
     storage: 160
     multi_az: yes
 
