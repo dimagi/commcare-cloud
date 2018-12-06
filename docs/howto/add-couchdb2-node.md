@@ -78,5 +78,5 @@ $ commcare-cloud <env> migrate-couchdb myplan.yml describe
 7. Redeploy Proxy 
 
 ```
-$ commcare-cloud <env> ansible-playbook deploy_proxy.yml
+$ commcare-cloud <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
 ```
