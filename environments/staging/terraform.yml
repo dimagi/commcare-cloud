@@ -122,6 +122,7 @@ rds_instances:
   - identifier: "pg0-staging"
     instance_type: "db.t2.large"
     storage: 160
+    multi_az: yes
 
 redis:
   create: no
