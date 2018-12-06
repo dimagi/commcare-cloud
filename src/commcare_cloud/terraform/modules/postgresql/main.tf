@@ -22,6 +22,8 @@ module "postgresql" {
 
   deletion_protection = "true"
 
+  multi_az = "${var.rds_instance["multi_az"]}"
+
   iam_database_authentication_enabled = false
 
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
