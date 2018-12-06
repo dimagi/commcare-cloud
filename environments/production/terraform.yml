@@ -262,6 +262,11 @@ rds_instances:
   - identifier: "pgsynclog0-production"
     instance_type: "db.t2.large"
     storage: 1000
+    params:
+      work_mem: 2457kB
+      shared_buffers: 3840MB
+      effective_cache_size: 11520MB
+      maintenance_work_mem: 960MB
 
 redis:
   create: no
