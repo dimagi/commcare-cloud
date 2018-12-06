@@ -15,16 +15,18 @@ override:
   postgresql_max_wal_size: 2GB
 
 
-LOAD_BALANCED_APPS:
-  auth:
-    - [default, 1]
-    - [pgmainstandby0, 3]
-  locations:
-    - [default, 1]
-    - [pgmainstandby0, 3]
-  userreports:
-    - [default, 1]
-    - [pgmainstandby0, 3]
+# We're temporarily disabling read replicas
+# and will revisit after migration to RDS
+#LOAD_BALANCED_APPS:
+#  auth:
+#    - [default, 1]
+#    - [pgmainstandby0, 3]
+#  locations:
+#    - [default, 1]
+#    - [pgmainstandby0, 3]
+#  userreports:
+#    - [default, 1]
+#    - [pgmainstandby0, 3]
 
 dbs:
   main:
