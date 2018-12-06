@@ -2,7 +2,8 @@
 - hosts:
   - {{ node }}
   tasks:
-  - file:
+  - become: yes
+    file:
       path: '{{ couch_data_dir }}{{ '{{' }} item {{ '}}' }}'
       state: absent
     with_items:
