@@ -20,7 +20,15 @@ esmaster2-production: 10.202.40.201
 formplayer0-production: 10.202.10.21
 kafka0-production: 10.202.40.70
 pgbouncer0-production: 10.202.40.58
+pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgproxy0-production: 10.202.40.167
+pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pillow0-production: 10.202.12.170
 proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
