@@ -5,6 +5,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     password = "${var.rds_password}"
     identifier = {{ rds_instance.identifier|tojson }}
     instance_type = {{ rds_instance.instance_type|tojson }}
+    multi_az = "{{ "true" if rds_instance.multi_az else "false" }}"
     storage = {{ rds_instance.storage|tojson }}
     create = {{ rds_instance.create|tojson }}
     username = {{ rds_instance.username|tojson }}
