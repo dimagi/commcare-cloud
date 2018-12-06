@@ -118,6 +118,12 @@ pgsynclog1
 postgresql_30gb
 postgresql_15gb
 
+[pgproxy0]
+{{ pgproxy0-production }} hostname=pgproxy0-production ec2=yes
+
+[pgbouncer0]
+{{ pgbouncer0-production }} hostname=pgbouncer0-production ec2=yes
+
 [rabbit0]
 {{ rabbit0-production }} hostname=rabbit0-production ec2=yes
 
