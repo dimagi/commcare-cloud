@@ -37,6 +37,7 @@
     dest: "{{ airflow_home }}/airflow.cfg"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+  tags: localsettings
 
 - name: symlink dags
   become: yes
