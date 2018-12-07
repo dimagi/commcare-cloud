@@ -250,36 +250,100 @@ rds_instances:
   - identifier: "pgmain0-production"  # replaces old hqdb0
     instance_type: "db.t2.xlarge"
     storage: 500
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
   - identifier: "pgucr0-production"  # replaces old hqdb3
     instance_type: "db.t2.xlarge"
     storage: 500
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
 
   # replace old hqdb1, hqdb5
   - identifier: "pgshard1-production"
     instance_type: "db.t2.large"
     storage: 250
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
   - identifier: "pgshard2-production"
     instance_type: "db.t2.large"
     storage: 250
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
   - identifier: "pgshard3-production"
     instance_type: "db.t2.large"
     storage: 250
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
   - identifier: "pgshard4-production"
     instance_type: "db.t2.large"
     storage: 250
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
   - identifier: "pgshard5-production"
     instance_type: "db.t2.large"
     storage: 250
+    backup_retention: 0
+    params:
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
 
   # replaces old pgsynclog1
   - identifier: "pgsynclog0-production"
     instance_type: "db.t2.large"
     storage: 1000
+#    params:
+#      work_mem: 2457kB
+#      shared_buffers: 3840MB
+#      effective_cache_size: 11520MB
+#      maintenance_work_mem: 960MB
+    backup_retention: 0
     params:
-      work_mem: 2457kB
-      shared_buffers: 3840MB
-      effective_cache_size: 11520MB
-      maintenance_work_mem: 960MB
+      maintenance_work_mem: 500MB
+      min_wal_size: 160MB
+      max_wal_size: 512MB
+      checkpoint_timeout: 300
+      synchronous_commit: 'off'
+      autovacuum: 0
 
 redis:
   create: no
