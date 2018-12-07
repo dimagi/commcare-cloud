@@ -17,6 +17,7 @@ MB = Bytes(1024 * KB)
 GB = Bytes(1024 * MB)
 # Postgres measures some things in terms of number of 8-kB blocks
 BLOCK_8KB = Bytes(8 * KB)
+BLOCK_16MB = Bytes(16 * MB)
 
 MS = TimeInMilliseconds(1)
 SECOND = TimeInMilliseconds(1000 * MS)
@@ -32,6 +33,9 @@ UNITS = {
 }
 
 UNITS_BY_PARAM = {
+
+    # Taken from the AWS docs at
+    # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
     'effective_cache_size': BLOCK_8KB,
     'segment_size': BLOCK_8KB,
     'shared_buffers': BLOCK_8KB,
@@ -69,6 +73,10 @@ UNITS_BY_PARAM = {
     'tcp_keepalives_idle': SECOND,
     'tcp_keepalives_interval': SECOND,
     'wal_receiver_status_interval': SECOND,
+
+    # Surmised from parameter description in aws console
+    'min_wal_size': BLOCK_16MB,
+    'max_wal_size': BLOCK_16MB,
 }
 
 
