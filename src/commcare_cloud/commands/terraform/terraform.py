@@ -27,6 +27,12 @@ class Terraform(CommandBase):
 
             Good for not having to enter vault password again.
         """),
+        Argument('--apply-immediately', action='store_true', help="""
+            Apply immediately regardless fo the default.
+
+            In RDS where the default is to apply in the next maintenance window,
+            use this to apply immediately instead. This may result in a service interruption.
+        """),
         Argument('--username', default=get_default_username(), help="""
             The username of the user whose public key will be put on new servers.
 
@@ -54,7 +60,8 @@ class Terraform(CommandBase):
         key_name = args.username
 
         try:
-            generate_terraform_entrypoint(environment, key_name, run_dir)
+            generate_terraform_entrypoint(environment, key_name, run_dir,
+                                          apply_immediately=args.apply_immediately)
         except UnauthorizedUser as e:
             allowed_users = environment.users_config.dev_users.present
             puts(colored.red(
@@ -124,7 +131,7 @@ def get_postgresql_params_by_rds_instance(environment):
     return rds_instance_to_params
 
 
-def generate_terraform_entrypoint(environment, key_name, run_dir):
+def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediately):
     context = environment.terraform_config.to_json()
     if key_name not in environment.users_config.dev_users.present:
         raise UnauthorizedUser(key_name)
@@ -136,6 +143,10 @@ def generate_terraform_entrypoint(environment, key_name, run_dir):
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
         'postgresql_params': get_postgresql_params_by_rds_instance(environment)
+    })
+
+    context.update({
+        'apply_immediately': apply_immediately
     })
     template_root = os.path.join(os.path.dirname(__file__), 'templates')
     for template_file, output_file in (
