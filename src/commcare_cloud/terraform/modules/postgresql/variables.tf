@@ -15,3 +15,5 @@ variable "subnet_ids" {
 }
 
 variable "create" {}
+
+variable "apply_immediately" {}

@@ -15,12 +15,16 @@ module "postgresql" {
   instance_class    = "${var.rds_instance["instance_type"]}"
   allocated_storage = "${var.rds_instance["storage"]}"
 
+  apply_immediately     = "${var.apply_immediately}"
+
   name     = ""
   username = "${var.rds_instance["username"]}"
   password = "${var.rds_instance["password"]}"
   port     = "${var.rds_instance["port"]}"
 
   deletion_protection = "true"
+
+  multi_az = "${var.rds_instance["multi_az"]}"
 
   iam_database_authentication_enabled = false
 
