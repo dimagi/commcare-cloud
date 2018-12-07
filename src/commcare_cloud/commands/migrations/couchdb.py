@@ -6,7 +6,8 @@ from contextlib import contextmanager
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files
+from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files, \
+    figure_out_what_you_can_and_cannot_delete
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
@@ -92,8 +93,16 @@ def generate_shard_prune_playbook(migration):
     """Create a playbook for deleting unused files.
     :returns: List of nodes that have files to remove
     """
-    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
-    _, deletable_files_by_node = get_node_files(migration.source_couch_config, full_plan)
+    # get shard allocation from DB directly instead of using plan in case they are different
+    full_plan = {
+        db_name: get_shard_allocation(migration.target_couch_config, db_name)
+        for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+    }
+    shard_suffix_by_db = {
+        db_name: shard_allocation_doc.usable_shard_suffix
+        for db_name, shard_allocation_doc in full_plan.items()
+    }
+    _, deletable_files_by_node = figure_out_what_you_can_and_cannot_delete(full_plan, shard_suffix_by_db)
     if not any(deletable_files_by_node.values()):
         return None
 
