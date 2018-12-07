@@ -51,6 +51,7 @@ class MigrateCouchdb(CommandBase):
             - clean: remove shard files from hosts where they aren't needed
         """),
         shared_args.SKIP_CHECK_ARG,
+        shared_args.LIMIT_ARG,
     )
 
     def run(self, args, unknown_args):
@@ -63,6 +64,8 @@ class MigrateCouchdb(CommandBase):
             check_connection(migration.source_couch_config.get_control_node())
 
         ansible_context = AnsibleContext(args)
+        if args.limit and args.action != 'clean':
+            puts(colored.yellow('Ignoring --limit (it only applies to "clean" action).'))
 
         if args.action == 'describe':
             return describe(migration)
@@ -77,15 +80,16 @@ class MigrateCouchdb(CommandBase):
             return commit(migration)
 
         if args.action == 'clean':
-            return clean(migration, ansible_context, args.skip_check)
+            return clean(migration, ansible_context, args.skip_check, args.limit)
 
 
-def clean(migration, ansible_context, skip_check):
+def clean(migration, ansible_context, skip_check, limit):
     nodes = generate_shard_prune_playbook(migration)
     if nodes:
         run_ansible_playbook(
             migration.target_environment, migration.prune_playbook_path, ansible_context,
-            skip_check=skip_check
+            skip_check=skip_check,
+            limit=limit
         )
 
 

@@ -24,6 +24,10 @@ def tearDown():
     for plan_name in TEST_PLANS:
         migration = _get_migration(plan_name)
         shutil.rmtree(migration.rsync_files_path)
+        try:
+            os.remove(migration.prune_playbook_path)
+        except OSError:
+            pass
 
 
 def get_shard_allocation_func(mock_shard_allocation):

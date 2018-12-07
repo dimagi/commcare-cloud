@@ -80,3 +80,11 @@ $ commcare-cloud <env> migrate-couchdb myplan.yml describe
 ```
 $ commcare-cloud <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
 ```
+
+## Cleanup
+
+After confirming that all is well we can remove old shards:
+
+```
+$ commcare-cloud <env> migrate-couchdb myplan.yml clean
+```
