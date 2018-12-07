@@ -252,10 +252,10 @@ rds_instances:
     storage: 500
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
   - identifier: "pgucr0-production"  # replaces old hqdb3
@@ -263,10 +263,10 @@ rds_instances:
     storage: 500
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
 
@@ -276,10 +276,10 @@ rds_instances:
     storage: 250
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
   - identifier: "pgshard2-production"
@@ -287,10 +287,10 @@ rds_instances:
     storage: 250
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
   - identifier: "pgshard3-production"
@@ -298,10 +298,10 @@ rds_instances:
     storage: 250
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
   - identifier: "pgshard4-production"
@@ -309,10 +309,10 @@ rds_instances:
     storage: 250
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
   - identifier: "pgshard5-production"
@@ -320,10 +320,10 @@ rds_instances:
     storage: 250
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
 
@@ -338,10 +338,10 @@ rds_instances:
 #      maintenance_work_mem: 960MB
     backup_retention: 0
     params:
-      maintenance_work_mem: 500MB
-      min_wal_size: 160MB
-      max_wal_size: 512MB
-      checkpoint_timeout: 300
+      maintenance_work_mem: 2GB
+      min_wal_size: 4GB
+      max_wal_size: 8GB
+      checkpoint_timeout: 60m
       synchronous_commit: 'off'
       autovacuum: 0
 
