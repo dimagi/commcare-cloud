@@ -250,31 +250,39 @@ rds_instances:
   - identifier: "pgmain0-production"  # replaces old hqdb0
     instance_type: "db.t2.xlarge"
     storage: 500
+    multi_az: true
   - identifier: "pgucr0-production"  # replaces old hqdb3
     instance_type: "db.t2.xlarge"
     storage: 500
+    multi_az: true
 
   # replace old hqdb1, hqdb5
   - identifier: "pgshard1-production"
     instance_type: "db.t2.large"
     storage: 250
+    multi_az: true
   - identifier: "pgshard2-production"
     instance_type: "db.t2.large"
     storage: 250
+    multi_az: true
   - identifier: "pgshard3-production"
     instance_type: "db.t2.large"
     storage: 250
+    multi_az: true
   - identifier: "pgshard4-production"
     instance_type: "db.t2.large"
     storage: 250
+    multi_az: true
   - identifier: "pgshard5-production"
     instance_type: "db.t2.large"
     storage: 250
+    multi_az: true
 
   # replaces old pgsynclog1
   - identifier: "pgsynclog0-production"
     instance_type: "db.t2.large"
     storage: 1000
+    multi_az: true
     params:
       work_mem: 2457kB
       shared_buffers: 3840MB
