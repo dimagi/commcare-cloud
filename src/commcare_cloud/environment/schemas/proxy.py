@@ -10,7 +10,7 @@ class ProxyConfig(jsonobject.JsonObject):
     nginx_combined_cert_value = jsonobject.StringProperty()
     nginx_key_value = jsonobject.StringProperty()
     nginx_hsts_max_age = jsonobject.IntegerProperty()
-    nginx_max_clients = jsonobject.IntegerProperty(default=512)
+    nginx_max_worker_connection = jsonobject.IntegerProperty(default=512)
     nginx_worker_rlimit_nofile = jsonobject.IntegerProperty()
     fake_ssl_cert = jsonobject.BooleanProperty(default=False)
     letsencrypt_cchq_ssl = jsonobject.BooleanProperty(default=False)
