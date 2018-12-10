@@ -2,7 +2,7 @@ SITE_HOST: 'www.icds-cas.gov.in'
 NO_WWW_SITE_HOST: 'icds-cas.gov.in'
 primary_ssl_env: "cas"
 
-nginx_max_clients: 1024
+nginx_max_worker_connection: 1024
 nginx_worker_rlimit_nofile : 16384
 
 CAS_SITE_HOST: 'cas.commcarehq.org'

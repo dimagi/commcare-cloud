@@ -6,7 +6,7 @@ pid        /var/run/nginx.pid;
 worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
 
 events {
-    worker_connections  {{ nginx_max_clients }};
+    worker_connections  {{ nginx_max_worker_connection }};
 }
 
 
