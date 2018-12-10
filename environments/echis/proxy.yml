@@ -1,5 +1,5 @@
 SITE_HOST: 'www.echisethiopia.org'
-nginx_max_clients: 1024
+nginx_max_worker_connection: 1024
 nginx_worker_rlimit_nofile : 16384
 primary_ssl_env: "echis"
 
