@@ -175,9 +175,16 @@ def generate_shard_prune_playbook(migration):
 
 def commit(migration):
     if ask("Are you sure you want to update the Couch Database config?"):
+        # TODO: check that the shard files are on disk as we expect
         commit_migration(migration)
 
-        # TODO: verify that shard config in DB matches what we expect
+        diff_with_db = diff_plan(migration)
+        if diff_with_db:
+            puts(colored.red('DB allocation differs from expected:\n'))
+            puts("{}\n\n".format(diff_with_db))
+            puts("Check the DB state and logs and maybe try running 'commit' again?")
+            return 1
+
         puts(colored.yellow("New shard allocation:\n"))
         print_shard_table([
             get_shard_allocation(migration.target_couch_config, db_name)
