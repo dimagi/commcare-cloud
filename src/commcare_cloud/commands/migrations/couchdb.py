@@ -1,3 +1,4 @@
+import difflib
 import json
 import os
 from collections import defaultdict
@@ -84,13 +85,63 @@ class MigrateCouchdb(CommandBase):
 
 
 def clean(migration, ansible_context, skip_check, limit):
+    diff_with_db = diff_plan(migration)
+    if diff_with_db:
+        puts(colored.red("Current plan differs with database:\n"))
+        puts("{}\n\n".format(diff_with_db))
+        puts(
+            "This could mean that the plan hasn't been committed yet\n"
+            "or that the plan was re-generated.\n"
+            "Performing the 'clean' operation is still safe but may\n"
+            "not have the outcome you are expecting.\n"
+        )
+        if not ask("Do you wish to continue?"):
+            puts(colored.red('Abort.'))
+            return 0
+
     nodes = generate_shard_prune_playbook(migration)
     if nodes:
-        run_ansible_playbook(
+        return run_ansible_playbook(
             migration.target_environment, migration.prune_playbook_path, ansible_context,
             skip_check=skip_check,
             limit=limit
         )
+
+
+def get_db_allocations(couch_config):
+    return {
+        db_name: get_shard_allocation(couch_config, db_name)
+        for db_name in sorted(get_db_list(couch_config.get_control_node()))
+    }
+
+
+def diff_plan(migration):
+    db_allocations = get_db_allocations(migration.target_couch_config)
+    l1 = get_shard_table(migration.shard_plan)
+    l2 = get_shard_table(db_allocations.values())
+    difflines = list(difflib.ndiff(l1, l2))
+    has_diff = any(d for d in difflines if d[0] in '+-')
+    if has_diff:
+        return '\n'.join(difflines)
+
+
+def diff_allocations(alloc_by_db1, alloc_by_db2):
+    diff = defaultdict(dict)
+    for db_name, alloc1 in alloc_by_db1:
+        if db_name not in alloc_by_db2:
+            diff[db_name]['db'] = (db_name, None)
+            continue
+
+        alloc2 = alloc_by_db2[db_name]
+        sorted_range_1 = sorted(alloc1.by_range)
+        sorted_range_2 = sorted(alloc2.by_range)
+        if sorted_range_1 != sorted_range_2:
+            diff[db_name]['shards'] = (sorted_range_1, sorted_range_2)
+
+        if alloc1.shard_suffix != alloc2.shard_suffix:
+            diff[db_name]['suffic'] = (alloc1.shard_suffix, alloc2.shard_suffix)
+
+    return diff
 
 
 def generate_shard_prune_playbook(migration):
@@ -98,10 +149,7 @@ def generate_shard_prune_playbook(migration):
     :returns: List of nodes that have files to remove
     """
     # get shard allocation from DB directly instead of using plan in case they are different
-    full_plan = {
-        db_name: get_shard_allocation(migration.target_couch_config, db_name)
-        for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
-    }
+    full_plan = get_db_allocations(migration.target_couch_config)
     shard_suffix_by_db = {
         db_name: shard_allocation_doc.usable_shard_suffix
         for db_name, shard_allocation_doc in full_plan.items()
@@ -292,3 +340,16 @@ def get_migration_file_configs(migration):
             migration_file_configs[target_host] = files_for_node
 
     return migration_file_configs
+
+
+def get_shard_table(shard_allocation_docs):
+    lines = []
+    last_header = None
+    db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
+    max_db_name_len = max(map(len, db_names))
+    for shard_allocation_doc in shard_allocation_docs:
+        this_header = sorted(shard_allocation_doc.by_range)
+        change_header = (last_header != this_header)
+        lines.append(shard_allocation_doc.get_printable(include_shard_names=change_header, db_name_len=max_db_name_len))
+        last_header = this_header
+    return lines
