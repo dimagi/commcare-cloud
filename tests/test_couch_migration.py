@@ -83,9 +83,10 @@ def test_generated_plan(plan_name):
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_generate_shard_prune_playbook(plan_name):
     migration = _get_migration(plan_name)
-    mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation.yml')
+    mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation_post_migration.yml')
     mock_func = get_shard_allocation_func(mock_shard_allocation)
-    with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
+    with patch('commcare_cloud.commands.migrations.couchdb.get_shard_allocation', mock_func),\
+            patch('commcare_cloud.commands.migrations.couchdb.get_db_list', return_value=['commcarehq', 'commcarehq__apps']):
         nodes = generate_shard_prune_playbook(migration)
 
     if nodes:
@@ -97,7 +98,7 @@ def test_generate_shard_prune_playbook(plan_name):
 
 
 def _generate_plan_and_rsync_lists(migration, plan_name):
-    mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation.yml')
+    mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation_pre_migration.yml')
     mock_func = get_shard_allocation_func(mock_shard_allocation)
 
     db_info = [
