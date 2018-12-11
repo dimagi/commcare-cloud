@@ -126,25 +126,6 @@ def diff_plan(migration):
         return '\n'.join(difflines)
 
 
-def diff_allocations(alloc_by_db1, alloc_by_db2):
-    diff = defaultdict(dict)
-    for db_name, alloc1 in alloc_by_db1:
-        if db_name not in alloc_by_db2:
-            diff[db_name]['db'] = (db_name, None)
-            continue
-
-        alloc2 = alloc_by_db2[db_name]
-        sorted_range_1 = sorted(alloc1.by_range)
-        sorted_range_2 = sorted(alloc2.by_range)
-        if sorted_range_1 != sorted_range_2:
-            diff[db_name]['shards'] = (sorted_range_1, sorted_range_2)
-
-        if alloc1.shard_suffix != alloc2.shard_suffix:
-            diff[db_name]['suffic'] = (alloc1.shard_suffix, alloc2.shard_suffix)
-
-    return diff
-
-
 def generate_shard_prune_playbook(migration):
     """Create a playbook for deleting unused files.
     :returns: List of nodes that have files to remove
