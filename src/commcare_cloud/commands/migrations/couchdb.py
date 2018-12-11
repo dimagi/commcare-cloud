@@ -1,3 +1,4 @@
+import difflib
 import json
 import os
 from collections import defaultdict
@@ -6,7 +7,8 @@ from contextlib import contextmanager
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files
+from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files, \
+    figure_out_what_you_can_and_cannot_delete
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
@@ -83,21 +85,76 @@ class MigrateCouchdb(CommandBase):
 
 
 def clean(migration, ansible_context, skip_check, limit):
+    diff_with_db = diff_plan(migration)
+    if diff_with_db:
+        puts(colored.red("Current plan differs with database:\n"))
+        puts("{}\n\n".format(diff_with_db))
+        puts(
+            "This could mean that the plan hasn't been committed yet\n"
+            "or that the plan was re-generated.\n"
+            "Performing the 'clean' operation is still safe but may\n"
+            "not have the outcome you are expecting.\n"
+        )
+        if not ask("Do you wish to continue?"):
+            puts(colored.red('Abort.'))
+            return 0
+
     nodes = generate_shard_prune_playbook(migration)
     if nodes:
-        run_ansible_playbook(
+        return run_ansible_playbook(
             migration.target_environment, migration.prune_playbook_path, ansible_context,
             skip_check=skip_check,
             limit=limit
         )
 
 
+def get_db_allocations(couch_config):
+    return {
+        db_name: get_shard_allocation(couch_config, db_name)
+        for db_name in sorted(get_db_list(couch_config.get_control_node()))
+    }
+
+
+def diff_plan(migration):
+    db_allocations = get_db_allocations(migration.target_couch_config)
+    l1 = get_shard_table(migration.shard_plan)
+    l2 = get_shard_table(db_allocations.values())
+    difflines = list(difflib.ndiff(l1, l2))
+    has_diff = any(d for d in difflines if d[0] in '+-')
+    if has_diff:
+        return '\n'.join(difflines)
+
+
+def diff_allocations(alloc_by_db1, alloc_by_db2):
+    diff = defaultdict(dict)
+    for db_name, alloc1 in alloc_by_db1:
+        if db_name not in alloc_by_db2:
+            diff[db_name]['db'] = (db_name, None)
+            continue
+
+        alloc2 = alloc_by_db2[db_name]
+        sorted_range_1 = sorted(alloc1.by_range)
+        sorted_range_2 = sorted(alloc2.by_range)
+        if sorted_range_1 != sorted_range_2:
+            diff[db_name]['shards'] = (sorted_range_1, sorted_range_2)
+
+        if alloc1.shard_suffix != alloc2.shard_suffix:
+            diff[db_name]['suffic'] = (alloc1.shard_suffix, alloc2.shard_suffix)
+
+    return diff
+
+
 def generate_shard_prune_playbook(migration):
     """Create a playbook for deleting unused files.
     :returns: List of nodes that have files to remove
     """
-    full_plan = {plan.db_name: plan for plan in migration.shard_plan}
-    _, deletable_files_by_node = get_node_files(migration.source_couch_config, full_plan)
+    # get shard allocation from DB directly instead of using plan in case they are different
+    full_plan = get_db_allocations(migration.target_couch_config)
+    shard_suffix_by_db = {
+        db_name: shard_allocation_doc.usable_shard_suffix
+        for db_name, shard_allocation_doc in full_plan.items()
+    }
+    _, deletable_files_by_node = figure_out_what_you_can_and_cannot_delete(full_plan, shard_suffix_by_db)
     if not any(deletable_files_by_node.values()):
         return None
 
@@ -118,9 +175,16 @@ def generate_shard_prune_playbook(migration):
 
 def commit(migration):
     if ask("Are you sure you want to update the Couch Database config?"):
+        # TODO: check that the shard files are on disk as we expect
         commit_migration(migration)
 
-        # TODO: verify that shard config in DB matches what we expect
+        diff_with_db = diff_plan(migration)
+        if diff_with_db:
+            puts(colored.red('DB allocation differs from expected:\n'))
+            puts("{}\n\n".format(diff_with_db))
+            puts("Check the DB state and logs and maybe try running 'commit' again?")
+            return 1
+
         puts(colored.yellow("New shard allocation:\n"))
         print_shard_table([
             get_shard_allocation(migration.target_couch_config, db_name)
@@ -283,3 +347,16 @@ def get_migration_file_configs(migration):
             migration_file_configs[target_host] = files_for_node
 
     return migration_file_configs
+
+
+def get_shard_table(shard_allocation_docs):
+    lines = []
+    last_header = None
+    db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
+    max_db_name_len = max(map(len, db_names))
+    for shard_allocation_doc in shard_allocation_docs:
+        this_header = sorted(shard_allocation_doc.by_range)
+        change_header = (last_header != this_header)
+        lines.append(shard_allocation_doc.get_printable(include_shard_names=change_header, db_name_len=max_db_name_len))
+        last_header = this_header
+    return lines
