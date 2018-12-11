@@ -39,63 +39,28 @@ servers:
     volume_size: 80
 
   - server_name: "web0-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
   - server_name: "web1-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-  - server_name: "web2-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-  - server_name: "web3-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-  - server_name: "web4-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-  - server_name: "web5-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
 
   - server_name: "web6-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
   - server_name: "web7-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
   - server_name: "web8-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web9-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web10-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-  - server_name: "web11-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
