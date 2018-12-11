@@ -7,6 +7,7 @@ from contextlib import contextmanager
 import yaml
 from clint.textui import puts, colored, indent
 from couchdb_cluster_admin.describe import print_shard_table
+from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files, \
     figure_out_what_you_can_and_cannot_delete
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
@@ -194,6 +195,11 @@ def commit(migration):
 
 
 def migrate(migration, ansible_context, skip_check):
+    print_allocation(migration)
+    if not ask("Continue with this plan?"):
+        puts("Abort")
+        return 0
+
     def run_check():
         return _run_migration(migration, ansible_context, check_mode=True)
 
@@ -201,6 +207,24 @@ def migrate(migration, ansible_context, skip_check):
         return _run_migration(migration, ansible_context, check_mode=False)
 
     return run_action_with_check_mode(run_check, run_apply, skip_check)
+
+
+def print_allocation(migration):
+    def convert_to_aliases(nodes):
+        return [
+            migration.target_couch_config.aliases.get(node, node)
+            for node in nodes
+        ]
+
+    printable_docs = []
+    for doc in migration.shard_plan:
+        doc_json = doc.to_plan_json()
+        doc_json['by_range'] = {
+            shard: convert_to_aliases(by_range)
+            for shard, by_range in doc_json['by_range'].items()
+        }
+        printable_docs.append(ShardAllocationDoc.from_plan_json(doc.db_name, doc_json))
+    print_shard_table(printable_docs)
 
 
 def plan(migration):
