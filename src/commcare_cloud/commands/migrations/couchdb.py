@@ -306,12 +306,14 @@ def get_files_for_assertion(alloc_docs_by_db):
     files_by_node, _ = figure_out_what_you_can_and_cannot_delete(alloc_docs_by_db, shard_suffix_by_db)
     for node, files in files_by_node.items():
         node_ip = node.split('@')[1]
-        files_by_nodes[node_ip] = {'views': [
-            file.filename for file in files if file.filename.endswith('design')
-        ]}
-        files_by_nodes[node_ip]['shards'] = [
-            file.filename for file in files if file.filename.endswith('.couch')
-        ]
+        files_by_nodes[node_ip] = {
+            'views': [
+                node_file.filename for node_file in files if node_file.filename.endswith('design')
+            ],
+            'shards': [
+                node_file.filename for node_file in files if node_file.filename.endswith('.couch')
+            ]
+        }
     return files_by_nodes
 
 
