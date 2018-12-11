@@ -117,9 +117,14 @@ def get_db_allocations(couch_config):
 
 
 def diff_plan(migration):
-    db_allocations = get_db_allocations(migration.target_couch_config)
-    l1 = get_shard_table(migration.shard_plan)
-    l2 = get_shard_table(db_allocations.values())
+    plan_dbs = {doc.db_name for doc in migration.shard_plan}
+    db_allocations = [
+        doc
+        for db_name, doc in get_db_allocations(migration.target_couch_config).items()
+        if db_name in plan_dbs
+    ]
+    l1 = get_shard_table(_get_aliased_allocation_docs(migration))
+    l2 = get_shard_table(db_allocations)
     difflines = list(difflib.ndiff(l1, l2))
     has_diff = any(d for d in difflines if d[0] in '+-')
     if has_diff:
@@ -191,6 +196,11 @@ def migrate(migration, ansible_context, skip_check):
 
 
 def print_allocation(migration):
+    printable_docs = _get_aliased_allocation_docs(migration)
+    print_shard_table(printable_docs)
+
+
+def _get_aliased_allocation_docs(migration):
     def convert_to_aliases(nodes):
         return [
             migration.target_couch_config.aliases.get(node, node)
@@ -205,7 +215,7 @@ def print_allocation(migration):
             for shard, by_range in doc_json['by_range'].items()
         }
         printable_docs.append(ShardAllocationDoc.from_plan_json(doc.db_name, doc_json))
-    print_shard_table(printable_docs)
+    return printable_docs
 
 
 def plan(migration):
@@ -235,16 +245,23 @@ def generate_shard_plan(migration):
 
 
 def describe(migration):
-    print u'\nMembership'
+    puts(u'\nMembership')
     with indent():
         puts(get_membership(migration.target_couch_config).get_printable())
-    print u'\nDB Info'
+    puts(u'\nDB Info')
     print_db_info(migration.target_couch_config)
-    print u'\nShards'
-    print_shard_table([
-        get_shard_allocation(migration.target_couch_config, db_name)
-        for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
-    ])
+
+    puts(u'\nShard allocation')
+    diff_with_db = diff_plan(migration)
+    if diff_with_db:
+        puts(colored.yellow('DB allocation differs from plan:\n'))
+        puts("{}\n\n".format(diff_with_db))
+    else:
+        puts(colored.green('DB allocation matches plan.'))
+        print_shard_table([
+            get_shard_allocation(migration.target_couch_config, db_name)
+            for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+        ])
     return 0
 
 
@@ -359,7 +376,7 @@ def get_shard_table(shard_allocation_docs):
     last_header = None
     db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
     max_db_name_len = max(map(len, db_names))
-    for shard_allocation_doc in shard_allocation_docs:
+    for shard_allocation_doc in sorted(shard_allocation_docs, key=lambda doc: doc.db_name):
         this_header = sorted(shard_allocation_doc.by_range)
         change_header = (last_header != this_header)
         lines.append(shard_allocation_doc.get_printable(include_shard_names=change_header, db_name_len=max_db_name_len))
