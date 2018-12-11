@@ -28,6 +28,7 @@ from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
 
 
 class MigrateCouchdb(CommandBase):
@@ -79,7 +80,7 @@ class MigrateCouchdb(CommandBase):
             return migrate(migration, ansible_context, args.skip_check)
 
         if args.action == 'commit':
-            return commit(migration)
+            return commit(migration, ansible_context)
 
         if args.action == 'clean':
             return clean(migration, ansible_context, args.skip_check, args.limit)
@@ -99,6 +100,12 @@ def clean(migration, ansible_context, skip_check, limit):
         if not ask("Do you wish to continue?"):
             puts(colored.red('Abort.'))
             return 0
+
+    alloc_docs_by_db = get_db_allocations(migration.target_couch_config)
+    puts(colored.yellow("Checking shards on disk vs DB. Please wait."))
+    if not assert_files(migration, alloc_docs_by_db, ansible_context):
+        puts(colored.red("Not all couch files are accounted for. Aborting."))
+        return 1
 
     nodes = generate_shard_prune_playbook(migration)
     if nodes:
@@ -160,9 +167,17 @@ def generate_shard_prune_playbook(migration):
     return list(deletable_files_by_node)
 
 
-def commit(migration):
+def commit(migration, ansible_context):
+    alloc_docs_by_db = {plan.db_name: plan for plan in migration.shard_plan}
+    puts(colored.yellow("Checking shards on disk vs plan. Please wait."))
+    if not assert_files(migration, alloc_docs_by_db, ansible_context):
+        puts(colored.red("Some shard files are not where we expect. Have you run 'migrate'?"))
+        puts(colored.red("Aborting"))
+        return 1
+    else:
+        puts(colored.yellow("All shards appear to be where we expect according to the plan."))
+
     if ask("Are you sure you want to update the Couch Database config?"):
-        # TODO: check that the shard files are on disk as we expect
         commit_migration(migration)
 
         diff_with_db = diff_plan(migration)
@@ -178,6 +193,23 @@ def commit(migration):
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
         ])
     return 0
+
+
+def assert_files(migration, alloc_docs_by_db, ansible_context):
+    files_by_node = get_files_for_assertion(alloc_docs_by_db)
+    expected_files_vars = os.path.abspath(os.path.join(migration.working_dir, 'assert_vars.yml'))
+    with open(expected_files_vars, 'w') as f:
+        yaml.safe_dump({'files_by_node': files_by_node}, f, indent=2)
+
+    play_path = os.path.join(PLAY_DIR, 'assert_couch_files.yml')
+    with ansible_context.with_vars({ansible_context.stdout_callback: 'minimal'}):
+        return_code = run_ansible_playbook(
+            migration.target_environment, play_path, ansible_context,
+            always_skip_check=True,
+            quiet=True,
+            unknown_args=['-e', '@{}'.format(expected_files_vars)]
+        )
+    return return_code == 0
 
 
 def migrate(migration, ansible_context, skip_check):
@@ -263,6 +295,24 @@ def describe(migration):
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
         ])
     return 0
+
+
+def get_files_for_assertion(alloc_docs_by_db):
+    files_by_nodes = {}
+    shard_suffix_by_db = {
+        db_name: shard_allocation_doc.usable_shard_suffix
+        for db_name, shard_allocation_doc in alloc_docs_by_db.items()
+    }
+    files_by_node, _ = figure_out_what_you_can_and_cannot_delete(alloc_docs_by_db, shard_suffix_by_db)
+    for node, files in files_by_node.items():
+        node_ip = node.split('@')[1]
+        files_by_nodes[node_ip] = {'views': [
+            file.filename for file in files if file.filename.endswith('design')
+        ]}
+        files_by_nodes[node_ip]['shards'] = [
+            file.filename for file in files if file.filename.endswith('.couch')
+        ]
+    return files_by_nodes
 
 
 def _run_migration(migration, ansible_context, check_mode):
