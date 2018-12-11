@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 from collections import namedtuple
+from contextlib import contextmanager
 
 from clint.textui import puts, colored
 
@@ -20,6 +21,10 @@ DEPRECATED_ANSIBLE_ARGS = [
 
 
 class AnsibleContext(object):
+    config = 'ANSIBLE_CONFIG'
+    roles_path = 'ANSIBLE_ROLES_PATH'
+    stdout_callback = 'ANSIBLE_STDOUT_CALLBACK'
+
     def __init__(self, args):
         self.env_vars = self._build_env(args)
 
@@ -28,11 +33,18 @@ class AnsibleContext(object):
         and add them to the env dict with appropriate naming
         """
         env = os.environ.copy()
-        env['ANSIBLE_CONFIG'] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
-        env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
+        env[self.config] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
+        env[self.roles_path] = ANSIBLE_ROLES_PATH
         if hasattr(args, 'stdout_callback'):
-            env['ANSIBLE_STDOUT_CALLBACK'] = args.stdout_callback
+            env[self.stdout_callback] = args.stdout_callback
         return env
+
+    @contextmanager
+    def with_vars(self, vars):
+        current_vars = self.env_vars.copy()
+        self.env_vars.update(vars)
+        yield
+        self.env_vars = current_vars
 
 
 def get_common_ssh_args(environment, use_factory_auth=False):
