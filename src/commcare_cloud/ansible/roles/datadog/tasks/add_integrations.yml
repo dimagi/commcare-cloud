@@ -56,6 +56,6 @@
     - {"name": "couch", "enabled": "{{ datadog_integration_couch or inventory_hostname == couchdb2_first_host }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
-    - {"name": "http_check", "enabled": "{{ datadog_integration_http }}"}
+    - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
