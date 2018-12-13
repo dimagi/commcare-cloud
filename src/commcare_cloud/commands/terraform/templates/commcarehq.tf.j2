@@ -61,6 +61,7 @@ module "server__{{ server.server_name }}" {
   subnet_options = "${local.subnet_options}"
   security_group_options = "${local.security_group_options}"
   key_name = "${var.key_name}"
+  group_tag= {{ server.group|tojson }}
 }
 {% endfor %}
 
