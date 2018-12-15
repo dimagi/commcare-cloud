@@ -11,6 +11,15 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2018-12-15** [Blob Metadata Migration - part 2](0009-blob-metadata-migration-p2.md) (_action required_)
+Form submission attachment metadata is being consolidated in the blob metadata
+table in SQL. This migration consists of a series of commands that will
+consolidate the data in your environment.
+
+### **2018-12-15** [Blob Metadata Migration - part 1](0008-blob-metadata-migration-p1.md) (_action required_)
+Blob metadata needs to be migrated from CouchDB to SQL. This migration consists
+of a series of commands that will move the data in your environment.
+
 ### **2018-11-26** [Reorganize pillows](0007-reorganize-pillows.md) (_action required_)
 Pillows read changes from kafka and do various processing such as sending them to
 elasticsearch, transforming into a UCR table row etc. A doc for same change is read
