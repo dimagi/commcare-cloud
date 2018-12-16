@@ -1,4 +1,4 @@
-# Blob Metadata Migration Process - part 2
+# Blob Metadata Migration - part 2
 
 This migration will consist of running a series of commands against your cluster
 to migrate blob metadata within the form processor SQL database(s).

@@ -1,4 +1,4 @@
-# Blob Metadata Migration Process - part 1
+# Blob Metadata Migration - part 1
 
 This migration will consist of running a series of commands against your cluster
 to migrate blob metadata from CouchDB to SQL.

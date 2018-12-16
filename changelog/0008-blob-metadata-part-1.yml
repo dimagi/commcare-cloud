@@ -1,0 +1,12 @@
+title: Blob Metadata Migration - part 1
+key: blob-metadata-part-1
+date: 2018-09-24
+
+optional_per_env: no
+
+min_commcare_version: d7a5ee92d32f719e3e19c5841fdc7cecd2072985
+max_commcare_version:
+
+context: |
+  Blob metadata needs to be migrated from CouchDB to SQL. This migration
+  consists of a series of commands that will move the data in your environment.

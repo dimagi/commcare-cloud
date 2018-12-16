@@ -1,0 +1,13 @@
+title: Blob Metadata Migration - part 2
+key: blob-metadata-part-2
+date: 2018-12-15
+
+optional_per_env: no
+
+min_commcare_version: 6503d45c425701d3c0caeda7dc4964720f9a466b
+max_commcare_version:
+
+context: |
+  Form submission attachment metadata is being consolidated in the blob
+  metadata table in SQL. This migration consists of a series of commands that
+  will consolidate the data in your environment.
