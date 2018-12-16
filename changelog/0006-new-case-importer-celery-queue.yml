@@ -13,20 +13,3 @@ context: |
   specifically for case imports, to improve visibility into backups as well as
   typical runtimes.  Additionally, this is a first step towards allocating
   resources specifically for case imports, should that become necessary.
-
-details: |
-  This creates a case_import_queue in celery, which will be used for case
-  import tasks.
-
-update_steps: |
-  This update should be performed before updating CommCare to a version more
-  recent than that specified above.
-
-  First, add a queue called `case_import_queue` to your app_processes.yml,
-  following the examples in commcare-cloud commit 1b602e805.
-
-  To apply this change, run
-
-  ```
-  commcare-cloud <env> update-supervisor-confs
-  ```

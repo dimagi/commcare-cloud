@@ -9,15 +9,13 @@ from commcare_cloud.manage_commcare_cloud.get import Get
 from commcare_cloud.manage_commcare_cloud.list_vault_keys import ListVaultKeys
 from commcare_cloud.manage_commcare_cloud.install import Install
 from commcare_cloud.manage_commcare_cloud.make_docs import MakeDocs
-from commcare_cloud.manage_commcare_cloud.make_changelog import MakeChangelogIndex, \
-    MakeChangelog
+from commcare_cloud.manage_commcare_cloud.make_changelog import MakeChangelogIndex
 
 COMMAND_TYPES = [
     Configure,
     Get,
     Install,
     ListVaultKeys,
-    MakeChangelog,
     MakeChangelogIndex,
     MakeDocs,
     TestEnvironments,

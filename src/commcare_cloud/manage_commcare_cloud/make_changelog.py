@@ -42,16 +42,6 @@ class ChangelogEntry(jsonobject.JsonObject):
     # This will be shown as a sort of "preview" in the index
     context = MarkdownProperty()
 
-    # Details of the change
-    # This property must not be set if the changelog entry details and
-    # update steps have been composed in the target markdown file.
-    details = MarkdownProperty(default=None)
-
-    # Steps to update
-    # This property must not be set if the changelog entry details and
-    # update steps have been composed in the target markdown file.
-    update_steps = MarkdownProperty(default=None)
-
 
 def compile_changelog():
     # Parse the contents of the changelog dir
@@ -59,8 +49,20 @@ def compile_changelog():
     changelog_dir = 'changelog'
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
-        changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
+        entry = load_changelog_entry(os.path.join(changelog_dir, change_file_name))
+        verify_changelog_markdown_exists(changelog_dir, entry)
+        changelog_contents.append(entry)
     return changelog_contents
+
+
+def verify_changelog_markdown_exists(changelog_dir, entry):
+    changelog_md = os.path.join("docs", changelog_dir, entry["filename"])
+    if not os.path.exists(changelog_md):
+        print("error: changelog details not found: %s\nthis file should "
+              "contain any details and steps necessary to bring an "
+              "environment up to date for the described changes" %
+              changelog_md, file=sys.stderr)
+        sys.exit(1)
 
 
 def load_changelog_entry(path):
@@ -99,39 +101,3 @@ class MakeChangelogIndex(CommandBase):
 
         template = j2.get_template('changelog-index.md.j2')
         print(template.render(changelog_contents=changelog_contents).rstrip())
-
-
-class MakeChangelog(CommandBase):
-    command = 'make-changelog'
-    help = "Build the commcare-cloud CLI tool's individual changelog files"
-    arguments = (
-        Argument(dest='changelog_yml', help="""Path to the yaml changelog file"""),
-        Argument(dest='output_file', help="""Path to the markdown output file"""),
-    )
-
-    def run(self, args, unknown_args):
-        changelog_yml = args.changelog_yml
-        ordinal = int(changelog_yml.split('/')[-1].split('-')[0])
-        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
-
-        changelog_entry = load_changelog_entry(changelog_yml)
-
-        details = (changelog_entry.details, changelog_entry.update_steps)
-        if details == (None, None):
-            if not os.path.exists(args.output_file):
-                print("error: `details` and `update_steps` are missing and "
-                      "output file (%s) does not exist" % args.output_file,
-                      file=sys.stderr)
-                sys.exit(1)
-            return
-
-        if None in details:
-            print("error: `details` and `update_steps` must either both "
-                  "be `None` and output file %s must exist or both have "
-                  "a value so the output file can be generated from them"
-                  % args.output_file, file=sys.stderr)
-            sys.exit(1)
-        template = j2.get_template('changelog.md.j2')
-        text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
-        with open(args.output_file, "w", encoding="utf-8") as out:
-            print(text.rstrip(), file=out)

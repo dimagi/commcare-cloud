@@ -11,15 +11,3 @@ context: |
   To rule it out as a possible cause,
   we decided it was better to be on a later version of supervisor,
   and one that's not in beta.
-details: |
-  We updated our scripts to install `supervisor` via `pip` in the global env
-  rather than through `apt-get`, and also to remove any existing `supervisor` installed
-  via `apt-get`. They now install supervisor 3.3.4.
-update_steps: |
-  To update, run
-
-  ```
-  commcare-cloud <env> deploy-stack --tags supervisor
-  ```
-
-  This may restart services, so it is good to plan for a small blip in uptime.
