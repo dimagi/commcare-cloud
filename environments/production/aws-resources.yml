@@ -34,14 +34,11 @@ proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
 rabbit0-production: 10.202.42.98
 redis0-production: 10.202.41.8
+shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194
 vpn-production.public_ip: 18.235.223.2
 web0-production: 10.202.10.233
 web1-production: 10.202.10.84
-web10-production: 10.202.11.188
-web11-production: 10.202.11.153
-web2-production: 10.202.10.238
 web6-production: 10.202.11.98
 web7-production: 10.202.11.62
 web8-production: 10.202.11.30
-web9-production: 10.202.11.197

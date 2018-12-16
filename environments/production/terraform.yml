@@ -183,6 +183,12 @@ servers:
     az: "b"
     volume_size: 60
 
+  - server_name: "shareddir0-production"
+    server_instance_type: t3.micro
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+
   - server_name: "kafka0-production"
     server_instance_type: t3.medium
     network_tier: "db-private"
