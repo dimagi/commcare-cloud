@@ -52,6 +52,7 @@ class ServerConfig(jsonobject.JsonObject):
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
+    group = jsonobject.StringProperty()
 
 
 class BlockDevice(jsonobject.JsonObject):

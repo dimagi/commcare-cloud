@@ -19,3 +19,4 @@ variable "volume_size" {}
 variable "secondary_volume_size" {}
 variable "secondary_volume_type" {}
 variable "az" {}
+variable "group_tag" {}
