@@ -7,6 +7,7 @@ import jinja2
 import os
 import re
 import sys
+from io import open
 
 import yaml
 
@@ -42,10 +43,14 @@ class ChangelogEntry(jsonobject.JsonObject):
     context = MarkdownProperty()
 
     # Details of the change
-    details = MarkdownProperty()
+    # This property must not be set if the changelog entry details and
+    # update steps have been composed in the target markdown file.
+    details = MarkdownProperty(default=None)
 
     # Steps to update
-    update_steps = MarkdownProperty()
+    # This property must not be set if the changelog entry details and
+    # update steps have been composed in the target markdown file.
+    update_steps = MarkdownProperty(default=None)
 
 
 def compile_changelog():
@@ -101,6 +106,7 @@ class MakeChangelog(CommandBase):
     help = "Build the commcare-cloud CLI tool's individual changelog files"
     arguments = (
         Argument(dest='changelog_yml', help="""Path to the yaml changelog file"""),
+        Argument(dest='output_file', help="""Path to the markdown output file"""),
     )
 
     def run(self, args, unknown_args):
@@ -109,6 +115,23 @@ class MakeChangelog(CommandBase):
         j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
 
         changelog_entry = load_changelog_entry(changelog_yml)
-        template = j2.get_template('changelog.md.j2')
 
-        print(template.render(changelog_entry=changelog_entry, ordinal=ordinal).rstrip())
+        details = (changelog_entry.details, changelog_entry.update_steps)
+        if details == (None, None):
+            if not os.path.exists(args.output_file):
+                print("error: `details` and `update_steps` are missing and "
+                      "output file (%s) does not exist" % args.output_file,
+                      file=sys.stderr)
+                sys.exit(1)
+            return
+
+        if None in details:
+            print("error: `details` and `update_steps` must either both "
+                  "be `None` and output file %s must exist or both have "
+                  "a value so the output file can be generated from them"
+                  % args.output_file, file=sys.stderr)
+            sys.exit(1)
+        template = j2.get_template('changelog.md.j2')
+        text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
+        with open(args.output_file, "w", encoding="utf-8") as out:
+            print(text.rstrip(), file=out)
