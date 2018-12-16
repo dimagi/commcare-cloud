@@ -31,9 +31,6 @@ docs/commcare-cloud/commands/index.md : src/commcare_cloud/* src/commcare_cloud/
 
 
 
-docs/changelog/%.md : changelog/%.yml src/commcare_cloud/manage_commcare_cloud/*
-	manage-commcare-cloud make-changelog $< > $@
-
 docs/changelog/index.md : changelog/*.yml src/commcare_cloud/manage_commcare_cloud/*
 	manage-commcare-cloud make-changelog-index > docs/changelog/index.md
 
