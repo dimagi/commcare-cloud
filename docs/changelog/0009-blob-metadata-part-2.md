@@ -1,5 +1,14 @@
 # Blob Metadata Migration - part 2
 
+**Optional per env:** No
+
+## CommCare Version Dependency
+
+This version of CommCare must be deployed before rolling out this change:
+[6503d45c](https://github.com/dimagi/commcare-hq/commit/6503d45c425701d3c0caeda7dc4964720f9a466b)
+
+## Details
+
 This migration will consist of running a series of commands against your cluster
 to migrate blob metadata within the form processor SQL database(s).
 
