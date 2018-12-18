@@ -23,7 +23,6 @@ Cmnd_Alias UPSTART = /sbin/stop, /sbin/start, /sbin/initctl
 Cmnd_Alias HQCOMMANDS = PACKAGES, GIT, PYTHON, SUPERVISORD, CHOWN_CONF, CHMOD_CONF, MV_CONF, UPSTART, NGINX
 
 HIPAA_USERS ALL = (root) ALL
-{{ cchq_user }}    ALL = (ALL) NOPASSWD: HQCOMMANDS
 
 HIPAA_ACTOR ALL = (ALL) ALL
 HIPAA_USERS ALL = (HIPAA_ACTOR) NOPASSWD: ALL
@@ -40,3 +39,5 @@ root    ALL=(ALL:ALL) ALL
 
 # https://help.ubuntu.com/community/EnvironmentVariables#sudo_caveat
 Defaults env_keep += "http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY"
+
+{{ cchq_user }}    ALL = (ALL) NOPASSWD: HQCOMMANDS
