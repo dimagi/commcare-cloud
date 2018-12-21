@@ -47,6 +47,9 @@ that machine is also the control machine.
     - [Configure a firewall on the servers](howto/firewall.md)
 - [Kafka](services/kafka.md)
 
+## Optional but recommended
+- [Set up Sentry for error messages](howto/set-up-sentry.md)
+
 ## A word of caution
 
 CommCare HQ is a complex, distributed software application,
