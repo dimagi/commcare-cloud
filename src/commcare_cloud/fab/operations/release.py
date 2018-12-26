@@ -183,7 +183,7 @@ def _update_code_from_previous_release():
             sudo('git remote set-url origin {}'.format(env.code_repo))
     else:
         with cd(env.code_root):
-            sudo('git clone {} {}'.format(env.code_repo, env.code_root))
+            sudo('git clone --depth 1 {} {}'.format(env.code_repo, env.code_root))
 
 
 def _get_git_submodule_urls(path):
@@ -213,7 +213,7 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
         git_config_cmd.append('git config {} {}'.format(submodule_config.key, submodule_config.value))
 
     with cd(from_path):
-        cmd_fn('git clone {}/.git {}'.format(
+        cmd_fn('git clone --depth 1 {}/.git {}'.format(
             from_path,
             to_path
         ))
