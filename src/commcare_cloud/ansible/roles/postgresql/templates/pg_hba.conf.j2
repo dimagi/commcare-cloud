@@ -45,3 +45,7 @@ host    all             all             127.0.0.1/32            md5
 
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
+
+# Todo; make it so that standby pg_hba accepts from main db
+# Accept private connections
+host    all         all         192.168.33.0/24        md5
