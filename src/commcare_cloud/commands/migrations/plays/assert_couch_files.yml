@@ -1,0 +1,27 @@
+---
+- name: Assert couchdb shard files exist
+  hosts: couchdb2
+  tasks:
+    - name: stat shards
+      stat:
+        path: "/opt/data/couchdb2/{{item}}"
+      loop: "{{ files_by_node[inventory_hostname].shards }}"
+      register: shards
+
+    - name: stat views
+      stat:
+        path: "/opt/data/couchdb2/{{item}}"
+      loop: "{{files_by_node[inventory_hostname].views }}"
+      register: views
+
+    - name: assert shards exist
+      assert:
+        that: "{{ item.stat.exists }}"
+        fail_msg: "Shard file missing: {{ item.item }}"
+      loop: "{{ shards.results }}"
+
+    - name: assert views exist
+      assert:
+        that: "{{ item.stat.exists and item.stat.isdir }}"
+        fail_msg: "View missing: {{ item.item }}"
+      loop: "{{ views.results }}"
