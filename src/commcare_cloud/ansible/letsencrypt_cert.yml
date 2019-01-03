@@ -59,7 +59,7 @@
 
     - name: Run Certbot command when there is a www host
       command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
-      when: NO_WWW_SITE_HOST is defined
+      when: NO_WWW_SITE_HOST|bool
 
     - name: Run Certbot command when there is no www host
       command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}}'
