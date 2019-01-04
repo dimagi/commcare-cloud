@@ -63,12 +63,8 @@
         user: root
         cron_file: certbot
 
-    - name: reload nginx every 15 days
+    # Cleanup
+    - name: Remove "Reload Nginx to reread SSL" cron job
       cron:
-        name: "Reload Nginx to reread SSL"
-        job: "/etc/init.d/nginx reload"
-        minute: "0"
-        hour: "0"
-        day: "1,15"
-        user: root
+        state: absent
         cron_file: nginx_ssl_reread
