@@ -73,19 +73,6 @@
         name: nginx
         state: reloaded
 
-    - name: Final instructions
-      pause:
-        prompt: |
-
-          Hello person who ran letsencrypt_cert.yml.
-
-          Now you just have to finalize things by
-            - making sure `fake_ssl_cert` is set to `no` (or is absent) in `proxy.yml`
-            - running `commcare-cloud <env> ansible-playbook deploy_proxy.yml`
-            - optionally, copying the important files from `proxy` `/etc/pki/tls/`
-              to an encrypted file in the environment settings.
-
-
     - name: Add certbot cron
       cron:
         name: "Certbot Renew"
