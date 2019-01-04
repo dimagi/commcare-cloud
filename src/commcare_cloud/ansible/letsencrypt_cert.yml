@@ -36,33 +36,17 @@
         group: www-data
       ignore_errors: '{{ ansible_check_mode }}'
 
-
-    - name: Reload Nginx
-      service:
-        name: nginx
-        state: reloaded
-
-
     - name: Check that a test page returns a status 200
       uri:
         url: 'https://{{SITE_HOST}}/.well-known/acme-challenge/test.txt'
         validate_certs: no
 
-    - name: 'Verify that there exists a certbot Directory /etc/letsencrypt/live/{{ SITE_HOST }}'
-      stat:
-        path: "/etc/letsencrypt/live/{{ SITE_HOST }}"
-      register: certdir
-
-    - name: 'Take Backup of /etc/letsencrypt/live/{{ SITE_HOST }} to /etc/letsencrypt/live/{{ SITE_HOST }}.back'
-      command: "mv /etc/letsencrypt/live/{{ SITE_HOST }} /etc/letsencrypt/live/{{ SITE_HOST }}.back"
-      when: certdir.stat.exists
-
     - name: Run Certbot command when there is a www host
-      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
+      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
       when: NO_WWW_SITE_HOST|bool
 
     - name: Run Certbot command when there is no www host
-      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}}'
+      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}}'
       when: not NO_WWW_SITE_HOST
 
     - name: 'Link Certificate /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt to /etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem'
