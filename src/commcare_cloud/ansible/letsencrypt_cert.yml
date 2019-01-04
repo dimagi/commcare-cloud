@@ -65,9 +65,6 @@
         remote_src: yes
         force: yes
 
-    - name: Dump Certificate and keys
-      command: 'cat /etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt '
-
     - name: Reload Nginx
       service:
         name: nginx
