@@ -11,6 +11,10 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2019-01-02** [Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx.md)
+Previously you had to manually restart nginx every time letsencrypt auto-renewed,
+which was about every two months.
+
 ### **2018-12-15** [Blob Metadata Migration - part 2](0009-blob-metadata-part-2.md) (_action required_)
 Form submission attachment metadata is being consolidated in the blob
 metadata table in SQL. This migration consists of a series of commands that
