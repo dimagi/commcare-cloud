@@ -33,67 +33,6 @@ web8
 hq_webworkers
 mobile_webworkers
 
-[hqdb0]
-hqdb0.internal-va.commcarehq.org
-
-[hqdb0:vars]
-hot_standby_server=hqstandby0.internal-va.commcarehq.org
-postgresql_replication_slots=['standby','spare']
-datavol_device=/dev/xvdb
-
-[hqdb1]
-hqdb1.internal-va.commcarehq.org
-
-[hqdb1:vars]
-hot_standby_server=hqstandby1.internal-va.commcarehq.org
-postgresql_replication_slots=['standby','spare']
-datavol_device=/dev/xvdb
-
-[hqdb3]
-hqdb3.internal-va.commcarehq.org datadog_integration_tcp_check=yes
-
-[hqdb3:vars]
-#hot_standby_server=hqstandby3.internal-va.commcarehq.org
-postgresql_replication_slots=['standby','spare']
-datavol_device=/dev/xvdb
-
-[hqdb5]
-hqdb5.internal-va.commcarehq.org
-
-[hqdb5:vars]
-hot_standby_server=hqstandby2.internal-va.commcarehq.org
-postgresql_replication_slots=['standby','spare']
-datavol_device=/dev/xvdb
-
-[pgsynclog1]
-pgsynclog1.internal-va.commcarehq.org
-
-[pgsynclog1:vars]
-postgresql_replication_slots=['standby','spare']
-datavol_device=/dev/xvdb
-
-[postgresql_15gb:vars]
-postgresql_work_mem=2457kB
-postgresql_shared_buffers=3840MB
-postgresql_effective_cache_size=11520MB
-postgresql_maintenance_work_mem=960MB
-
-
-[postgresql_30gb:vars]
-postgresql_work_mem=6553kB
-postgresql_shared_buffers=7680MB
-postgresql_effective_cache_size=23040MB
-postgresql_maintenance_work_mem=1920MB
-
-[postgresql_30gb:children]
-hqdb5
-
-[postgresql_15gb:children]
-hqdb0
-hqdb1
-hqdb3
-pgsynclog1
-
 [pgproxy0]
 {{ pgproxy0-production }} hostname=pgproxy0-production ec2=yes
 
@@ -135,8 +74,6 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-postgresql_30gb
-postgresql_15gb
 pgproxy0
 pgbouncer0
 remote_postgresql
@@ -156,15 +93,10 @@ swap_size=2G
 [kafka0]
 {{ kafka0-production }} hostname=kafka0-production ec2=yes kafka_broker_id=1
 
-[hqes1]
-hqes1.internal-va.commcarehq.org kafka_broker_id=1
-
 [zookeeper:children]
-# hqes1
 kafka0
 
 [kafka:children]
-# hqes1
 kafka0
 
 [celery0]
@@ -354,42 +286,6 @@ hqriak21
 
 [lvm:children]
 riakcs
-
-[hqstandby0]
-hqstandby0.internal-va.commcarehq.org
-
-[hqstandby0:vars]
-pg_backup_from=hqdb0.internal-va.commcarehq.org
-hot_standby_master=hqdb0.internal-va.commcarehq.org
-replication_slot=standby
-
-[hqstandby1]
-hqstandby1.internal-va.commcarehq.org
-
-[hqstandby1:vars]
-pg_backup_from=hqdb1.internal-va.commcarehq.org
-hot_standby_master=hqdb1.internal-va.commcarehq.org
-replication_slot=standby
-datavol_device=/dev/xvdb
-
-[hqstandby2]
-hqstandby2.internal-va.commcarehq.org
-
-[hqstandby2:vars]
-pg_backup_from=hqdb5.internal-va.commcarehq.org
-hot_standby_master=hqdb5.internal-va.commcarehq.org
-replication_slot=standby
-datavol_device=/dev/xvdb
-
-[pg_standby:children]
-hqstandby0
-hqstandby1
-hqstandby2
-
-[pg_backup:children]
-hqstandby0
-hqstandby1
-hqstandby2
 
 [control]
 {{ control-production }} hostname=control-production ec2=yes
