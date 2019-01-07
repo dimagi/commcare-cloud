@@ -3,4 +3,5 @@ env_monitoring_id: pna
 users:
   - dimagi
   - pna
+  - fissionlabs
 slack_alerts_channel: alerts-pna
