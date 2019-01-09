@@ -28,6 +28,7 @@ swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
+redis_maxmemory: '7gb'
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 kafka_log_retention: 1440 # 60 days
