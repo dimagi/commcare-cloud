@@ -2,4 +2,5 @@ deploy_env: softlayer
 env_monitoring_id: softlayer
 users:
   - dimagi
+  - fissionlabs
 slack_alerts_channel: alerts-softlayer
