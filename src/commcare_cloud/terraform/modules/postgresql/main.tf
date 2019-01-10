@@ -16,6 +16,7 @@ module "postgresql" {
   allocated_storage = "${var.rds_instance["storage"]}"
 
   apply_immediately     = "${var.apply_immediately}"
+  auto_minor_version_upgrade = false
 
   name     = ""
   username = "${var.rds_instance["username"]}"
