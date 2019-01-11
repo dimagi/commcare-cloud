@@ -159,7 +159,7 @@ def generate_shard_prune_playbook(migration):
     }
     prune_playbook = render_template('prune.yml.j2', {
         'deletable_files_by_node': deletable_files_by_node,
-        'couch_data_dir': '/opt/data/couchdb2/'
+        'couch_data_dir': migration.couchdb2_data_dir
     }, TEMPLATE_DIR)
     with open(migration.prune_playbook_path, 'w') as f:
         f.write(prune_playbook)
@@ -325,7 +325,7 @@ def _run_migration(migration, ansible_context, check_mode):
         True, None, False
     )
 
-    file_args = "path=/opt/data/couchdb2 mode=0755"
+    file_args = "path={} mode=0755".format(migration.couchdb2_data_dir)
     run_ansible_module(
         migration.source_environment, ansible_context, 'couchdb2', 'file', file_args,
         True, None, False
@@ -335,8 +335,8 @@ def _run_migration(migration, ansible_context, check_mode):
     rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
     puts(colored.blue('Stop couch and reallocate shards'))
-    with stop_couch(migration.all_environments, ansible_context, check_mode):
-        execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
+    # with stop_couch(migration.all_environments, ansible_context, check_mode):
+    execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
 
     return 0
 
@@ -411,8 +411,8 @@ def get_migration_file_configs(migration):
             files_for_node.append(
                 SourceFiles(
                     source_host=source_host,
-                    source_dir='/opt/data/couchdb2/',
-                    target_dir='/opt/data/couchdb2/',
+                    source_dir=migration.couchdb2_data_dir,
+                    target_dir=migration.couchdb2_data_dir,
                     files=[f.filename for f in file_list]
                 )
             )
