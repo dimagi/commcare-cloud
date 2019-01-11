@@ -2,6 +2,6 @@
   become: yes
   lineinfile:
     dest: /etc/rsyslog.conf
-    regexp: '^\\$klogConsoleLogLevel'
+    regexp: '^\$klogConsoleLogLevel'
     line: '$klogConsoleLogLevel 4'
   notify: restart rsyslog
