@@ -23,6 +23,12 @@ resource aws_instance "server" {
     Environment = "${var.environment}"
     Group = "${var.group_tag}"
   }
+  volume_tags {
+    Name = "vol-${var.server_name}"
+    ServerName = "${var.server_name}"
+    Environment = "${var.environment}"
+    Group = "${var.group_tag}"
+  }
 }
 
 resource "aws_ebs_volume" "ebs_volume" {
