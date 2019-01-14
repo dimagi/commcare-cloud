@@ -335,8 +335,8 @@ def _run_migration(migration, ansible_context, check_mode):
     rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
     puts(colored.blue('Stop couch and reallocate shards'))
-    # with stop_couch(migration.all_environments, ansible_context, check_mode):
-    execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
+    with stop_couch(migration.all_environments, ansible_context, check_mode):
+        execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
 
     return 0
 
