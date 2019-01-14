@@ -21,7 +21,7 @@ resource aws_instance "server" {
   tags {
     Name        = "${var.server_name}"
     Environment = "${var.environment}"
-    group_tag = "${var.group_tag}"
+    Group = "${var.group_tag}"
   }
 }
 
