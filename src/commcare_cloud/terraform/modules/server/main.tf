@@ -10,6 +10,9 @@ resource aws_instance "server" {
   credit_specification {
     cpu_credits = "unlimited"
   }
+
+  disable_api_termination = true
+
   root_block_device {
     volume_size           = "${var.volume_size}"
     volume_type           = "gp2"
