@@ -103,6 +103,14 @@ class CouchMigration(object):
             for db_name, plan_json in plan.items()
         ]
 
+    @memoized_property
+    def couchdb2_data_dir(self):
+        hosts = self.target_environment.groups['couchdb2']
+        encrypted_roots = {self.target_environment.get_host_vars(host).get('encrypted_root', '/opt/data') for host in hosts}
+        assert len(encrypted_roots) == 1
+        encrypted_root, = encrypted_roots
+        return '{}/couchdb2/'.format(encrypted_root)
+
 
 class CouchMigrationPlan(jsonobject.JsonObject):
     src_env = jsonobject.StringProperty()
