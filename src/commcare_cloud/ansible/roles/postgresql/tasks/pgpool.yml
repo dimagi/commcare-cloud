@@ -2,7 +2,7 @@
   apt: name= state=present
   with_items:
     - "postgresql-{{ postgresql_version }}-pgpool2"
-    - pgpool2=3.7.5-2.pgdg14.04+1
+    - pgpool2=4.0.2-1.pgdg14.04+1
   notify: Start pgpool
   tags:
     - pgpool
