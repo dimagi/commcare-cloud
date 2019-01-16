@@ -11,6 +11,14 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2019-01-16** [Fix encrypted temp directory permissions](0011-fix-encrypted-tmp-permissions.md)
+This is a followup to [Added encrypted temporary directory](./0001-add-encrypted-tmp.md)
+in which we introduced an encrypted directory for temp files.
+In its original implementation, this file was owned by root,
+and processes were unable to write to it.
+
+This changes the directory to be owned by cchq, allowing our processes to write to the file.
+
 ### **2019-01-02** [Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx.md)
 Previously you had to manually restart nginx every time letsencrypt auto-renewed,
 which was about every two months.
