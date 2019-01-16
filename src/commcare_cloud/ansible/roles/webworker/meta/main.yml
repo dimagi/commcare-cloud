@@ -2,4 +2,5 @@
 # roles/webworker/meta/main.yml
 
 dependencies:
+  - role: java  # Needed for j2me builds
   - role: shared_dir
