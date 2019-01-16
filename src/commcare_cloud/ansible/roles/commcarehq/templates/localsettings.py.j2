@@ -32,7 +32,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
-        'HOST': '{% if config.host == inventory_hostname %}127.0.0.1{% else %}{{ config.host }}{% endif %}',
+        'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
@@ -187,6 +187,7 @@ S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ s3_blob_db_access_key }}',
     'secret_key': '{{ s3_blob_db_secret_key }}',
     's3_bucket': '{{ s3_blob_db_s3_bucket }}',
+    'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3'},
 }
 {% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
@@ -195,6 +196,7 @@ OLD_S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ old_s3_blob_db_access_key }}',
     'secret_key': '{{ old_s3_blob_db_secret_key }}',
     's3_bucket': '{{ old_s3_blob_db_s3_bucket }}',
+    'bulk_delete_chunksize': {{ old_s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3'},
 }
 BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
@@ -816,7 +818,8 @@ DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
     'project': {
-        'icds-cas': ['test-project-211', 'icds-cas-aww', 'icds-cas-ls', 'icds-cas-it', 'icds-cas-miscellaneous'],
+        'icds-cas': ['test-project-211', 'icds-cas-aww', 'icds-cas-ls', 'icds-cas-it', 'icds-cas-miscellaneous',
+                     'rtl-test-project'],
     },
     'teams': {
         'icds-cas': {

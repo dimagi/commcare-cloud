@@ -37,6 +37,7 @@
     dest: "{{ airflow_home }}/airflow.cfg"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+  tags: localsettings
 
 - name: symlink dags
   become: yes
@@ -62,3 +63,12 @@
   environment:
     AIRFLOW_HOME: "{{ airflow_home }}"
 
+- name: Purge old logs
+  become: yes
+  cron:
+    name: "Purge old airflow logs"
+    special_time: daily
+    job: "/usr/sbin/tmpreaper --mtime 21d {{ airflow_home }}/logs"
+    user: root
+    cron_file: purge_airflow_logs
+  tags: cron

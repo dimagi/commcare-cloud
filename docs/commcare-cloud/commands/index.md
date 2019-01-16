@@ -1085,7 +1085,7 @@ Gives additional databases on the server.
 Run terraform for this env with the given arguments
 
 ```
-commcare-cloud <env> terraform [--skip-secrets] [--username USERNAME]
+commcare-cloud <env> terraform [--skip-secrets] [--apply-immediately] [--username USERNAME]
 ```
 
 ##### Optional Arguments
@@ -1095,6 +1095,13 @@ commcare-cloud <env> terraform [--skip-secrets] [--username USERNAME]
 Skip regenerating the secrets file.
 
 Good for not having to enter vault password again.
+
+###### `--apply-immediately`
+
+Apply immediately regardless fo the default.
+
+In RDS where the default is to apply in the next maintenance window,
+use this to apply immediately instead. This may result in a service interruption.
 
 ###### `--username USERNAME`
 

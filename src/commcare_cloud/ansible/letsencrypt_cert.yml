@@ -36,87 +36,35 @@
         group: www-data
       ignore_errors: '{{ ansible_check_mode }}'
 
-
-    - name: Reload Nginx
-      service:
-        name: nginx
-        state: reloaded
-
-
     - name: Check that a test page returns a status 200
       uri:
         url: 'https://{{SITE_HOST}}/.well-known/acme-challenge/test.txt'
         validate_certs: no
 
-    - name: 'Verify that there exists a certbot Directory /etc/letsencrypt/live/{{ SITE_HOST }}'
-      stat:
-        path: "/etc/letsencrypt/live/{{ SITE_HOST }}"
-      register: certdir
-
-    - name: 'Take Backup of /etc/letsencrypt/live/{{ SITE_HOST }} to /etc/letsencrypt/live/{{ SITE_HOST }}.back'
-      command: "mv /etc/letsencrypt/live/{{ SITE_HOST }} /etc/letsencrypt/live/{{ SITE_HOST }}.back"
-      when: certdir.stat.exists
-
     - name: Run Certbot command when there is a www host
-      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
-      when: NO_WWW_SITE_HOST
+      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
+      when: NO_WWW_SITE_HOST|bool
 
     - name: Run Certbot command when there is no www host
-      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -d {{SITE_HOST}}'
+      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}}'
       when: not NO_WWW_SITE_HOST
-
-    - name: 'Link Certificate /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt to /etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem'
-      file:
-        src: '/etc/letsencrypt/live/{{SITE_HOST}}/fullchain.pem'
-        path: '/etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt'
-        state: link
-        remote_src: yes
-        force: yes
-
-    - name: 'Link Privatekey /etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key to   /etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem '
-      file:
-        src: '/etc/letsencrypt/live/{{SITE_HOST}}/privkey.pem'
-        path: '/etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key'
-        state: link
-        remote_src: yes
-        force: yes
-
-    - name: Dump Certificate and keys
-      command: 'cat /etc/pki/tls/private/{{ deploy_env }}_nginx_commcarehq.org.key /etc/pki/tls/certs/{{ deploy_env }}_nginx_combined.crt '
 
     - name: Reload Nginx
       service:
         name: nginx
         state: reloaded
 
-    - name: Final instructions
-      pause:
-        prompt: |
-
-          Hello person who ran letsencrypt_cert.yml.
-
-          Now you just have to finalize things by
-            - making sure `fake_ssl_cert` is set to `no` (or is absent) in `proxy.yml`
-            - running `commcare-cloud <env> ansible-playbook deploy_proxy.yml`
-            - optionally, copying the important files from `proxy` `/etc/pki/tls/`
-              to an encrypted file in the environment settings.
-
-
     - name: Add certbot cron
       cron:
         name: "Certbot Renew"
-        job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew"
+        job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew --renew-hook '/etc/init.d/nginx reload'"
         minute: "0"
         hour: "0/12"
         user: root
         cron_file: certbot
 
-    - name: reload nginx every 15 days
+    # Cleanup
+    - name: Remove "Reload Nginx to reread SSL" cron job
       cron:
-        name: "Reload Nginx to reread SSL"
-        job: "/etc/init.d/nginx reload"
-        minute: "0"
-        hour: "0"
-        day: "1,15"
-        user: root
+        state: absent
         cron_file: nginx_ssl_reread

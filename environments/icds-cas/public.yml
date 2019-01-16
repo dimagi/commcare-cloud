@@ -65,6 +65,14 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
+  - name: /tamil_icds-cas_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_tamil"
+  - name: /telangana_icds-cas_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_telangana"
   - name: /mp_ls_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
@@ -124,6 +132,8 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 s3_blob_db_enabled: yes
 old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
 old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
+old_s3_bulk_delete_chunksize: 200
+
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 s3_blob_db_s3_bucket: 'blobdb'
 
@@ -221,6 +231,7 @@ localsettings:
             - 'static-infrastructure_form_v2'
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
+            - 'static-ls_vhnd_form'
             - 'static-postnatal_care_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
@@ -251,6 +262,18 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  UCR_COMPARISONS: {}
+  UCR_COMPARISONS:
+    'static-icds-cas-static-mpr_10a_person_cases': 'static-icds-cas-static-mpr_10a_person_cases-optimized'
+    'static-icds-cas-static-mpr_10b_person_cases': 'static-icds-cas-static-mpr_10b_person_cases-optimized'
+    'static-icds-cas-static-mpr_1_person_cases': 'static-icds-cas-static-mpr_1_person_cases-optimized'
+    'static-icds-cas-static-mpr_3ii_person_cases': 'static-icds-cas-static-mpr_3ii_person_cases-optimized'
+    'static-icds-cas-static-asr_2_3_person_cases': 'static-icds-cas-static-asr_2_3_person_cases-optimized'
+    'static-icds-cas-static-mpr_3i_person_cases': 'static-icds-cas-static-mpr_3i_person_cases-optimized'
+    # new UCR format from LS app
+    'static-icds-cas-static-mpr_10a_children_referred': 'static-icds-cas-static-mpr_10a_children_referred-optimized'
+    'static-icds-cas-static-mpr_10b_pregnancies_referred': 'static-icds-cas-static-mpr_10b_pregnancies_referred-optimized'
+    'static-icds-cas-static-mpr_3_children_registered': 'static-icds-cas-static-mpr_3_children_registered-optimized'
+    'static-icds-cas-static-asr_2_3_beneficiaries': 'static-icds-cas-static-asr_2_3_beneficiaries-optimized'
+    'static-icds-cas-static-mpr_3i_pregnancies': 'static-icds-cas-static-mpr_3i_pregnancies-optimized'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'

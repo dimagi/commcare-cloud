@@ -115,6 +115,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.host = self.DEFAULT_POSTGRESQL_HOST
             elif db.host != '127.0.0.1':
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
+
+            if db.pgbouncer_host is None:
+                db.pgbouncer_host = db.host
+            else:
+                db.pgbouncer_host = environment.translate_host(db.pgbouncer_host, environment.paths.postgresql_yml)
             if db.port is None:
                 if db.host in host_settings:
                     db.port = host_settings[db.host].port
@@ -184,6 +189,7 @@ class DBOptions(jsonobject.JsonObject):
 
     name = jsonobject.StringProperty(required=True)
     host = jsonobject.StringProperty()
+    pgbouncer_host = jsonobject.StringProperty(default=None)
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()

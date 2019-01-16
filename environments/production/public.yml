@@ -135,6 +135,7 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb2_client_max_body_size: 100M
 
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
@@ -161,6 +162,8 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
+  BIGCOUCH: True
+  BIGCOUCH_QUORUM_COUNT: 2
   BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True

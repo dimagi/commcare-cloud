@@ -46,3 +46,5 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
+
+allow_direct_postgresql_access: no

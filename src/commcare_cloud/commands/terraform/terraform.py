@@ -9,11 +9,12 @@ from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.environment.paths import TERRAFORM_DIR
+from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
 
 
 class Terraform(CommandBase):
@@ -25,6 +26,12 @@ class Terraform(CommandBase):
             Skip regenerating the secrets file.
 
             Good for not having to enter vault password again.
+        """),
+        Argument('--apply-immediately', action='store_true', help="""
+            Apply immediately regardless fo the default.
+
+            In RDS where the default is to apply in the next maintenance window,
+            use this to apply immediately instead. This may result in a service interruption.
         """),
         Argument('--username', default=get_default_username(), help="""
             The username of the user whose public key will be put on new servers.
@@ -53,7 +60,8 @@ class Terraform(CommandBase):
         key_name = args.username
 
         try:
-            generate_terraform_entrypoint(environment, key_name, run_dir)
+            generate_terraform_entrypoint(environment, key_name, run_dir,
+                                          apply_immediately=args.apply_immediately)
         except UnauthorizedUser as e:
             allowed_users = environment.users_config.dev_users.present
             puts(colored.red(
@@ -85,7 +93,45 @@ class UnauthorizedUser(Exception):
         self.username = username
 
 
-def generate_terraform_entrypoint(environment, key_name, run_dir):
+def format_param_for_terraform(param_name, param_value):
+    return {
+        'name': param_name,
+        'value': postgresql_units.convert_to_standard_unit(param_name, param_value),
+        # Anything listed as "dynamic" in
+        #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
+        # will be applied *immediately*, ignoring this flag. See:
+        #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html
+        'apply_method': 'pending-reboot'
+    }
+
+
+def get_postgresql_params_by_rds_instance(environment):
+    """
+    Returns a map from rds_instance identifier to postgresql parameters as accepted by terraform
+
+    See aws db_parameter_group "parameter" argument.
+    """
+    postgresql_variables = get_role_defaults('postgresql')
+    postgresql_variables.update(environment.postgresql_config.override)
+    environment_default_params = {
+        'max_connections': postgresql_variables['postgresql_max_connections'],
+    }
+    rds_instance_to_params = {}
+    for rds_instance in environment.terraform_config.rds_instances:
+        param_names = set(environment_default_params.keys()) | set(rds_instance.params.keys())
+        combined_params = {
+            param_name: (rds_instance.params[param_name] if param_name in rds_instance.params
+                         else environment_default_params[param_name])
+            for param_name in param_names
+        }
+        rds_instance_to_params[rds_instance.identifier] = [
+            format_param_for_terraform(param_name, param_value)
+            for param_name, param_value in combined_params.items()
+        ]
+    return rds_instance_to_params
+
+
+def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediately):
     context = environment.terraform_config.to_json()
     if key_name not in environment.users_config.dev_users.present:
         raise UnauthorizedUser(key_name)
@@ -96,6 +142,11 @@ def generate_terraform_entrypoint(environment, key_name, run_dir):
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
+        'postgresql_params': get_postgresql_params_by_rds_instance(environment)
+    })
+
+    context.update({
+        'apply_immediately': apply_immediately
     })
     template_root = os.path.join(os.path.dirname(__file__), 'templates')
     for template_file, output_file in (

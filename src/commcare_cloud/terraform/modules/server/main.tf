@@ -16,10 +16,25 @@ resource aws_instance "server" {
     delete_on_termination = true
   }
   lifecycle {
-    ignore_changes = ["user_data", "key_name", "root_block_device.0.delete_on_termination", "ebs_optimized"]
+    ignore_changes = ["user_data", "key_name", "root_block_device.0.delete_on_termination", "ebs_optimized", "ami"]
   }
   tags {
     Name        = "${var.server_name}"
     Environment = "${var.environment}"
+    group_tag = "${var.group_tag}"
   }
+}
+
+resource "aws_ebs_volume" "ebs_volume" {
+  count = "${var.secondary_volume_size > 0 ? 1 : 0}"
+  availability_zone = "${aws_instance.server.availability_zone}"
+  size = "${var.secondary_volume_size}"
+  type = "${var.secondary_volume_type}"
+}
+
+resource "aws_volume_attachment" "ebs_att" {
+  count = "${var.secondary_volume_size > 0 ? 1 : 0}"
+  device_name = "/dev/sdf"
+  volume_id   = "${aws_ebs_volume.ebs_volume.id}"
+  instance_id = "${aws_instance.server.id}"
 }

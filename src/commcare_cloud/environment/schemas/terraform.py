@@ -51,14 +51,29 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
+    block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
+    group = jsonobject.StringProperty()
+
+
+class BlockDevice(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
+    volume_size = jsonobject.IntegerProperty(required=True)
 
 
 class RdsInstanceConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    identifier = jsonobject.StringProperty()
-    instance_type = jsonobject.StringProperty()  # should start with 'db.'
+    identifier = jsonobject.StringProperty(required=True)
+    instance_type = jsonobject.StringProperty(required=True)  # should start with 'db.'
+    multi_az = jsonobject.BooleanProperty(default=False)
     storage = jsonobject.IntegerProperty()
     create = jsonobject.BooleanProperty(default=True)
+    username = "root"
+    backup_window = "06:27-06:57"
+    backup_retention = 30
+    maintenance_window = "sat:08:27-sat:08:57"
+    port = 5432
+    params = jsonobject.DictProperty()
 
 
 class RedisConfig(jsonobject.JsonObject):

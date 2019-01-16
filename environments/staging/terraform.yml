@@ -31,77 +31,99 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 50
+    group: "control"
   - server_name: "web0-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    group: "webworkers"
   - server_name: "web1-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    group: "webworkers"
   - server_name: "es0-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
+    group: "elasticsearch"
   - server_name: "es1-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    group: "elasticsearch"
   - server_name: "pillow0-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    group: "pillowtop"
   - server_name: "celery0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    group: "celery"
   - server_name: "airflow0-staging"
     server_instance_type: "t3.small"
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    group: "airflow"
   - server_name: "formplayer0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    group: "formplayer"
   - server_name: "couch0-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 50
+    volume_size: 400
+    group: "couchdb2"
   - server_name: "couch1-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 50
+    volume_size: 400
+    group: "couchdb2"
   - server_name: "couch2-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 50
+    volume_size: 400
+    group: "couchdb2"
   - server_name: "rabbit0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    group: "rabbitmq"
 
   - server_name: "kafka0-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    group: "kafka"
 
   - server_name: "pgproxy0-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
     volume_size: 40
+    group: "postgresql"
+
+  - server_name: "redis0-staging"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+    group: "redis"
 
 
 proxy_servers:
@@ -110,12 +132,14 @@ proxy_servers:
     network_tier: "public"
     az: "a"
     volume_size: 80
+    group: "proxy"
 
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t2.large"
+    instance_type: "db.t2.medium"
     storage: 160
+    multi_az: yes
 
 redis:
   create: no
