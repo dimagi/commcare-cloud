@@ -1,0 +1,65 @@
+---
+nginx_ssl_cert: "{{ reach_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ reach_nginx_ssl_key }}"
+
+nginx_sites:
+- server:
+   balancers:
+    - name: "{{ deploy_env }}_commcare"
+      hosts: webworkers
+      port: "{{ django_port }}"
+    - name: "{{ deploy_env }}_formplayer"
+      hosts: formplayer
+      port: "{{ formplayer_port }}"
+      method: "hash $cookie_sessionid consistent"
+   proxy_cache_path:
+    - name: "hq_media_cache"
+      path: "{{ www_home }}/hq_media/cache"
+      max_size: "2g"
+      inactive_time: "24h"
+   file_name: "{{ deploy_env }}_reach_commcare"
+   listen: "443 ssl http2"
+   server_name: "{{ REACH_SITE_HOST }}"
+   client_max_body_size: 100m
+   proxy_set_headers:
+   - "Host $host"
+   - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-Protocol  $scheme"
+   add_header: "X-Frame-Options SAMEORIGIN"
+   access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
+   locations:
+    - name: /
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ REACH_SITE_HOST }} https://{{ REACH_SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 1200s # 900s temporarily increase timeout for UCR data exports for ICDS
+      proxy_buffers: 8 64k
+      proxy_buffer_size: 64k
+      client_body_buffer_size: 512k
+    - name: "/hq/multimedia/file"
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ REACH_SITE_HOST }} https://{{ REACH_SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      proxy_cache: hq_media_cache
+    - name: "/static"
+      alias: "{{ nginx_static_home }}"
+      add_header: "Access-Control-Allow-Origin *"
+      expires: "1M"
+      try_files: "$uri $uri/index.html $uri/ =404"
+    - name: "/{{ transfer_payload_dir_name }}"
+      alias: "{{ shared_mount_dir if shared_drive_enabled else shared_data_dir }}/{{ transfer_payload_dir_name }}"
+      is_internal: True
+    - name: /errors
+      alias: "{{ errors_home }}/pages"
+    - name: /ws
+      proxy_pass: "http://unix:{{ www_home }}/web.socket"
+      proxy_http_version: "1.1"
+      proxy_set_headers:
+      - "Upgrade $http_upgrade"
+      - "Connection \"upgrade\""
+    - name: /formplayer
+      balancer: "{{ deploy_env }}_formplayer/"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+   extra_locations: "{{ site_locations|default([]) }}"
