@@ -53,6 +53,7 @@ localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
     - testserver
+    - "{{ REACH_SITE_HOST }}"
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
