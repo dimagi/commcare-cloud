@@ -39,6 +39,13 @@ resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = "${aws_instance.server.availability_zone}"
   size = "${var.secondary_volume_size}"
   type = "${var.secondary_volume_type}"
+
+  tags {
+    Name = "vol-${var.server_name}"
+    ServerName = "${var.server_name}"
+    Environment = "${var.environment}"
+    Group = "${var.group_tag}"
+  }
 }
 
 resource "aws_volume_attachment" "ebs_att" {
