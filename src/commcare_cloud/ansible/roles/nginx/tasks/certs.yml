@@ -94,3 +94,22 @@
   tags:
     - link_pna_cas
 
+- name: Link REACH SSL cert
+  become: yes
+  file:
+    src: "/etc/letsencrypt/live/{{REACH_SITE_HOST}}/fullchain.pem"
+    dest: "{{ ssl_certs_dir }}/{{ reach_nginx_ssl_cert }}"
+    state: link
+  when: not fake_ssl_cert and REACH_SITE_HOST | default(None)
+  tags:
+    - link_ssl_reach
+
+- name: Link REACH SSL Key
+  become: yes
+  file:
+    src: "/etc/letsencrypt/live/{{REACH_SITE_HOST}}/privkey.pem"
+    dest: "{{ ssl_keys_dir }}/{{ reach_nginx_ssl_key  }}"
+    state: link
+  when: not fake_ssl_cert and REACH_SITE_HOST | default(None)
+  tags:
+    - link_ssl_reach
