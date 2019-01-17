@@ -36,10 +36,14 @@ install:
   - touch ~/.aws/config
   - touch ~/.aws/credentials
   - touch ~/.ssh/commcarehq_testing.pem
-  - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/config --output=~/.aws/config
-  - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
-  - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
-  - "if [[ $TEST = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
+  - |
+    if [[ $TEST = 'prove-deploy' ]]
+    then
+      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/config --output=~/.aws/config
+      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
+      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
+      pip install -e commcare-cloud-bootstrap
+    done
 
 script:
   - ".travis/tests.sh"
