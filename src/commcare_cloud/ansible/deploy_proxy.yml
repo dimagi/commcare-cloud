@@ -114,6 +114,16 @@
         riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
         site_config: {name: riakcs, vars_file: riakcs}
 
+- name: Reach Proxy
+  hosts: proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: "{{ 'reach_ssl' in special_sites }}"
+        site_config: {name: reach_ssl, vars_file: reach_ssl}
+    
 - name: CAS Proxy
   hosts: cas_proxy
   tasks:
