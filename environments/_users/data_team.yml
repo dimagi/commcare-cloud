@@ -5,4 +5,5 @@ dev_users:
     - esu
     - ymsosa
     - slee
+    - kchen
   absent: []
