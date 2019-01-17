@@ -4,11 +4,19 @@ celery_processes:
   'celery0':
     beat: {}
     flower: {}
-    async_restore_queue,celery_periodic,email_queue,submission_reprocessing_queue:
-      concurrency: 2
-    repeat_record_queue,sumologic_logs_queue,reminder_queue,sms_queue,reminder_case_update_queue,icds_aggregation_queue:
+    reminder_queue:
       pooling: gevent
-      concurrency: 220
+      concurrency: 5
+    submission_reprocessing_queue:
+      concurrency: 1
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+    async_restore_queue,celery_periodic,email_queue:
+      concurrency: 2
+    repeat_record_queue,sumologic_logs_queue,reminder_case_update_queue,icds_aggregation_queue:
+      pooling: gevent
+      concurrency: 200
     ucr_queue,ucr_indicator_queue,celery,export_download_queue,reminder_rule_queue,case_import_queue:
       concurrency: 2
       max_tasks_per_child: 5
