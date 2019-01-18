@@ -62,6 +62,10 @@ host    all             all             127.0.0.1/32            md5
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
 
-# Todo; make it so that standby pg_hba accepts from main db
-# Accept private connections
-host    all         all         192.168.33.0/24        md5
+# Todo; Fix hostvars bug
+# Standbys should accept connection from pgpool host
+{% for pgpool_host, config in pgpool_config.items() %}
+{% if ansible_hostname in config.standbys %}
+host    all         all         "hostvars[pgpool_host]['host'][internal_network_interface_fact].ipv4.address"/32        md5
+{% endif %}
+{% endfor %}
