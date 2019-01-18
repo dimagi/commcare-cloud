@@ -306,7 +306,6 @@ black_function_list = 'nextval,setval,nextval,setval'
                                    # that write to database
                                    # Regexp are accepted
 
-# Todo; update with env config values
 database_redirect_preference_list = {{ pgpool_config[ansible_hostname]['database_redirect_preference_list'] }}
                                    # comma separated list of pairs of database and node id.
                                    # example: postgres:primary,mydb[0-4]:1,mydb[5-9]:2'
@@ -347,9 +346,10 @@ sr_check_user = '{{ secrets.POSTGRES_USERS.replication.username }}'
                                    # sr_check_period = 0
 sr_check_password = '{{ secrets.POSTGRES_USERS.replication.password }}'
                                    # Password for streaming replication check user
+# Todo; verify with Simon; WAL is per pg server and not per db, so just check on default postgres db
 sr_check_database = 'postgres'
                                    # Database name for streaming replication check
-delay_threshold = 10
+delay_threshold = {{ pgpool_config[ansible_hostname]['delay_threshold'] }}
                                    # Threshold before not dispatching query to standby node
                                    # Unit is in bytes
                                    # Disabled (0) by default
