@@ -65,7 +65,7 @@ host    all             all             ::1/128                 md5
 # Todo; Fix hostvars bug
 # Standbys should accept connection from pgpool host
 {% for pgpool_host, config in pgpool_config.items() %}
-{% if ansible_hostname in config.standbys %}
+{% if ansible_hostname in config.standbys + [config.primary] and ansible_hostname != pgpool_host %}
 host    all         all         "hostvars[pgpool_host]['host'][internal_network_interface_fact].ipv4.address"/32        md5
 {% endif %}
 {% endfor %}
