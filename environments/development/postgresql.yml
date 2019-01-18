@@ -9,5 +9,8 @@ override:
   postgresql_shared_buffers: 128MB
 
 dbs:
+  main:
+    host: db1
+    pgpool_host: db1
   synclogs: null
   form_processing: null

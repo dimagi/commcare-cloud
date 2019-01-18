@@ -190,6 +190,7 @@ class DBOptions(jsonobject.JsonObject):
     name = jsonobject.StringProperty(required=True)
     host = jsonobject.StringProperty()
     pgbouncer_host = jsonobject.StringProperty(default=None)
+    pgpool_host = jsonobject.StringProperty(default=None)
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
