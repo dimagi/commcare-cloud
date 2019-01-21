@@ -1,5 +1,17 @@
-# Todo: update for env specific ip
+# Accept all local connections
 host    all         all         127.0.0.1/32          md5
 local   all         all                               md5
-# Accept private connections
-host    all         all         192.168.33.0/24        md5
+# Accept from other app/db hosts
+{% for host in (groups['formplayer'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups.get('django_manage', []) + groups['postgresql'] + groups.get('pg_standby', []) + groups.get('airflow', [])) | unique %}
+# {{ host }}
+{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
+{% set db = db_list[0] %}
+{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% if host | ipaddr %}
+host   {{ db.name }}	{{ db.user }}	{{ host }}/32   md5
+{% else %}
+host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}

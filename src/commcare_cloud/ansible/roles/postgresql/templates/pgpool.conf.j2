@@ -306,7 +306,7 @@ black_function_list = 'nextval,setval,nextval,setval'
                                    # that write to database
                                    # Regexp are accepted
 
-database_redirect_preference_list = {{ pgpool_config[ansible_hostname]['database_redirect_preference_list'] }}
+database_redirect_preference_list = '{{ pgpool_config[ansible_hostname]['database_redirect_preference_list'] }}'
                                    # comma separated list of pairs of database and node id.
                                    # example: postgres:primary,mydb[0-4]:1,mydb[5-9]:2'
                                    # valid for streaming replicaton mode only.
