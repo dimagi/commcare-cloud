@@ -123,6 +123,12 @@
       vars:
         site_present: "{{ 'reach_ssl' in special_sites }}"
         site_config: {name: reach_ssl, vars_file: reach_ssl}
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: "{{ 'reach_http' in special_sites }}"
+        site_config: {name: reach_http, vars_file: reach_http}
     
 - name: CAS Proxy
   hosts: cas_proxy
