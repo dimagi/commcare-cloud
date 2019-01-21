@@ -698,8 +698,14 @@ TWO_FACTOR_CALL_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
 ENFORCE_TWO_FACTOR_FOR_SUPERUSERS = {{ localsettings.ENFORCE_TWO_FACTOR_FOR_SUPERUSERS }}
 {% endif %}
 
-{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') and isinstance(localsettings.CUSTOM_LANDING_TEMPLATE, str)%}
 CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
+{% elif localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+CUSTOM_LANDING_TEMPLATE = {
+{% for hostname, template in localsettings.CUSTOM_LANDING_TEMPLATE.items() %}
+    '{{ hostname }}': '{{ template }}',
+{% endfor %}
+}
 {% endif %}
 
 {% if localsettings.get('ENTERPRISE_MODE') %}
@@ -714,12 +720,24 @@ RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
 TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
 {% endif %}
 
-{% if localsettings.get('COMMCARE_HQ_NAME') %}
+{% if localsettings.get('COMMCARE_HQ_NAME') and isinstance(localsettings.COMMCARE_HQ_NAME, str)%}
 COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
+{% elif localsettings.get('COMMCARE_HQ_NAME') %}
+COMMCARE_HQ_NAME = {
+{% for hostname, commcare_hq_name in localsettings.COMMCARE_HQ_NAME.items() %}
+    '{{ hostname }}': '{{ commcare_hq_name }}',
+{% endfor %}
+}
 {% endif %}
 
-{% if localsettings.get('COMMCARE_NAME') %}
+{% if localsettings.get('COMMCARE_NAME') and isinstance(localsettings.COMMCARE_NAME, str)%}
 COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
+{% elif localsettings.get('COMMCARE_NAME') %}
+COMMCARE_NAME = {
+{% for hostname, commcare_name in localsettings.COMMCARE_NAME.items() %}
+    '{{ hostname }}': '{{ commcare_name }}',
+{% endfor %}
+}
 {% endif %}
 
 {% if SENTRY_PUBLIC_KEY %}
