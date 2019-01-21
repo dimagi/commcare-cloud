@@ -12,3 +12,4 @@ REACH_SITE_HOST: 'reach.commcarehq.org'
 
 special_sites:
   - reach_ssl
+  - reach_http
