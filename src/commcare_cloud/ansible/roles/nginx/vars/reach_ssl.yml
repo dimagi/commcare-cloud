@@ -5,18 +5,13 @@ nginx_ssl_key:  "{{ reach_nginx_ssl_key }}"
 nginx_sites:
 - server:
    balancers:
-    - name: "{{ deploy_env }}_commcare"
+    - name: "{{ deploy_env }}_reach_commcare"
       hosts: webworkers
       port: "{{ django_port }}"
-    - name: "{{ deploy_env }}_formplayer"
+    - name: "{{ deploy_env }}_reach_formplayer"
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
-   proxy_cache_path:
-    - name: "hq_media_cache"
-      path: "{{ www_home }}/hq_media/cache"
-      max_size: "2g"
-      inactive_time: "24h"
    file_name: "{{ deploy_env }}_reach_commcare"
    listen: "443 ssl http2"
    server_name: "{{ REACH_SITE_HOST }}"
@@ -29,7 +24,7 @@ nginx_sites:
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
     - name: /
-      balancer: "{{ deploy_env }}_commcare"
+      balancer: "{{ deploy_env }}_reach_commcare"
       proxy_redirect: "http://{{ REACH_SITE_HOST }} https://{{ REACH_SITE_HOST }}"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 1200s # 900s temporarily increase timeout for UCR data exports for ICDS
@@ -37,7 +32,7 @@ nginx_sites:
       proxy_buffer_size: 64k
       client_body_buffer_size: 512k
     - name: "/hq/multimedia/file"
-      balancer: "{{ deploy_env }}_commcare"
+      balancer: "{{ deploy_env }}_reach_commcare"
       proxy_redirect: "http://{{ REACH_SITE_HOST }} https://{{ REACH_SITE_HOST }}"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
@@ -59,7 +54,7 @@ nginx_sites:
       - "Upgrade $http_upgrade"
       - "Connection \"upgrade\""
     - name: /formplayer
-      balancer: "{{ deploy_env }}_formplayer/"
+      balancer: "{{ deploy_env }}_reach_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
    extra_locations: "{{ site_locations|default([]) }}"
