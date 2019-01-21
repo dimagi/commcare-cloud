@@ -16,7 +16,7 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/pgpool
 PIDFILE=/var/run/postgresql/pgpool.pid
-PGPOOL_PCP_CONFIG_FILE=/etc/pgpool2/pcp.conf
+PGPOOLLOG=/var/log/postgresql/pgpool.log
 
 test -x $DAEMON || exit 5
 
@@ -30,8 +30,11 @@ if [ x"$PGPOOL_LOG_DEBUG" = x"yes" ]; then
     OPTS="$OPTS -d"
 fi
 
-if [ -f $PGPOOL_PCP_CONFIG_FILE ]; then
-    OPTS="$OPTS -F $PGPOOL_PCP_CONFIG_FILE"
+# Create the log file if it does not exist
+if [ ! -x $PGPOOLLOG ]
+then
+    touch $PGPOOLLOG
+    chown postgres: $PGPOOLLOG
 fi
 
 . /lib/lsb/init-functions
@@ -50,7 +53,7 @@ d_start() {
     if is_running; then
         :
     else
-        su -c "$DAEMON -n $OPTS 2>&1 </dev/null | logger -t pgpool -p ${PGPOOL_SYSLOG_FACILITY:-local0}.info >/dev/null 2>&1 &" - postgres
+        su -c "$DAEMON -n $OPTS & " >> "$PGPOOLLOG" 2>&1 < /dev/null
     fi
 }
 

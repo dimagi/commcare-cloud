@@ -3,9 +3,9 @@
   with_items:
     - "postgresql-{{ postgresql_version }}-pgpool2"
     - pgpool2=4.0.2-1.pgdg14.04+1
-  notify: Start pgpool
-  tags:
-    - pgpool
+
+- name: Setup pgpool init.d
+  template: src=pgpool.init.d.j2 dest=/etc/init.d/pgpool2
 
 - name: Configure pgpool app
   template: src={{ item }}.j2 dest="{{ pgpool_config_home }}/{{ item }}" mode=0644 owner=root group=root
