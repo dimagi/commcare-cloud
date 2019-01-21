@@ -64,7 +64,11 @@ pcp_socket_dir = '/var/run/postgresql'
 # - Backend Connection Settings -
 
 # Todo; may have to fix IPV4 address
+{% if pgpool_config[ansible_hostname]['primary'] == ansible_hostname %}
+backend_hostname0 = 'localhost'
+{% else %}
 backend_hostname0 = '{{ pgpool_config[ansible_hostname]['primary'] }}'
+{% endif %}
                                    # Host name or IP address to connect to for backend 0
 backend_port0 = 5432
                                    # Port number for backend 0
@@ -79,8 +83,12 @@ backend_flag0 = 'ALWAYS_MASTER'
                                    # or ALWAYS_MASTER
 
 # Todo; may have to fix IPV4 address
-{% for host in pgpool_config[ansible_hostname]['standbys'] %}
-backend_hostname{{ loop.index }} = '{{ host }}'
+{% for standby in pgpool_config[ansible_hostname]['standbys'] %}
+{% if standby == ansible_hostname %}
+backend_hostname{{ loop.index }} = 'localhost'
+{% else %}
+backend_hostname{{ loop.index }} = '{{ standby }}'
+{% endif %}
 backend_port1 = 5432
 backend_weight1 = 1
 backend_data_directory1 = '/data1'
