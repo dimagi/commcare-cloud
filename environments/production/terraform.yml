@@ -128,7 +128,7 @@ servers:
     volume_size: 80
     group: "couchdb2_proxy"
   - server_name: "couch0-production"
-    server_instance_type: c5.4xlarge
+    server_instance_type: c5.18xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 4000
