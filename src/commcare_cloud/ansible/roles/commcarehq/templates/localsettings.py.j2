@@ -32,8 +32,13 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
+    {% if config.pgpool_host %}
+        'HOST': '{% if config.pgpool_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgpool_host }}{% endif %}',
+        'PORT': {{ PGPOOL_PORT }},
+    {% else%}
         'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
+    {% endif %}}
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
         {% if not config.django_migrate -%}

@@ -62,10 +62,10 @@ host    all             all             127.0.0.1/32            md5
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
 
-# Todo; Fix hostvars bug
-# Standbys should accept connection from pgpool host
-{% for pgpool_host, config in pgpool_config.items() %}
-{% if ansible_hostname in config.standbys + [config.primary] and ansible_hostname != pgpool_host %}
-host    all         all         "hostvars[pgpool_host]['host'][internal_network_interface_fact].ipv4.address"/32        md5
+# should accept connection from pgpool host if applicable
+{% for pgpool_hostname, config in pgpool_config.items() %}
+{% set pgpool_host = pgpool_hostname | host_from_alias(deploy_env) %}
+{% if ansible_hostname in config.standbys + [config.primary] and ansible_hostname != pgpool_hostname %}
+host    all         all         {{hostvars[pgpool_host][internal_network_interface_fact].ipv4.address}}/32        md5
 {% endif %}
 {% endfor %}

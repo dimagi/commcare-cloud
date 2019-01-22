@@ -118,3 +118,5 @@ pgpool_config:
     max_pool: 4
     database_redirect_preference_list: 'bench:1(0.5)'
     delay_threshold: 10
+
+PGPOOL_PORT: 5433
