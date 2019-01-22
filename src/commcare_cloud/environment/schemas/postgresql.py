@@ -116,6 +116,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
             elif db.host != '127.0.0.1':
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
 
+            if db.pgpool_host:
+                db.pgpool_host = environment.translate_host(db.pgpool_host, environment.paths.postgresql_yml)
+
             if db.pgbouncer_host is None:
                 db.pgbouncer_host = db.host
             else:

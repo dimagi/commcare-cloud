@@ -26,19 +26,23 @@ SYNCLOGS_SQL_DB_ALIAS = "default"
 {% endif %}
 
 DATABASES = { {% for config in postgresql_dbs.all %}
+{% if config.pgpool_host and config.pgpool_host == inventory_hostname %}
+    {% set db_host = '127.0.0.1' %}
+{% elif config.pgpool_host %}
+    {% set db_host = config.pgpool_host %}
+{% elif config.pgbouncer_host == inventory_hostname %}
+    {% set db_host = '127.0.0.1' %}
+{% else %}
+    {% set db_host = config.pgbouncer_host %}
+{% endif%}
 {%- if config.django_alias %}
     '{{config.django_alias}}': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
-    {% if config.pgpool_host %}
-        'HOST': '{% if config.pgpool_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgpool_host }}{% endif %}',
-        'PORT': {{ PGPOOL_PORT }},
-    {% else%}
-        'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
-        'PORT': {{ config.port }},
-    {% endif %}}
+        'HOST': '{{ db_host }}',
+        'PORT': {% if config.pgpool_host %}{{ PGPOOL_PORT }}{% else %}{{ config.port }}{% endif %},
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
         {% if not config.django_migrate -%}
