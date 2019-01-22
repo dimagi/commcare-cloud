@@ -33,9 +33,6 @@ web8
 hq_webworkers
 mobile_webworkers
 
-[pgproxy0]
-{{ pgproxy0-production }} hostname=pgproxy0-production ec2=yes
-
 [pgproxy1]
 {{ pgproxy1-production }} hostname=pgproxy1-production ec2=yes
 
@@ -77,7 +74,6 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgproxy0
 pgproxy1
 pgbouncer0
 remote_postgresql
