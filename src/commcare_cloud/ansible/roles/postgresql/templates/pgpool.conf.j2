@@ -30,7 +30,7 @@ listen_addresses = '*'
                                    # Host name or IP address to listen on:
                                    # '*' for all, '' for no TCP/IP connections
                                    # (change requires restart)
-port = 5433
+port = {{ PGPOOL_PORT }}
                                    # Port number
                                    # (change requires restart)
 socket_dir = '/var/run/postgresql'
@@ -71,7 +71,7 @@ backend_hostname0 = 'localhost'
 backend_hostname0 = '{{ hostvars[primary_host][internal_network_interface_fact].ipv4.address }}'
 {% endif %}
                                    # Host name or IP address to connect to for backend 0
-backend_port0 = 5432
+backend_port0 = {{ postgresql_port }}
                                    # Port number for backend 0
 backend_weight0 = 1
                                    # Weight for backend 0 (only in load balancing mode)
@@ -91,7 +91,7 @@ backend_hostname{{ loop.index }} = 'localhost'
 {% set standby_host = standby | host_from_alias(deploy_env) %}
 backend_hostname{{ loop.index }} = '{{ hostvars[standby_host][internal_network_interface_fact].ipv4.address }}'
 {% endif %}
-backend_port1 = 5432
+backend_port1 = {{ postgresql_port }}
 backend_weight1 = 1
 backend_data_directory1 = '/data1'
 backend_flag1 = 'DISALLOW_TO_FAILOVER'
