@@ -14,3 +14,14 @@ dbs:
     pgpool_host: db1
   synclogs: null
   form_processing: null
+
+# A config should be specified for each host in `pgpool` host group
+pgpool_config:
+  db1:
+    primary: db1
+    standbys:
+      - proxy1
+    num_init_children: 32
+    max_pool: 4
+    database_redirect_preference_list: 'bench:1(0.5)'
+    delay_threshold: 10

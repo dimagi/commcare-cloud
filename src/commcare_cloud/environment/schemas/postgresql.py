@@ -72,6 +72,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
     host_settings = jsonobject.DictProperty(lambda: HostSettings)
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
+    pgpool_config = jsonobject.DictProperty(lambda: PgpoolHostSettings)
 
     override = jsonobject.ObjectProperty(PostgresqlOverride)
 
@@ -96,6 +97,10 @@ class PostgresqlConfig(jsonobject.JsonObject):
             key=lambda db: db['name']
         )
         data.update(self.override.to_json())
+        data['pgpool_config'] = {
+            pgpool_host: settings.to_json()
+            for pgpool_host, settings in self.pgpool_config.items()
+        }
         return data
 
     def replace_hosts(self, environment):
@@ -128,6 +133,19 @@ class PostgresqlConfig(jsonobject.JsonObject):
                     db.port = host_settings[db.host].port
                 else:
                     db.port = DEFAULT_PORT
+
+        self._replace_pgpool_hosts(environment)
+
+    def _replace_pgpool_hosts(self, environment):
+        pgpool_config = {}
+        path = environment.paths.postgresql_yml
+        for pgpool_host, settings in self.pgpool_config.items():
+            host = environment.translate_host(pgpool_host, path)
+            settings.primary = environment.translate_host(settings.primary, path)
+            settings.standbys = [environment.translate_host(s, path) for s in settings.standbys]
+            pgpool_config[host] = settings
+
+        self.pgpool_config = pgpool_config
 
     def generate_postgresql_dbs(self):
         return filter(None, [
@@ -172,6 +190,15 @@ class PostgresqlConfig(jsonobject.JsonObject):
 class HostSettings(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     port = jsonobject.IntegerProperty(DEFAULT_PORT)
+
+
+class PgpoolHostSettings(jsonobject.JsonObject):
+    primary = jsonobject.StringProperty(required=True)
+    standbys = jsonobject.ListProperty(default=[])
+    num_init_children = jsonobject.IntegerProperty(required=True)
+    max_pool = jsonobject.IntegerProperty(required=True)
+    database_redirect_preference_list = jsonobject.StringProperty(required=True)
+    delay_threshold = jsonobject.IntegerProperty(required=True)
 
 
 class SmartDBConfig(jsonobject.JsonObject):

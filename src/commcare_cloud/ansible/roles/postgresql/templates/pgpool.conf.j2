@@ -63,12 +63,11 @@ pcp_socket_dir = '/var/run/postgresql'
 
 # - Backend Connection Settings -
 
-{% set primary_hostname = pgpool_config[ansible_hostname]['primary'] %}
-{% if primary_hostname == ansible_hostname %}
+{% set primary_hostname = pgpool_config[inventory_hostname]['primary'] %}
+{% if primary_hostname == inventory_hostname %}
 backend_hostname0 = 'localhost'
 {% else %}
-{% set primary_host = primary_hostname | host_from_alias(deploy_env) %}
-backend_hostname0 = '{{ hostvars[primary_host][internal_network_interface_fact].ipv4.address }}'
+backend_hostname0 = '{{ hostvars[primary_hostname][internal_network_interface_fact].ipv4.address }}'
 {% endif %}
                                    # Host name or IP address to connect to for backend 0
 backend_port0 = {{ postgresql_port }}
@@ -84,12 +83,11 @@ backend_flag0 = 'ALWAYS_MASTER'
                                    # or ALWAYS_MASTER
 
 # Todo; may have to fix IPV4 address
-{% for standby in pgpool_config[ansible_hostname]['standbys'] %}
-{% if standby == ansible_hostname %}
+{% for standby in pgpool_config[inventory_hostname]['standbys'] %}
+{% if standby == inventory_hostname %}
 backend_hostname{{ loop.index }} = 'localhost'
 {% else %}
-{% set standby_host = standby | host_from_alias(deploy_env) %}
-backend_hostname{{ loop.index }} = '{{ hostvars[standby_host][internal_network_interface_fact].ipv4.address }}'
+backend_hostname{{ loop.index }} = '{{ hostvars[standby][internal_network_interface_fact].ipv4.address }}'
 {% endif %}
 backend_port1 = {{ postgresql_port }}
 backend_weight1 = 1
@@ -137,10 +135,10 @@ ssl = off
 # - Concurrent session and pool size -
 
 # Todo; to review relation between below two
-num_init_children = {{ pgpool_config[ansible_hostname]['num_init_children'] }}
+num_init_children = {{ pgpool_config[inventory_hostname]['num_init_children'] }}
                                    # Number of concurrent sessions allowed
                                    # (change requires restart)
-max_pool = {{ pgpool_config[ansible_hostname]['max_pool'] }}
+max_pool = {{ pgpool_config[inventory_hostname]['max_pool'] }}
                                    # Number of connection pool caches per connection
                                    # (change requires restart)
 
@@ -316,7 +314,7 @@ black_function_list = 'nextval,setval,nextval,setval'
                                    # that write to database
                                    # Regexp are accepted
 
-database_redirect_preference_list = '{{ pgpool_config[ansible_hostname]['database_redirect_preference_list'] }}'
+database_redirect_preference_list = '{{ pgpool_config[inventory_hostname]['database_redirect_preference_list'] }}'
                                    # comma separated list of pairs of database and node id.
                                    # example: postgres:primary,mydb[0-4]:1,mydb[5-9]:2'
                                    # valid for streaming replicaton mode only.
@@ -359,7 +357,7 @@ sr_check_password = '{{ secrets.POSTGRES_USERS.replication.password }}'
 # Todo; verify with Simon; WAL is per pg server and not per db, so just check on default postgres db
 sr_check_database = 'postgres'
                                    # Database name for streaming replication check
-delay_threshold = {{ pgpool_config[ansible_hostname]['delay_threshold'] }}
+delay_threshold = {{ pgpool_config[inventory_hostname]['delay_threshold'] }}
                                    # Threshold before not dispatching query to standby node
                                    # Unit is in bytes
                                    # Disabled (0) by default
