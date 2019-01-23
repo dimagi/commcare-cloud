@@ -20,12 +20,6 @@
   with_items: "{{ postgres_users.values() }}"
   notify: Restart pgpool
 
-# Todo; review whether below will be needed
-# - name: Setup pgpool extensions
-#   sudo_user: postgres
-#   command: "{{postgres_install_dir}}/bin/psql}}" -f /usr/share/postgresql/"{{ postgresql_version }}"/extension/{{ item }} template1
-#   with_items:
-#     - pgpool-recovery.sql
 
 - name: Start pgpool
   service: name=pgpool2 state=started enabled=yes
