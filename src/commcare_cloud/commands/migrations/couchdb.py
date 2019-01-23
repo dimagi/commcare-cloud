@@ -53,11 +53,16 @@ class MigrateCouchdb(CommandBase):
             - commit: update database docs with new shard allocation
             - clean: remove shard files from hosts where they aren't needed
         """),
+        Argument('--no-stop', action='store_true', help="""
+            When used with migrate, operate on live couchdb cluster without stopping nodes
+        """),
         shared_args.SKIP_CHECK_ARG,
         shared_args.LIMIT_ARG,
     )
 
     def run(self, args, unknown_args):
+        assert args.action == 'migrate' or not args.no_stop, \
+            "You can only use --no-stop with migrate"
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
@@ -77,7 +82,7 @@ class MigrateCouchdb(CommandBase):
             return plan(migration)
 
         if args.action == 'migrate':
-            return migrate(migration, ansible_context, args.skip_check)
+            return migrate(migration, ansible_context, args.skip_check, args.no_stop)
 
         if args.action == 'commit':
             return commit(migration, ansible_context)
@@ -212,17 +217,17 @@ def assert_files(migration, alloc_docs_by_db, ansible_context):
     return return_code == 0
 
 
-def migrate(migration, ansible_context, skip_check):
+def migrate(migration, ansible_context, skip_check, no_stop):
     print_allocation(migration)
     if not ask("Continue with this plan?"):
         puts("Abort")
         return 0
 
     def run_check():
-        return _run_migration(migration, ansible_context, check_mode=True)
+        return _run_migration(migration, ansible_context, check_mode=True, no_stop=no_stop)
 
     def run_apply():
-        return _run_migration(migration, ansible_context, check_mode=False)
+        return _run_migration(migration, ansible_context, check_mode=False, no_stop=no_stop)
 
     return run_action_with_check_mode(run_check, run_apply, skip_check)
 
@@ -317,7 +322,7 @@ def get_files_for_assertion(alloc_docs_by_db):
     return files_by_nodes
 
 
-def _run_migration(migration, ansible_context, check_mode):
+def _run_migration(migration, ansible_context, check_mode, no_stop):
     puts(colored.blue('Give ansible user access to couchdb files:'))
     user_args = "user=ansible groups=couchdb append=yes"
     run_ansible_module(
@@ -334,8 +339,13 @@ def _run_migration(migration, ansible_context, check_mode):
     puts(colored.blue('Copy file lists to nodes:'))
     rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
-    puts(colored.blue('Stop couch and reallocate shards'))
-    with stop_couch(migration.all_environments, ansible_context, check_mode):
+    if no_stop:
+        stop_couch_context = noop_context()
+    else:
+        puts(colored.blue('Stop couch and reallocate shards'))
+        stop_couch_context = stop_couch(migration.all_environments, ansible_context, check_mode)
+
+    with stop_couch_context:
         execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
 
     return 0
@@ -348,6 +358,11 @@ def stop_couch(environments, ansible_context, check_mode=False):
     yield
     for env in environments:
         start_stop_service(env, ansible_context, 'started', check_mode)
+
+
+@contextmanager
+def noop_context():
+    yield
 
 
 def start_stop_service(environment, ansible_context, service_state, check_mode=False):
