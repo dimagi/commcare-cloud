@@ -58,3 +58,14 @@ nginx_sites:
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
    extra_locations: "{{ site_locations|default([]) }}"
+- server: # Send anything from http -> https
+   file_name: "{{ deploy_env }}_reach_commcare_static"
+   listen: "80"
+   server_name: "{{ REACH_SITE_HOST }}"
+   client_max_body_size: 100m
+   proxy_set_headers:
+   - "Host $host"
+   - "X-Forwarded-Protocol  $scheme"
+   locations:
+     - name: /
+       return: "301 https://$server_name$request_uri"
