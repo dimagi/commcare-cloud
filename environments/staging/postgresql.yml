@@ -54,5 +54,5 @@ pgpool_config:
       - rds_pg0_replica
     num_init_children: 59
     max_pool: 5
-    database_redirect_preference_list: 'bench:1(0.5)'
+    database_redirect_preference_list: 'commcarehq:1(0.8)'
     delay_threshold: 10
