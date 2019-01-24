@@ -19,7 +19,7 @@
       tags: ecryptfs-cleanup
 
 - name: PostgreSQL
-  hosts: postgresql:pg_standby
+  hosts: postgresql:pg_standby:pgpool
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
