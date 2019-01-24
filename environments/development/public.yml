@@ -107,5 +107,3 @@ commcare_cloud_remote_user: vagrant
 commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
-
-PGPOOL_PORT: 5433

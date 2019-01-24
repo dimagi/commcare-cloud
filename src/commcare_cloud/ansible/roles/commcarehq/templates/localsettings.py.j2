@@ -42,7 +42,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
         'HOST': '{{ db_host }}',
-        'PORT': {% if config.pgpool_host %}{{ PGPOOL_PORT }}{% else %}{{ config.port }}{% endif %},
+        'PORT': {% if config.pgpool_host %}{{ pgpool_port }}{% else %}{{ config.port }}{% endif %},
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
         {% if not config.django_migrate -%}
