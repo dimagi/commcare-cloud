@@ -22,9 +22,9 @@ celery_processes:
       concurrency: 1
       max_tasks_per_child: 1
       optimize: True
-    submission_reprocessing_queue,ucr_indicator_queue,ucr_queue:
+    submission_reprocessing_queue:
       concurrency: 1
-    reminder_case_update_queue:
+    reminder_case_update_queue,ucr_indicator_queue,ucr_queue:
       pooling: gevent
       concurrency: 5
     reminder_queue:
