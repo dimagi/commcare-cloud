@@ -5,7 +5,10 @@
     - pgpool2=4.0.2-1.pgdg14.04+1
 
 - name: Setup pgpool init.d
-  template: src=pgpool.init.d.j2 dest=/etc/init.d/pgpool2
+  template: src=pgpool.init.d.j2 dest=/etc/init.d/pgpool2 mode=0755
+
+- name: Create conf directory
+  file: path={{ pgpool_config_home }} state=directory
 
 - name: Configure pgpool app
   template: src={{ item }}.j2 dest="{{ pgpool_config_home }}/{{ item }}" mode=0644 owner=root group=root
@@ -16,6 +19,7 @@
   notify: Restart pgpool
 
 - name: Setup /etc/pgpool2/pool_passwd file
+  become: true
   shell: "pg_md5 -m -u {{ item.username }} {{ item.password }}"
   with_items: "{{ postgres_users.values() }}"
   notify: Restart pgpool
