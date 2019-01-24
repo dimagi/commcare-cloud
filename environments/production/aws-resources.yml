@@ -29,7 +29,6 @@ formplayer0-production: 10.202.10.21
 kafka0-production: 10.202.40.70
 pgbouncer0-production: 10.202.40.58
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pgproxy0-production: 10.202.40.167
 pgproxy1-production: 10.202.40.54
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
