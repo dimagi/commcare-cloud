@@ -6,7 +6,15 @@ celery4-production: 10.202.12.62
 control-production: 10.202.10.79
 couch0-production: 10.202.40.211
 couch1-production: 10.202.41.83
+couch10-production: 10.202.40.133
 couch2-production: 10.202.42.85
+couch3-production: 10.202.40.135
+couch4-production: 10.202.40.97
+couch5-production: 10.202.40.5
+couch6-production: 10.202.40.100
+couch7-production: 10.202.40.120
+couch8-production: 10.202.40.57
+couch9-production: 10.202.40.134
 couchproxy0-production: 10.202.40.162
 djangomanage0-production: 10.202.10.185
 es10-production: 10.202.40.116
@@ -22,6 +30,7 @@ kafka0-production: 10.202.40.70
 pgbouncer0-production: 10.202.40.58
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgproxy0-production: 10.202.40.167
+pgproxy1-production: 10.202.40.54
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com

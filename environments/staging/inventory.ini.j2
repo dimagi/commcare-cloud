@@ -28,6 +28,10 @@ web1
 # RDS
 {{ pg0-staging }}
 
+[rds_pg0_replica]
+# RDS
+{{ pg0-staging-replica }}
+
 [remote_postgresql:children]
 rds_pg0
 
@@ -58,23 +62,14 @@ couch0
 # Amazon EC2
 rabbit0
 
-[hqkafka0]
-hqkafka0-staging.internal-va.commcarehq.org
-
-[hqkafka0:vars]
-swap_size=1G
-kafka_broker_id=0
-
 [kafka0]
 {{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
 
 [zookeeper:children]
-#hqkafka0
 # Amazon EC2
 kafka0
 
 [kafka:children]
-#hqkafka0
 # Amazon EC2
 kafka0
 
@@ -119,19 +114,6 @@ es1
 [shared_dir_host:children]
 redis0
 
-[stanchion:children]
-hqkafka0
-
-[hqriak00]
-hqriak00-staging.internal-va.commcarehq.org
-
-[hqriak01]
-hqriak01-staging.internal-va.commcarehq.org
-
-[riakcs:children]
-hqriak00
-hqriak01
-
 [airflow0]
 {{ airflow0-staging }} hostname=airflow0-staging ec2=yes
 
@@ -145,6 +127,7 @@ airflow0
 
 [ansible_skip:children]
 rds_pg0
+rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2

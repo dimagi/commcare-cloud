@@ -27,5 +27,6 @@ module "postgresql__{{ rds_instance.identifier }}" {
   vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
   create = "true"
   apply_immediately = "{{ "true" if apply_immediately else "false" }}"
+  environment = "${var.environment}"
 }
 {%- endfor %}
