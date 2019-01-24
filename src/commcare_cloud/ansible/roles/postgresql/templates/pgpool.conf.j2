@@ -67,7 +67,11 @@ pcp_socket_dir = '/var/run/postgresql'
 {% if primary_hostname == inventory_hostname %}
 backend_hostname0 = 'localhost'
 {% else %}
+{% if primary_hostname in groups['remote_postgresql'] %}
+backend_hostname0 = '{{ primary_hostname }}'
+{% else %}
 backend_hostname0 = '{{ hostvars[primary_hostname][internal_network_interface_fact].ipv4.address }}'
+{% endif %}
 {% endif %}
                                    # Host name or IP address to connect to for backend 0
 backend_port0 = {{ postgresql_port }}
@@ -85,7 +89,11 @@ backend_flag0 = 'ALWAYS_MASTER'
 {% if standby == inventory_hostname %}
 backend_hostname{{ loop.index }} = 'localhost'
 {% else %}
+{% if standby in groups['remote_postgresql'] %}
+backend_hostname{{ loop.index }} = '{{ standby }}'
+{% else %}
 backend_hostname{{ loop.index }} = '{{ hostvars[standby][internal_network_interface_fact].ipv4.address }}'
+{% endif %}
 {% endif %}
 backend_port1 = {{ postgresql_port }}
 backend_weight1 = 1
@@ -132,7 +140,6 @@ ssl = off
 
 # - Concurrent session and pool size -
 
-# Todo; to review relation between below two
 num_init_children = {{ pgpool_config[inventory_hostname]['num_init_children'] }}
                                    # Number of concurrent sessions allowed
                                    # (change requires restart)
