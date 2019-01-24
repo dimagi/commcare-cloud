@@ -74,15 +74,13 @@ backend_port0 = {{ postgresql_port }}
                                    # Port number for backend 0
 backend_weight0 = 1
                                    # Weight for backend 0 (only in load balancing mode)
-# Todo; to review and update, not needed since we don't use online recovery
-backend_data_directory0 = '/var/lib/pgsql/data'
+backend_data_directory0 = ''
                                    # Data directory for backend 0
 backend_flag0 = 'ALWAYS_MASTER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER, DISALLOW_TO_FAILOVER
                                    # or ALWAYS_MASTER
 
-# Todo; may have to fix IPV4 address
 {% for standby in pgpool_config[inventory_hostname]['standbys'] %}
 {% if standby == inventory_hostname %}
 backend_hostname{{ loop.index }} = 'localhost'
@@ -91,7 +89,7 @@ backend_hostname{{ loop.index }} = '{{ hostvars[standby][internal_network_interf
 {% endif %}
 backend_port1 = {{ postgresql_port }}
 backend_weight1 = 1
-backend_data_directory1 = '/data1'
+backend_data_directory1 = ''
 backend_flag1 = 'DISALLOW_TO_FAILOVER'
 {% endfor %}
 
@@ -343,8 +341,7 @@ master_slave_sub_mode = 'stream'
                                    # (change requires restart)
 
 # - Streaming -
-# Todo; read http://www.pgpool.net/docs/latest/en/html/runtime-streaming-replication-check.html
-sr_check_period = 1
+sr_check_period = 30
                                    # Streaming replication check period
                                    # Disabled (0) by default
 sr_check_user = '{{ secrets.POSTGRES_USERS.replication.username }}'

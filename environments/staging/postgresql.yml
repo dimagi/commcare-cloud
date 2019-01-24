@@ -10,6 +10,7 @@ dbs:
   main:
     pgbouncer_host: pgproxy0
     query_stats: True
+    pgpool_host: redis0
   ucr:
     pgbouncer_host: pgproxy0
     query_stats: True
@@ -46,3 +47,12 @@ dbs:
       pgbouncer_host: pgproxy0
       django_migrate: False
 
+pgpool_config:
+  redis0:
+    primary: rds_pg0
+    standbys:
+      - rds_pg0_replica
+    num_init_children: 59
+    max_pool: 5
+    database_redirect_preference_list: 'bench:1(0.5)'
+    delay_threshold: 10
