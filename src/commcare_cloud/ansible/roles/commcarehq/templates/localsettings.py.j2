@@ -564,6 +564,14 @@ MAPS_LAYERS = json.loads('{{ MAPS_LAYERS|to_json }}')
 PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
+ACTIVE_PILLOW_NAMES = [
+{% for _, pillows in app_processes_config.pillows.items() %}
+    {% for pillow_name, params in pillows.items() %}
+        "{{ pillow_name }}",
+    {% endfor %}
+{% endfor %}
+]
+
 {% if SIMPLE_API_KEYS %}
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
