@@ -1,13 +1,11 @@
 - name: create required directories
   become: yes
   file:
-    path: "{{ item }}"
+    path: "{{ errors_home }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0755
     state: directory
-  with_items:
-    - "{{ errors_home }}"
 
 - name: pull errors repository
   become: true
@@ -21,5 +19,21 @@
     recursive: yes
     accept_hostkey: yes
     depth: 1
+  tags:
+    - git
+
+- name: pull reach errors repository
+  become: true
+  become_user: "{{ cchq_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  git:
+    repo: "{{ commcarehq_errors_repository }}"
+    dest: "{{ reach_errors_home }}"
+    version: "{{ reach_commcare_errors_branch }}"
+    recursive: yes
+    accept_hostkey: yes
+    depth: 1
+  when: reach_errors_home is defined
   tags:
     - git
