@@ -270,13 +270,6 @@ servers:
     volume_size: 50
     group: "formplayer"
 
-  - server_name: "redis0-production"
-    server_instance_type: r5.large
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 60
-    group: "redis"
-
   - server_name: "redis1-production"
     server_instance_type: r5.xlarge
     network_tier: "db-private"
