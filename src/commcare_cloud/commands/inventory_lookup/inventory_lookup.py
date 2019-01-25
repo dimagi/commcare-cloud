@@ -208,7 +208,7 @@ class DjangoManage(CommandBase):
             code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
                 cchq_user=cchq_user, deploy_env=deploy_env)
         remote_command = (
-            '{code_dir}/python_env/bin/python {code_dir}/manage.py {args}'
+            'bash -c "cd {code_dir}; {code_dir}/python_env/bin/python {code_dir}/manage.py {args}"'
             .format(
                 cchq_user=cchq_user,
                 code_dir=code_dir,
