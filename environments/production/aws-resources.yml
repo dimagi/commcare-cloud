@@ -42,6 +42,7 @@ proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
 rabbit0-production: 10.202.42.98
 redis0-production: 10.202.41.8
+redis1-production: 10.202.40.34
 shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194
 vpn-production.public_ip: 18.235.223.2

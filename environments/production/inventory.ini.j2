@@ -140,8 +140,12 @@ formplayer0
 [redis0]
 {{ redis0-production }} hostname=redis0-production ec2=yes
 
+[redis1]
+{{ redis1-production }} hostname=redis1-production ec2=yes
+
 [redis:children]
-redis0
+redis1
+#redis0
 
 [shareddir0]
 {{ shareddir0-production }} hostname=shareddir0-production ec2=yes
