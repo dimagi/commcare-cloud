@@ -1,6 +1,7 @@
 ---
 - name: Assert couchdb shard files exist
   hosts: couchdb2
+  become: yes
   tasks:
     - name: stat shards
       stat:

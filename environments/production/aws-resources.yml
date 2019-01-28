@@ -29,7 +29,6 @@ formplayer0-production: 10.202.10.21
 kafka0-production: 10.202.40.70
 pgbouncer0-production: 10.202.40.58
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pgproxy0-production: 10.202.40.167
 pgproxy1-production: 10.202.40.54
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
@@ -42,7 +41,7 @@ pillow0-production: 10.202.12.170
 proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
 rabbit0-production: 10.202.42.98
-redis0-production: 10.202.41.8
+redis1-production: 10.202.40.34
 shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194
 vpn-production.public_ip: 18.235.223.2
