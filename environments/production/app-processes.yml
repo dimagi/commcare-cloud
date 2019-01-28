@@ -25,6 +25,16 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
+    celery,case_import_queue:
+      pooling: gevent
+      concurrency: 6
+      max_tasks_per_child: 5
+      num_workers: 2
+    export_download_queue:
+      pooling: gevent
+      concurrency: 6
+      max_tasks_per_child: 5
+      num_workers: 2
   celery1:
     flower: {}
     reminder_queue:
