@@ -6,7 +6,7 @@ riak_backend: "bitcask"
 riak_ring_size: 64
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
-elasticsearch_cluster_name: 'icds-2.0'
+elasticsearch_cluster_name: 'icds-nic'
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
