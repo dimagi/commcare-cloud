@@ -7,7 +7,7 @@ REPORTING_DATABASES:
       - [icds-ucr, 1]
       - [icds-ucr-standby0, 5]
       - [icds-ucr-standby1, 5]
-#      - [icds-ucr-standby2, 5]
+      - [icds-ucr-standby2, 5]
 #      - [icds-ucr-standby3, 5]
   icds-test-ucr: icds-ucr
 
