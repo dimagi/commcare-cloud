@@ -108,12 +108,12 @@ dbs:
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 1800
-    - django_alias: icds-ucr-standby2
-      name: commcarehq_icds_aggregatedata
-      host: pgucrstandby2
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 1800
+    # - django_alias: icds-ucr-standby2
+    #   name: commcarehq_icds_aggregatedata
+    #   host: pgucrstandby2
+    #   create: False
+    #   django_migrate: False
+    #   hq_acceptable_standby_delay: 1800
     - django_alias: icds-ucr-standby3
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby3
