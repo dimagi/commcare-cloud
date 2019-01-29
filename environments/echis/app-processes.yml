@@ -8,7 +8,6 @@ celery_processes:
   None:
     repeat_record_queue:
     async_restore_queue:
-    ucr_queue:
   echis_server0:
     celery,export_download_queue,email_queue,case_import_queue:
       concurrency: 1
@@ -31,7 +30,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-    reminder_rule_queue:
+    reminder_rule_queue,ucr_indicator_queue,ucr_queue:
       concurrency: 1
       max_tasks_per_child: 1
     sms_queue:
