@@ -8,7 +8,7 @@ REPORTING_DATABASES:
       - [icds-ucr-standby0, 5]
       - [icds-ucr-standby1, 5]
       - [icds-ucr-standby2, 5]
-      - [icds-ucr-standby3, 5]
+#      - [icds-ucr-standby3, 5]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
@@ -114,12 +114,12 @@ dbs:
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 1800
-    - django_alias: icds-ucr-standby3
-      name: commcarehq_icds_aggregatedata
-      host: pgucrstandby3
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 1800
+    # - django_alias: icds-ucr-standby3
+    #   name: commcarehq_icds_aggregatedata
+    #   host: pgucrstandby3
+    #   create: False
+    #   django_migrate: False
+    #   hq_acceptable_standby_delay: 1800
     - django_alias: pgmainstandby0
       name: commcarehq
       host: pgmainstandby0

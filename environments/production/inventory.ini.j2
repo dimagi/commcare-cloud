@@ -33,8 +33,8 @@ web8
 hq_webworkers
 mobile_webworkers
 
-[pgproxy0]
-{{ pgproxy0-production }} hostname=pgproxy0-production ec2=yes
+[pgproxy1]
+{{ pgproxy1-production }} hostname=pgproxy1-production ec2=yes
 
 [pgbouncer0]
 {{ pgbouncer0-production }} hostname=pgbouncer0-production ec2=yes
@@ -74,7 +74,7 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgproxy0
+pgproxy1
 pgbouncer0
 remote_postgresql
 
@@ -137,11 +137,11 @@ pillow0
 [formplayer:children]
 formplayer0
 
-[redis0]
-{{ redis0-production }} hostname=redis0-production ec2=yes
+[redis1]
+{{ redis1-production }} hostname=redis1-production ec2=yes
 
 [redis:children]
-redis0
+redis1
 
 [shareddir0]
 {{ shareddir0-production }} hostname=shareddir0-production ec2=yes
@@ -206,10 +206,35 @@ es_data
 [couch2]
 {{ couch2-production }} hostname=couch2-production ec2=yes
 
+[couch3]
+{{ couch3-production }} hostname=couch3-production ec2=yes
+[couch4]
+{{ couch4-production }} hostname=couch4-production ec2=yes
+[couch5]
+{{ couch5-production }} hostname=couch5-production ec2=yes
+[couch6]
+{{ couch6-production }} hostname=couch6-production ec2=yes
+[couch7]
+{{ couch7-production }} hostname=couch7-production ec2=yes
+[couch8]
+{{ couch8-production }} hostname=couch8-production ec2=yes
+[couch9]
+{{ couch9-production }} hostname=couch9-production ec2=yes
+[couch10]
+{{ couch10-production }} hostname=couch10-production ec2=yes
+
 [couchdb2:children]
 couch0
 couch1
 couch2
+couch3
+couch4
+couch5
+couch6
+couch7
+couch8
+couch9
+couch10
 
 [couchdb2:vars]
 swap_size=8G

@@ -18,6 +18,8 @@ cas_nginx_ssl_cert: "{{ deploy_env }}_nginx_cas_combined.crt"
 cas_nginx_ssl_key: "{{ deploy_env }}_nginx_cas.org.key"
 pna_nginx_ssl_cert: "{{ deploy_env }}_nginx_pna_combined.crt"
 pna_nginx_ssl_key: "{{ deploy_env }}_nginx_pna.org.key"
+reach_nginx_ssl_cert: "{{ deploy_env }}_nginx_reach_combined.crt"
+reach_nginx_ssl_key: "{{ deploy_env }}_nginx_reach.org.key"
 # providing this will ensure that the poodle vulnerability is closed
 nginx_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
 # RC4 is needed for J2ME so we have to have it enabled here.

@@ -28,6 +28,10 @@ web1
 # RDS
 {{ pg0-staging }}
 
+[rds_pg0_replica]
+# RDS
+{{ pg0-staging-replica }}
+
 [remote_postgresql:children]
 rds_pg0
 
@@ -123,6 +127,7 @@ airflow0
 
 [ansible_skip:children]
 rds_pg0
+rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
