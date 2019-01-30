@@ -8,3 +8,10 @@ commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"
 
 letsencrypt_cchq_ssl: True
 
+REACH_SITE_HOST: 'reach.commcarehq.org'
+reach_errors_home: "{{ www_home }}/reach_errors"
+reach_commcare_errors_branch: "master-icds"
+
+
+special_sites:
+  - reach_ssl
