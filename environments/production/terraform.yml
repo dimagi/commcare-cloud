@@ -159,7 +159,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch4-production"
     server_instance_type: c5.xlarge
@@ -167,7 +167,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch5-production"
     server_instance_type: c5.xlarge
@@ -175,7 +175,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch6-production"
     server_instance_type: c5.xlarge
@@ -183,7 +183,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch7-production"
     server_instance_type: c5.xlarge
@@ -191,7 +191,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch8-production"
     server_instance_type: c5.xlarge
@@ -199,7 +199,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch9-production"
     server_instance_type: c5.xlarge
@@ -207,7 +207,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
   - server_name: "couch10-production"
     server_instance_type: c5.xlarge
@@ -215,7 +215,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 1500
+      volume_size: 4200
     group: "couchdb2:main"
 
   - server_name: "rabbit0-production"
