@@ -215,13 +215,12 @@ def assert_files(migration, alloc_docs_by_db, ansible_context):
         yaml.safe_dump({'files_by_node': files_by_node}, f, indent=2)
 
     play_path = os.path.join(PLAY_DIR, 'assert_couch_files.yml')
-    with ansible_context.with_vars({ansible_context.stdout_callback: 'minimal'}):
-        return_code = run_ansible_playbook(
-            migration.target_environment, play_path, ansible_context,
-            always_skip_check=True,
-            quiet=True,
-            unknown_args=['-e', '@{}'.format(expected_files_vars)]
-        )
+    return_code = run_ansible_playbook(
+        migration.target_environment, play_path, ansible_context,
+        always_skip_check=True,
+        quiet=True,
+        unknown_args=['-e', '@{}'.format(expected_files_vars)]
+    )
     return return_code == 0
 
 
