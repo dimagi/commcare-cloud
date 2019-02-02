@@ -949,8 +949,7 @@ Use 'help' action to list all options.
 Perform a CouchDB migration
 
 ```
-commcare-cloud <env> migrate-couchdb [--no-stop] [--skip-file-check]
-                                     migration_plan {describe,plan,migrate,commit,clean}
+commcare-cloud <env> migrate-couchdb [--no-stop] migration_plan {describe,plan,migrate,commit,clean}
 ```
 
 This is a recent and advanced addition to the capabilities,
@@ -978,11 +977,6 @@ Action to perform
 ###### `--no-stop`
 
 When used with migrate, operate on live couchdb cluster without stopping nodes
-
-###### `--skip-file-check`
-
-When used with commit, do not check for the existence of expected shard files.
-Only use this if you've verified the files are in place by other means.
 
 ---
 

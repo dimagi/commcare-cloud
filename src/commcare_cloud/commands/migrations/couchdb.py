@@ -56,10 +56,6 @@ class MigrateCouchdb(CommandBase):
         Argument('--no-stop', action='store_true', help="""
             When used with migrate, operate on live couchdb cluster without stopping nodes
         """),
-        Argument('--skip-file-check', action='store_true', help="""
-            When used with commit, do not check for the existence of expected shard files.
-            Only use this if you've verified the files are in place by other means.
-        """),
         shared_args.SKIP_CHECK_ARG,
         shared_args.LIMIT_ARG,
     )
@@ -67,8 +63,6 @@ class MigrateCouchdb(CommandBase):
     def run(self, args, unknown_args):
         assert args.action == 'migrate' or not args.no_stop, \
             "You can only use --no-stop with migrate"
-        assert args.action == 'commit' or not args.skip_file_check, \
-            "You can only use --skip-file-check with commit"
         environment = get_environment(args.env_name)
         environment.create_generated_yml()
 
@@ -91,7 +85,7 @@ class MigrateCouchdb(CommandBase):
             return migrate(migration, ansible_context, args.skip_check, args.no_stop)
 
         if args.action == 'commit':
-            return commit(migration, ansible_context, args.skip_file_check)
+            return commit(migration, ansible_context)
 
         if args.action == 'clean':
             return clean(migration, ansible_context, args.skip_check, args.limit)
@@ -178,17 +172,16 @@ def generate_shard_prune_playbook(migration):
     return list(deletable_files_by_node)
 
 
-def commit(migration, ansible_context, skip_file_check):
+def commit(migration, ansible_context):
     print_allocation(migration)
     alloc_docs_by_db = {plan.db_name: plan for plan in migration.shard_plan}
-    if not skip_file_check:
-        puts(colored.yellow("Checking shards on disk vs plan. Please wait."))
-        if not assert_files(migration, alloc_docs_by_db, ansible_context):
-            puts(colored.red("Some shard files are not where we expect. Have you run 'migrate'?"))
-            puts(colored.red("Aborting"))
-            return 1
-        else:
-            puts(colored.yellow("All shards appear to be where we expect according to the plan."))
+    puts(colored.yellow("Checking shards on disk vs plan. Please wait."))
+    if not assert_files(migration, alloc_docs_by_db, ansible_context):
+        puts(colored.red("Some shard files are not where we expect. Have you run 'migrate'?"))
+        puts(colored.red("Aborting"))
+        return 1
+    else:
+        puts(colored.yellow("All shards appear to be where we expect according to the plan."))
 
     if ask("Are you sure you want to update the Couch Database config?"):
         commit_migration(migration)
