@@ -11,6 +11,10 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2019-02-01** [Generalize load case from fixture feature](0012-generalize-load-case-from-fixture.md) (_action required_)
+Previously loading a case from a fixture required the fixture to be an attribute.
+This change allows using non-attributes from the fixture.
+
 ### **2019-01-16** [Fix encrypted temp directory permissions](0011-fix-encrypted-tmp-permissions.md)
 This is a followup to [Added encrypted temporary directory](./0001-add-encrypted-tmp.md)
 in which we introduced an encrypted directory for temp files.
