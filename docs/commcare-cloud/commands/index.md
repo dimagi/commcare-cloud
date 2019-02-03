@@ -976,7 +976,14 @@ Action to perform
 
 ###### `--no-stop`
 
-When used with migrate, operate on live couchdb cluster without stopping nodes
+When used with migrate, operate on live couchdb cluster without stopping nodes.
+
+This is potentially dangerous.
+If the sets of a shard's old locations and new locations are disjoint---i.e.
+if there are no "pivot" locations for a shard---then running migrate and commit
+without stopping couchdb will result in data loss.
+If your shard reallocation has a pivot location for each shard,
+then it's acceptable to do live.
 
 ---
 

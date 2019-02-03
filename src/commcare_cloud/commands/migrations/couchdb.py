@@ -54,7 +54,14 @@ class MigrateCouchdb(CommandBase):
             - clean: remove shard files from hosts where they aren't needed
         """),
         Argument('--no-stop', action='store_true', help="""
-            When used with migrate, operate on live couchdb cluster without stopping nodes
+            When used with migrate, operate on live couchdb cluster without stopping nodes.
+
+            This is potentially dangerous.
+            If the sets of a shard's old locations and new locations are disjoint---i.e.
+            if there are no "pivot" locations for a shard---then running migrate and commit
+            without stopping couchdb will result in data loss.
+            If your shard reallocation has a pivot location for each shard,
+            then it's acceptable to do live. 
         """),
         shared_args.SKIP_CHECK_ARG,
         shared_args.LIMIT_ARG,
@@ -222,6 +229,15 @@ def migrate(migration, ansible_context, skip_check, no_stop):
     if not ask("Continue with this plan?"):
         puts("Abort")
         return 0
+
+    if no_stop:
+        puts(colored.yellow("Running migrate with --no-stop will result in data loss"))
+        puts(colored.yellow("unless each shard of each db has a pivot location."))
+        if not ask("Have you manually confirmed that for each shard of each db "
+                   "at least one of its new locations is the same as an old location, "
+                   "and do you want to continue without stopping couchdb first?"):
+            puts("Abort")
+            return 0
 
     def run_check():
         return _run_migration(migration, ansible_context, check_mode=True, no_stop=no_stop)
