@@ -53,7 +53,7 @@ class CouchMigration(object):
 
     @memoized_property
     def target_couch_config(self):
-        return self._get_couch_config(self.target_environment, list(self.plan.allocation_by_node()))
+        return self._get_couch_config(self.target_environment, list(self.plan.get_all_nodes()))
 
     def _get_couch_config(self, environment, nodes):
         error = '"get couch IP for env: {}'.format(environment.meta_config.deploy_env)
@@ -116,9 +116,9 @@ class CouchMigrationPlan(jsonobject.JsonObject):
     src_env = jsonobject.StringProperty()
     target_allocation = jsonobject.ListProperty()
 
-    def allocation_by_node(self):
+    def get_all_nodes(self):
         return {
-            node: int(copies)
-            for nodes, copies in (group.split(':') for group in self.target_allocation)
+            node
+            for nodes, _ in (group.split(':', 1) for group in self.target_allocation)
             for node in nodes.split(',')
         }
