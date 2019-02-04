@@ -2,6 +2,8 @@ riak_backend: "leveldb"
 riak_ring_size: 64
 
 DATADOG_ENABLED: True
+monitor_celery_heartbeat: False
+
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 1.7.6
@@ -20,7 +22,6 @@ aws_region: 'us-east-1'
 formplayer_archive_time_spec: '10m'
 
 KSPLICE_ACTIVE: yes
-
 
 ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
 
