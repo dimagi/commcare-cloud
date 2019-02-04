@@ -240,6 +240,7 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-ls_vhnd_form'
+            - 'static-cbe_form'
             - 'static-postnatal_care_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
