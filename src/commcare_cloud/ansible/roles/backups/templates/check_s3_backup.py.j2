@@ -3,6 +3,8 @@ import argparse
 import boto3
 import datetime
 
+#input environement and service from users
+
 parser = argparse.ArgumentParser(description="S3 Backup Status.")
 parser.add_argument('env', choices=['pna','softlayer','production','staging'] ,help='Environment Name')
 parser.add_argument('service', choices=['couch','blobdb','postgres'] ,help='Service Name')
@@ -16,6 +18,7 @@ bucket = s3.Bucket(BUCKET_NAME)
 
 today = datetime.datetime.today()
 
+# Shows Alert if backup is not uploaded since 2 days. 
 for key in bucket.objects.all():
     if today.day - key.last_modified.day > 2:
         print "[ALERT]" , key.key , key.last_modified
