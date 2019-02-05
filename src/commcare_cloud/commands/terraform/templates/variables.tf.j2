@@ -19,6 +19,11 @@ variable "openvpn_instance_type" {
 variable "server_image" {
   default = "ami-07cf43e1798df5582"
 }
+
+variable "bionic_server_image" {
+  default = "ami-012fd5eb46f56731f"
+}
+
 variable "dns_zone_id" {}
 variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}
