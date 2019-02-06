@@ -207,14 +207,20 @@ class SendDatadogEvent(CommandBase):
         vault = environment.get_vault_variables()['secrets']
         tags = "environment:{}".format(args.env_name)
         args.module_args = "api_key={api_key} app_key={app_key} " \
-            "tags='{tags}' text='{text}' title='{title}'".format(
+            "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(
                 api_key=vault['DATADOG_API_KEY'],
                 app_key=vault['DATADOG_APP_KEY'],
                 tags=tags,
                 text=args.event_text,
-                title=args.event_title
+                title=args.event_title,
+                agg='commcare-cloud'
             )
         env_vars = AnsibleContext(args).env_vars
+        return run_ansible_module(
+            environment, AnsibleContext(args),
+            '127.0.0.1', args.module, args.module_args,
+            False, False, False,
+        )
         cmd_parts = (
             'ansible', '127.0.0.1',
             '-m', args.module,
