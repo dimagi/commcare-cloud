@@ -298,6 +298,7 @@ pillows:
       start_process: 0
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 20
     CaseToElasticsearchPillow:
       start_process: 0
       num_processes: 9
