@@ -73,6 +73,10 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telangana"
+  - name: /meghalaya_icds-cas_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_meghalaya"
   - name: /mp_ls_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
@@ -236,6 +240,7 @@ localsettings:
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
             - 'static-ls_vhnd_form'
+            - 'static-cbe_form'
             - 'static-postnatal_care_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
@@ -279,5 +284,8 @@ localsettings:
     'static-icds-cas-static-mpr_3_children_registered': 'static-icds-cas-static-mpr_3_children_registered-optimized'
     'static-icds-cas-static-asr_2_3_beneficiaries': 'static-icds-cas-static-asr_2_3_beneficiaries-optimized'
     'static-icds-cas-static-mpr_3i_pregnancies': 'static-icds-cas-static-mpr_3i_pregnancies-optimized'
+    'static-icds-cas-static-mpr_6b_child_health_cases_v2': 'static-icds-cas-static-custom_sql_mpr_6b_child_health_cases_v2'
+    'static-icds-cas-static-mpr_6ac_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_6ac_child_health_cases_v2'
+    'static-icds-cas-static-mpr_5_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_5_child_health_cases_v2'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'

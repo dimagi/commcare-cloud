@@ -76,9 +76,13 @@ kafka0
 [celery0]
 {{ celery0-staging }} hostname=celery0-staging ec2=yes
 
+[celery1]
+{{ celery1-staging }} hostname=celery1-staging ec2=yes
+
 [celery:children]
 # Amazon EC2
 celery0
+celery1
 
 [pillow0]
 {{ pillow0-staging }} hostname=pillow0-staging ec2=yes
