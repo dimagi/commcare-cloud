@@ -9,10 +9,12 @@ instances:
     days_critical: 10
     timeout: 30
     include_content: true
+{% if monitor_celery_heartbeat|default(True) %}
   - name: {{ env_monitoring_id }} Heartbeat
     url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat
     check_certificate_expiration: false
     timeout: 30
+{% endif %}
 {% for host in datadog_extra_host_checks %}
   - name: {{ host.url|urlsplit('hostname') }}
     url: {{ host.url }}

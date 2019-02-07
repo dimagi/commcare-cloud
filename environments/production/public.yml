@@ -47,86 +47,9 @@ run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: commcarehq.cloudant.com
-    port: 443
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
-  domains:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__domains
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  users:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__users
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  apps:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__apps
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  fluff-bihar:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__fluff-bihar
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  fluff-mc:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__fluff-mc
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  auditcare:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__auditcare
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  fixtures:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__fixtures
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  meta:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__meta
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  receiverwrapper:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__receiverwrapper
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  m4change:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__m4change
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
-  mvp-indicators:
-    host: "{{ groups.couchdb2_proxy.0 }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq__mvp-indicators
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
@@ -164,7 +87,6 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
