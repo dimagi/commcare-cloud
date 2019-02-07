@@ -215,20 +215,11 @@ class SendDatadogEvent(CommandBase):
                 title=args.event_title,
                 agg='commcare-cloud'
             )
-        env_vars = AnsibleContext(args).env_vars
         return run_ansible_module(
             environment, AnsibleContext(args),
             '127.0.0.1', args.module, args.module_args,
             False, False, False,
         )
-        cmd_parts = (
-            'ansible', '127.0.0.1',
-            '-m', args.module,
-            '-i', environment.paths.inventory_source,
-            '-a', args.module_args,
-            '--diff',
-        )
-        return subprocess.call(cmd_parts, env=env_vars)
 
 
 class Ping(CommandBase):
