@@ -74,6 +74,19 @@
         - slow
       when: not testing|default(False)
 
+    - name: py3 install pip requirements
+      become: true
+      with_items: "{{ commcarehq_requirements }}"
+      pip:
+        requirements: "{{ code_home }}/requirements-python3_6/{{ item }}"
+        virtualenv: "{{ py3_virtualenv_home }}"
+        virtualenv_python: "python3.6"
+        chdir: "{{ code_home }}"
+      tags:
+        - slow
+        - py3
+      when: (py3_include_venv is defined and py3_include_venv)
+
     - name: chown clone
       become: true
       file:
@@ -106,6 +119,18 @@
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     recurse: yes
+
+- name: py3 chown virtualenv
+  become: true
+  file:
+    path: "{{ py3_virtualenv_home }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+  tags:
+    - py3
+  when: (py3_include_venv is defined and py3_include_venv)
 
 - name: copy localsettings
   become: true
