@@ -47,7 +47,6 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 4
-    flower: {}
 pillows:
   'pillow0':
     AppDbChangeFeedPillow:
