@@ -26,6 +26,28 @@ celery_processes:
       pooling: gevent
       concurrency: 4
     flower: {}
+  'celery1':
+    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue,case_import_queue:
+      concurrency: 4
+      max_tasks_per_child: 5
+    background_queue,case_rule_queue,analytics_queue:
+      concurrency: 2
+      max_tasks_per_child: 1
+    saved_exports_queue:
+      concurrency: 3
+      max_tasks_per_child: 1
+      optimize: True
+    ucr_queue:
+      concurrency: 1
+      max_tasks_per_child: 5
+    email_queue:
+      concurrency: 1
+    async_restore_queue:
+      concurrency: 1
+    sms_queue:
+      pooling: gevent
+      concurrency: 4
+    flower: {}
 pillows:
   'pillow0':
     AppDbChangeFeedPillow:
