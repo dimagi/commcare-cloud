@@ -2,7 +2,8 @@
 
 **Date:** 2018-09-24
 
-**Optional per env:** No
+**Optional per env:** _required on all environments_
+
 
 ## CommCare Version Dependency
 This version of CommCare must be deployed before rolling out this change:
