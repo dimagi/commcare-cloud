@@ -1,6 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
 REPORTING_DATABASES:
   ucr: ucr
+  icds-ucr-non-dashboard: icds-ucr-non-dashboard
   icds-ucr:
     WRITE: icds-ucr
     READ:
@@ -85,6 +86,11 @@ dbs:
         host: pgshard9
   custom:
     - django_alias: icds-ucr
+      name: commcarehq_icds_aggregatedata
+      host: pgucr
+      query_stats: True
+      django_migrate: True  # the dashboard models are stored here
+    - django_alias: icds-ucr-non-dashboard
       name: commcarehq_icds_aggregatedata
       host: pgucr
       query_stats: True
