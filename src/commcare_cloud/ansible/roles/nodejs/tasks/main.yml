@@ -10,6 +10,12 @@
   become: yes
   with_items:
     - nodejs
+
+- name: Install nodejs packages
+  apt: name="{{ item }}" state=present
+  become: yes
+  when: ansible_distribution_version == '18.04'
+  with_items:
     - npm
 
 - name: Set NPM registry
