@@ -43,7 +43,7 @@ install:
       echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
       echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
       pip install -e commcare-cloud-bootstrap
-    done
+    fi
 
 script:
   - ".travis/tests.sh"
