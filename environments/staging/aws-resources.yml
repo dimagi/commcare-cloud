@@ -1,5 +1,6 @@
 airflow0-staging: 10.201.10.220
 celery0-staging: 10.201.10.150
+celery1-staging: 10.201.10.108
 control-staging: 10.201.10.174
 couch0-staging: 10.201.40.11
 couch1-staging: 10.201.40.38

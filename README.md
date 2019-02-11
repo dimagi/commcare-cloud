@@ -47,7 +47,6 @@ from anywhere:
 ```
 export PATH=$PATH:~/.commcare-cloud/bin
 source ~/.commcare-cloud/repo/src/commcare_cloud/.bash_completion
-
 ```
 
 # Manual setup

@@ -20,3 +20,5 @@ DimagiKeyStore
 /dist
 couchdb@*_files
 **/fab/config.py
+**/migrations/*/migration_build_*/
+**/migrations/*/copy_file_scripts_*/
