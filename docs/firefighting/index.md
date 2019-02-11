@@ -1,9 +1,15 @@
 This page summarizes how to do various things related to HQ.
+
+# Notes
+
+All Datadog links will be specific and private to Dimagi employees.
+If datadog releases a feature to share dashboard configurations, we will happily share configurations in this repository.
+
 For a more user-friendly guide check out [Cory's brown bag on the topic](http://prezi.com/wedwm-dgqto7/firefighting-hq/).
 
 # HQ Architecture and Machines
 
-![](./hq_architecture.jpg)
+![](./hq_architecture.png)
 
 # High-level System Monitoring and Alerts
 
@@ -101,8 +107,3 @@ To stop all supervisor processes use:
 ```bash
 $ cchq <env> fab supervisorctl:"stop all"
 ```
-
-# Notes
-
-All Datadog links will be specific and private to Dimagi employees.
-If datadog releases a feature to share dashboard configurations, we will happily share configurations in this repository.
