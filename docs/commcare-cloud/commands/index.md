@@ -949,7 +949,7 @@ Use 'help' action to list all options.
 Perform a CouchDB migration
 
 ```
-commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commit,clean}
+commcare-cloud <env> migrate-couchdb [--no-stop] migration_plan {describe,plan,migrate,commit,clean}
 ```
 
 This is a recent and advanced addition to the capabilities,
@@ -971,6 +971,19 @@ Action to perform
 - migrate: stop nodes and copy shard data according to plan
 - commit: update database docs with new shard allocation
 - clean: remove shard files from hosts where they aren't needed
+
+##### Optional Arguments
+
+###### `--no-stop`
+
+When used with migrate, operate on live couchdb cluster without stopping nodes.
+
+This is potentially dangerous.
+If the sets of a shard's old locations and new locations are disjoint---i.e.
+if there are no "pivot" locations for a shard---then running migrate and commit
+without stopping couchdb will result in data loss.
+If your shard reallocation has a pivot location for each shard,
+then it's acceptable to do live.
 
 ---
 

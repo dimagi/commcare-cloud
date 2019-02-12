@@ -161,12 +161,15 @@
 - name: Copy es backup script
   become: yes
   template:
-    src: "create_es_snapshot.py.j2"
-    dest: "/usr/local/sbin/create_es_snapshot.py"
+    src: "{{ item }}"
+    dest: "/usr/local/sbin/"
     group: root
     owner: root
     mode: 0700
     backup: yes
+  with_items:
+    - create_es_snapshot.py.j2
+    - check_snapshot_status.py.j2
   when: (es_local_repo or backup_es_s3 or backup_es_swift) and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
