@@ -166,7 +166,6 @@ localsettings:
   CELERY_TIMEZONE: 'Asia/Kolkata'
   COMMCARE_HQ_NAME: 'ICDS-CAS Server'
   COMMCARE_NAME: 'ICDS-CAS'
-  COUCH_REINDEX_SCHEDULE: {'crontab': {'minute': '*/30', 'hour': '0-5'}}
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_STALE_QUERY: 'update_after'
