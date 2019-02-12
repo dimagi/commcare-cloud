@@ -2,4 +2,4 @@
 dependencies:
   - {role: common_installs, tags: common_installs}
   - role: edit
-  - {role: ksplice, tags: ksplice}
+  - {role: ksplice, tags: ksplice, when: ansible_distribution_version == '14.04'}
