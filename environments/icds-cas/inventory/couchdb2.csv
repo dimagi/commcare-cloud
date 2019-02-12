@@ -1,6 +1,11 @@
-hostname,host_address,group 1,group 2,group 3,var: hostname,L.var: devices,L.var: partitions
-couch0,100.71.184.25,couchdb2,couchdb2_proxy,,MUMGCCWCDPRDCD00,["/dev/vdb"],["/dev/vdb1"]
-couch1,100.71.184.8,couchdb2,,,MUMGCCWCDPRDCD01,["/dev/vdb"],["/dev/vdb1"]
-couch2,100.71.184.9,couchdb2,,,MUMGCCWCDPRDCD02,["/dev/vdb"],["/dev/vdb1"]
-couch3,100.71.184.6,couchdb2,,,MUMGCCWCDPRDCD03,["/dev/vdb"],["/dev/vdb1"]
-couch4,100.71.184.17,couchdb2,,,MUMGCCWCDPRDCD04,["/dev/vdb"],["/dev/vdb1"]
+hostname,host_address,group 1,group 2,group 3,var: hostname
+couch0,100.71.184.25,couchdb2,couchdb2_proxy,,MUMGCCWCDPRDCD00
+couch1,100.71.184.8,couchdb2,,,MUMGCCWCDPRDCD01
+couch2,100.71.184.9,couchdb2,,,MUMGCCWCDPRDCD02
+couch3,100.71.184.6,couchdb2,,,MUMGCCWCDPRDCD03
+couch4,100.71.184.17,couchdb2,,,MUMGCCWCDPRDCD04
+couch5,100.71.184.62,couchdb2,,,MUMGCCWCDPRDCD05
+couch6,100.71.184.54,couchdb2,,,MUMGCCWCDPRDCD06
+couch7,100.71.184.65,couchdb2,,,MUMGCCWCDPRDCD07
+couch8,100.71.184.67,couchdb2,,,MUMGCCWCDPRDCD08
+couch9,100.71.184.95,couchdb2,,,MUMGCCWCDPRDCD09

@@ -11,13 +11,46 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2019-02-11** [Add tag to datadog http checks](0014-add-tag-to-datadog-http-checks.md)
+This change adds "check_type" tag to the http_check datadog integration.
+This change applies only to envs using datadog for monitoring.
+
+### **2019-02-11** [Java upgrade for formplayer](0013-java-upgrade-for-formplayer.md) (_action required_)
+Previously, Formplayer was running on Java 7.
+This change updates us to Java 8 for formplayer.
+
+### **2019-02-01** [Generalize load case from fixture feature](0012-generalize-load-case-from-fixture.md) (_action required_)
+Previously loading a case from a fixture required the fixture to be an attribute.
+This change allows using non-attributes from the fixture.
+
+### **2019-01-16** [Fix encrypted temp directory permissions](0011-fix-encrypted-tmp-permissions.md)
+This is a followup to [Added encrypted temporary directory](./0001-add-encrypted-tmp.md)
+in which we introduced an encrypted directory for temp files.
+In its original implementation, this file was owned by root,
+and processes were unable to write to it.
+
+This changes the directory to be owned by cchq, allowing our processes to write to the file.
+
+### **2019-01-02** [Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx.md)
+Previously you had to manually restart nginx every time letsencrypt auto-renewed,
+which was about every two months.
+
+### **2018-12-15** [Blob Metadata Migration - part 2](0009-blob-metadata-part-2.md) (_action required_)
+Form submission attachment metadata is being consolidated in the blob
+metadata table in SQL. This migration consists of a series of commands that
+will consolidate the data in your environment.
+
+### **2018-09-24** [Blob Metadata Migration - part 1](0008-blob-metadata-part-1.md) (_action required_)
+Blob metadata needs to be migrated from CouchDB to SQL. This migration
+consists of a series of commands that will move the data in your environment.
+
 ### **2018-11-26** [Reorganize pillows](0007-reorganize-pillows.md) (_action required_)
 Pillows read changes from kafka and do various processing such as sending them to
 elasticsearch, transforming into a UCR table row etc. A doc for same change is read
 multiple times for each processor, since there are separte pillows for each processor.
 This is inefficient, so we have combined multiple processors that apply for a
 given document type (also called `KAFKA_TOPIC`) such as form/case/user under
-one pillow. For e.g. A new single `kafka-case-ucr-es` pillow replaces
+one pillow. For e.g. A new single `case-pillow` pillow replaces
 various old pillows that process case changes such as `CaseToElasticsearchPillow`,
 `CaseSearchToElasticsearchPillow`, `ReportCaseToElasticsearchPillow`,
 and `kafka-ucr-main` etc. 

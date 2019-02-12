@@ -46,7 +46,7 @@ We also recommend that you put the following in your `~/.profile` which gives yo
 from anywhere:
 ```
 export PATH=$PATH:~/.commcare-cloud/bin
-source ~/.commcare-cloud/repo/control/.bash_completion
+source ~/.commcare-cloud/repo/src/commcare_cloud/.bash_completion
 ```
 
 # Manual setup

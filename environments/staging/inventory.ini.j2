@@ -18,19 +18,19 @@ proxy1
 
 [webworkers:children]
 # Amazon EC2
-# Temporarily commenting this out while it's removed from the rotation for the aws migration's couchdb2 reindex
-# web0
+web0
 web1
-
-[hqdb1]
-hqdb1-staging.internal-va.commcarehq.org swap_size=1G
 
 [pgproxy0]
 {{ pgproxy0-staging }} hostname=pgproxy0-staging ec2=yes
 
 [rds_pg0]
 # RDS
-pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
+{{ pg0-staging }}
+
+[rds_pg0_replica]
+# RDS
+{{ pg0-staging-replica }}
 
 [remote_postgresql:children]
 rds_pg0
@@ -62,32 +62,27 @@ couch0
 # Amazon EC2
 rabbit0
 
-[hqkafka0]
-hqkafka0-staging.internal-va.commcarehq.org
-
-[hqkafka0:vars]
-swap_size=1G
-kafka_broker_id=0
-
 [kafka0]
 {{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
 
 [zookeeper:children]
-#hqkafka0
 # Amazon EC2
 kafka0
 
 [kafka:children]
-#hqkafka0
 # Amazon EC2
 kafka0
 
 [celery0]
 {{ celery0-staging }} hostname=celery0-staging ec2=yes
 
+[celery1]
+{{ celery1-staging }} hostname=celery1-staging ec2=yes
+
 [celery:children]
 # Amazon EC2
 celery0
+celery1
 
 [pillow0]
 {{ pillow0-staging }} hostname=pillow0-staging ec2=yes
@@ -123,19 +118,6 @@ es1
 [shared_dir_host:children]
 redis0
 
-[stanchion:children]
-hqkafka0
-
-[hqriak00]
-hqriak00-staging.internal-va.commcarehq.org
-
-[hqriak01]
-hqriak01-staging.internal-va.commcarehq.org
-
-[riakcs:children]
-hqriak00
-hqriak01
-
 [airflow0]
 {{ airflow0-staging }} hostname=airflow0-staging ec2=yes
 
@@ -149,7 +131,11 @@ airflow0
 
 [ansible_skip:children]
 rds_pg0
+rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
 web0
+
+[hwarehouse0]
+{{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=yes

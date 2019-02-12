@@ -144,3 +144,7 @@
   tags:
     - mount
     - after-reboot
+
+- import_tasks: syslog.yml
+  tags:
+    - syslog

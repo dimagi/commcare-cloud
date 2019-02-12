@@ -4,6 +4,7 @@ postgresql_dbs:
     django_alias: default
     django_migrate: true
     host: 192.168.33.16
+    pgbouncer_host: 192.168.33.16
     name: commcarehq
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
@@ -14,6 +15,7 @@ postgresql_dbs:
     django_alias: ucr
     django_migrate: false
     host: 192.168.33.16
+    pgbouncer_host: 192.168.33.16
     name: commcarehq_ucr
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
@@ -24,6 +26,7 @@ postgresql_dbs:
     django_alias: null
     django_migrate: true
     host: 192.168.33.16
+    pgbouncer_host: 192.168.33.16
     name: formplayer
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
@@ -37,6 +40,7 @@ postgresql_dbs:
     django_alias: null
     django_migrate: true
     host: 192.168.33.16
+    pgbouncer_host: 192.168.33.16
     name: formplayer
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
@@ -48,6 +52,7 @@ postgresql_dbs:
     django_alias: default
     django_migrate: true
     host: 192.168.33.16
+    pgbouncer_host: 192.168.33.16
     name: commcarehq
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
@@ -61,6 +66,7 @@ postgresql_dbs:
     django_alias: ucr
     django_migrate: false
     host: 192.168.33.16
+    pgbouncer_host: 192.168.33.16
     name: commcarehq_ucr
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'

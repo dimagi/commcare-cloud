@@ -14,6 +14,8 @@ resource aws_instance "vpn_host" {
     reboot
     EOF
 
+  disable_api_termination = true
+
   root_block_device {
     volume_size           = 40
     volume_type           = "gp2"

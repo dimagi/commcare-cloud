@@ -335,7 +335,7 @@ def hotfix_deploy():
     """
     if not console.confirm('Are you sure you want to deploy to {env.deploy_env}?'.format(env=env), default=False) or \
        not console.confirm('Did you run "fab {env.deploy_env} preindex_views"? '.format(env=env), default=False) or \
-       not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
+       not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING PYTHON CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
         utils.abort('Deployment aborted.')
 
     _require_target()

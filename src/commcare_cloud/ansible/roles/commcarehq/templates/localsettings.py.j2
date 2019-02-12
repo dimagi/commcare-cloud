@@ -32,7 +32,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'NAME': '{{ config.name }}',
         'USER': '{{ config.user }}',
         'PASSWORD': '{{ config.password }}',
-        'HOST': '{% if config.host == inventory_hostname %}127.0.0.1{% else %}{{ config.host }}{% endif %}',
+        'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
         'DISABLE_SERVER_SIDE_CURSORS': True,
@@ -190,6 +190,7 @@ S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ s3_blob_db_access_key }}',
     'secret_key': '{{ s3_blob_db_secret_key }}',
     's3_bucket': '{{ s3_blob_db_s3_bucket }}',
+    'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3'},
 }
 {% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
@@ -198,6 +199,7 @@ OLD_S3_BLOB_DB_SETTINGS = {
     'access_key': '{{ old_s3_blob_db_access_key }}',
     'secret_key': '{{ old_s3_blob_db_secret_key }}',
     's3_bucket': '{{ old_s3_blob_db_s3_bucket }}',
+    'bulk_delete_chunksize': {{ old_s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3'},
 }
 BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
@@ -548,7 +550,7 @@ INDICATOR_NAMESPACES = {
     ),
 }
 # should be 'ok' if couchdb version < 1.1.0, or cloudant, else 'update_after'
-COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('ok') }}'
+COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('update_after') }}'
 
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
@@ -564,6 +566,14 @@ MAPS_LAYERS = json.loads('{{ MAPS_LAYERS|to_json }}')
 {% if 'PILLOWTOP_MACHINE_ID' in localsettings and localsettings.PILLOWTOP_MACHINE_ID %}
 PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
+
+ACTIVE_PILLOW_NAMES = [
+{% for _, pillows in app_processes_config.pillows.items() %}
+    {% for pillow_name, params in pillows.items() %}
+        "{{ pillow_name }}",
+    {% endfor %}
+{% endfor %}
+]
 
 {% if SIMPLE_API_KEYS %}
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
@@ -699,8 +709,14 @@ TWO_FACTOR_CALL_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
 ENFORCE_TWO_FACTOR_FOR_SUPERUSERS = {{ localsettings.ENFORCE_TWO_FACTOR_FOR_SUPERUSERS }}
 {% endif %}
 
-{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+{% if localsettings.get('CUSTOM_LANDING_TEMPLATE') and localsettings.CUSTOM_LANDING_TEMPLATE is not mapping %}
 CUSTOM_LANDING_TEMPLATE = '{{ localsettings.CUSTOM_LANDING_TEMPLATE }}'
+{% elif localsettings.get('CUSTOM_LANDING_TEMPLATE') %}
+CUSTOM_LANDING_TEMPLATE = {
+{% for hostname, template in localsettings.CUSTOM_LANDING_TEMPLATE.items() %}
+    '{{ hostname }}': '{{ template }}',
+{% endfor %}
+}
 {% endif %}
 
 {% if localsettings.get('ENTERPRISE_MODE') %}
@@ -715,12 +731,24 @@ RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
 TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
 {% endif %}
 
-{% if localsettings.get('COMMCARE_HQ_NAME') %}
+{% if localsettings.get('COMMCARE_HQ_NAME') and localsettings.COMMCARE_HQ_NAME is not mapping %}
 COMMCARE_HQ_NAME = '{{ localsettings.COMMCARE_HQ_NAME }}'
+{% elif localsettings.get('COMMCARE_HQ_NAME') %}
+COMMCARE_HQ_NAME = {
+{% for hostname, commcare_hq_name in localsettings.COMMCARE_HQ_NAME.items() %}
+    '{{ hostname }}': '{{ commcare_hq_name }}',
+{% endfor %}
+}
 {% endif %}
 
-{% if localsettings.get('COMMCARE_NAME') %}
+{% if localsettings.get('COMMCARE_NAME') and localsettings.COMMCARE_NAME is not mapping %}
 COMMCARE_NAME = '{{ localsettings.COMMCARE_NAME }}'
+{% elif localsettings.get('COMMCARE_NAME') %}
+COMMCARE_NAME = {
+{% for hostname, commcare_name in localsettings.COMMCARE_NAME.items() %}
+    '{{ hostname }}': '{{ commcare_name }}',
+{% endfor %}
+}
 {% endif %}
 
 {% if SENTRY_PUBLIC_KEY %}
@@ -819,7 +847,8 @@ DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
     'project': {
-        'icds-cas': ['test-project-211', 'icds-cas-aww', 'icds-cas-ls', 'icds-cas-it', 'icds-cas-miscellaneous'],
+        'icds-cas': ['test-project-211', 'icds-cas-aww', 'icds-cas-ls', 'icds-cas-it', 'icds-cas-miscellaneous',
+                     'rtl-test-project'],
     },
     'teams': {
         'icds-cas': {
