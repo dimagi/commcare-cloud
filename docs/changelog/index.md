@@ -15,6 +15,10 @@ an action on your part will be marked "_action optional_".
 This change adds "check_type" tag to the http_check datadog integration.
 This change applies only to envs using datadog for monitoring.
 
+### **2019-02-11** [Java upgrade for formplayer](0013-java-upgrade-for-formplayer.md) (_action required_)
+Previously, Formplayer was running on Java 7.
+This change updates us to Java 8 for formplayer.
+
 ### **2019-02-01** [Generalize load case from fixture feature](0012-generalize-load-case-from-fixture.md) (_action required_)
 Previously loading a case from a fixture required the fixture to be an attribute.
 This change allows using non-attributes from the fixture.
