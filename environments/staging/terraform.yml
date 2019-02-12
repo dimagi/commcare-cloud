@@ -131,6 +131,13 @@ servers:
     volume_size: 60
     group: "redis"
 
+  - server_name: "hwarehouse0-staging"
+    server_instance_type: "m5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    group: "hwarehouse:bionic"
+
 
 proxy_servers:
   - server_name: "proxy1-staging"
