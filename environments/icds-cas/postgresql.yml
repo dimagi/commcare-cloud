@@ -5,25 +5,33 @@ REPORTING_DATABASES:
     WRITE: icds-ucr
     READ:
       - [icds-ucr, 1]
-      - [icds-ucr-standby0, 5]
-      - [icds-ucr-standby1, 5]
-      - [icds-ucr-standby2, 5]
-      - [icds-ucr-standby3, 5]
+      - [icds-ucr-standby0, 10]
+      - [icds-ucr-standby1, 10]
+      - [icds-ucr-standby2, 10]
+      - [icds-ucr-standby3, 10]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
   auth:
     - [default, 1]
     - [pgmainstandby0, 4]
+    - [pgmainstandby1, 4]
+    - [pgmainstandby2, 4]
   accounting:
     - [default, 1]
     - [pgmainstandby0, 4]
+    - [pgmainstandby1, 4]
+    - [pgmainstandby2, 4]
   locations:
     - [default, 1]
     - [pgmainstandby0, 4]
+    - [pgmainstandby1, 4]
+    - [pgmainstandby2, 4]
   userreports:
     - [default, 1]
     - [pgmainstandby0, 4]
+    - [pgmainstandby1, 4]
+    - [pgmainstandby2, 4]
 
 override:
   pgbouncer_pool_mode: transaction
@@ -117,4 +125,16 @@ dbs:
       host: pgmainstandby0
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 30
+      hq_acceptable_standby_delay: 5
+    - django_alias: pgmainstandby1
+      name: commcarehq
+      host: pgmainstandby1
+      create: False
+      django_migrate: False
+      hq_acceptable_standby_delay: 5
+    - django_alias: pgmainstandby2
+      name: commcarehq
+      host: pgmainstandby2
+      create: False
+      django_migrate: False
+      hq_acceptable_standby_delay: 5

@@ -1,0 +1,7 @@
+- name: Decrease console log level
+  become: yes
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: '^\$klogConsoleLogLevel'
+    line: '$klogConsoleLogLevel 4'
+  notify: restart rsyslog

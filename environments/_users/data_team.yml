@@ -4,4 +4,6 @@ dev_users:
     - mtheis
     - esu
     - ymsosa
+    - slee
+    - kchen
   absent: []

@@ -1,0 +1,133 @@
+commcarehq:
+  by_range:
+    # this range was manually edited to avoid moving existing shards
+    00000000-1fffffff: [couchdb@10.202.40.133, couchdb@10.202.40.134, couchdb@10.202.40.57]
+    20000000-3fffffff: [couchdb@10.202.40.134, couchdb@10.202.40.57, couchdb@10.202.40.120]
+    40000000-5fffffff: [couchdb@10.202.40.57, couchdb@10.202.40.120, couchdb@10.202.40.100]
+    60000000-7fffffff: [couchdb@10.202.40.120, couchdb@10.202.40.100, couchdb@10.202.40.5]
+    80000000-9fffffff: [couchdb@10.202.40.100, couchdb@10.202.40.5, couchdb@10.202.40.97]
+    a0000000-bfffffff: [couchdb@10.202.40.5, couchdb@10.202.40.97, couchdb@10.202.40.135]
+    c0000000-dfffffff: [couchdb@10.202.40.97, couchdb@10.202.40.135, couchdb@10.202.40.133]
+    e0000000-ffffffff: [couchdb@10.202.40.135, couchdb@10.202.40.133, couchdb@10.202.40.134]
+  shard_suffix: '.1541446170'
+commcarehq__apps:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541009667'
+commcarehq__auditcare:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541186619'
+commcarehq__domains:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1540951678'
+commcarehq__fixtures:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541187369'
+commcarehq__fluff-bihar:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541009837'
+commcarehq__fluff-mc:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541009852'
+commcarehq__m4change:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541009872'
+commcarehq__meta:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541446494'
+commcarehq__mvp-indicators:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541009862'
+commcarehq__receiverwrapper:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1541446507'
+commcarehq__users:
+  by_range:
+    00000000-1fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    20000000-3fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    40000000-5fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    60000000-7fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    80000000-9fffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    a0000000-bfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    c0000000-dfffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+    e0000000-ffffffff: [couchdb@10.202.40.211, couchdb@10.202.41.83, couchdb@10.202.42.85]
+  shard_suffix: '.1540951666'

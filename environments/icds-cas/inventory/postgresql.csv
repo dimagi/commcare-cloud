@@ -1,57 +1,54 @@
-hostname,host_address,group 1,group 2,var: hostname,L.var: devices,L.var: partitions,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
-pgucr,100.71.184.42,postgresql,ucr_dbs,MUMGCCWCDPRDPU00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgucrstandby0,,"[""standby0"",""standby1"",""standby2"",""standby3"",""spare""]",
-pgucrstandby0,100.71.184.36,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS0,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby0
-pgucrstandby1,100.71.184.45,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby1
-pgucrstandby2,100.71.184.24,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS2,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby2
-pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgucr,,standby3
-pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
-pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby0
-pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby1
-pgmainstandby2,100.71.184.85,pg_standby,main_dbs,MUMGCCWCDPRDPMS2,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgmain0,,standby2
-pgshard0,100.71.184.27,postgresql,shard_dbs,MUMGCCWCDPRDPS00,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard0standby,,"[""standby0"",""spare""]",
-pgshard1,100.71.184.29,postgresql,shard_dbs,MUMGCCWCDPRDPS01,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard1standby,,"[""standby0"",""spare""]",
-pgshard2,100.71.184.21,postgresql,shard_dbs,MUMGCCWCDPRDPS02,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard2standby,,"[""standby0"",""spare""]",
-pgshard3,100.71.184.22,postgresql,shard_dbs,MUMGCCWCDPRDPS03,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard3standby,,"[""standby0"",""spare""]",
-pgshard4,100.71.184.32,postgresql,shard_dbs,MUMGCCWCDPRDPS04,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard4standby,,"[""standby0"",""spare""]",
-pgshard5,100.71.184.20,postgresql,shard_dbs,MUMGCCWCDPRDPS05,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard5standby,,"[""standby0"",""spare""]",
-pgshard6,100.71.184.30,postgresql,shard_dbs,MUMGCCWCDPRDPS06,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard6standby,,"[""standby0"",""spare""]",
-pgshard7,100.71.184.31,postgresql,shard_dbs,MUMGCCWCDPRDPS07,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard7standby,,"[""standby0"",""spare""]",
-pgshard8,100.71.184.34,postgresql,shard_dbs,MUMGCCWCDPRDPS08,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard8standby,,"[""standby0"",""spare""]",
-pgshard9,100.71.184.26,postgresql,shard_dbs,MUMGCCWCDPRDPS09,"[""/dev/vdb""]","[""/dev/vdb1""]",pgshard9standby,,"[""standby0"",""spare""]",
-pgshard0standby,100.71.184.47,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS00,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard0,,standby0
-pgshard1standby,100.71.184.51,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS01,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard1,,standby0
-pgshard2standby,100.71.184.57,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS02,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard2,,standby0
-pgshard3standby,100.71.184.49,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS03,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard3,,standby0
-pgshard4standby,100.71.184.60,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS04,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard4,,standby0
-pgshard5standby,100.71.184.52,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS05,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard5,,standby0
-pgshard6standby,100.71.184.58,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS06,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard6,,standby0
-pgshard7standby,100.71.184.61,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS07,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard7,,standby0
-pgshard8standby,100.71.184.56,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS08,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard8,,standby0
-pgshard9standby,100.71.184.59,pg_standby,shard_standby_dbs,MUMGCCWCDPRDSS09,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgshard9,,standby0
-plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,"[""/dev/vdb""]","[""/dev/vdb1""]",,,,
-pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,"[""/dev/vdb""]","[""/dev/vdb1""]",pgsynclog0standby,,"[""standby0"",""spare""]",
-pgsynclog0standby,100.71.184.41,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL1,"[""/dev/vdb""]","[""/dev/vdb1""]",,pgsynclog0,,standby0
-pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,"[""/dev/vdb""]","[""/dev/vdb1""]",,,,
-,,,,,,,,,,,
-# group vars for postgres,,,,,,,,,,
-group,I.var: pgbouncer_max_connections,I.var: pgbouncer_default_pool,I.var: postgresql_max_connections,S.var: postgresql_work_mem,S.var: postgresql_shared_buffers,S.var: postgresql_random_page_cost,,,,
-postgres,,,,,,,,,,
-pg_standby,,,,,,,,,,
-ucr_dbs,3500,775,500,4096kB,12GB,1.1,,,,
-shard_standby_dbs,3500,775,800,41943kB,12GB,,,,,
-shard_dbs,3500,775,800,41943kB,12GB,,,,,
-main_dbs,3500,775,400,41943kB,12GB,,,,,
-synclog_dbs,3500,775,800,41943kB,12GB,,,,,
-plproxy0,3500,775,800,41943kB,8GB,,,,,
-pgwarehouse0,3500,775,800,655kB,2GB,,,,,
-,,,,,,,,,,,
-# group vars for postgres continued,,,,,,,,,,
-group,I.var: postgresql_checkpoint_segments,F.var: postgresql_checkpoint_completion_target,S.var: postgresql_maintenance_work_mem,S.var: postgresql_wal_buffers,I.var: postgresql_default_statistics_target,S.var: postgresql_effective_cache_size,S.var: postgresql_max_wal_size,S.var: enable_nestloop,,
-ucr_dbs,128,0.7,2GB,16MB,500,36GB,5GB,"off",,
-shard_standby_dbs,64,0.9,2GB,16MB,100,36GB,,,,
-shard_dbs,64,0.9,2GB,16MB,100,36GB,,,,
-main_dbs,32,0.7,2GB,16MB,100,36GB,,,,
-synclog_dbs,64,0.9,2GB,16MB,100,36GB,,,,
-plproxy0,64,0.9,2GB,16MB,100,24GB,,,,
-pgwarehouse0,170,0.9,1GB,16MB,500,6GB,8GB,,,
-,,,,,,,,,,
+hostname,host_address,group 1,group 2,var: hostname,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
+pgucr,100.71.184.42,postgresql,ucr_dbs,MUMGCCWCDPRDPU00,pgucrstandby0,,"[""standby0"",""standby1"",""spare""]",
+pgucrstandby0,100.71.184.36,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS0,pgucrstandby2,pgucr,"[""standby2""]",standby0
+pgucrstandby1,100.71.184.45,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS1,pgucrstandby3,pgucr,"[""standby3""]",standby1
+pgucrstandby2,100.71.184.24,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS2,,pgucrstandby0,,standby2
+pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,,pgucrstandby1,,standby3
+pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
+pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,,pgmain0,,standby0
+pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,,pgmain0,,standby1
+pgmainstandby2,100.71.184.85,pg_standby,main_dbs,MUMGCCWCDPRDPMS2,,pgmain0,,standby2
+pgshard0,100.71.184.27,postgresql,shard_dbs,MUMGCCWCDPRDPS00,pgshard0standby,,"[""standby0"",""spare""]",
+pgshard1,100.71.184.29,postgresql,shard_dbs,MUMGCCWCDPRDPS01,pgshard1standby,,"[""standby0"",""spare""]",
+pgshard2,100.71.184.21,postgresql,shard_dbs,MUMGCCWCDPRDPS02,pgshard2standby,,"[""standby0"",""spare""]",
+pgshard3,100.71.184.22,postgresql,shard_dbs,MUMGCCWCDPRDPS03,pgshard3standby,,"[""standby0"",""spare""]",
+pgshard4,100.71.184.32,postgresql,shard_dbs,MUMGCCWCDPRDPS04,pgshard4standby,,"[""standby0"",""spare""]",
+pgshard5,100.71.184.20,postgresql,shard_dbs,MUMGCCWCDPRDPS05,pgshard5standby,,"[""standby0"",""spare""]",
+pgshard6,100.71.184.30,postgresql,shard_dbs,MUMGCCWCDPRDPS06,pgshard6standby,,"[""standby0"",""spare""]",
+pgshard7,100.71.184.31,postgresql,shard_dbs,MUMGCCWCDPRDPS07,pgshard7standby,,"[""standby0"",""spare""]",
+pgshard8,100.71.184.34,postgresql,shard_dbs,MUMGCCWCDPRDPS08,pgshard8standby,,"[""standby0"",""spare""]",
+pgshard9,100.71.184.26,postgresql,shard_dbs,MUMGCCWCDPRDPS09,pgshard9standby,,"[""standby0"",""spare""]",
+pgshard0standby,100.71.184.47,pg_standby,shard_dbs,MUMGCCWCDPRDSS00,,pgshard0,,standby0
+pgshard1standby,100.71.184.51,pg_standby,shard_dbs,MUMGCCWCDPRDSS01,,pgshard1,,standby0
+pgshard2standby,100.71.184.57,pg_standby,shard_dbs,MUMGCCWCDPRDSS02,,pgshard2,,standby0
+pgshard3standby,100.71.184.49,pg_standby,shard_dbs,MUMGCCWCDPRDSS03,,pgshard3,,standby0
+pgshard4standby,100.71.184.60,pg_standby,shard_dbs,MUMGCCWCDPRDSS04,,pgshard4,,standby0
+pgshard5standby,100.71.184.52,pg_standby,shard_dbs,MUMGCCWCDPRDSS05,,pgshard5,,standby0
+pgshard6standby,100.71.184.58,pg_standby,shard_dbs,MUMGCCWCDPRDSS06,,pgshard6,,standby0
+pgshard7standby,100.71.184.61,pg_standby,shard_dbs,MUMGCCWCDPRDSS07,,pgshard7,,standby0
+pgshard8standby,100.71.184.56,pg_standby,shard_dbs,MUMGCCWCDPRDSS08,,pgshard8,,standby0
+pgshard9standby,100.71.184.59,pg_standby,shard_dbs,MUMGCCWCDPRDSS09,,pgshard9,,standby0
+plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,,,,
+pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,pgsynclog0standby,,"[""standby0"",""spare""]",
+pgsynclog0standby,100.71.184.41,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL1,,pgsynclog0,,standby0
+pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,,,,
+,,,,,,,,
+# group vars for postgres,,,,,,,,
+group,I.var: pgbouncer_max_connections,I.var: pgbouncer_default_pool,I.var: postgresql_max_connections,S.var: postgresql_work_mem,S.var: postgresql_shared_buffers,S.var: postgresql_random_page_cost,,
+postgres,,,,,,,,
+pg_standby,,,,,,,,
+ucr_dbs,3500,775,500,4096kB,12GB,1.1,,
+shard_dbs,3500,775,800,41943kB,12GB,,,
+main_dbs,3500,775,400,41943kB,12GB,,,
+synclog_dbs,3500,775,800,41943kB,12GB,,,
+plproxy0,3500,775,800,41943kB,8GB,,,
+pgwarehouse0,3500,775,800,655kB,2GB,,,
+,,,,,,,,
+# group vars for postgres continued,,,,,,,,
+group,I.var: postgresql_checkpoint_segments,F.var: postgresql_checkpoint_completion_target,S.var: postgresql_maintenance_work_mem,S.var: postgresql_wal_buffers,I.var: postgresql_default_statistics_target,S.var: postgresql_effective_cache_size,S.var: postgresql_max_wal_size,S.var: enable_nestloop
+ucr_dbs,128,0.7,2GB,16MB,500,36GB,5GB,off
+shard_dbs,64,0.9,2GB,16MB,100,36GB,,
+main_dbs,32,0.7,2GB,16MB,100,36GB,,
+synclog_dbs,64,0.9,2GB,16MB,100,36GB,,
+plproxy0,64,0.9,2GB,16MB,100,24GB,,
+pgwarehouse0,170,0.9,1GB,16MB,500,6GB,8GB,

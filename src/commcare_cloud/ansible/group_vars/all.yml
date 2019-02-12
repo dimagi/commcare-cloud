@@ -57,11 +57,13 @@ run_websockets_wsgi: False
 s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
 s3_blob_db_s3_bucket: 'blobdb'
+s3_bulk_delete_chunksize: 1000
 
 # For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
 # or http://dimagi.github.io/commcare-cloud/howto/migrate-s3-to-s3
 old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 old_s3_blob_db_s3_bucket: 'blobdb'
+old_s3_bulk_delete_chunksize: 1000
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory

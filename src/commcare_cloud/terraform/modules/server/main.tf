@@ -10,6 +10,9 @@ resource aws_instance "server" {
   credit_specification {
     cpu_credits = "unlimited"
   }
+
+  disable_api_termination = true
+  ebs_optimized = true
   root_block_device {
     volume_size           = "${var.volume_size}"
     volume_type           = "gp2"
@@ -21,6 +24,13 @@ resource aws_instance "server" {
   tags {
     Name        = "${var.server_name}"
     Environment = "${var.environment}"
+    Group = "${var.group_tag}"
+  }
+  volume_tags {
+    Name = "vol-${var.server_name}"
+    ServerName = "${var.server_name}"
+    Environment = "${var.environment}"
+    Group = "${var.group_tag}"
   }
 }
 
@@ -29,6 +39,13 @@ resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = "${aws_instance.server.availability_zone}"
   size = "${var.secondary_volume_size}"
   type = "${var.secondary_volume_type}"
+
+  tags {
+    Name = "vol-${var.server_name}"
+    ServerName = "${var.server_name}"
+    Environment = "${var.environment}"
+    Group = "${var.group_tag}"
+  }
 }
 
 resource "aws_volume_attachment" "ebs_att" {

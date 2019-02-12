@@ -55,12 +55,17 @@ module "server__{{ server.server_name }}" {
   secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
 
+{% if ':bionic' in server.group %}
+  server_image = "${var.bionic_server_image}"
+{% else %}
   server_image = "${var.server_image}"
-  environment = "${var.environment}"
+{% endif %}
+ environment = "${var.environment}"
   vpc_id = "${module.network.vpc-id}"
   subnet_options = "${local.subnet_options}"
   security_group_options = "${local.security_group_options}"
   key_name = "${var.key_name}"
+  group_tag= {{ server.group|tojson }}
 }
 {% endfor %}
 

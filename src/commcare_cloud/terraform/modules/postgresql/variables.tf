@@ -3,6 +3,9 @@ variable "rds_instance" {
   type = "map"
 }
 
+variable "parameters" {
+  type = "list"
+}
 variable "vpc_security_group_ids" {
   type = "list"
 }
@@ -12,3 +15,7 @@ variable "subnet_ids" {
 }
 
 variable "create" {}
+
+variable "apply_immediately" {}
+
+variable "environment" {}
