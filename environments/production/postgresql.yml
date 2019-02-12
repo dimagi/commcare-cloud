@@ -42,25 +42,25 @@ dbs:
     pgbouncer_host: pgbouncer0
   form_processing:
     proxy:
-      host: pgproxy0
+      host: pgproxy1
     partitions:
       p1:
         shards: [0, 204]
         host: rds_pgshard1
-        pgbouncer_host: pgproxy0
+        pgbouncer_host: pgproxy1
       p2:
         shards: [205, 409]
         host: rds_pgshard2
-        pgbouncer_host: pgproxy0
+        pgbouncer_host: pgproxy1
       p3:
         shards: [410, 614]
         host: rds_pgshard3
-        pgbouncer_host: pgproxy0
+        pgbouncer_host: pgproxy1
       p4:
         shards: [615, 819]
         host: rds_pgshard4
-        pgbouncer_host: pgproxy0
+        pgbouncer_host: pgproxy1
       p5:
         shards: [820, 1023]
         host: rds_pgshard5
-        pgbouncer_host: pgproxy0
+        pgbouncer_host: pgproxy1

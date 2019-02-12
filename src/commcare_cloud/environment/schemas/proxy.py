@@ -27,6 +27,10 @@ class ProxyConfig(jsonobject.JsonObject):
     cas_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
     cas_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
+    REACH_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
+    reach_errors_home = jsonobject.StringProperty(exclude_if_none=True)
+    reach_commcare_errors_branch = jsonobject.StringProperty(exclude_if_none=True)
+
     TABLEAU_HOST = jsonobject.StringProperty(exclude_if_none=True)
     tableau_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
     tableau_key_value = jsonobject.StringProperty(exclude_if_none=True)

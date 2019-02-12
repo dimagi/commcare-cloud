@@ -1,0 +1,3 @@
+target_allocation:
+  - couch3,couch4,couch5,couch6,couch7,couch8,couch9,couch10:1:commcarehq
+  - couch0,couch1,couch2:3
