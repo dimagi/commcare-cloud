@@ -11,6 +11,10 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2019-02-11** [Add tag to datadog http checks](0014-add-tag-to-datadog-http-checks.md)
+This change adds "check_type" tag to the http_check datadog integration.
+This change applies only to envs using datadog for monitoring.
+
 ### **2019-02-11** [Java upgrade for formplayer](0013-java-upgrade-for-formplayer.md) (_action required_)
 Previously, Formplayer was running on Java 7.
 This change updates us to Java 8 for formplayer.

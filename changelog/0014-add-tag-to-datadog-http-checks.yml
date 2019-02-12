@@ -1,0 +1,20 @@
+title: Add tag to datadog http checks
+key: add-tag-to-datadog-http-checks
+date: 2019-02-11
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  This change adds "check_type" tag to the http_check datadog integration.
+  This change applies only to envs using datadog for monitoring.
+
+details: |
+  The check_type tag will allow you to set up different monitors
+  for "serverup" endpoint (high severity)
+  and "heartbeat" endpoint (usually lower severity).
+
+update_steps: |
+  1. Update datadog integrations on the proxy machine:
+  ```bash
+  commcare-cloud <env> deploy-stack --limit=proxy --tags=datadog_integrations
+  ```
