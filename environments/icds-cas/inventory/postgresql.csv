@@ -1,9 +1,10 @@
 hostname,host_address,group 1,group 2,var: hostname,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
-pgucr,100.71.184.42,postgresql,ucr_dbs,MUMGCCWCDPRDPU00,pgucrstandby0,,"[""standby0"",""standby1"",""spare""]",
+pgucr,100.71.184.42,postgresql,ucr_dbs,MUMGCCWCDPRDPU00,pgucrstandby0,,"[""standby0"",""standby1"",""nondashboarducr"",""spare""]",
 pgucrstandby0,100.71.184.36,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS0,pgucrstandby2,pgucr,"[""standby2""]",standby0
 pgucrstandby1,100.71.184.45,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS1,pgucrstandby3,pgucr,"[""standby3""]",standby1
 pgucrstandby2,100.71.184.24,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS2,,pgucrstandby0,,standby2
 pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,,pgucrstandby1,,standby3
+pgnondashboarducr0,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,,pgucr,,nondashboarducr
 pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
 pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,,pgmain0,,standby0
 pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,,pgmain0,,standby1
