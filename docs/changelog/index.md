@@ -11,6 +11,10 @@ an action on your part will be marked "_action optional_".
 
 ## Changelog
 
+### **2019-02-11** [Add tag to datadog http checks](0014-add-tag-to-datadog-http-checks.md)
+This change adds "check_type" tag to the http_check datadog integration.
+This change applies only to envs using datadog for monitoring.
+
 ### **2019-02-01** [Generalize load case from fixture feature](0012-generalize-load-case-from-fixture.md) (_action required_)
 Previously loading a case from a fixture required the fixture to be an attribute.
 This change allows using non-attributes from the fixture.
