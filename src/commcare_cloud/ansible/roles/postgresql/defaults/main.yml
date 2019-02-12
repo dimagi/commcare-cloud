@@ -22,6 +22,7 @@ pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"
 pgbouncer_config_home: /etc/pgbouncer
 pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
 pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
+pgbouncer_hba: "{{ pgbouncer_config_home }}/pgbouncer_hba.conf"
 
 # defaults should match the postgresql defaults
 postgresql_max_connections: 20
