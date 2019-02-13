@@ -1,0 +1,12 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+   - host: localhost
+     port: 6432
+     username: {{ postgres_users.devreadonly.username }}
+     password: {{ postgres_users.devreadonly.password }}
+     tags:
+       - environment:{{ env_monitoring_id }}
