@@ -2,7 +2,8 @@
 
 **Date:** 2018-08-16
 
-**Optional per env:** Yes
+**Optional per env:** _only required on some environments_
+
 
 ## CommCare Version Dependency
 CommCare versions beyond this commit require this change to function correctly:
