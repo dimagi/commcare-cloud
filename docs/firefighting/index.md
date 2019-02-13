@@ -263,7 +263,8 @@ You can run the following commands to fix it
 cd /opt/data/postgresql/9.4/main/
 chown postgres:postgres server.crt
 chown postgres:postgres server.key
-``
+```
+
 More information on this error is available [here](https://wiki.postgresql.org/wiki/May_2015_Fsync_Permissions_Bug).
 
 ## Dealing with too many open connections
@@ -279,7 +280,7 @@ $ sudo -u postgres psql commcarehq
 ```
 
 # Check open connections
-select client_addr, datname as database, count(*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle from pg_stat_activity group by client_addr, datname;
+select client_addr, datname as database, count(\*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle from pg_stat_activity group by client_addr, datname;
 This will print something like the following:
 
 ```
@@ -293,7 +294,7 @@ This will print something like the following:
  10.208.148.179 | commcarehq |    3 |   3
  10.176.132.63  | commcarehq |   24 |   23
  10.210.67.214  | commcarehq |    3 |   2
- ```
+```
 
 When using pgbouncer the following command can be used to list clients:
 
