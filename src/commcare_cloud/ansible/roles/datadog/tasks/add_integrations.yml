@@ -31,6 +31,17 @@
   tags:
     - datadog_integrations
 
+- name: Install pgbouncer_custom check
+  get_url:
+    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_shell_version }}/pgbouncer_custom/pgbouncer_custom.py"
+    dest: /etc/dd-agent/checks.d/pgbouncer_custom.py
+    sha256sum: "{{ datadog_pgbouncer_custom_sha256sum }}"
+    force: yes
+  when: datadog_integration_pgbouncer
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+
 - name: add datadog integration configs
   template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml"
   notify: restart datadog
