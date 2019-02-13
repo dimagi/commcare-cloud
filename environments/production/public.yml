@@ -29,6 +29,7 @@ supervisor_http_enabled: True
 backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: True
+backup_couch: True
 postgres_s3: True
 postgresql_backup_days: 1
 postgresql_backup_weeks: 1
@@ -87,9 +88,9 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 3}}
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EULA_COMPLIANCE: True
