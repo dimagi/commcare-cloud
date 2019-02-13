@@ -41,10 +41,11 @@ resource "aws_ebs_volume" "ebs_volume" {
   type = "${var.secondary_volume_type}"
 
   tags {
-    Name = "vol-${var.server_name}"
+    Name = "data-vol-${var.server_name}"
     ServerName = "${var.server_name}"
     Environment = "${var.environment}"
     Group = "${var.group_tag}"
+    VolumeType = "data"
   }
 }
 
