@@ -633,8 +633,8 @@ Sometimes node data can become corrupt in a way that prevents the riak service f
 In /var/log/riak/console.log
 ```
 2016-09-28  00:02:22.350 [error] <0.638.0>@riak_kv_vnode:init:497 Failed to  start riak_cs_kv_multi_backend backend for index  1255977969581244695331291653115555720016817029120 error:  [{riak_kv_eleveldb_backend,{db_open,"Corruption: truncated record at end  of file"}}]
-``
-`
+```
+
 Basho has good documentation on [recovering a node from database corruption](https://docs.basho.com/riak/kv/2.1.4/using/repair-recovery/repairs/#healing-corrupted-leveldbs) (be sure to use the version of the documentation that matches the Riak version), although this specific error is not mentioned in the docs. Here are the steps used to resolve this error in the past:
 
 ```
