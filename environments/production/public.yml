@@ -33,6 +33,7 @@ backup_couch: True
 postgres_s3: True
 postgresql_backup_days: 1
 postgresql_backup_weeks: 1
+nadir_hour: 16
 
 aws_region: 'us-east-1'
 
