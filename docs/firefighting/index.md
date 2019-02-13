@@ -90,7 +90,7 @@ Service logs: `cchq <env> service <service_name> logs`
 
 [kafka](https://app.datadoghq.com/screen/516865/kafka---overview-cloned)
 
-[riak/riak-cs](https://app.datadoghq.com/dash/175518/riak-cs-system-resources)
+[Blob DB Dashboard](https://app.datadoghq.com/dashboard/753-35q-fwt/blob-db-dashboard)
 
 [couch](https://app.datadoghq.com/screen/177642/couchdb-dashboard)
 
