@@ -61,12 +61,12 @@ servers:
     az: "a"
     volume_size: 80
     group: "pillowtop"
-  - server_name: "celery0-staging"
-    server_instance_type: "t3.large"
+  - server_name: "pillow1-staging"
+    server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    group: "celery"
+    group: "pillowtop:bionic"
   - server_name: "celery1-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
