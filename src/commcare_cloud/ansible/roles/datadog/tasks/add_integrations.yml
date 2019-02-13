@@ -33,7 +33,7 @@
 
 - name: Install pgbouncer_custom check
   get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_shell_version }}/pgbouncer_custom/pgbouncer_custom.py"
+    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_pgbouncer_custom_version }}/pgbouncer_custom/pgbouncer_custom.py"
     dest: /etc/dd-agent/checks.d/pgbouncer_custom.py
     sha256sum: "{{ datadog_pgbouncer_custom_sha256sum }}"
     force: yes
