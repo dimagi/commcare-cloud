@@ -608,7 +608,7 @@ Key: (C) = Claimant; availability marked with '!' is unexpected
 
 The most common problem we have had with Riak and Riak CS is running [out of memory](https://docs.basho.com/riak/kv/2.1.4/using/repair-recovery/failure-recovery/#out-of-memory). Most of the time this is non-actionable; nodes will crash and automatically restart and operation usually returns to normal without intervention. If a node is consistently running out of memory then it is likely necessary to either allocate more memory (usually done by creating a new node with more memory) or by allocating more swap space (can affect performance).
 
-##What do do when one or more Riak nodes has a corrupt database
+## What do do when one or more Riak nodes has a corrupt database
 AAE error seen (logged repeatedly) in /var/log/riak/console.log accompanied by very high CPU load:
 
 in /var/log/riak/console.log:
