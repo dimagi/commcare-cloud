@@ -745,8 +745,8 @@ Then go over to the other machine and try to hit that server:
 ```
 $ curl hqdb0.internal-va.commcarehq.org:1234
 Can you see this?$
-``
-`
+```
+
 Looks like the request went through!  If you go back and check on the netcat process, you should see the request:
 
 ```
