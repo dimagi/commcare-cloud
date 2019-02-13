@@ -67,6 +67,12 @@ servers:
     az: "a"
     volume_size: 80
     group: "celery"
+  - server_name: "celery1-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "celery:bionic"
   - server_name: "airflow0-staging"
     server_instance_type: "t3.small"
     network_tier: "app-private"
@@ -124,6 +130,13 @@ servers:
     az: "a"
     volume_size: 60
     group: "redis"
+
+  - server_name: "hwarehouse0-staging"
+    server_instance_type: "m5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    group: "hwarehouse:bionic"
 
 
 proxy_servers:

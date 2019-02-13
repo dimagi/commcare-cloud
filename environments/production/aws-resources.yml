@@ -4,10 +4,7 @@ celery2-production: 10.202.12.26
 celery3-production: 10.202.12.121
 celery4-production: 10.202.12.62
 control-production: 10.202.10.79
-couch0-production: 10.202.40.211
-couch1-production: 10.202.41.83
 couch10-production: 10.202.40.133
-couch2-production: 10.202.42.85
 couch3-production: 10.202.40.135
 couch4-production: 10.202.40.97
 couch5-production: 10.202.40.5
@@ -50,3 +47,4 @@ web1-production: 10.202.10.84
 web6-production: 10.202.11.98
 web7-production: 10.202.11.62
 web8-production: 10.202.11.30
+web9-production: 10.202.10.37
