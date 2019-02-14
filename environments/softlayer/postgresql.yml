@@ -2,6 +2,7 @@ REPORTING_DATABASES:
   ucr: ucr
   icds-ucr: icds-ucr
   icds-test-ucr: icds-ucr
+  icds-ucr-non-dashboard: icds-ucr
 
 override:
   pgbouncer_default_pool: 290
