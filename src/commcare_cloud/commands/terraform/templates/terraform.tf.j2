@@ -8,6 +8,7 @@ terraform {
 }
 
 provider "aws" {
+  version = "~> 1.44"
   region  = {{ region|tojson }}
 }
 
