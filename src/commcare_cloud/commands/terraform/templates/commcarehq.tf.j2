@@ -75,8 +75,7 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
     }
 
     target_tags = {
-      Group = "couchdb2"
-      VolumeType = "data"
+      GroupDetail = "couchdb2:data"
     }
   }
 }

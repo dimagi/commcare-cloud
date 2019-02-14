@@ -47,6 +47,7 @@ resource "aws_ebs_volume" "ebs_volume" {
     Environment = "${var.environment}"
     Group = "${var.group_tag}"
     VolumeType = "data"
+    GroupDetail = "${var.group_tag}:data"
   }
 }
 
