@@ -158,7 +158,7 @@ COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 COUCH_CACHE_VIEWS = '{{ localsettings.COUCH_CACHE_VIEWS }}'
 {% endif %}
 {% if 'COUCH_REINDEX_SCHEDULE' in localsettings %}
-COUCH_REINDEX_SCHEDULE = '{{ localsettings.COUCH_REINDEX_SCHEDULE }}'
+COUCH_REINDEX_SCHEDULE = {{ localsettings.COUCH_REINDEX_SCHEDULE }}
 {% endif %}
 
 {% if 'STAGING_DOMAINS' in localsettings %}
