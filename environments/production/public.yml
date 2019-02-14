@@ -29,7 +29,7 @@ supervisor_http_enabled: True
 backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: True
-backup_couch: True
+backup_couch: False
 postgres_s3: True
 postgresql_backup_days: 1
 postgresql_backup_weeks: 1

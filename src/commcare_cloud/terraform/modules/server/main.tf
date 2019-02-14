@@ -19,7 +19,8 @@ resource aws_instance "server" {
     delete_on_termination = true
   }
   lifecycle {
-    ignore_changes = ["user_data", "key_name", "root_block_device.0.delete_on_termination", "ebs_optimized", "ami"]
+    ignore_changes = ["user_data", "key_name", "root_block_device.0.delete_on_termination",
+      "ebs_optimized", "ami", "volume_tags"]
   }
   tags {
     Name        = "${var.server_name}"
@@ -41,10 +42,12 @@ resource "aws_ebs_volume" "ebs_volume" {
   type = "${var.secondary_volume_type}"
 
   tags {
-    Name = "vol-${var.server_name}"
+    Name = "data-vol-${var.server_name}"
     ServerName = "${var.server_name}"
     Environment = "${var.environment}"
     Group = "${var.group_tag}"
+    VolumeType = "data"
+    GroupDetail = "${var.group_tag}:data"
   }
 }
 
