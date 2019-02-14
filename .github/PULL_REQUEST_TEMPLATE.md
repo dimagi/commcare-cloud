@@ -3,7 +3,7 @@
 
 <!--- HINT: Include "Fixes #nnn" if you are fixing an existing issue -->
 
-##### Envirnomments affected
+##### ENVIRONMENTS AFFECTED
 <!--- list which environments are affected by this change or None if this doesn't change any environment files -->
 
 ##### ISSUE TYPE
