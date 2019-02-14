@@ -43,6 +43,45 @@ locals {
   }
 }
 
+
+data "aws_iam_role" "data_lifecycle_role" {
+  name = "AWSDataLifecycleManagerDefaultRole"
+}
+
+resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
+  description        = "Data Volume Backup Policy"
+  execution_role_arn = "${data.aws_iam_role.data_lifecycle_role.arn}"
+  state              = "ENABLED"
+
+  policy_details {
+    resource_types = ["VOLUME"]
+
+    schedule {
+      name = "Default Schedule"
+
+      create_rule {
+        interval      = 24
+        interval_unit = "HOURS"
+        times         = ["22:00"]
+      }
+
+      retain_rule {
+        count = 7
+      }
+
+      tags_to_add = {
+        VolumeType = "backup"
+      }
+
+      copy_tags = true
+    }
+
+    target_tags = {
+      GroupDetail = "couchdb2:data"
+    }
+  }
+}
+
 {% for server in servers + proxy_servers %}
 module "server__{{ server.server_name }}" {
   source = "./modules/server"
