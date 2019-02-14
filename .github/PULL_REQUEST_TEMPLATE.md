@@ -3,6 +3,9 @@
 
 <!--- HINT: Include "Fixes #nnn" if you are fixing an existing issue -->
 
+##### Envirnomments affected
+<!--- list which environments are affected by this change or None if this doesn't change any environment files -->
+
 ##### ISSUE TYPE
 <!--- Pick one below and delete the rest -->
 - Change Pull Request
