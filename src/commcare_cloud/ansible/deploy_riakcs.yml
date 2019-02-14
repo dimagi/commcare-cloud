@@ -90,8 +90,13 @@
     # for backend_vars.riak_version
     - roles/riakcs/configure/vars/main.yml
   roles:
-    - {role: riakcs/install, name: riak}
-    - {role: riakcs/install, name: riakcs, service: riak-cs}
+    - role: riakcs/install
+      vars:
+        name: riak
+    - role: riakcs/install
+      vars:
+        name: riakcs
+        service: riak-cs
 
 - name: Install Stanchion
   become: true
@@ -100,7 +105,9 @@
     # for backend_vars.riak_version
     - roles/riakcs/configure/vars/main.yml
   roles:
-    - {role: riakcs/install, name: stanchion}
+    - role: riakcs/install
+      vars:
+        name: stanchion
 
 - name: Configure and start Riak
   # Riak CS must be installed before Riak can be started
@@ -108,7 +115,8 @@
   hosts: riakcs
   roles:
     - role: riakcs/configure
-      name: riak
+      vars:
+        name: riak
       drop_conf: "{{ backend_vars.drop_conf }}"
       advanced_conf: "{{ backend_vars.advanced_conf }}"
       data_dirs:
@@ -118,6 +126,7 @@
         - "{{ riak_data_root_bitcask if _riak_backend == 'bitcask' else '' }}"
         - "{{ riak_data_root_blocks if _riak_backend == 'leveldb' else '' }}"
       when: _force_riak_config | bool
+
 
 - name: Start Riak
   become: true
@@ -139,15 +148,19 @@
   hosts: stanchion
   roles:
     - role: riakcs/configure
-      name: stanchion
-      ulimit_n: 4096
-      data_dirs: [ "{{ stanchion_data_dir }}" ]
+      vars:
+        name: stanchion
+        ulimit_n: 4096
+        data_dirs: [ "{{ stanchion_data_dir }}" ]
 
 - name: Configure and start Riak CS
   become: true
   hosts: riakcs
   roles:
-    - {role: riakcs/configure, name: riakcs, service: riak-cs}
+    - role: riakcs/configure
+      vars:
+        name: riakcs
+        service: riak-cs
 
 - name: Create admin user
   become: true
@@ -160,14 +173,18 @@
   become: true
   hosts: riakcs
   roles:
-    - {role: riakcs/sync_keys, name: riakcs}
+    - role: riakcs/sync_keys
+      vars:
+        name: riakcs
 
 - name: Sync admin user keys to Stanchion
   become: true
   hosts:
     - stanchion
   roles:
-    - {role: riakcs/sync_keys, name: stanchion}
+    - role: riakcs/sync_keys
+      vars:
+        name: stanchion
 
 - name: Remove Riak Restarter
   hosts: riakcs

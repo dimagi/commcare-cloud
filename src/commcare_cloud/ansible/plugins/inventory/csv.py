@@ -26,6 +26,10 @@ DOCUMENTATION = '''
         and columns are variables. The second format has 4 columns, C(group), C(var), C(val), C(type) and
         each row represents a single variable value for a single group.
         - In both formats the first column header must be C(group).
+    notes:
+       - "The hostname of a host defaults to the value in the 'hostname' column but it can be overridden by
+         adding a C(var: hostname) var column."
+       - If this is done then the value in the C(hostname) column will be set as the value of the C(alt_hostname) var.
 '''
 
 EXAMPLES = '''
@@ -138,7 +142,7 @@ class InventoryModule(BaseInventoryPlugin):
                 self.inventory.add_group(group)
                 self.inventory.add_child(group, host_group)
 
-            self.populate_host_vars([host], host_vars)
+            self._populate_host_vars([host], host_vars)
 
     def _get_host_groups(self, row):
         return [
@@ -147,13 +151,17 @@ class InventoryModule(BaseInventoryPlugin):
         ]
 
     def _get_host_vars(self, row, hosts_aliases):
-        vars = {'hostname': row['hostname']}
+        vars = {}
         for key, raw_val in row.items():
             raw_val = raw_val.strip()
             if 'var' in key and raw_val:
                 item_type, name = key.split('.') if '.' in key else ('S', key)
                 name = name.split(' ')[1]
                 vars[name] = conv_str2value(item_type, raw_val, hosts_aliases)
+        if 'hostname' not in vars:
+            vars['hostname'] = row['hostname']
+        else:
+            vars['alt_hostname'] = row['hostname']
         return vars
 
     def _parse_groups(self, rows):

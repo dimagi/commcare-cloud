@@ -1,4 +1,20 @@
 ---
+- name: Set bash prompt in bash.bashrc
+  become: yes
+  lineinfile:
+    dest: "/etc/bash.bashrc"
+    regexp: "^PS1=.*"
+    line: "PS1={{ bash_PS1 }}"
+    state: present
+
+- name: Set bash prompt in bashrc skeleton
+  become: yes
+  lineinfile:
+    dest: "/etc/skel/.bashrc"
+    regexp: "^PS1=.*"
+    line: "PS1={{ bash_PS1 }}"
+    state: present
+
 - name: Add dev group
   become: yes
   group: name="{{ dev_group }}" state=present
@@ -45,23 +61,11 @@
   authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
 
-- name: De-authorize ansible & cchq pubkey  # todo: remove after applied to all envs
-  become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
-  with_items:
-    - ansible
-    - cchq
-
 - import_tasks: remove_users.yml
   when: dev_users.absent
-
-- name: find supervisorctl path
-  shell: 'dirname "$(which supervisorctl)"'
-  register: dirname_which_supervisorctl
-  changed_when: false
-  check_mode: no
-
 
 - name: Copy sudoers file
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+  tags:
+    - sudoers

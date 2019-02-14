@@ -1,32 +1,48 @@
+DEFAULT_POSTGRESQL_HOST: rds_pg0
+
 override:
   pgbouncer_pool_mode: transaction
-  pgbouncer_max_connections: 600
+  pgbouncer_max_connections: 1600
   postgresql_max_connections: 300
   pgbouncer_default_pool: 290
 
 dbs:
   main:
+    pgbouncer_host: pgproxy0
     query_stats: True
   ucr:
+    pgbouncer_host: pgproxy0
     query_stats: True
+  synclogs:
+    pgbouncer_host: pgproxy0
+  formplayer:
+    pgbouncer_host: pgproxy0
   form_processing:
+    proxy:
+      host: pgproxy0
     partitions:
       p1:
+        pgbouncer_host: pgproxy0
         shards: [0, 99]
         query_stats: True
       p2:
+        pgbouncer_host: pgproxy0
         shards: [100, 199]
         query_stats: True
       p3:
+        pgbouncer_host: pgproxy0
         shards: [200, 299]
         query_stats: True
       p4:
+        pgbouncer_host: pgproxy0
         shards: [300, 399]
         query_stats: True
       p5:
+        pgbouncer_host: pgproxy0
         shards: [400, 511]
         query_stats: True
   custom:
     - name: airflow
+      pgbouncer_host: pgproxy0
       django_migrate: False
 

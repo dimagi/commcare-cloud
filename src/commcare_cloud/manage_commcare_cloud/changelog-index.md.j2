@@ -3,15 +3,8 @@
 The following changes to `commcare-cloud` that require your attention,
 newest first.
 
-Changes that will require an action from anyone choosing
-to update on or after the date listed will be maked "_action required_".
-Those which are worth taking a look at but which may or may not require
-an action on your part will be marked "_action optional_".
-
-
 ## Changelog
 {% for changelog_entry in changelog_contents %}
-### **{{ changelog_entry.date }}** [{{ changelog_entry.title }}]({{ changelog_entry.filename }}){% if not changelog_entry.optional_per_env %} (_action required_)
-{%- endif %}
+### **{{ changelog_entry.date }}** [{{ changelog_entry.title }}]({{ changelog_entry.filename }})
 {{ changelog_entry.context }}
 {%- endfor -%}

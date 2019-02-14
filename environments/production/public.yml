@@ -7,10 +7,18 @@ DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
 datadog_integration_cloudant: true
 
+DATADOG_TRACE:
+  TAGS:
+    env: production
+
+LOCAL_APPS:
+  - {name: 'ddtrace.contrib.django', host: webworkers}
+
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
+elasticsearch_fielddata_cache_size: "40%"
 
 redis_maxmemory: 8gb
 
@@ -20,10 +28,12 @@ supervisor_http_enabled: True
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es: True
+backup_es_s3: True
+backup_couch: False
 postgres_s3: True
 postgresql_backup_days: 1
 postgresql_backup_weeks: 1
+nadir_hour: 16
 
 aws_region: 'us-east-1'
 
@@ -33,16 +43,32 @@ formplayer_purge_time_spec: '8d'
 KSPLICE_ACTIVE: yes
 
 
-ufw_private_interface: eth1
+ufw_private_interface: "{{ 'eth0' if ec2|default(false) else 'eth1' }}"
+
+run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: commcarehq.cloudant.com
-    port: 443
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: True
+    is_https: False
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb2_client_max_body_size: 100M
+
+couchdb_reduce_limit: False
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 3
+
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
@@ -52,10 +78,7 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
 
 localsettings:
   ALLOWED_HOSTS:
-    - www.commcarehq.org
     - www.commtrack.org
-    - localhost
-    - 127.0.0.1
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
@@ -64,9 +87,11 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
+  BIGCOUCH: True
+  BIGCOUCH_QUORUM_COUNT: 2
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 20}}
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EULA_COMPLIANCE: True
@@ -88,6 +113,7 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
@@ -100,4 +126,7 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
+
+# comment these two lines out to make a new rackspace machine
+commcare_cloud_root_user: ubuntu
+commcare_cloud_pem: ~/.ssh/id_rsa

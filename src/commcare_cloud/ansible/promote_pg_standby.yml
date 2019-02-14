@@ -9,7 +9,7 @@
     - roles/postgresql/defaults/main.yml
   tasks:
     - stat:
-        path: "{{ postgresql_home }}/recovery.conf"
+        path: "{{ postgresql_recovery_conf }}"
       register: recovery_file
 
     - assert:

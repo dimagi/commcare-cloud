@@ -12,12 +12,17 @@ env:
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: TEST=prove-deploy
 
 before_install:
-  # The next line exits out of the prove-deploy test if the last commit that was merged in doesn't contain [pv-test]
-  - if [[ $TEST = 'prove-deploy' ]] && git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -iv '\[pv-deploy\]'; then exit 0; fi
+  # The next line exits out of the prove-deploy test if
+  #   - the test is not running from a cron event
+  #   - the last commit that was merged in doesn't contain [pv-test]
+  - |
+    if [[ $TEST = 'prove-deploy' && $TRAVIS_EVENT_TYPE != 'cron' ]] &&
+      git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -iv '\[pv-deploy\]'
+    then
+      exit 0
+    fi
   # Make sure everything's up to date.
   - sudo apt-get clean
   - sudo apt-get update -qq
@@ -31,15 +36,17 @@ install:
   - touch ~/.aws/config
   - touch ~/.aws/credentials
   - touch ~/.ssh/commcarehq_testing.pem
-  - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/config --output=~/.aws/config
-  - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
-  - echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
-  - "if [[ $TEST = 'prove-deploy' ]]; then pip install -e commcare-cloud-bootstrap; fi"
+  - |
+    if [[ $TEST = 'prove-deploy' ]]
+    then
+      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/config --output=~/.aws/config
+      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
+      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
+      pip install -e commcare-cloud-bootstrap
+    fi
 
 script:
   - ".travis/tests.sh"
-  - "git diff"
-  - "./tests/test_autogen_docs.sh"
 
 after_script:
   - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"

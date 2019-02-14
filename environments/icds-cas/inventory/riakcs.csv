@@ -1,11 +1,11 @@
-hostname,host_address,group 1,group 2,group 3,var: host_alias,L.var: devices,L.var: partitions
-riak0,100.71.184.33,riakcs,,stanchion,MUMGCCWCDPRDR000,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak1,100.71.184.43,riakcs,,,MUMGCCWCDPRDR001,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak2,100.71.184.13,riakcs,,,MUMGCCWCDPRDR002,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak3,100.71.184.44,riakcs,,,MUMGCCWCDPRDR003,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak4,100.71.184.50,riakcs,,,MUMGCCWCDPRDR004,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak5,100.71.184.37,riakcs,,,MUMGCCWCDPRDR005,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak6,100.71.184.48,riakcs,,,MUMGCCWCDPRDR006,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak7,100.71.184.40,riakcs,,,MUMGCCWCDPRDR007,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak8,100.71.184.46,riakcs,,,MUMGCCWCDPRDR008,"[""/dev/vdb""]","[""/dev/vdb1""]"
-riak9,100.71.184.35,riakcs,,,MUMGCCWCDPRDR009,"[""/dev/vdb""]","[""/dev/vdb1""]"
+hostname,host_address,group 1,group 2,group 3,var: hostname,var: encrypted_root
+riak0,100.71.184.33,riakcs,,stanchion,MUMGCCWCDPRDR000,/opt/data
+riak1,100.71.184.43,riakcs,,,MUMGCCWCDPRDR001,/opt_new
+riak2,100.71.184.13,riakcs,,,MUMGCCWCDPRDR002,/opt_new
+riak3,100.71.184.44,riakcs,,,MUMGCCWCDPRDR003,/opt/data1
+riak4,100.71.184.50,riakcs,,,MUMGCCWCDPRDR004,/opt/data1
+riak5,100.71.184.37,riakcs,,,MUMGCCWCDPRDR005,/opt/data1
+riak6,100.71.184.48,riakcs,,,MUMGCCWCDPRDR006,/opt/data1
+riak7,100.71.184.40,riakcs,,,MUMGCCWCDPRDR007,/opt/data
+riak8,100.71.184.46,riakcs,,,MUMGCCWCDPRDR008,/opt/data
+riak9,100.71.184.35,riakcs,,,MUMGCCWCDPRDR009,/opt/data

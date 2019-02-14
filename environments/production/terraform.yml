@@ -1,0 +1,344 @@
+account_alias: commcare-production
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "us-east-1"
+environment: "production"
+azs:
+  - "us-east-1a"
+  - "us-east-1b"
+  - "us-east-1c"
+vpc_begin_range: "10.202"
+
+vpn_connections:
+  - name: rackspace
+    cidr_blocks:
+      - "172.24.16.0/22"
+      - "172.24.32.0/22"
+    ip_address: "104.130.188.4"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+external_routes:
+  - cidr_block: "172.24.16.0/22"
+    gateway_id: "vgw-05c8c22d05e33c5bf"
+  - cidr_block: "172.24.32.0/22"
+    gateway_id: "vgw-05c8c22d05e33c5bf"
+
+servers:
+  - server_name: "control-production"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "control"
+
+  - server_name: "djangomanage0-production"
+    server_instance_type: c5.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "django_manage"
+
+  - server_name: "web0-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "hq_webworkers"
+  - server_name: "web1-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "hq_webworkers"
+
+  - server_name: "web6-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "mobile_webworkers"
+  - server_name: "web7-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "mobile_webworkers"
+  - server_name: "web8-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "mobile_webworkers"
+  - server_name: "web9-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "mobile_webworkers"
+
+  - server_name: "esmaster0-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+    group: "elasticsearch"
+  - server_name: "esmaster1-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+    group: "elasticsearch"
+  - server_name: "esmaster2-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "a"
+    group: "elasticsearch"
+
+  - server_name: "es10-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+    group: "elasticsearch"
+  - server_name: "es11-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+    group: "elasticsearch"
+  - server_name: "es12-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+    group: "elasticsearch"
+  - server_name: "es13-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+    group: "elasticsearch"
+  - server_name: "es14-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 600
+    group: "elasticsearch"
+
+  - server_name: "couchproxy0-production"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "couchdb2_proxy"
+
+  - server_name: "couch3-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+  - server_name: "couch4-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+  - server_name: "couch5-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+  - server_name: "couch6-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 6500
+    group: "couchdb2"
+  - server_name: "couch7-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+  - server_name: "couch8-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+  - server_name: "couch9-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+  - server_name: "couch10-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    block_device:
+      volume_size: 5500
+    group: "couchdb2"
+
+  - server_name: "rabbit0-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+    group: "rabbitmq"
+
+  - server_name: "celery0-production"
+    server_instance_type: t3.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "celery"
+  - server_name: "celery1-production"
+    server_instance_type: t3.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "celery"
+  - server_name: "celery2-production"
+    server_instance_type: t3.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "celery"
+  - server_name: "celery3-production"
+    server_instance_type: t3.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "celery"
+  - server_name: "celery4-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "celery"
+
+  - server_name: "pillow0-production"
+    server_instance_type: r5a.4xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "pillowtop"
+
+  - server_name: "formplayer0-production"
+    server_instance_type: t3.large
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 50
+    group: "formplayer"
+
+  - server_name: "redis1-production"
+    server_instance_type: r5.xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+    group: "redis"
+
+  - server_name: "shareddir0-production"
+    server_instance_type: t3.micro
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    group: "shared_dir_host"
+
+  - server_name: "kafka0-production"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 160
+    group: "kafka"
+
+  - server_name: "pgproxy1-production"
+    server_instance_type: t3.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+
+  - server_name: "pgbouncer0-production"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+
+
+
+proxy_servers:
+  - server_name: "proxy0-production"
+    server_instance_type: "t3.medium"
+    network_tier: "public"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+
+
+rds_instances:
+  - identifier: "pgmain0-production"  # replaces old hqdb0
+    instance_type: "db.t2.xlarge"
+    storage: 500
+    multi_az: true
+  - identifier: "pgucr0-production"  # replaces old hqdb3
+    instance_type: "db.t2.xlarge"
+    storage: 500
+    multi_az: true
+
+  # replace old hqdb1, hqdb5
+  - identifier: "pgshard1-production"
+    instance_type: "db.t2.large"
+    storage: 250
+    multi_az: true
+  - identifier: "pgshard2-production"
+    instance_type: "db.t2.large"
+    storage: 250
+    multi_az: true
+  - identifier: "pgshard3-production"
+    instance_type: "db.t2.large"
+    storage: 250
+    multi_az: true
+  - identifier: "pgshard4-production"
+    instance_type: "db.t2.large"
+    storage: 250
+    multi_az: true
+  - identifier: "pgshard5-production"
+    instance_type: "db.t2.large"
+    storage: 250
+    multi_az: true
+
+  # replaces old pgsynclog1
+  - identifier: "pgsynclog0-production"
+    instance_type: "db.t2.large"
+    storage: 1000
+    multi_az: true
+    params:
+      work_mem: 2457kB
+      shared_buffers: 3840MB
+      effective_cache_size: 11520MB
+      maintenance_work_mem: 960MB
+
+redis:
+  create: no

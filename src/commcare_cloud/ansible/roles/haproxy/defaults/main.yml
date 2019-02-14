@@ -1,0 +1,57 @@
+---
+# Major version to install (don't specify point release)
+haproxy_version: 1.8
+
+# Validate Certificates when downloading hatop. May be set to "no" when proxy server
+# is intercepting the certificates.
+haproxy_hatop_download_validate_certs: yes
+
+## Haproxy Configuration
+haproxy_rise: 3
+haproxy_fall: 3
+haproxy_interval: 12000
+
+## Haproxy Stats
+haproxy_stats_enabled: False
+haproxy_stats_bind_address: 127.0.0.1
+haproxy_stats_port: 1936
+haproxy_username: admin
+haproxy_stats_password: secrete
+haproxy_stats_refresh_interval: 60
+
+# Default haproxy backup nodes to empty list so this doesn't have to be
+# defined for each service.
+haproxy_backup_nodes: []
+
+# haproxy_service_configs:
+#   - service:
+#       haproxy_service_name: haproxy_all
+#       haproxy_backend_nodes: "{{ groups['haproxy_all'][0] }}"
+#       # haproxy_backup_nodes: "{{ groups['haproxy_all'][1:] }}"
+#       haproxy_port: 80
+#       haproxy_balance_type: http
+#       haproxy_backend_options:
+#         - "forwardfor"
+#         - "httpchk"
+#         - "httplog"
+
+# hatop extra package URL and checksum
+haproxy_hatop_download_url: "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/hatop/hatop-0.7.7.tar.gz"
+haproxy_hatop_download_checksum: "sha256:0b9fc1b84ce4e469a069e3a3c7c1b5eea10e6bb24bc66bd32af453acd54636ab"
+
+# The location where the extra packages are downloaded to
+haproxy_hatop_download_path: "/opt/cache/files"
+
+## haproxy default
+# Set the number of retries to perform on a server after a connection failure
+haproxy_retries: "3"
+# Set the maximum inactivity time on the client side
+haproxy_client_timeout: "50s"
+# Set the maximum time to wait for a connection attempt to a server to succeed
+haproxy_connect_timeout: "10s"
+# Set the maximum allowed time to wait for a complete HTTP request
+haproxy_http_request_timeout: "5s"
+# Set the maximum inactivity time on the server side
+haproxy_server_timeout: "50s"
+## haproxy tuning params
+haproxy_maxconn: 4096

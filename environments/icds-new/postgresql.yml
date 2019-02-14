@@ -1,12 +1,13 @@
 DEFAULT_POSTGRESQL_HOST: pgmain1
 REPORTING_DATABASES:
   ucr: ucr
+  icds-ucr-non-dashboard: icds-ucr
   icds-ucr:
     WRITE: icds-ucr
     READ:
       - [icds-ucr, 1]
       - [icds-ucr-standby1, 2]
-      - [icds-ucr-standby2, 2]
+#      - [icds-ucr-standby2, 2]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
@@ -76,6 +77,12 @@ dbs:
       host: pgucr
       query_stats: True
       django_migrate: True  # the dashboard models are stored here
+    - name: airflow
+      django_migrate: False
+    - django_alias: warehouse
+      name: warehouse
+      django_migrate: True
+      host: pgwarehouse0
   standby:
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
@@ -83,12 +90,12 @@ dbs:
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 1800
-    - django_alias: icds-ucr-standby2
-      name: commcarehq_icds_aggregatedata
-      host: pgucrstandby1
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 1800
+#    - django_alias: icds-ucr-standby2
+#      name: commcarehq_icds_aggregatedata
+#      host: pgucrstandby1
+#      create: False
+#      django_migrate: False
+#      hq_acceptable_standby_delay: 1800
     - django_alias: pgmainstandby
       name: commcarehq
       host: pgmainstandby1

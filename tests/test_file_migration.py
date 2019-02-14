@@ -84,8 +84,12 @@ def test_parse_plan():
         }
     )
 
-    plan = read_plan(os.path.join(TEST_DATA_DIR, 'test_plan.yml'), target_env)
+    pla_path = os.path.join(TEST_DATA_DIR, 'test_plan.yml')
+    plan = read_plan(pla_path, target_env)
     assert_equal(plan, expected)
+
+    plan = read_plan(pla_path, target_env, 'target_host2')
+    assert_equal(list(plan.configs), ['10.0.0.2'])
 
 
 def _check_file_contents(generated_path, expected_path):

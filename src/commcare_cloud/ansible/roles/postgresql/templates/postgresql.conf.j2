@@ -33,7 +33,7 @@ dynamic_shared_memory_type = posix
 # WRITE AHEAD LOG
 {% if groups['pg_barman']|default(False) and not is_pg_standby %}
 archive_mode = on
-{% if 'hostname' in hostvars[item] %}
+{% if 'hostname' in hostvars[inventory_hostname] %}
 archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ hostname }}/wals/%f'
 {% else %}
 archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ inventory_hostname_short }}/wals/%f'
@@ -69,6 +69,9 @@ max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
 
 # QUERY TUNING
 effective_cache_size = {{ postgresql_effective_cache_size }}
+{% if enable_nestloop is defined %}
+enable_nestloop = {{ enable_nestloop }}
+{% endif %}
 
 
 # ERROR REPORTING AND LOGGING

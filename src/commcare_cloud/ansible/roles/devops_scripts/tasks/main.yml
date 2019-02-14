@@ -1,5 +1,5 @@
 
-- name: Copy db_verification scripts to /usr/local/sbin
+- name: Copy db_verification script to /usr/local/sbin
   template:
     src: db-tools.py.j2
     dest: /usr/local/sbin/db-tools.py

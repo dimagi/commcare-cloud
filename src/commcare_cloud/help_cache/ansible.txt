@@ -18,7 +18,7 @@ Options:
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -h, --help            show this help message and exit
   -i INVENTORY, --inventory=INVENTORY, --inventory-file=INVENTORY
                         specify inventory host path or comma separated host
@@ -33,6 +33,11 @@ Options:
                         prepend colon-separated path(s) to module library
                         (default=[u'./src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
+  --playbook-dir=BASEDIR
+                        Since this tool does not use playbooks, use this as a
+                        subsitute playbook directory.This sets the relative
+                        path for many features including roles/ group_vars/
+                        etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
@@ -86,7 +91,7 @@ Options:
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     --become-user=BECOME_USER
                         run operations as this user (default=root)
     --ask-sudo-pass     ask for sudo password (deprecated, use become)

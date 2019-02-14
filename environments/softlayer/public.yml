@@ -18,7 +18,7 @@ supervisor_http_enabled: True
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es: True
+backup_es_s3: True
 postgres_s3: True
 postgresql_backup_weeks: 1
 postgresql_backup_days: 1
@@ -40,6 +40,8 @@ ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
+run_websockets_wsgi: True
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy[0] }}"
@@ -49,7 +51,7 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-
+couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
   r: 1
@@ -60,10 +62,7 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
   ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
     - "{{ CAS_SITE_HOST }}"
-    - "{{ SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
   ASYNC_INDICATORS_TO_QUEUE: 30000
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
@@ -107,7 +106,6 @@ localsettings:
 #  STATIC_ROOT:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444/"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
 
 site_locations:

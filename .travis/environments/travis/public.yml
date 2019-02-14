@@ -51,7 +51,6 @@ postgres_s3: False
 nadir_hour: 18
 
 nofile_limit: 65536
-nginx_worker_rlimit_nofile: "{{ nofile_limit }}"
 
 supervisor_http_enabled: True
 
@@ -74,10 +73,6 @@ couch_dbs:
 TOUCHFORMS_API_USER: 'touchforms@example.com'
 
 localsettings:
-  ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - "{{ SITE_HOST }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'

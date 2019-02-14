@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os
+import subprocess
 import sys
 
 from commcare_cloud.cli_utils import print_command
@@ -37,7 +37,7 @@ class Lookup(CommandBase):
             sys.stderr.write(
                 "Ignoring extra argument(s): {}\n".format(unknown_args)
             )
-        print_command(self.lookup_server_address(args))
+        print(self.lookup_server_address(args))
 
 
 class _Ssh(Lookup):
@@ -50,7 +50,7 @@ class _Ssh(Lookup):
         cmd_parts = [self.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        os.execvp(self.command, cmd_parts)
+        return subprocess.call(cmd_parts)
 
 
 class Ssh(_Ssh):
@@ -72,7 +72,7 @@ class Ssh(_Ssh):
         if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
             environment = get_environment(args.env_name)
             ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
-        super(Ssh, self).run(args, ssh_args)
+        return super(Ssh, self).run(args, ssh_args)
 
 
 class Mosh(_Ssh):
@@ -92,7 +92,7 @@ class Mosh(_Ssh):
             print("! mosh does not support ssh agent forwarding, using ssh instead.",
                   file=sys.stderr)
             Ssh(self.parser).run(args, ssh_args)
-        super(Mosh, self).run(args, ssh_args)
+        return super(Mosh, self).run(args, ssh_args)
 
 
 class Tmux(_Ssh):
@@ -157,7 +157,8 @@ class DjangoManage(CommandBase):
     Run a django management command.
 
     `commcare-cloud <env> django-manage ...`
-    runs `./manage.py ...` on the first webworker of <env>.
+    runs `./manage.py ...` on the first django_manage machine of <env> or
+    server you specify.
     Omit <command> to see a full list of possible commands.
 
     Example:
@@ -167,6 +168,12 @@ class DjangoManage(CommandBase):
     ```
     commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
     ```
+    
+    To do this on a specific server
+
+    ```
+    commcare-cloud <env> django-manage --tmux shell --server web0
+    ```
     """
 
     arguments = (
@@ -175,6 +182,10 @@ class DjangoManage(CommandBase):
             run in a new tmux window under the `cchq` user. You may then exit using
             the customary tmux command `^b` `d`, and resume the session later.
             This is especially useful for long-running commands.
+        """),
+        Argument('--server', help="""
+            Server to run management command on.
+            Defaults to first server under django_manage inventory group
         """),
         Argument('--release', help="""
             Name of release to run under.
@@ -197,14 +208,14 @@ class DjangoManage(CommandBase):
             code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
                 cchq_user=cchq_user, deploy_env=deploy_env)
         remote_command = (
-            '{code_dir}/python_env/bin/python {code_dir}/manage.py {args}'
+            'bash -c "cd {code_dir}; python_env/bin/python manage.py {args}"'
             .format(
                 cchq_user=cchq_user,
                 code_dir=code_dir,
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
         )
-        args.server = 'django_manage:0'
+        args.server = args.server or 'django_manage:0'
         if args.tmux:
             args.remote_command = remote_command
             Tmux(self.parser).run(args, [])

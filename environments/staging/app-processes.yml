@@ -4,8 +4,8 @@ celery_processes:
     # so that no SMSes, etc. ever come from staging.
     celery_periodic: {}
     beat: {}
-  'hqdb1-staging.internal-va.commcarehq.org':
-    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue:
+  'celery1':
+    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue,case_import_queue:
       concurrency: 4
       max_tasks_per_child: 5
     background_queue,case_rule_queue,analytics_queue:
@@ -27,42 +27,22 @@ celery_processes:
       concurrency: 4
     flower: {}
 pillows:
-  'hqpillow0-staging.internal-va.commcarehq.org':
+  'pillow0':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
       num_processes: 1
     CacheInvalidatePillow:
       num_processes: 1
-    CaseSearchToElasticsearchPillow:
-      num_processes: 1
-    CaseToElasticsearchPillow:
-      num_processes: 1
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
-      num_processes: 1
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 1
-    GroupPillow:
-      num_processes: 1
-    GroupToUserPillow:
-      num_processes: 1
-    kafka-ucr-main:
-      num_processes: 1
-    kafka-ucr-static:
       num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
       num_processes: 1
-    ReportCaseToElasticsearchPillow:
-      num_processes: 1
-    ReportXFormToElasticsearchPillow:
-      num_processes: 1
     SqlSMSPillow:
-      num_processes: 1
-    UnknownUsersPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
@@ -70,7 +50,11 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-    UserPillow:
+    case-pillow:
+      num_processes: 2
+    xform-pillow:
+      num_processes: 2
+    group-pillow:
       num_processes: 1
-    XFormToElasticsearchPillow:
+    user-pillow:
       num_processes: 1

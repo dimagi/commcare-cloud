@@ -23,8 +23,6 @@ gce_updated_hostname: yes
 # DEPRECATED: use conf.d/disk.yaml instead to configure it
 use_mount: no
 
-process_agent_enabled: true
-
 {% if inventory_hostname in datadog_parsers|map(attribute='hosts')|join %}
 dogstreams: {% for parser in datadog_parsers -%}
     {%- if inventory_hostname in parser.hosts -%}
@@ -39,6 +37,18 @@ dogstreams: {% for parser in datadog_parsers -%}
 {%- endfor %}
 {% endif %}
 
-{% if host_alias is defined %}
-hostname: {{ hostname }}.{{ internal_domain_name }}
+{% if alt_hostname is defined %}
+hostname: {{ alt_hostname }}.{{ internal_domain_name }}
+{% endif %}
+
+{% if 'webworkers' in group_names and app_processes_config.datadog_pythonagent %}
+apm_config:
+  enabled: true
+  replace_tags:
+    - name: "http.url"
+      pattern: "https?://.+?:.+?@"
+      repl: "https://"
+
+[trace.analyzed_spans]
+django|django.request: 1
 {% endif %}

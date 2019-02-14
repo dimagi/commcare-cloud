@@ -1,5 +1,5 @@
 # postgres,,,,,,,,,,,,
-hostname,host_alias,host_address,group 1,group 2,group 3,L.var: devices,L.var: partitions,var: datavol_device,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
+hostname,var: hostname,host_address,group 1,group 2,group 3,L.var: devices,L.var: partitions,var: datavol_device,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot
 pgucr,ALIAS_PU00,192.168.33.26,postgres,lvm,test_group1,"[""/dev/sdb""]","[""/dev/sdb1"",""/dev/sdc""]",/dev/mapper/consolidated-data,pgucrstandby0,,"[""standby"",""spare""]",
 pgucrstandby0,ALIAS_PUS0,192.168.33.27,pg_standby,lvm,test_group2,"[""/dev/sda""]","[""/dev/sdb1"",""/dev/sdc1""]",/dev/mapper/consolidated-data,,pgucr,,standby
 ,,,,,,,,,,,,

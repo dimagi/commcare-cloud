@@ -6,3 +6,4 @@ kafka_group: kafka
 kafka_data_dir: "{{ encrypted_root }}/kafka/data"
 kafka_conf_dir: /etc/kafka/config
 kafka_log_dir: /var/log/kafka
+kafka_log_retention: 672 # 28 days

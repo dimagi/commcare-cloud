@@ -2,7 +2,12 @@
 
 **Date:** {{ changelog_entry.date }}
 
-**Optional per env:** {% if changelog_entry.optional_per_env %}Yes{% else %}No{% endif %}
+**Optional per env:** {% if not changelog_entry.optional_per_env -%}
+  _required on all environments_
+{%- else -%}
+  _only required on some environments_
+{%- endif %}
+
 
 ## CommCare Version Dependency
 {% if changelog_entry.max_commcare_version -%}

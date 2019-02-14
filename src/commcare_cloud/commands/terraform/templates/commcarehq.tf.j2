@@ -1,0 +1,163 @@
+#  Variables.tf declares the default variables that are shared by all environments
+# $var.region, $var.domain, $var.tf_s3_bucket
+
+# This should be changed to reflect the service / stack defined by this repo
+variable "stack" {
+  default = "commcarehq"
+}
+
+variable "tf_s3_bucket" {
+  description = "S3 bucket Terraform can use for state"
+  default     = "dimagi-terraform"
+}
+
+module "network" {
+  source            = "./modules/network"
+  vpc_begin_range   = "${var.vpc_begin_range}"
+  env               = "${var.environment}"
+  azs               = "${var.azs}"
+  az_codes          = "${var.az_codes}"
+  vpn_connections   = "${var.vpn_connections}"
+  vpn_connection_routes = "${var.vpn_connection_routes}"
+  external_routes   = "${var.external_routes}"
+  openvpn_ip        = "${module.openvpn.openvpn-server-ip}"
+}
+
+
+locals {
+  subnet_options = {
+  {% for az in az_codes %}
+    app-private-{{ az }} = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+  {% endfor %}
+  {% for az in az_codes %}
+    db-private-{{ az }} = "${lookup(module.network.subnets-db-private, "{{ az }}", "")}"
+  {% endfor %}
+  {% for az in az_codes %}
+    public-{{ az }} = "${lookup(module.network.subnets-public, "{{ az }}", "")}"
+  {% endfor %}
+  }
+  security_group_options = {
+    "public" = ["${module.network.proxy-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+    "app-private" = ["${module.network.app-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+    "db-private" = ["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+  }
+}
+
+
+data "aws_iam_role" "data_lifecycle_role" {
+  name = "AWSDataLifecycleManagerDefaultRole"
+}
+
+resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
+  description        = "Data Volume Backup Policy"
+  execution_role_arn = "${data.aws_iam_role.data_lifecycle_role.arn}"
+  state              = "ENABLED"
+
+  policy_details {
+    resource_types = ["VOLUME"]
+
+    schedule {
+      name = "Default Schedule"
+
+      create_rule {
+        interval      = 24
+        interval_unit = "HOURS"
+        times         = ["22:00"]
+      }
+
+      retain_rule {
+        count = 7
+      }
+
+      tags_to_add = {
+        VolumeType = "backup"
+      }
+
+      copy_tags = true
+    }
+
+    target_tags = {
+      GroupDetail = "couchdb2:data"
+    }
+  }
+}
+
+{% for server in servers + proxy_servers %}
+module "server__{{ server.server_name }}" {
+  source = "./modules/server"
+
+  server_name = {{ server.server_name|tojson }}
+  server_instance_type = {{ server.server_instance_type|tojson }}
+  network_tier = {{ server.network_tier|tojson }}
+  az = {{ server.az|tojson }}
+  volume_size = {{ server.volume_size|tojson }}
+  secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
+  secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
+
+{% if ':bionic' in server.group %}
+  server_image = "${var.bionic_server_image}"
+{% else %}
+  server_image = "${var.server_image}"
+{% endif %}
+ environment = "${var.environment}"
+  vpc_id = "${module.network.vpc-id}"
+  subnet_options = "${local.subnet_options}"
+  security_group_options = "${local.security_group_options}"
+  key_name = "${var.key_name}"
+  group_tag= {{ server.group|tojson }}
+}
+{% endfor %}
+
+{% for server in proxy_servers %}
+resource "aws_eip" "proxy__{{ server.server_name }}" {
+  vpc = true
+  instance = "${module.server__{{ server.server_name }}.server}"
+  associate_with_private_ip = "${module.server__{{ server.server_name }}.server_private_ip}"
+}
+{% endfor %}
+
+
+module "Redis" {
+  source               = "./modules/elasticache"
+  create               = "{{ redis.create|tojson }}"
+  cluster_id           = "redis-${var.environment}"
+  engine               = "redis"
+  engine_version       = "{{ redis.engine_version }}"
+  node_type            = "{{ redis.node_type }}"
+  num_cache_nodes      = "{{ redis.num_cache_nodes }}"
+  parameter_group_name = "{{ redis.parameter_group_name }}"
+  port                 = 6379
+  elasticache_subnets  = "${values(module.network.subnets-db-private)}"
+  security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
+}
+
+module "openvpn" {
+  source = "./modules/openvpn"
+  openvpn_image = "${var.openvpn_image}"
+  environment = "${var.environment}"
+  vpn_size = "${var.openvpn_instance_type}"
+  # hardcoded, should be configurable like the others
+  instance_subnet = "${module.network.subnets-public["a"]}"
+  vpc_id = "${module.network.vpc-id}"
+  vpc_cidr = "${module.network.vpc-cidr}"
+  key_name = "${var.key_name}"
+}
+
+module "Users" {
+  source = "./modules/iam"
+  account_alias = "${var.account_alias}"
+}
+
+{%- for user in (users if manage_users else []) %}
+{%- if user.public_key %}
+resource "aws_key_pair" {{ user.username|tojson }} {
+  key_name = {{ user.username|tojson }}
+  public_key = {{ user.public_key|tojson }}
+}
+{%- endif %}
+module "iam_user__{{ user.username }}" {
+  source = "./modules/iam/user"
+  username = {{ user.username|tojson }}
+  administrators_iam_group = "${module.Users.administrators_iam_group}"
+}
+{%- endfor %}

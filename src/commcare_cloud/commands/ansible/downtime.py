@@ -15,7 +15,7 @@ from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
-HQ_PROCESSES_SCOPE = 'webworkers,celery,pillowtop,touchforms,formplayer,proxy'
+HQ_PROCESSES_SCOPE = 'webworkers,celery,pillowtop,formplayer,proxy'
 
 
 class Downtime(CommandBase):

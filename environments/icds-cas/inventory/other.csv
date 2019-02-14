@@ -1,11 +1,14 @@
-hostname,host_address,group 1,group 2,group3,var: host_alias,L.var: devices,L.var: partitions,var: public_ip,I.var: kafka_broker_id
-airflow0,100.71.188.10,airflow,,,MUMGCCWCDPRDAF00,["/dev/vdb"],["/dev/vdb1"],,
-formplayer0,100.71.188.27,formplayer,,,MUMGCCWCDPRDFP00,["/dev/vdb"],["/dev/vdb1"],,
-rabbit0,100.71.188.43,rabbitmq,,,MUMGCCWCDPRDRB00,["/dev/vdb"],["/dev/vdb1"],,
-kafka0,100.71.184.15,kafka,zookeeper,,MUMGCCWCDPRDKF00,["/dev/vdb"],["/dev/vdb1"],,0
-kafka1,100.71.184.12,kafka,,,MUMGCCWCDPRDKF01,["/dev/vdb"],["/dev/vdb1"],,1
-redis0,100.71.184.53,redis,,,MUMGCCWCDPRDRD00,["/dev/vdb"],["/dev/vdb1"],,
-redis1,100.71.184.55,redis,,,MUMGCCWCDPRDRD01,["/dev/vdb"],["/dev/vdb1"],,
-patch0,100.71.181.8,patch,control,,MUMGCCWCDPRDPT00,,,,
-proxy0,100.71.181.10,proxy,cas_proxy,,MUMGCCWCDPRDPX01,,,14.141.62.10,
-proxy1,100.71.181.14,proxy,cas_proxy,,MUMGCCWCDPRDPX02,,,14.141.62.11,
+hostname,host_address,group 1,group 2,group3,var: hostname,var: public_ip,I.var: kafka_broker_id
+airflow0,100.71.188.10,airflow,,,MUMGCCWCDPRDAF00,,
+formplayer0,100.71.188.27,formplayer,,,MUMGCCWCDPRDFP00,,
+formplayer1,100.71.188.70,formplayer,,,MUMGCCWCDPRDFP01,,
+rabbit0,100.71.188.43,rabbitmq,,,MUMGCCWCDPRDRB00,,
+kafka0,100.71.184.15,kafka,zookeeper,,MUMGCCWCDPRDKF00,,0
+kafka1,100.71.184.12,kafka,,,MUMGCCWCDPRDKF01,,1
+kafka2,100.71.184.80,kafka,,,MUMGCCWCDPRDKF02,,2
+redis1,100.71.184.55,redis,redis_cluster_master,,MUMGCCWCDPRDRD01,,
+redis2,100.71.184.89,redis,redis_cluster_master,,MUMGCCWCDPRDRD02,,
+redis3,100.71.184.94,redis,redis_cluster_master,,MUMGCCWCDPRDRD03,,
+patch0,100.71.181.8,patch,control,,MUMGCCWCDPRDPT00,,
+proxy0,100.71.181.10,proxy,cas_proxy,,MUMGCCWCDPRDPX01,14.141.62.10,
+proxy1,100.71.181.14,proxy,cas_proxy,,MUMGCCWCDPRDPX02,14.141.62.11,

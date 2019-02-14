@@ -13,7 +13,7 @@ set eventqueue
 
 set mail-format {
      from: monit@$HOST
-  subject: [{{ env_monitoring_id }}] monit alert -- {{ ansible_hostname }}: $EVENT $SERVICE
+  subject: [{{ env_monitoring_id }}] monit alert -- {{ alt_hostname|default(ansible_hostname) }}: $EVENT $SERVICE
   message: $EVENT Service $SERVICE
                 Date:        $DATE
                 Action:      $ACTION

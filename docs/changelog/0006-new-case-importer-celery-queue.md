@@ -1,0 +1,35 @@
+# 6. New Case Importer Celery Queue
+
+**Date:** 2018-11-20
+
+**Optional per env:** _required on all environments_
+
+
+## CommCare Version Dependency
+CommCare versions beyond this commit require this change to function correctly:
+[bc07919f](https://github.com/dimagi/commcare-hq/commit/bc07919f38828306015c688469a35df2fd8f9527)
+
+
+## Change Context
+Importing cases is often a time-sensitive task, and prolonged backlogs are
+very visible to users.  It will be useful to have a separate queue
+specifically for case imports, to improve visibility into backups as well as
+typical runtimes.  Additionally, this is a first step towards allocating
+resources specifically for case imports, should that become necessary.
+
+## Details
+This creates a case_import_queue in celery, which will be used for case
+import tasks.
+
+## Steps to update
+This update should be performed before updating CommCare to a version more
+recent than that specified above.
+
+First, add a queue called `case_import_queue` to your app_processes.yml,
+following the examples in commcare-cloud commit 1b602e805.
+
+To apply this change, run
+
+```
+commcare-cloud <env> update-supervisor-confs
+```

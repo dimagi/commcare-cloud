@@ -1,12 +1,9 @@
 jython_memory: "1024m"
 formplayer_memory: "1024m"
 
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   'swiss.commcarehq.org':
-    repeat_record_queue,celery,export_download_queue:
+    repeat_record_queue,celery,export_download_queue,case_import_queue:
       concurrency: 1
       max_tasks_per_child: 5
     background_queue,case_rule_queue,analytics_queue:
@@ -15,13 +12,13 @@ celery_processes:
     beat: {}
     celery_periodic,email_queue:
       concurrency: 1
-    email_queue,sms_queue:
+    email_queue:
       concurrency: 1
     saved_exports_queue:
       concurrency: 1
       max_tasks_per_child: 1
       optimize: True
-    submission_reprocessing_queue,reminder_case_update_queue,reminder_queue:
+    reminder_case_update_queue:
       concurrency: 1
     reminder_rule_queue:
       concurrency: 1

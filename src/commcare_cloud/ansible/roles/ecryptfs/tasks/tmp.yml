@@ -32,6 +32,9 @@
     path: "{{ encrypted_tmp }}"
     mode: "u=rwx,g=rwx,o=rx"
     state: directory
+    owner: cchq
+    group: cchq
+
   tags:
     - mount-ecryptfs
     - after-reboot

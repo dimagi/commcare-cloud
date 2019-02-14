@@ -1,0 +1,18 @@
+source_env: icds-new
+copy_files:
+  - es0:
+      - source_host: es0
+        source_dir: /opt/data/elasticsearch-1.7.6/data/icds-2.0/
+        target_dir: /opt/data/elasticsearch-1.7.6.from.NIC/data/icds-2.0/
+  - es1:
+      - source_host: es1
+        source_dir: /opt/data/elasticsearch-1.7.6/data/icds-2.0/
+        target_dir: /opt/data/elasticsearch-1.7.6.from.NIC/data/icds-2.0/
+  - es2:
+      - source_host: es2
+        source_dir: /opt/data/elasticsearch-1.7.6/data/icds-2.0/
+        target_dir: /opt/data/elasticsearch-1.7.6.from.NIC/data/icds-2.0/
+  - es3:
+      - source_host: es3
+        source_dir: /opt/data/elasticsearch-1.7.6/data/icds-2.0/
+        target_dir: /opt/data/elasticsearch-1.7.6.from.NIC/data/icds-2.0/

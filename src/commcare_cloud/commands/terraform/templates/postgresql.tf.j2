@@ -1,0 +1,32 @@
+{%- for rds_instance in rds_instances %}
+module "postgresql__{{ rds_instance.identifier }}" {
+  source = "./modules/postgresql"
+  rds_instance = {
+    password = "${var.rds_password}"
+    identifier = {{ rds_instance.identifier|tojson }}
+    instance_type = {{ rds_instance.instance_type|tojson }}
+    multi_az = "{{ "true" if rds_instance.multi_az else "false" }}"
+    storage = {{ rds_instance.storage|tojson }}
+    create = {{ rds_instance.create|tojson }}
+    username = {{ rds_instance.username|tojson }}
+    backup_window = {{ rds_instance.backup_window|tojson }}
+    backup_retention = {{ rds_instance.backup_retention|tojson }}
+    maintenance_window = {{ rds_instance.maintenance_window|tojson }}
+    port = {{ rds_instance.port|tojson }}
+  }
+  parameters = [
+    {%- for param in postgresql_params[rds_instance.identifier] %}
+    {
+      name = {{ param.name|tojson }}
+      value = {{ param.value|tojson }}
+      apply_method = {{ param.apply_method|tojson }}
+    },
+    {%- endfor %}
+  ]
+  subnet_ids = "${values(module.network.subnets-db-private)}"
+  vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
+  create = "true"
+  apply_immediately = "{{ "true" if apply_immediately else "false" }}"
+  environment = "${var.environment}"
+}
+{%- endfor %}

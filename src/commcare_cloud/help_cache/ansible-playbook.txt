@@ -11,11 +11,11 @@ Options:
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
                         filename prepend with @
-  --flush-cache         clear the fact cache
+  --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -h, --help            show this help message and exit
   -i INVENTORY, --inventory=INVENTORY, --inventory-file=INVENTORY
                         specify inventory host path or comma separated host
@@ -86,7 +86,7 @@ Options:
     --become-method=BECOME_METHOD
                         privilege escalation method to use (default=sudo),
                         valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun ]
+                        dzdo | ksu | runas | pmrun | enable ]
     --become-user=BECOME_USER
                         run operations as this user (default=root)
     --ask-sudo-pass     ask for sudo password (deprecated, use become)
