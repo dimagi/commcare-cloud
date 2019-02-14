@@ -135,7 +135,7 @@ servers:
     group: "couchdb2_proxy"
 
   - server_name: "couch3-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -143,7 +143,7 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch4-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -151,7 +151,7 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch5-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -159,7 +159,7 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch6-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -167,7 +167,7 @@ servers:
       volume_size: 6500
     group: "couchdb2"
   - server_name: "couch7-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -175,7 +175,7 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch8-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -183,7 +183,7 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch9-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -191,7 +191,7 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch10-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
