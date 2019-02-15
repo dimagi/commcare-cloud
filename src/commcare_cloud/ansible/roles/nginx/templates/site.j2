@@ -13,7 +13,7 @@ upstream {{ balancer.name }} {
   {% endif %}
 
 {% for host in groups[balancer.hosts] | default(balancer.hosts) %}
-  server {{ host }}:{{ balancer.port }}{% for key, value in balancer.params.items() | default([]) %} {{ key }}={{ value }}{% endfor %};
+  server {{ host }}:{{ balancer.port }}{% for key, value in (balancer.params | default({})).items() %} {{ key }}={{ value }}{% endfor %};
 {% endfor %}
 }
 {% endfor %}
