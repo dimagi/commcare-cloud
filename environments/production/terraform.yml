@@ -158,14 +158,6 @@ servers:
     block_device:
       volume_size: 5500
     group: "couchdb2"
-  - server_name: "couch6-production"
-    server_instance_type: c5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    block_device:
-      volume_size: 6500
-    group: "couchdb2"
   - server_name: "couch7-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -183,14 +175,6 @@ servers:
       volume_size: 5500
     group: "couchdb2"
   - server_name: "couch9-production"
-    server_instance_type: c5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    block_device:
-      volume_size: 5500
-    group: "couchdb2"
-  - server_name: "couch10-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "a"
