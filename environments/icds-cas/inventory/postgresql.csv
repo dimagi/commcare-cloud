@@ -4,7 +4,8 @@ pgucrstandby0,100.71.184.36,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS0,pgucrstandby2,pg
 pgucrstandby1,100.71.184.45,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS1,pgucrstandby3,pgucr,"[""standby3""]",standby1
 pgucrstandby2,100.71.184.24,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS2,,pgucrstandby0,,standby2
 pgucrstandby3,100.71.184.38,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS3,,pgucrstandby1,,standby3
-pgnondashboarducr0,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,,pgucrstandby0,,nondashboarducr
+pgnondashboarducr0,100.71.184.86,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS6,,pgucrstandby0,[""standby0""],nondashboarducr
+pgndbucrstandby0,100.71.184.70,pg_standby,ucr_dbs,MUMGCCWCDPRDPUS4,,pgnondashboarducr0,,nondashboarducr
 pgmain0,100.71.184.19,postgresql,main_dbs,MUMGCCWCDPRDPM00,pgmainstandby0,,"[""standby0"",""standby1"",""standby2"",""spare""]",
 pgmainstandby0,100.71.184.28,pg_standby,main_dbs,MUMGCCWCDPRDPMS0,,pgmain0,,standby0
 pgmainstandby1,100.71.184.82,pg_standby,main_dbs,MUMGCCWCDPRDPMS1,,pgmain0,,standby1
