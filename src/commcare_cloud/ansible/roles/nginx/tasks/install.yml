@@ -36,18 +36,22 @@
 - name: Copy the nginx configuration file
   become: yes
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify: restart nginx
 
 - name: Copy the nginx default configuration file
   become: yes
   template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf
+  notify: restart nginx
 
 - name: Copy the nginx default site configuration file
   become: yes
   template: src=default.j2 dest=/etc/nginx/sites-available/default
+  notify: restart nginx
 
 - name: Create the link for site enabled specific configurations
   become: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default force=yes
+  notify: restart nginx
 
 - name: Allow cchq user to modify sites-availabled
   become: yes
