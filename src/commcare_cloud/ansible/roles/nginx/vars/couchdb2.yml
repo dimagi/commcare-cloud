@@ -5,6 +5,9 @@ nginx_sites:
     - name: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
       hosts: couchdb2
       port: "{{ couchdb2_port }}"
+      params:
+        # http://nginx.org/en/docs/http/ngx_http_upstream_module.html#server
+        fail_timeout: 5s
    file_name: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
    listen: "'{{ couchdb2_proxy_port }}'"
    client_max_body_size: "{{ couchdb2_client_max_body_size }}"
