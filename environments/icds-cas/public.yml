@@ -138,12 +138,13 @@ couch_dbs:
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 s3_blob_db_enabled: yes
-old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
-old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
-old_s3_bulk_delete_chunksize: 200
-
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 s3_blob_db_s3_bucket: 'blobdb'
+
+# removed after migrating data to riak
+#old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
+#old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
+#old_s3_bulk_delete_chunksize: 200
 
 localsettings:
   ALLOWED_HOSTS:
@@ -252,7 +253,7 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
