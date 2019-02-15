@@ -16,7 +16,7 @@
     - server.proxy_cache_path
     - flags:
       skip_missing: True
-  notify: restart nginx
+  notify: reload nginx
 
 - name: Create the site configurations
   become: yes
@@ -29,7 +29,7 @@
   with_items: "{{ nginx_sites|default([]) }}"
   loop_control:
     label: "{{item.server.file_name}}"
-  notify: restart nginx
+  notify: reload nginx
 
 - name: Create the links to enable site configurations
   become: yes
@@ -38,4 +38,4 @@
   when: not ansible_check_mode
   loop_control:
     label: "{{item.server.file_name}}"
-  notify: restart nginx
+  notify: reload nginx
