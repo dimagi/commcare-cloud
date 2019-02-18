@@ -7,7 +7,7 @@ primary_ssl_env: "production"
 
 nginx_hsts_max_age: 300 # 5 minutes
 
-nginx_max_worker_connection: 1024
+nginx_max_worker_connection: 2048
 # commcarehq.org of certs
 nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
 nginx_key_value: "{{ ssl_secrets.private_keys.commcarehq_org }}"
