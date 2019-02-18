@@ -3,6 +3,7 @@ REPORTING_DATABASES:
   icds-ucr: icds-ucr
   icds-test-ucr: icds-ucr
   icds-ucr-non-dashboard: icds-ucr
+  aaa-data: aaa-data
 
 override:
   pgbouncer_default_pool: 290
@@ -29,5 +30,8 @@ dbs:
     - django_alias: icds-ucr
       name: icds-ucr
       django_migrate: True  # ICDS dashboard models are stored here
+    - django_alias: aaa-data
+      name: aaa-data
+      django_migrate: True  # AAA dashboard models are stored here
     - name: airflow
       django_migrate: False
