@@ -69,10 +69,6 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
         count = 7
       }
 
-      tags_to_add = {
-        VolumeType = "backup"
-      }
-
       copy_tags = true
     }
 
