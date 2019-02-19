@@ -268,8 +268,10 @@ pillows:
       num_processes: 1
     kafka-ucr-main:
       num_processes: 1
+      processor_chunk_size: 100
     kafka-ucr-static-awc-location:
       num_processes: 1
+      processor_chunk_size: 100
   'pillow1':
     XFormToElasticsearchPillow:
       num_processes: 16
@@ -278,26 +280,31 @@ pillows:
       start_process: 0
       num_processes: 12
       total_processes: 48
+      processor_chunk_size: 100
   'pillow3':
     kafka-ucr-static-forms:
       start_process: 12
       num_processes: 12
       total_processes: 48
+      processor_chunk_size: 100
   'pillow4':
     kafka-ucr-static-forms:
       start_process: 24
       num_processes: 12
       total_processes: 48
+      processor_chunk_size: 100
   'pillow16':
     kafka-ucr-static-forms:
       start_process: 36
       num_processes: 12
       total_processes: 48
+      processor_chunk_size: 100
   'pillow5':
     kafka-ucr-static-cases:
       start_process: 0
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 0
       num_processes: 9
@@ -307,6 +314,7 @@ pillows:
       start_process: 9
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 9
       num_processes: 9
@@ -316,6 +324,7 @@ pillows:
       start_process: 18
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 18
       num_processes: 9
@@ -325,6 +334,7 @@ pillows:
       start_process: 27
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 27
       num_processes: 9
@@ -334,6 +344,7 @@ pillows:
       start_process: 36
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 36
       num_processes: 9
@@ -343,6 +354,7 @@ pillows:
       start_process: 45
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 45
       num_processes: 9
@@ -352,6 +364,7 @@ pillows:
       start_process: 54
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 54
       num_processes: 9
@@ -361,6 +374,7 @@ pillows:
       start_process: 63
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 63
       num_processes: 9
@@ -370,6 +384,7 @@ pillows:
       start_process: 72
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 72
       num_processes: 9
@@ -379,6 +394,7 @@ pillows:
       start_process: 81
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 81
       num_processes: 9
@@ -388,6 +404,7 @@ pillows:
       start_process: 90
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 90
       num_processes: 9
@@ -397,6 +414,7 @@ pillows:
       start_process: 99
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 99
       num_processes: 9
@@ -406,6 +424,7 @@ pillows:
       start_process: 108
       num_processes: 9
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 108
       num_processes: 9
@@ -415,6 +434,7 @@ pillows:
       start_process: 117
       num_processes: 3
       total_processes: 120
+      processor_chunk_size: 100
     CaseToElasticsearchPillow:
       start_process: 117
       num_processes: 3

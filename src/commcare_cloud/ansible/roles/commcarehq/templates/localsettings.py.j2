@@ -157,6 +157,9 @@ COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% if 'COUCH_CACHE_VIEWS' in localsettings %}
 COUCH_CACHE_VIEWS = '{{ localsettings.COUCH_CACHE_VIEWS }}'
 {% endif %}
+{% if 'COUCH_REINDEX_SCHEDULE' in localsettings %}
+COUCH_REINDEX_SCHEDULE = {{ localsettings.COUCH_REINDEX_SCHEDULE }}
+{% endif %}
 
 {% if 'STAGING_DOMAINS' in localsettings %}
 STAGING_DOMAINS = {{ localsettings.STAGING_DOMAINS }}
@@ -190,7 +193,7 @@ S3_BLOB_DB_SETTINGS = {
     'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3'},
 }
-{% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
+{% if localsettings.get('BLOB_DB_MIGRATING_FROM_S3_TO_S3', False) %}
 OLD_S3_BLOB_DB_SETTINGS = {
     'url': '{{ old_s3_blob_db_url }}',
     'access_key': '{{ old_s3_blob_db_access_key }}',

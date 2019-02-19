@@ -31,6 +31,17 @@
   tags:
     - datadog_integrations
 
+- name: Install pgbouncer_custom check
+  get_url:
+    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_pgbouncer_custom_version }}/pgbouncer_custom/pgbouncer_custom.py"
+    dest: /etc/dd-agent/checks.d/pgbouncer_custom.py
+    sha256sum: "{{ datadog_pgbouncer_custom_sha256sum }}"
+    force: yes
+  when: datadog_integration_pgbouncer
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+
 - name: add datadog integration configs
   template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml"
   notify: restart datadog
@@ -44,6 +55,7 @@
     - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
     - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
     - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+    - {"name": "pgbouncer_custom", "enabled": "{{ datadog_integration_pgbouncer }}"}
     - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
     - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}

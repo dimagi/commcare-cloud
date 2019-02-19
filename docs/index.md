@@ -49,6 +49,7 @@ that machine is also the control machine.
 
 ## Optional but recommended
 - [Set up Sentry for error messages](howto/set-up-sentry.md)
+- [Firefighting](firefighting/index.md)
 
 ## Specialized howtos
 - [White label a CommCare instance](howto/white-label.md)

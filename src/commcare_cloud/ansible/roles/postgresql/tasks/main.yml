@@ -167,7 +167,14 @@
   notify: Reload pgbouncer
   tags:
     - pgbouncer
-    - postgres_users
+    - pgbouncer_users
+
+- name: pgbouncer hba
+  template: src=pgbouncer_hba.conf.j2 dest="{{ pgbouncer_hba }}"
+  notify: Reload pgbouncer
+  tags:
+    - pgbouncer
+    - pgbouncer_hba
 
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer

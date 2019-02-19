@@ -2,7 +2,8 @@
 
 **Date:** 2019-01-16
 
-**Optional per env:** Yes
+**Optional per env:** _required on all environments_
+
 
 ## CommCare Version Dependency
 This change is not known to be dependent on any particular version of CommCare.
