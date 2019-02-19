@@ -25,8 +25,6 @@ celery_processes:
     async_restore_queue:
       concurrency: 2
       max_tasks_per_child: 5
-    confirmation_email_queue:
-      concurrency: 1
   celery1:
     flower: {}
     reminder_queue:
@@ -91,6 +89,8 @@ celery_processes:
     export_download_queue:
       concurrency: 6
       max_tasks_per_child: 5
+    confirmation_email_queue:
+      concurrency: 1
 pillows:
   pillow0:
     CaseToElasticsearchPillow:
