@@ -466,7 +466,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Track an infrastructure maintainance event in Datadog
 
 ```
-commcare-cloud <env> send-datadog-event event_title event_body
+commcare-cloud <env> send-datadog-event event_title event_text
 ```
 
 ##### Positional Arguments
@@ -475,7 +475,7 @@ commcare-cloud <env> send-datadog-event event_title event_body
 
 Title of the datadog event.
 
-###### `event_body`
+###### `event_text`
 
 Text content of the datadog event.
 
