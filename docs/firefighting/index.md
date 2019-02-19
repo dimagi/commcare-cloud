@@ -1,11 +1,18 @@
 This page summarizes how to do various things related to HQ.
 
-# Notes
+#### Notes
+{:.no_toc}
 
 All Datadog links will be specific and private to Dimagi employees.
 If datadog releases a feature to share dashboard configurations, we will happily share configurations in this repository.
 
 For a more user-friendly guide check out [Cory's brown bag on the topic](http://prezi.com/wedwm-dgqto7/firefighting-hq/).
+
+## Contents
+{:.no_toc}
+
+* TOC
+{:toc}
 
 # HQ Architecture and Machines
 
