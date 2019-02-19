@@ -137,7 +137,6 @@ BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE | d
 BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY | default('') }}"
 BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN | default('') }}"
 BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS | default(None) }}"
-CELERY_RESULT_BACKEND: 'django-db'
 COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD | default(None) }}"
 COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME | default(None) }}"
 DRIFT_ID: "{{ localsettings_private.DRIFT_ID | default('', true) }}"
