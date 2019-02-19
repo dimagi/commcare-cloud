@@ -29,9 +29,11 @@ supervisor_http_enabled: True
 backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: True
+backup_couch: False
 postgres_s3: True
 postgresql_backup_days: 1
 postgresql_backup_weeks: 1
+nadir_hour: 16
 
 aws_region: 'us-east-1'
 
@@ -89,6 +91,7 @@ localsettings:
   BIGCOUCH_QUORUM_COUNT: 2
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 20}}
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EULA_COMPLIANCE: True

@@ -109,6 +109,10 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_english_files"
+  - name: /gujarat_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_gujarat_files"
   - name: /adhaar_id_scanner_apk
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
@@ -138,12 +142,13 @@ couch_dbs:
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 s3_blob_db_enabled: yes
-old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
-old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
-old_s3_bulk_delete_chunksize: 200
-
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 s3_blob_db_s3_bucket: 'blobdb'
+
+# removed after migrating data to riak
+#old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
+#old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
+#old_s3_bulk_delete_chunksize: 200
 
 localsettings:
   ALLOWED_HOSTS:
@@ -252,7 +257,7 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
@@ -278,6 +283,9 @@ localsettings:
     'static-icds-cas-static-mpr_3ii_person_cases': 'static-icds-cas-static-mpr_3ii_person_cases-optimized'
     'static-icds-cas-static-asr_2_3_person_cases': 'static-icds-cas-static-asr_2_3_person_cases-optimized'
     'static-icds-cas-static-mpr_3i_person_cases': 'static-icds-cas-static-mpr_3i_person_cases-optimized'
+    'static-icds-cas-static-mpr_2a_deaths': 'static-icds-cas-static-mpr_2a_deaths-optimized'
+    'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-mpr_2a_person_cases-optimized'
+    'static-icds-cas-static-mpr_2bi_preg_delivery_death_list': 'static-icds-cas-static-mpr_2bi_preg_delivery_death_list-optimized'
     # new UCR format from LS app
     'static-icds-cas-static-mpr_10a_children_referred': 'static-icds-cas-static-mpr_10a_children_referred-optimized'
     'static-icds-cas-static-mpr_10b_pregnancies_referred': 'static-icds-cas-static-mpr_10b_pregnancies_referred-optimized'
