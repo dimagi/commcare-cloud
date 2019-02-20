@@ -439,9 +439,8 @@ LIMIT 20;
 ```
 
 # Celery
-Check out this child page:
 
-https://confluence.dimagi.com/display/commcarehq/Firefighting+Celery+and+RabbitMQ
+Check out this [child page](firefighting/celery.md)
 
 ## Monitoring
 Sometimes it's helpful to check "Flower", a UI for celery monitoring http://hqcelery1.internal-va.commcarehq.org:5555/ (you have to be VPN'd in).
@@ -791,5 +790,3 @@ Information for restoring elasticsearch and postgres from a backup are at [Resto
 
 # SMS Gateways
 See the page on [SMS Gateway Technical Info](https://confluence.dimagi.com/display/commcarehq/SMS+Gateway+Technical+Info) for API docs and support contacts for each gateway.
-
-
