@@ -1,8 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
 REPORTING_DATABASES:
   ucr: ucr
-  icds-ucr-non-dashboard:
-    WRITE: icds-ucr-non-dashboard
+  icds-ucr-non-dashboard: icds-ucr-non-dashboard
   icds-ucr:
     WRITE: icds-ucr
     READ:
