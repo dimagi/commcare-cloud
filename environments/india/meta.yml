@@ -1,6 +1,6 @@
-deploy_env: softlayer
-env_monitoring_id: softlayer
+deploy_env: india
+env_monitoring_id: india
 users:
   - dimagi
   - fissionlabs
-slack_alerts_channel: alerts-softlayer
+slack_alerts_channel: alerts-india
