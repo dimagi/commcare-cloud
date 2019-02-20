@@ -27,7 +27,7 @@ from .commands.ansible.ansible_playbook import (
     UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
 )
 from commcare_cloud.commands.ansible.service import Service
-from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping
+from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from .commands.ansible.ops_tool import ListDatabases
@@ -49,6 +49,7 @@ COMMAND_GROUPS = OrderedDict([
         Mosh,
         RunAnsibleModule,
         RunShellCommand,
+        SendDatadogEvent,
         DjangoManage,
         Tmux,
     ]),
