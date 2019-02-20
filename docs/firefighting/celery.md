@@ -127,9 +127,12 @@ For the most part, we just have to wait until the tasks are processed. If it's i
 If this happens often for the same queue, then it means a longer-term solution is needed, such as increasing the concurrency on the worker, reducing the time it takes for the tasks to be completed, or moving the tasks to a different queue (or to a new queue and worker). However, there are a couple short-term things we may be able to do to help reduce the time we need to wait before it's back to normal:
 
 1. If you log into the machine where the worker is hosted and there is a good amount of free memory (at least 2GB or so), you can temporarily increase the concurrency on the worker.  To do this:
+
     a. Using the environments and inventory files to find which machine hosts flower, use your browser to hit port 5555 on that machine (example: http://hqcelery1.internal-va.commcarehq.org:5555/) to view flower.
+
     b. From the dashboard, click the name of the worker which consumes from the queue that is backed up.
-    c.Under "Pool size control", increase the number of child processes that worker has by selecting a number of processes to increase by in the dropdown and click the "Grow" button. For example, if the current concurrency is 4 and you select 2 in the dropdown and click "Grow", the new max concurrency will be 6.
+
+    c. Under "Pool size control", increase the number of child processes that worker has by selecting a number of processes to increase by in the dropdown and click the "Grow" button. For example, if the current concurrency is 4 and you select 2 in the dropdown and click "Grow", the new max concurrency will be 6.
 
 
 Be careful with this - if you increase by too much you may start to see tasks failing with out of memory (SIGSEGV) errors. Rule of thumb is to only increase by 2 processes per 1 GB of memory you can use up, and always try to leave at least 1 GB of memory free on the machine at all times. So if there's 2 GB of memory free, only increase by 2, and if there's 3 GB of memory free, only increase by 4. If you start having out of memory issues after you do this, you'll need to either shrink the pool or restart the worker.
