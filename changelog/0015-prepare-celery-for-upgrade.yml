@@ -1,0 +1,26 @@
+title: Prepare celery for upgrade to 4.x
+key: prepare-celery-for-upgrade
+date: 2019-02-19
+optional_per_env: no
+min_commcare_version: f67f9c8149bd71712f457c270b03b5a55077c273
+max_commcare_version:
+context: |
+  Upgrading to celery 4.x requires removing the dependency on
+  django-celery, which means that the celery management command
+  becomes unavailable.  This prepares for that by invoking the
+  celery command directly.  This also removes ```CELERY_RESULT_BACKEND```
+  from ```localsettings.py```, which has been moved to ```settings.py```.
+
+details: |
+  This updates the celery bash scripts to run celery
+  without invoking a management command.
+
+update_steps: |
+  1. Update localsettings:
+  ```bash
+  commcare-cloud <env> update-config
+  ```
+  2. Update celery bash scripts:
+  ```bash
+  commcare-cloud <env> update-supervisor-confs
+  ```
