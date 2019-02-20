@@ -350,16 +350,9 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
-{% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
-CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
-{% endif %}
-
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
-
-CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 
 FORMPLAYER_URL = "/formplayer"
 
@@ -397,6 +390,13 @@ CACHES = {
     'default': redis_cache,
     'redis': redis_cache,
 }
+
+CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
+CELERY_RESULT_BACKEND = redis_cache['LOCATION']
+CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
+{% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
+CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
+{% endif %}
 
 ELASTICSEARCH_HOSTS = [
     {% for es_host in groups.elasticsearch -%}
