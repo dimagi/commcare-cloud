@@ -18,4 +18,4 @@
         msg: "Standby node ('{{ standby }}') does not have a recovery.conf file. Are you sure it's a standby node?"
 
     - name: promote pg standby node
-      command:  pg_ctlcluster 9.4 main promote
+      command: pg_ctlcluster "{{ postgresql_version }}" main promote
