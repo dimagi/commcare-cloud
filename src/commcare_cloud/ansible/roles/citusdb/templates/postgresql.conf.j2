@@ -1,0 +1,167 @@
+
+#------------------------------------------------------------------------------
+# FILE LOCATIONS
+#------------------------------------------------------------------------------
+
+data_directory = '{{ postgresql_home }}'	
+hba_file = '{{ postgresql_config_home }}/pg_hba.conf'
+ident_file = '{{ postgresql_config_home }}/pg_ident.conf'
+external_pid_file = '{{ postgresql_pid_file }}'
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+# - Connection Settings -
+
+listen_addresses = '*'
+port = {{ postgresql_port }}				
+max_connections = {{ postgresql_max_connections }}			
+unix_socket_directories = '/var/run/postgresql'	
+ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+
+# - Memory -
+
+shared_buffers = {{ postgresql_shared_buffers }}
+work_mem = {{ postgresql_work_mem }}
+maintenance_work_mem = {{ postgresql_maintenance_work_mem }}	
+vacuum_cost_delay = 20ms
+max_stack_depth = {{ postgresql_max_stack_depth }}		
+dynamic_shared_memory_type = posix
+
+
+#------------------------------------------------------------------------------
+# WRITE-AHEAD LOG
+#------------------------------------------------------------------------------
+
+wal_level = hot_standby
+max_wal_senders = 8
+max_wal_size = {{ postgresql_max_wal_size }}
+random_page_cost = {{ postgresql_random_page_cost }}
+checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
+wal_buffers = {{ postgresql_wal_buffers }}
+checkpoint_warning = 120s
+{% if is_pg_standby %}
+wal_keep_segments = {{ pgstandby_wal_keep_segments }}
+{% else %}
+wal_keep_segments = {{ postgresql_wal_keep_segments }}
+{% endif %}
+
+
+#------------------------------------------------------------------------------
+# REPLICATION
+#------------------------------------------------------------------------------
+
+hot_standby = on    # ignored on masters
+{% if allow_dump_from_pgstandby %}
+hot_standby_feedback = on
+{% endif %}
+max_replication_slots = 8
+
+{% if is_pg_standby and postgresql_max_standby_delay %}
+max_standby_archive_delay = {{ postgresql_max_standby_delay }}
+max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
+{% endif %}
+
+#------------------------------------------------------------------------------
+# QUERY TUNING
+#------------------------------------------------------------------------------
+effective_cache_size = {{ postgresql_effective_cache_size }}
+{% if enable_nestloop is defined %}
+enable_nestloop = {{ enable_nestloop }}
+{% endif %}
+
+#------------------------------------------------------------------------------
+# REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+log_destination = 'csvlog'
+logging_collector = on
+log_directory = '{{ postgresql_log_directory }}'
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+log_truncate_on_rotation = on
+log_rotation_age = 0
+log_rotation_size = 100000		
+log_timezone = 'UTC'
+
+client_min_messages = notice
+log_min_messages = warning
+log_min_error_statement = error
+log_min_duration_statement = {{ postgresql_slow_log_threshold }}
+
+log_checkpoints = on
+log_connections = on
+log_disconnections = on
+log_line_prefix = '%t '
+log_lock_waits = on
+log_temp_files = 0
+
+#------------------------------------------------------------------------------
+# PROCESS TITLE
+#------------------------------------------------------------------------------
+
+cluster_name = '11/main'
+
+#------------------------------------------------------------------------------
+# STATISTICS
+#------------------------------------------------------------------------------
+
+stats_temp_directory = '/var/run/postgresql/11-main.pg_stat_tmp'
+
+#------------------------------------------------------------------------------
+# AUTOVACUUM
+#------------------------------------------------------------------------------
+
+autovacuum = on
+
+#------------------------------------------------------------------------------
+# CLIENT CONNECTION DEFAULTS
+#------------------------------------------------------------------------------
+
+datestyle = 'iso, mdy'
+timezone = 'UTC'
+
+# These settings are initialized by initdb, but they can be changed.
+lc_messages = 'en_US.UTF-8'
+lc_monetary = 'en_US.UTF-8'
+lc_numeric = 'en_US.UTF-8'
+lc_time = 'en_US.UTF-8'
+
+# default configuration for text search
+default_text_search_config = 'pg_catalog.english'
+
+# - Shared Library Preloading -
+
+shared_preload_libraries = citus	# (change requires restart)
+
+
+#------------------------------------------------------------------------------
+# LOCK MANAGEMENT
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+# VERSION AND PLATFORM COMPATIBILITY
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# ERROR HANDLING
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+# CONFIG FILE INCLUDES
+#------------------------------------------------------------------------------
+
+
+include_dir = 'conf.d'		
+
+#------------------------------------------------------------------------------
+# CUSTOMIZED OPTIONS
+#------------------------------------------------------------------------------
+
+# Add settings for extensions here

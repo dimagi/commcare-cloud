@@ -1,6 +1,7 @@
 ---
 - name: Common Database Machine Setup
   hosts:
+    - citusdb
     - postgresql
     - couchdb
     - redis
@@ -23,6 +24,12 @@
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
+
+- name: CitusDB
+  hosts: citusdb
+  become: true
+  roles:
+    - {role: citusdb, tags: 'citusdb'}
 
 - name: Remote PostgreSQL (e.g. Amazon RDS)
   hosts: django_manage

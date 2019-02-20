@@ -1,0 +1,53 @@
+---
+ - name: Add CitusDB repo
+   shell: 'curl https://install.citusdata.com/community/deb.sh | bash'
+
+ - name: Install CitusDB-PostgreSQL
+   apt:
+    name: "postgresql-{{postgresql_citus_version}}-citus-{{citusdb_version}}"
+    state: present
+
+ - name: Check for original postgresql directory
+   stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_citus_version  }}/{{ postgresql_cluster_name }}/PG_VERSION"
+   register: orig_path
+
+ - name: Make new postgresql directory
+   become: yes
+   file:
+    path: '{{ postgresql_dir_path }}'
+    owner: postgres
+    group: postgres
+    mode: 0700
+    state: directory
+
+ - name: Check for new postgresql directory
+   stat: path="{{ postgresql_dir_path }}/{{ postgresql_citus_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
+   register: new_path
+
+ - name: Assert postgresql directory shows up in exactly one place
+   fail: msg="postgresl directory must either be {{ postgresql_dir_path }} or {{ postgresql_dir_original_path }} (and not both)"
+   when: ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
+
+ - name: Move postgres to encrypted drive
+   command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_citus_version }} {{ postgresql_dir_path }}/"
+   when: orig_path.stat.exists
+
+#  - name: assert hot standby config correct
+#    assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
+
+ - name: Create postgresql_log_directory
+   file:
+    dest: "{{ postgresql_log_directory }}"
+    state: directory
+    owner: postgres
+    group: postgres
+
+ - name: PostgreSQL app configuration
+   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
+   tags: postgresql_conf
+   notify: Restart postgres
+
+ - name: PostgreSQL access configuration
+   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
+   tags: postgresql_conf
+   notify: Reload postgres
