@@ -3,9 +3,6 @@ REPORTING_DATABASES:
   ucr: ucr
   icds-ucr-non-dashboard:
     WRITE: icds-ucr-non-dashboard
-    READ:
-      - [icds-ucr-non-dashboard, 1]
-      - [icds-ndb-ucr-standby0, 10]
   icds-ucr:
     WRITE: icds-ucr
     READ:
@@ -127,12 +124,6 @@ dbs:
     - django_alias: icds-ucr-standby3
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby3
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 1800
-    - django_alias: icds-ndb-ucr-standby0
-      name: commcarehq_icds_aggregatedata
-      host: pgndbucrstandby0
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 1800
