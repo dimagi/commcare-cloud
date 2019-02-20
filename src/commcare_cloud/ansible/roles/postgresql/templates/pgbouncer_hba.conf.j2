@@ -14,7 +14,7 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.us
  {% endif %}
 {% endfor %}
 {%  else %}
-{% for host in (groups['formplayer'] + groups['touchforms'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups['pg_standby'] + groups['airflow']) | unique %}
+{% for host in (groups['formplayer'] + groups.get('touchforms', []) + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups('pg_standby',[]) + groups('airflow', [])) | unique %}
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}

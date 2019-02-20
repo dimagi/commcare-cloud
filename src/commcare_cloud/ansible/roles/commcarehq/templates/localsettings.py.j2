@@ -193,7 +193,7 @@ S3_BLOB_DB_SETTINGS = {
     'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3'},
 }
-{% if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings %}
+{% if localsettings.get('BLOB_DB_MIGRATING_FROM_S3_TO_S3', False) %}
 OLD_S3_BLOB_DB_SETTINGS = {
     'url': '{{ old_s3_blob_db_url }}',
     'access_key': '{{ old_s3_blob_db_access_key }}',
@@ -382,6 +382,7 @@ redis_cache = {
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
+        'PICKLE_VERSION': 2,  # After PY3 migration: remove
 {% if is_redis_cluster %}
         'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
         'CONNECTION_POOL_CLASS': 'rediscluster.connection.ClusterConnectionPool',

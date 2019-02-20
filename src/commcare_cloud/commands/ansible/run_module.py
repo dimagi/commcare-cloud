@@ -188,6 +188,40 @@ class RunShellCommand(CommandBase):
         return RunAnsibleModule(self.parser).run(args, unknown_args)
 
 
+class SendDatadogEvent(CommandBase):
+    command = 'send-datadog-event'
+    help = "Track an infrastructure maintainance event in Datadog"
+
+    arguments = (
+        Argument('event_title', help="""
+            Title of the datadog event.
+        """),
+        Argument('event_text', help="""
+            Text content of the datadog event.
+        """),
+    )
+
+    def run(self, args, unknown_args):
+        args.module = 'datadog_event'
+        environment = get_environment(args.env_name)
+        vault = environment.get_vault_variables()['secrets']
+        tags = "environment:{}".format(args.env_name)
+        args.module_args = "api_key={api_key} app_key={app_key} " \
+            "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(
+                api_key=vault['DATADOG_API_KEY'],
+                app_key=vault['DATADOG_APP_KEY'],
+                tags=tags,
+                text=args.event_text,
+                title=args.event_title,
+                agg='commcare-cloud'
+            )
+        return run_ansible_module(
+            environment, AnsibleContext(args),
+            '127.0.0.1', args.module, args.module_args,
+            False, False, False,
+        )
+
+
 class Ping(CommandBase):
     command = 'ping'
     help = 'Ping specified or all machines to see if they have been provisioned yet.'
