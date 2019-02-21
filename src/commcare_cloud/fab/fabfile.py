@@ -124,8 +124,19 @@ def _setup_path():
     env.code_root = posixpath.join(env.releases, env.deploy_metadata.timestamp)
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
-    env.virtualenv_current = posixpath.join(env.code_current, 'python_env')
-    env.virtualenv_root = posixpath.join(env.code_root, 'python_env')
+
+    env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
+    env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3_6')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3_6')
+
+    if env.py3_run_deploy:
+        env.virtualenv_current = env.py3_virtualenv_current
+        env.virtualenv_root = env.py3_virtualenv_root
+    else:
+        env.virtualenv_current = env.py2_virtualenv_current
+        env.virtualenv_root = env.py2_virtualenv_root
+
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.deploy_env)
@@ -137,8 +148,19 @@ def _override_code_root_to_current():
     env.code_root = env.code_current
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
-    env.virtualenv_current = posixpath.join(env.code_current, 'python_env')
-    env.virtualenv_root = posixpath.join(env.code_root, 'python_env')
+
+    env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
+    env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3_6')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3_6')
+
+    if env.py3_run_deploy:
+        env.virtualenv_current = env.py3_virtualenv_current
+        env.virtualenv_root = env.py3_virtualenv_root
+    else:
+        env.virtualenv_current = env.py2_virtualenv_current
+        env.virtualenv_root = env.py2_virtualenv_root
+
     env.services = posixpath.join(env.code_root, 'services')
 
 
