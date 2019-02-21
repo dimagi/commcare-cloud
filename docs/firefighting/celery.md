@@ -79,7 +79,11 @@ Using the environments and inventory files to find which machine hosts flower, u
 
 On the dashboard you should see two of the same workers listed as being online, but with different timestamps in their name:
 
+![](./flower-two-active-workers.png)
+
 Check the box next to the worker you saw in the serverup notice (which should also be the one with the older, or smaller, timestamp), and shut it down by selecting Shut Down from the dropdown at the top of the page:
+
+![](./shutdown-worker.png)
 
 
 ## Worker is deadlocked
@@ -134,6 +138,7 @@ If this happens often for the same queue, then it means a longer-term solution i
 
     c. Under "Pool size control", increase the number of child processes that worker has by selecting a number of processes to increase by in the dropdown and click the "Grow" button. For example, if the current concurrency is 4 and you select 2 in the dropdown and click "Grow", the new max concurrency will be 6.
 
+![](./increase-pool-size.png)
 
 Be careful with this - if you increase by too much you may start to see tasks failing with out of memory (SIGSEGV) errors. Rule of thumb is to only increase by 2 processes per 1 GB of memory you can use up, and always try to leave at least 1 GB of memory free on the machine at all times. So if there's 2 GB of memory free, only increase by 2, and if there's 3 GB of memory free, only increase by 4. If you start having out of memory issues after you do this, you'll need to either shrink the pool or restart the worker.
 
