@@ -224,17 +224,19 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
         cmd_fn('git submodule update --init --recursive')
 
 
-def _clone_virtual_env():
+def _clone_virtual_env(virtualenv_current, virtualenv_root):
     print('Cloning virtual env')
     # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
-    current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
-    sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
+    current_virtualenv = sudo('readlink -f {}'.format(virtualenv_current))
+    sudo("virtualenv-clone {} {}".format(current_virtualenv, virtualenv_root))
 
 
 @roles(ROLES_ALL_SRC)
 @parallel
 def clone_virtualenv():
-    _clone_virtual_env()
+    _clone_virtual_env(env.py2_virtualenv_current, env.py2_virtualenv_root)
+    if env.py3_include_venv:
+        _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
 
 def update_virtualenv(full_cluster=True):
@@ -249,23 +251,32 @@ def update_virtualenv(full_cluster=True):
     @roles(roles_to_use)
     @parallel
     def update():
-        requirements = posixpath.join(env.code_root, 'requirements')
+        def _update_virtualenv(virtualenv_current, virtualenv_root, requirements):
+            # Optimization if we have current setup (i.e. not the first deploy)
+            if files.exists(virtualenv_current):
+                _clone_virtual_env(virtualenv_current, virtualenv_root)
 
-        # Optimization if we have current setup (i.e. not the first deploy)
-        if files.exists(env.virtualenv_current):
-            _clone_virtual_env()
+            with cd(env.code_root):
+                cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+                    env.sudo_user, virtualenv_root)
+                # uninstall requirements in uninstall-requirements.txt
+                # but only the ones that are actually installed (checks pip freeze)
+                sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
+                     user=env.sudo_user)
+                pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
+                    posixpath.join(requirements, 'prod-requirements.txt'),
+                    posixpath.join(requirements, 'requirements.txt'),
+                ])
 
-        with cd(env.code_root):
-            cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
-                env.sudo_user, env.virtualenv_root)
-            # uninstall requirements in uninstall-requirements.txt
-            # but only the ones that are actually installed (checks pip freeze)
-            sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
-                 user=env.sudo_user)
-            pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
-                posixpath.join(requirements, 'prod-requirements.txt'),
-                posixpath.join(requirements, 'requirements.txt'),
-            ])
+        _update_virtualenv(
+            env.py2_virtualenv_current, env.py2_virtualenv_root,
+            posixpath.join(env.code_root, 'requirements')
+        )
+        if env.py3_include_venv:
+            _update_virtualenv(
+                env.py3_virtualenv_current, env.py3_virtualenv_root,
+                posixpath.join(env.code_root, 'requirements-python3_6')
+            )
 
     return update
 
