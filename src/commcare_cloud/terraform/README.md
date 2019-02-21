@@ -140,6 +140,15 @@ cchq <env> bootstrap-users --limit openvpn -u openvpnas
 cchq <env> deploy-stack --limit openvpn --skip-check
 ```
 
+If this gives you any trouble, try ssh'ing in again and running
+
+```
+sudo apt update
+sudo apt install python
+```
+
+to install python. <!-- Note: delete this once we're on python3 -->
+
 ### Set up DNS and HTTPS cert
 
 By whatever means you have, make a DNS entry that points a subdomain name
@@ -148,7 +157,7 @@ e.g. if the site is at www.mycchqsite.org, it should be vpn.www.mycchqsite.org
 
 Then run
 ```
-cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv
+cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv -e certificate_email=youremail@example.com
 ```
 
 ### Enable PAM in the web Admin UI
