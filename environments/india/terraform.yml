@@ -6,7 +6,12 @@ environment: "india"
 azs:
   - "ap-south-1a"
   - "ap-south-1b"
+az_codes:
+  - a
+  - b
 vpc_begin_range: "10.203"
+
+openvpn_image: ami-085d67fbfe42a25e7
 
 # copied as example from production
 vpn_connections:
@@ -22,9 +27,9 @@ vpn_connections:
 # copied as example from production
 external_routes:
   - cidr_block: "172.24.16.0/22"
-    gateway_id: "vgw-05c8c22d05e33c5bf"
+    gateway_id: "vgw-0ea47c14639c0bf48"
   - cidr_block: "172.24.32.0/22"
-    gateway_id: "vgw-05c8c22d05e33c5bf"
+    gateway_id: "vgw-0ea47c14639c0bf48"
 
 servers: []
 
