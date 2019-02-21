@@ -12,7 +12,9 @@ celery_processes:
     submission_reprocessing_queue:
       concurrency: 1
     email_queue:
-      concurrency: 2
+      pooling: gevent
+      concurrency: 100
+      num_workers: 2
     repeat_record_queue,sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
