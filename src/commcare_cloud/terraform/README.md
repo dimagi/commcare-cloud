@@ -15,14 +15,20 @@ and the new environment will live in it's own linked account.
     aws_access_key_id = "..."
     aws_secret_access_key = "..."
     ```
+    and then also active MFA for your device.
 5. Add `account_alias: <account_alias>` to `terraform.yml` of your env.
 6. (If the S3 state bucket is under a different account) Go to https://console.aws.amazon.com/iam/home#/security_credential > Account Identifiers
     to get the Canonical User ID for the account, and then in an incognito tab log in
-    under the account where the S3 state bucket lives, and under Permissions give
-    your account access to the bucket using the Canonical User ID. 
-7. Run `cchq <env> terraform init`
-8. Run `cchq <env> terraform apply -target module.commcarehq.module.Users`
-    and respond `yes` when prompted.
+    under the account where the S3 state bucket lives, navigate to the S3 state bucket,
+    and under Permissions > Access Control List > Access for other AWS accounts
+    give your account access to the bucket using the Canonical User ID.
+7. Run
+    ```bash
+    COMMCARE_CLOUD_DEFAULT_USERNAME=root cchq <env> aws-sign-in
+    cchq <env> terraform init
+    AWS_PROFILE=<account_alias>:session aws dlm create-default-role --region <region>
+    cchq <env> terraform apply
+    ```
 9. In AWS console, go to IAM users and click on your own username.
 10. Create access key and copy them to `~/.aws/credentials`,
     replacing the root credentials you had there.
