@@ -369,7 +369,12 @@ resource "aws_security_group" "rds" {
     from_port = "5432"
     to_port = "5432"
     protocol = "tcp"
-    cidr_blocks = ["${aws_subnet.subnet-app-private.*.cidr_block}", "${aws_subnet.subnet-db-private.*.cidr_block}"]
+    cidr_blocks = [
+      "${aws_subnet.subnet-app-private.*.cidr_block}",
+      "${aws_subnet.subnet-db-private.*.cidr_block}",
+      # proxy needs access for websockets
+      "${aws_subnet.subnet-public.*.cidr_block}"
+    ]
     ipv6_cidr_blocks = ["::/0"]
   }
 
