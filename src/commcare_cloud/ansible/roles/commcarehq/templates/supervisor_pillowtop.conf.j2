@@ -3,7 +3,7 @@
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
 environment=TMPDIR="{{ encrypted_tmp }}"
-command={{ virtualenv_home }}/bin/python {{ code_home }}/manage.py run_ptop --pillow-name {{ pillow_name }} --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }} --process-number={{ num_process }}{% if params.get('processor_chunk_size') %} --processor-chunk-size={{params.get('processor_chunk_size')}}{% endif %}
+command={% if PY3_RUN_PILLOWTOP %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/python {{ code_home }}/manage.py run_ptop --pillow-name {{ pillow_name }} --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }} --process-number={{ num_process }}{% if params.get('processor_chunk_size') %} --processor-chunk-size={{params.get('processor_chunk_size')}}{% endif %}
 
 directory={{ code_home }}
 user=cchq

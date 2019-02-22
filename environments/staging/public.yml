@@ -109,3 +109,5 @@ localsettings:
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
+
+PY3_RUN_PILLOWTOP: False
