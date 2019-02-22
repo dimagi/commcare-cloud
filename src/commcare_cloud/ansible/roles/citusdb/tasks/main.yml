@@ -2,10 +2,21 @@
  - name: Add CitusDB repo
    shell: 'curl https://install.citusdata.com/community/deb.sh | bash'
 
+ - name: generate en_US.UTF-8 locale
+   locale_gen: name='en_US.UTF-8' state=present
+
  - name: Install CitusDB-PostgreSQL
    apt:
     name: "postgresql-{{postgresql_citus_version}}-citus-{{citusdb_version}}"
     state: present
+
+ - name: Install PostgreSQL & dependencies (bionic)
+   apt: name="{{ item }}" state=present
+   with_items:
+    - python3-docutils  # required for building pghashlib
+    - python3-psycopg2
+   when: ansible_distribution_version == '18.04'
+
 
  - name: Check for original postgresql directory
    stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_citus_version  }}/{{ postgresql_cluster_name }}/PG_VERSION"
@@ -51,3 +62,14 @@
    template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
    tags: postgresql_conf
    notify: Reload postgres
+
+ - meta: flush_handlers
+
+ - name: Set up PostgreSQL DBs
+   import_tasks: ../../postgresql/tasks/set_up_dbs.yml
+   vars:
+    db_is_remote: no
+    postgresql_host: "{{ inventory_hostname }}"
+
+# restart / reload if necessary to make sure replication slot config updated
+ - meta: flush_handlers
