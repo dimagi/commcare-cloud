@@ -5,6 +5,11 @@ newest first.
 
 ## Changelog
 
+### **2019-02-22** [Separate celery datadog http check](0015-separate-celery-datadog-http-check.md)
+This adds a specific http check for the celery check (serverup.txt?only=celery)
+to datadog.
+Environments that are not relying on datadog for monitoring can ignore this change.
+
 ### **2019-02-11** [Add tag to datadog http checks](0014-add-tag-to-datadog-http-checks.md)
 This change adds "check_type" tag to the http_check datadog integration.
 This change applies only to envs using datadog for monitoring.
