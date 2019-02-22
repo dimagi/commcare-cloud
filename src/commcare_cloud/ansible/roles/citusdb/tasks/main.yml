@@ -73,3 +73,7 @@
 
 # restart / reload if necessary to make sure replication slot config updated
  - meta: flush_handlers
+
+ - name: setup_pgbouncer
+   import_tasks: pgbouncer.yml
+   when: citusdb_cordinator
