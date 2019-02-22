@@ -1,6 +1,8 @@
 ---
 postgresql_citus_version: '11'
 citusdb_version: 8.1
+citusdb_cordinator: False
+
 postgresql_cluster_name: 'main'
 postgresql_port: 5432
 postgresql_ssl_enabled: False
