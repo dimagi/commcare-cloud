@@ -2,4 +2,5 @@ code_releases: "{{ www_home }}/releases"
 code_source: "{{ code_releases }}/{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}.{{ ansible_date_time.minute }}"
 virtualenv_source: "{{ code_source }}/python_env"
 virtualenv_home: "{{ code_home }}/python_env"
+py3_virtualenv_home: "{{ code_home }}/python_env-3_6"
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
