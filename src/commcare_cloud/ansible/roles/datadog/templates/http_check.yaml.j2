@@ -11,6 +11,12 @@ instances:
     include_content: true
     tags:
       - check_type:serverup
+  - name: {{ env_monitoring_id }} Celery
+    url: https://{{ SITE_HOST }}/serverup.txt?only=celery
+    check_certificate_expiration: false
+    timeout: 30
+    tags:
+      - check_type:celery
 {% if monitor_celery_heartbeat|default(True) %}
   - name: {{ env_monitoring_id }} Heartbeat
     url: https://{{ SITE_HOST }}/serverup.txt?only=heartbeat
