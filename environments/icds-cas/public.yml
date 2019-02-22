@@ -28,6 +28,7 @@ swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
+redis_auto_aof_rewrite_percentage: "50"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 kafka_log_retention: 1440 # 60 days
@@ -283,6 +284,9 @@ localsettings:
     'static-icds-cas-static-mpr_3ii_person_cases': 'static-icds-cas-static-mpr_3ii_person_cases-optimized'
     'static-icds-cas-static-asr_2_3_person_cases': 'static-icds-cas-static-asr_2_3_person_cases-optimized'
     'static-icds-cas-static-mpr_3i_person_cases': 'static-icds-cas-static-mpr_3i_person_cases-optimized'
+    'static-icds-cas-static-mpr_2a_deaths': 'static-icds-cas-static-mpr_2a_deaths-optimized'
+    'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-mpr_2a_person_cases-optimized'
+    'static-icds-cas-static-mpr_2bi_preg_delivery_death_list': 'static-icds-cas-static-mpr_2bi_preg_delivery_death_list-optimized'
     # new UCR format from LS app
     'static-icds-cas-static-mpr_10a_children_referred': 'static-icds-cas-static-mpr_10a_children_referred-optimized'
     'static-icds-cas-static-mpr_10b_pregnancies_referred': 'static-icds-cas-static-mpr_10b_pregnancies_referred-optimized'
