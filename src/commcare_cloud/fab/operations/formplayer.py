@@ -15,7 +15,7 @@ from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 def build_formplayer(use_current_release=False):
     """
     the dir structure ends up looking like this:
-    ~/www/$ENV/current/fromplayer_build
+    ~/www/$ENV/current/formplayer_build
         formplayer__2017-08-23_16.16/
             libs/formplayer.jar
         current -> formplayer__2017-08-23_16.16
