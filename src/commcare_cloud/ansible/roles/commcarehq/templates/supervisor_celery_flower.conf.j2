@@ -1,5 +1,5 @@
 [program:{{ project }}-{{ deploy_env }}-celery_flower]
-command={{ virtualenv_home }}/bin/python {{ code_home }}/manage.py celery flower --address=0.0.0.0 --port={{ app_processes_config.flower_port }}
+command={{ virtualenv_home }}/bin/celery -A corehq flower --address=0.0.0.0 --port={{ app_processes_config.flower_port }}
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1
