@@ -37,7 +37,7 @@
     dest: /etc/dd-agent/checks.d/pgbouncer_custom.py
     sha256sum: "{{ datadog_pgbouncer_custom_sha256sum }}"
     force: yes
-  when: datadog_integration_pgbouncer
+  when: datadog_integration_pgbouncer_custom
   notify: restart datadog
   tags:
     - datadog_integrations
