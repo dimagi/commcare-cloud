@@ -6,6 +6,7 @@ log_home: "{{ www_home }}/log"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
+py3_virtualenv_home: "{{ code_home }}/python_env-3_6"
 encrypted_root: "/opt/data"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
@@ -80,6 +81,7 @@ datadog_integration_kafka: false
 datadog_integration_kafka_consumer: false
 datadog_integration_nginx: false
 datadog_integration_pgbouncer: false
+datadog_integration_pgbouncer_custom: false
 datadog_integration_postgres: false
 datadog_integration_postgres_receiver: false
 datadog_integration_rabbitmq: false
