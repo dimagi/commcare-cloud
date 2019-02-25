@@ -17,13 +17,6 @@ postgresql_wal_keep_segments: 8
 
 allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 
-pgbouncer_port: 6432
-pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"
-pgbouncer_config_home: /etc/pgbouncer
-pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
-pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
-pgbouncer_hba: "{{ pgbouncer_config_home }}/pgbouncer_hba.conf"
-
 # defaults should match the postgresql defaults
 postgresql_max_connections: 20
 postgresql_work_mem: '8MB'
@@ -38,11 +31,5 @@ postgresql_default_statistics_target: '100'
 postgresql_max_wal_size: '256MB'
 postgresql_slow_log_threshold: 300
 postgresql_random_page_cost: 4.0
-
-pgbouncer_max_connections: 100
-pgbouncer_default_pool: 15
-pgbouncer_reserve_pool: 4
-pgbouncer_pool_timeout: 2
-pgbouncer_pool_mode: session
 
 allow_direct_postgresql_access: no
