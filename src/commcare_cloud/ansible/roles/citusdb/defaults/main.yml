@@ -51,3 +51,6 @@ pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
 
 allow_direct_postgresql_access: no
+
+
+db_is_remote: no
