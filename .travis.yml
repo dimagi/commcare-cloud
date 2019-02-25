@@ -33,6 +33,7 @@ install:
   - "source control/init.sh"
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
+  - "pip install -r requirements.txt"
   - "pip install -e .[test]"
   - mkdir ~/.aws
   - touch ~/.aws/config
