@@ -143,6 +143,73 @@ If it's a global database (like _global_changes), then you may need to compact t
 
 `curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>`
 
+## DefaultChangeFeedPillow is millions of changes behind
+
+
+### Background
+Most of our change feed processors (pillows) read from Kafka, but a small number of them serve
+to copy changes from the CouchDB `_changes` feeds _into_ Kafka,
+the main such pillow being `DefaultChangeFeedPillow`.
+These pillows store as a checkpoint a CouchDB "seq", a long string that references a place
+in the _changes feed. While these `seq`s have the illusion of durability
+(that is, if couch gives you one, then couch will remember it when you pass it back)
+there are actually a number of situations in which CouchDB no longer recognizes a `seq`
+that it previously gave you. Two known examples of this are:
+
+- If you have migrated to a different CouchDB instance using replication, it will _not_
+    honor a `seq` that the old instance gave you.
+- If you follow the proper steps for draining a node of shards (data) and then remove it,
+    some `seq`s may be lost. 
+
+When couch receives a `seq` it doesn't recognize, it doesn't return an error.
+Instead it gives you changes _starting at the beginning of time_.
+This results in what we sometimes call a "rewind", when a couch change feed processor (pillow)
+suddenly becomes millions of changes behind.
+
+
+### What to do
+If you encounter a pillow rewind, you can fix it by
+- figuring out when the rewind happened,
+- finding a recent CouchDB change `seq` from before the rewind happened, and
+- resetting the pillow checkpoint to this "good" `seq`
+
+
+#### Figure out when the rewind happened
+
+Look at https://app.datadoghq.com/dashboard/ewu-jyr-udt/change-feeds-pillows for the right
+environment, and look for a huge jump in needs_processed for DefaultChangeFeedPillow.
+
+#### Find a recent `seq`
+Run
+```
+curl $couch/commcarehq/_changes?descending=true | grep '"1-"'
+```
+This will start at the latest change and go backwards, filtering for "1-" because
+what we want to find is a doc that has only been touched once
+(so we can easily reason with timestamps in the doc).
+Start looking up the docs in couch by doc id,
+until you find a doc with an early enough timestamp
+(like a form with `received_on`). You're looking for a recent timestamp that happened
+at a time _before_ the rewind happened.
+
+#### Reset the pillow checkpoint to this "good" seq
+
+Run
+```
+cchq <env> django-manage shell --tmux
+```
+to get a live production shell on the `django_manage` machine,
+and manually change the checkpoint using something like the following lines
+(using the seq you found above instead, of course):
+
+```
+# in django shell
+seq = '131585621-g1AAAAKzeJzLYWBg4MhgTmEQTc4vTc5ISXIwNNAzMjDSMzHQMzQ2zQFKMyUyJMn___8_K4M5ieFXGmMuUIw9JdkkxdjEMoVBBFOfqTkuA40MwAYmKQDJJHu4mb_cwWamJZumpiaa49JKyFAHkKHxcEP31oMNNTJMSbIwSCbX0ASQofUwQ3_-uQI21MwkKcnYxAyfoVjCxdIcbGYeC5BkaABSQGPnQxw7yQZibpJpooGFGQ7dxBi7AGLsfrCxfxKPg401MDI2MzClxNgDEGPvQ1zrWwA2NsnCyCItLYkCYx9AjIUE7p8qSDIAutXQwMwAV5LMAgCrhbmz'
+from pillowtop.utils import get_pillow_by_name
+p = get_pillow_by_name('DefaultChangeFeedPillow')
+p.checkpoint.update_to(seq)
+```
+
 # Nginx
 
 Occasionally a staging deploy fails because during a previous deploy, there was an issue uncommenting and re-commenting some lines in the nginx conf.
