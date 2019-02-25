@@ -3,7 +3,7 @@ dev_users:
     - bderenzi
     - mtheis
     - esu
-    - ymsosa
     - slee
     - kchen
-  absent: []
+  absent:
+    - ymsosa
