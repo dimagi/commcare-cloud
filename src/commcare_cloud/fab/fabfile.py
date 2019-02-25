@@ -399,7 +399,6 @@ def kill_stale_celery_workers():
 def deploy_formplayer():
     execute(announce_formplayer_deploy_start)
     execute(formplayer.build_formplayer, True)
-    execute(supervisor.restart_formplayer)
 
 
 @task
