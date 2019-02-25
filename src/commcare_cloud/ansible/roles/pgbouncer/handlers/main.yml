@@ -1,0 +1,16 @@
+---
+- name: Start pgbouncer
+  become: yes
+  action: service name=pgbouncer state=started
+
+- name: Restart pgbouncer
+  become: yes
+  action: service name=pgbouncer state=restarted
+
+- name: Reload pgbouncer
+  become: yes
+  action: service name=pgbouncer state=reloaded
+
+- name: Run ldconfig
+  become: yes
+  action: command ldconfig
