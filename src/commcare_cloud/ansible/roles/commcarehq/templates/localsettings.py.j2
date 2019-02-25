@@ -350,7 +350,6 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-CELERY_RESULT_BACKEND = '{{ CELERY_RESULT_BACKEND }}'
 CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 {% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
@@ -398,6 +397,8 @@ CACHES = {
     'default': redis_cache,
     'redis': redis_cache,
 }
+
+CELERY_RESULT_BACKEND = redis_cache['LOCATION']
 
 ELASTICSEARCH_HOSTS = [
     {% for es_host in groups.elasticsearch -%}
