@@ -10,7 +10,3 @@
 - name: Reload postgres
   become: yes
   action: service name=postgresql args="{{ postgresql_version }}" state=reloaded
-
-- name: Run ldconfig
-  become: yes
-  action: command ldconfig
