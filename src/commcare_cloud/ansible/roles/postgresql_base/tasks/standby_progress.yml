@@ -1,0 +1,21 @@
+- name: Check sync status
+  async_status:
+    jid: "{{ async_results.ansible_job_id }}"
+  register: async_poll_results
+  when: not async_poll_results.get('finished', True)
+
+- name: get standby size
+  shell: du -s {{ postgresql_home }}
+  register: standby_size_output
+  when: not async_poll_results.get('finished', True)
+
+- debug:
+    msg:
+      - "Progress = {{ (100 * standby_size_output.stdout.split()[0]|int / master_size_output.stdout.split()[0]|int)|int }}%"
+      - "Master size: {{ master_size_output.stdout.split()[0]|int }}"
+      - "Standby size: {{ standby_size_output.stdout.split()[0]|int }}"
+  when: not async_poll_results.get('finished', True)
+
+- pause:
+    seconds: 300
+  when: not async_poll_results.get('finished', True)
