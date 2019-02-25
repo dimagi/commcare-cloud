@@ -29,7 +29,7 @@
   tasks:
     - name: Remote PostgreSQL
       include_role:
-        name: postgresql
+        name: postgresql_base
         tasks_from: set_up_dbs.yml
       with_items: "{{ groups.remote_postgresql | default([]) }}"
       loop_control:

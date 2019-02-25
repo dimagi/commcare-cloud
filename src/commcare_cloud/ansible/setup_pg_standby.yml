@@ -75,7 +75,9 @@
       when: not ansible_check_mode
 
     - name: create progress tasks
-      include_tasks: roles/postgresql/tasks/standby_progress.yml
+      include_role:
+        name: postgresql_base
+        tasks_from: standby_progress.yml
       with_items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
       when: not ansible_check_mode
 
