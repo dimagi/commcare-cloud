@@ -1,0 +1,30 @@
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+host    all             all             127.0.0.1/32            md5
+local   all             all                                     md5
+
+{% if cluster_ip_range is defined %}
+{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
+{% set db = db_list[0] %}
+{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% for user_key in postgres_users | reject('in', ['netvault', 'replication'])  %}
+{% set user = postgres_users[user_key] %}
+host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.username }}    {{ cluster_ip_range }}    md5
+{% endfor %}
+ {% endif %}
+{% endfor %}
+{%  else %}
+{% for host in (groups['formplayer'] + groups.get('touchforms', []) + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups.get('pg_standby',[]) + groups.get('airflow', [])) | unique %}
+# {{ host }}
+{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
+{% set db = db_list[0] %}
+{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% if host | ipaddr %}
+host   {{ db.name }}	{{ db.user }}	{{ host }}/32   md5
+{% else %}
+host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endif %}
