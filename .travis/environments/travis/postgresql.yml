@@ -5,7 +5,7 @@ dbs:
   synclogs: null
   form_processing: null
 
-override_postgres:
+postgres_override:
   postgresql_version: '9.6'
   postgresql_log_directory: "{{ encrypted_root }}/pg_log"
   postgresql_ssl_enabled: False
