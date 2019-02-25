@@ -4,11 +4,13 @@ host_settings:
   rds_pg0:
     port: 5432
 
-override:
+pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_max_connections: 600
-  postgresql_max_connections: 300
   pgbouncer_default_pool: 290
+
+postgres_override:
+  postgresql_max_connections: 300
 
 dbs:
   main:

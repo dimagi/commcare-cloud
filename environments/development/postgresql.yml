@@ -1,7 +1,7 @@
 SEPARATE_SYNCLOGS_DB: False
 SEPARATE_FORM_PROCESSING_DBS: False
 
-override:
+postgres_override:
   postgresql_effective_cache_size: 4GB
   postgresql_log_directory: '{{ encrypted_root }}/pg_log'
   postgresql_max_stack_depth: 6MB
