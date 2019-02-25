@@ -24,6 +24,12 @@
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
+- name: pgbouncer
+  hosts: postgresql:pg_standby
+  become: true
+  roles:
+    - {role: pgbouncer, tags: 'pgbouncer'}
+
 - name: Remote PostgreSQL (e.g. Amazon RDS)
   hosts: django_manage
   tasks:
