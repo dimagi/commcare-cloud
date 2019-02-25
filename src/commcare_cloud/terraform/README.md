@@ -97,7 +97,8 @@ and click Save.
 Now you will be able to SSH into the VM.
 
 To make a cert, you'll also need to open port 80, so click Add Rule again,
-select Type HTTP, and Source "Anywhere", and click Save.
+select Type HTTP, **Source "Anywhere"** (needs to be publicly accessible),
+and click Save.
 
 Finally, make sure to run
 
@@ -169,7 +170,8 @@ In PAM authentication mode,
 enabling a user just requires setting their linux user's password with `passwd`.
 
 Go to `https://<vpn-subdomain-name>/admin` in your browser and log in with `openvpn`/`<password from above>`.
-Then navigate to /admin/pam_configuration and click Use PAM.
+Then navigate to /admin/pam_configuration and click Use PAM,
+and then click Update Running Server.
 
 ### Activate your user
 
@@ -179,10 +181,11 @@ To activate a user, run
 cchq <env> openvpn-activate-user <username>
 ```
 
-and then have the user (in this case, yourself) change the password with
+and then have the user (in this case, yourself)
+claim the user and set their password with
 
 ```
-cchq <env> ssh openvpn -t passwd
+cchq india openvpn-claim-user <username>
 ```
 
 providing first the ansible sudo user password, and then the new (secure!) password
