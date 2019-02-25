@@ -4,19 +4,13 @@
 - name: Add PosgreSQL apt repo
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main' state=present
   register: add_postgresql_repo
-  tags:
-    - pgbouncer
 
 - name: Add PosgreSQL apt key
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
-  tags:
-    - pgbouncer
 
 - name: Update package list
   apt: update_cache=yes
   when: add_postgresql_repo|changed
-  tags:
-    - pgbouncer
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present

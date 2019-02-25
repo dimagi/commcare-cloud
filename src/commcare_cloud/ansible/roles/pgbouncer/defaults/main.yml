@@ -5,7 +5,6 @@ pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
 pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
 pgbouncer_hba: "{{ pgbouncer_config_home }}/pgbouncer_hba.conf"
 
-
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4

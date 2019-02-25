@@ -10,7 +10,3 @@
 - name: Reload pgbouncer
   become: yes
   action: service name=pgbouncer state=reloaded
-
-- name: Run ldconfig
-  become: yes
-  action: command ldconfig
