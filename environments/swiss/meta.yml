@@ -3,4 +3,5 @@ env_monitoring_id: swiss
 users:
   - dimagi
   - fissionlabs
+  - swiss
 slack_alerts_channel: alerts-swiss

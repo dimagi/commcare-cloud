@@ -5,11 +5,16 @@ newest first.
 
 ## Changelog
 
-### **2019-02-22** [Update supervisor confs to invoke celery directly](0015-invoke-celery-directly.md)
+### **2019-02-22** [Update supervisor confs to invoke celery directly](0016-invoke-celery-directly.md)
 Upgrading to celery 4.x requires removing the dependency on
 django-celery, which means that the celery management command
 becomes unavailable.  This prepares for that by invoking the
 celery command directly.
+
+### **2019-02-22** [Separate celery datadog http check](0015-separate-celery-datadog-http-check.md)
+This adds a specific http check for the celery check (serverup.txt?only=celery)
+to datadog.
+Environments that are not relying on datadog for monitoring can ignore this change.
 
 ### **2019-02-11** [Add tag to datadog http checks](0014-add-tag-to-datadog-http-checks.md)
 This change adds "check_type" tag to the http_check datadog integration.

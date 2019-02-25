@@ -1,4 +1,4 @@
-# 15. Update supervisor confs to invoke celery directly
+# 16. Update supervisor confs to invoke celery directly
 
 **Date:** 2019-02-22
 
