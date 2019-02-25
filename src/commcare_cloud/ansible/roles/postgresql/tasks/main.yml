@@ -140,6 +140,13 @@
     - postgres_users
     - replication
 
+# Calling Pgbouncer roles
+- name: Setup Pgbouncer
+  include_role:
+    name: pgbouncer
+  tags:
+    - pgbouncer
+
 - name: update "recovery.conf"
   template:
     src: roles/postgresql/templates/recovery.conf.j2
@@ -148,59 +155,6 @@
   tags:
     - postgres_users
     - replication
-
-- name: Install pgbouncer
-  apt: name=pgbouncer state=present
-  notify: Start pgbouncer
-  tags:
-    - pgbouncer
-
-- name: pgbouncer configuration
-  template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - pgbouncer_conf
-
-- name: pgbouncer users
-  template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - pgbouncer_users
-
-- name: pgbouncer hba
-  template: src=pgbouncer_hba.conf.j2 dest="{{ pgbouncer_hba }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - pgbouncer_hba
-
-- name: pgbouncer defaults
-  template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
-  tags:
-    - pgbouncer
-
-- name: Make sure nofile ulimit is high
-  lineinfile:
-    path: /etc/default/pgbouncer
-    regexp: '^ULIMIT='
-    line: 'ULIMIT="-n 65536"'
-  notify: Restart pgbouncer
-  tags:
-    - pgbouncer
-
-- name: pgbouncer init script
-  template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
-  notify: Restart pgbouncer
-  tags:
-    - pgbouncer
-
-- name: Restarts pgbouncer (affect max open files limit)
-  command: /bin/true
-  notify: Restart pgbouncer
-  when: no_tags is not defined
-  tags: after-reboot
 
 - name: check if pghashlib installed
   stat:
@@ -320,24 +274,7 @@
   notify: reload monit
   tags: monit
 
-- name: pgbouncer monit config
-  become: yes
-  template:
-    src: "monit.pgbouncer.j2"
-    dest: "/etc/monit/conf.d/pgbouncer"
-    group: root
-    owner: root
-    mode: 0640
-  notify: reload monit
-  tags: monit
-
 - meta: flush_handlers
-
-- monit:
-    name: pgbouncer
-    state: monitored
-  tags: monit
-  ignore_errors: "{{ ansible_check_mode }}"
 
 - monit:
     name: postgresql
