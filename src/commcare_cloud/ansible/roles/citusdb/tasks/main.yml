@@ -77,3 +77,19 @@
  - name: setup_pgbouncer
    import_tasks: pgbouncer.yml
    when: citusdb_cordinator
+
+ - name: Add Citus Extension on All Database
+   become: yes
+   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+   postgresql_ext:
+     name: citus
+     db: "{{ item.name }}"
+     login_host: "{{ db_is_remote and postgresql_host or omit }}"
+     login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+     login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+   with_items: "{{ postgresql_dbs.all }}"
+   when: item.host == inventory_hostname
+
+ - name: Setup citusdb_cordinator
+   import_tasks: setup_cordinator.yml 
+   tags: citusdb_cordinator
