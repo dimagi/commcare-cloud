@@ -5,6 +5,13 @@ newest first.
 
 ## Changelog
 
+### **2019-02-26** [Split pgbouncer vars from postgresql vars](0015-split_pgbouncer_postgresql_vars.md)
+This change extracts a new role from the existing postgresql role for installing
+and configuring pgbouncer.
+
+As a result of this change the `postgresql.yml` environment configuration file
+needs to be changed to split out the postgresql vars from the pgbouncer vars.
+
 ### **2019-02-11** [Add tag to datadog http checks](0014-add-tag-to-datadog-http-checks.md)
 This change adds "check_type" tag to the http_check datadog integration.
 This change applies only to envs using datadog for monitoring.
