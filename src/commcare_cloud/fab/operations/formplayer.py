@@ -3,12 +3,28 @@ import datetime
 import os
 
 from fabric import utils
-from fabric.api import roles, env, sudo
+from fabric.api import roles, env, sudo, settings
 from fabric.context_managers import cd
 from fabric.contrib import console
 from fabric.contrib import files
 
+from commcare_cloud.fab.operations import supervisor
 from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
+
+
+def get_formplayer_build_url(env):
+    if env.deploy_env == 'staging':
+        return 'https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful/formplayer.jar'
+    else:
+        return 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
+
+
+def _formplayer_jars_differ(build_dir, release_1, release_2):
+    with cd(build_dir):
+        with settings(warn_only=True):
+            result = sudo("diff {}/libs/formplayer.jar {}/libs/formplayer.jar".format(release_1, release_2))
+    # 1 means there's a diff, 2 means one of the files doesn't exist
+    return result.return_code in (1, 2)
 
 
 @roles(ROLES_FORMPLAYER)
@@ -29,18 +45,22 @@ def build_formplayer(use_current_release=False):
     if not files.exists(build_dir):
         sudo('mkdir {}'.format(build_dir))
 
-    if env.deploy_env == 'staging':
-        jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful/formplayer.jar'
-    else:
-        jenkins_formplayer_build_url = 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
+    jenkins_formplayer_build_url = get_formplayer_build_url(env)
 
     release_name = 'formplayer__{}'.format(datetime.datetime.utcnow().strftime(DATE_FMT))
     release_name_libs = os.path.join(release_name, 'libs')
     with cd(build_dir):
         sudo('mkdir -p {}'.format(release_name_libs))
         sudo("wget -nv '{}' -O {}/formplayer.jar".format(jenkins_formplayer_build_url, release_name_libs))
-        sudo('ln -sfn {} current'.format(release_name))
-        sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
+
+    # since restarting formplayer currently causes Web Apps downtime
+    # only relink current and restart if the jar actually differs
+    if _formplayer_jars_differ(build_dir, 'current', release_name):
+        with cd(build_dir):
+            sudo('ln -sfn {} current'.format(release_name))
+            sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
+        env.NEEDS_FORMPLAYER_RESTART = True
+
 
 
 @roles(ROLES_FORMPLAYER)

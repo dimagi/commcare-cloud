@@ -1,4 +1,4 @@
-# 15. Split pgbouncer vars from postgresql vars
+# 16. Split pgbouncer vars from postgresql vars
 
 **Date:** 2019-02-26
 

@@ -1,0 +1,22 @@
+title: Separate celery datadog http check
+key: separate-celery-datadog-http-check.yml
+date: 2019-02-22
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version: 81325fbd9e3131c710179f7246dbe9caccb45154
+context: |
+  This adds a specific http check for the celery check (serverup.txt?only=celery)
+  to datadog.
+  Environments that are not relying on datadog for monitoring can ignore this change.
+
+details: |
+  This will result in three distinct http checks:
+    - "serverup" endpoint (high severity)
+    - "celery" endpoint (usually lower severity)
+    - "heartbeat" endpoint (usually lower severity)
+
+update_steps: |
+  1. Update datadog integrations on the proxy machine:
+  ```bash
+  commcare-cloud <env> deploy-stack --limit=proxy --tags=datadog_integrations
+  ```
