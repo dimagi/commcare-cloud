@@ -5,6 +5,12 @@ newest first.
 
 ## Changelog
 
+### **2019-02-26** [Update supervisor confs to invoke celery directly](0017-use-redis-celery-results-backend.md)
+Upgrading to celery 4.x requires removing the dependency on
+django-celery, which means that the results backend provided
+by django-celery has to be replaced.  This change configures
+celery to use the redis results backend instead.
+
 ### **2019-02-22** [Update supervisor confs to invoke celery directly](0016-invoke-celery-directly.md)
 Upgrading to celery 4.x requires removing the dependency on
 django-celery, which means that the celery management command

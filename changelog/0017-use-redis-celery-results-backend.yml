@@ -1,0 +1,22 @@
+title: Update supervisor confs to invoke celery directly
+key: invoke-celery-directly
+date: 2019-02-26
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Upgrading to celery 4.x requires removing the dependency on
+  django-celery, which means that the results backend provided
+  by django-celery has to be replaced.  This change configures
+  celery to use the redis results backend instead.
+
+details: |
+  This change must be applied before the django-celery dependency
+  is removed from the commcare-hq library, otherwise celery
+  will not be able to store task results.
+
+update_steps: |
+  Update supervisor confs:
+  ```bash
+  commcare-cloud <env> update-config
+  ```
