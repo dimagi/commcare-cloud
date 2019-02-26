@@ -25,6 +25,6 @@ should no longer require human intervention.
 ## Steps to update
 To apply, simply run
 ```
-commcare-cloud <env> ansible-playbook deploy_proxy.yml
+commcare-cloud <env> ansible-playbook deploy_proxy.yml --tags=setup_letsencrypt
 ```
 using the latest version of commcare-cloud.
