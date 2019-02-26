@@ -293,8 +293,5 @@ localsettings:
     'static-icds-cas-static-mpr_3_children_registered': 'static-icds-cas-static-mpr_3_children_registered-optimized'
     'static-icds-cas-static-asr_2_3_beneficiaries': 'static-icds-cas-static-asr_2_3_beneficiaries-optimized'
     'static-icds-cas-static-mpr_3i_pregnancies': 'static-icds-cas-static-mpr_3i_pregnancies-optimized'
-    'static-icds-cas-static-mpr_6b_child_health_cases_v2': 'static-icds-cas-static-custom_sql_mpr_6b_child_health_cases_v2'
-    'static-icds-cas-static-mpr_6ac_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_6ac_child_health_cases_v2'
-    'static-icds-cas-static-mpr_5_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_5_child_health_cases_v2'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
