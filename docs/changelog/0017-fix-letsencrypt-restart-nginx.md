@@ -1,4 +1,4 @@
-# 16. Fix to restart nginx after every letsencrypt cert auto-renewal
+# 17. Fix to restart nginx after every letsencrypt cert auto-renewal
 
 **Date:** 2019-02-26
 
