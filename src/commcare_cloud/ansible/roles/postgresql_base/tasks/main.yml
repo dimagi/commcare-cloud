@@ -2,11 +2,11 @@
 # roles/postgresql/tasks/main.yml
 
 - name: Add PosgreSQL apt repo
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main' state=present
+  apt_repository: repo='{{ postgresql_apt_repo }}' state=present
   register: add_postgresql_repo
 
 - name: Add PosgreSQL apt key
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+  apt_key: url={{ postgresql_apt_key_url }} state=present
 
 - name: Update package list
   apt: update_cache=yes
@@ -15,10 +15,12 @@
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present
 
-- name: Install PostgreSQL & dependencies
+- name: Install PostgreSQL
+  apt: name="{{postgresql_binary}}" state=present
+
+- name: Install dependencies
   apt: name="{{ item }}" state=present
   with_items:
-    - "postgresql-{{ postgresql_version }}"
     - "postgresql-{{ postgresql_version }}-plproxy"
     - "postgresql-contrib-{{ postgresql_version }}"
     - "postgresql-server-dev-{{ postgresql_version }}"
