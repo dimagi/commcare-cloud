@@ -54,14 +54,21 @@
         name: nginx
         state: reloaded
 
-    - name: Add certbot cron
+    # Certbot auto installs this cron file,
+    # but we want to replace it with our own
+    - name: Remove default certbot cron
+      cron:
+        cron_file: certbot
+        state: absent
+
+    - name: Add custom_certbot cron
       cron:
         name: "Certbot Renew"
         job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew --renew-hook '/etc/init.d/nginx reload'"
         minute: "0"
-        hour: "0/12"
+        hour: "*/12"
         user: root
-        cron_file: certbot
+        cron_file: custom_certbot
 
     # Cleanup
     - name: Remove "Reload Nginx to reread SSL" cron job
