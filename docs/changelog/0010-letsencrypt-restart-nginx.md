@@ -11,7 +11,7 @@ This change is not known to be dependent on any particular version of CommCare.
 
 ## Change Context
 **Update 2019-02-26**: There was a bug in this fix and it has been superceded by
-[Fix to restart nginx after every letsencrypt cert auto-renewal](0016-fix-letsencrypt-restart-nginx).
+[Fix to restart nginx after every letsencrypt cert auto-renewal](0017-fix-letsencrypt-restart-nginx).
 
 Previously you had to manually restart nginx every time letsencrypt auto-renewed,
 which was about every two months.

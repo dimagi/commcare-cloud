@@ -23,7 +23,8 @@ def _formplayer_jars_differ(build_dir, release_1, release_2):
     with cd(build_dir):
         with settings(warn_only=True):
             result = sudo("diff {}/libs/formplayer.jar {}/libs/formplayer.jar".format(release_1, release_2))
-    return result.return_code == 1
+    # 1 means there's a diff, 2 means one of the files doesn't exist
+    return result.return_code in (1, 2)
 
 
 @roles(ROLES_FORMPLAYER)
@@ -58,7 +59,8 @@ def build_formplayer(use_current_release=False):
         with cd(build_dir):
             sudo('ln -sfn {} current'.format(release_name))
             sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
-        supervisor.restart_formplayer()
+        env.NEEDS_FORMPLAYER_RESTART = True
+
 
 
 @roles(ROLES_FORMPLAYER)

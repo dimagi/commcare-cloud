@@ -412,13 +412,11 @@ def copy_localsettings(full_cluster=True):
 @parallel
 @roles(ROLES_FORMPLAYER)
 def copy_formplayer_properties():
-    sudo('mkdir -p {}'.format(os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)))
-    for filename in ['application.properties', 'sentry.properties']:
-        sudo(
-            'cp {} {}'.format(
-                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, filename),
-                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-            ))
+    sudo(
+        'cp -r {} {}'.format(
+            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
+            os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
+        ))
 
 
 @parallel
