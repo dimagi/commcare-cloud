@@ -298,3 +298,12 @@ localsettings:
     'static-icds-cas-static-mpr_5_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_5_child_health_cases_v2'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
+
+PY3_RUN_CELERY_BEAT: False
+PY3_RUN_CELERY_FLOWER: False
+PY3_RUN_CELERY_WORKER: False
+PY3_RUN_ERRAND_BOY: False
+PY3_RUN_GUNICORN: False
+PY3_RUN_MANAGEMENT: False
+PY3_RUN_PILLOWTOP: False
+PY3_RUN_WEBSOCKETS: False
