@@ -185,7 +185,7 @@ and then have the user (in this case, yourself)
 claim the user and set their password with
 
 ```
-cchq india openvpn-claim-user <username>
+cchq <env> openvpn-claim-user <username>
 ```
 
 providing first the ansible sudo user password, and then the new (secure!) password
