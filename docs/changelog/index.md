@@ -5,6 +5,12 @@ newest first.
 
 ## Changelog
 
+### **2019-02-26** [Fix to restart nginx after every letsencrypt cert auto-renewal](0016-fix-letsencrypt-restart-nginx.md)
+Previously you had to manually restart nginx every time letsencrypt auto-renewed,
+which was about every two months. We believed we had fixed this with
+[Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx),
+but there was an error in our setup at that time that made it not work as intended.
+
 ### **2019-02-22** [Separate celery datadog http check](0015-separate-celery-datadog-http-check.md)
 This adds a specific http check for the celery check (serverup.txt?only=celery)
 to datadog.
@@ -31,6 +37,9 @@ and processes were unable to write to it.
 This changes the directory to be owned by cchq, allowing our processes to write to the file.
 
 ### **2019-01-02** [Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx.md)
+**Update 2019-02-26**: There was a bug in this fix and it has been superceded by
+[Fix to restart nginx after every letsencrypt cert auto-renewal](0016-fix-letsencrypt-restart-nginx).
+
 Previously you had to manually restart nginx every time letsencrypt auto-renewed,
 which was about every two months.
 
