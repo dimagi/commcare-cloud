@@ -55,6 +55,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
         return {
             'CELERY_FLOWER_URL': "http://{flower_host}:5555".format(flower_host=flower_host),
             'app_processes_config': self.to_json(),
+            'celery_queues': CELERY_PROCESS_NAMES
         }
 
 
