@@ -1,0 +1,16 @@
+---
+- name: Create PostgreSQL databases on Worker
+  become_user: "postgres"
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_db:
+    name: "{{ item.name }}"
+    state: present
+    port: "{{ postgresql_port }}"
+    owner: "{{ item.user }}"
+    encoding: 'UTF-8'
+    lc_collate: 'en_US.UTF-8'
+    lc_ctype: 'en_US.UTF-8'
+    template: 'template0'
+  when: item.create and ((item.host in groups.citusdb_cordinator) and (inventory_hostname in groups.citusdb_worker ))
+  with_items: "{{ postgresql_dbs.all }}"
