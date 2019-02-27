@@ -2,7 +2,6 @@
 dependencies:
   - role: monit
   - role: postgresql_base
-    cluster_name: '11/main'
     postgresql_version: '11'
     postgresql_process_path: /var/run/postgresql
     postgresql_cluster_name: '11/main'
