@@ -8,7 +8,6 @@
     - riakcs
     - formplayer
     - django_manage
-    - citusdb
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
