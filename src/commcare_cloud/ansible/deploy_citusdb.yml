@@ -1,6 +1,16 @@
 ---
+- name: CitusDB Machine Setup
+  hosts:
+    - citusdb_worker
+    - citusdb_cordinator
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+
 - name: CitusDB
-  hosts: citusdb
+  hosts: 
+    - citusdb_worker
+    - citusdb_cordinator
   become: true
   roles:
     - {role: citusdb, tags: 'citusdb'}
@@ -16,7 +26,8 @@
 - name: Disable THP
   become: true
   hosts:
-    - citusdb
+    - citusdb_worker
+    - citusdb_cordinator
   tags: 'kernel_tuning'
   roles:
     - role: thp
