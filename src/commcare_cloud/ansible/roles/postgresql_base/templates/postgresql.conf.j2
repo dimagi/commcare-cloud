@@ -1,7 +1,9 @@
 #
 # {{ ansible_managed }}
 #
-
+{% if cluster_name is defined %}
+cluster_name = '{{cluster_name}}'
+{% endif %}
 
 # FILE LOCATIONS
 
@@ -103,7 +105,7 @@ track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
 {% if not is_pg_standby %}
-shared_preload_libraries = 'pg_stat_statements'
+shared_preload_libraries = '{{ postgresql_shared_preload_libraries|join(", ") }}'
 pg_stat_statements.track = all
 pg_stat_statements.max = 10000
 track_activity_query_size = 2048
