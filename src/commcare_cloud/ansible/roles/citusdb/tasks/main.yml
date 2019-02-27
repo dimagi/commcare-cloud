@@ -33,6 +33,9 @@
    tags:
     - citusdb 
 
+ - name: Set up Citus Worker DBs
+   import_tasks: setup_worker.yml
+
  - name: Setup citusdb_cordinator
    import_tasks: setup_cordinator.yml 
    tags:
