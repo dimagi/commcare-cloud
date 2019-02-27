@@ -3,7 +3,6 @@ dependencies:
   - role: monit
   - role: postgresql_base
     postgresql_version: '11'
-    postgresql_process_path: /var/run/postgresql
     postgresql_cluster_name: '11/main'
     postgresql_shared_preload_libraries:
      - 'citus'
