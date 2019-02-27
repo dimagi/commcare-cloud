@@ -8,6 +8,7 @@
     - riakcs
     - formplayer
     - django_manage
+    - citusdb
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -16,7 +17,12 @@
     - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
       tags: ecryptfs-cleanup
 
-- import_playbook: deploy_postgres.yml
+
+- name : PostgreSQL
+  import_playbook: deploy_postgres.yml
+
+- name : CitusDB
+  import_playbook: deploy_citusdb.yml
 
 - name: Couchdb
   hosts: couchdb
