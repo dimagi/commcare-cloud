@@ -5,7 +5,7 @@ newest first.
 
 ## Changelog
 
-### **2019-02-27** [Only monitor specific RabbitMQ queues](0016-monitor-specific-rabbitmq-queues.md)
+### **2019-02-27** [Only monitor specific RabbitMQ queues](0017-monitor-specific-rabbitmq-queues.md)
 Datadog RabbitMQ monitoring restricts the number of queues it
 can monitor to 200. To avoid hitting this limit on large
 scale deployments we limit the queues being monitored to only
