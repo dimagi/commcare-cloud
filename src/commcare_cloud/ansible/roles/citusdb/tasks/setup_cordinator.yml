@@ -1,0 +1,10 @@
+---
+ - name: Add database to the Cordinator
+   become: yes
+   become_user: postgres
+   shell: psql {{ item.name }} -c "SELECT * from master_add_node( '{{item.host|ipaddr}}' , 5432) ; "
+   with_items: "{{ postgresql_dbs.all }}"
+   when: inventory_hostname in groups["citusdb_cordinator"]  and (item.host == inventory_hostname)
+   tags:
+    - citusdb
+    - citusdb_cordinator
