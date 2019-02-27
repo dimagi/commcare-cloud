@@ -74,7 +74,7 @@ kafka0
 kafka0
 
 [celery1]
-{{ celery1-staging }} hostname=celery1-staging ec2=yes
+{{ celery1-staging }} hostname=celery1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
 
 [celery:children]
 # Amazon EC2
@@ -84,7 +84,7 @@ celery1
 {{ pillow0-staging }} hostname=pillow0-staging ec2=yes
 
 [pillow1]
-{{ pillow1-staging }} hostname=pillow1-staging ec2=yes
+{{ pillow1-staging }} hostname=pillow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
 
 [pillowtop:children]
 # Amazon EC2
