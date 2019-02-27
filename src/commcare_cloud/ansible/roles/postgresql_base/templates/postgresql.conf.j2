@@ -1,9 +1,7 @@
 #
 # {{ ansible_managed }}
 #
-{% if cluster_name is defined %}
-cluster_name = '{{cluster_name}}'
-{% endif %}
+cluster_name = '{{postgresql_cluster_name}}'
 
 # FILE LOCATIONS
 
