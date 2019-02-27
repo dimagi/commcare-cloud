@@ -1,0 +1,21 @@
+title: Only monitor specific RabbitMQ queues
+key: monitor-specific-rabbitmq-queues
+date: 2019-02-27
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  Datadog RabbitMQ monitoring restricts the number of queues it
+  can monitor to 200. To avoid hitting this limit on large
+  scale deployments we limit the queues being monitored to only
+  the primary queues.
+
+details: |
+  This will result in only the queues listed in the config file
+  being monitored by Datadog.
+
+update_steps: |
+  1. Update datadog integrations on the RabbitMQ machine:
+  ```bash
+  commcare-cloud <env> deploy-stack --limit=rabbitmq --tags=datadog_integrations
+  ```
