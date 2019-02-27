@@ -8,7 +8,11 @@ cluster_name = '{{postgresql_cluster_name}}'
 data_directory = '{{ postgresql_home }}'
 hba_file = '{{ postgresql_config_home }}/pg_hba.conf'
 ident_file = '{{ postgresql_config_home }}/pg_ident.conf'
+{% if ansible_distribution_version == '18.04' %}
+external_pid_file = '/var/run/postgresql/{{ postgresql_version }}-main.pid'
+{% else %}
 external_pid_file = '{{ postgresql_pid_file }}'
+{% endif %}
 
 
 # CONNECTIONS AND AUTHENTICATION
