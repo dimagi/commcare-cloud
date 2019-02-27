@@ -4,11 +4,10 @@ postgresql_port: 5432
 postgresql_ssl_enabled: False
 postgresql_dir_original_path: /var/lib/postgresql
 postgresql_dir_path: "{{ encrypted_root }}/postgresql"
-postgresql_process_path: "{{postgresql_dir_path}}"
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
-postgresql_pid_file: "{{ postgresql_process_path }}/{{ postgresql_version }}-main.pid"
+postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
 postgresql_log_directory: "{{ postgresql_home }}/pg_log"
 postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
