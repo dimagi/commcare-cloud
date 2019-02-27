@@ -11,3 +11,9 @@ postgres_override:
 dbs:
   synclogs: null
   form_processing: null
+  ucr:
+    host: citusdb1
+  ucr:
+    host: citusdb2
+  ucr:
+    host: citusdb3
