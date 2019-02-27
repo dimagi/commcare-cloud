@@ -1,4 +1,3 @@
-postgresql_port: 5432
 pgbouncer_port: 6432
 pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"
 pgbouncer_config_home: /etc/pgbouncer
