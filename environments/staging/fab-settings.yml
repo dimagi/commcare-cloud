@@ -1,4 +1,4 @@
 ignore_kafka_checkpoint_warning: True
 default_branch: autostaging
-py3_include_venv: False
-py3_run_deploy: False
+py3_include_venv: True
+py3_run_deploy: True
