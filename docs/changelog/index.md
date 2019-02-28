@@ -5,6 +5,18 @@ newest first.
 
 ## Changelog
 
+### **2019-02-27** [Only monitor specific RabbitMQ queues](0017-monitor-specific-rabbitmq-queues.md)
+Datadog RabbitMQ monitoring restricts the number of queues it
+can monitor to 200. To avoid hitting this limit on large
+scale deployments we limit the queues being monitored to only
+the primary queues.
+
+### **2019-02-22** [Update supervisor confs to invoke celery directly](0016-invoke-celery-directly.md)
+Upgrading to celery 4.x requires removing the dependency on
+django-celery, which means that the celery management command
+becomes unavailable.  This prepares for that by invoking the
+celery command directly.
+
 ### **2019-02-22** [Separate celery datadog http check](0015-separate-celery-datadog-http-check.md)
 This adds a specific http check for the celery check (serverup.txt?only=celery)
 to datadog.

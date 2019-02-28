@@ -55,6 +55,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
         return {
             'CELERY_FLOWER_URL': "http://{flower_host}:5555".format(flower_host=flower_host),
             'app_processes_config': self.to_json(),
+            'celery_queues': CELERY_PROCESS_NAMES
         }
 
 
@@ -98,18 +99,23 @@ CELERY_PROCESS_NAMES = [process.name for process in CELERY_PROCESSES]
 OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
                              if not process.required]
 
+# queues specified in solo_queues cannot be combined with other queues in the same process
+SOLO_QUEUES = [
+    # because these don't actually run normal celery processes
+    'flower', 'beat',
+    # because these run management commands in addition to normal celery processes
+    # (see commcare_cloud/ansible/roles/commcarehq/tasks/celery.yml)
+    'reminder_queue', 'submission_reprocessing_queue', 'sms_queue',
+]
+
 
 def validate_app_processes_config(app_processes_config):
-    # queues specified in solo_queues cannot be combined with other queues in the same processes, otherwise tasks
-    # specific to those queues in celery.yml will get skipped
-    solo_queues = ['flower', 'beat', 'reminder_queue', 'submission_reprocessing_queue',
-                   'sms_queue', 'queue_schedule_instances', 'handle_survey_actions']
     all_queues_mentioned = Counter({queue_name: 0 for queue_name in CELERY_PROCESS_NAMES})
     for machine, queues_config in app_processes_config.celery_processes.items():
         for comma_separated_queue_names, celery_options in queues_config.items():
             queue_names = comma_separated_queue_names.split(',')
             for queue_name in queue_names:
-                if queue_name in solo_queues:
+                if queue_name in SOLO_QUEUES:
                     assert len(queue_names) == 1, \
                         "The special process {} may not be grouped with other processes".format(queue_name)
                 assert queue_name in CELERY_PROCESS_NAMES, \
