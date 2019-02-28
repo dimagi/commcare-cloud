@@ -1,0 +1,27 @@
+title: Update supervisor confs to invoke celery directly
+key: invoke-celery-directly
+date: 2019-02-22
+optional_per_env: no
+min_commcare_version: 08e5a3c1f7482ea30f071044431e42fe1c6e2f04
+max_commcare_version:
+context: |
+  Upgrading to celery 4.x requires removing the dependency on
+  django-celery, which means that the celery management command
+  becomes unavailable.  This prepares for that by invoking the
+  celery command directly.
+
+details: |
+  If the supervisor conf changes here are deployed prior to the
+  minimum CommCare version, then celery will be unable to start
+  because the file corehq/celery.py is missing.
+
+  If celery is upgraded to 4.x prior to applying these changes,
+  celery also will be unable to start since starting celery via
+  the django_celery management command is no longer possible in
+  celery 4.x.
+
+update_steps: |
+  Update supervisor confs:
+  ```bash
+  commcare-cloud <env> update-supervisor-confs
+  ```
