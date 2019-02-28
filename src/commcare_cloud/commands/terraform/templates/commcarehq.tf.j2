@@ -112,7 +112,7 @@ resource "aws_eip" "proxy__{{ server.server_name }}" {
 }
 {% endfor %}
 
-
+{% if redis %}
 module "Redis" {
   source               = "./modules/elasticache"
   create               = "{{ redis.create|tojson }}"
@@ -126,6 +126,7 @@ module "Redis" {
   elasticache_subnets  = "${values(module.network.subnets-db-private)}"
   security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
 }
+{% endif %}
 
 module "openvpn" {
   source = "./modules/openvpn"
