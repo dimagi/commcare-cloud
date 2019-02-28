@@ -22,7 +22,7 @@
     state: present
    notify: Restart postgres
 
- - name: Add Citus Extension on All Database
+ - name: Add Citus Extension on Coordinator Database
    become: yes
    become_user: postgres
    postgresql_ext:

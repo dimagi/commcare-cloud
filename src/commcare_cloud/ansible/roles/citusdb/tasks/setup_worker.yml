@@ -14,3 +14,16 @@
     template: 'template0'
   when: item.create and ((item.host in groups.citusdb_cordinator) and (inventory_hostname in groups.citusdb_worker ))
   with_items: "{{ postgresql_dbs.all }}"
+  tags:
+   - citusdb_worker
+
+- name: Add Citus Extension on Worker Database
+  become: yes
+  become_user: postgres
+  postgresql_ext:
+    name: citus
+    db: "{{ item.name }}"
+  with_items: "{{ postgresql_dbs.all }}"
+  when: (item.host in groups.citusdb_cordinator) and (inventory_hostname in groups.citusdb_worker)
+  tags:
+   - citusdb_worker 
