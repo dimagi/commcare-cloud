@@ -3,8 +3,6 @@
    become: yes
    become_user: postgres
    shell: psql {{ item.0.name }} -c "SELECT * from master_add_node( '{{item.1|ipaddr}}' , 5432) ; "
-  #  debug:
-  #    msg: " {{ item.0.name }} {{item.1|ipaddr}} "
    with_nested: 
     - "{{ postgresql_dbs.all }}"
     - "{{groups['citusdb_worker']}}"
