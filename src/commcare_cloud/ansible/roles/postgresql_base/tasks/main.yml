@@ -56,6 +56,7 @@
 - name: Assert postgresql directory shows up in exactly one place
   fail: msg="postgresl directory must either be {{ postgresql_dir_path }} or {{ postgresql_dir_original_path }} (and not both)"
   when: ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
+  tags: postgres_directory
 
 - name: Move postgres to encrypted drive
   command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/"
