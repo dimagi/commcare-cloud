@@ -9,6 +9,8 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.202"
 
+openvpn_image: ami-5e73b923
+
 vpn_connections:
   - name: rackspace
     cidr_blocks:
