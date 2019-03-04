@@ -12,3 +12,7 @@ instances:
     vhosts:
       - {{ AMQP_NAME }}
     skip_proxy: True
+    queues:
+      {% for queue in celery_queues -%}
+      - {{ queue }}
+      {% endfor -%}
