@@ -29,7 +29,7 @@ host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/3
 {% endfor %}
 
 {% for host in (groups.get('citusdb_worker', []) + groups.get('citusdb_cordinator', []) ) | unique %}
-# Allow Trus Access fro Citus DB
+# Allow Trus Access from Citus DB
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
