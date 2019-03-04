@@ -19,7 +19,7 @@ class TerraformConfig(jsonobject.JsonObject):
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
-    redis = jsonobject.ObjectProperty(lambda: RedisConfig)
+    redis = jsonobject.ObjectProperty(lambda: RedisConfig, default=None)
 
     @classmethod
     def wrap(cls, data):
