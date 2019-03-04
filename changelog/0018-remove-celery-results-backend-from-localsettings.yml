@@ -2,7 +2,7 @@ title: Remove celery results backend from localsettings
 key: remove-celery-results-backend-from-localsettings
 date: 2019-02-27
 optional_per_env: no
-min_commcare_version:
+min_commcare_version: 425793a8928910e993d3a6159ffd4a665d1fbfba
 max_commcare_version:
 context: |
   Upgrading to celery 4.x requires removing the dependency on
