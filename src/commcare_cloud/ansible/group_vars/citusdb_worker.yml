@@ -1,4 +1,4 @@
 datadog_integration_pgbouncer: false  
 datadog_integration_postgres: true
 is_pg_standby: false
-allow_direct_postgresql_access: true
+allow_direct_citusdb_access: true

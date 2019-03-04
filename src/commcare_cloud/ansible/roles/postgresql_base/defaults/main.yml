@@ -34,6 +34,7 @@ postgresql_slow_log_threshold: 300
 postgresql_random_page_cost: 4.0
 
 allow_direct_postgresql_access: no
+allow_direct_citusdb_access: no
 
 postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
