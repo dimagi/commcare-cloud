@@ -1,4 +1,4 @@
-# 17. Remove celery results backend from localsettings
+# 18. Remove celery results backend from localsettings
 
 **Date:** 2019-02-27
 

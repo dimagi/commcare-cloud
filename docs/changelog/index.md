@@ -5,12 +5,18 @@ newest first.
 
 ## Changelog
 
-### **2019-02-27** [Remove celery results backend from localsettings](0017-remove-celery-results-backend-from-localsettings.md)
+### **2019-02-27** [Remove celery results backend from localsettings](0018-remove-celery-results-backend-from-localsettings.md)
 Upgrading to celery 4.x requires removing the dependency on
 django-celery, which means that its results backend will no
 longer be available.  This removes the django-celery backend
 as the default from localsettings, so the results backend can
 be specified by commcare-hq settings instead.
+
+### **2019-02-27** [Only monitor specific RabbitMQ queues](0017-monitor-specific-rabbitmq-queues.md)
+Datadog RabbitMQ monitoring restricts the number of queues it
+can monitor to 200. To avoid hitting this limit on large
+scale deployments we limit the queues being monitored to only
+the primary queues.
 
 ### **2019-02-22** [Update supervisor confs to invoke celery directly](0016-invoke-celery-directly.md)
 Upgrading to celery 4.x requires removing the dependency on
