@@ -1,0 +1,27 @@
+title: Remove celery results backend from localsettings
+key: remove-celery-results-backend-from-localsettings
+date: 2019-02-27
+optional_per_env: no
+min_commcare_version: 425793a8928910e993d3a6159ffd4a665d1fbfba
+max_commcare_version:
+context: |
+  Upgrading to celery 4.x requires removing the dependency on
+  django-celery, which means that its results backend will no
+  longer be available.  This removes the django-celery backend
+  as the default from localsettings, so the results backend can
+  be specified by commcare-hq settings instead.
+
+details: |
+  If the localsettings change here is deployed prior to the
+  minimum CommCare version, then celery will be missing its
+  results backend.
+
+  If celery is upgraded to 4.x prior to applying this change,
+  celery will be misconfigured, using the unavailable
+  django-celery results backend.
+
+update_steps: |
+  Update localsettings:
+  ```bash
+  commcare-cloud <env> update-config
+  ```
