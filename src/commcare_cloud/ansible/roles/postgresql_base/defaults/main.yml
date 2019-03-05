@@ -4,10 +4,11 @@ postgresql_port: 5432
 postgresql_ssl_enabled: False
 postgresql_dir_original_path: /var/lib/postgresql
 postgresql_dir_path: "{{ encrypted_root }}/postgresql"
+postgresql_process_path: "{{ '/var/run/postgresql' if ansible_distribution_version == '18.04' else postgresql_dir_path }}"
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
 postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
-postgresql_pid_file: "{{ postgresql_dir_path }}/{{ postgresql_version }}-main.pid"
+postgresql_pid_file: "{{ postgresql_process_path }}/{{ postgresql_version }}-main.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
 postgresql_log_directory: "{{ postgresql_home }}/pg_log"
 postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
@@ -16,13 +17,6 @@ pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
 
 allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
-
-pgbouncer_port: 6432
-pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"
-pgbouncer_config_home: /etc/pgbouncer
-pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
-pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
-pgbouncer_hba: "{{ pgbouncer_config_home }}/pgbouncer_hba.conf"
 
 # defaults should match the postgresql defaults
 postgresql_max_connections: 20
@@ -39,10 +33,12 @@ postgresql_max_wal_size: '256MB'
 postgresql_slow_log_threshold: 300
 postgresql_random_page_cost: 4.0
 
-pgbouncer_max_connections: 100
-pgbouncer_default_pool: 15
-pgbouncer_reserve_pool: 4
-pgbouncer_pool_timeout: 2
-pgbouncer_pool_mode: session
-
 allow_direct_postgresql_access: no
+allow_direct_citusdb_access: no
+
+postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main"
+postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+postgresql_binary: "postgresql-{{ postgresql_version }}"
+
+postgresql_shared_preload_libraries:
+ - 'pg_stat_statements'

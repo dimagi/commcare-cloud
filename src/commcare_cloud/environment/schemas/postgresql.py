@@ -7,9 +7,11 @@ from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
 
 PostgresqlOverride = get_defaults_jsonobject(
-    'postgresql',
+    'postgresql_base',
     allow_dump_from_pgstandby=jsonobject.BooleanProperty,
 )
+
+PgbouncerOverride = get_defaults_jsonobject('pgbouncer')
 
 
 def alphanum_key(key):
@@ -73,12 +75,14 @@ class PostgresqlConfig(jsonobject.JsonObject):
     host_settings = jsonobject.DictProperty(lambda: HostSettings)
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
 
-    override = jsonobject.ObjectProperty(PostgresqlOverride)
+    postgres_override = jsonobject.ObjectProperty(PostgresqlOverride)
+    pgbouncer_override = jsonobject.ObjectProperty(PgbouncerOverride)
 
     @classmethod
     def wrap(cls, data):
         # for better validation error message
-        PostgresqlOverride.wrap(data.get('override', {}))
+        PostgresqlOverride.wrap(data.get('postgres_override', {}))
+        PgbouncerOverride.wrap(data.get('pgbouncer_override', {}))
         self = super(PostgresqlConfig, cls).wrap(data)
         for db in self.generate_postgresql_dbs():
             if not db.user:
@@ -89,13 +93,15 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     def to_generated_variables(self):
         data = self.to_json()
-        del data['override']
+        del data['postgres_override']
+        del data['pgbouncer_override']
         data['postgresql_dbs'] = data.pop('dbs')
         data['postgresql_dbs']['all'] = sorted(
             (db.to_json() for db in self.generate_postgresql_dbs()),
             key=lambda db: db['name']
         )
-        data.update(self.override.to_json())
+        data.update(self.postgres_override.to_json())
+        data.update(self.pgbouncer_override.to_json())
         return data
 
     def replace_hosts(self, environment):
