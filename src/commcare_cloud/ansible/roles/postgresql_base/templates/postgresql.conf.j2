@@ -1,7 +1,7 @@
 #
 # {{ ansible_managed }}
 #
-
+cluster_name = '{{postgresql_cluster_name}}'
 
 # FILE LOCATIONS
 
@@ -9,7 +9,6 @@ data_directory = '{{ postgresql_home }}'
 hba_file = '{{ postgresql_config_home }}/pg_hba.conf'
 ident_file = '{{ postgresql_config_home }}/pg_ident.conf'
 external_pid_file = '{{ postgresql_pid_file }}'
-
 
 # CONNECTIONS AND AUTHENTICATION
 
@@ -103,7 +102,7 @@ track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
 {% if not is_pg_standby %}
-shared_preload_libraries = 'pg_stat_statements'
+shared_preload_libraries = '{{ postgresql_shared_preload_libraries|join(", ") }}'
 pg_stat_statements.track = all
 pg_stat_statements.max = 10000
 track_activity_query_size = 2048

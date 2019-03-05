@@ -5,12 +5,19 @@ newest first.
 
 ## Changelog
 
-### **2019-02-27** [Remove celery results backend from localsettings](0018-remove-celery-results-backend-from-localsettings.md)
+### **2019-02-27** [Remove celery results backend from localsettings](0019-remove-celery-results-backend-from-localsettings.md)
 Upgrading to celery 4.x requires removing the dependency on
 django-celery, which means that its results backend will no
 longer be available.  This removes the django-celery backend
 as the default from localsettings, so the results backend can
 be specified by commcare-hq settings instead.
+
+### **2019-02-26** [Split pgbouncer vars from postgresql vars](0018-split_pgbouncer_postgresql_vars.md)
+This change extracts a new role from the existing postgresql role for installing
+and configuring pgbouncer.
+
+As a result of this change the `postgresql.yml` environment configuration file
+needs to be changed to split out the postgresql vars from the pgbouncer vars.
 
 ### **2019-02-27** [Only monitor specific RabbitMQ queues](0017-monitor-specific-rabbitmq-queues.md)
 Datadog RabbitMQ monitoring restricts the number of queues it
