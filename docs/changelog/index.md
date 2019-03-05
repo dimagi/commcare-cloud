@@ -5,6 +5,13 @@ newest first.
 
 ## Changelog
 
+### **2019-02-27** [Remove celery results backend from localsettings](0019-remove-celery-results-backend-from-localsettings.md)
+Upgrading to celery 4.x requires removing the dependency on
+django-celery, which means that its results backend will no
+longer be available.  This removes the django-celery backend
+as the default from localsettings, so the results backend can
+be specified by commcare-hq settings instead.
+
 ### **2019-02-26** [Split pgbouncer vars from postgresql vars](0018-split_pgbouncer_postgresql_vars.md)
 This change extracts a new role from the existing postgresql role for installing
 and configuring pgbouncer.
