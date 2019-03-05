@@ -111,8 +111,8 @@ def get_postgresql_params_by_rds_instance(environment):
 
     See aws db_parameter_group "parameter" argument.
     """
-    postgresql_variables = get_role_defaults('postgresql')
-    postgresql_variables.update(environment.postgresql_config.override)
+    postgresql_variables = get_role_defaults('postgresql_base')
+    postgresql_variables.update(environment.postgresql_config.postgres_override)
     environment_default_params = {
         'max_connections': postgresql_variables['postgresql_max_connections'],
     }

@@ -1,12 +1,14 @@
 SEPARATE_SYNCLOGS_DB: False
 SEPARATE_FORM_PROCESSING_DBS: False
 
-override:
+pgbouncer_override:
   pgbouncer_default_pool: 290
   pgbouncer_max_connections: 400
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+
+postgres_override:
   postgresql_effective_cache_size: '4GB'
   postgresql_log_directory: "{{ encrypted_root }}/pg_log"
   postgresql_max_connections: 300

@@ -1,0 +1,33 @@
+---
+- name: CitusDB Machine Setup
+  hosts:
+    - citusdb_worker
+    - citusdb_cordinator
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+
+- name: CitusDB
+  hosts: 
+    - citusdb_worker
+    - citusdb_cordinator
+  become: true
+  roles:
+    - {role: citusdb, tags: 'citusdb'}
+
+- name: pgbouncer
+  hosts: citusdb_cordinator
+  become: true
+  roles:
+    - {role: pgbouncer, tags: 'citusdb_cordinator'}
+
+
+# Disables transparent huge pages (THP)
+- name: Disable THP
+  become: true
+  hosts:
+    - citusdb_worker
+    - citusdb_cordinator
+  tags: 'kernel_tuning'
+  roles:
+    - role: thp
