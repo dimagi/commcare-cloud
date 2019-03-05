@@ -1,4 +1,3 @@
 ---
 dependencies:
   - role: monit
-  - role: postgresql_base
