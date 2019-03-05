@@ -58,3 +58,34 @@ pillows:
       num_processes: 1
     user-pillow:
       num_processes: 1
+  'pillow1':
+    AppDbChangeFeedPillow:
+      num_processes: 1
+    ApplicationToElasticsearchPillow:
+      num_processes: 1
+    CacheInvalidatePillow:
+      num_processes: 1
+    DefaultChangeFeedPillow:
+      num_processes: 1
+    DomainDbKafkaPillow:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    LedgerToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+    UpdateUserSyncHistoryPillow:
+      num_processes: 1
+    UserCacheInvalidatePillow:
+      num_processes: 1
+    UserGroupsDbKafkaPillow:
+      num_processes: 1
+    case-pillow:
+      num_processes: 2
+    xform-pillow:
+      num_processes: 2
+    group-pillow:
+      num_processes: 1
+    user-pillow:
+      num_processes: 1
