@@ -75,7 +75,7 @@
     - postgres_users
 
 - name: check postgres database hosts
-  assert: { that: "item.host in groups.postgresql or item.host in groups.pg_standby or item.host == '127.0.0.1'" }
+  assert: { that: "item.host in groups.postgresql or item.host in groups.pg_standby or item.host == '127.0.0.1' or item.host in groups.citusdb_cordinator " }
   with_items: "{{ postgresql_dbs.all }}"
 
 - name: Create PostgreSQL databases

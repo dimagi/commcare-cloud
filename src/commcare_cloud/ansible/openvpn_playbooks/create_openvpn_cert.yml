@@ -18,3 +18,13 @@
         ln -s -f /etc/letsencrypt/live/{{ subdomain_name }}/cert.pem /usr/local/openvpn_as/etc/web-ssl/server.crt
         ln -s -f /etc/letsencrypt/live/{{ subdomain_name }}/privkey.pem /usr/local/openvpn_as/etc/web-ssl/server.key
         service openvpnas start
+
+    - name: Add certbot cron
+      become: yes
+      cron:
+        name: "Certbot Renew"
+        job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew --renew-hook 'service openvpnas restart'"
+        minute: "0"
+        hour: "0/12"
+        user: root
+        cron_file: certbot

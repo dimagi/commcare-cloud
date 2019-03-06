@@ -1,0 +1,198 @@
+---
+# roles/postgresql/tasks/main.yml
+
+- name: Add PosgreSQL apt repo
+  apt_repository: repo='{{ postgresql_apt_repo }}' state=present
+  register: add_postgresql_repo
+
+- name: Add PosgreSQL apt key
+  apt_key: url={{ postgresql_apt_key_url }} state=present
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_postgresql_repo|changed
+
+- name: generate en_US.UTF-8 locale
+  locale_gen: name='en_US.UTF-8' state=present
+
+- name: Install PostgreSQL
+  apt: name="{{postgresql_binary}}" state=present
+
+- name: Install dependencies
+  apt: name="{{ item }}" state=present
+  with_items:
+    - "postgresql-{{ postgresql_version }}-plproxy"
+    - "postgresql-contrib-{{ postgresql_version }}"
+    - "postgresql-server-dev-{{ postgresql_version }}"
+    - python-docutils  # required for building pghashlib
+    - libpq-dev
+    - python-psycopg2
+    - unzip
+
+- name: Install PostgreSQL & dependencies (bionic)
+  apt: name="{{ item }}" state=present
+  with_items:
+    - python3-docutils  # required for building pghashlib
+    - python3-psycopg2
+  when: ansible_distribution_version == '18.04'
+
+- name: Check for original postgresql directory
+  stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
+  register: orig_path
+
+- name: Make new postgresql directory
+  become: yes
+  file:
+    path: '{{ postgresql_dir_path }}'
+    owner: postgres
+    group: postgres
+    mode: 0700
+    state: directory
+
+- name: Check for new postgresql directory
+  stat: path="{{ postgresql_dir_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
+  register: new_path
+
+- name: Assert postgresql directory shows up in exactly one place
+  fail: msg="postgresl directory must either be {{ postgresql_dir_path }} or {{ postgresql_dir_original_path }} (and not both)"
+  when: ((orig_path.stat.exists and new_path.stat.exists) or (not orig_path.stat.exists and not new_path.stat.exists))
+  tags: postgres_directory
+
+- name: Move postgres to encrypted drive
+  command: "mv {{ postgresql_dir_original_path }}/{{ postgresql_version }} {{ postgresql_dir_path }}/"
+  when: orig_path.stat.exists
+
+- name: assert hot standby config correct
+  assert: { that: "hot_standby_server is not defined or hot_standby_server in groups.pg_standby"}
+
+- name: Create postgresql_log_directory
+  file:
+    dest: "{{ postgresql_log_directory }}"
+    state: directory
+    owner: postgres
+    group: postgres
+
+- name: assert replication slot config correct
+  assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
+
+- name: Remove wal archive directory (cleanup)
+  become: true
+  file:
+    path: "{{ postgresql_dir_path }}/wal_archive"
+    state: absent
+
+- name: PostgreSQL app configuration
+  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
+  tags: postgresql_conf
+  notify: Restart postgres
+
+- name: PostgreSQL access configuration
+  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
+  tags: postgresql_conf
+  notify: Reload postgres
+
+- meta: flush_handlers
+
+- name: Set up PostgreSQL DBs
+  import_tasks: set_up_dbs.yml
+  vars:
+    db_is_remote: no
+    postgresql_host: "{{ inventory_hostname }}"
+
+# restart / reload if necessary to make sure replication slot config updated
+- meta: flush_handlers
+
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
+- name: Restart postgresql (after reboot)
+  command: /bin/true
+  notify: Start postgres
+  when: no_tags is not defined
+  tags: after-reboot
+
+- name: Create replication slots
+  pg_replication_slot:
+    name: "{{ item }}"
+    port: "{{ postgresql_port }}"
+    state: present
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  with_items: "{{ postgresql_replication_slots|default([]) }}"
+  when: not is_pg_standby
+  tags:
+    - replication
+
+# Only update recovery config if it exists, don't create it
+- name: Check if recovery.conf exists
+  stat:
+    path: "{{ postgresql_recovery_conf }}"
+  register: recovery_file
+  when: is_pg_standby
+  tags:
+    - postgres_users
+    - replication
+
+- name: update "recovery.conf"
+  template:
+    src: roles/postgresql/templates/recovery.conf.j2
+    dest: "{{ postgresql_recovery_conf }}"
+  when: is_pg_standby and recovery_file.stat.exists
+  tags:
+    - postgres_users
+    - replication
+
+- name: Enable query stat collection
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
+  when: item.query_stats and not is_pg_standby and (item.host == inventory_hostname) or is_monolith|bool
+  with_items: "{{ postgresql_dbs.all }}"
+
+- name: Copy log rotation script
+  become: yes
+  template:
+    src: "rotate_logs.sh.j2"
+    dest: "/usr/local/sbin/rotate_postgres_logs.sh"
+    group: postgres
+    owner: postgres
+    mode: 0700
+    backup: yes
+  tags:
+    - cron
+
+- name: Create log rotation cron
+  become: yes
+  cron:
+    name: "Rotate postgres logs"
+    job: "/usr/local/sbin/rotate_postgres_logs.sh"
+    minute: "*/15"
+    user: postgres
+    cron_file: rotate_postgres
+  tags:
+    - cron
+
+- name: PostgreSQL monit config
+  become: yes
+  template:
+    src: "monit.postgresql.j2"
+    dest: "/etc/monit/conf.d/postgresql"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: postgresql
+    state: monitored
+  tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
