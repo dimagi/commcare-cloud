@@ -3,7 +3,7 @@ CAS_SITE_HOST: 'cas.commcarehq.org'
 J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
 tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
-primary_ssl_env: "softlayer"
+primary_ssl_env: "india"
 
 # Nginx only accepts on cert, so cat the site cert and chain:
 # $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt

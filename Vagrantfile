@@ -10,7 +10,7 @@ require_relative './provisioning/key_authorization'
 
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/bionic64"
   cchq_proxy_port = ENV.fetch("VAGRANT_CCHQ_PROXY_PORT", 8080)
   config.ssh.insert_key = false
   authorize_key config, '~/.vagrant.d/insecure_private_key'
@@ -18,6 +18,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   {
     'app1'    => '192.168.33.15',
     'db1'   => '192.168.33.16',
+    'citusdb1'   => '192.168.33.31',
+    'citusdb2'   => '192.168.33.32',
+    'citusdb3'   => '192.168.33.33',
     'proxy1' => '192.168.33.17',
   }.each do |short_name, ip|
     config.vm.define short_name do |host|

@@ -15,14 +15,20 @@ and the new environment will live in it's own linked account.
     aws_access_key_id = "..."
     aws_secret_access_key = "..."
     ```
+    and then also active MFA for your device.
 5. Add `account_alias: <account_alias>` to `terraform.yml` of your env.
 6. (If the S3 state bucket is under a different account) Go to https://console.aws.amazon.com/iam/home#/security_credential > Account Identifiers
     to get the Canonical User ID for the account, and then in an incognito tab log in
-    under the account where the S3 state bucket lives, and under Permissions give
-    your account access to the bucket using the Canonical User ID. 
-7. Run `cchq <env> terraform init`
-8. Run `cchq <env> terraform apply -target module.commcarehq.module.Users`
-    and respond `yes` when prompted.
+    under the account where the S3 state bucket lives, navigate to the S3 state bucket,
+    and under Permissions > Access Control List > Access for other AWS accounts
+    give your account access to the bucket using the Canonical User ID.
+7. Run
+    ```bash
+    COMMCARE_CLOUD_DEFAULT_USERNAME=root cchq <env> aws-sign-in
+    cchq <env> terraform init
+    AWS_PROFILE=<account_alias>:session aws dlm create-default-role --region <region>
+    cchq <env> terraform apply
+    ```
 9. In AWS console, go to IAM users and click on your own username.
 10. Create access key and copy them to `~/.aws/credentials`,
     replacing the root credentials you had there.
@@ -91,7 +97,8 @@ and click Save.
 Now you will be able to SSH into the VM.
 
 To make a cert, you'll also need to open port 80, so click Add Rule again,
-select Type HTTP, and Source "Anywhere", and click Save.
+select Type HTTP, **Source "Anywhere"** (needs to be publicly accessible),
+and click Save.
 
 Finally, make sure to run
 
@@ -134,6 +141,15 @@ cchq <env> bootstrap-users --limit openvpn -u openvpnas
 cchq <env> deploy-stack --limit openvpn --skip-check
 ```
 
+If this gives you any trouble, try ssh'ing in again and running
+
+```
+sudo apt update
+sudo apt install python
+```
+
+to install python. <!-- Note: delete this once we're on python3 -->
+
 ### Set up DNS and HTTPS cert
 
 By whatever means you have, make a DNS entry that points a subdomain name
@@ -142,7 +158,7 @@ e.g. if the site is at www.mycchqsite.org, it should be vpn.www.mycchqsite.org
 
 Then run
 ```
-cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv
+cchq <env> ansible-playbook openvpn_playbooks/create_openvpn_cert.yml --skip-check -vvv -e certificate_email=youremail@example.com
 ```
 
 ### Enable PAM in the web Admin UI
@@ -154,7 +170,8 @@ In PAM authentication mode,
 enabling a user just requires setting their linux user's password with `passwd`.
 
 Go to `https://<vpn-subdomain-name>/admin` in your browser and log in with `openvpn`/`<password from above>`.
-Then navigate to /admin/pam_configuration and click Use PAM.
+Then navigate to /admin/pam_configuration and click Use PAM,
+and then click Update Running Server.
 
 ### Activate your user
 
@@ -164,10 +181,11 @@ To activate a user, run
 cchq <env> openvpn-activate-user <username>
 ```
 
-and then have the user (in this case, yourself) change the password with
+and then have the user (in this case, yourself)
+claim the user and set their password with
 
 ```
-cchq <env> ssh openvpn -t passwd
+cchq <env> openvpn-claim-user <username>
 ```
 
 providing first the ansible sudo user password, and then the new (secure!) password

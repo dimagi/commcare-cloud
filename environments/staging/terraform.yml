@@ -9,6 +9,8 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.201"
 
+openvpn_image: ami-5e73b923
+
 vpn_connections:
   - name: rackspace
     cidr_blocks:
@@ -61,6 +63,12 @@ servers:
     az: "a"
     volume_size: 80
     group: "pillowtop"
+  - server_name: "pillow1-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "pillowtop:bionic"
   - server_name: "celery0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"

@@ -1,6 +1,12 @@
 msp_users: "{{ secrets.MSP_USERS }}"
 
 DATADOG_ENABLED: True
+# Simon 2019-02-28
+# on why DATADOG_INTEGRATIONS_ENABLED is False and whether it could be enabled:
+# > no real reason except that we didn't think it was necessary -
+# > given our current bill I don't think adding it would have much impact
+# > so if you think it would be useful please go ahead
+# So if you have a reason to, feel free to enable
 DATADOG_INTEGRATIONS_ENABLED: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
@@ -92,3 +98,12 @@ localsettings:
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
+
+PY3_RUN_CELERY_BEAT: False
+PY3_RUN_CELERY_FLOWER: False
+PY3_RUN_CELERY_WORKER: False
+PY3_RUN_ERRAND_BOY: False
+PY3_RUN_GUNICORN: False
+PY3_RUN_MANAGEMENT: False
+PY3_RUN_PILLOWTOP: False
+PY3_RUN_WEBSOCKETS: False

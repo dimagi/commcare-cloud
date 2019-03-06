@@ -277,6 +277,16 @@ resource "aws_security_group" "db-private" {
   }
 
   ingress {
+    from_port   = 6432
+    to_port     = 6432
+    protocol    = "tcp"
+    cidr_blocks = [
+      // Allow proxy access to pgbouncer
+      "${aws_subnet.subnet-public.*.cidr_block}",
+    ]
+  }
+
+  ingress {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
