@@ -15,10 +15,13 @@ celery_processes:
       pooling: gevent
       concurrency: 100
       num_workers: 2
-    repeat_record_queue,sumologic_logs_queue:
+    sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
       num_workers: 8
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 100
     ucr_queue:
       concurrency: 4
       max_tasks_per_child: 5
@@ -72,6 +75,9 @@ celery_processes:
     analytics_queue:
       pooling: gevent
       concurrency: 10
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 100
   celery3:
     async_restore_queue:
       concurrency: 8
@@ -84,6 +90,9 @@ celery_processes:
     export_download_queue:
       concurrency: 4
       max_tasks_per_child: 5
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 100
   celery4:
     celery,case_import_queue:
       concurrency: 6
