@@ -57,12 +57,6 @@ servers:
     az: "a"
     volume_size: 80
     group: "elasticsearch"
-  - server_name: "pillow0-staging"
-    server_instance_type: "t3.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    group: "pillowtop"
   - server_name: "pillow1-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
@@ -131,6 +125,13 @@ servers:
     az: "a"
     volume_size: 80
     group: "postgresql"
+
+  - server_name: "pgproxy1-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql:bionic"
 
   - server_name: "redis0-staging"
     server_instance_type: t3.medium
