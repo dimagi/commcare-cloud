@@ -29,6 +29,7 @@ resource aws_instance "vpn_host" {
   tags {
     Name        = "vpn-${var.environment}"
     Environment = "${var.environment}"
+    Group = "openvpn"
   }
 }
 
@@ -39,6 +40,7 @@ resource aws_eip "vpn_ip" {
   tags {
     Name        = "vpn-public-ip-${var.environment}"
     Environment = "${var.environment}"
+    Group = "openvpn"
   }
 }
 
