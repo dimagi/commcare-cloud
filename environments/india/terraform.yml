@@ -15,20 +15,17 @@ openvpn_image: ami-085d67fbfe42a25e7
 
 # copied as example from production
 vpn_connections:
-  - name: rackspace
+  - name: softlayer
     cidr_blocks:
-      - "172.24.16.0/22"
-      - "172.24.32.0/22"
-    ip_address: "104.130.188.4"
+      - "10.162.36.0/22"
+    ip_address: "169.38.81.12"
     type: "ipsec.1"
     bgp_asn: 65000
     amazon_side_asn: 7224
 
 # copied as example from production
 external_routes:
-  - cidr_block: "172.24.16.0/22"
-    gateway_id: "vgw-0ea47c14639c0bf48"
-  - cidr_block: "172.24.32.0/22"
+  - cidr_block: "10.162.36.0/22"
     gateway_id: "vgw-0ea47c14639c0bf48"
 
 servers: []
