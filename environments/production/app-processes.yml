@@ -21,7 +21,7 @@ celery_processes:
     repeat_record_queue:
       pooling: gevent
       num_workers: 3
-      concurrency: 100
+      concurrency: 50
     ucr_queue:
       concurrency: 4
       max_tasks_per_child: 5
@@ -78,7 +78,7 @@ celery_processes:
     repeat_record_queue:
       pooling: gevent
       num_workers: 5
-      concurrency: 100
+      concurrency: 50
   celery3:
     async_restore_queue:
       concurrency: 8
@@ -94,7 +94,7 @@ celery_processes:
     repeat_record_queue:
       pooling: gevent
       num_workers: 4
-      concurrency: 100
+      concurrency: 50
   celery4:
     celery,case_import_queue:
       concurrency: 6
