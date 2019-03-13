@@ -34,6 +34,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     newrelic_djangoagent = jsonobject.BooleanProperty()
     newrelic_javaagent = jsonobject.BooleanProperty()
     django_command_prefix = jsonobject.StringProperty()
+    celery_command_prefix = jsonobject.StringProperty()
     datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
