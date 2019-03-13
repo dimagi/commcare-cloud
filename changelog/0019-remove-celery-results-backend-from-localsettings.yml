@@ -3,7 +3,7 @@ key: remove-celery-results-backend-from-localsettings
 date: 2019-02-27
 optional_per_env: no
 min_commcare_version: 425793a8928910e993d3a6159ffd4a665d1fbfba
-max_commcare_version:
+max_commcare_version: 0ffef2b55910f9476d9aa4c9cc5c7d47b4f4e390
 context: |
   Upgrading to celery 4.x requires removing the dependency on
   django-celery, which means that its results backend will no
