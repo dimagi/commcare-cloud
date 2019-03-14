@@ -88,6 +88,15 @@
     - services
   register: celery_beat_files
 
+- name: remove celery beat service
+  become: cchq
+  file:
+    path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
+    state: absent
+  when: app_processes_config.celery_processes.get(inventory_hostname).beat is not defined
+  tags:
+    - services
+
 - name: define celery workers
   become: cchq
   template:
