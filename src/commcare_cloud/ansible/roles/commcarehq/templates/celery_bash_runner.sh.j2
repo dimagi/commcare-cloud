@@ -44,7 +44,7 @@ HOSTNAME_ARG+=".${TIMESTAMP}_timestamp"
 HOSTNAME_PARTS=(${HOSTNAME_ARG//=/ })
 HOSTNAME=${HOSTNAME_PARTS[1]}
 
-{% if PY3_RUN_CELERY_WORKER %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/celery -A corehq worker ${HOSTNAME_ARG} ${ARGS}  &
+{{ app_processes_config.celery_command_prefix }}{% if PY3_RUN_CELERY_WORKER %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/celery -A corehq worker ${HOSTNAME_ARG} ${ARGS}  &
 PID=$!
 BASH_PID=$$
 echo "Started ${HOSTNAME} on PID: ${PID}"
