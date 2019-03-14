@@ -31,3 +31,4 @@ http_proxy: null
 newrelic_djangoagent: False
 newrelic_javaagent: False
 django_command_prefix: ''
+celery_command_prefix: ''
