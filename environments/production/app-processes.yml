@@ -7,15 +7,8 @@ gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 2
 celery_processes:
   celery0:
-    beat: {}
-    celery_periodic:
-      concurrency: 4
     submission_reprocessing_queue:
       concurrency: 1
-    email_queue:
-      pooling: gevent
-      concurrency: 100
-      num_workers: 2
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
@@ -103,6 +96,16 @@ celery_processes:
     export_download_queue:
       concurrency: 6
       max_tasks_per_child: 5
+  celery5:
+    beat: {}
+    celery_periodic:
+      concurrency: 4
+    email_queue:
+      pooling: gevent
+      concurrency: 100
+      num_workers: 2
+
+
 pillows:
   pillow0:
     CaseToElasticsearchPillow:
