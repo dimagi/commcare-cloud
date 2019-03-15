@@ -58,8 +58,8 @@ celery_processes:
       max_tasks_per_child: 5
   celery2:
     background_queue:
+      pooling: gevent
       concurrency: 8
-      max_tasks_per_child: 1
     send_report_throttled:
       concurrency: 2
       max_tasks_per_child: 1
