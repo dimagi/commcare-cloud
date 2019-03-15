@@ -212,7 +212,10 @@ def assert_files(migration, alloc_docs_by_db, ansible_context):
     files_by_node = get_files_for_assertion(alloc_docs_by_db)
     expected_files_vars = os.path.abspath(os.path.join(migration.working_dir, 'assert_vars.yml'))
     with open(expected_files_vars, 'w') as f:
-        yaml.safe_dump({'files_by_node': files_by_node}, f, indent=2)
+        yaml.safe_dump({
+            'files_by_node': files_by_node,
+            'couch_data_dir': migration.couchdb2_data_dir,
+        }, f, indent=2)
 
     play_path = os.path.join(PLAY_DIR, 'assert_couch_files.yml')
     return_code = run_ansible_playbook(
