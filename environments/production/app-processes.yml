@@ -2,7 +2,7 @@ newrelic_djangoagent: False
 newrelic_javaagent: True
 datadog_pythonagent: True
 django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
-celery_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
+celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 2
 celery_processes:
