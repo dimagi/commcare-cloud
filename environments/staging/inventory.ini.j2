@@ -24,6 +24,9 @@ web1
 [pgproxy0]
 {{ pgproxy0-staging }} hostname=pgproxy0-staging ec2=yes
 
+[pgproxy1]
+{{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
 [rds_pg0]
 # RDS
 {{ pg0-staging }}
@@ -79,9 +82,6 @@ kafka0
 [celery:children]
 # Amazon EC2
 celery1
-
-[pillow0]
-{{ pillow0-staging }} hostname=pillow0-staging ec2=yes
 
 [pillow1]
 {{ pillow1-staging }} hostname=pillow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
