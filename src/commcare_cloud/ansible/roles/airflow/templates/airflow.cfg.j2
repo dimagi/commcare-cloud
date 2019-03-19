@@ -81,7 +81,7 @@ smtp_password = "{{ EMAIL_PASSWORD }}"
 {% endif %}
 
 smtp_port = {{ localsettings.EMAIL_SMTP_PORT }}
-smtp_mail_from = airflow-noreply@dimagi.com
+smtp_mail_from = {{ default_from_email }}
 
 
 [scheduler]
