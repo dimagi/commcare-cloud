@@ -166,7 +166,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 5500
+      volume_size: 6100
     group: "couchdb2"
   - server_name: "couch8-production"
     server_instance_type: c5.4xlarge
@@ -174,7 +174,7 @@ servers:
     az: "a"
     volume_size: 80
     block_device:
-      volume_size: 5500
+      volume_size: 5800
     group: "couchdb2"
   - server_name: "couch9-production"
     server_instance_type: c5.4xlarge
