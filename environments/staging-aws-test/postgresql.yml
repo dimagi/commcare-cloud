@@ -19,7 +19,7 @@ dbs:
     query_stats: True
   form_processing:
     proxy:
-      host: pgproxy1
+      host: pgproxy0
     partitions:
       p1:
         shards: [0, 99]
