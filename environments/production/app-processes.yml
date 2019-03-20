@@ -21,7 +21,7 @@ celery_processes:
     ucr_indicator_queue:
       concurrency: 2
     async_restore_queue:
-      num_workers: 2
+      num_workers: 4
       concurrency: 2
   celery1:
     flower: {}
@@ -57,7 +57,7 @@ celery_processes:
     send_report_throttled:
       concurrency: 2
     async_restore_queue:
-      num_workers: 2
+      num_workers: 4
       concurrency: 2
     analytics_queue:
       pooling: gevent
