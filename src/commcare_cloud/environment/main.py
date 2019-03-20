@@ -68,6 +68,8 @@ class Environment(object):
                 with open(self.paths.vault_yml, 'r') as vf:
                     return vault.load(vf.read())
             except AnsibleVaultError:
+                if os.environ.get('ANSIBLE_VAULT_PASSWORD'):
+                    raise
                 print('incorrect password')
                 self.get_ansible_vault_password.reset_cache(self)
 
