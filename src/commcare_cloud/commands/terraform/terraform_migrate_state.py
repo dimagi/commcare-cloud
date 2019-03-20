@@ -281,7 +281,7 @@ def apply_migration_plans(environment, migration_plans, remote_migration_state_m
         log('  [{:0>4} {}]'.format(migration.number, migration.slug))
         for start_address, end_address in migration_plan.moves:
             log('    {} => {}'.format(start_address, end_address))
-            commcare_cloud(environment.paths.env_name, 'terraform', 'state', 'mv',
+            commcare_cloud(environment.name, 'terraform', 'state', 'mv',
                            start_address, end_address)
         remote_migration_state_manager.push(
             RemoteMigrationState(number=migration.number, slug=migration.slug))
