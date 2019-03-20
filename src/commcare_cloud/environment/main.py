@@ -1,6 +1,7 @@
 import getpass
 import os
 from collections import Counter
+from contextlib import contextmanager
 
 import datadog.api
 import yaml
@@ -58,6 +59,17 @@ class Environment(object):
         self.get_vault_variables()
         return self._get_ansible_vault_password()
 
+    def get_vault_variables(self):
+        """Get ansible vault variables
+
+        This method has a side-effect: it records a Datadog event with
+        the commcare-cloud command that is currently being run.
+        """
+        vault_vars = self._get_vault_variables()
+        if "secrets" in vault_vars:
+            self.record_vault_loaded_event(vault_vars["secrets"])
+        return vault_vars
+
     @memoized
     def _get_ansible_vault_password(self):
         return (
@@ -66,12 +78,7 @@ class Environment(object):
         )
 
     @memoized
-    def get_vault_variables(self):
-        """Get ansible vault variables
-
-        This method has a side-effect: it records a Datadog event with
-        the commcare-cloud command that is currently being run.
-        """
+    def _get_vault_variables(self):
         # try unencrypted first for tests
         with open(self.paths.vault_yml, 'r') as f:
             vault_vars = yaml.load(f)
@@ -82,10 +89,7 @@ class Environment(object):
             try:
                 vault = Vault(self._get_ansible_vault_password())
                 with open(self.paths.vault_yml, 'r') as vf:
-                    vault_vars = vault.load(vf.read())
-                    if "secrets" in vault_vars:
-                        self.record_vault_loaded_event(vault_vars["secrets"])
-                    return vault_vars
+                    return vault.load(vf.read())
             except AnsibleVaultError:
                 if os.environ.get('ANSIBLE_VAULT_PASSWORD'):
                     raise
@@ -120,6 +124,21 @@ class Environment(object):
                 text="commcare-cloud {}".format(' '.join(quoted_args)),
                 tags=["environment:{}".format(self.name)],
             )
+
+    @contextmanager
+    def suppress_vault_loaded_event(self):
+        """Prevent "run event" from being sent to datadog
+
+        This is only effective if `self.get_vault_variables()` has not
+        yet been called outside of this context manager. If it has been
+        called then the event has already been sent and this is a no-op.
+        """
+        sent = self.did_send_vault_loaded_event
+        self.did_send_vault_loaded_event = True
+        try:
+            yield
+        finally:
+            self.did_send_vault_loaded_event = sent
 
     @memoized_property
     def public_vars(self):

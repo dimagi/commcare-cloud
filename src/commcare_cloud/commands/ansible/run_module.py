@@ -91,7 +91,8 @@ class RunAnsibleModule(CommandBase):
             )
 
         def run_check():
-            return _run_ansible(args, '--check', *unknown_args)
+            with environment.suppress_vault_loaded_event():
+                return _run_ansible(args, '--check', *unknown_args)
 
         def run_apply():
             return _run_ansible(args, *unknown_args)
