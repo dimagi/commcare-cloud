@@ -2,6 +2,7 @@ import getpass
 import os
 from collections import Counter
 
+import datadog.api
 import yaml
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
@@ -9,6 +10,7 @@ from ansible.parsing.vault import AnsibleVaultError
 from ansible.vars.manager import VariableManager
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
+from six.moves import shlex_quote
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
@@ -25,6 +27,8 @@ from commcare_cloud.environment.users import UsersConfig
 class Environment(object):
     def __init__(self, paths):
         self.paths = paths
+        self.input_argv = None
+        self.did_send_vault_loaded_event = False
 
     @property
     def name(self):
@@ -45,8 +49,17 @@ class Environment(object):
         self.proxy_config
         self.create_generated_yml()
 
-    @memoized
     def get_ansible_vault_password(self):
+        """Get ansible vault password
+
+        This method has a side-effect: it records a Datadog event with
+        the commcare-cloud command that is currently being run.
+        """
+        self.get_vault_variables()
+        return self._get_ansible_vault_password()
+
+    @memoized
+    def _get_ansible_vault_password(self):
         return (
             os.environ.get('ANSIBLE_VAULT_PASSWORD') or
             getpass.getpass("Vault Password for '{}': ".format(self.name))
@@ -54,6 +67,11 @@ class Environment(object):
 
     @memoized
     def get_vault_variables(self):
+        """Get ansible vault variables
+
+        This method has a side-effect: it records a Datadog event with
+        the commcare-cloud command that is currently being run.
+        """
         # try unencrypted first for tests
         with open(self.paths.vault_yml, 'r') as f:
             vault_vars = yaml.load(f)
@@ -62,14 +80,17 @@ class Environment(object):
 
         while True:
             try:
-                vault = Vault(self.get_ansible_vault_password())
+                vault = Vault(self._get_ansible_vault_password())
                 with open(self.paths.vault_yml, 'r') as vf:
-                    return vault.load(vf.read())
+                    vault_vars = vault.load(vf.read())
+                    if "secrets" in vault_vars:
+                        self.record_vault_loaded_event(vault_vars["secrets"])
+                    return vault_vars
             except AnsibleVaultError:
                 if os.environ.get('ANSIBLE_VAULT_PASSWORD'):
                     raise
                 print('incorrect password')
-                self.get_ansible_vault_password.reset_cache(self)
+                self._get_ansible_vault_password.reset_cache(self)
 
     def get_vault_var(self, var):
         path = var.split('.')
@@ -80,6 +101,25 @@ class Environment(object):
 
     def get_ansible_user_password(self):
         return self.get_vault_variables()['ansible_sudo_pass']
+
+    def record_vault_loaded_event(self, secrets):
+        if (
+            not self.did_send_vault_loaded_event and
+            self.input_argv is not None and
+            secrets.get('DATADOG_API_KEY') and
+            self.public_vars.get('DATADOG_ENABLED')
+        ):
+            self.did_send_vault_loaded_event = True
+            datadog.initialize(
+                api_key=secrets['DATADOG_API_KEY'],
+                app_key=secrets['DATADOG_APP_KEY'],
+            )
+            quoted_args = [shlex_quote(arg) for arg in self.input_argv[1:]]
+            datadog.api.Event.create(
+                title="commcare-cloud vault loaded",
+                text="commcare-cloud {}".format(' '.join(quoted_args)),
+                tags=["environment:{}".format(self.name)],
+            )
 
     @memoized_property
     def public_vars(self):
@@ -326,6 +366,13 @@ class Environment(object):
         if full and self.public_vars.get('internal_domain_name'):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
+
+
+def setup_environment(env_name, input_argv):
+    environment = get_environment(env_name)
+    # get_environment() is memoized, so it will always return the same value
+    # after the first call. This mutation affects all subsequent calls
+    environment.input_argv = input_argv
 
 
 @memoized
