@@ -1,21 +1,19 @@
 import getpass
 import os
+from collections import Counter
 
 import yaml
+from ansible.inventory.manager import InventoryManager
+from ansible.parsing.dataloader import DataLoader
 from ansible.parsing.vault import AnsibleVaultError
+from ansible.vars.manager import VariableManager
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
-from collections import Counter
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
-
-from ansible.inventory.manager import InventoryManager
-from ansible.parsing.dataloader import DataLoader
-from ansible.vars.manager import VariableManager
-
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
