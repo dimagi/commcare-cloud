@@ -87,6 +87,7 @@ celery_processes:
   celery5:
     beat: {}
     celery_periodic:
+      num_workers: 2
       concurrency: 4
     email_queue:
       pooling: gevent
