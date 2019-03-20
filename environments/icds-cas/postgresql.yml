@@ -133,16 +133,16 @@ dbs:
       host: pgmainstandby0
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 5
+      hq_acceptable_standby_delay: 0
     - django_alias: pgmainstandby1
       name: commcarehq
       host: pgmainstandby1
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 5
+      hq_acceptable_standby_delay: 0
     - django_alias: pgmainstandby2
       name: commcarehq
       host: pgmainstandby2
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 5
+      hq_acceptable_standby_delay: 0
