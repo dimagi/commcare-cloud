@@ -28,6 +28,10 @@ class Environment(object):
     def __init__(self, paths):
         self.paths = paths
 
+    @property
+    def name(self):
+        return self.paths.env_name
+
     def check(self):
 
         included_disallowed_public_variables = set(self.public_vars.keys()) & self._disallowed_public_variables
@@ -47,7 +51,7 @@ class Environment(object):
     def get_ansible_vault_password(self):
         return (
             os.environ.get('ANSIBLE_VAULT_PASSWORD') or
-            getpass.getpass("Vault Password for '{}': ".format(self.paths.env_name))
+            getpass.getpass("Vault Password for '{}': ".format(self.name))
         )
 
     @memoized
