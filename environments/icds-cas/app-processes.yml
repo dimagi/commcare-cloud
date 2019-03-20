@@ -28,7 +28,6 @@ celery_processes:
     background_queue,analytics_queue:
       concurrency: 6
     icds_aggregation_queue:
-      pooling: gevent
       concurrency: 10
     case_rule_queue:
       concurrency: 2
