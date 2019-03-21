@@ -4,13 +4,13 @@
   become: yes
   tasks:
     - name: assert shards exist
-      shell: "find /opt/data/couchdb2/{{item}}"
+      shell: "find {{ couch_data_dir }}{{ item }}"
       loop: "{{ files_by_node[inventory_hostname].shards }}"
       when: inventory_hostname in files_by_node
       changed_when: no
 
     - name: assert views exist
-      shell: "find /opt/data/couchdb2/{{item}}"
-      loop: "{{files_by_node[inventory_hostname].views }}"
+      shell: "find {{ couch_data_dir }}{{ item }}"
+      loop: "{{ files_by_node[inventory_hostname].views }}"
       when: inventory_hostname in files_by_node
       changed_when: no
