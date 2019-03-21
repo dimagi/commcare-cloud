@@ -352,7 +352,7 @@ CUSTOM_REPORT_MAP = {
 
 CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 {% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
-CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
+timezone = '{{ localsettings.CELERY_TIMEZONE }}'
 {% endif %}
 
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
