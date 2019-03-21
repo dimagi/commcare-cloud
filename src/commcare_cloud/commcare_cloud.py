@@ -32,7 +32,6 @@ from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from .commands.ansible.ops_tool import ListDatabases
 from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
-from .environment.main import setup_environment
 from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
@@ -154,7 +153,6 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     if args.control:
         run_on_control_instead(args, input_argv)
-    setup_environment(args.env_name, input_argv)
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:

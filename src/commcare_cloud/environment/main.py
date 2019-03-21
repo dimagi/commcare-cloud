@@ -1,5 +1,6 @@
 import getpass
 import os
+import sys
 from collections import Counter
 from contextlib import contextmanager
 
@@ -28,7 +29,6 @@ from commcare_cloud.environment.users import UsersConfig
 class Environment(object):
     def __init__(self, paths):
         self.paths = paths
-        self.input_argv = None
         self.did_send_vault_loaded_event = False
 
     @property
@@ -109,7 +109,6 @@ class Environment(object):
     def record_vault_loaded_event(self, secrets):
         if (
             not self.did_send_vault_loaded_event and
-            self.input_argv is not None and
             secrets.get('DATADOG_API_KEY') and
             self.public_vars.get('DATADOG_ENABLED')
         ):
@@ -118,10 +117,9 @@ class Environment(object):
                 api_key=secrets['DATADOG_API_KEY'],
                 app_key=secrets['DATADOG_APP_KEY'],
             )
-            quoted_args = [shlex_quote(arg) for arg in self.input_argv[1:]]
             datadog.api.Event.create(
                 title="commcare-cloud vault loaded",
-                text="commcare-cloud {}".format(' '.join(quoted_args)),
+                text=' '.join([shlex_quote(arg) for arg in sys.argv]),
                 tags=["environment:{}".format(self.name)],
             )
 
@@ -385,13 +383,6 @@ class Environment(object):
         if full and self.public_vars.get('internal_domain_name'):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
-
-
-def setup_environment(env_name, input_argv):
-    environment = get_environment(env_name)
-    # get_environment() is memoized, so it will always return the same value
-    # after the first call. This mutation affects all subsequent calls
-    environment.input_argv = input_argv
 
 
 @memoized
