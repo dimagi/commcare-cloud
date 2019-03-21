@@ -29,7 +29,7 @@ from commcare_cloud.environment.users import UsersConfig
 class Environment(object):
     def __init__(self, paths):
         self.paths = paths
-        self.did_send_vault_loaded_event = False
+        self.should_send_vault_loaded_event = True
 
     @property
     def name(self):
@@ -108,11 +108,11 @@ class Environment(object):
 
     def record_vault_loaded_event(self, secrets):
         if (
-            not self.did_send_vault_loaded_event and
+            self.should_send_vault_loaded_event and
             secrets.get('DATADOG_API_KEY') and
             self.public_vars.get('DATADOG_ENABLED')
         ):
-            self.did_send_vault_loaded_event = True
+            self.should_send_vault_loaded_event = False
             datadog.initialize(
                 api_key=secrets['DATADOG_API_KEY'],
                 app_key=secrets['DATADOG_APP_KEY'],
@@ -131,12 +131,12 @@ class Environment(object):
         yet been called outside of this context manager. If it has been
         called then the event has already been sent and this is a no-op.
         """
-        sent = self.did_send_vault_loaded_event
-        self.did_send_vault_loaded_event = True
+        value = self.should_send_vault_loaded_event
+        self.should_send_vault_loaded_event = False
         try:
             yield
         finally:
-            self.did_send_vault_loaded_event = sent
+            self.should_send_vault_loaded_event = value
 
     @memoized_property
     def public_vars(self):
