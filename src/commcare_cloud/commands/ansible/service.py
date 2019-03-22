@@ -65,7 +65,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             self.print_help()
             return 0
         elif action == 'logs':
-            print("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.paths.env_name)))
+            print("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.name)))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
