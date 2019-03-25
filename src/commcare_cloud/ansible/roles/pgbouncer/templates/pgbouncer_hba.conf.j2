@@ -6,7 +6,7 @@ local   all             all                                     md5
 {% if cluster_ip_range is defined %}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
-{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% if db.pgbouncer_host == inventory_hostname or db.pgbouncer_host == hot_standby_master|default(None) or is_monolith|bool %}
 {% for user_key in postgres_users | reject('in', ['netvault', 'replication'])  %}
 {% set user = postgres_users[user_key] %}
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.username }}    {{ cluster_ip_range }}    md5
@@ -18,7 +18,7 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.us
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
-{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% if db.pgbouncer_host == inventory_hostname or db.pgbouncer_host == hot_standby_master|default(None) or is_monolith|bool %}
 {% if host | ipaddr %}
 host   {{ db.name }}	{{ db.user }}	{{ host }}/32   md5
 {% else %}
@@ -33,7 +33,7 @@ host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/3
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
-{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% if db.pgbouncer_host == inventory_hostname or db.pgbouncer_host == hot_standby_master|default(None) or is_monolith|bool %}
 {% if host | ipaddr %}
 host   {{ db.name }}	{{ db.user }}	{{ host }}/32   trust
 {% else %}
