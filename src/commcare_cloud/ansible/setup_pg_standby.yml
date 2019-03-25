@@ -8,7 +8,7 @@
     - "{{ standby }}"
   become: yes
   vars_files:
-    - roles/postgresql/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   tasks:
     - assert:
         that:
@@ -43,7 +43,7 @@
     - "{{ standby }}"
   become: yes
   vars_files:
-    - roles/postgresql/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   tasks:
     - name: get master size
       delegate_to: "{{ hot_standby_master }}"
@@ -95,7 +95,7 @@
 
     - name: create / update "recovery.conf"
       template:
-        src: roles/postgresql/templates/recovery.conf.j2
+        src: roles/postgresql_base/templates/recovery.conf.j2
         dest: "{{ postgresql_recovery_conf }}"
 
     - name: Reset ownership
