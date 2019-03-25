@@ -66,6 +66,10 @@ celery_processes:
       pooling: gevent
       num_workers: 5
       concurrency: 50
+    saved_exports_queue:
+      num_workers: 3
+      concurrency: 2
+      optimize: True
   celery3:
     async_restore_queue:
       concurrency: 8
