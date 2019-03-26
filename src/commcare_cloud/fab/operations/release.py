@@ -186,13 +186,17 @@ def _update_code_from_previous_release():
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
 
 
-def _get_git_submodule_urls(path):
+def _get_submodule_list():
     if files.exists(env.code_current):
         with cd(env.code_current):
-            submodules = sudo("git submodule | awk '{ print $2 }'").split()
+            return sudo("git submodule | awk '{ print $2 }'").split()
+    else:
+        return []
 
+
+def _get_local_submodule_urls(path):
     local_submodule_config = []
-    for submodule in submodules:
+    for submodule in _get_submodule_list():
         local_submodule_config.append(
             GitConfig(
                 key='submodule.{submodule}.url'.format(submodule=submodule),
@@ -205,12 +209,27 @@ def _get_git_submodule_urls(path):
     return local_submodule_config
 
 
+def _get_remote_submodule_urls(path):
+    with cd(env.code_current):
+        remote_submodule_config = [
+            GitConfig(
+                key='submodule.{}.url'.format(submodule),
+                value=sudo("git config submodule.{}.url".format(submodule))
+            )
+            for submodule in _get_submodule_list()]
+    return remote_submodule_config
+
+
 def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
     cmd_fn = sudo if run_as_sudo else run
-    submodule_configs = _get_git_submodule_urls(from_path)
-    git_config_cmd = []
-    for submodule_config in submodule_configs:
-        git_config_cmd.append('git config {} {}'.format(submodule_config.key, submodule_config.value))
+    git_local_submodule_config = [
+        'git config {} {}'.format(submodule_config.key, submodule_config.value)
+        for submodule_config in _get_local_submodule_urls(from_path)
+    ]
+    git_remote_submodule_config = [
+        'git config {} {}'.format(submodule_config.key, submodule_config.value)
+        for submodule_config in _get_remote_submodule_urls(from_path)
+    ]
 
     with cd(from_path):
         cmd_fn('git clone {}/.git {}'.format(
@@ -220,8 +239,9 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
 
     with cd(to_path):
         cmd_fn('git config receive.denyCurrentBranch updateInstead')
-        cmd_fn(' && '.join(git_config_cmd))
+        cmd_fn(' && '.join(git_local_submodule_config))
         cmd_fn('git submodule update --init --recursive')
+        cmd_fn(' && '.join(git_remote_submodule_config))
 
 
 def _clone_virtual_env(virtualenv_current, virtualenv_root):
