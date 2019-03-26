@@ -54,26 +54,16 @@ localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
     - testserver
-    - "{{ REACH_SITE_HOST }}"
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
-  COMMCARE_NAME:
-    'reach.commcarehq.org': 'REACH'
-    'default': 'CommCare'
-  COMMCARE_HQ_NAME:
-    'reach.commcarehq.org': 'REACH HQ'
-    'default': 'CommCare HQ'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  CUSTOM_LANDING_TEMPLATE:
-    'reach.commcarehq.org': 'icds/login.html'
-    'default': 'login_and_password/login.html'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
