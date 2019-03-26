@@ -68,14 +68,14 @@ celery_processes:
       concurrency: 50
     saved_exports_queue:
       num_workers: 3
-      concurrency: 2
+      concurrency: 4
       optimize: True
   celery3:
     async_restore_queue:
       concurrency: 8
     saved_exports_queue:
       num_workers: 3
-      concurrency: 2
+      concurrency: 4
       optimize: True
     export_download_queue:
       concurrency: 4
