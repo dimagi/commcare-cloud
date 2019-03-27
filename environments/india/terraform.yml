@@ -13,19 +13,17 @@ vpc_begin_range: "10.203"
 
 openvpn_image: ami-085d67fbfe42a25e7
 
-# copied as example from production
 vpn_connections:
   - name: softlayer
     cidr_blocks:
-      - "10.162.36.0/22"
+      - "10.162.0.0/16"
     ip_address: "169.38.81.12"
     type: "ipsec.1"
     bgp_asn: 65000
     amazon_side_asn: 7224
 
-# copied as example from production
 external_routes:
-  - cidr_block: "10.162.36.0/22"
+  - cidr_block: "10.162.0.0/16"
     gateway_id: "vgw-0ea47c14639c0bf48"
 
 servers: []
