@@ -119,12 +119,6 @@ servers:
     volume_size: 80
     group: "kafka"
 
-  - server_name: "pgproxy0-staging"
-    server_instance_type: t3.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
 
   - server_name: "pgproxy1-staging"
     server_instance_type: t3.small
