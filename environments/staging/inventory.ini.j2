@@ -16,6 +16,12 @@ proxy1
 [web1]
 {{ web1-staging }} swap_size=1G hostname=web1-staging ec2=yes
 
+[web2]
+{{ web2-staging }} swap_size=1G hostname=web3-staging ec2=yes
+
+[web3]
+{{ web3-staging }} swap_size=1G hostname=web3-staging ec2=yes
+
 [webworkers:children]
 # Amazon EC2
 web0
@@ -90,6 +96,9 @@ pillow1
 [formplayer0]
 {{ formplayer0-staging }} hostname=formplayer0-staging ec2=yes
 
+[formplayer1]
+{{ formplayer1-staging }} hostname=formplayer1-staging ec2=yes
+
 [formplayer:children]
 # Amazon EC2
 formplayer0
@@ -116,6 +125,9 @@ redis0
 
 [airflow0]
 {{ airflow0-staging }} hostname=airflow0-staging ec2=yes
+
+[airflow1]
+{{ airflow1-staging }} hostname=airflow1-staging ec2=yes
 
 [airflow:children]
 # Amazon EC2
