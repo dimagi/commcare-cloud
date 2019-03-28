@@ -22,6 +22,7 @@ esmaster0-production: 10.202.41.120
 esmaster1-production: 10.202.41.236
 esmaster2-production: 10.202.40.201
 formplayer0-production: 10.202.10.21
+formplayer1-production: 10.202.10.4
 kafka0-production: 10.202.40.70
 pgbouncer0-production: 10.202.40.58
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
