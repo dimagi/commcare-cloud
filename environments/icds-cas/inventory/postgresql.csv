@@ -31,8 +31,7 @@ pgshard7standby,100.71.184.61,pg_standby,shard_dbs,MUMGCCWCDPRDSS07,,pgshard7,,s
 pgshard8standby,100.71.184.56,pg_standby,shard_dbs,MUMGCCWCDPRDSS08,,pgshard8,,standby0
 pgshard9standby,100.71.184.59,pg_standby,shard_dbs,MUMGCCWCDPRDSS09,,pgshard9,,standby0
 plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,,,,
-pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,pgsynclog0standby,,"[""standby0"",""spare""]",
-pgsynclog0standby,100.71.184.41,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL1,,pgsynclog0,,standby0
+pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,,,"[""spare""]",
 pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,,,,
 ,,,,,,,,
 # group vars for postgres,,,,,,,,
