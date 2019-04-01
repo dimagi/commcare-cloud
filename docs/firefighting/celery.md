@@ -192,9 +192,9 @@ Disk usage warning
 2. Check the RabbitMQ dashboard to determine which queue is causing the issue
    a. https://app.datadoghq.com/screen/integration/237/rabbitmq---overview
 3. Ensure that the celery workers are running and consuming the queue
-4. Use rabbitmqctl to purge the queue. *Only do this if the tasks can be re-queued e.g. pillow_retry_queue*
+4. Purge the queue. *Only do this if the tasks can be re-queued e.g. pillow_retry_queue*
 
-`rabbitmqctl purge_queue -p commcarehq [queue name]`
+`celery -A corehq purge -Q queue_1,queue_2`
 
 # Useful Celery Commands
 
@@ -248,7 +248,7 @@ and then restart it after purging:
 
 To purge all messages in a rabbitmq message queue:
 
-`python manage.py celery amqp queue.purge <queue name>`
+`celery -A corehq purge -Q queue_1,queue_2`
 
 # Useful RabbitMQ Commands
 
