@@ -258,7 +258,7 @@ pillows:
     UserPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
-      num_processes: 1
+      num_processes: 16
     kafka-ucr-main:
       num_processes: 1
       processor_chunk_size: 100
