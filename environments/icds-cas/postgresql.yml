@@ -47,7 +47,7 @@ dbs:
   main:
     host: pgmain0
   formplayer:
-    host: pgucr
+    host: pgmain0
   ucr:
     host: pgucr
   synclogs:
