@@ -360,7 +360,11 @@ GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
-CELERY_HEARTBEAT_THRESHOLDS = {{ CELERY_HEARTBEAT_THRESHOLDS }}
+CELERY_HEARTBEAT_THRESHOLDS = {
+{% for queue, threshold in CELERY_HEARTBEAT_THRESHOLDS.items() | sort %}
+    {{ queue | to_json }}: {% if threshold == None %}None{% else %}{{ threshold | to_json }}{% endif %},
+{% endfor %}
+}
 
 FORMPLAYER_URL = "/formplayer"
 
