@@ -189,6 +189,7 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
+  'celery112':
   'web0':
     ucr_indicator_queue:
       concurrency: 3
