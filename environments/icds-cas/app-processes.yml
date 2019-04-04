@@ -153,15 +153,15 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
-  # 'celery12':
-  #   ucr_indicator_queue:
-  #     concurrency: 4
-  #   reminder_case_update_queue:
-  #     pooling: gevent
-  #     concurrency: 5
-  #     num_workers: 6
-  #   icds_dashboard_reports_queue:
-  #     concurrency: 2
+  'celery112':
+    ucr_indicator_queue:
+      concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 6
+    icds_dashboard_reports_queue:
+      concurrency: 2
   'celery13':
     ucr_indicator_queue:
       concurrency: 4
@@ -189,7 +189,6 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
-  'celery112':
   'web0':
     ucr_indicator_queue:
       concurrency: 3
