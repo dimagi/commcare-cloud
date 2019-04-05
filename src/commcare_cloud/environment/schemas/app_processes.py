@@ -50,49 +50,63 @@ class AppProcessesConfig(jsonobject.JsonObject):
         self.pillows = check_and_translate_hosts(environment, self.pillows)
         _validate_all_required_machines_mentioned(environment, self)
 
+    def get_celery_heartbeat_thresholds(self):
+        celery_queues = set()
+        for celery_options in self.celery_processes.values():
+            for process_group in celery_options.keys():
+                celery_queues.update(process_group.split(','))
+
+        return {
+            p.name: p.blockage_threshold for p in CELERY_PROCESSES
+            if p.is_queue and p.name in celery_queues
+        }
+
     def to_generated_variables(self):
         flower_host, = [machine for machine, queues_config in self.celery_processes.items()
                         if 'flower' in queues_config]
         return {
             'CELERY_FLOWER_URL': "http://{flower_host}:5555".format(flower_host=flower_host),
             'app_processes_config': self.to_json(),
-            'celery_queues': CELERY_PROCESS_NAMES
+            'celery_queues': CELERY_PROCESS_NAMES,
+            'CELERY_HEARTBEAT_THRESHOLDS': self.get_celery_heartbeat_thresholds()
         }
 
 
-class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
-    def __new__(cls, name, required=True, *args, **kwargs):
-        return super(CeleryProcess, cls).__new__(cls, name, required, *args, **kwargs)
+class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required', 'is_queue', 'blockage_threshold'])):
+    def __new__(cls, name, required=True, is_queue=True, blockage_threshold=None,
+                *args, **kwargs):
+        return super(CeleryProcess, cls).__new__(cls, name, required, is_queue, blockage_threshold,
+                                                 *args, **kwargs)
 
 
 CELERY_PROCESSES = [
-    CeleryProcess("analytics_queue"),
-    CeleryProcess("async_restore_queue", required=False),
-    CeleryProcess("background_queue"),
-    CeleryProcess("beat", required=False),
-    CeleryProcess("case_rule_queue"),
-    CeleryProcess("case_import_queue"),
-    CeleryProcess("celery"),
-    CeleryProcess("celery_periodic", required=False),
-    CeleryProcess("email_queue"),
-    CeleryProcess("export_download_queue"),
-    CeleryProcess("flower"),
+    CeleryProcess("analytics_queue", blockage_threshold=30 * 60),
+    CeleryProcess("async_restore_queue", required=False, blockage_threshold=60),
+    CeleryProcess("background_queue", blockage_threshold=10 * 60),
+    CeleryProcess("beat", required=False, is_queue=False),
+    CeleryProcess("case_rule_queue", blockage_threshold=10 * 60),
+    CeleryProcess("case_import_queue", blockage_threshold=60),
+    CeleryProcess("celery", blockage_threshold=60),
+    CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),
+    CeleryProcess("email_queue", blockage_threshold=30),
+    CeleryProcess("export_download_queue", blockage_threshold=30),
+    CeleryProcess("flower", is_queue=False),
     CeleryProcess("icds_aggregation_queue", required=False),
     CeleryProcess("icds_dashboard_reports_queue", required=False),
     CeleryProcess("ils_gateway_sms_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
-    CeleryProcess("reminder_case_update_queue"),
-    CeleryProcess("reminder_queue", required=False),
-    CeleryProcess("reminder_rule_queue"),
-    CeleryProcess("repeat_record_queue"),
-    CeleryProcess("saved_exports_queue"),
-    CeleryProcess("sumologic_logs_queue", required=False),
-    CeleryProcess("send_report_throttled", required=False),
-    CeleryProcess("sms_queue", required=False), # TODO remove required
-    CeleryProcess("submission_reprocessing_queue", required=False),
-    CeleryProcess("ucr_indicator_queue", required=False),
-    CeleryProcess("ucr_queue", required=False),
+    CeleryProcess("reminder_case_update_queue", blockage_threshold=15 * 60),
+    CeleryProcess("reminder_queue", required=False, blockage_threshold=15 * 60),
+    CeleryProcess("reminder_rule_queue", blockage_threshold=15 * 60),
+    CeleryProcess("repeat_record_queue", blockage_threshold=60 * 60),
+    CeleryProcess("saved_exports_queue", blockage_threshold=6 * 60 * 60),
+    CeleryProcess("sumologic_logs_queue", required=False, blockage_threshold=6 * 60 * 60),
+    CeleryProcess("send_report_throttled", required=False, blockage_threshold=6 * 60 * 60),
+    CeleryProcess("sms_queue", required=False, blockage_threshold=5 * 60), # TODO remove required
+    CeleryProcess("submission_reprocessing_queue", required=False, blockage_threshold=60 * 60),
+    CeleryProcess("ucr_indicator_queue", required=False, blockage_threshold=60 * 60),
+    CeleryProcess("ucr_queue", required=False, blockage_threshold=60 * 60),
 ]
 
 
