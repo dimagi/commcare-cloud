@@ -26,6 +26,8 @@ proxy1
 # Amazon EC2
 web0
 web1
+web2
+web3
 
 [pgproxy1]
 {{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
@@ -103,6 +105,7 @@ pillow1
 [formplayer:children]
 # Amazon EC2
 formplayer0
+formplayer1
 
 [redis0]
 {{ redis0-staging }} hostname=redis0-staging ec2=yes
@@ -133,6 +136,7 @@ redis0
 [airflow:children]
 # Amazon EC2
 airflow0
+airflow1
 
 [control]
 # Amazon EC2
@@ -145,6 +149,8 @@ rds_pg0_replica
 [django_manage:children]
 # Amazon EC2
 web0
+web2
+web3
 
 [hwarehouse0]
 {{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=yes
