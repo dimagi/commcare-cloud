@@ -10,12 +10,6 @@
 # Amazon EC2
 proxy1
 
-[web0]
-{{ web0-staging }} swap_size=1G hostname=web0-staging ec2=yes
-
-[web1]
-{{ web1-staging }} swap_size=1G hostname=web1-staging ec2=yes
-
 [web2]
 {{ web2-staging }} swap_size=1G hostname=web2-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
 
@@ -24,8 +18,8 @@ proxy1
 
 [webworkers:children]
 # Amazon EC2
-web0
-web1
+web2
+web3
 
 [pgproxy1]
 {{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
@@ -94,15 +88,12 @@ celery1
 # Amazon EC2
 pillow1
 
-[formplayer0]
-{{ formplayer0-staging }} hostname=formplayer0-staging ec2=yes
-
 [formplayer1]
 {{ formplayer1-staging }} hostname=formplayer1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
 
 [formplayer:children]
 # Amazon EC2
-formplayer0
+formplayer1
 
 [redis0]
 {{ redis0-staging }} hostname=redis0-staging ec2=yes
@@ -124,15 +115,12 @@ es1
 [shared_dir_host:children]
 redis0
 
-[airflow0]
-{{ airflow0-staging }} hostname=airflow0-staging ec2=yes
-
 [airflow1]
 {{ airflow1-staging }} hostname=airflow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
 
 [airflow:children]
 # Amazon EC2
-airflow0
+airflow1
 
 [control]
 # Amazon EC2
@@ -144,7 +132,8 @@ rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
-web0
+web2
+web3
 
 [hwarehouse0]
 {{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=yes
