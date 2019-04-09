@@ -683,12 +683,6 @@ SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
 SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
 {% endif %}
 
-ENVIRONMENT_HOSTS = {
-{% for group, hosts in groups.items() | sort %}
-    {{ group | to_json }}: {{ hosts | sort | to_json }},
-{% endfor %}
-}
-
 {% if HQ_PRIVATE_KEY %}
 HQ_PRIVATE_KEY = \
 {{ HQ_PRIVATE_KEY }}
