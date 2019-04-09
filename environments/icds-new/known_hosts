@@ -162,3 +162,7 @@
 10.247.164.89 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPJlHghVkxEe3vpJKEx/c8FGJtK03+djz2O7ZGnblNBb+aTd07Rd8z0eZpNWH2scQDQWTqXREjQNjrDyI/cuC8Q=
 |1|KHP4oyBpuTDesamvx10KT12/K4U=|mS5tU7+dVbyBWV1lJfeuRjn8Zn0= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHw4iz18hVc0aoHht/VtgESpB24w5nCzd+yjfPPy6DsdC+9xWcqLXgzL7mEt9lSV50wVQG1QK23D89HQMo8Pk+I=
 |1|uMAOQX0NfQk871bDk4cNUrgVho4=|g+72r03K55Q42wmGKGbI6bijc/o= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPJlHghVkxEe3vpJKEx/c8FGJtK03+djz2O7ZGnblNBb+aTd07Rd8z0eZpNWH2scQDQWTqXREjQNjrDyI/cuC8Q=
+# EnvironmentException: The following hosts are missing from known_hosts:
+# 10.247.63.132 (patch0)
+# 10.247.164.92 (pgwarehouse0)
+# 10.247.164.91 (airflow0)
