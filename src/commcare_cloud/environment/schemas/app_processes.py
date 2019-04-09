@@ -52,7 +52,9 @@ class AppProcessesConfig(jsonobject.JsonObject):
 
     def get_celery_heartbeat_thresholds(self):
         celery_queues = set()
-        for celery_options in self.celery_processes.values():
+        for host, celery_options in self.celery_processes.items():
+            if host == 'None':
+                continue
             for process_group in celery_options.keys():
                 celery_queues.update(process_group.split(','))
 
