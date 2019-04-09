@@ -69,11 +69,9 @@
   roles:
     - redis_monitoring
 
-- name: RabbitMQ
-  hosts: rabbitmq
-  become: true
-  roles:
-    - {role: rabbitmq, tags: 'rabbitmq'}
+- import_playbook: deploy_rabbitmq.yml
+  tags:
+    - rabbitmq
 
 - import_playbook: deploy_kafka.yml
   tags:
