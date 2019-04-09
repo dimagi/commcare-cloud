@@ -78,6 +78,14 @@ resource "aws_security_group" "openvpn-access-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  // for auto-renewing certs
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   ingress {
     from_port   = -1
     to_port     = -1
