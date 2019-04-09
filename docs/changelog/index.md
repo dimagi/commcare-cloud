@@ -12,6 +12,10 @@ longer be available.  This removes the django-celery backend
 as the default from localsettings, so the results backend can
 be specified by commcare-hq settings instead.
 
+### **2019-04-05** [Update RabbitMQ logging configuration](0019-update-rabbitmq-logging.md)
+This change updates the RabbitMQ logging configuration to change the
+log level from `info` to `warning`.
+
 ### **2019-02-26** [Split pgbouncer vars from postgresql vars](0018-split_pgbouncer_postgresql_vars.md)
 This change extracts a new role from the existing postgresql role for installing
 and configuring pgbouncer.
