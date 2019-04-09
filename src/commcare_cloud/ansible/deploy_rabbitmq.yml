@@ -18,7 +18,9 @@
   become: true
   roles:
     - role: ansible-logrotate
-      tags: rabbitmq
+      tags:
+      - rabbitmq
+      - logging
       logrotate_scripts:
         - name: "rabbitmq-server"
           path: "/var/log/rabbitmq/*.log"
