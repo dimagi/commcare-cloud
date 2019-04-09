@@ -40,6 +40,7 @@ class Environment(object):
         included_disallowed_public_variables = set(self.public_vars.keys()) & self._disallowed_public_variables
         assert not included_disallowed_public_variables, \
             "Disallowed variables in {}: {}".format(self.paths.public_yml, included_disallowed_public_variables)
+        self.check_known_hosts()
         self.meta_config
         self.users_config
         self.raw_app_processes_config
@@ -49,6 +50,35 @@ class Environment(object):
         self.postgresql_config
         self.proxy_config
         self.create_generated_yml()
+
+    def check_known_hosts(self):
+        if not os.path.exists(self.paths.known_hosts):
+            return
+        blacklist = set(self.groups.get('ansible_skip', []))
+        hostname_to_sshable = {
+            inventory_hostname: sshable.split(':')[0]
+            for sshable, inventory_hostname in self.inventory_hostname_map.items()
+        }
+
+        expected_hosts = {
+            (host, hostname_to_sshable[host], self.hostname_map.get(host))
+            for group, hosts in self.groups.items()
+            for host in hosts if host not in blacklist
+        }
+        with open(self.paths.known_hosts) as f:
+            known_hosts_contents = f.read()
+        missing_hosts = {
+            (sshable, hostname) for _, sshable, hostname in expected_hosts
+            if sshable not in known_hosts_contents
+        }
+        if missing_hosts:
+            raise EnvironmentException(
+                'The following hosts are missing from known_hosts:\n{}'.format(
+                   '\n'.join(
+                       "{} ({})".format(sshable, hostname) for sshable, hostname in missing_hosts
+                   )
+                )
+            )
 
     def get_ansible_vault_password(self):
         """Get ansible vault password
