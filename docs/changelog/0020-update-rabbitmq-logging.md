@@ -1,4 +1,4 @@
-# 19. Update RabbitMQ logging configuration
+# 20. Update RabbitMQ logging configuration
 
 **Date:** 2019-04-05
 
