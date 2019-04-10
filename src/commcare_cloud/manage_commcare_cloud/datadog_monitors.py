@@ -119,6 +119,10 @@ def get_monitor_definitions(config):
     return monitors
 
 
+def dump_monitor_yaml(monitor_definition):
+    return yaml.safe_dump(monitor_definition, allow_unicode=True)
+
+
 def write_monitor_definition(monitor_id, monitor_definition):
     if 'env_key' not in monitor_definition:
         # try to guess it
@@ -133,7 +137,7 @@ def write_monitor_definition(monitor_id, monitor_definition):
 
     filename = 'autogen_{}.yml'.format(monitor_id)
     with open(os.path.join(CONFIG_ROOT, filename), 'w') as f:
-        f.write(yaml.safe_dump(monitor_definition, allow_unicode=True))
+        f.write(dump_monitor_yaml(monitor_definition))
 
 
 def render_messages(config, monitor):
@@ -258,8 +262,8 @@ class DatadogMonitors(CommandBase):
 
         for id, (expected, actual) in shared_local_remote_monitors.items():
             diff = list(_unidiff_output(
-                yaml.safe_dump(get_data_to_update(actual, keys_to_update)),
-                yaml.safe_dump(get_data_to_update(expected, keys_to_update))))
+                dump_monitor_yaml(get_data_to_update(actual, keys_to_update)),
+                dump_monitor_yaml(get_data_to_update(expected, keys_to_update))))
             any_diffs |= bool(diff)
             if diff:
                 puts(colored.magenta("\nDiff for '{}'\n".format(expected['name'])))
