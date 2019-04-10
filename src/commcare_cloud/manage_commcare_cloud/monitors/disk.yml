@@ -4,19 +4,7 @@ message: |-
   {{#is_alert}}ALERT: Disk usage {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
   {{#is_warning}}WARNING: Disk usage {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
   https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
-  {{#is_match "environment.name" "icds"}} @slack-alerts-icds  {{/is_match}}
-  {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
-  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
-  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
-  {{^is_match "environment.name" "icds"}}
-      {{^is_match "environment.name" "enikshay"}}
-          {{^is_match "environment.name" "india"}}
-              {{^is_match "environment.name" "production"}}
-                  @slack-hq-ops-priority
-              {{/is_match}}
-          {{/is_match}}
-      {{/is_match}}
-  {{/is_match}}
+  << notification_block >>
 name: Disk space running low on {{host.name}} ({{device.name}})
 options:
   escalation_message: |-
