@@ -3,19 +3,7 @@ id: 4013126
 message: |-
   The {{pillow_name.name}} on {{environment.name}} has been above{{#is_warning}} {{warn_threshold}} {{/is_warning}}{{#is_alert}} {{threshold}} {{/is_alert}}for the past 24 hours.
   This could be the result of an outage or it could imply that more resources are required. Please investigate.
-  {{#is_match "environment.name" "icds-new"}} @slack-alerts-icds  {{/is_match}}
-  {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
-  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
-  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
-  {{^is_match "environment.name" "icds-new"}}
-      {{^is_match "environment.name" "enikshay"}}
-          {{^is_match "environment.name" "india"}}
-              {{^is_match "environment.name" "production"}}
-                  @slack-hq-ops-priority
-              {{/is_match}}
-          {{/is_match}}
-      {{/is_match}}
-  {{/is_match}}
+  << notification_block >>
 name: Pillow {{pillow_name.name}} on {{environment.name}} is not able to keep up with
   changes
 options:
