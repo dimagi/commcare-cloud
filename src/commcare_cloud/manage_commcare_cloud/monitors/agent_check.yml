@@ -27,13 +27,14 @@ options:
     << notification_block >>
   locked: false
   new_host_delay: 300
-  no_data_timeframe: 10
+  no_data_timeframe: 5
   notify_audit: false
   notify_no_data: true
-  renotify_interval: 60
-  silenced: {'host:hqdjangomanage0': null}
+  renotify_interval: 0
+  silenced: {}
   thresholds: {critical: 1, ok: 1, warning: 1}
   timeout_h: 0
-query: '"datadog.agent.up".over("*").exclude("environment:64-test","group:pgsynclog","environment:enikshay").by("host").last(2).count_by_status()'
-tags: []
+  include_tags: true
+query: '"datadog.agent.up".over("*").exclude("environment:64-test","group:pgsynclog","environment:enikshay","host:citus0.india.commcarehq.org","host:citus1.india.commcarehq.org","host:citus2.india.commcarehq.org").by("host").last(2).count_by_status()'
+tags: [opsgenie]
 type: service check
