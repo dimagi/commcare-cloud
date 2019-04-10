@@ -55,7 +55,8 @@ def compile_changelog():
     changelog_dir = 'changelog'
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
-        changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
+        if change_file_name.endswith('.yml'):
+            changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
     return changelog_contents
 
 
