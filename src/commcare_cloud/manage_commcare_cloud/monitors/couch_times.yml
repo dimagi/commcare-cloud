@@ -23,6 +23,7 @@ options:
   silenced: {}
   thresholds: {critical: 3.0}
   timeout_h: 0
-query: min(last_10m):avg:couch.timings{!environment:staging} by {environment} > 3
-tags: ['*']
+query: min(last_10m):avg:couch.timings{!environment:staging,!couch_url:_changes} by {environment} > 3
+tags: ['*', opsgenie]
+
 type: metric alert
