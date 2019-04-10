@@ -16,16 +16,16 @@ options:
     https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
     Cannot connect to all ES nodes; should be looked into ASAP.
     << notification_block >>
-  include_tags: false
+  include_tags: true
   locked: false
   new_host_delay: 300
   no_data_timeframe: 2
   notify_audit: false
   notify_no_data: false
-  renotify_interval: 60
+  renotify_interval: 0
   silenced: {}
-  thresholds: {critical: 2, ok: 2, warning: 1}
+  thresholds: {critical: 1, ok: 1, warning: 1}
   timeout_h: 0
-query: '"elasticsearch.can_connect".over("group:elasticsearch").exclude("environment:icds-new").by("host","port").last(3).count_by_status()'
-tags: []
+query: '"elasticsearch.can_connect".over("group:elasticsearch").exclude("environment:icds-new").by("host","port").last(2).count_by_status()'
+tags: [opsgenie]
 type: service check
