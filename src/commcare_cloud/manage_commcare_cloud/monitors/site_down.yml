@@ -2,18 +2,23 @@ id: 4498268
 env_key: host.environment
 message: |
   {{check_message}}
+  Check the [Event Stream](https://app.datadoghq.com/event/stream?tags_execution=and&show_private=true&per_page=30&query=tags%3Aenvironment%3A{{host.environment}}%20status%3Aerror%20priority%3Aall%20Serverup%20check%20failed&aggregate_up=true&use_date_happened=false&display_timeline=true&from_ts=1544619120000&priority=normal&is_zoomed=false&status=all&to_ts=1544622720000&is_auto=false&incident=true&only_discussed=false&no_user=false&page=0&live=true&bucket_size=60000)
   << notification_block >>
-name: SITE DOWN
+name: Endpoint check failed
 options:
+  escalation_message: |-
+    {{check_message}}
+    Site still down. Please check the [Event Stream](https://app.datadoghq.com/event/stream?tags_execution=and&show_private=true&per_page=30&query=tags%3Aenvironment%3A{{host.environment}}%20status%3Aerror%20priority%3Aall%20Serverup%20check%20failed&aggregate_up=true&use_date_happened=false&display_timeline=true&from_ts=1544619120000&priority=normal&is_zoomed=false&status=all&to_ts=1544622720000&is_auto=false&incident=true&only_discussed=false&no_user=false&page=0&live=true&bucket_size=60000)
+  include_tags: true
   locked: false
   new_host_delay: 300
   no_data_timeframe: 10
   notify_audit: false
   notify_no_data: true
-  renotify_interval: 0
-  silenced: {}
-  thresholds: {critical: 4, ok: 2, warning: 1}
+  renotify_interval: 10
+  silenced: {'host:hqproxy0': null, 'host:proxy1.internal-icds.commcarehq.org': null}
+  thresholds: {critical: 5, ok: 1, warning: 1}
   timeout_h: 0
-query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat").by("host","instance","url").last(5).count_by_status()'
-tags: [serverup]
+query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_heartbeat").by("host","instance","url").last(6).count_by_status()'
+tags: [serverup, opsgenie]
 type: service check
