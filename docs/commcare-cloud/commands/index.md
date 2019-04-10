@@ -230,7 +230,7 @@ Run an arbitrary Ansible module.
 commcare-cloud <env> run-module [--use-factory-auth] inventory_group module module_args
 ```
 
-#### Example
+##### Example
 
 To print out the `inventory_hostname` ansible variable for each machine, run
 ```
@@ -350,7 +350,7 @@ Run an arbitrary command via the Ansible shell module.
 commcare-cloud <env> run-shell-command [--silence-warnings] [--use-factory-auth] inventory_group shell_command
 ```
 
-#### Example
+##### Example
 
 ```
 commcare-cloud <env> run-shell-command all 'df -h | grep /opt/data'
@@ -494,7 +494,7 @@ runs `./manage.py ...` on the first django_manage machine of &lt;env&gt; or
 server you specify.
 Omit &lt;command&gt; to see a full list of possible commands.
 
-#### Example
+##### Example
 
 To open a django shell in a tmux window using the `2018-04-13_18.16` release.
 
@@ -538,7 +538,7 @@ Connect to a remote host with ssh and open a tmux session.
 commcare-cloud <env> tmux server [remote_command]
 ```
 
-#### Example
+##### Example
 
 Rejoin last open tmux window.
 
@@ -604,7 +604,7 @@ commcare-cloud <env> ansible-playbook [--use-factory-auth] playbook
 
 By default, you will see --check output and then asked whether to apply.
 
-#### Example
+##### Example
 
 ```
 commcare-cloud <env> ansible-playbook deploy_proxy.yml --limit=proxy
@@ -923,7 +923,7 @@ commcare-cloud <env> service [--only PROCESS_PATTERN]
                              {start,stop,restart,status,logs,help}
 ```
 
-#### Example
+##### Example
 
 ```
 cchq <env> service postgresql status
