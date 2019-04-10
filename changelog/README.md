@@ -14,8 +14,9 @@ Anytime you make a change to commcare-cloud ask yourself these questions:
 - Did I need to edit all (or a number of) environments files in conjunction with the code changes?
 - Did I need to run commands to deploy it?
 
-## Creating a changelog entry
 If the answer to either is yes, then please complete all of the following steps:
+
+## Creating a changelog entry
 
 - Add an entry to https://github.com/dimagi/commcare-cloud/tree/master/changelog, following the example of other files in that directory
 - Run `make` to compile the corresponding docs
