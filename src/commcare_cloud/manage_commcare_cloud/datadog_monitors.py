@@ -9,6 +9,7 @@ from datadog import api, initialize
 from jinja2 import DictLoader
 from jsonobject.api import JsonObject
 from jsonobject.properties import StringProperty, DictProperty
+from memoized import memoized
 from simplejson import OrderedDict
 
 from commcare_cloud.cli_utils import ask
@@ -56,11 +57,16 @@ class Config(JsonObject):
     env_notifications = DictProperty(required=True)
 
 
-def render_notification_block(config, env_key):
-    j2 = jinja2.Environment(
+@memoized
+def get_datadog_jinja_environment():
+    return jinja2.Environment(
         loader=jinja2.FileSystemLoader(CONFIG_ROOT),
         **JINJA_OPTS
     )
+
+
+def render_notification_block(config, env_key):
+    j2 = get_datadog_jinja_environment()
     template = j2.get_template('notification_block.j2')
     return template.render(
         env_key=env_key,
