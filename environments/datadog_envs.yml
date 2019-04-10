@@ -2,6 +2,6 @@ env_with_datadog_auth: production
 catchall_alert_channel: '@slack-hq-ops-priority'
 env_notifications:
   icds: '@slack-alerts-icds'
-  softlayer: '@slack-alerts-softlayer'
-  production: '@slack-alerts-production'
+  india: '@slack-alerts-softlayer'
+  production: '@slack-alerts-production @opsgenie-commcarehq'
   pna: '@slack-alerts-pna'
