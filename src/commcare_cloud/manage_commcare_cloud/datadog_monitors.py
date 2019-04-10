@@ -173,6 +173,7 @@ class DatadogMonitors(CommandBase):
             app_key=env.get_vault_var('secrets.DATADOG_APP_KEY')
         )
         any_diffs = False
+        missing_monitors = {raw_mon['id']: raw_mon for raw_mon in api.Monitor.get_all()}
         for id, mon in monitors.items():
             raw_mon = api.Monitor.get(id)
             if raw_mon.get('errors'):
@@ -180,6 +181,8 @@ class DatadogMonitors(CommandBase):
                     "\nError for '{}': {}\n".format(mon['name'], raw_mon['errors'])
                 ))
                 continue
+            else:
+                del missing_monitors[id]
             cleaned = clean_raw_monitor(raw_mon)
             expected = get_data_to_update(mon, keys_to_update)
             actual = get_data_to_update(cleaned, keys_to_update)
@@ -189,6 +192,14 @@ class DatadogMonitors(CommandBase):
                 puts(colored.magenta("\nDiff for '{}'\n".format(mon['name'])))
                 with indent():
                     print_diff(diff)
+
+        if missing_monitors:
+            puts(colored.magenta(
+                "FYI you also have some untracked monitors. "
+                "No change will be applied for these:"
+            ))
+            for id, raw_mon in sorted(missing_monitors.items()):
+                puts(colored.magenta("  - Untracked monitor {} '{}' (no change will be applied)".format(id, raw_mon['name'])))
 
         if any_diffs:
             if ask("Do you want to push these changes to Datadog?"):
