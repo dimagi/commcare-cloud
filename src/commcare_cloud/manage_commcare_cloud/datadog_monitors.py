@@ -116,11 +116,11 @@ def get_monitor_definitions(config):
 def render_messages(config, monitor):
     monitor = monitor.copy()
     message_rendered = render_message(config, monitor['message'], monitor['env_key'])
-    monitor['message'] = LiteralUnicode(message_rendered)
+    monitor['message'] = LiteralUnicode(message_rendered.strip())
     escal_msg = monitor['options'].get(ESCAL_MSG)
     if escal_msg:
         elcal_rendered = render_message(config, escal_msg, monitor['env_key'])
-        monitor['options'][ESCAL_MSG] = LiteralUnicode(elcal_rendered)
+        monitor['options'][ESCAL_MSG] = LiteralUnicode(elcal_rendered.strip())
     return monitor
 
 
@@ -177,7 +177,7 @@ class DatadogMonitors(CommandBase):
             cleaned = clean_raw_monitor(raw_mon)
             expected = get_data_to_update(mon, keys_to_update)
             actual = get_data_to_update(cleaned, keys_to_update)
-            diff = _unidiff_output(yaml.safe_dump(actual), yaml.safe_dump(expected))
+            diff = list(_unidiff_output(yaml.safe_dump(actual), yaml.safe_dump(expected)))
             any_diffs |= bool(diff)
             if diff:
                 puts(colored.magenta("\nDiff for '{}'\n".format(mon['name'])))
