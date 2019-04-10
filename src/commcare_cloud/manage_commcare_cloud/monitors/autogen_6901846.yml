@@ -1,0 +1,28 @@
+env_key: host.environment
+id: 6901846
+message: |-
+  {{#is_alert}}
+  There are {{value}} tasks backed up on the *{{celery_queue.name}}* queue for the last 2 hours on *{{environment.name}}*
+  {{/is_alert}}
+  Follow the steps below to verify the status of the site:
+  *1. Run check_services (https://[www.commcarehq.org]/hq/admin/system/check_services) Note: Replace [] with environment affected to see if any celery workers are down *
+  *2. Check this datadog graph for any anomalies: https://app.datadoghq.com/dash/141098/celery-overview?screenId=141098&screenName=celery-overview&from_ts=1548672720000&is_auto=false&live=true&page=0&tile_size=m&to_ts=1548687120000&tpl_var_environment=production *
+  *3. Please alert interrupt or talk to Nick P / Danny / Manish for further troubleshooting and your observations in 1 & 2 above* @slack-support-alerts
+name: 'Support Alert: Tasks backed up on celery queue:{{celery_queue.name}}'
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 100.0}
+  timeout_h: 0
+query: min(last_2h):sum:celery.tasks_queued{!environment:icds,!celery_queue:saved_exports_queue,!celery_queue:ils_gateway_sms_queue}
+  by {celery_queue,environment} >= 100
+tags: []
+type: metric alert

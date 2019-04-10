@@ -1,0 +1,26 @@
+env_key: host.environment
+id: 8131399
+message: |-
+  {{#is_alert}}
+  Kafka is down on *{{host.environment}}*
+  {{/is_alert}}
+  Follow the steps below to verify the status of the site:
+  *1. Run check_services (https://[www.commcarehq.org]/hq/admin/system/check_services) Note: Replace [] with environment affected*
+  *2. Check if you are successfully able to load HQ*
+  *3. Check if you are successfully able to load apps / exports / reports*
+  *4. If any of the above results into a 500 error, alert interrupt IMMEDIATELY, this may be a P1!* @slack-support-alerts
+name: 'Support Alert: Kafka is down! Environment: {{host.environment}}'
+options:
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 3}
+  timeout_h: 0
+query: '"kafka.can_connect".over("group:kafka").by("host","instance").last(4).count_by_status()'
+tags: []
+type: service check

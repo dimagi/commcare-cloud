@@ -1,0 +1,22 @@
+env_key: host.environment
+id: 5091620
+message: |-
+  Service errors are above threshold
+name: '{{service.name}} giving high number of error in {{environment.name}}'
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 10.0}
+  timeout_h: 0
+query: sum(last_5m):avg:commcare.sentry.errors.rate_limited{!environment:staging}
+  by {service,environment}.as_count() > 10
+tags: []
+type: query alert

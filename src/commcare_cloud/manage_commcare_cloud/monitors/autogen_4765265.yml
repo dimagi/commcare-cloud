@@ -1,0 +1,25 @@
+env_key: host.environment
+id: 4765265
+message: |-
+  {{#is_alert}}Normalised Load Average is {{value}} which is more than threshold {{threshold}} for last 4 hours.
+  @slack-alerts-scale
+  @webhook-trello
+  {{/is_alert}}
+  {{#is_alert_recovery}}Thanks for the action. The alert has been recoverd.  @slack-alerts-scale {{/is_alert_recovery}}
+name: '[Scale] Normalised Load Average more than 1 on {{host.name}} for 24 hours'
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 4.0}
+  timeout_h: 0
+query: avg(last_1d):avg:system.load.norm.15{!host:commcarealmanach} by {host} >= 4
+tags: []
+type: query alert

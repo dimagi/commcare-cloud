@@ -1,0 +1,18 @@
+env_key: host.environment
+id: 2742482
+message: |-
+  Test riak process alert
+name: Riak process alert
+options:
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 20, warning: 10}
+  timeout_h: 0
+query: '"process.up".over("process:riak").by("environment").last(1).pct_by_status()'
+tags: []
+type: service check

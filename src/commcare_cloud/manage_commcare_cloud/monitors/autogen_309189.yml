@@ -1,0 +1,28 @@
+env_key: environment.name
+id: 309189
+message: |-
+  {{#is_alert}}
+  Django response times have averaged > {{threshold}}s at all times in the last 15m. Current average is {{value}}s.
+  {{/is_alert}}
+  {{#is_recovery}}
+  Django back to ***normal***
+  {{/is_recovery}}
+  @slack-hq-ops
+name: Django response times high
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 30
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 25000.0}
+  timeout_h: 0
+query: min(last_15m):avg:gunicorn.request.duration.avg{!environment:softlayer} by
+  {environment} > 25000
+tags: ['*']
+type: metric alert

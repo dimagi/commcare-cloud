@@ -1,0 +1,22 @@
+env_key: host.environment
+id: 1320983
+message: |-
+  {{#is_alert}}
+  Unusual CPU activity on {{host.name}}.
+  {{/is_alert}}
+  @slack-hq-ops
+name: 'CPU high on Pillowtop: {{host.name}}'
+options:
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 120
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 2.0}
+  timeout_h: 0
+query: avg(last_1h):avg:system.load.norm.5{group:pillowtop} by {host} > 2
+tags: []
+type: metric alert

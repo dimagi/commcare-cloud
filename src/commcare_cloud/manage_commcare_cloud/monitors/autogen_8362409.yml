@@ -1,0 +1,34 @@
+env_key: host.environment
+id: 8362409
+message: |-
+  The {{pillow_name.name}} on {{environment.name}} has been above{{#is_warning}} {{warn_threshold}} {{/is_warning}}{{#is_alert}} {{threshold}} {{/is_alert}}for the past minute.
+  If this is a pillow rewind, you can solve by finding a couch change seq from before it happened (pick ids from /commcarehq/_changes?descending=true with revs starting with "1-" until you find a form with received_on with an early enough time, and then use the corresonding seq) and use a few lines like https://gist.github.com/dannyroberts/fdd07ecd780e08b6c236092379535a82 in `django-mange shell` to reset the checkpoint to the seq you found.
+  {{#is_match "environment.name" "icds-new"}} @slack-alerts-icds  {{/is_match}}
+  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
+  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
+  {{^is_match "environment.name" "icds-new"}}
+      {{^is_match "environment.name" "softlayer"}}
+          {{^is_match "environment.name" "production"}}
+              @slack-hq-ops-priority
+          {{/is_match}}
+      {{/is_match}}
+  {{/is_match}}
+name: Couch Pillow Rewind? Couch Pillow {{pillow_name.name}} on {{environment.name}}
+  is very high
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 180
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 0
+  require_full_window: false
+  silenced: {}
+  thresholds: {critical: 1000000.0, warning: 500000.0}
+  timeout_h: 24
+query: min(last_1m):sum:commcare.change_feed.need_processing{feed_type:couch,!pillow_name:usercacheinvalidatepillow,!pillow_name:cacheinvalidatepillow}
+  by {pillow_name,environment} > 1000000
+tags: ['*', opsgenie]
+type: query alert

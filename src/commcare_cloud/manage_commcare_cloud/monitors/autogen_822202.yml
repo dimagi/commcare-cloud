@@ -1,0 +1,41 @@
+env_key: environment.name
+id: 822202
+message: |-
+  {{#is_alert}}
+  Cloudant disk usage is above {{threshold}} %.
+  {{/is_alert}}
+  {{#is_no_data}}
+  Data missing for Cloudnat disk usage metric.
+  Run the following command on hqdb0 to diagnose the problem:
+  ```
+  (root) $ service datadog-agent info
+  ```
+  If no issue is being reported check the API output directly:
+  ```
+  curl https://commcarehq.cloudant.com/_api/v2/monitoring/disk_use_v2?cluster=dimagi003 -u commcarehq
+  ```
+  {{/is_no_data}}
+  @slack-alerts-production
+name: Cloudant disk usage alert
+options:
+  escalation_message: |-
+    Cloudant disk usage still above {{threshold}}.
+    You can:
+    * mute this alert while the issue is being resolved
+    * adjust the threshold level if a new threshold has been agreed upon
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 60
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 1440
+  require_full_window: false
+  silenced: {}
+  thresholds: {critical: 80.0}
+  timeout_h: 0
+query: avg(last_30m):avg:cloudant.disk_use.used{environment:production} by {environment}
+  * 100 / ( avg:cloudant.disk_use.used{environment:production} by {environment} +
+  avg:cloudant.disk_use.free{environment:production} by {environment} ) > 80
+tags: ['*']
+type: query alert

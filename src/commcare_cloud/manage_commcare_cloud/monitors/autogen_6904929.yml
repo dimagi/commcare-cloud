@@ -1,0 +1,30 @@
+env_key: environment.name
+id: 6904929
+message: |-
+  {{#is_alert}}
+  There are {{value}}  tasks backed up on the *saved exports queue* for the last 24 hours on *{{environment.name}}*
+  {{/is_alert}}
+  Visit the following link for more information:
+  {{#is_match "host.environment" "pna"}} http://196.207.230.171:5555 {{/is_match}}
+  {{#is_match "host.environment" "production"}} http://10.202.12.214:5555 {{/is_match}}
+  {{#is_match "host.environment" "softlayer"}} http://10.162.36.233:5555 {{/is_match}}
+  *This means that daily saved exports / excel dashboards may not be updated. Please alert interrupt or talk to Nick P / Danny / Manish @slack-support-alerts*
+name: 'Support Alert: Tasks backed up on saved_exports_queue on {{environment.name}}'
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  synthetics_check_id: null
+  thresholds: {critical: 100.0}
+  timeout_h: 0
+query: min(last_1d):sum:celery.tasks_queued{celery_queue:saved_exports_queue,!environment:icds}
+  by {environment} >= 100
+tags: []
+type: query alert

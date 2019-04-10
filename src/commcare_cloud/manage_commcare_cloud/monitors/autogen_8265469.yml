@@ -1,0 +1,26 @@
+env_key: host.environment
+id: 8265469
+message: |-
+  Postgres is down on {{host.environment}}
+  Follow the steps below to verify the status of the site:
+  *1. Run check_services (https://[www.commcarehq.org]/hq/admin/system/check_services) Note: Replace [] with environment affected*
+  *2. Check if you are successfully able to load HQ, users, locations and reports*
+  *3. Check this graph to verify if number of 500 errors on the environment is high: https://app.datadoghq.com/dashboard/g9s-pw6-tpg/hq-vitals?screenId=g9s-pw6-tpg&screenName=hq-vitals&from_ts=1549612620000&is_auto=false&live=true&page=0&tile_size=s&to_ts=1549616220000&tpl_var_environment=production&fullscreen_widget=65612754 *
+  *4. Check this graph for number of postgres errors: https://app.datadoghq.com/dashboard/g9s-pw6-tpg/hq-vitals?screenId=g9s-pw6-tpg&screenName=hq-vitals&from_ts=1549632900000&is_auto=false&live=true&page=0&tile_size=s&to_ts=1549636500000&tpl_var_environment=production&fullscreen_widget=200684876 *
+  *5. If you see high number of errors in the 500 error graph for URL group: Reports, Settings and Receiver / Submissions, alert interrupt IMMEDIATELY, this may be a P1!*
+  @slack-support-alerts
+name: 'Support Alert: Postgres is down! Environment: {{host.environment}}'
+options:
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 3, ok: 1, warning: 1}
+  timeout_h: 0
+query: '"postgres.can_connect".over("*").exclude("environment:icds","environment:staging").by("db","host","port").last(4).count_by_status()'
+tags: []
+type: service check

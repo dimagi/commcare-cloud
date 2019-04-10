@@ -1,0 +1,54 @@
+env_key: host.environment
+id: 654754
+message: |-
+  https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
+  {{#is_alert}}
+  {{#is_match "environment" "production"}}
+  For details check [hqes0](http://hqes0.internal-va.commcarehq.org:9200/_cluster/health?pretty=true), [hqes1](http://hqes1.internal-va.commcarehq.org:9200/_cluster/health?pretty=true) or [hqes3](http://hqes3.internal-va.commcarehq.org:9200/_cluster/health?pretty=true)
+  {{/is_match}}
+  {{/is_alert}}
+  {{#is_recovery}}ES cluster status back to GREEN.{{/is_recovery}}
+  {{#is_match "environment.name" "icds-new"}} @slack-alerts-icds  {{/is_match}}
+  {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
+  {{#is_match "environment.name" "softlayer"}} @slack-alerts-softlayer {{/is_match}}
+  {{#is_match "environment.name" "production"}} @slack-alerts-production {{/is_match}}
+  {{^is_match "environment.name" "icds-new"}}
+      {{^is_match "environment.name" "enikshay"}}
+          {{^is_match "environment.name" "softlayer"}}
+              {{^is_match "environment.name" "production"}}
+                  @slack-hq-ops-priority
+              {{/is_match}}
+          {{/is_match}}
+      {{/is_match}}
+  {{/is_match}}
+name: ES Cluster Status ALERT
+options:
+  escalation_message: |-
+    https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
+    ES cluster status is still not OK and should be looked into ASAP.
+    {{#is_match "environment.name" "icds-new"}} @slack-alerts-icds  {{/is_match}}
+    {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
+    {{#is_match "environment.name" "softlayer"}} @slack-alerts-softlayer {{/is_match}}
+    {{#is_match "environment.name" "production"}} @slack-alerts-production {{/is_match}}
+    {{^is_match "environment.name" "icds-new"}}
+        {{^is_match "environment.name" "enikshay"}}
+            {{^is_match "environment.name" "softlayer"}}
+                {{^is_match "environment.name" "production"}}
+                    @slack-hq-ops-priority
+                {{/is_match}}
+            {{/is_match}}
+        {{/is_match}}
+    {{/is_match}}
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 60
+  silenced: {}
+  thresholds: {critical: 10, warning: 80}
+  timeout_h: 0
+query: '"elasticsearch.cluster_health".over("*").exclude("environment:icds-new").by("environment").last(1).pct_by_status()'
+tags: [opsgenie]
+type: service check
