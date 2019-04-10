@@ -193,9 +193,6 @@ class MonitorError(Exception):
 
 
 class RemoteMonitorAPI(object):
-    def __init__(self, keys_to_update):
-        self.keys_to_update = keys_to_update
-
     def _wrap(self, raw_mon):
         if raw_mon.get('errors'):
             raise MonitorError(raw_mon['errors'])
@@ -210,9 +207,8 @@ class RemoteMonitorAPI(object):
 
 
 class LocalMonitorAPI(object):
-    def __init__(self, config, keys_to_update):
+    def __init__(self, config):
         self.config = config
-        self.keys_to_update = keys_to_update
 
     def get_all(self):
         return get_monitor_definitions(self.config)
@@ -234,8 +230,8 @@ class DatadogMonitors(CommandBase):
         config = get_config(args.config)
         keys_to_update = args.update_key or UPDATE_KEYS
         initialize_datadog(config)
-        remote_monitor_api = RemoteMonitorAPI(keys_to_update)
-        local_monitor_api = LocalMonitorAPI(config, keys_to_update)
+        remote_monitor_api = RemoteMonitorAPI()
+        local_monitor_api = LocalMonitorAPI(config)
 
         local_monitors = local_monitor_api.get_all()
         remote_monitors = remote_monitor_api.get_all()
@@ -273,7 +269,7 @@ class DatadogMonitors(CommandBase):
         if any_diffs:
             if ask("Do you want to push these changes to Datadog?"):
                 for id, expected in local_monitors.items():
-                    remote_monitor_api.update(id, expected)
+                    remote_monitor_api.update(id, get_data_to_update(expected, keys_to_update))
 
         if only_remote:
             puts(colored.magenta(
