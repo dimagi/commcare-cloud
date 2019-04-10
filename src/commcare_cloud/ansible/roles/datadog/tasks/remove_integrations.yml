@@ -34,6 +34,15 @@
   tags:
     - datadog_integrations
 
+- name: Remove pgbouncer_custom check
+  file:
+    path: /etc/dd-agent/checks.d/pgbouncer_custom.py
+    state: absent
+  when: not datadog_integration_pgbouncer_custom or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+
 - name: remove datadog integration configs
   file:
     path: "/etc/dd-agent/conf.d/{{ item.name }}.yaml"
@@ -49,6 +58,7 @@
     - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
     - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
     - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+    - {"name": "pgbouncer_custom", "enabled": "{{ datadog_integration_pgbouncer_custom }}"}
     - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
     - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
     - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
@@ -60,6 +70,7 @@
     - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
     - {"name": "couch", "enabled": "{{ datadog_integration_couch or inventory_hostname == couchdb2_first_host }}"}
     - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
-    - {"name": "http_check", "enabled": "{{ datadog_integration_http }}"}
+    - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
+    - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     # "Datadog Integration Graveyard": list globally removed integrations below
     - {"name": "couchdb2", "enabled": false}

@@ -64,13 +64,8 @@
 - import_tasks: remove_users.yml
   when: dev_users.absent
 
-- name: find supervisorctl path
-  shell: 'dirname "$(which supervisorctl)"'
-  register: dirname_which_supervisorctl
-  changed_when: false
-  check_mode: no
-
-
 - name: Copy sudoers file
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+  tags:
+    - sudoers

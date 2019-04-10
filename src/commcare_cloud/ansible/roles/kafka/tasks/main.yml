@@ -22,7 +22,7 @@
   file: src="/opt/kafka_2.10-{{ kafka_version }}" path=/opt/kafka state=link
 
 - name: Set permissions to Kafka folder
-  file: path=/opt/kafka/ owner=root group=root recurse=yes
+  file: path=/opt/kafka/ owner=root group=root recurse=yes follow=no
 
 - name: Create Kafka data directories
   become: yes
@@ -36,7 +36,7 @@
     - "{{ kafka_data_dir }}"
 
 - name: Create Kafka log directory
-  file: path="{{ kafka_log_dir }}" state=directory owner="{{ kafka_user }}" group="{{ kafka_group }}"
+  file: path="{{ kafka_log_dir }}" state=directory owner="{{ kafka_user }}" group="{{ kafka_group }}" recurse=yes
 
 - name: Link the log directory
   file: src="{{ kafka_log_dir }}" path=/opt/kafka/logs state=link
@@ -60,28 +60,6 @@
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
-
-- name: Add ruby ppa
-  apt_repository: repo='ppa:brightbox/ruby-ng'
-  register: add_ruby_ppa
-  tags:
-    - kafkat
-
-- name: Update package list for ruby
-  apt: update_cache=yes
-  when: add_ruby_ppa|changed
-  tags:
-    - kafkat
-
-- name: Install ruby
-  apt: name="{{ item }}" state=present
-  become: yes
-  with_items:
-    - ruby2.3
-    - ruby2.3-dev
-  tags:
-    - kafkat
-  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Install kafkat
   command: 'gem install kafkat'

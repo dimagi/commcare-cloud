@@ -9,9 +9,11 @@ ansible==2.5.0
 argparse==1.4.0
 args==0.1.0               # via clint
 asn1crypto==0.24.0        # via cryptography
-attrs==18.1.0
+attrs==18.2.0
 bcrypt==3.1.4             # via paramiko
-certifi==2018.4.16        # via requests
+boto3==1.9.38
+botocore==1.12.38         # via boto3, s3transfer
+certifi==2018.10.15       # via requests
 cffi==1.11.5              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 clint==0.5.1
@@ -19,31 +21,39 @@ couchdb-cluster-admin==0.4.2
 cryptography==2.3.1
 datadog==0.2.0
 decorator==4.3.0          # via datadog
-dimagi-memoized==1.1.0
+deprecated==1.2.4         # via pygithub
+dimagi-memoized==1.1.1
 dnspython==1.15.0
+docutils==0.14            # via botocore
 enum34==1.1.6             # via cryptography
 fabric==1.10.2
-gevent==1.3.5             # via couchdb-cluster-admin
-greenlet==0.4.13          # via gevent
+futures==3.2.0            # via s3transfer
+gevent==1.3.7             # via couchdb-cluster-admin
+greenlet==0.4.15          # via gevent
 idna==2.6
 ipaddress==1.0.22         # via cryptography
-jinja2==2.10              # via ansible
-jsonobject==0.9.1
+jinja2-cli==0.6.0
+jinja2==2.10              # via ansible, jinja2-cli
+jmespath==0.9.3           # via boto3, botocore
+jsonobject==0.9.5
 markupsafe==1.0           # via jinja2
-ndg-httpsclient==0.5.0
+ndg-httpsclient==0.5.1
 netaddr==0.7.19
-paramiko==2.4.1           # via ansible, fabric
+paramiko==2.4.2           # via ansible, fabric
 passlib==1.7.1
-pyasn1==0.4.3             # via ndg-httpsclient, paramiko
-pycparser==2.18           # via cffi
+pyasn1==0.4.4             # via ndg-httpsclient, paramiko
+pycparser==2.19           # via cffi
 pycryptodome==3.6.6
-pygithub==1.40a1
+pygithub==1.43.3
 pyjwt==1.6.4              # via pygithub
-pynacl==1.2.1             # via paramiko
+pynacl==1.3.0             # via paramiko
 pyopenssl==18.0.0
+python-dateutil==2.7.5    # via botocore
 pytz==2017.2
 pyyaml==3.13              # via ansible, couchdb-cluster-admin
 requests==2.19.1          # via couchdb-cluster-admin, datadog, pygithub
+s3transfer==0.1.13        # via boto3
 simplejson==3.16.0        # via datadog
 six==1.11.0
-urllib3==1.23             # via requests
+urllib3==1.23             # via botocore, requests
+wrapt==1.10.11            # via deprecated

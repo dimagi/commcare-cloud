@@ -1,0 +1,7 @@
+dev_users:
+  present:
+    - nteja
+    - amohammed
+    - asamaddar
+    - sbaig
+  absent: []

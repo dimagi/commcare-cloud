@@ -1,9 +1,11 @@
-override:
+pgbouncer_override:
   pgbouncer_default_pool: 290
-  pgbouncer_max_connections: 400
+  pgbouncer_max_connections: 800
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+
+postgres_override:
   postgresql_effective_cache_size: 8GB
   postgresql_max_connections: 300
   postgresql_max_stack_depth: 4MB

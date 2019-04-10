@@ -19,5 +19,5 @@ couchdb_compaction_settings:
 
 couchdb_async_io_threads: 64
 
-couchdb_require_valid_user: 'false'
-couchdb_require_valid_user_node_local: 'false'
+couchdb_require_valid_user: false
+couchdb_require_valid_user_node_local: false

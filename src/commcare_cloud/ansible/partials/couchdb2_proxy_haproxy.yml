@@ -1,0 +1,43 @@
+---
+- name: Couchdb 2.0 Proxy
+  include_role:
+    name: "../roles/haproxy"
+  vars:
+    # https://github.com/apache/couchdb/blob/master/rel/haproxy.cfg
+    haproxy_stats_enabled: true
+    haproxy_server_timeout: 1h
+    haproxy_client_timeout: 150s
+    haproxy_connect_timeout: 500ms
+    haproxy_http_request_timeout:
+    haproxy_service_configs:
+    - service:
+        haproxy_service_name: couchdb2
+        haproxy_backend_nodes: "{{ groups['couchdb2'] | default([]) }}"
+        haproxy_port: "{{ couchdb2_proxy_port }}"
+        haproxy_backend_port: "{{ couchdb2_port }}"
+        haproxy_balance_type: http
+        haproxy_interval: 5s
+        haproxy_backend_options:
+          - httpchk GET /_up
+        backend_httpcheck_options:
+          - disable-on-404
+
+- name: Haproxy log rolling configurations
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: "haproxy"
+        path: "/var/log/haproxy/*.log"
+        options:
+          - daily
+          - size 100M
+          - rotate 10
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate
+          - nocreate
+          - notifempty
+        scripts:
+          postrotate: "invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true"

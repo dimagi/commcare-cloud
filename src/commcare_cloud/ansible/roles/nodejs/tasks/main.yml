@@ -1,0 +1,46 @@
+- include: trusty_apt_repos.yml
+  when: ansible_distribution_version == '14.04'
+
+- name: Update package list
+  apt: update_cache=yes
+  when: add_nodejs_repo is changed
+
+- name: Install nodejs packages
+  apt: name="{{ item }}" state=present
+  become: yes
+  with_items:
+    - nodejs
+
+- name: Install nodejs packages
+  apt: name="{{ item }}" state=present
+  become: yes
+  when: ansible_distribution_version == '18.04'
+  with_items:
+    - npm
+
+- name: Set NPM registry
+  command: 'npm config set registry http://registry.npmjs.org/'
+  become: yes
+
+- name: Install npm items
+  npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
+  become: yes
+  with_items:
+    - {name: 'n', version: '2.1.12'}
+    - {name: 'less', version: '2.7.2'}
+    - {name: 'bower', version: '1.8.4'}
+    - {name: 'uglify-js', version: '2.6.1'}
+  tags:
+    - npm
+
+- name: Update Node
+  command: 'n lts'
+  become: yes
+
+- name: Install correct npm version
+  npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
+  become: yes
+  with_items:
+    - {name: 'npm', version: '6.4.1'}
+  tags:
+    - npm

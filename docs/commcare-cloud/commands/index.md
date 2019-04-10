@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -277,7 +277,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -396,7 +396,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         filename prepend with @
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   -l SUBSET, --limit=SUBSET
                         further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -461,16 +461,37 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
+#### `send-datadog-event`
+
+Track an infrastructure maintainance event in Datadog
+
+```
+commcare-cloud <env> send-datadog-event event_title event_text
+```
+
+##### Positional Arguments
+
+###### `event_title`
+
+Title of the datadog event.
+
+###### `event_text`
+
+Text content of the datadog event.
+
+---
+
 #### `django-manage`
 
 Run a django management command.
 
 ```
-commcare-cloud <env> django-manage [--tmux] [--release RELEASE]
+commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE]
 ```
 
 `commcare-cloud <env> django-manage ...`
-runs `./manage.py ...` on the first webworker of &lt;env&gt;.
+runs `./manage.py ...` on the first django_manage machine of &lt;env&gt; or
+server you specify.
 Omit &lt;command&gt; to see a full list of possible commands.
 
 #### Example
@@ -481,6 +502,12 @@ To open a django shell in a tmux window using the `2018-04-13_18.16` release.
 commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
 ```
 
+To do this on a specific server
+
+```
+commcare-cloud <env> django-manage --tmux shell --server web0
+```
+
 ##### Optional Arguments
 
 ###### `--tmux`
@@ -489,6 +516,11 @@ If this option is included, the management command will be
 run in a new tmux window under the `cchq` user. You may then exit using
 the customary tmux command `^b` `d`, and resume the session later.
 This is especially useful for long-running commands.
+
+###### `--server SERVER`
+
+Server to run management command on.
+Defaults to first server under django_manage inventory group
 
 ###### `--release RELEASE`
 
@@ -602,7 +634,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --force-handlers      run handlers even if a task fails
   -f FORKS, --forks=FORKS
                         specify number of parallel processes to use
-                        (default=5)
+                        (default=50)
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --list-tags           list all available tags
@@ -675,7 +707,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for deploying the entire stack.
 
 ```
-commcare-cloud <env> deploy-stack [--use-factory-auth]
+commcare-cloud <env> deploy-stack [--use-factory-auth] [--first-time]
 ```
 
 Often used in conjunction with --limit and/or --tag
@@ -687,6 +719,29 @@ for a more specific update.
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
 
+###### `--first-time`
+
+Use this flag for running against a newly-created machine.
+
+It will first use factory auth to set up users,
+and then will do the rest of deploy-stack normally,
+but skipping check mode.
+
+Running with this flag is equivalent to
+
+```
+commcare-cloud <env> bootstrap-users <...args>
+commcare-cloud <env> deploy-stack --skip-check --skip-tags=users <...args>
+```
+
+If you run and it fails half way, when you're ready to retry, you're probably
+better off running
+```
+commcare-cloud <env> deploy-stack --skip-check --skip-tags=users <...args>
+```
+since if it made it through bootstrap-users
+you won't be able to run bootstrap-users again.
+
 ---
 
 #### `update-config`
@@ -694,16 +749,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Run the ansible playbook for updating app config.
 
 ```
-commcare-cloud <env> update-config [--use-factory-auth]
+commcare-cloud <env> update-config
 ```
 
 This includes django `localsettings.py` and formplayer `application.properties`.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
 
@@ -844,6 +893,7 @@ Use `-l` instead of a command to see the full list of commands.
     prepare_offline_deploy
     reset_mvp_pillows
     restart_services
+    restart_webworkers
     reverse_patch              Used to reverse a git patch created via `git f...
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
@@ -919,7 +969,7 @@ Use 'help' action to list all options.
 Perform a CouchDB migration
 
 ```
-commcare-cloud <env> migrate-couchdb migration_plan {describe,plan,migrate,commit,clean}
+commcare-cloud <env> migrate-couchdb [--no-stop] migration_plan {describe,plan,migrate,commit,clean}
 ```
 
 This is a recent and advanced addition to the capabilities,
@@ -941,6 +991,19 @@ Action to perform
 - migrate: stop nodes and copy shard data according to plan
 - commit: update database docs with new shard allocation
 - clean: remove shard files from hosts where they aren't needed
+
+##### Optional Arguments
+
+###### `--no-stop`
+
+When used with migrate, operate on live couchdb cluster without stopping nodes.
+
+This is potentially dangerous.
+If the sets of a shard's old locations and new locations are disjoint---i.e.
+if there are no "pivot" locations for a shard---then running migrate and commit
+without stopping couchdb will result in data loss.
+If your shard reallocation has a pivot location for each shard,
+then it's acceptable to do live.
 
 ---
 
@@ -1047,5 +1110,166 @@ commcare-cloud <ev> list-databases
 ###### `--compare`
 
 Gives additional databases on the server.
+
+---
+
+#### `terraform`
+
+Run terraform for this env with the given arguments
+
+```
+commcare-cloud <env> terraform [--skip-secrets] [--apply-immediately] [--username USERNAME]
+```
+
+##### Optional Arguments
+
+###### `--skip-secrets`
+
+Skip regenerating the secrets file.
+
+Good for not having to enter vault password again.
+
+###### `--apply-immediately`
+
+Apply immediately regardless fo the default.
+
+In RDS where the default is to apply in the next maintenance window,
+use this to apply immediately instead. This may result in a service interruption.
+
+###### `--username USERNAME`
+
+The username of the user whose public key will be put on new servers.
+
+Normally this would be _your_ username.
+Defaults to the value of the COMMCARE_CLOUD_DEFAULT_USERNAME environment variable
+or else the username of the user running the command.
+
+---
+
+#### `terraform-migrate-state`
+
+Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
+
+```
+commcare-cloud <env> terraform-migrate-state
+```
+
+This migration tool should exist as a generic tool for terraform,
+but terraform is still not that mature, and it doesn't seem to exist yet.
+
+Terraform assigns each resource an address so that it can map it back to the code.
+However, often when you change the code, the addresses no longer map to the same place.
+For this, terraform offers the terraform state mv &lt;address&gt; &lt;new_address&gt; command,
+so you can tell it how existing resources map to your new code.
+
+This is a tedious task, and often follows a very predictable renaming pattern.
+This command helps fill this gap.
+
+---
+
+#### `aws-sign-in`
+
+Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
+
+```
+commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES]
+```
+
+This will store the temporary session credentials in ~/.aws/credentials
+under a profile named with the pattern "&lt;aws_profile&gt;:profile".
+After this you can use other AWS-related commands for up to &lt;duration&gt; minutes
+before having to sign in again.
+
+##### Optional Arguments
+
+###### `--duration-minutes DURATION_MINUTES`
+
+Stay signed in for this many minutes
+
+---
+
+#### `aws-list`
+
+List endpoints (ec2, rds, etc.) on AWS
+
+```
+commcare-cloud <env> aws-list
+```
+
+---
+
+#### `aws-fill-inventory`
+
+Fill inventory.ini.j2 using AWS resource values cached in aws-resources.yml
+
+```
+commcare-cloud <env> aws-fill-inventory [--cached]
+```
+
+If --cached is not specified, also refresh aws-resources.yml
+to match what is actually in AWS.
+
+##### Optional Arguments
+
+###### `--cached`
+
+Use the values set in aws-resources.yml rather than fetching from AWS.
+
+This runs much more quickly and gives the same result, provided no changes
+have been made to our actual resources in AWS.
+
+---
+
+#### `openvpn-activate-user`
+
+Give a OpenVPN user a temporary password (the ansible user password)
+
+```
+commcare-cloud <env> openvpn-activate-user [--use-factory-auth] vpn_user
+```
+
+to allow the user to connect to the VPN, log in, and change their password using
+
+```
+cchq <env> openvpn-claim-user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to activate.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
+#### `openvpn-claim-user`
+
+Claim an OpenVPN user as your own, setting its password
+
+```
+commcare-cloud <env> openvpn-claim-user [--use-factory-auth] vpn_user
+```
+
+##### Positional Arguments
+
+###### `vpn_user`
+
+The user to claim.
+
+Must be one of the defined ssh users defined for the environment.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---

@@ -25,6 +25,7 @@
   - proxy
   - cas_proxy
   - couchdb2_proxy
+  - reach_proxy
   tasks:
   - service:
       name: nginx
@@ -34,7 +35,6 @@
 
 - hosts:
   - webworkers
-  - touchforms
   - pillowtop
   - formplayer
   tasks:

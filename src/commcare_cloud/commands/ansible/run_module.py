@@ -91,7 +91,8 @@ class RunAnsibleModule(CommandBase):
             )
 
         def run_check():
-            return _run_ansible(args, '--check', *unknown_args)
+            with environment.suppress_vault_loaded_event():
+                return _run_ansible(args, '--check', *unknown_args)
 
         def run_apply():
             return _run_ansible(args, *unknown_args)
@@ -102,7 +103,6 @@ class RunAnsibleModule(CommandBase):
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
                        become, become_user, factory_auth, *extra_args):
     cmd_parts = (
-        'ANSIBLE_CONFIG={}'.format(os.path.join(ANSIBLE_DIR, 'ansible.cfg')),
         'ansible', inventory_group,
         '-m', module,
         '-i', environment.paths.inventory_source,
@@ -131,17 +131,15 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
-        cmd_parts += ('--vault-password-file=/bin/cat',)
+        cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
-    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=ansible_context.env_vars)
+    env_vars = ansible_context.env_vars
     if ask_vault_pass:
-        p.communicate(input='{}\n'.format(environment.get_ansible_vault_password()))
-    else:
-        p.communicate()
-    return p.returncode
+        env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
+    return subprocess.call(cmd_parts, env=env_vars)
 
 
 class RunShellCommand(CommandBase):
@@ -189,6 +187,40 @@ class RunShellCommand(CommandBase):
         args.quiet = True
         del args.shell_command
         return RunAnsibleModule(self.parser).run(args, unknown_args)
+
+
+class SendDatadogEvent(CommandBase):
+    command = 'send-datadog-event'
+    help = "Track an infrastructure maintainance event in Datadog"
+
+    arguments = (
+        Argument('event_title', help="""
+            Title of the datadog event.
+        """),
+        Argument('event_text', help="""
+            Text content of the datadog event.
+        """),
+    )
+
+    def run(self, args, unknown_args):
+        args.module = 'datadog_event'
+        environment = get_environment(args.env_name)
+        vault = environment.get_vault_variables()['secrets']
+        tags = "environment:{}".format(args.env_name)
+        args.module_args = "api_key={api_key} app_key={app_key} " \
+            "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(
+                api_key=vault['DATADOG_API_KEY'],
+                app_key=vault['DATADOG_APP_KEY'],
+                tags=tags,
+                text=args.event_text,
+                title=args.event_title,
+                agg='commcare-cloud'
+            )
+        return run_ansible_module(
+            environment, AnsibleContext(args),
+            '127.0.0.1', args.module, args.module_args,
+            False, False, False,
+        )
 
 
 class Ping(CommandBase):

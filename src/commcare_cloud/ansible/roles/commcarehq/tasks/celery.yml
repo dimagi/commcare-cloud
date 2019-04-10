@@ -1,3 +1,6 @@
+# Note: Make sure to add queues with associated tasks to the solo_queues list in
+# validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
+
 - name: define reminder queue services
   become: cchq
   template:
@@ -84,6 +87,15 @@
   tags:
     - services
   register: celery_beat_files
+
+- name: remove celery beat service
+  become: cchq
+  file:
+    path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
+    state: absent
+  when: app_processes_config.celery_processes.get(inventory_hostname).beat is not defined
+  tags:
+    - services
 
 - name: define celery workers
   become: cchq

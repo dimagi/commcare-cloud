@@ -131,10 +131,11 @@ def read_plan(plan_path, target_env, limit=None):
     source_env = None
     if 'source_env' in plan_dict:
         source_env = get_environment(plan_dict['source_env'])
+    else:
+        source_env = target_env
 
     def _get_source_files(config_dict):
-        if source_env:
-            config_dict['source_host'] = source_env.translate_host(config_dict['source_host'], plan_path)
+        config_dict['source_host'] = source_env.translate_host(config_dict['source_host'], plan_path)
         return SourceFiles(**config_dict)
 
     configs = {

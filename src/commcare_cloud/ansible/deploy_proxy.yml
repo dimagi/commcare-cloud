@@ -1,11 +1,18 @@
 ---
 - name: setup nginx
-  hosts: proxy:couchdb2_proxy
+  hosts: proxy
   tasks:
     - name: install nginx
       include_role:
         name: nginx
         tasks_from: install
+      when: not nginx_installed|default(False)
+      tags: nginx
+
+    - name: install nginx certs
+      include_role:
+        name: nginx
+        tasks_from: certs
       when: not nginx_installed|default(False)
       tags: nginx
 
@@ -33,7 +40,7 @@
 
     - name: install cchq sites
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: site
       with_items:
         - {name: cchq_http, vars_file: cchq_http}
@@ -44,10 +51,10 @@
 
     - name: install no www redirect sites
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
-        site_present: "{{ NO_WWW_SITE_HOST|default(None) }}"
+        site_present: "{{ NO_WWW_SITE_HOST|default(None) is not none }}"
       with_items:
         - {name: cchq_www_redirect_insecure, vars_file: cchq_www_redirect_insecure}
         - {name: cchq_www_redirect_secure, vars_file: cchq_www_redirect_secure}
@@ -57,10 +64,10 @@
 
     - name: install j2me http site
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
-        site_present: "{{ J2ME_SITE_HOST|default(None) }}"
+        site_present: "{{ J2ME_SITE_HOST|default(None) is not none }}"
       with_items:
         - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
       loop_control:
@@ -69,7 +76,7 @@
 
     - name: install other sites
       include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ site_config.name in special_sites }}"
@@ -107,6 +114,16 @@
         riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
         site_config: {name: riakcs, vars_file: riakcs}
 
+- name: Reach Proxy
+  hosts: reach_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: "{{ 'reach_ssl' in special_sites }}"
+        site_config: {name: reach_ssl, vars_file: reach_ssl}
+
 - name: CAS Proxy
   hosts: cas_proxy
   tasks:
@@ -127,20 +144,9 @@
         site_present: "{{ 'pna_ssl' in special_sites }}"
         site_config: {name: pna_ssl, vars_file: pna_ssl}
 
-- name: Couchdb 2.0 Proxy
-  hosts: couchdb2_proxy
-  tasks:
-    - include_role:
-        name: nginx
-        tasks_from: set_site_present
-      vars:
-        site_present: True
-        site_config: {name: couchdb2, vars_file: couchdb2}
-
 - name: Move logrotate to hourly
   hosts:
     - proxy
-    - couchdb2_proxy
   become: true
   roles:
     - role: logrotate
@@ -148,7 +154,6 @@
 - name: Nginx log rolling configurations
   hosts:
    - proxy
-   - couchdb2_proxy
   become: true
   roles:
     - role: ansible-logrotate
@@ -167,3 +172,7 @@
             - sharedscripts
           scripts:
             postrotate: "[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`"
+
+- name: Setup Letsencrypt
+  import_playbook: letsencrypt_cert.yml
+  tags: setup_letsencrypt

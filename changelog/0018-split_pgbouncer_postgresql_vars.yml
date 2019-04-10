@@ -1,0 +1,33 @@
+title: Split pgbouncer vars from postgresql vars
+key: split-postgresql-vars-from-pgbouncer-vars
+date: 2019-02-26
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  This change extracts a new role from the existing postgresql role for installing
+  and configuring pgbouncer.
+
+  As a result of this change the `postgresql.yml` environment configuration file
+  needs to be changed to split out the postgresql vars from the pgbouncer vars.
+
+details: |
+  Previously there was a field in `<env>/postgresql.yml` called `override` which allowed
+  overriding vars from the postgresql role. This var has now been split in two to represent
+  the two distinct roles for postgresql and pgbouncer.
+
+  The vars should be split accordingly.
+
+update_steps: |
+  Edit the `postgresql.yml` file in all environments to split the `override` var as follows:
+
+  ```diff
+  - override:
+  + pgbouncer_override:
+      pgbouncer_pool_mode: transaction
+      pgbouncer_*
+  +
+  + postgres_override:
+      postgresql_version: "9.6"
+      postgresql_*
+  ```

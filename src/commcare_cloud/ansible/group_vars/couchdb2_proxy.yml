@@ -1,0 +1,6 @@
+datadog_integration_haproxy: true
+haproxy_username: admin
+haproxy_stats_password: "{{ secrets.HAPROXY_STATS_PASSWORD | default(None) }}"
+haproxy_stats_bind_address: "{{ inventory_hostname }}"
+haproxy_stats_port: 1936
+couchdb2_client_max_body_size: 10M

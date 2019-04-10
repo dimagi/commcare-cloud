@@ -11,6 +11,7 @@
     owner: root
     mode: 0600
   tags: monit
+  notify: reload monit
 
 - name: start monit
   become: yes

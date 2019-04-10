@@ -1,0 +1,69 @@
+variable "region" {}
+variable "environment" {}
+variable "azs" {
+  type = "list"
+}
+variable "az_codes" {
+  type = "list"
+}
+variable "vpc_begin_range" {}
+
+# OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe.
+# To do so please visit http://aws.amazon.com/marketplace/pp?sku=3ihdqli79gl9v2jnlzs6nq60h
+variable "openvpn_image" {
+  default = ""  # will be auto-assigned by openvpn module if not set
+}
+variable "openvpn_instance_type" {
+  default = "t2.small"
+}
+
+# Use 'hvm:ebs-ssd' AMIs from https://cloud-images.ubuntu.com/locator/ec2/
+variable "server_image" {
+  default = "{{ {'us-east-1': 'ami-07cf43e1798df5582', 'ap-south-1': 'ami-07c128e60e80e6766'}[region] }}"
+}
+
+variable "bionic_server_image" {
+  default = "{{ {'us-east-1': 'ami-012fd5eb46f56731f', 'ap-south-1': 'ami-0a63d6cdb8b90bdae'}[region] }}"
+}
+
+variable "dns_zone_id" {}
+variable "dns_domain" {}
+variable "internal_ssl_cert_arn" {}
+variable "external_routes" {
+  type = "list"
+  default = []
+}
+
+variable "vpn_connections" {
+  type = "list"
+  default = []
+}
+
+variable "vpn_connection_routes" {
+  type = "list"
+  default = []
+}
+
+# Redis/ElastiCache variables
+variable "redis" {
+  type = "map"
+  default = {}
+}
+
+variable "rds_instances" {
+  type = "list"
+  default = []
+}
+
+variable "account_alias" {}
+
+variable "key_name" {}
+variable "servers" {
+  type = "list"
+  default = []
+}
+
+variable "proxy_servers" {
+  type = "list"
+  default = []
+}

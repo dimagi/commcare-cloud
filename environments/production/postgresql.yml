@@ -1,41 +1,68 @@
-DEFAULT_POSTGRESQL_HOST: hqdb0
-
-override:
+postgres_override:
+  allow_direct_postgresql_access: yes
   allow_dump_from_pgstandby: yes
+  postgresql_max_connections: 300
+  postgresql_version: '9.6'
+  postgresql_checkpoint_completion_target: '0.7'
+  postgresql_wal_buffers: 16MB
+  postgresql_max_wal_size: 2GB
+
+pgbouncer_override:
   pgbouncer_default_pool: 290
-  pgbouncer_max_connections: 800
+  pgbouncer_max_connections: 3000
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
-  postgresql_max_connections: 300
-  postgresql_version: '9.6'
+
+
+# We're temporarily disabling read replicas
+# and will revisit after migration to RDS
+#LOAD_BALANCED_APPS:
+#  auth:
+#    - [default, 1]
+#    - [pgmainstandby0, 3]
+#  locations:
+#    - [default, 1]
+#    - [pgmainstandby0, 3]
+#  userreports:
+#    - [default, 1]
+#    - [pgmainstandby0, 3]
 
 dbs:
   main:
-    host: hqdb0
+    host: rds_pgmain0
+    pgbouncer_host: pgbouncer0
   formplayer:
-    host: hqdb0
+    host: rds_pgmain0
+    pgbouncer_host: pgbouncer0
   ucr:
-    host: hqdb3
+    host: rds_pgucr0
+    pgbouncer_host: pgbouncer0
     query_stats: True
   synclogs:
-    host: pgsynclog1
+    host: rds_pgsynclog0
+    pgbouncer_host: pgbouncer0
   form_processing:
     proxy:
-      host: hqdb1
+      host: pgproxy1
     partitions:
       p1:
         shards: [0, 204]
-        host: hqdb1
+        host: rds_pgshard1
+        pgbouncer_host: pgproxy1
       p2:
         shards: [205, 409]
-        host: hqdb1
+        host: rds_pgshard2
+        pgbouncer_host: pgproxy1
       p3:
         shards: [410, 614]
-        host: hqdb2
+        host: rds_pgshard3
+        pgbouncer_host: pgproxy1
       p4:
         shards: [615, 819]
-        host: hqdb2
+        host: rds_pgshard4
+        pgbouncer_host: pgproxy1
       p5:
         shards: [820, 1023]
-        host: hqdb2
+        host: rds_pgshard5
+        pgbouncer_host: pgproxy1

@@ -1,9 +1,11 @@
 ---
 - name: Check for uptrack installation
-  shell: sudo uptrack-show
+  become: yes
+  shell: uptrack-show
   ignore_errors: yes
   register: command_result
   when: KSPLICE_ACTIVE
+  changed_when: no
 
 - name: Download install-uptrack
   become: yes

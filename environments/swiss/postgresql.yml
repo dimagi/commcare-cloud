@@ -1,12 +1,14 @@
 DEFAULT_POSTGRESQL_HOST: "127.0.0.1"
 SEPARATE_FORM_PROCESSING_DBS: False
 
-override:
+pgbouncer_override:
   pgbouncer_default_pool: 290
   pgbouncer_max_connections: 400
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+
+postgres_override:
   postgresql_max_connections: 300
   postgresql_wal_keep_segments: 0
   postgresql_work_mem: 1MB

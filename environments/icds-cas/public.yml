@@ -14,17 +14,24 @@ supervisor_http_enabled: False
 
 backup_blobdb: False
 backup_postgres: False
-backup_es: False
+backup_es_s3: False
 postgres_s3: False
 couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
+# ElasticSearch Backup on Swift API
+backup_es_swift: True
+swift_container: mowcdmumelasticdb
+swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
+
 nofile_limit: 65536
 
 redis_appendonly: 'yes'
+redis_auto_aof_rewrite_percentage: "50"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
+kafka_log_retention: 1440 # 60 days
 
 KSPLICE_ACTIVE: no
 
@@ -41,8 +48,9 @@ etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
 
-# TODO: uncomment  when switching back to TCL SMTP
-# default_from_email: "admin@sq.endmile.co.in"
+default_from_email: commcarehq-noreply@icds-cas.gov.in
+server_email: commcarehq-noreply@icds-cas.gov.in
+cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 
 commcare_errors_branch: "master-icds"
 site_locations:
@@ -58,6 +66,18 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_maharashtra"
+  - name: /tamil_icds-cas_files 
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_tamil"
+  - name: /telangana_icds-cas_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_telangana"
+  - name: /meghalaya_icds-cas_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_meghalaya"
   - name: /mp_ls_files
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
@@ -86,11 +106,20 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_telugu_files"
+  - name: /english_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_english_files"
+  - name: /gujarat_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_gujarat_files"
   - name: /adhaar_id_scanner_apk
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
 
+couchdb_use_haproxy: True
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
@@ -101,10 +130,6 @@ couchdb_cluster_settings:
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
-
-couchdb_admins: "{
-  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
-}"
 
 couch_dbs:
   default:
@@ -118,16 +143,17 @@ couch_dbs:
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 s3_blob_db_enabled: yes
-s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
-s3_blob_db_s3_bucket: 'mowcdmum-c1'
+s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
+s3_blob_db_s3_bucket: 'blobdb'
+
+# removed after migrating data to riak
+#old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
+#old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
+#old_s3_bulk_delete_chunksize: 200
 
 localsettings:
   ALLOWED_HOSTS:
-    - localhost
-    - 127.0.0.1
-    - '{{ SITE_HOST }}'
     - '{{ CAS_SITE_HOST }}'
-    - '{{ hostvars[groups.proxy.0].public_ip }}'
   ASYNC_INDICATORS_TO_QUEUE: 60000
   ASYNC_INDICATOR_QUEUE_TIMES:
     '*':
@@ -151,8 +177,8 @@ localsettings:
   COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
-  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com # Temp till we get TCL
-  EMAIL_SMTP_PORT: 587
+  EMAIL_SMTP_HOST: relay.sendermile.com
+  EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160
@@ -168,6 +194,7 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
+  KAFKA_API_VERSION: [0, 8, 2]
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'
@@ -198,6 +225,7 @@ localsettings:
             - 'static-ccs_record_cases_monthly_v2'
             - 'static-ccs_record_cases_monthly_tableau_v2'
             - 'static-person_cases_v2'
+            - 'static-person_cases_v3'
             - 'static-commcare_user_cases'
             - 'static-pregnant-tasks_cases'
             - 'static-child_tasks_cases'
@@ -217,6 +245,8 @@ localsettings:
             - 'static-infrastructure_form_v2'
             - 'static-awc_mgt_forms'
             - 'static-ls_home_visit_forms_filled'
+            - 'static-ls_vhnd_form'
+            - 'static-cbe_form'
             - 'static-postnatal_care_forms'
             - 'static-thr_forms_v2'
             - 'static-usage_forms'
@@ -228,25 +258,34 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: True
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
-  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_HOST: "{{ groups.redis_cluster_master.0 }}"
   REDIS_PORT: '6379'
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
   SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  # sumologic toggle is set to 0 so having this here just incurs another cache hit for nothing
+  # can re-enable if we want to
+  SUMOLOGIC_URL: # "{{ localsettings_private.SUMOLOGIC_URL }}"
   ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  UCR_COMPARISONS:
-    'static-icds-cas-static-mpr_2a_person_cases': 'static-icds-cas-static-custom_sql_mpr_2a_person_cases'
+  UCR_COMPARISONS: {}
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
+
+PY3_RUN_CELERY_BEAT: False
+PY3_RUN_CELERY_FLOWER: False
+PY3_RUN_CELERY_WORKER: False
+PY3_RUN_ERRAND_BOY: False
+PY3_RUN_GUNICORN: False
+PY3_RUN_MANAGEMENT: False
+PY3_RUN_PILLOWTOP: False
+PY3_RUN_WEBSOCKETS: False

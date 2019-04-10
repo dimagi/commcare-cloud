@@ -1,0 +1,9 @@
+copy_files:
+  - redis1:
+      - source_host: redis0
+#        source_user: <user>
+        source_dir: /opt/data/
+        target_dir: /opt/data/
+        rsync_args: []
+        files:
+          - redis/

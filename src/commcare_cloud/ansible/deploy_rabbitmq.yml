@@ -1,0 +1,37 @@
+---
+- name: Common Database Machine Setup
+  hosts:
+    - rabbitmq
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+    - {role: backups, tags: 'backups'}
+
+- name: RabbitMQ
+  hosts: rabbitmq
+  become: true
+  roles:
+    - {role: rabbitmq, tags: 'rabbitmq'}
+
+- name: RabbitMQ log rolling configurations
+  hosts: rabbitmq
+  become: true
+  roles:
+    - role: ansible-logrotate
+      tags:
+      - rabbitmq
+      - logging
+      logrotate_scripts:
+        - name: "rabbitmq-server"
+          path: "/var/log/rabbitmq/*.log"
+          options:
+            - weekly
+            - size 1G
+            - rotate 10
+            - missingok
+            - compress
+            - delaycompress
+            - notifempty
+            - sharedscripts
+          scripts:
+            postrotate: "/etc/init.d/rabbitmq-server rotate-logs > /dev/null"

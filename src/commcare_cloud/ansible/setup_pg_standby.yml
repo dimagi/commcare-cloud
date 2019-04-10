@@ -8,7 +8,7 @@
     - "{{ standby }}"
   become: yes
   vars_files:
-    - roles/postgresql/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   tasks:
     - assert:
         that:
@@ -16,7 +16,7 @@
         msg: "Standby node ('{{ standby }}') provided does not have 'hot_standby_master var set. Are you sure it's the right node?"
 
     - stat:
-        path: "{{ postgresql_home }}/recovery.conf"
+        path: "{{ postgresql_recovery_conf }}"
       register: recovery_file
 
     - assert:
@@ -43,7 +43,7 @@
     - "{{ standby }}"
   become: yes
   vars_files:
-    - roles/postgresql/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   tasks:
     - name: get master size
       delegate_to: "{{ hot_standby_master }}"
@@ -75,7 +75,9 @@
       when: not ansible_check_mode
 
     - name: create progress tasks
-      include_tasks: roles/postgresql/tasks/standby_progress.yml
+      include_role:
+        name: postgresql_base
+        tasks_from: standby_progress.yml
       with_items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
       when: not ansible_check_mode
 
@@ -93,8 +95,8 @@
 
     - name: create / update "recovery.conf"
       template:
-        src: roles/postgresql/templates/recovery.conf.j2
-        dest: "{{ postgresql_home }}/recovery.conf"
+        src: roles/postgresql_base/templates/recovery.conf.j2
+        dest: "{{ postgresql_recovery_conf }}"
 
     - name: Reset ownership
       file:
