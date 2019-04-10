@@ -151,6 +151,52 @@ def get_data_to_update(monitor, keys_to_update):
     return to_update
 
 
+def initialize_datadog(config):
+    env = get_environment(config.env_with_datadog_auth)
+    initialize(
+        api_key=env.get_vault_var('secrets.DATADOG_API_KEY'),
+        app_key=env.get_vault_var('secrets.DATADOG_APP_KEY')
+    )
+
+
+def get_config(config_path):
+    with open(config_path, 'r') as config_file:
+        config = Config(yaml.load(config_file))
+        config.env_notifications = OrderedDict(sorted(config.env_notifications.items()))
+    return config
+
+
+class MonitorError(Exception):
+    def __init__(self, errors):
+        self.errors = errors
+
+
+class RemoteMonitorAPI(object):
+    def __init__(self, keys_to_update):
+        self.keys_to_update = keys_to_update
+
+    def _wrap(self, raw_mon):
+        if raw_mon.get('errors'):
+            raise MonitorError(raw_mon['errors'])
+        else:
+            return clean_raw_monitor(raw_mon)
+
+    def get_all(self):
+        return {raw_mon['id']: self._wrap(raw_mon) for raw_mon in api.Monitor.get_all()}
+
+    def update(self, monitor_id, wrapped_monitor):
+        api.Monitor.update(monitor_id, **wrapped_monitor)
+
+
+class LocalMonitorAPI(object):
+    def __init__(self, config, keys_to_update):
+        self.config = config
+        self.keys_to_update = keys_to_update
+
+    def get_all(self):
+        return get_monitor_definitions(self.config)
+
+
 class DatadogMonitors(CommandBase):
     command = 'update-datadog-monitors'
     help = """Update Datadog Monitor definitions"""
@@ -161,48 +207,54 @@ class DatadogMonitors(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        with open(args.config, 'r') as config_file:
-            config = Config(yaml.load(config_file))
-            config.env_notifications = OrderedDict(sorted(config.env_notifications.items()))
-
+        config = get_config(args.config)
         keys_to_update = args.update_key or UPDATE_KEYS
-        env = get_environment(config.env_with_datadog_auth)
-        monitors = get_monitor_definitions(config)
-        initialize(
-            api_key=env.get_vault_var('secrets.DATADOG_API_KEY'),
-            app_key=env.get_vault_var('secrets.DATADOG_APP_KEY')
-        )
+        initialize_datadog(config)
+        remote_monitor_api = RemoteMonitorAPI(keys_to_update)
+        local_monitor_api = LocalMonitorAPI(config, keys_to_update)
+
+        local_monitors = local_monitor_api.get_all()
+        remote_monitors = remote_monitor_api.get_all()
+
+        only_remote = {
+            id: remote_monitors[id]
+            for id in set(remote_monitors) - set(local_monitors)
+        }
+        only_local = {
+            id: local_monitors[id]
+            for id in set(local_monitors) - set(remote_monitors)
+        }
+        shared_local_remote_monitors = {
+            id: (local_monitors[id], remote_monitors[id])
+            for id in set(local_monitors) & set(remote_monitors)
+        }
+
         any_diffs = False
-        missing_monitors = {raw_mon['id']: raw_mon for raw_mon in api.Monitor.get_all()}
-        for id, mon in monitors.items():
-            raw_mon = api.Monitor.get(id)
-            if raw_mon.get('errors'):
+        if only_local:
+            for id, monitor in only_local.items():
                 puts(colored.magenta(
-                    "\nError for '{}': {}\n".format(mon['name'], raw_mon['errors'])
+                    "\nMonitor missing from datadog: {} ({})\n".format(monitor['name'], id)
                 ))
-                continue
-            else:
-                del missing_monitors[id]
-            cleaned = clean_raw_monitor(raw_mon)
-            expected = get_data_to_update(mon, keys_to_update)
-            actual = get_data_to_update(cleaned, keys_to_update)
-            diff = list(_unidiff_output(yaml.safe_dump(actual), yaml.safe_dump(expected)))
+
+        for id, (expected, actual) in shared_local_remote_monitors.items():
+            diff = list(_unidiff_output(
+                yaml.safe_dump(get_data_to_update(actual, keys_to_update)),
+                yaml.safe_dump(get_data_to_update(expected, keys_to_update))))
             any_diffs |= bool(diff)
             if diff:
-                puts(colored.magenta("\nDiff for '{}'\n".format(mon['name'])))
+                puts(colored.magenta("\nDiff for '{}'\n".format(expected['name'])))
                 with indent():
                     print_diff(diff)
 
-        if missing_monitors:
+        if only_remote:
             puts(colored.magenta(
                 "FYI you also have some untracked monitors. "
                 "No change will be applied for these:"
             ))
-            for id, raw_mon in sorted(missing_monitors.items()):
-                puts(colored.magenta("  - Untracked monitor {} '{}' (no change will be applied)".format(id, raw_mon['name'])))
+            for id, missing_monitor in sorted(only_remote.items()):
+                puts(colored.magenta("  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor['name'])))
 
         if any_diffs:
             if ask("Do you want to push these changes to Datadog?"):
-                for id, mon in monitors.items():
-                    to_update = get_data_to_update(mon, keys_to_update)
-                    api.Monitor.update(id, **to_update)
+                for id, expected in local_monitors.items():
+                    remote_monitor_api.update(id, expected)
