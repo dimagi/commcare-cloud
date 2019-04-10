@@ -1,0 +1,16 @@
+---
+- name: Assert couchdb shard files exist
+  hosts: couchdb2
+  become: yes
+  tasks:
+    - name: assert shards exist
+      shell: "find {{ couch_data_dir }}{{ item }}"
+      loop: "{{ files_by_node[inventory_hostname].shards }}"
+      when: inventory_hostname in files_by_node
+      changed_when: no
+
+    - name: assert views exist
+      shell: "find {{ couch_data_dir }}{{ item }}"
+      loop: "{{ files_by_node[inventory_hostname].views }}"
+      when: inventory_hostname in files_by_node
+      changed_when: no

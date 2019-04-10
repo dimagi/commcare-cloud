@@ -1,29 +1,21 @@
 jython_memory: "1024m"
 formplayer_memory: "1024m"
 
-service_blacklist:
-  - supervisor_websockets.conf
-
 celery_processes:
   'pnaserver1':
     repeat_record_queue:
       concurrency: 2
-      max_tasks_per_child: 1
-    celery:
+    celery,case_import_queue:
       concurrency: 2
-      max_tasks_per_child: 1
     background_queue,export_download_queue,saved_exports_queue,analytics_queue:
       concurrency: 4
-      max_tasks_per_child: 1
 # wait until background_queue,export_download_queue have been verified to work with optimize
 #      optimize: True
-    submission_reprocessing_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
+    ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
-      max_tasks_per_child: 1
     beat: {}
     celery_periodic:
       concurrency: 2
-      max_tasks_per_child: 1
     flower: {}
   None:
     # todo: create these queues?

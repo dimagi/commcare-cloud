@@ -11,4 +11,8 @@ instances:
       - environment:{{ env_monitoring_id }}
     vhosts:
       - {{ AMQP_NAME }}
-    no_proxy: True
+    skip_proxy: True
+    queues:
+      {% for queue in celery_queues -%}
+      - {{ queue }}
+      {% endfor -%}

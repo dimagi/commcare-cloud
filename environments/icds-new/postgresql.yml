@@ -1,6 +1,7 @@
 DEFAULT_POSTGRESQL_HOST: pgmain1
 REPORTING_DATABASES:
   ucr: ucr
+  icds-ucr-non-dashboard: icds-ucr
   icds-ucr:
     WRITE: icds-ucr
     READ:
@@ -20,10 +21,12 @@ LOAD_BALANCED_APPS:
     - [default, 1]
     - [pgmainstandby, 1]
 
-override:
+pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+
+postgres_override:
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
 

@@ -8,11 +8,13 @@ datadog_extra_host_checks:
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '2048m'
 elasticsearch_cluster_name: 'pna-es'
+elasticsearch_version: 1.7.6
+elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 #elasticsearch_node_name: '??'
 
 backup_blobdb: True
 backup_postgres: dump
-backup_es: True
+backup_es_s3: True
 backup_couch: True
 postgres_s3: True
 blobdb_s3: True
@@ -39,8 +41,8 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-server_email: commcare@pna.sn
-default_from_email: commcare@pna.sn
+server_email: commcare@commcare.pna.sn
+default_from_email: commcare@commcare.pna.sn
 
 KSPLICE_ACTIVE: yes
 
@@ -53,9 +55,6 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 localsettings:
   ALLOWED_HOSTS:
     - "{{ PNA_SITE_HOST }}"
-    - "{{ SITE_HOST }}"
-    - localhost
-    - 127.0.0.1
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
@@ -103,3 +102,12 @@ localsettings:
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True
+
+PY3_RUN_CELERY_BEAT: False
+PY3_RUN_CELERY_FLOWER: False
+PY3_RUN_CELERY_WORKER: False
+PY3_RUN_ERRAND_BOY: False
+PY3_RUN_GUNICORN: False
+PY3_RUN_MANAGEMENT: False
+PY3_RUN_PILLOWTOP: False
+PY3_RUN_WEBSOCKETS: False

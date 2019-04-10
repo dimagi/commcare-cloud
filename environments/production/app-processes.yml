@@ -1,47 +1,46 @@
-newrelic_djangoagent: True
+newrelic_djangoagent: False
 newrelic_javaagent: True
-django_command_prefix: '{{ virtualenv_home }}/bin/newrelic-admin run-program '
-
+datadog_pythonagent: True
+django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
+celery_command_prefix: ''
+gunicorn_workers_static_factor: 0
+gunicorn_workers_factor: 2
 celery_processes:
-  hqcelery0.internal-va.commcarehq.org:
-    beat: {}
-    celery_periodic:
-      concurrency: 4
+  celery0:
     submission_reprocessing_queue:
       concurrency: 1
-    email_queue:
-      concurrency: 2
-    repeat_record_queue,sumologic_logs_queue:
+    sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
-      num_workers: 4
+    repeat_record_queue:
+      pooling: gevent
+      num_workers: 3
+      concurrency: 50
     ucr_queue:
       concurrency: 4
-      max_tasks_per_child: 5
     ucr_indicator_queue:
-      concurrency: 1
-    async_restore_queue:
       concurrency: 2
-      max_tasks_per_child: 5
-  hqcelery1.internal-va.commcarehq.org:
-    case_rule_queue:
-      concurrency: 4
-      max_tasks_per_child: 1
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 2
+    async_restore_queue:
+      num_workers: 4
+      concurrency: 2
+  celery1:
+    flower: {}
     reminder_queue:
       pooling: gevent
       concurrency: 10
       num_workers: 3
-    reminder_rule_queue:
-      concurrency: 3
-      max_tasks_per_child: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
       num_workers: 3
+    case_rule_queue:
+      concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    reminder_rule_queue:
+      concurrency: 3
     ils_gateway_sms_queue:
       # Use 1 worker with concurrency 8 in order to enforce the
       # restriction of having 8 max simultaneous connections with
@@ -50,51 +49,70 @@ celery_processes:
       concurrency: 8
     logistics_reminder_queue:
       concurrency: 2
-      max_tasks_per_child: 5
     logistics_background_queue:
       concurrency: 2
-      max_tasks_per_child: 5
-    flower: {}
-  hqcelery2.internal-va.commcarehq.org:
+  celery2:
     background_queue:
       concurrency: 8
-      max_tasks_per_child: 1
     send_report_throttled:
       concurrency: 2
-      max_tasks_per_child: 1
     async_restore_queue:
+      num_workers: 4
       concurrency: 2
-      max_tasks_per_child: 5
     analytics_queue:
       pooling: gevent
       concurrency: 10
-  hqcelery3.internal-va.commcarehq.org:
+    repeat_record_queue:
+      pooling: gevent
+      num_workers: 5
+      concurrency: 50
+    saved_exports_queue:
+      num_workers: 3
+      concurrency: 4
+      optimize: True
+  celery3:
     async_restore_queue:
       concurrency: 8
-      max_tasks_per_child: 5
     saved_exports_queue:
-      concurrency: 6
-      max_tasks_per_child: 1
+      num_workers: 3
+      concurrency: 4
       optimize: True
-  hqcelery4.internal-va.commcarehq.org:
-    celery:
+    export_download_queue:
+      concurrency: 4
+    repeat_record_queue:
+      pooling: gevent
+      num_workers: 4
+      concurrency: 50
+  celery4:
+    celery,case_import_queue:
       concurrency: 6
-      max_tasks_per_child: 5
     export_download_queue:
       concurrency: 6
-      max_tasks_per_child: 5
+  celery5:
+    beat: {}
+    celery_periodic:
+      num_workers: 2
+      concurrency: 4
+    email_queue:
+      pooling: gevent
+      concurrency: 100
+      num_workers: 2
+
+
 pillows:
-  hqpillowtop3.internal-va.commcarehq.org:
+  pillow0:
     CaseToElasticsearchPillow:
-      num_processes: 8
+      num_processes: 4
     CaseSearchToElasticsearchPillow:
-      num_processes: 4
-  hqpillowtop2.internal-va.commcarehq.org:
-    kafka-ucr-main:
-      num_processes: 4
-  hqpillowtop0.internal-va.commcarehq.org:
+      num_processes: 2
     kafka-ucr-static:
-      num_processes: 1
+      num_processes: 4
+    XFormToElasticsearchPillow:
+      num_processes: 2
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 4
+    kafka-ucr-main:
+      num_processes: 7
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
@@ -106,8 +124,6 @@ pillows:
     DomainDbKafkaPillow:
       num_processes: 1
     FarmerRecordFluffPillow:
-      num_processes: 1
-    FormSubmissionMetadataTrackerPillow:
       num_processes: 1
     GeographyFluffPillow:
       num_processes: 1
@@ -122,7 +138,7 @@ pillows:
     M4ChangeFormFluffPillow:
       num_processes: 1
     ReportCaseToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 2
     ReportXFormToElasticsearchPillow:
       num_processes: 1
     SqlSMSPillow:
@@ -138,6 +154,4 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
     UserPillow:
-      num_processes: 1
-    XFormToElasticsearchPillow:
       num_processes: 1

@@ -6,6 +6,7 @@ log_home: "{{ www_home }}/log"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
+py3_virtualenv_home: "{{ code_home }}/python_env-3_6"
 encrypted_root: "/opt/data"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
@@ -30,7 +31,6 @@ public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
 dev_group: dimagidev
-touchforms_enabled: '{{ groups["touchforms"]|length == 1 }}'
 
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
@@ -44,18 +44,27 @@ temp_riakcs_proxy_port: 8081
 riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 zookeeper_client_port: 2181
 formplayer_port: 8181
+couchdb_use_haproxy: False
 couchdb2_port: 15984
-couchdb2_proxy_port: 25984
+couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
+couchdb_admins: "{
+  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
+}"
+couchdb_ver: '2.1.1'
+is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
+run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service, which is Riak CS
 s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
 s3_blob_db_s3_bucket: 'blobdb'
+s3_bulk_delete_chunksize: 1000
 
 # For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
 # or http://dimagi.github.io/commcare-cloud/howto/migrate-s3-to-s3
 old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
 old_s3_blob_db_s3_bucket: 'blobdb'
+old_s3_bulk_delete_chunksize: 1000
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory
@@ -72,6 +81,7 @@ datadog_integration_kafka: false
 datadog_integration_kafka_consumer: false
 datadog_integration_nginx: false
 datadog_integration_pgbouncer: false
+datadog_integration_pgbouncer_custom: false
 datadog_integration_postgres: false
 datadog_integration_postgres_receiver: false
 datadog_integration_rabbitmq: false
@@ -82,10 +92,20 @@ datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_vmware: false
 datadog_integration_http: false
+datadog_integration_haproxy: false
+datadog_integration_tcp_check: false
 datadog_extra_host_checks: []
+datadog_patch_modules:
+  - requests:true
+  - gevent:true
+  - psycopg:true
+  - redis:true
+  - sqlalchemy:true
+  - elasticsearch:true
 
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
+server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
@@ -119,7 +139,6 @@ BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE | d
 BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY | default('') }}"
 BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN | default('') }}"
 BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS | default(None) }}"
-CELERY_RESULT_BACKEND: 'djcelery.backends.database:DatabaseBackend'
 COUCH_MONITORING_PASSWORD: "{{ localsettings_private.COUCH_MONITORING_PASSWORD | default(None) }}"
 COUCH_MONITORING_USERNAME: "{{ localsettings_private.COUCH_MONITORING_USERNAME | default(None) }}"
 DRIFT_ID: "{{ localsettings_private.DRIFT_ID | default('', true) }}"
@@ -154,8 +173,6 @@ SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL | default(None) }}"
 SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS | default(None) }}"
 STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None) }}"
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
-TOUCHFORMS_API_PASSWORD: "{{ localsettings_private.TOUCHFORMS_API_PASSWORD | default('') }}"
-TOUCHFORMS_API_USER: "{{ localsettings_private.TOUCHFORMS_API_USER | default('') }}"
 TRANSIFEX_API_TOKEN: "{{ localsettings_private.TRANSIFEX_API_TOKEN | default(None) }}"
 TWO_FACTOR_GATEWAY_ENABLED: False
 DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY | default(None) }}"
@@ -178,6 +195,7 @@ es_local_repo: false
 blobdb_snapshot_bucket: dimagi-{{ deploy_env }}-blobdb-backups
 couchdb_snapshot_bucket: dimagi-{{ deploy_env }}-couch-backups
 postgres_snapshot_bucket: dimagi-{{ deploy_env }}-postgres-backups
+backup_es_s3: False
 es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 aws_region: None
 # this reads "'s3.{{ aws_region }}.amazonaws.com' if aws_region else None"

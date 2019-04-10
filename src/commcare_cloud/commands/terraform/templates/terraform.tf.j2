@@ -1,0 +1,17 @@
+terraform {
+  backend "s3" {
+    bucket  = {{ state_bucket|tojson }}
+    key     = "state/{{ environment }}.tfstate"
+    region  = {{ state_bucket_region|tojson }}
+    encrypt = true
+  }
+}
+
+provider "aws" {
+  version = "~> 1.44"
+  region  = {{ region|tojson }}
+}
+
+variable "rds_password" {
+  type = "string"
+}

@@ -8,7 +8,7 @@
 #     queue_name:               # Required; the comma-separated names of the queue from which each worker configured in this section will consume
 #       concurrency: 4          # Required; the concurrency configured on each worker
 #       pooling: prefork        # Optional, default prefork; specify prefork or gevent for the process pool type used on each worker in this section
-#       max_tasks_per_child: 5  # Optional, default 50; only applicable for prefork pooling (corresponds to maxtasksperchild worker command line arg)
+#       max_tasks_per_child: 5  # Optional, only applicable for prefork pooling (corresponds to maxtasksperchild worker command line arg)
 #       num_workers: 2          # Optional, default 1; the number of workers to create consuming from this queue on this host
 #
 # The above celery configuration would create 2 celery workers with max concurrency of 4
@@ -31,3 +31,4 @@ http_proxy: null
 newrelic_djangoagent: False
 newrelic_javaagent: False
 django_command_prefix: ''
+celery_command_prefix: ''

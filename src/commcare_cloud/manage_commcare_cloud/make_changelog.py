@@ -7,6 +7,7 @@ import jinja2
 import os
 import re
 import sys
+from io import open
 
 import yaml
 
@@ -54,13 +55,14 @@ def compile_changelog():
     changelog_dir = 'changelog'
     sorted_files = _sort_files(changelog_dir)
     for change_file_name in sorted_files:
-        changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
+        if change_file_name.endswith('.yml'):
+            changelog_contents.append(load_changelog_entry(os.path.join(changelog_dir, change_file_name)))
     return changelog_contents
 
 
 def load_changelog_entry(path):
     try:
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             change_yaml = yaml.load(f)
             change_yaml['filename'] = re.sub(r'\.yml$', '.md', path.split('/')[-1])
             # yaml.load already parses dates, using this instead of ChangelogEntry.wrap
@@ -111,4 +113,5 @@ class MakeChangelog(CommandBase):
         changelog_entry = load_changelog_entry(changelog_yml)
         template = j2.get_template('changelog.md.j2')
 
-        print(template.render(changelog_entry=changelog_entry, ordinal=ordinal).rstrip())
+        text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
+        print(text.rstrip().encode("utf-8"))

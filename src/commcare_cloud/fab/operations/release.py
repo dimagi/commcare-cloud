@@ -18,7 +18,6 @@ from ..const import (
     OFFLINE_STAGING_DIR,
     ROLES_ALL_SRC,
     RELEASE_RECORD,
-    ROLES_TOUCHFORMS,
     ROLES_FORMPLAYER,
     ROLES_STATIC,
     ROLES_DEPLOY,
@@ -187,13 +186,17 @@ def _update_code_from_previous_release():
             sudo('git clone {} {}'.format(env.code_repo, env.code_root))
 
 
-def _get_git_submodule_urls(path):
+def _get_submodule_list():
     if files.exists(env.code_current):
         with cd(env.code_current):
-            submodules = sudo("git submodule | awk '{ print $2 }'").split()
+            return sudo("git submodule | awk '{ print $2 }'").split()
+    else:
+        return []
 
+
+def _get_local_submodule_urls(path):
     local_submodule_config = []
-    for submodule in submodules:
+    for submodule in _get_submodule_list():
         local_submodule_config.append(
             GitConfig(
                 key='submodule.{submodule}.url'.format(submodule=submodule),
@@ -206,12 +209,27 @@ def _get_git_submodule_urls(path):
     return local_submodule_config
 
 
+def _get_remote_submodule_urls(path):
+    with cd(env.code_current):
+        remote_submodule_config = [
+            GitConfig(
+                key='submodule.{}.url'.format(submodule),
+                value=sudo("git config submodule.{}.url".format(submodule))
+            )
+            for submodule in _get_submodule_list()]
+    return remote_submodule_config
+
+
 def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
     cmd_fn = sudo if run_as_sudo else run
-    submodule_configs = _get_git_submodule_urls(from_path)
-    git_config_cmd = []
-    for submodule_config in submodule_configs:
-        git_config_cmd.append('git config {} {}'.format(submodule_config.key, submodule_config.value))
+    git_local_submodule_config = [
+        'git config {} {}'.format(submodule_config.key, submodule_config.value)
+        for submodule_config in _get_local_submodule_urls(from_path)
+    ]
+    git_remote_submodule_config = [
+        'git config {} {}'.format(submodule_config.key, submodule_config.value)
+        for submodule_config in _get_remote_submodule_urls(from_path)
+    ]
 
     with cd(from_path):
         cmd_fn('git clone {}/.git {}'.format(
@@ -221,21 +239,24 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
 
     with cd(to_path):
         cmd_fn('git config receive.denyCurrentBranch updateInstead')
-        cmd_fn(' && '.join(git_config_cmd))
+        cmd_fn(' && '.join(git_local_submodule_config))
         cmd_fn('git submodule update --init --recursive')
+        cmd_fn(' && '.join(git_remote_submodule_config))
 
 
-def _clone_virtual_env():
+def _clone_virtual_env(virtualenv_current, virtualenv_root):
     print('Cloning virtual env')
     # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
-    current_virtualenv = sudo('readlink -f {}'.format(env.virtualenv_current))
-    sudo("virtualenv-clone {} {}".format(current_virtualenv, env.virtualenv_root))
+    current_virtualenv = sudo('readlink -f {}'.format(virtualenv_current))
+    sudo("virtualenv-clone {} {}".format(current_virtualenv, virtualenv_root))
 
 
 @roles(ROLES_ALL_SRC)
 @parallel
 def clone_virtualenv():
-    _clone_virtual_env()
+    _clone_virtual_env(env.py2_virtualenv_current, env.py2_virtualenv_root)
+    if env.py3_include_venv:
+        _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
 
 def update_virtualenv(full_cluster=True):
@@ -250,23 +271,32 @@ def update_virtualenv(full_cluster=True):
     @roles(roles_to_use)
     @parallel
     def update():
-        requirements = posixpath.join(env.code_root, 'requirements')
+        def _update_virtualenv(virtualenv_current, virtualenv_root, requirements):
+            # Optimization if we have current setup (i.e. not the first deploy)
+            if files.exists(virtualenv_current):
+                _clone_virtual_env(virtualenv_current, virtualenv_root)
 
-        # Optimization if we have current setup (i.e. not the first deploy)
-        if files.exists(env.virtualenv_current):
-            _clone_virtual_env()
+            with cd(env.code_root):
+                cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+                    env.sudo_user, virtualenv_root)
+                # uninstall requirements in uninstall-requirements.txt
+                # but only the ones that are actually installed (checks pip freeze)
+                sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
+                     user=env.sudo_user)
+                pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
+                    posixpath.join(requirements, 'prod-requirements.txt'),
+                    posixpath.join(requirements, 'requirements.txt'),
+                ])
 
-        with cd(env.code_root):
-            cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
-                env.sudo_user, env.virtualenv_root)
-            # uninstall requirements in uninstall-requirements.txt
-            # but only the ones that are actually installed (checks pip freeze)
-            sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
-                 user=env.sudo_user)
-            pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
-                posixpath.join(requirements, 'prod-requirements.txt'),
-                posixpath.join(requirements, 'requirements.txt'),
-            ])
+        _update_virtualenv(
+            env.py2_virtualenv_current, env.py2_virtualenv_root,
+            posixpath.join(env.code_root, 'requirements')
+        )
+        if env.py3_include_venv:
+            _update_virtualenv(
+                env.py3_virtualenv_current, env.py3_virtualenv_root,
+                posixpath.join(env.code_root, 'requirements-python3_6')
+            )
 
     return update
 
@@ -400,28 +430,13 @@ def copy_localsettings(full_cluster=True):
 
 
 @parallel
-@roles(ROLES_TOUCHFORMS)
-def copy_tf_localsettings():
-    hosts_defined = _hosts_in_roles(ROLES_TOUCHFORMS)
-    path_template = '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'
-    if hosts_defined and files.exists(path_template.format(env.code_current)):
-        sudo(
-            'cp {}/submodules/touchforms-src/touchforms/backend/localsettings.py '
-            '{}/submodules/touchforms-src/touchforms/backend/localsettings.py'.format(
-                env.code_current, env.code_root
-            ))
-
-
-@parallel
 @roles(ROLES_FORMPLAYER)
 def copy_formplayer_properties():
-    sudo('mkdir -p {}'.format(os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)))
-    for filename in ['application.properties', 'sentry.properties']:
-        sudo(
-            'cp {} {}'.format(
-                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR, filename),
-                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-            ))
+    sudo(
+        'cp -r {} {}'.format(
+            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
+            os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
+        ))
 
 
 @parallel

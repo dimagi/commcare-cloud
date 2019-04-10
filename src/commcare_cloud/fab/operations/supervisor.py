@@ -49,7 +49,7 @@ def start_celery_tasks(current=False):
         sudo('scripts/supervisor-group-ctl start celery')
 
 
-@roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO))
+@roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO) - set(ROLES_FORMPLAYER))
 @parallel
 def restart_all_except_webworkers():
     _services_restart()

@@ -1,6 +1,8 @@
-override:
+pgbouncer_override:
   pgbouncer_max_connections: 1500
   pgbouncer_default_pool: 290
+
+postgres_override:
   postgresql_max_connections: 300
   postgresql_work_mem: '8MB'
   postgresql_shared_buffers: '8GB'

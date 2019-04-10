@@ -3,3 +3,5 @@ commcarehq_version: master
 commcarehq_requirements:
   - requirements.txt
   - prod-requirements.txt
+
+LOCAL_APPS: []

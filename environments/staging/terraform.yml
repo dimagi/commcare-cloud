@@ -1,0 +1,191 @@
+account_alias: commcare-staging
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "us-east-1"
+environment: "staging"
+azs:
+  - "us-east-1a"
+  - "us-east-1b"
+  - "us-east-1c"
+vpc_begin_range: "10.201"
+
+openvpn_image: ami-5e73b923
+
+vpn_connections:
+  - name: rackspace
+    cidr_blocks:
+      - "172.24.16.0/22"
+      - "172.24.32.0/22"
+    ip_address: "104.130.188.4"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+external_routes:
+  - cidr_block: "172.24.16.0/22"
+    gateway_id: "vgw-04585c3d515d0589b"
+  - cidr_block: "172.24.32.0/22"
+    gateway_id: "vgw-04585c3d515d0589b"
+
+servers:
+  - server_name: "control-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 50
+    group: "control"
+  - server_name: "web0-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "webworkers"
+  - server_name: "web1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    group: "webworkers"
+
+  - server_name: "web2-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "webworkers:bionic"
+  - server_name: "web3-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    group: "webworkers:bionic"
+
+  - server_name: "es0-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    group: "elasticsearch"
+  - server_name: "es1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "elasticsearch"
+  - server_name: "pillow1-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "pillowtop:bionic"
+  - server_name: "celery0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "celery"
+  - server_name: "celery1-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "celery:bionic"
+  - server_name: "airflow0-staging"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "airflow"
+
+  - server_name: "airflow1-staging"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "airflow:bionic"
+
+  - server_name: "formplayer0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "formplayer"
+
+  - server_name: "formplayer1-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "formplayer:bionic"
+
+  - server_name: "couch0-staging"
+    server_instance_type: "t2.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 400
+    group: "couchdb2"
+  - server_name: "couch1-staging"
+    server_instance_type: "t2.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 400
+    group: "couchdb2"
+  - server_name: "couch2-staging"
+    server_instance_type: "t2.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 400
+    group: "couchdb2"
+  - server_name: "rabbit0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "rabbitmq"
+
+  - server_name: "kafka0-staging"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "kafka"
+
+
+  - server_name: "pgproxy1-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql:bionic"
+
+  - server_name: "redis0-staging"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+    group: "redis"
+
+  - server_name: "hwarehouse0-staging"
+    server_instance_type: "m5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    group: "hwarehouse:bionic"
+
+
+proxy_servers:
+  - server_name: "proxy1-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "public"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+
+
+rds_instances:
+  - identifier: "pg0-staging"
+    instance_type: "db.t2.medium"
+    storage: 160
+    multi_az: yes
+
+redis:
+  create: no

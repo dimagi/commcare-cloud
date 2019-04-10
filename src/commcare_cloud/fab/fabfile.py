@@ -97,7 +97,6 @@ env.roledefs = {
     # otherwise deploy() will run multiple times in parallel causing issues
     'django_monolith': [],
 
-    'formsplayer': [],
     'staticfiles': [],
 
     # package level configs that are not quite config'ed yet in this fabfile
@@ -125,8 +124,19 @@ def _setup_path():
     env.code_root = posixpath.join(env.releases, env.deploy_metadata.timestamp)
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
-    env.virtualenv_current = posixpath.join(env.code_current, 'python_env')
-    env.virtualenv_root = posixpath.join(env.code_root, 'python_env')
+
+    env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
+    env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3_6')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3_6')
+
+    if env.py3_run_deploy:
+        env.virtualenv_current = env.py3_virtualenv_current
+        env.virtualenv_root = env.py3_virtualenv_root
+    else:
+        env.virtualenv_current = env.py2_virtualenv_current
+        env.virtualenv_root = env.py2_virtualenv_root
+
     env.services = posixpath.join(env.code_root, 'services')
     env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.deploy_env)
@@ -138,8 +148,19 @@ def _override_code_root_to_current():
     env.code_root = env.code_current
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
-    env.virtualenv_current = posixpath.join(env.code_current, 'python_env')
-    env.virtualenv_root = posixpath.join(env.code_root, 'python_env')
+
+    env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
+    env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3_6')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3_6')
+
+    if env.py3_run_deploy:
+        env.virtualenv_current = env.py3_virtualenv_current
+        env.virtualenv_root = env.py3_virtualenv_root
+    else:
+        env.virtualenv_current = env.py2_virtualenv_current
+        env.virtualenv_root = env.py2_virtualenv_root
+
     env.services = posixpath.join(env.code_root, 'services')
 
 
@@ -250,7 +271,6 @@ def env_common():
     riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
-    touchforms = servers.get('touchforms', [])
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']
@@ -272,7 +292,6 @@ def env_common():
         'django_app': webworkers,
         'django_manage': django_manage,
         'django_pillowtop': pillowtop,
-        'formsplayer': touchforms,
         'formplayer': formplayer,
         'staticfiles': proxy,
         'lb': [],
@@ -338,7 +357,7 @@ def hotfix_deploy():
     """
     if not console.confirm('Are you sure you want to deploy to {env.deploy_env}?'.format(env=env), default=False) or \
        not console.confirm('Did you run "fab {env.deploy_env} preindex_views"? '.format(env=env), default=False) or \
-       not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
+       not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING PYTHON CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
         utils.abort('Deployment aborted.')
 
     _require_target()
@@ -380,7 +399,6 @@ def kill_stale_celery_workers():
 def deploy_formplayer():
     execute(announce_formplayer_deploy_start)
     execute(formplayer.build_formplayer, True)
-    execute(supervisor.restart_formplayer)
 
 
 @task
@@ -610,7 +628,6 @@ def unlink_current():
 def copy_release_files(full_cluster=True):
     execute(release.copy_localsettings(full_cluster))
     if full_cluster:
-        execute(release.copy_tf_localsettings)
         execute(release.copy_formplayer_properties)
         execute(release.copy_components)
         execute(release.copy_node_modules)
@@ -802,6 +819,8 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
+        if getattr(env, 'NEEDS_FORMPLAYER_RESTART', False):
+            execute(supervisor.restart_formplayer)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -814,6 +833,11 @@ def stop_celery():
 @task
 def start_celery():
     execute(supervisor.start_celery_tasks, True)
+
+
+@task
+def restart_webworkers():
+    execute(supervisor.restart_webworkers)
 
 
 @task

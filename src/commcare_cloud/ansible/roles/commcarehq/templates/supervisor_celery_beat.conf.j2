@@ -1,5 +1,7 @@
 [program:{{ project }}-{{ deploy_env }}-celerybeat]
-command={{ virtualenv_home }}/bin/python {{ code_home }}/manage.py celery beat --loglevel=INFO
+command={% if PY3_RUN_CELERY_BEAT %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/celery
+    -A corehq beat
+    --loglevel=INFO
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1

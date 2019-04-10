@@ -3,9 +3,15 @@ redis_version: 4.0.8
 redis_install_dir: "/opt/redis/{{ redis_version}}"
 redis_dir: "{{ encrypted_root }}/redis"
 redis_local_facts: false
+redis_logfile: "{{ redis_dir }}/redis.log"
 redis_service_name: redis-server
 redis_syslog_enabled: "yes"
 redis_maxmemory: 4gb
 redis_maxmemory_policy: volatile-lru
 redis_save: []
 redis_appendonly: "yes"
+redis_timeout: 300  # 5 minutes
+cluster_config:
+  cluster-enabled: "yes"
+  cluster-config-file: "nodes.conf" # Redis internal filename, never change this
+  cluster-node-timeout: "5000"

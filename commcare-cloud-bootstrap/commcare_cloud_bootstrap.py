@@ -384,7 +384,7 @@ def save_vault_yml(environment):
         return str(uuid.uuid4())
     j2.globals.update(generate_uuid=generate_uuid)
     template = j2.get_template('private.yml.j2')
-    vault_file_contents = template.render(deploy_env=environment.paths.env_name)
+    vault_file_contents = template.render(deploy_env=environment.name)
     vault_file = environment.paths.vault_yml
     with open(vault_file, 'w') as f:
         f.write(vault_file_contents)

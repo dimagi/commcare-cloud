@@ -1,0 +1,139 @@
+# This file currently contains a lot of commented-out hosts
+# that refer to presumed eventual hosts that will live on AWS but don't yet exist
+# As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
+# using the aws-fill-inventory command.
+
+[proxy1]
+{{ proxy1-staging }} hostname=proxy1-staging public_ip={{ proxy1-staging.public_ip }} ec2=yes
+
+[proxy:children]
+# Amazon EC2
+proxy1
+
+[web2]
+{{ web2-staging }} swap_size=1G hostname=web2-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[web3]
+{{ web3-staging }} swap_size=1G hostname=web3-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[webworkers:children]
+# Amazon EC2
+web2
+web3
+
+[pgproxy1]
+{{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[rds_pg0]
+# RDS
+{{ pg0-staging }}
+
+[rds_pg0_replica]
+# RDS
+{{ pg0-staging-replica }}
+
+[remote_postgresql:children]
+rds_pg0
+
+[postgresql:children]
+pgproxy1
+remote_postgresql
+
+[couch0]
+{{ couch0-staging }} hostname=couch0-staging ec2=yes
+
+[couch1]
+{{ couch1-staging }} hostname=couch1-staging ec2=yes
+
+[couch2]
+{{ couch2-staging }} hostname=couch2-staging ec2=yes
+
+[couchdb2:children]
+couch0
+couch1
+couch2
+
+[couchdb2_proxy:children]
+couch0
+
+[rabbit0]
+{{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
+
+[rabbitmq:children]
+# Amazon EC2
+rabbit0
+
+[kafka0]
+{{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
+
+[zookeeper:children]
+# Amazon EC2
+kafka0
+
+[kafka:children]
+# Amazon EC2
+kafka0
+
+[celery1]
+{{ celery1-staging }} hostname=celery1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[celery:children]
+# Amazon EC2
+celery1
+
+[pillow1]
+{{ pillow1-staging }} hostname=pillow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[pillowtop:children]
+# Amazon EC2
+pillow1
+
+[formplayer1]
+{{ formplayer1-staging }} hostname=formplayer1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[formplayer:children]
+# Amazon EC2
+formplayer1
+
+[redis0]
+{{ redis0-staging }} hostname=redis0-staging ec2=yes
+
+[redis:children]
+redis0
+
+[es0]
+{{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes elasticsearch_master=true
+
+[es1]
+{{ es1-staging }} elasticsearch_node_name=es1-staging elasticsearch_node_zone=aws hostname=es1-staging ec2=yes elasticsearch_master=true
+
+[elasticsearch:children]
+# Amazon EC2
+es0
+es1
+
+[shared_dir_host:children]
+redis0
+
+[airflow1]
+{{ airflow1-staging }} hostname=airflow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+
+[airflow:children]
+# Amazon EC2
+airflow1
+
+[control]
+# Amazon EC2
+{{ control-staging }} hostname=control-staging ec2=yes
+
+[ansible_skip:children]
+rds_pg0
+rds_pg0_replica
+
+[django_manage:children]
+# Amazon EC2
+web2
+web3
+
+[hwarehouse0]
+{{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=yes

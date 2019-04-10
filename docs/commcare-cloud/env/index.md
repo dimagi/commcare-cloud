@@ -112,7 +112,7 @@ celery_processes:
     <queue-name>:
       pooling: [gevent|prefork]  # default prefork
       concurrency: <int>  # Required
-      max_tasks_per_child: <int>  # default 50
+      max_tasks_per_child: <int>
   <host>:
     ...
   ...
