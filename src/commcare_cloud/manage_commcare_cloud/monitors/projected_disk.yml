@@ -10,19 +10,7 @@ name: '[Scale] Disk space will reach {{threshold}} on {{host.name}} in 2 weeks'
 options:
   escalation_message: |-
     Disk Space Used will cross the  {{threshold}} mark in next 2 weeks.
-    {{#is_match "environment.name" "icds"}} @slack-alerts-icds  {{/is_match}}
-    {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
-    {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
-    {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
-    {{^is_match "environment.name" "icds"}}
-        {{^is_match "environment.name" "enikshay"}}
-            {{^is_match "environment.name" "india"}}
-                {{^is_match "environment.name" "production"}}
-                    @slack-hq-ops-priority
-                {{/is_match}}
-            {{/is_match}}
-        {{/is_match}}
-    {{/is_match}}
+    << notification_block >>
   include_tags: true
   locked: false
   new_host_delay: 300
