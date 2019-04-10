@@ -169,6 +169,11 @@ class DatadogMonitors(CommandBase):
         any_diffs = False
         for id, mon in monitors.items():
             raw_mon = api.Monitor.get(id)
+            if raw_mon.get('errors'):
+                puts(colored.magenta(
+                    "\nError for '{}': {}\n".format(mon['name'], raw_mon['errors'])
+                ))
+                continue
             cleaned = clean_raw_monitor(raw_mon)
             expected = get_data_to_update(mon, keys_to_update)
             actual = get_data_to_update(cleaned, keys_to_update)
