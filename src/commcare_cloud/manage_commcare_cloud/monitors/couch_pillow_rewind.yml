@@ -3,16 +3,7 @@ id: 8362409
 message: |-
   The {{pillow_name.name}} on {{environment.name}} has been above{{#is_warning}} {{warn_threshold}} {{/is_warning}}{{#is_alert}} {{threshold}} {{/is_alert}}for the past minute.
   If this is a pillow rewind, you can solve by finding a couch change seq from before it happened (pick ids from /commcarehq/_changes?descending=true with revs starting with "1-" until you find a form with received_on with an early enough time, and then use the corresonding seq) and use a few lines like https://gist.github.com/dannyroberts/fdd07ecd780e08b6c236092379535a82 in `django-mange shell` to reset the checkpoint to the seq you found.
-  {{#is_match "environment.name" "icds-new"}} @slack-alerts-icds  {{/is_match}}
-  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
-  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
-  {{^is_match "environment.name" "icds-new"}}
-      {{^is_match "environment.name" "softlayer"}}
-          {{^is_match "environment.name" "production"}}
-              @slack-hq-ops-priority
-          {{/is_match}}
-      {{/is_match}}
-  {{/is_match}}
+  << notification_block >>
 name: Couch Pillow Rewind? Couch Pillow {{pillow_name.name}} on {{environment.name}}
   is very high
 options:
