@@ -1,0 +1,15 @@
+env_key: host.environment
+id: 8548590
+message: ""
+name: '[Synthetics] Test on www.commcarehq.org/serverup.txt'
+options:
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  notify_audit: false
+  notify_no_data: false
+  silenced: {}
+  tick_every: 60
+query: no_query
+tags: [serverup, 'probe_dc:aws:us-west-2', 'check_type:api', 'check_status:live']
+type: synthetics alert

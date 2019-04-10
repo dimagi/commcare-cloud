@@ -1,0 +1,40 @@
+env_key: host.environment
+id: 1945144
+message: |-
+  {{#is_alert}}ALERT: Disk usage {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
+  {{#is_warning}}WARNING: Disk usage {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
+  https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
+  {{#is_match "environment.name" "icds"}} @slack-alerts-icds  {{/is_match}}
+  {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
+  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
+  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
+  {{^is_match "environment.name" "icds"}}
+      {{^is_match "environment.name" "enikshay"}}
+          {{^is_match "environment.name" "india"}}
+              {{^is_match "environment.name" "production"}}
+                  @slack-hq-ops-priority
+              {{/is_match}}
+          {{/is_match}}
+      {{/is_match}}
+  {{/is_match}}
+name: Disk space running low on {{host.name}} ({{device.name}})
+options:
+  escalation_message: |-
+    {{#is_alert}}Disk usage still >= {{threshold}} ({{value}}) {{/is_alert}}
+    {{#is_warning}}Disk usage still >= {{warn_threshold}} ({{value}}) {{/is_warning}}
+    https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-FullDrives/OutofDiskSpace
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 360
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 0.9, warning: 0.8}
+  timeout_h: 0
+query: min(last_15m):avg:system.disk.in_use{!group:riakcs,!group:riakcs_new,!environment:staging,!device:/dev/mapper/consolidated-data1,!device:/opt/data,!device:/opt/data/ecrypt}
+  by {host,device,environment} >= 0.9
+tags: ['*', opsgenie]
+type: metric alert

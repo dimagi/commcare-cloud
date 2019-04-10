@@ -1,0 +1,33 @@
+env_key: environment.name
+id: 4848178
+message: |-
+  {{#is_alert}} Number of 500 is more than 10%. {{/is_alert}}
+  {{#is_match "environment.name" "icds-new"}} @slack-alerts-icds  {{/is_match}}
+  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
+  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
+  {{^is_match "environment.name" "icds-new"}}
+          {{^is_match "environment.name" "india"}}
+              {{^is_match "environment.name" "production"}}
+                  @slack-hq-ops-priority
+              {{/is_match}}
+          {{/is_match}}
+  {{/is_match}}
+name: HQ 500 errors (as % or requests) {{environment.name}}
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 10.0}
+  timeout_h: 0
+query: min(last_15m):100 * avg:gunicorn.request.status.500{!environment:staging} by
+  {environment}.as_count() / ( avg:gunicorn.requests{!environment:staging} by {environment}.as_count()
+  + 10 ) > 10
+tags: [opsgenie]
+type: query alert
