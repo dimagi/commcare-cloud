@@ -21,5 +21,5 @@ options:
   timeout_h: 0
 query: avg(last_5m):avg:postgresql.percent_usage_connections{*} by {host,environment}
   * 100 > 90
-tags: []
+tags: [opsgenie]
 type: query alert
