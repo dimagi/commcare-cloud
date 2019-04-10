@@ -119,6 +119,23 @@ def get_monitor_definitions(config):
     return monitors
 
 
+def write_monitor_definition(monitor_id, monitor_definition):
+    if 'env_key' not in monitor_definition:
+        # try to guess it
+        for env_key in ['environment.name', 'host.environment']:
+            if env_key in monitor_definition['message']:
+                monitor_definition['env_key'] = env_key
+                break
+        if 'by {environment}' in monitor_definition['query']:
+            monitor_definition['env_key'] = 'environment.name'
+        else:
+            monitor_definition['env_key'] = 'host.environment'
+
+    filename = 'autogen_{}.yml'.format(monitor_id)
+    with open(os.path.join(CONFIG_ROOT, filename), 'w') as f:
+        f.write(yaml.safe_dump(monitor_definition, allow_unicode=True))
+
+
 def render_messages(config, monitor):
     monitor = monitor.copy()
     message_rendered = render_message(config, monitor['message'], monitor['env_key'])
@@ -196,6 +213,9 @@ class LocalMonitorAPI(object):
     def get_all(self):
         return get_monitor_definitions(self.config)
 
+    def create(self, monitor_id, wrapped_monitor):
+        write_monitor_definition(monitor_id, wrapped_monitor)
+
 
 class DatadogMonitors(CommandBase):
     command = 'update-datadog-monitors'
@@ -246,6 +266,11 @@ class DatadogMonitors(CommandBase):
                 with indent():
                     print_diff(diff)
 
+        if any_diffs:
+            if ask("Do you want to push these changes to Datadog?"):
+                for id, expected in local_monitors.items():
+                    remote_monitor_api.update(id, expected)
+
         if only_remote:
             puts(colored.magenta(
                 "FYI you also have some untracked monitors. "
@@ -253,8 +278,6 @@ class DatadogMonitors(CommandBase):
             ))
             for id, missing_monitor in sorted(only_remote.items()):
                 puts(colored.magenta("  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor['name'])))
-
-        if any_diffs:
-            if ask("Do you want to push these changes to Datadog?"):
-                for id, expected in local_monitors.items():
-                    remote_monitor_api.update(id, expected)
+            if ask("And BTW do you want to dump all untracked monitors as a starting point?"):
+                for id, missing_monitor in sorted(only_remote.items()):
+                    local_monitor_api.create(id, missing_monitor)
