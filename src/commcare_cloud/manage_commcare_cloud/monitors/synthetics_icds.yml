@@ -14,6 +14,7 @@ options:
   notify_no_data: false
   silenced: {}
   tick_every: 60
+  synthetics_check_id: u69-spv-khn
 query: no_query
 tags: [ICDS, serverup, 'probe_dc:aws:ap-northeast-1', 'check_type:api', 'check_status:live']
 type: synthetics alert

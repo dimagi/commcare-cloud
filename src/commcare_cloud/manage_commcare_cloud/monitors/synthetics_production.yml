@@ -10,6 +10,7 @@ options:
   notify_no_data: false
   silenced: {}
   tick_every: 60
+  synthetics_check_id: src-qdp-f53
 query: no_query
 tags: [serverup, 'probe_dc:aws:us-west-2', 'check_type:api', 'check_status:live']
 type: synthetics alert
