@@ -5,19 +5,7 @@ message: |-
   {{#is_warning}}Add a riak node in the next month (at the latest) or revisit the cost of comparison to increasing node size.{{/is_warning}}
   {{#is_alert}}Add a riak node in the next 3 days. You missed your window to consider increasing node size.{{/is_alert}}
   (Otherwise it's up to you to figure out what this alert means.)
-  {{#is_match "environment.name" "icds"}} @slack-alerts-icds  {{/is_match}}
-  {{#is_match "environment.name" "enikshay"}} @slack-alerts-enikshay {{/is_match}}
-  {{#is_match "environment.name" "india"}} @slack-alerts-softlayer {{/is_match}}
-  {{#is_match "environment.name" "production"}} @slack-alerts-production @opsgenie-commcarehq {{/is_match}}
-  {{^is_match "environment.name" "icds"}}
-      {{^is_match "environment.name" "enikshay"}}
-          {{^is_match "environment.name" "india"}}
-              {{^is_match "environment.name" "production"}}
-                  @slack-hq-ops-priority
-              {{/is_match}}
-          {{/is_match}}
-      {{/is_match}}
-  {{/is_match}}
+  << notification_block >>
 name: Disk space running low on Riak Node {{host.name}}
 options:
   escalation_message: |-
