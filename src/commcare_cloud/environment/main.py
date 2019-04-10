@@ -59,16 +59,18 @@ class Environment(object):
             inventory_hostname: sshable.split(':')[0]
             for sshable, inventory_hostname in self.inventory_hostname_map.items()
         }
-
-        expected_hosts = {
-            (host, hostname_to_sshable[host], self.hostname_map.get(host))
-            for group, hosts in self.groups.items()
+        inventory_hostnames = {
+            host for hosts in self.groups.values()
             for host in hosts if host not in blacklist
+        }
+        expected_hosts = {
+            (hostname_to_sshable[host], self.hostname_map.get(host))
+            for host in inventory_hostnames
         }
         with open(self.paths.known_hosts) as f:
             known_hosts_contents = f.read()
         missing_hosts = {
-            (sshable, hostname) for _, sshable, hostname in expected_hosts
+            (sshable, hostname) for sshable, hostname in expected_hosts
             if sshable not in known_hosts_contents
         }
         if missing_hosts:
