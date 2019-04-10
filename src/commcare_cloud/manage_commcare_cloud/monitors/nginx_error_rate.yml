@@ -1,0 +1,26 @@
+env_key: environment.name
+id: 1278050
+message: |-
+  {{#is_alert}}Django error rate is {{value}}%, and has been above {{threshold}}% for the last 30 mins. (Minor additive smoothing is used to adjust for low-usage periods.{{/is_alert}}
+  {{#is_recovery}}Django error rate recovered.{{/is_recovery}}
+  {{#is_no_data}}No data for alert{{/is_no_data}}
+  @slack-hq-ops
+name: Django error rate high
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: false
+  silenced: {}
+  thresholds: {critical: 8.0}
+  timeout_h: 0
+query: min(last_30m):sum:nginx.requests{status_code:500,!environment:swiss,!environment:staging}
+  by {environment}.rollup(sum, 600) * 100 / ( sum:nginx.requests{!environment:swiss,!environment:staging}
+  by {environment}.rollup(sum, 600) + 100 ) > 8
+tags: ['*']
+type: query alert
