@@ -1,0 +1,20 @@
+env_key: host.environment
+id: 2195274
+message: |-
+  https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Couchnodeisdown
+  << notification_block >>
+name: CouchDB node is down on {{instance}}
+options:
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 3, ok: 1, warning: 1}
+  timeout_h: 0
+query: '"couchdb.can_connect".over("group:couchdb2").by("host","instance").last(4).count_by_status()'
+tags: [opsgenie]
+type: service check
