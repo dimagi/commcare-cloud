@@ -200,6 +200,11 @@ class MonitorError(Exception):
 
 class RemoteMonitorAPI(object):
     def _wrap(self, raw_mon):
+        # The drove me crazy to figure out, but the get_all endpoint omits
+        # options.synthetics_check_id for no reason I can think of
+        # o if it's a synthetics alert, pull it again directly by id
+        if raw_mon['type'] == 'synthetics alert':
+            raw_mon = api.Monitor.get(raw_mon['id'])
         if raw_mon.get('errors'):
             raise MonitorError(raw_mon['errors'])
         else:
