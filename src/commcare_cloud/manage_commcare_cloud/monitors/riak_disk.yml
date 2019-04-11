@@ -1,0 +1,27 @@
+env_key: host.environment
+id: 1278009
+message: |-
+  The concerning disk is ({{device.name}}). If this is the main disk—
+  {{#is_warning}}Add a riak node in the next month (at the latest) or revisit the cost of comparison to increasing node size.{{/is_warning}}
+  {{#is_alert}}Add a riak node in the next 3 days. You missed your window to consider increasing node size.{{/is_alert}}
+  (Otherwise it's up to you to figure out what this alert means.)
+  << notification_block >>
+name: Disk space running low on Riak Node {{host.name}}
+options:
+  escalation_message: |-
+    {{#is_alert}}Please add another riak node. Disk usage still {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 180
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 0.9, warning: 0.85}
+  timeout_h: 0
+query: avg(last_10m):avg:system.disk.in_use{group:riakcs} by {host,environment,device}
+  >= 0.9
+tags: ['*', opsgenie]
+type: metric alert

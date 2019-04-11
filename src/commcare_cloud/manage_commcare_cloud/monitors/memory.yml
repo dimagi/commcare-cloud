@@ -1,0 +1,24 @@
+env_key: host.environment
+id: 1291358
+message: |-
+  {{#is_alert}} Memory usage (RAM + swap) > 90% for the last hour! {{/is_alert}}
+  {{^is_alert}} Memory usage (RAM + swap) is OK.{{/is_alert}}
+  @slack-hq-ops
+name: Memory usage (RAM + swap) high on {{host.name}}
+options:
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 120
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 0.9, warning: 0.8}
+  timeout_h: 0
+query: avg(last_1h):( ( avg:system.mem.total{group:riakcs} by {host} - avg:system.mem.usable{group:riakcs}
+  by {host} ) + ( avg:system.swap.used{group:riakcs} by {host} - avg:system.swap.cached{group:riakcs}
+  by {host} ) ) / ( avg:system.mem.total{group:riakcs} by {host} + avg:system.swap.total{group:riakcs}
+  by {host} ) > 0.9
+tags: []
+type: query alert

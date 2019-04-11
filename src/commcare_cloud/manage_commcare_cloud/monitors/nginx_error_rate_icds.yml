@@ -1,0 +1,25 @@
+env_key: host.environment
+id: 2498362
+message: |-
+  {{#is_alert}}Django error rate is {{value}}%, and has been above {{threshold}}% for the last 5 mins.{{/is_alert}}
+  {{#is_recovery}}Django error rate recovered.{{/is_recovery}}
+  {{#is_no_data}}No data for alert{{/is_no_data}}
+    @icds-dimagi@dimagi.com
+name: Above 15% error rate on ICDS
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 15.0}
+  timeout_h: 0
+query: min(last_10m):sum:nginx.requests{status_code:500,environment:icds-new}.rollup(sum,
+  600) * 100 / sum:nginx.requests{environment:icds-new}.rollup(sum, 600) > 15
+tags: ['*']
+type: query alert

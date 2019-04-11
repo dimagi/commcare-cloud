@@ -14,7 +14,6 @@ celery_processes:
     beat: {}
     celery,export_download_queue,case_import_queue:
       concurrency: 8
-      max_tasks_per_child: 5
     celery_periodic:
        concurrency: 4
     submission_reprocessing_queue:
@@ -23,27 +22,21 @@ celery_processes:
       concurrency: 2
     reminder_rule_queue:
       concurrency: 2
-      max_tasks_per_child: 1
     saved_exports_queue:
       concurrency: 3
-      max_tasks_per_child: 1
       optimize: True
     background_queue,analytics_queue:
       concurrency: 6
-      max_tasks_per_child: 1
     icds_aggregation_queue:
-      pooling: gevent
       concurrency: 10
     case_rule_queue:
       concurrency: 2
-      max_tasks_per_child: 1
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 8
   'celery1':
     ucr_queue:
       concurrency: 4
-      max_tasks_per_child: 1
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -54,17 +47,17 @@ celery_processes:
       num_workers: 1
     ucr_indicator_queue:
       concurrency: 6
-  # 'celery2':
-  #   reminder_case_update_queue:
-  #     pooling: gevent
-  #     concurrency: 5
-  #     num_workers: 6
-  #   reminder_queue:
-  #     pooling: gevent
-  #     concurrency: 5
-  #     num_workers: 1
-  #   ucr_indicator_queue:
-  #     concurrency: 6
+  'celery2':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 6
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 1
+    ucr_indicator_queue:
+      concurrency: 6
   'celery3':
     reminder_case_update_queue:
       pooling: gevent
@@ -89,19 +82,19 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
-  #'celery5':
-  #  ucr_indicator_queue:
-  #    concurrency: 4
-  #  reminder_case_update_queue:
-  #    pooling: gevent
-  #    concurrency: 5
-  #    num_workers: 6
-  #  icds_dashboard_reports_queue:
-  #    concurrency: 2
-  #  sms_queue:
-  #    pooling: gevent
-  #    concurrency: 10
-  #    num_workers: 2
+  'celery5':
+    ucr_indicator_queue:
+      concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 6
+    icds_dashboard_reports_queue:
+      concurrency: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
   'celery6':
     ucr_indicator_queue:
       concurrency: 4
@@ -160,15 +153,6 @@ celery_processes:
       num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
-#  'celery12':
-#    ucr_indicator_queue:
-#      concurrency: 4
-#    reminder_case_update_queue:
-#      pooling: gevent
-#      concurrency: 5
-#      num_workers: 6
-#    icds_dashboard_reports_queue:
-#      concurrency: 2
   'celery13':
     ucr_indicator_queue:
       concurrency: 4
@@ -265,7 +249,7 @@ pillows:
     UserPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
-      num_processes: 1
+      num_processes: 16
     kafka-ucr-main:
       num_processes: 1
       processor_chunk_size: 100

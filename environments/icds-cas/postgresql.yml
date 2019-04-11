@@ -18,11 +18,6 @@ LOAD_BALANCED_APPS:
     - [pgmainstandby0, 4]
     - [pgmainstandby1, 4]
     - [pgmainstandby2, 4]
-  accounting:
-    - [default, 1]
-    - [pgmainstandby0, 4]
-    - [pgmainstandby1, 4]
-    - [pgmainstandby2, 4]
   locations:
     - [default, 1]
     - [pgmainstandby0, 4]
@@ -34,10 +29,12 @@ LOAD_BALANCED_APPS:
     - [pgmainstandby1, 4]
     - [pgmainstandby2, 4]
 
-override:
+pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+
+postgres_override:
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
 
@@ -45,7 +42,7 @@ dbs:
   main:
     host: pgmain0
   formplayer:
-    host: pgucr
+    host: pgmain0
   ucr:
     host: pgucr
   synclogs:
@@ -131,16 +128,16 @@ dbs:
       host: pgmainstandby0
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 5
+      hq_acceptable_standby_delay: 0
     - django_alias: pgmainstandby1
       name: commcarehq
       host: pgmainstandby1
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 5
+      hq_acceptable_standby_delay: 0
     - django_alias: pgmainstandby2
       name: commcarehq
       host: pgmainstandby2
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 5
+      hq_acceptable_standby_delay: 0

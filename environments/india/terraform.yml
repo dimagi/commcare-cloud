@@ -1,0 +1,39 @@
+account_alias: commcare-india
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "ap-south-1"
+environment: "india"
+azs:
+  - "ap-south-1a"
+  - "ap-south-1b"
+az_codes:
+  - a
+  - b
+vpc_begin_range: "10.203"
+
+openvpn_image: ami-085d67fbfe42a25e7
+
+vpn_connections:
+  - name: softlayer
+    cidr_blocks:
+      - "10.162.0.0/16"
+    ip_address: "169.38.81.12"
+    type: "ipsec.1"
+    bgp_asn: 65000
+    amazon_side_asn: 7224
+
+external_routes:
+  - cidr_block: "10.162.0.0/16"
+    gateway_id: "vgw-0ea47c14639c0bf48"
+
+servers: []
+
+proxy_servers:
+  - server_name: "proxy0-india"
+    server_instance_type: "t3.micro"
+    network_tier: "public"
+    az: "a"
+    volume_size: 80
+    group: "proxy:bionic"
+
+rds_instances: []

@@ -3,7 +3,7 @@ key: invoke-celery-directly
 date: 2019-02-22
 optional_per_env: no
 min_commcare_version: 08e5a3c1f7482ea30f071044431e42fe1c6e2f04
-max_commcare_version:
+max_commcare_version: 0ffef2b55910f9476d9aa4c9cc5c7d47b4f4e390
 context: |
   Upgrading to celery 4.x requires removing the dependency on
   django-celery, which means that the celery management command

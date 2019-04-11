@@ -3,7 +3,15 @@ directory={{ code_home }}/
 ; gunicorn
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
 
-command={{ app_processes_config.django_command_prefix }}{{ virtualenv_home }}/bin/gunicorn deployment.gunicorn.commcarehq_wsgi:application -c deployment/gunicorn/gunicorn_conf.py -k gevent --workers {{ item.gunicorn_workers }} --bind 0.0.0.0:{{ django_port }} --log-file {{ log_home }}/{{ project }}.gunicorn.log --log-level debug --statsd-host localhost:8125
+command={{ app_processes_config.django_command_prefix }}{% if PY3_RUN_GUNICORN %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/gunicorn
+    deployment.gunicorn.commcarehq_wsgi:application
+    -c deployment/gunicorn/gunicorn_conf.py
+    -k gevent
+    --workers {{ item.gunicorn_workers }}
+    --bind 0.0.0.0:{{ django_port }}
+    --log-file {{ log_home }}/{{ project }}.gunicorn.log
+    --log-level debug
+    --statsd-host localhost:8125
 user={{ cchq_user }}
 autostart=true
 autorestart=true

@@ -353,7 +353,7 @@ $ su
 $ sudo -u postgres psql commcarehq
 ```
 
-# Check open connections
+### Check open connections
 select client_addr, datname as database, count(\*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle from pg_stat_activity group by client_addr, datname;
 This will print something like the following:
 
@@ -507,7 +507,7 @@ LIMIT 20;
 
 # Celery
 
-Check out this [child page](firefighting/celery.md)
+Check out this [child page](celery.md)
 
 ## Monitoring
 Sometimes it's helpful to check "Flower", a UI for celery monitoring http://hqcelery1.internal-va.commcarehq.org:5555/ (you have to be VPN'd in).

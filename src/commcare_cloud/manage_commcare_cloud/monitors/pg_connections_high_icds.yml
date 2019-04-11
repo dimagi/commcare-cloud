@@ -1,0 +1,26 @@
+env_key: host.environment
+id: 5895436
+message: |-
+  {{#is_alert}} {{value}}% connections are used on PgBouncer. Which is above {{threshold}}% for the last 5 mins.{{/is_alert}}
+  {{#is_recovery}}PgBouncer connections recovered.{{/is_recovery}}
+  {{#is_no_data}}No data for alert{{/is_no_data}}
+  @slack-alerts-icds
+name: PgBouncer Connection Above 30% on ICDS {{host.name}}
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 30.0}
+  timeout_h: 0
+query: avg(last_5m):( ( sum:pgbouncer.pools.cl_active{environment:icds-new,group:postgresql}
+  by {host} + sum:pgbouncer.pools.cl_waiting{environment:icds-new,group:postgresql}
+  by {host} ) / 3500 ) * 100 > 30
+tags: []
+type: query alert

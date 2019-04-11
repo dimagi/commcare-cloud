@@ -118,6 +118,9 @@ kafka0
 [celery4]
 {{ celery4-production }} hostname=celery4-production ec2=yes
 
+[celery5]
+{{ celery5-production }} hostname=celery5-production ec2=yes
+
 
 [celery:children]
 celery1
@@ -125,6 +128,7 @@ celery0
 celery2
 celery3
 celery4
+celery5
 
 [celery:vars]
 swap_size=8G
@@ -138,8 +142,12 @@ pillow0
 [formplayer0]
 {{ formplayer0-production }} hostname=formplayer0-production ec2=yes
 
+[formplayer1]
+{{ formplayer1-production }} hostname=formplayer1-production ec2=yes
+
 [formplayer:children]
 formplayer0
+formplayer1
 
 [redis1]
 {{ redis1-production }} hostname=redis1-production ec2=yes

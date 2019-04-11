@@ -1,0 +1,18 @@
+env_key: host.environment
+id: 582119
+message: |-
+  @slack-hq-ops
+name: Datadog can't connect to pgbouncer
+options:
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 3, ok: 1, warning: 1}
+  timeout_h: 0
+query: '"pgbouncer.can_connect".over("*").by("db","host","port").last(4).count_by_status()'
+tags: []
+type: service check

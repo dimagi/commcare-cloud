@@ -16,7 +16,7 @@ class CeleryOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     concurrency = jsonobject.IntegerProperty(default=1)
     pooling = jsonobject.StringProperty(choices=['gevent', 'prefork'], default='prefork')
-    max_tasks_per_child = jsonobject.IntegerProperty(default=50)
+    max_tasks_per_child = jsonobject.IntegerProperty(default=None)
     num_workers = jsonobject.IntegerProperty(default=1)
     optimize = jsonobject.BooleanProperty(default=False)
 
@@ -34,6 +34,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     newrelic_djangoagent = jsonobject.BooleanProperty()
     newrelic_javaagent = jsonobject.BooleanProperty()
     django_command_prefix = jsonobject.StringProperty()
+    celery_command_prefix = jsonobject.StringProperty()
     datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
@@ -49,48 +50,65 @@ class AppProcessesConfig(jsonobject.JsonObject):
         self.pillows = check_and_translate_hosts(environment, self.pillows)
         _validate_all_required_machines_mentioned(environment, self)
 
+    def get_celery_heartbeat_thresholds(self):
+        celery_queues = set()
+        for host, celery_options in self.celery_processes.items():
+            if host == 'None':
+                continue
+            for process_group in celery_options.keys():
+                celery_queues.update(process_group.split(','))
+
+        return {
+            p.name: p.blockage_threshold for p in CELERY_PROCESSES
+            if p.is_queue and p.name in celery_queues
+        }
+
     def to_generated_variables(self):
         flower_host, = [machine for machine, queues_config in self.celery_processes.items()
                         if 'flower' in queues_config]
         return {
             'CELERY_FLOWER_URL': "http://{flower_host}:5555".format(flower_host=flower_host),
             'app_processes_config': self.to_json(),
+            'celery_queues': CELERY_PROCESS_NAMES,
+            'CELERY_HEARTBEAT_THRESHOLDS': self.get_celery_heartbeat_thresholds()
         }
 
 
-class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required'])):
-    def __new__(cls, name, required=True, *args, **kwargs):
-        return super(CeleryProcess, cls).__new__(cls, name, required, *args, **kwargs)
+class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required', 'is_queue', 'blockage_threshold'])):
+    def __new__(cls, name, required=True, is_queue=True, blockage_threshold=None,
+                *args, **kwargs):
+        return super(CeleryProcess, cls).__new__(cls, name, required, is_queue, blockage_threshold,
+                                                 *args, **kwargs)
 
 
 CELERY_PROCESSES = [
-    CeleryProcess("analytics_queue"),
-    CeleryProcess("async_restore_queue", required=False),
-    CeleryProcess("background_queue"),
-    CeleryProcess("beat", required=False),
-    CeleryProcess("case_rule_queue"),
-    CeleryProcess("case_import_queue"),
-    CeleryProcess("celery"),
-    CeleryProcess("celery_periodic", required=False),
-    CeleryProcess("email_queue"),
-    CeleryProcess("export_download_queue"),
-    CeleryProcess("flower"),
+    CeleryProcess("analytics_queue", blockage_threshold=30 * 60),
+    CeleryProcess("async_restore_queue", required=False, blockage_threshold=60),
+    CeleryProcess("background_queue", blockage_threshold=10 * 60),
+    CeleryProcess("beat", required=False, is_queue=False),
+    CeleryProcess("case_rule_queue", blockage_threshold=10 * 60),
+    CeleryProcess("case_import_queue", blockage_threshold=60),
+    CeleryProcess("celery", blockage_threshold=60),
+    CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),
+    CeleryProcess("email_queue", blockage_threshold=30),
+    CeleryProcess("export_download_queue", blockage_threshold=30),
+    CeleryProcess("flower", is_queue=False),
     CeleryProcess("icds_aggregation_queue", required=False),
     CeleryProcess("icds_dashboard_reports_queue", required=False),
     CeleryProcess("ils_gateway_sms_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
-    CeleryProcess("reminder_case_update_queue"),
-    CeleryProcess("reminder_queue", required=False),
-    CeleryProcess("reminder_rule_queue"),
-    CeleryProcess("repeat_record_queue"),
-    CeleryProcess("saved_exports_queue"),
-    CeleryProcess("sumologic_logs_queue", required=False),
-    CeleryProcess("send_report_throttled", required=False),
-    CeleryProcess("sms_queue", required=False), # TODO remove required
-    CeleryProcess("submission_reprocessing_queue", required=False),
-    CeleryProcess("ucr_indicator_queue", required=False),
-    CeleryProcess("ucr_queue", required=False),
+    CeleryProcess("reminder_case_update_queue", blockage_threshold=15 * 60),
+    CeleryProcess("reminder_queue", required=False, blockage_threshold=15 * 60),
+    CeleryProcess("reminder_rule_queue", blockage_threshold=15 * 60),
+    CeleryProcess("repeat_record_queue", blockage_threshold=60 * 60),
+    CeleryProcess("saved_exports_queue", blockage_threshold=6 * 60 * 60),
+    CeleryProcess("sumologic_logs_queue", required=False, blockage_threshold=6 * 60 * 60),
+    CeleryProcess("send_report_throttled", required=False, blockage_threshold=6 * 60 * 60),
+    CeleryProcess("sms_queue", required=False, blockage_threshold=5 * 60), # TODO remove required
+    CeleryProcess("submission_reprocessing_queue", required=False, blockage_threshold=60 * 60),
+    CeleryProcess("ucr_indicator_queue", required=False, blockage_threshold=60 * 60),
+    CeleryProcess("ucr_queue", required=False, blockage_threshold=60 * 60),
 ]
 
 
@@ -98,18 +116,23 @@ CELERY_PROCESS_NAMES = [process.name for process in CELERY_PROCESSES]
 OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
                              if not process.required]
 
+# queues specified in solo_queues cannot be combined with other queues in the same process
+SOLO_QUEUES = [
+    # because these don't actually run normal celery processes
+    'flower', 'beat',
+    # because these run management commands in addition to normal celery processes
+    # (see commcare_cloud/ansible/roles/commcarehq/tasks/celery.yml)
+    'reminder_queue', 'submission_reprocessing_queue', 'sms_queue',
+]
+
 
 def validate_app_processes_config(app_processes_config):
-    # queues specified in solo_queues cannot be combined with other queues in the same processes, otherwise tasks
-    # specific to those queues in celery.yml will get skipped
-    solo_queues = ['flower', 'beat', 'reminder_queue', 'submission_reprocessing_queue',
-                   'sms_queue', 'queue_schedule_instances', 'handle_survey_actions']
     all_queues_mentioned = Counter({queue_name: 0 for queue_name in CELERY_PROCESS_NAMES})
     for machine, queues_config in app_processes_config.celery_processes.items():
         for comma_separated_queue_names, celery_options in queues_config.items():
             queue_names = comma_separated_queue_names.split(',')
             for queue_name in queue_names:
-                if queue_name in solo_queues:
+                if queue_name in SOLO_QUEUES:
                     assert len(queue_names) == 1, \
                         "The special process {} may not be grouped with other processes".format(queue_name)
                 assert queue_name in CELERY_PROCESS_NAMES, \

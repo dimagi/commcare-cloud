@@ -1,0 +1,26 @@
+env_key: host.environment
+id: 1400710
+message: |-
+  {{#is_alert}}
+  Seriously consider prioritizing auto-deleting old files as discussed here: https://github.com/dimagi/commcare-hq/pull/14178#issuecomment-267057882, or agree on some other solution
+  {{/is_alert}}
+  {{#is_warning}}
+  This is just a warning with a low threshold to remind you to re-evaluate, as discussed here: https://github.com/dimagi/commcare-hq/pull/14178#issuecomment-267158655
+  {{/is_warning}}
+   @slack-hq-ops
+name: Case Importer upload files total size high
+options:
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: false
+  silenced: {}
+  thresholds: {critical: 50000000000.0, warning: 10000000000.0}
+  timeout_h: 0
+query: max(last_5m):avg:commcare.case_importer.files.total_bytes{environment:production}
+  > 50000000000
+tags: []
+type: metric alert

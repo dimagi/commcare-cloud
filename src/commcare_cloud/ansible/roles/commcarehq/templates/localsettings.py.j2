@@ -350,7 +350,6 @@ CUSTOM_REPORT_MAP = {
     ]
 }
 
-CELERY_RESULT_BACKEND = '{{ CELERY_RESULT_BACKEND }}'
 CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 {% if 'CELERY_TIMEZONE' in localsettings and localsettings.CELERY_TIMEZONE %}
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
@@ -361,6 +360,11 @@ GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 FORMTRANSLATE_TIMEOUT = 5
 
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
+CELERY_HEARTBEAT_THRESHOLDS = {
+{% for queue, threshold in CELERY_HEARTBEAT_THRESHOLDS.items() | sort %}
+    {{ queue | to_json }}: {% if threshold == None %}None{% else %}{{ threshold | to_json }}{% endif %},
+{% endfor %}
+}
 
 FORMPLAYER_URL = "/formplayer"
 
@@ -568,13 +572,13 @@ MAPS_LAYERS = json.loads('{{ MAPS_LAYERS|to_json }}')
 PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
-ACTIVE_PILLOW_NAMES = [
+ACTIVE_PILLOW_NAMES = list(set([
 {% for _, pillows in app_processes_config.pillows.items() %}
-    {% for pillow_name, params in pillows.items() %}
+    {% for pillow_name in pillows.keys()|unique %}
         "{{ pillow_name }}",
     {% endfor %}
 {% endfor %}
-]
+]))
 
 {% if SIMPLE_API_KEYS %}
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
@@ -678,12 +682,6 @@ SUPERVISOR_RPC_ENABLED = True
 SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
 SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
 {% endif %}
-
-ENVIRONMENT_HOSTS = {
-{% for group, hosts in groups.items() | sort %}
-    {{ group | to_json }}: {{ hosts | sort | to_json }},
-{% endfor %}
-}
 
 {% if HQ_PRIVATE_KEY %}
 HQ_PRIVATE_KEY = \

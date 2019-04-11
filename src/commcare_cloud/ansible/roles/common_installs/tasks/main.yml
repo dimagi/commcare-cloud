@@ -70,5 +70,5 @@
   become: yes
   pip:
     name: virtualenv-clone
-    version: 0.2.6
+    version: 0.5.1
     executable: pip2

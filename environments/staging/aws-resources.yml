@@ -1,5 +1,5 @@
 airflow0-staging: 10.201.10.220
-celery0-staging: 10.201.10.150
+airflow1-staging: 10.201.10.147
 celery1-staging: 10.201.10.108
 control-staging: 10.201.10.174
 couch0-staging: 10.201.40.11
@@ -8,12 +8,13 @@ couch2-staging: 10.201.40.146
 es0-staging: 10.201.40.161
 es1-staging: 10.201.40.108
 formplayer0-staging: 10.201.10.9
+formplayer1-staging: 10.201.10.234
 hwarehouse0-staging: 10.201.10.192
 kafka0-staging: 10.201.40.189
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pg0-staging-replica: pg0-staging-replica.czkracjslrn2.us-east-1.rds.amazonaws.com
-pgproxy0-staging: 10.201.40.127
-pillow0-staging: 10.201.10.92
+pgproxy1-staging: 10.201.40.187
+pillow1-staging: 10.201.10.103
 proxy1-staging: 10.201.20.21
 proxy1-staging.public_ip: 107.20.83.77
 rabbit0-staging: 10.201.10.73
@@ -22,3 +23,5 @@ vpn-staging: 10.201.20.112
 vpn-staging.public_ip: 54.227.170.89
 web0-staging: 10.201.10.104
 web1-staging: 10.201.11.46
+web2-staging: 10.201.10.182
+web3-staging: 10.201.11.246

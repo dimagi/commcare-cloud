@@ -1,7 +1,0 @@
-deploy_env: staging
-env_monitoring_id: staging-aws-test
-users:
-#  - dimagi
-#  - dimagi-qa
-  - droberts
-  - g2

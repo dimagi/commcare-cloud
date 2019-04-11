@@ -1,0 +1,29 @@
+title: Update RabbitMQ logging configuration
+key: update-rabbitmq-logging
+date: 2019-04-05
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  This change updates the RabbitMQ logging configuration to change the
+  log level from `info` to `warning`.
+
+details: |
+  With the upgrade of Celery to v4 the RabbitMQ connection logs have
+  increased greatly. The logging configuration is being changed to
+  prevent the logs from growing beyond 10GB in size.
+
+
+update_steps: |
+  1. Stop all CommCare services
+  ```bash
+  commcare-cloud <env> downtime start
+  ```
+  2. Update the RabbitMQ logs
+  ```bash
+  commcare-cloud <env> ap deploy_rabbitmq.yml
+  ```
+  3. Start all CommCare services
+  ```bash
+  commcare-cloud <env> downtime end
+  ```

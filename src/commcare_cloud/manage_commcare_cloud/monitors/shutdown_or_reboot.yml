@@ -1,0 +1,24 @@
+id: 4039487
+env_key: host.environment
+message: |
+  You will need to resolve/mute this alert manually once you have bring the services back up.
+  << notification_block >>
+name: '{{host.name}} was shut down or rebooted'
+options:
+  escalation_message: |
+    {{host.name}} was shut down or rebooted and the alert has not been resolved.
+    << notification_block >>
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: false
+  silenced: {'host:celery12.internal-icds.commcarehq.org': null}
+  thresholds: {critical: 0.0}
+  timeout_h: 0
+query: change(avg(last_5m),last_30m):avg:system.uptime{*} by {host} < 0
+tags: ['*', opsgenie]
+type: query alert
