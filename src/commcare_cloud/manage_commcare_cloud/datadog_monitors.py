@@ -154,6 +154,8 @@ def render_messages(config, monitor):
     if escal_msg:
         elcal_rendered = render_message(config, escal_msg, monitor['env_key'])
         monitor['options'][ESCAL_MSG] = LiteralUnicode(elcal_rendered.strip())
+    if 'include_tags' not in monitor['options']:
+        monitor['options']['include_tags'] = True
     return monitor
 
 
