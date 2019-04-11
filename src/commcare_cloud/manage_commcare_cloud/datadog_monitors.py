@@ -130,10 +130,11 @@ def write_monitor_definition(monitor_id, monitor_definition):
             if env_key in monitor_definition['message']:
                 monitor_definition['env_key'] = env_key
                 break
-        if 'by {environment}' in monitor_definition['query']:
-            monitor_definition['env_key'] = 'environment.name'
         else:
-            monitor_definition['env_key'] = 'host.environment'
+            if 'by {environment}' in monitor_definition['query']:
+                monitor_definition['env_key'] = 'environment.name'
+            else:
+                monitor_definition['env_key'] = 'host.environment'
 
     filename = 'autogen_{}.yml'.format(monitor_id)
     with open(os.path.join(CONFIG_ROOT, filename), 'w') as f:
