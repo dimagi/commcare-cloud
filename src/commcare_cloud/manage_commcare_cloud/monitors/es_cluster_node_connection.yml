@@ -1,0 +1,31 @@
+id: 4889842
+env_key: environment.name
+message: |
+  https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
+  See https://app.datadoghq.com/screen/127236/es-overview?tpl_var_cluster_name=*&tpl_var_scope={{ environment.name }}
+  {{#is_alert}}
+  {{#is_match "environment" "production"}}
+  For details check [hqes0](http://hqes0.internal-va.commcarehq.org:9200/_cluster/health?pretty=true), [hqes1](http://hqes1.internal-va.commcarehq.org:9200/_cluster/health?pretty=true) or [hqes3](http://hqes3.internal-va.commcarehq.org:9200/_cluster/health?pretty=true)
+  {{/is_match}}
+  {{/is_alert}}
+  {{#is_recovery}}ES cluster status back to GREEN.{{/is_recovery}}
+  << notification_block >>
+name: ES Cluster Node Connection ALERT (new)
+options:
+  escalation_message: |
+    https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
+    Cannot connect to all ES nodes; should be looked into ASAP.
+    << notification_block >>
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 1, ok: 1, warning: 1}
+  timeout_h: 0
+query: '"elasticsearch.can_connect".over("group:elasticsearch").exclude("environment:icds-new").by("host","port").last(2).count_by_status()'
+tags: [opsgenie]
+type: service check

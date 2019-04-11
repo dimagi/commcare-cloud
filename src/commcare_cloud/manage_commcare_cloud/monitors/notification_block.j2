@@ -1,0 +1,10 @@
+<% for env, alert_channel in envs.items() -%>
+{{#is_match "<<env_key>>" "<<env>>"}} <<alert_channel>> {{/is_match}}
+<% endfor -%>
+<% for env, alert_channel in envs.items() -%>
+<< ''|indent(loop.index0 * 2, true, true) >>{{^is_match "<<env_key>>" "<<env>>"}}
+<% endfor -%>
+<< catchall_alert_channel >>
+<% for env, alert_channel in envs.items() -%>
+<< ''|indent(loop.revindex0 * 2, true, true) >>{{/is_match}}
+<% endfor %>
