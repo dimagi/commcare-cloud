@@ -146,6 +146,8 @@ resource "aws_eip" "nat_gateway" {
   vpc = true
   tags {
     Name = "nat-gateway-ip-${var.env}"
+    Environment = "production"
+    Group = "Network"
   }
 }
 
@@ -154,11 +156,21 @@ resource "aws_nat_gateway" "main" {
   allocation_id = "${aws_eip.nat_gateway.id}"
   subnet_id     = "${aws_subnet.subnet-public.*.id[0]}"
   depends_on    = ["aws_internet_gateway.main", "aws_eip.nat_gateway"]
+  tags {
+    Name = "nat-gateway-${var.env}"
+    Environment = "production"
+    Group = "Network"
+  }
 }
 
 # Create an Internet Gateway
 resource "aws_internet_gateway" "main" {
   vpc_id = "${aws_vpc.main.id}"
+  tags {
+    Name = "internet-gateway-${var.env}"
+    Environment = "production"
+    Group = "Network"
+  }
 }
 
 locals {

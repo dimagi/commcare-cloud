@@ -9,6 +9,8 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.201"
 
+openvpn_image: ami-5e73b923
+
 vpn_connections:
   - name: rackspace
     cidr_blocks:
@@ -44,6 +46,20 @@ servers:
     az: "b"
     volume_size: 80
     group: "webworkers"
+
+  - server_name: "web2-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "webworkers:bionic"
+  - server_name: "web3-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    group: "webworkers:bionic"
+
   - server_name: "es0-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
@@ -55,12 +71,12 @@ servers:
     az: "a"
     volume_size: 80
     group: "elasticsearch"
-  - server_name: "pillow0-staging"
+  - server_name: "pillow1-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    group: "pillowtop"
+    group: "pillowtop:bionic"
   - server_name: "celery0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -79,12 +95,28 @@ servers:
     az: "a"
     volume_size: 40
     group: "airflow"
+
+  - server_name: "airflow1-staging"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "airflow:bionic"
+
   - server_name: "formplayer0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
     group: "formplayer"
+
+  - server_name: "formplayer1-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "formplayer:bionic"
+
   - server_name: "couch0-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
@@ -117,12 +149,13 @@ servers:
     volume_size: 80
     group: "kafka"
 
-  - server_name: "pgproxy0-staging"
+
+  - server_name: "pgproxy1-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
     volume_size: 80
-    group: "postgresql"
+    group: "postgresql:bionic"
 
   - server_name: "redis0-staging"
     server_instance_type: t3.medium

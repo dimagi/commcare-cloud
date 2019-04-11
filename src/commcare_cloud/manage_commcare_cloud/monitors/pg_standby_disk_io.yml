@@ -1,0 +1,25 @@
+env_key: host.environment
+id: 1300873
+message: |-
+  {{#is_alert}}Disk IO above expected levels for the past hour{{/is_alert}}
+  Use *htop* or *iotop* to see what process is responsible.
+  @slack-hq-ops
+name: Disk IO high on {{host.name}} (pg_standby)
+options:
+  escalation_message: |-
+    Disk usage still high - notify Interrupt Team to investigate.
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 20
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 40.0}
+  timeout_h: 0
+query: avg(last_1h):avg:system.io.avg_q_sz{group:pg_standby} by {host,environment}
+  > 40
+tags: []
+type: metric alert

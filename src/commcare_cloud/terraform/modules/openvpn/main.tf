@@ -29,6 +29,7 @@ resource aws_instance "vpn_host" {
   tags {
     Name        = "vpn-${var.environment}"
     Environment = "${var.environment}"
+    Group = "openvpn"
   }
 }
 
@@ -39,6 +40,7 @@ resource aws_eip "vpn_ip" {
   tags {
     Name        = "vpn-public-ip-${var.environment}"
     Environment = "${var.environment}"
+    Group = "openvpn"
   }
 }
 
@@ -72,6 +74,14 @@ resource "aws_security_group" "openvpn-access-sg" {
   ingress {
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  // for auto-renewing certs
+  ingress {
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

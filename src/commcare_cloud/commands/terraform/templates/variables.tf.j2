@@ -16,12 +16,14 @@ variable "openvpn_image" {
 variable "openvpn_instance_type" {
   default = "t2.small"
 }
+
+# Use 'hvm:ebs-ssd' AMIs from https://cloud-images.ubuntu.com/locator/ec2/
 variable "server_image" {
-  default = "ami-07cf43e1798df5582"
+  default = "{{ {'us-east-1': 'ami-07cf43e1798df5582', 'ap-south-1': 'ami-07c128e60e80e6766'}[region] }}"
 }
 
 variable "bionic_server_image" {
-  default = "ami-012fd5eb46f56731f"
+  default = "{{ {'us-east-1': 'ami-012fd5eb46f56731f', 'ap-south-1': 'ami-0a63d6cdb8b90bdae'}[region] }}"
 }
 
 variable "dns_zone_id" {}

@@ -1,0 +1,29 @@
+env_key: host.environment
+id: 4765671
+message: |-
+  {{#is_alert}}Disk Space Used will cross the  {{threshold}} mark in next 2 weeks.
+  @slack-alerts-scale
+  {{/is_alert}}
+  {{#is_alert_recovery}}Thanks for the action. The alert has been recovered.  @slack-alerts-scale
+  {{/is_alert_recovery}}
+name: '[Scale] Disk space will reach {{threshold}} on {{host.name}} in 2 weeks'
+options:
+  escalation_message: |-
+    Disk Space Used will cross the  {{threshold}} mark in next 2 weeks.
+    << notification_block >>
+  include_tags: true
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 1440
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 0.8, critical_recovery: 0.75}
+  timeout_h: 0
+query: max(next_2w):forecast(avg:system.disk.in_use{device:/opt/data,!group:riakcs}
+  by {host,environment}, 'seasonal', 1, interval='120m', seasonality='weekly') >=
+  0.8
+tags: []
+type: query alert

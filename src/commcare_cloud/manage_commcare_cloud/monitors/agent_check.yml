@@ -1,0 +1,40 @@
+id: 341723
+env_key: host.environment
+message: |
+  {{#is_no_data}}
+  Host {{host.name}} not reporting data.
+  Possible steps to fix (on failing server):
+  ```
+      $> su
+      Password: {password from keepass}
+      $> ps aux | grep datadog
+      dd-agent pid1  ...  /opt/datadog-agent/embedded/bin/python /opt/datadog-agent/agent/dogstatsd.py --use-local-forwarder
+      dd-agent pid2  ...  /opt/datadog-agent/embedded/bin/python /opt/datadog-agent/agent/ddagent.py
+      $> kill pid1
+      $> kill pid2
+      $> service datadog-agent start
+  ```
+  {{/is_no_data}}
+  {{#is_recovery}}
+  Host "{{host.name}}" back to normal.
+  {{/is_recovery}}
+  << notification_block >>
+
+name: 'Datadog agent not reporting: {{host.name}}'
+options:
+  escalation_message: |
+    Host {{host.name}} still not reporting data. Please fix this.
+    << notification_block >>
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 5
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 0
+  silenced: {}
+  thresholds: {critical: 1, ok: 1, warning: 1}
+  timeout_h: 0
+  include_tags: true
+query: '"datadog.agent.up".over("*").exclude("environment:64-test","group:pgsynclog","environment:enikshay","host:citus0.india.commcarehq.org","host:citus1.india.commcarehq.org","host:citus2.india.commcarehq.org").by("host").last(2).count_by_status()'
+tags: [opsgenie]
+type: service check

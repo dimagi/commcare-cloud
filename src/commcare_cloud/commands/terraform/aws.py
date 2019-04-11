@@ -260,9 +260,15 @@ def generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
     # General idea from https://www.vividcortex.com/blog/setting-up-multi-factor-authentication-with-the-aws-cli
     boto_session = boto3.session.Session(profile_name=aws_profile)
     iam = boto_session.client('iam')
-    devices = iam.list_mfa_devices(UserName=username)['MFADevices']
+
+    if username == 'root':
+        devices = [device for device in iam.list_mfa_devices()['MFADevices']
+                   if 'root-account-mfa-device' in device['SerialNumber']]
+    else:
+        devices = iam.list_mfa_devices(UserName=username)['MFADevices']
     device_arn = sorted(devices, key=lambda device: device['EnableDate'])[-1]['SerialNumber']
     sts = boto_session.client('sts')
+
     credentials = sts.get_session_token(
         SerialNumber=device_arn,
         TokenCode=mfa_token,

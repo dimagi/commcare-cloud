@@ -115,7 +115,7 @@
         site_config: {name: riakcs, vars_file: riakcs}
 
 - name: Reach Proxy
-  hosts: proxy
+  hosts: reach_proxy
   tasks:
     - include_role:
         name: nginx
