@@ -19,6 +19,6 @@ options:
   silenced: {'host:hqproxy0': null, 'host:proxy1.internal-icds.commcarehq.org': null}
   thresholds: {critical: 5, ok: 1, warning: 1}
   timeout_h: 0
-query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_heartbeat").by("host","instance","url").last(6).count_by_status()'
+query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_celery").by("host","instance","url").last(6).count_by_status()'
 tags: [serverup, opsgenie]
 type: service check

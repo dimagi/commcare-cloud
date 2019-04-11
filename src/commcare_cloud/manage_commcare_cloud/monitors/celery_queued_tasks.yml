@@ -1,0 +1,24 @@
+env_key: host.environment
+id: 1704065
+message: |-
+  {{#is_alert}} {{celery_queue.name}} on {{environment.name}} has had at least 100 tasks queued for the last 4 hours.{{/is_alert}}
+   @slack-hq-ops
+name: Number of Queued Tasks is High in queue "{{celery_queue}}"
+options:
+  escalation_message: |-
+    This is still a problem.
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 120
+  require_full_window: false
+  silenced: {}
+  thresholds: {critical: 100.0}
+  timeout_h: 0
+query: min(last_4h):sum:celery.tasks_queued{!celery_queue:ucr_indicator_queue} by
+  {environment,celery_queue} >= 100
+tags: ['*']
+type: query alert

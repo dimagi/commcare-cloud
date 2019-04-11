@@ -1,0 +1,25 @@
+env_key: host.environment
+id: 4013126
+message: |-
+  The {{pillow_name.name}} on {{environment.name}} has been above{{#is_warning}} {{warn_threshold}} {{/is_warning}}{{#is_alert}} {{threshold}} {{/is_alert}}for the past 24 hours.
+  This could be the result of an outage or it could imply that more resources are required. Please investigate.
+  << notification_block >>
+name: Pillow {{pillow_name.name}} on {{environment.name}} is not able to keep up with
+  changes
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 60
+  notify_audit: false
+  notify_no_data: true
+  renotify_interval: 0
+  require_full_window: false
+  silenced: {'environment:64-test': null}
+  thresholds: {critical: 5000.0, warning: 2500.0}
+  timeout_h: 24
+query: min(last_1d):sum:commcare.change_feed.need_processing{feed_type:kafka} by {pillow_name,environment}
+  > 5000
+tags: ['*', opsgenie]
+type: query alert

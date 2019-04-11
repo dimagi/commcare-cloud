@@ -111,7 +111,7 @@ def print_diff(diff_lines):
 def get_monitor_definitions(config):
     monitors = {}
     for file in os.listdir(CONFIG_ROOT):
-        if file.endswith('yml'):
+        if file.endswith('yml') and file != '.ignore.yml':
             with open(os.path.join(CONFIG_ROOT, file), 'r') as mon:
                 data = mon.read()
             monitor_def = render_messages(config, yaml.load(data))
@@ -139,6 +139,11 @@ def write_monitor_definition(monitor_id, monitor_definition):
     filename = 'autogen_{}.yml'.format(monitor_id)
     with open(os.path.join(CONFIG_ROOT, filename), 'w') as f:
         f.write(dump_monitor_yaml(monitor_definition))
+
+
+def get_ignored_mointor_ids():
+    with open(os.path.join(CONFIG_ROOT, '.ignore.yml'), 'r') as f:
+        return yaml.safe_load(f)['ignored_monitors']
 
 
 def render_messages(config, monitor):
@@ -195,13 +200,19 @@ class MonitorError(Exception):
 
 class RemoteMonitorAPI(object):
     def _wrap(self, raw_mon):
+        # This drove me crazy to figure out, but the get_all endpoint omits
+        # options.synthetics_check_id for no reason I can think of.
+        # If it's a synthetics alert, pull it again directly by id.
+        if raw_mon['type'] == 'synthetics alert':
+            raw_mon = api.Monitor.get(raw_mon['id'])
         if raw_mon.get('errors'):
             raise MonitorError(raw_mon['errors'])
         else:
             return clean_raw_monitor(raw_mon)
 
     def get_all(self):
-        return {raw_mon['id']: self._wrap(raw_mon) for raw_mon in api.Monitor.get_all()}
+        return {raw_mon['id']: self._wrap(raw_mon) for raw_mon in api.Monitor.get_all()
+                if raw_mon['id'] not in get_ignored_mointor_ids()}
 
     def update(self, monitor_id, wrapped_monitor):
         api.Monitor.update(monitor_id, **wrapped_monitor)

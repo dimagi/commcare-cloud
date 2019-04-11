@@ -1,0 +1,24 @@
+env_key: environment.name
+id: 5511193
+message: |-
+  Optional patches:
+  1) Restart the worker
+  2) Talk to Norman
+name: Backlog high on export_download_queue on {{environment.name}}
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 100.0, critical_recovery: 50.0, warning: 50.0, warning_recovery: 30.0}
+  timeout_h: 0
+query: max(last_5m):avg:celery.tasks_queued{celery_queue:export_download_queue} by
+  {environment} > 100
+tags: []
+type: query alert
