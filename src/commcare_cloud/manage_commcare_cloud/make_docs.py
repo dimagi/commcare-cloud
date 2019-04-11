@@ -137,7 +137,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
             parser.parse(in_lines)
             text = parser.get_output()
         else:
-            text = text.replace('Example:\n', '#### Example\n')
+            text = text.replace('Example:\n', '##### Example\n')
         return super(MarkdownFormatterBase, self)._format_text(text)
 
 
