@@ -11,7 +11,7 @@ options:
   notify_no_data: false
   renotify_interval: 0
   silenced: {}
-  thresholds: {critical: 20, warning: 10}
+  thresholds: {critical: 20.0, warning: 10.0}
   timeout_h: 0
 query: '"process.up".over("process:riak").by("environment").last(1).pct_by_status()'
 tags: []
