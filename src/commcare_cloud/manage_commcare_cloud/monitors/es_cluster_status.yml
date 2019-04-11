@@ -1,0 +1,28 @@
+env_key: host.environment
+id: 654754
+message: |-
+  https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
+  {{#is_alert}}
+  For details check http://<es-host>:9200/_cluster/health?pretty=true
+  {{/is_alert}}
+  {{#is_recovery}}ES cluster status back to GREEN.{{/is_recovery}}
+  << notification_block >>
+name: ES Cluster Status ALERT
+options:
+  escalation_message: |-
+    https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch
+    ES cluster status is still not OK and should be looked into ASAP.
+    << notification_block >>
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: 2
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 60
+  silenced: {}
+  thresholds: {critical: 10, warning: 80}
+  timeout_h: 0
+query: '"elasticsearch.cluster_health".over("*").exclude("environment:icds-new").by("environment").last(1).pct_by_status()'
+tags: [opsgenie]
+type: service check

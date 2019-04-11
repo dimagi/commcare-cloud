@@ -1,0 +1,23 @@
+env_key: environment.name
+id: 4961588
+message: |-
+  Please restart elasticsearch in the short term, and improve cluster stability in the near term (by e.g. adding nodes, resources)
+  << notification_block >>
+name: Elasticsearch is returning partial results
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: false
+  silenced: {}
+  thresholds: {critical: 1.0}
+  timeout_h: 0
+query: sum(last_5m):avg:commcare.es.partial_results{*} by {environment}.as_count()
+  > 1
+tags: [opsgenie]
+type: query alert

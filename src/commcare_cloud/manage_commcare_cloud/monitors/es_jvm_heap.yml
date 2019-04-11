@@ -1,0 +1,24 @@
+env_key: host.environment
+id: 4314745
+message: |-
+  If the pattern starts to skew upward over time,
+  this means that the rate of garbage collection is not keeping up with the rate of object creation, which could lead to slow garbage collection times and,
+  eventually, OutOfMemoryErrors
+name: ElasticSearch JVM Heap Usage
+options:
+  escalation_message: ''
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 0
+  require_full_window: true
+  silenced: {}
+  thresholds: {critical: 85.0}
+  timeout_h: 0
+query: avg(last_5m):( avg:jvm.mem.heap_used{group:elasticsearch} / avg:jvm.mem.heap_committed{group:elasticsearch}
+  ) * 100 > 85
+tags: []
+type: query alert
