@@ -1,7 +1,7 @@
 env_key: host.environment
 id: 9455671
 message: |-
-  CAS Down? Please check!
+  CAS Down? Please check https://www.icds-cas.gov.in/serverup.txt
   @slack-icds-dev
 name: '[Synthetics] Test on www.icds-cas.gov.in/serverup.txt'
 options:
