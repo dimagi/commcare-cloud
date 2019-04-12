@@ -34,6 +34,7 @@ proxy_servers:
     network_tier: "public"
     az: "a"
     volume_size: 80
-    group: "proxy:bionic"
+    group: proxy
+    os: bionic
 
 rds_instances: []
