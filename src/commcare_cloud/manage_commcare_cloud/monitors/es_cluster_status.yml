@@ -21,7 +21,7 @@ options:
   notify_no_data: false
   renotify_interval: 60
   silenced: {}
-  thresholds: {critical: 10, warning: 80}
+  thresholds: {critical: 80.0, warning: 10.0}
   timeout_h: 0
 query: '"elasticsearch.cluster_health".over("*").exclude("environment:icds-new").by("environment").last(1).pct_by_status()'
 tags: [opsgenie]

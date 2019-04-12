@@ -154,6 +154,8 @@ def render_messages(config, monitor):
     if escal_msg:
         elcal_rendered = render_message(config, escal_msg, monitor['env_key'])
         monitor['options'][ESCAL_MSG] = LiteralUnicode(elcal_rendered.strip())
+    if 'include_tags' not in monitor['options']:
+        monitor['options']['include_tags'] = True
     return monitor
 
 
@@ -194,8 +196,7 @@ def get_config(config_path):
 
 
 class MonitorError(Exception):
-    def __init__(self, errors):
-        self.errors = errors
+    pass
 
 
 class RemoteMonitorAPI(object):
@@ -206,7 +207,7 @@ class RemoteMonitorAPI(object):
         if raw_mon['type'] == 'synthetics alert':
             raw_mon = api.Monitor.get(raw_mon['id'])
         if raw_mon.get('errors'):
-            raise MonitorError(raw_mon['errors'])
+            raise MonitorError('\n'.join(raw_mon['errors']))
         else:
             return clean_raw_monitor(raw_mon)
 
@@ -215,7 +216,9 @@ class RemoteMonitorAPI(object):
                 if raw_mon['id'] not in get_ignored_mointor_ids()}
 
     def update(self, monitor_id, wrapped_monitor):
-        api.Monitor.update(monitor_id, **wrapped_monitor)
+        result = api.Monitor.update(monitor_id, **wrapped_monitor)
+        if result.get('errors'):
+            raise MonitorError('\n'.join(result['errors']))
 
 
 class LocalMonitorAPI(object):
@@ -261,6 +264,8 @@ class DatadogMonitors(CommandBase):
             for id in set(local_monitors) & set(remote_monitors)
         }
 
+        monitors_with_diffs = {}
+
         any_diffs = False
         if only_local:
             for id, monitor in only_local.items():
@@ -277,10 +282,12 @@ class DatadogMonitors(CommandBase):
                 puts(colored.magenta("\nDiff for '{}'\n".format(expected['name'])))
                 with indent():
                     print_diff(diff)
+                monitors_with_diffs[id] = expected
 
         if any_diffs:
             if ask("Do you want to push these changes to Datadog?"):
-                for id, expected in local_monitors.items():
+                for id, expected in monitors_with_diffs.items():
+                    print("Updating '{}'".format(expected['name']))
                     remote_monitor_api.update(id, get_data_to_update(expected, keys_to_update))
 
         if only_remote:
