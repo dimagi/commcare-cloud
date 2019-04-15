@@ -90,7 +90,9 @@ module "server__{{ server.server_name }}" {
   secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
 
-{% if ':bionic' in server.group %}
+{# Remove the :bionic in group option once this has been rolled out -#}
+{# and any open PRs have had a chance to adopt the new convention -#}
+{% if server.os == 'bionic' or ':bionic' in server.group %}
   server_image = "${var.bionic_server_image}"
 {% else %}
   server_image = "${var.server_image}"
