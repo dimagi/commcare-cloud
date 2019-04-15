@@ -53,6 +53,8 @@ class ServerConfig(jsonobject.JsonObject):
     volume_size = jsonobject.IntegerProperty(default=20)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
+    # todo: invert this so that all new machines are bionic unless otherwise specified
+    os = jsonobject.StringProperty(default='trusty')
 
 
 class BlockDevice(jsonobject.JsonObject):
