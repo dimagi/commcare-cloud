@@ -107,6 +107,9 @@ redis0
 [es1]
 {{ es1-staging }} elasticsearch_node_name=es1-staging elasticsearch_node_zone=aws hostname=es1-staging ec2=yes elasticsearch_master=true
 
+[es2]
+{{ es2-staging }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws hostname=es2-staging ec2=yes elasticsearch_master=true
+
 [elasticsearch:children]
 # Amazon EC2
 es0
