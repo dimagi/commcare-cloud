@@ -57,7 +57,7 @@ celery_processes:
     send_report_throttled:
       concurrency: 2
     async_restore_queue:
-      num_workers: 4
+      num_workers: 3
       concurrency: 2
     analytics_queue:
       pooling: gevent
@@ -84,8 +84,10 @@ celery_processes:
       num_workers: 4
       concurrency: 50
   celery4:
-    celery,case_import_queue:
-      concurrency: 6
+    celery:
+      concurrency: 4
+    case_import_queue:
+      concurrency: 4
     export_download_queue:
       concurrency: 6
   celery5:
@@ -97,6 +99,16 @@ celery_processes:
       pooling: gevent
       concurrency: 100
       num_workers: 2
+  celery6:
+    celery:
+      concurrency: 4
+    case_import_queue:
+      concurrency: 4
+    case_rule_queue:
+      concurrency: 4
+    async_restore_queue:
+      num_workers: 3
+      concurrency: 2
 
 
 pillows:
