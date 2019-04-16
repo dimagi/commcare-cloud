@@ -12,17 +12,13 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
-   mappings:
-    - name: "$digest_submission"
-      variable: "$http_authorization"
-      value: "$server_name"
    limit_req_zones:
     - name: "restore"
-      zone: "$digest_submission"
+      zone: "$server_name"
       size: "10m"
       rate: "6r/s"
     - name: "submissions"
-      zone: "$digest_submission"
+      zone: "$server_name"
       size: "10m"
       rate: "60r/s"
     - name: "server_name"
