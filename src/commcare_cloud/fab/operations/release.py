@@ -178,6 +178,8 @@ def _upload_and_extract(zippath, strip_components=0):
 
 def _update_code_from_previous_release():
     if files.exists(env.code_current):
+        with cd(env.code_current):
+            sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(env.code_current, env.code_root)
         with cd(env.code_root):
             sudo('git remote set-url origin {}'.format(env.code_repo))
