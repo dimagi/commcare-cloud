@@ -44,7 +44,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 1
+      num_workers: 2
     ucr_indicator_queue:
       concurrency: 6
   'celery2':
@@ -55,7 +55,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 1
+      num_workers: 2
     ucr_indicator_queue:
       concurrency: 6
   'celery3':
@@ -66,7 +66,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 1
+      num_workers: 2
     ucr_indicator_queue:
       concurrency: 4
     icds_dashboard_reports_queue:
