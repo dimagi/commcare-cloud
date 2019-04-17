@@ -11,10 +11,10 @@
 proxy1
 
 [web2]
-{{ web2-staging }} swap_size=1G hostname=web2-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ web2-staging }} swap_size=1G hostname=web2-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [web3]
-{{ web3-staging }} swap_size=1G hostname=web3-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ web3-staging }} swap_size=1G hostname=web3-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [webworkers:children]
 # Amazon EC2
@@ -22,7 +22,7 @@ web2
 web3
 
 [pgproxy1]
-{{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [rds_pg0]
 # RDS
@@ -75,21 +75,21 @@ kafka0
 kafka0
 
 [celery1]
-{{ celery1-staging }} hostname=celery1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ celery1-staging }} hostname=celery1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [celery:children]
 # Amazon EC2
 celery1
 
 [pillow1]
-{{ pillow1-staging }} hostname=pillow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ pillow1-staging }} hostname=pillow1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [pillowtop:children]
 # Amazon EC2
 pillow1
 
 [formplayer1]
-{{ formplayer1-staging }} hostname=formplayer1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ formplayer1-staging }} hostname=formplayer1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [formplayer:children]
 # Amazon EC2
@@ -116,7 +116,7 @@ es1
 redis0
 
 [airflow1]
-{{ airflow1-staging }} hostname=airflow1-staging ec2=yes ansible_python_interpreter=/usr/bin/python3
+{{ airflow1-staging }} hostname=airflow1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [airflow:children]
 # Amazon EC2
@@ -136,4 +136,4 @@ web2
 web3
 
 [hwarehouse0]
-{{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=yes
+{{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=ena
