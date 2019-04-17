@@ -104,6 +104,10 @@ celery_processes:
       concurrency: 4
     case_rule_queue:
       concurrency: 4
+    email_queue:
+      pooling: gevent
+      concurrency: 100
+      num_workers: 2
     export_download_queue:
       concurrency: 5
 
