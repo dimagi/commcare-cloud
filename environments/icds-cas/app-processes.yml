@@ -92,7 +92,7 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 10
-      num_workers: 2
+      num_workers: 4
   'celery6':
     ucr_indicator_queue:
       concurrency: 4
@@ -105,7 +105,7 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 10
-      num_workers: 2
+      num_workers: 4
   'celery7':
     ucr_indicator_queue:
       concurrency: 4
