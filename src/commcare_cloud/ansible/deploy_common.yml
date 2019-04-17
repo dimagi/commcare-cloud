@@ -98,6 +98,7 @@
     lineinfile:
       dest: /etc/resolvconf/resolv.conf.d/base
       line: 'nameserver {{ item }}'
+      create: yes
     with_items: "{{ nameservers }}"
     when: nameservers is defined
     tags:
