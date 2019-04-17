@@ -32,6 +32,9 @@ redis_appendonly: 'yes'
 
 KSPLICE_ACTIVE: yes
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
 
 kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
