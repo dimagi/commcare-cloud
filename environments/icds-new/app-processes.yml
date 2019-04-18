@@ -151,15 +151,6 @@ pillows:
       start_process: 4
       num_processes: 4
       total_processes: 36
-  'pillow2':
-    kafka-ucr-static-cases:
-      start_process: 12
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 8
-      num_processes: 4
-      total_processes: 36
   'pillow3':
     kafka-ucr-static-cases:
       start_process: 18
