@@ -142,28 +142,3 @@ pillows:
       start_process: 0
       num_processes: 4
       total_processes: 36
-  'pillow1':
-    kafka-ucr-static-cases:
-      start_process: 6
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 4
-      num_processes: 4
-      total_processes: 36
-  'pillow3':
-    kafka-ucr-static-cases:
-      start_process: 18
-      num_processes: 6
-      total_processes: 36
-    CaseToElasticsearchPillow:
-      start_process: 12
-      num_processes: 4
-      total_processes: 36
-  'pillow7':
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 8
-    kafka-ucr-static-forms:
-      start_process: 12
-      num_processes: 4
-      total_processes: 16
