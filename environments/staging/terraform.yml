@@ -77,7 +77,7 @@ servers:
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
-    group: "elasticsearch:bionic"
+    group: "os:bionic"
   - server_name: "pillow1-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
