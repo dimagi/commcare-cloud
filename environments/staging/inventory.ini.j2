@@ -134,6 +134,10 @@ airflow1
 # Amazon EC2
 {{ control-staging }} hostname=control-staging ec2=yes
 
+[control0]
+# Amazon EC2
+{{ control0-staging }} hostname=control0-staging ec2=yes
+
 [ansible_skip:children]
 rds_pg0
 rds_pg0_replica
