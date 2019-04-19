@@ -301,8 +301,13 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
         unknown_args += ('--tags=services',)
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
         if ask("Would you like to update supervisor to use the new configurations?"):
-            exec_fab_command(args.env_name, 'supervisorctl:"reread"')
-            exec_fab_command(args.env_name, 'supervisorctl:"update"')
+            carryover_args = []
+            if args.limit:
+                carryover_args.extend(['--limit', args.limit])
+            commcare_cloud(
+                args.env_name, 'run-shell-command', 'webworkers:celery:pillowtop:formplayer',
+                'supervisorctl reread; supervisorctl update', '-b', *carryover_args
+            )
         else:
             return rc
 
