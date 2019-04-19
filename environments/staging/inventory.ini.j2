@@ -98,8 +98,12 @@ formplayer1
 [redis0]
 {{ redis0-staging }} hostname=redis0-staging ec2=yes
 
+[redis1]
+{{ redis1-staging }} hostname=redis1-staging ec2=yes
+
 [redis:children]
 redis0
+redis1
 
 [es0]
 {{ es0-staging }} elasticsearch_node_name=es0-staging elasticsearch_node_zone=aws hostname=es0-staging ec2=yes elasticsearch_master=true
@@ -107,10 +111,14 @@ redis0
 [es1]
 {{ es1-staging }} elasticsearch_node_name=es1-staging elasticsearch_node_zone=aws hostname=es1-staging ec2=yes elasticsearch_master=true
 
+[es3]
+{{ es3-staging }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws hostname=es3-staging ec2=yes elasticsearch_master=true
+
 [elasticsearch:children]
 # Amazon EC2
 es0
 es1
+es3
 
 [shared_dir_host:children]
 redis0
