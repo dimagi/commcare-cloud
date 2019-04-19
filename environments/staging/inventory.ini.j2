@@ -99,7 +99,7 @@ formplayer1
 {{ redis0-staging }} hostname=redis0-staging ec2=yes
 
 [redis1]
-{{ redis1-staging }} hostname=redis1-staging ec2=yes
+{{ redis1-staging }} hostname=redis1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [redis:children]
 redis0
@@ -112,10 +112,10 @@ redis1
 {{ es1-staging }} elasticsearch_node_name=es1-staging elasticsearch_node_zone=aws hostname=es1-staging ec2=yes elasticsearch_master=true
 
 [es2]
-{{ es2-staging }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws hostname=es2-staging ec2=yes elasticsearch_master=true
+{{ es2-staging }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws hostname=es2-staging ec2=ena ansible_python_interpreter=/usr/bin/python3 elasticsearch_master=true
 
 [es3]
-{{ es3-staging }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws hostname=es3-staging ec2=yes elasticsearch_master=true
+{{ es3-staging }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws hostname=es3-staging ec2=ena ansible_python_interpreter=/usr/bin/python3 elasticsearch_master=true
 
 [elasticsearch:children]
 # Amazon EC2
@@ -141,7 +141,7 @@ airflow1
 
 [control0]
 # Amazon EC2
-{{ control0-staging }} hostname=control0-staging ec2=yes
+{{ control0-staging }} hostname=control0-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [ansible_skip:children]
 rds_pg0
