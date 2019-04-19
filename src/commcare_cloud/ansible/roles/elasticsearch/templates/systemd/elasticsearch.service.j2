@@ -1,0 +1,50 @@
+[Unit]
+Description=Elasticsearch {{ elasticsearch_version }}
+Documentation=http://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Environment=ES_HOME={{ elasticsearch_home }}
+Environment=CONF_DIR={{ elasticsearch_conf_dir}}
+Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
+Environment=ES_HEAP_SIZE={{ elasticsearch_memory }}
+
+WorkingDirectory=/opt/elasticsearch-1.7.6
+
+User=elasticsearch
+Group=elasticsearch
+
+ExecStart={{ elasticsearch_home }}/bin/elasticsearch \
+                                              --path.conf=${CONF_DIR} \
+                                              --path.home=${ES_HOME}
+#
+# StandardOutput is configured to redirect to journalctl since
+# some error messages may be logged in standard output before
+# elasticsearch logging system is initialized. Elasticsearch
+# stores its logs in /var/log/elasticsearch and does not use
+# journalctl by default. If you also want to enable journalctl
+# logging, you can simply remove the "quiet" option from ExecStart.
+#StandardOutput=journal
+StandardError=inherit
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=32000
+
+# Disable timeout logic and wait until process is stopped
+TimeoutStopSec=0
+
+# SIGTERM signal is used to stop the Java process
+KillSignal=SIGTERM
+
+# Send the signal only to the JVM rather than its control group
+KillMode=process
+
+# Java process is never killed
+SendSIGKILL=no
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
