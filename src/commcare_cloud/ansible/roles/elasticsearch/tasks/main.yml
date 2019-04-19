@@ -60,6 +60,25 @@
   register: copy_elasticsearch_upstart_result
   tags:
     - es_conf
+  when: ansible_distribution_version == '14.04'
+
+- name: Copy Elasticsearch Systemd Conf
+  become: yes
+  template:
+    src: systemd/elasticsearch.service.j2
+    dest: /etc/systemd/system/elasticsearch.service
+  register: copy_elasticsearch_systemd_result
+  tags:
+    - es_conf
+  when: ansible_distribution_version == '18.04'
+
+- name: Reload Systemd Daemon if Elasticsearch config changed and Restart ElasticSearch.
+  become: yes
+  systemd:
+    state: restarted
+    daemon-reload: yes
+    name: elasticsearch
+  when: copy_elasticsearch_systemd_result.changed
 
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
@@ -100,6 +119,7 @@
 - name: Reload upstart
   become: yes
   shell: initctl reload-configuration
+  when: ansible_distribution_version == '14.04'
 
 - name: Start Elasticsearch
   become: yes
