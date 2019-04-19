@@ -110,6 +110,8 @@ celery_processes:
       num_workers: 2
     export_download_queue:
       concurrency: 5
+    ucr_queue:
+      concurrency: 4
 
 
 pillows:
