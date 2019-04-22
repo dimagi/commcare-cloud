@@ -308,10 +308,6 @@ rds_instances:
     instance_type: "db.t2.xlarge"
     storage: 500
     multi_az: true
-    params:
-      pg_stat_statements.track: all
-      pg_stat_statements.max: 10000
-      track_activity_query_size: 2048
 
   - identifier: "pgucr0-production"  # replaces old hqdb3
     instance_type: "db.t2.xlarge"

@@ -77,6 +77,22 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     port = 5432
     params = jsonobject.DictProperty()
 
+    _default_params = {
+        'pg_stat_statements.track': 'all',
+        'pg_stat_statements.max': 10000,
+        'track_activity_query_size': 2048,
+    }
+
+    @classmethod
+    def wrap(cls, data):
+        if 'params' not in data:
+            data['params'] = {}
+        params = data['params']
+        for name, value in cls._default_params.items():
+            if name not in params:
+                params[name] = value
+        return super(RdsInstanceConfig, cls).wrap(data)
+
 
 class RedisConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
