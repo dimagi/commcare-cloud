@@ -1,5 +1,6 @@
 import getpass
 import os
+import re
 import sys
 from collections import Counter
 from contextlib import contextmanager
@@ -71,7 +72,7 @@ class Environment(object):
             known_hosts_contents = f.read()
         missing_hosts = {
             (sshable, hostname) for sshable, hostname in expected_hosts
-            if sshable not in known_hosts_contents
+            if not re.search(r'\b{}\b'.format(sshable), known_hosts_contents)
         }
         if missing_hosts:
             raise EnvironmentException(
