@@ -11,12 +11,13 @@ local   all             all                                     md5
 {% set user = postgres_users[user_key] %}
 host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.username }}    {{ cluster_ip_range }}    md5
 {% endfor %}
- {% endif %}
+{% endif %}
 {% endfor %}
 {%  else %}
 {% set host_list = groups['formplayer'] + groups.get('touchforms', []) + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups.get('pg_standby',[]) + groups.get('airflow', []) %}
 {% if run_websockets_wsgi %}
 {% set host_list = host_list + groups['proxy'] %}
+{% endif %}
 {% for host in host_list | unique %}
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
@@ -30,8 +31,11 @@ host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/3
 {% endif %}
 {% endfor %}
 {% endfor %}
+{% endif %}
 
-{% for host in (groups.get('citusdb_worker', []) + groups.get('citusdb_cordinator', []) ) | unique %}
+{% set citus_host_list = groups.get('citusdb_worker', []) + groups.get('citusdb_cordinator', []) | unique %}
+{% if inventory_hostname in citus_host_list %}
+{% for host in citus_host_list %}
 # Allow Trus Access from Citus DB
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
@@ -45,5 +49,4 @@ host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/3
 {% endif %}
 {% endfor %}
 {% endfor %}
-
 {% endif %}
