@@ -122,9 +122,9 @@ redis1
 # Amazon EC2
 airflow1
 
-[control0]
+[control]
 # Amazon EC2
-{{ control0-staging }} hostname=control0-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ control-staging }} hostname=control-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
 [ansible_skip:children]
 rds_pg0
