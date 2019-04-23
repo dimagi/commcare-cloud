@@ -4,3 +4,4 @@ ignored_monitors:
   - 8265469  # Support Alert: Postgres is down! Environment: {{host.environment}}
   - 8131184  # Support Alert: RabbitMQ is down! Environment: {{host.environment}}
   - 6904929  # Support Alert: Tasks backed up on saved_exports_queue on {{environment.name}}
+  - 9607745  # Support Alert: ES Cluster Node Connection Alert
