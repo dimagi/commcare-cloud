@@ -177,6 +177,15 @@ class AwsFillInventory(CommandBase):
                     ' ansible_python_interpreter=/usr/bin/python3' if is_bionic else ''
                 ])
 
+        for rds_instance in environment.terraform_config.rds_instances:
+            address = resources[rds_instance.identifier]
+            host_name = rds_instance.identifier.split('-', 1)[0]
+            if '{}-{}'.format(host_name, env_suffix) == rds_instance.identifier:
+                context['__rds_{}__'.format(host_name)] = ''.join([
+                    '[rds_{}]\n'.format(host_name),
+                    address,
+                ])
+
         out_string = jinja2.Template(out_string, keep_trailing_newline=True).render(context)
 
         with open(environment.paths.inventory_ini, 'w') as f:

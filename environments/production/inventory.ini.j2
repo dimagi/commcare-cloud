@@ -34,29 +34,21 @@ mobile_webworkers
 
 {{ __pgbouncer0__ }}
 
-[rds_pgmain0]
-{{ pgmain0-production }}
+{{ __rds_pgmain0__ }}
 
-[rds_pgucr0]
-{{ pgucr0-production }}
+{{ __rds_pgucr0__ }}
 
-[rds_pgshard1]
-{{ pgshard1-production }}
+{{ __rds_pgshard1__ }}
 
-[rds_pgshard2]
-{{ pgshard2-production }}
+{{ __rds_pgshard2__ }}
 
-[rds_pgshard3]
-{{ pgshard3-production }}
+{{ __rds_pgshard3__ }}
 
-[rds_pgshard4]
-{{ pgshard4-production }}
+{{ __rds_pgshard4__ }}
 
-[rds_pgshard5]
-{{ pgshard5-production }}
+{{ __rds_pgshard5__ }}
 
-[rds_pgsynclog0]
-{{ pgsynclog0-production }}
+{{ __rds_pgsynclog0__ }}
 
 [remote_postgresql:children]
 rds_pgmain0
