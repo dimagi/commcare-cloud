@@ -163,14 +163,18 @@ class AwsFillInventory(CommandBase):
             out_string = out_string.replace('{{ ' + name + ' }}', address)
 
         context = {}
-        for server_name, address in resources.items():
-            host_name = server_name.split('-', 1)[0]
-            if '{}-{}'.format(host_name, env_suffix) == server_name:
+        servers = environment.terraform_config.servers + environment.terraform_config.proxy_servers
+        for server in servers:
+            address = resources[server.server_name]
+            host_name = server.server_name.split('-', 1)[0]
+            is_bionic = server.os == 'bionic'
+            if '{}-{}'.format(host_name, env_suffix) == server.server_name:
                 context['__{}__'.format(host_name)] = ''.join([
                     '[{}]\n'.format(host_name),
                     address,
-                    ' hostname={}'.format(server_name),
-                    ' ec2=yes',
+                    ' hostname={}'.format(server.server_name),
+                    ' ec2={}'.format('ena' if is_bionic else 'yes'),
+                    ' ansible_python_interpreter=/usr/bin/python3' if is_bionic else ''
                 ])
 
         out_string = jinja2.Template(out_string, keep_trailing_newline=True).render(context)
