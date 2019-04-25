@@ -165,6 +165,8 @@ class AwsFillInventory(CommandBase):
         context = {}
         servers = environment.terraform_config.servers + environment.terraform_config.proxy_servers
         for server in servers:
+            if server.server_name not in resources:
+                continue
             address = resources[server.server_name]
             host_name = server.server_name.split('-', 1)[0]
             is_bionic = server.os == 'bionic'
@@ -178,6 +180,8 @@ class AwsFillInventory(CommandBase):
                 ])
 
         for rds_instance in environment.terraform_config.rds_instances:
+            if rds_instance.identifier not in resources:
+                continue
             address = resources[rds_instance.identifier]
             host_name = rds_instance.identifier.split('-', 1)[0]
             if '{}-{}'.format(host_name, env_suffix) == rds_instance.identifier:
