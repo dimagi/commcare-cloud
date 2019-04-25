@@ -9,9 +9,12 @@ import textwrap
 from datetime import datetime
 
 import boto3
+import jinja2
 import six
 import yaml
 from clint.textui import puts, colored
+from jinja2 import nodes
+from jinja2.ext import Extension
 from memoized import memoized
 from six.moves import shlex_quote
 from six.moves import configparser
@@ -158,6 +161,19 @@ class AwsFillInventory(CommandBase):
         out_string = inventory_ini_j2
         for name, address in resources.items():
             out_string = out_string.replace('{{ ' + name + ' }}', address)
+
+        context = {}
+        for server_name, address in resources.items():
+            host_name = server_name.split('-', 1)[0]
+            if '{}-{}'.format(host_name, env_suffix) == server_name:
+                context['__{}__'.format(host_name)] = ''.join([
+                    '[{}]\n'.format(host_name),
+                    address,
+                    ' hostname={}'.format(server_name),
+                    ' ec2=yes',
+                ])
+
+        out_string = jinja2.Template(out_string, keep_trailing_newline=True).render(context)
 
         with open(environment.paths.inventory_ini, 'w') as f:
             f.write(out_string)

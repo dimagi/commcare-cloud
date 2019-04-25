@@ -1,26 +1,19 @@
-[proxy0]
-{{ proxy0-production }} hostname=proxy0-production public_ip={{ proxy0-production.public_ip }} ec2=yes
+{{ __proxy0__ }} public_ip={{ proxy0-production.public_ip }}
 
 [proxy:children]
 proxy0
 
-[web0]
-{{ web0-production }} hostname=web0-production ec2=yes
+{{ __web0__ }}
 
-[web1]
-{{ web1-production }} hostname=web1-production ec2=yes datadog_integration_tcp_check=yes
+{{ __web1__ }} datadog_integration_tcp_check=yes
 
-[web6]
-{{ web6-production }} hostname=web6-production ec2=yes
+{{ __web6__ }}
 
-[web7]
-{{ web7-production }} hostname=web7-production ec2=yes datadog_integration_tcp_check=yes
+{{ __web7__ }} datadog_integration_tcp_check=yes
 
-[web8]
-{{ web8-production }} hostname=web8-production ec2=yes
+{{ __web8__ }}
 
-[web9]
-{{ web9-production }} hostname=web9-production ec2=yes
+{{ __web9__ }}
 
 
 [hq_webworkers:children]
@@ -37,11 +30,9 @@ web9
 hq_webworkers
 mobile_webworkers
 
-[pgproxy1]
-{{ pgproxy1-production }} hostname=pgproxy1-production ec2=yes
+{{ __pgproxy1__ }}
 
-[pgbouncer0]
-{{ pgbouncer0-production }} hostname=pgbouncer0-production ec2=yes
+{{ __pgbouncer0__ }}
 
 [rds_pgmain0]
 {{ pgmain0-production }}
@@ -85,8 +76,7 @@ remote_postgresql
 [ansible_skip:children]
 remote_postgresql
 
-[rabbit0]
-{{ rabbit0-production }} hostname=rabbit0-production ec2=yes
+{{ __rabbit0__ }}
 
 [rabbitmq:children]
 rabbit0
@@ -94,8 +84,7 @@ rabbit0
 [rabbitmq:vars]
 swap_size=2G
 
-[kafka0]
-{{ kafka0-production }} hostname=kafka0-production ec2=yes kafka_broker_id=1
+{{ __kafka0__ }} kafka_broker_id=1
 
 [zookeeper:children]
 kafka0
@@ -103,23 +92,17 @@ kafka0
 [kafka:children]
 kafka0
 
-[celery0]
-{{ celery0-production }} hostname=celery0-production ec2=yes
+{{ __celery0__ }}
 
-[celery1]
-{{ celery1-production }} hostname=celery1-production ec2=yes
+{{ __celery1__ }}
 
-[celery2]
-{{ celery2-production }} hostname=celery2-production ec2=yes
+{{ __celery2__ }}
 
-[celery3]
-{{ celery3-production }} hostname=celery3-production ec2=yes
+{{ __celery3__ }}
 
-[celery4]
-{{ celery4-production }} hostname=celery4-production ec2=yes
+{{ __celery4__ }}
 
-[celery5]
-{{ celery5-production }} hostname=celery5-production ec2=yes
+{{ __celery5__ }}
 
 [celery6]
 {{ celery6-production }} hostname=celery6-production ec2=ena ansible_python_interpreter=/usr/bin/python3
@@ -137,57 +120,44 @@ celery6
 [celery:vars]
 swap_size=8G
 
-[pillow0]
-{{ pillow0-production }} hostname=pillow0-production ec2=yes
+{{ __pillow0__ }}
 
 [pillowtop:children]
 pillow0
 
-[formplayer0]
-{{ formplayer0-production }} hostname=formplayer0-production ec2=yes
+{{ __formplayer0__ }}
 
-[formplayer1]
-{{ formplayer1-production }} hostname=formplayer1-production ec2=yes
+{{ __formplayer1__ }}
 
 [formplayer:children]
 formplayer0
 formplayer1
 
-[redis1]
-{{ redis1-production }} hostname=redis1-production ec2=yes
+{{ __redis1__ }}
 
 [redis:children]
 redis1
 
-[shareddir0]
-{{ shareddir0-production }} hostname=shareddir0-production ec2=yes
+{{ __shareddir0__ }}
 
 [shared_dir_host:children]
 shareddir0
 
-[es10]
-{{ es10-production }} hostname=es10-production elasticsearch_node_name=es10 ec2=yes
+{{ __es10__ }} elasticsearch_node_name=es10
 
-[es11]
-{{ es11-production }} hostname=es11-production elasticsearch_node_name=es11 ec2=yes
+{{ __es11__ }} elasticsearch_node_name=es11
 
-[es12]
-{{ es12-production }} hostname=es12-production elasticsearch_node_name=es12 ec2=yes
+{{ __es12__ }} elasticsearch_node_name=es12
 
-[es13]
-{{ es13-production }} hostname=es13-production elasticsearch_node_name=es13 ec2=yes
+{{ __es13__ }} elasticsearch_node_name=es13
 
-[es14]
-{{ es14-production }} hostname=es14-production elasticsearch_node_name=es14 ec2=yes
+{{ __es14__ }} elasticsearch_node_name=es14
 
-[esmaster0]
-{{ esmaster0-production }} hostname=esmaster0-production elasticsearch_node_name=esmaster0 ec2=yes
+{{ __esmaster0__ }} elasticsearch_node_name=esmaster0
 
-[esmaster1]
-{{ esmaster1-production }} hostname=esmaster1-production elasticsearch_node_name=esmaster1 ec2=yes
+{{ __esmaster1__ }} elasticsearch_node_name=esmaster1
 
-[esmaster2]
-{{ esmaster2-production }} hostname=esmaster2-production elasticsearch_node_name=esmaster2 ec2=yes
+{{ __esmaster2__ }} elasticsearch_node_name=esmaster2
 
 [es_master:children]
 esmaster0
@@ -212,18 +182,12 @@ elasticsearch_node_zone=aws
 es_master
 es_data
 
-[couch3]
-{{ couch3-production }} hostname=couch3-production ec2=yes
-[couch4]
-{{ couch4-production }} hostname=couch4-production ec2=yes
-[couch5]
-{{ couch5-production }} hostname=couch5-production ec2=yes
-[couch7]
-{{ couch7-production }} hostname=couch7-production ec2=yes
-[couch8]
-{{ couch8-production }} hostname=couch8-production ec2=yes
-[couch9]
-{{ couch9-production }} hostname=couch9-production ec2=yes
+{{ __couch3__ }}
+{{ __couch4__ }}
+{{ __couch5__ }}
+{{ __couch7__ }}
+{{ __couch8__ }}
+{{ __couch9__ }}
 
 [couchdb2:children]
 couch3
@@ -237,17 +201,14 @@ couch9
 swap_size=8G
 datavol_device=/dev/nvme1n
 
-[couchproxy0]
-{{ couchproxy0-production }} hostname=couchproxy0-production ec2=yes
+{{ __couchproxy0__ }}
 
 [couchdb2_proxy:children]
 couchproxy0
 
-[control]
-{{ control-production }} hostname=control-production ec2=yes
+{{ __control__ }}
 
-[djangomanage0]
-{{ djangomanage0-production }} hostname=djangomanage0-production ec2=yes
+{{ __djangomanage0__ }}
 
 [django_manage:children]
 djangomanage0
