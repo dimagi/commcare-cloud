@@ -143,8 +143,21 @@ class AwsFillInventory(CommandBase):
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
+        out_string = AwsFillInventoryHelper(environment, inventory_ini_j2, resources).render()
+
+        with open(environment.paths.inventory_ini, 'w') as f:
+            f.write(out_string)
+
+
+class AwsFillInventoryHelper(object):
+    def __init__(self, environment, inventory_ini_j2, resources):
+        self.environment = environment
+        self.inventory_ini_j2 = inventory_ini_j2
+        self.resources = resources
+
+    def render(self):
         context = {}
-        env_suffix = environment.terraform_config.environment
+        env_suffix = self.environment.terraform_config.environment
         vpn_name = 'vpn-{}'.format(env_suffix)
         openvpn_ini_j2 = textwrap.dedent("""
         [openvpn]
@@ -155,15 +168,16 @@ class AwsFillInventory(CommandBase):
         hostname=%(vpn_name)s
         """ % {'vpn_name': vpn_name})
 
-        if vpn_name in resources:
-            inventory_ini_j2 += openvpn_ini_j2
-            context["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
+        template = self.inventory_ini_j2
+        if vpn_name in self.resources:
+            template += openvpn_ini_j2
+            context["vpn_subdomain_name"] = "vpn.{}".format(self.environment.proxy_config.SITE_HOST)
 
-        servers = environment.terraform_config.servers + environment.terraform_config.proxy_servers
+        servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
-            if server.server_name not in resources:
+            if server.server_name not in self.resources:
                 continue
-            address = resources[server.server_name]
+            address = self.resources[server.server_name]
             host_name = server.server_name.split('-', 1)[0]
             is_bionic = server.os == 'bionic'
             if '{}-{}'.format(host_name, env_suffix) == server.server_name:
@@ -175,10 +189,10 @@ class AwsFillInventory(CommandBase):
                     ' ansible_python_interpreter=/usr/bin/python3' if is_bionic else ''
                 ])
 
-        for rds_instance in environment.terraform_config.rds_instances:
-            if rds_instance.identifier not in resources:
+        for rds_instance in self.environment.terraform_config.rds_instances:
+            if rds_instance.identifier not in self.resources:
                 continue
-            address = resources[rds_instance.identifier]
+            address = self.resources[rds_instance.identifier]
             host_name = rds_instance.identifier.split('-', 1)[0]
             if '{}-{}'.format(host_name, env_suffix) == rds_instance.identifier:
                 context['__rds_{}__'.format(host_name)] = ''.join([
@@ -186,13 +200,10 @@ class AwsFillInventory(CommandBase):
                     address,
                 ])
         context.update({
-            'aws_resources': resources
+            'aws_resources': self.resources
         })
 
-        out_string = jinja2.Template(inventory_ini_j2, keep_trailing_newline=True).render(context)
-
-        with open(environment.paths.inventory_ini, 'w') as f:
-            f.write(out_string)
+        return jinja2.Template(template, keep_trailing_newline=True).render(context)
 
 
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
