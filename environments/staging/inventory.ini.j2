@@ -3,7 +3,7 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy1__ }} public_ip={{ proxy1-staging.public_ip }}
+{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
 
 [proxy:children]
 # Amazon EC2
@@ -20,13 +20,12 @@ web3
 
 {{ __pgproxy1__ }}
 
-[rds_pg0]
-# RDS
-{{ pg0-staging }}
+{{ __rds_pg0__ }}
 
+# this is non-standard naming
+# todo: fix and then enforce naming convention
 [rds_pg0_replica]
-# RDS
-{{ pg0-staging-replica }}
+{{ aws_resources['pg0-staging-replica'] }}
 
 [remote_postgresql:children]
 rds_pg0
