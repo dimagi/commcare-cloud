@@ -143,11 +143,12 @@ class AwsFillInventory(CommandBase):
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
+        context = {}
         env_suffix = environment.terraform_config.environment
         vpn_name = 'vpn-{}'.format(env_suffix)
         openvpn_ini_j2 = textwrap.dedent("""
         [openvpn]
-        {{ %(vpn_name)s }}  # ansible_host={{ %(vpn_name)s.public_ip }}
+        {{ aws_resources['%(vpn_name)s'] }}  # ansible_host={{ aws_resources['%(vpn_name)s.public_ip'] }}
 
         [openvpn:vars]
         subdomain_name={{ vpn_subdomain_name }}
@@ -156,13 +157,8 @@ class AwsFillInventory(CommandBase):
 
         if vpn_name in resources:
             inventory_ini_j2 += openvpn_ini_j2
-            resources["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
+            context["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
 
-        out_string = inventory_ini_j2
-        for name, address in resources.items():
-            out_string = out_string.replace('{{ ' + name + ' }}', address)
-
-        context = {}
         servers = environment.terraform_config.servers + environment.terraform_config.proxy_servers
         for server in servers:
             if server.server_name not in resources:
@@ -189,8 +185,11 @@ class AwsFillInventory(CommandBase):
                     '[rds_{}]\n'.format(host_name),
                     address,
                 ])
+        context.update({
+            'aws_resources': resources
+        })
 
-        out_string = jinja2.Template(out_string, keep_trailing_newline=True).render(context)
+        out_string = jinja2.Template(inventory_ini_j2, keep_trailing_newline=True).render(context)
 
         with open(environment.paths.inventory_ini, 'w') as f:
             f.write(out_string)
