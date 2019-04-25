@@ -157,20 +157,10 @@ class AwsFillInventoryHelper(object):
 
     def render(self):
         context = {}
-        env_suffix = self.environment.terraform_config.environment
-        vpn_name = 'vpn-{}'.format(env_suffix)
-        openvpn_ini_j2 = textwrap.dedent("""
-        [openvpn]
-        {{ aws_resources['%(vpn_name)s'] }}  # ansible_host={{ aws_resources['%(vpn_name)s.public_ip'] }}
-
-        [openvpn:vars]
-        subdomain_name={{ vpn_subdomain_name }}
-        hostname=%(vpn_name)s
-        """ % {'vpn_name': vpn_name})
 
         template = self.inventory_ini_j2
-        if vpn_name in self.resources:
-            template += openvpn_ini_j2
+        if self.vpn_name in self.resources:
+            template += self.openvpn_ini_j2
             context["vpn_subdomain_name"] = "vpn.{}".format(self.environment.proxy_config.SITE_HOST)
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
@@ -180,7 +170,7 @@ class AwsFillInventoryHelper(object):
             address = self.resources[server.server_name]
             host_name = server.server_name.split('-', 1)[0]
             is_bionic = server.os == 'bionic'
-            if '{}-{}'.format(host_name, env_suffix) == server.server_name:
+            if '{}-{}'.format(host_name, self.env_suffix) == server.server_name:
                 context['__{}__'.format(host_name)] = ''.join([
                     '[{}]\n'.format(host_name),
                     address,
@@ -194,7 +184,7 @@ class AwsFillInventoryHelper(object):
                 continue
             address = self.resources[rds_instance.identifier]
             host_name = rds_instance.identifier.split('-', 1)[0]
-            if '{}-{}'.format(host_name, env_suffix) == rds_instance.identifier:
+            if '{}-{}'.format(host_name, self.env_suffix) == rds_instance.identifier:
                 context['__rds_{}__'.format(host_name)] = ''.join([
                     '[rds_{}]\n'.format(host_name),
                     address,
@@ -204,6 +194,27 @@ class AwsFillInventoryHelper(object):
         })
 
         return jinja2.Template(template, keep_trailing_newline=True).render(context)
+
+    @property
+    def env_suffix(self):
+        return self.environment.terraform_config.environment
+
+    @property
+    def vpn_name(self):
+        return 'vpn-{}'.format(self.env_suffix)
+
+    @property
+    def openvpn_ini_j2(self):
+        return textwrap.dedent("""
+        [openvpn]
+        {{ aws_resources['%(vpn_name)s'] }}  # ansible_host={{ aws_resources['%(vpn_name)s.public_ip'] }}
+
+        [openvpn:vars]
+        subdomain_name={{ vpn_subdomain_name }}
+        hostname=%(vpn_name)s
+        """ % {'vpn_name': self.vpn_name})
+
+
 
 
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
