@@ -10,6 +10,7 @@ REPORTING_DATABASES:
       - [icds-ucr-standby1, 10]
       - [icds-ucr-standby2, 10]
       - [icds-ucr-standby3, 10]
+      - [icds-ucr-standby5, 10]
   icds-test-ucr: icds-ucr
 
 LOAD_BALANCED_APPS:
