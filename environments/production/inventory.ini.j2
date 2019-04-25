@@ -1,4 +1,4 @@
-{{ __proxy0__ }} public_ip={{ proxy0-production.public_ip }}
+{{ __proxy0__ }} public_ip={{ aws_resources['proxy0-production.public_ip'] }}
 
 [proxy:children]
 proxy0
