@@ -165,30 +165,20 @@ class AwsFillInventoryHelper(object):
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
-            if server.server_name not in self.resources:
-                continue
-            address = self.resources[server.server_name]
-            host_name = server.server_name.split('-', 1)[0]
             is_bionic = server.os == 'bionic'
-            if '{}-{}'.format(host_name, self.env_suffix) == server.server_name:
-                context['__{}__'.format(host_name)] = ''.join([
-                    '[{}]\n'.format(host_name),
-                    address,
-                    ' hostname={}'.format(server.server_name),
-                    ' ec2={}'.format('ena' if is_bionic else 'yes'),
-                    ' ansible_python_interpreter=/usr/bin/python3' if is_bionic else ''
-                ])
+            context.update(
+                self.get_host_group_definition(resource_name=server.server_name, vars=(
+                    ('hostname', server.server_name),
+                    ('ec2', ('ena' if is_bionic else 'yes')),
+                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+                ))
+            )
 
         for rds_instance in self.environment.terraform_config.rds_instances:
-            if rds_instance.identifier not in self.resources:
-                continue
-            address = self.resources[rds_instance.identifier]
-            host_name = rds_instance.identifier.split('-', 1)[0]
-            if '{}-{}'.format(host_name, self.env_suffix) == rds_instance.identifier:
-                context['__rds_{}__'.format(host_name)] = ''.join([
-                    '[rds_{}]\n'.format(host_name),
-                    address,
-                ])
+            context.update(
+                self.get_host_group_definition(resource_name=rds_instance.identifier, prefix='rds_')
+            )
+
         context.update({
             'aws_resources': self.resources
         })
@@ -214,7 +204,17 @@ class AwsFillInventoryHelper(object):
         hostname=%(vpn_name)s
         """ % {'vpn_name': self.vpn_name})
 
-
+    def get_host_group_definition(self, resource_name, vars=(), prefix=''):
+        context = {}
+        host_name = resource_name.split('-', 1)[0]
+        name_matches = '{}-{}'.format(host_name, self.env_suffix) == resource_name
+        if resource_name in self.resources and name_matches:
+            group_name = '{}{}'.format(prefix, host_name)
+            context['__{}__'.format(group_name)] = ''.join([
+                '[{}]\n'.format(group_name),
+                self.resources[resource_name],
+            ]) + ''.join([' {}={}'.format(key, value) for key, value in vars if value])
+        return context
 
 
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
