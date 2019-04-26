@@ -10,16 +10,16 @@
 # Amazon EC2
 proxy1
 
-[web2]
-{{ web2-staging }} swap_size=1G hostname=web2-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
-
 [web3]
 {{ web3-staging }} swap_size=1G hostname=web3-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
 
+[web4]
+{{ web4-staging }} swap_size=1G hostname=web4-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+
 [webworkers:children]
 # Amazon EC2
-web2
 web3
+web4
 
 [pgproxy1]
 {{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
@@ -132,7 +132,6 @@ rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
-web2
 web3
 
 [hwarehouse0]
