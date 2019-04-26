@@ -156,12 +156,21 @@ class AwsFillInventoryHelper(object):
         self.resources = resources
 
     def render(self):
-        context = {}
+        return jinja2.Template(self.template, keep_trailing_newline=True).render(self.context)
 
+    @property
+    def template(self):
         template = self.inventory_ini_j2
         if self.vpn_name in self.resources:
             template += self.openvpn_ini_j2
-            context["vpn_subdomain_name"] = "vpn.{}".format(self.environment.proxy_config.SITE_HOST)
+        return template
+
+    @property
+    def context(self):
+        context = {
+            'aws_resources': self.resources,
+            'vpn_subdomain_name': "vpn.{}".format(self.environment.proxy_config.SITE_HOST)
+        }
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
@@ -178,12 +187,7 @@ class AwsFillInventoryHelper(object):
             context.update(
                 self.get_host_group_definition(resource_name=rds_instance.identifier, prefix='rds_')
             )
-
-        context.update({
-            'aws_resources': self.resources
-        })
-
-        return jinja2.Template(template, keep_trailing_newline=True).render(context)
+        return context
 
     @property
     def env_suffix(self):
