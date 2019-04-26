@@ -121,7 +121,7 @@ if ! grep -q init-ansible ~/.profile 2>/dev/null; then
         ;;
         * )
             printf "\n${BLUE}You can always set it up later by running this command:\n"
-            printf "${BLUE}'[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
+            printf "${BLUE}echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
 fi
