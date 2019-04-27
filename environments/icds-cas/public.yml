@@ -100,6 +100,14 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_files"
+  - name: /hindi_english_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_hindi_english_files"
+  - name: /mizo_english_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_mizo_english_files"
   - name: /marathi_files 
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
