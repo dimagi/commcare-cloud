@@ -54,7 +54,7 @@ class ServerConfig(jsonobject.JsonObject):
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     # todo: invert this so that all new machines are bionic unless otherwise specified
-    os = jsonobject.StringProperty(default='trusty')
+    os = jsonobject.StringProperty(required=True)
 
 
 class BlockDevice(jsonobject.JsonObject):
