@@ -168,6 +168,13 @@ servers:
     az: "a"
     volume_size: 80
     group: "rabbitmq"
+  - server_name: "rabbit1-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "rabbitmq"
+    os: bionic
 
   - server_name: "kafka0-staging"
     server_instance_type: t3.medium
