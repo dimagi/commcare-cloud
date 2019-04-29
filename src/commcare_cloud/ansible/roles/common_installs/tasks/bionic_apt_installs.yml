@@ -6,3 +6,4 @@
     - npm
     - python-minimal
     - python3-pip
+    - ufw
