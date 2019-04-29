@@ -5,6 +5,12 @@ nginx_sites:
       - name: "{{ deploy_env }}_riakcs_{{ riakcs_proxy_port }}"
         hosts: "{{ hosts_group }}"
         port: "{{ riakcs_port }}"
+    proxy_cache_path:
+      - name: "file_cache"
+        path: "{{ www_home }}/riakcs_cache"
+        max_size: "30g"  # 2 days of forms @ 1.3MM per day (11K per form)
+        key_zone_size: "160m"  # assume key size is 60 bytes
+        inactive_time: "24h"
     file_name: "{{ deploy_env }}_riakcs_{{ riakcs_proxy_port }}"
     listen: "{{ riakcs_proxy_port }}"
     # boto3 python library switches to multipart uploads for blobs > 8M

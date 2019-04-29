@@ -30,7 +30,7 @@ limit_req_zone {{ zone.get('zone', '$binary_remote_addr') }} zone={{ zone.name }
 {% endfor %}
 
 {% for cache in item.server.get('proxy_cache_path', []) %}
-proxy_cache_path {{ cache.path }} levels=1:2 keys_zone={{ cache.name }}:10m
+proxy_cache_path {{ cache.path }} levels=1:2 keys_zone={{ cache.name }}:{{ cache.key_zone_size|default('10m') }}
                  max_size={{ cache.max_size}} inactive={{ cache.inactive_time }} use_temp_path=off;
 {% endfor %}
 
