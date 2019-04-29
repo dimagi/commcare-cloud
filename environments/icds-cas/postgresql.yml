@@ -5,7 +5,6 @@ REPORTING_DATABASES:
   icds-ucr:
     WRITE: icds-ucr
     READ:
-      - [icds-ucr, 1]
       - [icds-ucr-standby0, 10]
       - [icds-ucr-standby1, 10]
       - [icds-ucr-standby2, 10]
