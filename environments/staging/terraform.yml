@@ -34,6 +34,7 @@ servers:
     az: "a"
     volume_size: 50
     group: "control"
+    os: trusty
   - server_name: "control0-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
@@ -47,12 +48,14 @@ servers:
     az: "a"
     volume_size: 80
     group: "webworkers"
+    os: trusty
   - server_name: "web1-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
     group: "webworkers"
+    os: trusty
 
   - server_name: "web3-staging"
     server_instance_type: "t3.medium"
@@ -74,12 +77,14 @@ servers:
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
+    os: trusty
   - server_name: "es1-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "elasticsearch"
+    os: trusty
   - server_name: "es2-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
@@ -107,6 +112,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "celery"
+    os: trusty
   - server_name: "celery1-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -120,6 +126,7 @@ servers:
     az: "a"
     volume_size: 40
     group: "airflow"
+    os: trusty
 
   - server_name: "airflow1-staging"
     server_instance_type: "t3.small"
@@ -135,6 +142,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "formplayer"
+    os: trusty
 
   - server_name: "formplayer1-staging"
     server_instance_type: "t3.large"
@@ -150,24 +158,28 @@ servers:
     az: "a"
     volume_size: 400
     group: "couchdb2"
+    os: trusty
   - server_name: "couch1-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
     volume_size: 400
     group: "couchdb2"
+    os: trusty
   - server_name: "couch2-staging"
     server_instance_type: "t2.large"
     network_tier: "db-private"
     az: "a"
     volume_size: 400
     group: "couchdb2"
+    os: trusty
   - server_name: "rabbit0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
     group: "rabbitmq"
+    os: trusty
   - server_name: "rabbit1-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -182,6 +194,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "kafka"
+    os: trusty
 
 
   - server_name: "pgproxy1-staging"
@@ -198,7 +211,8 @@ servers:
     az: "a"
     volume_size: 60
     group: "redis"
-    
+    os: trusty
+
   - server_name: "redis1-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
@@ -223,6 +237,7 @@ proxy_servers:
     az: "a"
     volume_size: 80
     group: "proxy"
+    os: trusty
 
 
 rds_instances:
