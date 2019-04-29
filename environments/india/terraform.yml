@@ -29,7 +29,7 @@ external_routes:
 servers: []
 
 proxy_servers:
-  - server_name: "proxy0-india"
+  - server_name: "proxy1-india"
     server_instance_type: "t3.micro"
     network_tier: "public"
     az: "a"
