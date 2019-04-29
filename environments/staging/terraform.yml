@@ -54,13 +54,6 @@ servers:
     volume_size: 80
     group: "webworkers"
 
-  - server_name: "web2-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    group: webworkers
-    os: bionic
   - server_name: "web3-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
@@ -68,7 +61,14 @@ servers:
     volume_size: 80
     group: webworkers
     os: bionic
-    
+  - server_name: "web4-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    group: webworkers
+    os: bionic
+
   - server_name: "es0-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
@@ -168,6 +168,13 @@ servers:
     az: "a"
     volume_size: 80
     group: "rabbitmq"
+  - server_name: "rabbit1-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "rabbitmq"
+    os: bionic
 
   - server_name: "kafka0-staging"
     server_instance_type: t3.medium
