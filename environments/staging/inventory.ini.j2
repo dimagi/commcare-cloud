@@ -9,14 +9,14 @@
 # Amazon EC2
 proxy1
 
-{{ __web2__ }} swap_size=1G
-
 {{ __web3__ }} swap_size=1G
+
+{{ __web4__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web2
 web3
+web4
 
 {{ __pgproxy1__ }}
 
@@ -120,7 +120,6 @@ rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
-web2
 web3
 
 {{ __hwarehouse0__ }}
