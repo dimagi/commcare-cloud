@@ -655,10 +655,6 @@ SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 INACTIVITY_TIMEOUT = {{ localsettings.INACTIVITY_TIMEOUT }}
 {% endif %}
 
-{% if MIA_THE_DEPLOY_BOT_API %}
-MIA_THE_DEPLOY_BOT_API = '{{ MIA_THE_DEPLOY_BOT_API }}'
-{% endif %}
-
 # Set to something like "192.168.1.5:8000" (with your IP address).
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'

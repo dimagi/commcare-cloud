@@ -38,6 +38,8 @@
 - name: register git repo
   stat: path="{{ code_home }}/.git"
   register: gitdir
+  tags:
+    - py3
 
 - block:
     - name: Pull full CommcareHQ source
