@@ -13,8 +13,6 @@ import jinja2
 import six
 import yaml
 from clint.textui import puts, colored
-from jinja2 import nodes
-from jinja2.ext import Extension
 from memoized import memoized
 from six.moves import shlex_quote
 from six.moves import configparser
@@ -143,9 +141,12 @@ class AwsFillInventory(CommandBase):
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
-        out_string = AwsFillInventoryHelper(environment, inventory_ini_j2, resources).render()
-
         with open(environment.paths.inventory_ini, 'w') as f:
+            # by putting this inside the with
+            # we make sure that if the it fails, inventory.ini is made empty
+            # reflecting that we were unable to create it
+            out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
+                                                resources).render()
             f.write(out_string)
 
 
