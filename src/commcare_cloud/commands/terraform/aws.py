@@ -179,7 +179,7 @@ class AwsFillInventoryHelper(object):
             context.update(
                 self.get_host_group_definition(resource_name=server.server_name, vars=(
                     ('hostname', server.server_name),
-                    ('ec2', ('ena' if is_bionic else 'yes')),
+                    ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
                     ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
                 ))
             )

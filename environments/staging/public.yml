@@ -23,8 +23,6 @@ formplayer_archive_time_spec: '10m'
 
 KSPLICE_ACTIVE: yes
 
-ufw_private_interface: "{{ 'ens5' if ec2 == 'ena' else 'eth0' if ec2|default(false) else 'eth1' }}"
-
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy.0 }}"
