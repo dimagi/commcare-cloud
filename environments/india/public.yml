@@ -61,6 +61,11 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
+
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
@@ -75,6 +80,7 @@ localsettings:
 #  COUCH_CACHE_VIEWS:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
