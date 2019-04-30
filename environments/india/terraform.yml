@@ -30,7 +30,7 @@ servers: []
 
 proxy_servers:
   - server_name: "proxy1-india"
-    server_instance_type: "t3.micro"
+    server_instance_type: "t3.small"
     network_tier: "public"
     az: "a"
     volume_size: 80
