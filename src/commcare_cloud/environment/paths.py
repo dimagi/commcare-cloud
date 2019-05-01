@@ -98,6 +98,10 @@ class DefaultPaths(object):
         return self.get_env_file_path('postgresql.yml')
 
     @lazy_immutable_property
+    def elasticsearch_yml(self):
+        return self.get_env_file_path('elasticsearch.yml')
+
+    @lazy_immutable_property
     def proxy_yml(self):
         return self.get_env_file_path('proxy.yml')
 

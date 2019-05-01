@@ -13,13 +13,10 @@ REPORTING_DATABASES:
 LOAD_BALANCED_APPS:
   auth:
     - [default, 1]
-    - [pgmainstandby, 1]
   accounting:
     - [default, 1]
-    - [pgmainstandby, 1]
   locations:
     - [default, 1]
-    - [pgmainstandby, 1]
 
 pgbouncer_override:
   pgbouncer_pool_mode: transaction
@@ -98,9 +95,3 @@ dbs:
 #      create: False
 #      django_migrate: False
 #      hq_acceptable_standby_delay: 1800
-    - django_alias: pgmainstandby
-      name: commcarehq
-      host: pgmainstandby1
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 30

@@ -1,0 +1,15 @@
+# To make this work run
+# cchq india run-shell-command proxy0 'chmod 755 /etc/letsencrypt/archive /etc/letsencrypt/live' -b
+# before copy
+# cchq <env> run-shell-command proxy0 'chmod 700 /etc/letsencrypt/archive /etc/letsencrypt/live' -b
+# after copy
+
+copy_files:
+  - proxy1:
+      - source_host: proxy0
+        source_dir: /etc/letsencrypt/
+        target_dir: /etc/letsencrypt/
+        rsync_args: []
+        files:
+          - live/
+          - archive/

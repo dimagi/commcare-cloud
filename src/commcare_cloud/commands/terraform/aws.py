@@ -9,6 +9,7 @@ import textwrap
 from datetime import datetime
 
 import boto3
+import jinja2
 import six
 import yaml
 from clint.textui import puts, colored
@@ -140,27 +141,85 @@ class AwsFillInventory(CommandBase):
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
-        env_suffix = environment.terraform_config.environment
-        vpn_name = 'vpn-{}'.format(env_suffix)
-        openvpn_ini_j2 = textwrap.dedent("""
+        with open(environment.paths.inventory_ini, 'w') as f:
+            # by putting this inside the with
+            # we make sure that if the it fails, inventory.ini is made empty
+            # reflecting that we were unable to create it
+            out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
+                                                resources).render()
+            f.write(out_string)
+
+
+class AwsFillInventoryHelper(object):
+    def __init__(self, environment, inventory_ini_j2, resources):
+        self.environment = environment
+        self.inventory_ini_j2 = inventory_ini_j2
+        self.resources = resources
+
+    def render(self):
+        return jinja2.Template(self.template, keep_trailing_newline=True).render(self.context)
+
+    @property
+    def template(self):
+        template = self.inventory_ini_j2
+        if self.vpn_name in self.resources:
+            template += self.openvpn_ini_j2
+        return template
+
+    @property
+    def context(self):
+        context = {
+            'aws_resources': self.resources,
+            'vpn_subdomain_name': "vpn.{}".format(self.environment.proxy_config.SITE_HOST)
+        }
+
+        servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
+        for server in servers:
+            is_bionic = server.os == 'bionic'
+            context.update(
+                self.get_host_group_definition(resource_name=server.server_name, vars=(
+                    ('hostname', server.server_name),
+                    ('ec2', ('ena' if is_bionic else 'yes')),
+                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+                ))
+            )
+
+        for rds_instance in self.environment.terraform_config.rds_instances:
+            context.update(
+                self.get_host_group_definition(resource_name=rds_instance.identifier, prefix='rds_')
+            )
+        return context
+
+    @property
+    def env_suffix(self):
+        return self.environment.terraform_config.environment
+
+    @property
+    def vpn_name(self):
+        return 'vpn-{}'.format(self.env_suffix)
+
+    @property
+    def openvpn_ini_j2(self):
+        return textwrap.dedent("""
         [openvpn]
-        {{ %(vpn_name)s }}  # ansible_host={{ %(vpn_name)s.public_ip }}
+        {{ aws_resources['%(vpn_name)s'] }}  # ansible_host={{ aws_resources['%(vpn_name)s.public_ip'] }}
 
         [openvpn:vars]
         subdomain_name={{ vpn_subdomain_name }}
         hostname=%(vpn_name)s
-        """ % {'vpn_name': vpn_name})
+        """ % {'vpn_name': self.vpn_name})
 
-        if vpn_name in resources:
-            inventory_ini_j2 += openvpn_ini_j2
-            resources["vpn_subdomain_name"] = "vpn.{}".format(environment.proxy_config.SITE_HOST)
-
-        out_string = inventory_ini_j2
-        for name, address in resources.items():
-            out_string = out_string.replace('{{ ' + name + ' }}', address)
-
-        with open(environment.paths.inventory_ini, 'w') as f:
-            f.write(out_string)
+    def get_host_group_definition(self, resource_name, vars=(), prefix=''):
+        context = {}
+        host_name = resource_name.split('-', 1)[0]
+        name_matches = '{}-{}'.format(host_name, self.env_suffix) == resource_name
+        if resource_name in self.resources and name_matches:
+            group_name = '{}{}'.format(prefix, host_name)
+            context['__{}__'.format(group_name)] = ''.join([
+                '[{}]\n'.format(group_name),
+                self.resources[resource_name],
+            ]) + ''.join([' {}={}'.format(key, value) for key, value in vars if value])
+        return context
 
 
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30

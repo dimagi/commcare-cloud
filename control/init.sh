@@ -50,7 +50,13 @@ if [ -z ${TRAVIS_TEST} ]; then
     source virtualenvwrapper.sh
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
-        mkvirtualenv ansible
+        mkvirtualenv ansible --python $(which python2)
+    # If we by mistake are using a py3 env (unsupported), then replace with a py2 env
+    elif ~/.virtualenvs/ansible/bin/python -c 'print ""' 2> /dev/null; [ "$?" -ne "0" ]; then
+        echo "Replacing ansible py3 virtualenv with py2 virtualenv..."
+        deactivate 2> /dev/null || :  # deactivate if in a virtualenv, else ignore error
+        rmvirtualenv ansible
+        mkvirtualenv ansible --python $(which python2)
     else
         workon ansible
     fi
@@ -121,7 +127,7 @@ if ! grep -q init-ansible ~/.profile 2>/dev/null; then
         ;;
         * )
             printf "\n${BLUE}You can always set it up later by running this command:\n"
-            printf "${BLUE}'[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
+            printf "${BLUE}echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
 fi
