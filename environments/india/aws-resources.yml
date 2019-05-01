@@ -1,4 +1,8 @@
+control0-india: 10.203.10.246
+djangomanage0-india: 10.203.10.37
 proxy1-india: 10.203.20.59
 proxy1-india.public_ip: 13.234.163.136
 vpn-india: 10.203.20.132
 vpn-india.public_ip: 13.127.238.159
+web0-india: 10.203.10.48
+web1-india: 10.203.10.146
