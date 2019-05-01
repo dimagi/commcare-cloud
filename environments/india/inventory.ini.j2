@@ -76,7 +76,7 @@ datavol_device=/dev/xvdc
 [proxy0]
 10.162.36.203 hostname="proxy0"
 
-{{ __proxy1__ }}
+{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-india.public_ip'] }}
 
 [formplayer0]
 10.162.36.248 hostname="formplayer0" encrypted_root=/opt/data/ecrypt
@@ -119,8 +119,8 @@ datavol_device='/dev/mapper/consolidated-data'
 10.162.36.205 hostname="airflow0"
 
 [proxy:children]
-proxy0
 proxy1
+proxy0
 
 [webworkers:children]
 django0
