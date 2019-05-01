@@ -16,6 +16,6 @@ es13,100.71.184.93,elasticsearch,,MUMGCCWCDPRDES13,es13,,
 es14,100.71.184.114,elasticsearch,,MUMGCCWCDPRDES14,es14,,
 es15,100.71.184.91,elasticsearch,,MUMGCCWCDPRDES15,es15,,
 es16,100.71.184.99,elasticsearch,,MUMGCCWCDPRDES16,es16,,
-esm0,100.71.184.100,elasticsearch,,MUMGCCWCDPRDESM0,esm0,true,
-esm1,100.71.184.98,elasticsearch,,MUMGCCWCDPRDESM1,esm1,true,
-esm2,100.71.184.117,elasticsearch,,MUMGCCWCDPRDESM2,esm2,true,
+esm0,100.71.184.100,elasticsearch,,MUMGCCWCDPRDESM0,esm0,true,false
+esm1,100.71.184.98,elasticsearch,,MUMGCCWCDPRDESM1,esm1,true,false
+esm2,100.71.184.117,elasticsearch,,MUMGCCWCDPRDESM2,esm2,true,false

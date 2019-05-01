@@ -34,6 +34,7 @@ servers:
     az: "a"
     volume_size: 40
     group: "control"
+    os: trusty
 
   - server_name: "djangomanage0-production"
     server_instance_type: c5.xlarge
@@ -41,6 +42,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "django_manage"
+    os: trusty
 
   - server_name: "web0-production"
     server_instance_type: m5.2xlarge
@@ -48,12 +50,14 @@ servers:
     az: "a"
     volume_size: 40
     group: "hq_webworkers"
+    os: trusty
   - server_name: "web1-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     group: "hq_webworkers"
+    os: trusty
 
   - server_name: "web6-production"
     server_instance_type: m5.2xlarge
@@ -61,24 +65,28 @@ servers:
     az: "b"
     volume_size: 40
     group: "mobile_webworkers"
+    os: trusty
   - server_name: "web7-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
     group: "mobile_webworkers"
+    os: trusty
   - server_name: "web8-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
     group: "mobile_webworkers"
+    os: trusty
   - server_name: "web9-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     group: "mobile_webworkers"
+    os: trusty
 
   - server_name: "esmaster0-production"
     server_instance_type: t3.large
@@ -86,17 +94,20 @@ servers:
     az: "b"
     volume_size: 40
     group: "elasticsearch"
+    os: trusty
   - server_name: "esmaster1-production"
     server_instance_type: t3.large
     network_tier: "db-private"
     az: "b"
     volume_size: 40
     group: "elasticsearch"
+    os: trusty
   - server_name: "esmaster2-production"
     server_instance_type: t3.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
+    os: trusty
 
   - server_name: "es10-production"
     server_instance_type: m5.2xlarge
@@ -104,30 +115,35 @@ servers:
     az: "a"
     volume_size: 600
     group: "elasticsearch"
+    os: trusty
   - server_name: "es11-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 600
     group: "elasticsearch"
+    os: trusty
   - server_name: "es12-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 600
     group: "elasticsearch"
+    os: trusty
   - server_name: "es13-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 600
     group: "elasticsearch"
+    os: trusty
   - server_name: "es14-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 600
     group: "elasticsearch"
+    os: trusty
 
   - server_name: "couchproxy0-production"
     server_instance_type: "t3.medium"
@@ -135,6 +151,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "couchdb2_proxy"
+    os: trusty
 
   - server_name: "couch3-production"
     server_instance_type: c5.4xlarge
@@ -144,6 +161,7 @@ servers:
     block_device:
       volume_size: 6938
     group: "couchdb2"
+    os: trusty
   - server_name: "couch4-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -152,6 +170,7 @@ servers:
     block_device:
       volume_size: 6769
     group: "couchdb2"
+    os: trusty
   - server_name: "couch5-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -160,6 +179,7 @@ servers:
     block_device:
       volume_size: 7023
     group: "couchdb2"
+    os: trusty
   - server_name: "couch7-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -168,6 +188,7 @@ servers:
     block_device:
       volume_size: 7226
     group: "couchdb2"
+    os: trusty
   - server_name: "couch8-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -176,6 +197,7 @@ servers:
     block_device:
       volume_size: 7674
     group: "couchdb2"
+    os: trusty
   - server_name: "couch9-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -184,6 +206,7 @@ servers:
     block_device:
       volume_size: 7531
     group: "couchdb2"
+    os: trusty
 
   - server_name: "rabbit0-production"
     server_instance_type: t3.large
@@ -191,6 +214,7 @@ servers:
     az: "c"
     volume_size: 80
     group: "rabbitmq"
+    os: trusty
 
   - server_name: "celery0-production"
     server_instance_type: t3.2xlarge
@@ -198,36 +222,42 @@ servers:
     az: "c"
     volume_size: 150
     group: "celery"
+    os: trusty
   - server_name: "celery1-production"
     server_instance_type: t3.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
     group: "celery"
+    os: trusty
   - server_name: "celery2-production"
     server_instance_type: t3.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
     group: "celery"
+    os: trusty
   - server_name: "celery3-production"
     server_instance_type: t3.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
     group: "celery"
+    os: trusty
   - server_name: "celery4-production"
     server_instance_type: t3.xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
     group: "celery"
+    os: trusty
   - server_name: "celery5-production"
     server_instance_type: t3.xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 80
     group: "celery"
+    os: trusty
   - server_name: "celery6-production"
     server_instance_type: t3.xlarge
     network_tier: "app-private"
@@ -242,6 +272,7 @@ servers:
     az: "c"
     volume_size: 150
     group: "pillowtop"
+    os: trusty
 
   - server_name: "formplayer0-production"
     server_instance_type: t3.large
@@ -249,13 +280,15 @@ servers:
     az: "a"
     volume_size: 50
     group: "formplayer"
-  
+    os: trusty
+
   - server_name: "formplayer1-production"
     server_instance_type: t3.large
     network_tier: "app-private"
     az: "a"
     volume_size: 50
     group: "formplayer"
+    os: trusty
 
   - server_name: "redis1-production"
     server_instance_type: r5.xlarge
@@ -263,6 +296,7 @@ servers:
     az: "a"
     volume_size: 60
     group: "redis"
+    os: trusty
 
   - server_name: "shareddir0-production"
     server_instance_type: t3.micro
@@ -270,6 +304,7 @@ servers:
     az: "a"
     volume_size: 40
     group: "shared_dir_host"
+    os: trusty
 
   - server_name: "kafka0-production"
     server_instance_type: t3.medium
@@ -277,6 +312,7 @@ servers:
     az: "a"
     volume_size: 160
     group: "kafka"
+    os: trusty
 
   - server_name: "pgproxy1-production"
     server_instance_type: t3.large
@@ -284,6 +320,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "postgresql"
+    os: trusty
 
   - server_name: "pgbouncer0-production"
     server_instance_type: t3.medium
@@ -291,6 +328,7 @@ servers:
     az: "a"
     volume_size: 80
     group: "postgresql"
+    os: trusty
 
 
 
@@ -301,6 +339,7 @@ proxy_servers:
     az: "a"
     volume_size: 80
     group: "proxy"
+    os: trusty
 
 
 rds_instances:
@@ -308,10 +347,6 @@ rds_instances:
     instance_type: "db.t2.xlarge"
     storage: 500
     multi_az: true
-    params:
-      pg_stat_statements.track: all
-      pg_stat_statements.max: 10000
-      track_activity_query_size: 2048
 
   - identifier: "pgucr0-production"  # replaces old hqdb3
     instance_type: "db.t2.xlarge"

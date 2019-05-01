@@ -3,34 +3,29 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-[proxy1]
-{{ proxy1-staging }} hostname=proxy1-staging public_ip={{ proxy1-staging.public_ip }} ec2=yes
+{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
 
 [proxy:children]
 # Amazon EC2
 proxy1
 
-[web2]
-{{ web2-staging }} swap_size=1G hostname=web2-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __web3__ }} swap_size=1G
 
-[web3]
-{{ web3-staging }} swap_size=1G hostname=web3-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __web4__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web2
 web3
+web4
 
-[pgproxy1]
-{{ pgproxy1-staging }} hostname=pgproxy1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __pgproxy1__ }}
 
-[rds_pg0]
-# RDS
-{{ pg0-staging }}
+{{ __rds_pg0__ }}
 
+# this is non-standard naming
+# todo: fix and then enforce naming convention
 [rds_pg0_replica]
-# RDS
-{{ pg0-staging-replica }}
+{{ aws_resources['pg0-staging-replica'] }}
 
 [remote_postgresql:children]
 rds_pg0
@@ -39,14 +34,11 @@ rds_pg0
 pgproxy1
 remote_postgresql
 
-[couch0]
-{{ couch0-staging }} hostname=couch0-staging ec2=yes
+{{ __couch0__ }}
 
-[couch1]
-{{ couch1-staging }} hostname=couch1-staging ec2=yes
+{{ __couch1__ }}
 
-[couch2]
-{{ couch2-staging }} hostname=couch2-staging ec2=yes
+{{ __couch2__ }}
 
 [couchdb2:children]
 couch0
@@ -56,18 +48,15 @@ couch2
 [couchdb2_proxy:children]
 couch0
 
-[rabbit0]
-{{ rabbit0-staging }} hostname=rabbit0-staging ec2=yes
+{{ __rabbit0__ }}
 
-[rabbit1]
-{{ rabbit1-staging }} hostname=rabbit1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __rabbit1__ }}
 
 [rabbitmq:children]
 # Amazon EC2
 rabbit1
 
-[kafka0]
-{{ kafka0-staging }} kafka_broker_id=0 hostname=kafka0-staging ec2=yes
+{{ __kafka0__ }} kafka_broker_id=0
 
 [zookeeper:children]
 # Amazon EC2
@@ -77,38 +66,32 @@ kafka0
 # Amazon EC2
 kafka0
 
-[celery1]
-{{ celery1-staging }} hostname=celery1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __celery1__ }}
 
 [celery:children]
 # Amazon EC2
 celery1
 
-[pillow1]
-{{ pillow1-staging }} hostname=pillow1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __pillow1__ }}
 
 [pillowtop:children]
 # Amazon EC2
 pillow1
 
-[formplayer1]
-{{ formplayer1-staging }} hostname=formplayer1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __formplayer1__ }}
 
 [formplayer:children]
 # Amazon EC2
 formplayer1
 
-[redis1]
-{{ redis1-staging }} hostname=redis1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __redis1__ }}
 
 [redis:children]
 redis1
 
-[es2]
-{{ es2-staging }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws hostname=es2-staging ec2=ena ansible_python_interpreter=/usr/bin/python3 elasticsearch_master=true
+{{ __es2__ }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
-[es3]
-{{ es3-staging }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws hostname=es3-staging ec2=ena ansible_python_interpreter=/usr/bin/python3 elasticsearch_master=true
+{{ __es3__ }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
 [elasticsearch:children]
 # Amazon EC2
@@ -118,16 +101,16 @@ es3
 [shared_dir_host:children]
 redis1
 
-[airflow1]
-{{ airflow1-staging }} hostname=airflow1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __airflow1__ }}
 
 [airflow:children]
 # Amazon EC2
 airflow1
 
-[control]
-# Amazon EC2
-{{ control0-staging }} hostname=control0-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __control0__ }}
+
+[control:children]
+control0
 
 [ansible_skip:children]
 rds_pg0
@@ -135,8 +118,6 @@ rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
-web2
 web3
 
-[hwarehouse0]
-{{ hwarehouse0-staging }} hostname=hwarehouse0-staging ec2=ena
+{{ __hwarehouse0__ }}

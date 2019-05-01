@@ -1,5 +1,6 @@
 import getpass
 import os
+import re
 import sys
 from collections import Counter
 from contextlib import contextmanager
@@ -18,6 +19,7 @@ from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
+from commcare_cloud.environment.schemas.elasticsearch import ElasticsearchConfig
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
@@ -71,7 +73,7 @@ class Environment(object):
             known_hosts_contents = f.read()
         missing_hosts = {
             (sshable, hostname) for sshable, hostname in expected_hosts
-            if sshable not in known_hosts_contents
+            if not re.search(r'\b{}\b'.format(sshable), known_hosts_contents)
         }
         if missing_hosts:
             raise EnvironmentException(
@@ -196,6 +198,20 @@ class Environment(object):
         postgresql_config.replace_hosts(self)
         postgresql_config.check()
         return postgresql_config
+
+    @memoized_property
+    def elasticsearch_config(self):
+        try:
+            with open(self.paths.elasticsearch_yml) as f:
+                elasticsearch_json = yaml.load(f)
+        except IOError:
+            # It's fine to omit this file
+            elasticsearch_json = {}
+        number_of_replicas = 0 if len(self.groups['elasticsearch']) < 2 else 1
+        elasticsearch_config = ElasticsearchConfig.wrap(elasticsearch_json)
+        if elasticsearch_config.settings.default.number_of_replicas is None:
+            elasticsearch_config.settings.default.number_of_replicas = number_of_replicas
+        return elasticsearch_config
 
     @memoized_property
     def proxy_config(self):
@@ -385,6 +401,8 @@ class Environment(object):
             'authorized_keys_dir': '{}/'.format(os.path.realpath(self.paths.authorized_keys_dir)),
             'known_hosts_file': self.paths.known_hosts,
             'commcarehq_repository': self.fab_settings_config.code_repo,
+            'ES_SETTINGS': self.elasticsearch_config.settings.to_json(),
+            'py3_include_venv': self.fab_settings_config.py3_include_venv,
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables())

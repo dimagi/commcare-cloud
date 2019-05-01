@@ -3,7 +3,6 @@ catchall_alert_channel: '@slack-hq-ops-priority'
 env_notifications:
   icds: '@slack-alerts-icds'
   india: '@slack-alerts-india'
-  softlayer: '@slack-alerts-softlayer'
   production: '@slack-alerts-production @opsgenie-commcarehq'
   pna: '@slack-alerts-pna'
   swiss: '@slack-alerts-swiss'

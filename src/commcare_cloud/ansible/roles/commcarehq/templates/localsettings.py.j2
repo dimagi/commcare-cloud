@@ -409,6 +409,9 @@ ELASTICSEARCH_HOSTS = [
     {% endfor -%}
 ]
 ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
+
+ES_SETTINGS = {{ ES_SETTINGS }}
+
 SECRET_KEY = "{{ SECRET_KEY }}"
 
 PRIME_VIEWS_INTERVAL = 2
@@ -650,10 +653,6 @@ SMS_PREFIXES_BY_COUNTRY = '{{ localsettings.SMS_PREFIXES_BY_COUNTRY }}'
 
 {% if localsettings.get('INACTIVITY_TIMEOUT') %}
 INACTIVITY_TIMEOUT = {{ localsettings.INACTIVITY_TIMEOUT }}
-{% endif %}
-
-{% if MIA_THE_DEPLOY_BOT_API %}
-MIA_THE_DEPLOY_BOT_API = '{{ MIA_THE_DEPLOY_BOT_API }}'
 {% endif %}
 
 # Set to something like "192.168.1.5:8000" (with your IP address).
