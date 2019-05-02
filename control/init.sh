@@ -51,12 +51,18 @@ if [ -z ${TRAVIS_TEST} ]; then
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
         mkvirtualenv ansible --python $(which python2)
-    # If we by mistake are using a py3 env (unsupported), then replace with a py2 env
     elif ~/.virtualenvs/ansible/bin/python -c 'print ""' 2> /dev/null; [ "$?" -ne "0" ]; then
-        echo "Replacing ansible py3 virtualenv with py2 virtualenv..."
-        deactivate 2> /dev/null || :  # deactivate if in a virtualenv, else ignore error
-        rmvirtualenv ansible
-        mkvirtualenv ansible --python $(which python2)
+        echo "######################################################"
+        echo "#                                                    #"
+        echo "#  You're working from a python3 virtualenv,         #"
+        echo "#  but commcare-cloud doesn't yet support Python 3.  #"
+        echo "#  To reset your virtualenv, run the following:      #"
+        echo "#                                                    #"
+        echo "#    deactivate                                      #"
+        echo "#    rmvirtualenv ansible                            #"
+        echo "#    mkvirtualenv ansible --python $(which python2)  #"
+        echo "#                                                    #"
+        echo "######################################################"
     else
         workon ansible
     fi
