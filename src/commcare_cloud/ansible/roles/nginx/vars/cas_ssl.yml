@@ -21,6 +21,10 @@ nginx_sites:
       zone: "$server_name"
       size: "10m"
       rate: "200r/s"
+    - name: "clients"
+      zone: "$binary_remote_addr"
+      size: "10m"
+      rate: "1r/s"
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
@@ -88,6 +92,7 @@ nginx_sites:
          - zone_name: "restore"
            burst: 100
            nodelay: True
+         - zone_name: "clients"
      - name: "/a/icds-cas/receiver"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
@@ -98,6 +103,7 @@ nginx_sites:
          - zone_name: "submissions"
            burst: 100
            nodelay: True
+         - zone_name: "clients"
      - name: /
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
