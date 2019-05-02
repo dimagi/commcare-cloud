@@ -13,7 +13,7 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_mosh_repo|changed or add_postgres_repo|changed
+  when: add_mosh_repo is changed or add_postgres_repo is changed
 
 # Install base packages, common to all servers
 - name: Install common packages
