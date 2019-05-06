@@ -1,3 +1,6 @@
+citus0-india: 10.203.10.77
+citus1-india: 10.203.10.74
+citus2-india: 10.203.10.190
 control0-india: 10.203.10.246
 djangomanage0-india: 10.203.10.37
 proxy1-india: 10.203.20.59
