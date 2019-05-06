@@ -10,6 +10,7 @@ es3-staging: 10.201.40.171
 formplayer1-staging: 10.201.10.234
 hwarehouse0-staging: 10.201.10.192
 kafka0-staging: 10.201.40.189
+kafka1-staging: 10.201.40.14
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pg0-staging-replica: pg0-staging-replica.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy1-staging: 10.201.40.187
