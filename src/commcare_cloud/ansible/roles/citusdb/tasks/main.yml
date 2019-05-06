@@ -14,7 +14,7 @@
  - name: Update package list
    apt: 
     update_cache: yes
-   when: add_citus_repo|changed
+   when: add_citus_repo is changed
 
  - name: Install Citus
    apt: 

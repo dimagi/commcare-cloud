@@ -100,7 +100,7 @@
     status_code: 200
     body: '"{{ item.password }}"'
     body_format: raw
-  when: update_config|changed and ((item.host == inventory_hostname) or is_monolith|bool)
+  when: update_config is changed and ((item.host == inventory_hostname) or is_monolith|bool)
   with_items: "{{ couch_dbs.values() }}"
 
 - name: Copy couch restart script (cleanup)

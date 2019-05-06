@@ -12,7 +12,7 @@
 
 - name: Update package list
   apt: update_cache=yes cache_valid_time=7200
-  when: "'pg_backup' in group_names and add_postgresql_repo|changed"
+  when: "'pg_backup' in group_names and add_postgresql_repo is changed"
 
 - name: Install PostgreSQL server
   apt: name="postgresql-server-dev-{{ postgresql_version }}" state=present

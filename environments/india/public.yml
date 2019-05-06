@@ -1,4 +1,3 @@
-internal_domain_name: "india.commcarehq.org"
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -39,7 +38,7 @@ nameservers:
 kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
-ufw_private_interface: "{{ 'ens5' if ec2 == 'ena' else 'eth0' if ec2|default(false) else 'eth1' }}"
+ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
