@@ -10,7 +10,7 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_postgresql_repo|changed
+  when: add_postgresql_repo is changed
 
 - name: generate en_US.UTF-8 locale
   locale_gen: name='en_US.UTF-8' state=present

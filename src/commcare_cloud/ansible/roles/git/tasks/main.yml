@@ -4,7 +4,7 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_git_repo|changed
+  when: add_git_repo is changed
 
 - name: Install git packages
   apt: name="{{ item }}" state=present
