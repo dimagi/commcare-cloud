@@ -195,6 +195,13 @@ servers:
     volume_size: 80
     group: "kafka"
     os: trusty
+  - server_name: "kafka1-staging"
+    server_instance_type: t3.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "kafka"
+    os: bionic
 
 
   - server_name: "pgproxy1-staging"

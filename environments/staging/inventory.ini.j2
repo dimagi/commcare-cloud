@@ -55,6 +55,7 @@ couch0
 rabbit1
 
 {{ __kafka0__ }} kafka_broker_id=0
+{{ __kafka1__ }} kafka_broker_id=0
 
 [zookeeper:children]
 # Amazon EC2
@@ -63,6 +64,7 @@ kafka0
 [kafka:children]
 # Amazon EC2
 kafka0
+kafka1
 
 {{ __celery1__ }}
 
