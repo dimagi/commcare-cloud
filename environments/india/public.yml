@@ -38,8 +38,6 @@ nameservers:
 kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
-ufw_private_interface: eth0
-
 control_machine_ip: 10.162.36.196
 
 run_websockets_wsgi: True
