@@ -11,9 +11,14 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
+- name: Add pango repo for trusty
+  apt_repository: repo='ppa:jonathonf/gtk3.18' state=present
+  register: add_pango_repo
+  when: ansible_distribution_version == '14.04'
+
 - name: Update package list
   apt: update_cache=yes
-  when: add_mosh_repo|changed or add_postgres_repo|changed
+  when: add_mosh_repo|changed or add_postgres_repo|changed or add_pango_repo|changed
 
 # Install base packages, common to all servers
 - name: Install common packages
