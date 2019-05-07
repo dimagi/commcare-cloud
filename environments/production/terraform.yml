@@ -58,7 +58,14 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: trusty
-
+  - server_name: "web2-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "hq_webworkers"
+    os: bionic
+    
   - server_name: "web6-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
