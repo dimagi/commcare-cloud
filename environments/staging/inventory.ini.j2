@@ -48,25 +48,21 @@ couch2
 [couchdb2_proxy:children]
 couch0
 
-{{ __rabbit0__ }}
-
-[rabbit1]
-{{ rabbit1-staging }} hostname=rabbit1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __rabbit1__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit0
 rabbit1
 
-{{ __kafka0__ }} kafka_broker_id=0
+{{ __kafka1__ }} kafka_broker_id=0
 
 [zookeeper:children]
 # Amazon EC2
-kafka0
+kafka1
 
 [kafka:children]
 # Amazon EC2
-kafka0
+kafka1
 
 {{ __celery1__ }}
 
