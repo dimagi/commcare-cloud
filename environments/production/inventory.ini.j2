@@ -7,6 +7,8 @@ proxy0
 
 {{ __web1__ }} datadog_integration_tcp_check=yes
 
+{{ __web2__ }}
+
 {{ __web6__ }}
 
 {{ __web7__ }} datadog_integration_tcp_check=yes
@@ -19,6 +21,7 @@ proxy0
 [hq_webworkers:children]
 web0
 web1
+web2
 
 [mobile_webworkers:children]
 web6
