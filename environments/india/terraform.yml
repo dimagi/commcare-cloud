@@ -26,11 +26,39 @@ external_routes:
   - cidr_block: "10.162.0.0/16"
     gateway_id: "vgw-0ea47c14639c0bf48"
 
-servers: []
+servers:
+  - server_name: "control0-india"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: control
+    os: bionic
+  - server_name: "djangomanage0-india"
+    server_instance_type: "t3.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: control
+    os: bionic
+  - server_name: "web0-india"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: control
+    os: bionic
+  - server_name: "web1-india"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: control
+    os: bionic
 
 proxy_servers:
-  - server_name: "proxy0-india"
-    server_instance_type: "t3.micro"
+  - server_name: "proxy1-india"
+    server_instance_type: "t3.small"
     network_tier: "public"
     az: "a"
     volume_size: 80

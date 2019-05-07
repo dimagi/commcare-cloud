@@ -9,7 +9,7 @@
 
     - name: Update package list
       apt: update_cache=yes
-      when: add_cert_repo|changed
+      when: add_cert_repo is changed
 
     - name: Install Certbot
       apt:
