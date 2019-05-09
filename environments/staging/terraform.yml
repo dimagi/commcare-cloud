@@ -253,5 +253,5 @@ rds_instances:
     storage: 160
     multi_az: yes
 
-redis:
+elasticache:
   create: no

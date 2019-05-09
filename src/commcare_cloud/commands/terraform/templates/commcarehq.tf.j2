@@ -114,16 +114,16 @@ resource "aws_eip" "proxy__{{ server.server_name }}" {
 }
 {% endfor %}
 
-{% if redis %}
+{% if elasticache %}
 module "Redis" {
   source               = "./modules/elasticache"
-  create               = "{{ redis.create|tojson }}"
-  cluster_id           = "redis-${var.environment}"
-  engine               = "redis"
-  engine_version       = "{{ redis.engine_version }}"
-  node_type            = "{{ redis.node_type }}"
-  num_cache_nodes      = "{{ redis.num_cache_nodes }}"
-  parameter_group_name = "{{ redis.parameter_group_name }}"
+  create               = "{{ elasticache.create|tojson }}"
+  cluster_id           = "elasticache-${var.environment}"
+  engine               = "elasticache"
+  engine_version       = "{{ elasticache.engine_version }}"
+  node_type            = "{{ elasticache.node_type }}"
+  num_cache_nodes      = "{{ elasticache.num_cache_nodes }}"
+  parameter_group_name = "{{ elasticache.parameter_group_name }}"
   port                 = 6379
   elasticache_subnets  = "${values(module.network.subnets-db-private)}"
   security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
