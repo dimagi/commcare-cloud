@@ -393,5 +393,5 @@ rds_instances:
       effective_cache_size: 11520MB
       maintenance_work_mem: 960MB
 
-redis:
+elasticache:
   create: no
