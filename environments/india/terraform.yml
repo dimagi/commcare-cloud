@@ -55,6 +55,27 @@ servers:
     volume_size: 80
     group: control
     os: bionic
+  - server_name: "citus0-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: citusdb_cordinator
+    os: bionic
+  - server_name: "citus1-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: citusdb_worker
+    os: bionic
+  - server_name: "citus2-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: citusdb_worker
+    os: bionic
 
 proxy_servers:
   - server_name: "proxy1-india"
