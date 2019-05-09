@@ -1,4 +1,4 @@
-{% for queue_names, celery_params in app_processes_config.celery_processes.get(inventory_hostname).items() %}
+{% for queue_names, celery_params in app_processes_config.celery_processes.get(inventory_hostname).items() | sort %}
 {% for worker_num in range(celery_params.num_workers) %}
 
 {% if queue_names not in ("flower", "beat") %}
