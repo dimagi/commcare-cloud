@@ -1,6 +1,7 @@
 postgresql_dbs:
   all:
-  - create: true
+  - &id001
+    create: true
     django_alias: default
     django_migrate: true
     host: 127.0.0.1
@@ -11,7 +12,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id002
+    create: true
     django_alias: synclogs
     django_migrate: true
     host: 127.0.0.1
@@ -22,7 +24,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id003
+    create: true
     django_alias: ucr
     django_migrate: false
     host: 127.0.0.1
@@ -33,7 +36,8 @@ postgresql_dbs:
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id004
+    create: true
     django_alias: null
     django_migrate: true
     host: 127.0.0.1
@@ -44,7 +48,12 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  by_host: {}
+  by_host:
+    127.0.0.1:
+    - *id001
+    - *id002
+    - *id003
+    - *id004
   custom: []
   form_processing: null
   formplayer:

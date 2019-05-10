@@ -38,9 +38,11 @@ host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_serv
 {% endif %}
 
 {% if allow_direct_postgresql_access %}
+{% set current_host = inventory_hostname %}
+{% if is_monolith %}{% set current_host = DEFAULT_POSTGRESQL_HOST %}{% endif %}
 {% for host in (groups['formplayer'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups.get('django_manage', []) + groups['postgresql'] + groups.get('pg_standby', []) + groups.get('airflow', []) ) | unique %}
 # {{ host }}
-{% for db in postgresql_dbs.by_host.get(inventory_hostname, []) %}
+{% for db in postgresql_dbs.by_host.get(current_host, []) %}
 {% if host | ipaddr %}
 host   {{ db.name }}    {{ db.user }}   {{ host }}/32   md5
 {% else %}

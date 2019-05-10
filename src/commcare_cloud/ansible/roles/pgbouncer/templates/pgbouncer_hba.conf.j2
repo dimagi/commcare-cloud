@@ -13,14 +13,16 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.us
 {% endfor %}
 {% endif %}
 {% endfor %}
-{%  else %}
+{% else %}
+{% set current_host = inventory_hostname %}
+{% if is_monolith %}{% set current_host = DEFAULT_POSTGRESQL_HOST %}{% endif %}
 {% set host_list = groups['commcarehq'] + groups['postgresql'] + groups.get('pg_standby',[]) | sort %}
 {% if run_websockets_wsgi %}
 {% set host_list = host_list + groups['proxy'] %}
 {% endif %}
 {% for host in host_list | unique %}
 # {{ host }}
-{% for db in postgresql_dbs.by_host.get(inventory_hostname, []) %}
+{% for db in postgresql_dbs.by_host.get(current_host, []) %}
 {% if host | ipaddr %}
 host   {{ db.name }}    {{ db.user }}   {{ host }}/32   md5
 {% else %}
