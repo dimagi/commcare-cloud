@@ -141,7 +141,7 @@
         name: nginx
         tasks_from: set_site_present
       vars:
-        site_config: {name: blobdb_proxy, vars_file: blobdb_proxy}
+        site_config: {name: blobdb_proxy, vars_file: blobdb}
 
 - name: PNA Proxy
   hosts: pna_proxy
