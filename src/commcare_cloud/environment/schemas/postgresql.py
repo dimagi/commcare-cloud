@@ -110,8 +110,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
         dbs_by_host = defaultdict(list)
         postgresql_hosts = environment.groups.get('postgresql', [])
         for db in sorted_dbs:
-            if db['host'] in postgresql_hosts:
-                dbs_by_host[db['host']].append(db)
+            if db['pgbouncer_host'] in postgresql_hosts:
+                dbs_by_host[db['pgbouncer_host']].append(db)
 
         for host in environment.groups.get('pg_standby', []):
             root_pg_host = self._get_root_pg_host(host, environment)
