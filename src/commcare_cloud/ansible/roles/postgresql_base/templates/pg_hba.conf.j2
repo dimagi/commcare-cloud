@@ -40,14 +40,11 @@ host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_serv
 {% if allow_direct_postgresql_access %}
 {% for host in (groups['formplayer'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups.get('django_manage', []) + groups['postgresql'] + groups.get('pg_standby', []) + groups.get('airflow', []) ) | unique %}
 # {{ host }}
-{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
-{% set db = db_list[0] %}
-{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% for db in postgresql_dbs.by_host.get(inventory_hostname, []) %}
 {% if host | ipaddr %}
-host   {{ db.name }}	{{ db.user }}	{{ host }}/32   md5
+host   {{ db.name }}   {{ db.user }}   {{ host }}/32   md5
 {% else %}
-host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
-{% endif %}
+host   {{ db.name }}   {{ db.user }}   {{ lookup('dig', host, wantlist=True)[0] }}/32  md5
 {% endif %}
 {% endfor %}
 {% endfor %}
