@@ -40,8 +40,10 @@ unix_socket_dir = /var/run/postgresql
 ;;; Authentication settings
 ;;;
 
-auth_type = hba
+auth_type = {{ pgboucner_auth_type }}
+{% if pgboucner_auth_type == 'hba' %}
 auth_hba_file = /etc/pgbouncer/pgbouncer_hba.conf
+{% endif %}
 
 auth_file = /etc/pgbouncer/userlist.txt
 
