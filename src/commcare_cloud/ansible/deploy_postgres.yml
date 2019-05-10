@@ -1,4 +1,6 @@
 ---
+- import_playbook: host_group_aliases.yml
+
 - name: PostgreSQL Machine Setup
   hosts:
     - postgresql
