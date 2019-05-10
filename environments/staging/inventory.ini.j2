@@ -3,13 +3,11 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
-
 {{ __proxy0__ }} public_ip={{ aws_resources['proxy0-staging.public_ip'] }}
 
 [proxy:children]
 # Amazon EC2
-proxy1
+proxy0
 
 {{ __web3__ }} swap_size=1G
 
