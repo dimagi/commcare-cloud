@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import jsonobject
 import re
 
@@ -91,17 +93,31 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.password = DEFAULT_POSTGRESQL_PASSWORD
         return self
 
-    def to_generated_variables(self):
+    def to_generated_variables(self, environment):
         data = self.to_json()
         del data['postgres_override']
         del data['pgbouncer_override']
         data['postgresql_dbs'] = data.pop('dbs')
-        data['postgresql_dbs']['all'] = sorted(
+        sorted_dbs = sorted(
             (db.to_json() for db in self.generate_postgresql_dbs()),
             key=lambda db: db['name']
         )
+        data['postgresql_dbs']['all'] = sorted_dbs
         data.update(self.postgres_override.to_json())
         data.update(self.pgbouncer_override.to_json())
+
+        # generate list of databases per host for use in pgbouncer and postgresql configuration
+        dbs_by_host = defaultdict(list)
+        postgresql_hosts = environment.groups.get('postgresql', [])
+        for db in sorted_dbs:
+            if db['host'] in postgresql_hosts:
+                dbs_by_host[db['host']].append(db)
+
+        for host in environment.groups.get('pg_standby', []):
+            root_pg_host = self._get_root_pg_host(host, environment)
+            dbs_by_host[host] = dbs_by_host[root_pg_host]
+
+        data['postgresql_dbs']['by_host'] = dict(dbs_by_host)
         return data
 
     def replace_hosts(self, environment):
@@ -131,6 +147,15 @@ class PostgresqlConfig(jsonobject.JsonObject):
                     db.port = host_settings[db.host].port
                 else:
                     db.port = DEFAULT_PORT
+
+    def _get_root_pg_host(self, standby_host, env):
+        vars = env.get_host_vars(standby_host)
+        standby_master = vars.get('hot_standby_master')
+        if not standby_master:
+            raise Exception('{} has not root pg host'.format(standby_host))
+        if standby_master in env.groups['postgresql']:
+            return standby_master
+        return self._get_root_pg_host(standby_master, env)
 
     def generate_postgresql_dbs(self):
         return filter(None, [
