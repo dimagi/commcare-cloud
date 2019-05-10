@@ -86,7 +86,7 @@ server {
     {% if location.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'limit_reqs'] %}
+    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'limit_reqs', 'extra_parameters'] %}
         {{ x }} {{ y }};
     {% endfor %}
     {% if location.get('proxy_set_headers') %}
@@ -95,26 +95,20 @@ server {
       {% endfor %}
     {% endif %}
 
-    {% if location.get('add_header') %}
-      {% for header in location.add_header %}
-        set {{ header }};
-      {% endfor %}
-    {% endif %}
-
-    {% if location.get('set') %}
-      {% for var in location.set %}
-        add_header {{ var }};
-      {% endfor %}
-    {% endif %}
-
     {% for limit in location.get('limit_reqs', []) %}
         limit_req zone={{ limit.zone_name }}{% if limit.get('burst') %} burst={{limit.burst}}{% endif %}{% if limit.get('nodelay') %} nodelay{% endif %};
     {% endfor %}
+
+    {% if location.extra_parameters is defined %}
+        {{ location.extra_parameters|indent(8) }}
+    {% endif %}
   }
 {% endfor %}
 
+{% if item.support_letsencrypt|default(True) %}
 # For Letsencrypt
   location ^~ /.well-known/acme-challenge/ {
-            root         /var/www/letsencrypt;
-            }
+      root         /var/www/letsencrypt;
+  }
+{% endif %}
 }
