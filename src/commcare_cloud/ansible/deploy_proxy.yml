@@ -1,6 +1,6 @@
 ---
 - name: setup nginx
-  hosts: proxy
+  hosts: proxy:reach_proxy:cas_proxy:blobdb_proxy:pna_proxy
   tasks:
     - name: install nginx
       include_role:
