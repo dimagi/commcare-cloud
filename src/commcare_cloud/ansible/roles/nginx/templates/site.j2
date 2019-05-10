@@ -70,10 +70,8 @@ server {
   {% endif %}
 {% endfor %}
 
-{% for k,v in item.server.iteritems() if k == 'proxy_set_headers' %}
-  {% for header in v %}
+{% for header in item.server.get('proxy_set_headers', []) %}
   proxy_set_header {{ header }};
-  {% endfor %}
 {% endfor %}
 
 {% for value in error_pages %}
@@ -96,6 +94,19 @@ server {
         proxy_set_header {{ header }};
       {% endfor %}
     {% endif %}
+
+    {% if location.get('add_header') %}
+      {% for header in location.add_header %}
+        set {{ header }};
+      {% endfor %}
+    {% endif %}
+
+    {% if location.get('set') %}
+      {% for var in location.set %}
+        add_header {{ var }};
+      {% endfor %}
+    {% endif %}
+
     {% for limit in location.get('limit_reqs', []) %}
         limit_req zone={{ limit.zone_name }}{% if limit.get('burst') %} burst={{limit.burst}}{% endif %}{% if limit.get('nodelay') %} nodelay{% endif %};
     {% endfor %}

@@ -1,0 +1,47 @@
+# based off https://blog.sentry.io/2017/03/01/dodging-s3-downtime-with-nginx-and-haproxy.html
+# https://gist.github.com/mikhailov/9639593
+# https://stackoverflow.com/questions/44639182/nginx-proxy-amazon-s3-resources
+---
+nginx_sites:
+- server:
+    proxy_cache_path:
+      - name: "blobdb_cache"
+        path: "{{ www_home }}/blob_cache"
+        max_size: "30g"  # 2 days of forms @ 1.3MM per day (11K per form)
+        key_zone_size: "300m"
+        inactive_time: "3d"
+        levels: "1:2"
+    file_name: "{{ deploy_env }}_blobdb_{{ blobdb_proxy_port }}"
+    listen: "{{ blobdb_proxy_port }}"
+    # boto3 python library switches to multipart uploads for blobs > 8M
+    client_max_body_size: "9M"
+    client_body_buffer_size: "128k"
+    locations:
+      - name: /
+        proxy_set_headers:
+          - "Host $host"
+          - "Connection ''"  # Make sure we're using Keep-Alives with S3
+        proxy_redirect: "off"
+        proxy_cache: "blobdb_cache"
+        proxy_cache_lock: "on"
+        proxy_cache_lock_timeout: "30s"
+        proxy_cache_valid: "200 3d"
+#        proxy_cache_valid: "403 15m" ?
+        proxy_intercept_errors: "on" ?
+        proxy_cache_revalidate: "on"
+        proxy_cache_use_stale: "error timeout invalid_header updating http_500 http_502 http_503 http_504"
+
+        # Verify and reuse our SSL session for our upstream connection
+        proxy_ssl_verify: "on"
+        proxy_ssl_session_reuse: "on"
+
+          # Set back a nice HTTP Header to indicate what the cache status was
+        add_header:
+          - "X-Cache-Status $upstream_cache_status always"
+
+        # Set this to a variable instead of using an `upstream`
+        # to coerce nginx into resolving as DNS instead of caching
+        # it once on process boot and never updating.
+        set:
+          - "$db_host '{{ blobdb_proxy_upstream_host }}'"
+        proxy_pass: "https://$db_host"

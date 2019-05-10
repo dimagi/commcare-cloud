@@ -71,6 +71,9 @@ old_s3_bulk_delete_chunksize: 1000
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
 
+blobdb_proxy_port: 8082
+blobdb_proxy_upstream_host: ''
+
 couchdb_mirror: https://archive.apache.org/dist/couchdb/source
 
 datadog_integration_cloudant: false

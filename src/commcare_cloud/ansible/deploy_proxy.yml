@@ -134,6 +134,15 @@
         site_present: "{{ 'cas_ssl' in special_sites }}"
         site_config: {name: cas_ssl, vars_file: cas_ssl}
 
+- name: BlobDB Proxy
+  hosts: blobdb_proxy
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_config: {name: blobdb_proxy, vars_file: blobdb_proxy}
+
 - name: PNA Proxy
   hosts: pna_proxy
   tasks:

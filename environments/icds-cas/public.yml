@@ -153,13 +153,16 @@ couch_dbs:
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 s3_blob_db_enabled: yes
-s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
-s3_blob_db_s3_bucket: 'blobdb'
 
-# removed after migrating data to riak
-#old_s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
-#old_s3_blob_db_s3_bucket: 'mowcdmum-c1'
-#old_s3_bulk_delete_chunksize: 200
+# RiakCS
+old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
+old_s3_blob_db_s3_bucket: 'blobdb'
+
+# TCL object storage
+s3_blob_db_url: "http://{{ groups['blobdb_proxy'][0] }}:{{ blobdb_proxy_port }}"
+s3_blob_db_s3_bucket: 'mowcddb-c1'
+
+blobdb_proxy_upstream_host: 'mowcddbmum.ipstorage.tatacommunications.com'
 
 localsettings:
   ALLOWED_HOSTS:
