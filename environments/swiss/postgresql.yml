@@ -7,6 +7,7 @@ pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+  pgboucner_auth_type: md5
 
 postgres_override:
   postgresql_max_connections: 300
