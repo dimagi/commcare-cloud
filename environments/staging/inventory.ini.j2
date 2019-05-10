@@ -5,6 +5,8 @@
 
 {{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
 
+{{ __proxy0__ }} public_ip={{ aws_resources['proxy0-staging.public_ip'] }}
+
 [proxy:children]
 # Amazon EC2
 proxy1
