@@ -16,9 +16,9 @@ pg0-staging-replica: pg0-staging-replica.czkracjslrn2.us-east-1.rds.amazonaws.co
 pgproxy1-staging: 10.201.40.187
 pillow1-staging: 10.201.10.103
 proxy0-staging: 10.201.20.89
-proxy0-staging.public_ip: 3.216.37.252
-proxy1-staging: 10.201.20.21
-proxy1-staging.public_ip: 107.20.83.77
+proxy0-staging.public_ip: 107.20.83.77
+proxy1-staging: 10.201.20.21 
+proxy1-staging.public_ip: 3.216.37.252
 rabbit0-staging: 10.201.10.73
 rabbit1-staging: 10.201.10.129
 redis1-staging: 10.201.40.219
