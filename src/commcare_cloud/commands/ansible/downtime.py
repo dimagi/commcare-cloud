@@ -151,33 +151,24 @@ def create_downtime_record(environment, message=None):
         if environment.meta_config.slack_alerts_channel:
             message = '{} @slack-{}'.format(message, environment.meta_config.slack_alerts_channel)
 
-        downtime = datadog.api.Downtime.create(
+        datadog.api.Downtime.create(
             scope=scope,
             message=message
         )
-    else:
-        downtime = {
-            'active': True,
-            'message': message,
-            'scope': [scope],
-            'start': int(datetime.utcnow().strftime('%s')),
-        }
-    with open(environment.paths.downtime_yml, 'w') as f:
-        yaml.safe_dump(downtime, f)
-    return downtime
 
 
 def cancel_downtime_record(environment, downtime):
     if 'id' in downtime and initialize_datadog(environment):
         datadog.api.Downtime.delete(downtime['id'])
 
-    os.remove(environment.paths.downtime_yml)
-
 
 def get_downtime_record(environment):
-    if os.path.exists(environment.paths.downtime_yml):
-        with open(environment.paths.downtime_yml, 'r') as f:
-            return yaml.safe_load(f)
+    scope = 'environment:{}'.format(environment.meta_config.env_monitoring_id)
+    if initialize_datadog(environment):
+        downtimes = datadog.api.Downtime.get_all(current_only=True)
+        for downtime in downtimes:
+            if downtime['scope'] == scope and downtime['monitor_tags'] == ["*"]:
+                return downtime
 
 
 @memoized
