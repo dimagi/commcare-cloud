@@ -31,6 +31,11 @@ class Downtime(CommandBase):
         Argument('-m', '--message', help="""
             Optional message to set on Datadog.
         """),
+        Argument('-d', '--duration', default=24, help="""
+            Max duration for the Datadog downtime after which it will be auto-cancelled.
+            This is a safeguard against downtime remaining active and preventing future
+            alerts.
+        """),
     )
 
     def run(self, args, unknown_args):
@@ -71,7 +76,7 @@ def start_downtime(environment, ansible_context, args):
 
     if go_down:
         if not downtime:
-            create_downtime_record(environment, args.message)
+            create_downtime_record(environment, args.message, args.duration)
         supervisor_services(environment, ansible_context, 'stop')
         wait_for_all_processes_to_stop(environment, ansible_context)
 
@@ -144,16 +149,20 @@ def print_downtime(downtime):
     ))
 
 
-def create_downtime_record(environment, message=None):
+def create_downtime_record(environment, message, duration):
     # https://docs.datadoghq.com/api/?lang=python#schedule-monitor-downtime
     scope = 'environment:{}'.format(environment.meta_config.env_monitoring_id)
     if initialize_datadog(environment):
         if environment.meta_config.slack_alerts_channel:
             message = '{} @slack-{}'.format(message, environment.meta_config.slack_alerts_channel)
 
+        # auto-cancel downtime as a safeguard
+        end_ts = int(time.time()) + (duration * 60 * 60)
+
         datadog.api.Downtime.create(
             scope=scope,
-            message=message
+            message=message,
+            end=end_ts,
         )
 
 
