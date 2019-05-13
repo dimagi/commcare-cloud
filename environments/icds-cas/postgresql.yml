@@ -33,10 +33,29 @@ pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+  pgbouncer_auth_type: hba
+  pgbouncer_hba_entries:
+    # app vlan
+    - contype: host
+      netmask: 100.71.188.0/22
+    # db vlan
+    - contype: host
+      netmask: 100.71.184.0/22
 
 postgres_override:
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: replication
+      netmask: 100.71.184.0/22
+    - contype: host
+      users: TCLBKPADMIN
+      netmask: 127.0.0.1/32
+    - contype: local
+      users: TCLBKPADMIN
+
 
 dbs:
   main:
