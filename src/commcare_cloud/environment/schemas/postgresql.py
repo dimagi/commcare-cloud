@@ -107,11 +107,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
         data.update(self.pgbouncer_override.to_json())
 
         # generate list of databases per host for use in pgbouncer and postgresql configuration
-        dbs_by_host = defaultdict(list)
         postgresql_hosts = environment.groups.get('postgresql', [])
         if self.DEFAULT_POSTGRESQL_HOST not in postgresql_hosts:
             postgresql_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
 
+        dbs_by_host = defaultdict(list)
         for db in sorted_dbs:
             if db['pgbouncer_host'] in postgresql_hosts:
                 dbs_by_host[db['pgbouncer_host']].append(db)

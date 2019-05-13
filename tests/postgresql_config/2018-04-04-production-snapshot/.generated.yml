@@ -1,6 +1,7 @@
 postgresql_dbs:
   all:
-  - create: true
+  - &id001
+    create: true
     django_alias: default
     django_migrate: true
     host: hqdb0.internal-va.commcarehq.org
@@ -11,7 +12,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id004
+    create: true
     django_alias: p1
     django_migrate: true
     host: hqdb1.internal-va.commcarehq.org
@@ -23,7 +25,8 @@ postgresql_dbs:
     query_stats: false
     shards: [0, 204]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id005
+    create: true
     django_alias: p2
     django_migrate: true
     host: hqdb1.internal-va.commcarehq.org
@@ -35,7 +38,8 @@ postgresql_dbs:
     query_stats: false
     shards: [205, 409]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id007
+    create: true
     django_alias: p3
     django_migrate: true
     host: hqdb2.internal-va.commcarehq.org
@@ -47,7 +51,8 @@ postgresql_dbs:
     query_stats: false
     shards: [410, 614]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id008
+    create: true
     django_alias: p4
     django_migrate: true
     host: hqdb2.internal-va.commcarehq.org
@@ -59,7 +64,8 @@ postgresql_dbs:
     query_stats: false
     shards: [615, 819]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id009
+    create: true
     django_alias: p5
     django_migrate: true
     host: hqdb2.internal-va.commcarehq.org
@@ -71,7 +77,8 @@ postgresql_dbs:
     query_stats: false
     shards: [820, 1023]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id006
+    create: true
     django_alias: proxy
     django_migrate: true
     host: hqdb1.internal-va.commcarehq.org
@@ -82,7 +89,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id010
+    create: true
     django_alias: synclogs
     django_migrate: true
     host: pgsynclog.internal-va.commcarehq.org
@@ -93,7 +101,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id002
+    create: true
     django_alias: ucr
     django_migrate: false
     host: hqdb0.internal-va.commcarehq.org
@@ -104,7 +113,8 @@ postgresql_dbs:
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id003
+    create: true
     django_alias: null
     django_migrate: true
     host: hqdb0.internal-va.commcarehq.org
@@ -115,7 +125,21 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  by_host: {}
+  by_host:
+    hqdb0.internal-va.commcarehq.org:
+    - *id001
+    - *id002
+    - *id003
+    hqdb1.internal-va.commcarehq.org:
+    - *id004
+    - *id005
+    - *id006
+    hqdb2.internal-va.commcarehq.org:
+    - *id007
+    - *id008
+    - *id009
+    pgsynclog.internal-va.commcarehq.org:
+    - *id010
   custom: []
   form_processing:
     partitions:
