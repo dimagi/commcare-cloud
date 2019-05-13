@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2019-05-13** [Install Pango](0022-install-pango.md)
+This change installs pango and its dependencies for the weasyprint
+library which has been added as a requirement to commcare-hq for
+proper pdf printing of unicode fonts
+
 ### **2019-02-26** [Fix to restart nginx after every letsencrypt cert auto-renewal](0021-fix-letsencrypt-restart-nginx.md)
 Previously you had to manually restart nginx every time letsencrypt auto-renewed,
 which was about every two months. We believed we had fixed this with
