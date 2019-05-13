@@ -161,6 +161,7 @@ old_s3_blob_db_s3_bucket: 'blobdb'
 # TCL object storage
 s3_blob_db_url: "http://{{ groups['blobdb_proxy'][0] }}:{{ blobdb_proxy_port }}"
 s3_blob_db_s3_bucket: 'mowcddb-c1'
+s3_bulk_delete_chunksize: 200
 
 blobdb_proxy_upstream_host: 'mowcddbmum.ipstorage.tatacommunications.com'
 

@@ -1,4 +1,6 @@
 ---
+- import_playbook: host_group_aliases.yml
+
 - name: PostgreSQL Machine Setup
   hosts:
     - postgresql
@@ -50,7 +52,7 @@
     - state: 'present'
   tasks:
     - import_tasks: roles/setup_auth_keys.yml
-      when: hot_standby_server is defined
+      when: hot_standby_server
   tags:
     - pg_standby
 

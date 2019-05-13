@@ -14,7 +14,7 @@ host{% if postgresql_ssl_enabled %}ssl{% endif %}    {{ db.name }}    {{ user.us
 {% endif %}
 {% endfor %}
 {%  else %}
-{% set host_list = groups['formplayer'] + groups.get('touchforms', []) + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups['postgresql'] + groups.get('pg_standby',[]) + groups.get('airflow', []) %}
+{% set host_list = groups['commcarehq'] + groups['postgresql'] + groups.get('pg_standby',[]) | sort %}
 {% if run_websockets_wsgi %}
 {% set host_list = host_list + groups['proxy'] %}
 {% endif %}
