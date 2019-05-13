@@ -1,0 +1,23 @@
+title: Install Pango
+key: install-pango
+date: 2019-05-13
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  This change installs pango and its dependencies for the weasyprint
+  library which has been added as a requirement to commcare-hq for
+  proper pdf printing of unicode fonts
+
+details: |
+  Pango and cairo have been added to common installs as they are now dependencies
+  of commcare-hq. Running the common installs playbook will install the proper
+  version.
+
+
+update_steps: |
+  1. Install common installs
+  ```bash
+  commcare-cloud <env> ap deploy_common.yml --tags=common_installs
+  ```
+  
