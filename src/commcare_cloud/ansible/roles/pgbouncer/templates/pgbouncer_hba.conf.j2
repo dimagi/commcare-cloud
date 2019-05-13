@@ -6,21 +6,3 @@ local   all             all                                     md5
 {% for entry in pgbouncer_hba_entries %}
 {{ entry.contype|default('host') }}    {{ entry.databases|default('all') }}    {{ entry.users|default('all') }}    {% if entry.contype != 'local' %}{{ entry.netmask }}{% endif %}    {{ entry.method|default('md5') }}
 {{ endfor }}
-
-{% set citus_host_list = groups.get('citusdb_worker', []) + groups.get('citusdb_cordinator', []) | unique %}
-{% if inventory_hostname in citus_host_list %}
-{% for host in citus_host_list %}
-# Allow Trus Access from Citus DB
-# {{ host }}
-{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
-{% set db = db_list[0] %}
-{% if db.pgbouncer_host == inventory_hostname or db.pgbouncer_host == hot_standby_master|default(None) or is_monolith|bool %}
-{% if host | ipaddr %}
-host   {{ db.name }}	{{ db.user }}	{{ host }}/32   trust
-{% else %}
-host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
-{% endif %}
-{% endif %}
-{% endfor %}
-{% endfor %}
-{% endif %}
