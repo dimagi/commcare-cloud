@@ -5,4 +5,4 @@ local   all             all                                     md5
 
 {% for entry in pgbouncer_hba_entries %}
 {{ entry.contype|default('host') }}    {{ entry.databases|default('all') }}    {{ entry.users|default('all') }}    {% if entry.contype != 'local' %}{{ entry.netmask }}{% endif %}    {{ entry.method|default('md5') }}
-{{ endfor }}
+{% endfor %}
