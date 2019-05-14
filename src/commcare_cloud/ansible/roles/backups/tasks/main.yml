@@ -101,3 +101,4 @@
     src: check_s3_backup.py.j2
     dest: /usr/local/bin/check_s3_backup.py
     mode: "u=rwx,g=rx,o=rx"
+  when: postgres_s3 or couch_s3 or blobdb_s3

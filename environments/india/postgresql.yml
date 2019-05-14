@@ -7,7 +7,7 @@ REPORTING_DATABASES:
 
 pgbouncer_override:
   pgbouncer_default_pool: 290
-  pgbouncer_max_connections: 2000
+  pgbouncer_max_connections: 4000
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5

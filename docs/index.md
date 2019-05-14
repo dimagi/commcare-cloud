@@ -46,6 +46,8 @@ that machine is also the control machine.
 - Firewall
     - [Configure a firewall on the servers](howto/firewall.md)
 - [Kafka](services/kafka.md)
+- Celery
+    - [Add a new Celery machine](howto/add-celery-machines.md)
 
 ## Optional but recommended
 - [Set up Sentry for error messages](howto/set-up-sentry.md)

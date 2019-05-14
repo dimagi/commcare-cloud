@@ -110,13 +110,16 @@ def print_diff(diff_lines):
 
 def get_monitor_definitions(config):
     monitors = {}
+    monitor_file_names_by_id = {}
     for file in os.listdir(CONFIG_ROOT):
         if file.endswith('yml') and file != '.ignore.yml':
-            with open(os.path.join(CONFIG_ROOT, file), 'r') as mon:
+            file_path = os.path.join(CONFIG_ROOT, file)
+            with open(file_path, 'r') as mon:
                 data = mon.read()
             monitor_def = render_messages(config, yaml.load(data))
             monitors[monitor_def['id']] = monitor_def
-    return monitors
+            monitor_file_names_by_id[monitor_def['id']] = file_path
+    return monitors, monitor_file_names_by_id
 
 
 def dump_monitor_yaml(monitor_definition):
@@ -224,9 +227,20 @@ class RemoteMonitorAPI(object):
 class LocalMonitorAPI(object):
     def __init__(self, config):
         self.config = config
+        self._monitors_by_id = None
+        self._monitor_file_names_by_id = None
+
+    @memoized
+    def _load_monitors(self):
+        self._monitors, self._monitor_file_names_by_id = get_monitor_definitions(self.config)
 
     def get_all(self):
-        return get_monitor_definitions(self.config)
+        self._load_monitors()
+        return self._monitors
+
+    def get_filename_for_monitor(self, monitor_id):
+        self._load_monitors()
+        return self._monitor_file_names_by_id[monitor_id]
 
     def create(self, monitor_id, wrapped_monitor):
         write_monitor_definition(monitor_id, wrapped_monitor)
@@ -279,7 +293,9 @@ class DatadogMonitors(CommandBase):
                 dump_monitor_yaml(get_data_to_update(expected, keys_to_update))))
             any_diffs |= bool(diff)
             if diff:
-                puts(colored.magenta("\nDiff for '{}'\n".format(expected['name'])))
+                puts(colored.magenta("\nDiff for '{}'".format(expected['name'])))
+                puts(colored.cyan(local_monitor_api.get_filename_for_monitor(expected['id'])))
+
                 with indent():
                     print_diff(diff)
                 monitors_with_diffs[id] = expected
