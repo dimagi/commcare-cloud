@@ -8,7 +8,7 @@ local   all             postgres                                peer
 # Allow replication connections from localhost, by a user with the replication privilege.
 local   replication     postgres                                peer
 
-{% for entry in postgres_hba_entries %}
+{% for entry in postgresql_hba_entries %}
 {{ entry.contype|default('host') }}    {{ entry.databases|default('all') }}    {{ entry.users|default('all') }}    {% if entry.contype != 'local' %}{{ entry.netmask }}{% endif %}    {{ entry.method|default('md5') }}
 {{ endfor }}
 
