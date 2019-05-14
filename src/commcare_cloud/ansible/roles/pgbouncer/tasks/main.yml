@@ -22,6 +22,7 @@
 
 - name: pgbouncer hba
   template: src=pgbouncer_hba.conf.j2 dest="{{ pgbouncer_hba }}"
+  when: pgbouncer_auth_type == 'hba'
   notify: Reload pgbouncer
   tags:
     - pgbouncer
