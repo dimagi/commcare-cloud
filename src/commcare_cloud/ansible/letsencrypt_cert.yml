@@ -9,7 +9,7 @@
 
     - name: Update package list
       apt: update_cache=yes
-      when: add_cert_repo|changed
+      when: add_cert_repo is changed
 
     - name: Install Certbot
       apt:
@@ -64,7 +64,7 @@
     - name: Add custom_certbot cron
       cron:
         name: "Certbot Renew"
-        job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew --renew-hook '/etc/init.d/nginx reload'"
+        job: "test -x /usr/bin/certbot && perl -e 'sleep int(rand(3600))' && certbot -q renew --post-hook '/etc/init.d/nginx reload'"
         minute: "0"
         hour: "*/12"
         user: root

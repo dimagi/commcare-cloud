@@ -1,4 +1,6 @@
 ---
+- import_playbook: host_group_aliases.yml
+
 - name: CitusDB Machine Setup
   hosts:
     - citusdb_worker

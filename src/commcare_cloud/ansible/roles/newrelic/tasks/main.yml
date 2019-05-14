@@ -7,7 +7,7 @@
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_new_relic_repo|changed
+  when: add_new_relic_repo is changed
 
 - name: Install newrelic-sysmond
   apt: name=newrelic-sysmond state=present

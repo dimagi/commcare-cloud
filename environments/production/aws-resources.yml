@@ -45,6 +45,7 @@ vpn-production: 10.202.20.194
 vpn-production.public_ip: 18.235.223.2
 web0-production: 10.202.10.233
 web1-production: 10.202.10.84
+web2-production: 10.202.10.224
 web6-production: 10.202.11.98
 web7-production: 10.202.11.62
 web8-production: 10.202.11.30
