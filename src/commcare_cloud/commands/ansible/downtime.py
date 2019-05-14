@@ -32,9 +32,10 @@ class Downtime(CommandBase):
             Optional message to set on Datadog.
         """),
         Argument('-d', '--duration', default=24, help="""
-            Max duration for the Datadog downtime after which it will be auto-cancelled.
+            Max duration in hours for the Datadog downtime after which it will be auto-cancelled.
             This is a safeguard against downtime remaining active and preventing future
             alerts.
+            Default: 24 hours
         """),
     )
 
