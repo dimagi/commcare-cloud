@@ -10,7 +10,7 @@ local   replication     postgres                                peer
 
 {% for entry in postgresql_hba_entries %}
 {{ entry.contype|default('host') }}    {{ entry.databases|default('all') }}    {{ entry.users|default('all') }}    {% if entry.contype != 'local' %}{{ entry.netmask }}{% endif %}    {{ entry.method|default('md5') }}
-{{ endfor }}
+{% endfor %}
 
 {% if inventory_hostname in groups.get('citusdb_worker', []) %}
 {% for host in groups.get('citusdb_cordinator', []) %}
