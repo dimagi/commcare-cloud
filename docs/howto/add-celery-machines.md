@@ -20,14 +20,18 @@ diff environments/<env>/app_process.yml
 
 ## Configure
 
-1. Configure Share Directory
+1. Configure Shared Directory
 
 ```
 commcare-cloud <env> ap deploy_shared_dir.yml --tags=nfs --limit=shared_dir_host
 
 ```
 
+2. Register with pgbouncer machines
 
+```
+cchq $ENV deploy-stack --tags=pgbouncer_hba --limit postgresql
+```
 
 3. Deploy new node
 
@@ -45,4 +49,10 @@ commcare-cloud <env> update-config
 
 ```
 cchq <env> fab deploy
+```
+
+## Update supervisor config
+
+```
+cchq <env> update-supervisor-confs
 ```
