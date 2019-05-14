@@ -1012,7 +1012,7 @@ then it's acceptable to do live.
 Manage downtime for the selected environment.
 
 ```
-commcare-cloud <env> downtime [-m MESSAGE] {start,end}
+commcare-cloud <env> downtime [-m MESSAGE] [-d DURATION] {start,end}
 ```
 
 This notifies Datadog of the planned downtime so that is is recorded
@@ -1027,6 +1027,13 @@ in the history, and so that during it service alerts are silenced.
 ###### `-m MESSAGE, --message MESSAGE`
 
 Optional message to set on Datadog.
+
+###### `-d DURATION, --duration DURATION`
+
+Max duration in hours for the Datadog downtime after which it will be auto-cancelled.
+This is a safeguard against downtime remaining active and preventing future
+alerts.
+Default: 24 hours
 
 ---
 
