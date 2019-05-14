@@ -20,6 +20,7 @@ host   all	all	{{ host }}/32   trust
 host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
 {% endfor %}
+{% endif %}
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
