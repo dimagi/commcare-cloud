@@ -1,6 +1,7 @@
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr: icds-ucr
+  icds-ucr-citus: icds-ucr-citus
   icds-test-ucr: icds-ucr
   icds-ucr-non-dashboard: icds-ucr
   aaa-data: aaa-data
