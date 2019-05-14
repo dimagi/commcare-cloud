@@ -7,6 +7,3 @@
     - "{{ postgresql_dbs.all }}"
     - "{{groups['citusdb_worker']}}"
    when: inventory_hostname in groups["citusdb_cordinator"]  and (item.0.host in groups["citusdb_cordinator"])
-   tags:
-    - citusdb
-    - citusdb_cordinator
