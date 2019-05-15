@@ -173,6 +173,27 @@ servers:
     volume_size: 400
     group: "couchdb2"
     os: trusty
+  - server_name: "couch3-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 400
+    group: "couchdb2"
+    os: bionic
+  - server_name: "couch4-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 400
+    group: "couchdb2"
+    os: bionic
+  - server_name: "couch5-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 400
+    group: "couchdb2"
+    os: bionic
   - server_name: "rabbit0-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
