@@ -77,6 +77,91 @@ servers:
     group: citusdb_worker
     os: bionic
 
+  - server_name: "airflow1-india"
+    server_instance_type: "c5.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 30
+    group: airflow
+    os: bionic
+
+  - server_name: "celery1-india"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 30
+    group: celery
+    os: bionic
+
+  - server_name: "couch2-india"
+    server_instance_type: "c5.2xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 100
+    group: couchdb2
+    os: bionic
+  - server_name: "couch3-india"
+    server_instance_type: "c5.2xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 100
+    group: couchdb2
+    os: bionic
+  - server_name: "couch4-india"
+    server_instance_type: "c5.2xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 100
+    group: couchdb2
+    os: bionic
+
+  - server_name: "redis0-india"
+    server_instance_type: "r5.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    group: redis
+    os: bionic
+
+  - server_name: "es0-india"
+    server_instance_type: "t3.xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    group: elasticsearch
+    os: bionic
+  - server_name: "es1-india"
+    server_instance_type: "t3.xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    group: elasticsearch
+    os: bionic
+
+  - server_name: "formplayer1-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    group: formplayer
+    os: bionic
+
+  - server_name: "pillow2-india"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 25
+    group: pillowtop
+    os: bionic
+
+  - server_name: "kafka0-india"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 50
+    group: kafka
+    os: bionic
+
 proxy_servers:
   - server_name: "proxy1-india"
     server_instance_type: "t3.small"
@@ -86,4 +171,8 @@ proxy_servers:
     group: proxy
     os: bionic
 
-rds_instances: []
+rds_instances:
+  - identifier: "pgmain0-india"
+    instance_type: "db.t2.2xlarge"
+    storage: 500
+    multi_az: true
