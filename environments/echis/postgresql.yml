@@ -12,7 +12,7 @@ postgres_override:
   postgresql_hba_entries:
     - contype: host
       databases: replication
-      users: replication
+      users: hqrepl
       netmask: 0.0.0.0/0
 
 dbs:
