@@ -48,7 +48,7 @@ postgres_override:
   postgresql_hba_entries:
     - contype: host
       databases: replication
-      users: replication
+      users: hqrepl
       netmask: 100.71.184.0/22
     - contype: host
       users: TCLBKPADMIN
