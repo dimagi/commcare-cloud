@@ -139,7 +139,7 @@
 
 - name: update "recovery.conf"
   template:
-    src: roles/postgresql/templates/recovery.conf.j2
+    src: recovery.conf.j2
     dest: "{{ postgresql_recovery_conf }}"
   when: is_pg_standby and recovery_file.stat.exists
   tags:
