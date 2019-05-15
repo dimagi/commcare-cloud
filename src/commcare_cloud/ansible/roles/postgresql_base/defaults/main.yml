@@ -29,9 +29,13 @@ postgresql_maintenance_work_mem: '64MB'
 postgresql_checkpoint_completion_target: '0.5'
 postgresql_wal_buffers: '-1'
 postgresql_default_statistics_target: '100'
+postgresql_min_wal_size: ~
 postgresql_max_wal_size: '256MB'
 postgresql_slow_log_threshold: 300
 postgresql_random_page_cost: 4.0
+postgresql_max_worker_processes: ~
+postgresql_max_parallel_workers_per_gather: ~
+postgresql_effective_io_concurrency: ~
 
 allow_direct_postgresql_access: no
 allow_direct_citusdb_access: no
