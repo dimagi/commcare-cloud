@@ -6,7 +6,7 @@
 - hosts: "{{ standby }}"
   become: yes
   vars_files:
-    - roles/postgresql/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   tasks:
     - stat:
         path: "{{ postgresql_recovery_conf }}"
