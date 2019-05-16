@@ -177,7 +177,7 @@ def get_downtime_record(environment):
     if initialize_datadog(environment):
         downtimes = datadog.api.Downtime.get_all(current_only=True)
         for downtime in downtimes:
-            if downtime['scope'] == scope and downtime['monitor_tags'] == ["*"]:
+            if downtime['scope'] == [scope] and downtime['monitor_tags'] == ["*"]:
                 return downtime
 
 
