@@ -75,11 +75,14 @@
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
 
-- name: Remove wal archive directory (cleanup)
+- name: Create wal archive directory
   become: true
   file:
-    path: "{{ postgresql_dir_path }}/wal_archive"
-    state: absent
+    path: "{{ postgresql_archive_path }}"
+    state: directory
+    owner: postgres
+    group: postgres
+  when: postgresql_enable_archive
 
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
