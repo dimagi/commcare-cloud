@@ -60,7 +60,6 @@ file.
 
 ## Advanced tasks
 
-- [Backup PostgreSQL](postgresql/add-barman-server.md)
 - [Moving partitioned databases](postgresql/move-partitioned-database.md)
 
 ---
