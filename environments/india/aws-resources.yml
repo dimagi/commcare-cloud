@@ -12,6 +12,7 @@ es0-india: 10.203.40.175
 es1-india: 10.203.40.142
 formplayer1-india: 10.203.10.208
 kafka0-india: 10.203.40.207
+pgbouncer0-india: 10.203.40.199
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pillow2-india: 10.203.10.9
 proxy1-india: 10.203.20.59
