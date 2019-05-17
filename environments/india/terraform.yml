@@ -154,7 +154,7 @@ servers:
     group: pillowtop
     os: bionic
 
-  - server_name: "kafka0-india"
+  - server_name: "kafka1-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
