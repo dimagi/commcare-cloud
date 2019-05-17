@@ -433,6 +433,9 @@ Assumes that the deploy_db.yml playbook has already been applied to the standby 
 ### Replication Delay
 https://www.enterprisedb.com/blog/monitoring-approach-streaming-replication-hot-standby-postgresql-93
 
+* Check if wal receiver and sender process are running respectively on standby and master using `ps aux | grep receiver` and `ps aux | grep sender`
+* Alternatively use SQL `select * from pg_stat_replication` on either master or standby
+* If WAL processes are not running, check logs, address any issues and may need to reload/restart postgres
 * Check logs for anything suspicious
 * Checking replication delay
   * [Use datadog](https://app.datadoghq.com/dash/263336/postgres---overview?live=true&page=0&is_auto=false&from_ts=1511770050831&to_ts=1511773650831&tile_size=m&tpl_var_env=*&fullscreen=253462140&tpl_var_host=*)
