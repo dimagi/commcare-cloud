@@ -1,0 +1,20 @@
+- _id: commcarehq
+  by_node:
+    couchdb@10.247.164.12: [s1, s2]
+    couchdb@10.247.164.5: [s1]
+    couchdb@10.247.164.14: [s2]
+  by_range:
+    s1: [couchdb@10.247.164.12, couchdb@10.247.164.5]
+    s2: [couchdb@10.247.164.12, couchdb@10.247.164.14]
+  changelog: []
+  shard_suffix: [46, 49, 52, 57, 53, 56, 50, 52, 52, 56, 49]
+- _id: commcarehq__apps
+  by_node:
+    couchdb@10.247.164.12: [s2]
+    couchdb@10.247.164.5: [s1, s2]
+    couchdb@10.247.164.14: [s1]
+  by_range:
+    s1: [couchdb@10.247.164.14, couchdb@10.247.164.5]
+    s2: [couchdb@10.247.164.12, couchdb@10.247.164.5]
+  changelog: []
+  shard_suffix: [46, 49, 52, 57, 53, 56, 50, 52, 53, 48, 53]
