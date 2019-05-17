@@ -191,3 +191,9 @@ db1
 
 [airflow:children]
 airflow0
+
+[remote_postgresql:children]
+rds_pgmain0
+
+[ansible_skip:children]
+remote_postgresql
