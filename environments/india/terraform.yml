@@ -162,6 +162,15 @@ servers:
     group: kafka
     os: bionic
 
+  - server_name: "pgbouncer0-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: bionic
+
+
 proxy_servers:
   - server_name: "proxy1-india"
     server_instance_type: "t3.small"
