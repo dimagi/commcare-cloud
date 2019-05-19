@@ -17,6 +17,10 @@
     owner: rabbitmq
     mode: 0644
 
+- name: Make sure RabbitMQ service is started before running config tasks
+  become: yes
+  service: name=rabbitmq-server state=started
+
 - include: config-cluster.yml
   when: rabbitmq_create_cluster
 
