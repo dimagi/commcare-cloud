@@ -1,4 +1,12 @@
 ---
+- name: check nginx version
+  become: yes
+  block:
+    - command: 'nginx -v'
+      register: nginx_version
+    - debug:
+        var: nginx_version.stdout_lines
+
 - name: check nginx configuration
   become: yes
   shell: "nginx -t"
