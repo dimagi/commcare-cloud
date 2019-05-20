@@ -97,23 +97,23 @@ servers:
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 100
+    volume_size: 275
     group: couchdb2
-    os: bionic
+    os: trusty
   - server_name: "couch3-india"
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 100
+    volume_size: 275
     group: couchdb2
-    os: bionic
+    os: trusty
   - server_name: "couch4-india"
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 100
+    volume_size: 275
     group: couchdb2
-    os: bionic
+    os: trusty
 
   - server_name: "redis0-india"
     server_instance_type: "r5.large"

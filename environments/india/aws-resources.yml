@@ -4,9 +4,9 @@ citus0-india: 10.203.10.77
 citus1-india: 10.203.10.74
 citus2-india: 10.203.10.190
 control0-india: 10.203.10.246
-couch2-india: 10.203.40.122
-couch3-india: 10.203.40.114
-couch4-india: 10.203.40.189
+couch2-india: 10.203.40.187
+couch3-india: 10.203.40.186
+couch4-india: 10.203.40.188
 djangomanage0-india: 10.203.10.37
 es0-india: 10.203.40.175
 es1-india: 10.203.40.142
