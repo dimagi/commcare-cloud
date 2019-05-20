@@ -122,7 +122,6 @@ web1
 
 [postgresql:children]
 remote_postgresql
-db1  # todo: remove
 pgbouncer0
 
 [rabbitmq:children]
@@ -135,7 +134,6 @@ kafka1
 kafka1
 
 [celery:children]
-celery0  # todo: remove
 celery1
 
 [pillowtop:children]
@@ -148,8 +146,6 @@ formplayer1
 redis0
 
 [elasticsearch:children]
-es2  # todo: remove
-es3  # todo: remove
 es0
 es1
 
@@ -189,11 +185,6 @@ control0
 
 [django_manage:children]
 djangomanage0
-
-[pg_standby]
-
-[pg_backup:children]
-db1
 
 [airflow:children]
 airflow1
