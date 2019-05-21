@@ -35,7 +35,6 @@ nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
-kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 control_machine_ip: 10.162.36.196
@@ -58,12 +57,18 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
+s3_signature_version: 's3v4'
+
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 # Copied from all.yml, hardcoded proxy0 instead of the first proxy host.
 # This is a temporary setup that lets us route traffic through the softlayer proxy
 # to be closer to the riakcs machines it serves.
-s3_blob_db_url: "http://{{ groups['proxy0'][0] }}:{{ riakcs_proxy_port }}"
+old_s3_blob_db_url: "http://{{ groups['proxy0'][0] }}:{{ riakcs_proxy_port }}"
 
 localsettings:
   ALLOWED_HOSTS:
@@ -77,6 +82,7 @@ localsettings:
 #  COUCH_CACHE_VIEWS:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
