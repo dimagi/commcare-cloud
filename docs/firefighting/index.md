@@ -257,25 +257,27 @@ $ mount /mnt/shared_data
 # verify that it is mounted and that there are files in the subfolders
 ```
 
-### Forcing re-connection of an NFS client in a webworker
+### Forcing re-connection of an NFS client in a webworker (or other commcarehq machine)
 
 It may happen, specially if the client crashes or has kernel oops, that a connection gets in a state where it cannot be broken nor re-established.  This is how we force re-connection in a webworker.
+
 1. Verify NFS is actually stuck
-    a. “df” doesn’t work, it hangs. Same goes for lsof.
-    b. “umount” results in umount.nfs: /mnt/shared_icds: device is busy
-2. top all gunicorns and supervisor
-    a. `sudo supervirsorctl stop all`
-    b. jVerify “stuck” processes keep running: $ ps aux|grep gunicorn
-    c. $ sudo service supervisord stop
-    d. Verify “stuck” processes are gone: $ ps aux|grep gunicorn
+    1. `df` doesn’t work, it hangs. Same goes for `lsof`.
+    2. `umount` results in `umount.nfs: /mnt/shared_icds`: device is busy
+2. top all app processes (gunicorn, etc) and datadog
+    1. `sudo supervisorctl stop all`
+    5. `sudo service datadog-agent stop`
 3. Force umount 
-    a. $ sudo umount -f /mnt/shared_icds
+    1. `sudo umount -f /mnt/shared_icds`
+        - if that doesn't work make sure to kill all app processes
+          in e.g. for webworkers `ps aux | grep gunicor[n]`
 4. Re-mount
-    a. $ sudo mount /mnt/shared_icds
-    b. Verify NFS mount works: $ df
-5. Start supervisor and gunicorns
-    a. $ sudo service supervisord start
-    b. $ sudo supervisorctl start all
+    1. `sudo mount /mnt/shared_icds`
+    2. Verify NFS mount works: `df`
+5. Start supervisor and app processes
+    1. `sudo service supervisord start`
+    2. `sudo supervisorctl start all`
+    3. `sudo service datadog-agent start`
 
 If none of the above works check that nfsd is running on the shared_dir_host.
 
