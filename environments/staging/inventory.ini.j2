@@ -34,12 +34,6 @@ rds_pg0
 pgproxy1
 remote_postgresql
 
-{{ __couch0__ }}
-
-{{ __couch1__ }}
-
-{{ __couch2__ }}
-
 {{ __couch3__ }}
 
 {{ __couch4__ }}
@@ -47,15 +41,12 @@ remote_postgresql
 {{ __couch5__ }}
 
 [couchdb2:children]
-couch0
-couch1
-couch2
 couch3
 couch4
 couch5
 
 [couchdb2_proxy:children]
-couch0
+couch3
 
 {{ __rabbit1__ }}
 
