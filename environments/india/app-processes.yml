@@ -22,9 +22,7 @@ celery_processes:
       optimize: True
     background_queue:
       concurrency: 5
-  celery0: {}
 pillows:
-  pillow1: {}
   pillow2:
     AppDbChangeFeedPillow:
       num_processes: 1
