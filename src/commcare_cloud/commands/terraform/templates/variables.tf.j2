@@ -19,7 +19,7 @@ variable "openvpn_instance_type" {
 
 # Use 'hvm:ebs-ssd' AMIs from https://cloud-images.ubuntu.com/locator/ec2/
 variable "server_image" {
-  default = "{{ {'us-east-1': 'ami-07cf43e1798df5582', 'ap-south-1': 'ami-07c128e60e80e6766'}[region] }}"
+  default = "{{ {'us-east-1': 'ami-07cf43e1798df5582', 'ap-south-1': 'ami-04242e05c1ebface0'}[region] }}"
 }
 
 variable "bionic_server_image" {
