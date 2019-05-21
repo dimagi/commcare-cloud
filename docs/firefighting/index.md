@@ -266,7 +266,7 @@ It may happen, specially if the client crashes or has kernel oops, that a connec
     2. `umount` results in `umount.nfs: /mnt/shared_icds`: device is busy
 2. top all app processes (gunicorn, etc) and datadog
     1. `sudo supervisorctl stop all`
-    5. `sudo service datadog-agent stop`
+    2. `sudo service datadog-agent stop`
 3. Force umount 
     1. `sudo umount -f /mnt/shared_icds`
         - if that doesn't work make sure to kill all app processes
