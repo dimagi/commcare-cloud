@@ -35,7 +35,6 @@ nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
-kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 control_machine_ip: 10.162.36.196
