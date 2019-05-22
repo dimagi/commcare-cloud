@@ -56,7 +56,19 @@
   when: ansible_distribution_version == '14.04'
 
 - name: Install Kafka systemd script
-  template: src=kafka.service.j2 dest=/etc/systemd/system/kafka.service mode=0755
+  template: src=kafka-server.service.j2 dest=/etc/systemd/system/kafka-server.service mode=0755
+  when: ansible_distribution_version == '18.04'
+
+- name: Remove kafka.service (cleanup)
+  file:
+    name: /etc/systemd/system/kafka.service
+    state: absent
+  when: ansible_distribution_version == '18.04'
+
+- name: Reload Systemd Daemon
+  become: yes
+  systemd:
+    daemon_reload: yes
   when: ansible_distribution_version == '18.04'
 
 - name: Enable and start Kafka service
