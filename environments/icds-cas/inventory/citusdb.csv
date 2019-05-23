@@ -27,6 +27,7 @@ citusworker22,100.71.184.139,citusdb,citus_worker,,MUMGCCWCDPRDCW22
 citusworker23,100.71.184.133,citusdb,citus_worker,,MUMGCCWCDPRDCW23
 ,,,,,
 group,var,val,type,,
+citusdb,ansible_python_interpreter,/usr/bin/python3,S,,
 citus_master,pgbouncer_default_pool,800,I,,
 citus_master,postgresql_checkpoint_completion_target,0.9,F,,
 citus_master,postgresql_default_statistics_target,500,I,,
