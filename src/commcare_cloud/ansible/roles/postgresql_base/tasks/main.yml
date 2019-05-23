@@ -83,12 +83,12 @@
 
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
-  tags: postgresql_conf
+  tags: configure
   notify: Restart postgres
 
 - name: PostgreSQL access configuration
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
-  tags: postgresql_conf
+  tags: configure
   notify: Reload postgres
 
 - meta: flush_handlers
@@ -98,6 +98,8 @@
   vars:
     db_is_remote: no
     postgresql_host: "{{ inventory_hostname }}"
+  tags:
+    - configure
 
 # restart / reload if necessary to make sure replication slot config updated
 - meta: flush_handlers
@@ -126,6 +128,7 @@
   when: not is_pg_standby
   tags:
     - replication
+    - configure
 
 # Only update recovery config if it exists, don't create it
 - name: Check if recovery.conf exists
@@ -136,15 +139,17 @@
   tags:
     - postgres_users
     - replication
+    - configure
 
 - name: update "recovery.conf"
   template:
-    src: roles/postgresql/templates/recovery.conf.j2
+    src: recovery.conf.j2
     dest: "{{ postgresql_recovery_conf }}"
   when: is_pg_standby and recovery_file.stat.exists
   tags:
     - postgres_users
     - replication
+    - configure
 
 - name: Enable query stat collection
   become: yes
@@ -154,6 +159,8 @@
   shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
   when: item.query_stats and not is_pg_standby and (item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs.all }}"
+  tags:
+    - configure
 
 - name: Copy log rotation script
   become: yes
