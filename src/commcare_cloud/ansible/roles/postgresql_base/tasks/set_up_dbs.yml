@@ -105,7 +105,7 @@
   postgresql_set:
     name: "{{ item.1.name }}"
     value: "{{ item.1.value }}"
-    db: "{{ item.name }}"
+    db: "{{ item.0.name }}"
     port: "{{ postgresql_port }}"
     login_host: "{{ db_is_remote and postgresql_host or omit }}"
     login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
