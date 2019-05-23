@@ -257,25 +257,27 @@ $ mount /mnt/shared_data
 # verify that it is mounted and that there are files in the subfolders
 ```
 
-### Forcing re-connection of an NFS client in a webworker
+### Forcing re-connection of an NFS client in a webworker (or other commcarehq machine)
 
 It may happen, specially if the client crashes or has kernel oops, that a connection gets in a state where it cannot be broken nor re-established.  This is how we force re-connection in a webworker.
+
 1. Verify NFS is actually stuck
-    a. “df” doesn’t work, it hangs. Same goes for lsof.
-    b. “umount” results in umount.nfs: /mnt/shared_icds: device is busy
-2. top all gunicorns and supervisor
-    a. `sudo supervirsorctl stop all`
-    b. jVerify “stuck” processes keep running: $ ps aux|grep gunicorn
-    c. $ sudo service supervisord stop
-    d. Verify “stuck” processes are gone: $ ps aux|grep gunicorn
+    1. `df` doesn’t work, it hangs. Same goes for `lsof`.
+    2. `umount` results in `umount.nfs: /mnt/shared_icds`: device is busy
+2. top all app processes (gunicorn, etc) and datadog
+    1. `sudo supervisorctl stop all`
+    2. `sudo service datadog-agent stop`
 3. Force umount 
-    a. $ sudo umount -f /mnt/shared_icds
+    1. `sudo umount -f /mnt/shared_icds`
+        - if that doesn't work make sure to kill all app processes
+          in e.g. for webworkers `ps aux | grep gunicor[n]`
 4. Re-mount
-    a. $ sudo mount /mnt/shared_icds
-    b. Verify NFS mount works: $ df
-5. Start supervisor and gunicorns
-    a. $ sudo service supervisord start
-    b. $ sudo supervisorctl start all
+    1. `sudo mount /mnt/shared_icds`
+    2. Verify NFS mount works: `df`
+5. Start supervisor and app processes
+    1. `sudo service supervisord start`
+    2. `sudo supervisorctl start all`
+    3. `sudo service datadog-agent start`
 
 If none of the above works check that nfsd is running on the shared_dir_host.
 
@@ -433,6 +435,9 @@ Assumes that the deploy_db.yml playbook has already been applied to the standby 
 ### Replication Delay
 https://www.enterprisedb.com/blog/monitoring-approach-streaming-replication-hot-standby-postgresql-93
 
+* Check if wal receiver and sender process are running respectively on standby and master using `ps aux | grep receiver` and `ps aux | grep sender`
+* Alternatively use SQL `select * from pg_stat_replication` on either master or standby
+* If WAL processes are not running, check logs, address any issues and may need to reload/restart postgres
 * Check logs for anything suspicious
 * Checking replication delay
   * [Use datadog](https://app.datadoghq.com/dash/263336/postgres---overview?live=true&page=0&is_auto=false&from_ts=1511770050831&to_ts=1511773650831&tile_size=m&tpl_var_env=*&fullscreen=253462140&tpl_var_host=*)

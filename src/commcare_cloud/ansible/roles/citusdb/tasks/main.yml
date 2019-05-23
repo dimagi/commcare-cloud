@@ -31,13 +31,14 @@
    with_items: "{{ postgresql_dbs.all }}"
    when: item.host == inventory_hostname
    tags:
-    - citusdb 
+    - configure
 
  - name: Set up Citus Worker DBs
    import_tasks: setup_worker.yml
+   tags:
+     - configure
 
  - name: Setup citusdb_cordinator
    import_tasks: setup_cordinator.yml 
    tags:
-    - citusdb 
-    - citusdb_cordinator 
+    - configure

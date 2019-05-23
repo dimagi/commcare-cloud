@@ -96,7 +96,7 @@ dbs:
         host: pgshard7
       p9:
         shards: [824, 926]
-        host: pgshard8
+        host: pgshard8standby
       p10:
         shards: [927, 1023]
         host: pgshard9
