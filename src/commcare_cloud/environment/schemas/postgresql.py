@@ -132,6 +132,13 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 else:
                     db.port = DEFAULT_PORT
 
+        for entry in self.postgres_override.postgresql_hba_entries:
+            netmask = entry.get('netmask')
+            if netmask and not re.match(r'(\d+\.?){4}', netmask):
+                host, mask = netmask.split('/')
+                host = environment.translate_host(host, environment.paths.postgresql_yml)
+                entry['netmask'] = '{}/{}'.format(host, mask)
+
     def generate_postgresql_dbs(self):
         return filter(None, [
             self.dbs.main, self.dbs.synclogs,
