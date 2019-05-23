@@ -80,7 +80,7 @@
       become: true
       with_items: "{{ commcarehq_requirements }}"
       pip:
-        requirements: "{{ code_home }}/requirements-python3_6/{{ item }}"
+        requirements: "{{ code_home }}/requirements-python3/{{ item }}"
         virtualenv: "{{ py3_virtualenv_home }}"
         virtualenv_python: "python3.6"
         chdir: "{{ code_home }}"
