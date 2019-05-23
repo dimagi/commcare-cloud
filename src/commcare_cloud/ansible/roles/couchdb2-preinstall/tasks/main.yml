@@ -16,3 +16,8 @@
     mode: 0755
   with_items:
     - "{{ couchdb_parent_srcs_dir }}"
+
+- name: Add Erlang apt repo
+  block:
+    - apt_key: url=https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
+    - apt_repository: repo="deb https://packages.erlang-solutions.com/ubuntu bionic contrib" state=present
