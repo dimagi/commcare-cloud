@@ -152,19 +152,6 @@ es1
 [shared_dir_host:children]
 redis0
 
-[riakcs:children]
-riak15
-riak16
-riak17
-riak18
-riak19
-
-[riakcs:vars]
-datavol_device=/dev/xvdc
-
-[stanchion:children]
-riak15
-
 [couchdb2:children]
 couch2
 couch3
