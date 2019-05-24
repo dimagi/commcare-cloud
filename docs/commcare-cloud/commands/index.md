@@ -283,12 +283,13 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'./src/commcare_cloud/ansible/library'])
+                        prepend colon-separated path(s) to module library (def
+                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
+                        gins/modules)
   -o, --one-line        condense output
   --playbook-dir=BASEDIR
                         Since this tool does not use playbooks, use this as a
-                        subsitute playbook directory.This sets the relative
+                        substitute playbook directory.This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
@@ -299,7 +300,20 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --vault-id=VAULT_IDS  the vault identity to use
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
                         connection debugging)
-  --version             show program's version number and exit
+  --version             show program's version number, config file location,
+                        configured module search path, module location,
+                        executable location and exit
+
+```
+#####   Privilege Escalation Options
+```
+    control how and which user you become as on target hosts
+
+    --become-method=BECOME_METHOD
+                        privilege escalation method to use (default=sudo), use
+                        `ansible-doc -t become -l` to list valid choices.
+    -K, --ask-become-pass
+                        ask for privilege escalation password
 
 ```
 #####   Connection Options
@@ -326,18 +340,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         specify extra arguments to pass to scp only (e.g. -l)
     --ssh-extra-args=SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-#####   Privilege Escalation Options
-```
-    control how and which user you become as on target hosts
-
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun | enable ]
-    -K, --ask-become-pass
-                        ask for privilege escalation password
 ```
 
 ---
@@ -402,12 +404,13 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'./src/commcare_cloud/ansible/library'])
+                        prepend colon-separated path(s) to module library (def
+                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
+                        gins/modules)
   -o, --one-line        condense output
   --playbook-dir=BASEDIR
                         Since this tool does not use playbooks, use this as a
-                        subsitute playbook directory.This sets the relative
+                        substitute playbook directory.This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
@@ -418,7 +421,20 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --vault-id=VAULT_IDS  the vault identity to use
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
                         connection debugging)
-  --version             show program's version number and exit
+  --version             show program's version number, config file location,
+                        configured module search path, module location,
+                        executable location and exit
+
+```
+#####   Privilege Escalation Options
+```
+    control how and which user you become as on target hosts
+
+    --become-method=BECOME_METHOD
+                        privilege escalation method to use (default=sudo), use
+                        `ansible-doc -t become -l` to list valid choices.
+    -K, --ask-become-pass
+                        ask for privilege escalation password
 
 ```
 #####   Connection Options
@@ -445,18 +461,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         specify extra arguments to pass to scp only (e.g. -l)
     --ssh-extra-args=SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
-
-```
-#####   Privilege Escalation Options
-```
-    control how and which user you become as on target hosts
-
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun | enable ]
-    -K, --ask-become-pass
-                        ask for privilege escalation password
 ```
 
 ---
@@ -640,8 +644,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library
-                        (default=[u'./src/commcare_cloud/ansible/library'])
+                        prepend colon-separated path(s) to module library (def
+                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
+                        gins/modules)
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -654,7 +659,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --vault-id=VAULT_IDS  the vault identity to use
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
                         connection debugging)
-  --version             show program's version number and exit
+  --version             show program's version number, config file location,
+                        configured module search path, module location,
+                        executable location and exit
 
 ```
 #####   Connection Options
@@ -690,9 +697,8 @@ authenticate using the pem file (or prompt for root password if there is no pem 
     -b, --become        run operations with become (does not imply password
                         prompting)
     --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo),
-                        valid choices: [ sudo | su | pbrun | pfexec | doas |
-                        dzdo | ksu | runas | pmrun | enable ]
+                        privilege escalation method to use (default=sudo), use
+                        `ansible-doc -t become -l` to list valid choices.
     --become-user=BECOME_USER
                         run operations as this user (default=root)
     -K, --ask-become-pass
