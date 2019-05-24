@@ -82,7 +82,6 @@ localsettings:
 #  COUCH_CACHE_VIEWS:
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  BLOB_DB_MIGRATING_FROM_S3_TO_S3: yes
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
