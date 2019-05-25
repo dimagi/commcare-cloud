@@ -19,9 +19,9 @@ Would be nice to get a diagram in here.
 This section will cover OS, system, and user-level setup
 that is common among all VMs involved in a CommCare HQ production environment.
 
-### Ubuntu Linux OS (14.04)
+### Ubuntu Linux OS (18.04)
 
-The system and all our tools have been well-tested on Ubuntu 14.04 Trusty Tahr
+The system and all our tools have been well-tested on Ubuntu 18.04 Bionic Beaver
 and aren't expected or guaranteed to work on any other OS or Ubuntu version.
 
 In addition, make sure that if you have the option, to select the correct
