@@ -2,4 +2,4 @@ acceptable_maintenance_window:
   hour_start: 0
   hour_end: 7
   timezone: Asia/Kolkata
-email_enabled: False
+email_enabled: True
