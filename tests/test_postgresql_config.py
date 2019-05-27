@@ -8,6 +8,8 @@ from parameterized import parameterized
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
 
+from nose.tools import assert_equal
+
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'postgresql_config')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
 
@@ -24,4 +26,4 @@ def test_postgresql_config(env_name):
 
     actual_json = env.postgresql_config.to_generated_variables()['postgresql_dbs']
 
-    assert actual_json == expected_json, "{} != {}".format(actual_json, expected_json)
+    assert_equal(actual_json, expected_json)
