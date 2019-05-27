@@ -118,6 +118,11 @@ localsettings:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+  UCR_COMPARISONS:
+    static-mpr_1_person_cases:
+    static-mpr_2a_3_child_delivery_forms:
+    static-mpr_2ci_child_birth_list:
+    static-asr_2_pregnancies:
 
 site_locations:
   - name: /data_dumps/export/enikshay/public
