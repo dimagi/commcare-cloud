@@ -198,28 +198,15 @@
     - cron
     - backups
 
-- name: Create aws config directory
-  become: yes
-  file:
-    path: '{{ couchdb_dir }}/.aws'
-    owner: couchdb
-    group: couchdb
-    mode: 0700
-    state: directory
-  when: couch_s3
-  tags:
-    - cron
-    - backups
 
-- name: copy boto3 credentials file
+- name: Set up aws credentials
   become: yes
-  template:
-    src: "aws_credentials.j2"
-    dest: "{{ couchdb_dir }}/.aws/credentials"
-    group: couchdb
-    owner: couchdb
-    mode: 0700
-    backup: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_aws_credentials.yml
+  vars:
+    s3_user: "couchdb"
+    s3_user_home_dir: "{{ couchdb_dir }}"
   when: couch_s3
   tags:
     - cron
