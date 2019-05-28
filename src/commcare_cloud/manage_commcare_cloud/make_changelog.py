@@ -63,9 +63,9 @@ def compile_changelog():
 def load_changelog_entry(path):
     try:
         with open(path, encoding='utf-8') as f:
-            change_yaml = yaml.load(f)
+            change_yaml = yaml.safe_load(f)
             change_yaml['filename'] = re.sub(r'\.yml$', '.md', path.split('/')[-1])
-            # yaml.load already parses dates, using this instead of ChangelogEntry.wrap
+            # yaml.safe_load already parses dates, using this instead of ChangelogEntry.wrap
             return ChangelogEntry(**change_yaml)
     except Exception:
         print("Error parsing the file {}.".format(path), file=sys.stderr)
