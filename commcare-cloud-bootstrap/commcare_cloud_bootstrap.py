@@ -447,7 +447,7 @@ class Provision(object):
     @staticmethod
     def run(args):
         with open(args.spec) as f:
-            spec = yaml.load(f)
+            spec = yaml.safe_load(f)
 
         spec = Spec.wrap(spec)
         provision_machines(spec, args.env, create_machines=args.create_machines)
