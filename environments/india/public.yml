@@ -65,11 +65,6 @@ s3_signature_version: 's3v4'
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-# Copied from all.yml, hardcoded proxy0 instead of the first proxy host.
-# This is a temporary setup that lets us route traffic through the softlayer proxy
-# to be closer to the riakcs machines it serves.
-old_s3_blob_db_url: "http://{{ groups['proxy0'][0] }}:{{ riakcs_proxy_port }}"
-
 localsettings:
   ALLOWED_HOSTS:
     - "{{ CAS_SITE_HOST }}"
