@@ -46,7 +46,7 @@ Then run the migration in a tmux (or screen) with these good defaults options
 cchq <env> django-manage --tmux run_blob_migration migrate_backend --log-dir=/opt/data/riak2s3-migration-logs --chunk-size=1000 --num-workers=15
 ```
 
-At the end, you'll get a message saying that some blobs are missing
+At the end, you may get a message saying that some blobs are missing
 and a link to a log file that contains the info about which ones.
 (If you don't get this message, congratulations! You can skip this step.)
 Run the following command to check all the blobs in the file to get more info
