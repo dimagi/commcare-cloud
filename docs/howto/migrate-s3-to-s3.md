@@ -79,7 +79,7 @@ Legend:
 - `Not found` means that the missing blob is still referenced in blob metadata,
   but not found in either the old backend or new backend.
 - `Found in (new|old) db` means that actually it is present in one of the backends,
-  unlike originally reported. These are generally 0. 
+  unlike originally reported. Re-run the `check_blob_logs` command with `--migrate` to migrate items "Found in old db".
 
 ## Flip to just the new backend
 1. Make sure you've run the steps above to move all data to the new backend.
