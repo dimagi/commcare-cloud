@@ -74,7 +74,7 @@ XFormInstance: checked 42 records
 
 Legend:
 - `Not referenced` is OK. It means that the blob that was said to be "missing"
-  isn't in the blobdb but also isn't referenced in blob metadata anymore, so it was likely deleted
+  isn't in the blobdb but also isn't referenced by its parent object anymore (this is only meaningful if `BlobMeta.parent_id` is a couch identifier that can be used to lookup the parent object), so it was likely deleted
   while the migration was running.
 - `Not found` means that the missing blob is still referenced in blob metadata,
   but not found in either the old backend or new backend.
