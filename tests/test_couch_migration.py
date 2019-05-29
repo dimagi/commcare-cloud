@@ -127,7 +127,7 @@ def _get_expected_yml(plan_name, filename):
 
 def _get_yml(path):
     with open(path, 'r') as exp:
-        return yaml.load(exp)
+        return yaml.safe_load(exp)
 
 
 def _get_test_file(plan_name, filename):

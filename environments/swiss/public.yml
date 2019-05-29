@@ -26,6 +26,7 @@ couch_s3: True
 
 es_local_repo: False
 
+aws_region: ch-dk-2
 aws_endpoint: https://sos-ch-dk-2.exo.io
 es_snapshot_bucket:   commcare-almanach-backup
 postgres_snapshot_bucket: commcare-almanach-backup
