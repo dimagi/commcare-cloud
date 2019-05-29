@@ -2,13 +2,16 @@
 dependencies:
   - couchdb2-preinstall
   - role: andrewrothstein.couchdb-cluster
+    when: ansible_distribution_version != '18.04'
+  - role: andrewrothstein.couchdb-cluster
     couchdb_dep_pkgs:
-    - build-essential
-    - pkg-config
-    - esl-erlang=1:21.3.8.2-1
-    - libicu-dev
-    - libnspr4-dev
-    - libcurl4-openssl-dev
-    - couch-libmozjs185-dev
+      - build-essential
+      - pkg-config
+      - esl-erlang=1:21.3.8.2-1
+      - libicu-dev
+      - libnspr4-dev
+      - libcurl4-openssl-dev
+      - couch-libmozjs185-dev
+    when: ansible_distribution_version == '18.04'
 
   - role: monit
