@@ -19,7 +19,7 @@ def test_postgresql_config(env_name):
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
 
     with open(env.paths.generated_yml) as f:
-        generated = yaml.load(f)
+        generated = yaml.safe_load(f)
         assert generated.keys() == ['postgresql_dbs']
 
     expected_json = generated['postgresql_dbs']
