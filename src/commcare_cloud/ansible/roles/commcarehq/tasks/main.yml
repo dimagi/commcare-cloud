@@ -82,7 +82,7 @@
       pip:
         requirements: "{{ code_home }}/requirements-python3/{{ item }}"
         virtualenv: "{{ py3_virtualenv_home }}"
-        virtualenv_python: "python3.6"
+        virtualenv_python: "python3.7"
         chdir: "{{ code_home }}"
       tags:
         - slow
