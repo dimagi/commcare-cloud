@@ -61,8 +61,8 @@
     - monit # service restarter
     - libcairo2
     - libpango1.0-0
-    - python3.7
-    - python3.7-dev
+    - python3.6
+    - python3.6-dev
 
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
