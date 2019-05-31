@@ -7,3 +7,8 @@
     - python-minimal
     - python3-pip
     - ufw
+    - libbz2-dev
+
+- name: Install Python 3.6.8
+  become: yes
+  script: install_python_3.6.8.sh
