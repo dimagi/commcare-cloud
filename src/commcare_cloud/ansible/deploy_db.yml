@@ -5,7 +5,6 @@
     - redis
     - elasticsearch
     - rabbitmq
-    - riakcs
     - formplayer
     - django_manage
   become: true
@@ -78,9 +77,6 @@
     - kafka
     - zookeeper
 
-- import_playbook: deploy_riakcs.yml
-  tags: riakcs
-
 # Note other machines also have java installed, but are initiated through the meta task
 - name: Java
   become: true
@@ -97,7 +93,6 @@
     - redis
     - elasticsearch
     - rabbitmq
-    - riakcs
     - formplayer
   tags: 'kernel_tuning'
   roles:
