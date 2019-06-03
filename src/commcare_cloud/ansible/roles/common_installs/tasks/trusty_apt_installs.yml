@@ -3,5 +3,3 @@
   become: yes
   with_items:
     - python-software-properties
-    - python3.6
-    - python3.6-dev
