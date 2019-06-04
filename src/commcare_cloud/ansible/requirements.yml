@@ -1,4 +1,6 @@
 ---
+- version: v2.1.5
+  name: andrewrothstein.couchdb
 - version: v1.1.4
   name: andrewrothstein.couchdb-cluster
 - src: git+https://github.com/debops-contrib/ansible-etckeeper.git

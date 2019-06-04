@@ -126,7 +126,7 @@ class CopyFiles(CommandBase):
 
 def read_plan(plan_path, target_env, limit=None):
     with open(plan_path, 'r') as f:
-        plan_dict = yaml.load(f)
+        plan_dict = yaml.safe_load(f)
 
     source_env = None
     if 'source_env' in plan_dict:
