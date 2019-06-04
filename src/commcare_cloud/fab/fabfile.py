@@ -127,8 +127,8 @@ def _setup_path():
 
     env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
     env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
-    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3_6')
-    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3_6')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.7')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.7')
 
     if env.py3_run_deploy:
         env.virtualenv_current = env.py3_virtualenv_current
@@ -151,8 +151,8 @@ def _override_code_root_to_current():
 
     env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
     env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
-    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3_6')
-    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3_6')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.7')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.7')
 
     if env.py3_run_deploy:
         env.virtualenv_current = env.py3_virtualenv_current

@@ -9,10 +9,10 @@
 - name: Install NFS packages
   become: yes
   when: shared_drive_enabled
-  apt: name="{{ item }}" state=present
-  with_items:
-    - nfs-kernel-server
-    - portmap
+  apt:
+    name:
+      - nfs-kernel-server
+      - portmap
   tags:
     - nfs
 

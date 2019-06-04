@@ -16,4 +16,5 @@
   cron:
     name: "Purge files in {{ encrypted_tmp }}"
     cron_file: purge_tmp_files
+    user: root
     state: absent
