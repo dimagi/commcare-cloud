@@ -17,7 +17,7 @@ class FabSettingsConfig(jsonobject.JsonObject):
     acceptable_maintenance_window = jsonobject.ObjectProperty(lambda: AcceptableMaintenanceWindow)
     email_enabled = jsonobject.BooleanProperty()
     py3_include_venv = jsonobject.BooleanProperty()
-    py3_run_deploy = jsonobject.BooleanProperty()
+    py3_run_deploy = jsonobject.BooleanProperty(default=True)
 
     @classmethod
     def wrap(cls, data):
