@@ -3,7 +3,7 @@
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
 environment=TMPDIR="{{ encrypted_tmp }}"
-command={% if PY3_RUN_PILLOWTOP %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/python
+command={{ py3_virtualenv_home }}/bin/python
     {{ code_home }}/manage.py run_ptop
     --pillow-name {{ pillow_name }}
     --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }}
