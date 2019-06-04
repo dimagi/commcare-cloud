@@ -22,6 +22,7 @@
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
 
+# Notes this should be filtered out if the environment does not have remote postgres
 - name: Remote PostgreSQL (e.g. Amazon RDS)
   hosts: django_manage
   tasks:
