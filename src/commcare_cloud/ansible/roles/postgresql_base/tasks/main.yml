@@ -92,7 +92,7 @@
     user: root
     special_time: hourly
     cron_file: clean_pg_archive
-    state: present
+    state: "{{ 'present' if postgresql_enable_archive else 'absent' }}"
 
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
