@@ -1,0 +1,29 @@
+title: Upgrade to Python 3
+key: upgrade-to-python-3
+date: 2020-01-01  # TODO - update
+optional_per_env: no
+min_commcare_version: XXXX  # TODO - update
+max_commcare_version: YYYY  # TODO - update
+context: |
+  This change installs Python 3.6.8, builds a new virtualenv, and runs
+  CommCare HQ in Python 3.
+
+details: |
+  Future updates to HQ are designed for Python 3 and may be incompatible
+  with earlier Python versions. Python 3.6.8 is required to guarantee a
+  zero-downtime upgrade.
+
+
+update_steps: |
+  1. Install Python 3 requirements
+  ```bash
+  commcare-cloud <env> ap deploy_common.yml --tags=common_installs
+  ```
+  2. Add Python 3 virtualenv
+  ```bash
+  cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3 -e 'CREATE_NEW_VIRTUALENV=1'
+  ```
+  3. Update Python processes to use Python 3
+  ```bash
+  cchq <env> update-supervisor-confs
+  ```
