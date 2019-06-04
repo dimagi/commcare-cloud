@@ -1,6 +1,7 @@
 postgresql_dbs:
   all:
-  - create: true
+  - &id001
+    create: true
     django_alias: default
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -12,7 +13,8 @@ postgresql_dbs:
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id002
+    create: true
     django_alias: p1
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -23,11 +25,10 @@ postgresql_dbs:
     pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
-    shards:
-    - 0
-    - 99
+    shards: [0, 99]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id003
+    create: true
     django_alias: p2
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -38,11 +39,10 @@ postgresql_dbs:
     pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
-    shards:
-    - 100
-    - 199
+    shards: [100, 199]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id004
+    create: true
     django_alias: p3
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -53,11 +53,10 @@ postgresql_dbs:
     pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
-    shards:
-    - 200
-    - 299
+    shards: [200, 299]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id005
+    create: true
     django_alias: p4
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -68,11 +67,10 @@ postgresql_dbs:
     pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
-    shards:
-    - 300
-    - 399
+    shards: [300, 399]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id006
+    create: true
     django_alias: p5
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -83,11 +81,10 @@ postgresql_dbs:
     pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
-    shards:
-    - 400
-    - 511
+    shards: [400, 511]
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id007
+    create: true
     django_alias: proxy
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -99,7 +96,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id008
+    create: true
     django_alias: synclogs
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -111,7 +109,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id009
+    create: true
     django_alias: ucr
     django_migrate: false
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -123,7 +122,8 @@ postgresql_dbs:
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id010
+    create: true
     django_alias: null
     django_migrate: true
     host: hqdb1-staging.internal-va.commcarehq.org
@@ -135,6 +135,18 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+  by_host:
+    hqdb1-staging.internal-va.commcarehq.org:
+    - *id001
+    - *id002
+    - *id003
+    - *id004
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - *id009
+    - *id010
   custom: []
   form_processing:
     partitions:
@@ -150,9 +162,7 @@ postgresql_dbs:
         pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
-        shards:
-        - 0
-        - 99
+        shards: [0, 99]
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p2:
         create: true
@@ -166,9 +176,7 @@ postgresql_dbs:
         pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
-        shards:
-        - 100
-        - 199
+        shards: [100, 199]
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p3:
         create: true
@@ -182,9 +190,7 @@ postgresql_dbs:
         pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
-        shards:
-        - 200
-        - 299
+        shards: [200, 299]
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p4:
         create: true
@@ -198,9 +204,7 @@ postgresql_dbs:
         pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
-        shards:
-        - 300
-        - 399
+        shards: [300, 399]
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p5:
         create: true
@@ -214,9 +218,7 @@ postgresql_dbs:
         pgbouncer_host: hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
-        shards:
-        - 400
-        - 511
+        shards: [400, 511]
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
     proxy:
       create: true
