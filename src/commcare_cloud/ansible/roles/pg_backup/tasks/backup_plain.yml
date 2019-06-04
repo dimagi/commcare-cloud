@@ -26,27 +26,19 @@
     version: 1.4.0
   when: postgres_s3
 
-- name: Create aws config directory
+- name: Set up aws credentials
   become: yes
-  file:
-    path: '{{ postgresql_dir_original_path }}/.aws'
-    owner: postgres
-    group: postgres
-    mode: 0700
-    state: directory
+  import_role:
+    name: backups
+    tasks_from: set_up_aws_credentials.yml
+  vars:
+    s3_user: "postgres"
+    s3_user_home_dir: "{{ postgresql_dir_original_path }}"
   when: postgres_s3
-    
-- name: copy boto3 credentials file
-  become: yes
-  template:
-    src: "plain/aws_credentials.j2"
-    dest: "{{ postgresql_dir_original_path }}/.aws/credentials"
-    group: postgres
-    owner: postgres
-    mode: 0700
-    backup: yes
-  when: postgres_s3
-  
+  tags:
+    - cron
+    - backups
+
 - name: Create Daily Cron job
   become: yes
   cron:

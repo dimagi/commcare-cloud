@@ -15,6 +15,10 @@ postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
+postgresql_archive_timeout: 300
+postgresql_archive_path: "{{ postgresql_dir_path }}/wal_archive"
+postgresql_archive_command: "cp %p {{ postgresql_dir_path }}/wal_archive/%f"
+postgresql_enable_archive: no
 
 allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 

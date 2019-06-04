@@ -80,9 +80,9 @@
       become: true
       with_items: "{{ commcarehq_requirements }}"
       pip:
-        requirements: "{{ code_home }}/requirements-python3_6/{{ item }}"
+        requirements: "{{ code_home }}/requirements-python3/{{ item }}"
         virtualenv: "{{ py3_virtualenv_home }}"
-        virtualenv_python: "python3.6"
+        virtualenv_python: "python3.7"
         chdir: "{{ code_home }}"
       tags:
         - slow
@@ -101,7 +101,7 @@
         - "{{ code_source }}"
         - "{{ virtualenv_source }}"
 
-  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
+  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists or (CREATE_NEW_VIRTUALENV is defined and CREATE_NEW_VIRTUALENV)
 
 - name: Upgrade python packages
   pip:
@@ -112,7 +112,19 @@
     - six
     - pip
     - setuptools
-        
+
+- name: py3 Upgrade python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+    virtualenv: "{{ py3_virtualenv_home }}"
+  with_items:
+    - six
+    - pip
+    - setuptools
+  tags:
+    - py3
+
 - name: chown virtualenv
   become: true
   file:

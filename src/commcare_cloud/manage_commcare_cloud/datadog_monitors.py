@@ -116,7 +116,7 @@ def get_monitor_definitions(config):
             file_path = os.path.join(CONFIG_ROOT, file)
             with open(file_path, 'r') as mon:
                 data = mon.read()
-            monitor_def = render_messages(config, yaml.load(data))
+            monitor_def = render_messages(config, yaml.safe_load(data))
             monitors[monitor_def['id']] = monitor_def
             monitor_file_names_by_id[monitor_def['id']] = file_path
     return monitors, monitor_file_names_by_id
@@ -193,7 +193,7 @@ def initialize_datadog(config):
 
 def get_config(config_path):
     with open(config_path, 'r') as config_file:
-        config = Config(yaml.load(config_file))
+        config = Config(yaml.safe_load(config_file))
         config.env_notifications = OrderedDict(sorted(config.env_notifications.items()))
     return config
 

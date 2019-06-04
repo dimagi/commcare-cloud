@@ -197,6 +197,13 @@ class SmartDBConfig(jsonobject.JsonObject):
     standby = jsonobject.ListProperty(lambda: StandbyDBOptions)
 
 
+class PGConfigItem(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+
+    name = jsonobject.StringProperty()
+    value = jsonobject.DefaultProperty()
+
+
 class DBOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
 
@@ -211,6 +218,9 @@ class DBOptions(jsonobject.JsonObject):
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)
     create = jsonobject.BooleanProperty(default=True)
+
+    # config values to be set at the database level
+    pg_config = jsonobject.ListProperty(lambda: PGConfigItem)
 
 
 class MainDBOptions(DBOptions):
