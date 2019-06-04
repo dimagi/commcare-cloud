@@ -11,8 +11,7 @@
 
 - name: Install nginx
   become: yes
-  apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
-  with_items: "{{ nginx_ubuntu_pkg }}"
+  apt: name="{{ nginx_ubuntu_pkg }}" state=latest update_cache=yes cache_valid_time=3600
   when: nginx_install == True
 
 - name: Make sure nofile ulimit is high

@@ -1,6 +1,7 @@
 - name: Install pgBackRest and requirements
-  apt: name={{item}} state=installed
-  with_items:
+  apt:
+    state: installed
+    name:
      - pgbackrest
      - libio-socket-ssl-perl
      - libxml-libxml-perl
