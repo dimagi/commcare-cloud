@@ -71,13 +71,14 @@
   when: ansible_distribution_version == '18.04'
 
 - name: Install pip packages
-  pip: name="{{ item }}" executable=pip2
+  pip:
+    name:
+      - virtualenv
+      - sh
+      - httplib2
+      - pexpect
+    executable: pip2
   become: yes
-  with_items:
-    - virtualenv
-    - sh
-    - httplib2
-    - pexpect
 
 - name: Install virtualenv-clone
   become: yes
