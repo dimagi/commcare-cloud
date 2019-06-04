@@ -36,11 +36,23 @@
     - python3-psycopg2
   when: ansible_distribution_version == '18.04'
 
+- name: Create service config folder
+  become: yes
+  file:
+    path: "{{ postgresql_systemd_config_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
 - name: Configure service limits
+  become: yes
   template:
     src: systemd_limits.conf.j2
-    dest: "/etc/systemd/system/postgresql@.service.d/limits.conf"
+    dest: "{{ postgresql_systemd_config_dir }}/limits.conf"
     owner: root
+    group: root
+    mode: 644
   notify: Restart postgres
 
 - name: Check for original postgresql directory
