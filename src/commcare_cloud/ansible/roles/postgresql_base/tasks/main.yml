@@ -53,7 +53,9 @@
     owner: root
     group: root
     mode: 644
-  notify: Restart postgres
+  notify:
+    - Restart postgres
+    - reload systemd
 
 - name: Check for original postgresql directory
   stat: path="{{ postgresql_dir_original_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}/PG_VERSION"
