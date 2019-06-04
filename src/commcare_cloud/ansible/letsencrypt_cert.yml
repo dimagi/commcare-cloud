@@ -13,7 +13,7 @@
 
     - name: Install Certbot
       apt:
-        name: "{{item}}"
+        name:
           - software-properties-common
           - certbot
       ignore_errors: '{{ ansible_check_mode }}'
