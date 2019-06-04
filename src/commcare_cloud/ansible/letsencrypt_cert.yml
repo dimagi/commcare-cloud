@@ -14,10 +14,8 @@
     - name: Install Certbot
       apt:
         name: "{{item}}"
-        state: present
-      with_items:
-        - software-properties-common
-        - certbot
+          - software-properties-common
+          - certbot
       ignore_errors: '{{ ansible_check_mode }}'
 
     - name: Create Challenge Directory
