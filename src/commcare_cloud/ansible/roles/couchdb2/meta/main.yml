@@ -1,5 +1,14 @@
 ---
 dependencies:
   - couchdb2-preinstall
-  - andrewrothstein.couchdb-cluster
+  - role: andrewrothstein.couchdb-cluster
+    couchdb_dep_pkgs:
+    - build-essential
+    - pkg-config
+    - esl-erlang=1:21.3.8.2-1
+    - libicu-dev
+    - libnspr4-dev
+    - libcurl4-openssl-dev
+    - couch-libmozjs185-dev
+
   - role: monit

@@ -1,5 +1,6 @@
 - name: Install packages we would want on any machine ever
-  apt: name="{{ item }}" state=present
+  apt:
+    name:
+      - htop
+    state: present
   become: yes
-  with_items:
-    - htop

@@ -136,7 +136,7 @@ class AwsFillInventory(CommandBase):
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
             with open(environment.paths.aws_resources_yml, 'r') as f:
-                resources = yaml.load(f.read())
+                resources = yaml.safe_load(f.read())
 
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
