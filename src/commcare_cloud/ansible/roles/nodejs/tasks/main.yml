@@ -9,7 +9,7 @@
   apt: name="nodejs" state=present
   become: yes
 
-- name: Install nodejs packages
+- name: Install npm packages (Bionic)
   apt: name="npm" state=present
   become: yes
   when: ansible_distribution_version == '18.04'
