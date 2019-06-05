@@ -42,6 +42,7 @@ postgresql_random_page_cost: 4.0
 postgresql_max_worker_processes: ~
 postgresql_max_parallel_workers_per_gather: ~
 postgresql_effective_io_concurrency: ~
+postgresql_max_locks_per_transaction: ~
 
 allow_direct_postgresql_access: no
 allow_direct_citusdb_access: no
