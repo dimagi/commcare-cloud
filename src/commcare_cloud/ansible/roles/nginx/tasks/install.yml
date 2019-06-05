@@ -25,9 +25,19 @@
   become: yes
   user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
 
+- stat:
+    path: "{{ code_home }}"
+  register: code_home_folder
+
 - name: Create static files home
   become: yes
-  file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
+  file:
+    path: "{{ nginx_static_home }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+    state: directory
+  when: code_home_folder.stat.exists
 
 - name: Copy the nginx configuration file
   become: yes
