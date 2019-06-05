@@ -20,6 +20,8 @@ postgresql_archive_path: "{{ postgresql_dir_path }}/wal_archive"
 postgresql_archive_command: "cp %p {{ postgresql_dir_path }}/wal_archive/%f"
 postgresql_enable_archive: no
 
+postgresql_systemd_config_dir: "/etc/systemd/system/postgresql@.service.d"
+
 allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 
 # defaults should match the postgresql defaults
@@ -40,6 +42,7 @@ postgresql_random_page_cost: 4.0
 postgresql_max_worker_processes: ~
 postgresql_max_parallel_workers_per_gather: ~
 postgresql_effective_io_concurrency: ~
+postgresql_max_locks_per_transaction: ~
 
 allow_direct_citusdb_access: no
 

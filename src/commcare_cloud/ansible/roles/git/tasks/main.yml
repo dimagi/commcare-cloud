@@ -7,7 +7,7 @@
   when: add_git_repo is changed
 
 - name: Install git packages
-  apt: name="{{ item }}" state=present
   become: yes
-  with_items:
-    - git
+  apt:
+    name:
+      - git
