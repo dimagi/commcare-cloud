@@ -43,11 +43,11 @@ host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/3
 
 {% if allow_direct_citusdb_access %}
 # trus access for CitusDB connections only
-{% for host in (  groups.get('citusdb_worker', []) + groups.get('citusdb_cordinator', [])) | unique %}
+{% for host in (  groups.get('citusdb_worker', []) + groups.get('citus_master', [])) | unique %}
 # {{ host }}
 {% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
 {% set db = db_list[0] %}
-{% if db.host in groups.get('citusdb_cordinator', []) %}
+{% if db.host in groups.get('citus_master', []) %}
 {% if host | ipaddr %}
 host   {{ db.name }}	{{ db.user }}	{{ host }}/32   trust
 {% else %}
