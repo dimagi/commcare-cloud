@@ -6,7 +6,6 @@
   become: yes
   apt:
     name: "{{ java_packages }}"
-    state: present
 
 - name: Correct java version selected
   alternatives:

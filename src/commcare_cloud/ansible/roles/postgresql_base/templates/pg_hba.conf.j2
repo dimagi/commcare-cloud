@@ -13,7 +13,7 @@ local   replication     postgres                                peer
 {% endfor %}
 
 {% if inventory_hostname in groups.get('citusdb_worker', []) %}
-{% for host in groups.get('citusdb_cordinator', []) %}
+{% for host in groups.get('citusdb_master', []) %}
 {% if host | ipaddr %}
 host   all	all	{{ host }}/32   trust
 {% else %}
@@ -21,6 +21,7 @@ host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
 {% endfor %}
 {% endif %}
+
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
