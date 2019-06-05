@@ -60,7 +60,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
-    group: citusdb_cordinator
+    group: citus_master
     os: bionic
   - server_name: "citus1-india"
     server_instance_type: "c5.xlarge"
