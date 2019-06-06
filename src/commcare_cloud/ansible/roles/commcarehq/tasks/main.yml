@@ -66,9 +66,8 @@
 
     - name: install pip requirements
       become: true
-      with_items: "{{ commcarehq_requirements }}"
       pip:
-        requirements: "{{ code_home }}/requirements/{{ item }}"
+        requirements: "{{ code_home }}/requirements/prod-requirements.txt"
         virtualenv: "{{ virtualenv_source }}"
         virtualenv_python: "python2.7"
         chdir: "{{ code_home }}"
@@ -78,9 +77,8 @@
 
     - name: py3 install pip requirements
       become: true
-      with_items: "{{ commcarehq_requirements }}"
       pip:
-        requirements: "{{ code_home }}/requirements-python3/{{ item }}"
+        requirements: "{{ code_home }}/requirements-python3/prod-requirements.txt"
         virtualenv: "{{ py3_virtualenv_home }}"
         virtualenv_python: "python3.7"
         chdir: "{{ code_home }}"
