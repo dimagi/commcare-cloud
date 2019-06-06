@@ -138,7 +138,6 @@ def _setup_path():
         env.virtualenv_root = env.py2_virtualenv_root
 
     env.services = posixpath.join(env.code_root, 'services')
-    env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.deploy_env)
     env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
     env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
