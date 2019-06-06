@@ -176,3 +176,4 @@
 - name: Setup Letsencrypt
   import_playbook: letsencrypt_cert.yml
   tags: setup_letsencrypt
+  when: not fake_ssl_cert
