@@ -51,7 +51,7 @@
       - libfreetype6-dev
       - ranger  # cmdline file browser
       - libffi-dev  # Required for installing github3py
-      - libssl-dev  # Required for pip setup tools
+      - libssl-dev  # Required for pip setup tools and libcurl4-openssl-dev
       - tmux
       - reptyr # move process into tmux session
       - unzip
