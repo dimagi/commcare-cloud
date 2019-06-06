@@ -67,7 +67,7 @@
     mode: 0700
     group: couchdb
     owner: couchdb
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -81,7 +81,7 @@
     owner: couchdb
     mode: 0700
     backup: yes
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -97,7 +97,7 @@
     user: couchdb
     cron_file: backup_couch
     state: absent
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -113,7 +113,7 @@
     user: couchdb
     cron_file: backup_couch
     state: absent
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -156,7 +156,7 @@
   vars:
     s3_user: "couchdb"
     s3_user_home_dir: "{{ couchdb_dir }}"
-  when: couch_s3
+  when: couch_s3|bool
   tags:
     - cron
     - backups
