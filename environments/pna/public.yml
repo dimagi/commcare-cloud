@@ -12,6 +12,8 @@ elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 #elasticsearch_node_name: '??'
 
+redis_maxmemory: 4gb
+
 backup_blobdb: True
 backup_postgres: dump
 backup_es_s3: True
