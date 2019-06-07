@@ -20,7 +20,7 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 
-redis_maxmemory: 8gb
+redis_maxmemory: 24gb
 
 nofile_limit: 65536
 
