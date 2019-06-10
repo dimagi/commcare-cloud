@@ -82,8 +82,8 @@
   tags:
     - cron
     - backups
-  
-- name: Copy check_s3_backup script to /usr/local/sbin
+
+- name: Copy check_s3_backup script to /usr/local/bin
   template:
     src: check_s3_backup.py.j2
     dest: /usr/local/bin/check_s3_backup.py
