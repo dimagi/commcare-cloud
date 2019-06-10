@@ -15,13 +15,11 @@ celery_processes:
     email_queue,repeat_record_queue,sumologic_logs_queue,reminder_case_update_queue,icds_aggregation_queue,analytics_queue:
       pooling: gevent
       concurrency: 200
-    ucr_queue,ucr_indicator_queue,celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue,icds_dashboard_reports_queue,async_restore_queue,celery_periodic:
-      concurrency: 3
+    background_queue,dashboard_comparison_queue,ucr_queue,ucr_indicator_queue,celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue,icds_dashboard_reports_queue,async_restore_queue,celery_periodic:
+      concurrency: 7
     saved_exports_queue:
       concurrency: 2
       optimize: True
-    background_queue,dashboard_comparison_queue:
-      concurrency: 5
 pillows:
   pillow2:
     AppDbChangeFeedPillow:
