@@ -1,23 +1,23 @@
 ---
 
 - name: Update the apt cache
-  when: shared_drive_enabled
+  when: shared_drive_enabled|bool
   apt:
     update_cache: yes
     cache_valid_time: 7200
 
 - name: Install NFS packages
   become: yes
-  when: shared_drive_enabled
-  apt: name="{{ item }}" state=present
-  with_items:
-    - nfs-kernel-server
-    - portmap
+  when: shared_drive_enabled|bool
+  apt:
+    name:
+      - nfs-kernel-server
+      - portmap
   tags:
     - nfs
 
 - name: ensure nfs service is running
-  when: shared_drive_enabled
+  when: shared_drive_enabled|bool
   service:
     name: nfs-kernel-server
     state: started

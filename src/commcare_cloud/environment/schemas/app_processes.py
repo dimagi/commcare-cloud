@@ -28,7 +28,6 @@ class AppProcessesConfig(jsonobject.JsonObject):
     flower_port = PortProperty()
     gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
-    jython_memory = MemorySpecProperty()
     formplayer_memory = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
     newrelic_djangoagent = jsonobject.BooleanProperty()

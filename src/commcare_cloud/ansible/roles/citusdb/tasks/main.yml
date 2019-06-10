@@ -38,7 +38,7 @@
    tags:
      - configure
 
- - name: Setup citusdb_cordinator
+ - name: Setup citusdb_master
    import_tasks: setup_cordinator.yml 
    tags:
     - configure
