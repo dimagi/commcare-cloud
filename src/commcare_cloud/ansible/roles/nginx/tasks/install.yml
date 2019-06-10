@@ -11,9 +11,7 @@
 
 - name: Install nginx
   become: yes
-  apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
-  with_items: "{{ nginx_ubuntu_pkg }}"
-  when: nginx_install == True
+  apt: name="{{ nginx_ubuntu_pkg }}" state=latest update_cache=yes cache_valid_time=3600
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -26,12 +24,10 @@
 - name: Create nginx http user
   become: yes
   user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
-  when: nginx_install == True
 
 - name: Create static files home
   become: yes
   file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
-  when: nginx_install == True
 
 - name: Copy the nginx configuration file
   become: yes

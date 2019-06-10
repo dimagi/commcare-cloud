@@ -2,7 +2,7 @@
 
 - name: Create shared mount dir
   become: yes
-  when: shared_drive_enabled
+  when: shared_drive_enabled|bool
   file:
     path: "{{ shared_mount_dir }}"
     owner: "nobody"
@@ -14,7 +14,7 @@
 
 - name: Mount directory in /etc/fstab
   become: yes
-  when: shared_drive_enabled
+  when: shared_drive_enabled|bool
   mount:
     name: "{{ shared_mount_dir }}"
     src: "{{ groups.shared_dir_host[0] }}:{{ shared_data_dir }}"

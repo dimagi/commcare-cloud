@@ -4,7 +4,7 @@
 - name: CitusDB Machine Setup
   hosts:
     - citusdb_worker
-    - citusdb_cordinator
+    - citusdb_master
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -12,13 +12,13 @@
 - name: CitusDB
   hosts: 
     - citusdb_worker
-    - citusdb_cordinator
+    - citusdb_master
   become: true
   roles:
     - {role: citusdb, tags: 'citusdb'}
 
 - name: pgbouncer
-  hosts: citusdb_cordinator
+  hosts: citusdb_master
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
@@ -29,7 +29,7 @@
   become: true
   hosts:
     - citusdb_worker
-    - citusdb_cordinator
+    - citusdb_master
   tags: 'kernel_tuning'
   roles:
     - role: thp

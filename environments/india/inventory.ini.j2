@@ -6,7 +6,7 @@
 {{ __citus1__ }}
 {{ __citus2__ }}
 {{ __airflow1__ }}
-{{ __celery1__ }}
+{{ __celery1__ }} swap_size=4G
 {{ __couch2__ }}
 {{ __couch3__ }}
 {{ __couch4__ }}
@@ -24,7 +24,7 @@
 citus1
 citus2
 
-[citusdb_cordinator:children]
+[citusdb_master:children]
 citus0
 
 [proxy:children]
