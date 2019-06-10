@@ -1,6 +1,11 @@
  check process redis with pidfile {{ redis_pidfile }}
    group database
    group redis
+{% if ansible_service_mgr|default() != "systemd" %}
    start program = "/etc/init.d/{{ redis_service_name }} start"
    stop program = "/etc/init.d/{{ redis_service_name }} stop"
+{% else %}
+   start program = "/bin/systemctl start {{ redis_service_name }}"
+   stop program = "/bin/systemctl stop {{ redis_service_name }}"
+{% endif %}
    if failed host {{ inventory_hostname }} port {{ redis_port }} then restart
