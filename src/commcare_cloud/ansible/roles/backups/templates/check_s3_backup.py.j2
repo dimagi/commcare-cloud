@@ -65,5 +65,5 @@ if weekly_matches:
 else:
     print('[ALERT] No weekly {} backup in last seven days'.format(args.service))
 
-if not weekly_matches and not daily_matches:
+if not weekly_matches or not daily_matches:
     exit(-1)
