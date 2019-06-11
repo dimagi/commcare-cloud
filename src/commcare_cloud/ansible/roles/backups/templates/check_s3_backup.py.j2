@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import argparse
 import boto3
+import botocore
 import datetime
 
 parser = argparse.ArgumentParser(description="S3 Backup Status.")
@@ -34,7 +35,13 @@ s3 = session.resource(service_name='s3',endpoint_url=endpoint,region_name='{{ aw
 s3 = session.resource(service_name='s3',endpoint_url=endpoint)
 {% endif %}
 
-bucket = s3.Bucket(BUCKET_NAME)
+def file_exists_in_s3(object_key):
+  try:
+    s3.Object(BUCKET_NAME, object_key).load()
+  except botocore.exceptions.ClientError:
+    return False
+  else:
+    return True
 
 today = datetime.datetime.today()
 
@@ -56,28 +63,26 @@ weekly_options = [
     for n in [0, 1, 2, 3, 4, 5, 6]
 ]
 
+# up to one match will be stored in these
 daily_matches = []
 weekly_matches = []
-# Shows Alert if backup is not uploaded since 2 days.
-for obj in bucket.objects.all():
-    if obj.key in daily_options:
-        daily_matches.append(obj)
-    if obj.key in weekly_options:
-        weekly_matches.append(obj)
+
+for options, matches in [(daily_options, daily_matches),
+                         (weekly_options, weekly_matches)]:
+    for filename in options:
+        if file_exists_in_s3(filename):
+            matches.append(filename)
+            break
 
 if daily_matches:
-    daily_matches.sort(key=lambda obj: obj.last_modified)
     match = daily_matches[-1]
-    print('[OK] Last daily {} backup is {}, uploaded @ {}'.format(
-        args.service, match.key, match.last_modified))
+    print('[OK] Last daily {} backup is {}'.format(args.service, match))
 else:
     print('[ALERT] No daily {} backup in last two days'.format(args.service))
 
 if weekly_matches:
-    weekly_matches.sort(key=lambda obj: obj.last_modified)
     match = weekly_matches[-1]
-    print('[OK] Last weekly {} backup is {}, uploaded @ {}'.format(
-        args.service, match.key, match.last_modified))
+    print('[OK] Last weekly {} backup is {}'.format(args.service, match))
 else:
     print('[ALERT] No weekly {} backup in last seven days'.format(args.service))
 
