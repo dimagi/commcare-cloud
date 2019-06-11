@@ -30,6 +30,12 @@
   apt: update_cache=yes
   when: add_mosh_repo is changed or add_postgres_repo is changed or add_pango_repo is changed or add_python_ppa_trusty is changed or add_python_ppa_bionic is changed
 
+- name: Uninstall existing Python 3.6 so it can be replaced with 3.6.8 from PPA
+  apt:
+    name: python3.6
+    state: absent
+  when: ansible_distribution_version == '18.04' or ansible_distribution_version == '16.04'
+
 # Install base packages, common to all servers
 - name: Install common packages
   become: yes
