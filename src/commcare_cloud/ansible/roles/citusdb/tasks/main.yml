@@ -22,7 +22,7 @@
     state: present
 
  - name: Add citus to postgres prelod libraries
-   shell: "pg_conftool 11 main set shared_preload_libraries 'citus, pg_stat_statements'"
+   shell: "pg_conftool {{postgresql_version}} main set shared_preload_libraries 'citus, pg_stat_statements'"
    become: yes
    notify: Restart postgres
 
