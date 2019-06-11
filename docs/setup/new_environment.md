@@ -33,7 +33,7 @@ $ ansible-vault encrypt ~/environments/monolith/vault.yml
 
 ### Add passwords to the vault file
 
-In the vault file, change all fields that have the value 'CHANGE ME' to strong, different, passwords
+In the vault file, change each field that has a value 'CHANGE ME' to a strong, unique password.
 
 ``` bash
 $ ansible-vault edit ~/environments/monolith/vault.yml`
