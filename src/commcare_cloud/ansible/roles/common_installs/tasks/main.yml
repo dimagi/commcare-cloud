@@ -16,13 +16,19 @@
   register: add_pango_repo
   when: ansible_distribution_version == '14.04'
 
-- name: Add Python PPA
+- name: Add Python PPA for trusty
   apt_repository: repo='ppa:deadsnakes/ppa' state=present
-  register: add_python_ppa
+  register: add_python_ppa_trusty
+  when: ansible_distribution_version == '14.04'
+
+- name: Add Python PPA for bionic and xenial
+  apt_repository: repo='ppa:jonathonf/python-3.6' state=present
+  register: add_python_ppa_bionic
+  when: ansible_distribution_version == '18.04' or ansible_distribution_version == '16.04'
 
 - name: Update package list
   apt: update_cache=yes
-  when: add_mosh_repo is changed or add_postgres_repo is changed or add_pango_repo is changed
+  when: add_mosh_repo is changed or add_postgres_repo is changed or add_pango_repo is changed or add_python_ppa_trusty is changed or add_python_ppa_bionic is changed
 
 # Install base packages, common to all servers
 - name: Install common packages
@@ -61,8 +67,8 @@
       - monit # service restarter
       - libcairo2
       - libpango1.0-0
-      - python3.7
-      - python3.7-dev
+      - python3.6
+      - python3.6-dev
 
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
