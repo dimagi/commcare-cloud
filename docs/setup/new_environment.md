@@ -20,7 +20,7 @@ $ sudo pip install ansible virtualenv virtualenvwrapper --ignore-installed six
 
 1. Clone the sample environment into the `environments` folder:
  ``` bash
-$ git clone https://github.com/emord/supreme-octo-potato.git environments
+$ git clone https://github.com/dimagi/sample-environment.git environments
  ```
 
 1. Encrypt the provided ansible vault file by running:
