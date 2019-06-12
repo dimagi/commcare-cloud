@@ -4,7 +4,9 @@ This document will walk you through the process of setting up a new monolith ser
 
 ## Pre-requesites
 
-* A server with Ubuntu 18.04 installed (referred to as the "monolith" from here)
+* A single server (referred to as the "monolith" from here) with:
+    * At least: 4vCPUs, 16GB RAM, 20GB Drive
+    * Ubuntu 18.04 installed 
 * Access to the monolith via SSH with a user who has sudo access
 
 ## Step 1: Add Root User and Install Required System Packages
