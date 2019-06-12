@@ -94,12 +94,12 @@ dbs:
       query_stats: True
       django_migrate: False
     - django_alias: icds-ucr-citus
-        name: icds_ucr
-        django_migrate: True  # ICDS dashboard models are stored here
-        host: citusmaster0
-        pg_config:
-          - name: citus.shard_count
-            value: 64
+      name: icds_ucr
+      django_migrate: True  # ICDS dashboard models are stored here
+      host: citusmaster0
+      pg_config:
+        - name: citus.shard_count
+          value: 64
     - name: airflow
       django_migrate: False
     - django_alias: warehouse
