@@ -10,8 +10,7 @@
 
 - name: CitusDB
   hosts: 
-    - citusdb_worker
-    - citusdb_master
+    - citusdb
   become: true
   roles:
     - {role: citusdb, tags: 'citusdb'}
