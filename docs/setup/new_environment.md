@@ -21,7 +21,7 @@ This document will walk you through the process of setting up a new monolith ser
 
     Enable the root user
 
-    ```bash
+    ``` bash
     $ sudo passwd -u root
     ```
 
@@ -70,7 +70,7 @@ In the vault file, change each field that has a value 'CHANGE ME' to a strong, u
 $ ansible-vault edit ~/environments/monolith/vault.yml`
 ```
 
-### Set the network interface name
+### Set the network interface name and ipaddress
 
 1. Find the name of the network interface of your machine, and note it down. You can do this by running
 
@@ -95,13 +95,18 @@ $ ansible-vault edit ~/environments/monolith/vault.yml`
            valid_lft forever preferred_lft forever
     ```
 
-    Here, the network interface we are interested in is **enp0s3**. Note this value, or copy it to the system clipboard.
+    Here, the network interface we are interested in is **enp0s3**, which has an IP address of `10.0.2.15`. Note these values down.
 
-1. Open the `environments/monolith/inventory.ini` file, uncomment and set the value of `ufw_private_interface` to the network interface of your machine that we found in the previous step.
+1. Open the `environments/monolith/inventory.ini` file in an editor
 
     ``` bash
     $ nano ./environments/monolith/inventory.ini
     ```
+
+    Replace the word `localhost` on the second line with the IP address you found in the previous step.
+
+    Uncomment and set the value of `ufw_private_interface` to the network interface of your machine that we found in the previous step.
+
 
 ### Add a public key and user to commcare-cloud
 
@@ -184,15 +189,33 @@ If there are failures during the install, which may happen due to timing issues,
 $ commcare-cloud monolith deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
 ```
 
-## Step 7: Deploy CommCare HQ
+## Step 7: Edit the fab config file
+
+1. Copy the example config file:
+
+    ``` bash
+    $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
+    ```
+
+2. Edit this file
+
+    ``` bash
+    $ nano ~/commcare-cloud/src/commcare_cloud/fab/config.py
+    ```
+    Enter `None` for the GitHub API key, it is not needed for locally hosted deploys.
+
+## Step 8: Deploy CommCare HQ
 
 ``` bash
-commcare-cloud monolith fab deploy
+$ commcare-cloud monolith fab deploy
 ```
 
 If deploy fails, you can restart where it left off:
 
 ``` bash
-$ commcare-cloud monol# Setting up a new CommCareHQ environment Cleanup
+$ commcare-cloud monolith fab deploy:resume=yes
+```
+
+## Step 9: Cleanup
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
