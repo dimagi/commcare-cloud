@@ -81,5 +81,5 @@
 
 - name: start supervisord
   become: yes
-  service: name=supervisord state=started
+  service: name=supervisord enabled=yes
   when: which_supervisord.stdout
