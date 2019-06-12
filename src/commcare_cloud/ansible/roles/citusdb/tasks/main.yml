@@ -35,10 +35,12 @@
 
  - name: Set up Citus Worker DBs
    import_tasks: setup_worker.yml
+   when: inventory_hostname in groups.citusdb_worker
    tags:
      - configure
 
  - name: Setup citusdb_master
-   import_tasks: setup_cordinator.yml 
+   import_tasks: setup_cordinator.yml
+   when: inventory_hostname in groups.citusdb_master
    tags:
     - configure
