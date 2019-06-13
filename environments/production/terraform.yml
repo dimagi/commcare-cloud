@@ -120,35 +120,35 @@ servers:
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 600
+    volume_size: 660
     group: "elasticsearch"
     os: trusty
   - server_name: "es11-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 600
+    volume_size: 660
     group: "elasticsearch"
     os: trusty
   - server_name: "es12-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 600
+    volume_size: 660
     group: "elasticsearch"
     os: trusty
   - server_name: "es13-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 600
+    volume_size: 660
     group: "elasticsearch"
     os: trusty
   - server_name: "es14-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 600
+    volume_size: 660
     group: "elasticsearch"
     os: trusty
 
