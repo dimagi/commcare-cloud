@@ -7,6 +7,9 @@ control0-india: 10.203.10.246
 couch2-india: 10.203.40.187
 couch3-india: 10.203.40.186
 couch4-india: 10.203.40.188
+couch5-india: 10.203.40.178
+couch6-india: 10.203.40.191
+couch7-india: 10.203.40.56
 djangomanage0-india: 10.203.10.37
 es0-india: 10.203.40.175
 es1-india: 10.203.40.142
