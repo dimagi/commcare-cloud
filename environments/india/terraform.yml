@@ -109,23 +109,26 @@ servers:
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 275
+    volume_size: 20
+    block_device:
+      volume_size: 250
     group: couchdb2
-    os: bionic
   - server_name: "couch6-india"
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 275
+    volume_size: 20
+    block_device:
+      volume_size: 250
     group: couchdb2
-    os: bionic
   - server_name: "couch7-india"
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 275
+    volume_size: 20
+    block_device:
+      volume_size: 250
     group: couchdb2
-    os: bionic
     
   - server_name: "redis0-india"
     server_instance_type: "r5.large"
