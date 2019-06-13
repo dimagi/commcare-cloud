@@ -2,10 +2,10 @@
 
 This document will walk you through the process of setting up a new monolith server to run CommCareHQ
 
-## Pre-requesites
+## Prerequisites
 
 * A single server (referred to as the "monolith" from here) with:
-    * At least: 4vCPUs, 16GB RAM, 20GB Drive
+    * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCareHQ as a demo, and any production environment should be given many more resources.
     * Ubuntu 18.04 installed 
 * Access to the monolith via SSH with a user who has sudo access
 
@@ -66,15 +66,15 @@ This document will walk you through the process of setting up a new monolith ser
 
 ### Add passwords to the vault file
 
-In the vault file, change each field that has a value 'CHANGE ME' to a strong, unique password.
+In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a useful username.
 
 ``` bash
-$ ansible-vault edit ~/environments/monolith/vault.yml`
+$ ansible-vault edit ~/environments/monolith/vault.yml
 ```
 
 ### Set the network interface name and ipaddress
 
-1. Find the name of the network interface of your machine, and note it down. You can do this by running
+1. Find the name and IP address of the network interface of your machine, and note it down. You can do this by running
 
     ``` bash
     $ ip addr
@@ -102,7 +102,7 @@ $ ansible-vault edit ~/environments/monolith/vault.yml`
 1. Open the `environments/monolith/inventory.ini` file in an editor
 
     ``` bash
-    $ nano ./environments/monolith/inventory.ini
+    $ nano ~/environments/monolith/inventory.ini
     ```
 
     Replace the word `localhost` on the second line with the IP address you found in the previous step.
