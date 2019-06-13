@@ -58,7 +58,7 @@
 
 - name: Add shared dir to exports
   become: yes
-  when: shared_drive_enabled
+  when: shared_drive_enabled|bool
   lineinfile:
     dest: /etc/exports
     line: "{{ shared_data_dir }} {{ item }}(rw,sync,all_squash,no_subtree_check,anongid={{ shared_dir_gid }})"
@@ -76,7 +76,7 @@
 
 - name: Export directories
   become: yes
-  when: shared_drive_enabled
+  when: shared_drive_enabled|bool
   command: "exportfs -a"
   tags:
     - nfs

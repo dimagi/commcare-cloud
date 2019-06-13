@@ -374,7 +374,6 @@ class Environment(object):
             mapping[self.format_sshable_host(ansible_host, ansible_port)] = host.name
         return mapping
 
-
     @memoized_property
     def hostname_map(self):
         """Mapping of inventory hostname (IP) to assigned hostname"""
@@ -388,12 +387,7 @@ class Environment(object):
 
         return mapping
 
-    def _run_last_minute_checks(self):
-        assert len(self.groups.get('rabbitmq', [])) > 0, \
-            "You need at least one rabbitmq host in the [rabbitmq] group"
-
     def create_generated_yml(self):
-        self._run_last_minute_checks()
         generated_variables = {
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,

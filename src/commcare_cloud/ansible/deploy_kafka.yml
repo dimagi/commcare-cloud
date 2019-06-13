@@ -6,9 +6,6 @@
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
-  tasks:
-    - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
-      tags: ecryptfs-cleanup
 
 - name: Zookeeper
   hosts: zookeeper

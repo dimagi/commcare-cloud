@@ -176,12 +176,16 @@ class AwsFillInventoryHelper(object):
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
             is_bionic = server.os == 'bionic'
+            inventory_vars = [
+                ('hostname', server.server_name),
+                ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
+                ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+            ]
+            if server.block_device:
+                inventory_vars.append(('datavol_device', '/dev/nvme1n'))
+
             context.update(
-                self.get_host_group_definition(resource_name=server.server_name, vars=(
-                    ('hostname', server.server_name),
-                    ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
-                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
-                ))
+                self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
             )
 
         for rds_instance in self.environment.terraform_config.rds_instances:
