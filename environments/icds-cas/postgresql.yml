@@ -33,14 +33,6 @@ pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
-  pgbouncer_auth_type: hba
-  pgbouncer_hba_entries:
-    # app vlan
-    - contype: host
-      netmask: 100.71.188.0/22
-    # db vlan
-    - contype: host
-      netmask: 100.71.184.0/22
 
 postgres_override:
   postgresql_max_stack_depth: 6MB
