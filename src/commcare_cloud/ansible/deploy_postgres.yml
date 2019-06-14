@@ -22,18 +22,15 @@
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
 
+# Notes this should be filtered out if the environment does not have remote postgres
 - name: Remote PostgreSQL (e.g. Amazon RDS)
   hosts: django_manage
   tasks:
     - name: Install python-psycopg2 to be able to set up remote postgresql
       become: yes
       block:
-        - apt: name={{ item }} state=latest
-          with_items:
-            - libpq-dev
-        - pip: name={{ item }} state=present
-          with_items:
-            - psycopg2
+        - apt: name=libpq-dev state=latest
+        - pip: name=psycopg2
     - name: Remote PostgreSQL
       include_role:
         name: postgresql_base

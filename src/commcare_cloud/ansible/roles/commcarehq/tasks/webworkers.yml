@@ -30,7 +30,11 @@
   register: webworker_django_worker_conf_file
 
 - set_fact:
-    webworker_supervisor_files: "{{ webworker_errand_boy_conf_file.get('results', []) }} + {{ webworker_django_worker_conf_file.get('results', []) }}"
+    webworker_supervisor_files: "{{ [webworker_errand_boy_conf_file] + webworker_django_worker_conf_file.get('results', []) }}"
+  tags:
+    - services
 
 - set_fact:
     webworker_managed_files: "{{ webworker_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + webworker_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
+  tags:
+    - services

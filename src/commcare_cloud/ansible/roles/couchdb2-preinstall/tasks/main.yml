@@ -3,10 +3,10 @@
   become: yes
 
 - name: Install ndg-httpsclient so we can download couch
-  pip: name="{{ item }}"
+  pip:
+    name:
+      - ndg-httpsclient
   become: yes
-  with_items:
-    - ndg-httpsclient
 
 - name: Create couchdb2 dirs
   become: yes

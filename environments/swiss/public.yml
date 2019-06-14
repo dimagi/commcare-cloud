@@ -12,7 +12,7 @@ elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd
 #elasticsearch_node_name: '??'
 elastcsearch_backup_days: 2
 
-
+redis_maxmemory: 4gb
 
 ssh_allow_password: True
 
