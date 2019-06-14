@@ -15,6 +15,10 @@
 
 - set_fact:
     formplayer_supervisor_files: "{{ formplayer_files.get('results', []) }}"
+  tags:
+    - services
 
 - set_fact:
     formplayer_managed_files: "{{ formplayer_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }}"
+  tags:
+    - services
