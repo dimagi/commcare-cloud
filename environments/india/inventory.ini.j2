@@ -7,9 +7,6 @@
 {{ __citus2__ }}
 {{ __airflow1__ }}
 {{ __celery1__ }} swap_size=4G
-{{ __couch2__ }}
-{{ __couch3__ }}
-{{ __couch4__ }}
 {{ __couch5__ }}
 {{ __couch6__ }}
 {{ __couch7__ }}
@@ -70,15 +67,12 @@ es1
 redis0
 
 [couchdb2:children]
-couch2
-couch3
-couch4
 couch5
 couch6
 couch7
 
 [couchdb2_proxy:children]
-couch2
+couch5
 
 [control:children]
 control0
