@@ -48,6 +48,10 @@
   with_items: "{{ postgres_users.values() }}"
   tags:
     - postgres_users
+  register: result
+  until: not result.failed or 'starting up' not in result.msg
+  retries: 5
+  delay: 20
 
 - name: Add user privs
   become: yes
