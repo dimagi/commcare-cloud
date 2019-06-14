@@ -745,11 +745,6 @@ def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
         env.checkpoint_index = checkpoint_index or 0
         print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
-    if datetime.datetime.now().isoweekday() == 5:
-        warning_message = 'Friday'
-    else:
-        warning_message = ''
-
     env.offline = offline == 'yes'
 
     if env.offline:
@@ -764,20 +759,6 @@ def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
         # Force ansible user and prompt for password
         env.user = 'ansible'
         env.password = getpass('Enter the password for the ansbile user: ')
-
-    if warning_message:
-        print('')
-        print('┓┏┓┏┓┃')
-        print('┛┗┛┗┛┃＼○／')
-        print('┓┏┓┏┓┃  /      ' + warning_message)
-        print('┛┗┛┗┛┃ノ)')
-        print('┓┏┓┏┓┃         deploy,')
-        print('┛┗┛┗┛┃')
-        print('┓┏┓┏┓┃         good')
-        print('┛┗┛┗┛┃')
-        print('┓┏┓┏┓┃         luck!')
-        print('┃┃┃┃┃┃')
-        print('┻┻┻┻┻┻')
 
     _deploy_without_asking(skip_record)
 
