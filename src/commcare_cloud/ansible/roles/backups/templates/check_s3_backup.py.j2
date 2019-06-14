@@ -36,12 +36,12 @@ s3 = session.resource(service_name='s3',endpoint_url=endpoint)
 {% endif %}
 
 def file_exists_in_s3(object_key):
-  try:
-    s3.Object(BUCKET_NAME, object_key).load()
-  except botocore.exceptions.ClientError:
-    return False
-  else:
-    return True
+    try:
+        s3.Object(BUCKET_NAME, object_key).load()
+    except botocore.exceptions.ClientError:
+        return False
+    else:
+        return True
 
 today = datetime.datetime.today()
 
