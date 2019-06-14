@@ -8,9 +8,6 @@
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
   when: app_processes_config.celery_processes.get(inventory_hostname).reminder_queue is defined
   with_items:
-    - dest_name: supervisor_reminder_queue.conf
-      process_name: reminder_queue
-      management_command: run_reminder_queue
     - dest_name: supervisor_queue_schedule_instances.conf
       process_name: queue_schedule_instances
       management_command: queue_schedule_instances
@@ -47,15 +44,6 @@
     - services
   register: celery_sms_files
 
-- name: define errand boy services
-  become: cchq
-  template:
-    src: "../templates/supervisor_errand_boy.conf"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
-  tags:
-    - services
-  register: celery_errand_boy_files
-
 - name: Add celery_bash_runner files
   template:
     src: "../templates/celery_bash_runner.sh.j2"
@@ -68,34 +56,25 @@
     - services
   register: celery_bash_runner_files
 
-- name: define celery_flower services
+- name: define speical celery services
   become: cchq
   template:
-    src: "../templates/supervisor_celery_flower.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
-  when: app_processes_config.celery_processes.get(inventory_hostname).flower is defined
+    src: "{{ item.template }}"
+    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+  when: item.should_apply
+  with_items:
+    - template: ../templates/supervisor_celery_flower.conf.j2
+      file_name: supervisor_celery_flower.conf
+      should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
+    - template: ../templates/supervisor_celery_beat.conf.j2
+      file_name: supervisor_celery_beat.conf
+      should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).beat is defined }}"
+    - template: ../templates/supervisor_errand_boy.conf
+      file_name: supervisor_errand_boy.conf
+      should_apply: yes
   tags:
     - services
-  register: celery_flower_files
-
-- name: define celery beat service
-  become: cchq
-  template:
-    src: "../templates/supervisor_celery_beat.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
-  when: app_processes_config.celery_processes.get(inventory_hostname).beat is defined
-  tags:
-    - services
-  register: celery_beat_files
-
-- name: remove celery beat service
-  become: cchq
-  file:
-    path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
-    state: absent
-  when: app_processes_config.celery_processes.get(inventory_hostname).beat is not defined
-  tags:
-    - services
+  register: celery_special_service_files
 
 - name: define celery workers
   become: cchq
@@ -114,7 +93,11 @@
   register: celery_worker_files
 
 - set_fact:
-    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_errand_boy_files.get('results', []) }} + celery_bash_runner_files.get('results', []) + celery_flower_files.get('results', []) + celery_beat_files.get('results', []) + celery_worker_files.get('results', [])"
+    celery_supervisor_files: "{{ celery_reminder_queue_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
+  tags:
+    - services
 
 - set_fact:
     celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
+  tags:
+    - services

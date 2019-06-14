@@ -168,18 +168,14 @@ function ansible-control-banner() {
     BLUE='\033[0;34m'
     YELLOW='\033[0;33m'
     NC='\033[0m' # No Color
-    printf "\n${GREEN}Welcome to Ansible Control\n\n"
+    printf "\n${GREEN}Welcome to commcare-cloud\n\n"
     printf "${GREEN}Available commands:\n"
-    printf "${BLUE}update-code${NC} - update the ansible repositories (safely)\n"
-    printf "${BLUE}workon ansible${NC} - activate the ansible virtual env\n"
+    printf "${BLUE}update-code${NC} - update the commcare-cloud repositories (safely)\n"
+    printf "${BLUE}workon ansible${NC} - activate the ansible virtual environment\n"
     printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
-    printf -- "\n${GREEN}Deprecated Commands${NC}\n"
-    printf "ap - Use ${YELLOW}commcare-cloud <env> ap${NC} instead.\n"
-    printf "aps - Use ${YELLOW}commcare-cloud <env> aps${NC} instead.\n"
-    printf "ae - Use ${YELLOW}commcare-cloud <env> run-shell-command${NC} instead.\n"
 }
 
 [ -t 1 ] && ansible-control-banner

@@ -1,17 +1,17 @@
 # CouchDB
 - name: Install prequisites
-  apt: name="{{ item }}" state=present
-  with_items:
-    - build-essential
-    - g++
-    - erlang-base
-    - erlang-dev
-    - erlang-eunit
-    - erlang-nox
-    - libmozjs185-dev
-    - libicu-dev
-    - libcurl4-gnutls-dev
-    - libtool
+  apt:
+    name:
+      - build-essential
+      - g++
+      - erlang-base
+      - erlang-dev
+      - erlang-eunit
+      - erlang-nox
+      - libmozjs185-dev
+      - libicu-dev
+      - libcurl4-gnutls-dev
+      - libtool
 
 - name: Check CouchDB existence
   stat: path="{{ couchdb_install_path }}"

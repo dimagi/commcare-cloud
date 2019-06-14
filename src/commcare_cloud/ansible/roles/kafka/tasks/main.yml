@@ -77,15 +77,3 @@
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
-
-- name: Install kafkat
-  command: 'gem install kafkat'
-  become: yes
-  tags:
-    - kafkat
-
-- name: Create kafkat config file
-  template: src=kafkatcfg.j2 dest="/etc/kafkatcfg"
-  become: yes
-  tags:
-    - kafkat
