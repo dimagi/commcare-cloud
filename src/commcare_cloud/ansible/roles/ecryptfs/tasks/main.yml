@@ -4,7 +4,7 @@
   become: yes
   shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
   register: partition_check
-  when: datavol_device is defined and ansible_hostname not in groups['lvm']
+  when: datavol_device is defined and ansible_hostname not in groups.get('lvm', [])
   changed_when: false
   failed_when: false
   check_mode: no
@@ -20,7 +20,7 @@
   #   - default - start at beginning of disk
   #   - default - use entire disk
   # w - write the partition table
-  when: datavol_device is defined and partition_check.rc == 0 and ansible_hostname not in groups['lvm']
+  when: datavol_device is defined and partition_check.rc == 0 and ansible_hostname not in groups.get('lvm', [])
 
 - name: Format block storage volume
   become: yes
