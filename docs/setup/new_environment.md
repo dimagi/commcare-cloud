@@ -134,7 +134,7 @@ Even though we will be running all commands locally, we still need to add the us
 
 ## Step 3: Install commcare-cloud
 
-Install commcare-cloud onto the monolith as described in [Installing CommCareHQ](installation.md#step-2) beginning with **Step 2**.
+Install commcare-cloud onto the monolith as described in [Installing commcare-cloud](installation.md#step-2) beginning with **Step 2**.
 
 ## Step 4: Set-up commcare-cloud
 
