@@ -221,7 +221,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 2200
+      volume_size: 2600
     group: "couchdb2"
     os: bionic
   - server_name: "couch11-production"
@@ -230,7 +230,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 2200
+      volume_size: 2600
     group: "couchdb2"
     os: bionic
   - server_name: "couch12-production"
@@ -239,7 +239,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 2200
+      volume_size: 2600
     group: "couchdb2"
     os: bionic
 
