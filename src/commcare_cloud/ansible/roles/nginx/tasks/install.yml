@@ -1,4 +1,9 @@
 ---
+
+# Once we're entirely on bionic
+# we might be able install from the default bionic apt repo
+# and not add the official nginx repo.
+# See: https://github.com/dimagi/commcare-cloud/pull/2901#pullrequestreview-250517794
 - name: Add nginx repository
   become: yes
   apt_repository: repo='ppa:nginx/stable' state=present
