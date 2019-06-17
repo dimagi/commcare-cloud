@@ -18,10 +18,10 @@ matrix:
 before_install:
   # The next line exits out of the prove-deploy test if
   #   - the test is not running from a cron event
-  #   - the last commit that was merged in doesn't contain [pv-test]
+  #   - the last commit that was merged in doesn't contain [prove-deploy]
   - |
     if [[ $TEST = 'prove-deploy' && $TRAVIS_EVENT_TYPE != 'cron' ]] &&
-      git log --pretty=format:'%s %b' -n1 HEAD^2 | grep -iv '\[pv-deploy\]'
+    echo $(git log --pretty=format:'%s %b' -n1 HEAD^2) | grep -iv '\[prove-deploy\]'
     then
       exit 0
     fi
