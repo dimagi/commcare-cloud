@@ -265,29 +265,29 @@ pillows:
       processor_chunk_size: 100
   'pillow1':
     XFormToElasticsearchPillow:
-      num_processes: 16
+      num_processes: 24
   'pillow2':
     kafka-ucr-static-forms:
       start_process: 0
-      num_processes: 12
-      total_processes: 48
+      num_processes: 24
+      total_processes: 96
       processor_chunk_size: 100
   'pillow3':
     kafka-ucr-static-forms:
-      start_process: 12
-      num_processes: 12
+      start_process: 24
+      num_processes: 24
       total_processes: 48
       processor_chunk_size: 100
   'pillow4':
     kafka-ucr-static-forms:
-      start_process: 24
-      num_processes: 12
+      start_process: 48
+      num_processes: 24
       total_processes: 48
       processor_chunk_size: 100
   'pillow16':
     kafka-ucr-static-forms:
-      start_process: 36
-      num_processes: 12
+      start_process: 72
+      num_processes: 24
       total_processes: 48
       processor_chunk_size: 100
   'pillow5':
