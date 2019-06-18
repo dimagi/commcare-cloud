@@ -79,6 +79,7 @@ resource "aws_vpn_connection_route" "vpn_connections" {
 }
 
 resource "aws_security_group" "vpn_connections" {
+  count = "${length(var.vpn_connections) == 0 ? 0 : 1}"
   name = "vpn-connections-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
   ingress {
