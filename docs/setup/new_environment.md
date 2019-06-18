@@ -63,6 +63,8 @@ This document will walk you through the process of setting up a new monolith ser
     ```
 
     Enter a strong password when prompted, and save this password somewhere safe as you will need it for any future changes to this file, as well as when you deploy and configuration changes to this machine.
+    
+You can read more about the files contained in environments folder [here](../commcare-cloud/env/index.md).
 
 ### Add passwords to the vault file
 
