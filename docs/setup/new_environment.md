@@ -55,6 +55,8 @@ This document will walk you through the process of setting up a new monolith ser
     ``` bash
     $ git clone https://github.com/dimagi/sample-environment.git environments
     ```
+    
+    You can read more about the files contained in this environments folder [here](../commcare-cloud/env/index.md).
 
 1. Encrypt the provided ansible vault file by running:
 
@@ -64,7 +66,9 @@ This document will walk you through the process of setting up a new monolith ser
 
     Enter a strong password when prompted, and save this password somewhere safe as you will need it for any future changes to this file, as well as when you deploy and configuration changes to this machine.
     
-You can read more about the files contained in environments folder [here](../commcare-cloud/env/index.md).
+    More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
+    
+    You can read more about how we use this vault file [here](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault).
 
 ### Add passwords to the vault file
 
