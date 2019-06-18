@@ -159,8 +159,11 @@ Install commcare-cloud onto the monolith as described in [Installing commcare-cl
     ``` bash
     $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.profile
     ```
+1. Load the commcare-cloud config so it takes effect immediately:
 
-1. Log out of your machine and log in again so these changes take effect.
+    ``` bash
+    $ source ~/.commcare-cloud/load_config.sh
+    ```
 
 ## Step 5: Update the known hosts file
 
