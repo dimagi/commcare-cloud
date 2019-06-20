@@ -27,7 +27,13 @@ This document will walk you through the process of setting up a new monolith ser
     $ sudo passwd -u root
     ```
 
-    Edit `/etc/ssh/sshd_config`, and add the following line:
+    Edit `/etc/ssh/sshd_config`:
+    
+    ``` bash
+    $ sudo nano /etc/ssh/sshd_config
+    ```
+    
+    and add the following line at the bottom:
 
     ```
     PermitRootLogin yes
