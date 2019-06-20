@@ -233,23 +233,23 @@ servers:
       volume_size: 2600
     group: "couchdb2"
     os: bionic
+
   - server_name: "couch12-production"
     server_instance_type: c5.9xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 2200
+      volume_size: 3000
     group: "couchdb2"
     os: bionic
-
   - server_name: "couch13-production"
     server_instance_type: c5.9xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 20
+      volume_size: 3000
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
@@ -258,7 +258,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 20
+      volume_size: 3000
     group: "couchdb2"
     os: bionic
   - server_name: "couch15-production"
@@ -267,7 +267,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 20
+      volume_size: 3000
     group: "couchdb2"
     os: bionic
 
