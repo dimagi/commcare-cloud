@@ -176,14 +176,16 @@ elasticsearch_node_zone=aws
 es_master
 es_data
 
-{{ __couch10__ }}
-{{ __couch11__ }}
 {{ __couch12__ }}
+{{ __couch13__ }}
+{{ __couch14__ }}
+{{ __couch15__ }}
 
 [couchdb2:children]
-couch10
-couch11
 couch12
+couch13
+couch14
+couch15
 
 [couchdb2:vars]
 swap_size=8G
