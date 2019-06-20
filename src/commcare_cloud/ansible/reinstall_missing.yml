@@ -9,6 +9,7 @@
       - cloud-init
       - command-not-found
       - dh-python
+      - hibagent
       - iotop
       - landscape-common
       - language-selector-common
