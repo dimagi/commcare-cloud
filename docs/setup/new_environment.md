@@ -6,8 +6,8 @@ This document will walk you through the process of setting up a new monolith ser
 
 * A single server (referred to as the "monolith" from here) with:
     * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCareHQ as a demo, and any production environment should be given many more resources.
-    * Ubuntu 18.04 64-bit installed 
-* Access to the monolith via SSH with a user who has sudo access
+    * Ubuntu 18.04 server 64-bit installed 
+* Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
 
 ## Step 1: Add Root User and Install Required System Packages
 
