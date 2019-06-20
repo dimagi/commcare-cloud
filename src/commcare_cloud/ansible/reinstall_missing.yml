@@ -1,4 +1,4 @@
-- name: Install common packages
+- name: Reinstall removed packages
   become: yes
   apt:
     name:
