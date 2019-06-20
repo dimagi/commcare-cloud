@@ -239,3 +239,9 @@ $ commcare-cloud monolith fab deploy:resume=yes
 ## Step 9: Cleanup
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
+
+## Step 10: Troubleshooting
+
+If everything went well, you should now be able to access CommCareHQ from a browser. If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
+
+You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues that `commcare-cloud` can resolve.
