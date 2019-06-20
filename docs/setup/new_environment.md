@@ -136,7 +136,10 @@ Even though we will be running all commands locally, we still need to add the us
     ```
 
 1. Add your system username to the `present` section of `~/environments/_users/dimagi.yml`. This username should correspond to the name you've used for the public key in the previous step.
-
+   
+    ``` bash
+    $ nano ~/environments/_users/dimagi.yml
+    ```
 
 ## Step 3: Install commcare-cloud
 
