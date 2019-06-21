@@ -230,7 +230,7 @@ $ commcare-cloud monolith deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
 $ commcare-cloud monolith fab deploy
 ```
 
-The first time you run deploy (and whenever we have changes to our couch indices), it will kick off a "preindex" task. The deploy script will block until this task is complete. If it takes too long, the deploy script will pause, with a message:
+The first time you run deploy (and whenever we have changes to our couchdb indices or elasticsearch mappings), it will kick off a "preindex" task. The deploy script will block until this task is complete. If it takes too long, the deploy script will pause, with a message:
 
 ```
 You can't deploy to monolith yet. There's a preindex in process.
