@@ -42,6 +42,7 @@ postgres_override:
 dbs:
   main:
     host: pgmain0
+    query_stats: True
   formplayer:
     host: pgmain0
   ucr:
