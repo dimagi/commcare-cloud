@@ -230,6 +230,20 @@ $ commcare-cloud monolith deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
 $ commcare-cloud monolith fab deploy
 ```
 
+The first time you run deploy (and whenever we have changes to our couch indices), it will kick off a "preindex" task. The deploy script will block until this task is complete. If it takes too long, the deploy script will pause, with a message:
+
+```
+You can't deploy to monolith yet. There's a preindex in process.
+```
+
+You can check when the preindex is complete with:
+
+``` bash
+$ commcare-cloud monolith django-manage preindex_everything --check
+```
+
+If there is no success message as the output of this command, then preindex is still ongoing.
+
 If deploy fails, you can restart where it left off:
 
 ``` bash
