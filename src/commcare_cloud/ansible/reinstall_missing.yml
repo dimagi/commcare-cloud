@@ -1,5 +1,10 @@
 - hosts: all
   tasks:
+  - name: Update package list
+    become: yes
+    apt: update_cache=yes
+    when: ansible_distribution_version == '18.04' or ansible_distibution_version == '16.04'
+
   - name: Reinstall removed packages
     become: yes
     apt:
