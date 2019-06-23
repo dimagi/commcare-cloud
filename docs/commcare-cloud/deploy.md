@@ -89,3 +89,11 @@ You may also wish to revert to a previous version of the CommCareHQ code if the 
 ``` bash
 $ commcare-cloud <env> fab rollback
 ```
+
+# Scheduling Deploys
+
+Internally at Dimagi the main cloud environment is deployed **every weekday**. 
+
+However, for locally hosted deployments, we recommend deploying **once a week** (for example, every Wednesday), to keep up to date with new features and security patches.
+
+Since CommCareHQ is an Open Source project, you can see all the new features that were recently merged by looking at the [merged pull requests](https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+is%3Aclosed "merged pull requests") on GitHub.
