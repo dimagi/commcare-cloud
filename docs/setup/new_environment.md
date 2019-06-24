@@ -185,7 +185,7 @@ Install commcare-cloud onto the monolith as described in [Installing commcare-cl
 ```bash
 $ commcare-cloud monolith update-local-known-hosts
 ```
-You will be prompted for the ansible vault password that you entered in [Step 1](#step-1-install-required-system-packages)
+You will be prompted for the ansible vault password that you entered in [Step 2](#step-2-download-and-configure-the-commcare-cloud-environment)
 
 ## Step 6: Install all the services onto the monolith
 
