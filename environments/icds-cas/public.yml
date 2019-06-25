@@ -32,7 +32,6 @@ redis_maxmemory_policy: allkeys-lru
 redis_auto_aof_rewrite_percentage: "50"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
-kafka_log_retention: 1440 # 60 days
 
 KSPLICE_ACTIVE: no
 
