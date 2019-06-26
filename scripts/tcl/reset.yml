@@ -1,0 +1,66 @@
+# TCL VMs usually are given to us with wcdadmin user and password, the initial SSH
+# prompt is configured to reset that password. This playbook automates this for a 
+# given list of servers. Once IPs and passwords are substituited correctly, the playbook
+# can be run like below.
+#
+# ansible-playbook --connection=local reset.yml
+#
+# Python pexpect module is required
+
+- hosts: localhost
+  tasks:
+    - expect:
+        command: ssh wcdadmin@{{item}}
+        responses:
+          "(.*)wcdadmin(.*)": '{{current_pass}}'
+          "(current) UNIX password": '{{current_pass}}'
+          "Enter new UNIX password": '{{reset_pass}}'
+          "Retype new UNIX password": '{{reset_pass}}'
+      with_items:
+       # list of servers
+       - 100.71.188.113
+       - 100.71.188.112
+       - 100.71.188.106
+       - 100.71.188.117
+       - 100.71.188.100
+       - 100.71.188.119
+       - 100.71.188.120
+       - 100.71.188.115
+       - 100.71.188.121
+       - 100.71.188.95
+       - 100.71.188.73
+       - 100.71.188.124
+       - 100.71.188.122
+       - 100.71.188.111
+       - 100.71.188.125
+       - 100.71.188.114
+       - 100.71.188.116
+       - 100.71.188.97
+       - 100.71.188.126
+       - 100.71.188.93
+       - 100.71.188.89
+       - 100.71.188.92
+       - 100.71.188.98
+       - 100.71.188.99
+       - 100.71.188.104
+       - 100.71.188.79
+       - 100.71.188.88
+       - 100.71.188.105
+       - 100.71.188.108
+       - 100.71.188.86
+       - 100.71.188.109
+       - 100.71.188.103
+       - 100.71.188.110
+       - 100.71.188.107
+       - 100.71.188.85
+       - 100.71.188.63
+       - 100.71.188.87
+       - 100.71.188.90
+       - 100.71.188.82
+       - 100.71.188.66
+       - 100.71.188.91
+       - 100.71.188.94
+       - 100.71.188.78
+       - 100.71.188.96
+       - 100.71.184.148
+       - 100.71.184.131
