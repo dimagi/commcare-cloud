@@ -28,7 +28,7 @@ celery_processes:
     background_queue,analytics_queue:
       concurrency: 6
     icds_aggregation_queue:
-      concurrency: 10
+      concurrency: 20
     case_rule_queue:
       concurrency: 2
     sumologic_logs_queue:
