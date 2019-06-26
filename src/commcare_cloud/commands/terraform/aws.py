@@ -182,7 +182,10 @@ class AwsFillInventoryHelper(object):
                 ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
             ]
             if server.block_device:
-                inventory_vars.append(('datavol_device', '/dev/nvme1n'))
+                inventory_vars.extend([
+                    ('datavol_device', '/dev/sdf'),
+                    ('is_datavol_ebsnvme', 'yes'),
+                ])
 
             context.update(
                 self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
