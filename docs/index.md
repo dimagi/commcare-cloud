@@ -48,6 +48,8 @@ that machine is also the control machine.
 - [Kafka](services/kafka.md)
 - Celery
     - [Add a new Celery machine](howto/add-celery-machines.md)
+- Redis
+	- [Setup Redis Cluster](howto/redis-cluster.md)
 
 ## Optional but recommended
 - [Set up Sentry for error messages](howto/set-up-sentry.md)

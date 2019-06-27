@@ -6,10 +6,10 @@
 {{ __citus1__ }}
 {{ __citus2__ }}
 {{ __airflow1__ }}
-{{ __celery1__ }}
-{{ __couch2__ }}
-{{ __couch3__ }}
-{{ __couch4__ }}
+{{ __celery1__ }} swap_size=4G
+{{ __couch5__ }}
+{{ __couch6__ }}
+{{ __couch7__ }}
 {{ __redis0__ }}
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=aws
 {{ __es1__ }} elasticsearch_node_name=es1 elasticsearch_node_zone=aws
@@ -24,7 +24,7 @@
 citus1
 citus2
 
-[citusdb_cordinator:children]
+[citusdb_master:children]
 citus0
 
 [proxy:children]
@@ -67,12 +67,12 @@ es1
 redis0
 
 [couchdb2:children]
-couch2
-couch3
-couch4
+couch5
+couch6
+couch7
 
 [couchdb2_proxy:children]
-couch2
+couch5
 
 [control:children]
 control0
