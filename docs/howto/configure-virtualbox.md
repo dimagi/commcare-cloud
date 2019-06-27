@@ -67,7 +67,7 @@ Bridged mode requires a few things from the host:
   ```
 - On the host, edit the `/etc/hosts` file:
     ``` bash
-    sudo nano /etc/hosts
+    $ sudo nano /etc/hosts
     ```
     and add the following line to the end:
     ```
