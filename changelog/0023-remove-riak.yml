@@ -1,0 +1,17 @@
+title: Removing support for Riak CS
+key: removing-support-for-riak-cs
+date: 2019-06-27
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  We are removing support for deploying Riak CS clusters in commcare-cloud
+
+details: |
+  This change will remove all variables and playbooks related to Riak CS from the repository.
+  CommCare HQ will continue to support Riak CS and all other S3 compliant object storage solutions.
+
+  In the future, any Riak CS clusters will need to be managed outside of commcare-cloud.
+
+update_steps: |
+  No commcare-cloud steps required.
