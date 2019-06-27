@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2019-06-27** [Removing support for Riak CS](0023-remove-riak.md)
+We are removing support for deploying Riak CS clusters in commcare-cloud
+
 ### **2019-05-13** [Install Pango](0022-install-pango.md)
 This change installs pango and its dependencies for the weasyprint
 library which has been added as a requirement to commcare-hq for
