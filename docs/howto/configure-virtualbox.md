@@ -15,13 +15,13 @@ Follow the instructions for your host machine operating system found at the [Vir
     - Boot the VM and select the Ubuntu ISO you downloaded in the previous step
     - Follow the Ubuntu installation prompts, ensuring you install the OpenSSH server. The other defaults should all be left as-is unless you have specific requirements.
 
-# Step 3: Configuring VirtualBox Networking
+## Step 3: Configuring VirtualBox Networking
 
 There are two options for configuring the VirtualBox network.
 
 Before following these instructions it is wise to read and understand the `NAT` and `Bridged` sections of this [VirtualBox networking explained](https://technology.amis.nl/2018/07/27/virtualbox-networking-explained/) article. The rest of this section assumes knoweldge of that article.
 
-## NAT
+### NAT
 
 This is the easiest, but will prevent you from accessing some CommCare features like `formplayer`.
 
@@ -46,18 +46,18 @@ With these settings:
     **Note**: the `https` part is important as redirects will not work using this method.
 
 
-## Bridged
+### Bridged
 
 In this mode, the virtual machine will get its own IP address from the router that the host is connected to. This will allow the VM to be accessed from outside of the host.
 
-### Prerequisites
+#### Prerequisites
 
 Bridged mode requires a few things from the host:
 - A wired network connection, or a wireless connection that allows bridged connections (many wireless network cards and wireless gateways do not allow this)
 - Ideally, an ability to give specific MAC addresses a static IP address from the network router. Otherwise the VM's IP address might change on reboot.
 - An ability to edit the host's `host` file (`/etc/hosts` on unix machines)
 
-### Setting up Bridged mode:
+#### Setting up Bridged mode:
 - Under the VM's network settings, set the network adapter to be attached to the `Bridged Adapter`. Select the network device on the host that is connected to the router (i.e. your wireless or wired card).
 - For some wireless gateways which require a password, you might need to set the MAC address of the to the MAC address of the host. This may sometimes work to get a new IP address, but some wireless gateways will only give a single IP per MAC.
 - If you have access to the router, set it up to give the VM's MAC address in the settings with a static IP
