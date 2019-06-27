@@ -49,10 +49,9 @@ is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster
 run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service
-# TODO change default
-s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
-s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
-s3_blob_db_s3_bucket: 'blobdb'
+s3_blob_db_enabled: False
+s3_blob_db_url:
+s3_blob_db_s3_bucket:
 s3_bulk_delete_chunksize: 1000
 
 # For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
@@ -81,8 +80,6 @@ datadog_integration_postgres: false
 datadog_integration_postgres_receiver: false
 datadog_integration_rabbitmq: false
 datadog_integration_redisdb: false
-datadog_integration_riak: false
-datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_vmware: false
