@@ -7,6 +7,7 @@ This document will walk you through the process of setting up a new monolith ser
 * A single server (referred to as the "monolith" from here) with:
     * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCareHQ as a demo, and any production environment should be given many more resources.
     * Ubuntu 18.04 server 64-bit installed 
+    * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
 
 ## Step 1: Add Root User and Install Required System Packages
@@ -260,7 +261,9 @@ CommCare Cloud will no longer need the root user to be accessible via the passwo
 
 ## Step 10: Troubleshooting
 
-If everything went well, you should now be able to access CommCareHQ from a browser. If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
+If everything went well, you should now be able to access CommCareHQ from a browser. See the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md) page to find the URL which depends on your networking setup.
+
+If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
 
 You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues that `commcare-cloud` can resolve.
 
