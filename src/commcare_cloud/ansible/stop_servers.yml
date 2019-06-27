@@ -114,26 +114,3 @@
       state: stopped
     become: yes
     name: Stop elasticsearch
-
-- hosts:
-  - riakcs
-  tasks:
-  - service:
-      name: riak
-      state: stopped
-    name: Stop riak
-    become: yes
-  - service:
-      name: riak-cs
-      state: stopped
-    name: Stop riak-cs
-    become: yes
-
-- hosts:
-  - stanchion
-  tasks:
-  - service:
-      name: stanchion
-      state: stopped
-    name: Stop stanchion
-    become: yes
