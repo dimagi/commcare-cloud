@@ -14,7 +14,7 @@ elastcsearch_backup_days: 2
 
 redis_maxmemory: 4gb
 
-ssh_allow_password: True
+ssh_allow_password: False
 
 backup_blobdb: True
 backup_postgres: plain
@@ -102,3 +102,5 @@ PY3_RUN_GUNICORN: False
 PY3_RUN_MANAGEMENT: False
 PY3_RUN_PILLOWTOP: False
 PY3_RUN_WEBSOCKETS: False
+
+commcare_cloud_root_user: ubuntu
