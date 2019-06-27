@@ -28,16 +28,6 @@
         name: nginx
         tasks_from: errorpages
 
-    - name: remove old sites
-      include_role:
-        name: nginx
-        tasks_from: dropsite
-      with_items:
-        - "{{ deploy_env }}_riakcs"
-        - hq_status
-      loop_control:
-        loop_var: file_name
-
     - name: install cchq sites
       include_role:
         name: {name: nginx, tags: nginx_sites}
@@ -94,25 +84,6 @@
       loop_control:
         loop_var: site_config
       tags: nginx_sites
-
-    - name: riakcs site
-      include_role:
-        name: nginx
-        tasks_from: set_site_present
-      vars:
-        site_present: "{{ groups.get('riakcs') }}"
-        site_config: {name: riakcs, vars_file: riakcs}
-        hosts_group: riakcs
-
-    - name: riakcs new
-      include_role:
-        name: nginx
-        tasks_from: set_site_present
-      vars:
-        site_present: "{{ groups.get('riakcs') and ((groups.get('riakcs_new') and 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings) or 'TEMP_RIAKCS_PROXY' in localsettings) }}"
-        hosts_group: "{{ 'riakcs_new' if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else 'riakcs' }}"
-        riakcs_proxy_port: "{{ temp_riakcs_proxy_port }}"
-        site_config: {name: riakcs, vars_file: riakcs}
 
 - name: Reach Proxy
   hosts: reach_proxy

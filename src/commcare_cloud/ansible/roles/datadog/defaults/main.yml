@@ -25,7 +25,6 @@ monitoring_groups:
   - shard_dbs
   - main_dbs
   - ucr_dbs
-  - riakcs
   - formplayer
   - pillowtop
   - celery

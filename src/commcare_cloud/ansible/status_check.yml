@@ -11,7 +11,6 @@
 - hosts:
    - postgresql
    - elsaticsearch
-   - riakcs
    - couchdb2
    - kafka
    - redis

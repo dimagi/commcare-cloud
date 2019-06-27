@@ -37,11 +37,6 @@ etc_hosts_lines_removed: []
 ssh_allow_password: False
 ssh_allow_password_users: []
 django_port: 9010
-riakcs_port: 8080
-riakcs_proxy_port_override: "{{ riakcs_port }}"  # use this to override in env vars
-riakcs_proxy_port: "{{ riakcs_proxy_port_override }}"
-temp_riakcs_proxy_port: 8081
-riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb_use_haproxy: False
@@ -53,7 +48,8 @@ couchdb_admins: "{
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 run_websockets_wsgi: False
 
-# commcare-hq connects to an S3-compatible service, which is Riak CS
+# commcare-hq connects to an S3-compatible service
+# TODO change default
 s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
 s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
 s3_blob_db_s3_bucket: 'blobdb'
