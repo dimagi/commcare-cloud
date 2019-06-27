@@ -27,7 +27,6 @@ swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 
 nofile_limit: 65536
 
-redis_appendonly: 'yes'
 redis_maxmemory: 6gb
 redis_maxmemory_policy: allkeys-lru
 redis_auto_aof_rewrite_percentage: "50"
@@ -128,6 +127,18 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
+  - name: /sikkim_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_sikkim_files"
+  - name: /assamese-icds-cas-files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_asm_files"
+  - name: /kannada-icds-cas-files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_kan_files"
 
 couchdb_use_haproxy: True
 couchdb_reduce_limit: False

@@ -46,5 +46,5 @@
     - import_tasks: partials/couchdb2_proxy_nginx.yml
       when: not couchdb_use_haproxy
     - import_tasks: partials/couchdb2_proxy_haproxy.yml
-      when: couchdb_use_haproxy
+      when: couchdb_use_haproxy|bool
   tags: proxy

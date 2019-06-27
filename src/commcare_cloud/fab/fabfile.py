@@ -127,8 +127,8 @@ def _setup_path():
 
     env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
     env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
-    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.7')
-    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.7')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
 
     if env.py3_run_deploy:
         env.virtualenv_current = env.py3_virtualenv_current
@@ -138,7 +138,6 @@ def _setup_path():
         env.virtualenv_root = env.py2_virtualenv_root
 
     env.services = posixpath.join(env.code_root, 'services')
-    env.jython_home = '/usr/local/lib/jython'
     env.db = '%s_%s' % (env.project, env.deploy_env)
     env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
     env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
@@ -151,8 +150,8 @@ def _override_code_root_to_current():
 
     env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
     env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
-    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.7')
-    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.7')
+    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
+    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
 
     if env.py3_run_deploy:
         env.virtualenv_current = env.py3_virtualenv_current
@@ -746,11 +745,6 @@ def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
         env.checkpoint_index = checkpoint_index or 0
         print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
-    if datetime.datetime.now().isoweekday() == 5:
-        warning_message = 'Friday'
-    else:
-        warning_message = ''
-
     env.offline = offline == 'yes'
 
     if env.offline:
@@ -765,20 +759,6 @@ def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
         # Force ansible user and prompt for password
         env.user = 'ansible'
         env.password = getpass('Enter the password for the ansbile user: ')
-
-    if warning_message:
-        print('')
-        print('┓┏┓┏┓┃')
-        print('┛┗┛┗┛┃＼○／')
-        print('┓┏┓┏┓┃  /      ' + warning_message)
-        print('┛┗┛┗┛┃ノ)')
-        print('┓┏┓┏┓┃         deploy,')
-        print('┛┗┛┗┛┃')
-        print('┓┏┓┏┓┃         good')
-        print('┛┗┛┗┛┃')
-        print('┓┏┓┏┓┃         luck!')
-        print('┃┃┃┃┃┃')
-        print('┻┻┻┻┻┻')
 
     _deploy_without_asking(skip_record)
 

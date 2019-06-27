@@ -6,9 +6,17 @@
       become: yes
       become_user: "{{ cchq_user }}"
       django_manage:
-        command: migrate_multi
+        command: 'migrate_multi --noinput'
         app_path: "{{ code_home }}"
         virtualenv: "{{ virtualenv_home }}"
       environment:
         CCHQ_IS_FRESH_INSTALL: 1
+      when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
+    - name: Configure Pl/Proxy cluster
+      become: yes
+      become_user: "{{ cchq_user }}"
+      django_manage:
+        command: 'configure_pl_proxy_cluster --create_only'
+        app_path: "{{ code_home }}"
+        virtualenv: "{{ virtualenv_home }}"
       when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL

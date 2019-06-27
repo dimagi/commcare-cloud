@@ -35,6 +35,10 @@
     status_code: 201, 412 # 412 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0
+  register: result
+  until: not result.failed or 'Connection refused' not in result.msg
+  retries: 5
+  delay: 20
   with_items:
    - _users
    - _replicator
@@ -67,7 +71,7 @@
     mode: 0700
     group: couchdb
     owner: couchdb
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -81,7 +85,7 @@
     owner: couchdb
     mode: 0700
     backup: yes
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -97,7 +101,7 @@
     user: couchdb
     cron_file: backup_couch
     state: absent
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -113,7 +117,7 @@
     user: couchdb
     cron_file: backup_couch
     state: absent
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -156,7 +160,7 @@
   vars:
     s3_user: "couchdb"
     s3_user_home_dir: "{{ couchdb_dir }}"
-  when: couch_s3
+  when: couch_s3|bool
   tags:
     - cron
     - backups
@@ -183,4 +187,7 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
-
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20
