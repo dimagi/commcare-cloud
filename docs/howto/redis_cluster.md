@@ -11,12 +11,12 @@ Redis requires at least three master nodes for a functional cluster. Read more o
   ```
   commcare-cloud <env> deploy-stack --limit=<redis_hosts> --tags=redis
   ```
-- On any one of the nodes, run below to command to make above Redis hosts form a cluster with equal number of hash slots (aka shards)
+- On any one of the nodes, run below command to make the Redis hosts form a cluster with equal number of hash slots on each node (aka shards)
    ```
    /usr/local/src/redis-4.0.8/src/redis-trib.rb create --replicas 0 <list of redis URLs of all hosts in the format redis_ip:redis_port>
    ```
 
-Note that this creates a fresh Redis cluster with no data. It is also possible to migrate existing single Redis monolith to a Redis cluster. This document doesn't cover this part in detail, but the general process involves below steps
+Note that this creates a fresh Redis cluster with no data. It is also possible to migrate an existing Redis monolith with data to a Redis cluster. This document doesn't go into details on that, but the general process involves below steps
 - Setting up an empty redis cluster
 - Resharding the cluster to have one node contain all hash slots instead of equal distribution
 - Getting data dump from old Redis instance in aof or rdb format
