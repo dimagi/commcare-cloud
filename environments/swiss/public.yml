@@ -51,6 +51,9 @@ couchdb2:
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 
+BROKER_URL: 'redis://{{ groups.redis.0 }}:6379/0'
+
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
