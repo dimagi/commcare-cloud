@@ -218,13 +218,6 @@ $ commcare-cloud monolith deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
     $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
     ```
 
-2. Edit this file
-
-    ``` bash
-    $ nano ~/commcare-cloud/src/commcare_cloud/fab/config.py
-    ```
-    Enter `None` for the GitHub API key, it is not needed for locally hosted deploys.
-
 ## Step 8: Deploy CommCare HQ
 
 Deploying CommcareHQ for the first time needs a few things enabled first.
