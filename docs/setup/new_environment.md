@@ -259,19 +259,33 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
 
-## Step 10: Troubleshooting
+## Step 10: Running CommCareHQ
 
-If everything went well, you should now be able to access CommCareHQ from a browser. See the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md) page to find the URL which depends on your networking setup.
-
-If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
-
-You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues that `commcare-cloud` can resolve.
-
-*note*: If you ever reboot this machine, make sure to follow the [after reboot procedure](../commcare-cloud/basics.md#handling-a-reboot) to bring all the services back up, and mount the encrypted drive.
+### Learning `commcare-cloud` basics
 
 In general it will be useful to understand all the commands on the [commcare-cloud basics](../commcare-cloud/basics.md) page.
 
-## Step 11: [Optional] Make a user
+### Accessing CommCareHQ from a browser
+
+If everything went well, you should now be able to access CommCareHQ from a browser. See the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md) page to find the URL which depends on your networking setup.
+
+### Troubleshooting first time set up
+
+If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
+
+### Firefighting issues once CommCareHQ is running
+
+You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues that `commcare-cloud` can resolve.
+
+## Step 11: [Optional] Rebooting the machine
+
+If you ever reboot this machine, make sure to follow the [after reboot procedure](../commcare-cloud/basics.md#handling-a-reboot) to bring all the services back up, and mount the encrypted drive by running: 
+
+``` bash
+$ commcare-cloud monolith after-reboot all
+```
+
+## Step 12: [Optional] Make a user
 
 If you are following this process, we assume you have some knowledge of CommCareHQ and may already have data you want to migrate to your new cluster. By default, the monolith deploy scripts will be in `Enterprise` mode, which means there is no sign up screen. You can change this and other settings in the localsettings file, and following the [localsettings deploy instructions](../commcare-cloud/basics.md#update-commcare-hq-local-settings).
 
