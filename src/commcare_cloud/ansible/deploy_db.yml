@@ -11,7 +11,7 @@
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
-    - {role: backups, tags: 'backups'}
+    - {role: backups, tags: 'backups,backups-only'}
 
 - name : PostgreSQL
   import_playbook: deploy_postgres.yml
