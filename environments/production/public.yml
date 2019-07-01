@@ -1,8 +1,5 @@
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-riak_backend: "leveldb"
-riak_ring_size: 128
-
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
 datadog_integration_cloudant: true
