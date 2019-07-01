@@ -297,7 +297,75 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  UCR_COMPARISONS: {}
+  UCR_COMPARISONS:
+    # MPR
+    static-mpr_1_person_cases:
+    static-mpr_2a_person_cases:
+    static-mpr_2a_3_child_delivery_forms:
+    static-mpr_2bi_preg_delivery_death_list:
+    static-mpr_2bii_child_death_list:
+    static-mpr_2ci_child_birth_list:
+    static-mpr_3i_person_cases:
+    static-mpr_3ii_person_cases:
+    static-dashboard_mpr_4a_6_pse:
+    static-mpr_4a_6_pse:
+    static-mpr_4b_infra_forms:
+    static-mpr_5_child_health_cases:
+    static-mpr_5_child_health_cases_v2:
+    static-mpr_5_ccs_record_cases:
+    static-mpr_5_ccs_record_cases_v2:
+    static-mpr_6ac_child_health_cases:
+    static-mpr_6ac_child_health_cases_v2:
+    static-mpr_6b_child_health_cases:
+    static-mpr_6b_child_health_cases_v2:
+    static-mpr_7_growth_monitoring_forms:
+    static-mpr_8_tasks_cases:
+    mpr_9_vhnd_forms:
+    static-mpr_10a_person_cases:
+    static-mpr_10ab_person_cases:
+    static-mpr_10b_person_cases:
+    static-mpr_11_visitor_book_forms:
+    # ASR
+    static-asr_2_household_cases:
+    static-asr_2_lactating:
+    static-asr_2_pregnancies:
+    static-asr_2_3_person_cases:
+    static-dashboard_asr_2_3_person_cases:
+    static-asr_4_6_infrastructure:
+    # LS
+    static-ls_awc_days_open:
+    static-ls_awc_locations:
+    static-ls_above_6mo_nutrition:
+    static-ls_awc_mgmt_forms:
+    static-ls_beneficiary_feedback:
+    static-ls_born_last_30_days:
+    static-ls_ccs_record_cases:
+    static-ls_child_nutrition_status:
+    static-ls_children_weighed:
+    static-ls_comp_feeding:
+    static-ls_ebf:
+    static-ls_handwashing:
+    static-ls_ifa_consumption:
+    static-ls_immun_complete:
+    static-ls_report_child_names:
+    static-ls_report_child_nutrition_status:
+    static-ls_report_lbw_pre_term:
+    static-ls_report_pregnant_women_names:
+    static-ls_timely_home_visits:
+    static-ls_thr_30_days:
+    static-ls_thr_forms:
+    # other
+    static-hardware_district:
+    static-hardware_block:
+    static-hardware_individual:
+    static-it_individual_issues:
+    static-it_issues_activity:
+    static-it_issues_state:
+    static-it_issues_district:
+    static-it_issues_block:
+    static-it_issues_by_issue_level:
+    static-it_issues_by_ticket_level:
+    static-list_pnc_delivery_complications:
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
 
