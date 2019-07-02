@@ -57,6 +57,7 @@
     - name: Remove default certbot cron
       cron:
         cron_file: certbot
+        user: root
         state: absent
 
     - name: Add custom_certbot cron
@@ -72,4 +73,5 @@
     - name: Remove "Reload Nginx to reread SSL" cron job
       cron:
         state: absent
+        user: root
         cron_file: nginx_ssl_reread
