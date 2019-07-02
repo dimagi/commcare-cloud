@@ -30,10 +30,7 @@ setup(
     },
     install_requires=(
         'ansible-vault==1.1.1',
-        # Ansible 2.5.1 through 2.6.*
-        # are affected by https://github.com/ansible/ansible/issues/44065
-        # When 2.7 comes out, if not affected, should change this to >=2.7
-        'ansible==2.5.0',
+        'ansible>=2.8.0',
         'argparse>=1.4',
         'attrs>=18.1.0',
         'boto3>=1.9.131',

@@ -1,17 +1,17 @@
 # CouchDB
 - name: Install prequisites
-  apt: name="{{ item }}" state=present
-  with_items:
-    - build-essential
-    - g++
-    - erlang-base
-    - erlang-dev
-    - erlang-eunit
-    - erlang-nox
-    - libmozjs185-dev
-    - libicu-dev
-    - libcurl4-gnutls-dev
-    - libtool
+  apt:
+    name:
+      - build-essential
+      - g++
+      - erlang-base
+      - erlang-dev
+      - erlang-eunit
+      - erlang-nox
+      - libmozjs185-dev
+      - libicu-dev
+      - libcurl4-gnutls-dev
+      - libtool
 
 - name: Check CouchDB existence
   stat: path="{{ couchdb_install_path }}"
@@ -52,7 +52,10 @@
   when: not couchdb_path.stat.exists and couchdb_compile|success
 
 - name: Add CouchDB user
-  user: name=couchdb createhome=no password=no state=present
+  user:
+    name: couchdb
+    home: '{{ couchdb_dir }}'
+    state: present
 
 - name: Apply CouchDB config
   template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
@@ -198,28 +201,15 @@
     - cron
     - backups
 
-- name: Create aws config directory
-  become: yes
-  file:
-    path: '{{ couchdb_dir }}/.aws'
-    owner: couchdb
-    group: couchdb
-    mode: 0700
-    state: directory
-  when: couch_s3
-  tags:
-    - cron
-    - backups
 
-- name: copy boto3 credentials file
+- name: Set up aws credentials
   become: yes
-  template:
-    src: "aws_credentials.j2"
-    dest: "{{ couchdb_dir }}/.aws/credentials"
-    group: couchdb
-    owner: couchdb
-    mode: 0700
-    backup: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_aws_credentials.yml
+  vars:
+    s3_user: "couchdb"
+    s3_user_home_dir: "{{ couchdb_dir }}"
   when: couch_s3
   tags:
     - cron

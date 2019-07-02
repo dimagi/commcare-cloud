@@ -7,9 +7,6 @@ resource aws_instance "server" {
   key_name                = "${var.key_name}"
   vpc_security_group_ids  = ["${var.security_group_options[var.network_tier]}"]
   source_dest_check       = false
-  credit_specification {
-    cpu_credits = "unlimited"
-  }
 
   disable_api_termination = true
   ebs_optimized = true

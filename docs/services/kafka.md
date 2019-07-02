@@ -55,12 +55,35 @@ $ ./kafka-topics.sh --alter --zookeeper=<zookeeper host>:2181 --topic <topci> --
 Pillowtop process configurations as described in the [CommCare docs](https://commcare-hq.readthedocs.io/pillows.html#parallel-processors).
 
 ### Move partitions
-**NOTE**: All processes accessing Kafka should be shutdown prior to following this process to avoid
- errors publishing or consuming Kafka messages.
+**NOTE**: This can be done while all services are online
 
-1. Create file listing partitions to move and their new brokers:
+1. Create the list of topics to rebalance
 
-    In the JSON below `replicas` refers to the broker IDs that the partition should appear on. In the example
+    ```
+    $ cat topics.json
+    {
+      "topics": [{"topic": "case-sql"},{"topic": "form-sql"}],
+      "version": 1
+    }
+    ```
+
+2. Generate the reassignments
+
+    ```
+    $ /opt/kafka/bin/kafka-reassign-partitions.sh --zookeeper=localhost:2181 --broker-list "0,1,2" --topics-to-move-json-file topics.json --generate 
+    Current partition replica assignment
+
+    {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[0]}, ... ]}
+    Proposed partition reassignment configuration
+
+    {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[1]}, ... ]}
+    ```
+
+    --broker-list: list of brokers that can have partitions assigned to them
+
+3. Copy the proposed reassignment configuration to a JSON file and verify / update as required
+
+    `replicas` refers to the broker IDs that the partition should appear on. In the example
     below this will put the `("case", 0)` partition on broker 0 (with no replicas).
     ```
     $ cat partitions-to-move.json
@@ -73,9 +96,11 @@ Pillowtop process configurations as described in the [CommCare docs](https://com
     }
     ```
 
-2. Reassign the partitions and verify the change:
+4. Reassign the partitions and verify the change:
     ```
     $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --execute
     
     $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --verify
     ```
+
+See https://kafka.apache.org/documentation.html#basic_ops_cluster_expansion for more details.

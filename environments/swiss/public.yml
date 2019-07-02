@@ -12,7 +12,7 @@ elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd
 #elasticsearch_node_name: '??'
 elastcsearch_backup_days: 2
 
-
+redis_maxmemory: 4gb
 
 ssh_allow_password: True
 
@@ -26,6 +26,7 @@ couch_s3: True
 
 es_local_repo: False
 
+aws_region: ch-dk-2
 aws_endpoint: https://sos-ch-dk-2.exo.io
 es_snapshot_bucket:   commcare-almanach-backup
 postgres_snapshot_bucket: commcare-almanach-backup

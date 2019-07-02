@@ -33,7 +33,7 @@ host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/3
 {% endfor %}
 {% endif %}
 
-{% set citus_host_list = groups.get('citusdb_worker', []) + groups.get('citusdb_cordinator', []) | unique %}
+{% set citus_host_list = groups.get('citusdb_worker', []) + groups.get('citusdb_master', []) | unique %}
 {% if inventory_hostname in citus_host_list %}
 {% for host in citus_host_list %}
 # Allow Trus Access from Citus DB

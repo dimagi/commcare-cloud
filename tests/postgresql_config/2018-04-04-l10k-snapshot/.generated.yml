@@ -4,10 +4,11 @@ postgresql_dbs:
     django_alias: default
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: commcarehq
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -15,10 +16,11 @@ postgresql_dbs:
     django_alias: synclogs
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: commcarehq_synclogs
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -26,10 +28,11 @@ postgresql_dbs:
     django_alias: ucr
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: commcarehq_ucr
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -37,10 +40,11 @@ postgresql_dbs:
     django_alias: null
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: formplayer
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -51,10 +55,11 @@ postgresql_dbs:
     django_alias: null
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: formplayer
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -63,10 +68,11 @@ postgresql_dbs:
     django_alias: default
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: commcarehq
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -76,10 +82,11 @@ postgresql_dbs:
     django_alias: synclogs
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: commcarehq_synclogs
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
@@ -88,10 +95,11 @@ postgresql_dbs:
     django_alias: ucr
     django_migrate: true
     host: 127.0.0.1
-    pgbouncer_host: 127.0.0.1
     name: commcarehq_ucr
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
