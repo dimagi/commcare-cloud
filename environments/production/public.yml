@@ -20,8 +20,6 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 
-redis_maxmemory: 8gb
-
 nofile_limit: 65536
 
 supervisor_http_enabled: True
@@ -56,6 +54,10 @@ couch_dbs:
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_compaction_settings:
+  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "17:00"}, {to, "5:00"}]'
+
 
 couchdb2_client_max_body_size: 100M
 

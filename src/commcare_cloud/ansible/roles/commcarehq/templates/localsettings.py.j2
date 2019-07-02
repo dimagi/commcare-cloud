@@ -861,7 +861,11 @@ TRANSIFEX_DETAILS = {
 {% if localsettings.UCR_COMPARISONS is defined %}
 UCR_COMPARISONS = {
 {% for old_config, new_config in localsettings.UCR_COMPARISONS.items() %}
-    '{{ old_config }}': '{{ new_config }}',
+    {% if new_config %}
+     '{{ old_config }}': '{{ new_config }}',
+    {% else %}
+    '{{ old_config }}': None,
+    {% endif %}
 {% endfor %}
 }
 {% endif %}

@@ -27,6 +27,9 @@ max_stack_depth = {{ postgresql_max_stack_depth }}
 maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
 vacuum_cost_delay = 20ms
 dynamic_shared_memory_type = posix
+{% if postgresql_max_locks_per_transaction %}
+max_locks_per_transaction = {{ postgresql_max_locks_per_transaction }}
+{% endif %}
 
 # PARALLEL QUERY
 {% if postgresql_max_worker_processes %}
@@ -41,6 +44,12 @@ effective_io_concurrency = {{ postgresql_effective_io_concurrency }}
 
 
 # WRITE AHEAD LOG
+{% if postgresql_enable_archive and not is_pg_standby %}
+archive_mode = on
+archive_command = '{{ postgresql_archive_command }}'
+archive_timeout = {{ postgresql_archive_timeout }}
+{% endif %}
+
 wal_level = hot_standby
 max_wal_senders = 8
 max_wal_size = {{ postgresql_max_wal_size }}

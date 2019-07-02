@@ -297,7 +297,7 @@ def update_virtualenv(full_cluster=True):
         if env.py3_include_venv:
             _update_virtualenv(
                 env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, 'requirements-python3_6')
+                posixpath.join(env.code_root, 'requirements-python3')
             )
 
     return update

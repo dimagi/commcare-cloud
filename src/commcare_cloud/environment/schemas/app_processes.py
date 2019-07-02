@@ -28,7 +28,6 @@ class AppProcessesConfig(jsonobject.JsonObject):
     flower_port = PortProperty()
     gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
-    jython_memory = MemorySpecProperty()
     formplayer_memory = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
     newrelic_djangoagent = jsonobject.BooleanProperty()
@@ -90,6 +89,7 @@ CELERY_PROCESSES = [
     CeleryProcess("case_import_queue", blockage_threshold=60),
     CeleryProcess("celery", blockage_threshold=60),
     CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),
+    CeleryProcess("dashboard_comparison_queue", required=False),
     CeleryProcess("email_queue", blockage_threshold=30),
     CeleryProcess("export_download_queue", blockage_threshold=30),
     CeleryProcess("flower", is_queue=False),

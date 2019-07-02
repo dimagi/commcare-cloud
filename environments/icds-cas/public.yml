@@ -27,7 +27,6 @@ swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 
 nofile_limit: 65536
 
-redis_appendonly: 'yes'
 redis_maxmemory: 6gb
 redis_maxmemory_policy: allkeys-lru
 redis_auto_aof_rewrite_percentage: "50"
@@ -128,6 +127,18 @@ site_locations:
     try_files: "$uri $uri/index.html $uri/ =404"
     auth_basic: '"Restricted Content"'
     auth_basic_user_file: "/etc/nginx/.htpasswd_adhaar_id_scanner_apk"
+  - name: /sikkim_files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_sikkim_files"
+  - name: /assamese-icds-cas-files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_asm_files"
+  - name: /kannada-icds-cas-files
+    try_files: "$uri $uri/index.html $uri/ =404"
+    auth_basic: '"Restricted Content"'
+    auth_basic_user_file: "/etc/nginx/.htpasswd_kan_files"
 
 couchdb_use_haproxy: True
 couchdb_reduce_limit: False
@@ -286,7 +297,75 @@ localsettings:
   ENTERPRISE_MODE: True
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  UCR_COMPARISONS: {}
+  UCR_COMPARISONS:
+    # MPR
+    static-icds-cas-static-mpr_1_person_cases:
+    static-icds-cas-static-mpr_2a_person_cases:
+    static-icds-cas-static-mpr_2a_3_child_delivery_forms:
+    static-icds-cas-static-mpr_2bi_preg_delivery_death_list:
+    static-icds-cas-static-mpr_2bii_child_death_list:
+    static-icds-cas-static-mpr_2ci_child_birth_list:
+    static-icds-cas-static-mpr_3i_person_cases:
+    static-icds-cas-static-mpr_3ii_person_cases:
+    static-icds-cas-static-dashboard_mpr_4a_6_pse:
+    static-icds-cas-static-mpr_4a_6_pse:
+    static-icds-cas-static-mpr_4b_infra_forms:
+    static-icds-cas-static-mpr_5_child_health_cases:
+    static-icds-cas-static-mpr_5_child_health_cases_v2:
+    static-icds-cas-static-mpr_5_ccs_record_cases:
+    static-icds-cas-static-mpr_5_ccs_record_cases_v2:
+    static-icds-cas-static-mpr_6ac_child_health_cases:
+    static-icds-cas-static-mpr_6ac_child_health_cases_v2:
+    static-icds-cas-static-mpr_6b_child_health_cases:
+    static-icds-cas-static-mpr_6b_child_health_cases_v2:
+    static-icds-cas-static-mpr_7_growth_monitoring_forms:
+    static-icds-cas-static-mpr_8_tasks_cases:
+    static-icds-cas-mpr_9_vhnd_forms:
+    static-icds-cas-static-mpr_10a_person_cases:
+    static-icds-cas-static-mpr_10ab_person_cases:
+    static-icds-cas-static-mpr_10b_person_cases:
+    static-icds-cas-static-mpr_11_visitor_book_forms:
+    # ASR
+    static-icds-cas-static-asr_2_household_cases:
+    static-icds-cas-static-asr_2_lactating:
+    static-icds-cas-static-asr_2_pregnancies:
+    static-icds-cas-static-asr_2_3_person_cases:
+    static-icds-cas-static-dashboard_asr_2_3_person_cases:
+    static-icds-cas-static-asr_4_6_infrastructure:
+    # LS
+    static-icds-cas-static-ls_awc_days_open:
+    static-icds-cas-static-ls_awc_locations:
+    static-icds-cas-static-ls_above_6mo_nutrition:
+    static-icds-cas-static-ls_awc_mgmt_forms:
+    static-icds-cas-static-ls_beneficiary_feedback:
+    static-icds-cas-static-ls_born_last_30_days:
+    static-icds-cas-static-ls_ccs_record_cases:
+    static-icds-cas-static-ls_child_nutrition_status:
+    static-icds-cas-static-ls_children_weighed:
+    static-icds-cas-static-ls_comp_feeding:
+    static-icds-cas-static-ls_ebf:
+    static-icds-cas-static-ls_handwashing:
+    static-icds-cas-static-ls_ifa_consumption:
+    static-icds-cas-static-ls_immun_complete:
+    static-icds-cas-static-ls_report_child_names:
+    static-icds-cas-static-ls_report_child_nutrition_status:
+    static-icds-cas-static-ls_report_lbw_pre_term:
+    static-icds-cas-static-ls_report_pregnant_women_names:
+    static-icds-cas-static-ls_timely_home_visits:
+    static-icds-cas-static-ls_thr_30_days:
+    static-icds-cas-static-ls_thr_forms:
+    # other
+    static-icds-cas-static-hardware_district:
+    static-icds-cas-static-hardware_block:
+    static-icds-cas-static-hardware_individual:
+    static-icds-cas-static-it_individual_issues:
+    static-icds-cas-static-it_issues_activity:
+    static-icds-cas-static-it_issues_state:
+    static-icds-cas-static-it_issues_district:
+    static-icds-cas-static-it_issues_block:
+    static-icds-cas-static-it_issues_by_issue_level:
+    static-icds-cas-static-it_issues_by_ticket_level:
+    static-icds-cas-static-list_pnc_delivery_complications:
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
 

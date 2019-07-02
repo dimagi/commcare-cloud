@@ -1,4 +1,3 @@
-jython_memory: "1024m"
 formplayer_memory: "1024m"
 
 celery_processes:
