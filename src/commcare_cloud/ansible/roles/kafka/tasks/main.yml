@@ -9,7 +9,7 @@
 - name: Set JMX_PORT in /etc/environment
   lineinfile:
     dest: /etc/environment
-    line: 'JMX_PORT={{ KAFKA_JMX_PORT }}'
+    line: 'JMX_PORT={{ kafka_jmx_port }}'
     state: "{{ 'present' if ansible_distribution_version == '14.04' else 'absent' }}"
 
 - name: Download Kafka
