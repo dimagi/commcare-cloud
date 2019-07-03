@@ -50,6 +50,7 @@ couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
+couchdb_use_haproxy: True
 
 BROKER_URL: 'redis://{{ groups.redis.0 }}:6379/0'
 
