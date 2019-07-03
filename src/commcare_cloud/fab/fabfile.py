@@ -102,7 +102,6 @@ env.roledefs = {
     # package level configs that are not quite config'ed yet in this fabfile
     'couch': [],
     'pg': [],
-    'rabbitmq': [],
     'lb': [],
     # need a special 'deploy' role to make deploy only run once
     'deploy': [],
@@ -273,7 +272,6 @@ def env_common():
     formplayer = servers['formplayer']
     elasticsearch = servers['elasticsearch']
     celery = servers['celery']
-    rabbitmq = servers['rabbitmq']
     # if no server specified, just don't run pillowtop
     pillowtop = servers.get('pillowtop', [])
     airflow = servers.get('airflow', [])
@@ -286,7 +284,6 @@ def env_common():
         'pgstandby': pg_standby,
         'elasticsearch': elasticsearch,
         'riakcs': riakcs,
-        'rabbitmq': rabbitmq,
         'django_celery': celery,
         'django_app': webworkers,
         'django_manage': django_manage,
