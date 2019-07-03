@@ -19,4 +19,4 @@
         command: 'configure_pl_proxy_cluster --create_only'
         app_path: "{{ code_home }}"
         virtualenv: "{{ virtualenv_home }}"
-      when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
+      when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL and SEPARATE_FORM_PROCESSING_DBS
