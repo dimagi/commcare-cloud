@@ -118,7 +118,7 @@
   hosts: reach_proxy
   tasks:
     - include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ 'reach_ssl' in special_sites }}"
@@ -130,7 +130,7 @@
   hosts: cas_proxy
   tasks:
     - include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ 'cas_ssl' in special_sites }}"
@@ -142,7 +142,7 @@
   hosts: pna_proxy
   tasks:
     - include_role:
-        name: nginx
+        name: {name: nginx, tags: nginx_sites}
         tasks_from: set_site_present
       vars:
         site_present: "{{ 'pna_ssl' in special_sites }}"
