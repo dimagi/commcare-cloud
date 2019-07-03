@@ -37,6 +37,10 @@ aws_versioning_enabled: false
 
 KSPLICE_ACTIVE: yes
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy.0 }}"
