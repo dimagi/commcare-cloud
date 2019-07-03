@@ -6,7 +6,7 @@ nginx_sites:
 - server:
    balancers:
     - name: "{{ deploy_env }}_cas_commcare"
-      hosts: webworkers
+      hosts: "{{ groups['mobile_webworkers'] | default('webworkers') }}"
       port: "{{ django_port }}"
     - name: "{{ deploy_env }}_cas_formplayer"
       hosts: formplayer
