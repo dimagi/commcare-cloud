@@ -184,6 +184,7 @@ class AwsFillInventoryHelper(object):
             if server.block_device:
                 inventory_vars.extend([
                     ('datavol_device', '/dev/sdf'),
+                    ('datavol_device1', '/dev/sdf'),
                     ('is_datavol_ebsnvme', 'yes'),
                 ])
 
