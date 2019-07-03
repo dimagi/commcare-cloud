@@ -1,7 +1,7 @@
 - name: Install nvme-cli
   become: yes
   apt: name=nvme-cli state=present
-  register: r_install_nvme_cli
+  notify: "Reload udev rules"
 
 - name: Download ebsnvme
   become: yes
@@ -12,7 +12,7 @@
     owner: root
     group: root
     mode: 0755
-  register: r_download_ebsnvme
+  notify: "Reload udev rules"
 
 - name: Add udev rule to map to standard /dev/sd* naming
   become: yes
@@ -22,5 +22,4 @@
     owner: root
     group: root
     mode: 0644
-  register: r_add_udev_rule
   notify: "Reload udev rules"
