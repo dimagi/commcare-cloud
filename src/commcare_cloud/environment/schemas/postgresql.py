@@ -70,6 +70,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
     SEPARATE_FORM_PROCESSING_DBS = jsonobject.BooleanProperty(default=True)
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
+    DEFAULT_CONN_MAX_AGE = jsonobject.IntegerProperty(default=None)
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
     host_settings = jsonobject.DictProperty(lambda: HostSettings)
@@ -131,6 +132,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
                     db.port = host_settings[db.host].port
                 else:
                     db.port = DEFAULT_PORT
+
+            if db.conn_max_age is None:
+                db.conn_max_age = self.DEFAULT_CONN_MAX_AGE
 
     def generate_postgresql_dbs(self):
         return filter(None, [
@@ -207,6 +211,7 @@ class DBOptions(jsonobject.JsonObject):
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
     options = jsonobject.DictProperty(unicode)
+    conn_max_age = jsonobject.IntegerProperty(default=None)
     django_alias = jsonobject.StringProperty()
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)
