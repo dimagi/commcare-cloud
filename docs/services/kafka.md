@@ -55,8 +55,7 @@ $ ./kafka-topics.sh --alter --zookeeper=<zookeeper host>:2181 --topic <topci> --
 Pillowtop process configurations as described in the [CommCare docs](https://commcare-hq.readthedocs.io/pillows.html#parallel-processors).
 
 ### Move partitions
-**NOTE**: All processes accessing Kafka should be shutdown prior to following this process to avoid
- errors publishing or consuming Kafka messages.
+**NOTE**: This can be done while all services are online
 
 1. Create the list of topics to rebalance
 
