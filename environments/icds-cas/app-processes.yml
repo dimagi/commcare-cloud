@@ -28,7 +28,7 @@ celery_processes:
     background_queue,analytics_queue:
       concurrency: 6
     icds_aggregation_queue:
-      concurrency: 10
+      concurrency: 20
     case_rule_queue:
       concurrency: 2
     sumologic_logs_queue:
@@ -58,6 +58,8 @@ celery_processes:
       num_workers: 2
     ucr_indicator_queue:
       concurrency: 6
+    dashboard_comparison_queue:
+      concurrency: 4
   'celery3':
     reminder_case_update_queue:
       pooling: gevent

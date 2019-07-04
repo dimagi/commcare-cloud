@@ -45,14 +45,14 @@
 
 - name: Format block storage volume
   become: yes
-  filesystem: fstype=ext4 dev={{ datavol_device }}1
+  filesystem: fstype=ext4 dev={{ datavol_device1 }}
   when: datavol_device is defined
 
 - name: Mount block storage volume
   become: yes
   mount:
     name: "{{ encrypted_root }}"
-    src: "{{ datavol_device }}1"
+    src: "{{ datavol_device1 }}"
     fstype: ext4
     state: mounted
     opts: "defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}"
