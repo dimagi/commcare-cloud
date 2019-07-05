@@ -1,3 +1,4 @@
 SITE_HOST: 'swiss.commcarehq.org'
 letsencrypt_cchq_ssl: True
 fake_ssl_cert: True  # todo: remove
+primary_ssl_env: 'swiss'
