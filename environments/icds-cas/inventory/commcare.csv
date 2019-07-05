@@ -40,10 +40,10 @@ web0,100.71.188.44,webworkers,celery,shared_dir_host,hq_webworkers,MUMGCCWCDPRDW
 web1,100.71.188.15,webworkers,celery,django_manage,hq_webworkers,MUMGCCWCDPRDW001
 web2,100.71.188.41,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW002
 web3,100.71.188.47,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW003
-web4,100.71.188.46,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW004
-web5,100.71.188.35,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW005
-web6,100.71.188.40,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW006
-web7,100.71.188.36,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW007
+web4,100.71.188.46,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW004
+web5,100.71.188.35,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW005
+web6,100.71.188.40,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW006
+web7,100.71.188.36,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW007
 web8,100.71.188.49,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW008
 web9,100.71.188.45,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW009
 web10,100.71.188.52,webworkers,celery,mobile_webworkers,,MUMGCCWCDPRDW010
