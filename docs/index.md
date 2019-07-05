@@ -50,7 +50,7 @@ that machine is also the control machine.
     - [Add a new Celery machine](howto/add-celery-machines.md)
 
 ## Optional but recommended
-- [Set up Sentry for error messages](howto/set-up-sentry.md)
+- [Set up Sentry for error messages](monitoring/set-up-sentry.md)
 - [Firefighting](firefighting/index.md)
 
 ## Specialized howtos
