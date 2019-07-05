@@ -51,6 +51,7 @@ that machine is also the control machine.
 
 ## Optional but recommended
 - [Set up Sentry for error messages](monitoring/set-up-sentry.md)
+- [Set up Datadog for monitoring your infrastructure and CommCare](monitoring/setup_datadog.md)
 - [Firefighting](firefighting/index.md)
 
 ## Specialized howtos
