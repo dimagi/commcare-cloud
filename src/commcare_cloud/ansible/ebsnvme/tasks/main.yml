@@ -1,0 +1,25 @@
+- name: Install nvme-cli
+  become: yes
+  apt: name=nvme-cli state=present
+  notify: "Reload udev rules"
+
+- name: Download ebsnvme
+  become: yes
+  get_url:
+    url: "https://gist.githubusercontent.com/lbernail/d851e5b06eb32180a4b8ead2ce4f45db/raw/07772083fa1c2e567ed422eb401ac7783487d1c7/ebsnvme-id"
+    dest: "/sbin/ebsnvme-id"
+    sha256sum: "3437393d3f0ba1088bc18db5bdc5e73d2cedd96fd39a086f2c5e5f061b955f58"
+    owner: root
+    group: root
+    mode: 0755
+  notify: "Reload udev rules"
+
+- name: Add udev rule to map to standard /dev/sd* naming
+  become: yes
+  template:
+    src: 70-ec2-nvme-devices.rules.j2
+    dest: /etc/udev/rules.d/70-ec2-nvme-devices.rules
+    owner: root
+    group: root
+    mode: 0644
+  notify: "Reload udev rules"

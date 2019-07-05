@@ -58,6 +58,8 @@ celery_processes:
       num_workers: 2
     ucr_indicator_queue:
       concurrency: 6
+    dashboard_comparison_queue:
+      concurrency: 4
   'celery3':
     reminder_case_update_queue:
       pooling: gevent
