@@ -9,7 +9,6 @@ control-production: 10.202.10.79
 couch12-production: 10.202.40.52
 couch13-production: 10.202.40.154
 couch14-production: 10.202.40.216
-couch15-production: 10.202.40.206
 couchproxy0-production: 10.202.40.162
 djangomanage0-production: 10.202.10.185
 es10-production: 10.202.40.116
