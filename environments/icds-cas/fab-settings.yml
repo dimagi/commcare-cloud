@@ -4,3 +4,4 @@ acceptable_maintenance_window:
   timezone: Asia/Kolkata
 email_enabled: True
 py3_include_venv: True
+py3_run_deploy: True
