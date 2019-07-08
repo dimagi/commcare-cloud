@@ -111,11 +111,11 @@ to show that the *p2* database is now on *pg2*:
      ...
      partitions:
        p1:
-         shards: [0, 1]
+-        shards: [0, 3]
++        shards: [0, 1]
          host: pg1
-       p2:
-         shards: [2, 3]
--        host: pg1
++      p2:
++        shards: [2, 3]
 +        host: pg2
        ...
 ```
