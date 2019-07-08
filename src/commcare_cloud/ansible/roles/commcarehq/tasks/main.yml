@@ -41,6 +41,26 @@
   tags:
     - py3
 
+- name: Upgrade python packages
+  pip:
+    name:
+      - six
+      - pip
+      - setuptools
+    state: latest
+    virtualenv: "{{ virtualenv_home }}"
+
+- name: py3 Upgrade python packages
+  pip:
+    name:
+      - six
+      - pip
+      - setuptools
+    state: latest
+    virtualenv: "{{ py3_virtualenv_home }}"
+  tags:
+    - py3
+
 - block:
     - name: Pull full CommcareHQ source
       git:
@@ -100,26 +120,6 @@
         - "{{ virtualenv_source }}"
 
   when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists or (CREATE_NEW_VIRTUALENV is defined and CREATE_NEW_VIRTUALENV)
-
-- name: Upgrade python packages
-  pip:
-    name:
-      - six
-      - pip
-      - setuptools
-    state: latest
-    virtualenv: "{{ virtualenv_home }}"
-
-- name: py3 Upgrade python packages
-  pip:
-    name:
-      - six
-      - pip
-      - setuptools
-    state: latest
-    virtualenv: "{{ py3_virtualenv_home }}"
-  tags:
-    - py3
 
 - name: chown virtualenv
   become: true
