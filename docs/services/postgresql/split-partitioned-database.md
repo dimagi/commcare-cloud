@@ -158,7 +158,7 @@ commcare-cloud <env> run-shell-command pg2 -b 'pg_ctlcluster <pg version> main p
 
 
 ### 8. Verify doc counts
-Re-run command from step 5 to verify that the document counts are double the number before.
+Re-run command from step 6 to verify that the document counts are double the number before.
 This is because each shard's data is now in two databases.
 
 ### 9. Update pl_proxy config
