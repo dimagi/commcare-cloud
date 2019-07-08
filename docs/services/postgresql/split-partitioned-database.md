@@ -192,7 +192,7 @@ pg1 $ psql -p 6543 -U someuser pgbouncer
 
 **Restart services**
 ```bash
-commcare-cloud <env> fab supervisorctl:"start all"
+commcare-cloud <env> downtime end
 ```
 
 ### 13. Validate the setup
