@@ -7,6 +7,7 @@ This document will walk you through the process of setting up a new monolith ser
 * A single server (referred to as the "monolith" from here) with:
     * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCareHQ as a demo, and any production environment should be given many more resources.
     * Ubuntu 18.04 server 64-bit installed 
+    * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
 
 ## Step 1: Add Root User and Install Required System Packages
@@ -78,7 +79,7 @@ This document will walk you through the process of setting up a new monolith ser
 
 ### Add passwords to the vault file
 
-In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a useful username.
+In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
 
 ``` bash
 $ ansible-vault edit ~/environments/monolith/vault.yml
@@ -185,7 +186,7 @@ Install commcare-cloud onto the monolith as described in [Installing commcare-cl
 ```bash
 $ commcare-cloud monolith update-local-known-hosts
 ```
-You will be prompted for the ansible vault password that you entered in [Step 1](#step-1-install-required-system-packages)
+You will be prompted for the ansible vault password that you entered in [Step 2](#step-2-download-and-configure-the-commcare-cloud-environment)
 
 ## Step 6: Install all the services onto the monolith
 
@@ -217,31 +218,74 @@ $ commcare-cloud monolith deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
     $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
     ```
 
-2. Edit this file
-
-    ``` bash
-    $ nano ~/commcare-cloud/src/commcare_cloud/fab/config.py
-    ```
-    Enter `None` for the GitHub API key, it is not needed for locally hosted deploys.
-
 ## Step 8: Deploy CommCare HQ
 
-``` bash
-$ commcare-cloud monolith fab deploy
-```
+Deploying CommcareHQ for the first time needs a few things enabled first.
 
-If deploy fails, you can restart where it left off:
+1. Create kafka topics:
 
-``` bash
-$ commcare-cloud monolith fab deploy:resume=yes
-```
+    ``` bash
+    $ commcare-cloud monolith django-manage create_kafka_topics
+    ```
+
+1. Create the CouchDB and Elasticsearch indices:
+
+    ```
+    $ commcare-cloud monolith django-manage preindex_everything
+    ```
+
+1. Run the deploy command:
+
+    ``` bash
+    $ commcare-cloud monolith fab deploy
+    ```
+    
+    You can read more about the deploy process in the [deploy documentation](../commcare-cloud/deploy.md).
+
+1. If deploy fails, you can restart where it left off:
+
+    ``` bash
+    $ commcare-cloud monolith fab deploy:resume=yes
+    ```
 
 ## Step 9: Cleanup
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
 
-## Step 10: Troubleshooting
+## Step 10: Running CommCareHQ
 
-If everything went well, you should now be able to access CommCareHQ from a browser. If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
+### Learning `commcare-cloud` basics
+
+In general it will be useful to understand all the commands on the [commcare-cloud basics](../commcare-cloud/basics.md) page.
+
+### Accessing CommCareHQ from a browser
+
+If everything went well, you should now be able to access CommCareHQ from a browser. See the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md) page to find the URL which depends on your networking setup.
+
+### Troubleshooting first time set up
+
+If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md) documentation. 
+
+### Firefighting issues once CommCareHQ is running
 
 You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues that `commcare-cloud` can resolve.
+
+## Step 11: [Optional] Rebooting the machine
+
+If you ever reboot this machine, make sure to follow the [after reboot procedure](../commcare-cloud/basics.md#handling-a-reboot) to bring all the services back up, and mount the encrypted drive by running: 
+
+``` bash
+$ commcare-cloud monolith after-reboot all
+```
+
+## Step 12: [Optional] Make a user
+
+If you are following this process, we assume you have some knowledge of CommCareHQ and may already have data you want to migrate to your new cluster. By default, the monolith deploy scripts will be in `Enterprise` mode, which means there is no sign up screen. You can change this and other settings in the localsettings file, and following the [localsettings deploy instructions](../commcare-cloud/basics.md#update-commcare-hq-local-settings).
+
+If you want to leave this setting as is, you can make a superuser with:
+
+``` bash
+$ commcare-cloud monolith django-manage make_superuser {email}
+```
+
+where `{email}` is the email address you would like to use as the username.

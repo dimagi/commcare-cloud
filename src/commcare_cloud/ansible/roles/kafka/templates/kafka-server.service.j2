@@ -5,6 +5,7 @@ Requires=network.target remote-fs.target
 After=network.target remote-fs.target kafka-zookeeper.service
 
 [Service]
+Environment=JMX_PORT={{ kafka_jmx_port }}
 Type=simple
 User=kafka
 Group=kafka
