@@ -180,7 +180,7 @@ VACUUM FULL table_name;
 ```
 
 ### 11. Verify doc counts
-Re-run command from step 5 to verify that the document counts are the same number as before.
+Re-run command from step 6 to verify that the document counts are the same number as in step 5 (half as in step 8).
 
 ### 12. Restart services
 **Unpause pgbouncer**
