@@ -25,7 +25,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
-  when: localsettings.get('PILLOW_RETRY_QUEUE_ENABLED', False)
+  when: localsettings.get('PILLOW_RETRY_QUEUE_ENABLED', False) and inventory_hostname == groups.pillowtop.0
   with_items:
     - process_name: pillow_retry_queue
       management_command: run_pillow_retry_queue

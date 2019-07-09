@@ -1,6 +1,7 @@
 postgresql_dbs:
   all:
   - &id013
+    conn_max_age: 120
     create: true
     django_alias: default
     django_migrate: true
@@ -14,6 +15,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id009
+    conn_max_age: 120
     create: true
     django_alias: icds-ucr
     django_migrate: true
@@ -26,7 +28,8 @@ postgresql_dbs:
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: false
+  - conn_max_age: 120
+    create: false
     django_alias: icds-ucr-standby1
     django_migrate: false
     host: 10.247.164.24
@@ -40,6 +43,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id018
+    conn_max_age: 120
     create: true
     django_alias: p1
     django_migrate: true
@@ -51,9 +55,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.66
     port: 6432
     query_stats: false
-    shards: [0, 103]
+    shards:
+    - 0
+    - 103
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id016
+    conn_max_age: 120
     create: true
     django_alias: p10
     django_migrate: true
@@ -65,9 +72,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.64
     port: 6432
     query_stats: false
-    shards: [927, 1023]
+    shards:
+    - 927
+    - 1023
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id019
+    conn_max_age: 120
     create: true
     django_alias: p2
     django_migrate: true
@@ -79,9 +89,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.66
     port: 6432
     query_stats: false
-    shards: [104, 205]
+    shards:
+    - 104
+    - 205
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id004
+    conn_max_age: 120
     create: true
     django_alias: p3
     django_migrate: true
@@ -93,9 +106,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.21
     port: 6432
     query_stats: false
-    shards: [206, 308]
+    shards:
+    - 206
+    - 308
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id005
+    conn_max_age: 120
     create: true
     django_alias: p4
     django_migrate: true
@@ -107,9 +123,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.21
     port: 6432
     query_stats: false
-    shards: [309, 411]
+    shards:
+    - 309
+    - 411
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id006
+    conn_max_age: 120
     create: true
     django_alias: p5
     django_migrate: true
@@ -121,9 +140,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.21
     port: 6432
     query_stats: false
-    shards: [412, 514]
+    shards:
+    - 412
+    - 514
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id001
+    conn_max_age: 120
     create: true
     django_alias: p6
     django_migrate: true
@@ -135,9 +157,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.20
     port: 6432
     query_stats: false
-    shards: [515, 617]
+    shards:
+    - 515
+    - 617
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id002
+    conn_max_age: 120
     create: true
     django_alias: p7
     django_migrate: true
@@ -149,9 +174,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.20
     port: 6432
     query_stats: false
-    shards: [618, 720]
+    shards:
+    - 618
+    - 720
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id003
+    conn_max_age: 120
     create: true
     django_alias: p8
     django_migrate: true
@@ -163,9 +191,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.20
     port: 6432
     query_stats: false
-    shards: [721, 823]
+    shards:
+    - 721
+    - 823
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id017
+    conn_max_age: 120
     create: true
     django_alias: p9
     django_migrate: true
@@ -177,9 +208,12 @@ postgresql_dbs:
     pgbouncer_host: 10.247.164.64
     port: 6432
     query_stats: false
-    shards: [824, 926]
+    shards:
+    - 824
+    - 926
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id015
+    conn_max_age: 120
     create: true
     django_alias: proxy
     django_migrate: true
@@ -193,6 +227,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id023
+    conn_max_age: 120
     create: true
     django_alias: synclogs
     django_migrate: true
@@ -206,6 +241,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id010
+    conn_max_age: 120
     create: true
     django_alias: ucr
     django_migrate: false
@@ -219,6 +255,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id011
+    conn_max_age: 120
     create: true
     django_alias: null
     django_migrate: true
@@ -266,7 +303,8 @@ postgresql_dbs:
     - *id023
     10.247.164.99: *id012
   custom:
-  - create: true
+  - conn_max_age: 120
+    create: true
     django_alias: icds-ucr
     django_migrate: true
     host: 10.247.164.25
@@ -281,6 +319,7 @@ postgresql_dbs:
   form_processing:
     partitions:
       p1:
+        conn_max_age: 120
         create: true
         django_alias: p1
         django_migrate: true
@@ -292,9 +331,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.66
         port: 6432
         query_stats: false
-        shards: [0, 103]
+        shards:
+        - 0
+        - 103
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p10:
+        conn_max_age: 120
         create: true
         django_alias: p10
         django_migrate: true
@@ -306,9 +348,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.64
         port: 6432
         query_stats: false
-        shards: [927, 1023]
+        shards:
+        - 927
+        - 1023
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p2:
+        conn_max_age: 120
         create: true
         django_alias: p2
         django_migrate: true
@@ -320,9 +365,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.66
         port: 6432
         query_stats: false
-        shards: [104, 205]
+        shards:
+        - 104
+        - 205
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p3:
+        conn_max_age: 120
         create: true
         django_alias: p3
         django_migrate: true
@@ -334,9 +382,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.21
         port: 6432
         query_stats: false
-        shards: [206, 308]
+        shards:
+        - 206
+        - 308
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p4:
+        conn_max_age: 120
         create: true
         django_alias: p4
         django_migrate: true
@@ -348,9 +399,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.21
         port: 6432
         query_stats: false
-        shards: [309, 411]
+        shards:
+        - 309
+        - 411
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p5:
+        conn_max_age: 120
         create: true
         django_alias: p5
         django_migrate: true
@@ -362,9 +416,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.21
         port: 6432
         query_stats: false
-        shards: [412, 514]
+        shards:
+        - 412
+        - 514
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p6:
+        conn_max_age: 120
         create: true
         django_alias: p6
         django_migrate: true
@@ -376,9 +433,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.20
         port: 6432
         query_stats: false
-        shards: [515, 617]
+        shards:
+        - 515
+        - 617
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p7:
+        conn_max_age: 120
         create: true
         django_alias: p7
         django_migrate: true
@@ -390,9 +450,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.20
         port: 6432
         query_stats: false
-        shards: [618, 720]
+        shards:
+        - 618
+        - 720
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p8:
+        conn_max_age: 120
         create: true
         django_alias: p8
         django_migrate: true
@@ -404,9 +467,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.20
         port: 6432
         query_stats: false
-        shards: [721, 823]
+        shards:
+        - 721
+        - 823
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p9:
+        conn_max_age: 120
         create: true
         django_alias: p9
         django_migrate: true
@@ -418,9 +484,12 @@ postgresql_dbs:
         pgbouncer_host: 10.247.164.64
         port: 6432
         query_stats: false
-        shards: [824, 926]
+        shards:
+        - 824
+        - 926
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
     proxy:
+      conn_max_age: 120
       create: true
       django_alias: proxy
       django_migrate: true
@@ -434,6 +503,7 @@ postgresql_dbs:
       query_stats: false
       user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   formplayer:
+    conn_max_age: 120
     create: true
     django_alias: null
     django_migrate: true
@@ -447,6 +517,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   main:
+    conn_max_age: 120
     create: true
     django_alias: default
     django_migrate: true
@@ -460,7 +531,8 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   standby:
-  - create: false
+  - conn_max_age: 120
+    create: false
     django_alias: icds-ucr-standby1
     django_migrate: false
     host: 10.247.164.24
@@ -474,6 +546,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   synclogs:
+    conn_max_age: 120
     create: true
     django_alias: synclogs
     django_migrate: true
@@ -487,6 +560,7 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   ucr:
+    conn_max_age: 120
     create: true
     django_alias: ucr
     django_migrate: false
