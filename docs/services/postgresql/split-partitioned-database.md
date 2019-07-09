@@ -187,7 +187,9 @@ The same data now exists in multiple shards. Run the following command to delete
 commcare-cloud <env> django-manage locate_invalid_shard_data --delete
 ```
 
-Optionally you can run a vacuum to more reclaim space from the table.
+You can also specify a database to only delete from one database `--database=<django alias>`
+
+Optionally you can run a full vacuum to more reclaim space from the table.
 
 ```sql
 VACUUM FULL table_name;
@@ -206,28 +208,6 @@ commcare-cloud <env> run-shell-command 'monit start pgbouncer' --become
 **Restart services**
 ```bash
 commcare-cloud <env> downtime end
-```
-
-### 13. Validate the setup
-One way to check that things are working as you expect is to examine the
-connections to the databases.
-
-```sql
-SELECT client_addr, datname as database, count(*) AS connections FROM pg_stat_activity GROUP BY client_addr, datname;
-```
-
-*pg1* should only have connections to the *commcarehq_p1* database
-```
-  client_addr   | database   | connections
-----------------+------------+------------
- <client IP>    | commcarehq_p1 |   3
-```
-
-*pg2* should only have connections to the *commcarehq_p2* database
-```
-  client_addr   | database   | connections
-----------------+------------+------------
- <client IP>    | commcarehq_p2 |   3
 ```
 
 ---
