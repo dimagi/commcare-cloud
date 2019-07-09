@@ -72,13 +72,9 @@ commcare-cloud <env> downtime start
 ```
 
 **Stop pgbouncer**
-To be completely certain that no data will be updating during the move you can also
-prevent connections from pgbouncer:
 
 ```bash
-pg1 $ psql -p 6432 -U someuser pgbouncer
-
-> PAUSE commcarehq_p1
+commcare-cloud <env> run-shell-command 'monit stop pgbouncer' --become
 ```
 
 ### 3. Check document counts in the databases
@@ -183,11 +179,10 @@ VACUUM FULL table_name;
 Re-run command from step 6 to verify that the document counts are the same number as in step 5 (half as in step 8).
 
 ### 12. Restart services
-**Unpause pgbouncer**
-```bash
-pg1 $ psql -p 6543 -U someuser pgbouncer
+**start pgbouncer**
 
-> RESUME commcarehq_p1
+```bash
+commcare-cloud <env> run-shell-command 'monit start pgbouncer' --become
 ```
 
 **Restart services**
