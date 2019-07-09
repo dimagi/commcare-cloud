@@ -1,6 +1,22 @@
 # Splitting a shard in postgresql
 
+This document describes the process required to split a partitioned database
+from one PostgreSQL instance into itself and another. This migration will
+require downtime.
+
 ## Assumptions
+
+For the purposes of this document we'll assume that we have two database machines, *pg1*
+and *pg2*. *pg1* has one database and *pg2* has none:
+
+*pg1* databases:
+
+* *commcarehq_p1* (with django alias *p1*)
+
+* *pg1* has a [replication slot][] available
+
+*pg2* is a newly deployed server in the *[postgresql]* group and we want to
+create a new  *commcarehq_p2* on *pg2* with half the data from *commcarehq_p1*.
 
 `pg1` is currently the only database containing sharded data.
 Half of the data should be moved to a new `pg2` server
@@ -43,6 +59,8 @@ DATABASES = {
         },
     },
 }
+
+At the end of this process shards 0 & 1 should stay on p1 and shards 2 & 3 will be on p2.
 ```
 
 ## Process Overview
