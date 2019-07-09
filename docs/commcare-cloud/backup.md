@@ -58,8 +58,7 @@ After [adding your credentials](#amazon-s3-credentials) to the vault file, set:
 You should first stop all CommCareHQ services:
 
 ``` bash
-$ commcare-cloud <env> webworkers stop
-$ commcare-cloud <env> service postgresql stop
+$ commcare-cloud <env> downtime start
 ```
 
 Restoring from backup depends on the type of backup made.
@@ -153,10 +152,10 @@ CouchDB backups create a compressed version of the couchdb data directory.
 
 Restoring couchdb from a backup simply requires stopping couchdb, overwriting the current data directory with the contents of the backup files, then restarting couchdb.
 
-- From the control machine, stop the couchdb service
+- From the control machine, stop all running services:
 
     ``` bash
-    $ commcare-cloud <env> service couchdb2 stop
+    $ commcare-cloud <env> downtime start
     ```
 
 - From the couchdb machine, become the couchdb user:
@@ -189,3 +188,38 @@ Restoring couchdb from a backup simply requires stopping couchdb, overwriting th
     ``` bash
     $ commcare-cloud <env> service couchdb2 start
     ```
+
+## BlobDB Backups
+
+The `blobdb` is our binary data store. 
+
+- `backup_blobdb: True`:  to enable blobdb backups
+- `blobdb_s3: True`: to enable sending blobdb backups to S3
+- `blobdb_backup_dir`: the directory to write blobdb backups to (Default: `/opt/data/backups/blobdb`)
+- `blobdb_backup_days`: the number of days to keep daily backups (Default: 2)
+- `blobdb_backup_weeks`: the number of weeks to keep weekly backups (Default: 2)
+
+BlobDB backups create a compressed version of the blobdb data directory.
+
+### Restoring BlobDB Backups
+
+You can follow the same instructions as for [restoring couchdb](#restoring-couchdb-backups) (extract the backup file into the blobdb data directory: `/opt/data/blobdb/`). 
+
+The files in the resulting directory should all be owned by the user `cchq` (i.e. you should be the `cchq` user when extracting the files)
+
+## Elasticsearch Snapshots
+
+While it is possible to backup Elasticsearch data, it isn't always necessary as this is not a primary data store and can be rebuilt from primary sources. If Elasticsearch data is lost or deleted in entirety, it will be recreated when a [deploy is made](./deploy.md) to the cluster.
+
+However, you may still back-up Elasticsearch using [Elasticsearch Snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/1.7/modules-snapshots.html#_snapshot) directly to S3 or locally. The rest of this section assumes an understanding of that documentation page.
+
+- `backup_es_s3: True`:  to create snapshots and send them directly to S3 (not stored locally)
+- `es_local_repo: True`: to save snapshots locally (not sent to S3)
+- `es_repository_name`: the name to give to the snapshot respository
+- 
+
+Both of those settings are **mutually exclusive**. There is currently no way to create snapshots to be saved locally and sent to S3 at the same time.
+
+### Restoring Elasticsearch Snapshots
+
+You can restore snapshots by following the [instructions given by Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/1.7/modules-snapshots.html#_restore)
