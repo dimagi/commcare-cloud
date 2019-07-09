@@ -20,13 +20,6 @@
     - pgbouncer
     - configure
 
-- name: pgbouncer hba
-  template: src=pgbouncer_hba.conf.j2 dest="{{ pgbouncer_hba }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - configure
-
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
   tags:

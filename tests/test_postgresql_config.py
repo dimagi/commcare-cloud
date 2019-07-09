@@ -24,6 +24,6 @@ def test_postgresql_config(env_name):
 
     expected_json = generated['postgresql_dbs']
 
-    actual_json = env.postgresql_config.to_generated_variables()['postgresql_dbs']
+    actual_json = env.postgresql_config.to_generated_variables(env)['postgresql_dbs']
 
     assert_equal(actual_json, expected_json)
