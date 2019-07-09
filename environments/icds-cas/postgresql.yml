@@ -1,4 +1,6 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
+DEFAULT_CONN_MAX_AGE: 120
+
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr-non-dashboard: icds-ucr-non-dashboard
