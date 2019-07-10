@@ -35,8 +35,6 @@ pgsynclog0,100.71.184.39,postgresql,synclog_dbs,MUMGCCWCDPRDPSL0,,,"[""spare""]"
 pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,,,,
 ,,,,,,,,
 group,var,val,type,,,,,
-postgresql,pgbouncer_max_connections,3500,I,,,,,
-pg_standby,pgbouncer_max_connections,3500,I,,,,,
 main_dbs,pgbouncer_default_pool,775,I,,,,,
 main_dbs,postgresql_checkpoint_completion_target,0.7,F,,,,,
 main_dbs,postgresql_default_statistics_target,100,I,,,,,
