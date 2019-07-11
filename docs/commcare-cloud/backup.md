@@ -174,7 +174,7 @@ Restoring couchdb from a backup simply requires stopping couchdb, overwriting th
 - Uncompress the backup you want, e.g:
 
     ``` bash
-    $ tar -xjf /opt/data/backups/couchdb2/couchdb2_<env>_daily_2019_07_06.gz -C /opt/data/backups/couchdb
+    $ tar xvzf /opt/data/backups/couchdb2/couchdb2_<env>_daily_2019_07_06.gz -C /opt/data/backups/couchdb
     ```
 
 -  Copy backup data to the couchdb data directory. This will overwrite all the data in this directory.
