@@ -1,6 +1,7 @@
 postgresql_dbs:
   all:
-  - conn_max_age: null
+  - &id001
+    conn_max_age: null
     create: true
     django_alias: default
     django_migrate: true
@@ -13,7 +14,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - conn_max_age: null
+  - &id002
+    conn_max_age: null
     create: true
     django_alias: ucr
     django_migrate: false
@@ -26,7 +28,8 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - conn_max_age: null
+  - &id003
+    conn_max_age: null
     create: true
     django_alias: null
     django_migrate: true
@@ -39,6 +42,11 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+  by_host:
+    192.168.33.16:
+    - *id001
+    - *id002
+    - *id003
   custom: []
   form_processing: null
   formplayer:

@@ -1,10 +1,10 @@
 newrelic_djangoagent: False
 newrelic_javaagent: True
 datadog_pythonagent: True
-django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
+django_command_prefix: ''
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
-gunicorn_workers_factor: 2
+gunicorn_workers_factor: 1
 celery_processes:
   celery0:
     submission_reprocessing_queue:

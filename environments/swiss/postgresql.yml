@@ -12,6 +12,13 @@ postgres_override:
   postgresql_max_connections: 300
   postgresql_wal_keep_segments: 0
   postgresql_work_mem: 1MB
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 0.0.0.0/0
+    - contype: host
+      netmask: 185.12.7.167/32
 
 dbs:
   ucr:
