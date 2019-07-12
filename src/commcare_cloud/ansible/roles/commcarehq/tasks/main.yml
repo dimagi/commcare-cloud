@@ -50,6 +50,7 @@
         recursive: yes
         accept_hostkey: yes
         update: yes
+      become_user: "{{ cchq_user }}"
       become: true
       tags:
         - git

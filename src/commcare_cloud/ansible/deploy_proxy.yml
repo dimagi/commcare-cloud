@@ -2,6 +2,10 @@
 - name: setup nginx
   hosts: proxy
   tasks:
+    - name: Create static files home
+      become: yes
+      file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
+
     - name: install nginx
       include_role:
         name: nginx
