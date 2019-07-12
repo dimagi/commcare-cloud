@@ -132,6 +132,17 @@
   tags:
     - postfix
 
+
+- name: Set proper umask
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: "^UMASK"
+    line: "UMASK\t\t022"
+  tags:
+    - umask
+
+
 - import_tasks: antivirus.yml
   tags:
     - antivirus
