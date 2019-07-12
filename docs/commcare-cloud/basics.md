@@ -54,7 +54,7 @@ to be picked up by the processes.
 ## Run Django Management Commands on Django Managed Machines    
 To run Django management commands we need to log into a machine which has Django configured. Usually we run these commands on the `django_manage` machine which is a `webworker` machine.
 ```
-$ cchq <env> ssh django_machine
+$ cchq <env> ssh django_manage
 $ sudo -iu cchq   #Switch to cchq user
 $ cd /home/cchq/www/<env>/current # Change directory to current django release folder
 $ source python_env/bin/activate  # Activate the python virtual env
