@@ -60,6 +60,25 @@ $ cd /home/cchq/www/<env>/current # Change directory to current django release f
 $ source python_env/bin/activate  # Activate the python virtual env
 $ ./manage.py <command>  # Run the command
 ```
+
+There is also an alternate method for running management commands which can be useful in certain situations:
+
+```
+$ cchq <env> django-manage <command> <options>
+```
+
+Here are some common examples:
+
+```
+# get a Django shell
+$ cchq <env> django-manage shell
+
+# get a DB shell
+$ cchq <env> django-manage dbshell --database <dbalias>
+
+# check services
+$ cchq <env> django-manage check-services
+```
 ---
 
 [︎⬅︎ Overview](..)
