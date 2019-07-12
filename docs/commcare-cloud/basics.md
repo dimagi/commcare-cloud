@@ -52,7 +52,7 @@ Note that you will need to restart the services in order for the changes
 to be picked up by the processes.
 
 ## Run Django Management Commands on Django Managed Machines    
-To run django managmement commands we need to log into a machine which has django configured. Usually we run these commands  on the django_manage machine which is a  webworker machine.
+To run Django management commands we need to log into a machine which has Django configured. Usually we run these commands on the `django_manage` machine which is a `webworker` machine.
 ```
 $ cchq <env> ssh django_machine
 $ sudo -iu cchq   #Switch to cchq user
