@@ -1,5 +1,4 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
-DEFAULT_CONN_MAX_AGE: 120
 
 REPORTING_DATABASES:
   ucr: ucr
@@ -40,6 +39,17 @@ pgbouncer_override:
 postgres_override:
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 100.71.184.0/22
+    - contype: host
+      users: TCLBKPADMIN
+      netmask: 127.0.0.1/32
+    - contype: local
+      users: TCLBKPADMIN
+
 
 dbs:
   main:

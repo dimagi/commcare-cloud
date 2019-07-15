@@ -14,7 +14,7 @@ elastcsearch_backup_days: 2
 
 redis_maxmemory: 4gb
 
-ssh_allow_password: True
+ssh_allow_password: False
 
 backup_blobdb: True
 backup_postgres: plain
@@ -37,14 +37,27 @@ aws_versioning_enabled: false
 
 KSPLICE_ACTIVE: yes
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
 couch_dbs:
   default:
-    host: 185.12.7.167
-    port: 5984
+    host: "{{ groups.couchdb2_proxy.0 }}"
+    port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_use_haproxy: True
+
+BROKER_URL: 'redis://{{ groups.redis.0 }}:6379/0'
+
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
@@ -102,3 +115,5 @@ PY3_RUN_GUNICORN: True
 PY3_RUN_MANAGEMENT: True
 PY3_RUN_PILLOWTOP: True
 PY3_RUN_WEBSOCKETS: True
+
+commcare_cloud_root_user: ubuntu

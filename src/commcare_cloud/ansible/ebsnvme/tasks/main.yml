@@ -3,12 +3,11 @@
   apt: name=nvme-cli state=present
   notify: "Reload udev rules"
 
-- name: Download ebsnvme
+- name: Copy ebsnvme-id
   become: yes
-  get_url:
-    url: "https://gist.githubusercontent.com/lbernail/d851e5b06eb32180a4b8ead2ce4f45db/raw/07772083fa1c2e567ed422eb401ac7783487d1c7/ebsnvme-id"
+  file:
+    src: "ebsnvme-id"
     dest: "/sbin/ebsnvme-id"
-    sha256sum: "3437393d3f0ba1088bc18db5bdc5e73d2cedd96fd39a086f2c5e5f061b955f58"
     owner: root
     group: root
     mode: 0755
