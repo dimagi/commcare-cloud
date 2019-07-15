@@ -9,6 +9,11 @@ postgres_override:
   postgresql_checkpoint_completion_target: '0.7'
   postgresql_wal_buffers: '16MB'
   postgresql_default_statistics_target: '100'
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 0.0.0.0/0
 
 dbs:
   form_processing:

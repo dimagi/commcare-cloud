@@ -1,9 +1,12 @@
+from collections import defaultdict
+
 import jsonobject
 import re
 
 import six
 
 from commcare_cloud.environment.constants import constants
+from commcare_cloud.environment.exceptions import PGConfigException
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
 
 PostgresqlOverride = get_defaults_jsonobject(
@@ -92,18 +95,45 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.password = DEFAULT_POSTGRESQL_PASSWORD
         return self
 
-    def to_generated_variables(self):
+    def to_generated_variables(self, environment):
         data = self.to_json()
         del data['postgres_override']
         del data['pgbouncer_override']
         data['postgresql_dbs'] = data.pop('dbs')
-        data['postgresql_dbs']['all'] = sorted(
+
+        sorted_dbs = sorted(
             (db.to_json() for db in self.generate_postgresql_dbs()),
             key=lambda db: db['name']
         )
+        data['postgresql_dbs']['all'] = sorted_dbs
         data.update(self.postgres_override.to_json())
         data.update(self.pgbouncer_override.to_json())
+
+        # generate list of databases per host for use in pgbouncer and postgresql configuration
+        postgresql_hosts = environment.groups.get('postgresql', [])
+        if self.DEFAULT_POSTGRESQL_HOST not in postgresql_hosts:
+            postgresql_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
+
+        dbs_by_host = defaultdict(list)
+        for db in sorted_dbs:
+            if db['pgbouncer_host'] in postgresql_hosts:
+                dbs_by_host[db['pgbouncer_host']].append(db)
+
+        for host in environment.groups.get('pg_standby', []):
+            root_pg_host = self._get_root_pg_host(host, environment)
+            dbs_by_host[host] = dbs_by_host[root_pg_host]
+
+        data['postgresql_dbs']['by_host'] = dict(dbs_by_host)
         return data
+
+    def _get_root_pg_host(self, standby_host, env):
+        vars = env.get_host_vars(standby_host)
+        standby_master = vars.get('hot_standby_master')
+        if not standby_master:
+            raise PGConfigException('{} has not root pg host'.format(standby_host))
+        if standby_master in env.groups['postgresql']:
+            return standby_master
+        return self._get_root_pg_host(standby_master, env)
 
     def replace_hosts(self, environment):
         if self.DEFAULT_POSTGRESQL_HOST is None:
@@ -135,6 +165,13 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
             if db.conn_max_age is None:
                 db.conn_max_age = self.DEFAULT_CONN_MAX_AGE
+
+        for entry in self.postgres_override.postgresql_hba_entries:
+            netmask = entry.get('netmask')
+            if netmask and not re.match(r'(\d+\.?){4}', netmask):
+                host, mask = netmask.split('/')
+                host = environment.translate_host(host, environment.paths.postgresql_yml)
+                entry['netmask'] = '{}/{}'.format(host, mask)
 
     def generate_postgresql_dbs(self):
         return filter(None, [

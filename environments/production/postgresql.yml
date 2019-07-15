@@ -1,5 +1,4 @@
 postgres_override:
-  allow_direct_postgresql_access: yes
   allow_dump_from_pgstandby: yes
   postgresql_max_connections: 300
   postgresql_version: '9.6'
