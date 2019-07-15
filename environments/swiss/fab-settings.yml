@@ -1,2 +1,3 @@
 ignore_kafka_checkpoint_warning: True
 py3_include_venv: True
+py3_run_deploy: True
