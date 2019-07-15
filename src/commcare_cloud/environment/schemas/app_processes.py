@@ -152,11 +152,11 @@ def validate_app_processes_config(app_processes_config):
 
 def _validate_all_required_machines_mentioned(environment, translated_app_process_config):
     inventory = environment.inventory_manager
-    for host in inventory.groups['pillowtop'].get_hosts():
+    for host in inventory.groups['pillowtop'].get_hosts(ignore_limits=True):
         assert host.get_name() in translated_app_process_config.pillows, \
             "pillowtop machine {} not in {}".format(host.get_name(), environment.paths.app_processes_yml)
 
-    for host in inventory.groups['celery'].get_hosts():
+    for host in inventory.groups['celery'].get_hosts(ignore_limits=True):
         assert host.get_name() in translated_app_process_config.celery_processes, \
             "celery machine {} not in {}".format(host.get_name(), environment.paths.app_processes_yml)
 
