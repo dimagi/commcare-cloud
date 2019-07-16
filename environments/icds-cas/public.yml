@@ -1,8 +1,6 @@
 internal_domain_name: 'internal-icds.commcarehq.org'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-riak_backend: "bitcask"
-riak_ring_size: 64
 
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
@@ -163,8 +161,6 @@ couch_dbs:
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 s3_blob_db_enabled: yes
-old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
-old_s3_blob_db_s3_bucket: 'blobdb'
 
 s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
 s3_blob_db_s3_bucket: 'mowcddb-c1'
