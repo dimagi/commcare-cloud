@@ -20,8 +20,10 @@ upstream {{ balancer.name }} {
 
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
-  ""     {{ var_map.value }};
-  default     "";
+  {% for map_value in var_map.var_mappings %}
+  {{ map_value.key}}     {{ map_value.value }};
+  {% endfor %}
+  default     {{ var_map.default_value}};
 }
 {% endfor %}
 
