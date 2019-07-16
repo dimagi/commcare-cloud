@@ -71,7 +71,7 @@
     dest: /etc/hosts
     regexp: '^{{ internal_ipv4.address }}\s'
     line: "{{ internal_ipv4.address }} {{ alt_hostname|default(hostname) }}.{{ internal_domain_name }} {{ alt_hostname|default(hostname) }}{%if alt_hostname|default('') %} {{ hostname }}{% endif %}"
-  when: hostname is defined and hostname and internal_domain_name and not etc_hosts_lines|join(',')|search(internal_ipv4.address)
+  when: hostname is defined and hostname and internal_domain_name and not etc_hosts_lines|join(',') is search(internal_ipv4.address)
   tags:
     - hostname
     - after-reboot
@@ -82,7 +82,7 @@
     dest: /etc/hosts
     regexp: '^{{ ansible_default_ipv4.address }}\s'
     line: '{{ ansible_default_ipv4.address }} {{ hostname }}'
-  when: hostname is defined and hostname and not internal_domain_name and not etc_hosts_lines|join(',')|search(ansible_default_ipv4.address)
+  when: hostname is defined and hostname and not internal_domain_name and not etc_hosts_lines|join(',') is search(ansible_default_ipv4.address)
   tags:
     - hostname
     - after-reboot
@@ -131,6 +131,17 @@
   when: aliases.changed
   tags:
     - postfix
+
+
+- name: Set proper umask
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: "^UMASK"
+    line: "UMASK\t\t022"
+  tags:
+    - umask
+
 
 - import_tasks: antivirus.yml
   tags:

@@ -20,8 +20,6 @@ elasticsearch_cluster_name: 'prodhqes-1.x'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 
-redis_maxmemory: 8gb
-
 nofile_limit: 65536
 
 supervisor_http_enabled: True
@@ -56,6 +54,10 @@ couch_dbs:
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couchdb_compaction_settings:
+  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "17:00"}, {to, "5:00"}]'
+
 
 couchdb2_client_max_body_size: 100M
 
@@ -128,11 +130,11 @@ localsettings:
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
 
-PY3_RUN_CELERY_BEAT: False
-PY3_RUN_CELERY_FLOWER: False
-PY3_RUN_CELERY_WORKER: False
-PY3_RUN_ERRAND_BOY: False
-PY3_RUN_GUNICORN: False
-PY3_RUN_MANAGEMENT: False
-PY3_RUN_PILLOWTOP: False
-PY3_RUN_WEBSOCKETS: False
+PY3_RUN_CELERY_BEAT: True
+PY3_RUN_CELERY_FLOWER: True
+PY3_RUN_CELERY_WORKER: True
+PY3_RUN_ERRAND_BOY: True
+PY3_RUN_GUNICORN: True
+PY3_RUN_MANAGEMENT: True
+PY3_RUN_PILLOWTOP: True
+PY3_RUN_WEBSOCKETS: True

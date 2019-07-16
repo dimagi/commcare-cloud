@@ -50,6 +50,7 @@
         recursive: yes
         accept_hostkey: yes
         update: yes
+      become_user: "{{ cchq_user }}"
       become: true
       tags:
         - git
@@ -66,9 +67,8 @@
 
     - name: install pip requirements
       become: true
-      with_items: "{{ commcarehq_requirements }}"
       pip:
-        requirements: "{{ code_home }}/requirements/{{ item }}"
+        requirements: "{{ code_home }}/requirements/prod-requirements.txt"
         virtualenv: "{{ virtualenv_source }}"
         virtualenv_python: "python2.7"
         chdir: "{{ code_home }}"
@@ -78,11 +78,10 @@
 
     - name: py3 install pip requirements
       become: true
-      with_items: "{{ commcarehq_requirements }}"
       pip:
-        requirements: "{{ code_home }}/requirements-python3/{{ item }}"
+        requirements: "{{ code_home }}/requirements-python3/prod-requirements.txt"
         virtualenv: "{{ py3_virtualenv_home }}"
-        virtualenv_python: "python3.7"
+        virtualenv_python: "python3.6"
         chdir: "{{ code_home }}"
       tags:
         - slow
@@ -101,27 +100,25 @@
         - "{{ code_source }}"
         - "{{ virtualenv_source }}"
 
-  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
+  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists or (CREATE_NEW_VIRTUALENV is defined and CREATE_NEW_VIRTUALENV)
 
 - name: Upgrade python packages
   pip:
-    name: "{{ item }}"
+    name:
+      - six
+      - pip
+      - setuptools
     state: latest
     virtualenv: "{{ virtualenv_home }}"
-  with_items:
-    - six
-    - pip
-    - setuptools
 
 - name: py3 Upgrade python packages
   pip:
-    name: "{{ item }}"
+    name:
+      - six
+      - pip
+      - setuptools
     state: latest
     virtualenv: "{{ py3_virtualenv_home }}"
-  with_items:
-    - six
-    - pip
-    - setuptools
   tags:
     - py3
 

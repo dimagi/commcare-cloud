@@ -11,11 +11,7 @@
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
-    - {role: backups, tags: 'backups'}
-  tasks:
-    - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
-      tags: ecryptfs-cleanup
-
+    - {role: backups, tags: 'backups,backups-only'}
 
 - name : PostgreSQL
   import_playbook: deploy_postgres.yml

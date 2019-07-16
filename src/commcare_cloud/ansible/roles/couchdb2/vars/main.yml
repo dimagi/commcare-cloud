@@ -21,3 +21,4 @@ couchdb_async_io_threads: 64
 
 couchdb_require_valid_user: false
 couchdb_require_valid_user_node_local: false
+couchdb_httpd_auth_secret: "{{ couchdb2.password|hash('sha256') }}"

@@ -3,6 +3,7 @@ locals {
 }
 module "postgresql" {
   source = "terraform-aws-modules/rds/aws"
+  version = "1.28.0"
 
   create_db_instance = "${local.create}"
   create_db_option_group = "${local.create}"

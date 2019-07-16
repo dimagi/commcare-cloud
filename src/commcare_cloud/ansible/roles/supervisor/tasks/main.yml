@@ -79,7 +79,7 @@
   failed_when: result.rc > 1
   changed_when: result.rc == 0
 
-- name: start supervisord
+- name: start and enable supervisord
   become: yes
-  service: name=supervisord state=started
+  service: name=supervisord enabled=yes state=started
   when: which_supervisord.stdout

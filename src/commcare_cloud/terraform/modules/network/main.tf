@@ -79,6 +79,7 @@ resource "aws_vpn_connection_route" "vpn_connections" {
 }
 
 resource "aws_security_group" "vpn_connections" {
+  count = "${length(var.vpn_connections) == 0 ? 0 : 1}"
   name = "vpn-connections-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
   ingress {
@@ -97,10 +98,17 @@ resource "aws_security_group" "vpn_connections" {
 resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.main.id}"
 
-  route = [{
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.main.id}"
-  }, "${var.external_routes}"]
+  route = ["${
+    concat(
+      list(
+        map(
+          "cidr_block", "0.0.0.0/0",
+          "nat_gateway_id", aws_nat_gateway.main.id
+        )
+      ),
+      var.external_routes
+    )
+  }"]
 
   tags {
     Name = "private-${var.env}"
@@ -110,10 +118,17 @@ resource "aws_route_table" "private" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  route = [{
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.main.id}"
-  }, "${var.external_routes}"]
+  route = ["${
+    concat(
+      list(
+        map(
+          "cidr_block", "0.0.0.0/0",
+          "gateway_id", aws_internet_gateway.main.id
+        )
+      ),
+      var.external_routes
+    )
+  }"]
 
   tags {
     Name = "public-${var.env}"

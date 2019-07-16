@@ -1,22 +1,24 @@
 - include: trusty_apt_repos.yml
   when: ansible_distribution_version == '14.04'
 
+- name: Add nodejs apt key
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+  when: ansible_distribution_version == '18.04'
+
+- name: Add git nodejs repo
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_8.x bionic main'
+    state: present
+  when: ansible_distribution_version == '18.04'
+
 - name: Update package list
   apt: update_cache=yes
   when: add_nodejs_repo is changed
 
 - name: Install nodejs packages
-  apt: name="{{ item }}" state=present
+  apt: name="nodejs" state=present
   become: yes
-  with_items:
-    - nodejs
-
-- name: Install nodejs packages
-  apt: name="{{ item }}" state=present
-  become: yes
-  when: ansible_distribution_version == '18.04'
-  with_items:
-    - npm
 
 - name: Set NPM registry
   command: 'npm config set registry http://registry.npmjs.org/'

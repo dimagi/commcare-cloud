@@ -10,6 +10,7 @@ elastcsearch_backup_days: 3
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
+redis_maxmemory: 4gb
 
 default_from_email: echismoh@moh.gov.et
 server_email: echismoh@moh.gov.et
