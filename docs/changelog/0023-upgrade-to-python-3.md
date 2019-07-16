@@ -2,16 +2,16 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # 23. Upgrade to Python 3
 
-**Date:** 2020-01-01
+**Date:** 2017-07-16
 
 **Optional per env:** _required on all environments_
 
 
 ## CommCare Version Dependency
 CommCare versions beyond this commit require this change to function correctly:
-[YYYY](https://github.com/dimagi/commcare-hq/commit/YYYY)
+[25f43bff](https://github.com/dimagi/commcare-hq/commit/25f43bffffea6ead94e91ff1f4edef0dfc95a638)
 This version of CommCare must be deployed before rolling out this change:
-[XXXX](https://github.com/dimagi/commcare-hq/commit/XXXX)
+[476e3291](https://github.com/dimagi/commcare-hq/commit/476e32910bf757d950b2575423c043bd71e83a48)
 
 
 ## Change Context
@@ -36,3 +36,7 @@ cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3 -e 'CREATE_NEW_VIRT
 ```bash
 cchq <env> update-supervisor-confs
 ```
+4. Restart services to ensure services are run in Python 3.
+  ```bash
+  cchq <env> fab restart_services
+  ```

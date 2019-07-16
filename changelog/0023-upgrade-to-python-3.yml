@@ -1,9 +1,9 @@
 title: Upgrade to Python 3
 key: upgrade-to-python-3
-date: 2020-01-01  # TODO - update
+date: 2017-07-16
 optional_per_env: no
-min_commcare_version: XXXX  # TODO - update
-max_commcare_version: YYYY  # TODO - update
+min_commcare_version: 476e32910bf757d950b2575423c043bd71e83a48
+max_commcare_version: 25f43bffffea6ead94e91ff1f4edef0dfc95a638
 context: |
   This change installs Python 3.6.8, builds a new virtualenv, and runs
   CommCare HQ in Python 3.
@@ -27,3 +27,7 @@ update_steps: |
   ```bash
   cchq <env> update-supervisor-confs
   ```
+  4. Restart services to ensure services are run in Python 3.
+    ```bash
+    cchq <env> fab restart_services
+    ```
