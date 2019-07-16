@@ -1,0 +1,3 @@
+target_allocation:
+  - couch3,couch4,couch5,couch7,couch8,couch9:1
+  - couch10,couch11:2

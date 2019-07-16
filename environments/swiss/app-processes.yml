@@ -1,17 +1,24 @@
-jython_memory: "1024m"
 formplayer_memory: "1024m"
 
 celery_processes:
-  'swiss.commcarehq.org':
-    repeat_record_queue,celery,export_download_queue,case_import_queue,reminder_case_update_queue,background_queue,case_rule_queue,analytics_queue,celery_periodic,email_queue,reminder_rule_queue:
-      concurrency: 3
+  swiss0:
+    repeat_record_queue,celery,export_download_queue:
+      concurrency: 1
+    case_import_queue,reminder_case_update_queue:
+      concurrency: 1
+    background_queue,case_rule_queue:
+      concurrency: 1
+    analytics_queue,celery_periodic:
+      concurrency: 1
+    email_queue,reminder_rule_queue:
+      concurrency: 1
     beat: {}
     saved_exports_queue:
       concurrency: 1
       optimize: True
     flower: {}
 pillows:
-  'swiss.commcarehq.org':
+  swiss0:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:

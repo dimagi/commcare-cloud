@@ -17,12 +17,14 @@
       vars:
         site_present: False
         site_config: {name: couchdb2, vars_file: couchdb2}
+        couchdb2_proxy_port: 25984
+      when: "'proxy' in group_names"
 
     - name: restart nginx
       service:
         name: nginx
         state: restarted
-  when: 'proxy' in group_names
+      when: "'proxy' in group_names"
 
 - name: Uninstall nginx and delete config
   hosts: couchdb2_proxy
@@ -32,14 +34,16 @@
       service:
         name: nginx
         state: stopped
+      when: "'proxy' not in group_names"
 
     - name: remove nginx
       package:
         name: nginx
         state: absent
+      when: "'proxy' not in group_names"
 
     - name: remove nginx config
       file:
         path: '/etc/nginx/'
         state: absent
-  when: 'proxy' not in group_names
+      when: "'proxy' not in group_names"

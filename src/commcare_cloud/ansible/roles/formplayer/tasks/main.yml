@@ -1,9 +1,9 @@
 - name: Install formplayer packages
-  apt: name="{{ item }}" state=present
   become: yes
-  with_items:
-    - sqlite3
-    - libsqlite3-dev
+  apt:
+    name:
+      - sqlite3
+      - libsqlite3-dev
 
 - name: Create purging cron jobs
   become: yes

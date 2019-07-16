@@ -12,6 +12,8 @@ elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 #elasticsearch_node_name: '??'
 
+redis_maxmemory: 4gb
+
 backup_blobdb: True
 backup_postgres: dump
 backup_es_s3: True
@@ -61,7 +63,6 @@ localsettings:
   CLOUDCARE_BASE_URL: http://localhost:9010
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_DATABASE_NAME: "{{ localsettings_private.COUCH_DATABASE_NAME }}"
   COUCH_HTTPS: False
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "127.0.0.1"
@@ -103,11 +104,11 @@ localsettings:
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True
 
-PY3_RUN_CELERY_BEAT: False
-PY3_RUN_CELERY_FLOWER: False
-PY3_RUN_CELERY_WORKER: False
-PY3_RUN_ERRAND_BOY: False
-PY3_RUN_GUNICORN: False
-PY3_RUN_MANAGEMENT: False
-PY3_RUN_PILLOWTOP: False
-PY3_RUN_WEBSOCKETS: False
+PY3_RUN_CELERY_BEAT: True
+PY3_RUN_CELERY_FLOWER: True
+PY3_RUN_CELERY_WORKER: True
+PY3_RUN_ERRAND_BOY: True
+PY3_RUN_GUNICORN: True
+PY3_RUN_MANAGEMENT: True
+PY3_RUN_PILLOWTOP: True
+PY3_RUN_WEBSOCKETS: True

@@ -2,7 +2,7 @@
 
 - name: Add Site
   include_tasks: site.yml
-  when: site_present
+  when: site_present|bool
 
 - name: Drop Site
   include_tasks: dropsite.yml

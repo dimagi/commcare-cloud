@@ -6,7 +6,9 @@ redis_local_facts: false
 redis_logfile: "{{ redis_dir }}/redis.log"
 redis_service_name: redis-server
 redis_syslog_enabled: "yes"
-redis_maxmemory: 4gb
+# This implements the best practice of setting redis_maxmemory to half the RAM
+# Discussion: https://github.com/dimagi/commcare-cloud/pull/2929#issuecomment-499970466
+redis_maxmemory: "{{ ansible_memory_mb.real.total // 2 }}m"
 redis_maxmemory_policy: volatile-lru
 redis_save: []
 redis_appendonly: "yes"

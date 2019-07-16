@@ -1,4 +1,5 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
+
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr-non-dashboard: icds-ucr-non-dashboard
@@ -11,6 +12,7 @@ REPORTING_DATABASES:
       - [icds-ucr-standby2, 10]
       - [icds-ucr-standby3, 10]
   icds-test-ucr: icds-ucr
+  icds-ucr-citus: icds-ucr-citus
 
 LOAD_BALANCED_APPS:
   auth:
@@ -37,10 +39,22 @@ pgbouncer_override:
 postgres_override:
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 100.71.184.0/22
+    - contype: host
+      users: TCLBKPADMIN
+      netmask: 127.0.0.1/32
+    - contype: local
+      users: TCLBKPADMIN
+
 
 dbs:
   main:
     host: pgmain0
+    query_stats: True
   formplayer:
     host: pgmain0
   ucr:
@@ -92,6 +106,13 @@ dbs:
       host: pgnondashboarducr0
       query_stats: True
       django_migrate: False
+    - django_alias: icds-ucr-citus
+      name: icds_ucr
+      django_migrate: True  # ICDS dashboard models are stored here
+      host: citusmaster0
+      pg_config:
+        - name: citus.shard_count
+          value: 64
     - name: airflow
       django_migrate: False
     - django_alias: warehouse

@@ -7,13 +7,10 @@
 ;;   client_encoding= datestyle= timezone=
 ;;   pool_size= connect_query=
 [databases]
-{% for db in postgresql_dbs.all %}
-{% if db.create %}
-{% set db_pgbouncer_host = db.pgbouncer_host %}
-{% if db_pgbouncer_host == inventory_hostname or db_pgbouncer_host == hot_standby_master|default(None) or is_monolith|bool %}
-{{ db.name }} = host={{ "localhost" if db.host == db_pgbouncer_host else db.host }} 
-{% endif %}
-{% endif %}
+{% set current_host = inventory_hostname %}
+{% if is_monolith %}{% set current_host = DEFAULT_POSTGRESQL_HOST %}{% endif %}
+{% for db in postgresql_dbs.by_host.get(current_host, []) %}
+{{ db.name }} = host={{ "localhost" if db.host == db.pgbouncer_host else db.host }}
 {% endfor %}
 
 ;; Configuration section
@@ -45,10 +42,8 @@ unix_socket_dir = /var/run/postgresql
 ;;; Authentication settings
 ;;;
 
-auth_type = hba
-auth_hba_file = /etc/pgbouncer/pgbouncer_hba.conf
-
-auth_file = /etc/pgbouncer/userlist.txt
+auth_type = md5
+auth_file = {{ pgbouncer_users }}
 
 ;;;
 ;;; Users allowed into database 'pgbouncer'

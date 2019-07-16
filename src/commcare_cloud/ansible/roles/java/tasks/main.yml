@@ -1,12 +1,12 @@
 ---
 - name: installing repo for Java 8+ in Ubuntu
   apt_repository: repo='ppa:openjdk-r/ppa'
+  when: ansible_distribution_version == '14.04'
 
 - name: Install Java
   become: yes
   apt:
     name: "{{ java_packages }}"
-    state: present
 
 - name: Correct java version selected
   alternatives:
