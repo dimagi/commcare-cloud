@@ -7,7 +7,7 @@ newest first.
 
 ## Changelog
 
-### **2020-01-01** [Upgrade to Python 3](0023-upgrade-to-python-3.md)
+### **2017-07-16** [Upgrade to Python 3](0023-upgrade-to-python-3.md)
 This change installs Python 3.6.8, builds a new virtualenv, and runs
 CommCare HQ in Python 3.
 
