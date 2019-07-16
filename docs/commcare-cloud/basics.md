@@ -51,7 +51,7 @@ $ commcare-cloud <env> update-config
 Note that you will need to restart the services in order for the changes
 to be picked up by the processes.
 
-## Run Django Management Commands on Django Managed Machines    
+## Run Django Management Commands
 To run Django management commands we need to log into a machine which has Django configured. Usually we run these commands on the `django_manage` machine which is a `webworker` machine.
 ```
 $ cchq <env> ssh django_manage
