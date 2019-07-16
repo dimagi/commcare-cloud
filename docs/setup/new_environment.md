@@ -294,4 +294,4 @@ where `{email}` is the email address you would like to use as the username.
 
 To make a build of an application in CommCare, you will need to add a CommCare build to your server.
 
-To add a build to your server visit `/builds/edit_menu` and follow the instructions under "Import a new build from the build server"
+To add a build to your server visit `<server url>/builds/edit_menu` and follow the instructions under "Import a new build from the build server"
