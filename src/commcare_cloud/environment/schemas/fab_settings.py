@@ -16,7 +16,7 @@ class FabSettingsConfig(jsonobject.JsonObject):
     ignore_kafka_checkpoint_warning = jsonobject.BooleanProperty()
     acceptable_maintenance_window = jsonobject.ObjectProperty(lambda: AcceptableMaintenanceWindow)
     email_enabled = jsonobject.BooleanProperty()
-    py3_include_venv = jsonobject.BooleanProperty()
+    py3_include_venv = jsonobject.BooleanProperty(default=True)
     py3_run_deploy = jsonobject.BooleanProperty(default=True)
 
     @classmethod
