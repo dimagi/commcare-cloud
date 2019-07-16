@@ -99,7 +99,7 @@ nginx_sites:
        proxy_read_timeout: 900s
        limit_reqs:
          - zone_name: "restore"
-           burst: 50
+           burst: 10
            nodelay: True
          - zone_name: "overall_restore"
            burst: 50
