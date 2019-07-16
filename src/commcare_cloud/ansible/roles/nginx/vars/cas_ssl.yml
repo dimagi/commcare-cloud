@@ -15,7 +15,10 @@ nginx_sites:
    mappings:
     - name: "$fresh_sync"
       variable: "$http_x_commcarehq_lastsynctoken"
-      value: "$server_name"
+      default_value: "$server_name"
+      var_mappings:
+        - key: '""'
+          value: '""'
    limit_req_zones:
     - name: "restore"
       zone: "$fresh_sync"
