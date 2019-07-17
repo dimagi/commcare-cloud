@@ -13,7 +13,7 @@ nginx_sites:
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    mappings:
-    - name: "$sync_update"
+    - name: "$incremental_sync"
       variable: "$http_x_commcarehq_lastsynctoken"
       # If header is provided, rate limit on $server_name
       default_value: "$server_name"
@@ -22,10 +22,10 @@ nginx_sites:
         - key: '""'
           value: '""'
    limit_req_zones:
-    - name: "restore" # Limits restores that are not new device or 412s
-      zone: "$sync_update"
+    - name: "incremental_restore" # Limits restores that are not new device or 412s
+      zone: "$incremental_sync"
       size: "10m"
-      rate: "1r/s"
+      rate: "15r/s"
     - name: "overall_restore" # Limits all restores
       zone: "$server_name"
       size: "10m"
@@ -98,11 +98,11 @@ nginx_sites:
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
        limit_reqs:
-         - zone_name: "restore"
+         - zone_name: "incremental_restore"
            burst: 10
            nodelay: True
          - zone_name: "overall_restore"
-           burst: 50
+           burst: 100
            nodelay: True
      - name: "/a/icds-cas/receiver"
        balancer: "{{ deploy_env }}_cas_commcare"
