@@ -1,6 +1,15 @@
 formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
 
+management_commands:
+  celery0:
+    - submission_reprocessing_queue
+  celery1:
+    - queue_schedule_instances
+    - handle_survey_actions
+  celery5:
+    - sms_queue
+
 celery_processes:
   None:
     repeat_record_queue:
