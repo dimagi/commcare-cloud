@@ -86,7 +86,7 @@
       tags:
         - slow
         - py3
-      when: (py3_include_venv is defined and py3_include_venv)
+      when: (py3_include_venv is defined and py3_include_venv) and (not testing|default(False))
 
     - name: chown clone
       become: true
