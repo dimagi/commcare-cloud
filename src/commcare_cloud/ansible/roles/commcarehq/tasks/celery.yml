@@ -6,7 +6,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
-  when: app_processes_config.management_commands.get(inventory_hostname).queue_schedule_instances is defined
+  when: queue_schedule_instances in app_processes_config.management_commands.get(inventory_hostname, [])
   with_items:
     - dest_name: supervisor_queue_schedule_instances.conf
       process_name: queue_schedule_instances
@@ -21,7 +21,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
-  when: app_processes_config.management_commands.get(inventory_hostname).handle_survey_actions is defined
+  when: handle_survey_actions in app_processes_config.management_commands.get(inventory_hostname, [])
   with_items:
     - dest_name: supervisor_handle_survey_actions.conf
       process_name: handle_survey_actions
@@ -35,7 +35,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_submission_reprocessing_queue.conf"
-  when: app_processes_config.management_commands.get(inventory_hostname).submission_reprocessing_queue is defined
+  when: submission_reprocessing_queue in app_processes_config.management_commands.get(inventory_hostname, [])
   with_items:
     - process_name: submission_reprocessing_queue
       management_command: run_submission_reprocessing_queue
@@ -48,7 +48,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_sms_queue.conf"
-  when: app_processes_config.management_commands.get(inventory_hostname).sms_queue is defined
+  when: sms_queue in app_processes_config.management_commands.get(inventory_hostname, [])
   with_items:
     - process_name: sms_queue
       management_command: run_sms_queue
