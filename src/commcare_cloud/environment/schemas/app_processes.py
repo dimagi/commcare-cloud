@@ -38,7 +38,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(unicode)
-    management_commands = jsonobject.DictProperty(jsonobject.ListProperty())
+    management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
 
