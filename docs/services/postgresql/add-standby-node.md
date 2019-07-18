@@ -19,7 +19,7 @@ Add
 To deploy the standby nodes we'd first need to create the replication slots in the primary.
 
 ```
-$ cchq icds run-shell-command <master-node> --become-user=postgres "psql -d icds_ucr -c  "'"'"SELECT * FROM pg_create_physical_replication_slot('<slot name>')"'"'""
+$ commcare-cloud <env> run-shell-command <primary-node> -b --become-user=postgres "psql -d <database name> -c  "'"'"SELECT * FROM pg_create_physical_replication_slot('<slot name>')"'"'""
 ```
 
 After that we can use the `setup_pg_standby.yml` playbook
