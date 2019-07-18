@@ -6,6 +6,9 @@ The PostgreSQL standby is a hot standby (accept reads operations only) of each p
  Add
   * `hot_standy_server` (points to standby server)
   * `postgresql_replication_slots` (list of replication slots)
+    * replication slots should be formatted a list as follows:
+      * CSV invenory: "[""slot1"",""slot2""]"
+      * INI inventory: ["slot1","slot2"]
 
 
 #### On the standby node 
