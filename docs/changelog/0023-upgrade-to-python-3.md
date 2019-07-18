@@ -8,8 +8,6 @@
 
 
 ## CommCare Version Dependency
-CommCare versions beyond this commit require this change to function correctly:
-[25f43bff](https://github.com/dimagi/commcare-hq/commit/25f43bffffea6ead94e91ff1f4edef0dfc95a638)
 This version of CommCare must be deployed before rolling out this change:
 [476e3291](https://github.com/dimagi/commcare-hq/commit/476e32910bf757d950b2575423c043bd71e83a48)
 
@@ -19,24 +17,26 @@ This change installs Python 3.6.8, builds a new virtualenv, and runs
 CommCare HQ in Python 3.
 
 ## Details
-Future updates to HQ are designed for Python 3 and may be incompatible
-with earlier Python versions. Python 3.6.8 is required to guarantee a
-zero-downtime upgrade.
+CommCare HQ will drop support for Python 2 on August 18, 2019.
+Performing these steps will ensure that your environment will be able
+to receive updates at that date.
 
 ## Steps to update
-1. Install Python 3 requirements
+1. Set `py3_include_venv` in `fab-settings.py` to `True`. See this
+[example](https://github.com/dimagi/commcare-cloud/pull/2906/commits/e56a5ce47b3a902f8aefad8ee5b53d2a7afca504).
+2. Install Python 3 requirements
 ```bash
 commcare-cloud <env> ap deploy_common.yml --tags=common_installs
 ```
-2. Add Python 3 virtualenv
+3. Add Python 3 virtualenv
 ```bash
 cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3 -e 'CREATE_NEW_VIRTUALENV=1'
 ```
-3. Update Python processes to use Python 3
+4. Update Python processes to use Python 3
 ```bash
 cchq <env> update-supervisor-confs
 ```
-4. Restart services to ensure services are run in Python 3.
-  ```bash
-  cchq <env> fab restart_services
-  ```
+5. Restart services to ensure services are run in Python 3.
+```bash
+cchq <env> fab restart_services
+```
