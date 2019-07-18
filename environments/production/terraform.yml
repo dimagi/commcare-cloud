@@ -289,7 +289,7 @@ servers:
     server_instance_type: t3.micro
     network_tier: "db-private"
     az: "a"
-    volume_size: 40
+    volume_size: 100
     group: "shared_dir_host"
     os: trusty
 
