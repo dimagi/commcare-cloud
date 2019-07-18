@@ -1,6 +1,6 @@
 # Adding a postgresql hot standby node
 
-The postgres standby is a hot standby (accept reads operations only) of our production database. Each Database node  should have standby node configured and deployed.This will require configuring in the environment inventory files
+The PostgreSQL standby is a hot standby (accept reads operations only) of each production database. Each Database node should have standby node configured and deployed. This will require configuring in the environment inventory files to set variables as follows:
 
  #### On primary node 
  Add
