@@ -192,6 +192,7 @@ class DjangoManage(CommandBase):
             E.g. '2018-04-13_18.16'.
             If none is specified, the `current` release will be used.
         """),
+        Argument('--py3', action='store_true', default=False, help="Use the python3 environment"),
     )
 
     def run(self, args, manage_args):
@@ -207,11 +208,15 @@ class DjangoManage(CommandBase):
         else:
             code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
                 cchq_user=cchq_user, deploy_env=deploy_env)
+        if args.py3:
+            env_path = 'python_env-3.6'
+        else:
+            env_path = 'python_env'
         remote_command = (
-            'bash -c "cd {code_dir}; python_env/bin/python manage.py {args}"'
+            'bash -c "cd {code_dir}; {env_path}/bin/python manage.py {args}"'
             .format(
-                cchq_user=cchq_user,
                 code_dir=code_dir,
+                env_path=env_path,
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
             )
         )
