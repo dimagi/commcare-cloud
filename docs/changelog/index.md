@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2017-07-16** [Upgrade to Python 3](0023-upgrade-to-python-3.md)
+This change installs Python 3.6.8, builds a new virtualenv, and runs
+CommCare HQ in Python 3.
+
 ### **2019-05-13** [Install Pango](0022-install-pango.md)
 This change installs pango and its dependencies for the weasyprint
 library which has been added as a requirement to commcare-hq for
