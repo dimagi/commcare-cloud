@@ -1,3 +1,5 @@
+management_commands:
+  64-test-proxy-0:
 celery_processes:
   64-test-proxy-0:
     beat: {}

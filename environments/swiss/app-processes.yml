@@ -1,5 +1,7 @@
 formplayer_memory: "1024m"
 
+management_commands:
+  swiss0:
 celery_processes:
   swiss0:
     repeat_record_queue,celery,export_download_queue:
