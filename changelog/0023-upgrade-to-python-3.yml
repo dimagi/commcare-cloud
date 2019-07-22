@@ -1,6 +1,6 @@
 title: Upgrade to Python 3
 key: upgrade-to-python-3
-date: 2017-07-16
+date: 2018-07-18
 optional_per_env: no
 min_commcare_version: 476e32910bf757d950b2575423c043bd71e83a48
 context: |
@@ -8,7 +8,7 @@ context: |
   CommCare HQ in Python 3.
 
 details: |
-  CommCare HQ will drop support for Python 2 on August 18, 2019.
+  CommCare HQ will drop support for Python 2 on August 22, 2019.
   Performing these steps will ensure that your environment will be able
   to receive updates at that date.
 

@@ -2,7 +2,7 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # 23. Upgrade to Python 3
 
-**Date:** 2017-07-16
+**Date:** 2018-07-18
 
 **Optional per env:** _required on all environments_
 
@@ -17,7 +17,7 @@ This change installs Python 3.6.8, builds a new virtualenv, and runs
 CommCare HQ in Python 3.
 
 ## Details
-CommCare HQ will drop support for Python 2 on August 18, 2019.
+CommCare HQ will drop support for Python 2 on August 22, 2019.
 Performing these steps will ensure that your environment will be able
 to receive updates at that date.
 
