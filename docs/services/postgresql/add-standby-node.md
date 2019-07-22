@@ -2,17 +2,15 @@
 
 The PostgreSQL standby is a hot standby (accept reads operations only) of each production database. Each Database node should have standby node configured and deployed. This will require configuring in the environment inventory files to set variables as follows:
 
- #### On primary node 
- Add
-  * `hot_standy_server` (points to standby server)
-  * `postgresql_replication_slots` (list of replication slots)
-    * replication slots should be formatted a list as follows:
-      * CSV invenory: "[""slot1"",""slot2""]"
-      * INI inventory: ["slot1","slot2"]
+#### On primary node 
+* `hot_standy_server` (points to standby server)
+* `postgresql_replication_slots` (list of replication slots)
+  * replication slots should be formatted a list as follows:
+    * CSV invenory: "[""slot1"",""slot2""]"
+    * INI inventory: ["slot1","slot2"]
 
 
 #### On the standby node 
-Add
 * `hot_standby_master` (point to primary)
 * `replication_slot` (which replication slot to use)
 * Add node to `pg_standby` group
