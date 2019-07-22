@@ -8,4 +8,4 @@
    start program = "/bin/systemctl start {{ redis_service_name }}"
    stop program = "/bin/systemctl stop {{ redis_service_name }}"
 {% endif %}
-   if failed host {{ inventory_hostname }} port {{ redis_port }} then restart
+   if failed host {{ inventory_hostname }} port {{ redis_port }} for 2 cycles then restart
