@@ -130,8 +130,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
         vars = env.get_host_vars(standby_host)
         standby_master = vars.get('hot_standby_master')
         if not standby_master:
-            raise PGConfigException('{} has not root pg host'.format(standby_host))
-        if standby_master in env.groups['postgresql']:
+            raise PGConfigException('{} has not root pig host'.format(standby_host))
+        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb',[])
+        if standby_master in potential_masters:
             return standby_master
         return self._get_root_pg_host(standby_master, env)
 
