@@ -127,7 +127,7 @@ pillow0
 formplayer0
 formplayer1
 
-{{ __redis1__ }}
+{{ __redis1__ }} swap_size=1G
 
 [redis:children]
 redis1
@@ -176,24 +176,17 @@ elasticsearch_node_zone=aws
 es_master
 es_data
 
-{{ __couch3__ }}
-{{ __couch4__ }}
-{{ __couch5__ }}
-{{ __couch7__ }}
-{{ __couch8__ }}
-{{ __couch9__ }}
+{{ __couch12__ }}
+{{ __couch13__ }}
+{{ __couch14__ }}
 
 [couchdb2:children]
-couch3
-couch4
-couch5
-couch7
-couch8
-couch9
+couch12
+couch13
+couch14
 
 [couchdb2:vars]
 swap_size=8G
-datavol_device=/dev/nvme1n
 
 {{ __couchproxy0__ }}
 
@@ -203,6 +196,7 @@ couchproxy0
 {{ __control__ }}
 
 {{ __djangomanage0__ }}
+{{ __djangomanage1__ }}
 
 [django_manage:children]
-djangomanage0
+djangomanage1

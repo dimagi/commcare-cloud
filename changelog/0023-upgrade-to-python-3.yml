@@ -1,0 +1,33 @@
+title: Upgrade to Python 3
+key: upgrade-to-python-3
+date: 2017-07-16
+optional_per_env: no
+min_commcare_version: 476e32910bf757d950b2575423c043bd71e83a48
+context: |
+  This change installs Python 3.6.8, builds a new virtualenv, and runs
+  CommCare HQ in Python 3.
+
+details: |
+  CommCare HQ will drop support for Python 2 on August 18, 2019.
+  Performing these steps will ensure that your environment will be able
+  to receive updates at that date.
+
+update_steps: |
+  1. Set `py3_include_venv` in `fab-settings.py` to `True`. See this
+  [example](https://github.com/dimagi/commcare-cloud/pull/2906/commits/e56a5ce47b3a902f8aefad8ee5b53d2a7afca504).
+  2. Install Python 3 requirements
+  ```bash
+  commcare-cloud <env> ap deploy_common.yml --tags=common_installs
+  ```
+  3. Add Python 3 virtualenv
+  ```bash
+  cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3 -e 'CREATE_NEW_VIRTUALENV=1'
+  ```
+  4. Update Python processes to use Python 3
+  ```bash
+  cchq <env> update-supervisor-confs
+  ```
+  5. Restart services to ensure services are run in Python 3.
+  ```bash
+  cchq <env> fab restart_services
+  ```

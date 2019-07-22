@@ -43,5 +43,5 @@ output "ssh-sg" {
 }
 
 output "vpn-connections-sg" {
-  value = "${aws_security_group.vpn_connections.id}"
+  value = "${aws_security_group.vpn_connections.*.id}"
 }

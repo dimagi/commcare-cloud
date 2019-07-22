@@ -310,7 +310,7 @@ class Environment(object):
         return get_variable_manager(self._ansible_inventory_data_loader, self.inventory_manager)
 
     def get_host_vars(self, host):
-        host_object, = [h for h in self.inventory_manager.get_hosts() if h.name == host]
+        host_object, = [h for h in self.inventory_manager.get_hosts(ignore_limits=True) if h.name == host]
         return self._ansible_inventory_variable_manager.get_vars(host=host_object)
 
     @memoized_property
@@ -347,10 +347,10 @@ class Environment(object):
         # use the ip address specified by ansible_host to ssh in if it's given
         ssh_addr_map = {
             host.name: var_manager.get_vars(host=host).get('ansible_host', host.name)
-            for host in inventory.get_hosts()}
+            for host in inventory.get_hosts(ignore_limits=True)}
         # use the port specified by ansible_port to ssh in if it's given
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
-                    for host in inventory.get_hosts()}
+                    for host in inventory.get_hosts(ignore_limits=True)}
         return {group: [
             self.format_sshable_host(ssh_addr_map[host], port_map[host])
             for host in hosts
@@ -374,7 +374,6 @@ class Environment(object):
             mapping[self.format_sshable_host(ansible_host, ansible_port)] = host.name
         return mapping
 
-
     @memoized_property
     def hostname_map(self):
         """Mapping of inventory hostname (IP) to assigned hostname"""
@@ -388,12 +387,7 @@ class Environment(object):
 
         return mapping
 
-    def _run_last_minute_checks(self):
-        assert len(self.groups.get('rabbitmq', [])) > 0, \
-            "You need at least one rabbitmq host in the [rabbitmq] group"
-
     def create_generated_yml(self):
-        self._run_last_minute_checks()
         generated_variables = {
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
@@ -405,7 +399,7 @@ class Environment(object):
             'py3_include_venv': self.fab_settings_config.py3_include_venv,
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
-        generated_variables.update(self.postgresql_config.to_generated_variables())
+        generated_variables.update(self.postgresql_config.to_generated_variables(self))
         generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
 

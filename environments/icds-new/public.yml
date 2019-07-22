@@ -1,5 +1,4 @@
 internal_domain_name: 'internal-icds-new.commcarehq.org'
-db_vlan_ip_range: '10.247.164.0/23'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
 riak_backend: "bitcask"
@@ -22,7 +21,6 @@ nadir_hour: 16
 
 nofile_limit: 65536
 
-redis_appendonly: 'yes'
 redis_maxmemory: 5gb
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'

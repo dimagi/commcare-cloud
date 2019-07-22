@@ -6,7 +6,7 @@
   vars:
     s3_user: "{{ blobdb_user }}"
     s3_user_home_dir: "~{{ blobdb_user }}"
-  when: blobdb_s3
+  when: blobdb_s3|bool
   tags:
     - cron
     - backups
@@ -82,8 +82,8 @@
   tags:
     - cron
     - backups
-  
-- name: Copy check_s3_backup script to /usr/local/sbin
+
+- name: Copy check_s3_backup script to /usr/local/bin
   template:
     src: check_s3_backup.py.j2
     dest: /usr/local/bin/check_s3_backup.py

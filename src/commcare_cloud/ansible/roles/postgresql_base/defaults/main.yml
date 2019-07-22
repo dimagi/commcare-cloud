@@ -44,9 +44,9 @@ postgresql_max_parallel_workers_per_gather: ~
 postgresql_effective_io_concurrency: ~
 postgresql_max_locks_per_transaction: ~
 
-allow_direct_postgresql_access: no
 allow_direct_citusdb_access: no
 
 postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 postgresql_binary: "postgresql-{{ postgresql_version }}"
+postgresql_hba_entries: []
