@@ -4,59 +4,25 @@
 local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
-{% if postgres_users.get('tcl_backup_agent') %}
-# TCL_BACKUP required configuration
-host    all             TCLBKPADMIN        127.0.0.1/32            md5
-local   all             TCLBKPADMIN                                md5
-{% endif %}
 
 # Allow replication connections from localhost, by a user with the replication privilege.
 local   replication     postgres                                peer
 
-{% if postgres_users.get('replication') %}
-host    replication     {{ postgres_users.replication.username }}   {{ db_vlan_ip_range|default('0.0.0.0/0') }}    md5
-{% endif %}
+{% for entry in postgresql_hba_entries %}
+{{ entry.contype|default('host') }}    {{ entry.databases|default('all') }}    {{ entry.users|default('all') }}    {% if entry.contype != 'local' %}{{ entry.netmask }}{% endif %}    {{ entry.method|default('md5') }}
+{% endfor %}
 
-{% if postgres_users.get('backup') %}
-host    all             {{ postgres_users.backup.username }}   {{ db_vlan_ip_range|default('0.0.0.0/0') }}    md5
-{% endif %}
-
-{% if postgres_users.get('tableau_readonly') %}
-host    all     {{ postgres_users.tableau_readonly.username }}   {{ tableau_server.split(':')[0] }}/32    md5
-{% endif %}
-
-{% if allow_direct_postgresql_access %}
-{% for host in (groups['formplayer'] + groups['webworkers'] + groups['celery'] + groups['pillowtop'] + groups.get('django_manage', []) + groups['postgresql'] + groups.get('pg_standby', []) + groups.get('airflow', []) ) | unique %}
-# {{ host }}
-{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
-{% set db = db_list[0] %}
-{% if db.host == inventory_hostname or db.host == hot_standby_master|default(None) or is_monolith|bool %}
+{% if inventory_hostname in groups.get('citusdb_worker', []) %}
+{% for host in groups.get('citusdb_master', []) %}
 {% if host | ipaddr %}
-host   {{ db.name }}	{{ db.user }}	{{ host }}/32   md5
+host   all	all	{{ host }}/32   trust
 {% else %}
-host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
-{% endif %}
-{% endfor %}
 {% endfor %}
 {% endif %}
 
-{% if allow_direct_citusdb_access %}
-# trus access for CitusDB connections only
-{% for host in (  groups.get('citusdb_worker', []) + groups.get('citusdb_master', [])) | unique %}
-# {{ host }}
-{% for db_name, db_list in postgresql_dbs.all|groupby('name') %}
-{% set db = db_list[0] %}
-{% if db.host in groups.get('citusdb_master', []) %}
-{% if host | ipaddr %}
-host   {{ db.name }}	{{ db.user }}	{{ host }}/32   trust
-{% else %}
-host   {{ db.name }}	{{ db.user }}	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
-{% endif %}
-{% endif %}
-{% endfor %}
-{% endfor %}
-{% endif %}
+
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
 

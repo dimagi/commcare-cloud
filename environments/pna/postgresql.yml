@@ -10,6 +10,13 @@ postgres_override:
   postgresql_max_connections: 300
   postgresql_max_stack_depth: 4MB
   postgresql_shared_buffers: 2GB
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 0.0.0.0/0
+    - contype: host
+      netmask: 196.207.230.171/32
 
 dbs:
   form_processing:

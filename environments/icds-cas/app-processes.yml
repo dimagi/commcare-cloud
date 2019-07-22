@@ -28,7 +28,8 @@ celery_processes:
     background_queue,analytics_queue:
       concurrency: 6
     icds_aggregation_queue:
-      concurrency: 10
+      concurrency: 20
+      max_tasks_per_child: 1
     case_rule_queue:
       concurrency: 2
     sumologic_logs_queue:
@@ -58,6 +59,8 @@ celery_processes:
       num_workers: 2
     ucr_indicator_queue:
       concurrency: 6
+    dashboard_comparison_queue:
+      concurrency: 4
   'celery3':
     reminder_case_update_queue:
       pooling: gevent
@@ -187,6 +190,253 @@ celery_processes:
       num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
+  'celery16':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery17':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery18':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery19':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery20':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery21':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery22':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery23':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery24':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery25':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery26':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery27':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery28':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery29':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery30':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery31':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery32':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery33':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 2
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
+  'celery34':
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 4
+    reminder_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 6
+    sms_queue:
+      pooling: gevent
+      concurrency: 10
+      num_workers: 2
   'web0':
     ucr_indicator_queue:
       concurrency: 3

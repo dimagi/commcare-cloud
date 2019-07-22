@@ -18,10 +18,10 @@ celery_processes:
     ucr_queue,ucr_indicator_queue,celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue,icds_dashboard_reports_queue,async_restore_queue,celery_periodic:
       concurrency: 3
     saved_exports_queue:
-      concurrency: 2
+      concurrency: 1
       optimize: True
     background_queue,dashboard_comparison_queue:
-      concurrency: 5
+      concurrency: 4
 pillows:
   pillow2:
     AppDbChangeFeedPillow:

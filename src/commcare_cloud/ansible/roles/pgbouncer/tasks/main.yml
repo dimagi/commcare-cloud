@@ -20,13 +20,6 @@
     - pgbouncer
     - configure
 
-- name: pgbouncer hba
-  template: src=pgbouncer_hba.conf.j2 dest="{{ pgbouncer_hba }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - configure
-
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
   tags:
@@ -71,3 +64,7 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20

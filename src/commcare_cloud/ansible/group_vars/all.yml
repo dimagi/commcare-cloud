@@ -6,7 +6,8 @@ log_home: "{{ www_home }}/log"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
-py3_virtualenv_home: "{{ code_home }}/python_env-3.7"
+py3_virtualenv_home: "{{ code_home }}/python_env-3.6"
+nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
@@ -50,7 +51,6 @@ couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
 couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
 }"
-couchdb_ver: '2.3.1'
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 run_websockets_wsgi: False
 

@@ -103,7 +103,7 @@
     state: directory
     owner: postgres
     group: postgres
-  when: postgresql_enable_archive
+  when: postgresql_enable_archive|bool
 
 - name: Create clean WAL archive cron
   become: yes
@@ -169,7 +169,7 @@
   stat:
     path: "{{ postgresql_recovery_conf }}"
   register: recovery_file
-  when: is_pg_standby
+  when: is_pg_standby|bool
   tags:
     - postgres_users
     - replication
@@ -237,3 +237,7 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20

@@ -101,6 +101,8 @@ Service logs: `cchq <env> service <service_name> logs`
 
 [couch](https://app.datadoghq.com/screen/177642/couchdb-dashboard)
 
+[formplayer](https://app.datadoghq.com/dashboard/dcs-kte-q8e/formplayer-health)
+
 # Switching to Maintenance Page
 
 To switch to the Maintenance page, if you stop all web workers then the proxy will revert to "CommCareHQ is currently undergoing maintenance...".

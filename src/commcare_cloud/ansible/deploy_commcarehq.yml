@@ -81,14 +81,16 @@
     - set_fact:
         supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) + airflow_managed_files|default([]) + formplayer_managed_files|default([]) }}"
       tags: services
-    - shell: ls -1 {{ service_home|quote }}
+    - shell: find {{ service_home|quote }} -type f
       register: contents
       tags: services
+      check_mode: no
+      changed_when: no
     - name: "Remove supervisor configs that are no longer needed"
       file:
-        path: "{{ service_home }}/{{ item }}"
+        path: "{{ item }}"
         state: absent
-      with_items: contents.stdout_lines
+      with_items: "{{ contents.stdout_lines }}"
       when: item not in supervisor_files
       tags: services
 
