@@ -4,7 +4,7 @@ import subprocess
 from copy import deepcopy
 
 from six.moves import shlex_quote
-from clint.textui import puts, colored
+from clint.textui import puts, colored, indent
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
@@ -17,7 +17,7 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.fab import exec_fab_command
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
-from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.environment.paths import ANSIBLE_DIR, PLAYBOOK_PATHS
 
 
 class AnsiblePlaybook(CommandBase):
@@ -104,7 +104,19 @@ def run_ansible_playbook(
         if os.path.isabs(playbook):
             playbook_path = playbook
         else:
-            playbook_path = os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook))
+            for path in PLAYBOOK_PATHS:
+                playbook_path = os.path.join(path, playbook)
+                if os.path.isfile(playbook_path):
+                    break
+            else:
+                puts(colored.red(
+                    "No playbook with name {} could be found in any of the following paths:".format(playbook)
+                ))
+                for path in PLAYBOOK_PATHS:
+                    with indent():
+                        puts(colored.red(path))
+                return 2  # exit code
+
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
