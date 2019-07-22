@@ -155,6 +155,7 @@ class Environment(object):
                 title="commcare-cloud vault loaded",
                 text=' '.join([shlex_quote(arg) for arg in sys.argv]),
                 tags=["environment:{}".format(self.name)],
+                source_type_name='ansible',
             )
 
     @contextmanager
