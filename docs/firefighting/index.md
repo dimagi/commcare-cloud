@@ -360,8 +360,7 @@ $ sudo -u postgres psql commcarehq
 ### Check open connections
 
 ```sql
-select client_addr, datname as database, count(\*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle
-from pg_stat_activity group by client_addr, datname;
+select client_addr, datname as database, count(*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle from pg_stat_activity group by client_addr, datname;
 ```
 
 This will print something like the following:
