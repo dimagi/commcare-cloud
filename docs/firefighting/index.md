@@ -137,13 +137,17 @@ Monitors are setup to ping the proxy instead of couch instance directly, so the 
 
 If a couch node is coming close to running out of space, it may not have enough space to compact the full db. You can start a compaction of one shard of a database using the following:
 
-`curl "<couch ip>:15986/shards%2F<shard range i.e. 20000000-3fffffff>%2F<database>.<The timestamp on the files of the database>/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>`
+```
+curl "<couch ip>:15986/shards%2F<shard range i.e. 20000000-3fffffff>%2F<database>.<The timestamp on the files of the database>/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>
+```
 
 It's important to use port 15986. This is the couch node endpoint instead of the cluster. The only way to find the timstamp is to go into /opt/data/couchdb2/shards and look for the filename of the database you want to compact
 
 If it's a global database (like _global_changes), then you may need to compact the entire database at once
 
-`curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>`
+```
+curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>
+```
 
 ## DefaultChangeFeedPillow is millions of changes behind
 
@@ -296,7 +300,9 @@ It is configured to use the "transaction"  pool mode which means that each serve
 
 ## Get a pgbouncer shell
 
-`$ psql -U {commcarehq-user} -p 6432 pgbouncer`
+```
+$ psql -U {commcarehq-user} -p 6432 pgbouncer
+```
 
 ## Check connection status
 
@@ -390,11 +396,15 @@ $ psql -h localhost -p 6432 -U $USERNAME pgbouncer -c "show clients" | cut -d'|'
 ### See Running Queries
 To see a list of queries (ordered by the long running ones first) you can do something like the following. This can also be exported to csv for further analysis.
 
-`SELECT pid, datname, query_start, now() - query_start as duration, state, query as current_or_last_query FROM pg_stat_activity WHERE state = 'active' OR query_start > now() - interval '1 min' ORDER BY state, query_start;`
+```sql
+SELECT pid, datname, query_start, now() - query_start as duration, state, query as current_or_last_query FROM pg_stat_activity WHERE state = 'active' OR query_start > now() - interval '1 min' ORDER BY state, query_start;
+```
 
  This can also be exported to csv for further analysis.
 
-`Copy (SELECT state, query_start, client_addr, query FROM pg_stat_activity ORDER BY query_start) TO '/tmp/pg_queries.csv' WITH CSV;`
+```sql
+Copy (SELECT state, query_start, client_addr, query FROM pg_stat_activity ORDER BY query_start) TO '/tmp/pg_queries.csv' WITH CSV;
+```
 
 ### Find queries that are consuming IO
 
@@ -402,7 +412,9 @@ Use `iotop` to see what processes are dominating the IO and get their process ID
 
 ### Filter the list of running queries by process ID:
 
-`SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = {pid} ORDER BY query_start;`
+```sql
+SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = {pid} ORDER BY query_start;
+```
 
 ### Kill connections
 *DO NOT EVER `kill -9` any PostgreSQL processes. It can bring the DB process down.*
@@ -412,10 +424,14 @@ This shouldn't be necessary now that we've switched to using pgbouncer (but it s
 After checking open connections you can kill connections by IP address or status. The following command will kill all open IDLE connections from localhost (where pgbouncer connections route from) and is a good way to reduce the load:
 
 #### Kill all idle connections
-`SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE client_addr = '127.0.0.1' AND query = '<IDLE>';`
+```sql
+SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE client_addr = '127.0.0.1' AND query = '<IDLE>';
+```
 
 #### Kill a single query
-`SELECT pg_terminate_backend({procpid})`
+```sql
+SELECT pg_terminate_backend({procpid})
+```
 
 ## Postgres Hot Standby
 
@@ -427,11 +443,15 @@ The postgres standby is a hot standby (hot standby means that it can accept read
 ### Creating the standby with ansible
 Assumes that the deploy_db.yml playbook has already been applied to the standby node.
 
-`$ commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]`
+```
+$ commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]
+```
 
 ### Failover to standby with ansible
 
-`$ commcare-cloud <env> ansible-playbook promote_pg_standby.yml -e standby=[standby node]`
+```
+$ commcare-cloud <env> ansible-playbook promote_pg_standby.yml -e standby=[standby node]
+```
 
 ### Replication Delay
 https://www.enterprisedb.com/blog/monitoring-approach-streaming-replication-hot-standby-postgresql-93
@@ -847,17 +867,22 @@ esoergel@hqdb0:~$
 # Tips and Tricks
 Never run that painful sequence of sudo -u cchq bash, entering the venv, cd'ing to the directory, etc., again just to run a management command. Instead, just run e.g.:
 
-`sudo -u cchq bash -c 'cd /home/cchq/www/production/current && /home/cchq/www/production/current/python_env/bin/python manage.py shell'`
+```sudo -u cchq bash -c 'cd /home/cchq/www/production/current && /home/cchq/www/production/current/python_env/bin/python manage.py shell'
+```
 
 first thing after logging in. Extra plus: next time you ssh in to the same machine, you can just type ^R and find this command in your history
 
 On staging:
 
-`sudo -u cchq bash -c 'cd /home/cchq/www/staging/current && /home/cchq/www/staging/current/python_env/bin/python manage.py shell'`
+```
+sudo -u cchq bash -c 'cd /home/cchq/www/staging/current && /home/cchq/www/staging/current/python_env/bin/python manage.py shell'
+```
 
 On Softlayer:
 
-`sudo -u cchq bash -c 'cd /home/cchq/www/softlayer/current && /home/cchq/www/softlayer/current/python_env/bin/python manage.py shell'`
+```
+sudo -u cchq bash -c 'cd /home/cchq/www/softlayer/current && /home/cchq/www/softlayer/current/python_env/bin/python manage.py shell'
+```
 
 # Some Short Write-ups and Examples
 
