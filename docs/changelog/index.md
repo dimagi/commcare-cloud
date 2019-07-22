@@ -11,6 +11,9 @@ newest first.
 This change installs Python 3.6.8, builds a new virtualenv, and runs
 CommCare HQ in Python 3.
 
+### **2019-07-17** [Define management commands explicitly](0023-define-management-commands.md)
+This change requires changing app-processes.yml to include a list of management comamnds to run
+
 ### **2019-05-13** [Install Pango](0022-install-pango.md)
 This change installs pango and its dependencies for the weasyprint
 library which has been added as a requirement to commcare-hq for

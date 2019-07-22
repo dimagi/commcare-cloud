@@ -1,5 +1,11 @@
 formplayer_memory: "7000m"
 newrelic_javaagent: True
+management_commands:
+  celery1:
+    submission_reprocessing_queue:
+    queue_schedule_instances:
+    handle_survey_actions:
+    sms_queue:
 celery_processes:
   celery1:
     beat: {}
