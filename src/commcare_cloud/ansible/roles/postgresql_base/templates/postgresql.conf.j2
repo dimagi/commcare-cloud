@@ -115,7 +115,7 @@ track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
 {% if not is_pg_standby %}
-shared_preload_libraries = '{{ postgresql_shared_preload_libraries|join(", ") }}'
+shared_preload_libraries = pg_stat_statements
 pg_stat_statements.track = all
 pg_stat_statements.max = 10000
 track_activity_query_size = 2048
