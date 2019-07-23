@@ -13,7 +13,7 @@ management_commands:
     handle_survey_actions:
     sms_queue:
 celery_processes:
-  celery7:
+  celery0:
     submission_reprocessing_queue:
       concurrency: 1
     sumologic_logs_queue:
