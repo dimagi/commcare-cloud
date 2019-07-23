@@ -30,7 +30,9 @@ pgshard6standby,100.71.184.58,pg_standby,shard_dbs,MUMGCCWCDPRDSS06,,pgshard6,,s
 pgshard7standby,100.71.184.61,pg_standby,shard_dbs,MUMGCCWCDPRDSS07,,pgshard7,,standby0
 pgshard8standby,100.71.184.56,postgresql,shard_dbs,MUMGCCWCDPRDSS08,pgshard8,,"[""standby0"",""spare""]",
 pgshard9standby,100.71.184.59,pg_standby,shard_dbs,MUMGCCWCDPRDSS09,,pgshard9,,standby0
-testdeleteshard,100.71.184.64,pg_standby,shard_dbs,MUMGCCWCDPRDPUS5,,pgshard9,,spare
+testdeleteshard,100.71.184.64,postgresql,shard_dbs,MUMGCCWCDPRDPUS5,,,"[""standby0"",""spare""]",
+testdeleteshardlow,100.71.184.76,postgresql,shard_dbs,MUMGCCWCDPRDPW01,,,"[""standby0"",""spare""]",
+testdeleteshardhigh,100.71.184.83,postgresql,shard_dbs,MUMGCCWCDPRDPW02,,,"[""standby0"",""spare""]",
 plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,,,,
 pgsynclog0,100.71.184.41,postgresql,synclog_dbs,MUMGCCWCDPRDPSL1,,,"[""spare""]",
 pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,,,,
