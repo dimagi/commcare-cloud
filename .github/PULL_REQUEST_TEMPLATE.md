@@ -12,6 +12,9 @@
 - Bugfix Pull Request
 - Docs Pull Request
 - Feature Pull Request
+- Downtime Pull Request
+
+<!-- If Downtime is selected, include information on how you will either be mitigating the downtime or scheduling it. --> 
 
 ##### COMPONENT NAME
 <!--- Write the short name of the script, playbook, task or feature below -->
