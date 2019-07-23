@@ -6,14 +6,14 @@ celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 1
 management_commands:
-  celery0:
+  celery7:
     submission_reprocessing_queue:
   celery1:
     queue_schedule_instances:
     handle_survey_actions:
     sms_queue:
 celery_processes:
-  celery0:
+  celery7:
     submission_reprocessing_queue:
       concurrency: 1
     sumologic_logs_queue:
