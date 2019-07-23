@@ -45,7 +45,7 @@ nginx_sites:
    proxy_cache_path:
     - name: "app_cache"
       path: "{{ www_home }}/app_downloads/cache"
-      max_size: "3g"
+      max_size: "5g"
       inactive_time: "24h"
    file_name: "{{ deploy_env }}_cas_commcare"
    listen: "443 ssl http2 default_server"
