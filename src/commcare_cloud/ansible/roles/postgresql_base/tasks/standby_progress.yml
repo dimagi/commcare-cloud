@@ -5,7 +5,7 @@
   when: not async_poll_results.get('finished', True)
 
 - name: get standby size
-  shell: du -s {{ postgresql_home }}
+  shell: du -s {{ postgresql_data_dir }}
   register: standby_size_output
   when: not async_poll_results.get('finished', True)
 

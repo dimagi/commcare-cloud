@@ -59,7 +59,7 @@
 
 - name: Ensure PostgreSQL data directory exists.
   file:
-    path: "{{ postgresql_home }}"
+    path: "{{ postgresql_data_dir }}"
     owner: postgres
     group: postgres
     state: directory
@@ -67,11 +67,11 @@
 
 - name: Check if PostgreSQL database is initialized.
   stat:
-    path: "{{ postgresql_home }}/PG_VERSION"
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
   register: pgdata_dir_version
 
 - name: Ensure PostgreSQL database is initialized.
-  command: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_home }}"
+  command: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
   when: not pgdata_dir_version.stat.exists
   become: true
   become_user: postgres
