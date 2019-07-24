@@ -1,4 +1,5 @@
 postgresql_version: 11
+postgresql_port: 5432
 citus_version: '8.1'
 citus_apt_repo: "deb https://packagecloud.io/citusdata/community/ubuntu/ {{ ansible_lsb.codename}} main"
 citus_apt_key_url: "https://repos.citusdata.com/community/gpgkey"
