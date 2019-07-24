@@ -39,12 +39,6 @@
        mode:  0700
        state: directory
 
-- hosts:
-    - "{{ standby }}"
-  become: yes
-  vars_files:
-    - roles/postgresql_base/defaults/main.yml
-  tasks:
     - name: get master size
       delegate_to: "{{ hot_standby_master }}"
       shell: du -s {{ postgresql_data_dir }}
@@ -106,10 +100,6 @@
         owner: postgres
         group: postgres
 
-- hosts:
-    - "{{ standby }}"
-  become: yes
-  tasks:
     - service:
         name: postgresql
         state: started
