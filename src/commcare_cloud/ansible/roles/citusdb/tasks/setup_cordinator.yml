@@ -14,5 +14,5 @@
    shell: psql {{ item.0.name }} -c "SELECT * from master_add_node( '{{item.1|ipaddr}}' , 5432) ; "
    with_nested: 
     - "{{ postgresql_dbs.all }}"
-    - "{{groups['citusdb_worker']}}"
+    - "{{ groups['citusdb_worker'] | difference(groups['pg_standby']) }}"
    when: item.0.host in groups.citusdb_master
