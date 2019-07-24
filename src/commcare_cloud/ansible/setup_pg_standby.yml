@@ -62,7 +62,7 @@
           -U {{ postgres_users.replication.username }} \
           -D {{ postgresql_data_dir }} \
           -S {{ replication_slot }} \
-          -R -v --xlog-method=stream 2>&1
+          -R -v -X stream 2>&1
       async: 36000
       poll: 0
       register: async_results
