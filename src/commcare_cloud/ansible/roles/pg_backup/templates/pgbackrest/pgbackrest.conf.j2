@@ -1,18 +1,18 @@
 # {{ ansible_managed }}
 
 [backup]
-db1-path={{ postgresql_home }}
+db1-path={{ postgresql_data_dir }}
 {% if pg_backup_to %}
 db2-host={{ pg_backup_to }}
-db2-path={{ postgresql_home }}
+db2-path={{ postgresql_data_dir }}
 {% endif %}
 
 {% if postgres_s3 %}
 [backups3]
-db1-path={{ postgresql_home }}
+db1-path={{ postgresql_data_dir }}
 {% if pg_backup_to %}
 db2-host={{ pg_backup_to }}
-db2-path={{ postgresql_home }}
+db2-path={{ postgresql_data_dir }}
 {% endif %}
 repo-path=/pgbackrest
 repo-type=s3
