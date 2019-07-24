@@ -26,7 +26,8 @@
    include_role:
      name: postgresql_base
    vars:
-     postgresql_version: '11'
+     postgresql_version: "{{ postgresql_version }}"
+     postgresql_port: "{{ postgresql_port }}"
      postgresql_cluster_name: 'main'
      postgresql_shared_preload_libraries:
        - 'citus'
