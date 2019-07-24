@@ -1,3 +1,4 @@
+celery0-production: 10.202.12.202
 celery1-production: 10.202.12.214
 celery2-production: 10.202.12.26
 celery3-production: 10.202.12.121
