@@ -24,7 +24,7 @@ if [ $confirm3 != 'y' ]; then
     exit 1
 fi
 echo 'copying backup to data directory' &&
-rsync -avz --delete "{{ postgresql_backup_dir }}/${BACKUP}/" "{{ postgresql_home }}" &&
+rsync -avz --delete "{{ postgresql_backup_dir }}/${BACKUP}/" "{{ postgresql_data_dir }}" &&
 
 echo 'starting postgresql' &&
 /etc/init.d/postgresql start &&
