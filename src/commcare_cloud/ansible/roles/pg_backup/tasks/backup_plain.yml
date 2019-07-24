@@ -3,7 +3,7 @@
   become: yes
   template:
     src: "plain/pgpass.j2"
-    dest: "{{ postgresql_home }}/.pgpass"
+    dest: "{{ postgresql_user_home }}/.pgpass"
     group: postgres
     owner: postgres
     mode: 0600
@@ -33,7 +33,7 @@
     tasks_from: set_up_aws_credentials.yml
   vars:
     s3_user: "postgres"
-    s3_user_home_dir: "{{ postgresql_home }}"
+    s3_user_home_dir: "{{ postgresql_user_home }}"
   when: postgres_s3
   tags:
     - cron
