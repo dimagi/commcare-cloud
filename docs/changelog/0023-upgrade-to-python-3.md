@@ -22,7 +22,7 @@ Performing these steps will ensure that your environment will be able
 to receive updates at that date.
 
 ## Steps to update
-1. Set `py3_include_venv` in `fab-settings.py` to `True`. See this
+1. Set `py3_include_venv` in `fab-settings.yml` to `True`. See this
 [example](https://github.com/dimagi/commcare-cloud/pull/2906/commits/e56a5ce47b3a902f8aefad8ee5b53d2a7afca504).
 2. Install Python 3 requirements
 ```bash

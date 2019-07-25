@@ -2,16 +2,17 @@ postgresql_version: '9.6'
 postgresql_cluster_name: 'main'
 postgresql_port: 5432
 postgresql_ssl_enabled: False
-postgresql_dir_original_path: /var/lib/postgresql
+postgresql_user_home: /var/lib/postgresql
+postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
 postgresql_dir_path: "{{ encrypted_root }}/postgresql"
 postgresql_process_path: "{{ '/var/run/postgresql' if ansible_distribution_version == '18.04' else postgresql_dir_path }}"
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
-postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
-postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
-postgresql_pid_file: "{{ postgresql_process_path }}/{{ postgresql_version }}-main.pid"
+postgresql_data_dir: "{{ postgresql_dir_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_pid_file: "{{ postgresql_process_path }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
-postgresql_log_directory: "{{ postgresql_home }}/pg_log"
-postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
+postgresql_log_directory: "{{ postgresql_data_dir }}/pg_log"
+postgresql_recovery_conf: "{{ postgresql_data_dir }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
@@ -49,4 +50,7 @@ allow_direct_citusdb_access: no
 postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 postgresql_binary: "postgresql-{{ postgresql_version }}"
+
+postgresql_shared_preload_libraries:
+ - 'pg_stat_statements'
 postgresql_hba_entries: []
