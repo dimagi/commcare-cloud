@@ -10,6 +10,9 @@
   vars_files:
     - roles/postgresql_base/defaults/main.yml
   tasks:
+    - include_vars:
+        file: roles/citusdb/defaults/main.yml
+      when: "'citusdb' in groups"
     - assert:
         that:
           - "hot_standby_master is defined"
@@ -29,25 +32,19 @@
         state: stopped
 
     - file:
-       path:  "{{ postgresql_home }}"
+       path:  "{{ postgresql_data_dir }}"
        state: absent
 
     - file:
-       path:  "{{ postgresql_home }}"
+       path:  "{{ postgresql_data_dir }}"
        owner: postgres
        group: postgres
        mode:  0700
        state: directory
 
-- hosts:
-    - "{{ standby }}"
-  become: yes
-  vars_files:
-    - roles/postgresql_base/defaults/main.yml
-  tasks:
     - name: get master size
       delegate_to: "{{ hot_standby_master }}"
-      shell: du -s {{ postgresql_home }}
+      shell: du -s {{ postgresql_data_dir }}
       register: master_size_output
 
     - debug:
@@ -60,7 +57,7 @@
         {{ postgres_install_dir }}/bin/pg_basebackup \
           -h {{ hot_standby_master }} \
           -U {{ postgres_users.replication.username }} \
-          -D {{ postgresql_home }} \
+          -D {{ postgresql_data_dir }} \
           -S {{ replication_slot }} \
           -R -v -X stream 2>&1
       async: 36000
@@ -100,16 +97,12 @@
 
     - name: Reset ownership
       file:
-        dest: "{{ postgresql_home }}"
+        dest: "{{ postgresql_data_dir }}"
         state: directory
         recurse: yes
         owner: postgres
         group: postgres
 
-- hosts:
-    - "{{ standby }}"
-  become: yes
-  tasks:
     - service:
         name: postgresql
         state: started
