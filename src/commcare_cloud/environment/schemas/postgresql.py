@@ -167,6 +167,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
             if db.conn_max_age is None:
                 db.conn_max_age = self.DEFAULT_CONN_MAX_AGE
 
+            if isinstance(db, LogicalReplicationOptions):
+                db.master_host = environment.translate_host(db.master_host, environment.paths.postgresql_yml)
+
         for entry in self.postgres_override.postgresql_hba_entries:
             netmask = entry.get('netmask')
             if netmask and not re.match(r'(\d+\.?){4}', netmask):
@@ -179,7 +182,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.main, self.dbs.synclogs,
         ] + (
             self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
-        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom + self.dbs.standby)
+        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom + self.dbs.standby + self.dbs.logical)
 
     def _check_reporting_databases(self):
         referenced_django_aliases = set()
@@ -230,6 +233,7 @@ class SmartDBConfig(jsonobject.JsonObject):
 
     custom = jsonobject.ListProperty(lambda: CustomDBOptions)
     standby = jsonobject.ListProperty(lambda: StandbyDBOptions)
+    logical = jsonobject.ListProperty(lambda: LogicalReplicationOptions, required=False)
 
 
 class PGConfigItem(jsonobject.JsonObject):
@@ -313,6 +317,12 @@ class CustomDBOptions(PartitionDBOptions):
 
 class StandbyDBOptions(PartitionDBOptions):
     hq_acceptable_standby_delay = jsonobject.IntegerProperty(default=None)
+
+
+class LogicalReplicationOptions(DBOptions):
+    master_host = jsonobject.StringProperty(required=True)
+    master_db_name = jsonobject.StringProperty(required=True)
+    replication_set = jsonobject.ListProperty(int, required=True)  # [start, end] pair
 
 
 class StrictPartitionDBOptions(PartitionDBOptions):

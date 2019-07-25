@@ -161,3 +161,14 @@ dbs:
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 0
+  logical:
+    - name: test_pglogical_low
+      host: testdeleteshardlow
+      master_host: testdeleteshard
+      master_db_name: commcarehq_p10_test_delete
+      replication_set: [927, 975]
+    - name: test_pglogical_high
+      host: testdeleteshardhigh
+      master_host: testdeleteshard
+      master_db_name: commcarehq_p10_test_delete
+      replication_set: [976, 1023]

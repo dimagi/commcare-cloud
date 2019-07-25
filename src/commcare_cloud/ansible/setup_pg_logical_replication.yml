@@ -1,0 +1,144 @@
+---
+
+# Install pglogical extension
+- hosts:
+    - shard_dbs
+  become: yes
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  tasks:
+    - name: Install pglogical
+      apt:
+        name:
+          - postgresql-9.6-pglogical
+
+    - name: Create pglogical extension (providers)
+      become: yes
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+      postgresql_ext:
+        name: pglogical
+        db: "{{item.master_db_name}}"
+        port: "{{ postgresql_port }}"
+      with_items: "{{ postgresql_dbs.logical }}"
+      when: item.master_host == inventory_hostname
+
+    - name: Create pglogical extension (subscribers)
+      become: yes
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+      postgresql_ext:
+        name: pglogical
+        db: "{{item.name}}"
+        port: "{{ postgresql_port }}"
+      with_items: "{{ postgresql_dbs.logical }}"
+      when: item.host == inventory_hostname
+
+# Set up provider nodes
+- hosts:
+    - shard_dbs
+  become: yes
+  become_user: postgres
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  vars:
+    - form_processor_replication_tables:
+        - table_name: form_processor_xforminstancesql
+          hash_fn: "hash_string(form_id, ''siphash24'')"
+        - table_name: form_processor_xformoperationsql
+          hash_fn: "hash_string(form_id, ''siphash24'')"
+        - table_name: form_processor_xformattachmentsql
+          hash_fn: "hash_string(form_id, ''siphash24'')"
+        - table_name: form_processor_commcarecasesql
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: form_processor_commcarecaseindexsql
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: form_processor_caseattachmentsql
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: form_processor_casetransaction
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: form_processor_ledgervalue
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: form_processor_ledgertransaction
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: scheduling_casealertscheduleinstance
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: scheduling_casetimedscheduleinstance
+          hash_fn: "hash_string(case_id, ''siphash24'')"
+        - table_name: scheduling_alertscheduleinstance
+          hash_fn: "hash_string(decode(replace(schedule_instance_id::text, ''-'', ''''), ''hex''), ''siphash24'')"
+        - table_name: scheduling_timedscheduleinstance
+          hash_fn: "hash_string(decode(replace(schedule_instance_id::text, ''-'', ''''), ''hex''), ''siphash24'')"
+        - table_name: blobs_blobmeta
+          hash_fn: "hash_string(parent_id, ''siphash24'')"
+        - table_name: blobs_deletedblobmeta
+          hash_fn: "hash_string(parent_id, ''siphash24'')"
+  tasks:
+    - name: Create node
+      postgresql_query:
+        db: '{{ item.master_db_name }}'
+        query: "SELECT pglogical.create_node(node_name := '{{ item.master_db_name }}_provider', dsn := 'host={{ item.master_host }} port=5432 dbname={{ item.master_db_name }} user={{ postgres_users.replication.username}} password={{ postgres_users.replication.password }}')"
+      with_items: "{{ postgresql_dbs.logical }}" # todo de-dupe for providers
+      when: item.master_host == inventory_hostname
+      register: result
+      failed_when:
+        - result.failed
+        - '"current database is already configured as pglogical node" not in result.msg'
+
+    - name: Create replication set
+      postgresql_query:
+        db: '{{ item.master_db_name }}'
+        query: "SELECT pglogical.create_replication_set(set_name := '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}')"
+      with_items: "{{ postgresql_dbs.logical }}"
+      when: item.master_host == inventory_hostname
+      register: result
+      failed_when:
+        - result.failed
+        - '"replication set {{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }} already exists" not in result.msg'
+
+    - name: Add tables to replication set
+      postgresql_query:
+        db: '{{ item.0.master_db_name }}'
+        query: "SELECT pglogical.replication_set_add_table(set_name := '{{ item.0.master_db_name }}_{{ item.0.replication_set.0 }}_{{ item.0.replication_set.1 }}',relation := '{{ item.1.table_name }}',row_filter := '{{ item.1.hash_fn }} & 1023 BETWEEN {{ item.0.replication_set.0}} AND {{ item.0.replication_set.1}}')"
+      loop: "{{ postgresql_dbs.logical|product(form_processor_replication_tables)|list }}"
+      when: item.0.master_host == inventory_hostname
+      register: result
+      failed_when:
+        - result.failed
+        - '"duplicate key value violates unique constraint" not in result.msg'
+
+    - name: Add sequences to replication set
+      postgresql_query:
+        db: '{{ item.master_db_name }}'
+        query: "SELECT pglogical.replication_set_add_all_sequences(set_name := '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}',schema_names := ARRAY['public'])"
+      loop: "{{ postgresql_dbs.logical }}"
+      when: item.master_host == inventory_hostname
+
+# Set up subscriber nodes
+- hosts:
+    - shard_dbs
+  become: yes
+  become_user: postgres
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  tasks:
+    - name: Create node
+      postgresql_query:
+        db: '{{ item.name }}'
+        query: "SELECT pglogical.create_node(node_name := '{{ item.name }}_subscriber', dsn := 'host={{ item.host }} port=5432 dbname={{ item.name }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}');"
+      loop: "{{ postgresql_dbs.logical }}"
+      when: item.host == inventory_hostname
+      register: result
+      failed_when:
+        - result.failed
+        - '"current database is already configured as pglogical node" not in result.msg'
+
+    - name: Subscribe to replication set and begin synchronization
+      postgresql_query:
+        db: '{{ item.name }}'
+        query: "SELECT pglogical.create_subscription(subscription_name := '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub',provider_dsn := 'host={{ item.master_host }} port=5432 dbname={{ item.master_db_name}} user={{ postgres_users.replication.username}} password={{ postgres_users.replication.password }}',replication_sets := '{ {{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }} }', synchronize_structure := 'true',synchronize_data := 'true');"
+      loop: "{{ postgresql_dbs.logical }}"
+      when: item.host == inventory_hostname
+      register: result
