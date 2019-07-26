@@ -68,9 +68,16 @@ $ commcare-cloud <env> update-config
 $ commcare-cloud <env> django-manage --tmux configure_pl_proxy_cluster
 ```
 
-7. End downtime for your site: `$ commcare-cloud <env> downtime end`
+7. If you have configured your standby and master nodes to use different parameters, or
+you would like to create replication slots on the newly promoted standby update those configurations:
 
-8. If you would like to have another standby for this newly promoted master, follow above instructions for adding a standby database.
+```
+$ commcare-cloud <env> ap deploy_db.yml --limit pg1,pg2
+```
+
+8. End downtime for your site: `$ commcare-cloud <env> downtime end`
+
+9. If you would like to have another standby for this newly promoted master, follow above instructions for adding a standby database.
 
 
 # Troubleshooting
