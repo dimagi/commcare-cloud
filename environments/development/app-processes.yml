@@ -1,3 +1,5 @@
+management_commands:
+  celery:
 celery_processes:
   celery:
     beat: {}

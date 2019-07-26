@@ -38,6 +38,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(unicode)
+    management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
 
@@ -45,6 +46,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
         validate_app_processes_config(self)
 
     def check_and_translate_hosts(self, environment):
+        self.management_commands = check_and_translate_hosts(environment, self.management_commands)
         self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
         self.pillows = check_and_translate_hosts(environment, self.pillows)
         _validate_all_required_machines_mentioned(environment, self)
