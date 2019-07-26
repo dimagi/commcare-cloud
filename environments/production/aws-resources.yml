@@ -5,6 +5,7 @@ celery3-production: 10.202.12.121
 celery4-production: 10.202.12.62
 celery5-production: 10.202.12.120
 celery6-production: 10.202.12.126
+celery7-production: 10.202.12.105
 control-production: 10.202.10.79
 couch12-production: 10.202.40.52
 couch13-production: 10.202.40.154
