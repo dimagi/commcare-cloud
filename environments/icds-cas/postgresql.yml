@@ -82,7 +82,7 @@ dbs:
         host: pgshard4
       p6:
         shards: [515, 617]
-        host: pgshard5
+        host: pgshard5standby
       p7:
         shards: [618, 720]
         host: pgshard6
