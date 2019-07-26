@@ -8,11 +8,22 @@ gunicorn_workers_factor: 1
 management_commands:
   celery7:
     submission_reprocessing_queue:
-  celery1:
+  celery8:
     queue_schedule_instances:
     handle_survey_actions:
     sms_queue:
 celery_processes:
+  celery6:
+    celery:
+      concurrency: 4
+    case_import_queue:
+      concurrency: 4
+    email_queue:
+      pooling: gevent
+      concurrency: 100
+      num_workers: 2
+    export_download_queue:
+      concurrency: 5
   celery7:
     submission_reprocessing_queue:
       concurrency: 1
@@ -29,7 +40,7 @@ celery_processes:
       concurrency: 2
     async_restore_queue:
       concurrency: 8
-  celery1:
+  celery8:
     flower: {}
     reminder_queue:
       pooling: gevent
@@ -57,7 +68,7 @@ celery_processes:
       concurrency: 2
     logistics_background_queue:
       concurrency: 2
-  celery2:
+  celery9:
     background_queue:
       concurrency: 8
     send_report_throttled:
@@ -75,7 +86,7 @@ celery_processes:
       num_workers: 3
       concurrency: 4
       optimize: True
-  celery3:
+  celery10:
     async_restore_queue:
       concurrency: 8
     saved_exports_queue:
@@ -88,7 +99,7 @@ celery_processes:
       pooling: gevent
       num_workers: 4
       concurrency: 50
-  celery4:
+  celery11:
     celery:
       concurrency: 4
     case_import_queue:
@@ -99,7 +110,7 @@ celery_processes:
       num_workers: 2
     export_download_queue:
       concurrency: 5
-  celery5:
+  celery12:
     beat: {}
     celery_periodic:
       num_workers: 2
@@ -108,17 +119,6 @@ celery_processes:
       concurrency: 4
     ucr_queue:
       concurrency: 4
-  celery6:
-    celery:
-      concurrency: 4
-    case_import_queue:
-      concurrency: 4
-    email_queue:
-      pooling: gevent
-      concurrency: 100
-      num_workers: 2
-    export_download_queue:
-      concurrency: 5
 
 
 pillows:
