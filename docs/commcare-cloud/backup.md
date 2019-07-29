@@ -59,6 +59,7 @@ You should first stop all CommCareHQ services:
 
 ``` bash
 $ commcare-cloud <env> downtime start
+$ commcare-cloud <env> service postgresql stop
 ```
 
 Restoring from backup depends on the type of backup made.
@@ -148,17 +149,11 @@ CouchDB backups are made daily and weekly. Old backups are deleted from the syst
 
 CouchDB backups create a compressed version of the couchdb data directory.
 
-### Restoring CouchDB backups
+### Restoring CouchDB backups (on a single node cluster)
 
-Restoring couchdb from a backup simply requires stopping couchdb, overwriting the current data directory with the contents of the backup files, then restarting couchdb.
+Make sure that you are starting with a fresh install of couchdb.
 
-- From the control machine, stop all running services:
-
-    ``` bash
-    $ commcare-cloud <env> downtime start
-    ```
-
-- From the couchdb machine, become the couchdb user:
+- First, become the couchdb user:
     ``` bash
     $ su - ansible
     # enter ansible user password from vault file
@@ -168,25 +163,27 @@ Restoring couchdb from a backup simply requires stopping couchdb, overwriting th
 - [Optional] Copy the contents of the current couchdb directory in case anything goes wrong. From the couchdb machine:
 
     ``` bash
-    $ tar -czvf /opt/data/backups/couchdb2/couchdb_data_before_restore.tar.gz /opt/data/couchdb2/
+    $ tar -czvf /opt/data/backups/couchdb2/couchdb_data_before_restore.tar.gz -C /opt/data/couchdb2/ .
     ```
 
-- Uncompress the backup you want, e.g:
+- Locate the compressed backup file that you want to restore. If this is stored somewhere remotely, you should put it on this machine in a place accessible to the `couchdb` user. By default, couchdb backups live in `/opt/data/backups/couchdb2`.
+
+- Run the restore script:
 
     ``` bash
-    $ tar xvzf /opt/data/backups/couchdb2/couchdb2_<env>_daily_2019_07_06.gz -C /opt/data/backups/couchdb
+    $ restore_couchdb_backup.sh <path to backup>
     ```
 
--  Copy backup data to the couchdb data directory. This will overwrite all the data in this directory.
+    This script will extract the backup file to the default couchdb backup location, copy this data to the couchdb data directory, the updates the couchdb shards with the current machine's IP addresses.
+
+    During this process you will be asked for the ansible user's password in order to stop and start the couchdb service.
+    
+    **Note**: This backup script will only work for a single-node cluster.
+
+- As your regular user, ensure the couchdb service is now running:
 
     ``` bash
-    $ rsync -avz --delete /opt/data/backups/couchdb2/couchdb2_<env>_daily_<date> /opt/data/couchdb2
-    ```
-
-- Start couchdb again (from the control machine):
-
-    ``` bash
-    $ commcare-cloud <env> service couchdb2 start
+    $ commcare-cloud <env> django-manage check_services
     ```
 
 ## BlobDB Backups
