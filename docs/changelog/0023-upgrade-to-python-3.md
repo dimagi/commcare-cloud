@@ -40,3 +40,5 @@ cchq <env> update-supervisor-confs
 ```bash
 cchq <env> fab restart_services
 ```
+6. [Optional] To run management commands in Python 3 when using `cchq <env> django-manage`,
+set `py3_run_deploy` in `fab-settings.yml` to `True`.
