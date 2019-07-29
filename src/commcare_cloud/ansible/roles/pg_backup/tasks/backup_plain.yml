@@ -24,7 +24,7 @@
   pip:
     name: boto3
     version: 1.4.0
-  when: postgres_s3
+  when: postgres_s3|bool
 
 - name: Set up aws credentials
   become: yes
@@ -34,7 +34,7 @@
   vars:
     s3_user: "postgres"
     s3_user_home_dir: "{{ postgresql_user_home }}"
-  when: postgres_s3
+  when: postgres_s3|bool
   tags:
     - cron
     - backups
@@ -70,7 +70,7 @@
     owner: root
     mode: 0700
     backup: yes
-  when: postgres_s3
+  when: postgres_s3|bool
 
 - name: copy restore script
   become: yes
@@ -81,4 +81,4 @@
     owner: root
     mode: 0700
     backup: yes
-  when: postgres_s3
+  when: postgres_s3|bool
