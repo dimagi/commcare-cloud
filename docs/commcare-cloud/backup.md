@@ -149,7 +149,7 @@ CouchDB backups are made daily and weekly. Old backups are deleted from the syst
 
 CouchDB backups create a compressed version of the couchdb data directory.
 
-### Restoring CouchDB backups
+### Restoring CouchDB backups (on a single node cluster)
 
 Make sure that you are starting with a fresh install of couchdb.
 
@@ -177,6 +177,8 @@ Make sure that you are starting with a fresh install of couchdb.
     This script will extract the backup file to the default couchdb backup location, copy this data to the couchdb data directory, the updates the couchdb shards with the current machine's IP addresses.
 
     During this process you will be asked for the ansible user's password in order to stop and start the couchdb service.
+    
+    **Note**: This backup script will only work for a single-node cluster.
 
 - As your regular user, ensure the couchdb service is now running:
 
