@@ -32,6 +32,7 @@
      postgresql_shared_preload_libraries:
        - 'citus'
        - 'pg_stat_statements'
+   tags: after-reboot
 
  - name: Set up Citus Worker DBs
    import_tasks: setup_worker.yml
