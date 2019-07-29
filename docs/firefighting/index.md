@@ -485,36 +485,6 @@ SELECT now() - pg_last_xact_replay_timestamp() AS replication_delay;
 
 In some cases it may be necessary to restart the standby node.
 
-## PgBackrest (deprecated)
-At the time of writing we only use pgbackrest as a backup method on softlayer db0. If we start running out of disk space on either machine, old backups might need to be expired and the backup retention settings in /etc/pgbackrest.conf might need to be updated.
-
-The [pgbackrest user guide is here](http://www.pgbackrest.org/user-guide.html), but below is some useful info.
-
-### Viewing Current Backups
-To see the backups that are currently stored, run this command as postgres user: `pgbackrest info`
-
-The "repository backup size" tells you how much actual disk space the given backup is taking up on the machine, after compression.
-
-### Manually Expiring Backups
-
-Backups get expired automatically according to the retention settings in /etc/pgbackrest.conf. If you need to manually expire backups, you'll need to use the `expire` command. It doesn't seem like you can expire specific backups, all you can do is expire either the oldest "full" backup(s) or the oldest "differential" backups(s). Expiring a "full" backup also expires all "differential" backups it's associated with.
-
-For example, if /etc/pgbackrest.conf is retaining 4 full backups, to expire the oldest full backup you'll need to run the `expire` command manually to give a different value for the retention-full setting:
-
-```
-# run as postgres user; this assumes the stanza's name in /etc/pgbackrest.conf is 'backup' for the backups you want to expire
-pgbackrest --stanza=backup --log-level-console=info --retention-full=3 expire
-```
-
-You can use a similar command to expire old differential backups by overriding the retention-diff setting which also resides in /etc/pgbackrest.conf:
-
-```
-# run as postgres user; this assumes the stanza's name in /etc/pgbackrest.conf is 'backup' for the backups you want to expire
-pgbackrest --stanza=backup --log-level-console=info --retention-diff=2 expire
-```
-
-If the machine can't support the current retention settings, then either more storage should be added or the retention settings should be changed in /etc/pgbackrest.conf.
-
 ## PostgreSQL disk usage
 Use the following query to find disc usage by table where child tables are added to the usage of the parent.
 
