@@ -135,7 +135,22 @@ On the PostgreSQL machine:
 
 #### dump (`pg_dumpall`)
 
-You should follow [these instructions](https://www.postgresql.org/docs/9.6/backup-dump.html#BACKUP-DUMP-ALL) to restore from a dump. You will need to have a new database set up with a root user as described in the instructions.
+You can follow [these instructions](https://www.postgresql.org/docs/9.6/backup-dump.html#BACKUP-DUMP-ALL) to restore from a dump. You will need to have a new database set up with a root user as described in the instructions.
+
+- Ensure the file you are restoring from is readable by the postgres user. By default, `commcare-cloud` will make backups into `/opt/data/backups/postgresql/` as `.gz` zipped archives. Choose one of these files as the source of your backup.
+
+- Become the postgres user
+    ``` bash
+    $ su - ansible
+    # enter ansible user password from vault file
+    $ sudo -u postgres bash
+    # enter ansible user password again. You will now be acting as the postgres user
+    ```
+- Extract the backup and pipe it to the `psql` command to restore the data contained in the backup. The name of the default postgres database is `commcare`:
+
+    ``` bash
+    $ gunzip -c <path to backup file> | psql commcarehq
+    ```
 
 ## CouchDB backups
 
