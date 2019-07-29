@@ -103,25 +103,25 @@ datadog_patch_modules:
   - sqlalchemy:true
   - elasticsearch:true
 
-root_email: commcarehq-ops+root@dimagi.com
-server_email: commcarehq-noreply@dimagi.com
-server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
-support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
-cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
-accounts_email: accounts@dimagi.com
-data_email: datatree@dimagi.com
-subscription_change_email: accounts+subchange@dimagi.com
-internal_subscription_change_email: accounts+subchange+internal@dimagi.com
-billing_email: sales@dimagi.com
-invoicing_contact_email: billing-support@dimagi.com
-growth_email: growth@dimagi.com
-master_list_email: master-list@dimagi.com
-report_builder_add_on_email: sales@dimagi.com
-eula_change_email: eula-notifications@dimagi.com
-contact_email: info@dimagi.com
-soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+root_email: commcarehq-ops+root@example.com
+server_email: commcarehq-noreply@example.com
+server_admin_email: commcarehq-ops+admins@example.com
+default_from_email: commcarehq-noreply@example.com
+support_email: support@example.com
+probono_support_email: pro-bono@example.com
+cchq_bug_report_email: commcarehq-bug-reports@example.com
+accounts_email: accounts@example.com
+data_email: datatree@example.com
+subscription_change_email: accounts+subchange@example.com
+internal_subscription_change_email: accounts+subchange+internal@example.com
+billing_email: sales@example.com
+invoicing_contact_email: billing-support@example.com
+growth_email: growth@example.com
+master_list_email: master-list@example.com
+report_builder_add_on_email: sales@example.com
+eula_change_email: eula-notifications@example.com
+contact_email: info@example.com
+soft_assert_email: commcarehq-ops+soft_asserts@example.com
 daily_deploy_email: null
 
 
