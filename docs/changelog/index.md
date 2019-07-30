@@ -7,34 +7,34 @@ newest first.
 
 ## Changelog
 
-### **2019-07-17** [Define management commands explicitly](0024-define-management-commands.md)
-This change requires changing app-processes.yml to include a list of management comamnds to run
-
-### **2018-07-18** [Upgrade to Python 3](0023-upgrade-to-python-3.md)
+### **2019-07-18** [Upgrade to Python 3](0024-upgrade-to-python-3.md)
 This change installs Python 3.6.8, builds a new virtualenv, and runs
 CommCare HQ in Python 3.
+
+### **2019-07-17** [Define management commands explicitly](0023-define-management-commands.md)
+This change requires changing app-processes.yml to include a list of management comamnds to run
 
 ### **2019-05-13** [Install Pango](0022-install-pango.md)
 This change installs pango and its dependencies for the weasyprint
 library which has been added as a requirement to commcare-hq for
 proper pdf printing of unicode fonts
 
-### **2019-02-26** [Fix to restart nginx after every letsencrypt cert auto-renewal](0021-fix-letsencrypt-restart-nginx.md)
-Previously you had to manually restart nginx every time letsencrypt auto-renewed,
-which was about every two months. We believed we had fixed this with
-[Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx),
-but there was an error in our setup at that time that made it not work as intended.
-
-### **2019-04-05** [Update RabbitMQ logging configuration](0020-update-rabbitmq-logging.md)
+### **2019-04-05** [Update RabbitMQ logging configuration](0021-update-rabbitmq-logging.md)
 This change updates the RabbitMQ logging configuration to change the
 log level from `info` to `warning`.
 
-### **2019-02-27** [Remove celery results backend from localsettings](0019-remove-celery-results-backend-from-localsettings.md)
+### **2019-02-27** [Remove celery results backend from localsettings](0020-remove-celery-results-backend-from-localsettings.md)
 Upgrading to celery 4.x requires removing the dependency on
 django-celery, which means that its results backend will no
 longer be available.  This removes the django-celery backend
 as the default from localsettings, so the results backend can
 be specified by commcare-hq settings instead.
+
+### **2019-02-26** [Fix to restart nginx after every letsencrypt cert auto-renewal](0019-fix-letsencrypt-restart-nginx.md)
+Previously you had to manually restart nginx every time letsencrypt auto-renewed,
+which was about every two months. We believed we had fixed this with
+[Restart nginx after every letsencrypt cert auto-renewal](0010-letsencrypt-restart-nginx),
+but there was an error in our setup at that time that made it not work as intended.
 
 ### **2019-02-26** [Split pgbouncer vars from postgresql vars](0018-split_pgbouncer_postgresql_vars.md)
 This change extracts a new role from the existing postgresql role for installing
