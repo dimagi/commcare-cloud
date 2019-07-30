@@ -12,10 +12,9 @@ from memoized import memoized
 from commcare_cloud.cli_utils import ask, ask_option
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
+from commcare_cloud.commands.ansible.service import COMMCARE_INVENTORY_GROUPS
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
-
-HQ_PROCESSES_SCOPE = 'webworkers,celery,pillowtop,formplayer,proxy'
 
 
 class Downtime(CommandBase):
@@ -135,7 +134,7 @@ def supervisor_services(environment, ansible_context, action):
 
 def _run_command(environment, ansible_context, command, become=False):
     return run_ansible_module(
-        environment, ansible_context, HQ_PROCESSES_SCOPE, 'shell', command,
+        environment, ansible_context, ','.join(COMMCARE_INVENTORY_GROUPS), 'shell', command,
         become, None, False
     )
 
