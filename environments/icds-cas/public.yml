@@ -145,6 +145,9 @@ couchdb_cluster_settings:
   w: 2
   n: 2
 
+couchdb_compaction_settings:
+  _default: '[{db_fragmentation, "10%"}, {view_fragmentation, "10%"}, {from, "17:00"}, {to, "22:30"}]'
+
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
