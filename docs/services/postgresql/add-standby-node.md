@@ -31,7 +31,13 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
 ```
 
 
-# Promoting a hot standby to Master
+# Promoting a hot standby to master
+
+0. In your inventory you have two postgresql servers defined:
+
+* `pg_database`
+* `pg_standby` where `hot_standby_master = pg_database`
+
 1. Begin downtime for your site:
 
 ```bash
@@ -41,12 +47,12 @@ $ commcare-cloud <env> downtime start
 2. Verify that the replication is up to date
 
 ```bash
-$ commcare-cloud <env> run-shell-command pg1,pg2 'ps -ef | grep -E "sender|receiver"'
+$ commcare-cloud <env> run-shell-command pg_database,pg_standby 'ps -ef | grep -E "sender|receiver"'
 
-    [ pg1 ] ps -ef | grep -E "sender|receiver"
+    [ pg_database ] ps -ef | grep -E "sender|receiver"
     postgres 5295 4517 0 Jul24 ? 00:00:01 postgres: wal sender process rep 10.116.175.107(49770) streaming 0/205B598
 
-    [ pg2 ] ps -ef | grep -E "sender|receiver"
+    [ pg_standby ] ps -ef | grep -E "sender|receiver"
     postgres 3821 3808 0 Jul24 ? 00:01:27 postgres: wal receiver process streaming 0/205B598
 ```
 
@@ -55,7 +61,7 @@ Output shows that master and standby are up to date (both processing the same lo
 3. Promote the standby
 
 ```bash
-$ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standy=[standby node]
+$ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standby=pg_standby
 ```
 
 4. In your inventory remove `hot_standby_master` and `replication_slot` variables from your standby node, and remove the node from the `pg_standby` group.
