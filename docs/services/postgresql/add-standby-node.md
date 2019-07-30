@@ -33,64 +33,64 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
 
 # Promoting a hot standby to master
 
-0. In your inventory you have two postgresql servers defined:
+1. In your inventory you have two postgresql servers defined:
 
     * `pg_database`
     * `pg_standby` where `hot_standby_master = pg_database`
 
-1. Begin downtime for your site:
+2. Begin downtime for your site:
 
     ```bash
     $ commcare-cloud <env> downtime start
     ```
 
-2. Verify that the replication is up to date
+3. Verify that the replication is up to date
+
+   ```bash
+   $ commcare-cloud <env> run-shell-command pg_database,pg_standby 'ps -ef | grep -E "sender|receiver"'
+       [ pg_database ] ps -ef | grep -E "sender|receiver"
+       postgres 5295 4517 0 Jul24 ? 00:00:01 postgres: wal sender process rep 10.116.175.107(49770) streaming 0/205B598
+       [ pg_standby ] ps -ef | grep -E "sender|receiver"
+       postgres 3821 3808 0 Jul24 ? 00:01:27 postgres: wal receiver process streaming 0/205B598
+   ```
+
+   Output shows that master and standby are up to date (both processing the same log).
+
+4. Promote the standby
 
     ```bash
-    $ commcare-cloud <env> run-shell-command pg_database,pg_standby 'ps -ef | grep -E "sender|receiver"'
-    
-        [ pg_database ] ps -ef | grep -E "sender|receiver"
-        postgres 5295 4517 0 Jul24 ? 00:00:01 postgres: wal sender process rep 10.116.175.107(49770) streaming 0/205B598
-    
-        [ pg_standby ] ps -ef | grep -E "sender|receiver"
-        postgres 3821 3808 0 Jul24 ? 00:01:27 postgres: wal receiver process streaming 0/205B598
-    ```
-    
-    Output shows that master and standby are up to date (both processing the same log).
-
-3. Promote the standby
-
-    ```bash $ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standby=pg_standby
+    $ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standby=pg_standby
     ```
 
-4. In your inventory remove `hot_standby_master` and `replication_slot` variables from your standby node, and remove the node from the `pg_standby` group.
+5. In your inventory remove `hot_standby_master` and `replication_slot` variables from your standby node, and remove the node from the `pg_standby` group.
 
-5. Update your processes to point to the newly promoted server:
+6. Update your processes to point to the newly promoted server:
 
     ```bash
     $ commcare-cloud <env> update-config
     ```
 
-6. If the standby you've promoted is one of the `form_processing` databases, update the PL proxy cluster
+7. If the standby you've promoted is one of the `form_processing` databases,
+   update the host for the applicable database(s) in `postgresql.yml` and update the PL proxy cluster configuration:
 
     ```bash
     $ commcare-cloud <env> django-manage --tmux configure_pl_proxy_cluster
     ```
 
-7. If you have configured your standby and master nodes to use different parameters, or
-you would like to create replication slots on the newly promoted standby update those configurations:
+8. If you have configured your standby and master nodes to use different parameters, or
+    you would like to create replication slots on the newly promoted standby update those configurations:
 
     ```bash
     $ commcare-cloud <env> ap deploy_db.yml --limit pg1,pg2
     ```
 
-8. End downtime for your site:
+9. End downtime for your site:
 
     ```bash
     $ commcare-cloud <env> downtime end
     ```
 
-9. If you would like to have another standby for this newly promoted master, follow above instructions for adding a standby database.
+10. If you would like to have another standby for this newly promoted master, follow above instructions for adding a standby database.
 
 
 # Troubleshooting
