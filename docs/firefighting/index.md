@@ -433,35 +433,37 @@ SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE client_addr = '
 SELECT pg_terminate_backend({procpid})
 ```
 
-## PgBackrest (deprecated)
-At the time of writing we only use pgbackrest as a backup method on softlayer db0. If we start running out of disk space on either machine, old backups might need to be expired and the backup retention settings in /etc/pgbackrest.conf might need to be updated.
+### Replication Delay
+https://www.enterprisedb.com/blog/monitoring-approach-streaming-replication-hot-standby-postgresql-93
 
-The [pgbackrest user guide is here](http://www.pgbackrest.org/user-guide.html), but below is some useful info.
+* Check if wal receiver and sender process are running respectively on standby and master using `ps aux | grep receiver` and `ps aux | grep sender`
+* Alternatively use SQL `select * from pg_stat_replication` on either master or standby
+* If WAL processes are not running, check logs, address any issues and may need to reload/restart postgres
+* Check logs for anything suspicious
+* Checking replication delay
+  * [Use datadog](https://app.datadoghq.com/dash/263336/postgres---overview?live=true&page=0&is_auto=false&from_ts=1511770050831&to_ts=1511773650831&tile_size=m&tpl_var_env=*&fullscreen=253462140&tpl_var_host=*)
+  * Run queries on nodes:
 
-### Viewing Current Backups
-To see the backups that are currently stored, run this command as postgres user: `pgbackrest info`
+```sql
+--- on master
+select
+  slot_name,
+  client_addr,
+  state,
+  pg_size_pretty(pg_xlog_location_diff(pg_current_xlog_location(), sent_location)) sending_lag,
+  pg_size_pretty(pg_xlog_location_diff(sent_location, flush_location)) receiving_lag,
+  pg_size_pretty(pg_xlog_location_diff(flush_location, replay_location)) replaying_lag,
+  pg_size_pretty(pg_xlog_location_diff(pg_current_xlog_location(), replay_location)) total_lag
+from pg_replication_slots s
+left join pg_stat_replication r on s.active_pid = r.pid
+where s.restart_lsn is not null;
 
-The "repository backup size" tells you how much actual disk space the given backup is taking up on the machine, after compression.
+-- On standby
 
-### Manually Expiring Backups
-
-Backups get expired automatically according to the retention settings in /etc/pgbackrest.conf. If you need to manually expire backups, you'll need to use the `expire` command. It doesn't seem like you can expire specific backups, all you can do is expire either the oldest "full" backup(s) or the oldest "differential" backups(s). Expiring a "full" backup also expires all "differential" backups it's associated with.
-
-For example, if /etc/pgbackrest.conf is retaining 4 full backups, to expire the oldest full backup you'll need to run the `expire` command manually to give a different value for the retention-full setting:
-
+SELECT now() - pg_last_xact_replay_timestamp() AS replication_delay;
 ```
-# run as postgres user; this assumes the stanza's name in /etc/pgbackrest.conf is 'backup' for the backups you want to expire
-pgbackrest --stanza=backup --log-level-console=info --retention-full=3 expire
-```
 
-You can use a similar command to expire old differential backups by overriding the retention-diff setting which also resides in /etc/pgbackrest.conf:
-
-```
-# run as postgres user; this assumes the stanza's name in /etc/pgbackrest.conf is 'backup' for the backups you want to expire
-pgbackrest --stanza=backup --log-level-console=info --retention-diff=2 expire
-```
-
-If the machine can't support the current retention settings, then either more storage should be added or the retention settings should be changed in /etc/pgbackrest.conf.
+In some cases it may be necessary to restart the standby node.
 
 ## PostgreSQL disk usage
 Use the following query to find disc usage by table where child tables are added to the usage of the parent.
