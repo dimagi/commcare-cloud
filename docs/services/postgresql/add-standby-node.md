@@ -32,11 +32,15 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
 
 
 # Promoting a hot standby to Master
-1. Begin downtime for your site: `$ commcare-cloud <env> downtime start`
+1. Begin downtime for your site:
+
+```bash
+$ commcare-cloud <env> downtime start
+```
 
 2. Verify that the replication is up to date
 
-```
+```bash
 $ commcare-cloud <env> run-shell-command pg1,pg2 'ps -ef | grep -E "sender|receiver"'
 
     [ pg1 ] ps -ef | grep -E "sender|receiver"
@@ -50,7 +54,7 @@ Output shows that master and standby are up to date (both processing the same lo
 
 3. Promote the standby
 
-```
+```bash
 $ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standy=[standby node]
 ```
 
@@ -58,24 +62,28 @@ $ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standy=[standby
 
 5. Update your processes to point to the newly promoted server:
 
-```
+```bash
 $ commcare-cloud <env> update-config
 ```
 
 6. If the standby you've promoted is one of the `form_processing` databases, update the PL proxy cluster
 
-```
+```bash
 $ commcare-cloud <env> django-manage --tmux configure_pl_proxy_cluster
 ```
 
 7. If you have configured your standby and master nodes to use different parameters, or
 you would like to create replication slots on the newly promoted standby update those configurations:
 
-```
+```bash
 $ commcare-cloud <env> ap deploy_db.yml --limit pg1,pg2
 ```
 
-8. End downtime for your site: `$ commcare-cloud <env> downtime end`
+8. End downtime for your site:
+
+```bash
+$ commcare-cloud <env> downtime end
+```
 
 9. If you would like to have another standby for this newly promoted master, follow above instructions for adding a standby database.
 
