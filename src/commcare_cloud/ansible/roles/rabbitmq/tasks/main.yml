@@ -26,7 +26,7 @@
   service: name=rabbitmq-server state=started
 
 - include: config-cluster.yml
-  when: rabbitmq_create_cluster
+  when: rabbitmq_create_cluster|bool
 
 - include: config.yml
   when: not rabbitmq_create_cluster or ( ansible_fqdn == hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )

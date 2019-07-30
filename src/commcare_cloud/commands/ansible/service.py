@@ -31,6 +31,8 @@ STATES = {
 
 MONIT_MANAGED_SERVICES = ['postgresql', 'pgbouncer', 'redis', 'couchdb2']
 
+COMMCARE_INVENTORY_GROUPS = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy', 'airflow']
+
 
 @attr.s
 class ServiceOption(object):
@@ -440,7 +442,7 @@ class SingleSupervisorService(SupervisorService):
 
 class CommCare(SingleSupervisorService):
     name = 'commcare'
-    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
+    inventory_groups = COMMCARE_INVENTORY_GROUPS
     log_location = '/home/cchq/www/{env}/log/django.log'
 
     @property
