@@ -80,5 +80,5 @@
 - name: clear users password valid time
   become: yes
   shell: chage -M -1 "{{ item['item'] }}"
-  loop: users_pw_valid.results
+  loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout != ''
