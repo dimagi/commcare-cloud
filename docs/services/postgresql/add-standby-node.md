@@ -35,8 +35,8 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
 
 1. In your inventory you have two postgresql servers defined:
 
-    * `pg_database`
-    * `pg_standby` where `hot_standby_master = pg_database`
+    * `pg_database` with `postgresql_replication_slots = ["standby0"]`
+    * `pg_standby` where `hot_standby_master = pg_database` and `replication_slot = "standby0"`
 
 2. Begin downtime for your site:
 
@@ -62,7 +62,8 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
     $ commcare-cloud <env> ansible-paybook promote_pg_standby.yml -e standby=pg_standby
     ```
 
-5. In your inventory remove `hot_standby_master` and `replication_slot` variables from your standby node, and remove the node from the `pg_standby` group.
+5. In your inventory remove `hot_standby_master` and `replication_slot` variables from your standby node,
+    and move the node from the `pg_standby` group to the `postgresql` group.
 
 6. Update your processes to point to the newly promoted server:
 
@@ -77,11 +78,11 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
     $ commcare-cloud <env> django-manage --tmux configure_pl_proxy_cluster
     ```
 
-8. If you have configured your standby and master nodes to use different parameters, or
+8. [Optional] If you have configured your standby and master nodes to use different parameters, or
     you would like to create replication slots on the newly promoted standby update those configurations:
 
     ```bash
-    $ commcare-cloud <env> ap deploy_db.yml --limit pg1,pg2
+    $ commcare-cloud <env> ap deploy_db.yml --limit pg_database,pg_standby
     ```
 
 9. End downtime for your site:
