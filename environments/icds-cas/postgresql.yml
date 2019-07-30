@@ -70,13 +70,13 @@ dbs:
         host: pgshard0
       p2:
         shards: [104, 205]
-        host: pgshard1
+        host: pgshard1standby
       p3:
         shards: [206, 308]
         host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard3
+        host: pgshard3standby
       p5:
         shards: [412, 514]
         host: pgshard4
@@ -94,7 +94,7 @@ dbs:
         host: pgshard8standby
       p10:
         shards: [927, 1023]
-        host: pgshard9
+        host: pgshard9standby
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
