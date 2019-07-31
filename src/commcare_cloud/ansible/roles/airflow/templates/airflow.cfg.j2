@@ -76,8 +76,9 @@ smtp_starttls = {{ localsettings.EMAIL_USE_TLS }}
 smtp_ssl = False
 
 {% if EMAIL_PASSWORD %}
-smtp_user = "{{ EMAIL_LOGIN }}"
-smtp_password = "{{ EMAIL_PASSWORD }}"
+smtp_user = {{ EMAIL_LOGIN|replace("%", "%%") }}
+{# airflow config parser treats % as special char, that needs to be escaped with % #}
+smtp_password = {{ EMAIL_PASSWORD|replace("%", "%%") }}
 {% endif %}
 
 smtp_port = {{ localsettings.EMAIL_SMTP_PORT }}
