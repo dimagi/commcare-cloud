@@ -122,23 +122,25 @@ class PillowResourceReport(CommandBase):
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
-        by_process = self._get_pillow_resources_by_name(environment)
-        self._print_table(by_process)
+        by_process = _get_pillow_resources_by_name(environment)
+        _print_table(by_process)
 
-    def _get_pillow_resources_by_name(self, environment):
-        pillows = environment.app_processes_config.pillows
-        by_process = defaultdict(lambda: {'num_processes': 0, 'total_processes': None})
-        for host, processes in pillows.items():
-            for name, options in processes.items():
-                config = by_process[name]
-                config['num_processes'] += options.get('num_processes', 1)
-        return by_process
 
-    def _print_table(self, by_process):
-        max_name_len = max([len(name) for name in by_process])
-        template = "{{:<{}}} | {{:<12}}".format(max_name_len + 2)
-        print(template.format('Pillow', 'Processes'))
-        print(template.format('------', '---------'))
-        for queue_name, stats in sorted(by_process.items(), key=itemgetter(0)):
-            workers = stats['num_processes']
-            print(template.format(queue_name, workers))
+def _get_pillow_resources_by_name(environment):
+    pillows = environment.app_processes_config.pillows
+    by_process = defaultdict(lambda: {'num_processes': 0, 'total_processes': None})
+    for host, processes in pillows.items():
+        for name, options in processes.items():
+            config = by_process[name]
+            config['num_processes'] += options.get('num_processes', 1)
+    return by_process
+
+
+def _print_table(by_process):
+    max_name_len = max([len(name) for name in by_process])
+    template = "{{:<{}}} | {{:<12}}".format(max_name_len + 2)
+    print(template.format('Pillow', 'Processes'))
+    print(template.format('------', '---------'))
+    for queue_name, stats in sorted(by_process.items(), key=itemgetter(0)):
+        workers = stats['num_processes']
+        print(template.format(queue_name, workers))
