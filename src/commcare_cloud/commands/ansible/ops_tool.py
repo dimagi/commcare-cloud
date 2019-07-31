@@ -132,13 +132,6 @@ class PillowResourceReport(CommandBase):
             for name, options in processes.items():
                 config = by_process[name]
                 config['num_processes'] += options.get('num_processes', 1)
-                total_processes = options.get('total_processes', 1)
-                if config['total_processes'] is None:
-                    config['total_processes'] = total_processes
-                elif config['total_processes'] != total_processes:
-                    puts_err("Incosistent total_processes for {}: {} != {}".format(
-                        name, total_processes, config['total_processes'])
-                    )
         return by_process
 
     def _print_table(self, by_process):
