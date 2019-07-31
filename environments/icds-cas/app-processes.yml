@@ -27,6 +27,7 @@ celery_processes:
        concurrency: 4
     submission_reprocessing_queue:
        concurrency: 2
+       blockage_threshold: 7200
     email_queue:
       concurrency: 2
     reminder_rule_queue:
@@ -39,14 +40,17 @@ celery_processes:
     icds_aggregation_queue:
       concurrency: 20
       max_tasks_per_child: 1
+      blockage_threshold: 86400
     case_rule_queue:
       concurrency: 2
+      blockage_threshold: 86400
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 8
   'celery1':
     ucr_queue:
       concurrency: 4
+      blockage_threshold: 7200
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
