@@ -65,14 +65,14 @@ $ cchq <env> ap setup_pg_standby.yml -e standby=[standby node]
 5. In your inventory remove `hot_standby_master` and `replication_slot` variables from your standby node,
     and move the node from the `pg_standby` group to the `postgresql` group.
 
-6. Update your processes to point to the newly promoted server:
+6. Update the host for the applicable database(s) in `postgresql.yml` and update your processes to point to the newly
+    promoted server:
 
     ```bash
     $ commcare-cloud <env> update-config
     ```
 
-7. If the standby you've promoted is one of the `form_processing` databases,
-   update the host for the applicable database(s) in `postgresql.yml` and update the PL proxy cluster configuration:
+7. If the standby you've promoted is one of the `form_processing` databases update the PL proxy cluster configuration:
 
     ```bash
     $ commcare-cloud <env> django-manage --tmux configure_pl_proxy_cluster
