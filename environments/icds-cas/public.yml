@@ -154,6 +154,7 @@ site_locations:
 
 couchdb_use_haproxy: True
 couchdb_reduce_limit: False
+compact_couch_cron: True
 couchdb_cluster_settings:
   q: 8
   r: 2
