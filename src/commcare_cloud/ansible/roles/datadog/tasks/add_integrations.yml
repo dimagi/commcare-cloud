@@ -42,6 +42,11 @@
   tags:
     - datadog_integrations
 
+- name: Install airflow check python requirement
+  command: /opt/datadog-agent/embedded/bin/pip install sqlalchemy
+  become_user: dd-agent
+  when: datadog_integration_airflow|bool
+
 - name: Install airflow check
   get_url:
     url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_airflow_version }}/airflow/airflow.py"

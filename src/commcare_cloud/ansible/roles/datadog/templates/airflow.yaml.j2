@@ -4,9 +4,5 @@
 init_config:
 
 instances:
-   - host: localhost
-     port: 6432
-     username: {{ postgres_users.devreadonly.username }}
-     password: {{ postgres_users.devreadonly.password }}
-     tags:
-       - environment:{{ env_monitoring_id }}
+    -   airflow_webserver_url: http://localhost:8080
+        airflow_sql_alchemy_conn: 'postgresql://{{ postgres_users.commcare.username }}:{{ postgres_users.commcare.password }}@{{ postgresql_dbs.main.pgbouncer_host }}:{{ postgresql_dbs.main.port }}/airflow'
