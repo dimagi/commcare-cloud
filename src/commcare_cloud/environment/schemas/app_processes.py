@@ -42,6 +42,8 @@ class AppProcessesConfig(jsonobject.JsonObject):
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
 
+    celery_heartbeat_thresholds = jsonobject.DictProperty(int)
+
     def check(self):
         validate_app_processes_config(self)
 
@@ -52,6 +54,9 @@ class AppProcessesConfig(jsonobject.JsonObject):
         _validate_all_required_machines_mentioned(environment, self)
 
     def get_celery_heartbeat_thresholds(self):
+        for process in self.celery_heartbeat_thresholds:
+            assert process in CELERY_PROCESS_NAMES, '"{}" is not a recognised celery process'.format(process)
+
         celery_queues = set()
         for host, celery_options in self.celery_processes.items():
             if host == 'None':
@@ -60,7 +65,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
                 celery_queues.update(process_group.split(','))
 
         return {
-            p.name: p.blockage_threshold for p in CELERY_PROCESSES
+            p.name: self.celery_heartbeat_thresholds.get(p.name, p.blockage_threshold) for p in CELERY_PROCESSES
             if p.is_queue and p.name in celery_queues
         }
 
