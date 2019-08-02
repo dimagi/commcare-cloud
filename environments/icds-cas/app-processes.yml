@@ -1,6 +1,11 @@
 formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
 
+celery_heartbeat_thresholds:
+  case_rule_queue: 86400
+  ucr_queue: 7200
+  submission_reprocessing_queue: 7200
+
 management_commands:
   celery0:
     submission_reprocessing_queue:
@@ -163,6 +168,15 @@ celery_processes:
       num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
+  'celery12':
+    ucr_indicator_queue:
+      concurrency: 4
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+    icds_dashboard_reports_queue:
+      concurrency: 2
   'celery112':
     ucr_indicator_queue:
       concurrency: 4
@@ -182,15 +196,6 @@ celery_processes:
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery14':
-    ucr_indicator_queue:
-      concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
-    icds_dashboard_reports_queue:
-      concurrency: 2
-  'celery15':
     ucr_indicator_queue:
       concurrency: 4
     reminder_case_update_queue:
