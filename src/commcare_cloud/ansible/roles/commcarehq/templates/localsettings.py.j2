@@ -296,6 +296,10 @@ SMS_BACKENDS = {
     "265" : "MOBILE_BACKEND_TROPO_CANADIAN",
 }
 
+{% if 'SYNC_CASE_FOR_MESSAGING_ON_SAVE' in localsettings %}
+SYNC_CASE_FOR_MESSAGING_ON_SAVE = {{ localsettings.SYNC_CASE_FOR_MESSAGING_ON_SAVE }}
+{% else %}
+
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
