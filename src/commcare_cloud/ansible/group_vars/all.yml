@@ -123,6 +123,7 @@ eula_change_email: eula-notifications@example.com
 contact_email: info@example.com
 soft_assert_email: commcarehq-ops+soft_asserts@example.com
 daily_deploy_email: null
+check_s3_backups_email: null
 
 
 AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY | default(None) }}"
