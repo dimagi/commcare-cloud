@@ -61,6 +61,7 @@ file.
 ## Advanced tasks
 
 - [Moving partitioned databases](postgresql/move-partitioned-database.md)
+- [Standby databases](postgresql/add-standby-node.md)
 
 ---
 
