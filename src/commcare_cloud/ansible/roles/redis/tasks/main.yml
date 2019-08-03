@@ -1,7 +1,7 @@
 ---
 
 - include: setup_cluster.yml
-  when: is_redis_cluster
+  when: is_redis_cluster|bool
 
 - name: start the redis service
   service: name="{{ redis_service_name }}" state=started enabled=yes
@@ -25,3 +25,7 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20

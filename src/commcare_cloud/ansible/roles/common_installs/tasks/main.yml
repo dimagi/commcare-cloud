@@ -11,47 +11,64 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
+- name: Add pango repo for trusty
+  apt_repository: repo='ppa:jonathonf/gtk3.18' state=present
+  register: add_pango_repo
+  when: ansible_distribution_version == '14.04'
+
+- name: Add Python PPA for trusty
+  apt_repository: repo='ppa:deadsnakes/ppa' state=present
+  register: add_python_ppa_trusty
+  when: ansible_distribution_version == '14.04'
+
+- name: Add Python PPA for bionic and xenial
+  apt_repository: repo='ppa:jonathonf/python-3.6' state=present
+  register: add_python_ppa_bionic
+  when: ansible_distribution_version == '18.04' or ansible_distribution_version == '16.04'
+
 - name: Update package list
   apt: update_cache=yes
-  when: add_mosh_repo|changed or add_postgres_repo|changed
+  when: add_mosh_repo is changed or add_postgres_repo is changed or add_pango_repo is changed or add_python_ppa_trusty is changed or add_python_ppa_bionic is changed
 
 # Install base packages, common to all servers
 - name: Install common packages
-  apt: name="{{ item }}" state=present
   become: yes
-  with_items:
-    - build-essential
-    - python-psycopg2
-    - postgresql-client-common
-    - postgresql-client-{{ postgresql_version }}
-    - libxml2-dev
-    - libxslt1-dev
-    - tig # git browser
-    - libpq-dev
-    - curl
-    - htop
-    - tmpreaper # remove files older than x days
-    - mailutils
-    - ntp
-    - at
-    - screen
-    - sysstat
-    - gettext
-    - mosh
-    - libjpeg-dev
-    - libfreetype6-dev
-    - ranger  # cmdline file browser
-    - libffi-dev  # Required for installing github3py
-    - libssl-dev  # Required for pip setup tools
-    - tmux
-    - reptyr # move process into tmux session
-    - unzip
-    - zip
-    - iotop
-    - ncdu # 'du' improved
-    - monit # service restarter
-    - libcairo2
-    - libpango1.0-0
+  apt:
+    name:
+      - build-essential
+      - python-psycopg2
+      - postgresql-client-common
+      - postgresql-client-{{ postgresql_version }}
+      - libxml2-dev
+      - libxslt1-dev
+      - tig # git browser
+      - libpq-dev
+      - curl
+      - htop
+      - tmpreaper # remove files older than x days
+      - mailutils
+      - ntp
+      - at
+      - screen
+      - sysstat
+      - gettext
+      - mosh
+      - libjpeg-dev
+      - libfreetype6-dev
+      - ranger  # cmdline file browser
+      - libffi-dev  # Required for installing github3py
+      - libssl-dev  # Required for pip setup tools and libcurl4-openssl-dev
+      - tmux
+      - reptyr # move process into tmux session
+      - unzip
+      - zip
+      - iotop
+      - ncdu # 'du' improved
+      - monit # service restarter
+      - libcairo2
+      - libpango1.0-0
+      - python3.6
+      - python3.6-dev
 
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
@@ -60,13 +77,14 @@
   when: ansible_distribution_version == '18.04'
 
 - name: Install pip packages
-  pip: name="{{ item }}" executable=pip2
+  pip:
+    name:
+      - virtualenv
+      - sh
+      - httplib2
+      - pexpect
+    executable: pip2
   become: yes
-  with_items:
-    - virtualenv
-    - sh
-    - httplib2
-    - pexpect
 
 - name: Install virtualenv-clone
   become: yes

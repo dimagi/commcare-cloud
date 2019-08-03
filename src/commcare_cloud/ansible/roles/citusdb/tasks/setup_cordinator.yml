@@ -1,12 +1,18 @@
 ---
+ - name: Add Citus Extension on Coordinator Database
+   become: yes
+   become_user: postgres
+   postgresql_ext:
+     name: citus
+     db: "{{ item.name }}"
+   with_items: "{{ postgresql_dbs.all }}"
+   when: item.host == inventory_hostname
+
  - name: Add Workers Nodes to the Cordinator
    become: yes
    become_user: postgres
    shell: psql {{ item.0.name }} -c "SELECT * from master_add_node( '{{item.1|ipaddr}}' , 5432) ; "
    with_nested: 
     - "{{ postgresql_dbs.all }}"
-    - "{{groups['citusdb_worker']}}"
-   when: inventory_hostname in groups["citusdb_cordinator"]  and (item.0.host in groups["citusdb_cordinator"])
-   tags:
-    - citusdb
-    - citusdb_cordinator
+    - "{{ groups['citusdb_worker'] | difference(groups['pg_standby']) }}"
+   when: item.0.host in groups.citusdb_master

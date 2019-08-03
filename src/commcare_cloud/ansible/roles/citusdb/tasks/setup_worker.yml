@@ -6,16 +6,14 @@
   postgresql_db:
     name: "{{ item.name }}"
     state: present
-    port: "{{ postgresql_port }}"
+    port: "{{ __postgresql_port }}"
     owner: "{{ item.user }}"
     encoding: 'UTF-8'
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
     template: 'template0'
-  when: item.create and ((item.host in groups.citusdb_cordinator) and (inventory_hostname in groups.citusdb_worker ))
+  when: item.create and item.host in groups.citusdb_master
   with_items: "{{ postgresql_dbs.all }}"
-  tags:
-   - citusdb_worker
 
 - name: Add Citus Extension on Worker Database
   become: yes
@@ -24,6 +22,4 @@
     name: citus
     db: "{{ item.name }}"
   with_items: "{{ postgresql_dbs.all }}"
-  when: (item.host in groups.citusdb_cordinator) and (inventory_hostname in groups.citusdb_worker)
-  tags:
-   - citusdb_worker 
+  when: item.host in groups.citusdb_master

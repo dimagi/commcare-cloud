@@ -3,11 +3,11 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
+{{ __proxy0__ }} public_ip={{ aws_resources['proxy0-staging.public_ip'] }}
 
 [proxy:children]
 # Amazon EC2
-proxy1
+proxy0
 
 {{ __web3__ }} swap_size=1G
 
@@ -34,39 +34,35 @@ rds_pg0
 pgproxy1
 remote_postgresql
 
-{{ __couch0__ }}
+{{ __couch3__ }}
 
-{{ __couch1__ }}
+{{ __couch4__ }}
 
-{{ __couch2__ }}
+{{ __couch5__ }}
 
 [couchdb2:children]
-couch0
-couch1
-couch2
+couch3
+couch4
+couch5
 
 [couchdb2_proxy:children]
-couch0
+couch3
 
-{{ __rabbit0__ }}
-
-[rabbit1]
-{{ rabbit1-staging }} hostname=rabbit1-staging ec2=ena ansible_python_interpreter=/usr/bin/python3
+{{ __rabbit1__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit0
 rabbit1
 
-{{ __kafka0__ }} kafka_broker_id=0
+{{ __kafka1__ }} kafka_broker_id=0
 
 [zookeeper:children]
 # Amazon EC2
-kafka0
+kafka1
 
 [kafka:children]
 # Amazon EC2
-kafka0
+kafka1
 
 {{ __celery1__ }}
 

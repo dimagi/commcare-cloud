@@ -14,14 +14,15 @@ dev_users:
     - mkangia
     - nhooper
     - npellegrino
-    - nsharma
-    - pvaidyanathan
     - rnegi
     - sgoyal
     - skelly
     - sravfeyn
+    - rkumar
   absent:
     - astone
     - wpride
     - gcapalbo
     - jroth
+    - pvaidyanathan
+    - nsharma

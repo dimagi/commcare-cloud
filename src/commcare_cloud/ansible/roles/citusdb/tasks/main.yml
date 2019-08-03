@@ -14,7 +14,7 @@
  - name: Update package list
    apt: 
     update_cache: yes
-   when: add_citus_repo|changed
+   when: add_citus_repo is changed
 
  - name: Install Citus
    apt: 
@@ -22,22 +22,25 @@
     state: present
    notify: Restart postgres
 
- - name: Add Citus Extension on Coordinator Database
-   become: yes
-   become_user: postgres
-   postgresql_ext:
-     name: citus
-     db: "{{ item.name }}"
-   with_items: "{{ postgresql_dbs.all }}"
-   when: item.host == inventory_hostname
-   tags:
-    - citusdb 
+ - name: Install and configure postgresql
+   import_role:
+     name: postgresql_base
+   vars:
+     postgresql_version: "{{ __postgresql_version }}"
+     postgresql_port: "{{ __postgresql_port }}"
+     postgresql_cluster_name: 'main'
+     postgresql_shared_preload_libraries:
+       - 'citus'
+       - 'pg_stat_statements'
 
  - name: Set up Citus Worker DBs
    import_tasks: setup_worker.yml
-
- - name: Setup citusdb_cordinator
-   import_tasks: setup_cordinator.yml 
+   when: not is_pg_standby and inventory_hostname in groups.citusdb_worker
    tags:
-    - citusdb 
-    - citusdb_cordinator 
+     - configure
+
+ - name: Setup citusdb_master
+   import_tasks: setup_cordinator.yml
+   when: not is_pg_standby and inventory_hostname in groups.citusdb_master
+   tags:
+    - configure

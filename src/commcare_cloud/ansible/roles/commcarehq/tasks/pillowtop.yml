@@ -25,7 +25,7 @@
   template:
     src: "../templates/common_supervisor_management.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
-  when: localsettings.get('PILLOW_RETRY_QUEUE_ENABLED', False)
+  when: localsettings.get('PILLOW_RETRY_QUEUE_ENABLED', False) and inventory_hostname == groups.pillowtop.0
   with_items:
     - process_name: pillow_retry_queue
       management_command: run_pillow_retry_queue
@@ -34,7 +34,11 @@
   register: pillowtop_pillow_retry_files
 
 - set_fact:
-    pillowtop_supervisor_files: "{{ pillowtop_conf_file.get('results', []) + pillowtop_form_feed_conf_file.get('results', []) }} + pillowtop_pillow_retry_files.get('results', []) "
+    pillowtop_supervisor_files: "{{ [pillowtop_conf_file] + pillowtop_form_feed_conf_file.get('results', []) + pillowtop_pillow_retry_files.get('results', []) }}"
+  tags:
+    - services
 
 - set_fact:
     pillowtop_managed_files: "{{ pillowtop_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + pillowtop_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
+  tags:
+    - services

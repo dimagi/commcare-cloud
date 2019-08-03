@@ -28,9 +28,6 @@
   become: true
   roles:
     - {role: ecryptfs}
-  tasks:
-    - import_tasks: roles/ecryptfs/tasks/remove-tmp.yml
-      tags: ecryptfs-cleanup
 
 - name: First host in riakcs_new group -> riakcs_new_control_host
   # riakcs_new_control_host group must contain at most one host
@@ -81,7 +78,8 @@
   vars_files:
     - roles/riakcs/install/defaults/main.yml
   tasks:
-    - import_tasks: roles/riakcs/get_admin_keys.yml tags=localsettings
+    - import_tasks: roles/riakcs/get_admin_keys.yml
+      tags: localsettings
 
 - name: Install Riak and Riak CS
   become: true

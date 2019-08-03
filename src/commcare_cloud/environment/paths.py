@@ -130,10 +130,6 @@ class DefaultPaths(object):
         return self.get_env_file_path('.generated.yml')
 
     @lazy_immutable_property
-    def downtime_yml(self):
-        return self.get_env_file_path('.downtime.yml')
-
-    @lazy_immutable_property
     def terraform_yml(self):
         return self.get_env_file_path('terraform.yml')
 
@@ -157,7 +153,7 @@ def get_role_defaults_yml(role):
 def get_role_defaults(role):
     """contents of a role's defaults/main.yml, as a dict"""
     with open(get_role_defaults_yml(role)) as f:
-        return yaml.load(f)
+        return yaml.safe_load(f)
 
 
 def get_available_envs(exclude_symlinks=False):

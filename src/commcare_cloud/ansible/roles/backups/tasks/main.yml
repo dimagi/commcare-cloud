@@ -1,29 +1,16 @@
-- name: Create aws config directory
+- name: Set up aws credentials
   become: yes
-  file:
-    path: '~{{ blobdb_user }}/.aws'
-    owner: "{{ blobdb_user }}"
-    group: "{{ blobdb_user }}"
-    mode: 0700
-    state: directory
-  when: blobdb_s3
+  import_role:
+    name: backups
+    tasks_from: set_up_aws_credentials.yml
+  vars:
+    s3_user: "{{ blobdb_user }}"
+    s3_user_home_dir: "~{{ blobdb_user }}"
+  when: blobdb_s3|bool
   tags:
     - cron
     - backups
 
-- name: copy boto3 credentials file
-  become: yes
-  template:
-    src: "aws_credentials.j2"
-    dest: "~{{ blobdb_user }}/.aws/credentials"
-    group: "{{ blobdb_user }}"
-    owner: "{{ blobdb_user }}"
-    mode: 0700
-    backup: yes
-  when: blobdb_s3
-  tags:
-    - cron
-    - backups
 
 - name: Create blobdb backup dir
   become: yes
@@ -95,9 +82,10 @@
   tags:
     - cron
     - backups
-  
-- name: Copy check_s3_backup script to /usr/local/sbin
+
+- name: Copy check_s3_backup script to /usr/local/bin
   template:
     src: check_s3_backup.py.j2
     dest: /usr/local/bin/check_s3_backup.py
     mode: "u=rwx,g=rx,o=rx"
+  when: postgres_s3 or couch_s3 or blobdb_s3

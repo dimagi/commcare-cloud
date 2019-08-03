@@ -35,6 +35,10 @@
     status_code: 201, 412 # 412 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0
+  register: result
+  until: not result.failed or 'Connection refused' not in result.msg
+  retries: 5
+  delay: 20
   with_items:
    - _users
    - _replicator
@@ -67,7 +71,7 @@
     mode: 0700
     group: couchdb
     owner: couchdb
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -81,7 +85,21 @@
     owner: couchdb
     mode: 0700
     backup: yes
-  when: backup_couch
+  when: backup_couch|bool
+  tags:
+    - cron
+    - backups
+
+- name: Copy couch restore script
+  become: yes
+  template:
+    src: "restore_couchdb_backup.sh.j2"
+    dest: "/usr/local/sbin/restore_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -97,7 +115,7 @@
     user: couchdb
     cron_file: backup_couch
     state: absent
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -113,7 +131,7 @@
     user: couchdb
     cron_file: backup_couch
     state: absent
-  when: backup_couch
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -148,29 +166,18 @@
     - cron
     - backups
 
-- name: Create aws config directory
-  become: yes
-  file:
-    path: '{{ couchdb_dir }}/.aws'
-    owner: couchdb
-    group: couchdb
-    mode: 0700
-    state: directory
-  when: couch_s3
-  tags:
-    - cron
-    - backups
+- import_tasks: compact.yml
+  when: compact_couch_cron and inventory_hostname == groups.couchdb2.0
 
-- name: copy boto3 credentials file
+- name: Set up aws credentials
   become: yes
-  template:
-    src: "aws_credentials.j2"
-    dest: "{{ couchdb_dir }}/.aws/credentials"
-    group: couchdb
-    owner: couchdb
-    mode: 0700
-    backup: yes
-  when: couch_s3
+  import_role:
+    name: backups
+    tasks_from: set_up_aws_credentials.yml
+  vars:
+    s3_user: "couchdb"
+    s3_user_home_dir: "{{ couchdb_dir }}"
+  when: couch_s3|bool
   tags:
     - cron
     - backups
@@ -197,4 +204,7 @@
     state: monitored
   tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
-
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20

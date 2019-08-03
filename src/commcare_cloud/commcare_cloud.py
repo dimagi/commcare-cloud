@@ -30,7 +30,7 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
-from .commands.ansible.ops_tool import ListDatabases
+from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport
 from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from .environment.paths import (
     get_available_envs,
@@ -68,6 +68,8 @@ COMMAND_GROUPS = OrderedDict([
         Downtime,
         CopyFiles,
         ListDatabases,
+        CeleryResourceReport,
+        PillowResourceReport,
         Terraform,
         TerraformMigrateState,
         AwsSignIn,
