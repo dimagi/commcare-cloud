@@ -1,4 +1,5 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
+
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr-non-dashboard: icds-ucr-non-dashboard
@@ -10,6 +11,7 @@ REPORTING_DATABASES:
       - [icds-ucr-standby2, 10]
       - [icds-ucr-standby3, 10]
   icds-test-ucr: icds-ucr
+  icds-ucr-citus: icds-ucr-citus
 
 LOAD_BALANCED_APPS:
   auth:
@@ -34,12 +36,25 @@ pgbouncer_override:
   pgbouncer_reserve_pool: 5
 
 postgres_override:
+  postgresql_max_standby_delay: 180s
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 100.71.184.0/22
+    - contype: host
+      users: TCLBKPADMIN
+      netmask: 127.0.0.1/32
+    - contype: local
+      users: TCLBKPADMIN
+
 
 dbs:
   main:
     host: pgmain0
+    query_stats: True
   formplayer:
     host: pgmain0
   ucr:
@@ -55,19 +70,19 @@ dbs:
         host: pgshard0
       p2:
         shards: [104, 205]
-        host: pgshard1
+        host: pgshard1standby
       p3:
         shards: [206, 308]
         host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard3
+        host: pgshard3standby
       p5:
         shards: [412, 514]
         host: pgshard4
       p6:
         shards: [515, 617]
-        host: pgshard5
+        host: pgshard5standby
       p7:
         shards: [618, 720]
         host: pgshard6
@@ -76,10 +91,10 @@ dbs:
         host: pgshard7
       p9:
         shards: [824, 926]
-        host: pgshard8
+        host: pgshard8standby
       p10:
         shards: [927, 1023]
-        host: pgshard9
+        host: pgshard9standby
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
@@ -91,6 +106,13 @@ dbs:
       host: pgnondashboarducr0
       query_stats: True
       django_migrate: False
+    - django_alias: icds-ucr-citus
+      name: icds_ucr
+      django_migrate: True  # ICDS dashboard models are stored here
+      host: citusmaster0
+      pg_config:
+        - name: citus.shard_count
+          value: 64
     - name: airflow
       django_migrate: False
     - django_alias: warehouse

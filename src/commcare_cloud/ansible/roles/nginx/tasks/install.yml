@@ -1,19 +1,16 @@
 ---
-- name: Remove official nginx repository
-  become: yes
-  apt_repository: repo='ppa:nginx/stable' state=absent
-  when: ansible_distribution_version == '14.04'
 
+# Once we're entirely on bionic
+# we might be able install from the default bionic apt repo
+# and not add the official nginx repo.
+# See: https://github.com/dimagi/commcare-cloud/pull/2901#pullrequestreview-250517794
 - name: Add nginx repository
   become: yes
-  apt_repository: repo='ppa:ondrej/nginx' state=present
-  with_items: "{{ 'ppa:ondrej/nginx' if ansible_distribution_version == '14.04' else 'ppa:nginx/stable' }}"
+  apt_repository: repo='ppa:nginx/stable' state=present
 
 - name: Install nginx
   become: yes
-  apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
-  with_items: "{{ nginx_ubuntu_pkg }}"
-  when: nginx_install == True
+  apt: name="{{ nginx_ubuntu_pkg }}" state=latest update_cache=yes cache_valid_time=3600
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -26,12 +23,6 @@
 - name: Create nginx http user
   become: yes
   user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
-  when: nginx_install == True
-
-- name: Create static files home
-  become: yes
-  file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
-  when: nginx_install == True
 
 - name: Copy the nginx configuration file
   become: yes

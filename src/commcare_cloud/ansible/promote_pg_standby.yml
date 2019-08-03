@@ -6,7 +6,7 @@
 - hosts: "{{ standby }}"
   become: yes
   vars_files:
-    - roles/postgresql/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   tasks:
     - stat:
         path: "{{ postgresql_recovery_conf }}"
@@ -19,3 +19,32 @@
 
     - name: promote pg standby node
       command: pg_ctlcluster "{{ postgresql_version }}" main promote
+
+    - name: Delete replication slot
+      delegate_to: "{{ hot_standby_master }}"
+      pg_replication_slot:
+        name: "{{ replication_slot }}"
+        port: "{{ postgresql_port }}"
+        state: absent
+      become: yes
+      become_user: postgres
+      ignore_errors: yes
+      register: delete_slot_result
+
+    - fail:
+        msg: |
+            Deleting the replication slot failed.
+            Check that the slot is not causing WAL logs to accumulate.
+            Error message: {{ delete_slot_result.module_stderr }}
+      when: delete_slot_result is failure
+
+    - name: Re-create replication slot
+      delegate_to: "{{ hot_standby_master }}"
+      pg_replication_slot:
+        name: "{{ replication_slot }}"
+        port: "{{ postgresql_port }}"
+        state: present
+      become: yes
+      become_user: postgres
+      when: delete_slot_result is success
+

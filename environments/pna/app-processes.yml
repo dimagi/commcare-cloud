@@ -1,6 +1,7 @@
-jython_memory: "1024m"
 formplayer_memory: "1024m"
 
+management_commands:
+  pnaserver1:
 celery_processes:
   'pnaserver1':
     repeat_record_queue:

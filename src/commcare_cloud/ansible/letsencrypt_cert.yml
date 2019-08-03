@@ -9,15 +9,13 @@
 
     - name: Update package list
       apt: update_cache=yes
-      when: add_cert_repo|changed
+      when: add_cert_repo is changed
 
     - name: Install Certbot
       apt:
-        name: "{{item}}"
-        state: present
-      with_items:
-        - software-properties-common
-        - certbot
+        name:
+          - software-properties-common
+          - certbot
       ignore_errors: '{{ ansible_check_mode }}'
 
     - name: Create Challenge Directory
@@ -59,6 +57,7 @@
     - name: Remove default certbot cron
       cron:
         cron_file: certbot
+        user: root
         state: absent
 
     - name: Add custom_certbot cron
@@ -74,4 +73,5 @@
     - name: Remove "Reload Nginx to reread SSL" cron job
       cron:
         state: absent
+        user: root
         cron_file: nginx_ssl_reread

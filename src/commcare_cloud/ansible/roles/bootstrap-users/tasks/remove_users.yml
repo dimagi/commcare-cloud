@@ -1,7 +1,7 @@
 ---
 
 - name: Get running processes
-  shell: "ps aux | grep -v grep | grep -Ew \"{{ dev_users.absent|join('|') }}\" | awk '{print $2}'"
+  shell: "ps -o pid= -u \"{{ dev_users.absent|join(',') }}\""
   register: running_processes
   changed_when: no
 

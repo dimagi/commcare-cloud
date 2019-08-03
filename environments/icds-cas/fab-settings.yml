@@ -1,5 +1,7 @@
 acceptable_maintenance_window:
-  hour_start: 0
-  hour_end: 7
+  hour_start: 20
+  hour_end: 23
   timezone: Asia/Kolkata
-email_enabled: False
+email_enabled: True
+py3_include_venv: True
+py3_run_deploy: True

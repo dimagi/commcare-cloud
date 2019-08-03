@@ -1,371 +1,503 @@
 postgresql_dbs:
   all:
-  - create: true
+  - &id001
+    conn_max_age: null
+    create: true
     django_alias: default
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id002
+    conn_max_age: null
+    create: true
     django_alias: p1
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p1
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [0, 103]
+    shards:
+    - 0
+    - 103
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id003
+    conn_max_age: null
+    create: true
     django_alias: p10
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p10
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [927, 1023]
+    shards:
+    - 927
+    - 1023
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id004
+    conn_max_age: null
+    create: true
     django_alias: p2
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p2
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [104, 205]
+    shards:
+    - 104
+    - 205
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id005
+    conn_max_age: null
+    create: true
     django_alias: p3
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p3
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [206, 308]
+    shards:
+    - 206
+    - 308
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id006
+    conn_max_age: null
+    create: true
     django_alias: p4
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p4
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [309, 411]
+    shards:
+    - 309
+    - 411
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id007
+    conn_max_age: null
+    create: true
     django_alias: p5
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p5
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [412, 514]
+    shards:
+    - 412
+    - 514
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id008
+    conn_max_age: null
+    create: true
     django_alias: p6
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p6
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [515, 617]
+    shards:
+    - 515
+    - 617
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id009
+    conn_max_age: null
+    create: true
     django_alias: p7
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p7
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [618, 720]
+    shards:
+    - 618
+    - 720
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id010
+    conn_max_age: null
+    create: true
     django_alias: p8
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p8
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [721, 823]
+    shards:
+    - 721
+    - 823
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id011
+    conn_max_age: null
+    create: true
     django_alias: p9
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_p9
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    shards: [824, 926]
+    shards:
+    - 824
+    - 926
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id012
+    conn_max_age: null
+    create: true
     django_alias: proxy
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_proxy
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id013
+    conn_max_age: null
+    create: true
     django_alias: synclogs
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_synclogs
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id014
+    conn_max_age: null
+    create: true
     django_alias: ucr
     django_migrate: false
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_ucr
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
-  - create: true
+  - &id015
+    conn_max_age: null
+    create: true
     django_alias: null
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: formplayer
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+  by_host:
+    172.25.3.5:
+    - *id001
+    - *id002
+    - *id003
+    - *id004
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - *id009
+    - *id010
+    - *id011
+    - *id012
+    - *id013
+    - *id014
+    - *id015
   custom: []
   form_processing:
     partitions:
       p1:
+        conn_max_age: null
         create: true
         django_alias: p1
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p1
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [0, 103]
+        shards:
+        - 0
+        - 103
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p10:
+        conn_max_age: null
         create: true
         django_alias: p10
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p10
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [927, 1023]
+        shards:
+        - 927
+        - 1023
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p2:
+        conn_max_age: null
         create: true
         django_alias: p2
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p2
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [104, 205]
+        shards:
+        - 104
+        - 205
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p3:
+        conn_max_age: null
         create: true
         django_alias: p3
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p3
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [206, 308]
+        shards:
+        - 206
+        - 308
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p4:
+        conn_max_age: null
         create: true
         django_alias: p4
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p4
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [309, 411]
+        shards:
+        - 309
+        - 411
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p5:
+        conn_max_age: null
         create: true
         django_alias: p5
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p5
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [412, 514]
+        shards:
+        - 412
+        - 514
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p6:
+        conn_max_age: null
         create: true
         django_alias: p6
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p6
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [515, 617]
+        shards:
+        - 515
+        - 617
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p7:
+        conn_max_age: null
         create: true
         django_alias: p7
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p7
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [618, 720]
+        shards:
+        - 618
+        - 720
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p8:
+        conn_max_age: null
         create: true
         django_alias: p8
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p8
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [721, 823]
+        shards:
+        - 721
+        - 823
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
       p9:
+        conn_max_age: null
         create: true
         django_alias: p9
         django_migrate: true
         host: 172.25.3.5
-        pgbouncer_host: 172.25.3.5
         name: commcarehq_p9
         options: {}
         password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        pg_config: []
+        pgbouncer_host: 172.25.3.5
         port: 6432
         query_stats: false
-        shards: [824, 926]
+        shards:
+        - 824
+        - 926
         user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
     proxy:
+      conn_max_age: null
       create: true
       django_alias: proxy
       django_migrate: true
       host: 172.25.3.5
-      pgbouncer_host: 172.25.3.5
       name: commcarehq_proxy
       options: {}
       password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+      pg_config: []
+      pgbouncer_host: 172.25.3.5
       port: 6432
       query_stats: false
       user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   formplayer:
+    conn_max_age: null
     create: true
     django_alias: null
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: formplayer
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   main:
+    conn_max_age: null
     create: true
     django_alias: default
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   standby: []
   synclogs:
+    conn_max_age: null
     create: true
     django_alias: synclogs
     django_migrate: true
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_synclogs
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   ucr:
+    conn_max_age: null
     create: true
     django_alias: ucr
     django_migrate: false
     host: 172.25.3.5
-    pgbouncer_host: 172.25.3.5
     name: commcarehq_ucr
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    pg_config: []
+    pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'

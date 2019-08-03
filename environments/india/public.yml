@@ -1,4 +1,3 @@
-internal_domain_name: "india.commcarehq.org"
 couchdb2:
   username: "{{ localsettings_private.COUCH_USERNAME }}"
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
@@ -28,18 +27,13 @@ aws_region: 'ap-south-1'
 
 nofile_limit: 65536
 
-redis_appendonly: 'yes'
-
 KSPLICE_ACTIVE: yes
 
 nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
-kafka_broker_id: 0
 kafka_log_dir: "{{ encrypted_root }}/kafka"
-
-ufw_private_interface: eth0
 
 control_machine_ip: 10.162.36.196
 
@@ -61,6 +55,31 @@ couchdb_cluster_settings:
   w: 1
   n: 1
 
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
+s3_signature_version: 's3v4'
+
+root_email: commcarehq-ops+root@dimagi.com
+server_email: commcarehq-noreply@dimagi.com
+server_admin_email: commcarehq-ops+admins@dimagi.com
+default_from_email: commcarehq-noreply@dimagi.com
+support_email: support@dimagi.com
+probono_support_email: pro-bono@dimagi.com
+cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
+accounts_email: accounts@dimagi.com
+data_email: datatree@dimagi.com
+subscription_change_email: accounts+subchange@dimagi.com
+internal_subscription_change_email: accounts+subchange+internal@dimagi.com
+billing_email: sales@dimagi.com
+invoicing_contact_email: billing-support@dimagi.com
+growth_email: growth@dimagi.com
+master_list_email: master-list@dimagi.com
+report_builder_add_on_email: sales@dimagi.com
+eula_change_email: eula-notifications@dimagi.com
+contact_email: info@dimagi.com
+soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
@@ -80,6 +99,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  ENABLE_SOFT_ASSERT_EMAILS: True
   EULA_COMPLIANCE: True
   HQ_INSTANCE: 'india'
   INACTIVITY_TIMEOUT: 20160
@@ -110,6 +130,11 @@ localsettings:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+  UCR_COMPARISONS:
+    static-mpr_1_person_cases:
+    static-mpr_2a_3_child_delivery_forms:
+    static-mpr_2ci_child_birth_list:
+    static-asr_2_pregnancies:
 
 site_locations:
   - name: /data_dumps/export/enikshay/public
@@ -124,11 +149,11 @@ site_locations:
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
 
-PY3_RUN_CELERY_BEAT: False
-PY3_RUN_CELERY_FLOWER: False
-PY3_RUN_CELERY_WORKER: False
-PY3_RUN_ERRAND_BOY: False
-PY3_RUN_GUNICORN: False
-PY3_RUN_MANAGEMENT: False
-PY3_RUN_PILLOWTOP: False
-PY3_RUN_WEBSOCKETS: False
+PY3_RUN_CELERY_BEAT: True
+PY3_RUN_CELERY_FLOWER: True
+PY3_RUN_CELERY_WORKER: True
+PY3_RUN_ERRAND_BOY: True
+PY3_RUN_GUNICORN: True
+PY3_RUN_MANAGEMENT: True
+PY3_RUN_PILLOWTOP: True
+PY3_RUN_WEBSOCKETS: True

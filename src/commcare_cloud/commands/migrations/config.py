@@ -24,7 +24,7 @@ class CouchMigration(object):
     @memoized_property
     def plan(self):
         with open(self.plan_path) as f:
-            plan = yaml.load(f)
+            plan = yaml.safe_load(f)
 
         return CouchMigrationPlan.wrap(plan)
 
@@ -96,7 +96,7 @@ class CouchMigration(object):
     @memoized_property
     def shard_plan(self):
         with open(self.shard_plan_path) as f:
-            plan = yaml.load(f)
+            plan = yaml.safe_load(f)
 
         return [
             ShardAllocationDoc.from_plan_json(db_name, plan_json)

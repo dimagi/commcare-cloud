@@ -13,8 +13,6 @@ import jinja2
 import six
 import yaml
 from clint.textui import puts, colored
-from jinja2 import nodes
-from jinja2.ext import Extension
 from memoized import memoized
 from six.moves import shlex_quote
 from six.moves import configparser
@@ -138,14 +136,17 @@ class AwsFillInventory(CommandBase):
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
             with open(environment.paths.aws_resources_yml, 'r') as f:
-                resources = yaml.load(f.read())
+                resources = yaml.safe_load(f.read())
 
         with open(environment.paths.inventory_ini_j2) as f:
             inventory_ini_j2 = f.read()
 
-        out_string = AwsFillInventoryHelper(environment, inventory_ini_j2, resources).render()
-
         with open(environment.paths.inventory_ini, 'w') as f:
+            # by putting this inside the with
+            # we make sure that if the it fails, inventory.ini is made empty
+            # reflecting that we were unable to create it
+            out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
+                                                resources).render()
             f.write(out_string)
 
 
@@ -175,12 +176,20 @@ class AwsFillInventoryHelper(object):
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
             is_bionic = server.os == 'bionic'
+            inventory_vars = [
+                ('hostname', server.server_name),
+                ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
+                ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+            ]
+            if server.block_device:
+                inventory_vars.extend([
+                    ('datavol_device', '/dev/sdf'),
+                    ('datavol_device1', '/dev/sdf'),
+                    ('is_datavol_ebsnvme', 'yes'),
+                ])
+
             context.update(
-                self.get_host_group_definition(resource_name=server.server_name, vars=(
-                    ('hostname', server.server_name),
-                    ('ec2', ('ena' if is_bionic else 'yes')),
-                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
-                ))
+                self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
             )
 
         for rds_instance in self.environment.terraform_config.rds_instances:

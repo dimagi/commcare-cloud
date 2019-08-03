@@ -2,19 +2,26 @@ postgresql_version: '9.6'
 postgresql_cluster_name: 'main'
 postgresql_port: 5432
 postgresql_ssl_enabled: False
-postgresql_dir_original_path: /var/lib/postgresql
+postgresql_user_home: /var/lib/postgresql
+postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
 postgresql_dir_path: "{{ encrypted_root }}/postgresql"
 postgresql_process_path: "{{ '/var/run/postgresql' if ansible_distribution_version == '18.04' else postgresql_dir_path }}"
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
-postgresql_home: "{{ postgresql_dir_path }}/{{ postgresql_version }}/main"
-postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/main"
-postgresql_pid_file: "{{ postgresql_process_path }}/{{ postgresql_version }}-main.pid"
+postgresql_data_dir: "{{ postgresql_dir_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_pid_file: "{{ postgresql_process_path }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
 postgres_install_dir: "/usr/lib/postgresql/{{ postgresql_version }}"
-postgresql_log_directory: "{{ postgresql_home }}/pg_log"
-postgresql_recovery_conf: "{{ postgresql_home }}/recovery.conf"
+postgresql_log_directory: "{{ postgresql_data_dir }}/pg_log"
+postgresql_recovery_conf: "{{ postgresql_data_dir }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 pgstandby_wal_keep_segments: 8
 postgresql_wal_keep_segments: 8
+postgresql_archive_timeout: 300
+postgresql_archive_path: "{{ postgresql_dir_path }}/wal_archive"
+postgresql_archive_command: "cp %p {{ postgresql_dir_path }}/wal_archive/%f"
+postgresql_enable_archive: no
+
+postgresql_systemd_config_dir: "/etc/systemd/system/postgresql@.service.d"
 
 allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 
@@ -24,16 +31,20 @@ postgresql_work_mem: '8MB'
 postgresql_shared_buffers: '1024MB'
 postgresql_max_stack_depth: '2MB'
 postgresql_effective_cache_size: '128MB'
-postgresql_max_standby_delay: 0  # 0 means don't set in postgresql.conf (leaving default value)
+postgresql_max_standby_delay: ''  # empty means don't set in postgresql.conf (leaving default value)
 postgresql_maintenance_work_mem: '64MB'
 postgresql_checkpoint_completion_target: '0.5'
 postgresql_wal_buffers: '-1'
 postgresql_default_statistics_target: '100'
+postgresql_min_wal_size: ~
 postgresql_max_wal_size: '256MB'
 postgresql_slow_log_threshold: 300
 postgresql_random_page_cost: 4.0
+postgresql_max_worker_processes: ~
+postgresql_max_parallel_workers_per_gather: ~
+postgresql_effective_io_concurrency: ~
+postgresql_max_locks_per_transaction: ~
 
-allow_direct_postgresql_access: no
 allow_direct_citusdb_access: no
 
 postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main"
@@ -42,3 +53,4 @@ postgresql_binary: "postgresql-{{ postgresql_version }}"
 
 postgresql_shared_preload_libraries:
  - 'pg_stat_statements'
+postgresql_hba_entries: []

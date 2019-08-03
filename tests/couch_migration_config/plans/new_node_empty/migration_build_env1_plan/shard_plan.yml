@@ -1,0 +1,18 @@
+commcarehq:
+  by_range:
+    s1:
+    - couchdb@10.247.164.12
+    - couchdb@10.247.164.5
+    s2:
+    - couchdb@10.247.164.12
+    - couchdb@10.247.164.5
+  shard_suffix: '.1495824481'
+commcarehq__apps:
+  by_range:
+    s1:
+    - couchdb@10.247.164.12
+    - couchdb@10.247.164.5
+    s2:
+    - couchdb@10.247.164.12
+    - couchdb@10.247.164.5
+  shard_suffix: '.1495824505'

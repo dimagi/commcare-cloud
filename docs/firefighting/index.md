@@ -101,6 +101,8 @@ Service logs: `cchq <env> service <service_name> logs`
 
 [couch](https://app.datadoghq.com/screen/177642/couchdb-dashboard)
 
+[formplayer](https://app.datadoghq.com/dashboard/dcs-kte-q8e/formplayer-health)
+
 # Switching to Maintenance Page
 
 To switch to the Maintenance page, if you stop all web workers then the proxy will revert to "CommCareHQ is currently undergoing maintenance...".
@@ -135,13 +137,17 @@ Monitors are setup to ping the proxy instead of couch instance directly, so the 
 
 If a couch node is coming close to running out of space, it may not have enough space to compact the full db. You can start a compaction of one shard of a database using the following:
 
-`curl "<couch ip>:15986/shards%2F<shard range i.e. 20000000-3fffffff>%2F<database>.<The timestamp on the files of the database>/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>`
+```
+curl "<couch ip>:15986/shards%2F<shard range i.e. 20000000-3fffffff>%2F<database>.<The timestamp on the files of the database>/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>
+```
 
 It's important to use port 15986. This is the couch node endpoint instead of the cluster. The only way to find the timstamp is to go into /opt/data/couchdb2/shards and look for the filename of the database you want to compact
 
 If it's a global database (like _global_changes), then you may need to compact the entire database at once
 
-`curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>`
+```
+curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>
+```
 
 ## DefaultChangeFeedPillow is millions of changes behind
 
@@ -257,25 +263,27 @@ $ mount /mnt/shared_data
 # verify that it is mounted and that there are files in the subfolders
 ```
 
-### Forcing re-connection of an NFS client in a webworker
+### Forcing re-connection of an NFS client in a webworker (or other commcarehq machine)
 
 It may happen, specially if the client crashes or has kernel oops, that a connection gets in a state where it cannot be broken nor re-established.  This is how we force re-connection in a webworker.
+
 1. Verify NFS is actually stuck
-    a. “df” doesn’t work, it hangs. Same goes for lsof.
-    b. “umount” results in umount.nfs: /mnt/shared_icds: device is busy
-2. top all gunicorns and supervisor
-    a. `sudo supervirsorctl stop all`
-    b. jVerify “stuck” processes keep running: $ ps aux|grep gunicorn
-    c. $ sudo service supervisord stop
-    d. Verify “stuck” processes are gone: $ ps aux|grep gunicorn
+    1. `df` doesn’t work, it hangs. Same goes for `lsof`.
+    2. `umount` results in `umount.nfs: /mnt/shared_icds`: device is busy
+2. top all app processes (gunicorn, etc) and datadog
+    1. `sudo supervisorctl stop all`
+    2. `sudo service datadog-agent stop`
 3. Force umount 
-    a. $ sudo umount -f /mnt/shared_icds
+    1. `sudo umount -f /mnt/shared_icds`
+        - if that doesn't work make sure to kill all app processes
+          in e.g. for webworkers `ps aux | grep gunicor[n]`
 4. Re-mount
-    a. $ sudo mount /mnt/shared_icds
-    b. Verify NFS mount works: $ df
-5. Start supervisor and gunicorns
-    a. $ sudo service supervisord start
-    b. $ sudo supervisorctl start all
+    1. `sudo mount /mnt/shared_icds`
+    2. Verify NFS mount works: `df`
+5. Start supervisor and app processes
+    1. `sudo service supervisord start`
+    2. `sudo supervisorctl start all`
+    3. `sudo service datadog-agent start`
 
 If none of the above works check that nfsd is running on the shared_dir_host.
 
@@ -292,7 +300,9 @@ It is configured to use the "transaction"  pool mode which means that each serve
 
 ## Get a pgbouncer shell
 
-`$ psql -U {commcarehq-user} -p 6432 pgbouncer`
+```
+$ psql -U {commcarehq-user} -p 6432 pgbouncer
+```
 
 ## Check connection status
 
@@ -356,8 +366,7 @@ $ sudo -u postgres psql commcarehq
 ### Check open connections
 
 ```sql
-select client_addr, datname as database, count(\*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle
-from pg_stat_activity group by client_addr, datname;
+select client_addr, datname as database, count(*) as total, sum(case when query = '<IDLE>' then 1 else 0 end) as idle from pg_stat_activity group by client_addr, datname;
 ```
 
 This will print something like the following:
@@ -387,11 +396,15 @@ $ psql -h localhost -p 6432 -U $USERNAME pgbouncer -c "show clients" | cut -d'|'
 ### See Running Queries
 To see a list of queries (ordered by the long running ones first) you can do something like the following. This can also be exported to csv for further analysis.
 
-`SELECT pid, datname, query_start, now() - query_start as duration, state, query as current_or_last_query FROM pg_stat_activity WHERE state = 'active' OR query_start > now() - interval '1 min' ORDER BY state, query_start;`
+```sql
+SELECT pid, datname, query_start, now() - query_start as duration, state, query as current_or_last_query FROM pg_stat_activity WHERE state = 'active' OR query_start > now() - interval '1 min' ORDER BY state, query_start;
+```
 
  This can also be exported to csv for further analysis.
 
-`Copy (SELECT state, query_start, client_addr, query FROM pg_stat_activity ORDER BY query_start) TO '/tmp/pg_queries.csv' WITH CSV;`
+```sql
+Copy (SELECT state, query_start, client_addr, query FROM pg_stat_activity ORDER BY query_start) TO '/tmp/pg_queries.csv' WITH CSV;
+```
 
 ### Find queries that are consuming IO
 
@@ -399,7 +412,9 @@ Use `iotop` to see what processes are dominating the IO and get their process ID
 
 ### Filter the list of running queries by process ID:
 
-`SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = {pid} ORDER BY query_start;`
+```sql
+SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = {pid} ORDER BY query_start;
+```
 
 ### Kill connections
 *DO NOT EVER `kill -9` any PostgreSQL processes. It can bring the DB process down.*
@@ -409,30 +424,21 @@ This shouldn't be necessary now that we've switched to using pgbouncer (but it s
 After checking open connections you can kill connections by IP address or status. The following command will kill all open IDLE connections from localhost (where pgbouncer connections route from) and is a good way to reduce the load:
 
 #### Kill all idle connections
-`SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE client_addr = '127.0.0.1' AND query = '<IDLE>';`
+```sql
+SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE client_addr = '127.0.0.1' AND query = '<IDLE>';
+```
 
 #### Kill a single query
-`SELECT pg_terminate_backend({procpid})`
-
-## Postgres Hot Standby
-
-In situations where the disk becomes corrupt or unusable, you can switch HQ to utilize a hotstandby. 
-
-### Standby Description
-The postgres standby is a hot standby (hot standby means that it can accept reads but not writes) of our production database. The standby keeps up with the production database through log shipping. As write ahead logs (WALs) are completed in the main database, they are sent to a directory on the standby machine (currently /opt/data/postgresql/wal_archive) where their operations are replicated into the standby database.
-
-### Creating the standby with ansible
-Assumes that the deploy_db.yml playbook has already been applied to the standby node.
-
-`$ commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]`
-
-### Failover to standby with ansible
-
-`$ commcare-cloud <env> ansible-playbook promote_pg_standby.yml -e standby=[standby node]`
+```sql
+SELECT pg_terminate_backend({procpid})
+```
 
 ### Replication Delay
 https://www.enterprisedb.com/blog/monitoring-approach-streaming-replication-hot-standby-postgresql-93
 
+* Check if wal receiver and sender process are running respectively on standby and master using `ps aux | grep receiver` and `ps aux | grep sender`
+* Alternatively use SQL `select * from pg_stat_replication` on either master or standby
+* If WAL processes are not running, check logs, address any issues and may need to reload/restart postgres
 * Check logs for anything suspicious
 * Checking replication delay
   * [Use datadog](https://app.datadoghq.com/dash/263336/postgres---overview?live=true&page=0&is_auto=false&from_ts=1511770050831&to_ts=1511773650831&tile_size=m&tpl_var_env=*&fullscreen=253462140&tpl_var_host=*)
@@ -458,36 +464,6 @@ SELECT now() - pg_last_xact_replay_timestamp() AS replication_delay;
 ```
 
 In some cases it may be necessary to restart the standby node.
-
-## PgBackrest (deprecated)
-At the time of writing we only use pgbackrest as a backup method on softlayer db0. If we start running out of disk space on either machine, old backups might need to be expired and the backup retention settings in /etc/pgbackrest.conf might need to be updated.
-
-The [pgbackrest user guide is here](http://www.pgbackrest.org/user-guide.html), but below is some useful info.
-
-### Viewing Current Backups
-To see the backups that are currently stored, run this command as postgres user: `pgbackrest info`
-
-The "repository backup size" tells you how much actual disk space the given backup is taking up on the machine, after compression.
-
-### Manually Expiring Backups
-
-Backups get expired automatically according to the retention settings in /etc/pgbackrest.conf. If you need to manually expire backups, you'll need to use the `expire` command. It doesn't seem like you can expire specific backups, all you can do is expire either the oldest "full" backup(s) or the oldest "differential" backups(s). Expiring a "full" backup also expires all "differential" backups it's associated with.
-
-For example, if /etc/pgbackrest.conf is retaining 4 full backups, to expire the oldest full backup you'll need to run the `expire` command manually to give a different value for the retention-full setting:
-
-```
-# run as postgres user; this assumes the stanza's name in /etc/pgbackrest.conf is 'backup' for the backups you want to expire
-pgbackrest --stanza=backup --log-level-console=info --retention-full=3 expire
-```
-
-You can use a similar command to expire old differential backups by overriding the retention-diff setting which also resides in /etc/pgbackrest.conf:
-
-```
-# run as postgres user; this assumes the stanza's name in /etc/pgbackrest.conf is 'backup' for the backups you want to expire
-pgbackrest --stanza=backup --log-level-console=info --retention-diff=2 expire
-```
-
-If the machine can't support the current retention settings, then either more storage should be added or the retention settings should be changed in /etc/pgbackrest.conf.
 
 ## PostgreSQL disk usage
 Use the following query to find disc usage by table where child tables are added to the usage of the parent.
@@ -841,17 +817,22 @@ esoergel@hqdb0:~$
 # Tips and Tricks
 Never run that painful sequence of sudo -u cchq bash, entering the venv, cd'ing to the directory, etc., again just to run a management command. Instead, just run e.g.:
 
-`sudo -u cchq bash -c 'cd /home/cchq/www/production/current && /home/cchq/www/production/current/python_env/bin/python manage.py shell'`
+```sudo -u cchq bash -c 'cd /home/cchq/www/production/current && /home/cchq/www/production/current/python_env/bin/python manage.py shell'
+```
 
 first thing after logging in. Extra plus: next time you ssh in to the same machine, you can just type ^R and find this command in your history
 
 On staging:
 
-`sudo -u cchq bash -c 'cd /home/cchq/www/staging/current && /home/cchq/www/staging/current/python_env/bin/python manage.py shell'`
+```
+sudo -u cchq bash -c 'cd /home/cchq/www/staging/current && /home/cchq/www/staging/current/python_env/bin/python manage.py shell'
+```
 
 On Softlayer:
 
-`sudo -u cchq bash -c 'cd /home/cchq/www/softlayer/current && /home/cchq/www/softlayer/current/python_env/bin/python manage.py shell'`
+```
+sudo -u cchq bash -c 'cd /home/cchq/www/softlayer/current && /home/cchq/www/softlayer/current/python_env/bin/python manage.py shell'
+```
 
 # Some Short Write-ups and Examples
 

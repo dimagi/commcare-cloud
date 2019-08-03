@@ -10,3 +10,9 @@
 - name: Reload postgres
   become: yes
   action: service name=postgresql args="{{ postgresql_version }}" state=reloaded
+
+- name: reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+  when: ansible_distribution_version == '18.04'

@@ -5,7 +5,7 @@ cluster_name = '{{postgresql_cluster_name}}'
 
 # FILE LOCATIONS
 
-data_directory = '{{ postgresql_home }}'
+data_directory = '{{ postgresql_data_dir }}'
 hba_file = '{{ postgresql_config_home }}/pg_hba.conf'
 ident_file = '{{ postgresql_config_home }}/pg_ident.conf'
 external_pid_file = '{{ postgresql_pid_file }}'
@@ -27,22 +27,35 @@ max_stack_depth = {{ postgresql_max_stack_depth }}
 maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
 vacuum_cost_delay = 20ms
 dynamic_shared_memory_type = posix
+{% if postgresql_max_locks_per_transaction %}
+max_locks_per_transaction = {{ postgresql_max_locks_per_transaction }}
+{% endif %}
+
+# PARALLEL QUERY
+{% if postgresql_max_worker_processes %}
+max_worker_processes = {{ postgresql_max_worker_processes }}
+{% endif %}
+{% if postgresql_max_parallel_workers_per_gather %}
+max_parallel_workers_per_gather = {{ postgresql_max_parallel_workers_per_gather }}
+{% endif %}
+{% if postgresql_effective_io_concurrency %}
+effective_io_concurrency = {{ postgresql_effective_io_concurrency }}
+{% endif %}
 
 
 # WRITE AHEAD LOG
-{% if groups['pg_barman']|default(False) and not is_pg_standby %}
+{% if postgresql_enable_archive and not is_pg_standby %}
 archive_mode = on
-{% if 'hostname' in hostvars[inventory_hostname] %}
-archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ hostname }}/wals/%f'
-{% else %}
-archive_command = 'rsync -a %p barman@{{groups['pg_barman'].0}}:{{encrypted_root}}/barman/{{ inventory_hostname_short }}/wals/%f'
-{% endif %}
-archive_timeout = 300
+archive_command = '{{ postgresql_archive_command }}'
+archive_timeout = {{ postgresql_archive_timeout }}
 {% endif %}
 
 wal_level = hot_standby
 max_wal_senders = 8
 max_wal_size = {{ postgresql_max_wal_size }}
+{% if postgresql_min_wal_size %}
+min_wal_size = {{ postgresql_min_wal_size }}
+{% endif %}
 random_page_cost = {{ postgresql_random_page_cost }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
@@ -101,8 +114,9 @@ log_temp_files = 0
 track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
-{% if not is_pg_standby %}
 shared_preload_libraries = '{{ postgresql_shared_preload_libraries|join(", ") }}'
+
+{% if not is_pg_standby %}
 pg_stat_statements.track = all
 pg_stat_statements.max = 10000
 track_activity_query_size = 2048

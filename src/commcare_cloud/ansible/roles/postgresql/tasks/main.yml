@@ -73,5 +73,14 @@
   become_user: postgres
   vars:
     ansible_ssh_pipelining: true
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{postgresql_dbs.form_processing.proxy.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to {{postgresql_dbs.form_processing.proxy.user}}\""
+  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{postgresql_dbs.form_processing.proxy.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to \\\"{{postgresql_dbs.form_processing.proxy.user}}\\\"\""
   when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname
+
+- name: Set vm.dirty_background_bytes
+  become: yes
+  sysctl:
+    name: vm.dirty_background_bytes
+    value: '{{ dirty_background_bytes }}'
+    state: present
+    sysctl_file: /etc/sysctl.d/90-commcare-cloud.conf
+  when: dirty_background_bytes is defined

@@ -3,10 +3,10 @@
   become: yes
 
 - name: Install ndg-httpsclient so we can download couch
-  pip: name="{{ item }}"
+  pip:
+    name:
+      - ndg-httpsclient
   become: yes
-  with_items:
-    - ndg-httpsclient
 
 - name: Create couchdb2 dirs
   become: yes
@@ -16,3 +16,15 @@
     mode: 0755
   with_items:
     - "{{ couchdb_parent_srcs_dir }}"
+
+- name: Add Couch apt repo (for libmozjs dependency)
+  block:
+    - apt_key: url=https://couchdb.apache.org/repo/bintray-pubkey.asc state=present
+    - apt_repository: repo="deb https://apache.bintray.com/couchdb-deb bionic main" state=present
+  when: ansible_distribution_version == '18.04'
+
+- name: Add Erlang apt repo
+  block:
+    - apt_key: url=https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
+    - apt_repository: repo="deb https://packages.erlang-solutions.com/ubuntu bionic contrib" state=present
+  when: ansible_distribution_version == '18.04'

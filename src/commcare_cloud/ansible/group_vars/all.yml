@@ -6,7 +6,8 @@ log_home: "{{ www_home }}/log"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
 virtualenv_home: "{{ code_home }}/python_env"
-py3_virtualenv_home: "{{ code_home }}/python_env-3_6"
+py3_virtualenv_home: "{{ code_home }}/python_env-3.6"
+nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
@@ -50,7 +51,6 @@ couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
 couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
 }"
-couchdb_ver: '2.1.1'
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 run_websockets_wsgi: False
 
@@ -103,25 +103,25 @@ datadog_patch_modules:
   - sqlalchemy:true
   - elasticsearch:true
 
-root_email: commcarehq-ops+root@dimagi.com
-server_email: commcarehq-noreply@dimagi.com
-server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
-support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
-cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
-accounts_email: accounts@dimagi.com
-data_email: datatree@dimagi.com
-subscription_change_email: accounts+subchange@dimagi.com
-internal_subscription_change_email: accounts+subchange+internal@dimagi.com
-billing_email: sales@dimagi.com
-invoicing_contact_email: billing-support@dimagi.com
-growth_email: growth@dimagi.com
-master_list_email: master-list@dimagi.com
-report_builder_add_on_email: sales@dimagi.com
-eula_change_email: eula-notifications@dimagi.com
-contact_email: info@dimagi.com
-soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+root_email: commcarehq-ops+root@example.com
+server_email: commcarehq-noreply@example.com
+server_admin_email: commcarehq-ops+admins@example.com
+default_from_email: commcarehq-noreply@example.com
+support_email: support@example.com
+probono_support_email: pro-bono@example.com
+cchq_bug_report_email: commcarehq-bug-reports@example.com
+accounts_email: accounts@example.com
+data_email: datatree@example.com
+subscription_change_email: accounts+subchange@example.com
+internal_subscription_change_email: accounts+subchange+internal@example.com
+billing_email: sales@example.com
+invoicing_contact_email: billing-support@example.com
+growth_email: growth@example.com
+master_list_email: master-list@example.com
+report_builder_add_on_email: sales@example.com
+eula_change_email: eula-notifications@example.com
+contact_email: info@example.com
+soft_assert_email: commcarehq-ops+soft_asserts@example.com
 daily_deploy_email: null
 
 

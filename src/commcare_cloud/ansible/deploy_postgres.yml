@@ -1,15 +1,15 @@
 ---
+- import_playbook: host_group_aliases.yml
+
 - name: PostgreSQL Machine Setup
-  hosts:
-    - postgresql
-    - pg_standby
+  hosts: postgresql:pg_standby:!citusdb
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
 - name: PostgreSQL
-  hosts: postgresql:pg_standby
+  hosts: postgresql:pg_standby:!citusdb
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
@@ -20,9 +20,15 @@
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
 
+# Notes this should be filtered out if the environment does not have remote postgres
 - name: Remote PostgreSQL (e.g. Amazon RDS)
   hosts: django_manage
   tasks:
+    - name: Install python-psycopg2 to be able to set up remote postgresql
+      become: yes
+      block:
+        - apt: name=libpq-dev state=latest
+        - pip: name=psycopg2
     - name: Remote PostgreSQL
       include_role:
         name: postgresql_base
@@ -33,6 +39,8 @@
       vars:
         db_is_remote: yes
         is_pg_standby: no
+  tags:
+    - remote_postgresql
 
 - name: PostgreSQL Backup
   hosts: postgresql:pg_backup
@@ -50,16 +58,14 @@
     - state: 'present'
   tasks:
     - import_tasks: roles/setup_auth_keys.yml
-      when: hot_standby_server is defined
+      when: hot_standby_server is defined and hot_standby_server
   tags:
     - pg_standby
 
 # Disables transparent huge pages (THP)
 - name: Disable THP
   become: true
-  hosts:
-    - postgresql
-    - pg_standby
+  hosts: postgresql:pg_standby:!citusdb
   tags: 'kernel_tuning'
   roles:
     - role: thp

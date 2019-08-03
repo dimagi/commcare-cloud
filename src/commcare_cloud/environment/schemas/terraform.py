@@ -19,7 +19,7 @@ class TerraformConfig(jsonobject.JsonObject):
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
-    redis = jsonobject.ObjectProperty(lambda: RedisConfig, default=None)
+    elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -94,7 +94,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
         return super(RdsInstanceConfig, cls).wrap(data)
 
 
-class RedisConfig(jsonobject.JsonObject):
+class ElasticacheConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
     node_type = jsonobject.StringProperty()
