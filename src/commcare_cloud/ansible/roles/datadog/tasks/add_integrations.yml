@@ -71,3 +71,4 @@
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
+    - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
