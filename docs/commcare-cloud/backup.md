@@ -35,6 +35,22 @@ We use [`boto3`](https://boto3.amazonaws.com/v1/documentation/api/latest/index.h
 - `aws_region`: The Amazon AWS region to send data to. (Amazon S3 only - this changes the default aws-endpoint to the region-specific endpoint).
 - `aws_versioning_enabled`: (`true` or `false`) Set this to `true` if the AWS endpoint you are using automatically stores old versions of the same file (Amazon S3 does this). If this is set to `false`, files will be uploaded to your S3-compatible bucket with a date and timestamp in the filename, creating a new file each time. (Default: `true`)
 
+### Receiving email alerts if check fails
+
+There is a script that can run to check for the presence of
+recent backups uploaded to S3, and it currently supports
+blobdb, couch, and postgres. To enable it, configure the following
+variable in public.yml:
+
+```
+check_s3_backups_email: backup-alerts@example.com
+```
+
+It's your responsibility to test that you receive these emails
+when recent backups are missing in S3 and that the emails
+don't go to you spam folder before treating the absence of
+alerts as a positive signal.
+
 ## PostgreSQL Backups
 
 PostgreSQL backups are made daily and weekly. Old backups are deleted from the local system.
