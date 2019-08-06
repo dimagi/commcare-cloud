@@ -95,7 +95,9 @@
     - rabbitmq
     - riakcs
     - formplayer
-  tags: 'kernel_tuning'
+  tags:
+    - kernel_tuning
+    - after-reboot
   roles:
     - role: thp
 
