@@ -35,3 +35,7 @@ you have configured the correct access to allow connections from the IPs where C
    ```
    cchq <env> update-config
    ```
+4. Restart CommCare services
+   ```bash
+   commcare-cloud <env> service commcare resetart
+   ```
