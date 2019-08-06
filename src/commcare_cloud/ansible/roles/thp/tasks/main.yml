@@ -34,4 +34,9 @@
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"'
     backrefs: yes
     state: present
+    register: grup_updated
   when: uses_grub.stat.exists
+
+- name: update grub
+  command: update-grub
+  when: grub_updated is changed
