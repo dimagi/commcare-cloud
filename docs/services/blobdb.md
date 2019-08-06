@@ -6,7 +6,7 @@
 
 ## Usage in CommCare
 
-The BlobDB is an internal term used to reference the service and classes responsble for storing binary data in CommCare.
+The BlobDB refers to the internal service used by CommCare to store binary data or [blobs](https://en.wikipedia.org/wiki/Binary_large_object).
 The interal API is abstracted from the backend service allowing different backends to be used. Currently supported
 backends are:
 
