@@ -104,6 +104,9 @@ nginx_sites:
          - zone_name: "overall_restore"
            burst: 100
            nodelay: True
+     - name: "/a/icds-cas/receiver/logs"
+       return: "201 '<OpenRosaResponse xmlns="http://openrosa.org/http/response"><message nature="submit_success">ignored</message></OpenRosaResponse>'"
+       add_header: "Content-Type application/xml"
      - name: "/a/icds-cas/receiver"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
