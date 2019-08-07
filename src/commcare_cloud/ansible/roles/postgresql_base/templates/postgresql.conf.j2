@@ -51,6 +51,7 @@ archive_timeout = {{ postgresql_archive_timeout }}
 {% endif %}
 
 wal_level = hot_standby
+wal_log_hints = on
 max_wal_senders = 8
 max_wal_size = {{ postgresql_max_wal_size }}
 {% if postgresql_min_wal_size %}
