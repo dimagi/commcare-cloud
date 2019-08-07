@@ -307,7 +307,7 @@ servers:
     server_instance_type: t3.large
     network_tier: "app-private"
     az: "a"
-    volume_size: 50
+    volume_size: 150
     group: "formplayer"
     os: trusty
 
@@ -315,7 +315,7 @@ servers:
     server_instance_type: t3.large
     network_tier: "app-private"
     az: "a"
-    volume_size: 50
+    volume_size: 150
     group: "formplayer"
     os: trusty
 
