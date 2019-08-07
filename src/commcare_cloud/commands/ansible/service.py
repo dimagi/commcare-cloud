@@ -233,7 +233,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
     def service_process_mapping(self):
         """
         Return a mapping of service names (as passed in by the user) to
-        a tuple of (linux_service_name, inventory_group1,inventory_group2)
+        a tuple of ('linux_service_name', 'inventory_group1,inventory_group2')
         """
         raise NotImplementedError
 
@@ -374,7 +374,8 @@ class Couchdb2(MultiAnsibleService):
     name = 'couchdb2'
     service_process_mapping = {
         'couchdb2': ('couchdb2', 'couchdb2'),
-        'couchdb2_proxy': ('nginx', 'couchdb2_proxy'),
+        'nginx': ('nginx', 'couchdb2_proxy'),
+        'haproxy': ('haproxy', 'couchdb2_proxy'),
     }
     log_location = '/usr/local/couchdb2/couchdb/var/log/'
 
