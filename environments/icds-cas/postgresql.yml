@@ -94,7 +94,7 @@ dbs:
         host: pgshard8standby
       p10:
         shards: [927, 1023]
-        host: pgshard9standby
+        host: pgshard9
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
