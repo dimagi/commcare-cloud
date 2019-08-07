@@ -54,4 +54,4 @@ haproxy_http_request_timeout: "5s"
 # Set the maximum inactivity time on the server side
 haproxy_server_timeout: "50s"
 ## haproxy tuning params
-haproxy_maxconn: 4096
+haproxy_maxconn: 8192
