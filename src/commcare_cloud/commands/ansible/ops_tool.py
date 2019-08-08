@@ -8,6 +8,7 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
 from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.schemas.app_processes import get_machine_alias
 
 
 class ListDatabases(CommandBase):
@@ -91,7 +92,7 @@ class CeleryResourceReport(CommandBase):
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
-        celery_processes = environment.raw_app_processes_config.celery_processes
+        celery_processes = environment.app_processes_config.celery_processes
         by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set(), 'worker_hosts': set()})
         for host, queues in celery_processes.items():
             for queue_name, options in queues.items():
@@ -111,7 +112,7 @@ class CeleryResourceReport(CommandBase):
             worker_hosts = stats['worker_hosts']
             print(template.format(
                 list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers,
-                ','.join(sorted(worker_hosts))
+                ','.join(sorted([get_machine_alias(environment, worker_host) for worker_host in worker_hosts]))
             ))
 
 
