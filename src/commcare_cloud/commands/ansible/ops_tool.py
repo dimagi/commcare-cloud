@@ -91,24 +91,27 @@ class CeleryResourceReport(CommandBase):
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
-        celery_processes = environment.app_processes_config.celery_processes
-        by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set()})
+        celery_processes = environment.raw_app_processes_config.celery_processes
+        by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set(), 'worker_hosts': set()})
         for host, queues in celery_processes.items():
             for queue_name, options in queues.items():
                 queue = by_queue[queue_name]
                 queue['num_workers'] += options.num_workers
                 queue['concurrency'] += options.concurrency * options.num_workers
                 queue['pooling'].add(options.pooling)
+                queue['worker_hosts'].add(host)
 
         max_name_len = max([len(name) for name in by_queue])
-        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
-        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker'))
-        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------'))
+        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
+        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker', 'Worker Hosts'))
+        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------', '------------'))
         for queue_name, stats in sorted(by_queue.items(), key=itemgetter(0)):
             workers = stats['num_workers']
             concurrency_ = stats['concurrency']
+            worker_hosts = stats['worker_hosts']
             print(template.format(
-                list(stats['pooling'])[0], queue_name, workers, concurrency_, concurrency_ // workers
+                list(stats['pooling'])[0], queue_name, workers, concurrency_, concurrency_ // workers,
+                ','.join(sorted(worker_hosts))
             ))
 
 
