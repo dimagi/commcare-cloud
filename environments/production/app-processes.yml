@@ -12,7 +12,6 @@ management_commands:
     handle_survey_actions:
     sms_queue:
 celery_processes:
-  celery6,celery7,celery8: {}
   celery9,celery10,celery11:
     analytics_queue:
       pooling: gevent
