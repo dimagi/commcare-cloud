@@ -110,7 +110,7 @@ class CeleryResourceReport(CommandBase):
             concurrency_ = stats['concurrency']
             worker_hosts = stats['worker_hosts']
             print(template.format(
-                list(stats['pooling'])[0], queue_name, workers, concurrency_, concurrency_ // workers,
+                list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers,
                 ','.join(sorted(worker_hosts))
             ))
 
