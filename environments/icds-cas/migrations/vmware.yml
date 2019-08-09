@@ -1,3 +1,4 @@
 target_allocation:
+  - couch0,couch1,couch2,couch4,couch5,couch6,couch7,couch8:3
   - couch00,couch01,couch02,couch03,couch04,couch05,couch06,couch07,couch08:3
 
