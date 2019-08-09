@@ -78,7 +78,7 @@ celery_processes:
       concurrency: 50
 
 pillows:
-  pillow0:
+  pillow1:
     CaseToElasticsearchPillow:
       num_processes: 4
     CaseSearchToElasticsearchPillow:
