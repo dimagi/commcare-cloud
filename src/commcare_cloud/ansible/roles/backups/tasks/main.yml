@@ -89,35 +89,14 @@
     - cron
     - backups
 
-- name: Copy check_s3_backup script to /usr/local/bin
-  template:
-    src: check_s3_backup.py.j2
-    dest: /usr/local/bin/check_s3_backup.py
-    mode: "u=rwx,g=rx,o=rx"
-  when: postgres_s3 or couch_s3 or blobdb_s3
-  tags:
-    - backup_checks
 
-- name: Create Daily Check Backups Cron job
+- name: Set up check_s3_backups
   become: yes
-  cron:
-    name: "Check {{ item.service }} s3 backups"
-    job: "/usr/local/bin/check_s3_backup.py {{ item.service }} > /tmp/check_s3_backup-{{ item.service }} || { echo /tmp/check_s3_backup-{{ item.service }} | mail -s 'Recent {{ item.service }} backups missing' {{ check_s3_backups_email }}; }"
-    state: "{{ 'present' if item.condition else 'absent' }}"
-    minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
-    weekday: "1,2,3,4,5,6"
-    user: "{{ item.user }}"
-    cron_file: "backup_{{ item.service }}"
-  with_items:
-    - service: 'blobdb'
-      condition: "{{ check_s3_backups_email and blobdb_s3 and backup_blobdb and 'shared_dir_host' in group_names }}"
-      user: "{{ blobdb_user }}"
-    - service: 'postgres'
-      condition: "{{ check_s3_backups_email and postgres_s3 and backup_postgres and ('postgresql' in group_names or 'pg_backup' in group_names) }}"
-      user: "postgres"
-    - service: 'couch'
-      condition: "{{ check_s3_backups_email and couch_s3 and backup_couch and ('couchdb2' in group_names) }}"
-      user: "couchdb"
-  tags:
-    - backup_checks
+  import_role:
+    name: backups
+    tasks_from: set_up_check_s3_backups.yml
+  vars:
+    service: 'blobdb'
+    condition: "{{ check_s3_backups_email and blobdb_s3 and backup_blobdb and 'shared_dir_host' in group_names }}"
+    user: "{{ blobdb_user }}"
+    service_backup_dir: "{{ blobdb_backup_dir }}"
