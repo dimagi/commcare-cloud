@@ -46,10 +46,9 @@ variable in public.yml:
 check_s3_backups_email: backup-alerts@example.com
 ```
 
-It's your responsibility to test that you receive these emails
-when recent backups are missing in S3 and that the emails
-don't go to you spam folder before treating the absence of
-alerts as a positive signal.
+It's your responsibility to test that you receive these emails when recent backups are missing in S3 and that the emails don't go to you spam folder before treating the absence of alerts as a positive signal.
+In addition to sending an email when there's an error, it will place a file called `s3_backup_status.txt` inside the backup dir for each service.
+You can check for the presence of that file and its last modified date when looking for evidence that the backup check is running correctly.
 
 ## PostgreSQL Backups
 
