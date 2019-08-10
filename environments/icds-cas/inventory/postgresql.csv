@@ -32,7 +32,8 @@ pgshard8standby,100.71.184.56,postgresql,shard_dbs,MUMGCCWCDPRDSS08,pgshard8,,"[
 pgshard9standby,100.71.184.59,pg_standby,shard_dbs,MUMGCCWCDPRDSS09,,pgshard9,,standby0
 plproxy0,100.71.184.18,postgresql,,MUMGCCWCDPRDPLP0,,,,
 pgsynclog0,100.71.184.41,postgresql,synclog_dbs,MUMGCCWCDPRDPSL1,,,"[""spare"",""standby0""]",
-pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,,,,
+pgwarehouse0,100.71.184.23,postgresql,,MUMGCCWCDPRDPW00,pgwarehouse0standby,,"[""standby0""]",
+pgwarehouse0standby,100.71.184.76,pg_standby,,MUMGCCWCDPRDPW01,,pgwarehouse0,,standby0
 pgsynclog0standby,100.71.184.39,pg_standby,synclog_dbs,MUMGCCWCDPRDPSL0,,pgsynclog0,,standby0
 ,,,,,,,,
 group,var,val,type,,,,,
