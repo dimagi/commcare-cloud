@@ -509,7 +509,7 @@ pillows:
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 4
     SqlSMSPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
