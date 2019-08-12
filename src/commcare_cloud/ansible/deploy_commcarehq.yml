@@ -48,7 +48,7 @@
   hosts: proxy
   tasks:
     - include_tasks: roles/commcarehq/tasks/proxy_websockets.yml
-      when: run_websockets_wsgi
+      when: run_websockets_wsgi|bool
       tags: services
 
 - name: Webworker Supervisor Config

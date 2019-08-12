@@ -146,7 +146,7 @@ You can follow [these instructions](https://www.postgresql.org/docs/9.6/backup-d
     $ sudo -u postgres bash
     # enter ansible user password again. You will now be acting as the postgres user
     ```
-- Extract the backup and pipe it to the `psql` command to restore the data contained in the backup. The name of the default postgres database is `commcare`:
+- Extract the backup and pipe it to the `psql` command to restore the data contained in the backup. The name of the default postgres database is `commcarehq`:
 
     ``` bash
     $ gunzip -c <path to backup file> | psql commcarehq

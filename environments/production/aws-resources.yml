@@ -34,6 +34,7 @@ pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pillow0-production: 10.202.12.170
+pillow1-production: 10.202.12.128
 proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
 rabbit0-production: 10.202.42.98
