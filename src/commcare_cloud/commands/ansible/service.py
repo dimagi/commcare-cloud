@@ -31,6 +31,8 @@ STATES = {
 
 MONIT_MANAGED_SERVICES = ['postgresql', 'pgbouncer', 'redis', 'couchdb2']
 
+COMMCARE_INVENTORY_GROUPS = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy', 'airflow']
+
 
 @attr.s
 class ServiceOption(object):
@@ -231,7 +233,7 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
     def service_process_mapping(self):
         """
         Return a mapping of service names (as passed in by the user) to
-        a tuple of (linux_service_name, inventory_group1,inventory_group2)
+        a tuple of ('linux_service_name', 'inventory_group1,inventory_group2')
         """
         raise NotImplementedError
 
@@ -372,7 +374,8 @@ class Couchdb2(MultiAnsibleService):
     name = 'couchdb2'
     service_process_mapping = {
         'couchdb2': ('couchdb2', 'couchdb2'),
-        'couchdb2_proxy': ('nginx', 'couchdb2_proxy'),
+        'nginx': ('nginx', 'couchdb2_proxy'),
+        'haproxy': ('haproxy', 'couchdb2_proxy'),
     }
     log_location = '/usr/local/couchdb2/couchdb/var/log/'
 
@@ -440,7 +443,7 @@ class SingleSupervisorService(SupervisorService):
 
 class CommCare(SingleSupervisorService):
     name = 'commcare'
-    inventory_groups = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
+    inventory_groups = COMMCARE_INVENTORY_GROUPS
     log_location = '/home/cchq/www/{env}/log/django.log'
 
     @property

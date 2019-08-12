@@ -41,8 +41,7 @@ that machine is also the control machine.
 - [PostgreSQL](services/postgresql.md)
 - Proxy
     - [Enable HTTPS](howto/enable-https.md)
-- RiakCS/S3
-    - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
+- [BlobDB/S3](services/blobdb.md)
 - Firewall
     - [Configure a firewall on the servers](howto/firewall.md)
 - [Kafka](services/kafka.md)

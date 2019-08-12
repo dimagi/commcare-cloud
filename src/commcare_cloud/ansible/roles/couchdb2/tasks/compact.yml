@@ -1,0 +1,24 @@
+---
+- name: Copy compaction script
+  become: yes
+  template:
+    src: "compact_couchdb.sh.j2"
+    dest: "/usr/local/sbin/compact_couchdb.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  tags:
+    - cron
+
+- name: Create Daily Cron job (compact)
+  become: yes
+  cron:
+    name: "Compact DB"
+    job: "/usr/local/sbin/compact_couchdb.sh"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    user: couchdb
+    cron_file: compact_couch
+  tags:
+    - cron

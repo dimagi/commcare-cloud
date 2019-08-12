@@ -433,26 +433,6 @@ SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE client_addr = '
 SELECT pg_terminate_backend({procpid})
 ```
 
-## Postgres Hot Standby
-
-In situations where the disk becomes corrupt or unusable, you can switch HQ to utilize a hotstandby. 
-
-### Standby Description
-The postgres standby is a hot standby (hot standby means that it can accept reads but not writes) of our production database. The standby keeps up with the production database through log shipping. As write ahead logs (WALs) are completed in the main database, they are sent to a directory on the standby machine (currently /opt/data/postgresql/wal_archive) where their operations are replicated into the standby database.
-
-### Creating the standby with ansible
-Assumes that the deploy_db.yml playbook has already been applied to the standby node.
-
-```
-$ commcare-cloud <env> ansible-playbook setup_pg_standby.yml -e standby=[standby node]
-```
-
-### Failover to standby with ansible
-
-```
-$ commcare-cloud <env> ansible-playbook promote_pg_standby.yml -e standby=[standby node]
-```
-
 ### Replication Delay
 https://www.enterprisedb.com/blog/monitoring-approach-streaming-replication-hot-standby-postgresql-93
 

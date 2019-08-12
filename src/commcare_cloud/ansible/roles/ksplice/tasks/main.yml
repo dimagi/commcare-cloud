@@ -4,7 +4,7 @@
   shell: uptrack-show
   ignore_errors: yes
   register: command_result
-  when: KSPLICE_ACTIVE
+  when: KSPLICE_ACTIVE|bool
   changed_when: no
 
 - name: Download install-uptrack

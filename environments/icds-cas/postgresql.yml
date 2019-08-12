@@ -6,7 +6,6 @@ REPORTING_DATABASES:
   icds-ucr:
     WRITE: icds-ucr
     READ:
-      - [icds-ucr, 1]
       - [icds-ucr-standby0, 10]
       - [icds-ucr-standby1, 10]
       - [icds-ucr-standby2, 10]
@@ -37,6 +36,7 @@ pgbouncer_override:
   pgbouncer_reserve_pool: 5
 
 postgres_override:
+  postgresql_max_standby_delay: 180s
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
   postgresql_hba_entries:
@@ -69,13 +69,13 @@ dbs:
         host: pgshard0
       p2:
         shards: [104, 205]
-        host: pgshard1
+        host: pgshard1standby
       p3:
         shards: [206, 308]
         host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard3
+        host: pgshard3standby
       p5:
         shards: [412, 514]
         host: pgshard4
