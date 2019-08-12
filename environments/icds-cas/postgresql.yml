@@ -6,7 +6,6 @@ REPORTING_DATABASES:
   icds-ucr:
     WRITE: icds-ucr
     READ:
-      - [icds-ucr, 1]
       - [icds-ucr-standby0, 10]
       - [icds-ucr-standby1, 10]
       - [icds-ucr-standby2, 10]
@@ -95,7 +94,7 @@ dbs:
         host: pgshard8standby
       p10:
         shards: [927, 1023]
-        host: pgshard9standby
+        host: pgshard9
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata
