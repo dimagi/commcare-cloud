@@ -22,7 +22,7 @@ citusworker5standby,100.71.184.137,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPR
 citusworker6standby,100.71.184.135,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW18,,citusworker6,,standby0
 citusworker7standby,100.71.184.141,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW19,,citusworker7,,standby0
 citusworker8standby,100.71.184.145,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW20,,citusworker8,,standby0
-citusworker9tandby,100.71.184.138,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW21,,citusworker9,,standby0
+citusworker9standby,100.71.184.138,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW21,,citusworker9,,standby0
 citusworker10standby,100.71.184.139,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW22,,citusworker10,,standby0
 citusworker11standby,100.71.184.133,citusdb,citusdb_worker,pg_standby,MUMGCCWCDPRDCW23,,citusworker11,,standby0
 ,,,,,,,,,
@@ -59,3 +59,16 @@ citusdb_worker,postgresql_random_page_cost,1.1,F,,,,,,
 citusdb_worker,postgresql_shared_buffers,20GB,S,,,,,,
 citusdb_worker,postgresql_wal_buffers,16MB,S,,,,,,
 citusdb_worker,postgresql_work_mem,1872kB,S,,,,,,
+citusmaster0standby,postgresql_enable_archive,true,B,,,,,,
+citusworker0standby,postgresql_enable_archive,true,B,,,,,,
+citusworker1standby,postgresql_enable_archive,true,B,,,,,,
+citusworker2standby,postgresql_enable_archive,true,B,,,,,,
+citusworker3standby,postgresql_enable_archive,true,B,,,,,,
+citusworker4standby,postgresql_enable_archive,true,B,,,,,,
+citusworker5standby,postgresql_enable_archive,true,B,,,,,,
+citusworker6standby,postgresql_enable_archive,true,B,,,,,,
+citusworker7standby,postgresql_enable_archive,true,B,,,,,,
+citusworker8standby,postgresql_enable_archive,true,B,,,,,,
+citusworker9tandby,postgresql_enable_archive,true,B,,,,,,
+citusworker10standby,postgresql_enable_archive,true,B,,,,,,
+citusworker11standby,postgresql_enable_archive,true,B,,,,,,
