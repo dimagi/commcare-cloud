@@ -1,0 +1,15 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+instances:
+  - use_mount: true
+    tags:
+      - environment:{{ env_monitoring_id }}
+    file_system_blacklist:
+      - tmpfs$
+      - devtmpfs$
+      - squashfs$
+    mount_point_blacklist:
+      - /boot$
+    service_check_rw: true

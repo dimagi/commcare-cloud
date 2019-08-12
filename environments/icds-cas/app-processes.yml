@@ -43,7 +43,6 @@ celery_processes:
       concurrency: 6
     icds_aggregation_queue:
       concurrency: 20
-      max_tasks_per_child: 1
     case_rule_queue:
       concurrency: 2
     sumologic_logs_queue:
@@ -510,7 +509,7 @@ pillows:
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 4
     SqlSMSPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
