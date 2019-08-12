@@ -87,12 +87,6 @@ kafka0
 [kafka:children]
 kafka0
 
-{{ __celery6__ }}
-
-{{ __celery7__ }}
-
-{{ __celery8__ }}
-
 {{ __celery9__ }}
 
 {{ __celery10__ }}
@@ -103,9 +97,6 @@ kafka0
 
 
 [celery:children]
-celery6
-celery7
-celery8
 celery9
 celery10
 celery11
@@ -114,10 +105,10 @@ celery12
 [celery:vars]
 swap_size=8G
 
-{{ __pillow0__ }}
+{{ __pillow1__ }}
 
 [pillowtop:children]
-pillow0
+pillow1
 
 {{ __formplayer0__ }}
 

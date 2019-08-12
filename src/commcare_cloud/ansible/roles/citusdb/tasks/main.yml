@@ -23,7 +23,7 @@
    notify: Restart postgres
 
  - name: Install and configure postgresql
-   include_role:
+   import_role:
      name: postgresql_base
    vars:
      postgresql_version: "{{ __postgresql_version }}"
@@ -32,7 +32,6 @@
      postgresql_shared_preload_libraries:
        - 'citus'
        - 'pg_stat_statements'
-   tags: after-reboot
 
  - name: Set up Citus Worker DBs
    import_tasks: setup_worker.yml
