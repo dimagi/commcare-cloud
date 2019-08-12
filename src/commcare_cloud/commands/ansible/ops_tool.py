@@ -186,7 +186,7 @@ def get_couch_config(environment, nodes=None):
         control_node_local_port=15986,
         username=environment.get_vault_var('localsettings_private.COUCH_USERNAME'),
         aliases={
-            'couchdb@{}'.format(node): environment.get_hostname(node, full=False) for node in couch_nodes
+            'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes
         }
     )
     config.set_password(environment.get_vault_var('localsettings_private.COUCH_PASSWORD'))
