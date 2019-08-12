@@ -298,7 +298,7 @@ SMS_BACKENDS = {
 
 {% if 'SYNC_CASE_FOR_MESSAGING_ON_SAVE' in localsettings %}
 SYNC_CASE_FOR_MESSAGING_ON_SAVE = {{ localsettings.SYNC_CASE_FOR_MESSAGING_ON_SAVE }}
-{% else %}
+{% endif %}
 
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
