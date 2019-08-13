@@ -222,13 +222,103 @@ dbs:
       django_migrate: False
       hq_acceptable_standby_delay: 0
   logical:
-    - name: test_pglogical_low
-      host: testdeleteshardlow
-      master_host: testdeleteshard
-      master_db_name: commcarehq_p10_test_delete
+    - name: commcarehq_p10
+      host: pgshard10
+      master_host: pgshard0
+      master_db_name: commcarehq_p1
+      replication_set: [0, 51]
+    - name: commcarehq_p11
+      host: pgshard11
+      master_host: pgshard0
+      master_db_name: commcarehq_p1
+      replication_set: [52, 103]
+    - name: commcarehq_p12
+      host: pgshard12
+      master_host: pgshard1standby
+      master_db_name: commcarehq_p2
+      replication_set: [104, 154]
+    - name: commcarehq_p13
+      host: pgshard13
+      master_host: pgshard1standby
+      master_db_name: commcarehq_p2
+      replication_set: [155, 205]
+    - name: commcarehq_p14
+      host: pgshard14
+      master_host: pgshard2
+      master_db_name: commcarehq_p3
+      replication_set: [206, 257]
+    - name: commcarehq_p15
+      host: pgshard15
+      master_host: pgshard2
+      master_db_name: commcarehq_p3
+      replication_set: [258, 308]
+    - name: commcarehq_p16
+      host: pgshard16
+      master_host: pgshard3standby
+      master_db_name: commcarehq_p4
+      replication_set: [309, 360]
+    - name: commcarehq_p17
+      host: pgshard17
+      master_host: pgshard3standby
+      master_db_name: commcarehq_p4
+      replication_set: [361, 411]
+    - name: commcarehq_p18
+      host: pgshard18
+      master_host: pgshard4
+      master_db_name: commcarehq_p5
+      replication_set: [412, 463]
+    - name: commcarehq_p19
+      host: pgshard19
+      master_host: pgshard4
+      master_db_name: commcarehq_p5
+      replication_set: [464, 514]
+    - name: commcarehq_p20
+      host: pgshard20
+      master_host: pgshard5standby
+      master_db_name: commcarehq_p6
+      replication_set: [515, 566]
+    - name: commcarehq_p21
+      host: pgshard21
+      master_host: pgshard5standby
+      master_db_name: commcarehq_p6
+      replication_set: [567, 617]
+    - name: commcarehq_p22
+      host: pgshard22
+      master_host: pgshard6
+      master_db_name: commcarehq_p7
+      replication_set: [618, 669]
+    - name: commcarehq_p23
+      host: pgshard23
+      master_host: pgshard6
+      master_db_name: commcarehq_p7
+      replication_set: [670, 720]
+    - name: commcarehq_p24
+      host: pgshard24
+      master_host: pgshard7
+      master_db_name: commcarehq_p8
+      replication_set: [721, 771]
+    - name: commcarehq_p25
+      host: pgshard25
+      master_host: pgshard7
+      master_db_name: commcarehq_p8
+      replication_set: [772, 823]
+    - name: commcarehq_p26
+      host: pgshard26
+      master_host: pgshard8standby
+      master_db_name: commcarehq_p9
+      replication_set: [824, 875]
+    - name: commcarehq_p27
+      host: pgshard27
+      master_host: pgshard8standby
+      master_db_name: commcarehq_p9
+      replication_set: [876, 926]
+    - name: commcarehq_p28
+      host: pgshard28
+      master_host: pgshard9
+      master_db_name: commcarehq_p10
       replication_set: [927, 975]
-    - name: test_pglogical_high
-      host: testdeleteshardhigh
-      master_host: testdeleteshard
-      master_db_name: commcarehq_p10_test_delete
+    - name: commcarehq_p29
+      host: pgshard29
+      master_host: pgshard9
+      master_db_name: commcarehq_p10
       replication_set: [976, 1023]
