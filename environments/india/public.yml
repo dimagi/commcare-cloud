@@ -126,6 +126,7 @@ localsettings:
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
