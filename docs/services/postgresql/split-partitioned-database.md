@@ -13,8 +13,6 @@ For the purposes of this document we'll assume that we have three database machi
 
 * *commcarehq_p1* (with django alias *p1*)
 
-* *pg1* has a [replication slot][] available
-
 *pg2* and *pg3* is a newly deployed server in the *[postgresql]* group and we want to
 create a new  *commcarehq_p2* on *pg2*  and *commcarehq_p3* on *pg3* with half the data from *commcarehq_p1* on each.
 
