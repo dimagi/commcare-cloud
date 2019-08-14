@@ -76,7 +76,7 @@ dbs:
         host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard3standby
+        host: pgshard3
       p5:
         shards: [412, 514]
         host: pgshard4
