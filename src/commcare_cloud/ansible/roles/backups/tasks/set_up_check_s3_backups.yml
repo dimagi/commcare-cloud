@@ -1,0 +1,23 @@
+- name: Copy check_s3_backup script to /usr/local/bin
+  template:
+    src: check_s3_backup.py.j2
+    dest: /usr/local/bin/check_s3_backup.py
+    mode: "u=rwx,g=rx,o=rx"
+  when: postgres_s3 or couch_s3 or blobdb_s3
+  tags:
+    - backup_checks
+
+
+- name: Create Daily Check Backups Cron job
+  become: yes
+  cron:
+    name: "Check {{ service }} s3 backups"
+    job: "/usr/local/bin/check_s3_backup.py {{ service }} > {{ service_backup_dir }}/s3_backup_status.txt || { echo {{ service_backup_dir }}/s3_backup_status.txt mail -s 'Recent {{ service }} backups missing' {{ check_s3_backups_email }}; }"
+    state: "{{ 'present' if condition else 'absent' }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: "{{ user }}"
+    cron_file: "backup_{{ service }}"
+  tags:
+    - backup_checks
