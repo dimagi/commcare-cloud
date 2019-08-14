@@ -119,7 +119,9 @@ billing_email: sales@example.com
 invoicing_contact_email: billing-support@example.com
 growth_email: growth@example.com
 master_list_email: master-list@example.com
-report_builder_add_on_email: sales@example.com
+sales_email: sales@example.com
+privacy_email: privacy@dimagi.com
+feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@example.com
 contact_email: info@example.com
 soft_assert_email: commcarehq-ops+soft_asserts@example.com
