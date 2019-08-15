@@ -4,3 +4,17 @@
       - htop
     state: present
   become: yes
+
+- name: Set proper umask
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: "^UMASK"
+    line: "UMASK\t\t022"
+  tags:
+    - umask
+
+- name: Set proper umask for this session
+  shell: umask 022
+  tags:
+    - umask
