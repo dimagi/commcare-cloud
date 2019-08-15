@@ -693,7 +693,29 @@ pillows:
       start_process: 117
       num_processes: 3
       total_processes: 120
+    case_messaging_sync_pillow:
+      num_processes: 10
   'pillow15':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 16
-
+  'pillow21':
+  'pillow22':
+  'pillow23':
+  'pillow24':
+  'pillow25':
+  'pillow26':
+  'pillow27':
+  'pillow28':
+  'pillow29':
+  'pillow30':
+  'pillow31':
+  'pillow32':
+  'pillow33':
+  'pillow34':
+  'pillow35':
+  'pillow36':
+  'pillow37':
+  'pillow38':
+  'pillow39':
+  'pillow40':
+  'pillow41':

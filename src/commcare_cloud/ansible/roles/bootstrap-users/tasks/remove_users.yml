@@ -4,6 +4,7 @@
   shell: "ps -o pid= -u \"{{ dev_users.absent|join(',') }}\""
   register: running_processes
   changed_when: no
+  failed_when: no
 
 - name: Kill running processes
   become: yes
