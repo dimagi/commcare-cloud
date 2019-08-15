@@ -4,13 +4,18 @@
 # we might be able install from the default bionic apt repo
 # and not add the official nginx repo.
 # See: https://github.com/dimagi/commcare-cloud/pull/2901#pullrequestreview-250517794
+
+- name: Add Nginx apt key
+  become: yes
+  apt_key: url=https://nginx.org/keys/nginx_signing.key state=present
+
 - name: Add nginx repository
   become: yes
-  apt_repository: repo='ppa:nginx/stable' state=present
+  apt_repository: repo='deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx' state=present
 
 - name: Install nginx
   become: yes
-  apt: name="{{ nginx_ubuntu_pkg }}" state=latest update_cache=yes cache_valid_time=3600
+  apt: name="nginx=1.17.3-1~bionic" state=present update_cache=yes cache_valid_time=3600
 
 - name: Make sure nofile ulimit is high
   become: yes
