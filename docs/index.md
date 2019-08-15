@@ -48,7 +48,7 @@ that machine is also the control machine.
 - Celery
     - [Add a new Celery machine](howto/add-celery-machines.md)
 - Redis
-	- [Setup Redis Cluster](howto/redis-cluster.md)
+	- [Setup Redis Cluster](howto/redis_cluster.md)
 
 ## Optional but recommended
 - [Set up Sentry for error messages](monitoring/set-up-sentry.md)
