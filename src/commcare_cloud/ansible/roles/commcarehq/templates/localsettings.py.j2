@@ -299,6 +299,10 @@ SMS_BACKENDS = {
     "265" : "MOBILE_BACKEND_TROPO_CANADIAN",
 }
 
+{% if 'SYNC_CASE_FOR_MESSAGING_ON_SAVE' in localsettings %}
+SYNC_CASE_FOR_MESSAGING_ON_SAVE = {{ localsettings.SYNC_CASE_FOR_MESSAGING_ON_SAVE }}
+{% endif %}
+
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
 {% else %}
@@ -842,9 +846,11 @@ BILLING_EMAIL = '{{ billing_email }}'
 INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
 GROWTH_EMAIL = '{{ growth_email }}'
 MASTER_LIST_EMAIL = '{{ master_list_email }}'
-REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
+SALES_EMAIL = '{{ sales_email }}'
+PRIVACY_EMAIL = '{{ privacy_email }}'
 EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
 CONTACT_EMAIL = '{{ contact_email }}'
+FEEDBACK_EMAIL = '{{ feedback_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
 DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
 {% if TRANSIFEX_API_TOKEN %}

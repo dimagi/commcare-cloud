@@ -75,7 +75,9 @@ billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
 master_list_email: master-list@dimagi.com
-report_builder_add_on_email: sales@dimagi.com
+sales_email: sales@dimagi.com
+privacy_email: privacy@dimagi.com
+feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
@@ -126,6 +128,7 @@ localsettings:
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"

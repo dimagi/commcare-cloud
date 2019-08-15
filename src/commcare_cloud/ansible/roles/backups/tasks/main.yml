@@ -1,3 +1,9 @@
+# todo:  The backups code doesn't really logically handle what happens when more than one
+# todo:  server hosts a service, because it runs the same backup code on all of them,
+# todo:  which depending on the service is either redundant (backup happens multiple times)
+# todo:  or conflicting (shards uploaded to the same place, overwrite each other)
+# todo:  I don't know the implications of this, possibly currently only used on monoliths.
+
 - name: Set up aws credentials
   become: yes
   import_role:
@@ -83,9 +89,14 @@
     - cron
     - backups
 
-- name: Copy check_s3_backup script to /usr/local/bin
-  template:
-    src: check_s3_backup.py.j2
-    dest: /usr/local/bin/check_s3_backup.py
-    mode: "u=rwx,g=rx,o=rx"
-  when: postgres_s3 or couch_s3 or blobdb_s3
+
+- name: Set up check_s3_backups
+  become: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_check_s3_backups.yml
+  vars:
+    service: 'blobdb'
+    condition: "{{ check_s3_backups_email and blobdb_s3 and backup_blobdb and 'shared_dir_host' in group_names }}"
+    user: "{{ blobdb_user }}"
+    service_backup_dir: "{{ blobdb_backup_dir }}"
