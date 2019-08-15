@@ -85,6 +85,7 @@
       register: result
       failed_when:
         - result.failed
+        - '"node {{ item.master_db_name }}_provider already exists" not in result.msg'
         - '"current database is already configured as pglogical node" not in result.msg'
 
     - name: Create replication set
@@ -133,6 +134,7 @@
       register: result
       failed_when:
         - result.failed
+        - '"node {{ item.name }}_subscriber already exists" not in result.msg'
         - '"current database is already configured as pglogical node" not in result.msg'
 
     - name: Subscribe to replication set and begin synchronization
