@@ -43,6 +43,9 @@ postgres_override:
     - contype: host
       users: hqrepl
       netmask: 100.71.184.0/22
+    - contype: replication
+      users: hqrepl
+      netmask: 100.71.184.0/22
     - contype: host
       users: TCLBKPADMIN
       netmask: 127.0.0.1/32
