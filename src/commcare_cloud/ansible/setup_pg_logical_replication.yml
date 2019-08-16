@@ -7,11 +7,6 @@
   vars_files:
     - roles/postgresql_base/defaults/main.yml
   tasks:
-    - name: Install pglogical
-      apt:
-        name:
-          - postgresql-9.6-pglogical
-
     - name: Create pglogical extension (providers)
       become: yes
       become_user: postgres
