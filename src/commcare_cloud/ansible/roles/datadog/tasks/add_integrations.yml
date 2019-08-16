@@ -43,7 +43,7 @@
     - datadog_integrations
 
 - name: add datadog integration configs
-  template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml"
+  template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml" owner="dd-agent" group="dd-agent"
   notify: restart datadog
   tags:
     - datadog_integrations
