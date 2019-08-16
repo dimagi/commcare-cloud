@@ -14,12 +14,12 @@
 
 ## CommCare Version Dependency
 {% if changelog_entry.max_commcare_version -%}
-CommCare versions beyond this commit require this change to function correctly:
+CommCare versions beyond the following commit require this change to function correctly:
 [{{ changelog_entry.max_commcare_version[:8] }}](https://github.com/dimagi/commcare-hq/commit/{{ changelog_entry.max_commcare_version }})
 {% endif %}
 
 {%- if changelog_entry.min_commcare_version -%}
-This version of CommCare must be deployed before rolling out this change:
+The following version of CommCare must be deployed before rolling out this change:
 [{{ changelog_entry.min_commcare_version[:8] }}](https://github.com/dimagi/commcare-hq/commit/{{ changelog_entry.min_commcare_version }})
 {% endif %}
 

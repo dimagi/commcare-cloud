@@ -8,7 +8,7 @@
 
 
 ## CommCare Version Dependency
-CommCare versions beyond this commit require this change to function correctly:
+CommCare versions beyond the following commit require this change to function correctly:
 [81325fbd](https://github.com/dimagi/commcare-hq/commit/81325fbd9e3131c710179f7246dbe9caccb45154)
 
 
