@@ -40,7 +40,7 @@
   tags:
     - pgbouncer
 
-# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+# Allows to execute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
   changed_when: false
   register: no_tags
