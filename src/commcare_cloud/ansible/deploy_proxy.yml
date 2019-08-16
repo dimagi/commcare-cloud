@@ -7,7 +7,7 @@
       file: path="{{ nginx_static_home }}" owner="{{ cchq_user }}" group="{{ cchq_user }}" mode=0755 state=directory
 
     - name: install nginx
-      include_role:
+      import_role:
         name: nginx
         tasks_from: install
       when: not nginx_installed|default(False)
