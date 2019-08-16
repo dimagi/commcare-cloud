@@ -213,7 +213,7 @@ dbs:
       replication_set: [258, 308]
     - name: commcarehq_p17
       host: pgshard17
-      master_host: pgshard3standby
+      master_host: pgshard3
       master_db_name: commcarehq_p4
       replication_set: [361, 411]
     - name: commcarehq_p19
