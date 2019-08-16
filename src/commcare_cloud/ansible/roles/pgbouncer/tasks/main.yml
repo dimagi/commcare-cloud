@@ -40,6 +40,11 @@
   tags:
     - pgbouncer
 
+# Allows to execute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
 - name: Restarts pgbouncer (affect max open files limit)
   command: /bin/true
   notify: Restart pgbouncer
