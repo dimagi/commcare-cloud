@@ -130,9 +130,12 @@ Deploy this change to your databases using:
 commcare-cloud <env> ap setup_pg_logical_replication.yml
 ```
 
-This will begin the replication process in the background.
+This will begin the replication process in the background. To check the progress:
 
-# TODO Should add how to check progress and verify. currently i was doing this manually
+```bash
+commcare-cloud <env> run-shell-command pg2 -b --become-user=postgres "psql -d commcarehq_p2 -c  "'"'"SELECT * FROM pglogical.show_subscription_status()"'"'""
+```
+# TODO Add example output
 
 ### 3. Stop all DB requests
 Once the databases are fully replicated and you are ready to switch to the new databases, bring the site down.
