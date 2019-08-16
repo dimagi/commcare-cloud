@@ -27,8 +27,8 @@ executed by the agent on the logs. Version 6 of the agent does not support this 
 although v5 of the agent is still supported it requires Python 2.7 which has reached end of life and so
 will be deprecated soon.
 
-In order to facilitate the upgarde of the agent it is necessary to move the log processing
-functionality to a different system. The system that get's chosen should have the following characteristics:
+In order to facilitate the upgrade of the agent it is necessary to move the log processing
+functionality to a different system. The system that gets chosen should have the following characteristics:
 
 * low CPU and memory consumption
 * able to process the necessary volume of logs
