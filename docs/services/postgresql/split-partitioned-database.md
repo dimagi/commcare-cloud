@@ -100,6 +100,10 @@ postgresql_hba_entries:
   - contype: host
     users: foo
     netmask: 'pg2 ip address'
+  - contype: host
+    databases: replication
+    users: foo
+    netmask: 'pg2 ip address'
 ```
 
 ### 2. Setup *pg2* and *pg3*
