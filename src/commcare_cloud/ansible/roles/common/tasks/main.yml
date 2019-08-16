@@ -138,10 +138,15 @@
     src: at.deny
     dest: /etc/at.deny
     owner: root
-    group: root
+    group: daemon
     mode: 0640
     backup: yes
 
+- name: "remove at.allow"
+  become: yes
+  file:
+    file: /etc/at.allow
+    state: absent
 
 - import_tasks: antivirus.yml
   tags:
