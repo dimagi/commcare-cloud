@@ -106,6 +106,12 @@ postgresql_hba_entries:
     netmask: 'pg2 ip address'
 ```
 
+Then deploy these settings to your databases:
+
+```bash
+commcare-cloud <env> ap deploy_db.yml --limit=pg1,pg2,pg3
+```
+
 ### 2. Setup *pg2* and *pg3*
 
 Setup *pg2* and *pg3* as you would another postgresql database in commcare-cloud.
@@ -134,7 +140,7 @@ Deploy this change to your databases using:
 commcare-cloud <env> ap setup_pg_logical_replication.yml
 ```
 
-This will begin the replication process in the background. To check the progress:
+This will begin the replication process in the background which replicates one table at a time. To check the progress:
 
 ```bash
 commcare-cloud <env> run-shell-command pg2 -b --become-user=postgres "psql -d commcarehq_p2 -c  "'"'"SELECT * FROM pglogical.show_subscription_status()"'"'""
