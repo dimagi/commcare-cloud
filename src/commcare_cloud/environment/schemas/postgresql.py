@@ -113,6 +113,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         postgresql_hosts = environment.groups.get('postgresql', [])
         if self.DEFAULT_POSTGRESQL_HOST not in postgresql_hosts:
             postgresql_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
+        postgresql_hosts.extend(environment.groups.get('citusdb_master', []))
 
         dbs_by_host = defaultdict(list)
         for db in sorted_dbs:
