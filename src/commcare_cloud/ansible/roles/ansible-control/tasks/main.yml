@@ -33,6 +33,7 @@
       - virtualenv
       - virtualenvwrapper
     extra_args: '--ignore-installed six'
+    umask: 0022
 
 - name: Check whether init has been run
   become: yes
