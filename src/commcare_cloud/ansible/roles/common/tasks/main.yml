@@ -145,7 +145,7 @@
 - name: "remove at.allow"
   become: yes
   file:
-    file: /etc/at.allow
+    path: /etc/at.allow
     state: absent
 
 - import_tasks: antivirus.yml
