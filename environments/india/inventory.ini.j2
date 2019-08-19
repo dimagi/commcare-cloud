@@ -7,6 +7,8 @@
 {{ __citus2__ }}
 {{ __airflow1__ }}
 {{ __celery1__ }} swap_size=4G
+{{ __celery2__ }} swap_size=4G
+{{ __celery3__ }} swap_size=4G
 {{ __couch5__ }} swap_size=8G
 {{ __couch6__ }} swap_size=8G
 {{ __couch7__ }} swap_size=8G
@@ -54,6 +56,8 @@ kafka1
 
 [celery:children]
 celery1
+celery2
+celery3
 
 [pillowtop:children]
 pillow2
