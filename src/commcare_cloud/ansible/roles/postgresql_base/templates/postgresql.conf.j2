@@ -50,7 +50,7 @@ archive_command = '{{ postgresql_archive_command }}'
 archive_timeout = {{ postgresql_archive_timeout }}
 {% endif %}
 
-wal_level = {{ postgresql_wal_level|default(hot_standby) }}
+wal_level = {{ postgresql_wal_level }}
 max_wal_senders = 8
 max_wal_size = {{ postgresql_max_wal_size }}
 {% if postgresql_min_wal_size %}
