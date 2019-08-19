@@ -193,7 +193,7 @@ You will be prompted for the ansible vault password that you entered in [Step 2]
 In this step, you will be prompted for an SSH password. This is the root user's password. After this step, the root user will not be able to log in via SSH.
 
 ``` bash
-$ commcare-cloud monolith deploy-stack --first-time
+$ commcare-cloud monolith deploy-stack --first-time -e 'CCHQ_IS_FRESH_INSTALL=1'
 ```
 
 ```
