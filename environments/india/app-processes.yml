@@ -10,24 +10,25 @@ celery_processes:
   celery1:
     beat: {}
     flower: {}
+  celery2,celery3:
     reminder_queue:
       pooling: gevent
-      concurrency: 5
+      concurrency: 3
     submission_reprocessing_queue:
       concurrency: 1
     sms_queue:
       pooling: gevent
-      concurrency: 10
+      concurrency: 5
     email_queue,repeat_record_queue,sumologic_logs_queue,reminder_case_update_queue,icds_aggregation_queue,analytics_queue:
       pooling: gevent
-      concurrency: 200
+      concurrency: 100
     ucr_queue,ucr_indicator_queue,celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue,icds_dashboard_reports_queue,async_restore_queue,celery_periodic:
-      concurrency: 3
+      concurrency: 2
     saved_exports_queue:
       concurrency: 1
       optimize: True
     background_queue,dashboard_comparison_queue:
-      concurrency: 4
+      concurrency: 2
 pillows:
   pillow2:
     AppDbChangeFeedPillow:

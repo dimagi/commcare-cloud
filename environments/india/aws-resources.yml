@@ -1,5 +1,7 @@
 airflow1-india: 10.203.10.63
 celery1-india: 10.203.10.13
+celery2-india: 10.203.10.117
+celery3-india: 10.203.10.197
 citus0-india: 10.203.10.77
 citus1-india: 10.203.10.74
 citus2-india: 10.203.10.190
