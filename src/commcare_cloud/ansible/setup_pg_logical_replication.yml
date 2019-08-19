@@ -14,10 +14,10 @@
         ansible_ssh_pipelining: true
       postgresql_ext:
         name: pglogical
-        db: "{{item.master_db_name}}"
+        db: "{{item.source_db_name}}"
         port: "{{ postgresql_port }}"
-      with_items: "{{ postgresql_dbs.logical }}"
-      when: item.master_host == inventory_hostname
+      with_items: "{{ replications }}"
+      when: item.source_host == inventory_hostname
 
     - name: Create pglogical extension (subscribers)
       become: yes
@@ -26,10 +26,10 @@
         ansible_ssh_pipelining: true
       postgresql_ext:
         name: pglogical
-        db: "{{item.name}}"
-        port: "{{ postgresql_port }}"
-      with_items: "{{ postgresql_dbs.logical }}"
-      when: item.host == inventory_hostname
+        db: "{{item.target_db_name}}"
+        port: "{{ replications }}"
+      with_items: "{{ replications }}"
+      when: item.target_host == inventory_hostname
 
 # Set up provider nodes
 - hosts:
@@ -73,33 +73,33 @@
   tasks:
     - name: Create node
       postgresql_query:
-        db: '{{ item.master_db_name }}'
-        query: "SELECT pglogical.create_node(node_name := '{{ item.master_db_name }}_provider', dsn := 'host={{ item.master_host }} port=5432 dbname={{ item.master_db_name }} user={{ postgres_users.replication.username}} password={{ postgres_users.replication.password }}')"
-      with_items: "{{ postgresql_dbs.logical }}" # todo de-dupe for providers
-      when: item.master_host == inventory_hostname
+        db: '{{ item.source_db_name }}'
+        query: "SELECT pglogical.create_node(node_name := '{{ item.source_db_name }}_provider', dsn := 'host={{ item.source_host }} port=5432 dbname={{ item.source_db_name }} user={{ postgres_users.replication.username}} password={{ postgres_users.replication.password }}')"
+      with_items: "{{ replications }}"
+      when: item.source_host == inventory_hostname
       register: result
       failed_when:
         - result.failed
-        - '"node {{ item.master_db_name }}_provider already exists" not in result.msg'
+        - '"node {{ item.source_db_name }}_provider already exists" not in result.msg'
         - '"current database is already configured as pglogical node" not in result.msg'
 
     - name: Create replication set
       postgresql_query:
-        db: '{{ item.master_db_name }}'
-        query: "SELECT pglogical.create_replication_set(set_name := '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}')"
-      with_items: "{{ postgresql_dbs.logical }}"
-      when: item.master_host == inventory_hostname
+        db: '{{ item.source_db_name }}'
+        query: "SELECT pglogical.create_replication_set(set_name := '{{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}')"
+      with_items: "{{ replications }}"
+      when: item.source_host == inventory_hostname
       register: result
       failed_when:
         - result.failed
-        - '"replication set {{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }} already exists" not in result.msg'
+        - '"replication set {{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }} already exists" not in result.msg'
 
     - name: Add tables to replication set
       postgresql_query:
-        db: '{{ item.0.master_db_name }}'
-        query: "SELECT pglogical.replication_set_add_table(set_name := '{{ item.0.master_db_name }}_{{ item.0.replication_set.0 }}_{{ item.0.replication_set.1 }}',relation := '{{ item.1.table_name }}',row_filter := '{{ item.1.hash_fn }} & 1023 BETWEEN {{ item.0.replication_set.0}} AND {{ item.0.replication_set.1}}')"
-      loop: "{{ postgresql_dbs.logical|product(form_processor_replication_tables)|list }}"
-      when: item.0.master_host == inventory_hostname
+        db: '{{ item.0.source_db_name }}'
+        query: "SELECT pglogical.replication_set_add_table(set_name := '{{ item.0.source_db_name }}_{{ item.0.replication_set.0 }}_{{ item.0.replication_set.1 }}',relation := '{{ item.1.table_name }}',row_filter := '{{ item.1.hash_fn }} & 1023 BETWEEN {{ item.0.replication_set.0}} AND {{ item.0.replication_set.1}}')"
+      loop: "{{ replications|product(form_processor_replication_tables)|list }}"
+      when: item.0.source_host == inventory_hostname
       register: result
       failed_when:
         - result.failed
@@ -107,10 +107,10 @@
 
     - name: Add sequences to replication set
       postgresql_query:
-        db: '{{ item.master_db_name }}'
-        query: "SELECT pglogical.replication_set_add_all_sequences(set_name := '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}',schema_names := ARRAY['public'])"
-      loop: "{{ postgresql_dbs.logical }}"
-      when: item.master_host == inventory_hostname
+        db: '{{ item.source_db_name }}'
+        query: "SELECT pglogical.replication_set_add_all_sequences(set_name := '{{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}',schema_names := ARRAY['public'])"
+      loop: "{{ replications }}"
+      when: item.source_host == inventory_hostname
 
 # Set up subscriber nodes
 - hosts:
@@ -122,10 +122,10 @@
   tasks:
     - name: Create node
       postgresql_query:
-        db: '{{ item.name }}'
-        query: "SELECT pglogical.create_node(node_name := '{{ item.name }}_subscriber', dsn := 'host={{ item.host }} port=5432 dbname={{ item.name }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}');"
-      loop: "{{ postgresql_dbs.logical }}"
-      when: item.host == inventory_hostname
+        db: '{{ item.target_db_name }}'
+        query: "SELECT pglogical.create_node(node_name := '{{ item.target_db_name }}_subscriber', dsn := 'host={{ item.target_host }} port=5432 dbname={{ item.target_db_name }} user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }}');"
+      loop: "{{ replications }}"
+      when: item.target_host == inventory_hostname
       register: result
       failed_when:
         - result.failed
@@ -134,10 +134,10 @@
 
     - name: Subscribe to replication set and begin synchronization
       postgresql_query:
-        db: '{{ item.name }}'
-        query: "SELECT pglogical.create_subscription(subscription_name := '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub',provider_dsn := 'host={{ item.master_host }} port=5432 dbname={{ item.master_db_name}} user={{ postgres_users.replication.username}} password={{ postgres_users.replication.password }}',replication_sets := '{ {{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }} }', synchronize_structure := 'true',synchronize_data := 'true');"
-      loop: "{{ postgresql_dbs.logical }}"
-      when: item.host == inventory_hostname
+        db: '{{ item.target_db_name }}'
+        query: "SELECT pglogical.create_subscription(subscription_name := '{{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub',provider_dsn := 'host={{ item.source_host }} port=5432 dbname={{ item.source_db_name}} user={{ postgres_users.replication.username}} password={{ postgres_users.replication.password }}',replication_sets := '{ {{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }} }', synchronize_structure := 'true',synchronize_data := 'true');"
+      loop: "{{ replications }}"
+      when: item.target_host == inventory_hostname
       register: result
 
 # status
@@ -150,10 +150,10 @@
   tasks:
     - name: Query provider status
       postgresql_query:
-        db: '{{ item.master_db_name }}'
-        query: "select application_name, sent_location, replay_location from pg_stat_replication where application_name = '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub'"
-      loop: "{{ postgresql_dbs.logical }}"
-      when: item.master_host == inventory_hostname
+        db: '{{ item.source_db_name }}'
+        query: "select application_name, sent_location, replay_location from pg_stat_replication where application_name = '{{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub'"
+      loop: "{{ replications }}"
+      when: item.source_host == inventory_hostname
       register: result
       tags: status
     - name: All provider status
@@ -162,10 +162,10 @@
       tags: status
     - name: Query subscriber status
       postgresql_query:
-        db: '{{ item.name }}'
-        query: "select pglogical.show_subscription_status('{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub')"
-      loop: "{{ postgresql_dbs.logical }}"
-      when: item.host == inventory_hostname
+        db: '{{ item.target_db_name }}'
+        query: "select pglogical.show_subscription_status('{{ item.source_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub')"
+      loop: "{{ replications }}"
+      when: item.target_host == inventory_hostname
       register: result
       tags: status
     - name: All subscriber status
@@ -183,8 +183,8 @@
   tasks:
     - name: Query provider status
       postgresql_query:
-        db: '{{ item.master_db_name }}'
+        db: '{{ item.source_db_name }}'
         query: "SELECT pglogical.synchronize_sequence( seqoid ) FROM pglogical.sequence_state"
-      loop: "{{ postgresql_dbs.logical }}"
-      when: item.master_host == inventory_hostname
+      loop: "{{ replications }}"
+      when: item.source_host == inventory_hostname
       tags: synchronize_sequences
