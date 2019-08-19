@@ -147,8 +147,6 @@
   become_user: postgres
   vars_files:
     - roles/postgresql_base/defaults/main.yml
-  vars:
-    - display_skipped_hosts: False
   tasks:
     - name: Query provider status
       postgresql_query:
@@ -174,3 +172,19 @@
       debug:
         msg: "{{ result.results | reject(\"skipped\") | map(attribute=\"query_result\") | list }}"
       tags: status
+
+# synchronize sequences
+- hosts:
+    - shard_dbs
+  become: yes
+  become_user: postgres
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  tasks:
+    - name: Query provider status
+      postgresql_query:
+        db: '{{ item.master_db_name }}'
+        query: "SELECT pglogical.synchronize_sequence( seqoid ) FROM pglogical.sequence_state"
+      loop: "{{ postgresql_dbs.logical }}"
+      when: item.master_host == inventory_hostname
+      tags: synchronize_sequences

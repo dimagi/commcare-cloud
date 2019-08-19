@@ -143,9 +143,23 @@ commcare-cloud <env> ap setup_pg_logical_replication.yml
 This will begin the replication process in the background which replicates one table at a time. To check the progress:
 
 ```bash
-commcare-cloud <env> run-shell-command pg2 -b --become-user=postgres "psql -d commcarehq_p2 -c  "'"'"SELECT * FROM pglogical.show_subscription_status()"'"'""
+ANSIBLE_DISPLAY_SKIPPED_HOSTS=False commcare-cloud <env> ap setup_pg_logical_replication.yml --tags=status
+
+TASK [All subscriber status] *****************
+ok: [pg2] => {
+    "msg": [
+        [
+            {
+                "show_subscription_status": "(sub_name,initializing,provider_name,\"connection_string\",internal_pg_logical_name,{subscription},{all})"
+            }
+        ]
+    ]
+}
+
 ```
-# TODO Add example output
+
+In the above output `initializing` means that the database is copying from the original to the new database.
+Once complete it will change to `replicating`
 
 ### 3. Stop all DB requests
 Once the databases are fully replicated and you are ready to switch to the new databases, bring the site down.
@@ -161,7 +175,36 @@ commcare-cloud <env> downtime start
 commcare-cloud <env> run-shell-command pg1,pg2,pg3 'monit stop pgbouncer' --become
 ```
 
-TODO: synchronize sequences
+Verify that the replication is up to date by ensuring `replay_location` and `sent_location` are the same for each database:
+
+```bash
+ANSIBLE_DISPLAY_SKIPPED_HOSTS=False commcare-cloud <env> ap setup_pg_logical_replication.yml --tags=status --limit=pg1
+ok: [100.71.184.26] => {
+    "msg": [
+        [
+            {
+                "application_name": "commcarehq_p2_0_1_sub",
+                "replay_location": "2058/4C93E6B0",
+                "sent_location": "2058/4C93E6B0"
+            }
+        ],
+        [
+            {
+                "application_name": "commcarehq_p3_2_3_sub",
+                "replay_location": "2058/4C93E6B0",
+                "sent_location": "2058/4C93E6B0"
+            }
+        ]
+    ]
+}
+```
+
+Synchronize the sequences:
+
+```bash
+ANSIBLE_DISPLAY_SKIPPED_HOSTS=False commcare-cloud <env> ap setup_pg_logical_replication.yml --tags=synchronize_sequences --limit=pg1
+```
+
 ### 4. Update configuration
 
 
