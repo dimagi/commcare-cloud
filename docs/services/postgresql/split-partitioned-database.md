@@ -161,7 +161,9 @@ commcare-cloud <env> downtime start
 commcare-cloud <env> run-shell-command pg1,pg2,pg3 'monit stop pgbouncer' --become
 ```
 
+TODO: synchronize sequences
 ### 4. Update configuration
+
 
 **Update ansible config**
 
