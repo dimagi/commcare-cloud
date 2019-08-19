@@ -139,3 +139,38 @@
       loop: "{{ postgresql_dbs.logical }}"
       when: item.host == inventory_hostname
       register: result
+
+# status
+- hosts:
+    - shard_dbs
+  become: yes
+  become_user: postgres
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  vars:
+    - display_skipped_hosts: False
+  tasks:
+    - name: Query provider status
+      postgresql_query:
+        db: '{{ item.master_db_name }}'
+        query: "select application_name, sent_location, replay_location from pg_stat_replication where application_name = '{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub'"
+      loop: "{{ postgresql_dbs.logical }}"
+      when: item.master_host == inventory_hostname
+      register: result
+      tags: status
+    - name: All provider status
+      debug:
+        msg: "{{ result.results | reject(\"skipped\") | map(attribute=\"query_result\") | list }}"
+      tags: status
+    - name: Query subscriber status
+      postgresql_query:
+        db: '{{ item.name }}'
+        query: "select pglogical.show_subscription_status('{{ item.master_db_name }}_{{ item.replication_set.0 }}_{{ item.replication_set.1 }}_sub')"
+      loop: "{{ postgresql_dbs.logical }}"
+      when: item.host == inventory_hostname
+      register: result
+      tags: status
+    - name: All subscriber status
+      debug:
+        msg: "{{ result.results | reject(\"skipped\") | map(attribute=\"query_result\") | list }}"
+      tags: status
