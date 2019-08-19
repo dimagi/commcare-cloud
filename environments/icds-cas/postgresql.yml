@@ -76,7 +76,7 @@ dbs:
         host: pgshard2
       p4:
         shards: [309, 411]
-        host: pgshard3standby
+        host: pgshard3
       p5:
         shards: [412, 514]
         host: pgshard4
@@ -119,6 +119,66 @@ dbs:
       name: warehouse
       host: pgwarehouse0
       django_migrate: True
+    - name: commcarehq_p10
+      host: pgshard10
+      django_migrate: False
+    - name: commcarehq_p11
+      host: pgshard11
+      django_migrate: False
+    - name: commcarehq_p12
+      host: pgshard12
+      django_migrate: False
+    - name: commcarehq_p13
+      host: pgshard13
+      django_migrate: False
+    - name: commcarehq_p14
+      host: pgshard14
+      django_migrate: False
+    - name: commcarehq_p15
+      host: pgshard15
+      django_migrate: False
+    - name: commcarehq_p16
+      host: pgshard16
+      django_migrate: False
+    - name: commcarehq_p17
+      host: pgshard17
+      django_migrate: False
+    - name: commcarehq_p18
+      host: pgshard18
+      django_migrate: False
+    - name: commcarehq_p19
+      host: pgshard19
+      django_migrate: False
+    - name: commcarehq_p20
+      host: pgshard20
+      django_migrate: False
+    - name: commcarehq_p21
+      host: pgshard21
+      django_migrate: False
+    - name: commcarehq_p22
+      host: pgshard22
+      django_migrate: False
+    - name: commcarehq_p23
+      host: pgshard23
+      django_migrate: False
+    - name: commcarehq_p24
+      host: pgshard24
+      django_migrate: False
+    - name: commcarehq_p25
+      host: pgshard25
+      django_migrate: False
+    - name: commcarehq_p26
+      host: pgshard26
+      django_migrate: False
+    - name: commcarehq_p27
+      host: pgshard27
+      django_migrate: False
+    - name: commcarehq_p28
+      host: pgshard28
+      django_migrate: False
+    - name: commcarehq_p29
+      host: pgshard29
+      django_migrate: False
   standby:
     - django_alias: icds-ucr-standby0
       name: commcarehq_icds_aggregatedata

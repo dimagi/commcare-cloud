@@ -88,7 +88,9 @@ billing_email: droberts+billing-comm@dimagi.com
 invoicing_contact_email: droberts+billing-support@dimagi.com
 growth_email: droberts+growth@dimagi.com
 master_list_email: droberts+master-list@dimagi.com
-report_builder_add_on_email: droberts+sales@dimagi.com
+sales_email: droberts+sales@dimagi.com
+privacy_email: droberts+privacy@dimagi.com
+feedback_email: droberts+feedback@dimagi.com
 eula_change_email: droberts+eula-notifications@dimagi.com
 contact_email: droberts+info@dimagi.com
 soft_assert_email: droberts+commcarehq-ops+soft_asserts@dimagi.com

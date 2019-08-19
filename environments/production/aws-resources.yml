@@ -1,10 +1,7 @@
-celery6-production: 10.202.12.126
-celery7-production: 10.202.12.105
-celery8-production: 10.202.12.146
-celery9-production: 10.202.12.80
 celery10-production: 10.202.12.142
 celery11-production: 10.202.12.27
 celery12-production: 10.202.12.101
+celery9-production: 10.202.12.80
 control-production: 10.202.10.79
 couch12-production: 10.202.40.52
 couch13-production: 10.202.40.154
@@ -33,7 +30,6 @@ pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pillow0-production: 10.202.12.170
 pillow1-production: 10.202.12.128
 proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221

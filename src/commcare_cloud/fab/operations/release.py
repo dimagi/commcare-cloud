@@ -212,13 +212,14 @@ def _get_local_submodule_urls(path):
 
 
 def _get_remote_submodule_urls(path):
+    submodule_list = _get_submodule_list()
     with cd(env.code_current):
         remote_submodule_config = [
             GitConfig(
                 key='submodule.{}.url'.format(submodule),
                 value=sudo("git config submodule.{}.url".format(submodule))
             )
-            for submodule in _get_submodule_list()]
+            for submodule in submodule_list]
     return remote_submodule_config
 
 
