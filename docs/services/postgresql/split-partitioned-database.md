@@ -245,6 +245,12 @@ commcare-cloud <env> ap deploy_db.yml --limit=pg2,pg3
 commcare-cloud <env> django-manage --tmux configure_pl_proxy_cluster
 ```
 
+To remove the logical replication run the following on all subscriber databases:
+
+```sql
+SELECT pglogical.drop_node(sub_name, true)
+```
+
 ### 5. Restart services
 **start pgbouncer**
 
