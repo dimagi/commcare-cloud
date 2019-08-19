@@ -1,4 +1,4 @@
-hostname,host_address,group 1,group 2,var: hostname,var: elasticsearch_node_name,var: elasticsearch_master,var: elasticsearch_data
+hostname,host_address,group 1,var: elasticsearch_node_zone,var: hostname,var: elasticsearch_node_name,var: elasticsearch_master,var: elasticsearch_data
 es0,100.71.184.7,elasticsearch,,MUMGCCWCDPRDES00,es0,,
 es1,100.71.184.11,elasticsearch,,MUMGCCWCDPRDES01,es1,,
 es2,100.71.184.14,elasticsearch,,MUMGCCWCDPRDES02,es2,,
@@ -19,3 +19,23 @@ es16,100.71.184.99,elasticsearch,,MUMGCCWCDPRDES16,es16,,
 esm0,100.71.184.100,elasticsearch,,MUMGCCWCDPRDESM0,esm0,true,false
 esm1,100.71.184.98,elasticsearch,,MUMGCCWCDPRDESM1,esm1,true,false
 esm2,100.71.184.117,elasticsearch,,MUMGCCWCDPRDESM2,esm2,true,false
+es17,100.71.184.201,elasticsearch,zone_vmware,MUMGCCWCDPRDESV00,es17,,
+es18,100.71.184.202,elasticsearch,zone_vmware,MUMGCCWCDPRDESV01,es18,,
+es19,100.71.184.203,elasticsearch,zone_vmware,MUMGCCWCDPRDESV02,es19,,
+es20,100.71.184.204,elasticsearch,zone_vmware,MUMGCCWCDPRDESV03,es20,,
+es21,100.71.184.205,elasticsearch,zone_vmware,MUMGCCWCDPRDESV04,es21,,
+es22,100.71.184.206,elasticsearch,zone_vmware,MUMGCCWCDPRDESV05,es22,,
+es23,100.71.184.207,elasticsearch,zone_vmware,MUMGCCWCDPRDESV06,es23,,
+es24,100.71.184.208,elasticsearch,zone_vmware,MUMGCCWCDPRDESV07,es24,,
+es25,100.71.184.209,elasticsearch,zone_vmware,MUMGCCWCDPRDESV08,es25,,
+es26,100.71.184.210,elasticsearch,zone_vmware,MUMGCCWCDPRDESV09,es26,,
+es27,100.71.184.211,elasticsearch,zone_vmware,MUMGCCWCDPRDESV10,es27,,
+es28,100.71.184.212,elasticsearch,zone_vmware,MUMGCCWCDPRDESV11,es28,,
+es29,100.71.184.213,elasticsearch,zone_vmware,MUMGCCWCDPRDESV12,es29,,
+es30,100.71.184.214,elasticsearch,zone_vmware,MUMGCCWCDPRDESV13,es30,,
+es31,100.71.184.215,elasticsearch,zone_vmware,MUMGCCWCDPRDESV14,es31,,
+es32,100.71.184.216,elasticsearch,zone_vmware,MUMGCCWCDPRDESV15,es32,,
+es33,100.71.184.217,elasticsearch,zone_vmware,MUMGCCWCDPRDESV16,es33,,
+esm3,100.71.184.218,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV0,esm3,true,false
+esm4,100.71.184.219,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV1,esm4,true,false
+esm5,100.71.184.220,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV2,esm5,true,false

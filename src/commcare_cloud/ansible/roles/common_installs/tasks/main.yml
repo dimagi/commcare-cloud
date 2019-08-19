@@ -84,7 +84,7 @@
       - httplib2
       - pexpect
     executable: pip2
-    umask: 0022
+    umask: "0022"
   become: yes
 
 - name: Install virtualenv-clone
@@ -93,4 +93,4 @@
     name: virtualenv-clone
     version: 0.5.1
     executable: pip2
-    umask: 0022
+    umask: "0022"
