@@ -33,9 +33,68 @@ Redis cluster can be expanded by adding more master nodes and resharding existin
   ```
 - Run below command  to add the node to the existing cluster. Run it on a redis host that is already part of the cluster 
    ```
-	/usr/local/src/redis-4.0.8/src/redis-trib.rb add-node <new_redis_host:redis_port> <existing_redis_host_ip>:<redis_port>
+  /usr/local/src/redis-4.0.8/src/redis-trib.rb add-node <new_redis_host:redis_port> <existing_redis_host_ip>:<redis_port>
   ```
 - Run below command in a tmux to reshard the data which should take few minutes to complete.
 ```
 ./redis-trib.rb rebalance --use-empty-masters <existing_redis_host_ip>:<redis_port>
 ```
+
+## How to migrate Redis cluster
+
+Below process can be used to migrate redis cluster from one set of nodes to another set of nodes if they are all on the same VLAN.
+
+The migration strategy involves adding new nodes to the existing cluster, moving redis slots (aka  shard data) from old to new nodes and then removing the old nodes from the cluster. All steps except removing the main redis node that's the interface for the application (`localsettings.REDIS_HOST`) can be executed without downtime.
+
+Please read the whole section thouroughly before doing the migration.
+
+
+- Setup the new redis nodes. This step can be done at any time before migration.
+  `cchq icds deploy-stack --limit=new-redis-hosts --tags=redis --branch=<new-redis-hosts>`
+
+
+- Add all new nodes to the old cluster one by one.
+  ```
+  cd /usr/local/src/redis-4.0.8/src/
+  ./redis-trib.rb add-node <new_redis_host:redis_port> <any_old_redis_host_ip>:<redis_port>
+  ```
+  All `redis-trib.rb` commands can be run on any one of the nodes as long as absolute host addresses are used. Any one of the new nodes can be used.
+
+
+- Remove old nodes from the cluster one by one using below steps.
+  - Move slots off of old node to equally redistribute to remaining nodes
+    ```
+    ./redis-trib.rb rebalance --use-empty-masters --weight <old_redis_node_ID>=0 <any_new_redis_host:redis_port>
+    ```
+    Redis node ID for a host can be found via `redis-cli CLUSTER NODES`
+
+  - Delete the old node from cluster
+    ```
+    ./redis-trib.rb del-node <any_new_redis_host:redis_port> <old_redis_node_ID>
+     ```
+  - Make sure slots are redistributed as expected
+    ```
+    ./redis-trib.rb check <any_new_redis_host:redis_port>:6379
+    ```
+  Above three steps can be done without application downtime for all old redis nodes except the one corresponding to `localsettings.REDIS_HOST` as application processes all point to this node.
+
+- Before executing above steps on the final `localsettings.REDIS_HOST` node, stop all application services first.
+  ```
+  cchq env downtime start -m "Redis cluster migration"
+  ```
+  - Make sure there are no ghost operations happening on the `localsettings.REDIS_HOST` by checking that the appendonly file (`/opt/data/redis/appendonly.aof`) is not getting updated (using tail or however)
+  - Now the old `localsettings.REDIS_HOST` node can also be removed from the cluster using above steps.
+- Run `update-config` which should update `localsettings.REDIS_HOST` from the old redis node to new `redis_cluster_master[0]`
+  ```
+  commcare-cloud <env> update-config --branch=<new-redis-hosts>
+  ```
+ - Finally end the downtime with `  cchq <env> downtime end`
+
+### General tips
+
+- To verify that the key counts stay same before and after the migration, run
+  ```
+  cchq <env> run-shell-command redis_hosts 'redis-cli info | grep -A 2 Keyspace'
+  ```
+  This displays the number of keys on each redis node which should stay the same
+- After the migration is finished it is best to turn off monit and redis on the old redis VMs and merge the branch into master to avoid someone doing an update-config on old master which will update `localsettings.REDIS_HOST` to the old Redis node (which will cause downtime).
