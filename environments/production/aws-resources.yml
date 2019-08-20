@@ -37,10 +37,10 @@ redis1-production: 10.202.40.34
 shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194
 vpn-production.public_ip: 18.235.223.2
-web0-production: 10.202.10.233
-web1-production: 10.202.10.84
 web2-production: 10.202.10.224
-web6-production: 10.202.11.98
-web7-production: 10.202.11.62
-web8-production: 10.202.11.30
-web9-production: 10.202.10.37
+web3-production: 10.202.10.10
+web4-production: 10.202.10.123
+web10-production: 10.202.11.233
+web11-production: 10.202.11.117
+web12-production: 10.202.11.58
+web13-production: 10.202.10.40
