@@ -5,10 +5,10 @@ gunicorn_workers_static_factor: 6
 
 management_commands:
   echis_server0:
-    submission_reprocessing_queue:
+    run_submission_reprocessing_queue:
     queue_schedule_instances:
     handle_survey_actions:
-    sms_queue:
+    run_sms_queue:
 
 celery_processes:
   None:
