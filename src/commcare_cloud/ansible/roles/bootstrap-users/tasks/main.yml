@@ -64,12 +64,6 @@
 - import_tasks: remove_users.yml
   when: dev_users.absent
 
-- name: Copy sudoers file
-  become: yes
-  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
-  tags:
-    - sudoers
-
 - name: check users password valid time
   become: yes
   shell: getent shadow "{{ item }}" | cut -d':' -f5
@@ -82,3 +76,9 @@
   shell: chage -M -1 "{{ item['item'] }}"
   loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout != ''
+
+- name: Copy sudoers file
+  become: yes
+  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+  tags:
+    - sudoers
