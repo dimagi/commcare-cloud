@@ -74,20 +74,20 @@ def add_factory_auth_cmd(environment):
 
 
 def get_django_webworker_name(environment):
-    environment_environment = environment.meta_config.deploy_env
-    project = environment.fab_settings_config.project
-    return "{project}-{environment}-django".format(
-        project=project,
-        environment=environment_environment
-    )
+    return _get_process_name(environment, 'django')
 
 
 def get_formplayer_spring_instance_name(environment):
-    environment_environment = environment.meta_config.deploy_env
+    return _get_process_name(environment, 'formsplayer-spring')
+
+
+def _get_process_name(environment, short_name):
+    deploy_env = environment.meta_config.deploy_env
     project = environment.fab_settings_config.project
-    return "{project}-{environment}-formsplayer-spring".format(
+    return "{project}-{deploy_env}-{short_name}".format(
         project=project,
-        environment=environment_environment
+        deploy_env=deploy_env,
+        short_name=short_name
     )
 
 
