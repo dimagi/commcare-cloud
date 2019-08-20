@@ -3,31 +3,31 @@
 [proxy:children]
 proxy0
 
-{{ __web0__ }}
-
-{{ __web1__ }} datadog_integration_tcp_check=yes
-
 {{ __web2__ }}
 
-{{ __web6__ }}
+{{ __web3__ }}
 
-{{ __web7__ }} datadog_integration_tcp_check=yes
+{{ __web4__ }} datadog_integration_tcp_check=yes
 
-{{ __web8__ }}
+{{ __web10__ }}
 
-{{ __web9__ }}
+{{ __web11__ }} datadog_integration_tcp_check=yes
+
+{{ __web12__ }}
+
+{{ __web13__ }}
 
 
 [hq_webworkers:children]
-web0
-web1
 web2
+web3
+web4
 
 [mobile_webworkers:children]
-web6
-web7
-web8
-web9
+web10
+web11
+web12
+web13
 
 [webworkers:children]
 hq_webworkers
