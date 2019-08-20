@@ -358,18 +358,6 @@ class Elasticsearch(ServiceBase):
                              skip_check=True, quiet=True)
 
 
-class Couchdb(AnsibleService):
-    name = 'couchdb'
-    inventory_groups = ['couchdb']
-    log_location = '/usr/local/var/log/couchdb'
-
-    def execute_action(self, action, host_pattern=None, process_pattern=None):
-        if not self.environment.groups.get('couchdb', None):
-            puts(colored.red("Inventory has no 'couchdb' hosts. Do you mean 'couchdb2'?"))
-            return 1
-        super(Couchdb, self).execute_action(action, host_pattern, process_pattern)
-
-
 class Couchdb2(MultiAnsibleService):
     name = 'couchdb2'
     service_process_mapping = {
@@ -572,7 +560,6 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
 SERVICES = [
     Postgresql,
     Nginx,
-    Couchdb,
     Couchdb2,
     RabbitMq,
     Elasticsearch,
