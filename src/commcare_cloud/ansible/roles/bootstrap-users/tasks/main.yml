@@ -77,6 +77,10 @@
   loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout != ''
 
+
+# This must be the last task in the file
+# It disables factory auth (e.g. root user with password login)
+# and this role has to be able to finish entirely using factory auth (to bootstrap the users)
 - name: Copy sudoers file
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
