@@ -18,3 +18,8 @@
   shell: umask 022
   tags:
     - umask
+
+- name: reset ssh connection to allow umask changes to take affect
+  meta: reset_connection
+
+- meta: flush_handlers
