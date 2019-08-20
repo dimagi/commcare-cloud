@@ -159,6 +159,7 @@
     - name: All provider status
       debug:
         msg: "{{ result.results | reject(\"skipped\") | map(attribute=\"query_result\") | list }}"
+      when: result.results | reject("skipped") | map(attribute="query_result") | list
       tags: status
     - name: Query subscriber status
       postgresql_query:
@@ -171,6 +172,7 @@
     - name: All subscriber status
       debug:
         msg: "{{ result.results | reject(\"skipped\") | map(attribute=\"query_result\") | list }}"
+      when: result.results | reject("skipped") | map(attribute="query_result") | list
       tags: status
 
 # synchronize sequences
