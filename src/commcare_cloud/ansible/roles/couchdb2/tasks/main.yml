@@ -90,6 +90,20 @@
     - cron
     - backups
 
+- name: Copy couch restore script
+  become: yes
+  template:
+    src: "restore_couchdb_backup.sh.j2"
+    dest: "/usr/local/sbin/restore_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: backup_couch|bool
+  tags:
+    - cron
+    - backups
+
 - name: Create Daily Cron job (cleanup blobdb)
   become: yes
   cron:
@@ -151,6 +165,20 @@
   tags:
     - cron
     - backups
+
+- name: Set up check_s3_backups
+  become: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_check_s3_backups.yml
+  vars:
+    service: 'couch'
+    condition: "{{ check_s3_backups_email and couch_s3 and backup_couch and ('couchdb2' in group_names) }}"
+    user: "couchdb"
+    service_backup_dir: "{{ couch_backup_dir }}"
+
+- import_tasks: compact.yml
+  when: compact_couch_cron and inventory_hostname == groups.couchdb2.0
 
 - name: Set up aws credentials
   become: yes

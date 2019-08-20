@@ -41,8 +41,7 @@ that machine is also the control machine.
 - [PostgreSQL](services/postgresql.md)
 - Proxy
     - [Enable HTTPS](howto/enable-https.md)
-- RiakCS/S3
-    - [Migrate from one S3 backend to another](howto/migrate-s3-to-s3.md)
+- [BlobDB/S3](services/blobdb.md)
 - Firewall
     - [Configure a firewall on the servers](howto/firewall.md)
 - [Kafka](services/kafka.md)
@@ -52,8 +51,11 @@ that machine is also the control machine.
 	- [Setup Redis Cluster](howto/redis-cluster.md)
 
 ## Optional but recommended
-- [Set up Sentry for error messages](howto/set-up-sentry.md)
+- [Set up Sentry for error messages](monitoring/set-up-sentry.md)
+- [Set up Datadog for monitoring your infrastructure and CommCare](monitoring/setup_datadog.md)
 - [Firefighting](firefighting/index.md)
+- [Backup and Restore](./commcare-cloud/backup.md)
+- [Deploying code changes to CommCareHQ](./commcare-cloud/deploy.md)
 
 ## Specialized howtos
 - [White label a CommCare instance](howto/white-label.md)

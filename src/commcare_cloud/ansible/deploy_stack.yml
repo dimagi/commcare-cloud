@@ -2,6 +2,7 @@
 # deploy-stack.yml
 
 - import_playbook: update_apt_cache.yml
+- import_playbook: deploy_ebsnvme_mapping.yml
 - import_playbook: deploy_common.yml
 - import_playbook: deploy_lvm.yml
 - import_playbook: deploy_db.yml

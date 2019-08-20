@@ -45,7 +45,6 @@ class Environment(object):
         self.check_known_hosts()
         self.meta_config
         self.users_config
-        self.raw_app_processes_config
         self.app_processes_config
         self.fab_settings_config
         self.inventory_manager
@@ -155,6 +154,7 @@ class Environment(object):
                 title="commcare-cloud vault loaded",
                 text=' '.join([shlex_quote(arg) for arg in sys.argv]),
                 tags=["environment:{}".format(self.name)],
+                source_type_name='ansible',
             )
 
     @contextmanager
@@ -257,7 +257,7 @@ class Environment(object):
                                         map(str, repeated_users))), self.meta_config.deploy_env))
 
     @memoized_property
-    def raw_app_processes_config(self):
+    def _raw_app_processes_config(self):
         """
         collated contents of app-processes.yml files, as an AppProcessesConfig object
 
@@ -274,7 +274,7 @@ class Environment(object):
 
     @memoized_property
     def app_processes_config(self):
-        app_processes_config = AppProcessesConfig.wrap(self.raw_app_processes_config.to_json())
+        app_processes_config = AppProcessesConfig.wrap(self._raw_app_processes_config.to_json())
         app_processes_config.check_and_translate_hosts(self)
         app_processes_config.check()
         return app_processes_config
@@ -310,7 +310,7 @@ class Environment(object):
         return get_variable_manager(self._ansible_inventory_data_loader, self.inventory_manager)
 
     def get_host_vars(self, host):
-        host_object, = [h for h in self.inventory_manager.get_hosts() if h.name == host]
+        host_object, = [h for h in self.inventory_manager.get_hosts(ignore_limits=True) if h.name == host]
         return self._ansible_inventory_variable_manager.get_vars(host=host_object)
 
     @memoized_property
@@ -347,10 +347,10 @@ class Environment(object):
         # use the ip address specified by ansible_host to ssh in if it's given
         ssh_addr_map = {
             host.name: var_manager.get_vars(host=host).get('ansible_host', host.name)
-            for host in inventory.get_hosts()}
+            for host in inventory.get_hosts(ignore_limits=True)}
         # use the port specified by ansible_port to ssh in if it's given
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
-                    for host in inventory.get_hosts()}
+                    for host in inventory.get_hosts(ignore_limits=True)}
         return {group: [
             self.format_sshable_host(ssh_addr_map[host], port_map[host])
             for host in hosts
@@ -399,7 +399,7 @@ class Environment(object):
             'py3_include_venv': self.fab_settings_config.py3_include_venv,
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
-        generated_variables.update(self.postgresql_config.to_generated_variables())
+        generated_variables.update(self.postgresql_config.to_generated_variables(self))
         generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
 

@@ -38,18 +38,25 @@ class AppProcessesConfig(jsonobject.JsonObject):
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(unicode)
+    management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty())
+
+    celery_heartbeat_thresholds = jsonobject.DictProperty(int)
 
     def check(self):
         validate_app_processes_config(self)
 
     def check_and_translate_hosts(self, environment):
+        self.management_commands = check_and_translate_hosts(environment, self.management_commands)
         self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
         self.pillows = check_and_translate_hosts(environment, self.pillows)
         _validate_all_required_machines_mentioned(environment, self)
 
     def get_celery_heartbeat_thresholds(self):
+        for process in self.celery_heartbeat_thresholds:
+            assert process in CELERY_PROCESS_NAMES, '"{}" is not a recognised celery process'.format(process)
+
         celery_queues = set()
         for host, celery_options in self.celery_processes.items():
             if host == 'None':
@@ -58,7 +65,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
                 celery_queues.update(process_group.split(','))
 
         return {
-            p.name: p.blockage_threshold for p in CELERY_PROCESSES
+            p.name: self.celery_heartbeat_thresholds.get(p.name, p.blockage_threshold) for p in CELERY_PROCESSES
             if p.is_queue and p.name in celery_queues
         }
 
@@ -163,7 +170,7 @@ def _validate_all_required_machines_mentioned(environment, translated_app_proces
 
 def check_and_translate_hosts(environment, host_mapping):
     """
-    :param environment: name of the env used to lookup the inventory
+    :param environment: the env used to lookup the inventory
     :param host_mapping: dictionary where keys can be one of:
                          * host (must be in inventory file)
                          * inventory group containing a single host
@@ -173,7 +180,22 @@ def check_and_translate_hosts(environment, host_mapping):
              representative host
     """
     translated = {}
-    for host, config in host_mapping.items():
-        translated[environment.translate_host(host, environment.paths.app_processes_yml)] = config
+    for comma_separated_hosts, config in host_mapping.items():
+        for host in comma_separated_hosts.split(','):
+            translated[environment.translate_host(host, environment.paths.app_processes_yml)] = config
 
     return translated
+
+
+def get_machine_alias(environment, host):
+    """
+
+    :param environment: the env used to lookup the inventory
+    :param host: the inventory host (expressed as i.e. an ip address) to look up
+    :return: the canonical group name for that host
+    """
+    for group, hosts in environment.groups.items():
+        if len(hosts) == 1 and hosts[0] == host:
+            return group
+    else:
+        return host

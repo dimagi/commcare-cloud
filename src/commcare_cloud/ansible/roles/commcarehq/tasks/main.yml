@@ -50,6 +50,7 @@
         recursive: yes
         accept_hostkey: yes
         update: yes
+      become_user: "{{ cchq_user }}"
       become: true
       tags:
         - git
@@ -85,7 +86,7 @@
       tags:
         - slow
         - py3
-      when: (py3_include_venv is defined and py3_include_venv)
+      when: (py3_include_venv is defined and py3_include_venv) and (not testing|default(False))
 
     - name: chown clone
       become: true

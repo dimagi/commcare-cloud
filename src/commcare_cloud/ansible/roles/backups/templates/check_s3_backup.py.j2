@@ -1,26 +1,90 @@
 #!/usr/bin/python
 import argparse
 import boto3
+import botocore
 import datetime
 
-#input environement and service from users
-
 parser = argparse.ArgumentParser(description="S3 Backup Status.")
-parser.add_argument('env', choices=['pna','softlayer','production','staging'] ,help='Environment Name')
 parser.add_argument('service', choices=['couch','blobdb','postgres'] ,help='Service Name')
 args = parser.parse_args()
 
-BUCKET_NAME = 'dimagi-'+args.env+'-'+args.service+'-backups'
+BUCKET_MAP = {
+  'couch': {{ couchdb_snapshot_bucket|tojson }},
+  'postgres': {{ postgres_snapshot_bucket|tojson }},
+  'blobdb': {{ blobdb_snapshot_bucket|tojson }},
+}
 
-s3 = boto3.resource('s3')
+PREFIX_MAP = {
+  'couch': "couchdb",
+  'postgres': "postgres_{{ deploy_env }}",
+  'blobdb': "blobdb",
+}
 
-bucket = s3.Bucket(BUCKET_NAME)
+BUCKET_NAME = BUCKET_MAP[args.service]
+PREFIX = PREFIX_MAP[args.service]
+
+endpoint = {{ aws_endpoint|tojson }}
+
+if not endpoint.startswith("http"):
+    endpoint = 'https://' + endpoint
+
+session = boto3.session.Session()
+{% if aws_region is defined %}
+s3 = session.resource(service_name='s3',endpoint_url=endpoint,region_name='{{ aws_region }}')
+{% else %}
+s3 = session.resource(service_name='s3',endpoint_url=endpoint)
+{% endif %}
+
+def file_exists_in_s3(object_key):
+    try:
+        s3.Object(BUCKET_NAME, object_key).load()
+    except botocore.exceptions.ClientError:
+        return False
+    else:
+        return True
 
 today = datetime.datetime.today()
 
-# Shows Alert if backup is not uploaded since 2 days. 
-for key in bucket.objects.all():
-    if today.day - key.last_modified.day > 2:
-        print "[ALERT]" , key.key , key.last_modified
-    else:
-        print "[OK]", key.key , key.last_modified
+backup_filename_format = '{prefix}_{backup_type}_{date}.tar.gz'
+daily_options = [
+    backup_filename_format.format(
+        prefix=PREFIX,
+        backup_type='daily',
+        date=(today - datetime.timedelta(days=n)).strftime('%Y_%m_%d')
+    )
+    for n in [0, 1]
+]
+weekly_options = [
+    backup_filename_format.format(
+        prefix=PREFIX,
+        backup_type='weekly',
+        date=(today - datetime.timedelta(days=n)).strftime('%Y_%m_%d')
+    )
+    for n in [0, 1, 2, 3, 4, 5, 6]
+]
+
+# up to one match will be stored in these
+daily_matches = []
+weekly_matches = []
+
+for options, matches in [(daily_options, daily_matches),
+                         (weekly_options, weekly_matches)]:
+    for filename in options:
+        if file_exists_in_s3(filename):
+            matches.append(filename)
+            break
+
+if daily_matches:
+    match = daily_matches[-1]
+    print('[OK] Last daily {} backup is {}'.format(args.service, match))
+else:
+    print('[ALERT] No daily {} backup in last two days'.format(args.service))
+
+if weekly_matches:
+    match = weekly_matches[-1]
+    print('[OK] Last weekly {} backup is {}'.format(args.service, match))
+else:
+    print('[ALERT] No weekly {} backup in last seven days'.format(args.service))
+
+if not weekly_matches or not daily_matches:
+    exit(-1)

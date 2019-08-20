@@ -3,31 +3,31 @@
 [proxy:children]
 proxy0
 
-{{ __web0__ }}
-
-{{ __web1__ }} datadog_integration_tcp_check=yes
-
 {{ __web2__ }}
 
-{{ __web6__ }}
+{{ __web3__ }}
 
-{{ __web7__ }} datadog_integration_tcp_check=yes
+{{ __web4__ }} datadog_integration_tcp_check=yes
 
-{{ __web8__ }}
+{{ __web10__ }}
 
-{{ __web9__ }}
+{{ __web11__ }} datadog_integration_tcp_check=yes
+
+{{ __web12__ }}
+
+{{ __web13__ }}
 
 
 [hq_webworkers:children]
-web0
-web1
 web2
+web3
+web4
 
 [mobile_webworkers:children]
-web6
-web7
-web8
-web9
+web10
+web11
+web12
+web13
 
 [webworkers:children]
 hq_webworkers
@@ -87,37 +87,28 @@ kafka0
 [kafka:children]
 kafka0
 
-{{ __celery0__ }}
+{{ __celery9__ }}
 
-{{ __celery1__ }}
+{{ __celery10__ }}
 
-{{ __celery2__ }}
+{{ __celery11__ }}
 
-{{ __celery3__ }}
-
-{{ __celery4__ }}
-
-{{ __celery5__ }}
-
-{{ __celery6__ }}
+{{ __celery12__ }}
 
 
 [celery:children]
-celery1
-celery0
-celery2
-celery3
-celery4
-celery5
-celery6
+celery9
+celery10
+celery11
+celery12
 
 [celery:vars]
 swap_size=8G
 
-{{ __pillow0__ }}
+{{ __pillow1__ }}
 
 [pillowtop:children]
-pillow0
+pillow1
 
 {{ __formplayer0__ }}
 
@@ -179,13 +170,11 @@ es_data
 {{ __couch12__ }}
 {{ __couch13__ }}
 {{ __couch14__ }}
-{{ __couch15__ }}
 
 [couchdb2:children]
 couch12
 couch13
 couch14
-couch15
 
 [couchdb2:vars]
 swap_size=8G
@@ -197,7 +186,7 @@ couchproxy0
 
 {{ __control__ }}
 
-{{ __djangomanage0__ }}
+{{ __djangomanage1__ }}
 
 [django_manage:children]
-djangomanage0
+djangomanage1

@@ -61,8 +61,11 @@ file representing each of these groups. You may name the file anything
 you wish; you will reference these files by name in the `meta.yml`
 file of each environment.
 
+In the sample environments, this file is called `dimagi.yml`. You may use and edit this file if you wish.
+
 Each of these files should contain YAML of the following format:
 
+``` yaml
 dev_users:
   present:
     - <username1>
@@ -72,15 +75,17 @@ dev_users:
     - <username3>
     - <username4>
     ...
+```
 
-To begin with, your `absent` may be empty; people rotate out of your
-team, you will want to put team members who have left under `absent`.
-That way, when you push your user configuration to your machines,
-these users will be removed, and thus those former team members'
-access will be revoked.
+The **`present`** section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in `<username>.pub` under [`_authorized_keys`](#_authorized_keys).
 
 Each `<username>` must correspond to that used in a `<username>.pub`
-under `_authorized_keys`.
+under .
+
+The **`absent`** section lists those users whose access you want to remove from your servers when running the user update scripts.
+
+If you change this file, you will need to run the [`update-users` command](../commands/index.md#update-users)
+
 
 ## Contents of an `environment` configuration directory
 

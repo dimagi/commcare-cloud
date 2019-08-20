@@ -1,0 +1,42 @@
+title: Define management commands explicitly
+key: define-mgmt-commands-explicit
+date: 2019-07-17
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  This change requires changing app-processes.yml to include a list of management comamnds to run
+
+details: |
+  Previously some management commands were configured to run continuously based on the servers that
+  a celery process was running on. Now the management commands are explicitly defined in
+  app-processes.yml.
+
+
+update_steps: |
+  1. Add the following line to app-processes.yml
+  ```yaml
+  management_commands:
+  ```
+
+  2. For any host that is running `sms_queue` in `celery_processes`, create an entry under management_commands:
+  ```yaml
+  management_commands:
+    server_hostname:
+      sms_queue:
+  ```
+
+  3. For any host that is running `reminder_queue` in `celery_processes`, create an entry under management_commands:
+  ```yaml
+  management_commands:
+    server_hostname:
+      handle_survey_actions:
+      queue_schedule_instances:
+  ```
+
+  4. For any host that is running `submission_reprocessing_queue` in `celery_processes`, create an entry under management_commands:
+  ```yaml
+  management_commands:
+    server_hostname:
+      submission_reprocessing_queue:
+  ```

@@ -84,27 +84,6 @@ servers:
     group: celery
     os: bionic
 
-  - server_name: "couch2-india"
-    server_instance_type: "c5.2xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 275
-    group: couchdb2
-    os: trusty
-  - server_name: "couch3-india"
-    server_instance_type: "c5.2xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 275
-    group: couchdb2
-    os: trusty
-  - server_name: "couch4-india"
-    server_instance_type: "c5.2xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 275
-    group: couchdb2
-    os: trusty
   - server_name: "couch5-india"
     server_instance_type: "c5.2xlarge"
     network_tier: "db-private"

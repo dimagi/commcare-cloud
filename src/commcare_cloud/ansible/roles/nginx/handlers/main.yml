@@ -1,3 +1,7 @@
 ---
 - name: reload nginx
   include_tasks: reload.yml
+
+- name: quick start nginx
+  become: yes
+  service: name=nginx state=started enabled=yes

@@ -3,7 +3,7 @@
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
 environment=TMPDIR="{{ encrypted_tmp }}"
-command={% if PY3_RUN_PILLOWTOP %}{{ py3_virtualenv_home }}{% else %}{{ virtualenv_home }}{% endif %}/bin/python
+command={{ py3_virtualenv_home }}/bin/python
     {{ code_home }}/manage.py run_ptop
     --pillow-name {{ pillow_name }}
     --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }}
@@ -21,7 +21,7 @@ stderr_logfile={{ log_home }}/pillowtop-{{ pillow_name }}-{{ num_process }}.erro
 startsecs=10
 ; Need to wait for currently executing tasks to finish at shutdown.
 ; Increase this if you have very long running tasks.
-stopwaitsecs = 10
+stopwaitsecs = 120
 ; if rabbitmq is supervised, set its priority higher
 ; so it starts first
 priority=998
