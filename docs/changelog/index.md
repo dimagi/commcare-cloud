@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2019-08-20** [Rename management commands explicitly](0025-rename-management-commands.md)
+This change requires editing `app-processes.yml` to rename some of the processes in the `management_comamnds`
+section
+
 ### **2019-07-17** [Define management commands explicitly](0024-define-management-commands.md)
 This change requires changing app-processes.yml to include a list of management comamnds to run
 
