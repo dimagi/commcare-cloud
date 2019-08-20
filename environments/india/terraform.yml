@@ -77,7 +77,7 @@ servers:
     os: bionic
 
   - server_name: "celery1-india"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 30
