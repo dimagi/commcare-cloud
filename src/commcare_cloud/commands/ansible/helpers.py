@@ -1,6 +1,7 @@
 # coding=utf-8
+import itertools
 import os
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 from contextlib import contextmanager
 
 from clint.textui import puts, colored
@@ -192,3 +193,38 @@ def get_pillowtop_processes(environment):
                     num_process=num_process
                 )
                 yield ProcessDescriptor(host, name, num_process, process_name)
+
+
+def get_management_command_processes(environment):
+    project = environment.fab_settings_config.project
+    deploy_env = environment.meta_config.deploy_env
+    for host, command_names in environment.app_processes_config.management_commands.items():
+        for command_name, params in command_names.items():
+            process_name = "{project}-{deploy_env}-{command_name}".format(
+                project=project, deploy_env=deploy_env, command_name=command_name
+            )
+            yield ProcessDescriptor(host, command_name, 0, process_name)
+
+
+def _get_simple_processes(environment, inventory_group, process_name):
+    for host in environment.groups[inventory_group]:
+        yield ProcessDescriptor(host, process_name, 0, process_name)
+
+
+def get_all_supervisor_processes_by_host(environment):
+    by_host = defaultdict(list)
+
+    processes = itertools.chain(
+        get_pillowtop_processes(environment),
+        get_celery_workers(environment),
+        get_management_command_processes(environment),
+        _get_simple_processes(environment, 'webworkers', get_django_webworker_name(environment)),
+        _get_simple_processes(environment, 'formplayer', get_formplayer_spring_instance_name(environment)),
+        _get_simple_processes(environment, 'airflow', _get_process_name(environment, 'airflow_scheduler')),
+        _get_simple_processes(environment, 'airflow', _get_process_name(environment, 'airflow_webserver')),
+        _get_simple_processes(environment, 'proxy', _get_process_name(environment, 'websockets')),
+    )
+    for process in processes:
+        by_host[process.host].append(process.full_name)
+
+    return by_host
