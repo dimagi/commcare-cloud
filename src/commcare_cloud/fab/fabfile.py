@@ -398,8 +398,6 @@ def kill_stale_celery_workers():
 def deploy_formplayer():
     execute(announce_formplayer_deploy_start)
     execute(formplayer.build_formplayer, True)
-    if getattr(env, 'NEEDS_FORMPLAYER_RESTART', False):
-        execute(supervisor.restart_formplayer)
 
 
 @task
@@ -801,8 +799,6 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        if getattr(env, 'NEEDS_FORMPLAYER_RESTART', False):
-            execute(supervisor.restart_formplayer)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
