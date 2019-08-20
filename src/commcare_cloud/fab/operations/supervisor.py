@@ -102,6 +102,8 @@ def restart_webworkers():
 
 @roles(ROLES_FORMPLAYER)
 def restart_formplayer():
+    # since this just restarts "all"
+    # on a monolith this actually restarts all services
     _services_restart()
 
 
