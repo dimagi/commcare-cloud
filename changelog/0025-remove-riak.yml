@@ -1,6 +1,6 @@
 title: Removing support for Riak CS
 key: removing-support-for-riak-cs
-date: 2019-06-27
+date: 2019-08-20
 optional_per_env: yes
 min_commcare_version:
 max_commcare_version:
