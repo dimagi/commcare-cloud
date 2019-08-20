@@ -72,3 +72,4 @@
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     # "Datadog Integration Graveyard": list globally removed integrations below
     - {"name": "couchdb2", "enabled": false}
+    - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}

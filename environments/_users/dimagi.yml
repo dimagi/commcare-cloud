@@ -13,11 +13,11 @@ dev_users:
     - jschweers
     - mkangia
     - nhooper
-    - npellegrino
     - rnegi
     - sgoyal
     - skelly
     - sravfeyn
+    - rkumar
   absent:
     - astone
     - wpride
@@ -25,3 +25,4 @@ dev_users:
     - jroth
     - pvaidyanathan
     - nsharma
+    - npellegrino

@@ -16,6 +16,16 @@ pgbouncer_override:
 
 postgres_override:
   postgresql_max_connections: 300
+  postgresql_hba_entries:
+    # required for backup
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 0.0.0.0/0
+    - contype: host
+      database: all
+      users: all
+      netmask: pgbouncer0/32
 
 dbs:
   main:

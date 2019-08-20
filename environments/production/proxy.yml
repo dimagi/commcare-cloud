@@ -12,6 +12,9 @@ nginx_max_worker_connection: 2048
 nginx_combined_cert_value: "{{ ssl_secrets.certs.commcarehq_org }}"
 nginx_key_value: "{{ ssl_secrets.private_keys.commcarehq_org }}"
 
+nginx_block_ips:
+  - '180.191.158.205'
+
 # commtrack.org
 commtrack_nginx_combined_cert_value: "{{ ssl_secrets.certs.commtrack_org }}"
 commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"

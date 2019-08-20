@@ -2,10 +2,13 @@ import collections
 from collections import defaultdict
 from operator import itemgetter
 
+from clint.textui import puts_err
+
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
 from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.schemas.app_processes import get_machine_alias
 
 
 class ListDatabases(CommandBase):
@@ -79,7 +82,6 @@ class ListDatabases(CommandBase):
         return dbs_expected_on_host
 
 
-
 class CeleryResourceReport(CommandBase):
     command = 'celery-resource-report'
     help = """
@@ -91,21 +93,58 @@ class CeleryResourceReport(CommandBase):
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
         celery_processes = environment.app_processes_config.celery_processes
-        by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set()})
+        by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set(), 'worker_hosts': set()})
         for host, queues in celery_processes.items():
             for queue_name, options in queues.items():
                 queue = by_queue[queue_name]
                 queue['num_workers'] += options.num_workers
                 queue['concurrency'] += options.concurrency * options.num_workers
                 queue['pooling'].add(options.pooling)
+                queue['worker_hosts'].add(host)
 
         max_name_len = max([len(name) for name in by_queue])
-        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
-        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker'))
-        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------'))
+        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
+        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker', 'Worker Hosts'))
+        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------', '------------'))
         for queue_name, stats in sorted(by_queue.items(), key=itemgetter(0)):
             workers = stats['num_workers']
             concurrency_ = stats['concurrency']
+            worker_hosts = stats['worker_hosts']
             print(template.format(
-                list(stats['pooling'])[0], queue_name, workers, concurrency_, concurrency_ // workers
+                list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers,
+                ','.join(sorted([get_machine_alias(environment, worker_host) for worker_host in worker_hosts]))
             ))
+
+
+class PillowResourceReport(CommandBase):
+    command = 'pillow-resource-report'
+    help = """
+    Report of pillow resources.
+    """
+
+    arguments = ()
+
+    def run(self, args, manage_args):
+        environment = get_environment(args.env_name)
+        by_process = _get_pillow_resources_by_name(environment)
+        _print_table(by_process)
+
+
+def _get_pillow_resources_by_name(environment):
+    pillows = environment.app_processes_config.pillows
+    by_process = defaultdict(lambda: {'num_processes': 0, 'total_processes': None})
+    for host, processes in pillows.items():
+        for name, options in processes.items():
+            config = by_process[name]
+            config['num_processes'] += options.get('num_processes', 1)
+    return by_process
+
+
+def _print_table(by_process):
+    max_name_len = max([len(name) for name in by_process])
+    template = "{{:<{}}} | {{:<12}}".format(max_name_len + 2)
+    print(template.format('Pillow', 'Processes'))
+    print(template.format('------', '---------'))
+    for queue_name, stats in sorted(by_process.items(), key=itemgetter(0)):
+        workers = stats['num_processes']
+        print(template.format(queue_name, workers))

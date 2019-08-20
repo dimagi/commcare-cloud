@@ -35,6 +35,9 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
+        {% if config.conn_max_age -%}
+        'CONN_MAX_AGE': {{ config.conn_max_age }},
+        {% endif -%}
         'DISABLE_SERVER_SIDE_CURSORS': True,
         {% if not config.django_migrate -%}
         'MIGRATE': False,
@@ -120,7 +123,7 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
-ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(True) }}
+ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(False) }}
 
 SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
@@ -254,6 +257,9 @@ LOCAL_PILLOWTOPS = {
 }
 {% endif %}
 
+{% if 'CASE_ES_DROP_FORM_FIELDS' in localsettings %}
+CASE_ES_DROP_FORM_FIELDS = {{ localsettings.CASE_ES_DROP_FORM_FIELDS }}
+{% endif %}
 
 BITLY_LOGIN = '{{ BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ BITLY_APIKEY }}'
@@ -292,6 +298,10 @@ SMS_BACKENDS = {
     "1" : "MOBILE_BACKEND_TROPO_US",
     "265" : "MOBILE_BACKEND_TROPO_CANADIAN",
 }
+
+{% if 'SYNC_CASE_FOR_MESSAGING_ON_SAVE' in localsettings %}
+SYNC_CASE_FOR_MESSAGING_ON_SAVE = {{ localsettings.SYNC_CASE_FOR_MESSAGING_ON_SAVE }}
+{% endif %}
 
 {% if 'MEDIA_ROOT' in localsettings and localsettings.MEDIA_ROOT %}
 MEDIA_ROOT = '{{ localsettings.MEDIA_ROOT }}'
@@ -836,9 +846,11 @@ BILLING_EMAIL = '{{ billing_email }}'
 INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
 GROWTH_EMAIL = '{{ growth_email }}'
 MASTER_LIST_EMAIL = '{{ master_list_email }}'
-REPORT_BUILDER_ADD_ON_EMAIL = '{{ report_builder_add_on_email }}'
+SALES_EMAIL = '{{ sales_email }}'
+PRIVACY_EMAIL = '{{ privacy_email }}'
 EULA_CHANGE_EMAIL = '{{ eula_change_email }}'
 CONTACT_EMAIL = '{{ contact_email }}'
+FEEDBACK_EMAIL = '{{ feedback_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
 DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
 {% if TRANSIFEX_API_TOKEN %}
@@ -861,7 +873,11 @@ TRANSIFEX_DETAILS = {
 {% if localsettings.UCR_COMPARISONS is defined %}
 UCR_COMPARISONS = {
 {% for old_config, new_config in localsettings.UCR_COMPARISONS.items() %}
-    '{{ old_config }}': '{{ new_config }}',
+    {% if new_config %}
+     '{{ old_config }}': '{{ new_config }}',
+    {% else %}
+    '{{ old_config }}': None,
+    {% endif %}
 {% endfor %}
 }
 {% endif %}

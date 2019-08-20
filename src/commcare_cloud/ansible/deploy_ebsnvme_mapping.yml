@@ -1,0 +1,6 @@
+- name: Create ebsnvme mapping
+  hosts: all
+  roles:
+    - role: ebsnvme
+      tags: ebsnvme
+      when: is_datavol_ebsnvme is defined and is_datavol_ebsnvme

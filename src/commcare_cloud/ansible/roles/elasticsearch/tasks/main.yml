@@ -32,13 +32,19 @@
 
 - name: Create /etc/elasticsearch
   become: yes
-  file: path="{{ elasticsearch_conf_dir }}" state=directory
+  file:
+    path: "{{ elasticsearch_conf_dir }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
 
 - name: Copy Elasticsearch Config
   become: yes
   template:
     src: config/elasticsearch.yml.j2
     dest: "{{ elasticsearch_conf_dir }}/elasticsearch.yml"
+    owner: elasticsearch
+    group: elasticsearch
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
@@ -57,6 +63,8 @@
   template:
     src: upstart/elasticsearch.conf.j2
     dest: "/etc/init/elasticsearch.conf"
+    owner: elasticsearch
+    group: elasticsearch
   register: copy_elasticsearch_upstart_result
   tags:
     - es_conf

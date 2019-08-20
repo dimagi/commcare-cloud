@@ -1,11 +1,11 @@
 DEFAULT_POSTGRESQL_HOST: pgmain0
+
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr-non-dashboard: icds-ucr-non-dashboard
   icds-ucr:
     WRITE: icds-ucr
     READ:
-      - [icds-ucr, 1]
       - [icds-ucr-standby0, 10]
       - [icds-ucr-standby1, 10]
       - [icds-ucr-standby2, 10]
@@ -36,8 +36,20 @@ pgbouncer_override:
   pgbouncer_reserve_pool: 5
 
 postgres_override:
+  postgresql_max_standby_delay: 180s
   postgresql_max_stack_depth: 6MB
   postgresql_slow_log_threshold: 1000
+  postgresql_hba_entries:
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 100.71.184.0/22
+    - contype: host
+      users: TCLBKPADMIN
+      netmask: 127.0.0.1/32
+    - contype: local
+      users: TCLBKPADMIN
+
 
 dbs:
   main:
@@ -58,7 +70,7 @@ dbs:
         host: pgshard0
       p2:
         shards: [104, 205]
-        host: pgshard1
+        host: pgshard1standby
       p3:
         shards: [206, 308]
         host: pgshard2
@@ -70,7 +82,7 @@ dbs:
         host: pgshard4
       p6:
         shards: [515, 617]
-        host: pgshard5
+        host: pgshard5standby
       p7:
         shards: [618, 720]
         host: pgshard6
@@ -107,6 +119,66 @@ dbs:
       name: warehouse
       host: pgwarehouse0
       django_migrate: True
+    - name: commcarehq_p10
+      host: pgshard10
+      django_migrate: False
+    - name: commcarehq_p11
+      host: pgshard11
+      django_migrate: False
+    - name: commcarehq_p12
+      host: pgshard12
+      django_migrate: False
+    - name: commcarehq_p13
+      host: pgshard13
+      django_migrate: False
+    - name: commcarehq_p14
+      host: pgshard14
+      django_migrate: False
+    - name: commcarehq_p15
+      host: pgshard15
+      django_migrate: False
+    - name: commcarehq_p16
+      host: pgshard16
+      django_migrate: False
+    - name: commcarehq_p17
+      host: pgshard17
+      django_migrate: False
+    - name: commcarehq_p18
+      host: pgshard18
+      django_migrate: False
+    - name: commcarehq_p19
+      host: pgshard19
+      django_migrate: False
+    - name: commcarehq_p20
+      host: pgshard20
+      django_migrate: False
+    - name: commcarehq_p21
+      host: pgshard21
+      django_migrate: False
+    - name: commcarehq_p22
+      host: pgshard22
+      django_migrate: False
+    - name: commcarehq_p23
+      host: pgshard23
+      django_migrate: False
+    - name: commcarehq_p24
+      host: pgshard24
+      django_migrate: False
+    - name: commcarehq_p25
+      host: pgshard25
+      django_migrate: False
+    - name: commcarehq_p26
+      host: pgshard26
+      django_migrate: False
+    - name: commcarehq_p27
+      host: pgshard27
+      django_migrate: False
+    - name: commcarehq_p28
+      host: pgshard28
+      django_migrate: False
+    - name: commcarehq_p29
+      host: pgshard29
+      django_migrate: False
   standby:
     - django_alias: icds-ucr-standby0
       name: commcarehq_icds_aggregatedata

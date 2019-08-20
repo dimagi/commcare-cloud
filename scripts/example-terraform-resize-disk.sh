@@ -13,7 +13,7 @@ do
 
     cchq ${env} terraform apply --skip-secrets -target module.server__${host}-${env}.aws_ebs_volume.ebs_volume &&
     ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} run-shell-command ${host} "reboot" -b && sleep 10 &&
-    until cchq production ping ${host}
+    until cchq ${env} ping ${host}
     do
         sleep 5
     done &&

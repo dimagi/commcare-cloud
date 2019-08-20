@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function)
 import csv
 import json
 import os
+import re
 
 __metaclass__ = type
 
@@ -156,7 +157,10 @@ class InventoryModule(BaseInventoryPlugin):
             raw_val = raw_val.strip()
             if 'var' in key and raw_val:
                 item_type, name = key.split('.') if '.' in key else ('S', key)
-                name = name.split(' ')[1]
+                parts = re.split(r'var:\s*', name)
+                if len(parts) != 2:
+                    raise AnsibleParserError('Unable to parse varible name: "{}"'.format(name))
+                name = parts[1]
                 vars[name] = conv_str2value(item_type, raw_val, hosts_aliases)
         if 'hostname' not in vars:
             vars['hostname'] = row['hostname']
