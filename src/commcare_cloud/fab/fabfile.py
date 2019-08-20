@@ -876,7 +876,6 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    formplayer.build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
