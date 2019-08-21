@@ -160,7 +160,7 @@ class SupervisorService(SubServicesMixin, ServiceBase):
 
         all_processes_by_host = get_all_supervisor_processes_by_host(self.environment)
         process_host_mapping = optimize_process_operations(
-            process_host_mapping, all_processes_by_host
+            all_processes_by_host, process_host_mapping
         )
 
         non_zero_exits = []
