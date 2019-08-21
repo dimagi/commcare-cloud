@@ -55,7 +55,7 @@ pillow38,100.71.188.197,pillowtop,,,,MUMGCCWCDPRDPV017
 pillow39,100.71.188.198,pillowtop,,,,MUMGCCWCDPRDPV018
 pillow40,100.71.188.199,pillowtop,,,,MUMGCCWCDPRDPV019
 pillow41,100.71.188.200,pillowtop,,,,MUMGCCWCDPRDPV020
-web0,100.71.188.44,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW000
+web0,100.71.188.44,webworkers,celery,hq_webworkers,shared_dir_host,MUMGCCWCDPRDW000
 web1,100.71.188.15,webworkers,celery,django_manage,hq_webworkers,MUMGCCWCDPRDW001
 web2,100.71.188.41,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW002
 web3,100.71.188.47,webworkers,celery,hq_webworkers,,MUMGCCWCDPRDW003
@@ -79,7 +79,7 @@ web20,100.71.188.33,webworkers,mobile_webworkers,,,MUMGCCWCDPRDW020
 web21,100.71.188.68,webworkers,mobile_webworkers,,,MUMGCCWCDPRDW021
 web22,100.71.188.62,webworkers,mobile_webworkers,,,MUMGCCWCDPRDW022
 web23,100.71.188.74,webworkers,mobile_webworkers,,,MUMGCCWCDPRDW023
-web24,100.71.188.203,webworkers,shared_dir_host,hq_webworkers,,MUMGCCWCDPRDWV000
+web24,100.71.188.203,webworkers,hq_webworkers,,,MUMGCCWCDPRDWV000
 web25,100.71.188.204,webworkers,django_manage,hq_webworkers,,MUMGCCWCDPRDWV001
 web26,100.71.188.205,webworkers,hq_webworkers,,,MUMGCCWCDPRDWV002
 web27,100.71.188.206,webworkers,hq_webworkers,,,MUMGCCWCDPRDWV003
