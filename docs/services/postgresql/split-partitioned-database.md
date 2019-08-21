@@ -80,7 +80,7 @@ More technical information can be found at https://github.com/2ndQuadrant/pglogi
 
 ### 1. Setup logical replication on *pg1*
 
-In your configuration set the following and deploy the configuration to *pg1*:
+In your inventory file set the following vars for *pg1*:
 
 ```
 [pg1]
