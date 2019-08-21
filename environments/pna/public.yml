@@ -112,7 +112,6 @@ localsettings:
   J2ME_ADDRESS: ''
 #  KAFKA_HOST:
   #  PILLOWTOP_MACHINE_ID:
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'

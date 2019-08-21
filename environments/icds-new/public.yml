@@ -179,7 +179,6 @@ localsettings:
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
   PILLOWTOP_MACHINE_ID: pil0
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
