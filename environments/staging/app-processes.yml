@@ -1,6 +1,9 @@
 management_commands:
   celery1:
     run_sms_queue:
+  pillow1:
+    run_form_websocket_feed:
+    run_pillow_retry_queue:
 celery_processes:
   None:
     # celery_periodic is intentionally absent from here,

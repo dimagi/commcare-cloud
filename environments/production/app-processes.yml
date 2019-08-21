@@ -11,6 +11,9 @@ management_commands:
     queue_schedule_instances:
     handle_survey_actions:
     run_sms_queue:
+  pillow1:
+    run_form_websocket_feed:
+    run_pillow_retry_queue:
 celery_processes:
   celery9,celery10,celery11:
     analytics_queue:
