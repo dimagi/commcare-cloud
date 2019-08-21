@@ -262,7 +262,7 @@ SELECT pglogical.drop_node(sub_name, true)
 **start pgbouncer**
 
 ```bash
-commcare-cloud <env> run-shell-command pg1,pg2,pg3 'monit start pgbouncer' --become
+commcare-cloud <env> service postgresql start --only pgbouncer --limit pg2,pg3
 ```
 
 **Restart services**
