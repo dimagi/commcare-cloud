@@ -123,7 +123,7 @@ commcare-cloud <env> ap deploy_db.yml --limit=pg1,pg2,pg3
 
 Setup *pg2* and *pg3* as you would another postgresql database in commcare-cloud.
 
-In addition to normal setup, add the following your postgresql.yml file:
+In addition to normal setup, add the following to your `postgresql.yml` file:
 
 ```yaml
 dbs:
