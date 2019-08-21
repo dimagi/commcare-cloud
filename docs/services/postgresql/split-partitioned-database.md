@@ -111,6 +111,14 @@ postgresql_hba_entries:
     databases: replication
     users: foo
     netmask: 'pg2 ip address'
+  - contype: host
+    users: foo
+    netmask: 'pg3 ip address'
+  - contype: host
+    databases: replication
+    users: foo
+    netmask: 'pg3 ip address'
+
 ```
 
 Then deploy these settings to your databases:
