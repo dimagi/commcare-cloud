@@ -82,6 +82,8 @@ web23,100.71.188.74,webworkers,mobile_webworkers,,,MUMGCCWCDPRDW023
 web24,100.71.188.203,webworkers,shared_dir_host,hq_webworkers,,MUMGCCWCDPRDWV000
 web25,100.71.188.204,webworkers,django_manage,hq_webworkers,,MUMGCCWCDPRDWV001
 web26,100.71.188.205,webworkers,hq_webworkers,,,MUMGCCWCDPRDWV002
+web27,100.71.188.206,webworkers,hq_webworkers,,,MUMGCCWCDPRDWV003
+web28,100.71.188.207,webworkers,mobile_webworkers,,,MUMGCCWCDPRDWV004
 web29,100.71.188.208,webworkers,mobile_webworkers,,,MUMGCCWCDPRDWV005
 web30,100.71.188.209,webworkers,mobile_webworkers,,,MUMGCCWCDPRDWV006
 web31,100.71.188.210,webworkers,mobile_webworkers,,,MUMGCCWCDPRDWV007
