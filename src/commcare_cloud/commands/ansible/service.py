@@ -12,8 +12,8 @@ from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,
     get_celery_workers,
-    get_pillowtop_processes
-)
+    get_pillowtop_processes,
+    get_all_supervisor_processes_by_host)
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -157,6 +157,11 @@ class SupervisorService(SubServicesMixin, ServiceBase):
 
         if not process_host_mapping:
             raise NoHostsMatch
+
+        all_processes_by_host = get_all_supervisor_processes_by_host(self.environment)
+        process_host_mapping = optimize_process_operations(
+            process_host_mapping, all_processes_by_host
+        )
 
         non_zero_exits = []
         for hosts, processes in process_host_mapping.items():
@@ -555,17 +560,34 @@ def get_processes_by_host(all_hosts, process_descriptors, process_pattern=None):
         if pd.host in all_hosts and matches_pattern:
             processes_by_host[pd.host].add(pd.full_name)
 
-    # convert to list so that we can sort
-    processes_by_host = {
+    return {
         host: list(p) for host, p in processes_by_host.items()
     }
+
+
+def optimize_process_operations(all_processes_by_host, process_host_mapping):
+    """Optimize supervisor commands to allow running commands in parallel.
+    Finds hosts where ALL supervisor processes will be operated on and groups
+    them together.
+
+    :returns: mapping (host tuple): list(process names)
+    """
+    processes_by_host = {}
+
+    for host, processes in process_host_mapping.items():
+        all_processes = all_processes_by_host[host]
+        if not (set(all_processes) - set(processes)):
+            processes_by_host[host] = ['all']
+        else:
+            processes_by_host[host] = processes
 
     processes_by_hosts = {}
     # group hosts together so we do less calls to ansible
     items = sorted(processes_by_host.items(), key=lambda hp: hp[1])
     for processes, group in groupby(items, key=lambda hp: hp[1]):
-        hosts = tuple([host_processes[0] for host_processes in group])
+        hosts = tuple(sorted([host_processes[0] for host_processes in group]))
         processes_by_hosts[hosts] = processes
+
     return processes_by_hosts
 
 
