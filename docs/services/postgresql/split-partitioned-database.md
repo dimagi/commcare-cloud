@@ -179,7 +179,7 @@ commcare-cloud <env> downtime start
 **Stop pgbouncer**
 
 ```bash
-commcare-cloud <env> run-shell-command pg1,pg2,pg3 'monit stop pgbouncer' --become
+commcare-cloud <env> service postgresql stop --only pgbouncer --limit pg1,pg2,pg3
 ```
 
 Verify that the replication is up to date by ensuring `replay_location` and `sent_location` are the same for each database:
