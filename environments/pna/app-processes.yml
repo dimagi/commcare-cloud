@@ -2,6 +2,8 @@ formplayer_memory: "1024m"
 
 management_commands:
   pnaserver1:
+    run_form_websocket_feed:
+    run_pillow_retry_queue:
 celery_processes:
   'pnaserver1':
     repeat_record_queue:
