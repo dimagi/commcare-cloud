@@ -44,14 +44,13 @@ Redis cluster can be expanded by adding more master nodes and resharding existin
 
 Below process can be used to migrate redis cluster from one set of nodes to another set of nodes if they are all on the same VLAN.
 
-The migration strategy involves adding new nodes to the existing cluster, moving redis slots (aka  shard data) from old to new nodes and then removing the old nodes from the cluster. All steps except removing the main redis node that's the interface for the application (`localsettings.REDIS_HOST`) can be executed without downtime.
+The migration strategy involves adding new nodes to the existing cluster, pointing application to one of the new nodes, moving redis slots (aka  shard data) from old to new nodes and then removing the old nodes from the cluster.
 
 Please read the whole section thouroughly before doing the migration.
 
 
 - Setup the new redis nodes. This step can be done at any time before migration.
   `cchq icds deploy-stack --limit=new-redis-hosts --tags=redis --branch=<new-redis-hosts>`
-
 
 - Add all new nodes to the old cluster one by one.
   ```
@@ -60,6 +59,7 @@ Please read the whole section thouroughly before doing the migration.
   ```
   All `redis-trib.rb` commands can be run on any one of the nodes as long as absolute host addresses are used. Any one of the new nodes can be used.
 
+- Run `update-config` from the new redis node branch, which should update `localsettings.REDIS_HOST` from the old redis node to new `redis_cluster_master[0]`
 
 - Remove old nodes from the cluster one by one using below steps.
   - Move slots off of old node to equally redistribute to remaining nodes
@@ -76,19 +76,6 @@ Please read the whole section thouroughly before doing the migration.
     ```
     ./redis-trib.rb check <any_new_redis_host:redis_port>:6379
     ```
-  Above three steps can be done without application downtime for all old redis nodes except the one corresponding to `localsettings.REDIS_HOST` as application processes all point to this node.
-
-- Before executing above steps on the final `localsettings.REDIS_HOST` node, stop all application services first.
-  ```
-  cchq env downtime start -m "Redis cluster migration"
-  ```
-  - Make sure there are no ghost operations happening on the `localsettings.REDIS_HOST` by checking that the appendonly file (`/opt/data/redis/appendonly.aof`) is not getting updated (using tail or however)
-  - Now the old `localsettings.REDIS_HOST` node can also be removed from the cluster using above steps.
-- Run `update-config` which should update `localsettings.REDIS_HOST` from the old redis node to new `redis_cluster_master[0]`
-  ```
-  commcare-cloud <env> update-config --branch=<new-redis-hosts>
-  ```
- - Finally end the downtime with `  cchq <env> downtime end`
 
 ### General tips
 
