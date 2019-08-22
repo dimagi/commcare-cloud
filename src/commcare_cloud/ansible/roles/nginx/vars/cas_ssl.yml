@@ -25,15 +25,15 @@ nginx_sites:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
       zone: "$incremental_sync"
       size: "10m"
-      rate: "15r/s"
+      rate: "20r/s"
     - name: "overall_restore" # Limits all restores
       zone: "$server_name"
       size: "10m"
-      rate: "15r/s"
+      rate: "20r/s"
     - name: "submissions"
       zone: "$server_name"
       size: "10m"
-      rate: "180r/s"
+      rate: "200r/s"
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
