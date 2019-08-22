@@ -1,7 +1,10 @@
+from __future__ import print_function
 import os
 import re
 import subprocess
+from time import sleep
 
+from clint.textui.colored import magenta, cyan, yellow
 from memoized import memoized
 
 from commcare_cloud.cli_utils import print_command, check_branch
@@ -45,6 +48,11 @@ class Fab(CommandBase):
         self.parser.__class__ = _Parser
 
     def run(self, args, unknown_args):
+
+        if args.fab_command in ('deploy', 'awesome_deploy'):
+            self.print_deploy_deprecation()
+            return -1
+
         check_branch(args)
         fab_args = []
         if args.fab_command:
@@ -61,6 +69,27 @@ class Fab(CommandBase):
         if not os.path.isfile(known_hosts_file):
             open(known_hosts_file, 'a').close()
         return exec_fab_command(args.env_name, *fab_args)
+
+    @staticmethod
+    def print_deploy_deprecation():
+        print(magenta('Hi.'))
+        print()
+        sleep(.5)
+        print(magenta('Things have changed.'))
+        print()
+        sleep(2)
+        print(cyan('The `commcare-cloud <env> fab deploy` command has been deprecated.'))
+        print()
+        sleep(3)
+        print(cyan('Instead, please use'))
+        print()
+        print(yellow('  commcare-cloud <env> deploy'))
+        sleep(4)
+        print()
+        print()
+        print(magenta('Thank you for using commcare-cloud.'))
+        print()
+        sleep(.5)
 
 
 def exec_fab_command(env_name, *extra_args):
