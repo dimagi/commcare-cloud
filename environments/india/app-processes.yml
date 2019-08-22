@@ -7,7 +7,6 @@ management_commands:
     handle_survey_actions:
     run_sms_queue:
   pillow2:
-    run_form_websocket_feed:
     run_pillow_retry_queue:
 celery_processes:
   celery1:

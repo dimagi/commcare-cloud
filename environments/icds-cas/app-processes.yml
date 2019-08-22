@@ -15,7 +15,6 @@ management_commands:
   celery5:
     run_sms_queue:
   pillow21:
-    run_form_websocket_feed:
     run_pillow_retry_queue:
 
 celery_processes:

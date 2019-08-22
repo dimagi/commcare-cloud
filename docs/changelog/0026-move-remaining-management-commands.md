@@ -21,15 +21,13 @@ to use the same process as the others. The following commands used to be automat
 pillowtop processes and would always be deployed onto the first host in the `pillowtop` group. From now on they
 will be deployed as configured by the `management_commands` section in `app-processes.yml`.
 
-* run_form_websocket_feed
 * run_pillow_retry_queue
 
 ## Steps to update
-1. Add the above mentioned management commands to the `management_commands` section of `app-processes.yml`:
+1. Add the above mentioned management command to the `management_commands` section of `app-processes.yml`:
 
 ```diff
   management_commands:
 +   pillowN:
-+     run_form_websocket_feed:
 +     run_pillow_retry_queue:
 ```
