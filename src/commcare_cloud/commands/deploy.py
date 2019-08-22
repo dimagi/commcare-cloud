@@ -18,4 +18,4 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
-        commcare_cloud(environment.name, 'fab', 'deploy', branch=args.branch, *unknown_args)
+        commcare_cloud(environment.name, 'fab', 'deploy_commcare', branch=args.branch, *unknown_args)

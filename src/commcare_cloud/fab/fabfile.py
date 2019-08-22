@@ -716,8 +716,8 @@ def manage(cmd):
              .format(env=env, cmd=cmd))
 
 
-@task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
+@task
+def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
