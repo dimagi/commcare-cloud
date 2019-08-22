@@ -53,7 +53,26 @@
     - localsettings
   with_items:
     - "{{ formplayer_build_dir }}"
+    - "{{ formplayer_release_dir }}/libs"
     - "{{ formplayer_data_dir }}"
+
+- name: Download formplayer release
+  get_url:
+    url: "{{ formplayer_build_url }}"
+    dest: "{{ formplayer_release_dir }}/libs/formplayer.jar"
+    mode: 0544
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+
+- name: Link formplayer jar
+  copy:
+    remote_src: yes
+    src: "{{ formplayer_release_dir }}/libs/formplayer.jar"
+    dest: "{{ formplayer_build_dir }}/formplayer.jar"
+    mode: 0544
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+
 
 - name: Copy Spring application.properties
   become: yes
