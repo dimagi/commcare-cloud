@@ -1,60 +1,15 @@
 # Note: Make sure to add queues with associated tasks to the solo_queues list in
 # validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
 
-- name: define queue_schedule_instances services
+- name: define management command services
   become: cchq
   template:
-    src: "../templates/common_supervisor_management.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
-  when: app_processes_config.management_commands.get(inventory_hostname, []).queue_schedule_instances is defined
-  with_items:
-    - dest_name: supervisor_queue_schedule_instances.conf
-      process_name: queue_schedule_instances
-      management_command: queue_schedule_instances
+    src: "../templates/supervisor_management_commands.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+  when: app_processes_config.management_commands.get(inventory_hostname, {}) | bool
   tags:
     - services
-  register: celery_queue_schedule_instances_files
-
-
-- name: define handle_survey_actions services
-  become: cchq
-  template:
-    src: "../templates/common_supervisor_management.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.dest_name }}"
-  when: app_processes_config.management_commands.get(inventory_hostname, []).handle_survey_actions is defined
-  with_items:
-    - dest_name: supervisor_handle_survey_actions.conf
-      process_name: handle_survey_actions
-      management_command: handle_survey_actions
-  tags:
-    - services
-  register: celery_handle_survey_actions_files
-
-- name: define submission reprocessing queue services
-  become: cchq
-  template:
-    src: "../templates/common_supervisor_management.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_submission_reprocessing_queue.conf"
-  when: app_processes_config.management_commands.get(inventory_hostname, []).submission_reprocessing_queue is defined
-  with_items:
-    - process_name: submission_reprocessing_queue
-      management_command: run_submission_reprocessing_queue
-  tags:
-    - services
-  register: celery_submission_reprocessing_files
-
-- name: define sms queue services
-  become: cchq
-  template:
-    src: "../templates/common_supervisor_management.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_sms_queue.conf"
-  when: app_processes_config.management_commands.get(inventory_hostname, []).sms_queue is defined
-  with_items:
-    - process_name: sms_queue
-      management_command: run_sms_queue
-  tags:
-    - services
-  register: celery_sms_files
+  register: management_commands_files
 
 - name: Add celery_bash_runner files
   template:
@@ -105,7 +60,7 @@
   register: celery_worker_files
 
 - set_fact:
-    celery_supervisor_files: "{{ celery_queue_schedule_instances_files.get('results', []) + celery_handle_survey_actions_files.get('results', []) + celery_submission_reprocessing_files.get('results', []) + celery_sms_files.get('results', []) + celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
+    celery_supervisor_files: "{{ management_commands_files.get('results', []) + celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
   tags:
     - services
 
