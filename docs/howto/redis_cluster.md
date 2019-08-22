@@ -81,7 +81,7 @@ Please read the whole section thouroughly before doing the migration.
 
 - To verify that the key counts stay same before and after the migration, run
   ```
-  cchq <env> run-shell-command redis_hosts 'redis-cli info | grep -A 2 Keyspace'
+  cchq <env> run-shell-command <redis_hosts> 'redis-cli info | grep -A 2 Keyspace'
   ```
   This displays the number of keys on each redis node which should stay the same
 - After the migration is finished it is best to turn off monit and redis on the old redis VMs and merge the branch into master to avoid someone doing an update-config on old master which will update `localsettings.REDIS_HOST` to the old Redis node (which will cause downtime).
