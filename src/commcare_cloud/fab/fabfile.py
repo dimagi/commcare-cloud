@@ -186,26 +186,9 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
-    _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
     execute(_confirm_deploying_same_code)
-
-
-def _confirm_branch(default_branch='master'):
-    if not hasattr(env, 'code_branch'):
-        print("code_branch not specified, using '{}'. "
-              "You can override this with '--set code_branch=<branch>'"
-              .format(default_branch))
-        env.code_branch = default_branch
-
-    if env.code_branch != default_branch:
-        branch_message = (
-            "Whoa there bud! You're using branch {env.code_branch}. "
-            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        ).format(env=env)
-        if not console.confirm(branch_message, default=False):
-            utils.abort('Action aborted.')
 
 
 def _confirm_environment_time(env_name):

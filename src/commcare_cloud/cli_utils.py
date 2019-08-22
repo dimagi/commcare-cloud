@@ -8,12 +8,16 @@ from .environment.paths import ANSIBLE_DIR
 from six.moves import input, shlex_quote
 
 
-def ask(message, strict=False, quiet=False):
+def ask(message, strict=False, quiet=False, default=False):
     if quiet:
         return True
     yesno = 'YES/NO' if strict else 'y/N'
-    negatives = ('NO', 'N', 'n', 'no', '')
+    negatives = ('NO', 'N', 'n', 'no')
     affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
+    if default:
+        affirmatives += ('',)
+    else:
+        negatives += ('',)
     acceptable_options = affirmatives + negatives
 
     response = ask_option(message, yesno.split('/'), acceptable_options)
