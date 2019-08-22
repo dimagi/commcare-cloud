@@ -27,7 +27,7 @@ CommCareHQ is deployed using [`fabric`](http://www.fabfile.org/), which ensures 
 Envoke the `deploy` command by running:
 
 ``` bash
-$ commcare-cloud <env> fab deploy
+$ commcare-cloud <env> deploy
 ```
 where you will substitute `<env>` for the name of the environment you wish to deploy to.
 
@@ -79,7 +79,7 @@ $ commcare-cloud <env> fab preindex_views
 If something goes wrong and the deploy fails part way through you may be able to resume it as follows:
 
 ``` bash
-$ commcare-cloud <env> fab deploy:"resume=yes"
+$ commcare-cloud <env> deploy --resume
 ```
 
 ## Roll back a failed deploy

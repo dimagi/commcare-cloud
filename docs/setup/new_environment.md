@@ -237,7 +237,7 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 1. Run the deploy command:
 
     ``` bash
-    $ commcare-cloud monolith fab deploy
+    $ commcare-cloud monolith deploy
     ```
     
     You can read more about the deploy process in the [deploy documentation](../commcare-cloud/deploy.md).
@@ -245,7 +245,7 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 1. If deploy fails, you can restart where it left off:
 
     ``` bash
-    $ commcare-cloud monolith fab deploy:resume=yes
+    $ commcare-cloud monolith deploy --resume
     ```
 
 ## Step 9: Cleanup

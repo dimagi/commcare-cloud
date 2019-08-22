@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -881,11 +881,9 @@ Use `-l` instead of a command to see the full list of commands.
 ```
 
     apply_patch                Used to apply a git patch created via `git for...
-    awesome_deploy             Preindex and deploy if it completes quickly en...
     check_status
     clean_offline_releases     Cleans all releases in home directory
     clean_releases             Cleans old and failed deploys from the ~/www/<...
-    deploy                     Preindex and deploy if it completes quickly en...
     deploy_airflow
     deploy_formplayer
     force_update_static
@@ -913,6 +911,16 @@ Use `-l` instead of a command to see the full list of commands.
     unlink_current             Unlinks the current code directory. Use with c...
     update_current
     webworkers
+```
+
+---
+
+#### `deploy`
+
+Deploy CommCare
+
+```
+commcare-cloud <env> deploy
 ```
 
 ---
