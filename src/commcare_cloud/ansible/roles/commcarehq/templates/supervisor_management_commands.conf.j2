@@ -1,0 +1,16 @@
+{% for command_name, params in app_processes_config.management_commands.get(inventory_hostname).items() | sort %}
+[program:{{ project }}-{{ deploy_env }}-{{ command_name }}]
+directory={{ code_home }}
+environment=TMPDIR="{{ encrypted_tmp }}"
+command={{ py3_virtualenv_home }}/bin/python manage.py {{ command_name }}
+user={{ cchq_user }}
+numprocs=1
+autostart=true
+autorestart=true
+stdout_logfile={{ log_home }}/{{ command_name }}.log
+redirect_stderr=true
+stderr_logfile={{ log_home }}/{{ command_name }}.error.log
+startsecs=0
+stopwaitsecs=10
+
+{% endfor %}

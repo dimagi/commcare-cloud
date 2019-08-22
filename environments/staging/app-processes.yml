@@ -1,6 +1,6 @@
 management_commands:
   celery1:
-    sms_queue:
+    run_sms_queue:
 celery_processes:
   None:
     # celery_periodic is intentionally absent from here,

@@ -59,8 +59,7 @@ def build_formplayer(use_current_release=False):
         with cd(build_dir):
             sudo('ln -sfn {} current'.format(release_name))
             sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
-        env.NEEDS_FORMPLAYER_RESTART = True
-
+        supervisor.restart_formplayer()
 
 
 @roles(ROLES_FORMPLAYER)
