@@ -85,3 +85,4 @@ Please read the whole section thouroughly before doing the migration.
   ```
   This displays the number of keys on each redis node which should stay the same
 - After the migration is finished it is best to turn off monit and redis on the old redis VMs and merge the branch into master to avoid someone doing an update-config on old master which will update `localsettings.REDIS_HOST` to the old Redis node (which will cause downtime).
+- It's best to reshard redis nodes during non-peak load as sharding puts a slight memory stress on the nodes.
