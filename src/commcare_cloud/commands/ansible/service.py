@@ -187,7 +187,7 @@ class SupervisorService(SubServicesMixin, ServiceBase):
         Given the process pattern return the matching processes and hosts.
 
         :param process_pattern: process pattern from the args or None
-        :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
+        :return: dict mapping hostname -> [process name list]
         """
         raise NotImplementedError
 
@@ -442,7 +442,8 @@ class SingleSupervisorService(SupervisorService):
             raise NoHostsMatch
 
         return {
-            tuple(self.all_service_hosts): [self.supervisor_process_name]
+            host: [self.supervisor_process_name]
+            for host in self.all_service_hosts
         }
 
 
