@@ -885,6 +885,7 @@ Use `-l` instead of a command to see the full list of commands.
     clean_offline_releases     Cleans all releases in home directory
     clean_releases             Cleans old and failed deploys from the ~/www/<...
     deploy_airflow
+    deploy_commcare            Preindex and deploy if it completes quickly en...
     deploy_formplayer
     force_update_static
     hotfix_deploy              deploy ONLY the code with no extra cleanup or ...
@@ -920,8 +921,22 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-branch COMMCARE_BRANCH]
 ```
+
+##### Optional Arguments
+
+###### `--resume`
+
+Rather than starting a new deploy, start where you left off the last one.
+
+###### `--skip-record`
+
+Skip the steps involved in recording and announcing the fact of the deploy.
+
+###### `--commcare-branch COMMCARE_BRANCH`
+
+The name of the commcare-hq git branch to deploy.
 
 ---
 
