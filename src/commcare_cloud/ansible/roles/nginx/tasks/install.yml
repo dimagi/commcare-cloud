@@ -28,6 +28,18 @@
     line: 'ULIMIT="-n 65536"'
   ignore_errors: "{{ ansible_check_mode }}"
 
+- name: Create sites-available and sites-enabled and allow cchq user to modify
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: "u=rwx,g=rwx,o=r"
+    state: directory
+  with_items:
+    - /etc/nginx/sites-available
+    - /etc/nginx/sites-enabled
+
 - name: Create nginx http user
   become: yes
   user: name="{{ nginx_user }}" createhome=no password=no state=present groups="{{ cchq_user }}"
@@ -51,15 +63,6 @@
   become: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default force=yes
   notify: reload nginx
-
-- name: Allow cchq user to modify sites-availabled
-  become: yes
-  file:
-    path: /etc/nginx/sites-available
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    mode: "u=rwx,g=rwx,o=r"
-    state: directory
 
 - name: Make sure the log directory exists
   import_tasks: roles/commcarehq/tasks/www_log_dir.yml
