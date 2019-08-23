@@ -7,6 +7,12 @@ newest first.
 
 ## Changelog
 
+### **2019-08-23** [Fix python3 virutalenvs](0027-fix-python3-virtualenv.md)
+This fixes a bug with how python3 virtualenvs were created by ansible. This fix needs to be applied to any
+machine which has a python3 virtualenv that was created by commcare-cloud.
+
+The fix is also safe to run on all CommCare hosts.
+
 ### **2019-08-21** [Move remaining management commands explicitly](0026-move-remaining-management-commands.md)
 This change requires editing `app-processes.yml` to add some of processes to the `management_comamnds`
 section
