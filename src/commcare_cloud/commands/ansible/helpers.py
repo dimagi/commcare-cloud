@@ -207,7 +207,7 @@ def get_management_command_processes(environment):
 
 
 def _get_simple_processes(environment, inventory_group, process_name):
-    for host in environment.groups[inventory_group]:
+    for host in environment.groups.get(inventory_group, []):
         yield ProcessDescriptor(host, process_name, 0, process_name)
 
 
