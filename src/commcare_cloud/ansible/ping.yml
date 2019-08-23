@@ -139,27 +139,3 @@
     name: Check NFS status
     args:
       warn: False
-
-- hosts:
-  - riakcs
-  tasks:
-  - command: service riak status
-    name: Check riak status
-    become: True
-    args:
-      warn: False
-  - command: service riak-cs status
-    name: Check riak-cs status
-    become: True
-    args:
-      warn: False
-
-- hosts:
-  - stanchion
-  tasks:
-  - command: service stanchion status
-    name: Check stanchion status
-    become: True
-    args:
-      warn: False
-

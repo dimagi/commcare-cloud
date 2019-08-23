@@ -1,7 +1,6 @@
 ---
 # deploy-localsettings.yml
 
-- import_playbook: deploy_riakcs.yml
 - import_playbook: deploy_commcarehq.yml
 - import_playbook: deploy_formplayer.yml
 - import_playbook: deploy_airflow.yml

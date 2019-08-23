@@ -38,11 +38,6 @@ etc_hosts_lines_removed: []
 ssh_allow_password: False
 ssh_allow_password_users: []
 django_port: 9010
-riakcs_port: 8080
-riakcs_proxy_port_override: "{{ riakcs_port }}"  # use this to override in env vars
-riakcs_proxy_port: "{{ riakcs_proxy_port_override }}"
-temp_riakcs_proxy_port: 8081
-riakcs_control: "{{ groups.get('riakcs')[0] | default('riakcs-is-disabled') }}"
 zookeeper_client_port: 2181
 formplayer_port: 8181
 couchdb_use_haproxy: False
@@ -54,24 +49,22 @@ couchdb_admins: "{
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 run_websockets_wsgi: False
 
-# commcare-hq connects to an S3-compatible service, which is Riak CS
-s3_blob_db_enabled: "{{ True if groups.get('riakcs') else False }}"
-s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ temp_riakcs_proxy_port if 'BLOB_DB_MIGRATING_FROM_S3_TO_S3' in localsettings else riakcs_proxy_port }}"
-s3_blob_db_s3_bucket: 'blobdb'
+# commcare-hq connects to an S3-compatible service
+s3_blob_db_enabled: False
+s3_blob_db_url:
+s3_blob_db_s3_bucket:
 s3_bulk_delete_chunksize: 1000
 
 # For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
 # or http://dimagi.github.io/commcare-cloud/howto/migrate-s3-to-s3
-old_s3_blob_db_url: "http://{{ groups['proxy'][0] }}:{{ riakcs_proxy_port }}"
-old_s3_blob_db_s3_bucket: 'blobdb'
-old_s3_bulk_delete_chunksize: 1000
+old_s3_blob_db_url: ~
+old_s3_blob_db_s3_bucket: ~
+old_s3_bulk_delete_chunksize: ~
 
 # To use these vars without deploying the riak control machine
 # add riakcs_s3_access_key and riakcs_s3_secret_key to the ansible secret config directory
 s3_blob_db_access_key: "{{ riakcs_s3_access_key if riakcs_s3_access_key else (hostvars[riakcs_control]['riak_key'] if s3_blob_db_enabled else '') }}"
 s3_blob_db_secret_key:  "{{ riakcs_s3_secret_key if riakcs_s3_secret_key else (hostvars[riakcs_control]['riak_secret'] if s3_blob_db_enabled else '') }}"
-
-couchdb_mirror: https://archive.apache.org/dist/couchdb/source
 
 datadog_integration_cloudant: false
 datadog_integration_couch: false
@@ -86,8 +79,6 @@ datadog_integration_postgres: false
 datadog_integration_postgres_receiver: false
 datadog_integration_rabbitmq: false
 datadog_integration_redisdb: false
-datadog_integration_riak: false
-datadog_integration_riakcs: false
 datadog_integration_zk: false
 datadog_integration_jmx: false
 datadog_integration_vmware: false

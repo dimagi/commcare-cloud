@@ -288,7 +288,6 @@ def update_virtualenv(full_cluster=True):
                      user=env.sudo_user)
                 pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
                     posixpath.join(requirements, 'prod-requirements.txt'),
-                    posixpath.join(requirements, 'requirements.txt'),
                 ])
 
         _update_virtualenv(

@@ -213,7 +213,6 @@ localsettings:
             - 'static-dashboard_birth_preparedness_forms'
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis_cluster_master.0 }}"
   REDIS_PORT: '6379'

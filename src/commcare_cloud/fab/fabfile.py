@@ -252,7 +252,6 @@ def env_common():
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
-    riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
     formplayer = servers['formplayer']
@@ -269,7 +268,6 @@ def env_common():
         'pg': postgresql,
         'pgstandby': pg_standby,
         'elasticsearch': elasticsearch,
-        'riakcs': riakcs,
         'django_celery': celery,
         'django_app': webworkers,
         'django_manage': django_manage,
@@ -782,6 +780,7 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
+        execute(supervisor.restart_formplayer)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -893,7 +892,6 @@ def check_status():
     execute(check_servers.ping)
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
-    execute(check_servers.riakcs)
 
 
 @task

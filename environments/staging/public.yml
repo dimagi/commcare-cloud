@@ -1,6 +1,3 @@
-riak_backend: "leveldb"
-riak_ring_size: 64
-
 DATADOG_ENABLED: True
 monitor_celery_heartbeat: False
 
@@ -106,7 +103,6 @@ localsettings:
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
