@@ -1,7 +1,17 @@
 ---
 
+- name: Find users to remove
+  getent:
+    database: passwd
+    key: "{{ item }}"
+    fail_key: no
+  loop: "{{ dev_users.absent }}"
+
+- set_fact:
+    users_to_remove: "{{ user_check.results|selectattr('msg', 'undefined')|map(attribute='item')|list }}"
+
 - name: Get running processes
-  shell: "ps -o pid= -u \"{{ dev_users.absent|join(',') }}\""
+  shell: "ps -o pid= -u \"{{ users_to_remove|join(',') }}\""
   register: running_processes
   changed_when: no
   failed_when: no
@@ -27,7 +37,7 @@
 - name: Remove users of former devs
   become: yes
   user: name="{{ item }}" state=absent
-  with_items: '{{ dev_users.absent }}'
+  with_items: '{{ users_to_remove }}'
 
 - name: check if key files exist
   become: false
