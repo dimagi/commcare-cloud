@@ -60,8 +60,6 @@
     - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
     - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
     - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
-    - {"name": "riak", "enabled": "{{ datadog_integration_riak }}"}
-    - {"name": "riakcs", "enabled": "{{ datadog_integration_riakcs }}"}
     - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}

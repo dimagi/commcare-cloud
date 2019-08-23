@@ -21,9 +21,6 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 
-riak_backend: "leveldb"
-riak_ring_size: 128
-
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
 datadog_integration_cloudant: true

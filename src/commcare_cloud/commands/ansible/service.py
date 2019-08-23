@@ -232,7 +232,7 @@ class AnsibleService(ServiceBase):
 
 
 class MultiAnsibleService(SubServicesMixin, AnsibleService):
-    """Service that is made up of multiple other services e.g. RiakCS"""
+    """Service that is made up of multiple other services e.g. CouchDB2"""
 
     @abstractproperty
     def service_process_mapping(self):
@@ -385,16 +385,6 @@ class Redis(AnsibleService):
     inventory_groups = ['redis']
     service_name = 'redis-server'
     log_location = '/var/log/syslog'
-
-
-class Riakcs(MultiAnsibleService):
-    name = 'riakcs'
-    service_process_mapping = {
-        'riak': ('riak', 'riakcs'),
-        'riakcs': ('riak-cs', 'riakcs'),
-        'stanchion': ('stanchion', 'stanchion'),
-    }
-    log_location = '/var/log/riak-cs/'
 
 
 class Kafka(MultiAnsibleService):
@@ -588,7 +578,6 @@ SERVICES = [
     Elasticsearch,
     ElasticsearchClassic,
     Redis,
-    Riakcs,
     Kafka,
     Webworker,
     Formplayer,
@@ -623,7 +612,6 @@ class Service(CommandBase):
 
     ```
     cchq <env> service postgresql status
-    cchq <env> service riakcs restart --only riak,riakcs
     cchq <env> service celery help
     cchq <env> service celery logs
     cchq <env> service celery restart --limit <host>

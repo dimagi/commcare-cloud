@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2019-08-23** [Removing support for Riak CS](0028-remove-riak.md)
+We are removing support for deploying Riak CS clusters in commcare-cloud
+
 ### **2019-08-23** [Fix python3 virutalenvs](0027-fix-python3-virtualenv.md)
 This fixes a bug with how python3 virtualenvs were created by ansible. This fix needs to be applied to any
 machine which has a python3 virtualenv that was created by commcare-cloud.
