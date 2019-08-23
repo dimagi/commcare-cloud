@@ -2,9 +2,8 @@ from __future__ import print_function
 import os
 import re
 import subprocess
-from time import sleep
 
-from clint.textui.colored import magenta, cyan, yellow
+from clint.textui.colored import magenta, yellow, blue
 from memoized import memoized
 
 from commcare_cloud.cli_utils import print_command, check_branch
@@ -72,24 +71,24 @@ class Fab(CommandBase):
 
     @staticmethod
     def print_deploy_deprecation():
-        print(magenta('Hi.'))
+        print(magenta('Hi. Things have changed.'))
         print()
-        sleep(.5)
-        print(magenta('Things have changed.'))
-        print()
-        sleep(2)
-        print(cyan('The `commcare-cloud <env> fab deploy` command has been deprecated.'))
-        print()
-        sleep(3)
-        print(cyan('Instead, please use'))
+        print('The `commcare-cloud <env> fab deploy` command has been deprecated.')
+        print('Instead, please use')
         print()
         print(yellow('  commcare-cloud <env> deploy'))
-        sleep(4)
         print()
+        print("For info on how you can use the new command, please see")
+        print(blue("https://dimagi.github.io/commcare-cloud/commcare-cloud/commands/#deploy"))
+        print("or run")
+        print()
+        print(yellow('  commcare-cloud <env> deploy -h'))
+        print()
+        print("For more information on this change, please see")
+        print(blue("https://dimagi.github.io/commcare-cloud/changelog/0029-add-deploy-command.html"))
         print()
         print(magenta('Thank you for using commcare-cloud.'))
         print()
-        sleep(.5)
 
 
 def exec_fab_command(env_name, *extra_args):
