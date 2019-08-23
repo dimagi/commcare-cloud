@@ -16,6 +16,7 @@ def ask(message, strict=False, quiet=False, default=False):
     affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
     if default:
         affirmatives += ('',)
+        yesno = 'Y/n'
     else:
         negatives += ('',)
     acceptable_options = affirmatives + negatives
