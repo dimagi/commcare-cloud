@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -881,12 +881,11 @@ Use `-l` instead of a command to see the full list of commands.
 ```
 
     apply_patch                Used to apply a git patch created via `git for...
-    awesome_deploy             Preindex and deploy if it completes quickly en...
     check_status
     clean_offline_releases     Cleans all releases in home directory
     clean_releases             Cleans old and failed deploys from the ~/www/<...
-    deploy                     Preindex and deploy if it completes quickly en...
     deploy_airflow
+    deploy_commcare            Preindex and deploy if it completes quickly en...
     deploy_formplayer
     force_update_static
     hotfix_deploy              deploy ONLY the code with no extra cleanup or ...
@@ -914,6 +913,30 @@ Use `-l` instead of a command to see the full list of commands.
     update_current
     webworkers
 ```
+
+---
+
+#### `deploy`
+
+Deploy CommCare
+
+```
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-branch COMMCARE_BRANCH]
+```
+
+##### Optional Arguments
+
+###### `--resume`
+
+Rather than starting a new deploy, start where you left off the last one.
+
+###### `--skip-record`
+
+Skip the steps involved in recording and announcing the fact of the deploy.
+
+###### `--commcare-branch COMMCARE_BRANCH`
+
+The name of the commcare-hq git branch to deploy.
 
 ---
 
