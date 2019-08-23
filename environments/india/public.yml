@@ -116,7 +116,6 @@ localsettings:
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: indiacloud
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
@@ -135,16 +134,6 @@ localsettings:
     static-mpr_2a_3_child_delivery_forms:
     static-mpr_2ci_child_birth_list:
     static-asr_2_pregnancies:
-
-site_locations:
-  - name: /data_dumps/export/enikshay/public
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_public'
-  - name: /data_dumps/export/enikshay/private
-    try_files: "$uri $uri/index.html $uri/ =404"
-    auth_basic: '"Restricted Content"'
-    auth_basic_user_file: '/etc/nginx/.htpasswd_enikshay_private'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa

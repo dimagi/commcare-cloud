@@ -87,7 +87,6 @@ localsettings:
   J2ME_ADDRESS: ''
 #  MEDIA_ROOT:
 #  PILLOWTOP_MACHINE_ID:
-#  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

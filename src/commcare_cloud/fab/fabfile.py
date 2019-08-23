@@ -797,8 +797,7 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        if getattr(env, 'NEEDS_FORMPLAYER_RESTART', False):
-            execute(supervisor.restart_formplayer)
+        execute(supervisor.restart_formplayer)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -874,7 +873,6 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    formplayer.build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
