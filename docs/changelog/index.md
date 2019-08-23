@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2019-08-21** [Move remaining management commands explicitly](0026-move-remaining-management-commands.md)
+This change requires editing `app-processes.yml` to add some of processes to the `management_comamnds`
+section
+
 ### **2019-08-20** [Rename management commands explicitly](0025-rename-management-commands.md)
 This change requires editing `app-processes.yml` to rename some of the processes in the `management_comamnds`
 section

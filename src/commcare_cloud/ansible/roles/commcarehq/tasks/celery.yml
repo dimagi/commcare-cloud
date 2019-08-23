@@ -1,16 +1,6 @@
 # Note: Make sure to add queues with associated tasks to the solo_queues list in
 # validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
 
-- name: define management command services
-  become: cchq
-  template:
-    src: "../templates/supervisor_management_commands.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
-  when: app_processes_config.management_commands.get(inventory_hostname, {}) | bool
-  tags:
-    - services
-  register: management_commands_files
-
 - name: Add celery_bash_runner files
   template:
     src: "../templates/celery_bash_runner.sh.j2"
@@ -60,7 +50,7 @@
   register: celery_worker_files
 
 - set_fact:
-    celery_supervisor_files: "{{ management_commands_files.get('results', []) + celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
+    celery_supervisor_files: "{{ celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
   tags:
     - services
 

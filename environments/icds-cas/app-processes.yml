@@ -14,6 +14,8 @@ management_commands:
     handle_survey_actions:
   celery5:
     run_sms_queue:
+  pillow21:
+    run_pillow_retry_queue:
 
 celery_processes:
   None:

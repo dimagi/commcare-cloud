@@ -7,34 +7,8 @@
     - services
   register: pillowtop_conf_file
 
-- name: define form feed service
-  become: cchq
-  template:
-    src: "../templates/common_supervisor_management.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_form_feed.conf"
-  when: inventory_hostname == groups.pillowtop.0
-  with_items:
-    - process_name: form_feed
-      management_command: run_form_websocket_feed
-  tags:
-    - services
-  register: pillowtop_form_feed_conf_file
-
-- name: define pillow retry queue services
-  become: cchq
-  template:
-    src: "../templates/common_supervisor_management.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillow_retry_queue.conf"
-  when: localsettings.get('PILLOW_RETRY_QUEUE_ENABLED', False) and inventory_hostname == groups.pillowtop.0
-  with_items:
-    - process_name: pillow_retry_queue
-      management_command: run_pillow_retry_queue
-  tags:
-    - services
-  register: pillowtop_pillow_retry_files
-
 - set_fact:
-    pillowtop_supervisor_files: "{{ [pillowtop_conf_file] + pillowtop_form_feed_conf_file.get('results', []) + pillowtop_pillow_retry_files.get('results', []) }}"
+    pillowtop_supervisor_files: "{{ [pillowtop_conf_file] }}"
   tags:
     - services
 
