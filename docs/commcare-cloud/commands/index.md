@@ -283,13 +283,13 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
+                        prepend colon-separated path(s) to module library
+                        (default=[u'/home/jemord/workspace/commcare-
+                        cloud/src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   --playbook-dir=BASEDIR
                         Since this tool does not use playbooks, use this as a
-                        substitute playbook directory.This sets the relative
+                        subsitute playbook directory.This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
@@ -300,20 +300,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --vault-id=VAULT_IDS  the vault identity to use
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
                         connection debugging)
-  --version             show program's version number, config file location,
-                        configured module search path, module location,
-                        executable location and exit
-
-```
-#####   Privilege Escalation Options
-```
-    control how and which user you become as on target hosts
-
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo), use
-                        `ansible-doc -t become -l` to list valid choices.
-    -K, --ask-become-pass
-                        ask for privilege escalation password
+  --version             show program's version number and exit
 
 ```
 #####   Connection Options
@@ -340,6 +327,29 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         specify extra arguments to pass to scp only (e.g. -l)
     --ssh-extra-args=SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
+
+```
+#####   Privilege Escalation Options
+```
+    control how and which user you become as on target hosts
+
+    -s, --sudo          run operations with sudo (nopasswd) (deprecated, use
+                        become)
+    -U SUDO_USER, --sudo-user=SUDO_USER
+                        desired sudo user (default=root) (deprecated, use
+                        become)
+    -S, --su            run operations with su (deprecated, use become)
+    -R SU_USER, --su-user=SU_USER
+                        run operations with su as this user (default=None)
+                        (deprecated, use become)
+    --become-method=BECOME_METHOD
+                        privilege escalation method to use (default=sudo),
+                        valid choices: [ sudo | su | pbrun | pfexec | doas |
+                        dzdo | ksu | runas | pmrun | enable ]
+    --ask-sudo-pass     ask for sudo password (deprecated, use become)
+    --ask-su-pass       ask for su password (deprecated, use become)
+    -K, --ask-become-pass
+                        ask for privilege escalation password
 ```
 
 ---
@@ -404,13 +414,13 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
+                        prepend colon-separated path(s) to module library
+                        (default=[u'/home/jemord/workspace/commcare-
+                        cloud/src/commcare_cloud/ansible/library'])
   -o, --one-line        condense output
   --playbook-dir=BASEDIR
                         Since this tool does not use playbooks, use this as a
-                        substitute playbook directory.This sets the relative
+                        subsitute playbook directory.This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
   -P POLL_INTERVAL, --poll=POLL_INTERVAL
@@ -421,20 +431,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --vault-id=VAULT_IDS  the vault identity to use
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
                         connection debugging)
-  --version             show program's version number, config file location,
-                        configured module search path, module location,
-                        executable location and exit
-
-```
-#####   Privilege Escalation Options
-```
-    control how and which user you become as on target hosts
-
-    --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo), use
-                        `ansible-doc -t become -l` to list valid choices.
-    -K, --ask-become-pass
-                        ask for privilege escalation password
+  --version             show program's version number and exit
 
 ```
 #####   Connection Options
@@ -461,6 +458,29 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         specify extra arguments to pass to scp only (e.g. -l)
     --ssh-extra-args=SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
+
+```
+#####   Privilege Escalation Options
+```
+    control how and which user you become as on target hosts
+
+    -s, --sudo          run operations with sudo (nopasswd) (deprecated, use
+                        become)
+    -U SUDO_USER, --sudo-user=SUDO_USER
+                        desired sudo user (default=root) (deprecated, use
+                        become)
+    -S, --su            run operations with su (deprecated, use become)
+    -R SU_USER, --su-user=SU_USER
+                        run operations with su as this user (default=None)
+                        (deprecated, use become)
+    --become-method=BECOME_METHOD
+                        privilege escalation method to use (default=sudo),
+                        valid choices: [ sudo | su | pbrun | pfexec | doas |
+                        dzdo | ksu | runas | pmrun | enable ]
+    --ask-sudo-pass     ask for sudo password (deprecated, use become)
+    --ask-su-pass       ask for su password (deprecated, use become)
+    -K, --ask-become-pass
+                        ask for privilege escalation password
 ```
 
 ---
@@ -644,9 +664,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
   -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
+                        prepend colon-separated path(s) to module library
+                        (default=[u'/home/jemord/workspace/commcare-
+                        cloud/src/commcare_cloud/ansible/library'])
   --skip-tags=SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
@@ -659,9 +679,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --vault-id=VAULT_IDS  the vault identity to use
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
                         connection debugging)
-  --version             show program's version number, config file location,
-                        configured module search path, module location,
-                        executable location and exit
+  --version             show program's version number and exit
 
 ```
 #####   Connection Options
@@ -694,13 +712,25 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 ```
     control how and which user you become as on target hosts
 
+    -s, --sudo          run operations with sudo (nopasswd) (deprecated, use
+                        become)
+    -U SUDO_USER, --sudo-user=SUDO_USER
+                        desired sudo user (default=root) (deprecated, use
+                        become)
+    -S, --su            run operations with su (deprecated, use become)
+    -R SU_USER, --su-user=SU_USER
+                        run operations with su as this user (default=None)
+                        (deprecated, use become)
     -b, --become        run operations with become (does not imply password
                         prompting)
     --become-method=BECOME_METHOD
-                        privilege escalation method to use (default=sudo), use
-                        `ansible-doc -t become -l` to list valid choices.
+                        privilege escalation method to use (default=sudo),
+                        valid choices: [ sudo | su | pbrun | pfexec | doas |
+                        dzdo | ksu | runas | pmrun | enable ]
     --become-user=BECOME_USER
                         run operations as this user (default=root)
+    --ask-sudo-pass     ask for sudo password (deprecated, use become)
+    --ask-su-pass       ask for su password (deprecated, use become)
     -K, --ask-become-pass
                         ask for privilege escalation password
 ```
@@ -924,16 +954,8 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-<<<<<<< HEAD
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
-||||||| merged common ancestors
-                             {celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}
-                             [{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker} ...]
-=======
-                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}
-                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker} ...]
->>>>>>> master
+                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
+                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
                              {start,stop,restart,status,logs,help}
 ```
 
@@ -955,13 +977,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-<<<<<<< HEAD
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
-||||||| merged common ancestors
-###### `{celery,commcare,couchdb,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}`
-=======
-###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,riakcs,webworker}`
->>>>>>> master
+###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
