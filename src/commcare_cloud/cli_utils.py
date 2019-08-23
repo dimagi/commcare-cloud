@@ -9,16 +9,27 @@ from six.moves import input, shlex_quote
 
 
 def ask(message, strict=False, quiet=False, default=False):
+    assert default in (True, False, None)
+
     if quiet:
-        return True
-    yesno = 'YES/NO' if strict else 'y/N'
-    negatives = ('NO', 'N', 'n', 'no')
-    affirmatives = ('YES',) if strict else ('y', 'Y', 'yes')
+        return default
+
+    if strict:
+        affirmatives = ('YES', 'yes')
+        negatives = ('NO', 'no')
+        yesno_by_default = {True: 'YES/no', False: 'yes/NO', None: 'yes/no'}
+    else:
+        affirmatives = ('Y', 'y', 'YES', 'yes')
+        negatives = ('N', 'n', 'NO', 'no')
+        yesno_by_default = {True: 'Y/n', False: 'y/N', None: 'y/n'}
+
     if default:
         affirmatives += ('',)
-        yesno = 'Y/n'
-    else:
+    elif default is not None:
         negatives += ('',)
+
+    yesno = yesno_by_default[default]
+
     acceptable_options = affirmatives + negatives
 
     response = ask_option(message, yesno.split('/'), acceptable_options)
