@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2019-08-23** [Add `deploy` Command](0029-add-deploy-command.md)
+In order to provide a consistent user interface while making underlying changes,
+we are replacing the `commcare-cloud <env> fab deploy` command with a more concise
+`commcare-cloud <env> deploy` command.
+
 ### **2019-08-23** [Removing support for Riak CS](0028-remove-riak.md)
 We are removing support for deploying Riak CS clusters in commcare-cloud
 

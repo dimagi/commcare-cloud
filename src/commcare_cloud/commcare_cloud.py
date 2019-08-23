@@ -12,6 +12,7 @@ from clint.textui import puts, colored
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
+from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
@@ -63,6 +64,7 @@ COMMAND_GROUPS = OrderedDict([
         UpdateUsers,
         UpdateSupervisorConfs,
         Fab,
+        Deploy,
         Service,
         MigrateCouchdb,
         Downtime,
