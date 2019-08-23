@@ -269,7 +269,6 @@ def env_common():
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
-    riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
     formplayer = servers['formplayer']
@@ -286,7 +285,6 @@ def env_common():
         'pg': postgresql,
         'pgstandby': pg_standby,
         'elasticsearch': elasticsearch,
-        'riakcs': riakcs,
         'django_celery': celery,
         'django_app': webworkers,
         'django_manage': django_manage,
@@ -911,7 +909,6 @@ def check_status():
     execute(check_servers.ping)
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
-    execute(check_servers.riakcs)
 
 
 @task
