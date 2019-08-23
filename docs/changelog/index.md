@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2019-08-23** [Add `deploy` Command](0029-add-deploy-command.md)
+In order to provide a consistent user interface while making underlying changes,
+we are replacing the `commcare-cloud <env> fab deploy` command with a more concise
+`commcare-cloud <env> deploy` command.
+
 ### **2019-08-20** [Rename management commands explicitly](0025-rename-management-commands.md)
 This change requires editing `app-processes.yml` to rename some of the processes in the `management_comamnds`
 section
