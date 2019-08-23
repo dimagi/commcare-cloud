@@ -41,6 +41,9 @@ postgres_override:
   postgresql_slow_log_threshold: 1000
   postgresql_hba_entries:
     - contype: host
+      users: hqrepl
+      netmask: 100.71.184.0/22
+    - contype: host
       databases: replication
       users: hqrepl
       netmask: 100.71.184.0/22
@@ -122,62 +125,32 @@ dbs:
     - name: commcarehq_p10
       host: pgshard10
       django_migrate: False
-    - name: commcarehq_p11
-      host: pgshard11
-      django_migrate: False
     - name: commcarehq_p12
       host: pgshard12
-      django_migrate: False
-    - name: commcarehq_p13
-      host: pgshard13
       django_migrate: False
     - name: commcarehq_p14
       host: pgshard14
       django_migrate: False
-    - name: commcarehq_p15
-      host: pgshard15
-      django_migrate: False
     - name: commcarehq_p16
       host: pgshard16
-      django_migrate: False
-    - name: commcarehq_p17
-      host: pgshard17
       django_migrate: False
     - name: commcarehq_p18
       host: pgshard18
       django_migrate: False
-    - name: commcarehq_p19
-      host: pgshard19
-      django_migrate: False
     - name: commcarehq_p20
       host: pgshard20
-      django_migrate: False
-    - name: commcarehq_p21
-      host: pgshard21
       django_migrate: False
     - name: commcarehq_p22
       host: pgshard22
       django_migrate: False
-    - name: commcarehq_p23
-      host: pgshard23
-      django_migrate: False
     - name: commcarehq_p24
       host: pgshard24
-      django_migrate: False
-    - name: commcarehq_p25
-      host: pgshard25
       django_migrate: False
     - name: commcarehq_p26
       host: pgshard26
       django_migrate: False
-    - name: commcarehq_p27
-      host: pgshard27
-      django_migrate: False
     - name: commcarehq_p28
       host: pgshard28
-      django_migrate: False
-    - name: commcarehq_p29
-      host: pgshard29
       django_migrate: False
   standby:
     - django_alias: icds-ucr-standby0
@@ -222,3 +195,105 @@ dbs:
       create: False
       django_migrate: False
       hq_acceptable_standby_delay: 0
+
+replications:
+  - target_db_name: commcarehq_p10
+    target_host: pgshard10
+    source_host: pgshard0
+    source_db_name: commcarehq_p1
+    replication_set: [0, 51]
+  - target_db_name: commcarehq_p11
+    target_host: pgshard11
+    source_host: pgshard0
+    source_db_name: commcarehq_p1
+    replication_set: [52, 103]
+  - target_db_name: commcarehq_p12
+    target_host: pgshard12
+    source_host: pgshard1standby
+    source_db_name: commcarehq_p2
+    replication_set: [104, 154]
+  - target_db_name: commcarehq_p13
+    target_host: pgshard13
+    source_host: pgshard1standby
+    source_db_name: commcarehq_p2
+    replication_set: [155, 205]
+  - target_db_name: commcarehq_p14
+    target_host: pgshard14
+    source_host: pgshard2
+    source_db_name: commcarehq_p3
+    replication_set: [206, 257]
+  - target_db_name: commcarehq_p15
+    target_host: pgshard15
+    source_host: pgshard2
+    source_db_name: commcarehq_p3
+    replication_set: [258, 308]
+  - target_db_name: commcarehq_p16
+    target_host: pgshard16
+    source_host: pgshard3
+    source_db_name: commcarehq_p4
+    replication_set: [309, 360]
+  - target_db_name: commcarehq_p17
+    target_host: pgshard17
+    source_host: pgshard3
+    source_db_name: commcarehq_p4
+    replication_set: [361, 411]
+  - target_db_name: commcarehq_p18
+    target_host: pgshard18
+    source_host: pgshard4
+    source_db_name: commcarehq_p5
+    replication_set: [412, 463]
+  - target_db_name: commcarehq_p19
+    target_host: pgshard19
+    source_host: pgshard4
+    source_db_name: commcarehq_p5
+    replication_set: [464, 514]
+  - target_db_name: commcarehq_p20
+    target_host: pgshard20
+    source_host: pgshard5standby
+    source_db_name: commcarehq_p6
+    replication_set: [515, 566]
+  - target_db_name: commcarehq_p21
+    target_host: pgshard21
+    source_host: pgshard5standby
+    source_db_name: commcarehq_p6
+    replication_set: [567, 617]
+  - target_db_name: commcarehq_p22
+    target_host: pgshard22
+    source_host: pgshard6
+    source_db_name: commcarehq_p7
+    replication_set: [618, 669]
+  - target_db_name: commcarehq_p23
+    target_host: pgshard23
+    source_host: pgshard6
+    source_db_name: commcarehq_p7
+    replication_set: [670, 720]
+  - target_db_name: commcarehq_p24
+    target_host: pgshard24
+    source_host: pgshard7
+    source_db_name: commcarehq_p8
+    replication_set: [721, 771]
+  - target_db_name: commcarehq_p25
+    target_host: pgshard25
+    source_host: pgshard7
+    source_db_name: commcarehq_p8
+    replication_set: [772, 823]
+  - target_db_name: commcarehq_p26
+    target_host: pgshard26
+    source_host: pgshard8standby
+    source_db_name: commcarehq_p9
+    replication_set: [824, 875]
+  - target_db_name: commcarehq_p27
+    target_host: pgshard27
+    source_host: pgshard8standby
+    source_db_name: commcarehq_p9
+    replication_set: [876, 926]
+  - target_db_name: commcarehq_p28
+    target_host: pgshard28
+    source_host: pgshard9
+    source_db_name: commcarehq_p10
+    replication_set: [927, 975]
+  - target_db_name: commcarehq_p29
+    target_host: pgshard29
+    source_host: pgshard9
+    source_db_name: commcarehq_p10
+    replication_set: [976, 1023]
