@@ -22,7 +22,7 @@ options:
   silenced: {}
   thresholds: {critical: 0.8, critical_recovery: 0.75}
   timeout_h: 0
-query: max(next_2w):forecast(avg:system.disk.in_use{device:/opt/data,!group:riakcs}
+query: max(next_2w):forecast(avg:system.disk.in_use{device:/opt/data}
   by {host,environment}, 'seasonal', 1, interval='120m', seasonality='weekly') >=
   0.8
 tags: []

@@ -187,7 +187,7 @@ class SupervisorService(SubServicesMixin, ServiceBase):
         Given the process pattern return the matching processes and hosts.
 
         :param process_pattern: process pattern from the args or None
-        :return: dict mapping tuple(hostname1,hostname2,...) -> [process name list]
+        :return: dict mapping hostname -> [process name list]
         """
         raise NotImplementedError
 
@@ -232,7 +232,7 @@ class AnsibleService(ServiceBase):
 
 
 class MultiAnsibleService(SubServicesMixin, AnsibleService):
-    """Service that is made up of multiple other services e.g. RiakCS"""
+    """Service that is made up of multiple other services e.g. CouchDB2"""
 
     @abstractproperty
     def service_process_mapping(self):
@@ -363,18 +363,6 @@ class Elasticsearch(ServiceBase):
                              skip_check=True, quiet=True)
 
 
-class Couchdb(AnsibleService):
-    name = 'couchdb'
-    inventory_groups = ['couchdb']
-    log_location = '/usr/local/var/log/couchdb'
-
-    def execute_action(self, action, host_pattern=None, process_pattern=None):
-        if not self.environment.groups.get('couchdb', None):
-            puts(colored.red("Inventory has no 'couchdb' hosts. Do you mean 'couchdb2'?"))
-            return 1
-        super(Couchdb, self).execute_action(action, host_pattern, process_pattern)
-
-
 class Couchdb2(MultiAnsibleService):
     name = 'couchdb2'
     service_process_mapping = {
@@ -397,16 +385,6 @@ class Redis(AnsibleService):
     inventory_groups = ['redis']
     service_name = 'redis-server'
     log_location = '/var/log/syslog'
-
-
-class Riakcs(MultiAnsibleService):
-    name = 'riakcs'
-    service_process_mapping = {
-        'riak': ('riak', 'riakcs'),
-        'riakcs': ('riak-cs', 'riakcs'),
-        'stanchion': ('stanchion', 'stanchion'),
-    }
-    log_location = '/var/log/riak-cs/'
 
 
 class Kafka(MultiAnsibleService):
@@ -442,7 +420,8 @@ class SingleSupervisorService(SupervisorService):
             raise NoHostsMatch
 
         return {
-            tuple(self.all_service_hosts): [self.supervisor_process_name]
+            host: [self.supervisor_process_name]
+            for host in self.all_service_hosts
         }
 
 
@@ -594,13 +573,11 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
 SERVICES = [
     Postgresql,
     Nginx,
-    Couchdb,
     Couchdb2,
     RabbitMq,
     Elasticsearch,
     ElasticsearchClassic,
     Redis,
-    Riakcs,
     Kafka,
     Webworker,
     Formplayer,
@@ -635,7 +612,6 @@ class Service(CommandBase):
 
     ```
     cchq <env> service postgresql status
-    cchq <env> service riakcs restart --only riak,riakcs
     cchq <env> service celery help
     cchq <env> service celery logs
     cchq <env> service celery restart --limit <host>
