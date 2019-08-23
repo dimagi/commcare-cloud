@@ -12,7 +12,7 @@
    - name: current_password
      prompt: "Current 'wcdadmin' password:"
    - name: new_password
-     prompt: "New 'wcdadmin' password:
+     prompt: "New 'wcdadmin' password:"
   tasks:
     - expect:
         command: ssh wcdadmin@{{item}} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
