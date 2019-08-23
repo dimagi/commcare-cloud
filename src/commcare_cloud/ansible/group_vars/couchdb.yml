@@ -1,2 +1,0 @@
-couch_log_dir: "/usr/local/var/log/couchdb"
-datadog_integration_couch: true
