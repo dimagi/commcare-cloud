@@ -3,13 +3,13 @@
   template:
     src: "../templates/supervisor_management_commands.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
-  when: app_processes_config.management_commands.get(inventory_hostname, {}) | bool
+  when: app_processes_config.management_commands.get(inventory_hostname, {})
   tags:
     - services
-  register: management_commands_files
+  register: management_commands_file
 
 - set_fact:
-    mgmt_cmd_supervisor_files: "{{ management_commands_files.get('results', []) }}"
+    mgmt_cmd_supervisor_files: "{{ [management_commands_file] }}"
   tags:
     - services
 
