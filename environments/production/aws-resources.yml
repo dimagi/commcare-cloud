@@ -13,9 +13,17 @@ es11-production: 10.202.40.91
 es12-production: 10.202.40.110
 es13-production: 10.202.40.241
 es14-production: 10.202.40.224
+es15-production: 10.202.40.113
+es16-production: 10.202.40.81
+es17-production: 10.202.40.12
+es18-production: 10.202.40.217
+es19-production: 10.202.40.144
 esmaster0-production: 10.202.41.120
 esmaster1-production: 10.202.41.236
 esmaster2-production: 10.202.40.201
+esmaster3-production: 10.202.41.183
+esmaster4-production: 10.202.41.247
+esmaster5-production: 10.202.40.226
 formplayer0-production: 10.202.10.21
 formplayer1-production: 10.202.10.4
 kafka0-production: 10.202.40.70
