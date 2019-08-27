@@ -452,43 +452,43 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  'web0':
+  'web28':
     ucr_indicator_queue:
       concurrency: 3
-  'web1':
+  'web29':
     ucr_indicator_queue:
       concurrency: 4
-  'web2':
+  'web30':
     ucr_indicator_queue:
       concurrency: 4
-  'web3':
+  'web31':
     ucr_indicator_queue:
       concurrency: 4
-  'web4':
+  'web32':
     ucr_indicator_queue:
       concurrency: 4
-  'web5':
+  'web33':
     ucr_indicator_queue:
       concurrency: 4
-  'web6':
+  'web34':
     ucr_indicator_queue:
       concurrency: 4
-  'web7':
+  'web35':
     ucr_indicator_queue:
       concurrency: 4
-  'web8':
+  'web36':
     ucr_indicator_queue:
       concurrency: 4
-  'web9':
+  'web37':
     ucr_indicator_queue:
       concurrency: 4
-  'web10':
+  'web38':
     ucr_indicator_queue:
       concurrency: 4
-  'web11':
+  'web39':
     ucr_indicator_queue:
       concurrency: 4
-  'web12':
+  'web40':
     ucr_indicator_queue:
       concurrency: 4
 pillows:
