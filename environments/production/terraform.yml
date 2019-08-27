@@ -196,7 +196,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 660
-    group: "elasticsearch9
+    group: "elasticsearch"
     os: bionic
   - server_name: "es19-production"
     server_instance_type: m5.2xlarge
