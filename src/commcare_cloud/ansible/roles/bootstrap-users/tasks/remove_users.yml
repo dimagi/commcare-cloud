@@ -6,6 +6,7 @@
     key: "{{ item }}"
     fail_key: no
   loop: "{{ dev_users.absent }}"
+  register: user_check
 
 - set_fact:
     users_to_remove: "{{ user_check.results|selectattr('msg', 'undefined')|map(attribute='item')|list }}"
