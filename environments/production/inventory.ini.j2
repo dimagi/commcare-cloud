@@ -128,16 +128,6 @@ redis1
 [shared_dir_host:children]
 shareddir0
 
-{{ __es10__ }} elasticsearch_node_name=es10
-
-{{ __es11__ }} elasticsearch_node_name=es11
-
-{{ __es12__ }} elasticsearch_node_name=es12
-
-{{ __es13__ }} elasticsearch_node_name=es13
-
-{{ __es14__ }} elasticsearch_node_name=es14
-
 {{ __es15__ }} elasticsearch_node_name=es15
 
 {{ __es16__ }} elasticsearch_node_name=es16
@@ -148,12 +138,6 @@ shareddir0
 
 {{ __es19__ }} elasticsearch_node_name=es19
 
-{{ __esmaster0__ }} elasticsearch_node_name=esmaster0
-
-{{ __esmaster1__ }} elasticsearch_node_name=esmaster1
-
-{{ __esmaster2__ }} elasticsearch_node_name=esmaster2
-
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4
@@ -161,9 +145,6 @@ shareddir0
 {{ __esmaster5__ }} elasticsearch_node_name=esmaster5
 
 [es_master:children]
-esmaster0
-esmaster1
-esmaster2
 esmaster3
 esmaster4
 esmaster5
@@ -173,11 +154,6 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es10
-es11
-es12
-es13
-es14
 es15
 es16
 es17
