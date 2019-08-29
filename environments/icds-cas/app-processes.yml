@@ -550,6 +550,9 @@ pillows:
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
+  'pillow41':
+    FormSubmissionMetadataTrackerPillow:
+      num_processes: 16
   'pillow27':
     case-pillow:
       start_process: 0
@@ -634,6 +637,3 @@ pillows:
       num_processes: 3
       total_processes: 120
       processor_chunk_size: 100
-  'pillow41':
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 16
