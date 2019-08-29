@@ -15,6 +15,7 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.sentry import ExportSentryEvents
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
 from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
 from commcare_cloud.commands.terraform.terraform import Terraform
@@ -53,6 +54,7 @@ COMMAND_GROUPS = OrderedDict([
         SendDatadogEvent,
         DjangoManage,
         Tmux,
+        ExportSentryEvents,
     ]),
     ('operational', [
         Ping,
