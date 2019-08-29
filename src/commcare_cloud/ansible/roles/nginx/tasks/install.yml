@@ -4,13 +4,21 @@
 # we might be able install from the default bionic apt repo
 # and not add the official nginx repo.
 # See: https://github.com/dimagi/commcare-cloud/pull/2901#pullrequestreview-250517794
+
+- name: Add Nginx apt key
+  become: yes
+  apt_key: url=https://nginx.org/keys/nginx_signing.key state=present
+
 - name: Add nginx repository
   become: yes
-  apt_repository: repo='ppa:nginx/stable' state=present
+  apt_repository: repo='deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx' state=present
 
 - name: Install nginx
   become: yes
-  apt: name="{{ nginx_ubuntu_pkg }}" state=latest update_cache=yes cache_valid_time=3600
+  apt: name="nginx=1.17.3-1~bionic" state=present update_cache=yes cache_valid_time=3600
+  notify: 'quick start nginx'
+
+- meta: flush_handlers  # need to start nginx as quickly as possible for minimal downtime
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -19,6 +27,18 @@
     regexp: '^ULIMIT='
     line: 'ULIMIT="-n 65536"'
   ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Create sites-available and sites-enabled and allow cchq user to modify
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: "u=rwx,g=rwx,o=r"
+    state: directory
+  with_items:
+    - /etc/nginx/sites-available
+    - /etc/nginx/sites-enabled
 
 - name: Create nginx http user
   become: yes
@@ -43,15 +63,6 @@
   become: yes
   file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default force=yes
   notify: reload nginx
-
-- name: Allow cchq user to modify sites-availabled
-  become: yes
-  file:
-    path: /etc/nginx/sites-available
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    mode: "u=rwx,g=rwx,o=r"
-    state: directory
 
 - name: Make sure the log directory exists
   import_tasks: roles/commcarehq/tasks/www_log_dir.yml

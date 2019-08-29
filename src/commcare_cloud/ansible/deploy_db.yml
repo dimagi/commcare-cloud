@@ -1,11 +1,9 @@
 ---
 - name: Common Database Machine Setup
   hosts:
-    - couchdb
     - redis
     - elasticsearch
     - rabbitmq
-    - riakcs
     - formplayer
     - django_manage
   become: true
@@ -18,32 +16,6 @@
 
 - name : CitusDB
   import_playbook: deploy_citusdb.yml
-
-- name: Couchdb
-  hosts: couchdb
-  become: true
-  roles:
-    - {role: couchdb, tags: 'couchdb'}
-
-- name: Couchdb log rolling configurations
-  hosts: couchdb
-  become: true
-  roles:
-    - role: ansible-logrotate
-      tags: couchdb
-      logrotate_scripts:
-        - name: "{{ deploy_env }}_couchdb"
-          path: "{{ couch_log_dir }}/*.log"
-          options:
-            - daily
-            - size 100M
-            - rotate 10
-            - missingok
-            - compress
-            - delaycompress
-            - copytruncate
-            - nocreate
-            - notifempty
 
 - import_playbook: deploy_couchdb2.yml
 
@@ -74,9 +46,6 @@
     - kafka
     - zookeeper
 
-- import_playbook: deploy_riakcs.yml
-  tags: riakcs
-
 # Note other machines also have java installed, but are initiated through the meta task
 - name: Java
   become: true
@@ -89,11 +58,9 @@
 - name: Disable THP
   become: true
   hosts:
-    - couchdb
     - redis
     - elasticsearch
     - rabbitmq
-    - riakcs
     - formplayer
   tags: 'kernel_tuning'
   roles:
