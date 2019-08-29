@@ -18,6 +18,13 @@
   notify: reload monit
   tags: monit
 
+- name: Set net.core.somaxconn
+  become: yes
+  sysctl:
+    name: net.core.somaxconn
+    value: 65535
+    state: present
+
 - meta: flush_handlers
 
 - monit:
