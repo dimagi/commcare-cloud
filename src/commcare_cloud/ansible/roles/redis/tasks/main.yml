@@ -24,7 +24,6 @@
     name: net.core.somaxconn
     value: 65535
     state: present
-    sysctl_file: /etc/sysctl.d/90-somaxconn.conf
 
 - meta: flush_handlers
 
