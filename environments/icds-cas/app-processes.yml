@@ -504,9 +504,7 @@ pillows:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
-    GroupPillow:
-      num_processes: 1
-    GroupToUserPillow:
+    group-pillow:
       num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
