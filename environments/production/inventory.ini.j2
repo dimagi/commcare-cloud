@@ -3,31 +3,31 @@
 [proxy:children]
 proxy0
 
-{{ __web0__ }}
-
-{{ __web1__ }} datadog_integration_tcp_check=yes
-
 {{ __web2__ }}
 
-{{ __web6__ }}
+{{ __web3__ }}
 
-{{ __web7__ }} datadog_integration_tcp_check=yes
+{{ __web4__ }} datadog_integration_tcp_check=yes
 
-{{ __web8__ }}
+{{ __web10__ }}
 
-{{ __web9__ }}
+{{ __web11__ }} datadog_integration_tcp_check=yes
+
+{{ __web12__ }}
+
+{{ __web13__ }}
 
 
 [hq_webworkers:children]
-web0
-web1
 web2
+web3
+web4
 
 [mobile_webworkers:children]
-web6
-web7
-web8
-web9
+web10
+web11
+web12
+web13
 
 [webworkers:children]
 hq_webworkers
@@ -87,12 +87,6 @@ kafka0
 [kafka:children]
 kafka0
 
-{{ __celery6__ }}
-
-{{ __celery7__ }}
-
-{{ __celery8__ }}
-
 {{ __celery9__ }}
 
 {{ __celery10__ }}
@@ -103,9 +97,6 @@ kafka0
 
 
 [celery:children]
-celery6
-celery7
-celery8
 celery9
 celery10
 celery11
@@ -114,10 +105,10 @@ celery12
 [celery:vars]
 swap_size=8G
 
-{{ __pillow0__ }}
+{{ __pillow1__ }}
 
 [pillowtop:children]
-pillow0
+pillow1
 
 {{ __formplayer0__ }}
 
@@ -195,7 +186,6 @@ couchproxy0
 
 {{ __control__ }}
 
-{{ __djangomanage0__ }}
 {{ __djangomanage1__ }}
 
 [django_manage:children]

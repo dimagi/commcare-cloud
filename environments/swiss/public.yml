@@ -73,11 +73,13 @@ billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
 master_list_email: master-list@dimagi.com
-report_builder_add_on_email: sales@dimagi.com
+sales_email: sales@dimagi.com
+privacy_email: privacy@dimagi.com
+feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-
+check_s3_backups_email: commcarehq-ops+root@dimagi.com,httu.admin@swisstph.ch
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
@@ -119,7 +121,6 @@ localsettings:
   J2ME_ADDRESS: ''
 #  KAFKA_HOST:
   #  PILLOWTOP_MACHINE_ID:
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'

@@ -1,12 +1,11 @@
 airflow1-india: 10.203.10.63
 celery1-india: 10.203.10.13
+celery2-india: 10.203.10.117
+celery3-india: 10.203.10.197
 citus0-india: 10.203.10.77
 citus1-india: 10.203.10.74
 citus2-india: 10.203.10.190
 control0-india: 10.203.10.246
-couch2-india: 10.203.40.187
-couch3-india: 10.203.40.186
-couch4-india: 10.203.40.188
 couch5-india: 10.203.40.178
 couch6-india: 10.203.40.191
 couch7-india: 10.203.40.56

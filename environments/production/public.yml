@@ -14,13 +14,12 @@ billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
 master_list_email: master-list@dimagi.com
-report_builder_add_on_email: sales@dimagi.com
+sales_email: sales@dimagi.com
+privacy_email: privacy@dimagi.com
+feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-
-riak_backend: "leveldb"
-riak_ring_size: 128
 
 DATADOG_ENABLED: True
 CLOUDANT_CLUSTER_NAME: dimagi003
@@ -133,7 +132,6 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
-  PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

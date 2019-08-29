@@ -132,16 +132,21 @@
   tags:
     - postfix
 
+- name: "Set at.deny"
+  become: yes
+  template:
+    src: at.deny
+    dest: /etc/at.deny
+    owner: root
+    group: daemon
+    mode: 0640
+    backup: yes
 
-- name: Set proper umask
-  lineinfile:
-    dest: /etc/login.defs
-    state: present
-    regexp: "^UMASK"
-    line: "UMASK\t\t022"
-  tags:
-    - umask
-
+- name: "remove at.allow"
+  become: yes
+  file:
+    path: /etc/at.allow
+    state: absent
 
 - import_tasks: antivirus.yml
   tags:

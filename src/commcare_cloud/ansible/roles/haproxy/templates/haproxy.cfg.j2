@@ -27,7 +27,7 @@ defaults
 {% if haproxy_stats_enabled | bool %}
 listen stats
     bind {{ haproxy_stats_bind_address }}:{{ haproxy_stats_port }}
-
+    maxconn 20
     mode http
     stats enable
     stats hide-version

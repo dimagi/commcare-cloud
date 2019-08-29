@@ -25,7 +25,6 @@ monitoring_groups:
   - shard_dbs
   - main_dbs
   - ucr_dbs
-  - riakcs
   - formplayer
   - pillowtop
   - celery
@@ -34,6 +33,5 @@ monitoring_groups:
   - redis
   - couchdb2
   - couchdb2_proxy
-  - couchdb
   - django_manage
   - citusdb

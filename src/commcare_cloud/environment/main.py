@@ -45,7 +45,6 @@ class Environment(object):
         self.check_known_hosts()
         self.meta_config
         self.users_config
-        self.raw_app_processes_config
         self.app_processes_config
         self.fab_settings_config
         self.inventory_manager
@@ -258,7 +257,7 @@ class Environment(object):
                                         map(str, repeated_users))), self.meta_config.deploy_env))
 
     @memoized_property
-    def raw_app_processes_config(self):
+    def _raw_app_processes_config(self):
         """
         collated contents of app-processes.yml files, as an AppProcessesConfig object
 
@@ -275,7 +274,7 @@ class Environment(object):
 
     @memoized_property
     def app_processes_config(self):
-        app_processes_config = AppProcessesConfig.wrap(self.raw_app_processes_config.to_json())
+        app_processes_config = AppProcessesConfig.wrap(self._raw_app_processes_config.to_json())
         app_processes_config.check_and_translate_hosts(self)
         app_processes_config.check()
         return app_processes_config
