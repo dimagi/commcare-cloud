@@ -8,7 +8,6 @@ from ..const import (
     ROLES_ALL,
     ROLES_POSTGRESQL,
     ROLES_ELASTICSEARCH,
-    ROLES_RIAKCS,
     ROLES_DEPLOY)
 
 
@@ -35,16 +34,6 @@ def elasticsearch():
         run("curl -XGET 'http://%s:9200/_cluster/health?pretty=true'" % env.host)
         ELASTICSEARCH_CHECKED = True
     run('service elasticsearch status')
-
-RIAKCS_CHECKED = False
-@roles(ROLES_RIAKCS)
-def riakcs():
-    global RIAKCS_CHECKED
-    if not RIAKCS_CHECKED:
-        sudo("riak-admin cluster status")
-        RIAKCS_CHECKED = True
-    sudo('service riak status')
-    sudo('service riak-cs status')
 
 @roles(ROLES_POSTGRESQL)
 def postgresql():

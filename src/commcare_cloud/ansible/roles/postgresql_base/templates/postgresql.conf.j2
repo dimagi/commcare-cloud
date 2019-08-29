@@ -50,7 +50,7 @@ archive_command = '{{ postgresql_archive_command }}'
 archive_timeout = {{ postgresql_archive_timeout }}
 {% endif %}
 
-wal_level = hot_standby
+wal_level = {{ postgresql_wal_level }}
 max_wal_senders = 8
 max_wal_size = {{ postgresql_max_wal_size }}
 {% if postgresql_min_wal_size %}
@@ -115,6 +115,10 @@ track_functions = all
 default_statistics_target = {{ postgresql_default_statistics_target }}
 
 shared_preload_libraries = '{{ postgresql_shared_preload_libraries|join(", ") }}'
+
+{% if postgresql_wal_level == 'logical' %}
+track_commit_timestamp = on
+{% endif %}
 
 {% if not is_pg_standby %}
 pg_stat_statements.track = all

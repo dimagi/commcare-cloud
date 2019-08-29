@@ -8,12 +8,14 @@ celery_heartbeat_thresholds:
 
 management_commands:
   celery0:
-    submission_reprocessing_queue:
+    run_submission_reprocessing_queue:
   celery1:
     queue_schedule_instances:
     handle_survey_actions:
   celery5:
-    sms_queue:
+    run_sms_queue:
+  pillow21:
+    run_pillow_retry_queue:
 
 celery_processes:
   None:
@@ -450,47 +452,47 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  'web0':
+  'web28':
     ucr_indicator_queue:
       concurrency: 3
-  'web1':
+  'web29':
     ucr_indicator_queue:
       concurrency: 4
-  'web2':
+  'web30':
     ucr_indicator_queue:
       concurrency: 4
-  'web3':
+  'web31':
     ucr_indicator_queue:
       concurrency: 4
-  'web4':
+  'web32':
     ucr_indicator_queue:
       concurrency: 4
-  'web5':
+  'web33':
     ucr_indicator_queue:
       concurrency: 4
-  'web6':
+  'web34':
     ucr_indicator_queue:
       concurrency: 4
-  'web7':
+  'web35':
     ucr_indicator_queue:
       concurrency: 4
-  'web8':
+  'web36':
     ucr_indicator_queue:
       concurrency: 4
-  'web9':
+  'web37':
     ucr_indicator_queue:
       concurrency: 4
-  'web10':
+  'web38':
     ucr_indicator_queue:
       concurrency: 4
-  'web11':
+  'web39':
     ucr_indicator_queue:
       concurrency: 4
-  'web12':
+  'web40':
     ucr_indicator_queue:
       concurrency: 4
 pillows:
-  'pillow0':
+  'pillow21':
     # Catch all server for low volume pillows
     AppDbChangeFeedPillow:
       num_processes: 1
@@ -526,34 +528,34 @@ pillows:
     kafka-ucr-static-awc-location:
       num_processes: 1
       processor_chunk_size: 100
-  'pillow1':
+  'pillow22':
     XFormToElasticsearchPillow:
       num_processes: 16
-  'pillow2':
+  'pillow23':
     kafka-ucr-static-forms:
       start_process: 0
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow3':
+  'pillow24':
     kafka-ucr-static-forms:
       start_process: 12
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow4':
+  'pillow25':
     kafka-ucr-static-forms:
       start_process: 24
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow16':
+  'pillow26':
     kafka-ucr-static-forms:
       start_process: 36
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow5':
+  'pillow27':
     kafka-ucr-static-cases:
       start_process: 0
       num_processes: 9
@@ -563,7 +565,11 @@ pillows:
       start_process: 0
       num_processes: 9
       total_processes: 120
-  'pillow6':
+    case_messaging_sync_pillow:
+      start_process: 0
+      num_processes: 5
+      total_processes: 65
+  'pillow28':
     kafka-ucr-static-cases:
       start_process: 9
       num_processes: 9
@@ -573,7 +579,11 @@ pillows:
       start_process: 9
       num_processes: 9
       total_processes: 120
-  'pillow7':
+    case_messaging_sync_pillow:
+      start_process: 5
+      num_processes: 5
+      total_processes: 65
+  'pillow29':
     kafka-ucr-static-cases:
       start_process: 18
       num_processes: 9
@@ -583,7 +593,11 @@ pillows:
       start_process: 18
       num_processes: 9
       total_processes: 120
-  'pillow8':
+    case_messaging_sync_pillow:
+      start_process: 10
+      num_processes: 5
+      total_processes: 65
+  'pillow30':
     kafka-ucr-static-cases:
       start_process: 27
       num_processes: 9
@@ -593,7 +607,11 @@ pillows:
       start_process: 27
       num_processes: 9
       total_processes: 120
-  'pillow9':
+    case_messaging_sync_pillow:
+      start_process: 15
+      num_processes: 5
+      total_processes: 65
+  'pillow31':
     kafka-ucr-static-cases:
       start_process: 36
       num_processes: 9
@@ -603,7 +621,11 @@ pillows:
       start_process: 36
       num_processes: 9
       total_processes: 120
-  'pillow10':
+    case_messaging_sync_pillow:
+      start_process: 20
+      num_processes: 5
+      total_processes: 65
+  'pillow32':
     kafka-ucr-static-cases:
       start_process: 45
       num_processes: 9
@@ -613,7 +635,11 @@ pillows:
       start_process: 45
       num_processes: 9
       total_processes: 120
-  'pillow11':
+    case_messaging_sync_pillow:
+      start_process: 25
+      num_processes: 5
+      total_processes: 65
+  'pillow33':
     kafka-ucr-static-cases:
       start_process: 54
       num_processes: 9
@@ -623,7 +649,11 @@ pillows:
       start_process: 54
       num_processes: 9
       total_processes: 120
-  'pillow12':
+    case_messaging_sync_pillow:
+      start_process: 30
+      num_processes: 5
+      total_processes: 65
+  'pillow34':
     kafka-ucr-static-cases:
       start_process: 63
       num_processes: 9
@@ -633,7 +663,11 @@ pillows:
       start_process: 63
       num_processes: 9
       total_processes: 120
-  'pillow13':
+    case_messaging_sync_pillow:
+      start_process: 35
+      num_processes: 5
+      total_processes: 65
+  'pillow35':
     kafka-ucr-static-cases:
       start_process: 72
       num_processes: 9
@@ -643,7 +677,11 @@ pillows:
       start_process: 72
       num_processes: 9
       total_processes: 120
-  'pillow14':
+    case_messaging_sync_pillow:
+      start_process: 40
+      num_processes: 5
+      total_processes: 65
+  'pillow36':
     kafka-ucr-static-cases:
       start_process: 81
       num_processes: 9
@@ -653,7 +691,11 @@ pillows:
       start_process: 81
       num_processes: 9
       total_processes: 120
-  'pillow17':
+    case_messaging_sync_pillow:
+      start_process: 45
+      num_processes: 4
+      total_processes: 65
+  'pillow37':
     kafka-ucr-static-cases:
       start_process: 90
       num_processes: 9
@@ -663,7 +705,11 @@ pillows:
       start_process: 90
       num_processes: 9
       total_processes: 120
-  'pillow18':
+    case_messaging_sync_pillow:
+      start_process: 49
+      num_processes: 4
+      total_processes: 65
+  'pillow38':
     kafka-ucr-static-cases:
       start_process: 99
       num_processes: 9
@@ -673,7 +719,11 @@ pillows:
       start_process: 99
       num_processes: 9
       total_processes: 120
-  'pillow19':
+    case_messaging_sync_pillow:
+      start_process: 53
+      num_processes: 4
+      total_processes: 65
+  'pillow39':
     kafka-ucr-static-cases:
       start_process: 108
       num_processes: 9
@@ -683,7 +733,11 @@ pillows:
       start_process: 108
       num_processes: 9
       total_processes: 120
-  'pillow20':
+    case_messaging_sync_pillow:
+      start_process: 57
+      num_processes: 4
+      total_processes: 65
+  'pillow40':
     kafka-ucr-static-cases:
       start_process: 117
       num_processes: 3
@@ -693,7 +747,10 @@ pillows:
       start_process: 117
       num_processes: 3
       total_processes: 120
-  'pillow15':
+    case_messaging_sync_pillow:
+      start_process: 61
+      num_processes: 4
+      total_processes: 65
+  'pillow41':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 16
-

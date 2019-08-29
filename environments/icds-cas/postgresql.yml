@@ -41,6 +41,9 @@ postgres_override:
   postgresql_slow_log_threshold: 1000
   postgresql_hba_entries:
     - contype: host
+      users: hqrepl
+      netmask: 100.71.184.0/22
+    - contype: host
       databases: replication
       users: hqrepl
       netmask: 100.71.184.0/22
@@ -65,36 +68,66 @@ dbs:
     proxy:
       host: plproxy0
     partitions:
-      p1:
-        shards: [0, 103]
-        host: pgshard0
-      p2:
-        shards: [104, 205]
-        host: pgshard1standby
-      p3:
-        shards: [206, 308]
-        host: pgshard2
-      p4:
-        shards: [309, 411]
-        host: pgshard3standby
-      p5:
-        shards: [412, 514]
-        host: pgshard4
-      p6:
-        shards: [515, 617]
-        host: pgshard5standby
-      p7:
-        shards: [618, 720]
-        host: pgshard6
-      p8:
-        shards: [721, 823]
-        host: pgshard7
-      p9:
-        shards: [824, 926]
-        host: pgshard8standby
       p10:
-        shards: [927, 1023]
-        host: pgshard9
+        shards: [0, 51]
+        host: pgshard10
+      p11:
+        shards: [52, 103]
+        host: pgshard11
+      p12:
+        shards: [104, 154]
+        host: pgshard12
+      p13:
+        shards: [155, 205]
+        host: pgshard13
+      p14:
+        shards: [206, 257]
+        host: pgshard14
+      p15:
+        shards: [258, 308]
+        host: pgshard15
+      p16:
+        shards: [309, 360]
+        host: pgshard16
+      p17:
+        shards: [361, 411]
+        host: pgshard17
+      p18:
+        shards: [412, 463]
+        host: pgshard18
+      p19:
+        shards: [464, 514]
+        host: pgshard19
+      p20:
+        shards: [515, 566]
+        host: pgshard20
+      p21:
+        shards: [567, 617]
+        host: pgshard21
+      p22:
+        shards: [618, 669]
+        host: pgshard22
+      p23:
+        shards: [670, 720]
+        host: pgshard23
+      p24:
+        shards: [721, 771]
+        host: pgshard24
+      p25:
+        shards: [772, 823]
+        host: pgshard25
+      p26:
+        shards: [824, 875]
+        host: pgshard26
+      p27:
+        shards: [876, 926]
+        host: pgshard27
+      p28:
+        shards: [927, 975]
+        host: pgshard28
+      p29:
+        shards: [976, 1023]
+        host: pgshard29
   custom:
     - django_alias: icds-ucr
       name: commcarehq_icds_aggregatedata

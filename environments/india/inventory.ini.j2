@@ -7,9 +7,11 @@
 {{ __citus2__ }}
 {{ __airflow1__ }}
 {{ __celery1__ }} swap_size=4G
-{{ __couch5__ }}
-{{ __couch6__ }}
-{{ __couch7__ }}
+{{ __celery2__ }} swap_size=4G
+{{ __celery3__ }} swap_size=4G
+{{ __couch5__ }} swap_size=8G
+{{ __couch6__ }} swap_size=8G
+{{ __couch7__ }} swap_size=8G
 {{ __redis0__ }}
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=aws
 {{ __es1__ }} elasticsearch_node_name=es1 elasticsearch_node_zone=aws
@@ -54,6 +56,8 @@ kafka1
 
 [celery:children]
 celery1
+celery2
+celery3
 
 [pillowtop:children]
 pillow2

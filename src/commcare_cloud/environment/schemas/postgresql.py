@@ -78,6 +78,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
     host_settings = jsonobject.DictProperty(lambda: HostSettings)
     dbs = jsonobject.ObjectProperty(lambda: SmartDBConfig)
+    replications = jsonobject.ListProperty(lambda: LogicalReplicationOptions, required=False)
 
     postgres_override = jsonobject.ObjectProperty(PostgresqlOverride)
     pgbouncer_override = jsonobject.ObjectProperty(PgbouncerOverride)
@@ -87,6 +88,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         # for better validation error message
         PostgresqlOverride.wrap(data.get('postgres_override', {}))
         PgbouncerOverride.wrap(data.get('pgbouncer_override', {}))
+        [LogicalReplicationOptions(_data) for _data in data.get('replications', [])]
         self = super(PostgresqlConfig, cls).wrap(data)
         for db in self.generate_postgresql_dbs():
             if not db.user:
@@ -113,6 +115,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         postgresql_hosts = environment.groups.get('postgresql', [])
         if self.DEFAULT_POSTGRESQL_HOST not in postgresql_hosts:
             postgresql_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
+        postgresql_hosts.extend(environment.groups.get('citusdb_master', []))
 
         dbs_by_host = defaultdict(list)
         for db in sorted_dbs:
@@ -166,6 +169,10 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
             if db.conn_max_age is None:
                 db.conn_max_age = self.DEFAULT_CONN_MAX_AGE
+
+        for replication in self.replications:
+            replication.source_host = environment.translate_host(replication.source_host, environment.paths.postgresql_yml)
+            replication.target_host = environment.translate_host(replication.target_host, environment.paths.postgresql_yml)
 
         for entry in self.postgres_override.postgresql_hba_entries:
             netmask = entry.get('netmask')
@@ -313,6 +320,15 @@ class CustomDBOptions(PartitionDBOptions):
 
 class StandbyDBOptions(PartitionDBOptions):
     hq_acceptable_standby_delay = jsonobject.IntegerProperty(default=None)
+
+
+class LogicalReplicationOptions(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    target_host = jsonobject.StringProperty(required=True)
+    target_db_name = jsonobject.StringProperty(required=True)
+    source_host = jsonobject.StringProperty(required=True)
+    source_db_name = jsonobject.StringProperty(required=True)
+    replication_set = jsonobject.ListProperty(int, required=True)  # [start, end] pair
 
 
 class StrictPartitionDBOptions(PartitionDBOptions):
