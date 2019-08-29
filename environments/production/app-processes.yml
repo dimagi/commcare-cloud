@@ -6,123 +6,81 @@ celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 1
 management_commands:
-  celery7:
-    submission_reprocessing_queue:
-  celery8:
+  celery12:
+    run_submission_reprocessing_queue:
     queue_schedule_instances:
     handle_survey_actions:
-    sms_queue:
+    run_sms_queue:
+  pillow1:
+    run_pillow_retry_queue:
 celery_processes:
-  celery6:
-    celery:
-      concurrency: 4
-    case_import_queue:
-      concurrency: 4
-    email_queue:
+  celery9,celery10,celery11:
+    analytics_queue:
       pooling: gevent
-      concurrency: 100
-      num_workers: 2
-    export_download_queue:
-      concurrency: 5
-  celery7:
-    submission_reprocessing_queue:
-      concurrency: 1
-    sumologic_logs_queue:
-      pooling: gevent
-      concurrency: 50
-    repeat_record_queue:
-      pooling: gevent
-      num_workers: 3
-      concurrency: 50
-    ucr_queue:
       concurrency: 4
-    ucr_indicator_queue:
-      concurrency: 2
     async_restore_queue:
       concurrency: 8
-  celery8:
-    flower: {}
+    background_queue:
+      concurrency: 3
+    case_import_queue:
+      concurrency: 3
+    case_rule_queue:
+      concurrency: 3
+    celery:
+      concurrency: 3
+    celery_periodic:
+      concurrency: 3
+    email_queue:
+      pooling: gevent
+      concurrency: 134
+    export_download_queue:
+      concurrency: 5
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 4
     reminder_queue:
       pooling: gevent
       concurrency: 10
-      num_workers: 3
+    reminder_rule_queue:
+      concurrency: 1
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 200
+    saved_exports_queue:
+      concurrency: 8
     sms_queue:
       pooling: gevent
       concurrency: 10
-      num_workers: 3
-    case_rule_queue:
-      concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 2
-    reminder_rule_queue:
+    ucr_indicator_queue:
+      concurrency: 1
+    ucr_queue:
       concurrency: 3
+  celery12:
+    # not really queues
+    flower: {}
+    beat: {}
+    # custom queues
     ils_gateway_sms_queue:
       # Use 1 worker with concurrency 8 in order to enforce the
       # restriction of having 8 max simultaneous connections with
       # the push sms gateway
       pooling: gevent
       concurrency: 8
-    logistics_reminder_queue:
-      concurrency: 2
     logistics_background_queue:
       concurrency: 2
-  celery9:
-    background_queue:
-      concurrency: 8
+    logistics_reminder_queue:
+      concurrency: 2
+    # other queues we're okay running without redundancy
     send_report_throttled:
       concurrency: 2
-    async_restore_queue:
-      concurrency: 8
-    analytics_queue:
+    submission_reprocessing_queue:
+      concurrency: 1
+    sumologic_logs_queue:
       pooling: gevent
-      concurrency: 10
-    repeat_record_queue:
-      pooling: gevent
-      num_workers: 5
       concurrency: 50
-    saved_exports_queue:
-      num_workers: 3
-      concurrency: 4
-      optimize: True
-  celery10:
-    async_restore_queue:
-      concurrency: 8
-    saved_exports_queue:
-      num_workers: 3
-      concurrency: 4
-      optimize: True
-    export_download_queue:
-      concurrency: 5
-    repeat_record_queue:
-      pooling: gevent
-      num_workers: 4
-      concurrency: 50
-  celery11:
-    celery:
-      concurrency: 4
-    case_import_queue:
-      concurrency: 4
-    email_queue:
-      pooling: gevent
-      concurrency: 100
-      num_workers: 2
-    export_download_queue:
-      concurrency: 5
-  celery12:
-    beat: {}
-    celery_periodic:
-      num_workers: 2
-      concurrency: 4
-    case_rule_queue:
-      concurrency: 4
-    ucr_queue:
-      concurrency: 4
-
 
 pillows:
-  pillow0:
+  pillow1:
     CaseToElasticsearchPillow:
       num_processes: 4
     CaseSearchToElasticsearchPillow:

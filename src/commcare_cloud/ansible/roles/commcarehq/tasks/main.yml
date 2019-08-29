@@ -80,7 +80,7 @@
       become: true
       pip:
         requirements: "{{ code_home }}/requirements-python3/prod-requirements.txt"
-        virtualenv: "{{ py3_virtualenv_home }}"
+        virtualenv: "{{ py3_virtualenv_source }}"
         virtualenv_python: "python3.6"
         chdir: "{{ code_home }}"
       tags:

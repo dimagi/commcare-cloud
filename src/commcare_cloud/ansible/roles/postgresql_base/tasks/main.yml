@@ -36,6 +36,13 @@
       - python3-psycopg2
   when: ansible_distribution_version == '18.04'
 
+- name: Install pglogical
+  apt:
+    name:
+      - postgresql-9.6-pglogical
+  when: postgresql_wal_level == 'logical'
+
+
 - name: Create service config folder
   become: yes
   file:
@@ -102,7 +109,7 @@
   become: yes
   cron:
     name: "Clean PG WAL Archive"
-    job: "find {{ postgresql_archive_path }} -mmin +720 -delete"
+    job: "find {{ postgresql_archive_path }} -mmin +120 -delete"
     user: root
     special_time: hourly
     cron_file: clean_pg_archive

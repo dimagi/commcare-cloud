@@ -25,15 +25,15 @@ nginx_sites:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
       zone: "$incremental_sync"
       size: "10m"
-      rate: "15r/s"
+      rate: "20r/s"
     - name: "overall_restore" # Limits all restores
       zone: "$server_name"
       size: "10m"
-      rate: "15r/s"
+      rate: "20r/s"
     - name: "submissions"
       zone: "$server_name"
       size: "10m"
-      rate: "110r/s"
+      rate: "200r/s"
     - name: "server_name"
       zone: "$server_name"
       size: "10m"
@@ -104,6 +104,10 @@ nginx_sites:
          - zone_name: "overall_restore"
            burst: 100
            nodelay: True
+     - name: "/a/icds-cas/receiver/logs"
+       return: >-
+          201 '<OpenRosaResponse xmlns="http://openrosa.org/http/response"><message nature="submit_success">ignored</message></OpenRosaResponse>'
+       add_header: "Content-Type application/xml"
      - name: "/a/icds-cas/receiver"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"

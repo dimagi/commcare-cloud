@@ -12,6 +12,7 @@ from clint.textui import puts, colored
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.ansible.downtime import Downtime
+from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
@@ -63,6 +64,7 @@ COMMAND_GROUPS = OrderedDict([
         UpdateUsers,
         UpdateSupervisorConfs,
         Fab,
+        Deploy,
         Service,
         MigrateCouchdb,
         Downtime,
@@ -91,7 +93,7 @@ def run_on_control_instead(args, sys_argv):
     branch = getattr(args, 'branch', 'master')
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control', '-t',
-        'source ~/init-ansible && git fetch --prune && git checkout {branch} '
+        'cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
         '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
         .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))
     ]

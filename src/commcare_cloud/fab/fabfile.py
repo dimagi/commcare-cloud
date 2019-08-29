@@ -140,6 +140,9 @@ def _setup_path():
     env.db = '%s_%s' % (env.project, env.deploy_env)
     env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
     env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
+    env.airflow_home = posixpath.join(env.home, 'airflow')
+    env.airflow_env = posixpath.join(env.airflow_home, 'env')
+    env.airflow_code_root = posixpath.join(env.airflow_home, 'pipes')
 
 
 def _override_code_root_to_current():
@@ -183,26 +186,9 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
-    _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
     execute(_confirm_deploying_same_code)
-
-
-def _confirm_branch(default_branch='master'):
-    if not hasattr(env, 'code_branch'):
-        print("code_branch not specified, using '{}'. "
-              "You can override this with '--set code_branch=<branch>'"
-              .format(default_branch))
-        env.code_branch = default_branch
-
-    if env.code_branch != default_branch:
-        branch_message = (
-            "Whoa there bud! You're using branch {env.code_branch}. "
-            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        ).format(env=env)
-        if not console.confirm(branch_message, default=False):
-            utils.abort('Action aborted.')
 
 
 def _confirm_environment_time(env_name):
@@ -266,7 +252,6 @@ def env_common():
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
-    riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
     formplayer = servers['formplayer']
@@ -283,7 +268,6 @@ def env_common():
         'pg': postgresql,
         'pgstandby': pg_standby,
         'elasticsearch': elasticsearch,
-        'riakcs': riakcs,
         'django_celery': celery,
         'django_app': webworkers,
         'django_manage': django_manage,
@@ -713,8 +697,8 @@ def manage(cmd):
              .format(env=env, cmd=cmd))
 
 
-@task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
+@task
+def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
@@ -796,8 +780,7 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        if getattr(env, 'NEEDS_FORMPLAYER_RESTART', False):
-            execute(supervisor.restart_formplayer)
+        execute(supervisor.restart_formplayer)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -873,7 +856,6 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    formplayer.build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
@@ -910,7 +892,6 @@ def check_status():
     execute(check_servers.ping)
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
-    execute(check_servers.riakcs)
 
 
 @task

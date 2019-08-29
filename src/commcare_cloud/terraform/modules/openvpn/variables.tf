@@ -2,10 +2,6 @@
 data "aws_ami" "openvpn_image" {
   most_recent = true
   filter {
-    name   = "name"
-    values = ["OpenVPN Access Server 2.6.1-fe8020db-5343-4c43-9e65-5ed4a825c931-ami-0f5d312e085235ed4.4"]
-  }
-  filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
