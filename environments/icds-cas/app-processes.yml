@@ -56,7 +56,7 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 4
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -67,7 +67,7 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 4
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -80,7 +80,7 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 4
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -95,7 +95,7 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 4
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery5':
@@ -104,7 +104,7 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 8
+      num_workers: 4
     icds_dashboard_reports_queue:
       concurrency: 2
     sms_queue:
@@ -114,10 +114,6 @@ celery_processes:
   'celery6':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
     sms_queue:
@@ -127,89 +123,49 @@ celery_processes:
   'celery7':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery8':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery9':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery10':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery11':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery12':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery112':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 6
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery13':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery14':
     ucr_indicator_queue:
       concurrency: 4
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery16':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -219,10 +175,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery17':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -232,10 +184,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery18':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -245,10 +193,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery19':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -258,10 +202,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery20':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -271,10 +211,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery21':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -284,10 +220,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery22':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -297,10 +229,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery23':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -310,10 +238,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery24':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -323,10 +247,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery25':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -336,10 +256,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery26':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -349,10 +265,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery27':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -362,10 +274,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery28':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -375,10 +283,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery29':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -388,10 +292,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery30':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -401,10 +301,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery31':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -414,10 +310,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery32':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -427,10 +319,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery33':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 8
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -440,10 +328,6 @@ celery_processes:
       concurrency: 10
       num_workers: 2
   'celery34':
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 5
-      num_workers: 4
     reminder_queue:
       pooling: gevent
       concurrency: 5
