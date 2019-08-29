@@ -66,6 +66,8 @@
 - name: Disable THP
   become: true
   hosts: postgresql:pg_standby:!citusdb
-  tags: 'kernel_tuning'
+  tags:
+   - kernel_tuning
+   - after-reboot
   roles:
     - role: thp
