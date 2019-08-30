@@ -25,6 +25,6 @@ can cause problems when updating python libraries.
 1. Run the following command, replacing `<env>` for the name of your environment:
 
 ```
-$ commcare-cloud <env> run-shell-command webworkers:pillowtop:celery:airflow:proxy:formplayer:django_manage sed -i -e "s~/home/cchq/www/{{ deploy_env }}/current~$(readlink -f /home/cchq/www/{{ deploy_env }}/current/)~g" /home/cchq/www/{{ deploy_env }}/current/python_env-3.6/bin/activate" -e deploy_env=<env>
+$ commcare-cloud <env> run-shell-command webworkers:pillowtop:celery:airflow:proxy:formplayer:django_manage -b --become-user cchq 'sed -i -e "s~/home/cchq/www/{{ deploy_env }}/current~$(readlink -f /home/cchq/www/{{ deploy_env }}/current/)~g" /home/cchq/www/{{ deploy_env }}/current/python_env-3.6/bin/activate' -e deploy_env=<env>
 
 ```
