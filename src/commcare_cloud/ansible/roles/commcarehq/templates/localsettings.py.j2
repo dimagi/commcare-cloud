@@ -759,7 +759,7 @@ COMMCARE_NAME = {
 }
 {% endif %}
 
-# -- Sentry
+{#-- Sentry --#}
 {% if SENTRY_DSN %}
 SENTRY_DSN = '{{ SENTRY_DSN }}'
 {% endif %}
@@ -779,9 +779,9 @@ SENTRY_PROJECT_SLUG = '{{ localsettings.SENTRY_PROJECT_SLUG }}'
 {% if 'SENTRY_REPOSITORY' in localsettings %}
 SENTRY_REPOSITORY = '{{ localsettings.SENTRY_REPOSITORY }}'
 {% endif %}
-# --
+{# -- #}
 
-# -- Sentry Deprecated
+{# -- Sentry Deprecated -- #}
 {% if SENTRY_PUBLIC_KEY %}
 SENTRY_PUBLIC_KEY = '{{ SENTRY_PUBLIC_KEY }}'
 SENTRY_PRIVATE_KEY = '{{ SENTRY_PRIVATE_KEY }}'
@@ -791,7 +791,7 @@ SENTRY_PROJECT_ID = '{{ SENTRY_PROJECT_ID }}'
 {% if SENTRY_QUERY_URL %}
 SENTRY_QUERY_URL = '{{ SENTRY_QUERY_URL }}'
 {% endif %}
-# --
+{# -- #}
 
 {% if GREENHOUSE_API_KEY %}
 GREENHOUSE_API_KEY = '{{ GREENHOUSE_API_KEY }}'
