@@ -2,7 +2,8 @@
 
 ## Register account on sentry.io
 
-Go to https://sentry.io to create your account.
+Go to [sentry.io](https://sentry.io) to create your account.
+
 As of Dec 2018, there's a free tier that allows you to log up to 5k errors a month. 
 
 Sentry allows you to divide your account into multiple "projects".
@@ -33,7 +34,6 @@ localsettings_private:
 
   ...
 secrets:
-  ...
   FORMPLAYER_SENTRY_DSN: 'https://{key}@sentry.io/{project_id}' 
   ...
 ```
