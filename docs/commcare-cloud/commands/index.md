@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -564,6 +564,43 @@ If a command specified, then it will always run in a new window.
 If a command is *not* specified, then a it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
+
+---
+
+#### `export-sentry-events`
+
+Export Sentry events. One line per event JSON.
+
+```
+commcare-cloud <env> export-sentry-events [-k API_KEY] [-q QUERY] [--start START] [--end END]
+                                          [--project-id PROJECT_ID] [--organization ORGANIZATION]
+```
+
+##### Optional Arguments
+
+###### `-k API_KEY, --api-key API_KEY`
+
+Sentry API Key
+
+###### `-q QUERY, --query QUERY`
+
+Text query
+
+###### `--start START`
+
+UTC start date. Format YYYY-MM-DDTHH:MM:SS
+
+###### `--end END`
+
+UTC end date. Format YYYY-MM-DDTHH:MM:SS
+
+###### `--project-id PROJECT_ID`
+
+Sentry project ID. If not supplied the value for the environment will be used (requires Vault access)
+
+###### `--organization ORGANIZATION`
+
+Organization slug
 
 ---
 ### Operational
