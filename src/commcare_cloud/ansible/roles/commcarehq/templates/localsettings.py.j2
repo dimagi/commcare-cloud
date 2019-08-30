@@ -775,6 +775,10 @@ SENTRY_ORGANIZATION_SLUG = '{{ localsettings.SENTRY_ORGANIZATION_SLUG }}'
 {% if 'SENTRY_PROJECT_SLUG' in localsettings %}
 SENTRY_PROJECT_SLUG = '{{ localsettings.SENTRY_PROJECT_SLUG }}'
 {% endif %}
+
+{% if 'SENTRY_REPOSITORY' in localsettings %}
+SENTRY_REPOSITORY = '{{ localsettings.SENTRY_REPOSITORY }}'
+{% endif %}
 # --
 
 # -- Sentry Deprecated
