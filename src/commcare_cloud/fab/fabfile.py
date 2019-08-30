@@ -327,37 +327,6 @@ def mail_admins(subject, message, use_current_release=False):
         })
 
 
-@task
-def hotfix_deploy():
-    """
-    deploy ONLY the code with no extra cleanup or syncing
-
-    for small python-only hotfixes
-
-    """
-    if not console.confirm('Are you sure you want to deploy to {env.deploy_env}?'.format(env=env), default=False) or \
-       not console.confirm('Did you run "fab {env.deploy_env} preindex_views"? '.format(env=env), default=False) or \
-       not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING PYTHON CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
-        utils.abort('Deployment aborted.')
-
-    _require_target()
-    run('echo ping!')  # workaround for delayed console response
-    try:
-        execute(release.update_code(full_cluster=True), env.deploy_metadata.deploy_ref, True)
-    except Exception:
-        execute(
-            mail_admins,
-            "Deploy failed",
-            traceback_string()
-        )
-        # hopefully bring the server back to life
-        silent_services_restart(use_current_release=True)
-        raise
-    else:
-        silent_services_restart(use_current_release=True)
-        execute(release.record_successful_deploy)
-
-
 def _confirm_translated():
     if datetime.datetime.now().isoweekday() != 2 or env.deploy_env != 'production':
         return True
@@ -672,15 +641,6 @@ def clean_offline_releases():
 
 
 @task
-def force_update_static():
-    _require_target()
-    execute(staticfiles.collectstatic, use_current_release=True)
-    execute(staticfiles.compress, use_current_release=True)
-    execute(staticfiles.update_manifest, use_current_release=True)
-    silent_services_restart(use_current_release=True)
-
-
-@task
 @roles(['deploy'])
 def manage(cmd):
     """
@@ -898,7 +858,7 @@ def check_status():
 def perform_system_checks():
     execute(check_servers.perform_system_checks, True)
 
-    
+
 @task
 def deploy_airflow():
     execute(airflow.update_airflow)
