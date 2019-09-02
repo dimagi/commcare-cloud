@@ -1,0 +1,25 @@
+#!/usr/bin/python
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+import smtplib
+import sys
+import hostname
+
+hostname = socket.gethostbyaddr(socket.gethostname())[0].split('.')[0]
+state= sys.arg[1]
+
+msg = MIMEMultipart()
+msg['From'] = "{{ sender_email }}"
+msg['To'] = "{{ recepient_email }}"
+msg['Subject'] = 'ALERT:proxy server status changed'
+
+body = "{0} entered in {1} state".format(hostname,state)
+msg.attach(MIMEText(body,'plain'))
+
+text = msg.as_string()
+server = smtplib.SMTP('{{ smtp_server }}',587)
+server.starttls()
+server.login("{{ sender_email }}", "{{ sender_password }}")
+server.sendmail("{{ sender_email }}", "{{ recepient_email }}",text)
+server.quit()

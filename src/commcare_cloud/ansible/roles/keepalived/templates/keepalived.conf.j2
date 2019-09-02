@@ -1,0 +1,33 @@
+ {{ ansible_managed }}
+global_defs { 
+      enable_script_security
+      script_user {{script_user}}
+}
+vrrp_script chk_service {           
+        script "pgrep {{monit_process}}"  
+        interval 2    
+}
+vrrp_instance VI_1 {
+    state {{ keepalived_role }}
+    interface {{ keepalived_shared_iface }}
+    virtual_router_id {{ keepalived_router_id }}
+    {% if keepalived_role.lower() == "master" %}
+    priority {{ keepalived_priority }}
+    {% else %}
+    priority {{ keepalived_backup_priority }}
+    {% endif %}   
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass {{ keepalived_auth_pass }}
+    }
+    virtual_ipaddress {
+        {{ keepalived_shared_ip }} dev {{ keepalived_shared_iface }} label {{ keepalived_shared_iface }}:0
+    }
+    track_script {
+        chk_service
+    }
+    notify_master "{{notify_script_path}} master"
+    notify_backup "{{notify_script_path}} backup"
+    notify_fault  "{{notify_script_path}} fault"
+}
