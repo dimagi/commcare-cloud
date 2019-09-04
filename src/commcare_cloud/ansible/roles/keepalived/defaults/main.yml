@@ -14,4 +14,4 @@ notify_script_path: "/etc/keepalived/notify_script"
 smtp_server: "smtp.gmail.com"
 sender_email: "lb-alert@dimagi.com"
 recepient_email: "tcl-server-standup@dimagi.com"
-sender_password: {{ secrets.sender_email_pass}}
+sender_password: "{{ secrets.sender_email_pass}}"

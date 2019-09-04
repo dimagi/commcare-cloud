@@ -1,4 +1,4 @@
-hostname,host_address,group 1,group 2,group 3,state,shared_ip,shared_iface,var: hostname
+hostname,host_address,group 1,group 2,group 3,var: state,var: shared_ip,var: shared_iface,var: hostname
 couch00,100.71.184.191,couchdb2,couchdb2_proxy,,MASTER,100.71.184.124,ens160,MUMGCCWCDPRDCDV00
 couch09,100.71.184.200,couchdb2,couchdb2_proxy,,BACKUP,100.71.184.124,ens160,MUMGCCWCDPRDCDV09
 couch01,100.71.184.192,couchdb2,,,,,,MUMGCCWCDPRDCDV01
