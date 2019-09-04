@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# bash scripts/example-terraform-resize-disk.sh production couch3:couch4 master
+# bash scripts/example-apply-terraform-rolling-restart.sh production couch3:couch4 master
 
 env=$1
 hosts=$2
 branch=$3
 
-read -sp "Vault Password for '${env}': " vault_password
+read -rsp "Vault Password for '${env}': " vault_password
 
 for host in $(echo ${hosts} | sed 's/:/ /g')
 do
