@@ -6,7 +6,7 @@ env=$1
 hosts=$2
 branch=$3
 
-read -sp "Vault Password for '${env}': " vault_password
+read -rsp "Vault Password for '${env}': " vault_password
 
 for host in $(echo ${hosts} | sed 's/:/ /g')
 do
