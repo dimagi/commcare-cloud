@@ -3,9 +3,6 @@
   hosts: couchdb2_proxy
   become: true
   vars:
-     keepalived_role: "{{ state }}"
-     keepalived_shared_ip: "{{ shared_ip }}"
-     keepalived_shared_iface: "{{ shared_iface }}"
      monit_process: "haproxy"
   roles:
     - role: keepalived

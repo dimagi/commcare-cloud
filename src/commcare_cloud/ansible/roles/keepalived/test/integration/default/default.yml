@@ -1,4 +1,0 @@
----
-- hosts: test-kitchen
-  roles:
-    - ansible-keepalived
