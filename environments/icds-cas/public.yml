@@ -212,6 +212,8 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
+  RUN_CASE_SEARCH_PILLOW: False
+  RUN_UNKNOWN_USER_PILLOW: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   REDIS_DB: '0'
