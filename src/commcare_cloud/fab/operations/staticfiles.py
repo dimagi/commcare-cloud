@@ -16,19 +16,6 @@ def version_static():
     reference.
 
     """
-    _version_static()
-
-
-@roles(ROLES_DEPLOY)
-def prime_version_static():
-    """
-    Run version static on the DB machine to prime the version_static cache so
-    subsequent calls on other machines will execute quickly
-    """
-    _version_static()
-
-
-def _version_static():
     cmd = 'resource_static'
     with cd(env.code_root):
         sudo(

@@ -806,8 +806,6 @@ ONLINE_DEPLOY_COMMANDS = [
     _setup_release,
     announce_deploy_start,
     db.preindex_views,
-    # Compute version statics while waiting for preindex
-    staticfiles.prime_version_static,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
     staticfiles.version_static,
@@ -826,8 +824,6 @@ ONLINE_DEPLOY_COMMANDS = [
 OFFLINE_DEPLOY_COMMANDS = [
     offline_setup_release,
     db.preindex_views,
-    # Compute version statics while waiting for preindex
-    staticfiles.prime_version_static,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
     staticfiles.version_static,
