@@ -1,4 +1,3 @@
-id: 4498244
 env_key: host.environment
 message: |
   {{#is_warning}}SSL Cert will expire in less than 28 days{{/is_warning}}

@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 1300873
 message: |-
   {{#is_alert}}Disk IO above expected levels for the past hour{{/is_alert}}
   Use *htop* or *iotop* to see what process is responsible.

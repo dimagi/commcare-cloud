@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 2498362
 message: |-
   {{#is_alert}}Django error rate is {{value}}%, and has been above {{threshold}}% for the last 5 mins.{{/is_alert}}
   {{#is_recovery}}Django error rate recovered.{{/is_recovery}}

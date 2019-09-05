@@ -1,4 +1,3 @@
-id: 4498268
 env_key: host.environment
 message: |
   {{check_message}}

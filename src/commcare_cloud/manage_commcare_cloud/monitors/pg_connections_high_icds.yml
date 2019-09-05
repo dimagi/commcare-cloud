@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 5895436
 message: |-
   {{#is_alert}} {{value}}% connections are used on PgBouncer. Which is above {{threshold}}% for the last 5 mins.{{/is_alert}}
   {{#is_recovery}}PgBouncer connections recovered.{{/is_recovery}}

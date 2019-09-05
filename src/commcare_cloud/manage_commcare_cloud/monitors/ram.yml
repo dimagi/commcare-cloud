@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 5848034
 message: |-
   {{#is_alert}} RAM used is {{value}} which is more than {{threshold}} for last 24 hours.
   @slack-alerts-scale

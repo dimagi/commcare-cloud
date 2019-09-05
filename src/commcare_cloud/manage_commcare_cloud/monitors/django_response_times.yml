@@ -1,5 +1,4 @@
 env_key: environment.name
-id: 309189
 message: |-
   {{#is_alert}}
   Django response times have averaged > {{threshold}}s at all times in the last 15m. Current average is {{value}}s.

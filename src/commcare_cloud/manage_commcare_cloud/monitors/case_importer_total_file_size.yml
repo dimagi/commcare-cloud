@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 1400710
 message: |-
   {{#is_alert}}
   Seriously consider prioritizing auto-deleting old files as discussed here: https://github.com/dimagi/commcare-hq/pull/14178#issuecomment-267057882, or agree on some other solution

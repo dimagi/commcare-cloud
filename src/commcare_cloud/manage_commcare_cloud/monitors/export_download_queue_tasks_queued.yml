@@ -1,5 +1,4 @@
 env_key: environment.name
-id: 5511193
 message: |-
   Optional patches:
   1) Restart the worker

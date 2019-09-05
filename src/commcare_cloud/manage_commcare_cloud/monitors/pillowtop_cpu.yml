@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 1320983
 message: |-
   {{#is_alert}}
   Unusual CPU activity on {{host.name}}.

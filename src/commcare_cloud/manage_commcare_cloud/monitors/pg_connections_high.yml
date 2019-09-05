@@ -1,4 +1,3 @@
-id: 4847367
 env_key: environment.name
 message: |
   {{#is_alert}}

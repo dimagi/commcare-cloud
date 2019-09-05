@@ -1,5 +1,4 @@
 env_key: environment.name
-id: 4961588
 message: |-
   Please restart elasticsearch in the short term, and improve cluster stability in the near term (by e.g. adding nodes, resources)
   << notification_block >>

@@ -1,5 +1,4 @@
 env_key: environment.name
-id: 4848178
 message: |-
   {{#is_alert}} Number of 500 is more than 10%. {{/is_alert}}
   << notification_block >>

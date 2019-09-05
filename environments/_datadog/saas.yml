@@ -1,0 +1,46 @@
+prefix: '[SaaS]'
+env_with_datadog_auth: production
+catchall_alert_channel: '@slack-hq-ops-priority'
+global_filter: '!environment:icds'
+env_notifications:
+  india: '@slack-alerts-india'
+  production: '@slack-alerts-production @opsgenie-commcarehq'
+  pna: '@slack-alerts-pna'
+  swiss: '@slack-alerts-swiss'
+monitor_ids:
+  agent_check:
+  case_importer_total_file_size:
+  celery_queued_tasks:
+  cert_expire:
+  couch_pillow_rewind:
+  couch_times:
+  couchdb_node_can_connect:
+  disk:
+  disk_icds:
+  disk_io:
+  django_error_rate:
+  django_response_times:
+  es_cluster_node_connection:
+  es_cluster_status:
+  es_jvm_heap:
+  es_partial_results:
+  export_download_queue_tasks_queued:
+  nginx_error_rate:
+  norm_load:
+  overdue_repeaters:
+  pg_connections_high:
+  pg_connections_high_production: 5895341
+  pg_replication_delay:
+  pg_standby_disk_io:
+  pgbouncer_can_connect:
+  pillow_behind:
+  pillow_errors:
+  pillowtop_cpu:
+  projected_disk:
+  ram:
+  sentry_errors_rate_limited:
+  shutdown_or_reboot:
+  site_down:
+  synthetics_production: 8548590
+  overdue_repeaters: 1716697
+  case_importer_total_file_size: 1400710

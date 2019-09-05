@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 1704065
 message: |-
   {{#is_alert}} {{celery_queue.name}} on {{environment.name}} has had at least 100 tasks queued for the last 4 hours.{{/is_alert}}
    @slack-hq-ops

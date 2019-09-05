@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 1716697
 message: |-
   {{#is_recovery}}Back to normal{{/is_recovery}} @slack-hq-ops
 name: The number of overdue repeaters is high

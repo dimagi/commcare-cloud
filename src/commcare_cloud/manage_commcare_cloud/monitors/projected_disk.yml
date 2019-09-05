@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 4765671
 message: |-
   {{#is_alert}}Disk Space Used will cross the  {{threshold}} mark in next 2 weeks.
   @slack-alerts-scale

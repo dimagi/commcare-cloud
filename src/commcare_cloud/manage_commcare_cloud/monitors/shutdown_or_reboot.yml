@@ -1,4 +1,3 @@
-id: 4039487
 env_key: host.environment
 message: |
   You will need to resolve/mute this alert manually once you have bring the services back up.

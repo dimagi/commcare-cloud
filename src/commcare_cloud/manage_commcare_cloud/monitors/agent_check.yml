@@ -1,4 +1,3 @@
-id: 341723
 env_key: host.environment
 message: |
   {{#is_no_data}}

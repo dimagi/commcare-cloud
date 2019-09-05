@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 4765265
 message: |-
   {{#is_alert}}Normalised Load Average is {{value}} which is more than threshold {{threshold}} for last 4 hours.
   @slack-alerts-scale

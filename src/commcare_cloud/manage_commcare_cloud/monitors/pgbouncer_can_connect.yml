@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 582119
 message: |-
   @slack-hq-ops
 name: Datadog can't connect to pgbouncer

@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 3220612
 message: |-
   {{#is_alert}}Not sure what the fix for this is so update this monitor with what you find.
   {{/is_alert}}

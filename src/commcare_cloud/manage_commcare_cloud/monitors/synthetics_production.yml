@@ -1,5 +1,4 @@
 env_key: host.environment
-id: 8548590
 message: ""
 name: '[Synthetics] Test on www.commcarehq.org/serverup.txt'
 options:

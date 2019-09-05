@@ -1,0 +1,42 @@
+prefix: '[ICDS]'
+env_with_datadog_auth: icds
+catchall_alert_channel: '@slack-hq-ops-priority'  # to change to ICDS-specific?
+global_filter: 'environment:icds'
+env_notifications:
+  icds: '@slack-alerts-icds'
+monitor_ids:
+  agent_check: 341723
+  celery_queued_tasks: 1704065
+  cert_expire: 4498244
+  couch_pillow_rewind: 8362409
+  couch_times: 677672
+  couchdb_node_can_connect: 2195274
+  disk: 1945144
+  disk_icds: 8797655
+  disk_io: 1278022
+  django_error_rate: 4848178
+  django_response_times: 309189
+  es_cluster_node_connection: 4889842
+  es_cluster_status: 654754
+  es_jvm_heap: 4314745
+  es_partial_results: 4961588
+  export_download_queue_tasks_queued: 5511193
+  nginx_error_rate: 1278050
+  nginx_error_rate_icds: 2498362
+  norm_load: 4765265
+  pg_connections_high: 4847367
+  pg_connections_high_icds: 5895436
+  pg_connections_high_production: 5895341
+  pg_replication_delay: 3220612
+  pg_standby_disk_io: 1300873
+  pgbouncer_can_connect: 582119
+  pillow_behind: 4013126
+  pillow_errors: 5569064
+  pillowtop_cpu: 1320983
+  projected_disk: 4765671
+  ram: 5848034
+  sentry_errors_rate_limited: 5091620
+  shutdown_or_reboot: 4039487
+  site_down: 4498268
+  synthetics_icds: 9455671
+  synthetics_production: 8548590
