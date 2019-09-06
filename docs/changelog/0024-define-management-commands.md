@@ -46,3 +46,5 @@ management_commands:
   server_hostname:
     submission_reprocessing_queue:
 ```
+
+5. Run `cchq <env> update-supervisor-confs`

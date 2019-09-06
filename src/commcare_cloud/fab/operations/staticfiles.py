@@ -16,23 +16,10 @@ def version_static():
     reference.
 
     """
-    _version_static()
-
-
-@roles(ROLES_DEPLOY)
-def prime_version_static():
-    """
-    Run version static on the DB machine to prime the version_static cache so
-    subsequent calls on other machines will execute quickly
-    """
-    _version_static()
-
-
-def _version_static():
     cmd = 'resource_static'
     with cd(env.code_root):
         sudo(
-            'rm -f tmp.sh resource_versions.py; {venv}/bin/python manage.py {cmd}'.format(
+            '{venv}/bin/python manage.py {cmd}'.format(
                 venv=env.virtualenv_root, cmd=cmd
             ),
             user=env.sudo_user
@@ -76,7 +63,7 @@ def collectstatic(use_current_release=False):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
-        sudo('rm -f tmp.sh resource_versions.py; {}/bin/python manage.py build_requirejs'.format(venv))
+        sudo('{}/bin/python manage.py build_requirejs'.format(venv))
 
 
 @parallel

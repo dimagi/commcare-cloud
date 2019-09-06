@@ -193,7 +193,7 @@ You will be prompted for the ansible vault password that you entered in [Step 2]
 In this step, you will be prompted for an SSH password. This is the root user's password. After this step, the root user will not be able to log in via SSH.
 
 ``` bash
-$ commcare-cloud monolith deploy-stack --first-time
+$ commcare-cloud monolith deploy-stack --first-time -e 'CCHQ_IS_FRESH_INSTALL=1'
 ```
 
 ```
@@ -237,7 +237,7 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 1. Run the deploy command:
 
     ``` bash
-    $ commcare-cloud monolith fab deploy
+    $ commcare-cloud monolith deploy
     ```
     
     You can read more about the deploy process in the [deploy documentation](../commcare-cloud/deploy.md).
@@ -245,7 +245,7 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 1. If deploy fails, you can restart where it left off:
 
     ``` bash
-    $ commcare-cloud monolith fab deploy:resume=yes
+    $ commcare-cloud monolith deploy --resume
     ```
 
 ## Step 9: Cleanup
@@ -289,3 +289,9 @@ $ commcare-cloud monolith django-manage make_superuser {email}
 ```
 
 where `{email}` is the email address you would like to use as the username.
+
+## Step 13: [Optional] Add a new build
+
+In order to create new versions of applications created in the CommCareHQ app builder, you will need to add the latest `CommCare Mobile` and `CommCare Core` builds to your server.
+
+To add a build to your server visit `<server url>/builds/edit_menu` and follow the instructions under "Import a new build from the build server"

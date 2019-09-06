@@ -2,12 +2,16 @@ import collections
 from collections import defaultdict
 from operator import itemgetter
 
-from clint.textui import puts_err
+from clint.textui import puts, indent
+from couchdb_cluster_admin.describe import print_shard_table
+from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
+from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
 
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
 from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.schemas.app_processes import get_machine_alias
 
 
 class ListDatabases(CommandBase):
@@ -92,23 +96,26 @@ class CeleryResourceReport(CommandBase):
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
         celery_processes = environment.app_processes_config.celery_processes
-        by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set()})
+        by_queue = defaultdict(lambda: {'num_workers': 0, 'concurrency': 0, 'pooling': set(), 'worker_hosts': set()})
         for host, queues in celery_processes.items():
             for queue_name, options in queues.items():
                 queue = by_queue[queue_name]
                 queue['num_workers'] += options.num_workers
                 queue['concurrency'] += options.concurrency * options.num_workers
                 queue['pooling'].add(options.pooling)
+                queue['worker_hosts'].add(host)
 
         max_name_len = max([len(name) for name in by_queue])
-        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
-        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker'))
-        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------'))
+        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
+        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker', 'Worker Hosts'))
+        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------', '------------'))
         for queue_name, stats in sorted(by_queue.items(), key=itemgetter(0)):
             workers = stats['num_workers']
             concurrency_ = stats['concurrency']
+            worker_hosts = stats['worker_hosts']
             print(template.format(
-                list(stats['pooling'])[0], queue_name, workers, concurrency_, concurrency_ // workers
+                list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers,
+                ','.join(sorted([get_machine_alias(environment, worker_host) for worker_host in worker_hosts]))
             ))
 
 
@@ -144,3 +151,43 @@ def _print_table(by_process):
     for queue_name, stats in sorted(by_process.items(), key=itemgetter(0)):
         workers = stats['num_processes']
         print(template.format(queue_name, workers))
+
+
+class CouchDBClusterInfo(CommandBase):
+    command = 'couchdb-cluster-info'
+    help = "Output information about the CouchDB cluster"
+
+    arguments = ()
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        couch_config = get_couch_config(environment)
+
+        puts(u'\nMembership')
+        with indent():
+            puts(get_membership(couch_config).get_printable())
+
+        puts(u'\nDB Info')
+        print_db_info(couch_config)
+
+        puts(u'\nShard allocation')
+        print_shard_table([
+            get_shard_allocation(couch_config, db_name)
+            for db_name in sorted(get_db_list(couch_config.get_control_node()))
+        ])
+        return 0
+
+
+def get_couch_config(environment, nodes=None):
+    couch_nodes = nodes or environment.groups['couchdb2']
+    config = Config(
+        control_node_ip=couch_nodes[0],
+        control_node_port=15984,
+        control_node_local_port=15986,
+        username=environment.get_vault_var('localsettings_private.COUCH_USERNAME'),
+        aliases={
+            'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes
+        }
+    )
+    config.set_password(environment.get_vault_var('localsettings_private.COUCH_PASSWORD'))
+    return config

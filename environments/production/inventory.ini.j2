@@ -1,33 +1,34 @@
 {{ __proxy0__ }} public_ip={{ aws_resources['proxy0-production.public_ip'] }}
+{{ __proxy1__ }} public_ip={{ aws_resources['proxy0-production.public_ip'] }}
 
 [proxy:children]
 proxy0
 
-{{ __web0__ }}
-
-{{ __web1__ }} datadog_integration_tcp_check=yes
-
 {{ __web2__ }}
 
-{{ __web6__ }}
+{{ __web3__ }}
 
-{{ __web7__ }} datadog_integration_tcp_check=yes
+{{ __web4__ }} datadog_integration_tcp_check=yes
 
-{{ __web8__ }}
+{{ __web10__ }}
 
-{{ __web9__ }}
+{{ __web11__ }} datadog_integration_tcp_check=yes
+
+{{ __web12__ }}
+
+{{ __web13__ }}
 
 
 [hq_webworkers:children]
-web0
-web1
 web2
+web3
+web4
 
 [mobile_webworkers:children]
-web6
-web7
-web8
-web9
+web10
+web11
+web12
+web13
 
 [webworkers:children]
 hq_webworkers
@@ -87,12 +88,6 @@ kafka0
 [kafka:children]
 kafka0
 
-{{ __celery6__ }}
-
-{{ __celery7__ }}
-
-{{ __celery8__ }}
-
 {{ __celery9__ }}
 
 {{ __celery10__ }}
@@ -103,9 +98,6 @@ kafka0
 
 
 [celery:children]
-celery6
-celery7
-celery8
 celery9
 celery10
 celery11
@@ -114,10 +106,10 @@ celery12
 [celery:vars]
 swap_size=8G
 
-{{ __pillow0__ }}
+{{ __pillow1__ }}
 
 [pillowtop:children]
-pillow0
+pillow1
 
 {{ __formplayer0__ }}
 
@@ -137,37 +129,37 @@ redis1
 [shared_dir_host:children]
 shareddir0
 
-{{ __es10__ }} elasticsearch_node_name=es10
+{{ __es15__ }} elasticsearch_node_name=es15
 
-{{ __es11__ }} elasticsearch_node_name=es11
+{{ __es16__ }} elasticsearch_node_name=es16
 
-{{ __es12__ }} elasticsearch_node_name=es12
+{{ __es17__ }} elasticsearch_node_name=es17
 
-{{ __es13__ }} elasticsearch_node_name=es13
+{{ __es18__ }} elasticsearch_node_name=es18
 
-{{ __es14__ }} elasticsearch_node_name=es14
+{{ __es19__ }} elasticsearch_node_name=es19
 
-{{ __esmaster0__ }} elasticsearch_node_name=esmaster0
+{{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
-{{ __esmaster1__ }} elasticsearch_node_name=esmaster1
+{{ __esmaster4__ }} elasticsearch_node_name=esmaster4
 
-{{ __esmaster2__ }} elasticsearch_node_name=esmaster2
+{{ __esmaster5__ }} elasticsearch_node_name=esmaster5
 
 [es_master:children]
-esmaster0
-esmaster1
-esmaster2
+esmaster3
+esmaster4
+esmaster5
 
 [es_master:vars]
 elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es10
-es11
-es12
-es13
-es14
+es15
+es16
+es17
+es18
+es19
 
 [es_data:vars]
 elasticsearch_node_zone=aws
@@ -195,7 +187,6 @@ couchproxy0
 
 {{ __control__ }}
 
-{{ __djangomanage0__ }}
 {{ __djangomanage1__ }}
 
 [django_manage:children]

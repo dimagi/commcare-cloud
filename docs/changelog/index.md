@@ -7,6 +7,28 @@ newest first.
 
 ## Changelog
 
+### **2019-08-23** [Add `deploy` Command](0029-add-deploy-command.md)
+In order to provide a consistent user interface while making underlying changes,
+we are replacing the `commcare-cloud <env> fab deploy` command with a more concise
+`commcare-cloud <env> deploy` command.
+
+### **2019-08-23** [Removing support for Riak CS](0028-remove-riak.md)
+We are removing support for deploying Riak CS clusters in commcare-cloud
+
+### **2019-08-23** [Fix python3 virutalenvs](0027-fix-python3-virtualenv.md)
+This fixes a bug with how python3 virtualenvs were created by ansible. This fix needs to be applied to any
+machine which has a python3 virtualenv that was created by commcare-cloud.
+
+The fix is also safe to run on all CommCare hosts.
+
+### **2019-08-21** [Move remaining management commands explicitly](0026-move-remaining-management-commands.md)
+This change requires editing `app-processes.yml` to add some of processes to the `management_comamnds`
+section
+
+### **2019-08-20** [Rename management commands explicitly](0025-rename-management-commands.md)
+This change requires editing `app-processes.yml` to rename some of the processes in the `management_comamnds`
+section
+
 ### **2019-07-17** [Define management commands explicitly](0024-define-management-commands.md)
 This change requires changing app-processes.yml to include a list of management comamnds to run
 

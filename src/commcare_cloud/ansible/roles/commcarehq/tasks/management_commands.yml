@@ -1,0 +1,19 @@
+- name: define management command services
+  become: cchq
+  template:
+    src: "../templates/supervisor_management_commands.conf.j2"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+  when: app_processes_config.management_commands.get(inventory_hostname, {})
+  tags:
+    - services
+  register: management_commands_file
+
+- set_fact:
+    mgmt_cmd_supervisor_files: "{{ [management_commands_file] }}"
+  tags:
+    - services
+
+- set_fact:
+    mgmt_cmd_managed_files: "{{ mgmt_cmd_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + mgmt_cmd_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
+  tags:
+    - services

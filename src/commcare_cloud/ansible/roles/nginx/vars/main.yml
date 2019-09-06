@@ -1,5 +1,4 @@
 ---
-nginx_ubuntu_pkg: nginx
 nginx_user: www-data
 nginx_access_log_name: nginx_access.log
 nginx_error_log_name: nginx_error.log

@@ -140,6 +140,9 @@ def _setup_path():
     env.db = '%s_%s' % (env.project, env.deploy_env)
     env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
     env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
+    env.airflow_home = posixpath.join(env.home, 'airflow')
+    env.airflow_env = posixpath.join(env.airflow_home, 'env')
+    env.airflow_code_root = posixpath.join(env.airflow_home, 'pipes')
 
 
 def _override_code_root_to_current():
@@ -183,26 +186,9 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
-    _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
     execute(_confirm_deploying_same_code)
-
-
-def _confirm_branch(default_branch='master'):
-    if not hasattr(env, 'code_branch'):
-        print("code_branch not specified, using '{}'. "
-              "You can override this with '--set code_branch=<branch>'"
-              .format(default_branch))
-        env.code_branch = default_branch
-
-    if env.code_branch != default_branch:
-        branch_message = (
-            "Whoa there bud! You're using branch {env.code_branch}. "
-            "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        ).format(env=env)
-        if not console.confirm(branch_message, default=False):
-            utils.abort('Action aborted.')
 
 
 def _confirm_environment_time(env_name):
@@ -266,7 +252,6 @@ def env_common():
     proxy = servers['proxy']
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
-    riakcs = servers.get('riakcs', [])
     postgresql = servers['postgresql']
     pg_standby = servers.get('pg_standby', [])
     formplayer = servers['formplayer']
@@ -283,7 +268,6 @@ def env_common():
         'pg': postgresql,
         'pgstandby': pg_standby,
         'elasticsearch': elasticsearch,
-        'riakcs': riakcs,
         'django_celery': celery,
         'django_app': webworkers,
         'django_manage': django_manage,
@@ -341,37 +325,6 @@ def mail_admins(subject, message, use_current_release=False):
             'message': pipes.quote(message),
             'deploy_env': pipes.quote(env.deploy_env),
         })
-
-
-@task
-def hotfix_deploy():
-    """
-    deploy ONLY the code with no extra cleanup or syncing
-
-    for small python-only hotfixes
-
-    """
-    if not console.confirm('Are you sure you want to deploy to {env.deploy_env}?'.format(env=env), default=False) or \
-       not console.confirm('Did you run "fab {env.deploy_env} preindex_views"? '.format(env=env), default=False) or \
-       not console.confirm('HEY!!!! YOU ARE ONLY DEPLOYING PYTHON CODE. THIS IS NOT A NORMAL DEPLOY. COOL???', default=False):
-        utils.abort('Deployment aborted.')
-
-    _require_target()
-    run('echo ping!')  # workaround for delayed console response
-    try:
-        execute(release.update_code(full_cluster=True), env.deploy_metadata.deploy_ref, True)
-    except Exception:
-        execute(
-            mail_admins,
-            "Deploy failed",
-            traceback_string()
-        )
-        # hopefully bring the server back to life
-        silent_services_restart(use_current_release=True)
-        raise
-    else:
-        silent_services_restart(use_current_release=True)
-        execute(release.record_successful_deploy)
 
 
 def _confirm_translated():
@@ -688,15 +641,6 @@ def clean_offline_releases():
 
 
 @task
-def force_update_static():
-    _require_target()
-    execute(staticfiles.collectstatic, use_current_release=True)
-    execute(staticfiles.compress, use_current_release=True)
-    execute(staticfiles.update_manifest, use_current_release=True)
-    silent_services_restart(use_current_release=True)
-
-
-@task
 @roles(['deploy'])
 def manage(cmd):
     """
@@ -713,8 +657,8 @@ def manage(cmd):
              .format(env=env, cmd=cmd))
 
 
-@task(alias='deploy')
-def awesome_deploy(confirm="yes", resume='no', offline='no', skip_record='no'):
+@task
+def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy:confirm=no  # do not confirm
     fab <env> deploy:resume=yes  # resume from previous deploy
@@ -796,8 +740,7 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        if getattr(env, 'NEEDS_FORMPLAYER_RESTART', False):
-            execute(supervisor.restart_formplayer)
+        execute(supervisor.restart_formplayer)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -863,17 +806,14 @@ ONLINE_DEPLOY_COMMANDS = [
     _setup_release,
     announce_deploy_start,
     db.preindex_views,
-    # Compute version statics while waiting for preindex
-    staticfiles.prime_version_static,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
-    staticfiles.version_static,
     staticfiles.bower_install,
     staticfiles.npm_install,
+    staticfiles.version_static,     # run after any new bower code has been installed
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    formplayer.build_formplayer,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
@@ -884,8 +824,6 @@ ONLINE_DEPLOY_COMMANDS = [
 OFFLINE_DEPLOY_COMMANDS = [
     offline_setup_release,
     db.preindex_views,
-    # Compute version statics while waiting for preindex
-    staticfiles.prime_version_static,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
     staticfiles.version_static,
@@ -910,14 +848,13 @@ def check_status():
     execute(check_servers.ping)
     execute(check_servers.postgresql)
     execute(check_servers.elasticsearch)
-    execute(check_servers.riakcs)
 
 
 @task
 def perform_system_checks():
     execute(check_servers.perform_system_checks, True)
 
-    
+
 @task
 def deploy_airflow():
     execute(airflow.update_airflow)

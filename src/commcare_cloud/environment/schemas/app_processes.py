@@ -170,7 +170,7 @@ def _validate_all_required_machines_mentioned(environment, translated_app_proces
 
 def check_and_translate_hosts(environment, host_mapping):
     """
-    :param environment: name of the env used to lookup the inventory
+    :param environment: the env used to lookup the inventory
     :param host_mapping: dictionary where keys can be one of:
                          * host (must be in inventory file)
                          * inventory group containing a single host
@@ -180,7 +180,22 @@ def check_and_translate_hosts(environment, host_mapping):
              representative host
     """
     translated = {}
-    for host, config in host_mapping.items():
-        translated[environment.translate_host(host, environment.paths.app_processes_yml)] = config
+    for comma_separated_hosts, config in host_mapping.items():
+        for host in comma_separated_hosts.split(','):
+            translated[environment.translate_host(host, environment.paths.app_processes_yml)] = config
 
     return translated
+
+
+def get_machine_alias(environment, host):
+    """
+
+    :param environment: the env used to lookup the inventory
+    :param host: the inventory host (expressed as i.e. an ip address) to look up
+    :return: the canonical group name for that host
+    """
+    for group, hosts in environment.groups.items():
+        if len(hosts) == 1 and hosts[0] == host:
+            return group
+    else:
+        return host
