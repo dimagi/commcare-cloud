@@ -379,7 +379,9 @@ class Environment(object):
         """Mapping of inventory hostname (IP) to assigned hostname"""
         mapping = {}
         for host in self.inventory_manager.hosts.values():
-            if 'hostname' in host.vars:
+            if 'alt_hostname' in host.vars:
+                mapping[host.name] = host.vars['alt_hostname']
+            elif 'hostname' in host.vars:
                 mapping[host.name] = host.vars['hostname']
             for group in host.groups:
                 if len(group.hosts) == 1 and 'hostname' in group.vars:
