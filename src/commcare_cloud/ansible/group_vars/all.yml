@@ -159,15 +159,11 @@ MAPS_LAYERS: "{{ localsettings_private.MAPS_LAYERS | default(None) }}"
 MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST_TOKEN | default(None) }}"
 OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID | default(None) }}"
 SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
-SENTRY_DSN: "{{ localsettings_private.SENTRY_DSN | default(None) }}"
 SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY | default(None) }}"
-
-# Deprecated
 SENTRY_PRIVATE_KEY: "{{ localsettings_private.SENTRY_PRIVATE_KEY | default(None) }}"
 SENTRY_PROJECT_ID: "{{ localsettings_private.SENTRY_PROJECT_ID | default(None) }}"
 SENTRY_PUBLIC_KEY: "{{ localsettings_private.SENTRY_PUBLIC_KEY | default(None) }}"
 SENTRY_QUERY_URL: "{{ localsettings_private.SENTRY_QUERY_URL | default(None) }}"
-
 SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS | default(None) }}"
 STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None) }}"
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
