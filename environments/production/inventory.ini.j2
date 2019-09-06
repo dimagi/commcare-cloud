@@ -2,6 +2,7 @@
 {{ __proxy1__ }} public_ip={{ aws_resources['proxy0-production.public_ip'] }}
 
 [proxy:children]
+proxy1
 proxy0
 
 {{ __web2__ }}
