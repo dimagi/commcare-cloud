@@ -1,7 +1,7 @@
 title: Upgrade Sentry
 key: upgrade_sentry
 date: 2019-08-30
-optional_per_env: no
+optional_per_env: yes
 min_commcare_version: 19be50699bf78b25a8da6e3e13eb5bc6d13245e8
 max_commcare_version:
 context: |
