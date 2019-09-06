@@ -257,6 +257,16 @@ LOCAL_PILLOWTOPS = {
 }
 {% endif %}
 
+{% if 'RUN_FORM_META_PILLOW' in localsettings %}
+RUN_FORM_META_PILLOW = {{ localsettings.RUN_FORM_META_PILLOW }}
+{% endif %}
+{% if 'RUN_CASE_SEARCH_PILLOW' in localsettings %}
+RUN_CASE_SEARCH_PILLOW = {{ localsettings.RUN_CASE_SEARCH_PILLOW }}
+{% endif %}
+{% if 'RUN_UNKNOWN_USER_PILLOW' in localsettings %}
+RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
+{% endif %}
+
 {% if 'CASE_ES_DROP_FORM_FIELDS' in localsettings %}
 CASE_ES_DROP_FORM_FIELDS = {{ localsettings.CASE_ES_DROP_FORM_FIELDS }}
 {% endif %}
