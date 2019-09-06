@@ -48,7 +48,7 @@ commcare-cloud <env> update-config
 ## Deploy code
 
 ```
-cchq <env> fab deploy
+cchq <env> deploy
 ```
 
 ## Update supervisor config

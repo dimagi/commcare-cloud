@@ -61,6 +61,17 @@
     user: postgres
     cron_file: backup_postgres
 
+- name: Set up check_s3_backups
+  become: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_check_s3_backups.yml
+  vars:
+    service: 'postgres'
+    condition: "{{ check_s3_backups_email and postgres_s3 and backup_postgres and ('postgresql' in group_names or 'pg_backup' in group_names) }}"
+    user: "postgres"
+    service_backup_dir: "{{ postgresql_backup_dir }}"
+
 - name: copy retrieve script
   become: yes
   template:

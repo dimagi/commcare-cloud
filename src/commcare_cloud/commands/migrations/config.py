@@ -6,6 +6,7 @@ import yaml
 from couchdb_cluster_admin.utils import Config
 from memoized import memoized_property
 
+from commcare_cloud.commands.ansible.ops_tool import get_couch_config
 from commcare_cloud.commands.inventory_lookup.getinventory import get_server_address
 from commcare_cloud.environment.main import get_environment
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
@@ -49,25 +50,13 @@ class CouchMigration(object):
     def source_couch_config(self):
         if not self.separate_source_and_target:
             return self.target_couch_config
-        return self._get_couch_config(self.source_environment, self.source_environment.groups['couchdb2'])
+        return get_couch_config(self.source_environment)
 
     @memoized_property
     def target_couch_config(self):
-        return self._get_couch_config(self.target_environment, list(self.plan.get_all_nodes()))
-
-    def _get_couch_config(self, environment, nodes):
-        error = '"get couch IP for env: {}'.format(environment.meta_config.deploy_env)
-        config = Config(
-            control_node_ip=environment.groups['couchdb2'][0],
-            control_node_port=15984,
-            control_node_local_port=15986,
-            username=environment.get_vault_var('localsettings_private.COUCH_USERNAME'),
-            aliases={
-                'couchdb@{}'.format(environment.translate_host(node, error)): node for node in nodes
-            }
-        )
-        config.set_password(environment.get_vault_var('localsettings_private.COUCH_PASSWORD'))
-        return config
+        error = '"get couch IP for env: {}'.format(self.target_environment.meta_config.deploy_env)
+        nodes = [self.target_environment.translate_host(node, error) for node in list(self.plan.get_all_nodes())]
+        return get_couch_config(self.target_environment, nodes)
 
     @lazy_immutable_property
     def working_dir(self):

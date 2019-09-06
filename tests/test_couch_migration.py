@@ -6,6 +6,7 @@ import shutil
 import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from mock.mock import patch
+from nose.tools import assert_equal
 from nose_parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME, COUCH_SHARD_PLAN
@@ -49,7 +50,8 @@ def test_couch_config(plan_name):
     assert not migration.separate_source_and_target
 
     expected_couch_config_json = _get_expected_yml(plan_name, 'expected_couch_config.yml')
-    assert expected_couch_config_json == migration.target_couch_config.to_json(), migration.target_couch_config.to_json()
+
+    assert_equal(expected_couch_config_json, migration.target_couch_config.to_json())
 
 
 @parameterized(TEST_PLANS)

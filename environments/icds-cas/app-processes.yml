@@ -8,12 +8,14 @@ celery_heartbeat_thresholds:
 
 management_commands:
   celery0:
-    submission_reprocessing_queue:
+    run_submission_reprocessing_queue:
   celery1:
     queue_schedule_instances:
     handle_survey_actions:
   celery5:
-    sms_queue:
+    run_sms_queue:
+  pillow21:
+    run_pillow_retry_queue:
 
 celery_processes:
   None:
@@ -450,47 +452,47 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  'web0':
+  'web28':
     ucr_indicator_queue:
       concurrency: 3
-  'web1':
+  'web29':
     ucr_indicator_queue:
       concurrency: 4
-  'web2':
+  'web30':
     ucr_indicator_queue:
       concurrency: 4
-  'web3':
+  'web31':
     ucr_indicator_queue:
       concurrency: 4
-  'web4':
+  'web32':
     ucr_indicator_queue:
       concurrency: 4
-  'web5':
+  'web33':
     ucr_indicator_queue:
       concurrency: 4
-  'web6':
+  'web34':
     ucr_indicator_queue:
       concurrency: 4
-  'web7':
+  'web35':
     ucr_indicator_queue:
       concurrency: 4
-  'web8':
+  'web36':
     ucr_indicator_queue:
       concurrency: 4
-  'web9':
+  'web37':
     ucr_indicator_queue:
       concurrency: 4
-  'web10':
+  'web38':
     ucr_indicator_queue:
       concurrency: 4
-  'web11':
+  'web39':
     ucr_indicator_queue:
       concurrency: 4
-  'web12':
+  'web40':
     ucr_indicator_queue:
       concurrency: 4
 pillows:
-  'pillow0':
+  'pillow21':
     # Catch all server for low volume pillows
     AppDbChangeFeedPillow:
       num_processes: 1
@@ -502,198 +504,136 @@ pillows:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
-    GroupPillow:
-      num_processes: 1
-    GroupToUserPillow:
+    group-pillow:
       num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 4
     SqlSMSPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-    UserPillow:
+    user-pillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 16
-    kafka-ucr-main:
-      num_processes: 1
-      processor_chunk_size: 100
     kafka-ucr-static-awc-location:
       num_processes: 1
       processor_chunk_size: 100
-  'pillow1':
+  'pillow22':
     XFormToElasticsearchPillow:
       num_processes: 16
-  'pillow2':
+  'pillow23':
     kafka-ucr-static-forms:
       start_process: 0
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow3':
+  'pillow24':
     kafka-ucr-static-forms:
       start_process: 12
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow4':
+  'pillow25':
     kafka-ucr-static-forms:
       start_process: 24
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow16':
+  'pillow26':
     kafka-ucr-static-forms:
       start_process: 36
       num_processes: 12
       total_processes: 48
       processor_chunk_size: 100
-  'pillow5':
-    kafka-ucr-static-cases:
-      start_process: 0
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 0
-      num_processes: 9
-      total_processes: 120
-  'pillow6':
-    kafka-ucr-static-cases:
-      start_process: 9
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 9
-      num_processes: 9
-      total_processes: 120
-  'pillow7':
-    kafka-ucr-static-cases:
-      start_process: 18
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 18
-      num_processes: 9
-      total_processes: 120
-  'pillow8':
-    kafka-ucr-static-cases:
-      start_process: 27
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 27
-      num_processes: 9
-      total_processes: 120
-  'pillow9':
-    kafka-ucr-static-cases:
-      start_process: 36
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 36
-      num_processes: 9
-      total_processes: 120
-  'pillow10':
-    kafka-ucr-static-cases:
-      start_process: 45
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 45
-      num_processes: 9
-      total_processes: 120
-  'pillow11':
-    kafka-ucr-static-cases:
-      start_process: 54
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 54
-      num_processes: 9
-      total_processes: 120
-  'pillow12':
-    kafka-ucr-static-cases:
-      start_process: 63
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 63
-      num_processes: 9
-      total_processes: 120
-  'pillow13':
-    kafka-ucr-static-cases:
-      start_process: 72
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 72
-      num_processes: 9
-      total_processes: 120
-  'pillow14':
-    kafka-ucr-static-cases:
-      start_process: 81
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 81
-      num_processes: 9
-      total_processes: 120
-  'pillow17':
-    kafka-ucr-static-cases:
-      start_process: 90
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 90
-      num_processes: 9
-      total_processes: 120
-  'pillow18':
-    kafka-ucr-static-cases:
-      start_process: 99
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 99
-      num_processes: 9
-      total_processes: 120
-  'pillow19':
-    kafka-ucr-static-cases:
-      start_process: 108
-      num_processes: 9
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 108
-      num_processes: 9
-      total_processes: 120
-  'pillow20':
-    kafka-ucr-static-cases:
-      start_process: 117
-      num_processes: 3
-      total_processes: 120
-      processor_chunk_size: 100
-    CaseToElasticsearchPillow:
-      start_process: 117
-      num_processes: 3
-      total_processes: 120
-  'pillow15':
+  'pillow41':
     FormSubmissionMetadataTrackerPillow:
       num_processes: 16
-
+  'pillow27':
+    case-pillow:
+      start_process: 0
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow28':
+    case-pillow:
+      start_process: 9
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow29':
+    case-pillow:
+      start_process: 18
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow30':
+    case-pillow:
+      start_process: 27
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow31':
+    case-pillow:
+      start_process: 36
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow32':
+    case-pillow:
+      start_process: 45
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow33':
+    case-pillow:
+      start_process: 54
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow34':
+    case-pillow:
+      start_process: 63
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow35':
+    case-pillow:
+      start_process: 72
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow36':
+    case-pillow:
+      start_process: 81
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow37':
+    case-pillow:
+      start_process: 90
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow38':
+    case-pillow:
+      start_process: 99
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow39':
+    case-pillow:
+      start_process: 108
+      num_processes: 9
+      total_processes: 120
+      processor_chunk_size: 100
+  'pillow40':
+    case-pillow:
+      start_process: 117
+      num_processes: 3
+      total_processes: 120
+      processor_chunk_size: 100

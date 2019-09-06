@@ -27,6 +27,7 @@ from ..const import (
     FORMPLAYER_BUILD_DIR,
     ROLES_CONTROL)
 from commcare_cloud.fab.utils import pip_install
+from .formplayer import clean_formplayer_releases
 
 GitConfig = namedtuple('GitConfig', 'key value')
 
@@ -212,13 +213,14 @@ def _get_local_submodule_urls(path):
 
 
 def _get_remote_submodule_urls(path):
+    submodule_list = _get_submodule_list()
     with cd(env.code_current):
         remote_submodule_config = [
             GitConfig(
                 key='submodule.{}.url'.format(submodule),
                 value=sudo("git config submodule.{}.url".format(submodule))
             )
-            for submodule in _get_submodule_list()]
+            for submodule in submodule_list]
     return remote_submodule_config
 
 
@@ -287,7 +289,6 @@ def update_virtualenv(full_cluster=True):
                      user=env.sudo_user)
                 pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
                     posixpath.join(requirements, 'prod-requirements.txt'),
-                    posixpath.join(requirements, 'requirements.txt'),
                 ])
 
         _update_virtualenv(
@@ -415,6 +416,10 @@ def clean_releases(keep=3):
 
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
+
+    remaining_releases = set(releases) - set(to_remove)
+    for release in remaining_releases:
+        clean_formplayer_releases(os.path.join(env.releases, release))
 
     # as part of the clean up step, run gc in the 'current' directory
     git_gc_current()

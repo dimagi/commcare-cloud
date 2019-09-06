@@ -10,6 +10,10 @@
     path: /sys/kernel/mm/transparent_hugepage/defrag
   register: thp_defrag
 
+- stat:
+    path: /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+  register: khugepaged_defrag
+
 - name: Sets THP enabled to never
   raw: echo never > /sys/kernel/mm/transparent_hugepage/enabled
   when: thp_enabled.stat.exists
@@ -17,6 +21,10 @@
 - name: Sets THP defrag to never
   raw: echo never > /sys/kernel/mm/transparent_hugepage/defrag
   when: thp_defrag.stat.exists
+
+- name: Set THP defrag to off
+  raw: echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+  when: khugepaged_defrag.stat.exists
 
 # do use grub-mkconfig to generate current grub config is you need to
 - name: Adds transparent_hugepage=never to default grub config
@@ -27,3 +35,8 @@
     backrefs: yes
     state: present
   when: uses_grub.stat.exists
+  register: grup_updated
+
+- name: update grub
+  command: update-grub
+  when: grub_updated is changed
