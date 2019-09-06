@@ -4,7 +4,7 @@ global_defs {
       script_user {{script_user}}
 }
 vrrp_script chk_service {           
-        script "pgrep {{monit_process}}"  
+        script "pgrep {{keepalived_check_process}}"  
         interval 2    
 }
 vrrp_instance VI_1 {
