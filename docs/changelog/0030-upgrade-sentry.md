@@ -4,7 +4,7 @@
 
 **Date:** 2019-08-30
 
-**Optional per env:** _required on all environments_
+**Optional per env:** _only required on some environments_
 
 
 ## CommCare Version Dependency
