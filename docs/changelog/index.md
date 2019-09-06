@@ -7,10 +7,6 @@ newest first.
 
 ## Changelog
 
-### **2019-08-30** [Upgrade Sentry](0030-upgrade-sentry.md)
-The Sentry SDK used by CommCare HQ has been updated and along with it we have updated the
-configuration parameters.
-
 ### **2019-08-23** [Add `deploy` Command](0029-add-deploy-command.md)
 In order to provide a consistent user interface while making underlying changes,
 we are replacing the `commcare-cloud <env> fab deploy` command with a more concise
