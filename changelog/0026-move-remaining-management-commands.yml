@@ -24,3 +24,4 @@ update_steps: |
   +   pillowN:
   +     run_pillow_retry_queue:
   ```
+  2. Run `cchq <env> update-supervisor-confs`
