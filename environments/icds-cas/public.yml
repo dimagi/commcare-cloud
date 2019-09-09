@@ -25,7 +25,7 @@ swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 nofile_limit: 65536
 
 redis_maxmemory: 6gb
-redis_maxmemory_policy: allkeys-lru
+redis_maxmemory_policy: allkeys-lfu
 redis_auto_aof_rewrite_percentage: "50"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
@@ -212,6 +212,8 @@ localsettings:
             - 'static-dashboard_growth_monitoring_forms'
             - 'dashboard_child_health_daily_feeding_forms'
             - 'static-dashboard_birth_preparedness_forms'
+  RUN_CASE_SEARCH_PILLOW: False
+  RUN_UNKNOWN_USER_PILLOW: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
   REDIS_DB: '0'

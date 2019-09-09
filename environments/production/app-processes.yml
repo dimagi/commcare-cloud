@@ -27,7 +27,7 @@ celery_processes:
     case_rule_queue:
       concurrency: 3
     celery:
-      concurrency: 3
+      concurrency: 4
     celery_periodic:
       concurrency: 3
     email_queue:
