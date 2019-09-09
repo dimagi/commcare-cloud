@@ -212,7 +212,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 4
     sms_queue:
       pooling: gevent
       concurrency: 10
