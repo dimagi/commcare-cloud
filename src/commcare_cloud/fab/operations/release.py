@@ -276,10 +276,10 @@ def update_virtualenv(full_cluster=True):
         assert requirements
         r_flags = ''
         for requirements_file in requirements:
-            if not fail_if_absent or files.exists(requirements_file):
+            if fail_if_absent or files.exists(requirements_file):
                 r_flags += '-r {}'.format(requirements_file)
-
-        sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
+        if r_flags:
+            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
 
     @roles(roles_to_use)
     @parallel
