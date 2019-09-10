@@ -468,12 +468,42 @@ In some cases it may be necessary to restart the standby node.
 ## PostgreSQL disk usage
 Use the following query to find disc usage by table where child tables are added to the usage of the parent.
 
-### Check disk usage by parent table
+### Table size
+```sql
+SELECT *, pg_size_pretty(total_bytes) AS total
+    , pg_size_pretty(index_bytes) AS INDEX
+    , pg_size_pretty(toast_bytes) AS toast
+    , pg_size_pretty(table_bytes) AS TABLE
+  FROM (
+  SELECT *, total_bytes-index_bytes-COALESCE(toast_bytes,0) AS table_bytes FROM (
+      SELECT c.oid,nspname AS table_schema, relname AS TABLE_NAME
+              , c.reltuples AS row_estimate
+              , pg_total_relation_size(c.oid) AS total_bytes
+              , pg_indexes_size(c.oid) AS index_bytes
+              , pg_total_relation_size(reltoastrelid) AS toast_bytes
+          FROM pg_class c
+          LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+          WHERE relkind = 'r'
+  ) a
+) a order by total_bytes desc;
 ```
+
+### Table size grouped by parent table
+```sql
+SELECT
+  main_table,
+  row_estimate,
+  pg_size_pretty(total_size) as total,
+  pg_size_pretty(index_bytes) as index,
+  pg_size_pretty(toast_bytes) as toast
+FROM (
 SELECT
     CASE WHEN HC.inhrelid IS NOT NULL THEN CP.relname
         ELSE C.relname END as main_table,
-    sum(pg_total_relation_size(C.oid)) AS "total_size"
+    sum(C.reltuples) AS row_estimate, 
+    sum(pg_total_relation_size(C.oid)) AS "total_size",
+    sum(pg_indexes_size(C.oid)) AS index_bytes,
+    sum(pg_total_relation_size(C.reltoastrelid)) AS toast_bytes
 FROM pg_class C
 LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 LEFT JOIN pg_inherits HC ON (HC.inhrelid = C.oid)
@@ -483,7 +513,34 @@ WHERE nspname NOT IN ('pg_catalog', 'information_schema')
     AND nspname !~ '^pg_toast'
 GROUP BY main_table
 ORDER BY total_size DESC
-LIMIT 20;
+) as a;
+```
+
+### Table stats grouped by parent table
+```sql
+SELECT
+    CASE WHEN HC.inhrelid IS NOT NULL THEN CP.relname
+        ELSE C.relname END as main_table,
+    sum(seq_scan) as seq_scan,
+    sum(seq_tup_read) as seq_tup_read,
+    sum(idx_scan) as idx_scan,
+    sum(idx_tup_fetch) as idx_tup_fetch,
+    sum(n_tup_ins) as n_tup_ins,
+    sum(n_tup_upd) as n_tup_upd,
+    sum(n_tup_del) as n_tup_del,
+    sum(n_tup_hot_upd) as n_tup_hot_upd,
+    sum(n_live_tup) as n_live_tup,
+    sum(n_dead_tup) as n_dead_tup    
+FROM pg_class C
+LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
+LEFT JOIN pg_inherits HC ON (HC.inhrelid = C.oid)
+LEFT JOIN pg_class CP ON (HC.inhparent = CP.oid)
+LEFT JOIN pg_stat_user_tables t ON (C.oid = t.relid)
+WHERE nspname NOT IN ('pg_catalog', 'information_schema')
+    AND C.relkind <> 'i' AND C.relkind <> 'S' AND C.relkind <> 'v'
+    AND nspname !~ '^pg_toast'
+GROUP BY main_table
+ORDER BY n_tup_ins DESC;
 ```
 
 # Celery
