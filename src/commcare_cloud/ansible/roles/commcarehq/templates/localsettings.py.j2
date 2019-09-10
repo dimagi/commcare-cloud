@@ -257,6 +257,16 @@ LOCAL_PILLOWTOPS = {
 }
 {% endif %}
 
+{% if 'RUN_FORM_META_PILLOW' in localsettings %}
+RUN_FORM_META_PILLOW = {{ localsettings.RUN_FORM_META_PILLOW }}
+{% endif %}
+{% if 'RUN_CASE_SEARCH_PILLOW' in localsettings %}
+RUN_CASE_SEARCH_PILLOW = {{ localsettings.RUN_CASE_SEARCH_PILLOW }}
+{% endif %}
+{% if 'RUN_UNKNOWN_USER_PILLOW' in localsettings %}
+RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
+{% endif %}
+
 {% if 'CASE_ES_DROP_FORM_FIELDS' in localsettings %}
 CASE_ES_DROP_FORM_FIELDS = {{ localsettings.CASE_ES_DROP_FORM_FIELDS }}
 {% endif %}
@@ -910,4 +920,8 @@ UCR_COMPARISONS = {
 
 {% if localsettings.KAFKA_API_VERSION is defined %}
 KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
+{% endif %}
+
+{% if localsettings.ICDS_USE_CITUS is defined %}
+ICDS_USE_CITUS = {{ localsettings.ICDS_USE_CITUS }}
 {% endif %}
