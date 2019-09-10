@@ -272,18 +272,14 @@ def update_virtualenv(full_cluster=True):
     """
     roles_to_use = _get_roles(full_cluster)
 
-    def uninstall_requirements(cmd_prefix, requirements_file=None, fail_if_absent=False):
-        """
-        Uninstall requirements in requirements_file
+    def pip_uninstall(cmd_prefix, requirements=(), fail_if_absent=False):
+        assert requirements
+        r_flags = ''
+        for requirements_file in requirements:
+            if not fail_if_absent or files.exists(requirements_file):
+                r_flags += '-r {}'.format(requirements_file)
 
-        but only the ones that are actually installed (checks pip freeze)
-        Uses requirements/uninstall-requirements.txt
-        if requirements_file not given.
-        """
-
-        if not fail_if_absent or files.exists(requirements_file):
-            sudo("{} bash scripts/uninstall-requirements.sh {}".format(
-                cmd_prefix, requirements_file or ''), user=env.sudo_user)
+        sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
 
     @roles(roles_to_use)
     @parallel
@@ -296,15 +292,15 @@ def update_virtualenv(full_cluster=True):
             with cd(env.code_root):
                 cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
                     env.sudo_user, virtualenv_root)
-                uninstall_requirements(cmd_prefix, fail_if_absent=True)
+                pip_uninstall(cmd_prefix, requirements=[
+                    posixpath.join(requirements, "uninstall-requirements.txt")
+                ], fail_if_absent=True)
                 pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
                     posixpath.join(requirements, 'prod-requirements.txt'),
                 ])
-                uninstall_requirements(
-                    cmd_prefix,
+                pip_uninstall(cmd_prefix, requirements=[
                     posixpath.join(requirements, "uninstall-requirements-after-install.txt"),
-                    fail_if_absent=False,  # for backwards compatibility
-                )
+                ],  fail_if_absent=False)
 
         _update_virtualenv(
             env.py2_virtualenv_current, env.py2_virtualenv_root,
