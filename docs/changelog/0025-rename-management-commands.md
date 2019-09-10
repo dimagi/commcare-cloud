@@ -24,3 +24,4 @@ the actual Django management command names:
 
 ## Steps to update
 1. Change any references to the old management command names to the new name in `app-processes.yml`
+2. Run `cchq <env> update-supervisor-confs`

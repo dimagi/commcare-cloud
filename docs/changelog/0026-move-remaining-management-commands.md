@@ -31,3 +31,4 @@ will be deployed as configured by the `management_commands` section in `app-proc
 +   pillowN:
 +     run_pillow_retry_queue:
 ```
+2. Run `cchq <env> update-supervisor-confs`
