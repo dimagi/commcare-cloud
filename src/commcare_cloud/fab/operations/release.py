@@ -274,11 +274,12 @@ def update_virtualenv(full_cluster=True):
 
     def pip_uninstall(cmd_prefix, requirements=(), fail_if_absent=False):
         assert requirements
-        r_flags = ''
+        r_flags = []
         for requirements_file in requirements:
             if fail_if_absent or files.exists(requirements_file):
-                r_flags += '-r {}'.format(requirements_file)
+                r_flags.extend(['-r', requirements_file])
         if r_flags:
+            r_flags = " ".join(r_flags)
             sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
 
     @roles(roles_to_use)
