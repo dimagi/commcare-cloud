@@ -14,15 +14,12 @@ class ExportSentryEvents(CommandBase):
     )
 
     arguments = (
-        Argument('-k', '--api-key', help="Sentry API Key"),
+        Argument('-k', '--api-key', help="Sentry API Key", required=True),
+        Argument('-p', '--project-id', help="Sentry project ID", required=True),
         Argument('-q', '--query', help="Text query", default=None),
         Argument('--start', help="UTC start date. Format YYYY-MM-DDTHH:MM:SS", default=None),
         Argument('--end', help="UTC end date. Format YYYY-MM-DDTHH:MM:SS", default=None),
-        Argument('--project-id',
-                 help="Sentry project ID. If not supplied the value for the environment "
-                      "will be used (requires Vault access)", default=None
-         ),
-        Argument('--organization', help="Organization slug", default='dimagi'),
+        Argument('--organization', help="Organization slug", default='dimagi', required=True),
     )
 
     def run(self, args, unknown_args):
@@ -41,8 +38,6 @@ class ExportSentryEvents(CommandBase):
             params['end'] = args.end
         if args.project_id:
             params['project'] = args.project_id
-        else:
-            params['project'] = env.get_vault_var('localsettings_private.SENTRY_PROJECT_ID')
 
         while True:
             resp = requests.get(url, params, headers={

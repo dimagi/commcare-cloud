@@ -21,6 +21,19 @@ nginx_sites:
         # If the header is not provided, do not rate limit
         - key: '""'
           value: '""'
+    # Remove 'username' query param from request uri for use in cache key
+    # https://stackoverflow.com/a/45587134
+    # https://stackoverflow.com/a/35772678
+    - name: "$request_uri_no_username"
+      variable: "$request_uri"
+      default_value: "$request_uri"
+      var_mappings:
+        # username is first query param
+        - key: '"~^(?P<path>[^?]*)\?(username=[^&]*)&?(?P<args>.*)?$"'
+          value: '$path?$args'
+        # username is not first query param
+        - key: '"~^(?P<path>[^?]*)\?(?P<args1>.*?)(&?username=[^&]*)(?P<args2>&?.*)?$"'
+          value: '$path?$args1$args2'
    limit_req_zones:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
       zone: "$incremental_sync"
@@ -72,6 +85,7 @@ nginx_sites:
          - zone_name: "multimedia"
            burst: 50
            nodelay: True
+       limit_rate: 500k
      - name: "/a/icds-test/apps/download"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
@@ -88,6 +102,8 @@ nginx_sites:
        proxy_cache: app_cache
        proxy_cache_lock: "on"
        proxy_cache_lock_timeout: 30s
+       # exclude username arg from cache key
+       proxy_cache_key: "$proxy_host$request_uri_no_username"
        client_body_buffer_size: 5m
        proxy_ignore_headers: Set-Cookie
        limit_reqs:
