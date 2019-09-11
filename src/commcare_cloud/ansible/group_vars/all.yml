@@ -204,9 +204,4 @@ airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
 airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
 
 nofile_limit: 4096
-keepalived_smtp_host: '{{ localsettings.EMAIL_SMTP_HOST }}'
-keepalived_smtp_port: '{{ localsettings.EMAIL_SMTP_PORT }}'
-keepalived_smtp_login: '{{ localsettings_private.EMAIL_LOGIN }}'
-keepalived_smtp_password: '{{ localsettings_private.EMAIL_PASSWORD }}'
-keepalived_sender_email: '{{ root_email }}'
-keepalived_recepient_email: '{{ default_from_email }}'
+keepalived_recepient_email: '{{ root_email }}'

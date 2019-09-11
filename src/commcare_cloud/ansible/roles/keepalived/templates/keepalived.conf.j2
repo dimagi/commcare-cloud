@@ -1,4 +1,4 @@
- {{ ansible_managed }}
+ #{{ ansible_managed }}
 global_defs { 
       enable_script_security
       script_user {{script_user}}
@@ -27,7 +27,7 @@ vrrp_instance VI_1 {
     track_script {
         chk_service
     }
-    notify_master "{{notify_script_path}} master"
-    notify_backup "{{notify_script_path}} backup"
-    notify_fault  "{{notify_script_path}} fault"
+    notify_master "{{notify_script_path}} MASTER"
+    notify_backup "{{notify_script_path}} BACKUP"
+    notify_fault  "{{notify_script_path}} FAULT"
 }

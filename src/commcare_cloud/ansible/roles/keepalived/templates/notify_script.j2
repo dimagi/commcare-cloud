@@ -1,25 +1,2 @@
-#!/usr/bin/python
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-import smtplib
-import sys
-import hostname
-
-hostname = socket.gethostbyaddr(socket.gethostname())[0].split('.')[0]
-state= sys.arg[1]
-
-msg = MIMEMultipart()
-msg['From'] = "{{ keepalived_smtp_host }}"
-msg['To'] = "{{ keepalived_recepient_email }}"
-msg['Subject'] = 'ALERT:proxy server status changed'
-
-body = "{0} entered in {1} state".format(hostname,state)
-msg.attach(MIMEText(body,'plain'))
-
-text = msg.as_string()
-server = smtplib.SMTP('{{ keepalived_smtp_host }}','{{ keepalived_smtp_port }}')
-server.starttls()
-server.login("{{ keepalived_smtp_login }}", "{{ keepalived_smtp_password }}")
-server.sendmail("{{ keepalived_sender_email }}", "{{ keepalived_recepient_email }}",text)
-server.quit()
+#!/bin/bash
+echo "Server entered in $1 state" | mail -s "ALERT: proxy server status changed" {{ keepalived_recepient_email }}
