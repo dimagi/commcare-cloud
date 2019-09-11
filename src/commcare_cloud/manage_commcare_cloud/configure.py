@@ -2,9 +2,10 @@ import os
 import textwrap
 from six.moves import shlex_quote
 
-from clint.textui import puts, colored
+from clint.textui import puts
 
 from commcare_cloud.cli_utils import ask
+from commcare_cloud.colors import color_summary, color_notice, color_code
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.paths import DIMAGI_ENVIRONMENTS_DIR, get_virtualenv_bin_path, \
     PACKAGE_BASE
@@ -65,7 +66,7 @@ class Configure(CommandBase):
         return environments_dir
 
     def _write_load_config_sh(self, environments_dir, quiet):
-        puts(colored.blue("Let's get you set up to run commcare-cloud."))
+        puts(color_summary("Let's get you set up to run commcare-cloud."))
 
         if not environments_dir:
             environments_dir = self._determine_environments_dir(quiet=quiet)
@@ -87,9 +88,9 @@ class Configure(CommandBase):
                     virtualenv_path=get_virtualenv_bin_path(),
                     PACKAGE_BASE=PACKAGE_BASE,
                 )).strip())
-        puts(colored.blue("Add the following to your ~/.bash_profile:"))
-        puts(colored.cyan("source ~/.commcare-cloud/load_config.sh"))
-        puts(colored.blue(
+        puts(color_notice("Add the following to your ~/.bash_profile:"))
+        puts(color_code("source ~/.commcare-cloud/load_config.sh"))
+        puts(color_notice(
             "and then open a new shell. "
             "You should be able to run `commcare-cloud` without entering your virtualenv."))
 

@@ -4,17 +4,17 @@ import subprocess
 from copy import deepcopy
 
 from six.moves import shlex_quote
-from clint.textui import puts, colored
+from clint.textui import puts
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.commands.fab import exec_fab_command
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -119,8 +119,10 @@ def run_ansible_playbook(
         cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
-            puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
-            puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
+            puts(color_error("Options --diff and --check not allowed. "
+                             "Please remove -D, --diff, -C, --check."))
+            puts(color_error("These ansible-playbook options are managed automatically "
+                             "by commcare-cloud and cannot be set manually."))
             return 2  # exit code
 
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
