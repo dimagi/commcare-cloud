@@ -7,4 +7,3 @@ formplayer_build_url: "{{
   if deploy_env == 'staging'
   else 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
 }}"
-formplayer_release_dir: "{{ formplayer_build_dir }}/formplayer__{{ lookup('pipe','date +%Y-%m-%d_%H.%M') }}"
