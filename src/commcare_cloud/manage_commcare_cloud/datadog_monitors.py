@@ -4,7 +4,7 @@ import re
 
 import jinja2
 import yaml
-from clint.textui import puts, colored, indent
+from clint.textui import puts, indent
 from datadog import api, initialize
 from jinja2 import DictLoader
 from jsonobject.api import JsonObject
@@ -13,6 +13,8 @@ from memoized import memoized
 from simplejson import OrderedDict
 
 from commcare_cloud.cli_utils import ask
+from commcare_cloud.colors import color_added, color_removed, color_unchanged, color_warning, \
+    color_notice
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.manage_commcare_cloud.yaml_representers import LiteralUnicode
@@ -99,11 +101,11 @@ def _unidiff_output(expected, actual):
 def print_diff(diff_lines):
     for line in diff_lines:
         if line.startswith('+'):
-            puts(colored.green(line), newline=False)
+            puts(color_added(line), newline=False)
         elif line.startswith('-'):
-            puts(colored.red(line), newline=False)
+            puts(color_removed(line), newline=False)
         elif line.startswith('@@'):
-            puts(colored.cyan(line), newline=False)
+            puts(color_unchanged(line), newline=False)
         else:
             puts(line, newline=False)
 
@@ -283,7 +285,7 @@ class DatadogMonitors(CommandBase):
         any_diffs = False
         if only_local:
             for id, monitor in only_local.items():
-                puts(colored.magenta(
+                puts(color_warning(
                     "\nMonitor missing from datadog: {} ({})\n".format(monitor['name'], id)
                 ))
 
@@ -293,8 +295,8 @@ class DatadogMonitors(CommandBase):
                 dump_monitor_yaml(get_data_to_update(expected, keys_to_update))))
             any_diffs |= bool(diff)
             if diff:
-                puts(colored.magenta("\nDiff for '{}'".format(expected['name'])))
-                puts(colored.cyan(local_monitor_api.get_filename_for_monitor(expected['id'])))
+                puts(color_notice("\nDiff for '{}'".format(expected['name'])))
+                puts(local_monitor_api.get_filename_for_monitor(expected['id']))
 
                 with indent():
                     print_diff(diff)
@@ -307,12 +309,12 @@ class DatadogMonitors(CommandBase):
                     remote_monitor_api.update(id, get_data_to_update(expected, keys_to_update))
 
         if only_remote:
-            puts(colored.magenta(
+            puts(color_warning(
                 "FYI you also have some untracked monitors. "
                 "No change will be applied for these:"
             ))
             for id, missing_monitor in sorted(only_remote.items()):
-                puts(colored.magenta("  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor['name'])))
+                puts("  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor['name']))
             if ask("And BTW do you want to dump all untracked monitors as a starting point?"):
                 for id, missing_monitor in sorted(only_remote.items()):
                     local_monitor_api.create(id, missing_monitor)

@@ -8,9 +8,10 @@ import sys
 import warnings
 from collections import OrderedDict
 
-from clint.textui import puts, colored
+from clint.textui import puts
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
@@ -164,7 +165,7 @@ def call_commcare_cloud(input_argv=sys.argv):
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
-        puts(colored.red(str(e), bold=True))
+        puts(color_error(str(e), bold=True))
         return 1
 
     return exit_code

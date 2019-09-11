@@ -3,10 +3,10 @@ import os
 import re
 import subprocess
 
-from clint.textui.colored import magenta, yellow, blue
 from memoized import memoized
 
 from commcare_cloud.cli_utils import print_command, check_branch
+from commcare_cloud.colors import color_summary, color_highlight, color_link
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.commands import shared_args
 from .command_base import CommandBase, Argument
@@ -71,23 +71,23 @@ class Fab(CommandBase):
 
     @staticmethod
     def print_deploy_deprecation():
-        print(magenta('Hi. Things have changed.'))
+        print(color_summary('Hi. Things have changed.'))
         print()
         print('The `commcare-cloud <env> fab deploy` command has been deprecated.')
         print('Instead, please use')
         print()
-        print(yellow('  commcare-cloud <env> deploy'))
+        print(color_highlight('  commcare-cloud <env> deploy'))
         print()
         print("For info on how you can use the new command, please see")
-        print(blue("https://dimagi.github.io/commcare-cloud/commcare-cloud/commands/#deploy"))
+        print(color_link("https://dimagi.github.io/commcare-cloud/commcare-cloud/commands/#deploy"))
         print("or run")
         print()
-        print(yellow('  commcare-cloud <env> deploy -h'))
+        print(color_highlight('  commcare-cloud <env> deploy -h'))
         print()
         print("For more information on this change, please see")
-        print(blue("https://dimagi.github.io/commcare-cloud/changelog/0029-add-deploy-command.html"))
+        print(color_link("https://dimagi.github.io/commcare-cloud/changelog/0029-add-deploy-command.html"))
         print()
-        print(magenta('Thank you for using commcare-cloud.'))
+        print(color_summary('Thank you for using commcare-cloud.'))
         print()
 
 

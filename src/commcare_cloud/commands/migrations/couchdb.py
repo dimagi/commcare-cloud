@@ -1,14 +1,13 @@
 import difflib
 import json
 import os
-from collections import defaultdict
 from contextlib import contextmanager
 
 import yaml
-from clint.textui import puts, colored, indent
+from clint.textui import puts, indent
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
-from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, get_node_files, \
+from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, \
     figure_out_what_you_can_and_cannot_delete
 from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
     print_db_info
@@ -16,14 +15,16 @@ from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocati
     get_membership
 
 from commcare_cloud.cli_utils import ask
+from commcare_cloud.colors import color_warning, color_notice, color_summary, color_error, \
+    color_highlight, color_success
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_file_copy_scripts, REMOTE_MIGRATION_ROOT, \
-    FILE_MIGRATION_RSYNC_SCRIPT, copy_scripts_to_target_host, execute_file_copy_scripts
+from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_file_copy_scripts, \
+    copy_scripts_to_target_host, execute_file_copy_scripts
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
@@ -80,7 +81,7 @@ class MigrateCouchdb(CommandBase):
 
         ansible_context = AnsibleContext(args)
         if args.limit and args.action != 'clean':
-            puts(colored.yellow('Ignoring --limit (it only applies to "clean" action).'))
+            puts(color_notice('Ignoring --limit (it only applies to "clean" action).'))
 
         if args.action == 'describe':
             return describe(migration)
@@ -101,22 +102,22 @@ class MigrateCouchdb(CommandBase):
 def clean(migration, ansible_context, skip_check, limit):
     diff_with_db = diff_plan(migration)
     if diff_with_db:
-        puts(colored.red("Current plan differs with database:\n"))
+        puts(color_warning("Current plan differs with database:\n"))
         puts("{}\n\n".format(diff_with_db))
-        puts(
+        puts(color_notice(
             "This could mean that the plan hasn't been committed yet\n"
             "or that the plan was re-generated.\n"
             "Performing the 'clean' operation is still safe but may\n"
             "not have the outcome you are expecting.\n"
-        )
+        ))
         if not ask("Do you wish to continue?"):
-            puts(colored.red('Abort.'))
+            puts(color_error('Abort.'))
             return 0
 
     alloc_docs_by_db = get_db_allocations(migration.target_couch_config)
-    puts(colored.yellow("Checking shards on disk vs DB. Please wait."))
+    puts(color_summary("Checking shards on disk vs DB. Please wait."))
     if not assert_files(migration, alloc_docs_by_db, ansible_context):
-        puts(colored.red("Not all couch files are accounted for. Aborting."))
+        puts(color_error("Not all couch files are accounted for. Aborting."))
         return 1
 
     nodes = generate_shard_prune_playbook(migration)
@@ -182,25 +183,25 @@ def generate_shard_prune_playbook(migration):
 def commit(migration, ansible_context):
     print_allocation(migration)
     alloc_docs_by_db = {plan.db_name: plan for plan in migration.shard_plan}
-    puts(colored.yellow("Checking shards on disk vs plan. Please wait."))
+    puts(color_summary("Checking shards on disk vs plan. Please wait."))
     if not assert_files(migration, alloc_docs_by_db, ansible_context):
-        puts(colored.red("Some shard files are not where we expect. Have you run 'migrate'?"))
-        puts(colored.red("Aborting"))
+        puts(color_error("Some shard files are not where we expect. Have you run 'migrate'?"))
+        puts(color_error("Aborting"))
         return 1
     else:
-        puts(colored.yellow("All shards appear to be where we expect according to the plan."))
+        puts(color_success("All shards appear to be where we expect according to the plan."))
 
     if ask("Are you sure you want to update the Couch Database config?"):
         commit_migration(migration)
 
         diff_with_db = diff_plan(migration)
         if diff_with_db:
-            puts(colored.red('DB allocation differs from expected:\n'))
+            puts(color_error('DB allocation differs from expected:\n'))
             puts("{}\n\n".format(diff_with_db))
             puts("Check the DB state and logs and maybe try running 'commit' again?")
             return 1
 
-        puts(colored.yellow("New shard allocation:\n"))
+        puts(color_highlight("New shard allocation:\n"))
         print_shard_table([
             get_shard_allocation(migration.target_couch_config, db_name)
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
@@ -234,8 +235,8 @@ def migrate(migration, ansible_context, skip_check, no_stop):
         return 0
 
     if no_stop:
-        puts(colored.yellow("Running migrate with --no-stop will result in data loss"))
-        puts(colored.yellow("unless each shard of each db has a pivot location."))
+        puts(color_notice("Running migrate with --no-stop will result in data loss"))
+        puts(color_notice("unless each shard of each db has a pivot location."))
         if not ask("Have you manually confirmed that for each shard of each db "
                    "at least one of its new locations is the same as an old location, "
                    "and do you want to continue without stopping couchdb first?"):
@@ -310,10 +311,10 @@ def describe(migration):
     puts(u'\nShard allocation')
     diff_with_db = diff_plan(migration)
     if diff_with_db:
-        puts(colored.yellow('DB allocation differs from plan:\n'))
+        puts(color_highlight('DB allocation differs from plan:\n'))
         puts("{}\n\n".format(diff_with_db))
     else:
-        puts(colored.green('DB allocation matches plan.'))
+        puts(color_success('DB allocation matches plan.'))
         print_shard_table([
             get_shard_allocation(migration.target_couch_config, db_name)
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
@@ -342,7 +343,7 @@ def get_files_for_assertion(alloc_docs_by_db):
 
 
 def _run_migration(migration, ansible_context, check_mode, no_stop):
-    puts(colored.blue('Give ansible user access to couchdb files:'))
+    puts(color_summary('Give ansible user access to couchdb files:'))
     user_args = "user=ansible groups=couchdb append=yes"
     run_ansible_module(
         migration.source_environment, ansible_context, 'couchdb2', 'user', user_args,
@@ -355,13 +356,13 @@ def _run_migration(migration, ansible_context, check_mode, no_stop):
         True, None, False
     )
 
-    puts(colored.blue('Copy file lists to nodes:'))
+    puts(color_summary('Copy file lists to nodes:'))
     rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
 
     if no_stop:
         stop_couch_context = noop_context()
     else:
-        puts(colored.blue('Stop couch and reallocate shards'))
+        puts(color_summary('Stop couch and reallocate shards'))
         stop_couch_context = stop_couch(migration.all_environments, ansible_context, check_mode)
 
     with stop_couch_context:

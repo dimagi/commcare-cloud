@@ -4,9 +4,10 @@ import os
 from collections import namedtuple, defaultdict
 from contextlib import contextmanager
 
-from clint.textui import puts, colored
+from clint.textui import puts
 
 from commcare_cloud.cli_utils import has_arg, ask
+from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH
 from six.moves import shlex_quote
 
@@ -118,11 +119,11 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
             # this means there was an error before ansible was able to start running
             return exit_code
         elif exit_code == 0:
-            puts(colored.green(u"✓ Check completed with status code {}".format(exit_code)))
+            puts(color_success(u"✓ Check completed with status code {}".format(exit_code)))
             user_wants_to_apply = ask('Do you want to apply these changes?',
                                       quiet=quiet)
         else:
-            puts(colored.red(u"✗ Check failed with status code {}".format(exit_code)))
+            puts(color_error(u"✗ Check failed with status code {}".format(exit_code)))
             user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
                                       quiet=quiet)
 
@@ -130,9 +131,9 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
     if user_wants_to_apply:
         exit_code = run_apply()
         if exit_code == 0:
-            puts(colored.green(u"✓ Apply completed with status code {}".format(exit_code)))
+            puts(color_success(u"✓ Apply completed with status code {}".format(exit_code)))
         else:
-            puts(colored.red(u"✗ Apply failed with status code {}".format(exit_code)))
+            puts(color_error(u"✗ Apply failed with status code {}".format(exit_code)))
 
     return exit_code
 
