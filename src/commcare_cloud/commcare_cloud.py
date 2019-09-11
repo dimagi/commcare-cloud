@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 from clint.textui import puts
 
-from commcare_cloud.cli_utils import print_command
+from commcare_cloud.cli_utils import print_command, check_repo_staleness
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy import Deploy
@@ -162,6 +162,9 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     if args.control:
         run_on_control_instead(args, input_argv)
+
+    check_repo_staleness()
+
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:

@@ -4,9 +4,12 @@ import re
 import subprocess
 
 import sys
+import time
+from datetime import timedelta
+
 from clint.textui import puts
 
-from commcare_cloud.colors import color_error, color_code
+from commcare_cloud.colors import color_error, color_code, color_notice
 from .environment.paths import ANSIBLE_DIR
 from six.moves import input, shlex_quote
 
@@ -79,6 +82,34 @@ def check_branch(args):
                          "this branch, use --branch={}, otherwise, change branches".format(branch)))
         exit(-1)
 
+
+def check_repo_staleness():
+    last_updated_timestamp = get_timestamp_of_last_git_pr_merge()
+    if None:
+        return
+    current_timestamp = time.time()
+    staleness = timedelta(seconds=current_timestamp - last_updated_timestamp)
+    if staleness > timedelta(days=10):
+        print(color_notice("Your commcare-cloud install was last updated {} ago"
+                           .format(staleness)))
+        print(color_notice("We recommend updating your install regularly."))
+        if not ask("Do you want to ignore this advice and continue with the current version?"):
+            exit(0)
+
+
+def get_timestamp_of_last_git_pr_merge():
+    try:
+        timestamp_output = subprocess.check_output(
+            "git log --grep '^Merge pull request #' -m --format='%at' -n1",
+            cwd=ANSIBLE_DIR, shell=True, stderr=open('/dev/null', 'w'),
+        )
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 128:
+            # We are not in a git repo; most likely pip installed
+            return None
+        else:
+            raise
+    return int(timestamp_output.strip())
 
 def print_command(command):
     """
