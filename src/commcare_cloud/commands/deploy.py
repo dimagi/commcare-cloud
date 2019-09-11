@@ -1,7 +1,6 @@
-from clint.textui.colored import yellow, blue
-
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import check_branch, ask
+from commcare_cloud.colors import color_notice, color_summary
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
@@ -36,14 +35,14 @@ class Deploy(CommandBase):
         commcare_branch = self._confirm_commcare_branch(environment, args.commcare_branch,
                                                         quiet=args.quiet)
         if args.component == 'commcare':
-            print(blue("You are about to deploy commcare"))
-            print(blue("branch: {}".format(commcare_branch)))
+            print(color_summary("You are about to deploy commcare"))
+            print(color_summary("branch: {}".format(commcare_branch)))
             if ask('Deploy commcare?', quiet=args.quiet):
-                print(yellow("Formplayer will not be deployed right now,"))
-                print(yellow("but we recommend deploying formplayer about once a month as well."))
-                print(yellow("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
-                print(yellow("but keeps these services up to date."))
-                print(yellow("You can do so by running `commcare-cloud <env> deploy formplayer`"))
+                print(color_notice("Formplayer will not be deployed right now,"))
+                print(color_notice("but we recommend deploying formplayer about once a month as well."))
+                print(color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
+                print(color_notice("but keeps these services up to date."))
+                print(color_notice("You can do so by running `commcare-cloud <env> deploy formplayer`"))
 
                 self.deploy_commcare(environment, commcare_branch, args, unknown_args)
         elif args.component == 'formplayer':
