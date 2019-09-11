@@ -10,6 +10,8 @@ import inspect
 import json
 import logging
 import os
+from datetime import datetime
+from textwrap import indent
 from functools import wraps
 
 import requests
@@ -278,10 +280,13 @@ class Info(object):
     def __init__(self, client, args):
         self.client = client
         self.dry_run = args.dry_run
+        self.metadata = args.metadata
+        self.detail = args.detail
 
     @classmethod
     def add_arguments(cls, parser):
-        pass
+        parser.add_argument('--detail', action='store_true', help='Print more detailed output')
+        parser.add_argument('--metadata', action='store_true', help='Print raw metadata for each live version')
 
     def run(self):
         info = self.client.account_info()
@@ -297,12 +302,32 @@ class Info(object):
                 )
         )
 
-        index = json.loads(self.client.get('index'))
+        index = self.client.get_json('index')
         live_snapshots = index['snapshots']
 
         print('Live snapshot versions:')
-        for version in live_snapshots:
-            print(f'    {version}')
+        for snapshot in live_snapshots:
+            snap_info = self.client.get_json(f'snapshot-{snapshot}')['snapshot']
+            state = snap_info['state']
+            suffix = ''
+            failure = state != 'SUCCESS'
+            if failure:
+                total = snap_info['total_shards']
+                success = snap_info['successful_shards']
+                suffix = f" ({total - success} of {total} shards failed)"
+            print(f"    {snapshot} [{state}]{suffix}")
+            if self.detail:
+                start = datetime.fromtimestamp(snap_info['start_time']/1000)
+                end = datetime.fromtimestamp(snap_info['end_time']/1000)
+                duration = str(end - start)
+                print(f"        Took {duration} from {start.strftime('%Y-%m-%d %H:%M:%S')} to {end.strftime('%Y-%m-%d %H:%M:%S')}")
+                if failure:
+                    print(indent(json.dumps(snap_info['failures'], indent=4), ' ' * 8))
+                print()
+
+            if self.metadata:
+                print(indent(json.dumps(snap_info, indent=4), ' ' * 8))
+                print()
 
 
 class DeleteSnapshotVersion(Cleanup):
@@ -367,10 +392,12 @@ class VerifySnapshotVersion(object):
         self.client = client
         self.dry_run = args.dry_run
         self.snapshot_version = args.snapshot_version
+        self.metadata = args.metadata
 
     @classmethod
     def add_arguments(cls, parser):
         parser.add_argument('snapshot_version', help="Name of snapshot version to verify")
+        parser.add_argument('--metadata', action='store_true', help='Print out snapshot metadata')
 
     def run(self):
         total_bytes = 0
@@ -393,6 +420,10 @@ class VerifySnapshotVersion(object):
             f'    Total size: {sizeof_fmt(total_bytes)}\n'
             f'    State:      {state}\n'
         )
+
+        if self.metadata:
+            metadata = self.client.get_json(f'snapshot-{self.snapshot_version}')
+            print(json.dumps(metadata, indent=4))
 
 
 COMMANDS = [
