@@ -6,10 +6,11 @@ from datetime import datetime
 
 import datadog
 import yaml
-from clint.textui import puts, colored, indent
+from clint.textui import puts, indent
 from memoized import memoized
 
 from commcare_cloud.cli_utils import ask, ask_option
+from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.ansible.service import COMMCARE_INVENTORY_GROUPS
@@ -53,7 +54,7 @@ class Downtime(CommandBase):
 def end_downtime(environment, ansible_context):
     downtime = get_downtime_record(environment)
     if not downtime:
-        puts(colored.yellow('Downtime record not found.'))
+        puts(color_notice('Downtime record not found.'))
         end_downtime = ask("Do you want to continue?")
     else:
         end_downtime = ask("Do you want to start all CommCare services?")
@@ -67,7 +68,7 @@ def end_downtime(environment, ansible_context):
 def start_downtime(environment, ansible_context, args):
     downtime = get_downtime_record(environment)
     if downtime:
-        puts(colored.yellow('Downtime already active'))
+        puts(color_notice('Downtime already active'))
         with indent():
             print_downtime(downtime)
         go_down = ask("Do you want to continue?")

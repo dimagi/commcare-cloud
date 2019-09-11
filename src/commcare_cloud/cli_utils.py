@@ -1,9 +1,12 @@
 from __future__ import print_function
+from __future__ import absolute_import
 import re
 import subprocess
 
 import sys
-from clint.textui import puts, colored
+from clint.textui import puts
+
+from commcare_cloud.colors import color_error, color_code
 from .environment.paths import ANSIBLE_DIR
 from six.moves import input, shlex_quote
 
@@ -69,9 +72,10 @@ def check_branch(args):
     if branch is None:
         # not in a git repo
         if args.branch != 'master':
-            puts(colored.red("You are not in a git repo. To deploy, remove --branch={}".format(branch)))
+            puts(color_error("You are not in a git repo. To deploy, remove --branch={}".format(branch)))
+            exit(-1)
     elif args.branch != branch:
-        puts(colored.red("You are not currently on the branch specified with the --branch tag. To deploy on "
+        puts(color_error("You are not currently on the branch specified with the --branch tag. To deploy on "
                          "this branch, use --branch={}, otherwise, change branches".format(branch)))
         exit(-1)
 
@@ -84,4 +88,4 @@ def print_command(command):
     """
     if isinstance(command, (list, tuple)):
         command = ' '.join(shlex_quote(arg) for arg in command)
-    print(colored.cyan(command), file=sys.stderr)
+    print(color_code(command), file=sys.stderr)

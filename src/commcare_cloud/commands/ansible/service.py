@@ -6,8 +6,9 @@ import sys
 
 import attr
 import six
-from clint.textui import puts, colored, indent
+from clint.textui import puts, indent
 
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,
@@ -78,7 +79,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             if host_pattern:
                 limit = " '--limit={}'".format(host_pattern)
 
-            puts(colored.red("No '{}' hosts match{}{}".format(self.name, limit, only)))
+            puts(color_error("No '{}' hosts match{}{}".format(self.name, limit, only)))
             return 1
 
     @abstractmethod
@@ -86,7 +87,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         raise NotImplementedError
 
     def print_help(self):
-        puts(colored.green("Additional help for service '{}'".format(self.name)))
+        puts("Additional help for service '{}'".format(self.name))
 
         options = self.get_options()
         for name, options in options.items():
