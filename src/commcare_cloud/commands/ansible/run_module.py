@@ -2,8 +2,9 @@
 import os
 import subprocess
 from six.moves import shlex_quote
-from clint.textui import puts, colored
+from clint.textui import puts
 from commcare_cloud.cli_utils import ask, print_command
+from commcare_cloud.colors import color_notice
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext,
@@ -172,7 +173,7 @@ class RunShellCommand(CommandBase):
 
     def run(self, args, unknown_args):
         if args.shell_command.strip().startswith('sudo '):
-            puts(colored.yellow(
+            puts(color_notice(
                 "To run as another user use `--become` (for root) or `--become-user <user>`.\n"
                 "Using 'sudo' directly in the command is non-standard practice."))
             if not ask("Do you know what you're doing and want to run this anyway?", quiet=args.quiet):

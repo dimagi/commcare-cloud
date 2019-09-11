@@ -1,6 +1,7 @@
 # coding: utf-8
-from clint.textui import puts, colored
+from clint.textui import puts
 
+from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.main import get_environment
 from .command_base import CommandBase
 
@@ -19,7 +20,7 @@ class ValidateEnvironmentSettings(CommandBase):
         try:
             environment.check()
         except Exception:
-            puts(colored.red(u"✗ The environment has the following error:"))
+            puts(color_error(u"✗ The environment has the following error:"))
             raise
         else:
-            puts(colored.green(u"✓ The environment configuration is valid."))
+            puts(color_success(u"✓ The environment configuration is valid."))

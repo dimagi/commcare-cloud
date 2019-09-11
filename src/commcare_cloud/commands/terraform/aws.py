@@ -12,13 +12,14 @@ import boto3
 import jinja2
 import six
 import yaml
-from clint.textui import puts, colored
+from clint.textui import puts
 from memoized import memoized
 from six.moves import shlex_quote
 from six.moves import configparser
 from six.moves import input
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.colors import color_success, color_notice
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
@@ -257,9 +258,9 @@ def get_default_username():
 
 
 def print_help_message_about_the_commcare_cloud_default_username_env_var(username):
-    puts(colored.blue("Did you know? You can put"))
-    puts(colored.blue("    export COMMCARE_CLOUD_DEFAULT_USERNAME={}".format(username)))
-    puts(colored.blue("in your profile to never have to type that in again! 🌈"))
+    puts(color_notice("Did you know? You can put"))
+    puts(color_notice("    export COMMCARE_CLOUD_DEFAULT_USERNAME={}".format(username)))
+    puts(color_notice("in your profile to never have to type that in again! 🌈"))
 
 
 class AwsSignIn(CommandBase):
@@ -313,11 +314,10 @@ def aws_sign_in(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES,
     mfa_token = input("Enter your MFA token: ")
     generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
 
-    puts(colored.green(u"✓ Sign in accepted"))
-    puts(colored.cyan(
-        "You will be able to use AWS from the command line for the next {} minutes."
-        .format(duration_minutes)))
-    puts(colored.cyan(
+    puts(color_success(u"✓ Sign in accepted"))
+    puts("You will be able to use AWS from the command line for the next {} minutes."
+         .format(duration_minutes))
+    puts(color_notice(
         "To use this session outside of commcare-cloud, "
         "prefix your command with AWS_PROFILE={}:session".format(aws_profile)))
     return aws_session_profile

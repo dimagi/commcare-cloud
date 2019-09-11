@@ -4,10 +4,11 @@ import json
 import os
 import subprocess
 
-from clint.textui import puts, colored
+from clint.textui import puts
 from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
@@ -64,7 +65,7 @@ class Terraform(CommandBase):
                                           apply_immediately=args.apply_immediately)
         except UnauthorizedUser as e:
             allowed_users = environment.users_config.dev_users.present
-            puts(colored.red(
+            puts(color_error(
                 "Unauthorized user {}.\n\n"
                 "Use COMMCARE_CLOUD_DEFAULT_USERNAME or --username to pass in one of the allowed ssh users:{}"
                 .format(e.username, '\n  - '.join([''] + allowed_users))))

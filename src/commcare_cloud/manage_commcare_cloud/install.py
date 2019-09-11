@@ -2,9 +2,10 @@ import os
 import subprocess
 from six.moves import shlex_quote
 
-from clint.textui import puts, colored
+from clint.textui import puts
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.paths import put_virtualenv_bin_on_the_path, \
     ANSIBLE_ROLES_PATH, ANSIBLE_DIR
@@ -30,5 +31,5 @@ class Install(CommandBase):
         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
         p.communicate()
 
-        puts(colored.blue("To finish first-time installation, run `manage-commcare-cloud configure`".format()))
+        puts(color_notice("To finish first-time installation, run `manage-commcare-cloud configure`".format()))
         return p.returncode
