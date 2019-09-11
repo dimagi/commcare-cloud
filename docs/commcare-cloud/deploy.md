@@ -90,10 +90,24 @@ You may also wish to revert to a previous version of the CommCareHQ code if the 
 $ commcare-cloud <env> fab rollback
 ```
 
+# Deploying Formplayer
+
+In addition to the regular deploy, you must also separately deploy the service that backs Web Apps and App Preview, called formplayer. Since it is updated less frequently, we recommend deploying formplayer changes less frequently as well. Doing so causes about 1 minute of service interruption to Web Apps and App Preview, but keeps these services up to date.
+
+``` bash
+commcare-cloud <env> deploy formplayer
+```
+
 # Scheduling Deploys
+
+## CommCare deploy
 
 Internally at Dimagi the main cloud environment is deployed **every weekday**. 
 
 However, for locally hosted deployments, we recommend deploying **once a week** (for example, every Wednesday), to keep up to date with new features and security patches.
 
 Since CommCareHQ is an Open Source project, you can see all the new features that were recently merged by looking at the [merged pull requests](https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+is%3Aclosed "merged pull requests") on GitHub.
+
+## Formplayer deploy
+
+In addition to the regular deploy, we recommend deploying formplayer **once a month**.
