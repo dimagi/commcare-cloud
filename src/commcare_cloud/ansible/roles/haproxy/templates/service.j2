@@ -58,7 +58,7 @@ backend {{ item.service.haproxy_service_name }}-back
 
 {% for host_name in item.service.haproxy_backend_nodes %}
 {% if hostvars[host_name] is defined %}
-{%   set ip_addr = hostvars[host_name][internal_network_interface_fact].ipv4.address %}
+{%   set ip_addr = hostvars[host_name][hostvars[host_name].internal_network_interface_fact].ipv4.address %}
 {% endif %}
     {{ [
         "server",
@@ -70,7 +70,7 @@ backend {{ item.service.haproxy_service_name }}-back
 
 {% for host_name in item.service.haproxy_backup_nodes|default([]) %}
 {% if hostvars[host_name] is defined %}
-{%   set ip_addr = hostvars[host_name].internal_ipv4.address %}
+{%   set ip_addr = hostvars[host_name][hostvars[host_name].internal_network_interface_fact].ipv4.address %}
 {% endif %}
     {{ [
         "server",
