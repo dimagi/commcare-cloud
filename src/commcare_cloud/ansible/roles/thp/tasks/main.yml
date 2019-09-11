@@ -35,7 +35,7 @@
     backrefs: yes
     state: present
   when: uses_grub.stat.exists
-  register: grup_updated
+  register: grub_updated
 
 - name: update grub
   command: update-grub
