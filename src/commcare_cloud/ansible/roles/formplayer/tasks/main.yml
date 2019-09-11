@@ -51,6 +51,7 @@
   tags:
     - fp-localsettings
     - localsettings
+    - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
     - "{{ formplayer_release_dir }}/libs"
@@ -63,6 +64,8 @@
     mode: 0544
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+  tags:
+    - formplayer_deploy
 
 - name: Link formplayer jar
   copy:
@@ -72,6 +75,8 @@
     mode: 0544
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+  tags:
+    - formplayer_deploy
 
 
 - name: Copy Spring application.properties
@@ -85,6 +90,7 @@
   tags:
     - fp-localsettings
     - localsettings
+    - formplayer_deploy
 
 - name: Copy sentry.properties
   become: yes
@@ -97,3 +103,4 @@
   tags:
     - fp-localsettings
     - localsettings
+    - formplayer_deploy

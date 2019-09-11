@@ -60,7 +60,9 @@
 - name: Formplayer Supervisor Config
   hosts: formplayer
   tasks:
-    - include_tasks: roles/commcarehq/tasks/formplayer.yml
+    - import_role:
+        name: commcarehq
+        tasks_from: formplayer
       tags: services
 
 - name: Airflow Supervisor Config

@@ -4,6 +4,7 @@ import re
 import sys
 from collections import Counter
 from contextlib import contextmanager
+from datetime import datetime
 
 import datadog.api
 import yaml
@@ -399,6 +400,7 @@ class Environment(object):
             'commcarehq_repository': self.fab_settings_config.code_repo,
             'ES_SETTINGS': self.elasticsearch_config.settings.to_json(),
             'py3_include_venv': self.fab_settings_config.py3_include_venv,
+            'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables(self))
