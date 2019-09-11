@@ -272,6 +272,16 @@ def update_virtualenv(full_cluster=True):
     """
     roles_to_use = _get_roles(full_cluster)
 
+    def pip_uninstall(cmd_prefix, requirements=(), fail_if_absent=False):
+        assert requirements
+        r_flags = []
+        for requirements_file in requirements:
+            if fail_if_absent or files.exists(requirements_file):
+                r_flags.extend(['-r', requirements_file])
+        if r_flags:
+            r_flags = " ".join(r_flags)
+            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
+
     @roles(roles_to_use)
     @parallel
     def update():
@@ -281,15 +291,17 @@ def update_virtualenv(full_cluster=True):
                 _clone_virtual_env(virtualenv_current, virtualenv_root)
 
             with cd(env.code_root):
-                cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+                cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
                     env.sudo_user, virtualenv_root)
-                # uninstall requirements in uninstall-requirements.txt
-                # but only the ones that are actually installed (checks pip freeze)
-                sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
-                     user=env.sudo_user)
+                pip_uninstall(cmd_prefix, requirements=[
+                    posixpath.join(requirements, "uninstall-requirements.txt")
+                ], fail_if_absent=True)
                 pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
                     posixpath.join(requirements, 'prod-requirements.txt'),
                 ])
+                pip_uninstall(cmd_prefix, requirements=[
+                    posixpath.join(requirements, "uninstall-requirements-after-install.txt"),
+                ],  fail_if_absent=False)
 
         _update_virtualenv(
             env.py2_virtualenv_current, env.py2_virtualenv_root,
@@ -298,7 +310,7 @@ def update_virtualenv(full_cluster=True):
         if env.py3_include_venv:
             _update_virtualenv(
                 env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, 'requirements-python3')
+                posixpath.join(env.code_root, 'requirements')
             )
 
     return update
