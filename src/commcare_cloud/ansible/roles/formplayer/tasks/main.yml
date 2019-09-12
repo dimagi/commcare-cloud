@@ -67,18 +67,6 @@
   tags:
     - formplayer_deploy
 
-- name: Link formplayer jar
-  copy:
-    remote_src: yes
-    src: "{{ formplayer_release_dir }}/libs/formplayer.jar"
-    dest: "{{ formplayer_build_dir }}/formplayer.jar"
-    mode: 0544
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-  tags:
-    - formplayer_deploy
-
-
 - name: Copy Spring application.properties
   become: yes
   template:
@@ -103,4 +91,19 @@
   tags:
     - fp-localsettings
     - localsettings
+    - formplayer_deploy
+
+# This should be the last task in the file
+# (and certainly the last one tagged with `formplayer_deploy`)
+# so that if setting up a release fails, `current` never gets linked to it
+# giving us nearly atomic formplayer deploys
+- name: Link formplayer jar
+  copy:
+    remote_src: yes
+    src: "{{ formplayer_release_dir }}/libs/formplayer.jar"
+    dest: "{{ formplayer_build_dir }}/formplayer.jar"
+    mode: 0544
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+  tags:
     - formplayer_deploy
