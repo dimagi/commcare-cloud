@@ -1,0 +1,25 @@
+---
+# This role installs and sets up keepalived
+- name: Install keepalived 
+  apt: name=keepalived state=latest
+  tags: keepalived
+  notify: restart keepalived
+
+- name: Create notify script 
+  template: 
+    src: notify_script.j2 
+    dest: "{{ notify_script_path }}"
+    mode: 0755
+    owner: root
+    group: root
+  tags: keepalived
+  notify: restart keepalived
+
+- name: Configure  keepalived
+  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
+  tags: keepalived
+  notify: restart keepalived
+
+- name: Start keepalived
+  service: name=keepalived state=started
+  tags: keepalived

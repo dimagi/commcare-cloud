@@ -1,0 +1,9 @@
+---
+- name: deploy keepalived
+  hosts: couchdb2_proxy
+  become: true
+  vars:
+     keepalived_check_process: "haproxy"
+  roles:
+    - role: keepalived
+      when: groups.couchdb2_proxy |length == 2 
