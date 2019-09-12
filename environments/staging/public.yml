@@ -112,9 +112,7 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
+  ENABLE_NEW_TRIAL_EXPERIENCE: True
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

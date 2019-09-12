@@ -845,6 +845,10 @@ MAX_RULE_UPDATES_IN_ONE_RUN = {{ localsettings.MAX_RULE_UPDATES_IN_ONE_RUN }}
 REPEATERS_WHITELIST = {{ localsettings.REPEATERS_WHITELIST }}
 {% endif %}
 
+{% if localsettings.get('ENABLE_NEW_TRIAL_EXPERIENCE') %}
+ENABLE_NEW_TRIAL_EXPERIENCE = True
+{% endif %}
+
 {% if localsettings.AUDIT_MODEL_SAVE is defined %}
 AUDIT_MODEL_SAVE= [
   {% for model in localsettings.get("AUDIT_MODEL_SAVE") -%}
