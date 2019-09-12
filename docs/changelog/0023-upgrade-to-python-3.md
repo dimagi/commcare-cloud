@@ -22,15 +22,14 @@ Performing these steps will ensure that your environment will be able
 to receive updates at that date.
 
 ## Steps to update
-1. Set `py3_include_venv` in `fab-settings.yml` to `True`. See this
-[example](https://github.com/dimagi/commcare-cloud/pull/2906/commits/e56a5ce47b3a902f8aefad8ee5b53d2a7afca504).
+1. Update to the latest commcare-cloud
 2. Install Python 3 requirements
 ```bash
 commcare-cloud <env> ap deploy_common.yml --tags=common_installs
 ```
 3. Add Python 3 virtualenv
 ```bash
-cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3 -e 'CREATE_NEW_VIRTUALENV=1'
+cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3
 ```
 4. Update Python processes to use Python 3
 ```bash
@@ -38,7 +37,5 @@ cchq <env> update-supervisor-confs
 ```
 5. Restart services to ensure services are run in Python 3.
 ```bash
-cchq <env> fab restart_services
+cchq <env> deploy
 ```
-6. [Optional] To run management commands in Python 3 when using `cchq <env> django-manage`,
-set `py3_run_deploy` in `fab-settings.yml` to `True`.

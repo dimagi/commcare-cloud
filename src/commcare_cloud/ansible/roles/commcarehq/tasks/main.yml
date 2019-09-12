@@ -89,9 +89,12 @@
         - "{{ code_source }}"
         - "{{ py3_virtualenv_source }}"
 
-  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists or (CREATE_NEW_VIRTUALENV is defined and CREATE_NEW_VIRTUALENV)
+  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
 
+# This task has the additional effect of creating the virtualenv if it does not exist
+# i.e. on a python2 install that is getting a python3 env for the first time
 - name: Upgrade python packages
+  become: true
   pip:
     name:
       - six
@@ -99,10 +102,11 @@
       - setuptools
     state: latest
     virtualenv: "{{ py3_virtualenv_home }}"
+    virtualenv_python: "python3.6"
   tags:
     - py3
 
-- name: py3 chown virtualenv
+- name: chown virtualenv
   become: true
   file:
     path: "{{ py3_virtualenv_home }}"
@@ -112,7 +116,6 @@
     recurse: yes
   tags:
     - py3
-  when: (py3_include_venv is defined and py3_include_venv)
 
 - name: copy localsettings
   become: true
