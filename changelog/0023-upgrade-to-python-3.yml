@@ -16,7 +16,7 @@ update_steps: |
   1. Update to the latest commcare-cloud
   2. Install Python 3 requirements
   ```bash
-  commcare-cloud <env> ap deploy_common.yml --tags=common_installs
+  cchq <env> ansible-playbook deploy_common.yml --tags=common_installs
   ```
   3. Add Python 3 virtualenv
   ```bash
