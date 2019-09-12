@@ -61,7 +61,7 @@
   get_url:
     url: "{{ formplayer_build_url }}"
     dest: "{{ formplayer_release_dir }}/libs/formplayer.jar"
-    mode: 0544
+    mode: 0744
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
   tags:
@@ -102,7 +102,7 @@
     remote_src: yes
     src: "{{ formplayer_release_dir }}/libs/formplayer.jar"
     dest: "{{ formplayer_build_dir }}/formplayer.jar"
-    mode: 0544
+    mode: 0744
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
   tags:
