@@ -88,7 +88,7 @@ couchdb2:
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy.0 }}"
+    host: "{{ hostvars[groups.couchdb2_proxy.0].keepalived_shared_ip }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
