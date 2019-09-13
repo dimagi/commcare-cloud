@@ -106,7 +106,7 @@ Pillowtop process configurations as described in the [CommCare docs](https://com
 See https://kafka.apache.org/documentation.html#basic_ops_cluster_expansion for more details.
 
 ### Replication
-for setting up the replication on exxiting topic we make use of a helper script for easier use.
+For setting up the replication on existing topic we make use of a helper script which has the following capabilities:
 What it can do:
 * increase replication for existing topics
 * decrease replication factor for existing topics
