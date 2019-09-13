@@ -68,7 +68,7 @@
     - name: install pip requirements
       become: true
       pip:
-        requirements: "{{ code_home }}/requirements-python3/prod-requirements.txt"
+        requirements: "{{ code_home }}/requirements/prod-requirements.txt"
         virtualenv: "{{ py3_virtualenv_source }}"
         virtualenv_python: "python3.6"
         chdir: "{{ code_home }}"
@@ -105,6 +105,17 @@
     virtualenv_python: "python3.6"
   tags:
     - py3
+
+- name: install pip requirements if py3 tag specified
+  become: true
+  pip:
+    requirements: "{{ code_home }}/requirements/prod-requirements.txt"
+    virtualenv: "{{ py3_virtualenv_home }}"
+    chdir: "{{ code_home }}"
+  tags:
+    - never  # means only when the following tag is specified
+    - py3
+  when: not testing|default(False)
 
 - name: chown virtualenv
   become: true
