@@ -16,7 +16,7 @@ then
     }
 
     test_localsettings() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=commcarehq
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
 
