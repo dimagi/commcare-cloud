@@ -107,7 +107,6 @@ See https://kafka.apache.org/documentation.html#basic_ops_cluster_expansion for 
 
 ### Replication
 For setting up the replication on existing topic we make use of a helper script which has the following capabilities:
-What it can do:
 * increase replication for existing topics
 * decrease replication factor for existing topics
 * remove all replicas from a particular broker so it can be decomissioned
