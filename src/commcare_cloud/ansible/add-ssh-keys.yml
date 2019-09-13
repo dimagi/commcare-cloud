@@ -23,7 +23,7 @@
   - name: Remove the public key in the '{{ ssh_known_hosts_file }}'
     local_action:
       module: known_hosts
-      name: "{{ ssh_known_host_results }}"
+      name: "{{ inventory_hostname }}"
       state: "absent"
       path: "{{ ssh_known_hosts_file }}"
     tags:
