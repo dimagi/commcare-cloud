@@ -113,5 +113,5 @@ What it can do:
 * remove all replicas from a particular broker so it can be decomissioned
 * balance leaders
 
-for details on how to use this tool please see [kafka-reassign-tool](https://github.com/dimas/kafka-reassign-tool)
+For details on how to use this tool please see [kafka-reassign-tool](https://github.com/dimas/kafka-reassign-tool)
 
