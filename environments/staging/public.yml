@@ -112,6 +112,7 @@ localsettings:
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
+  STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
