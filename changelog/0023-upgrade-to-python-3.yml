@@ -14,19 +14,14 @@ details: |
 
 update_steps: |
   1. Update to the latest commcare-cloud
-  2. Install Python 3 requirements
-  ```bash
-  cchq <env> ansible-playbook deploy_common.yml --tags=common_installs
-  ```
-  3. Add Python 3 virtualenv
-  ```bash
-  cchq <env> ansible-playbook deploy_commcarehq.yml --tags=py3
-  ```
-  4. Update Python processes to use Python 3
-  ```bash
-  cchq <env> update-supervisor-confs
-  ```
-  5. Restart services to ensure services are run in Python 3.
-  ```bash
-  cchq <env> deploy
-  ```
+  2. Install Python 3 requirements and create Python 3 Virtualenv:
+    ```bash
+    cchq <env> deploy-stack --tags=py3
+    ```
+    It will do a dry run, after which you can review the changes and enter 'y' to apply.
+  3. Update Python processes to use Python 3
+    ```bash
+    cchq <env> update-supervisor-confs
+    ```
+    It will do a dry run, after which you can review the changes and enter 'y' to apply.
+    It will also ask you if you want to reload configs and restart services, to which you should also reply 'y'.
