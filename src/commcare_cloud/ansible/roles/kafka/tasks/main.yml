@@ -47,6 +47,14 @@
 - name: Configure Kafka server
   template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
 
+- name: Copy Kafka partiontion reassign Script
+  file:
+    src: kafka-reassign-tool.rb
+    dest: "{{ kafka_data_dir }}"/bin
+    owner: root
+    group: root
+    mode: 0755
+
 - name: Copies kafka log4j.properties
   copy: src=log4j.properties dest=/opt/kafka/config owner=root group=root mode=644
   tags: log4j
