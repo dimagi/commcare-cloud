@@ -7,9 +7,6 @@
 - name: Store known hosts of 'all' the hosts in the inventory file
   hosts: all
   gather_facts: no
-  vars:
-    ssh_known_hosts_file: "{{ known_hosts_file }}"
-
   tasks:
   - name: For each host, scan for its ssh public key
     shell: "ssh-keyscan -T 10 -p {{ ansible_port|default('22') }} {{ inventory_hostname }},`dig +short {{ inventory_hostname }}`"
@@ -20,6 +17,13 @@
     tags:
       - ssh
 
+- name: update local known hosts
+  serial: 1
+  hosts: all
+  gather_facts: no
+  vars:
+    ssh_known_hosts_file: "{{ known_hosts_file }}"
+  tasks:
   - name: Remove the public key in the '{{ ssh_known_hosts_file }}'
     local_action:
       module: known_hosts
