@@ -1,4 +1,6 @@
 import collections
+import subprocess
+import sys
 from collections import defaultdict
 from operator import itemgetter
 
@@ -7,9 +9,12 @@ from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
 from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
 
+from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
+from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
 from commcare_cloud.commands.utils import PrivilegedCommand
+from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.schemas.app_processes import get_machine_alias
 
@@ -191,3 +196,117 @@ def get_couch_config(environment, nodes=None):
     )
     config.set_password(environment.get_vault_var('localsettings_private.COUCH_PASSWORD'))
     return config
+
+
+class UpdateLocalKnownHosts(CommandBase):
+    command = 'update-local-known-hosts'
+    help = (
+        "Update the local known_hosts file of the environment configuration.\n\n"
+        "You can run this on a regular basis to avoid having to `yes` through\n"
+        "the ssh prompts. Note that when you run this, you are implicitly\n"
+        "trusting that at the moment you run it, there is no man-in-the-middle\n"
+        "attack going on, the type of security breech that the SSH prompt\n"
+        "is meant to mitigate against in the first place."
+    )
+
+    arguments = (
+        shared_args.LIMIT_ARG,
+    )
+
+    def run(self, args, unknown_args):
+        limit = args.limit
+        environment = get_environment(args.env_name)
+        if limit:
+            environment.inventory_manager.subset(limit)
+
+        with open(environment.paths.known_hosts, 'r') as known_hosts:
+            original_keys_by_host = _get_host_key_map(
+                [line.strip() for line in known_hosts.readlines()]
+            )
+
+        procs = {}
+        for hostname in environment.inventory_hostname_map:
+            port = '22'
+            if ':' in hostname:
+                hostname, port = hostname.split(':')
+            cmd = 'ssh-keyscan -T 10 -p {port} {hostname},$(dig +short {hostname})'.format(
+                hostname=hostname,
+                port=port
+            )
+            procs[hostname] = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        lines = []
+        error_hosts = set()
+        for hostname, proc in procs.items():
+            sys.stdout.write('[{}]: '.format(hostname))
+            proc.wait()
+            error, host_lines = _get_lines(proc)
+            if error:
+                sys.stdout.write(error)
+            else:
+                sys.stdout.write(str(color_success('fetched key\n')))
+                lines.extend(host_lines)
+
+        updated_keys_by_host = _get_host_key_map(lines)
+
+        all_keys = set(original_keys_by_host) | set(updated_keys_by_host)
+        lines = []
+        for host_key_type in sorted(all_keys):
+            host, key_type = host_key_type
+            original = original_keys_by_host.pop(host_key_type, None)
+            updated = updated_keys_by_host.get(host_key_type, None)
+            if updated and original:
+                if updated != original:
+                    print(color_changed('Updating key: {} {}'.format(*host_key_type)))
+            elif updated:
+                print(color_added('Adding key: {} {}'.format(*host_key_type)))
+            elif original:
+                if limit or host in error_hosts:
+                    # if we're limiting or there was an error keep original key
+                    updated = original
+                else:
+                    print(color_removed('Removing key: {} {}'.format(*host_key_type)))
+
+            if updated:
+                lines.append('{} {} {}'.format(host, key_type, updated))
+
+        with open(environment.paths.known_hosts, 'w') as known_hosts:
+            known_hosts.write('\n'.join(sorted(lines)))
+
+        try:
+            environment.check_known_hosts()
+        except EnvironmentException as e:
+            print(color_error(str(e)))
+            return 1
+        return 0
+
+
+def _get_host_key_map(known_host_lines):
+    """
+    See https://man.openbsd.org/sshd.8#SSH_KNOWN_HOSTS_FILE_FORMAT
+    :param known_host_lines: lines in known_hosts format
+    :return: dict((hostname, key_type) -> key
+    """
+    keys_by_host = {}
+    for line in known_host_lines:
+        if not line:
+            continue
+        csv_hosts, key_type, key = line.split(' ')
+        hosts = [h for h in csv_hosts.split(',') if h]
+        for host in hosts:
+            keys_by_host[(host, key_type)] = key
+    return keys_by_host
+
+
+def _get_lines(proc):
+    """Read lines from process stdout
+    :returns tuple(error_message, lines)
+    """
+    out = proc.stdout.read()
+    if proc.returncode != 0:
+        err = proc.stderr.read()
+        return str(color_error('error: {}\n'.format(err))), []
+    elif not out:
+        return str(color_error('timeout\n')), []
+    else:
+        return None, out.splitlines()
