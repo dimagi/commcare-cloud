@@ -104,3 +104,13 @@ Pillowtop process configurations as described in the [CommCare docs](https://com
     ```
 
 See https://kafka.apache.org/documentation.html#basic_ops_cluster_expansion for more details.
+
+### Replication
+For setting up the replication on existing topic we make use of a helper script which has the following capabilities:
+* increase replication for existing topics
+* decrease replication factor for existing topics
+* remove all replicas from a particular broker so it can be decomissioned
+* balance leaders
+
+For details on how to use this tool please see [kafka-reassign-tool](https://github.com/dimas/kafka-reassign-tool)
+
