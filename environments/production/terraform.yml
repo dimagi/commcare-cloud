@@ -150,7 +150,7 @@ servers:
     server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 66
+    volume_size: 660
     group: "elasticsearch"
     os: bionic
 
