@@ -292,7 +292,8 @@ def _get_host_key_map(known_host_lines):
         if not line:
             continue
         csv_hosts, key_type, key = line.split(' ')
-        hosts = [h for h in csv_hosts.split(',') if h]
+        # filter out empty hosts ('[]:port' is empty host with non-standard port)
+        hosts = [h for h in csv_hosts.split(',') if h and '[]' not in h]
         for host in hosts:
             keys_by_host[(host, key_type)] = key
     return keys_by_host
