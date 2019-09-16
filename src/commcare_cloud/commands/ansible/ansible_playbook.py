@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import subprocess
+import sys
 from copy import deepcopy
 
 from six.moves import shlex_quote
@@ -8,13 +9,14 @@ from clint.textui import puts
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
-from commcare_cloud.colors import color_error
+from commcare_cloud.colors import color_error, color_success, color_added, color_changed, color_removed
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -324,15 +326,91 @@ class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
         "attack going on, the type of security breech that the SSH prompt\n"
         "is meant to mitigate against in the first place."
     )
-
     def run(self, args, unknown_args):
-        args.playbook = 'add-ssh-keys.yml'
-        args.quiet = True
+        limit = args.limit
         environment = get_environment(args.env_name)
-        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
-                                              respect_ansible_skip=False)
-        with open(environment.paths.known_hosts, 'r') as f:
-            known_hosts = sorted(set(f.readlines()))
-        with open(environment.paths.known_hosts, 'w') as f:
-            f.writelines(known_hosts)
-        return rc
+        if limit:
+            environment.inventory_manager.subset(limit)
+
+        with open(environment.paths.known_hosts, 'r') as known_hosts:
+            lines = [line.strip() for line in known_hosts.readlines()]
+
+        original_keys_by_host = _get_host_key_map(lines)
+
+        procs = {}
+        for host in environment.inventory_hostname_map:
+            if ':' in host:
+                hostname, port = host.split(':')
+            else:
+                hostname = host
+                port = '22'
+            cmd = 'ssh-keyscan -T 10 -p {port} {hostname},$(dig +short {hostname})'.format(
+                hostname=hostname,
+                port=port
+            )
+            procs[hostname] = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        lines = []
+        error_hosts = set()
+        for hostname, proc in procs.items():
+            sys.stdout.write('[{}]: '.format(hostname))
+            proc.wait()
+            out = proc.stdout.read()
+            if proc.returncode != 0:
+                err = proc.stderr.read()
+                sys.stdout.write(str(color_error('error: {}\n'.format(err))))
+                error_hosts.add(hostname)
+            elif not out:
+                sys.stdout.write(str(color_error('timeout\n')))
+                error_hosts.add(hostname)
+            else:
+                sys.stdout.write(str(color_success('fetched key\n')))
+                lines.extend(out.splitlines())
+
+        updated_keys_by_host = _get_host_key_map(lines)
+
+        all_keys = set(original_keys_by_host) | set(updated_keys_by_host)
+        lines = []
+        for host_key_type in sorted(all_keys):
+            host, key_type = host_key_type
+            original = original_keys_by_host.pop(host_key_type, None)
+            updated = updated_keys_by_host.get(host_key_type, None)
+            if updated and original:
+                if updated != original:
+                    print(color_changed('Updating key: {} {}'.format(*host_key_type)))
+            elif updated:
+                print(color_added('Adding key: {} {}'.format(*host_key_type)))
+            elif original:
+                if limit or host in error_hosts:
+                    # if we're limiting hosts keep all original keys
+                    updated = original
+                else:
+                    print(color_removed('Removing key: {} {}'.format(*host_key_type)))
+
+            if updated:
+                lines.append('{} {} {}'.format(host, key_type, updated))
+
+        with open(environment.paths.known_hosts, 'w') as known_hosts:
+            known_hosts.write('\n'.join(sorted(lines)))
+
+        try:
+            environment.check_known_hosts()
+        except EnvironmentException as e:
+            print(color_error(str(e)))
+            return 1
+        return 0
+
+
+def _get_host_key_map(known_host_lines):
+    keys_by_host = {}
+    for line in known_host_lines:
+        if not line:
+            continue
+        host, key_type, key = line.split(' ')
+        if ',' in host:
+            hosts = [h for h in host.split(',') if h]
+            for host in hosts:
+                keys_by_host[(host, key_type)] = key
+        else:
+            keys_by_host[(host, key_type)] = key
+    return keys_by_host
