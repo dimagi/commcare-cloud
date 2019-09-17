@@ -368,7 +368,7 @@ class Environment(object):
         var_manager = self._ansible_inventory_variable_manager
 
         mapping = {}
-        for host in self.inventory_manager.hosts.values():
+        for host in self.inventory_manager.get_hosts():
             ansible_port = var_manager.get_vars(host=host).get('ansible_port')
             ansible_host = var_manager.get_vars(host=host).get('ansible_host', host.name)
             mapping[self.format_sshable_host(ansible_host, ansible_port)] = host.name
