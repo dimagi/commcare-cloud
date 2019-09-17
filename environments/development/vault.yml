@@ -8,6 +8,8 @@ secrets:
   HAPROXY_STATS_PASSWORD: secrete
   SUPERVISOR_HTTP_USERNAME: user
   SUPERVISOR_HTTP_PASSWORD: 123
+  MINIO_ACCESS_KEY: 'vwBvJigNXuhUBZ7'
+  MINIO_SECRET_KEY: '5iAxxW6mMbfRxAbTQz8Y'
   POSTGRES_USERS:
     commcare:
       username: commcarehq
