@@ -3,8 +3,8 @@ import os
 import subprocess
 from copy import deepcopy
 
-from six.moves import shlex_quote
 from clint.textui import puts
+from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
@@ -16,8 +16,8 @@ from commcare_cloud.commands.ansible.helpers import (
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 
 
 class AnsiblePlaybook(CommandBase):
@@ -313,27 +313,3 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
             )
         else:
             return rc
-
-
-class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
-    command = 'update-local-known-hosts'
-    help = (
-        "Update the local known_hosts file of the environment configuration.\n\n"
-        "You can run this on a regular basis to avoid having to `yes` through\n"
-        "the ssh prompts. Note that when you run this, you are implicitly\n"
-        "trusting that at the moment you run it, there is no man-in-the-middle\n"
-        "attack going on, the type of security breech that the SSH prompt\n"
-        "is meant to mitigate against in the first place."
-    )
-
-    def run(self, args, unknown_args):
-        args.playbook = 'add-ssh-keys.yml'
-        args.quiet = True
-        environment = get_environment(args.env_name)
-        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
-                                              respect_ansible_skip=False)
-        with open(environment.paths.known_hosts, 'r') as f:
-            known_hosts = sorted(set(f.readlines()))
-        with open(environment.paths.known_hosts, 'w') as f:
-            f.writelines(known_hosts)
-        return rc

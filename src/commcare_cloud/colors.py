@@ -20,6 +20,7 @@ color_link = colored.blue  # for hyperlinks
 color_added = colored.green
 color_removed = colored.red
 color_unchanged = colored.cyan
+color_changed = colored.yellow
 
 
 # For future reference here are the ansible colors

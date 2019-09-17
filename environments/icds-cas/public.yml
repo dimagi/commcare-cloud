@@ -41,7 +41,7 @@ etc_hosts_lines:
   - '100.71.181.10		cas.commcarehq.org'
   - '100.71.181.10		reports.icds-cas.gov.in'
   - '100.71.181.10		www.icds-cas.gov.in'
-  - '100.126.21.226     mowcdmum.ipstorage.tatacommunications.com'
+  - '100.126.21.242     mowcdmum.ipstorage.tatacommunications.com'
 etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
@@ -304,12 +304,3 @@ localsettings:
     static-icds-cas-static-list_pnc_delivery_complications:
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   WAREHOUSE_DATABASE_ALIAS: 'warehouse'
-
-PY3_RUN_CELERY_BEAT: True
-PY3_RUN_CELERY_FLOWER: True
-PY3_RUN_CELERY_WORKER: True
-PY3_RUN_ERRAND_BOY: True
-PY3_RUN_GUNICORN: True
-PY3_RUN_MANAGEMENT: True
-PY3_RUN_PILLOWTOP: True
-PY3_RUN_WEBSOCKETS: True

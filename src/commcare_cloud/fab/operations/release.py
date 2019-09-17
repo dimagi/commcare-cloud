@@ -258,9 +258,7 @@ def _clone_virtual_env(virtualenv_current, virtualenv_root):
 @roles(ROLES_ALL_SRC)
 @parallel
 def clone_virtualenv():
-    _clone_virtual_env(env.py2_virtualenv_current, env.py2_virtualenv_root)
-    if env.py3_include_venv:
-        _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
+    _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
 
 def update_virtualenv(full_cluster=True):
@@ -304,16 +302,12 @@ def update_virtualenv(full_cluster=True):
                 ],  fail_if_absent=False)
 
         _update_virtualenv(
-            env.py2_virtualenv_current, env.py2_virtualenv_root,
+            env.py3_virtualenv_current, env.py3_virtualenv_root,
             posixpath.join(env.code_root, 'requirements')
         )
-        if env.py3_include_venv:
-            _update_virtualenv(
-                env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, 'requirements')
-            )
 
     return update
+
 
 def create_code_dir(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
@@ -331,7 +325,7 @@ def kill_stale_celery_workers(delay=0):
         sudo(
             'echo "{}/bin/python manage.py '
             'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.virtualenv_current, delay)
+            '| at now + {} minutes'.format(env.py3_virtualenv_current, delay)
         )
 
 
@@ -346,7 +340,7 @@ def record_successful_deploy():
             'record_deploy_success --user "%(user)s" --environment '
             '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
         ) % {
-            'virtualenv_current': env.virtualenv_current,
+            'virtualenv_current': env.py3_virtualenv_current,
             'user': env.user,
             'environment': env.deploy_env,
             'url': env.deploy_metadata.diff_url,

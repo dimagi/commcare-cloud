@@ -129,7 +129,7 @@ command to check for validation errors or incompatibilities.
 Update the local known_hosts file of the environment configuration.
 
 ```
-commcare-cloud <env> update-local-known-hosts [--use-factory-auth]
+commcare-cloud <env> update-local-known-hosts
 ```
 
 You can run this on a regular basis to avoid having to `yes` through
@@ -137,12 +137,6 @@ the ssh prompts. Note that when you run this, you are implicitly
 trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
 ### Ad-hoc
