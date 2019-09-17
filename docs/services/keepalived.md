@@ -42,7 +42,8 @@ We have plans to implement it more places where we have proxies setup.
     vrrp_script chk_service {           
         script "pgrep haproxy"  
         interval 2    
-      }```
+    }
+    ```
 
 From the config above it check for running process in every two second interval.if restart took longer than this, it will trigger failover
 
