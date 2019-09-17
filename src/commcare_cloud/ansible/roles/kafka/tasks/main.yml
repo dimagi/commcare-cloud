@@ -47,6 +47,14 @@
 - name: Configure Kafka server
   template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
 
+- name: Copy Kafka partition reassign Script
+  get_url:
+    url: "https://raw.githubusercontent.com/dimas/kafka-reassign-tool/master/kafka-reassign-tool" 
+    dest: "{{ kafka_data_dir }}/bin"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: 0755
+
 - name: Copies kafka log4j.properties
   copy: src=log4j.properties dest=/opt/kafka/config owner=root group=root mode=644
   tags: log4j
