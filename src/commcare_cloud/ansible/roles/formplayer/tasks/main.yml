@@ -75,40 +75,33 @@
 
 
 # This task copies the respective config files from "current", if applicable
-# so that the next tasks print out a nice diff instead of the full contents of the file
-- name: Copy config files from current release
+# so that the next task prints out a nice diff instead of the full contents of the file
+- name: Copy formplayer config files from current release
   become: yes
   copy:
     remote_src: yes
-    src: "{{ formplayer_build_dir }}/current/{{ item }}"
-    dest: "{{ formplayer_release_dir }}/{{ item }}"
+    src: "{{ formplayer_build_dir }}/current/{{ item.filename }}"
+    dest: "{{ formplayer_release_dir }}/{{ item.filename }}"
   with_items:
-    - application.properties
-    - sentry.properties
+    - filename: application.properties
+    - filename: sentry.properties
   tags:
     - formplayer_deploy
   when: new_release_name
 
-- name: Copy Spring application.properties
+- name: Update formplayer config files
   become: yes
   template:
-    src: application.properties.j2
-    dest: "{{ formplayer_release_dir }}/application.properties"
+    src: "{{ item.template }}"
+    dest: "{{ formplayer_release_dir }}/{{ item.filename }}"
     group: cchq
     owner: cchq
     mode: 0644
-  tags:
-    - localsettings
-    - formplayer_deploy
-
-- name: Copy sentry.properties
-  become: yes
-  template:
-    src: sentry.properties.j2
-    dest: "{{ formplayer_release_dir }}/sentry.properties"
-    group: cchq
-    owner: cchq
-    mode: 0644
+  with_items:
+    - template: application.properties.j2
+      filename: application.properties
+    - template: sentry.properties.j2
+      filename: sentry.properties
   tags:
     - localsettings
     - formplayer_deploy
