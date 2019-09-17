@@ -33,7 +33,9 @@ We have plans to implement it more places where we have proxies setup.
 
 3. where are the logs
     Keepalived logs to journald 
-    ```# journalctl -u keepalived```
+    ```
+    $ journalctl -u keepalived
+    ```
 
 4. if we restart haproxy will that trigger a failover? ( only on master node)
     ```
