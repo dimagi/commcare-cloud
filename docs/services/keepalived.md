@@ -32,6 +32,7 @@ We have plans to implement it more places where we have proxies setup.
      Check the virtual IP listed in `/etc/keepalived/keepalived.conf`, verify if this IP address is assigned to the interface of the server.
 
 3. where are the logs
+
     Keepalived logs to journald 
     ```
     $ journalctl -u keepalived
