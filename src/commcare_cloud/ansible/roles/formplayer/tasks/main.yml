@@ -85,7 +85,7 @@
     - sentry.properties
   tags:
     - formplayer_deploy
-  when: new_release_name|default(None) and current_stat.stat.exists
+  when: new_release_name
 
 - name: Copy Spring application.properties
   become: yes
@@ -128,4 +128,4 @@
     group: "{{ cchq_user }}"
   tags:
     - formplayer_deploy
-  when: new_release_name|default(None)
+  when: new_release_name
