@@ -69,6 +69,7 @@
       - libpango1.0-0
       - python3.6
       - python3.6-dev
+      - auditd
 
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
