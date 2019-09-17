@@ -74,6 +74,9 @@
   tags:
     - formplayer_deploy
 
+
+# This task copies the respective config files from "current", if applicable
+# so that the next tasks print out a nice diff instead of the full contents of the file
 - name: Copy config files from current release
   become: yes
   copy:
