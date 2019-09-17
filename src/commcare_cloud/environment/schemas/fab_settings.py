@@ -1,5 +1,7 @@
 import jsonobject
 
+from commcare_cloud.colors import color_notice, color_code
+
 GitUriProperty = jsonobject.StringProperty
 TimezoneProperty = jsonobject.StringProperty
 
@@ -16,14 +18,20 @@ class FabSettingsConfig(jsonobject.JsonObject):
     ignore_kafka_checkpoint_warning = jsonobject.BooleanProperty()
     acceptable_maintenance_window = jsonobject.ObjectProperty(lambda: AcceptableMaintenanceWindow)
     email_enabled = jsonobject.BooleanProperty()
-    py3_include_venv = jsonobject.BooleanProperty()
-    py3_run_deploy = jsonobject.BooleanProperty()
 
     @classmethod
     def wrap(cls, data):
+        for deprecated_property in ('py3_include_venv', 'py3_run_deploy'):
+            if deprecated_property in data:
+                print("{} {} {}".format(
+                    color_notice("The property"),
+                    color_code(deprecated_property),
+                    color_notice("is deprecated and has no effect.")
+                ))
+                print(color_notice("Feel free to remove it from your fab-settings.yml."))
+                del data[deprecated_property]
+
         obj = super(FabSettingsConfig, cls).wrap(data)
-        if obj.py3_run_deploy:
-            assert obj.py3_include_venv, "Must include Python 3 virtualenv to run Python 3 code."
         return obj
 
 
