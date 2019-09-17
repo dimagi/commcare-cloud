@@ -21,7 +21,10 @@ We have plans to implement it more places where we have proxies setup.
 #####Operational Notes:-
 
 1. check keepalived status
-    ```# systemctl status keepalived```
+
+    ```
+    $ systemctl status keepalived
+    ```
 
 2. know which one is the master
       Check the status/logs and you’ll see the log lines like this
