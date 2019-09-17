@@ -44,7 +44,7 @@ We have plans to implement it more places where we have proxies setup.
         interval 2    
       }```
 
-From the config above it check for running process in every two second interval.if restart took longer than this , it will trigger failover
+From the config above it check for running process in every two second interval.if restart took longer than this, it will trigger failover
 
 5.  what's the process for taking haproxy offline e.g. during maintenance
     * If we are performing Maintenance on Backup Node
