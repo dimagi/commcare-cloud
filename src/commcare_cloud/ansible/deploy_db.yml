@@ -25,6 +25,12 @@
   roles:
     - {role: redis, tags: 'redis'}
 
+- name: MinIO
+  hosts: minio
+  become: true
+  roles:
+    - {role: minio, tags: 'minio'}
+
 - name: Elasticsearch
   hosts: elasticsearch
   become: true
