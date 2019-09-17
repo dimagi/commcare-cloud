@@ -69,24 +69,13 @@
       become: true
       pip:
         requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-        virtualenv: "{{ virtualenv_source }}"
-        virtualenv_python: "python2.7"
-        chdir: "{{ code_home }}"
-      tags:
-        - slow
-      when: not testing|default(False)
-
-    - name: py3 install pip requirements
-      become: true
-      pip:
-        requirements: "{{ code_home }}/requirements-python3/prod-requirements.txt"
         virtualenv: "{{ py3_virtualenv_source }}"
         virtualenv_python: "python3.6"
         chdir: "{{ code_home }}"
       tags:
         - slow
         - py3
-      when: (py3_include_venv is defined and py3_include_venv) and (not testing|default(False))
+      when: not testing|default(False)
 
     - name: chown clone
       become: true
@@ -98,20 +87,14 @@
         recurse: yes
       with_items:
         - "{{ code_source }}"
-        - "{{ virtualenv_source }}"
+        - "{{ py3_virtualenv_source }}"
 
-  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists or (CREATE_NEW_VIRTUALENV is defined and CREATE_NEW_VIRTUALENV)
+  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
 
+# This task has the additional effect of creating the virtualenv if it does not exist
+# i.e. on a python2 install that is getting a python3 env for the first time
 - name: Upgrade python packages
-  pip:
-    name:
-      - six
-      - pip
-      - setuptools
-    state: latest
-    virtualenv: "{{ virtualenv_home }}"
-
-- name: py3 Upgrade python packages
+  become: true
   pip:
     name:
       - six
@@ -119,19 +102,22 @@
       - setuptools
     state: latest
     virtualenv: "{{ py3_virtualenv_home }}"
+    virtualenv_python: "python3.6"
   tags:
     - py3
 
-- name: chown virtualenv
+- name: install pip requirements if py3 tag specified
   become: true
-  file:
-    path: "{{ virtualenv_home }}"
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    recurse: yes
+  pip:
+    requirements: "{{ code_home }}/requirements/prod-requirements.txt"
+    virtualenv: "{{ py3_virtualenv_home }}"
+    chdir: "{{ code_home }}"
+  tags:
+    - never  # means only when the following tag is specified
+    - py3
+  when: not testing|default(False)
 
-- name: py3 chown virtualenv
+- name: chown virtualenv
   become: true
   file:
     path: "{{ py3_virtualenv_home }}"
@@ -141,7 +127,6 @@
     recurse: yes
   tags:
     - py3
-  when: (py3_include_venv is defined and py3_include_venv)
 
 - name: copy localsettings
   become: true

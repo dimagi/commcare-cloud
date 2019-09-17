@@ -208,10 +208,7 @@ class DjangoManage(CommandBase):
             code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
                 cchq_user=cchq_user, deploy_env=deploy_env)
 
-        if environment.fab_settings_config.py3_run_deploy:
-            python_env = 'python_env-3.6'
-        else:  # for old python 2 envs
-            python_env = 'python_env'
+        python_env = 'python_env-3.6'
         remote_command = (
             'bash -c "cd {code_dir}; {python_env}/bin/python manage.py {args}"'
             .format(

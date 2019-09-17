@@ -398,7 +398,6 @@ class Environment(object):
             'known_hosts_file': self.paths.known_hosts,
             'commcarehq_repository': self.fab_settings_config.code_repo,
             'ES_SETTINGS': self.elasticsearch_config.settings.to_json(),
-            'py3_include_venv': self.fab_settings_config.py3_include_venv,
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables(self))
