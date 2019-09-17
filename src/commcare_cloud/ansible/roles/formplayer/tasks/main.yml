@@ -49,7 +49,6 @@
     group: "{{ cchq_user }}"
     mode: 0755
   tags:
-    - fp-localsettings
     - localsettings
     - formplayer_deploy
   with_items:
@@ -99,7 +98,6 @@
     owner: cchq
     mode: 0644
   tags:
-    - fp-localsettings
     - localsettings
     - formplayer_deploy
 
@@ -112,7 +110,6 @@
     owner: cchq
     mode: 0644
   tags:
-    - fp-localsettings
     - localsettings
     - formplayer_deploy
 
