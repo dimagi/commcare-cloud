@@ -29,7 +29,7 @@ We have plans to implement it more places where we have proxies setup.
 2. know which one is the master
       Check the status/logs and you’ll see the log lines like this
      ```Sep 12 03:25:36 MUMGCCWCDPRDCDV09 Keepalived_vrrp[30570]: VRRP_Instance(VI_1) Entering BACKUP STATE```
-     Check the virtual ip listed in /etc/keepalived/keepalived.conf,verify if this ip address is assigned to the interface of the server.
+     Check the virtual IP listed in `/etc/keepalived/keepalived.conf`, verify if this IP address is assigned to the interface of the server.
 
 3. where are the logs
     Keepalived logs to journald 
