@@ -53,13 +53,13 @@
     - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
-    - "{{ formplayer_release_dir }}"
+    - "{{ [] if this_ansible_run_should_update_formplayer_in_place else formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
 
 - name: Download formplayer release
   get_url:
     url: "{{ formplayer_build_url }}"
-    dest: "{{ formplayer_release_dir }}/formplayer.jar"
+    dest: "{{ formplayer_target_dir_for_this_run }}/formplayer.jar"
     mode: 0744
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
@@ -68,11 +68,11 @@
 
 - name: Check if the "current" directory exists
   stat:
-    path: "{{ formplayer_build_dir }}/current"
+    path: "{{ formplayer_current_dir }}"
   register: current_stat
   tags:
     - formplayer_deploy
-
+  when: not this_ansible_run_should_update_formplayer_in_place
 
 # This task copies the respective config files from "current", if applicable
 # so that the next task prints out a nice diff instead of the full contents of the file
@@ -80,20 +80,20 @@
   become: yes
   copy:
     remote_src: yes
-    src: "{{ formplayer_build_dir }}/current/{{ item.filename }}"
+    src: "{{ formplayer_current_dir }}/{{ item.filename }}"
     dest: "{{ formplayer_release_dir }}/{{ item.filename }}"
   with_items:
     - filename: application.properties
     - filename: sentry.properties
   tags:
     - formplayer_deploy
-  when: new_release_name
+  when: not this_ansible_run_should_update_formplayer_in_place and current_stat.stat.exists
 
 - name: Update formplayer config files
   become: yes
   template:
     src: "{{ item.template }}"
-    dest: "{{ formplayer_release_dir }}/{{ item.filename }}"
+    dest: "{{ formplayer_target_dir_for_this_run }}/{{ item.filename }}"
     group: cchq
     owner: cchq
     mode: 0644
@@ -115,10 +115,10 @@
   file:
     state: link
     src: "{{ formplayer_release_dir }}"
-    path: "{{ formplayer_build_dir }}/current"
+    path: "{{ formplayer_current_dir }}"
     mode: 0755
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
   tags:
     - formplayer_deploy
-  when: new_release_name
+  when: not this_ansible_run_should_update_formplayer_in_place
