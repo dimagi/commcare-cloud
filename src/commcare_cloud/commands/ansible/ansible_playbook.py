@@ -221,7 +221,7 @@ class UpdateConfig(CommandBase):
     arguments = (shared_args.BRANCH_ARG,)
 
     def run(self, args, unknown_args):
-        unknown_args += ('-e', '{"this_ansible_run_should_update_formplayer_in_place": true}')
+        unknown_args += ('-e', '{"_should_update_formplayer_in_place": true}')
         return commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
                               tags='localsettings', branch=args.branch, *unknown_args)
 
