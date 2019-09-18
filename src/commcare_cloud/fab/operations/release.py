@@ -423,9 +423,7 @@ def clean_releases(keep=3):
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
 
-    remaining_releases = set(releases) - set(to_remove)
-    for release in remaining_releases:
-        clean_formplayer_releases(os.path.join(env.releases, release))
+    clean_formplayer_releases()
 
     # as part of the clean up step, run gc in the 'current' directory
     git_gc_current()
