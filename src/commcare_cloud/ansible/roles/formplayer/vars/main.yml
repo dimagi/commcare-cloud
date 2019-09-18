@@ -1,9 +1,4 @@
-formplayer_build_dir: "{{ www_home }}/formplayer_build"
+formplayer_build_dir: "{{ code_home }}/formplayer_build"
 formplayer_data_dir: "{{ encrypted_root }}/formplayer"
 # formplayer_sentry_dsn: ..defined in secret file
 # formplayer_db_name: ..defined in secret file
-formplayer_build_url: "{{
-  'https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful/formplayer.jar'
-  if deploy_env == 'staging'
-  else 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
-}}"

@@ -221,7 +221,6 @@ class UpdateConfig(CommandBase):
     arguments = (shared_args.BRANCH_ARG,)
 
     def run(self, args, unknown_args):
-        unknown_args += ('-e', '{"new_release_name": null}')
         return commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
                               tags='localsettings', branch=args.branch, *unknown_args)
 
