@@ -11,6 +11,7 @@
         TMPDIR: '{{ encrypted_tmp }}'
   tags:
     - services
+    - formplayer_deploy
   register: formplayer_files
 
 - set_fact:
