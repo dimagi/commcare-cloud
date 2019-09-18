@@ -129,9 +129,10 @@ class Deploy(CommandBase):
 
 
 def mail_admins(environment, subject, message):
-    commcare_cloud(
-        environment.name, 'django-manage', 'mail_admins',
-        '--subject', subject,
-        message,
-        '--environment', environment.meta_config.deploy_env
-    )
+    if environment.fab_settings_config.email_enabled:
+        commcare_cloud(
+            environment.name, 'django-manage', 'mail_admins',
+            '--subject', subject,
+            message,
+            '--environment', environment.meta_config.deploy_env
+        )
