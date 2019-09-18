@@ -28,41 +28,6 @@ def _formplayer_jars_differ(build_dir, release_1, release_2):
 
 
 @roles(ROLES_FORMPLAYER)
-def build_formplayer(use_current_release=False):
-    """
-    the dir structure ends up looking like this:
-    ~/www/$ENV/current/formplayer_build
-        formplayer__2017-08-23_16.16/
-            libs/formplayer.jar
-        current -> formplayer__2017-08-23_16.16
-        formplayer.jar -> current/libs/formplayer.jar
-
-    Thus the current artifacts will always be available at
-      ~/www/$ENV/current/fromplayer_build/formplayer.jar and
-    """
-    code_dir = env.code_root if not use_current_release else env.code_current
-    build_dir = os.path.join(code_dir, FORMPLAYER_BUILD_DIR)
-    if not files.exists(build_dir):
-        sudo('mkdir {}'.format(build_dir))
-
-    jenkins_formplayer_build_url = get_formplayer_build_url(env)
-
-    release_name = 'formplayer__{}'.format(datetime.datetime.utcnow().strftime(DATE_FMT))
-    release_name_libs = os.path.join(release_name, 'libs')
-    with cd(build_dir):
-        sudo('mkdir -p {}'.format(release_name_libs))
-        sudo("wget -nv '{}' -O {}/formplayer.jar".format(jenkins_formplayer_build_url, release_name_libs))
-
-    # since restarting formplayer currently causes Web Apps downtime
-    # only relink current and restart if the jar actually differs
-    if _formplayer_jars_differ(build_dir, 'current', release_name):
-        with cd(build_dir):
-            sudo('ln -sfn {} current'.format(release_name))
-            sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
-        supervisor.restart_formplayer()
-
-
-@roles(ROLES_FORMPLAYER)
 def offline_build_formplayer():
     build_dir = os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
 
