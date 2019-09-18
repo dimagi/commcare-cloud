@@ -1,1 +1,13 @@
 ---
+
+minio_server_release: 'RELEASE.2019-09-11T19-53-16Z'
+minio_client_release: 'RELEASE.2019-09-11T20-17-47Z'
+minio_server_envfile: /etc/minio/minio
+
+minio_server_datadirs:
+  - /opt/data/minio/
+minio_server_make_datadirs: true
+minio_server_cluster_nodes: "{{ groups['minio']|map('string_prefix', '/opt/data/minio')|map('string_postfix', 'http://')|list }}"
+
+minio_access_key: '{{ secrets.MINIO_ACCESS_KEY }}'
+minio_secret_key: '{{ secrets.MINIO_SECRET_KEY }}'

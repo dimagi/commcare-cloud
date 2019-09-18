@@ -28,6 +28,12 @@
 - name: MinIO
   hosts: minio
   become: true
+  pre_tasks:
+    - name: Create etc directory
+      file:
+        path: /etc/minio
+        state: directory
+      tags: 'minio'
   roles:
     - {role: minio, tags: 'minio'}
 
