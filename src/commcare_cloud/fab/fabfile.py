@@ -38,7 +38,7 @@ import pytz
 from distutils.util import strtobool
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel
+from fabric.api import roles, execute, task, sudo, env, parallel
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
