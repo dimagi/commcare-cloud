@@ -132,3 +132,11 @@ def _get_old_formplayer_builds(build_dir):
         old_builds = sorted(_get_builds(previous_build_paths.split('\n')), reverse=True)
         old_builds.remove(current_build)
         return old_builds
+
+
+def formplayer_is_running_from_old_release_location():
+    ps_formplayer = sudo('ps aux | grep formplaye[r]')
+    if env.code_current in ps_formplayer:
+        return True
+    else:
+        return False
