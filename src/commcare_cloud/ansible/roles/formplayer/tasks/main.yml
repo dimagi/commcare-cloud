@@ -53,13 +53,13 @@
     - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
-    - "{{ [] if this_ansible_run_should_update_formplayer_in_place else formplayer_release_dir }}"
+    - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
 
 - name: Download formplayer release
   get_url:
     url: "{{ formplayer_build_url }}"
-    dest: "{{ formplayer_target_dir_for_this_run }}/formplayer.jar"
+    dest: "{{ _formplayer_target_dir }}/formplayer.jar"
     mode: 0744
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
@@ -72,7 +72,7 @@
   register: current_stat
   tags:
     - formplayer_deploy
-  when: not this_ansible_run_should_update_formplayer_in_place
+  when: not _should_update_formplayer_in_place
 
 # This task copies the respective config files from "current", if applicable
 # so that the next task prints out a nice diff instead of the full contents of the file
@@ -87,13 +87,13 @@
     - filename: sentry.properties
   tags:
     - formplayer_deploy
-  when: not this_ansible_run_should_update_formplayer_in_place and current_stat.stat.exists
+  when: not _should_update_formplayer_in_place and current_stat.stat.exists
 
 - name: Update formplayer config files
   become: yes
   template:
     src: "{{ item.template }}"
-    dest: "{{ formplayer_target_dir_for_this_run }}/{{ item.filename }}"
+    dest: "{{ _formplayer_target_dir }}/{{ item.filename }}"
     group: cchq
     owner: cchq
     mode: 0644
@@ -121,4 +121,4 @@
     group: "{{ cchq_user }}"
   tags:
     - formplayer_deploy
-  when: not this_ansible_run_should_update_formplayer_in_place
+  when: not _should_update_formplayer_in_place
