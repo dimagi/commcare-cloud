@@ -8,7 +8,6 @@ from fabric.context_managers import cd
 from fabric.contrib import console
 from fabric.contrib import files
 
-from commcare_cloud.fab.operations import supervisor
 from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 
 

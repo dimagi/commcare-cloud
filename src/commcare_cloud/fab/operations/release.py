@@ -9,7 +9,6 @@ from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
 from fabric.context_managers import cd
 from fabric.contrib import files
-from fabric.contrib.files import comment
 from fabric.contrib.project import rsync_project
 from fabric.operations import put
 from fabric import utils, operations
