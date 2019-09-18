@@ -93,5 +93,5 @@ PY3_RUN_PILLOWTOP: False
 PY3_RUN_WEBSOCKETS: False
 
 minio_server_datadirs:
-  - /opt/data/minio/
+  - /opt/data/
 minio_server_cluster_nodes: "{{ groups['minio']|map('string_prefix', '/opt/data')|map('string_postfix', 'http://')|list }}"
