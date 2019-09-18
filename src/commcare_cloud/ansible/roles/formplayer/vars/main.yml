@@ -7,3 +7,10 @@ formplayer_build_url: "{{
   if deploy_env == 'staging'
   else 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
 }}"
+formplayer_current_dir: "{{ formplayer_build_dir }}/current"
+formplayer_release_dir: '{{ formplayer_build_dir }}/releases/{{ new_release_name }}'
+_formplayer_target_dir: "{{
+  formplayer_current_dir
+  if _should_update_formplayer_in_place
+  else formplayer_release_dir
+}}"
