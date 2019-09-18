@@ -1,11 +1,7 @@
-from argparse import Namespace
-
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import check_branch, ask
 from commcare_cloud.colors import color_notice, color_summary
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible import ansible_playbook
-from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
@@ -50,7 +46,7 @@ class Deploy(CommandBase):
 
                 self.deploy_commcare(environment, commcare_branch, args, unknown_args)
         elif args.component == 'formplayer':
-            self.deploy_formplayer(environment, args, unknown_args)
+            self.deploy_formplayer(environment, commcare_branch, args, unknown_args)
 
     def deploy_commcare(self, environment, commcare_branch, args, unknown_args):
         fab_func_args = self.get_deploy_commcare_fab_func_args(args)
@@ -58,31 +54,14 @@ class Deploy(CommandBase):
                        '--set', 'code_branch={}'.format(commcare_branch),
                        branch=args.branch, *unknown_args)
 
-    def deploy_formplayer(self, environment, args, unknown_args):
-        def run_ansible_playbook_command():
-            skip_check = True
-            environment.create_generated_yml()
-            ansible_context = AnsibleContext(args)
-            return ansible_playbook.run_ansible_playbook(
-                environment, 'deploy_stack.yml', ansible_context,
-                skip_check=skip_check, quiet=skip_check, always_skip_check=skip_check, limit='formplayer',
-                use_factory_auth=False, unknown_args=('--tags=formplayer_deploy',),
-                respect_ansible_skip=True,
-            )
-        rc = run_ansible_playbook_command()
-        if rc != 0:
-            return rc
-        rc = commcare_cloud(
-            args.env_name, 'run-shell-command', 'formplayer',
-            ('supervisorctl reread; '
-             'supervisorctl update {project}-{deploy_env}-formsplayer-spring; '
-             'supervisorctl restart {project}-{deploy_env}-formsplayer-spring').format(
-                project='commcare-hq',
-                deploy_env=environment.meta_config.deploy_env,
-            ), '-b',
-        )
-        if rc != 0:
-            return rc
+    def deploy_formplayer(self, environment, commcare_branch, args, unknown_args):
+        """
+        Because of how our fab code is structured, the code_branch variable is still required,
+        even though it is used only barely, if in any consequential way at all.
+        """
+        commcare_cloud(environment.name, 'fab', 'deploy_formplayer',
+                       '--set', 'code_branch={}'.format(commcare_branch),
+                       branch=args.branch, *unknown_args)
 
     @staticmethod
     def get_deploy_commcare_fab_func_args(args):

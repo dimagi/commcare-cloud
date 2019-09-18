@@ -51,84 +51,30 @@
   tags:
     - fp-localsettings
     - localsettings
-    - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
-    - "{{ formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
-
-- name: Download formplayer release
-  get_url:
-    url: "{{ formplayer_build_url }}"
-    dest: "{{ formplayer_release_dir }}/formplayer.jar"
-    mode: 0744
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-  tags:
-    - formplayer_deploy
-
-- name: Check if the "current" directory exists
-  stat:
-    path: "{{ formplayer_build_dir }}/current"
-  register: current_stat
-  tags:
-    - formplayer_deploy
-
-
-# This task copies the respective config files from "current", if applicable
-# so that the next tasks print out a nice diff instead of the full contents of the file
-- name: Copy config files from current release
-  become: yes
-  copy:
-    remote_src: yes
-    src: "{{ formplayer_build_dir }}/current/{{ item }}"
-    dest: "{{ formplayer_release_dir }}/{{ item }}"
-  with_items:
-    - application.properties
-    - sentry.properties
-  tags:
-    - formplayer_deploy
-  when: new_release_name
 
 - name: Copy Spring application.properties
   become: yes
   template:
     src: application.properties.j2
-    dest: "{{ formplayer_release_dir }}/application.properties"
+    dest: "{{ formplayer_build_dir }}/application.properties"
     group: cchq
     owner: cchq
     mode: 0644
   tags:
     - fp-localsettings
     - localsettings
-    - formplayer_deploy
 
 - name: Copy sentry.properties
   become: yes
   template:
     src: sentry.properties.j2
-    dest: "{{ formplayer_release_dir }}/sentry.properties"
+    dest: "{{ formplayer_build_dir }}/sentry.properties"
     group: cchq
     owner: cchq
     mode: 0644
   tags:
     - fp-localsettings
     - localsettings
-    - formplayer_deploy
-
-# This should be the last task in the file
-# (and certainly the last one tagged with `formplayer_deploy`)
-# so that if setting up a release fails, `current` never gets linked to it
-# giving us nearly atomic formplayer deploys
-- name: Link formplayer jar
-  become: yes
-  file:
-    state: link
-    src: "{{ formplayer_release_dir }}"
-    path: "{{ formplayer_build_dir }}/current"
-    mode: 0755
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-  tags:
-    - formplayer_deploy
-  when: new_release_name
