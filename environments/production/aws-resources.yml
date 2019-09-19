@@ -34,7 +34,7 @@ proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
 proxy1-production: 10.202.20.47
 proxy1-production.public_ip: 18.215.86.109
-rabbit0-production: 10.202.42.98
+rabbit1-production: 10.202.42.80
 redis1-production: 10.202.40.34
 shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194
