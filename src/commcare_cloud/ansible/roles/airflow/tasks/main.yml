@@ -57,11 +57,14 @@
     AIRFLOW_HOME: "{{ airflow_home }}"
 
 - name: set cchq home variable
-  shell: "{{ airflow_virtualenv }}/bin/airflow variables --set CCHQ_HOME {{ code_home }}"
+  shell: "{{ airflow_virtualenv }}/bin/airflow variables --set {{ item.var }} {{ item.val }}"
   become: yes
   become_user: "{{ cchq_user }}"
   environment:
     AIRFLOW_HOME: "{{ airflow_home }}"
+  loop:
+    - {"var": "CCHQ_HOME", "val": "{{ code_home }}"}
+    - {"var": "CCHQ_PY_ENV", "val": "{{ py3_virtualenv_home }}"}
 
 - name: Purge old logs
   become: yes
