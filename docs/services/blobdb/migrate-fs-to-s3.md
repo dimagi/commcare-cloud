@@ -14,8 +14,8 @@ you have configured the correct access to allow connections from the IPs where C
   - `s3_blob_db_url: "<Endpoint URL e.g. https://s3.amazonaws.com>"`
   - `s3_blob_db_s3_bucket: '<bucket name>'`
 2. Add/update settings in `environments/<env>/vault.yml`
-   - `secrets.RIAKCS_S3_ACCESS_KEY`
-   - `secrets.RIAKCS_S3_SECRET_KEY`
+   - `secrets.S3_ACCESS_KEY`
+   - `secrets.S3_SECRET_KEY`
 3. Deploy localsettings
     ```bash
     commcare-cloud <env> update-config
