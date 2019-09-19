@@ -11,8 +11,8 @@ or from a Riak CS cluster to Amazon S3, for example.
 2. Add `localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3: True`
    in `environments/<env>/public.yml`
 3. Add/update settings in `environments/<env>/vault.yml`
-   - `secrets.RIAKCS_S3_ACCESS_KEY` (new cluster)
-   - `secrets.RIAKCS_S3_SECRET_KEY` (new cluster)
+   - `secrets.S3_ACCESS_KEY` (new cluster)
+   - `secrets.S3_SECRET_KEY` (new cluster)
    - `secrets.OLD_S3_BLOB_DB_ACCESS_KEY` (old cluster)
    - `secrets.OLD_S3_BLOB_DB_SECRET_KEY` (old cluster)
 4. If the new endpoint is a Riak CS cluster, deploy proxy.
