@@ -1,5 +1,3 @@
-from argparse import Namespace
-
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import check_branch, ask
 from commcare_cloud.colors import color_notice, color_summary
@@ -7,6 +5,7 @@ from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
 
 
@@ -50,6 +49,7 @@ class Deploy(CommandBase):
 
                 self.deploy_commcare(environment, commcare_branch, args, unknown_args)
         elif args.component == 'formplayer':
+            self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
 
     def deploy_commcare(self, environment, commcare_branch, args, unknown_args):
@@ -115,3 +115,24 @@ class Deploy(CommandBase):
                 exit(-1)
 
         return commcare_branch
+
+    @staticmethod
+    def _announce_formplayer_deploy_start(environment):
+        mail_admins(
+            environment,
+            subject="{user} has initiated a formplayer deploy to {environment}.".format(
+                user=get_default_username(),
+                environment=environment.meta_config.deploy_env,
+            ),
+            message='',
+        )
+
+
+def mail_admins(environment, subject, message):
+    if environment.fab_settings_config.email_enabled:
+        commcare_cloud(
+            environment.name, 'django-manage', 'mail_admins',
+            '--subject', subject,
+            message,
+            '--environment', environment.meta_config.deploy_env
+        )
