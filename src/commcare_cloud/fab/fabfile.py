@@ -38,7 +38,7 @@ import pytz
 from distutils.util import strtobool
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel
+from fabric.api import roles, execute, task, sudo, env, parallel
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
@@ -327,12 +327,6 @@ def kill_stale_celery_workers():
 
 
 @task
-def deploy_formplayer():
-    execute(announce_formplayer_deploy_start)
-    execute(formplayer.build_formplayer, True)
-
-
-@task
 def rollback_formplayer():
     execute(formplayer.rollback_formplayer)
     execute(supervisor.restart_formplayer)
@@ -485,18 +479,6 @@ def announce_deploy_start():
             ),
             ''
         )
-
-
-def announce_formplayer_deploy_start():
-    execute_with_timing(
-        mail_admins,
-        "{user} has initiated a formplayer deploy to {environment}.".format(
-            user=env.user,
-            environment=env.deploy_env,
-        ),
-        '',
-        use_current_release=True,
-    )
 
 
 def _deploy_without_asking(skip_record):
