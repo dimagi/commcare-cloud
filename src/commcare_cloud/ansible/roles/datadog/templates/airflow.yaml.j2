@@ -1,0 +1,8 @@
+#
+# {{ ansible_managed }}
+#
+init_config:
+
+instances:
+    -   airflow_webserver_url: http://localhost:8080
+        airflow_sql_alchemy_conn: 'postgresql://{{ postgres_users.commcare.username }}:{{ postgres_users.commcare.password }}@{{ postgresql_dbs.main.pgbouncer_host }}:{{ postgresql_dbs.main.port }}/airflow'
