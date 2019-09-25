@@ -2,4 +2,4 @@ deploy_env: phi-cas
 env_monitoring_id: phi-cas
 users:
   - dimagi
-slack_alerts_channel: alerts-phi-cas
+slack_alerts_channel:
