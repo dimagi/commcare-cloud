@@ -1,11 +1,9 @@
-msp_users: "{{ secrets.MSP_USERS }}"
-
 DATADOG_ENABLED: True
 DATADOG_INTEGRATIONS_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
-elasticsearch_cluster_name: 'deves'
+elasticsearch_cluster_name: 'phi-cas'
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
 
@@ -19,27 +17,16 @@ ssh_allow_password: False
 backup_blobdb: True
 backup_postgres: plain
 backup_es_s3: False
-backup_couch: True
-postgres_s3: True
+backup_couch: False
+postgres_s3: False
 blobdb_s3: True
-couch_s3: True
+couch_s3: False
 
-es_local_repo: False
-
-aws_region: ch-dk-2
-aws_endpoint: https://sos-ch-dk-2.exo.io
-es_snapshot_bucket:   commcare-almanach-backup
-postgres_snapshot_bucket: commcare-almanach-backup
-blobdb_snapshot_bucket: commcare-almanach-backup
-couchdb_snapshot_bucket: commcare-almanach-backup
-
-aws_versioning_enabled: false
-
-KSPLICE_ACTIVE: yes
+KSPLICE_ACTIVE: no
 
 nameservers:
-  - 8.8.8.8
-  - 8.8.4.4
+  - 164.100.17.3
+  - 164.100.3.1
 
 couch_dbs:
   default:
@@ -79,14 +66,13 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-check_s3_backups_email: commcarehq-ops+root@dimagi.com,httu.admin@swisstph.ch
+check_s3_backups_email: commcarehq-ops+root@dimagi.com
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
   ALLOWED_HOSTS:
-    - 185.12.7.167
-    - testserver
+    - 100.71.128.7
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
@@ -95,15 +81,15 @@ localsettings:
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-# swiss is not hosted by Cloudant
+# phi-cas is not hosted by Cloudant
   COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
-  EMAIL_SMTP_PORT: 587
+  EMAIL_SMTP_HOST: relay.sendermile.com
+  EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   EULA_COMPLIANCE: True
-  HQ_INSTANCE: 'swiss'
+  HQ_INSTANCE: 'phi-cas'
   HUBSPOT_API_ID:
   HUBSPOT_API_KEY:
   INVOICE_FROM_ADDRESS:
@@ -125,8 +111,8 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
-  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
 
-commcare_cloud_root_user: ubuntu
+commcare_cloud_root_user: wcdadmin

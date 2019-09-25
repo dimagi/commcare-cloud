@@ -1,10 +1,10 @@
 formplayer_memory: "1024m"
 
 management_commands:
-  swiss0:
+  phi-cas0:
     run_pillow_retry_queue:
 celery_processes:
-  swiss0:
+  phi-cas0:
     repeat_record_queue,celery,export_download_queue:
       concurrency: 1
     case_import_queue,reminder_case_update_queue:
@@ -21,7 +21,7 @@ celery_processes:
       optimize: True
     flower: {}
 pillows:
-  swiss0:
+  phi-cas0:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
