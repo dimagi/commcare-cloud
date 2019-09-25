@@ -1,7 +1,5 @@
-deploy_env: swiss
-env_monitoring_id: swiss
+deploy_env: phi-cas
+env_monitoring_id: phi-cas
 users:
   - dimagi
-  - fissionlabs
-  - swiss
-slack_alerts_channel: alerts-swiss
+slack_alerts_channel: alerts-phi-cas
