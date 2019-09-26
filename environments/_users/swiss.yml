@@ -1,4 +1,6 @@
 dev_users:
   present:
     - gcastro
+    - ddobre
+    - pdelcroix
   absent: []
