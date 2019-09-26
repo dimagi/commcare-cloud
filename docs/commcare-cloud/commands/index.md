@@ -129,7 +129,7 @@ command to check for validation errors or incompatibilities.
 Update the local known_hosts file of the environment configuration.
 
 ```
-commcare-cloud <env> update-local-known-hosts [--use-factory-auth]
+commcare-cloud <env> update-local-known-hosts
 ```
 
 You can run this on a regular basis to avoid having to `yes` through
@@ -137,12 +137,6 @@ the ssh prompts. Note that when you run this, you are implicitly
 trusting that at the moment you run it, there is no man-in-the-middle
 attack going on, the type of security breech that the SSH prompt
 is meant to mitigate against in the first place.
-
-##### Optional Arguments
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
 ### Ad-hoc
@@ -572,8 +566,8 @@ tmux windows will a new one be opened.
 Export Sentry events. One line per event JSON.
 
 ```
-commcare-cloud <env> export-sentry-events [-k API_KEY] [-q QUERY] [--start START] [--end END]
-                                          [--project-id PROJECT_ID] [--organization ORGANIZATION]
+commcare-cloud <env> export-sentry-events -k API_KEY -p PROJECT_ID [-q QUERY] [--start START] [--end END]
+                                          --organization ORGANIZATION
 ```
 
 ##### Optional Arguments
@@ -581,6 +575,10 @@ commcare-cloud <env> export-sentry-events [-k API_KEY] [-q QUERY] [--start START
 ###### `-k API_KEY, --api-key API_KEY`
 
 Sentry API Key
+
+###### `-p PROJECT_ID, --project-id PROJECT_ID`
+
+Sentry project ID
 
 ###### `-q QUERY, --query QUERY`
 
@@ -593,10 +591,6 @@ UTC start date. Format YYYY-MM-DDTHH:MM:SS
 ###### `--end END`
 
 UTC end date. Format YYYY-MM-DDTHH:MM:SS
-
-###### `--project-id PROJECT_ID`
-
-Sentry project ID. If not supplied the value for the environment will be used (requires Vault access)
 
 ###### `--organization ORGANIZATION`
 
@@ -923,7 +917,6 @@ Use `-l` instead of a command to see the full list of commands.
     clean_releases             Cleans old and failed deploys from the ~/www/<...
     deploy_airflow
     deploy_commcare            Preindex and deploy if it completes quickly en...
-    deploy_formplayer
     kill_stale_celery_workers  Kills celery workers that failed to properly g...
     manage                     run a management command
     offline_setup_release
@@ -956,8 +949,14 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-branch COMMCARE_BRANCH]
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-branch COMMCARE_BRANCH] [{commcare,formplayer}]
 ```
+
+##### Positional Arguments
+
+###### `{commcare,formplayer}`
+
+The component to deploy.
 
 ##### Optional Arguments
 

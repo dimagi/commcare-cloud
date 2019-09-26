@@ -8,9 +8,10 @@ import sys
 import warnings
 from collections import OrderedDict
 
-from clint.textui import puts, colored
+from clint.textui import puts
 
 from commcare_cloud.cli_utils import print_command
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
@@ -26,14 +27,14 @@ from .argparse14 import ArgumentParser, RawTextHelpFormatter
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateSupervisorConfs, UpdateLocalKnownHosts,
+    UpdateUsers, UpdateSupervisorConfs,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
 from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
-    CouchDBClusterInfo
+    CouchDBClusterInfo, UpdateLocalKnownHosts
 from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from .environment.paths import (
     get_available_envs,
@@ -164,7 +165,7 @@ def call_commcare_cloud(input_argv=sys.argv):
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
-        puts(colored.red(str(e), bold=True))
+        puts(color_error(str(e), bold=True))
         return 1
 
     return exit_code

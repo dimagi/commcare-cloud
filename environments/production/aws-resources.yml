@@ -16,8 +16,8 @@ es19-production: 10.202.40.144
 esmaster3-production: 10.202.41.183
 esmaster4-production: 10.202.41.247
 esmaster5-production: 10.202.40.226
-formplayer0-production: 10.202.10.21
-formplayer1-production: 10.202.10.4
+formplayer2-production: 10.202.10.129
+formplayer3-production: 10.202.10.13
 kafka0-production: 10.202.40.70
 pgbouncer0-production: 10.202.40.58
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
@@ -34,7 +34,7 @@ proxy0-production: 10.202.20.138
 proxy0-production.public_ip: 100.24.216.221
 proxy1-production: 10.202.20.47
 proxy1-production.public_ip: 18.215.86.109
-rabbit0-production: 10.202.42.98
+rabbit1-production: 10.202.42.80
 redis1-production: 10.202.40.34
 shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194

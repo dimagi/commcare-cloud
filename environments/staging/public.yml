@@ -109,22 +109,11 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
-  OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
-
-PY3_RUN_CELERY_BEAT: True
-PY3_RUN_CELERY_FLOWER: True
-PY3_RUN_CELERY_WORKER: True
-PY3_RUN_ERRAND_BOY: True
-PY3_RUN_GUNICORN: True
-PY3_RUN_MANAGEMENT: True
-PY3_RUN_PILLOWTOP: True
-PY3_RUN_WEBSOCKETS: True

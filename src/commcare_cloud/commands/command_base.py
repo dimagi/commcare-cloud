@@ -2,7 +2,9 @@ import abc
 import inspect
 
 import six
-from clint.textui import puts, colored
+from clint.textui import puts
+
+from commcare_cloud.colors import color_summary
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -30,7 +32,7 @@ class CommandBase(object):
         pass
 
     def log(self, message):
-        puts(colored.magenta("[{}] {}".format(self.command, message)))
+        puts(color_summary("[{}] {}".format(self.command, message)))
 
 
 class Argument(object):

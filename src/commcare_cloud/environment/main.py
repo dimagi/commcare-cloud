@@ -4,6 +4,7 @@ import re
 import sys
 from collections import Counter
 from contextlib import contextmanager
+from datetime import datetime
 
 import datadog.api
 import yaml
@@ -368,7 +369,7 @@ class Environment(object):
         var_manager = self._ansible_inventory_variable_manager
 
         mapping = {}
-        for host in self.inventory_manager.hosts.values():
+        for host in self.inventory_manager.get_hosts():
             ansible_port = var_manager.get_vars(host=host).get('ansible_port')
             ansible_host = var_manager.get_vars(host=host).get('ansible_host', host.name)
             mapping[self.format_sshable_host(ansible_host, ansible_port)] = host.name
@@ -398,7 +399,7 @@ class Environment(object):
             'known_hosts_file': self.paths.known_hosts,
             'commcarehq_repository': self.fab_settings_config.code_repo,
             'ES_SETTINGS': self.elasticsearch_config.settings.to_json(),
-            'py3_include_venv': self.fab_settings_config.py3_include_venv,
+            'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
         }
         generated_variables.update(self.app_processes_config.to_generated_variables())
         generated_variables.update(self.postgresql_config.to_generated_variables(self))

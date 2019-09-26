@@ -2,8 +2,8 @@
 - name: rabbitmq_clustering | ensure hostnames are in the host file
   lineinfile:
     dest: /etc/hosts
-    regexp: "^{{ hostvars[item][internal_network_interface_fact].ipv4.address }}\\s"
-    line: "{{ hostvars[item][internal_network_interface_fact].ipv4.address }} {{ hostvars[item]['ansible_hostname'] }}"
+    regexp: "^{{ hostvars[item][hostvars[item].internal_network_interface_fact].ipv4.address }}\\s"
+    line: "{{ hostvars[item][hostvars[item].internal_network_interface_fact].ipv4.address }} {{ hostvars[item]['ansible_hostname'] }}"
   with_items: "{{ groups['rabbitmq'] }}"
 
 - name: rabbitmq_clustering | Capturing Erlang Cookie On Master

@@ -8,7 +8,6 @@ from fabric.context_managers import cd
 from fabric.contrib import console
 from fabric.contrib import files
 
-from commcare_cloud.fab.operations import supervisor
 from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 
 
@@ -25,41 +24,6 @@ def _formplayer_jars_differ(build_dir, release_1, release_2):
             result = sudo("diff {}/libs/formplayer.jar {}/libs/formplayer.jar".format(release_1, release_2))
     # 1 means there's a diff, 2 means one of the files doesn't exist
     return result.return_code in (1, 2)
-
-
-@roles(ROLES_FORMPLAYER)
-def build_formplayer(use_current_release=False):
-    """
-    the dir structure ends up looking like this:
-    ~/www/$ENV/current/formplayer_build
-        formplayer__2017-08-23_16.16/
-            libs/formplayer.jar
-        current -> formplayer__2017-08-23_16.16
-        formplayer.jar -> current/libs/formplayer.jar
-
-    Thus the current artifacts will always be available at
-      ~/www/$ENV/current/fromplayer_build/formplayer.jar and
-    """
-    code_dir = env.code_root if not use_current_release else env.code_current
-    build_dir = os.path.join(code_dir, FORMPLAYER_BUILD_DIR)
-    if not files.exists(build_dir):
-        sudo('mkdir {}'.format(build_dir))
-
-    jenkins_formplayer_build_url = get_formplayer_build_url(env)
-
-    release_name = 'formplayer__{}'.format(datetime.datetime.utcnow().strftime(DATE_FMT))
-    release_name_libs = os.path.join(release_name, 'libs')
-    with cd(build_dir):
-        sudo('mkdir -p {}'.format(release_name_libs))
-        sudo("wget -nv '{}' -O {}/formplayer.jar".format(jenkins_formplayer_build_url, release_name_libs))
-
-    # since restarting formplayer currently causes Web Apps downtime
-    # only relink current and restart if the jar actually differs
-    if _formplayer_jars_differ(build_dir, 'current', release_name):
-        with cd(build_dir):
-            sudo('ln -sfn {} current'.format(release_name))
-            sudo('ln -sf current/libs/formplayer.jar formplayer.jar')
-        supervisor.restart_formplayer()
 
 
 @roles(ROLES_FORMPLAYER)
@@ -93,8 +57,8 @@ def rollback_formplayer():
         ))
 
 
-def clean_formplayer_releases(commcare_release_path, keep=1):
-    build_dir = os.path.join(commcare_release_path, FORMPLAYER_BUILD_DIR)
+def clean_formplayer_releases(keep=1):
+    build_dir = os.path.join(env.root, FORMPLAYER_BUILD_DIR)
     if not files.exists(build_dir):
         return
 
@@ -102,7 +66,7 @@ def clean_formplayer_releases(commcare_release_path, keep=1):
     if not builds:
         return
 
-    with cd(build_dir):
+    with cd(os.path.join(build_dir, 'releases')):
         for build in builds[keep:]:
             sudo('rm -rf {}'.format(build))
 
@@ -112,7 +76,7 @@ def _get_builds(build_paths):
     for path in build_paths:
         filename = os.path.basename(path)
         try:
-            _, date_to_delete_string = filename.split('formplayer__')
+            date_to_delete_string = filename
             datetime.datetime.strptime(date_to_delete_string, DATE_FMT)
         except ValueError:
             continue
@@ -125,10 +89,18 @@ def _get_old_formplayer_builds(build_dir):
     with cd(build_dir):
         current_build = sudo('readlink -f current').split('/')[-1]
 
-        previous_build_paths = sudo('find . -name "{}*" -type d'.format('formplayer__')).strip()
+        previous_build_paths = sudo('ls releases/').strip()
         if not previous_build_paths:
             return []
 
         old_builds = sorted(_get_builds(previous_build_paths.split('\n')), reverse=True)
         old_builds.remove(current_build)
         return old_builds
+
+
+def formplayer_is_running_from_old_release_location():
+    ps_formplayer = sudo('ps aux | grep formplaye[r]')
+    if env.code_current in ps_formplayer:
+        return True
+    else:
+        return False

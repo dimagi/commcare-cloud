@@ -38,7 +38,7 @@ import pytz
 from distutils.util import strtobool
 
 from fabric import utils
-from fabric.api import run, roles, execute, task, sudo, env, parallel
+from fabric.api import roles, execute, task, sudo, env, parallel
 from fabric.colors import blue, red, magenta
 from fabric.context_managers import cd
 from fabric.contrib import files, console
@@ -124,17 +124,8 @@ def _setup_path():
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
-    env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
-    env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
     env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
     env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
-
-    if env.py3_run_deploy:
-        env.virtualenv_current = env.py3_virtualenv_current
-        env.virtualenv_root = env.py3_virtualenv_root
-    else:
-        env.virtualenv_current = env.py2_virtualenv_current
-        env.virtualenv_root = env.py2_virtualenv_root
 
     env.services = posixpath.join(env.code_root, 'services')
     env.db = '%s_%s' % (env.project, env.deploy_env)
@@ -150,17 +141,8 @@ def _override_code_root_to_current():
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
-    env.py2_virtualenv_current = posixpath.join(env.code_current, 'python_env')
-    env.py2_virtualenv_root = posixpath.join(env.code_root, 'python_env')
     env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
     env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
-
-    if env.py3_run_deploy:
-        env.virtualenv_current = env.py3_virtualenv_current
-        env.virtualenv_root = env.py3_virtualenv_root
-    else:
-        env.virtualenv_current = env.py2_virtualenv_current
-        env.virtualenv_root = env.py2_virtualenv_root
 
     env.services = posixpath.join(env.code_root, 'services')
 
@@ -314,7 +296,7 @@ def preindex_views():
 @roles(ROLES_DEPLOY)
 def mail_admins(subject, message, use_current_release=False):
     code_dir = env.code_current if use_current_release else env.code_root
-    virtualenv_dir = env.virtualenv_current if use_current_release else env.virtualenv_root
+    virtualenv_dir = env.py3_virtualenv_current if use_current_release else env.py3_virtualenv_root
     with cd(code_dir):
         sudo((
             '%(virtualenv_dir)s/bin/python manage.py '
@@ -342,12 +324,6 @@ def kill_stale_celery_workers():
     Kills celery workers that failed to properly go into warm shutdown
     """
     execute(release.kill_stale_celery_workers)
-
-
-@task
-def deploy_formplayer():
-    execute(announce_formplayer_deploy_start)
-    execute(formplayer.build_formplayer, True)
 
 
 @task
@@ -505,18 +481,6 @@ def announce_deploy_start():
         )
 
 
-def announce_formplayer_deploy_start():
-    execute_with_timing(
-        mail_admins,
-        "{user} has initiated a formplayer deploy to {environment}.".format(
-            user=env.user,
-            environment=env.deploy_env,
-        ),
-        '',
-        use_current_release=True,
-    )
-
-
 def _deploy_without_asking(skip_record):
     if env.offline:
         commands = OFFLINE_DEPLOY_COMMANDS
@@ -653,7 +617,7 @@ def manage(cmd):
     """
     _require_target()
     with cd(env.code_current):
-        sudo('{env.virtualenv_current}/bin/python manage.py {cmd}'
+        sudo('{env.py3_virtualenv_current}/bin/python manage.py {cmd}'
              .format(env=env, cmd=cmd))
 
 
@@ -740,7 +704,7 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        execute(supervisor.restart_formplayer)
+        execute(supervisor.restart_formplayer_if_it_is_running_from_old_release_location)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -792,7 +756,7 @@ def reset_pillow(pillow):
     ))
     with cd(env.code_root):
         command = '{virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput'.format(
-            virtualenv_root=env.virtualenv_root,
+            virtualenv_root=env.py3_virtualenv_root,
             pillow=pillow,
         )
         sudo(command)

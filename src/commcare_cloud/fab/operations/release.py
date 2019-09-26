@@ -9,7 +9,6 @@ from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
 from fabric.context_managers import cd
 from fabric.contrib import files
-from fabric.contrib.files import comment
 from fabric.contrib.project import rsync_project
 from fabric.operations import put
 from fabric import utils, operations
@@ -27,7 +26,10 @@ from ..const import (
     FORMPLAYER_BUILD_DIR,
     ROLES_CONTROL)
 from commcare_cloud.fab.utils import pip_install
-from .formplayer import clean_formplayer_releases
+from .formplayer import (
+    clean_formplayer_releases,
+    formplayer_is_running_from_old_release_location,
+)
 
 GitConfig = namedtuple('GitConfig', 'key value')
 
@@ -258,9 +260,7 @@ def _clone_virtual_env(virtualenv_current, virtualenv_root):
 @roles(ROLES_ALL_SRC)
 @parallel
 def clone_virtualenv():
-    _clone_virtual_env(env.py2_virtualenv_current, env.py2_virtualenv_root)
-    if env.py3_include_venv:
-        _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
+    _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
 
 def update_virtualenv(full_cluster=True):
@@ -272,6 +272,16 @@ def update_virtualenv(full_cluster=True):
     """
     roles_to_use = _get_roles(full_cluster)
 
+    def pip_uninstall(cmd_prefix, requirements=(), fail_if_absent=False):
+        assert requirements
+        r_flags = []
+        for requirements_file in requirements:
+            if fail_if_absent or files.exists(requirements_file):
+                r_flags.extend(['-r', requirements_file])
+        if r_flags:
+            r_flags = " ".join(r_flags)
+            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
+
     @roles(roles_to_use)
     @parallel
     def update():
@@ -281,27 +291,25 @@ def update_virtualenv(full_cluster=True):
                 _clone_virtual_env(virtualenv_current, virtualenv_root)
 
             with cd(env.code_root):
-                cmd_prefix = 'export HOME=/home/%s && source %s/bin/activate && ' % (
+                cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
                     env.sudo_user, virtualenv_root)
-                # uninstall requirements in uninstall-requirements.txt
-                # but only the ones that are actually installed (checks pip freeze)
-                sudo("%s bash scripts/uninstall-requirements.sh" % cmd_prefix,
-                     user=env.sudo_user)
+                pip_uninstall(cmd_prefix, requirements=[
+                    posixpath.join(requirements, "uninstall-requirements.txt")
+                ], fail_if_absent=True)
                 pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
                     posixpath.join(requirements, 'prod-requirements.txt'),
                 ])
+                pip_uninstall(cmd_prefix, requirements=[
+                    posixpath.join(requirements, "uninstall-requirements-after-install.txt"),
+                ],  fail_if_absent=False)
 
         _update_virtualenv(
-            env.py2_virtualenv_current, env.py2_virtualenv_root,
+            env.py3_virtualenv_current, env.py3_virtualenv_root,
             posixpath.join(env.code_root, 'requirements')
         )
-        if env.py3_include_venv:
-            _update_virtualenv(
-                env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, 'requirements-python3')
-            )
 
     return update
+
 
 def create_code_dir(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
@@ -319,7 +327,7 @@ def kill_stale_celery_workers(delay=0):
         sudo(
             'echo "{}/bin/python manage.py '
             'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.virtualenv_current, delay)
+            '| at now + {} minutes'.format(env.py3_virtualenv_current, delay)
         )
 
 
@@ -334,7 +342,7 @@ def record_successful_deploy():
             'record_deploy_success --user "%(user)s" --environment '
             '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
         ) % {
-            'virtualenv_current': env.virtualenv_current,
+            'virtualenv_current': env.py3_virtualenv_current,
             'user': env.user,
             'environment': env.deploy_env,
             'url': env.deploy_metadata.diff_url,
@@ -417,9 +425,7 @@ def clean_releases(keep=3):
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
 
-    remaining_releases = set(releases) - set(to_remove)
-    for release in remaining_releases:
-        clean_formplayer_releases(os.path.join(env.releases, release))
+    clean_formplayer_releases()
 
     # as part of the clean up step, run gc in the 'current' directory
     git_gc_current()
@@ -439,11 +445,12 @@ def copy_localsettings(full_cluster=True):
 @parallel
 @roles(ROLES_FORMPLAYER)
 def copy_formplayer_properties():
-    sudo(
-        'cp -r {} {}'.format(
-            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
-            os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-        ))
+    if formplayer_is_running_from_old_release_location():
+        sudo(
+            'cp -r {} {}'.format(
+                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
+                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
+            ))
 
 
 @parallel

@@ -49,32 +49,76 @@
     group: "{{ cchq_user }}"
     mode: 0755
   tags:
-    - fp-localsettings
     - localsettings
+    - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
+    - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
 
-- name: Copy Spring application.properties
-  become: yes
-  template:
-    src: application.properties.j2
-    dest: "{{ formplayer_build_dir }}/application.properties"
-    group: cchq
-    owner: cchq
-    mode: 0644
+- name: Download formplayer release
+  get_url:
+    url: "{{ formplayer_build_url }}"
+    dest: "{{ _formplayer_target_dir }}/formplayer.jar"
+    mode: 0744
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
   tags:
-    - fp-localsettings
-    - localsettings
+    - formplayer_deploy
 
-- name: Copy sentry.properties
+- name: Check if the "current" directory exists
+  stat:
+    path: "{{ formplayer_current_dir }}"
+  register: current_stat
+  tags:
+    - formplayer_deploy
+  when: not _should_update_formplayer_in_place
+
+# This task copies the respective config files from "current", if applicable
+# so that the next task prints out a nice diff instead of the full contents of the file
+- name: Copy formplayer config files from current release
+  become: yes
+  copy:
+    remote_src: yes
+    src: "{{ formplayer_current_dir }}/{{ item.filename }}"
+    dest: "{{ formplayer_release_dir }}/{{ item.filename }}"
+  with_items:
+    - filename: application.properties
+    - filename: sentry.properties
+  tags:
+    - formplayer_deploy
+  when: not _should_update_formplayer_in_place and current_stat.stat.exists
+
+- name: Update formplayer config files
   become: yes
   template:
-    src: sentry.properties.j2
-    dest: "{{ formplayer_build_dir }}/sentry.properties"
+    src: "{{ item.template }}"
+    dest: "{{ _formplayer_target_dir }}/{{ item.filename }}"
     group: cchq
     owner: cchq
     mode: 0644
+  with_items:
+    - template: application.properties.j2
+      filename: application.properties
+    - template: sentry.properties.j2
+      filename: sentry.properties
   tags:
-    - fp-localsettings
     - localsettings
+    - formplayer_deploy
+
+# This should be the last task in the file
+# (and certainly the last one tagged with `formplayer_deploy`)
+# so that if setting up a release fails, `current` never gets linked to it
+# giving us nearly atomic formplayer deploys
+- name: Link formplayer jar
+  become: yes
+  file:
+    state: link
+    src: "{{ formplayer_release_dir }}"
+    path: "{{ formplayer_current_dir }}"
+    mode: 0755
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+  tags:
+    - formplayer_deploy
+  when: not _should_update_formplayer_in_place

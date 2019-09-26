@@ -20,7 +20,7 @@ def version_static():
     with cd(env.code_root):
         sudo(
             '{venv}/bin/python manage.py {cmd}'.format(
-                venv=env.virtualenv_root, cmd=cmd
+                venv=env.py3_virtualenv_root, cmd=cmd
             ),
             user=env.sudo_user
         )
@@ -58,7 +58,7 @@ def collectstatic(use_current_release=False):
     Collect static after a code update
     Must run on web workers for same reasons as version_static.
     """
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
+    venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
@@ -70,7 +70,7 @@ def collectstatic(use_current_release=False):
 @roles(ROLES_STATIC)
 def compress(use_current_release=False):
     """Run Django Compressor after a code update"""
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
+    venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('{}/bin/python manage.py compress --force -v 0'.format(venv))
         sudo('{}/bin/python manage.py purge_compressed_files'.format(venv))
@@ -89,7 +89,7 @@ def update_manifest(save=False, soft=False, use_current_release=False):
     manifest.json file from redis and inserts it into the staticfiles dir.
     """
     withpath = env.code_root if not use_current_release else env.code_current
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
+    venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
 
     args = ''
     if save:
@@ -109,10 +109,10 @@ def update_manifest(save=False, soft=False, use_current_release=False):
 def update_translations():
     with cd(env.code_root):
         update_locale_command = '{virtualenv_root}/bin/python manage.py update_django_locales'.format(
-            virtualenv_root=env.virtualenv_root,
+            virtualenv_root=env.py3_virtualenv_root,
         )
         update_translations_command = '{virtualenv_root}/bin/python manage.py compilemessages -v 0'.format(
-            virtualenv_root=env.virtualenv_root,
+            virtualenv_root=env.py3_virtualenv_root,
         )
         sudo(update_locale_command)
         sudo(update_translations_command)

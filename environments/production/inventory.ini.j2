@@ -71,10 +71,10 @@ remote_postgresql
 [ansible_skip:children]
 remote_postgresql
 
-{{ __rabbit0__ }}
+{{ __rabbit1__ }}
 
 [rabbitmq:children]
-rabbit0
+rabbit1
 
 [rabbitmq:vars]
 swap_size=2G
@@ -110,13 +110,13 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer0__ }}
+{{ __formplayer2__ }}
 
-{{ __formplayer1__ }}
+{{ __formplayer3__ }}
 
 [formplayer:children]
-formplayer0
-formplayer1
+formplayer2
+formplayer3
 
 {{ __redis1__ }} swap_size=1G
 

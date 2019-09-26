@@ -3,21 +3,21 @@ import os
 import subprocess
 from copy import deepcopy
 
+from clint.textui import puts
 from six.moves import shlex_quote
-from clint.textui import puts, colored
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.commands.fab import exec_fab_command
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
 
 
 class AnsiblePlaybook(CommandBase):
@@ -119,8 +119,10 @@ def run_ansible_playbook(
         cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
-            puts(colored.red("Options --diff and --check not allowed. Please remove -D, --diff, -C, --check."))
-            puts("These ansible-playbook options are managed automatically by commcare-cloud and cannot be set manually.")
+            puts(color_error("Options --diff and --check not allowed. "
+                             "Please remove -D, --diff, -C, --check."))
+            puts(color_error("These ansible-playbook options are managed automatically "
+                             "by commcare-cloud and cannot be set manually."))
             return 2  # exit code
 
         ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
@@ -219,6 +221,7 @@ class UpdateConfig(CommandBase):
     arguments = (shared_args.BRANCH_ARG,)
 
     def run(self, args, unknown_args):
+        unknown_args += ('-e', '{"_should_update_formplayer_in_place": true}')
         return commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
                               tags='localsettings', branch=args.branch, *unknown_args)
 
@@ -310,27 +313,3 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
             )
         else:
             return rc
-
-
-class UpdateLocalKnownHosts(_AnsiblePlaybookAlias):
-    command = 'update-local-known-hosts'
-    help = (
-        "Update the local known_hosts file of the environment configuration.\n\n"
-        "You can run this on a regular basis to avoid having to `yes` through\n"
-        "the ssh prompts. Note that when you run this, you are implicitly\n"
-        "trusting that at the moment you run it, there is no man-in-the-middle\n"
-        "attack going on, the type of security breech that the SSH prompt\n"
-        "is meant to mitigate against in the first place."
-    )
-
-    def run(self, args, unknown_args):
-        args.playbook = 'add-ssh-keys.yml'
-        args.quiet = True
-        environment = get_environment(args.env_name)
-        rc = AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True,
-                                              respect_ansible_skip=False)
-        with open(environment.paths.known_hosts, 'r') as f:
-            known_hosts = sorted(set(f.readlines()))
-        with open(environment.paths.known_hosts, 'w') as f:
-            f.writelines(known_hosts)
-        return rc
