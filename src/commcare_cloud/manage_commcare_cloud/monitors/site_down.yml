@@ -16,9 +16,17 @@ options:
   notify_audit: false
   notify_no_data: true
   renotify_interval: 10
-  silenced: {'host:hqproxy0': null, 'host:proxy1.internal-icds.commcarehq.org': null}
+  silenced:
+    host:hqproxy0: null
+    host:proxy0.india.commcarehq.org: null
+    host:proxy1.internal-icds.commcarehq.org: null
+    instance:icds_heartbeat: null
+    instance:india_heartbeat: null
+    instance:pna_heartbeat: null
+    instance:production_heartbeat: null
+    instance:swiss_heartbeat: null
   thresholds: {critical: 5, ok: 1, warning: 1}
   timeout_h: 0
-query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_celery").by("host","instance","url").last(6).count_by_status()'
+query: '"http.can_connect".over("*").exclude("url:https://64-test.commcarehq.org/serverup.txt","url:https://64-test.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_heartbeat","url:https://staging.commcarehq.org/serverup.txt_only_celery").by("check_type","host","instance","url").last(6).count_by_status()'
 tags: [serverup, opsgenie]
 type: service check

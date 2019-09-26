@@ -31,7 +31,41 @@ options:
   notify_audit: false
   notify_no_data: true
   renotify_interval: 0
-  silenced: {}
+  silenced:
+    host:es0.internal-icds.commcarehq.org: null
+    host:es1.internal-icds.commcarehq.org: null
+    host:es10-production: null
+    host:es10.internal-icds.commcarehq.org: null
+    host:es11-production: null
+    host:es11.internal-icds.commcarehq.org: null
+    host:es12-production: null
+    host:es12.internal-icds.commcarehq.org: null
+    host:es13-production: null
+    host:es13.internal-icds.commcarehq.org: null
+    host:es14-production: null
+    host:es14.internal-icds.commcarehq.org: null
+    host:es15.internal-icds.commcarehq.org: null
+    host:es16.internal-icds.commcarehq.org: null
+    host:es2.internal-icds.commcarehq.org: null
+    host:es3.internal-icds.commcarehq.org: null
+    host:es4.internal-icds.commcarehq.org: null
+    host:es5.internal-icds.commcarehq.org: null
+    host:es6.internal-icds.commcarehq.org: null
+    host:es7.internal-icds.commcarehq.org: null
+    host:es8.internal-icds.commcarehq.org: null
+    host:es9.internal-icds.commcarehq.org: null
+    host:esm0.internal-icds.commcarehq.org: null
+    host:esm1.internal-icds.commcarehq.org: null
+    host:esm2.internal-icds.commcarehq.org: null
+    host:esmaster0-production: null
+    host:esmaster1-production: null
+    host:esmaster2-production: null
+    host:proxy0.india.commcarehq.org: null
+    host:riak15.india.commcarehq.org: null
+    host:riak16.india.commcarehq.org: null
+    host:riak17.india.commcarehq.org: null
+    host:riak18.india.commcarehq.org: null
+    host:riak19.india.commcarehq.org: null
   thresholds: {critical: 1, ok: 1, warning: 1}
   timeout_h: 0
   include_tags: true

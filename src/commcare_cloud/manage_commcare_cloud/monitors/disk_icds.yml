@@ -3,7 +3,7 @@ id: 8797655
 message: |-
   {{#is_alert}}ALERT: Disk usage {{comparator}} {{threshold}} ({{value}})  @jira-iio-maintenance_alert{{/is_alert}}
   {{#is_alert_recovery}}Thanks for the action. The alert has been recovered.  @jira-update{{/is_alert_recovery}}
-name: '[ICDS] Disk space will reach {{threshold}}% in 2 weeks'
+name: '[ICDS] disk alert {{host.name}} {{device.name}}'
 options:
   escalation_message: |-
     Disk Space Used will cross the  {{threshold}} mark in next 2 weeks.
@@ -17,9 +17,9 @@ options:
   renotify_interval: 0
   require_full_window: true
   silenced: {}
-  thresholds: {critical: 0.8, critical_recovery: 0.75}
+  thresholds: {critical: 0.9, critical_recovery: 0.8}
   timeout_h: 0
-query: max(next_2w):forecast(avg:system.disk.in_use{environment:icds} by {host,device},
-  'linear', 1, interval='60m', history='2w', model='reactive') >= 0.8
+query: max(next_1mo):forecast(avg:system.disk.in_use{environment:icds} by {host,device},
+  'linear', 1, interval='120m', history='1mo', model='default') >= 0.9
 tags: [JIRA, ICDS]
 type: query alert
