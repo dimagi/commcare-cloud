@@ -17,12 +17,12 @@ options:
   no_data_timeframe: null
   notify_audit: false
   notify_no_data: false
-  renotify_interval: 360
+  renotify_interval: 1440
   require_full_window: true
   silenced: {}
   thresholds: {critical: 0.9, warning: 0.8}
   timeout_h: 0
-query: min(last_15m):avg:system.disk.in_use{!environment:staging,!device:/dev/mapper/consolidated-data1,!device:/opt/data,!device:/opt/data/ecrypt,!device:/dev/loop0,!device:/dev/loop1,!device:/dev/loop2,!device:/dev/loop3,!device:/dev/loop4,!device:/dev/loop5}
+query: min(last_15m):avg:system.disk.in_use{!group:riakcs,!group:riakcs_new,!environment:staging,!device:/dev/mapper/consolidated-data1,!device:/opt/data,!device:/opt/data/ecrypt,!device:/dev/loop0,!device:/dev/loop1,!device:/dev/loop2,!device:/dev/loop3,!device:/dev/loop4,!device:/dev/loop5,!device:/dev/loop6,!device:/snap/core/6964,!device:/snap/core/7169,!device:/snap/core/7270,!device:/snap/amazon-ssm-agent/1335,!device:/snap/amazon-ssm-agent/1455,!device:/snap/core/7396}
   by {host,device,environment} >= 0.9
 tags: ['*', opsgenie]
 type: metric alert

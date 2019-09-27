@@ -23,9 +23,29 @@ options:
   notify_audit: false
   notify_no_data: false
   renotify_interval: 0
-  silenced: {}
+  silenced:
+    environment:icds,host:es0.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es1.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es10.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es11.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es12.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es13.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es14.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es15.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es16.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es2.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es3.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es4.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es5.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es6.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es7.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es8.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:es9.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:esm0.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:esm1.internal-icds.commcarehq.org,port:9200: null
+    environment:icds,host:esm2.internal-icds.commcarehq.org,port:9200: null
   thresholds: {critical: 1, ok: 1, warning: 1}
   timeout_h: 0
-query: '"elasticsearch.can_connect".over("group:elasticsearch").exclude("environment:icds-new","host:es2-staging").by("host","port").last(2).count_by_status()'
+query: '"elasticsearch.can_connect".over("group:elasticsearch").exclude("environment:icds-new","host:es0-staging","host:es1-staging").by("environment","host","port").last(2).count_by_status()'
 tags: [opsgenie]
 type: service check
