@@ -1,4 +1,5 @@
 #! /bin/bash
+set -x
 
 if [[ $_ == $0 ]]
 then
