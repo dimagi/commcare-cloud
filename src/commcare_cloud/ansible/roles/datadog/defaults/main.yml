@@ -14,6 +14,9 @@ datadog_shell_sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848
 datadog_pgbouncer_custom_version: d69d59d557a615471b98fbc5ec182fa2bae99760
 datadog_pgbouncer_custom_sha256sum: ab6b7bc06a1de1b22b5fe2cd1ea7b191d634a0c4f21424cbd4fed27f5e72681e
 
+datadog_airflow_version: d69d59d557a615471b98fbc5ec182fa2bae99760
+datadog_airflow_sha256sum: b2a4c9685ea2f521bf3720a4b94345c0fe536ecf6355470c018afc33ae61eb4b
+
 monitoring_groups:
   - webworkers
   - hq_webworkers

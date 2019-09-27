@@ -50,9 +50,7 @@
 - name: Copy Kafka partition reassign Script
   get_url:
     url: "https://raw.githubusercontent.com/dimas/kafka-reassign-tool/master/kafka-reassign-tool" 
-    dest: "{{ kafka_data_dir }}/bin"
-    owner: "{{ kafka_user }}"
-    group: "{{ kafka_group }}"
+    dest: "/opt/kafka/bin/kafka-reassign-tool.rb"
     mode: 0755
 
 - name: Copies kafka log4j.properties
