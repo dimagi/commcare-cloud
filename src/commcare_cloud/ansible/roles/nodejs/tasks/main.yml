@@ -5,11 +5,13 @@
   apt_key:
     url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
   when: ansible_distribution_version == '18.04'
+  become: yes
 
 - name: Add git nodejs repo
   apt_repository:
     repo: 'deb https://deb.nodesource.com/node_8.x bionic main'
     state: present
+  become: yes
   when: ansible_distribution_version == '18.04'
 
 - name: Update package list
