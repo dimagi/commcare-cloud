@@ -115,4 +115,4 @@ localsettings:
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
 
-commcare_cloud_root_user: wcdadmin
+commcare_cloud_root_user: ansible
