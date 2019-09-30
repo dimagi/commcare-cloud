@@ -114,5 +114,3 @@ localsettings:
   SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: False
 #  STATIC_ROOT:
-
-commcare_cloud_root_user: ansible
