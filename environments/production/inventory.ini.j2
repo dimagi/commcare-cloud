@@ -35,7 +35,7 @@ mobile_webworkers
 
 {{ __pgproxy1__ }}
 
-{{ __pgbouncer0__ }}
+{{ __pgbouncer1__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -65,7 +65,7 @@ rds_pgsynclog0
 
 [postgresql:children]
 pgproxy1
-pgbouncer0
+pgbouncer1
 remote_postgresql
 
 [ansible_skip:children]
@@ -179,10 +179,10 @@ couch14
 [couchdb2:vars]
 swap_size=8G
 
-{{ __couchproxy0__ }}
+{{ __couchproxy1__ }}
 
 [couchdb2_proxy:children]
-couchproxy0
+couchproxy1
 
 {{ __control__ }}
 
