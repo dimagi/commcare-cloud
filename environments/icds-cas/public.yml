@@ -149,6 +149,8 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   KAFKA_API_VERSION: [0, 8, 2]
+  LOCAL_MIDDLEWARE:
+    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
   LOCAL_PILLOWS:
     icds:
       - name: 'kafka-ucr-static-awc-location'
