@@ -21,7 +21,6 @@ backup_couch: False
 postgres_s3: False
 blobdb_s3: True
 couch_s3: False
-datadog_integration_airflow: False
 
 KSPLICE_ACTIVE: no
 
