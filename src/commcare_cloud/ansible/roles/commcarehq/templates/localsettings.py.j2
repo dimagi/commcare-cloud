@@ -808,6 +808,7 @@ GREENHOUSE_API_KEY = '{{ GREENHOUSE_API_KEY }}'
 {% endif %}
 
 LOCAL_LOGGING_LOGGERS = {{ localsettings.get('LOCAL_LOGGING_LOGGERS', {}) }}
+LOCAL_MIDDLEWARE = {{ localsettings.get('LOCAL_MIDDLEWARE', [])|to_json }}
 
 {% if localsettings.get('SUMOLOGIC_URL') %}
 SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'

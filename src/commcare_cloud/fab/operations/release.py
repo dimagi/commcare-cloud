@@ -26,7 +26,10 @@ from ..const import (
     FORMPLAYER_BUILD_DIR,
     ROLES_CONTROL)
 from commcare_cloud.fab.utils import pip_install
-from .formplayer import clean_formplayer_releases
+from .formplayer import (
+    clean_formplayer_releases,
+    formplayer_is_running_from_old_release_location,
+)
 
 GitConfig = namedtuple('GitConfig', 'key value')
 
@@ -442,11 +445,12 @@ def copy_localsettings(full_cluster=True):
 @parallel
 @roles(ROLES_FORMPLAYER)
 def copy_formplayer_properties():
-    sudo(
-        'cp -r {} {}'.format(
-            os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
-            os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-        ))
+    if formplayer_is_running_from_old_release_location():
+        sudo(
+            'cp -r {} {}'.format(
+                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
+                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
+            ))
 
 
 @parallel
