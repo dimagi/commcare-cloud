@@ -88,7 +88,7 @@ pillows:
     user-pillow:
       num_processes: 4
     group-pillow:
-      num_processes: 4
+      num_processes: 1
 
     AppDbChangeFeedPillow:
       num_processes: 1
