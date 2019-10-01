@@ -6,6 +6,7 @@ control-production: 10.202.10.79
 couch12-production: 10.202.40.52
 couch13-production: 10.202.40.154
 couch14-production: 10.202.40.216
+couchproxy0-production: 10.202.40.162
 couchproxy1-production: 10.202.40.39
 djangomanage1-production: 10.202.10.54
 es15-production: 10.202.40.113
@@ -19,6 +20,7 @@ esmaster5-production: 10.202.40.226
 formplayer2-production: 10.202.10.129
 formplayer3-production: 10.202.10.13
 kafka0-production: 10.202.40.70
+pgbouncer0-production: 10.202.40.58
 pgbouncer1-production: 10.202.40.8
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgproxy1-production: 10.202.40.54
@@ -30,10 +32,8 @@ pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pillow1-production: 10.202.12.128
-proxy0-production: 10.202.20.138
-proxy0-production.public_ip: 100.24.216.221
 proxy1-production: 10.202.20.47
-proxy1-production.public_ip: 18.215.86.109
+proxy1-production.public_ip: 100.24.216.221
 rabbit1-production: 10.202.42.80
 redis1-production: 10.202.40.34
 shareddir0-production: 10.202.40.191
