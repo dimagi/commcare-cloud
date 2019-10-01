@@ -93,13 +93,13 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd -
 else
-    { cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd - ; } &
+    { cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd - ; }
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-pip install pip --upgrade &
-manage-commcare-cloud install & # includes ansible-galaxy install
+pip install pip --upgrade
+manage-commcare-cloud install # includes ansible-galaxy install
 wait
 
 # workaround for some envs that got in a bad state
