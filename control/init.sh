@@ -100,6 +100,7 @@ echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
 pip install pip --upgrade
 manage-commcare-cloud install # includes ansible-galaxy install
+jobs
 wait
 
 # workaround for some envs that got in a bad state
