@@ -131,6 +131,13 @@ track_activity_query_size = 2048
 
 autovacuum = on
 
+{% if configure_autovacuum  %}
+autovacuum_multixact_freeze_max_age = 1000000000
+vacuum_cost_limit = 1200
+autovacuum_max_workers = 5
+autovacuum_analyze_scale_factor = 0.05
+autovacuum_vacuum_scale_factor = 0.1
+{% endif %}
 
 # CLIENT CONNECTION DEFAULTS
 
