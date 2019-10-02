@@ -86,7 +86,7 @@ pillows:
     xform-pillow:
       num_processes: 4
     user-pillow:
-      num_processes: 4
+      num_processes: 1
     group-pillow:
       num_processes: 1
 
