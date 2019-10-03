@@ -153,14 +153,7 @@ servers:
     volume_size: 660
     group: "elasticsearch"
     os: bionic
-
-  - server_name: "couchproxy0-production"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "couchdb2_proxy"
-    os: trusty
+    
   - server_name: "couchproxy1-production"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
@@ -290,13 +283,6 @@ servers:
     group: "postgresql"
     os: trusty
 
-  - server_name: "pgbouncer0-production"
-    server_instance_type: t3.medium
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
-    os: trusty
   - server_name: "pgbouncer1-production"
     server_instance_type: t3.medium
     network_tier: "db-private"
