@@ -197,4 +197,3 @@ rds_instances:
     instance_type: "db.t3.xlarge"
     storage: 500
     multi_az: true
-    engine_version: '9.6.15'
