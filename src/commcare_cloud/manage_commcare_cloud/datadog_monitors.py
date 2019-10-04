@@ -212,7 +212,24 @@ class MonitorError(Exception):
     pass
 
 
-class RemoteMonitorAPI(object):
+class MontorAPI(object):
+    def __init__(self, filtered_ids=None):
+        self.filtered_ids = filtered_ids
+
+    def get_all(self):
+        raise NotImplementedError
+
+    def get_filtered(self):
+        all_monitors = self.get_all()
+        if not self.filtered_ids:
+            return all_monitors
+        else:
+            return {
+                mid: all_monitors[mid] for mid in self.filtered_ids
+            }
+
+
+class RemoteMonitorAPI(MontorAPI):
     def _wrap(self, raw_mon):
         # This drove me crazy to figure out, but the get_all endpoint omits
         # options.synthetics_check_id for no reason I can think of.
@@ -234,8 +251,9 @@ class RemoteMonitorAPI(object):
             raise MonitorError('\n'.join(result['errors']))
 
 
-class LocalMonitorAPI(object):
-    def __init__(self, config):
+class LocalMonitorAPI(MontorAPI):
+    def __init__(self, config, filtered_ids=None):
+        super(LocalMonitorAPI, self).__init__(filtered_ids=filtered_ids)
         self.config = config
         self._monitors_by_id = None
         self._monitor_file_names_by_id = None
@@ -256,24 +274,25 @@ class LocalMonitorAPI(object):
         write_monitor_definition(monitor_id, wrapped_monitor)
 
 
-class DatadogMonitors(CommandBase):
+class UpdateDatadogMonitors(CommandBase):
     command = 'update-datadog-monitors'
     help = """Update Datadog Monitor definitions"""
 
     arguments = (
         Argument('config'),
         Argument('-k', '--update-key', nargs='*', choices=UPDATE_KEYS, help="Only update these keys."),
+        Argument('-m', '--monitors', type=int, nargs='*', help="Only update these monitors (by id)."),
     )
 
     def run(self, args, unknown_args):
         config = get_config(args.config)
         keys_to_update = args.update_key or UPDATE_KEYS
         initialize_datadog(config)
-        remote_monitor_api = RemoteMonitorAPI()
-        local_monitor_api = LocalMonitorAPI(config)
+        remote_monitor_api = RemoteMonitorAPI(filtered_ids=args.monitors)
+        local_monitor_api = LocalMonitorAPI(config, filtered_ids=args.monitors)
 
-        local_monitors = local_monitor_api.get_all()
-        remote_monitors = remote_monitor_api.get_all()
+        local_monitors = local_monitor_api.get_filtered()
+        remote_monitors = remote_monitor_api.get_filtered()
 
         only_remote = {
             id: remote_monitors[id]
