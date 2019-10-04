@@ -1,8 +1,10 @@
 import difflib
 import os
 import re
+from abc import ABCMeta, abstractmethod
 
 import jinja2
+import six
 import yaml
 from clint.textui import puts, indent
 from datadog import api, initialize
@@ -212,10 +214,11 @@ class MonitorError(Exception):
     pass
 
 
-class MontorAPI(object):
+class MonitorAPI(six.with_metaclass(ABCMeta)):
     def __init__(self, filtered_ids=None):
         self.filtered_ids = filtered_ids
 
+    @abstractmethod
     def get_all(self):
         raise NotImplementedError
 
@@ -229,7 +232,7 @@ class MontorAPI(object):
             }
 
 
-class RemoteMonitorAPI(MontorAPI):
+class RemoteMonitorAPI(MonitorAPI):
     def _wrap(self, raw_mon):
         # This drove me crazy to figure out, but the get_all endpoint omits
         # options.synthetics_check_id for no reason I can think of.
@@ -251,7 +254,7 @@ class RemoteMonitorAPI(MontorAPI):
             raise MonitorError('\n'.join(result['errors']))
 
 
-class LocalMonitorAPI(MontorAPI):
+class LocalMonitorAPI(MonitorAPI):
     def __init__(self, config, filtered_ids=None):
         super(LocalMonitorAPI, self).__init__(filtered_ids=filtered_ids)
         self.config = config
