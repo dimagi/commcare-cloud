@@ -12,7 +12,7 @@
   become: yes
   cron:
     name: "Check {{ service }} s3 backups"
-    job: "/usr/local/bin/check_s3_backup.py {{ service }} > {{ service_backup_dir }}/s3_backup_status.txt || { echo {{ service_backup_dir }}/s3_backup_status.txt | mail -s 'Recent {{ service }} backups missing' {{ check_s3_backups_email }}; }"
+    job: "/usr/local/bin/check_s3_backup.py {{ service }} > {{ service_backup_dir }}/s3_backup_status.txt || { cat {{ service_backup_dir }}/s3_backup_status.txt | mail -s 'Recent {{ service }} backups missing' {{ check_s3_backups_email }}; }"
     state: "{{ 'present' if condition else 'absent' }}"
     minute: 0
     hour: "0,4,8,12,16,20"
