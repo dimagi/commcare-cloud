@@ -34,6 +34,14 @@ nginx_sites:
         # username is not first query param
         - key: '"~^(?P<path>[^?]*)\?(?P<args1>.*?)(&?username=[^&]*)(?P<args2>&?.*)?$"'
           value: '$path?$args1$args2'
+    - name: "$limit_bucket"
+      variable: "$remote_addr"
+      default_value: "$server_name"
+      var_mappings: # whitelisted IP addresses not to be rate-limited
+        - key: '180.151.231.114'
+          value: '""'
+        - key: '120.56.87.55'
+          value: '""'
    limit_req_zones:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
       zone: "$incremental_sync"
@@ -52,13 +60,13 @@ nginx_sites:
       size: "10m"
       rate: "30r/s"
     - name: "app_downloads"
-      zone: "$server_name"
+      zone: "$limit_bucket"
       size: "10m"
-      rate: "150r/s"
+      rate: "2r/s"
     - name: "multimedia"
-      zone: "$server_name"
+      zone: "$limit_bucket"
       size: "10m"
-      rate: "50r/s"
+      rate: "200r/s"
    proxy_cache_path:
     - name: "app_cache"
       path: "{{ www_home }}/app_downloads/cache"
