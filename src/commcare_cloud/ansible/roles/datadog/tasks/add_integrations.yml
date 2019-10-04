@@ -45,7 +45,7 @@
 - name: Install airflow check python requirement
   command: /opt/datadog-agent/embedded/bin/pip install sqlalchemy
   become_user: dd-agent
-  when: datadog_integration_airflow|bool
+  when: datadog_integration_airflow|default(False)
 
 - name: Install airflow check
   get_url:
@@ -53,7 +53,7 @@
     dest: /etc/dd-agent/checks.d/airflow.py
     sha256sum: "{{ datadog_airflow_sha256sum }}"
     force: yes
-  when: datadog_integration_airflow|bool
+  when: datadog_integration_airflow|default(False)
   notify: restart datadog
   tags:
     - datadog_integrations
