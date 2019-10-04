@@ -67,13 +67,19 @@ def get_datadog_jinja_environment():
     )
 
 
-def render_notification_block(config, env_key):
+def render_notification_block(config, env_key, skip_envs=None):
     j2 = get_datadog_jinja_environment()
     template = j2.get_template('notification_block.j2')
+    envs = config.env_notifications
+    if skip_envs:
+        # copy but maintain ordering
+        envs = OrderedDict(sorted(config.env_notifications.items()))
+        for env in skip_envs:
+            envs.pop(env, None)
     return template.render(
         env_key=env_key,
         catchall_alert_channel=config.catchall_alert_channel,
-        envs=config.env_notifications,
+        envs=envs,
         start_block=BLOCK.format(env_key=env_key, start_or_end='START'),
         end_block=BLOCK.format(env_key=env_key, start_or_end='END'),
     )
@@ -153,21 +159,23 @@ def get_ignored_mointor_ids():
 
 def render_messages(config, monitor):
     monitor = monitor.copy()
-    message_rendered = render_message(config, monitor['message'], monitor['env_key'])
+    env_key = monitor['env_key']
+    skip_envs = monitor.get('skip_envs', [])
+    message_rendered = render_message(config, monitor['message'], env_key, skip_envs)
     monitor['message'] = LiteralUnicode(message_rendered.strip())
     escal_msg = monitor['options'].get(ESCAL_MSG)
     if escal_msg:
-        elcal_rendered = render_message(config, escal_msg, monitor['env_key'])
+        elcal_rendered = render_message(config, escal_msg, env_key, skip_envs)
         monitor['options'][ESCAL_MSG] = LiteralUnicode(elcal_rendered.strip())
     if 'include_tags' not in monitor['options']:
         monitor['options']['include_tags'] = True
     return monitor
 
 
-def render_message(config, message, env_key):
+def render_message(config, message, env_key, skip_envs=None):
     j2 = jinja2.Environment(loader=DictLoader({'m': message}), **JINJA_OPTS)
     return j2.get_template('m').render(
-        notification_block=render_notification_block(config, env_key)
+        notification_block=render_notification_block(config, env_key, skip_envs)
     )
 
 
