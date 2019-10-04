@@ -345,3 +345,77 @@ class UpdateDatadogMonitors(CommandBase):
             if ask("And BTW do you want to dump all untracked monitors as a starting point?"):
                 for id, missing_monitor in sorted(only_remote.items()):
                     local_monitor_api.create(id, missing_monitor)
+
+
+class ListDatadogMonitors(CommandBase):
+    command = 'list-datadog-monitors'
+    help = """Lost Datadog Monitor definitions"""
+
+    arguments = (
+        Argument('config'),
+        Argument('-f', '--filenames', action='store_true', help="Show filenames instead of monitor names."),
+        Argument('-l', '--local', action='store_true', help="Only list what's local. Don't query Datadog."),
+        Argument('--sort', choices=('name', 'id'), default='id', help="Sort order."),
+    )
+
+    def run(self, args, unknown_args):
+        config = get_config(args.config)
+        local_monitor_api = LocalMonitorAPI(config)
+
+        show_filenames = args.filenames
+        sort_index = {
+            'id': 0,
+            'name': 1
+        }[args.sort]
+
+        def _print(title, monitors):
+            _print_monitors(local_monitor_api, title, monitors, show_filenames, sort_index)
+
+        local_monitors = local_monitor_api.get_all()
+        if args.local:
+            _print("\nMonitors", local_monitors)
+        else:
+            initialize_datadog(config)
+            remote_monitor_api = RemoteMonitorAPI()
+            remote_monitors = remote_monitor_api.get_all()
+
+            only_remote = {
+                id: remote_monitors[id]
+                for id in set(remote_monitors) - set(local_monitors)
+            }
+            only_local = {
+                id: local_monitors[id]
+                for id in set(local_monitors) - set(remote_monitors)
+            }
+            shared_local_remote_monitors = {
+                id: local_monitors[id]
+                for id in set(local_monitors) & set(remote_monitors)
+            }
+
+            _print("\nMonitors", shared_local_remote_monitors)
+            _print("\nMonitors only on Datadog", only_remote)
+            _print("\nMonitors only on local", only_local)
+
+
+def _print_monitors(api, title, monitors, show_filenames, sort_index):
+    if not monitors:
+        return
+    puts(title)
+    with indent():
+        output_list = sorted([
+            (id, _get_display(api, monitor, show_filenames))
+            for id, monitor in monitors.items()
+        ], key=lambda p: p[sort_index])
+        for id, name in output_list:
+            puts("{:<10}: {}".format(id, name))
+
+
+def _get_display(api, monitor, show_filenames):
+    name_ = monitor['name']
+    if show_filenames:
+        try:
+            name_ = api.get_filename_for_monitor(monitor['id'])
+            _, name_ = os.path.split(name_)
+        except KeyError:
+            pass
+    return name_
