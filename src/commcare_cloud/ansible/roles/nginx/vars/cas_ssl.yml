@@ -42,6 +42,8 @@ nginx_sites:
           value: '""'
         - key: '120.56.87.55'
           value: '""'
+        - key: '192.168.8.218' # Ben Talbot
+          value: '""'
    limit_req_zones:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
       zone: "$incremental_sync"
