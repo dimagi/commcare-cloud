@@ -12,7 +12,7 @@ module "postgresql" {
   identifier = "${var.rds_instance["identifier"]}"
 
   engine            = "postgres"
-  engine_version    = "9.6.6"
+  engine_version    = "${var.rds_instance["engine_version"]}"
   instance_class    = "${var.rds_instance["instance_type"]}"
   allocated_storage = "${var.rds_instance["storage"]}"
 
