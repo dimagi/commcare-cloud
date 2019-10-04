@@ -1,5 +1,7 @@
 id: 4847367
 env_key: environment.name
+skip_envs:
+  - icds
 message: |
   {{#is_alert}}
   Postgresql Connection percentage is {{value}} which is more than 90%.
