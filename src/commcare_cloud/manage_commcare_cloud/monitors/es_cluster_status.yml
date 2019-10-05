@@ -1,4 +1,4 @@
-env_key: host.environment
+env_key: environment.name
 id: 654754
 message: |-
   https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch

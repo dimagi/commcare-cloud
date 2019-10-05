@@ -10,7 +10,7 @@ message: |
   {{/is_alert}}
   {{#is_recovery}}ES cluster status back to GREEN.{{/is_recovery}}
   << notification_block >>
-name: ES Cluster Node Connection ALERT (new)
+name: ES Cluster Node Connection ALERT
 options:
   escalation_message: |
     https://confluence.dimagi.com/display/commcarehq/Firefighting+HQ#FirefightingHQ-Elasticsearch

@@ -1,8 +1,10 @@
 import difflib
 import os
 import re
+from abc import ABCMeta, abstractmethod
 
 import jinja2
+import six
 import yaml
 from clint.textui import puts, indent
 from datadog import api, initialize
@@ -67,13 +69,19 @@ def get_datadog_jinja_environment():
     )
 
 
-def render_notification_block(config, env_key):
+def render_notification_block(config, env_key, skip_envs=None):
     j2 = get_datadog_jinja_environment()
     template = j2.get_template('notification_block.j2')
+    envs = config.env_notifications
+    if skip_envs:
+        # copy but maintain ordering
+        envs = OrderedDict(sorted(config.env_notifications.items()))
+        for env in skip_envs:
+            envs.pop(env, None)
     return template.render(
         env_key=env_key,
         catchall_alert_channel=config.catchall_alert_channel,
-        envs=config.env_notifications,
+        envs=envs,
         start_block=BLOCK.format(env_key=env_key, start_or_end='START'),
         end_block=BLOCK.format(env_key=env_key, start_or_end='END'),
     )
@@ -153,21 +161,23 @@ def get_ignored_mointor_ids():
 
 def render_messages(config, monitor):
     monitor = monitor.copy()
-    message_rendered = render_message(config, monitor['message'], monitor['env_key'])
+    env_key = monitor['env_key']
+    skip_envs = monitor.get('skip_envs', [])
+    message_rendered = render_message(config, monitor['message'], env_key, skip_envs)
     monitor['message'] = LiteralUnicode(message_rendered.strip())
     escal_msg = monitor['options'].get(ESCAL_MSG)
     if escal_msg:
-        elcal_rendered = render_message(config, escal_msg, monitor['env_key'])
+        elcal_rendered = render_message(config, escal_msg, env_key, skip_envs)
         monitor['options'][ESCAL_MSG] = LiteralUnicode(elcal_rendered.strip())
     if 'include_tags' not in monitor['options']:
         monitor['options']['include_tags'] = True
     return monitor
 
 
-def render_message(config, message, env_key):
+def render_message(config, message, env_key, skip_envs=None):
     j2 = jinja2.Environment(loader=DictLoader({'m': message}), **JINJA_OPTS)
     return j2.get_template('m').render(
-        notification_block=render_notification_block(config, env_key)
+        notification_block=render_notification_block(config, env_key, skip_envs)
     )
 
 
@@ -204,7 +214,25 @@ class MonitorError(Exception):
     pass
 
 
-class RemoteMonitorAPI(object):
+class MonitorAPI(six.with_metaclass(ABCMeta)):
+    def __init__(self, filtered_ids=None):
+        self.filtered_ids = filtered_ids
+
+    @abstractmethod
+    def get_all(self):
+        raise NotImplementedError
+
+    def get_filtered(self):
+        all_monitors = self.get_all()
+        if not self.filtered_ids:
+            return all_monitors
+        else:
+            return {
+                mid: all_monitors[mid] for mid in self.filtered_ids
+            }
+
+
+class RemoteMonitorAPI(MonitorAPI):
     def _wrap(self, raw_mon):
         # This drove me crazy to figure out, but the get_all endpoint omits
         # options.synthetics_check_id for no reason I can think of.
@@ -226,8 +254,9 @@ class RemoteMonitorAPI(object):
             raise MonitorError('\n'.join(result['errors']))
 
 
-class LocalMonitorAPI(object):
-    def __init__(self, config):
+class LocalMonitorAPI(MonitorAPI):
+    def __init__(self, config, filtered_ids=None):
+        super(LocalMonitorAPI, self).__init__(filtered_ids=filtered_ids)
         self.config = config
         self._monitors_by_id = None
         self._monitor_file_names_by_id = None
@@ -248,24 +277,25 @@ class LocalMonitorAPI(object):
         write_monitor_definition(monitor_id, wrapped_monitor)
 
 
-class DatadogMonitors(CommandBase):
+class UpdateDatadogMonitors(CommandBase):
     command = 'update-datadog-monitors'
     help = """Update Datadog Monitor definitions"""
 
     arguments = (
         Argument('config'),
         Argument('-k', '--update-key', nargs='*', choices=UPDATE_KEYS, help="Only update these keys."),
+        Argument('-m', '--monitors', type=int, nargs='*', help="Only update these monitors (by id)."),
     )
 
     def run(self, args, unknown_args):
         config = get_config(args.config)
         keys_to_update = args.update_key or UPDATE_KEYS
         initialize_datadog(config)
-        remote_monitor_api = RemoteMonitorAPI()
-        local_monitor_api = LocalMonitorAPI(config)
+        remote_monitor_api = RemoteMonitorAPI(filtered_ids=args.monitors)
+        local_monitor_api = LocalMonitorAPI(config, filtered_ids=args.monitors)
 
-        local_monitors = local_monitor_api.get_all()
-        remote_monitors = remote_monitor_api.get_all()
+        local_monitors = local_monitor_api.get_filtered()
+        remote_monitors = remote_monitor_api.get_filtered()
 
         only_remote = {
             id: remote_monitors[id]
@@ -318,3 +348,77 @@ class DatadogMonitors(CommandBase):
             if ask("And BTW do you want to dump all untracked monitors as a starting point?"):
                 for id, missing_monitor in sorted(only_remote.items()):
                     local_monitor_api.create(id, missing_monitor)
+
+
+class ListDatadogMonitors(CommandBase):
+    command = 'list-datadog-monitors'
+    help = """Lost Datadog Monitor definitions"""
+
+    arguments = (
+        Argument('config'),
+        Argument('-f', '--filenames', action='store_true', help="Show filenames instead of monitor names."),
+        Argument('-l', '--local', action='store_true', help="Only list what's local. Don't query Datadog."),
+        Argument('--sort', choices=('name', 'id'), default='id', help="Sort order."),
+    )
+
+    def run(self, args, unknown_args):
+        config = get_config(args.config)
+        local_monitor_api = LocalMonitorAPI(config)
+
+        show_filenames = args.filenames
+        sort_index = {
+            'id': 0,
+            'name': 1
+        }[args.sort]
+
+        def _print(title, monitors):
+            _print_monitors(local_monitor_api, title, monitors, show_filenames, sort_index)
+
+        local_monitors = local_monitor_api.get_all()
+        if args.local:
+            _print("\nMonitors", local_monitors)
+        else:
+            initialize_datadog(config)
+            remote_monitor_api = RemoteMonitorAPI()
+            remote_monitors = remote_monitor_api.get_all()
+
+            only_remote = {
+                id: remote_monitors[id]
+                for id in set(remote_monitors) - set(local_monitors)
+            }
+            only_local = {
+                id: local_monitors[id]
+                for id in set(local_monitors) - set(remote_monitors)
+            }
+            shared_local_remote_monitors = {
+                id: local_monitors[id]
+                for id in set(local_monitors) & set(remote_monitors)
+            }
+
+            _print("\nMonitors", shared_local_remote_monitors)
+            _print("\nMonitors only on Datadog", only_remote)
+            _print("\nMonitors only on local", only_local)
+
+
+def _print_monitors(api, title, monitors, show_filenames, sort_index):
+    if not monitors:
+        return
+    puts(title)
+    with indent():
+        output_list = sorted([
+            (id, _get_display(api, monitor, show_filenames))
+            for id, monitor in monitors.items()
+        ], key=lambda p: p[sort_index])
+        for id, name in output_list:
+            puts("{:<10}: {}".format(id, name))
+
+
+def _get_display(api, monitor, show_filenames):
+    name_ = monitor['name']
+    if show_filenames:
+        try:
+            name_ = api.get_filename_for_monitor(monitor['id'])
+            _, name_ = os.path.split(name_)
+        except KeyError:
+            pass
+    return name_

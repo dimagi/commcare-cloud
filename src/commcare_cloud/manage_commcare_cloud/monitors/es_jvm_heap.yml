@@ -18,7 +18,6 @@ options:
   silenced: {}
   thresholds: {critical: 85.0}
   timeout_h: 0
-query: avg(last_5m):( avg:jvm.mem.heap_used{group:elasticsearch} / avg:jvm.mem.heap_committed{group:elasticsearch}
-  ) * 100 > 85
+query: avg(last_5m):( avg:jvm.mem.heap_used{group:elasticsearch} by {host} / avg:jvm.mem.heap_committed{group:elasticsearch} by {host} ) * 100 > 85
 tags: []
 type: query alert
