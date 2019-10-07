@@ -19,7 +19,7 @@ backup_postgres: False
 backup_es_s3: False
 backup_couch: False
 postgres_s3: False
-blobdb_s3: True
+blobdb_s3: False
 couch_s3: False
 
 KSPLICE_ACTIVE: no
@@ -68,7 +68,7 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 check_s3_backups_email: commcarehq-ops+root@dimagi.com
 
-TWO_FACTOR_GATEWAY_ENABLED: True
+TWO_FACTOR_GATEWAY_ENABLED: False
 
 localsettings:
   ALLOWED_HOSTS:
