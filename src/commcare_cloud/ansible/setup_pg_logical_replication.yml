@@ -140,6 +140,14 @@
       when: item.target_host == inventory_hostname
       register: result
 
+    - name: Grant usage to hq user
+      postgres
+      postgresql_query:
+        db: '{{ item.target_db_name }}'
+        query: "GRANT USAGE ON SCHEMA pglogical TO {{ secrets.POSTGRES_USERS.commcare }};"
+      loop: "{{ replications }}"
+      when: item.target_host == inventory_hostname
+
 # status
 - hosts:
     - shard_dbs
