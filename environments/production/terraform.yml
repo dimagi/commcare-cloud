@@ -37,7 +37,7 @@ servers:
     os: trusty
 
   - server_name: "djangomanage1-production"
-    server_instance_type: c5.xlarge
+    server_instance_type: m5.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 80
