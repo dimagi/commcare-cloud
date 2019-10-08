@@ -22,7 +22,6 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 
 DATADOG_ENABLED: True
-datadog_integration_cloudant: true
 
 DATADOG_TRACE:
   TAGS:
