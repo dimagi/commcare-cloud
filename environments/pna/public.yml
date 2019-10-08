@@ -87,8 +87,6 @@ localsettings:
   COUCH_SERVER_ROOT: "127.0.0.1"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PORT: 5984
-# pna is not hosted by Cloudant
-  COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25

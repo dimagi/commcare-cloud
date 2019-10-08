@@ -1,14 +1,3 @@
-- name: Install cloudant check
-  get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_cloudant_version }}/cloudant/cloudant.py"
-    dest: /etc/dd-agent/checks.d/cloudant.py
-    sha256sum: "{{ datadog_cloudant_sha256sum }}"
-    force: yes
-  notify: restart datadog
-  when: datadog_integration_cloudant and inventory_hostname == groups.django_manage[0]
-  tags:
-    - datadog_integrations
-
 - name: Install celery check
   get_url:
     url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_celery_version }}/celery/celery.py"
@@ -82,7 +71,6 @@
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
     - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
-    - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
