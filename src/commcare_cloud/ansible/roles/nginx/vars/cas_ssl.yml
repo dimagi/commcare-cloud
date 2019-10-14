@@ -38,10 +38,6 @@ nginx_sites:
       variable: "$remote_addr"
       default_value: "$server_name"
       var_mappings: # whitelisted IP addresses not to be rate-limited
-        - key: '180.151.231.114'
-          value: '""'
-        - key: '120.56.87.55'
-          value: '""'
         - key: '192.168.8.218' # Ben Talbot
           value: '""'
    limit_req_zones:
