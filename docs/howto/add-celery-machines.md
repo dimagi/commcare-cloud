@@ -27,13 +27,7 @@ commcare-cloud <env> ap deploy_shared_dir.yml --tags=nfs --limit=shared_dir_host
 
 ```
 
-2. Register with pgbouncer machines
-
-```
-cchq $ENV deploy-stack --tags=pgbouncer_hba --limit postgresql
-```
-
-3. Deploy new node
+2. Deploy new node
 
 ```
 commcare-cloud <env> deploy_stack.yml --limit=celeryN
