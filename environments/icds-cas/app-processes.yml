@@ -217,9 +217,6 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  web28,web29,web30,web31,web32,web33,web34,web35,web36,web37,web38,web39,web40:
-    ucr_indicator_queue:
-      concurrency: 4
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
