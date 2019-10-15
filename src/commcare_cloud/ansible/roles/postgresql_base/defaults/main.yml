@@ -22,6 +22,11 @@ postgresql_archive_path: "{{ postgresql_dir_path }}/wal_archive"
 postgresql_archive_command: "cp %p {{ postgresql_dir_path }}/wal_archive/%f"
 postgresql_enable_archive: no
 disable_archive_cleanup_cron: False
+postgresql_vacuum_cost_limit: ~
+postgresql_autovacuum_multixact_freeze_max_age: ~
+postgresql_autovacuum_max_workers: ~
+postgresql_autovacuum_analyze_scale_factor: ~
+postgresql_autovacuum_vacuum_scale_factor: ~
 
 postgresql_systemd_config_dir: "/etc/systemd/system/postgresql@.service.d"
 

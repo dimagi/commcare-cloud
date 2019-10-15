@@ -131,6 +131,21 @@ track_activity_query_size = 2048
 
 autovacuum = on
 
+{% if postgresql_autovacuum_max_workers %}
+autovacuum_max_workers = {{ postgresql_autovacuum_max_workers }}
+{% endif %}
+{% if postgresql_vacuum_cost_limit %}
+vacuum_cost_limit = {{ postgresql_vacuum_cost_limit }}
+{% endif %}
+{% if postgresql_autovacuum_multixact_freeze_max_age %}
+autovacuum_multixact_freeze_max_age = {{ postgresql_autovacuum_multixact_freeze_max_age }}
+{% endif %}
+{% if postgresql_autovacuum_analyze_scale_factor %}
+autovacuum_analyze_scale_factor = {{ postgresql_autovacuum_analyze_scale_factor }}
+{% endif %}
+{% if postgresql_autovacuum_vacuum_scale_factor %}
+autovacuum_vacuum_scale_factor = {{ postgresql_autovacuum_vacuum_scale_factor }}
+{% endif %}
 
 # CLIENT CONNECTION DEFAULTS
 
