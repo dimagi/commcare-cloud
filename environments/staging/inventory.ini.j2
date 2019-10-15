@@ -22,11 +22,6 @@ web4
 
 {{ __rds_pg0__ }}
 
-# this is non-standard naming
-# todo: fix and then enforce naming convention
-[rds_pg0_replica]
-{{ aws_resources['pg0-staging-replica'] }}
-
 [remote_postgresql:children]
 rds_pg0
 
@@ -112,7 +107,6 @@ control0
 
 [ansible_skip:children]
 rds_pg0
-rds_pg0_replica
 
 [django_manage:children]
 # Amazon EC2
