@@ -35,7 +35,7 @@ pillow1-production: 10.202.12.128
 proxy1-production: 10.202.20.47
 proxy1-production.public_ip: 100.24.216.221
 rabbit1-production: 10.202.42.80
-redis1-production: 10.202.40.34
+redis0-production: 10.202.40.233
 shareddir0-production: 10.202.40.191
 vpn-production: 10.202.20.194
 vpn-production.public_ip: 18.235.223.2
