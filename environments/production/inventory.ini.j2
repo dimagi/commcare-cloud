@@ -118,9 +118,12 @@ pillow1
 formplayer2
 formplayer3
 
+{{ __redis0__ }} swap_size=1G
+
 {{ __redis1__ }} swap_size=1G
 
 [redis:children]
+redis0
 redis1
 
 {{ __shareddir0__ }}
