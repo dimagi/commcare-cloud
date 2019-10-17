@@ -17,6 +17,9 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST1 }}:5672/{{ AMQP_NAME }}'
+
 # ElasticSearch Backup on Swift API
 backup_es_swift: True
 swift_container: mowcdmumelasticdb
