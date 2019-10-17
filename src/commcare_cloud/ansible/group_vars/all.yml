@@ -124,7 +124,6 @@ check_s3_backups_email: null
 AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY | default(None) }}"
 AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY | default(None) }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-AMQP_HOST1: "{{ groups.rabbitmq.1 }}"
 AMQP_NAME: commcarehq
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD | default(None) }}"
 AMQP_USER: "{{ secrets.AMQP_USER | default(None) }}"
