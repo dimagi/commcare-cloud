@@ -99,7 +99,7 @@ servers:
     os: bionic
 
   - server_name: "couch5-india"
-    server_instance_type: "c5.2xlarge"
+    server_instance_type: "m5.2xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 20
@@ -108,7 +108,7 @@ servers:
     group: couchdb2
     os: bionic
   - server_name: "couch6-india"
-    server_instance_type: "c5.2xlarge"
+    server_instance_type: "m5.2xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 20
@@ -117,7 +117,7 @@ servers:
     group: couchdb2
     os: bionic
   - server_name: "couch7-india"
-    server_instance_type: "c5.2xlarge"
+    server_instance_type: "m5.2xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 20
