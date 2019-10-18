@@ -173,9 +173,10 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t2.medium"
+    instance_type: "db.t3.small"
     storage: 160
     multi_az: yes
+    engine_version: 9.6.9
 
 elasticache:
   create: no
