@@ -104,7 +104,7 @@ servers:
     az: "a"
     volume_size: 20
     block_device:
-      volume_size: 250
+      volume_size: 270
     group: couchdb2
     os: bionic
   - server_name: "couch6-india"
