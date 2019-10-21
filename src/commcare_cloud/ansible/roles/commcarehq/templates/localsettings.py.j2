@@ -407,6 +407,9 @@ redis_cache = {
     'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
 {% endif %}
     'OPTIONS': {
+{% if localsettings.get('REDIS_PASSWORD') %}
+        'PASSWORD': '{{ localsettings.REDIS_PASSWORD}}',
+{% endif %}
         'PARSER_CLASS': 'redis.connection.HiredisParser',
         'PICKLE_VERSION': 2,  # After PY3 migration: remove
 {% if is_redis_cluster %}
