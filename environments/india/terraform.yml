@@ -102,7 +102,7 @@ servers:
     server_instance_type: "m5.xlarge"
     network_tier: "db-private"
     az: "a"
-    volume_size: 20
+    volume_size: 25
     block_device:
       volume_size: 270
     group: couchdb2
