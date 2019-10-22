@@ -60,9 +60,11 @@ index.search.slowlog.threshold.query.trace: 500ms
 indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 {% endif %}
 
+{% if elasticsearch_enable_inline_groovy_scripts %}
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
+{% endif %}
 
 {% if backup_es_s3 and AMAZON_S3_ACCESS_KEY %}
 cloud:
