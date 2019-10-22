@@ -6,6 +6,7 @@ elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+elasticsearch_enable_inline_groovy_scripts: False
 
 supervisor_http_enabled: False
 
@@ -16,6 +17,9 @@ postgres_s3: False
 couch_s3: False
 backup_couch: False
 nadir_hour: 16
+
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
 
 # ElasticSearch Backup on Swift API
 backup_es_swift: True
