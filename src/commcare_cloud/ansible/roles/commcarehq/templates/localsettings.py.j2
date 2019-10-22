@@ -60,7 +60,6 @@ PARTITION_DATABASE_CONFIG = {
         {% endfor %}
     },
     'groups': {
-        'main': ['default'],
         'proxy': ['proxy'],
         'form_processing': [
             {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
