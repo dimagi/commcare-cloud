@@ -29,4 +29,4 @@
   with_items: "{{ hostTo }}"
 
 - name: Deleting temp files
-  local_action: file  path=/tmp/id_rsa.tmp state=absent
+  local_action: file path=/tmp/id_rsa.tmp state=absent

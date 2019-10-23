@@ -21,6 +21,20 @@
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
 
+- name: Setup auth for standby
+  hosts:
+    - citusdb
+  vars:
+    - userFrom: postgres
+    - hostTo: "{{ hot_standby_server }}"
+    - userTo: postgres
+    - state: 'present'
+  tasks:
+    - import_tasks: roles/setup_auth_keys.yml
+      when: hot_standby_server is defined and hot_standby_server
+  tags:
+    - pg_standby
+
 # Disables transparent huge pages (THP)
 - name: Disable THP
   become: true
