@@ -258,6 +258,10 @@ servers:
     volume_size: 60
     group: "redis"
     os: trusty
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 194ab51... Update terraform.yml
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
     network_tier: "db-private"
