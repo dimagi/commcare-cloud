@@ -7,6 +7,7 @@
 
 - shell: "getent passwd {{ userFrom }} | cut -d: -f6"
   become: true
+  check_mode: no
   register: user_home
 
 - name: Downloading pub key from {{ inventory_hostname }}
@@ -16,7 +17,6 @@
     dest: /tmp/id_rsa.tmp
     flat: yes
     fail_on_missing: yes
-  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "{{ 'Add' if state == 'present' else 'Remove' }} public key on {{ hostTo }} for {{ userTo }}"
   become: true
