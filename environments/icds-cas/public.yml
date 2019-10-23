@@ -229,6 +229,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: True
   SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
+  STATIC_DATA_SOURCE_PROVIDERS: []
   # sumologic toggle is set to 0 so having this here just incurs another cache hit for nothing
   # can re-enable if we want to
   SUMOLOGIC_URL: # "{{ localsettings_private.SUMOLOGIC_URL }}"
