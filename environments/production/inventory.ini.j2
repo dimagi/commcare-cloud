@@ -81,11 +81,15 @@ swap_size=2G
 
 {{ __kafka0__ }} kafka_broker_id=1
 
+{{ __kafka1__ }} kafka_broker_id=2
+
 [zookeeper:children]
 kafka0
+kafka1
 
 [kafka:children]
 kafka0
+kafka1
 
 {{ __celery9__ }}
 
