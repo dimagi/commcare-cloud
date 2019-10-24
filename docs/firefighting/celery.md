@@ -7,7 +7,7 @@
 
 ### Symptoms
 
-You check /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is down:
+You check /hq/admin/system/check_services or /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is down:
 * celery@hqcelery2.internal-va.commcarehq.org_main.1491657794_timestamp worker is down
 Using the environments and inventory files to find which machine hosts the worker, you log in and verify the worker is stopped:
 
@@ -41,7 +41,7 @@ commcare-hq-production-errand-boy RUNNING    pid 10465, uptime 0:45:47
 
 ### Symptoms
 
-You check /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is down:
+You check /hq/admin/system/check_services or /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is down:
 * celery@hqcelery2.internal-va.commcarehq.org_main.1491657794_timestamp worker is down
 Using the environments and inventory files to find which machine hosts the worker, you log in and verify the worker has not been able to start:
 

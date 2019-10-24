@@ -1,4 +1,4 @@
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy0-production.public_ip'] }}
+{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-production.public_ip'] }}
 
 [proxy:children]
 proxy1
@@ -33,9 +33,9 @@ web13
 hq_webworkers
 mobile_webworkers
 
-{{ __pgproxy1__ }}
+{{ __pgproxy2__ }}
 
-{{ __pgbouncer0__ }}
+{{ __pgbouncer1__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -64,8 +64,8 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgproxy1
-pgbouncer0
+pgproxy2
+pgbouncer1
 remote_postgresql
 
 [ansible_skip:children]
@@ -81,11 +81,15 @@ swap_size=2G
 
 {{ __kafka0__ }} kafka_broker_id=1
 
+{{ __kafka1__ }} kafka_broker_id=2
+
 [zookeeper:children]
 kafka0
+kafka1
 
 [kafka:children]
 kafka0
+kafka1
 
 {{ __celery9__ }}
 
@@ -118,9 +122,12 @@ pillow1
 formplayer2
 formplayer3
 
+{{ __redis0__ }} swap_size=1G
+
 {{ __redis1__ }} swap_size=1G
 
 [redis:children]
+#redis0
 redis1
 
 {{ __shareddir0__ }}
@@ -179,10 +186,10 @@ couch14
 [couchdb2:vars]
 swap_size=8G
 
-{{ __couchproxy0__ }}
+{{ __couchproxy1__ }}
 
 [couchdb2_proxy:children]
-couchproxy0
+couchproxy1
 
 {{ __control__ }}
 

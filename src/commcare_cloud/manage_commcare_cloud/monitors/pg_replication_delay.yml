@@ -20,7 +20,7 @@ options:
   silenced: {}
   thresholds: {critical: 90.0, warning: 60.0}
   timeout_h: 0
-query: avg(last_5m):avg:postgresql.replication_delay{group:pg_standby} by {host,environment}
+query: avg(last_5m):avg:postgresql.replication_delay{group:pg_standby,!group:citusdb,!host:pgwarehouse0standby.internal-icds.commcarehq.org} by {host,environment}
   > 90
 tags: ['service:postgresql', opsgenie]
 type: metric alert

@@ -4,8 +4,8 @@
   apt: name=supervisor state=absent
   become: yes
 
-- name: install supervisor 3.3.4
-  pip: name=supervisor state=present version=3.3.4 executable=pip2
+- name: install supervisor 4.0.4
+  pip: name=supervisor state=present version=4.0.4
   become: yes
 
 - name: link supervisor

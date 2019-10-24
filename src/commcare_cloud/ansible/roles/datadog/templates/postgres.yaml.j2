@@ -19,3 +19,9 @@ instances:
            descriptors:  # map columns to tags
              - [datname, database]
              - [state, state]
+         - query: SELECT pgdb.datname AS database, %s FROM pg_locks pl, pg_database pgdb WHERE pl.database = pgdb.oid AND NOT pl.granted GROUP BY pgdb.datname;
+           metrics:
+             "count(*)": [postgresql.locks.not_granted, GAUGE]
+           relation: false
+           descriptors:  # map columns to tags
+             - [database, database]

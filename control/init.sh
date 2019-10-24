@@ -92,14 +92,19 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd -
 else
-    { cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd - ; } &
+    { COMMCARE= && cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd - ; } &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-pip install pip --upgrade &
-manage-commcare-cloud install & # includes ansible-galaxy install
-wait
+COMMCARE= pip install pip --upgrade &
+COMMCARE= manage-commcare-cloud install & # includes ansible-galaxy install
+
+# wait for all processes that _we_ started
+for pid in `jobs | grep 'COMMCARE=' | cut -d'[' -f2 | cut -d']' -f1`
+do
+    wait %${pid}
+done
 
 # workaround for some envs that got in a bad state
 python -c 'import Crypto' || {
