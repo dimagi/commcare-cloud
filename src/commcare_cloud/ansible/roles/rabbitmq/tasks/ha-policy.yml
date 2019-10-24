@@ -1,0 +1,11 @@
+- name: Make rabbitmq queues High Available(mirrored)
+  rabbitmq_policy:
+    name: HA
+    pattern: .*
+    vhost: "{{ item }}"
+  with_items:
+     - commcarehq
+  args:
+    tags:
+      ha-mode: all
+      ha-sync-mode: automatic

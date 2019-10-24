@@ -60,7 +60,6 @@ PARTITION_DATABASE_CONFIG = {
         {% endfor %}
     },
     'groups': {
-        'main': ['default'],
         'proxy': ['proxy'],
         'form_processing': [
             {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
@@ -88,6 +87,7 @@ UCR_TIMING_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}
 UCR_DIFF_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_diff.log")
 UCR_EXCEPTION_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-ucr_exception.log")
 MAIN_COUCH_SQL_DATAMIGRATION = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-couch_sql_migration.log")
+SESSION_ACCESS_LOG_FILE = os.path.join(LOG_HOME,"{{ localsettings.DEPLOY_MACHINE_NAME }}-session_access_log.log")
 
 # Shared Drive Setup
 {% if shared_drive_enabled %}
