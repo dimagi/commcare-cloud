@@ -87,3 +87,7 @@ smtp_mail_from = {{ default_from_email }}
 
 [scheduler]
 child_process_log_directory = {{ airflow_home }}/logs/scheduler
+statsd_on = True
+statsd_host = localhost
+statsd_port = 8125
+statsd_prefix = airflow_statsd
