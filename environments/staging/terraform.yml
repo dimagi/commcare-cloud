@@ -152,14 +152,6 @@ servers:
     group: "redis"
     os: bionic
 
-  - server_name: "hwarehouse0-staging"
-    server_instance_type: "m5.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 200
-    group: hwarehouse
-    os: bionic
-
 
 proxy_servers:
   - server_name: "proxy0-staging"
