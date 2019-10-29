@@ -81,11 +81,15 @@ swap_size=2G
 
 {{ __kafka0__ }} kafka_broker_id=1
 
+{{ __kafka1__ }} kafka_broker_id=2
+
 [zookeeper:children]
 kafka0
+kafka1
 
 [kafka:children]
 kafka0
+kafka1
 
 {{ __celery9__ }}
 
@@ -120,16 +124,13 @@ formplayer3
 
 {{ __redis0__ }} swap_size=1G
 
-{{ __redis1__ }} swap_size=1G
-
 [redis:children]
-#redis0
-redis1
+redis0
 
-{{ __shareddir0__ }}
+{{ __shareddir1__ }}
 
 [shared_dir_host:children]
-shareddir0
+shareddir1
 
 {{ __es15__ }} elasticsearch_node_name=es15
 

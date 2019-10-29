@@ -34,6 +34,15 @@
   tags:
     - pgbouncer
 
+- name: pgbouncer kernel settings
+  become: yes
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/99-commcare-cloud.conf
+    reload: yes
+  with_dict: "{{ pgbouncer_kernel_settings }}"
+
 - name: pgbouncer init script
   template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
   notify: Restart pgbouncer
