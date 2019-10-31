@@ -1,4 +1,3 @@
-airflow1-staging: 10.201.10.147
 celery1-staging: 10.201.10.108
 control0-staging: 10.201.10.116
 couch3-staging: 10.201.40.182
