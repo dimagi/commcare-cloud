@@ -43,7 +43,7 @@ This document will walk you through the process of setting up a new monolith ser
     Then restart SSH:
 
     ``` bash
-    $ service ssh reload
+    $ sudo service ssh reload
     ```
 
 1. Install Required Packages
