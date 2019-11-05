@@ -46,11 +46,12 @@ class Environment(object):
         self.check_known_hosts()
         self.meta_config
         self.users_config
-        self.app_processes_config
-        self.fab_settings_config
         self.inventory_manager
-        self.postgresql_config
-        self.proxy_config
+        if not self.meta_config.bare_non_cchq_environment:
+            self.app_processes_config
+            self.fab_settings_config
+            self.postgresql_config
+            self.proxy_config
         self.create_generated_yml()
 
     def check_known_hosts(self):
@@ -397,13 +398,20 @@ class Environment(object):
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(os.path.realpath(self.paths.authorized_keys_dir)),
             'known_hosts_file': self.paths.known_hosts,
-            'commcarehq_repository': self.fab_settings_config.code_repo,
-            'ES_SETTINGS': self.elasticsearch_config.settings.to_json(),
+            'commcarehq_repository': (
+                self.fab_settings_config.code_repo
+                if not self.meta_config.bare_non_cchq_environment else {}
+            ),
+            'ES_SETTINGS': (
+                self.elasticsearch_config.settings.to_json()
+                if not self.meta_config.bare_non_cchq_environment else {}
+            ),
             'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
         }
-        generated_variables.update(self.app_processes_config.to_generated_variables())
-        generated_variables.update(self.postgresql_config.to_generated_variables(self))
-        generated_variables.update(self.proxy_config.to_generated_variables())
+        if not self.meta_config.bare_non_cchq_environment:
+            generated_variables.update(self.app_processes_config.to_generated_variables())
+            generated_variables.update(self.postgresql_config.to_generated_variables(self))
+            generated_variables.update(self.proxy_config.to_generated_variables())
         generated_variables.update(constants.to_json())
 
         if os.path.exists(self.paths.dimagi_key_store_vault):
