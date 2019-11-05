@@ -40,6 +40,8 @@ This document will walk you through the process of setting up a new monolith ser
     PermitRootLogin yes
     ```
 
+    Next, search for `PasswordAuthentication` and make sure it's set to `yes`
+
     Then restart SSH:
 
     ``` bash
