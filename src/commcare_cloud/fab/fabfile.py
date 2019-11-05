@@ -310,10 +310,10 @@ def mail_admins(subject, message, use_current_release=False):
 
 
 def _confirm_translated():
-    if datetime.datetime.now().isoweekday() != 2 or env.deploy_env != 'production':
+    if datetime.datetime.now().isoweekday() != 3 or env.deploy_env != 'production':
         return True
     return console.confirm(
-        "It's Tuesday, did you update the translations from transifex? "
+        "It's the weekly Wednesday deploy, did you update the translations from transifex? "
         "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
 
