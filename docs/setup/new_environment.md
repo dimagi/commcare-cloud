@@ -51,6 +51,11 @@ This document will walk you through the process of setting up a new monolith ser
     ``` bash
     $ sudo apt install python-pip sshpass
     $ sudo pip install ansible virtualenv virtualenvwrapper --ignore-installed six
+    ```
+
+1. Initialize a log file to be used in the installation process.
+
+    ``` bash
     $ sudo touch /var/log/ansible.log
     $ sudo chmod 666 /var/log/ansible.log
     ```
@@ -170,11 +175,12 @@ Install commcare-cloud onto the monolith as described in [Installing commcare-cl
     Would you like to use environments at that location? [y/N]y
     ```
 
-1. Add the commcare-cloud config to your bash profile to set the correct paths:
+1. As prompted, add the commcare-cloud config to your bash profile to set the correct paths:
 
     ``` bash
-    $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.profile
+    $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.bash_profile
     ```
+
 1. Load the commcare-cloud config so it takes effect immediately:
 
     ``` bash
@@ -186,11 +192,11 @@ Install commcare-cloud onto the monolith as described in [Installing commcare-cl
 ```bash
 $ commcare-cloud monolith update-local-known-hosts
 ```
-You will be prompted for the ansible vault password that you entered in [Step 2](#step-2-download-and-configure-the-commcare-cloud-environment)
+You may be prompted for the ansible vault password that you entered in [Step 2](#step-2-download-and-configure-the-commcare-cloud-environment)
 
 ## Step 6: Install all the services onto the monolith
 
-In this step, you will be prompted for an SSH password. This is the root user's password. After this step, the root user will not be able to log in via SSH.
+In this step, you will be prompted for the vault password from earlier.  You will also be prompted for an SSH password. This is the root user's password. After this step, the root user will not be able to log in via SSH.
 
 ``` bash
 $ commcare-cloud monolith deploy-stack --first-time -e 'CCHQ_IS_FRESH_INSTALL=1'
