@@ -53,15 +53,14 @@ This document will walk you through the process of setting up a new monolith ser
 1. Install Required Packages
 
     ``` bash
-    $ sudo apt install python-pip sshpass
+    $ sudo apt update && sudo apt install python-pip sshpass
     $ sudo pip install ansible virtualenv virtualenvwrapper --ignore-installed six
     ```
 
 1. Initialize a log file to be used in the installation process.
 
     ``` bash
-    $ sudo touch /var/log/ansible.log
-    $ sudo chmod 666 /var/log/ansible.log
+    $ sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
     ```
 
 ## Step 2: Download and configure the commcare-cloud environment
