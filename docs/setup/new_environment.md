@@ -16,6 +16,8 @@ This document will walk you through the process of setting up a new monolith ser
 
     On a standard Ubuntu install, the `root` user is not enabled or allowed to ssh. The root user will only be used initially, and will then be disabled automatically by the install scripts.
 
+    Make a root password and store it somewhere safe for later reference.
+
     Set the root password:
 
     ``` bash
@@ -72,13 +74,13 @@ This document will walk you through the process of setting up a new monolith ser
     
     You can read more about the files contained in this environments folder [here](../commcare-cloud/env/index.md).
 
-1. Encrypt the provided ansible vault file by running:
+1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
+
+    Encrypt the provided vault file, using that password:
 
     ``` bash
     $ ansible-vault encrypt ~/environments/monolith/vault.yml
     ```
-
-    Enter a strong password when prompted, and save this password somewhere safe as you will need it for any future changes to this file, as well as when you deploy and configuration changes to this machine.
     
     More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
     
