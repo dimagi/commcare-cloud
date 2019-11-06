@@ -161,10 +161,10 @@ localsettings:
   LOCAL_LOGGING_HANDLERS:
     kafka_audit:
       level: 'DEBUG'
-      class': 'logging.handlers.TimedRotatingFileHandler'
-      formatter': 'kafka_audit'
-      filename': '{{ log_home }}/commcarehq.kafka_audit.log'
-      when': 'H'
+      class: 'logging.handlers.TimedRotatingFileHandler'
+      formatter: 'kafka_audit'
+      filename: '{{ log_home }}/commcarehq.kafka_audit.log'
+      when: 'H'
       backupCount': 5
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
