@@ -153,6 +153,19 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   KAFKA_API_VERSION: [0, 8, 2]
+  LOCAL_LOGGING_LOGGERS:
+    kafka_producer_audit:
+      handlers: ['kafka_audit']
+      level: 'INFO'
+      propagate: False
+  LOCAL_LOGGING_HANDLERS:
+    kafka_audit:
+      level: 'DEBUG'
+      class': 'logging.handlers.TimedRotatingFileHandler'
+      formatter': 'kafka_audit'
+      filename': '{{ log_home }}/commcarehq.kafka_audit.log'
+      when': 'H'
+      backupCount': 5
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
   LOCAL_PILLOWS:
