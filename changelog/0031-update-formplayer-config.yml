@@ -1,0 +1,17 @@
+title: Update Formplayer Configuration
+key: update_formplayer_configuration
+date: 2019-11-06
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  There are some incompatible changes to the Formplayer configuration that need to be made.
+
+details: |
+  Some of the configuration properties for Formplayer are changing and before that can be rolled out
+  the local config files need to be updated.
+
+update_steps: |
+  ```shell
+  $ commcare-cloud <env> update-config --limit formplayer
+  ```
