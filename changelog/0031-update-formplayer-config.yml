@@ -5,13 +5,14 @@ optional_per_env: no
 min_commcare_version:
 max_commcare_version:
 context: |
-  There are some incompatible changes to the Formplayer configuration that need to be made.
+  There are some incompatible changes to the Formplayer configuration that will be required by
+  a later version of Formplayer.
 
 details: |
   Some of the configuration properties for Formplayer are changing and before that can be rolled out
   the local config files need to be updated.
 
 update_steps: |
-  ```shell
+  ```bash
   $ commcare-cloud <env> update-config --limit formplayer
   ```

@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2019-11-06** [Update Formplayer Configuration](0031-update-formplayer-config.md)
+There are some incompatible changes to the Formplayer configuration that will be required by
+a later version of Formplayer.
+
 ### **2019-08-30** [Upgrade Sentry](0030-upgrade-sentry.md)
 The Sentry SDK used by CommCare HQ has been updated and along with it we have updated the
 configuration parameters.
