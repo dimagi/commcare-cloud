@@ -169,7 +169,7 @@ localsettings:
         formatter: 'kafka_audit'
         filename: '{{ log_home }}/commcarehq.kafka_audit.log'
         when: 'H'
-        backupCount': 5
+        backupCount: 5
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
   LOCAL_PILLOWS:
