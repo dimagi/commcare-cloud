@@ -5,12 +5,10 @@ optional_per_env: no
 min_commcare_version:
 max_commcare_version:
 context: |
-  There are some incompatible changes to the Formplayer configuration that will be required by
-  a later version of Formplayer.
+  Some properties in the Formplayer configuration have changed names.
 
-details: |
-  Some of the configuration properties for Formplayer are changing and before that can be rolled out
-  the local config files need to be updated.
+details:
+  The old values are still supported however it is recommended to update the config with the new names.
 
 update_steps: |
   ```bash
