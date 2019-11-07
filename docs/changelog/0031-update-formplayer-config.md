@@ -12,13 +12,10 @@ This change is not known to be dependent on any particular version of CommCare.
 
 
 ## Change Context
-There are some incompatible changes to the Formplayer configuration that will be required by
-a later version of Formplayer.
+Some properties in the Formplayer configuration have changed names.
 
 ## Details
-Some of the configuration properties for Formplayer are changing and before that can be rolled out
-the local config files need to be updated.
-
+The old values are still supported however it is recommended to update the config with the new names.
 ## Steps to update
 ```bash
 $ commcare-cloud <env> update-config --limit formplayer
