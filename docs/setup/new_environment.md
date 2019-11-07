@@ -158,7 +158,22 @@ Even though we will be running all commands locally, we still need to add the us
 
 ### Install commcare-cloud
 
-Install commcare-cloud onto the monolith as described in [Installing commcare-cloud](installation.md#step-2) beginning with **Step 2**.
+Install commcare-cloud onto the monolith:
+
+```bash
+$ git clone https://github.com/dimagi/commcare-cloud.git
+$ source commcare-cloud/control/init.sh
+```
+
+and when you see it ask you this:
+
+```bash
+Do you want to have the CommCare Cloud environment setup on login?
+(y/n):
+```
+answer with `y`.
+
+For more information, see [Installing commcare-cloud](installation.md#step-2)
 
 ### Run first-time configuration
 
