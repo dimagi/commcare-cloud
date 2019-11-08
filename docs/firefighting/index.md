@@ -46,15 +46,15 @@ You don't always control the reboot process (sometimes our provider will expecte
 
 ```bash
 # Before shutting down VMs
-$ cchq <env> fab supervisorctl:'stop all'
+$ cchq <env> service commcare stop
 $ cchq <env> ansible-playbook stop_servers.yml
 
 # After restarting VMs
 $ cchq <env> after-reboot all
-$ cchq <env> fab manage:check_services  # ping various auxiliary services to make sure they're up
+$ cchq <env> django-manage check_services  # ping various auxiliary services to make sure they're up
   # if any services aren't running, you may have to manually start them:
-$ # cchq <env> run-module all service 'name=<service> state=started'
-$ cchq <env> fab restart_services  # start app processes
+$ # cchq <env> service postgres start
+$ cchq <env> service commcare start  # start app processes
 ```
 
 # In case of network outage
@@ -108,13 +108,13 @@ Service logs: `cchq <env> service <service_name> logs`
 To switch to the Maintenance page, if you stop all web workers then the proxy will revert to "CommCareHQ is currently undergoing maintenance...".
 
 ```bash
-$ cchq <env> fab webworkers supervisorctl:"stop all"
+$ cchq <env> service webworker stop
 ```
 
 To stop all supervisor processes use:
 
 ```bash
-$ cchq <env> fab supervisorctl:"stop all"
+$ cchq <env> service commcare stop
 ```
 
 # Couch 2.0
