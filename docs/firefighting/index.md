@@ -777,22 +777,12 @@ esoergel@hqdb0:~$
 # Tips and Tricks
 Never run that painful sequence of sudo -u cchq bash, entering the venv, cd'ing to the directory, etc., again just to run a management command. Instead, just run e.g.:
 
-```sudo -u cchq bash -c 'cd /home/cchq/www/production/current && /home/cchq/www/production/current/python_env/bin/python manage.py shell'
+```
+cchq <env> django-manage shell --tmux
 ```
 
-first thing after logging in. Extra plus: next time you ssh in to the same machine, you can just type ^R and find this command in your history
+first thing after logging in.
 
-On staging:
-
-```
-sudo -u cchq bash -c 'cd /home/cchq/www/staging/current && /home/cchq/www/staging/current/python_env/bin/python manage.py shell'
-```
-
-On Softlayer:
-
-```
-sudo -u cchq bash -c 'cd /home/cchq/www/softlayer/current && /home/cchq/www/softlayer/current/python_env/bin/python manage.py shell'
-```
 
 # Some Short Write-ups and Examples
 
