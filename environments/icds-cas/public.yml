@@ -160,7 +160,7 @@ localsettings:
     loggers:
       kafka_producer_audit:
         handlers: ['kafka_audit']
-        level: 'INFO'
+        level: 'DEBUG'
         propagate: False
     handlers:
       kafka_audit:
