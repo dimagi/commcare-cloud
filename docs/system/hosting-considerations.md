@@ -7,11 +7,60 @@ you may also find thinking about the considerations listed here helpful before
 deciding your next steps.
 
 
+## CommCare Cluster Management
+
+CommCare HQ is a complex, distributed software application, made up of dozens of
+processes and several pieces of third-party open source database software. It
+has been built for scale rather than simplicity, and as a result even for small
+deployments a CommCare server or server cluster can be challenging to maintain.
+
+### Many processes
+
+While the setup automation should work out of the box, once you're up and
+running you will have to troubleshoot any issues yourself. This means being
+familiar enough with every piece of third-party database software to be able to
+debug issues and bring it back to life or recover from some other bad state; it
+also means understanding what each of the many types of CommCare application
+processes does well enough to troubleshoot issues.
+
+CommCare HQ relies on the following open source technologies:
+
+- PostgreSQL
+  - PL/Proxy and a custom sharding setup
+  - `pg_backup` and streaming replication
+- CouchDB
+- Redis
+- Riak/Riak CS (mandatory for multi-server environments)
+- Elasticsearch
+- Kafka (and Zookeeper)
+- RabbitMQ
+- Nginx
+
+CommCare HQ also employs different types of application processes each with its
+own distinct purpose and set of functionality:
+
+- Web workers
+- Asynchronous task processors (Celery)
+- [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) processes
+  ("Pillowtop") that themselves come in a number of different flavors and fill a
+  number of different roles
+- The CommCare mobile engine exposed as a webservice ("Formplayer")
+
+You will also need some familiarity with the following sysadmin tools:
+
+- Monit
+- Supervisor
+- Ansible
+- Fabric
+- EcryptFS
+- [LVM](https://en.wikipedia.org/wiki/Logical_Volume_Manager_%28Linux%29) (optional)
+
+
 ## Physical Server Management
 
 This section is for people interested in owning the physical hardware running
 their servers. If you will be using an established data center or modern hosting
-provider, you can skip down to CommCare Cluster Management.
+provider, this doesn't apply.
 
 It can be tempting to want to run CommCare HQ on server hardware that you own.
 After all, a server is just a computer connected to the internet, with enough
@@ -59,54 +108,6 @@ are carefully designed to manage heat flow and sites are often specifically
 chosen for environmental features such as cold outdoor temperature or proximity
 to a vast water source for cooling. Overheating is a very real issue and when it
 happens it will lead to unpredictable hardware failure.
-
-
-## CommCare Cluster Management
-
-CommCare HQ is a complex, distributed software application, made up of dozens of
-processes and several pieces of third-party open source database software. It
-has been built for scale rather than simplicity, and as a result even for small
-deployments a CommCare server or server cluster can be challenging to maintain.
-
-### Many processes
-
-While the setup automation should work out of the box, once you're up and
-running you will have to troubleshoot any issues yourself. This means being
-familiar enough with every piece of third-party database software to be able to
-debug issues and bring it back to life or recover from some other bad state; it
-also means understanding what each of the many types of CommCare application
-processes does well enough to troubleshoot issues.
-
-CommCare HQ relies on the following open source technologies:
-
-- PostgreSQL
-  - PL/Proxy and a custom sharding setup
-  - `pg_backup` and streaming replication
-- CouchDB
-- Redis
-- Riak/Riak CS (mandatory for multi-server environments)
-- Elasticsearch
-- Kafka (and Zookeeper)
-- RabbitMQ
-- Nginx
-
-CommCare HQ also employs different types of application processes each with its
-own distinct purpose and set of functionality:
-
-- Web workers
-- Asynchronous task processors (Celery)
-- [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) processes ("Pillowtop")
-  that themselves come in a number of different flavors and fill a number of different roles
-- The CommCare mobile engine exposed as a webservice ("Formplayer")
-
-You will also need some familiarity with the following sysadmin tools:
-
-- Monit
-- Supervisor
-- Ansible
-- Fabric
-- EcryptFS
-- [LVM](https://en.wikipedia.org/wiki/Logical_Volume_Manager_%28Linux%29) (optional)
 
 ---
 
