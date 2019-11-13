@@ -543,6 +543,32 @@ GROUP BY main_table
 ORDER BY n_tup_ins DESC;
 ```
 
+
+### Deleting old WAL logs
+At all the times, PostgreSQL maintains a write-ahead log (WAL) in the pg_xlog/ subdirectory for (version >=10 , pg_wal folder) of the cluster’s data directory. The log records for every change made to the database’s data files. These log messages exists primarily for crash-safety purposes.
+
+It contains the main binary transaction log data or binary log files. If you are planning for replication or Point in time Recovery, we can use this transaction log files.
+
+We cannot delete this file. Otherwise, it causes a database corruption. The size of this folder would be greater than actual data so If you are dealing with massive database, 99% chance to face disk space related issues especially for the pg_xlog folder.
+
+There could be multiple reason for folder getting filled up.
+* Archive Command is failing.
+* Replication delay is high.
+* Configuration params on how much WAL logs to keep.
+
+If you are able to fix the above related , then logs from this folder will be cleared on next checkpoints.
+
+If it's absolutely necessary to delete the logs from this folder. Use following commands to do it. (Do not delete logs from this folder manually)
+
+```
+# you can run this to get the latest WAL log
+/usr/lib/postgresql/11/bin/pg_controldata /opt/data/postgresql/11/main
+
+Deleting 
+/usr/lib/postgresql/11/bin/pg_archivecleanup -d /opt/data/postgresql/11/main/pg_wal <latest WAL log filename>
+
+```
+
 # Celery
 
 Check out this [child page](celery.md)
