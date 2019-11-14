@@ -1,4 +1,7 @@
-# Contributing
+# Contributing to CommCare-Cloud
+
+CommCare-Cloud is chiefly developed by Dimagi, but we welcome contributions,
+whether it be new tools, simplifications, or documentation improvements.
 
 Before making any commits, make sure you install the git hooks:
 
