@@ -6,7 +6,7 @@
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
-    mode: 0765
+    mode: 0775
     state: directory
     # sometimes the log directory is a symlink to a dir on an encrypted drive
     follow: yes

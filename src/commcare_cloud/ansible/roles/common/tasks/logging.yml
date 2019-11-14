@@ -17,4 +17,4 @@
 - name: Create custom logrotate configs
   include_role:
     name: ansible-logrotate
-  when: "logrotate_scripts | length > 1"
+  when: "logrotate_scripts | length > 0"
