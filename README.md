@@ -3,21 +3,17 @@
 [![Build
 Status](https://travis-ci.org/dimagi/commcare-cloud.svg?branch=master)](https://travis-ci.org/dimagi/commcare-cloud)
 
-Tools for standing up and managing a CommCare HQ server environment.
+CommCare-Cloud is a suite of tools for standing up and managing a production
+[CommCare HQ](https://github.com/dimagi/commcare-hq/) server environment.
 
-Docs at [https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/commcare-cloud/)
-.
-
-# Components
-
-- Ansible
-- Fabric
-- configurable environments (under `environments/`)
-- Assorted small tools for managing and accessing servers
-- Command line interface (`commcare-cloud`) for running commands backed
-  by the other components
+For documentation and installation instructions, visit
+[https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/commcare-cloud/).
+or the `docs/` directory of this repository.
 
 
 # More Information
 
 * See something you'd like to improve?  We welcome [contributions](CONTRIBUTING.md).
+* To set up a local development environment for CommCare HQ, view the
+  [instructions](https://github.com/dimagi/commcare-hq/blob/master/DEV_SETUP.md)
+  in that repository.
