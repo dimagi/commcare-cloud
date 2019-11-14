@@ -16,3 +16,8 @@ Docs at [https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/comm
 - Assorted small tools for managing and accessing servers
 - Command line interface (`commcare-cloud`) for running commands backed
   by the other components
+
+
+# More Information
+
+* See something you'd like to improve?  We welcome [contributions](CONTRIBUTING.md).
