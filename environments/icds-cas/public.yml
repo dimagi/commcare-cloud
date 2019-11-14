@@ -107,7 +107,7 @@ s3_blob_db_s3_bucket: 'mowcddb-c1'
 s3_bulk_delete_chunksize: 200
 
 additional_logrotate_scripts:
-  web28:
+  webworkers:
     - name: "kafka-audit"
       path: "{{log_home}}/commcarehq.kafka_audit.log"
       options:
@@ -122,7 +122,7 @@ additional_logrotate_scripts:
         postrotate: "invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true"
 
 additional_syslog_config:
-  web28:
+  webworkers:
     - dest: /etc/rsyslog.d/10-kafka-audit.conf
       content: |-
         $FileCreateMode 0644
