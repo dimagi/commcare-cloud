@@ -19,3 +19,6 @@ es33,100.71.184.217,elasticsearch,zone_vmware,MUMGCCWCDPRDESV16,es33,,
 esm3,100.71.184.218,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV0,esm3,true,false
 esm4,100.71.184.219,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV1,esm4,true,false
 esm5,100.71.184.220,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV2,esm5,true,false
+,,,,,,,
+group,var,val,type,,,
+elasticsearch,ansible_python_interpreter,/usr/bin/python3,S,,,,
