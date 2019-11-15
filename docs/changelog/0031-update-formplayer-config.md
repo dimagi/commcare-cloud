@@ -18,5 +18,9 @@ Some properties in the Formplayer configuration have changed names.
 The old values are still supported however it is recommended to update the config with the new names.
 ## Steps to update
 ```bash
+# ensure that you have a new version of formplayer
+$ commcare-cloud <env> deploy formplayer
+
+# update the configuration
 $ commcare-cloud <env> update-config --limit formplayer
 ```
