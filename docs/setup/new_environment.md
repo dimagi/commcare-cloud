@@ -150,10 +150,10 @@ Even though we will be running all commands locally, we still need to add the us
     $ cp ~/.ssh/id_rsa.pub ~/environments/_authorized_keys/$(whoami).pub
     ```
 
-1. Add your system username to the `present` section of `~/environments/_users/dimagi.yml`. This username should correspond to the name you've used for the public key in the previous step.
+1. Add your system username to the `present` section of `~/environments/_users/admins.yml`. This username should correspond to the name you've used for the public key in the previous step.
    
     ``` bash
-    $ nano ~/environments/_users/dimagi.yml
+    $ nano ~/environments/_users/admins.yml
     ```
 
 ### Install commcare-cloud
