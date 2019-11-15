@@ -12,5 +12,9 @@ details:
 
 update_steps: |
   ```bash
+  # ensure that you have a new version of formplayer
+  $ commcare-cloud <env> deploy formplayer
+  
+  # update the configuration
   $ commcare-cloud <env> update-config --limit formplayer
   ```
