@@ -7,7 +7,7 @@ CommCare-Cloud is a suite of tools for standing up and managing a production
 [CommCare HQ](https://github.com/dimagi/commcare-hq/) server environment.
 
 For documentation and installation instructions, visit
-[https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/commcare-cloud/).
+[https://dimagi.github.io/commcare-cloud/](https://dimagi.github.io/commcare-cloud/)
 or the `docs/` directory of this repository.
 
 
