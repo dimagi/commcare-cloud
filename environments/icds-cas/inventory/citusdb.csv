@@ -29,6 +29,7 @@ citusworker23standby,100.71.184.246,citusdb,citusdb_worker,pg_standby,MUMGCCWCDP
 group,var,val,type,,,,,,
 citusdb,ansible_python_interpreter,/usr/bin/python3,S,,,,,,
 citusdb,pgbouncer_max_connections,3500,I,,,,,,
+citusdb,postgresql_archive_command,/bin/true,S,,,,,,
 citusdb_master,pgbouncer_default_pool,790,I,,,,,,
 citusdb_master,postgresql_checkpoint_completion_target,0.9,F,,,,,,
 citusdb_master,postgresql_default_statistics_target,500,I,,,,,,
