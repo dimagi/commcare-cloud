@@ -46,15 +46,15 @@ You don't always control the reboot process (sometimes our provider will expecte
 
 ```bash
 # Before shutting down VMs
-$ cchq <env> fab supervisorctl:'stop all'
+$ cchq <env> service commcare stop
 $ cchq <env> ansible-playbook stop_servers.yml
 
 # After restarting VMs
 $ cchq <env> after-reboot all
-$ cchq <env> fab manage:check_services  # ping various auxiliary services to make sure they're up
+$ cchq <env> django-manage check_services  # ping various auxiliary services to make sure they're up
   # if any services aren't running, you may have to manually start them:
-$ # cchq <env> run-module all service 'name=<service> state=started'
-$ cchq <env> fab restart_services  # start app processes
+$ # cchq <env> service postgres start
+$ cchq <env> service commcare start  # start app processes
 ```
 
 # In case of network outage
@@ -108,13 +108,13 @@ Service logs: `cchq <env> service <service_name> logs`
 To switch to the Maintenance page, if you stop all web workers then the proxy will revert to "CommCareHQ is currently undergoing maintenance...".
 
 ```bash
-$ cchq <env> fab webworkers supervisorctl:"stop all"
+$ cchq <env> service webworker stop
 ```
 
 To stop all supervisor processes use:
 
 ```bash
-$ cchq <env> fab supervisorctl:"stop all"
+$ cchq <env> service commcare stop
 ```
 
 # Couch 2.0
@@ -543,6 +543,32 @@ GROUP BY main_table
 ORDER BY n_tup_ins DESC;
 ```
 
+
+### Deleting old WAL logs
+At all the times, PostgreSQL maintains a write-ahead log (WAL) in the pg_xlog/ for version <10 and in pg_wal/ for version >=10 subdirectory of the cluster’s data directory. The log records for every change made to the database’s data files. These log messages exists primarily for crash-safety purposes.
+
+It contains the main binary transaction log data or binary log files. If you are planning for replication or Point in time Recovery, we can use this transaction log files.
+
+We cannot delete this file. Otherwise, it causes a database corruption. The size of this folder would be greater than actual data so If you are dealing with massive database, 99% chance to face disk space related issues especially for the pg_xlog or pg_wal folder.
+
+There could be multiple reason for folder getting filled up.
+* Archive Command is failing.
+* Replication delay is high.
+* Configuration params on how much WAL logs to keep.
+
+If you are able to fix the above related , then logs from this folder will be cleared on next checkpoints.
+
+If it's absolutely necessary to delete the logs from this folder. Use following commands to do it. (Do not delete logs from this folder manually)
+
+```
+# you can run this to get the latest WAL log
+/usr/lib/postgresql/<postgres-version>/bin/pg_controldata /opt/data/postgresql/<postgres-version>/main
+
+Deleting 
+/usr/lib/postgresql/<postgres-version>/bin/pg_archivecleanup -d /opt/data/postgresql/<postgres-version>/main/<pg_wal|| pg_xlog> <latest WAL log filename>
+
+```
+
 # Celery
 
 Check out this [child page](celery.md)
@@ -681,103 +707,6 @@ OK
 root@redis0:/opt/data/redis# rm temp-rewriteaof-\*.aof
 ```
 
-# Riak CS
-
-## Pinging a Riak Machine
-
-A simple way to check if riak is working is to use the `check_services` management command.  If that's showing it as down, make sure the services are running on all machines.  Riak usually runs on port 8080.  You should be able to curl any riak machine like so and see that you get a response from the Riak CS server.
-
-```
-$ curl -I hqriak0.internal-va.commcarehq.org:8080
-HTTP/1.1 405 Method Not Allowed
-Server: Riak CS
-Date: Mon, 21 Nov 2016 23:24:00 GMT
-Content-Type: application/xml
-Content-Length: 216
-Allow: GET
-```
-
-Another thing you can do to get a visual on riak is log on to a riak machine, `su` to root, and run `riak-admin cluster status`
-
-```
-root@staging-hqdjango2:/home/cchq/www/staging/current# riak-admin cluster status
----- Cluster Status ----
-Ring ready: true
-
-+----------------------------------------------------------------------+------+-------+-----+-------+
-|                                 node                                 |status| avail |ring |pending|
-+----------------------------------------------------------------------+------+-------+-----+-------+
-| (C) riak-hqdjango2-staging@hqdjango2-staging.internal.commcarehq.org |valid |  up   | 25.0|  --   |
-|     riak-hqdjango3-staging@hqdjango3-staging.internal.commcarehq.org |valid |  up   | 25.0|  --   |
-|     riak-hqdjango4-staging@hqdjango4-staging.internal.commcarehq.org |valid |  up   | 25.0|  --   |
-|     riak-hqdjango5-staging@hqdjango5-staging.internal.commcarehq.org |valid |  up   | 25.0|  --   |
-+----------------------------------------------------------------------+------+-------+-----+-------+
-
-Key: (C) = Claimant; availability marked with '!' is unexpected
-```
-
-## Riak is Out of Memory
-
-The most common problem we have had with Riak and Riak CS is running [out of memory](https://docs.basho.com/riak/kv/2.1.4/using/repair-recovery/failure-recovery/#out-of-memory). Most of the time this is non-actionable; nodes will crash and automatically restart and operation usually returns to normal without intervention. If a node is consistently running out of memory then it is likely necessary to either allocate more memory (usually done by creating a new node with more memory) or by allocating more swap space (can affect performance).
-
-## What do do when one or more Riak nodes has a corrupt database
-AAE error seen (logged repeatedly) in /var/log/riak/console.log accompanied by very high CPU load:
-
-in /var/log/riak/console.log:
-```
-2017-04-25 13:18:01.615 [info] <0.824.0>@riak_kv_vnode:maybe_create_hashtrees:234 riak_kv/890602560248518965780370444936484965102833893376: unable to start index_hashtree: {error,{{badmatch,{error,{db_open,"Corruption: truncated record at end of file"}}},[{hashtree,new_segment_store,2,[{file,"src/hashtree.erl"},{line,725}]},{hashtree,new,2,[{file,"src/hashtree.erl"},{line,246}]},{riak_kv_index_hashtree,do_new_tree,3,[{file,"src/riak_kv_index_hashtree.erl"},{line,712}]},{lists,foldl,3,[{file,"lists.erl"},{line,1248}]},{riak_kv_index_hashtree,init_trees,3,[{file,"src/riak_kv_index_hashtree.erl"},{line,565}]},{riak_kv_index_hashtree,init,1,[{file,"src/riak_kv_index_hashtree.erl"},{line,308}]},{gen_server,init_it,6,[{file,"gen_server.erl"},{line,304}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,239}]}]}}
-2017-04-25 13:18:01.633 [error] <0.1988.0> CRASH REPORT Process <0.1988.0> with 0 neighbours exited with reason: no match of right hand value {error,{db_open,"Corruption: truncated record at end of file"}} in hashtree:new_segment_store/2 line 725 in gen_server:init_it/6 line 328
-```
-
-The resolution is to delete the AAE hash tree as recommended by http://stackoverflow.com/a/28479640/10840:
-
-```
-ansible@hqriak18:~$ sudo service riak stop # probably not necessary, just restart after moving, maybe restart not even needed?
-ansible@hqriak18:~$ sudo mkdir -p sudo mkdir /opt/data/ecrypt/zjunk/20170425
-ansible@hqriak18:~$ sudo mv /opt/data/ecrypt/riak/anti_entropy/890602560248518965780370444936484965102833893376 /opt/data/ecrypt/zjunk/20170425/
-ansible@hqriak18:~$ mkdir /opt/data/ecrypt/zjunk/20170425/v0
-ansible@hqriak18:~$ sudo mv /opt/data/ecrypt/riak/anti_entropy/v0/890602560248518965780370444936484965102833893376 /opt/data/ecrypt/zjunk/20170425/v0/
-ansible@hqriak18:~$ sudo service riak start
-```
-
-Sometimes node data can become corrupt in a way that prevents the riak service from starting. In this case the node will begin to restart, but will crash while reading indexes from the disk into RAM. One example error we have seen in the past:
-
-In /var/log/riak/console.log
-```
-2016-09-28  00:02:22.350 [error] <0.638.0>@riak_kv_vnode:init:497 Failed to  start riak_cs_kv_multi_backend backend for index  1255977969581244695331291653115555720016817029120 error:  [{riak_kv_eleveldb_backend,{db_open,"Corruption: truncated record at end  of file"}}]
-```
-
-Basho has good documentation on [recovering a node from database corruption](https://docs.basho.com/riak/kv/2.1.4/using/repair-recovery/repairs/#healing-corrupted-leveldbs) (be sure to use the version of the documentation that matches the Riak version), although this specific error is not mentioned in the docs. Here are the steps used to resolve this error in the past:
-
-```
-# find errors in leveldb logs
-cd /opt/data/riak
-find . -name "LOG" -exec grep -l 'Corruption' {} \;
-# NOTE this showed other paths with errors as well.
-# I only repaired the one that was identified with the error in the logs.
-
-# disable riak restarter and stop service
-sudo mv /root/riak-restarter.sh /root/temp/
-sudo service riak stop
-sudo service riak status # verify stopped!
-
-# follow instructions on Healing Corrupted LevelDBs
-# https://docs.basho.com/riak/kv/2.1.4/using/repair-recovery/repairs/#healing-corrupted-leveldbs
-sudo riak ertspath # get erl path
-sudo -u riak /usr/lib/riak/erts-5.10.3/bin/erl
-1> [application:set_env(eleveldb, Var, Val) || {Var, Val} <-
-      [{max_open_files, 2000},
-       {block_size, 1048576},
-       {cache_size, 20*1024*1024*1024},
-       {sync, false},
-       {data_root, ""}]].
-2> eleveldb:repair("/opt/data/riak/leveldb/1255977969581244695331291653115555720016817029120", []).
-
-# ensable restarter and start riak
-sudo mv /root/temp/riak-restarter.sh /root/
-sudo service riak start
-```
-
 # Pillows / Pillowtop / Change feed
 
 Symptoms of pillows being down:
@@ -874,22 +803,12 @@ esoergel@hqdb0:~$
 # Tips and Tricks
 Never run that painful sequence of sudo -u cchq bash, entering the venv, cd'ing to the directory, etc., again just to run a management command. Instead, just run e.g.:
 
-```sudo -u cchq bash -c 'cd /home/cchq/www/production/current && /home/cchq/www/production/current/python_env/bin/python manage.py shell'
+```
+cchq <env> django-manage shell --tmux
 ```
 
-first thing after logging in. Extra plus: next time you ssh in to the same machine, you can just type ^R and find this command in your history
+first thing after logging in.
 
-On staging:
-
-```
-sudo -u cchq bash -c 'cd /home/cchq/www/staging/current && /home/cchq/www/staging/current/python_env/bin/python manage.py shell'
-```
-
-On Softlayer:
-
-```
-sudo -u cchq bash -c 'cd /home/cchq/www/softlayer/current && /home/cchq/www/softlayer/current/python_env/bin/python manage.py shell'
-```
 
 # Some Short Write-ups and Examples
 

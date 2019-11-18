@@ -58,11 +58,13 @@ if [ -z ${TRAVIS_TEST} ]; then
         echo "#  but commcare-cloud doesn't yet support Python 3.  #"
         echo "#  To reset your virtualenv, run the following:      #"
         echo "#                                                    #"
-        echo "#    deactivate                                      #"
         echo "#    rmvirtualenv ansible                            #"
-        echo "#    mkvirtualenv ansible --python $(which python2)  #"
+        echo "#                                                    #"
+        echo "#  Then run this script again. If it runs on login,  #"
+        echo "#  you can just log out and log back in.             #"
         echo "#                                                    #"
         echo "######################################################"
+        return -1
     else
         workon ansible
     fi

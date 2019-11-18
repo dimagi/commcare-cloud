@@ -1,6 +1,6 @@
 ## How do I install it?
 
-For manual install instructions see the [README](https://github.com/dimagi/commcare-cloud/blob/master/README.md)
+For manual install instructions see [Manual Installation](./manual_installation.md)
 
 ### Step 1.
 Make sure that you have a non-root user account on the control machine.
