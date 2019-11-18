@@ -26,6 +26,7 @@ that machine is also the control machine.
 ## System installation
 
 - [Installation](setup/installation.md)
+- [Setting up fresh environment](setup/new_environment.md)
 - [Troubleshooting first time setup](setup/troubleshooting.md)
 - [Changelog](changelog)
 

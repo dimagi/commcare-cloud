@@ -47,13 +47,13 @@ www/<env>/current -> www/<env>/releases/2015-09-10_04.00
 To initiate a regular deploy, use the following command:
 
 ```
-fab <env> deploy
+cchq <env> [--control] deploy
 ```
 
 Sometimes deploys fail intermittently. If a deploy fails, you can resume a deploy by running the following command:
 
 ```
-fab <env> deploy:resume=yes
+cchq <env> [--control] deploy:resume=yes
 ```
 
 In the event that a deploy completes successfully and many errors start appearing, you can rollback the release to the previous version:
@@ -64,24 +64,31 @@ fab <env> rollback
 
 ### Private releases
 
-The case may arise where you need to setup a new release, but do not want to do a full deploy. For exmample, this is often used when you would want to run a new management command that was just merged. To do this run:
+The case may arise where you need to setup a new release, but do not want to do a full deploy. For example, this is often used when you would want to run a new management command that was just merged. To do this run:
 ```
-fab <env> setup_release
+cchq <env> fab setup_release
 ```
 
-This will create a release with the most recent master code and a new virtualenv. Just cd into the directory that is printed on the screen and run your command.
+This will create a release with the most recent master code and a new virtualenv. Just cd into the directory that
+is printed on the screen and run your command, or use `django-manage` with the `--release=<NAME>` parameter.
+
+To set up a release based on a non-master branch, run:
+
+```
+cchq <env> fab setup_release --set code_branch=<HQ BRANCH>
+```
 
 Upon deploys, releases like these are cleaned up by the deploy process. If you know you have a long running command, you can ensure that the release does not get removed by using the `keep_days` option:
 
 ```
-fab <env> setup_release:keep_days=10
+cchq <env> fab setup_release:keep_days=10
 ```
 
 This will keep your release around for at least 10 days before it gets removed by a deploy.
 
 ### Task list
 
-To get a list of possible tasks to run, use `fab -l`. Here is an abbreviated list of useful commands you can run:
+To get a list of possible tasks to run, use `cchq <env> fab -l`. Here is an abbreviated list of useful commands you can run:
 
 ```
 clean_releases         Cleans old and failed deploys from the ~/www/<environment>/releases/ directory

@@ -2,6 +2,7 @@ formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
 
 celery_heartbeat_thresholds:
+  ucr_indicator_queue: 86400
   case_rule_queue: 86400
   ucr_queue: 7200
   submission_reprocessing_queue: 7200
@@ -217,9 +218,6 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  web28,web29,web30,web31,web32,web33,web34,web35,web36,web37,web38,web39,web40:
-    ucr_indicator_queue:
-      concurrency: 4
 pillows:
   'pillow21':
     # Catch all server for low volume pillows

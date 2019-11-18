@@ -37,4 +37,7 @@
   tags: after-reboot
 
 - include: join-cluster.yml
-  when: (rabbitmq_create_cluster == true) and ( ansible_fqdn != hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )
+  when: (rabbitmq_create_cluster | bool) and ( ansible_fqdn != hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )
+
+- include: ha-policy.yml
+  when: (rabbitmq_create_cluster| bool ) and ( ansible_fqdn == hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )

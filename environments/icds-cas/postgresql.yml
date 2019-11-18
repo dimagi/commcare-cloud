@@ -2,7 +2,6 @@ DEFAULT_POSTGRESQL_HOST: pgmain0
 
 REPORTING_DATABASES:
   ucr: ucr
-  icds-ucr-non-dashboard: icds-ucr-non-dashboard
   icds-ucr-citus: icds-ucr-citus
 
 LOAD_BALANCED_APPS:
@@ -26,6 +25,13 @@ pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
+  pgbouncer_kernel_settings:
+    net.ipv4.ip_local_port_range: 1024 65535
+    net.ipv4.tcp_tw_reuse: 1
+    net.core.rmem_max: 16777216
+    net.core.wmem_max: 16777216
+    net.ipv4.tcp_max_syn_backlog: 4096
+    net.core.somaxconn: 1024
 
 postgres_override:
   postgresql_max_standby_delay: 180s
@@ -121,11 +127,6 @@ dbs:
         shards: [976, 1023]
         host: pgshard29
   custom:
-    - django_alias: icds-ucr-non-dashboard
-      name: commcarehq_icds_aggregatedata
-      host: pgnondashboarducr0
-      query_stats: True
-      django_migrate: False
     - django_alias: icds-ucr-citus
       name: icds_ucr
       django_migrate: True  # ICDS dashboard models are stored here

@@ -981,8 +981,8 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
-                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
+                             {celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
+                             [{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
                              {start,stop,restart,status,logs,help}
 ```
 
@@ -1004,7 +1004,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
+###### `{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
