@@ -163,6 +163,8 @@ class DeployMetadata(object):
 
 @memoized
 def _get_github_credentials():
+    if not env.tag_deploy_commits:
+        return (None, None)
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
@@ -181,7 +183,7 @@ def _get_github_credentials():
 @memoized
 def _get_github():
     login_or_token, password = _get_github_credentials()
-    if not login_or_token:
+    if env.tag_deploy_commits and not login_or_token:
         print(magenta(
             "Warning: Creation of release tags is disabled. "
             "Provide Github auth details to enable release tags."
