@@ -1,7 +1,6 @@
 internal_domain_name: 'internal-icds.commcarehq.org'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
 elasticsearch_version: 1.7.6
@@ -105,6 +104,8 @@ s3_blob_db_enabled: yes
 s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
 s3_blob_db_s3_bucket: 'mowcddb-c1'
 s3_bulk_delete_chunksize: 200
+
+kafka_log_retention: 504 # 21 days
 
 localsettings:
   ALLOWED_HOSTS:
