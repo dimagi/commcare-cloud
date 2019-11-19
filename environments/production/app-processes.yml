@@ -29,7 +29,7 @@ celery_processes:
     celery:
       concurrency: 4
     celery_periodic:
-      concurrency: 3
+      concurrency: 4
     email_queue:
       pooling: gevent
       concurrency: 134
