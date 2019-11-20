@@ -144,6 +144,7 @@
     state: file
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+    mode: 0600
   tags:
     - localsettings
     - hq-localsettings
