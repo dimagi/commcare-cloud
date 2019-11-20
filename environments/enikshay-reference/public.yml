@@ -19,9 +19,6 @@ KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: False
 
-CLOUDANT_CLUSTER_NAME: null
-
-
 # This dumps the dummy keystore, but allows the ansible script to continue, should be overridden for real deploys
 #keystore_file: 'DimagiKeyStore'
 

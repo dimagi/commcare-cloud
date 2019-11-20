@@ -1,7 +1,6 @@
 internal_domain_name: 'internal-icds.commcarehq.org'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
 elasticsearch_version: 1.7.6
@@ -106,6 +105,8 @@ s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
 s3_blob_db_s3_bucket: 'mowcddb-c1'
 s3_bulk_delete_chunksize: 200
 
+kafka_log_retention: 504 # 21 days
+
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
@@ -130,7 +131,6 @@ localsettings:
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
   EMAIL_SMTP_HOST: relay.sendermile.com
