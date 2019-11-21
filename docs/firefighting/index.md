@@ -545,11 +545,11 @@ ORDER BY n_tup_ins DESC;
 
 
 ### Deleting old WAL logs
-At all the times, PostgreSQL maintains a write-ahead log (WAL) in the pg_xlog/ subdirectory for (version >=10 , pg_wal folder) of the cluster’s data directory. The log records for every change made to the database’s data files. These log messages exists primarily for crash-safety purposes.
+At all the times, PostgreSQL maintains a write-ahead log (WAL) in the pg_xlog/ for version <10 and in pg_wal/ for version >=10 subdirectory of the cluster’s data directory. The log records for every change made to the database’s data files. These log messages exists primarily for crash-safety purposes.
 
 It contains the main binary transaction log data or binary log files. If you are planning for replication or Point in time Recovery, we can use this transaction log files.
 
-We cannot delete this file. Otherwise, it causes a database corruption. The size of this folder would be greater than actual data so If you are dealing with massive database, 99% chance to face disk space related issues especially for the pg_xlog folder.
+We cannot delete this file. Otherwise, it causes a database corruption. The size of this folder would be greater than actual data so If you are dealing with massive database, 99% chance to face disk space related issues especially for the pg_xlog or pg_wal folder.
 
 There could be multiple reason for folder getting filled up.
 * Archive Command is failing.
@@ -562,10 +562,10 @@ If it's absolutely necessary to delete the logs from this folder. Use following 
 
 ```
 # you can run this to get the latest WAL log
-/usr/lib/postgresql/11/bin/pg_controldata /opt/data/postgresql/11/main
+/usr/lib/postgresql/<postgres-version>/bin/pg_controldata /opt/data/postgresql/<postgres-version>/main
 
 Deleting 
-/usr/lib/postgresql/11/bin/pg_archivecleanup -d /opt/data/postgresql/11/main/pg_wal <latest WAL log filename>
+/usr/lib/postgresql/<postgres-version>/bin/pg_archivecleanup -d /opt/data/postgresql/<postgres-version>/main/<pg_wal|| pg_xlog> <latest WAL log filename>
 
 ```
 

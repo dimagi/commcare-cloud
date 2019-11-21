@@ -33,6 +33,7 @@
   notify: Restart pgbouncer
   tags:
     - pgbouncer
+  when: not ansible_check_mode
 
 - name: pgbouncer kernel settings
   become: yes

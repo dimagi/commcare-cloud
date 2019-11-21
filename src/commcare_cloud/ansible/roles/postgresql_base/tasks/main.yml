@@ -109,7 +109,7 @@
   become: yes
   cron:
     name: "Clean PG WAL Archive"
-    job: "find {{ postgresql_archive_path }} -mmin +10 -delete"
+    job: "find {{ postgresql_archive_path }} -type f -mmin +10 -delete"
     user: root
     minute: "*/30"
     cron_file: clean_pg_archive

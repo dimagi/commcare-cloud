@@ -1,12 +1,3 @@
-- name: remove cloudant check
-  file:
-    path: /etc/dd-agent/checks.d/cloudant.py
-    state: absent
-  notify: restart datadog
-  when: not (datadog_integration_cloudant and inventory_hostname == groups.django_manage[0]) or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
-  tags:
-    - datadog_integrations
-
 - name: remove couchdb2 check
   file:
     path: /etc/dd-agent/checks.d/couchdb2.py
@@ -67,7 +58,6 @@
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
     - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
-    - {"name": "cloudant", "enabled": "{{ datadog_integration_cloudant and inventory_hostname == groups.django_manage[0] }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     # "Datadog Integration Graveyard": list globally removed integrations below
