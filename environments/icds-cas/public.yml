@@ -27,7 +27,8 @@ swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
 
 nofile_limit: 65536
 
-redis_maxmemory: 6gb
+redis_maxmemory: 8gb
+redis_maxclients: 14000
 redis_maxmemory_policy: allkeys-lfu
 redis_auto_aof_rewrite_percentage: "50"
 
