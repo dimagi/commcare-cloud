@@ -210,9 +210,23 @@ class PostgresqlConfig(jsonobject.JsonObject):
             validate_shards({name: db.shards
                              for name, db in self.dbs.form_processing.partitions.items()})
 
+    def _check_standbys(self):
+        if self.dbs.standby:
+            defined_django_aliases = {
+                db.django_alias for db in self.generate_postgresql_dbs()
+                if db.django_alias is not None
+            }
+            aliases_referenced_by_standbys = {
+                db.master for db in self.dbs.standby
+            }
+            missing_references = aliases_referenced_by_standbys - defined_django_aliases
+            assert not missing_references, \
+                'Standby databases reference missing masters: {}'.format(missing_references)
+
     def check(self):
         self._check_reporting_databases()
         self._check_shards()
+        self._check_standbys()
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
             'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
@@ -319,7 +333,8 @@ class CustomDBOptions(PartitionDBOptions):
 
 
 class StandbyDBOptions(PartitionDBOptions):
-    hq_acceptable_standby_delay = jsonobject.IntegerProperty(default=None)
+    master = jsonobject.StringProperty(required=True)
+    acceptable_replication_delay = jsonobject.IntegerProperty(default=None)
 
 
 class LogicalReplicationOptions(jsonobject.JsonObject):

@@ -42,8 +42,11 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         {% if not config.django_migrate -%}
         'MIGRATE': False,
         {% endif -%}
-        {% if 'hq_acceptable_standby_delay' in config -%}
-        'HQ_ACCEPTABLE_STANDBY_DELAY': {{ config.hq_acceptable_standby_delay }},
+        {% if config.get('master') -%}
+        'STANDBY': {
+            'MASTER': {{ config.master }},
+            'ACCEPTABLE_REPLICATION_DELAY': {{ config.acceptable_replication_delay }},
+        }
         {% endif -%}
     },
 {% endif -%}

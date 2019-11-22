@@ -65,4 +65,5 @@ dbs:
       host: pgucrstandby
       create: False
       django_migrate: False
-      hq_acceptable_standby_delay: 30
+      acceptable_replication_delay: 30
+      master: icds-ucr
