@@ -1,5 +1,4 @@
 DEFAULT_POSTGRESQL_HOST: pgmain
-DEFAULT_CONN_MAX_AGE: 120
 
 REPORTING_DATABASES:
   ucr: ucr
@@ -61,8 +60,6 @@ dbs:
       django_migrate: True
   standby:
     - django_alias: icds-ucr-standby1
-      name: commcarehq_icds_aggregatedata
       host: pgucrstandby
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 30
+      acceptable_replication_delay: 30
+      master: icds-ucr
