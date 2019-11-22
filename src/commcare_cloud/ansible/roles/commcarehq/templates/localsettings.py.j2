@@ -45,30 +45,22 @@ DATABASES = { {% for config in postgresql_dbs.all %}
             'ACCEPTABLE_REPLICATION_DELAY': {{ config.acceptable_replication_delay }},
         }
     {% endif -%}
+        {% if postgresql_dbs.form_processing and (config.get('shards') or config.name == postgresql_dbs.form_processing.proxy.name) -%}
+        'PLPROXY': {
+            {% if config.get('shards') -%}
+            'SHARDS': {{config.shards|to_json}},
+            {% endif -%}
+            {% if config.name == postgresql_dbs.form_processing.proxy.name -%}
+            'PROXY': True,
+        {% endif -%}
+        }
+    {% endif -%}
     },
 {% endif -%}
 {% endfor %}
 }
 
 USE_PARTITIONED_DATABASE = {{ SEPARATE_FORM_PROCESSING_DBS }}
-
-{% if SEPARATE_FORM_PROCESSING_DBS %}
-PARTITION_DATABASE_CONFIG = {
-    'shards': {
-        {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
-            '{{config.django_alias}}': {{config.shards|to_json}},
-        {% endfor %}
-    },
-    'groups': {
-        'proxy': ['proxy'],
-        'form_processing': [
-            {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
-                '{{config.django_alias}}',
-            {% endfor %}
-        ]
-    }
-}
-{% endif %}
 
 REPORTING_DATABASES = json.loads('{{ REPORTING_DATABASES|to_json }}')
 
