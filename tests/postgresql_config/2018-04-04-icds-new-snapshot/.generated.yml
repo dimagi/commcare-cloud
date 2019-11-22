@@ -33,7 +33,8 @@ postgresql_dbs:
     django_alias: icds-ucr-standby1
     django_migrate: false
     host: 10.247.164.24
-    hq_acceptable_standby_delay: 30
+    acceptable_replication_delay: 30
+    master: icds-ucr
     name: commcarehq_icds_aggregatedata
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
@@ -536,7 +537,8 @@ postgresql_dbs:
     django_alias: icds-ucr-standby1
     django_migrate: false
     host: 10.247.164.24
-    hq_acceptable_standby_delay: 30
+    acceptable_replication_delay: 30
+    master: icds-ucr
     name: commcarehq_icds_aggregatedata
     options: {}
     password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
