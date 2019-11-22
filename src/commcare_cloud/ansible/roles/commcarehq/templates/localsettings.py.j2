@@ -45,7 +45,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
             'ACCEPTABLE_REPLICATION_DELAY': {{ config.acceptable_replication_delay }},
         }
     {% endif -%}
-        {% if config.get('shards') or config.name == postgresql_dbs.form_processing.proxy.name -%}
+        {% if postgresql_dbs.form_processing and (config.get('shards') or config.name == postgresql_dbs.form_processing.proxy.name) -%}
         'PLPROXY': {
             {% if config.get('shards') -%}
             'SHARDS': {{config.shards|to_json}},
