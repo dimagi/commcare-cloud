@@ -35,9 +35,6 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
-        {% if config.conn_max_age -%}
-        'CONN_MAX_AGE': {{ config.conn_max_age }},
-        {% endif -%}
         'DISABLE_SERVER_SIDE_CURSORS': True,
         {% if not config.django_migrate -%}
         'MIGRATE': False,
