@@ -61,7 +61,6 @@ dbs:
       django_migrate: True
   standby:
     - django_alias: icds-ucr-standby1
-      name: commcarehq_icds_aggregatedata
       host: pgucrstandby
       acceptable_replication_delay: 30
       master: icds-ucr

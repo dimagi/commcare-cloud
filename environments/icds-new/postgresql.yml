@@ -84,7 +84,6 @@ dbs:
       host: pgwarehouse0
   standby:
     - django_alias: icds-ucr-standby1
-      name: commcarehq_icds_aggregatedata
       host: pgucrstandby
       acceptable_replication_delay: 1800
       master: icds-ucr
