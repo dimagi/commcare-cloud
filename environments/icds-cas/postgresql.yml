@@ -50,7 +50,9 @@ postgres_override:
       netmask: 127.0.0.1/32
     - contype: local
       users: TCLBKPADMIN
-
+    - contype: host
+      users: TCLBKPADMIN
+      netmask: 100.71.188.129/32
 
 dbs:
   main:
