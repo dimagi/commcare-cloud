@@ -119,6 +119,8 @@ class DeployMetadata(object):
     def diff_url(self):
         if env.offline:
             return '"No diff url for offline deploy"'
+        if not env.tag_deploy_commits:
+            return '"Diff URLs are not enabled for this environment"'
 
         if _github_auth_provided() and self._deploy_tag is None:
             raise Exception("You haven't tagged anything yet.")
