@@ -44,10 +44,10 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         {% endif -%}
         {% if config.get('master') -%}
         'STANDBY': {
-            'MASTER': {{ config.master }},
+            'MASTER': '{{ config.master }}',
             'ACCEPTABLE_REPLICATION_DELAY': {{ config.acceptable_replication_delay }},
         }
-        {% endif -%}
+    {% endif -%}
     },
 {% endif -%}
 {% endfor %}
