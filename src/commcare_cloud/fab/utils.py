@@ -162,13 +162,9 @@ class DeployMetadata(object):
 
 
 @memoized
-def _get_github():
-    def _show_no_auth_message():
-        print(magenta(
-            "Warning: Creation of release tags is disabled. "
-            "Provide Github auth details to enable release tags."
-        ))
-
+def _get_github_credentials():
+    if not env.tag_deploy_commits:
+        return (None, None)
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
@@ -177,30 +173,27 @@ def _get_github():
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username (leave blank for no auth): ')
+        username = input('Github username (leave blank for no auth): ') or None
         password = getpass('Github password: ') if username else None
-        if not username:
-            _show_no_auth_message()
-        return Github(
-            login_or_token=username or None,
-            password=password,
-        )
+        return (username, password)
     else:
-        if GITHUB_APIKEY is None:
-            _show_no_auth_message()
-        return Github(
-            login_or_token=GITHUB_APIKEY,
-        )
+        return (GITHUB_APIKEY, None)
+
+
+@memoized
+def _get_github():
+    login_or_token, password = _get_github_credentials()
+    if env.tag_deploy_commits and not login_or_token:
+        print(magenta(
+            "Warning: Creation of release tags is disabled. "
+            "Provide Github auth details to enable release tags."
+        ))
+    return Github(login_or_token=login_or_token, password=password)
 
 
 @memoized
 def _github_auth_provided():
-    try:
-        from .config import GITHUB_APIKEY
-    except ImportError:
-        return True  # user is prompted for auth
-    else:
-        return GITHUB_APIKEY is not None
+    return bool(_get_github_credentials()[0])
 
 
 def _get_checkpoint_filename():
