@@ -16,7 +16,9 @@
     - {role: citusdb, tags: 'citusdb'}
 
 - name: pgbouncer
-  hosts: citusdb_master
+  hosts: citusdb:pg_standby
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
