@@ -335,6 +335,8 @@ class CustomDBOptions(PartitionDBOptions):
 class StandbyDBOptions(PartitionDBOptions):
     master = jsonobject.StringProperty(required=True)
     acceptable_replication_delay = jsonobject.IntegerProperty(default=None)
+    create = False
+    django_migrate = False
 
 
 class LogicalReplicationOptions(jsonobject.JsonObject):
