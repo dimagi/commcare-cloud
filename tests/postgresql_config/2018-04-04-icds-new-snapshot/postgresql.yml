@@ -63,7 +63,5 @@ dbs:
     - django_alias: icds-ucr-standby1
       name: commcarehq_icds_aggregatedata
       host: pgucrstandby
-      create: False
-      django_migrate: False
       acceptable_replication_delay: 30
       master: icds-ucr

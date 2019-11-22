@@ -144,21 +144,15 @@ dbs:
     - django_alias: pgmainstandby0
       name: commcarehq
       host: pgmainstandby0
-      create: False
-      django_migrate: False
       acceptable_replication_delay: 0
       master: default
     - django_alias: pgmainstandby1
       name: commcarehq
       host: pgmainstandby1
-      create: False
-      django_migrate: False
       acceptable_replication_delay: 0
       master: default
     - django_alias: pgmainstandby2
       name: commcarehq
       host: pgmainstandby2
-      create: False
-      django_migrate: False
       acceptable_replication_delay: 0
       master: default
