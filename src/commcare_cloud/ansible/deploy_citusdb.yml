@@ -16,10 +16,17 @@
     - {role: citusdb, tags: 'citusdb'}
 
 - name: pgbouncer
-  hosts: citusdb:pg_standby
-  vars_files:
-    - roles/postgresql_base/defaults/main.yml
+  hosts: citusdb_master
   become: true
+  roles:
+    - {role: pgbouncer, tags: 'pgbouncer'}
+
+- name: pgbouncer
+  hosts: citusdb_worker
+  become: true
+  vars_files:
+    - roles/citusdb/defaults/main.yml
+    - roles/citusdb/vars/pgbouncer_workers.yml
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
 
