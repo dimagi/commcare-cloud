@@ -5,6 +5,8 @@
 {{ __citus0__ }}
 {{ __citus1__ }}
 {{ __citus2__ }}
+{{ __citus2standby__ }}
+{{ __citus1standby__ }}
 {{ __airflow1__ }}
 {{ __celery1__ }} swap_size=4G
 {{ __celery2__ }} swap_size=4G
@@ -33,6 +35,8 @@ citus0
 citus0
 citus1
 citus2
+citus1standby
+citus2standby
 
 [proxy:children]
 proxy1
