@@ -13,6 +13,13 @@
 {{ db.name }} = host={{ "localhost" if db.host == db.pgbouncer_host else db.host }}
 {% endfor %}
 
+{% if current_host in groups.citusdb_worker %}
+{% set citus_master = (groups.citusdb_master | difference(groups.pg_standby))[0] %}
+{% for db in postgresql_dbs.by_host.get(citus_master, []) %}
+{{ db.name }} = host={{ "localhost" }}
+{% endfor %}
+{% endif %}
+
 ;; Configuration section
 [pgbouncer]
 
