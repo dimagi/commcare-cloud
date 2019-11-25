@@ -57,25 +57,19 @@ backend {{ item.service.haproxy_service_name }}-back
 
 
 {% for host_name in item.service.haproxy_backend_nodes %}
-{% if hostvars[host_name] is defined %}
-{%   set ip_addr = hostvars[host_name][hostvars[host_name].internal_network_interface_fact].ipv4.address %}
-{% endif %}
     {{ [
         "server",
-        (host_name.name | default(host_name)) | string,
-        (host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string,
+        host_name | string,
+        host_name + ":" + haproxy_backend_port | string,
         "check",
     ] | join(' ') }}
 {% endfor %}
 
 {% for host_name in item.service.haproxy_backup_nodes|default([]) %}
-{% if hostvars[host_name] is defined %}
-{%   set ip_addr = hostvars[host_name][hostvars[host_name].internal_network_interface_fact].ipv4.address %}
-{% endif %}
     {{ [
         "server",
-        (host_name.name | default(host_name)) | string,
-        (host_name.ip_addr | default(ip_addr)) + ":" + haproxy_backend_port | string,
+        host_name | string,
+        host_name + ":" + haproxy_backend_port | string,
         "check",
         "backup"
     ] | join(' ') }}
