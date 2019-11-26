@@ -1,3 +1,4 @@
+import copy
 from collections import defaultdict
 
 import jsonobject
@@ -124,6 +125,20 @@ class PostgresqlConfig(jsonobject.JsonObject):
         for host in environment.groups.get('pg_standby', []):
             root_pg_host = self._get_root_pg_host(host, environment)
             dbs_by_host[host] = dbs_by_host[root_pg_host]
+
+        for host in environment.groups.get('citusdb_worker', []):
+            citusdb_masters = set(environment.groups.get('citusdb_master', []))
+            pg_standbys = set(environment.groups.get('pg_standby', []))
+            citusdb_master = list(citusdb_masters - pg_standbys)[0]
+            citus_dbs = []
+            for db in sorted_dbs:
+                if db['host'] == citusdb_master:
+                    db_config = copy.deepcopy(db)
+                    db_config['host'] = host
+                    db_config['pgbouncer_host'] = host
+                    citus_dbs.append(db_config)
+
+            dbs_by_host[host] = citus_dbs
 
         data['postgresql_dbs']['by_host'] = dict(dbs_by_host)
         return data
