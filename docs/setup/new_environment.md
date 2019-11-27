@@ -10,11 +10,13 @@ This document will walk you through the process of setting up a new monolith ser
     * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
 
-## Step 1: Add Root User and Install Required System Packages
+## Step 1: Prepare system for automated deploy
 
 1. Enable root login via ssh
 
     On a standard Ubuntu install, the `root` user is not enabled or allowed to ssh. The root user will only be used initially, and will then be disabled automatically by the install scripts.
+
+    Make a root password and store it somewhere safe for later reference.
 
     Set the root password:
 
@@ -40,19 +42,25 @@ This document will walk you through the process of setting up a new monolith ser
     PermitRootLogin yes
     ```
 
+    Next, search for `PasswordAuthentication` and make sure it's set to `yes`
+
     Then restart SSH:
 
     ``` bash
-    $ service ssh reload
+    $ sudo service ssh reload
     ```
 
 1. Install Required Packages
 
     ``` bash
-    $ sudo apt install python-pip sshpass
+    $ sudo apt update && sudo apt install python-pip sshpass
     $ sudo pip install ansible virtualenv virtualenvwrapper --ignore-installed six
-    $ sudo touch /var/log/ansible.log
-    $ sudo chmod 666 /var/log/ansible.log
+    ```
+
+1. Initialize a log file to be used in the installation process.
+
+    ``` bash
+    $ sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
     ```
 
 ## Step 2: Download and configure the commcare-cloud environment
@@ -65,13 +73,13 @@ This document will walk you through the process of setting up a new monolith ser
     
     You can read more about the files contained in this environments folder [here](../commcare-cloud/env/index.md).
 
-1. Encrypt the provided ansible vault file by running:
+1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
+
+    Encrypt the provided vault file, using that password:
 
     ``` bash
     $ ansible-vault encrypt ~/environments/monolith/vault.yml
     ```
-
-    Enter a strong password when prompted, and save this password somewhere safe as you will need it for any future changes to this file, as well as when you deploy and configuration changes to this machine.
     
     More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
     
@@ -142,17 +150,32 @@ Even though we will be running all commands locally, we still need to add the us
     $ cp ~/.ssh/id_rsa.pub ~/environments/_authorized_keys/$(whoami).pub
     ```
 
-1. Add your system username to the `present` section of `~/environments/_users/dimagi.yml`. This username should correspond to the name you've used for the public key in the previous step.
+1. Add your system username to the `present` section of `~/environments/_users/admins.yml`. This username should correspond to the name you've used for the public key in the previous step.
    
     ``` bash
-    $ nano ~/environments/_users/dimagi.yml
+    $ nano ~/environments/_users/admins.yml
     ```
 
-## Step 3: Install commcare-cloud
+### Install commcare-cloud
 
-Install commcare-cloud onto the monolith as described in [Installing commcare-cloud](installation.md#step-2) beginning with **Step 2**.
+Install commcare-cloud onto the monolith:
 
-## Step 4: Set-up commcare-cloud
+```bash
+$ git clone https://github.com/dimagi/commcare-cloud.git
+$ source commcare-cloud/control/init.sh
+```
+
+and when you see it ask you this:
+
+```bash
+Do you want to have the CommCare Cloud environment setup on login?
+(y/n):
+```
+answer with `y`.
+
+For more information, see [Installing commcare-cloud](installation.md#step-2)
+
+### Run first-time configuration
 
 1. Configure `commcare-cloud`
 
@@ -170,27 +193,35 @@ Install commcare-cloud onto the monolith as described in [Installing commcare-cl
     Would you like to use environments at that location? [y/N]y
     ```
 
-1. Add the commcare-cloud config to your bash profile to set the correct paths:
+1. As prompted, add the commcare-cloud config to your bash profile to set the correct paths:
 
     ``` bash
-    $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.profile
+    $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.bash_profile
     ```
+
 1. Load the commcare-cloud config so it takes effect immediately:
 
     ``` bash
     $ source ~/.commcare-cloud/load_config.sh
     ```
 
-## Step 5: Update the known hosts file
+1. Copy the example fab config file:
 
-```bash
-$ commcare-cloud monolith update-local-known-hosts
-```
-You will be prompted for the ansible vault password that you entered in [Step 2](#step-2-download-and-configure-the-commcare-cloud-environment)
+    ``` bash
+    $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
+    ```
 
-## Step 6: Install all the services onto the monolith
+1. Update the known hosts file
 
-In this step, you will be prompted for an SSH password. This is the root user's password. After this step, the root user will not be able to log in via SSH.
+    ```bash
+    $ commcare-cloud monolith update-local-known-hosts
+    ```
+    You may be prompted for the ansible vault password that you entered earlier.
+
+
+## Step 3: Install all the services onto the monolith
+
+In this step, you will be prompted for the vault password from earlier.  You will also be prompted for an SSH password. This is the root user's password. After this step, the root user will not be able to log in via SSH.
 
 ``` bash
 $ commcare-cloud monolith deploy-stack --first-time -e 'CCHQ_IS_FRESH_INSTALL=1'
@@ -210,15 +241,7 @@ If there are failures during the install, which may happen due to timing issues,
 $ commcare-cloud monolith deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
 ```
 
-## Step 7: Edit the fab config file
-
-1. Copy the example config file:
-
-    ``` bash
-    $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
-    ```
-
-## Step 8: Deploy CommCare HQ
+## Step 4: Deploy CommCare HQ
 
 Deploying CommcareHQ for the first time needs a few things enabled first.
 
@@ -248,11 +271,11 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
     $ commcare-cloud monolith deploy --resume
     ```
 
-## Step 9: Cleanup
+## Step 5: Cleanup
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
 
-## Step 10: Running CommCareHQ
+## Step 6: Running CommCareHQ
 
 ### Learning `commcare-cloud` basics
 
@@ -270,15 +293,15 @@ If you face any issues, it is recommended to review the [Troubleshooting first t
 
 You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues that `commcare-cloud` can resolve.
 
-## Step 11: [Optional] Rebooting the machine
-
 If you ever reboot this machine, make sure to follow the [after reboot procedure](../commcare-cloud/basics.md#handling-a-reboot) to bring all the services back up, and mount the encrypted drive by running: 
 
 ``` bash
 $ commcare-cloud monolith after-reboot all
 ```
 
-## Step 12: [Optional] Make a user
+## Step 7: Getting started with CommCareHQ
+
+### Make a user
 
 If you are following this process, we assume you have some knowledge of CommCareHQ and may already have data you want to migrate to your new cluster. By default, the monolith deploy scripts will be in `Enterprise` mode, which means there is no sign up screen. You can change this and other settings in the localsettings file, and following the [localsettings deploy instructions](../commcare-cloud/basics.md#update-commcare-hq-local-settings).
 
@@ -290,7 +313,7 @@ $ commcare-cloud monolith django-manage make_superuser {email}
 
 where `{email}` is the email address you would like to use as the username.
 
-## Step 13: [Optional] Add a new build
+### Add a new CommCare build
 
 In order to create new versions of applications created in the CommCareHQ app builder, you will need to add the latest `CommCare Mobile` and `CommCare Core` builds to your server.
 

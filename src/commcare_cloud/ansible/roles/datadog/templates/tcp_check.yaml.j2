@@ -4,13 +4,6 @@
 init_config:
 
 instances:
-  - name: Cloudant
-    host: commcarehq.cloudant.com
-    port: 443
-    timeout: 90
-    collect_response_time: true
-    tags:
-      - environment:{{ env_monitoring_id }}
   - name: Redis
     host: {{ groups.redis.0 }}
     port: 6379

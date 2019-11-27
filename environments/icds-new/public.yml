@@ -26,7 +26,6 @@ KSPLICE_ACTIVE: no
 
 
 DATADOG_ENABLED: True
-datadog_integration_cloudant: False
 datadog_integration_vmware: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
@@ -95,7 +94,6 @@ localsettings:
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EMAIL_SMTP_HOST: 'localhost'
@@ -198,4 +196,3 @@ localsettings:
     'static-icds-cas-static-mpr_5_child_health_cases_v2': 'static-icds-cas-static-custom_mpr_5_child_health_cases_v2'
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
-  WAREHOUSE_DATABASE_ALIAS: 'warehouse'

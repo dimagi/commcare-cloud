@@ -1,7 +1,6 @@
 postgresql_dbs:
   all:
   - &id001
-    conn_max_age: null
     create: true
     django_alias: default
     django_migrate: true
@@ -15,7 +14,6 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id002
-    conn_max_age: null
     create: true
     django_alias: synclogs
     django_migrate: true
@@ -29,7 +27,6 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id003
-    conn_max_age: null
     create: true
     django_alias: ucr
     django_migrate: false
@@ -43,7 +40,6 @@ postgresql_dbs:
     query_stats: true
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   - &id004
-    conn_max_age: null
     create: true
     django_alias: null
     django_migrate: true
@@ -65,7 +61,6 @@ postgresql_dbs:
   custom: []
   form_processing: null
   formplayer:
-    conn_max_age: null
     create: true
     django_alias: null
     django_migrate: true
@@ -79,7 +74,6 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   main:
-    conn_max_age: null
     create: true
     django_alias: default
     django_migrate: true
@@ -94,7 +88,6 @@ postgresql_dbs:
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   standby: []
   synclogs:
-    conn_max_age: null
     create: true
     django_alias: synclogs
     django_migrate: true
@@ -108,7 +101,6 @@ postgresql_dbs:
     query_stats: false
     user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
   ucr:
-    conn_max_age: null
     create: true
     django_alias: ucr
     django_migrate: false
