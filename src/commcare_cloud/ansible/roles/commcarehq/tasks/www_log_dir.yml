@@ -6,7 +6,7 @@
     path: "{{ item }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
-    mode: 0755
+    mode: 0775
     state: directory
     # sometimes the log directory is a symlink to a dir on an encrypted drive
     follow: yes
@@ -14,3 +14,11 @@
     - "{{ www_dir }}"
     - "{{ www_home }}"
     - "{{ log_home }}"
+
+# this is needed to allow syslog to write logs to `log_home`
+- name: Added syslog user to the cchq group
+  become: yes
+  user:
+    name: syslog
+    groups: cchq
+    append: yes

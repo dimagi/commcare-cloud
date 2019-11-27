@@ -105,6 +105,31 @@ s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
 s3_blob_db_s3_bucket: 'mowcddb-c1'
 s3_bulk_delete_chunksize: 200
 
+additional_logrotate_scripts:
+  webworkers:
+    - name: "kafka-audit"
+      path: "{{log_home}}/commcarehq.kafka_audit.log"
+      options:
+        - hourly
+        - rotate 5
+        - missingok
+        - nocompress
+        - copytruncate
+        - nocreate
+        - sharedscripts
+      scripts:
+        postrotate: "invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true"
+
+additional_syslog_config:
+  webworkers:
+    - dest: /etc/rsyslog.d/10-kafka-audit.conf
+      content: |-
+        $FileCreateMode 0644
+        :programname, isequal, "kafka_audit" {
+            {{log_home}}/commcarehq.kafka_audit.log
+            stop
+        }
+
 kafka_log_retention: 504 # 21 days
 
 localsettings:
@@ -157,7 +182,7 @@ localsettings:
   LOCAL_LOGGING_CONFIG:
     formatters:
       kafka_audit:
-        format: '%(asctime)s,%(message)s'
+        format: 'kafka_audit ,%(message)s'
     loggers:
       kafka_producer_audit:
         handlers: ['kafka_audit']
@@ -166,11 +191,9 @@ localsettings:
     handlers:
       kafka_audit:
         level: 'DEBUG'
-        class: 'logging.handlers.TimedRotatingFileHandler'
+        class: 'logging.handlers.SysLogHandler'
         formatter: 'kafka_audit'
-        filename: '{{ log_home }}/commcarehq.kafka_audit.log'
-        when: 'H'
-        backupCount: 5
+        address: '/dev/log'
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
   LOCAL_PILLOWS:
