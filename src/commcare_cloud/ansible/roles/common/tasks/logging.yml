@@ -1,0 +1,20 @@
+- name: Decrease console log level
+  become: yes
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: '^\$klogConsoleLogLevel'
+    line: '$klogConsoleLogLevel 4'
+  notify: restart rsyslog
+
+- name: Create custom syslog configs
+  become: yes
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+  loop: "{{ rsyslog_configs }}"
+  notify: restart rsyslog
+
+- name: Create custom logrotate configs
+  include_role:
+    name: ansible-logrotate
+  when: "logrotate_scripts | length > 0"
