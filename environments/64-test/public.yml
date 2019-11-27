@@ -22,8 +22,6 @@ KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: True
 
-CLOUDANT_CLUSTER_NAME: null
-
 backup_es_s3: False
 backup_postgres: plain
 backup_blobdb: True

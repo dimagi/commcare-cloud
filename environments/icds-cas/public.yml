@@ -1,7 +1,6 @@
 internal_domain_name: 'internal-icds.commcarehq.org'
 daily_deploy_email: tech-announce-daily@dimagi.com
 
-
 elasticsearch_endpoint: '{{ groups.es0.0 }}'
 elasticsearch_cluster_name: 'icds-2.0'
 elasticsearch_version: 1.7.6
@@ -131,6 +130,8 @@ additional_syslog_config:
             stop
         }
 
+kafka_log_retention: 504 # 21 days
+
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
@@ -149,13 +150,13 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
+  BYPASS_SESSIONS_FOR_MOBILE: True
   CASE_ES_DROP_FORM_FIELDS: True
   CELERY_TIMEZONE: 'Asia/Kolkata'
   COMMCARE_HQ_NAME: 'ICDS-CAS Server'
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_STALE_QUERY: 'update_after'
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
   EMAIL_SMTP_HOST: relay.sendermile.com
@@ -227,4 +228,5 @@ localsettings:
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
-  WAREHOUSE_DATABASE_ALIAS: 'warehouse'
+  USER_REPORTING_METADATA_BATCH_ENABLED: True
+  USER_REPORTING_METADATA_BATCH_SCHEDULE: {'crontab': {'minute': '*/2', 'hour': '17-21'}}

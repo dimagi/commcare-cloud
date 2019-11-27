@@ -18,6 +18,7 @@ class FabSettingsConfig(jsonobject.JsonObject):
     ignore_kafka_checkpoint_warning = jsonobject.BooleanProperty()
     acceptable_maintenance_window = jsonobject.ObjectProperty(lambda: AcceptableMaintenanceWindow)
     email_enabled = jsonobject.BooleanProperty()
+    tag_deploy_commits = jsonobject.BooleanProperty(default=False)
 
     @classmethod
     def wrap(cls, data):

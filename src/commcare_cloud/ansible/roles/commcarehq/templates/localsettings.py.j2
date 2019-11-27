@@ -35,16 +35,26 @@ DATABASES = { {% for config in postgresql_dbs.all %}
         'HOST': '{% if config.pgbouncer_host == inventory_hostname %}127.0.0.1{% else %}{{ config.pgbouncer_host }}{% endif %}',
         'PORT': {{ config.port }},
         'OPTIONS': {{ config.options|to_json }},
-        {% if config.conn_max_age -%}
-        'CONN_MAX_AGE': {{ config.conn_max_age }},
-        {% endif -%}
         'DISABLE_SERVER_SIDE_CURSORS': True,
         {% if not config.django_migrate -%}
         'MIGRATE': False,
         {% endif -%}
-        {% if 'hq_acceptable_standby_delay' in config -%}
-        'HQ_ACCEPTABLE_STANDBY_DELAY': {{ config.hq_acceptable_standby_delay }},
+        {% if config.get('master') -%}
+        'STANDBY': {
+            'MASTER': '{{ config.master }}',
+            'ACCEPTABLE_REPLICATION_DELAY': {{ config.acceptable_replication_delay }},
+        }
+    {% endif -%}
+        {% if postgresql_dbs.form_processing and (config.get('shards') or config.name == postgresql_dbs.form_processing.proxy.name) -%}
+        'PLPROXY': {
+            {% if config.get('shards') -%}
+            'SHARDS': {{config.shards|to_json}},
+            {% endif -%}
+            {% if config.name == postgresql_dbs.form_processing.proxy.name -%}
+            'PROXY': True,
         {% endif -%}
+        }
+    {% endif -%}
     },
 {% endif -%}
 {% endfor %}
@@ -52,27 +62,7 @@ DATABASES = { {% for config in postgresql_dbs.all %}
 
 USE_PARTITIONED_DATABASE = {{ SEPARATE_FORM_PROCESSING_DBS }}
 
-{% if SEPARATE_FORM_PROCESSING_DBS %}
-PARTITION_DATABASE_CONFIG = {
-    'shards': {
-        {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
-            '{{config.django_alias}}': {{config.shards|to_json}},
-        {% endfor %}
-    },
-    'groups': {
-        'proxy': ['proxy'],
-        'form_processing': [
-            {% for name, config in postgresql_dbs.form_processing.partitions.items()|sort -%}
-                '{{config.django_alias}}',
-            {% endfor %}
-        ]
-    }
-}
-{% endif %}
-
 REPORTING_DATABASES = json.loads('{{ REPORTING_DATABASES|to_json }}')
-
-WAREHOUSE_DATABASE_ALIAS = "{{ localsettings.WAREHOUSE_DATABASE_ALIAS|default('default') }}"
 
 LOAD_BALANCED_APPS = json.loads('{{ LOAD_BALANCED_APPS|to_json|default({}) }}')
 
@@ -583,8 +573,7 @@ INDICATOR_NAMESPACES = {
         ('mvp_indicators', "MVP"),
     ),
 }
-# should be 'ok' if couchdb version < 1.1.0, or cloudant, else 'update_after'
-COUCH_STALE_QUERY = '{{ localsettings.COUCH_STALE_QUERY | default('update_after') }}'
+COUCH_STALE_QUERY = 'update_after'
 
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
@@ -815,6 +804,9 @@ GREENHOUSE_API_KEY = '{{ GREENHOUSE_API_KEY }}'
 
 LOCAL_LOGGING_CONFIG = json.loads('{{ localsettings.get('LOCAL_LOGGING_CONFIG', {})|to_json }}')
 LOCAL_MIDDLEWARE = {{ localsettings.get('LOCAL_MIDDLEWARE', [])|to_json }}
+
+BYPASS_SESSIONS_FOR_MOBILE = {{localsettings.get('BYPASS_SESSIONS_FOR_MOBILE', False)}}
+
 
 {% if localsettings.get('SUMOLOGIC_URL') %}
 SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'
