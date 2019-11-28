@@ -872,6 +872,15 @@ AUDIT_VIEWS= [
 ]
 {% endif %}
 
+{% if localsettings.get('ICDS_CAS_ALWAYS_ENABLED_TOGGLES') is not none %}
+ICDS_CAS_ALWAYS_ENABLED_TOGGLES = {{ localsettings.ICDS_CAS_ALWAYS_ENABLED_TOGGLES }}
+{% endif %}
+
+{% if localsettings.get('ICDS_CAS_ALWAYS_DISABLED_TOGGLES') is not none %}
+ICDS_CAS_ALWAYS_DISABLED_TOGGLES = {{ localsettings.ICDS_CAS_ALWAYS_DISABLED_TOGGLES }}
+{% endif %}
+
+
 SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
