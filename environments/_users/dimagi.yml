@@ -17,6 +17,7 @@ dev_users:
     - skelly
     - sravfeyn
     - rkumar
+    - schauhan
   absent:
     - astone
     - wpride
