@@ -255,6 +255,12 @@ def _clone_virtual_env(virtualenv_current, virtualenv_root):
     # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
     current_virtualenv = sudo('readlink -f {}'.format(virtualenv_current))
     sudo("virtualenv-clone {} {}".format(current_virtualenv, virtualenv_root))
+    # There was a bug for a while that made new machines set up with commcare-cloud
+    # reference current in their virtualenvs instead of their absolute path
+    # this line automatically detects and fixes that.
+    # It's a noop in steady-state but essentially for fixing the issue.
+    sudo('sed -i -e "s~{virtualenv_current}~{virtualenv_root}~g" $(find {virtualenv_root}/bin/ -type f)'
+         .format(virtualenv_current=virtualenv_current, virtualenv_root=virtualenv_root))
 
 
 @roles(ROLES_ALL_SRC)
