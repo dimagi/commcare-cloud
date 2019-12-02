@@ -22,7 +22,10 @@ we are replacing the `commcare-cloud <env> fab deploy` command with a more conci
 ### **2019-08-23** [Removing support for Riak CS](0028-remove-riak.md)
 We are removing support for deploying Riak CS clusters in commcare-cloud
 
-### **2019-08-23** [Fix python3 virutalenvs](0027-fix-python3-virtualenv.md)
+### **2019-08-23** [Fix python3 virutalenvs (Deprecated)](0027-fix-python3-virtualenv.md)
+**Update (2019-11-27)**: This fix is no longer necessary as it has been superceded by changes
+to the deploy script that make this change automatically if necessary.
+
 This fixes a bug with how python3 virtualenvs were created by ansible. This fix needs to be applied to any
 machine which has a python3 virtualenv that was created by commcare-cloud.
 
