@@ -1,5 +1,5 @@
 ### Migrating zookeeper to a new node.
-This doc will explain how to migrate a running zookeeper to a new node without any downtime. first we will run ZooKeeper in replicated mode and shut down the primary server after that the secondary server will take over.
+This doc will explain how to migrate a running zookeeper to a new node without any downtime. First we will run ZooKeeper in replicated mode and shut down the primary server after that the secondary server will take over.
 
 1. Add the new node in zookeeper group and run deploy-stack
 ```
@@ -25,5 +25,4 @@ $ cchq <env> deploy-stack --limit=<All kafka nodes> --tags=kafka,zookeeper
 5. Shutdown the old zookeeper node.
 
 6. Remove the old node entry from  `/etc/zookeeper/conf/zoo.cfg` on new zookeeper nodes and restart the zookeeper service.
-
 
