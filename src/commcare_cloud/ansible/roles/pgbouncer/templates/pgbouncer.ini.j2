@@ -41,15 +41,13 @@ unix_socket_dir = /var/run/postgresql
 ;;;
 ;;; Authentication settings
 ;;;
-{% if inventory_hostname in groups['citusdb_worker'] %}
+{% if pgbouncer_client_tls_key_file and pgbouncer_client_tls_cert_file %}
 ;; SSL needed to connect between citus controller and worker machines.
 client_tls_sslmode = prefer
-client_tls_key_file = {{ postgresql_data_dir }}/server.key
-client_tls_cert_file = {{ postgresql_data_dir }}/server.crt
-auth_type = trust
-{% else %}
-auth_type = md5
+client_tls_key_file = {{ pgbouncer_client_tls_key_file }}
+client_tls_cert_file = {{ pgbouncer_client_tls_cert_file }}
 {% endif %}
+auth_type = {{ pgbouncer_auth_type|default('md5') }}
 auth_file = {{ pgbouncer_users }}
 
 ;;;

@@ -133,6 +133,7 @@ dbs:
       name: icds_ucr
       django_migrate: True  # ICDS dashboard models are stored here
       host: citusmaster1
+      query_stats: True
       pg_config:
         - name: citus.shard_count
           value: 64
