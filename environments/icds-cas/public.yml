@@ -207,125 +207,364 @@ localsettings:
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   USER_REPORTING_METADATA_BATCH_SCHEDULE: {'crontab': {'minute': '*/2', 'hour': '17-21'}}
-  ICDS_CAS_ALWAYS_ENABLED_TOGGLES:
-    - 'advanced-app-builder'
-    - 'case_list_custom_xml'
-    - 'case_list_custom_variables'
-    - 'case_list_tile'
-    - 'case_list_lookup'
-    - 'data_file_download'
-    - 'detail-list-tab-nodesets'
-    - 'graph-creation'
-    - 'app_builder_visit_scheduler'
-    - 'user_reports'
-    - 'locations_in_ucr'
-    - 'report_builder'
-    - 'role_webapps_permissions'
-    - 'form_link_workflow'
-    - 'save_to_case'
-    - 'allow_data_reference_in_setvalue'
-    - 'custom_properties'
-    - 'enable_loadtest_users'
-    - 'commtrack'
-    - 'dashboard_icds_reports'
-    - 'legacy_child_modules'
-    - 'fixture_case'
-    - 'call_center_location_owners'
-    - 'custom_app_base_url'
-    - 'hide_messaging_dashboard'
-    - 'mobile_user_demo_mode'
-    - 'locale_id_integrity'
-    - 'emwf_worker_activity_report'
-    - 'data_dictionary'
-    - 'paginated_exports'
-    - 'phone_apk_heartbeat'
-    - 'mobile_recovery_measures'
-    - 'enable_all_add_ons'
-    - 'filtered_bulk_user_download'
-    - 'linked_domains'
-    - 'multi_master_linked_domains'
-    - 'target_commcare_flavor'
-    - 'allow_blank_case_tags'
-    - 'restrict_app_release'
-    - 'release_builds_per_profile'
-    - 'parallel_mpr_asr_report'
-    - 'enable_ucr_mirrors'
-    - 'location_columns_app_status_report'
-    - 'skip_creating_default_build_files_on_build'
-  ICDS_CAS_ALWAYS_DISABLED_TOGGLES:
-    - 'custom-parent-ref'
-    - 'shadow-app-builder'
-    - 'show_persist_case_context_setting'
-    - 'biometric_integration'
-    - 'add_users_from_location'
-    - 'case_detail_print'
-    - 'copy_form_to_app'
-    - 'dhis2_integration'
-    - 'new_multimedia_uploader'
-    - 'report_builder_beta_group'
-    - 'search_claim'
-    - 'case_list_explorer'
-    - 'explore_case_data'
-    - 'ecd_migrated_domains'
-    - 'ecd_enterprise_domains'
-    - 'no_vellum'
-    - 'stock_and_sms_handler'
-    - 'products_per_location'
-    - 'allow_case_attachments_view'
-    - 'transfer_domain'
-    - 'printing'
-    - 'cache_and_index'
-    - 'API_BLACKLIST'
-    - 'non_commtrack_ledgers'
-    - 'custom_instances'
-    - 'custom_assertions'
-    - 'openclinica'
-    - 'icds_dashboard_temporary_downtime'
-    - 'openmrs_integration'
-    - 'APP_BUILDER_CONDITIONAL_NAMES'
-    - 'formplayer_use_livequery'
-    - 'sms_log_changes'
-    - 'enable_include_sms_gateway_charging'
-    - 'mobile_worker_self_registration'
-    - 'legacy_sync_support'
-    - 'not_tf_sql_backend'
-    - 'phone_numbers_report'
-    - 'inbound_sms_leniency'
-    - 'unlimited_report_builder_reports'
-    - 'emg_and_rec_sms_handlers'
-    - 'allow_user_defined_export_columns'
-    - 'disable_column_limit_in_ucr'
-    - 'use_latest_build_cloudcare'
-    - 'bulk_update_multimedia_paths'
-    - 'user_testing_simplify'
-    - 'data_migration'
-    - 'sort_calculation_in_case_list'
-    - 'app-changes-with-improved-diff'
-    - 'couch_sql_migration_blacklist'
-    - 'publish_custom_reports'
-    - 'display_condition_on_nodeset'
-    - 'skip_remove_indices'
-    - 'prevent_mobile_ucr_sync'
-    - 'bulk_upload_date_opened'
-    - 'regex_field_validation'
-    - 'custom_icon_badges'
-    - 'training-module'
-    - 'export_multisort'
-    - 'export_ownership'
-    - 'aggregate_ucrs'
-    - 'show_raw_data_sources_in_report_builder'
-    - 'related_locations'
-    - 'filter_on_groups_and_locations'
-    - 'dont_index_same_casetype'
-    - 'location_safe_case_imports'
-    - 'hide_hq_on_mobile_experience'
-    - 'dashboard_reach_reports'
-    - 'partial_ui_translations'
-    - 'skip_orm_fixture_upload'
-    - 'disable_case_update_rule_task'
-    - 'group_api_use_couch_backend'
-    - 'user_api_use_es_backend'
-    - 'phi_cas_integration'
-    - 'rate_limit_submissions'
-    - 'rate_limit_restores'
-    - 'skip_updating_user_reporting_metadata'
+  STATIC_TOGGLE_STATES:
+    advanced-app-builder:
+      always_enabled:
+        - 'icds-cas'
+    case_list_custom_xml:
+      always_enabled:
+        - 'icds-cas'
+    case_list_custom_variables:
+      always_enabled:
+        - 'icds-cas'
+    case_list_tile:
+      always_enabled:
+        - 'icds-cas'
+    case_list_lookup:
+      always_enabled:
+        - 'icds-cas'
+    data_file_download:
+      always_enabled:
+        - 'icds-cas'
+    detail-list-tab-nodesets:
+      always_enabled:
+        - 'icds-cas'
+    graph-creation:
+      always_enabled:
+        - 'icds-cas'
+    app_builder_visit_scheduler:
+      always_enabled:
+        - 'icds-cas'
+    user_reports:
+      always_enabled:
+        - 'icds-cas'
+    locations_in_ucr:
+      always_enabled:
+        - 'icds-cas'
+    report_builder:
+      always_enabled:
+        - 'icds-cas'
+    role_webapps_permissions:
+      always_enabled:
+        - 'icds-cas'
+    form_link_workflow:
+      always_enabled:
+        - 'icds-cas'
+    save_to_case:
+      always_enabled:
+        - 'icds-cas'
+    allow_data_reference_in_setvalue:
+      always_enabled:
+        - 'icds-cas'
+    custom_properties:
+      always_enabled:
+        - 'icds-cas'
+    enable_loadtest_users:
+      always_enabled:
+        - 'icds-cas'
+    commtrack:
+      always_enabled:
+        - 'icds-cas'
+    dashboard_icds_reports:
+      always_enabled:
+        - 'icds-cas'
+    legacy_child_modules:
+      always_enabled:
+        - 'icds-cas'
+    fixture_case:
+      always_enabled:
+        - 'icds-cas'
+    call_center_location_owners:
+      always_enabled:
+        - 'icds-cas'
+    custom_app_base_url:
+      always_enabled:
+        - 'icds-cas'
+    hide_messaging_dashboard:
+      always_enabled:
+        - 'icds-cas'
+    mobile_user_demo_mode:
+      always_enabled:
+        - 'icds-cas'
+    locale_id_integrity:
+      always_enabled:
+        - 'icds-cas'
+    emwf_worker_activity_report:
+      always_enabled:
+        - 'icds-cas'
+    data_dictionary:
+      always_enabled:
+        - 'icds-cas'
+    paginated_exports:
+      always_enabled:
+        - 'icds-cas'
+    phone_apk_heartbeat:
+      always_enabled:
+        - 'icds-cas'
+    mobile_recovery_measures:
+      always_enabled:
+        - 'icds-cas'
+    enable_all_add_ons:
+      always_enabled:
+        - 'icds-cas'
+    filtered_bulk_user_download:
+      always_enabled:
+        - 'icds-cas'
+    linked_domains:
+      always_enabled:
+        - 'icds-cas'
+    multi_master_linked_domains:
+      always_enabled:
+        - 'icds-cas'
+    target_commcare_flavor:
+      always_enabled:
+        - 'icds-cas'
+    allow_blank_case_tags:
+      always_enabled:
+        - 'icds-cas'
+    restrict_app_release:
+      always_enabled:
+        - 'icds-cas'
+    release_builds_per_profile:
+      always_enabled:
+        - 'icds-cas'
+    parallel_mpr_asr_report:
+      always_enabled:
+        - 'icds-cas'
+    enable_ucr_mirrors:
+      always_enabled:
+        - 'icds-cas'
+    location_columns_app_status_report:
+      always_enabled:
+        - 'icds-cas'
+    skip_creating_default_build_files_on_build:
+      always_enabled:
+        - 'icds-cas'
+  custom-parent-ref:
+    always_disabled:
+      - 'icds-cas'
+  shadow-app-builder:
+    always_disabled:
+      - 'icds-cas'
+  show_persist_case_context_setting:
+    always_disabled:
+      - 'icds-cas'
+  biometric_integration:
+    always_disabled:
+      - 'icds-cas'
+  add_users_from_location:
+    always_disabled:
+      - 'icds-cas'
+  case_detail_print:
+    always_disabled:
+      - 'icds-cas'
+  copy_form_to_app:
+    always_disabled:
+      - 'icds-cas'
+  dhis2_integration:
+    always_disabled:
+      - 'icds-cas'
+  new_multimedia_uploader:
+    always_disabled:
+      - 'icds-cas'
+  report_builder_beta_group:
+    always_disabled:
+      - 'icds-cas'
+  search_claim:
+    always_disabled:
+      - 'icds-cas'
+  case_list_explorer:
+    always_disabled:
+      - 'icds-cas'
+  explore_case_data:
+    always_disabled:
+      - 'icds-cas'
+  ecd_migrated_domains:
+    always_disabled:
+      - 'icds-cas'
+  ecd_enterprise_domains:
+    always_disabled:
+      - 'icds-cas'
+  no_vellum:
+    always_disabled:
+      - 'icds-cas'
+  stock_and_sms_handler:
+    always_disabled:
+      - 'icds-cas'
+  products_per_location:
+    always_disabled:
+      - 'icds-cas'
+  allow_case_attachments_view:
+    always_disabled:
+      - 'icds-cas'
+  transfer_domain:
+    always_disabled:
+      - 'icds-cas'
+  printing:
+    always_disabled:
+      - 'icds-cas'
+  cache_and_index:
+    always_disabled:
+      - 'icds-cas'
+  API_BLACKLIST:
+    always_disabled:
+      - 'icds-cas'
+  non_commtrack_ledgers:
+    always_disabled:
+      - 'icds-cas'
+  custom_instances:
+    always_disabled:
+      - 'icds-cas'
+  custom_assertions:
+    always_disabled:
+      - 'icds-cas'
+  openclinica:
+    always_disabled:
+      - 'icds-cas'
+  icds_dashboard_temporary_downtime:
+    always_disabled:
+      - 'icds-cas'
+  openmrs_integration:
+    always_disabled:
+      - 'icds-cas'
+  APP_BUILDER_CONDITIONAL_NAMES:
+    always_disabled:
+      - 'icds-cas'
+  formplayer_use_livequery:
+    always_disabled:
+      - 'icds-cas'
+  sms_log_changes:
+    always_disabled:
+      - 'icds-cas'
+  enable_include_sms_gateway_charging:
+    always_disabled:
+      - 'icds-cas'
+  mobile_worker_self_registration:
+    always_disabled:
+      - 'icds-cas'
+  legacy_sync_support:
+    always_disabled:
+      - 'icds-cas'
+  not_tf_sql_backend:
+    always_disabled:
+      - 'icds-cas'
+  phone_numbers_report:
+    always_disabled:
+      - 'icds-cas'
+  inbound_sms_leniency:
+    always_disabled:
+      - 'icds-cas'
+  unlimited_report_builder_reports:
+    always_disabled:
+      - 'icds-cas'
+  emg_and_rec_sms_handlers:
+    always_disabled:
+      - 'icds-cas'
+  allow_user_defined_export_columns:
+    always_disabled:
+      - 'icds-cas'
+  disable_column_limit_in_ucr:
+    always_disabled:
+      - 'icds-cas'
+  use_latest_build_cloudcare:
+    always_disabled:
+      - 'icds-cas'
+  bulk_update_multimedia_paths:
+    always_disabled:
+      - 'icds-cas'
+  user_testing_simplify:
+    always_disabled:
+      - 'icds-cas'
+  data_migration:
+    always_disabled:
+      - 'icds-cas'
+  sort_calculation_in_case_list:
+    always_disabled:
+      - 'icds-cas'
+  app-changes-with-improved-diff:
+    always_disabled:
+      - 'icds-cas'
+  couch_sql_migration_blacklist:
+    always_disabled:
+      - 'icds-cas'
+  publish_custom_reports:
+    always_disabled:
+      - 'icds-cas'
+  display_condition_on_nodeset:
+    always_disabled:
+      - 'icds-cas'
+  skip_remove_indices:
+    always_disabled:
+      - 'icds-cas'
+  prevent_mobile_ucr_sync:
+    always_disabled:
+      - 'icds-cas'
+  bulk_upload_date_opened:
+    always_disabled:
+      - 'icds-cas'
+  regex_field_validation:
+    always_disabled:
+      - 'icds-cas'
+  custom_icon_badges:
+    always_disabled:
+      - 'icds-cas'
+  training-module:
+    always_disabled:
+      - 'icds-cas'
+  export_multisort:
+    always_disabled:
+      - 'icds-cas'
+  export_ownership:
+    always_disabled:
+      - 'icds-cas'
+  aggregate_ucrs:
+    always_disabled:
+      - 'icds-cas'
+  show_raw_data_sources_in_report_builder:
+    always_disabled:
+      - 'icds-cas'
+  related_locations:
+    always_disabled:
+      - 'icds-cas'
+  filter_on_groups_and_locations:
+    always_disabled:
+      - 'icds-cas'
+  dont_index_same_casetype:
+    always_disabled:
+      - 'icds-cas'
+  location_safe_case_imports:
+    always_disabled:
+      - 'icds-cas'
+  hide_hq_on_mobile_experience:
+    always_disabled:
+      - 'icds-cas'
+  dashboard_reach_reports:
+    always_disabled:
+      - 'icds-cas'
+  partial_ui_translations:
+    always_disabled:
+      - 'icds-cas'
+  skip_orm_fixture_upload:
+    always_disabled:
+      - 'icds-cas'
+  disable_case_update_rule_task:
+    always_disabled:
+      - 'icds-cas'
+  group_api_use_couch_backend:
+    always_disabled:
+      - 'icds-cas'
+  user_api_use_es_backend:
+    always_disabled:
+      - 'icds-cas'
+  phi_cas_integration:
+    always_disabled:
+      - 'icds-cas'
+  rate_limit_submissions:
+    always_disabled:
+      - 'icds-cas'
+  rate_limit_restores:
+    always_disabled:
+      - 'icds-cas'
+  skip_updating_user_reporting_metadata:
+    always_disabled:
+      - 'icds-cas'
