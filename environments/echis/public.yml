@@ -81,3 +81,7 @@ localsettings:
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True
+  STATIC_TOGGLE_STATES:
+    mobile_ucr_linked_domain:
+      always_enabled:
+        - 'fmoh-echis-staging'
