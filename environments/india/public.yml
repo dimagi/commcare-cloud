@@ -137,6 +137,61 @@ localsettings:
     static-mpr_2a_3_child_delivery_forms:
     static-mpr_2ci_child_birth_list:
     static-asr_2_pregnancies:
+  STATIC_TOGGLE_STATES:
+    ucr_sum_when_templates:
+      always_enabled:
+        - 'icds-cas'
+    hierarchical_location_fixture:
+      always_enabled:
+        - 'icds-cas'
+    extension_sync:
+      always_enabled:
+        - 'icds-cas'
+    livequery_sync:
+      always_enabled:
+        - 'icds-cas'
+    mobile_ucr:
+      always_enabled:
+        - 'icds-cas'
+    mobile_ucr_linked_domain:
+      always_enabled:
+        - 'icds-cas'
+    cautious_multimedia:
+      always_enabled:
+        - 'icds-cas'
+        - 'icds'
+    icds:
+      always_enabled:
+        - 'icds-cas'
+        - 'icds-dashboard-qa'
+        - 'reach-test'
+        - 'icds-sql'
+        - 'icds-test'
+        - 'icds-cas-sandbox'
+    mm_case_properties:
+      always_disabled:
+        - 'icds-cas'
+    async_restore:
+      always_disabled:
+        - 'icds-cas'
+    sync_all_locations:
+      always_disabled:
+        - 'icds-cas'
+    FORM_SUBMISSION_BLACKLIST:
+      always_disabled:
+        - 'icds-cas'
+    run_auto_case_updates_on_save:
+      always_disabled:
+        - 'icds-cas'
+    mobile_user_login_lockout:
+      always_disabled:
+        - 'icds-cas'
+    sort_out_of_order_form_submissions_sql:
+      always_disabled:
+        - 'icds-cas'
+    manage_releases_per_location:
+      always_disabled:
+        - 'icds-cas'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
