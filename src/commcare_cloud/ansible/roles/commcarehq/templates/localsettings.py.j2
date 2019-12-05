@@ -872,6 +872,11 @@ AUDIT_VIEWS= [
 ]
 {% endif %}
 
+{% if localsettings.get('STATIC_TOGGLE_STATES') is not none %}
+STATIC_TOGGLE_STATES = {{ localsettings.STATIC_TOGGLE_STATES }}
+{% endif %}
+
+
 SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
