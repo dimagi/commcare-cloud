@@ -168,6 +168,9 @@ localsettings:
         - 'icds-sql'
         - 'icds-test'
         - 'icds-cas-sandbox'
+    show_build_profile_in_app_status:
+      always_enabled:
+        - 'icds-cas'
     mm_case_properties:
       always_disabled:
         - 'icds-cas'
