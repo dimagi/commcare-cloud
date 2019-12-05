@@ -78,20 +78,8 @@ dbs:
       django_migrate: True  # the dashboard models are stored here
     - name: airflow
       django_migrate: False
-    - django_alias: warehouse
-      name: warehouse
-      django_migrate: True
-      host: pgwarehouse0
   standby:
     - django_alias: icds-ucr-standby1
-      name: commcarehq_icds_aggregatedata
       host: pgucrstandby
-      create: False
-      django_migrate: False
-      hq_acceptable_standby_delay: 1800
-#    - django_alias: icds-ucr-standby2
-#      name: commcarehq_icds_aggregatedata
-#      host: pgucrstandby1
-#      create: False
-#      django_migrate: False
-#      hq_acceptable_standby_delay: 1800
+      acceptable_replication_delay: 1800
+      master: icds-ucr

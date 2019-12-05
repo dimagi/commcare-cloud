@@ -1,0 +1,6 @@
+deploy_env: confluence
+env_monitoring_id: confluence
+users:
+  - dimagi
+  - fissionlabs
+bare_non_cchq_environment: True

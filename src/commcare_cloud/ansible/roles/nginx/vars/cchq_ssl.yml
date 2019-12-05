@@ -11,7 +11,9 @@ nginx_sites:
     - name: "{{ deploy_env }}_formplayer"
       hosts: formplayer
       port: "{{ formplayer_port }}"
-      method: "hash $cookie_sessionid consistent"
+      # hash off sessionid cookie or X-FORMPLAYER-SESSION header
+      # but only one of the two will be present in any given request
+      method: "hash $cookie_sessionid$http_x_formplayer_session consistent"
    proxy_cache_path:
     - name: "hq_media_cache"
       path: "{{ www_home }}/hq_media/cache"
@@ -27,7 +29,6 @@ nginx_sites:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
-   add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
     - name: /

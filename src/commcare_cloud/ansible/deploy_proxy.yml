@@ -125,13 +125,6 @@
       tags:
         - nginx_sites
 
-- name: Move logrotate to hourly
-  hosts:
-    - proxy
-  become: true
-  roles:
-    - role: logrotate
-
 - name: Nginx log rolling configurations
   hosts:
    - proxy

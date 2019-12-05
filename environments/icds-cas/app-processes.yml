@@ -2,6 +2,7 @@ formplayer_memory: "8000m"
 gunicorn_workers_static_factor: 4
 
 celery_heartbeat_thresholds:
+  ucr_indicator_queue: 86400
   case_rule_queue: 86400
   ucr_queue: 7200
   submission_reprocessing_queue: 7200
@@ -60,7 +61,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     ucr_indicator_queue:
       concurrency: 6
   'celery2':
@@ -71,7 +72,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     ucr_indicator_queue:
       concurrency: 6
     dashboard_comparison_queue:
@@ -84,7 +85,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     ucr_indicator_queue:
       concurrency: 4
     icds_dashboard_reports_queue:
@@ -138,7 +139,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -147,7 +148,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -160,7 +161,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -173,7 +174,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -187,7 +188,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -201,7 +202,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 2
+      num_workers: 1
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -212,7 +213,7 @@ celery_processes:
     reminder_queue:
       pooling: gevent
       concurrency: 5
-      num_workers: 4
+      num_workers: 2
     sms_queue:
       pooling: gevent
       concurrency: 10

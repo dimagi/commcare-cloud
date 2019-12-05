@@ -57,10 +57,10 @@ class Fab(CommandBase):
         if args.fab_command:
             fab_args.append(args.fab_command)
         fab_args.extend(unknown_args)
+        env = get_environment(args.env_name)
         if args.l:
             fab_args.append('-l')
         else:
-            env = get_environment(args.env_name)
             fab_args.extend(['--disable-known-hosts',
                              '--system-known-hosts', env.paths.known_hosts])
         # Create known_hosts file if it doesn't exist

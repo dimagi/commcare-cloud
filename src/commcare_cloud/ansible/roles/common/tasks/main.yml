@@ -161,6 +161,6 @@
     - mount
     - after-reboot
 
-- import_tasks: syslog.yml
+- import_tasks: logging.yml
   tags:
-    - syslog
+    - logging
