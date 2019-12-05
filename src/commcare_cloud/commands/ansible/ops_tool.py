@@ -84,7 +84,7 @@ class ListDatabases(CommandBase):
     def get_expected_dbs(args):
         environment = get_environment(args.env_name)
         dbs_expected_on_host = collections.defaultdict(list)
-        dbs = environment.postgresql_config.to_generated_variables()['postgresql_dbs']['all']
+        dbs = environment.postgresql_config.to_generated_variables(environment)['postgresql_dbs']['all']
         for db in dbs:
             dbs_expected_on_host[db['host']].append(db['name'])
         return dbs_expected_on_host
