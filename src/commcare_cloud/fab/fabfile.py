@@ -168,9 +168,15 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
+    _confirm_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
     execute(_confirm_deploying_same_code)
+
+
+def _confirm_branch(default_branch):
+    if not getattr(env, 'code_branch', None):
+        env.code_branch = default_branch
 
 
 def _confirm_environment_time(env_name):
