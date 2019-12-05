@@ -177,6 +177,7 @@ def _setup_env(env_name):
 def _confirm_branch(default_branch):
     if not getattr(env, 'code_branch', None):
         env.code_branch = default_branch
+    print("Using commcare-hq branch {}".format(env.code_branch))
 
 
 def _confirm_environment_time(env_name):
