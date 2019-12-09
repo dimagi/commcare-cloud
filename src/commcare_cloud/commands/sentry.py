@@ -19,14 +19,15 @@ class ExportSentryEvents(CommandBase):
         Argument('-q', '--query', help="Text query", default=None),
         Argument('--start', help="UTC start date. Format YYYY-MM-DDTHH:MM:SS", default=None),
         Argument('--end', help="UTC end date. Format YYYY-MM-DDTHH:MM:SS", default=None),
-        Argument('--organization', help="Organization slug", default='dimagi', required=True),
+        Argument('--organization', help="Organization slug", default='dimagi'),
+        Argument('--full', action='store_true', help="Export the full event details"),
     )
 
     def run(self, args, unknown_args):
         env = get_environment(args.env_name)
 
         url = "https://sentry.io/api/0/organizations/{organization_slug}/events/".format(
-            organization_slug=args.organization_slug,
+            organization_slug=args.organization,
         )
 
         params = {'environment': env.meta_config.env_monitoring_id}
@@ -38,6 +39,8 @@ class ExportSentryEvents(CommandBase):
             params['end'] = args.end
         if args.project_id:
             params['project'] = args.project_id
+        if args.full:
+            params['full'] = True
 
         while True:
             resp = requests.get(url, params, headers={
