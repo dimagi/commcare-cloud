@@ -34,10 +34,10 @@
 
 - name: Setup plproxy
   include: plproxy.yml
-  when: item.host
+  when: item.get('host')
   loop:
-    - "{{ postgresql_dbs.form_processing.proxy }}"
-    - "{{ postgresql_dbs.form_processing.proxy_standby }}"
+    - "{{ postgresql_dbs.form_processing.proxy|default({}) }}"
+    - "{{ postgresql_dbs.form_processing.proxy_standby|default({}) }}"
 
 - name: Create pghashlib extension
   become: yes
