@@ -33,6 +33,7 @@ def get_server_address(environment, group, exit=sys.exit):
         username = ""
 
     if re.match(r'(\d+\.?){4}', group):
+        # short circuit for IP addresses
         return username + group
 
     if ':' in group:
