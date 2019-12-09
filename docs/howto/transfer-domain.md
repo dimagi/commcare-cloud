@@ -26,6 +26,18 @@ DNS level, without requiring a change on each device.
    work as usual.
 - Release the build and roll it out to all users.
 
+That is, there are three registered domain names, which I'll call "old", "new",
+and "mobile". This table describes which domain name each type of user will
+access at each stage of the migration:
+
+|                 | web users         | mobile workers                        |
+|-----------------|-------------------|---------------------------------------|
+| current state   | access old domain | access old domain                     |
+| pre-migration   | access old domain | access mobile domain as alias for old |
+| during downtime | access blocked    | access mobile domain, but blocked     |
+| post-migration  | access new domain | access mobile domain as alias for new |
+| after clean-up  | access new domain | access new domain directly            |
+
 ## 2. Perform migration
 
 The migration will require you to block data access to prevent loss of data
