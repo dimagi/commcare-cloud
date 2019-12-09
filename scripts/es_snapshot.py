@@ -291,7 +291,7 @@ class Cleanup(object):
                 try:
                     manifest = self.client.get_json(manifest_path)
                 except HTTPError as e:
-                    if e.status_code == 404:
+                    if e.response.status_code == 404:
                         pass
                     else:
                         raise
