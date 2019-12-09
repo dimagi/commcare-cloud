@@ -48,3 +48,4 @@ def perform_system_checks(current=False):
     venv = env.py3_virtualenv_current if current else env.py3_virtualenv_root
     with cd(path):
         sudo('%s/bin/python manage.py check --deploy' % venv)
+        sudo('%s/bin/python manage.py check --deploy -t database' % venv)
