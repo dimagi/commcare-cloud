@@ -48,7 +48,7 @@ will be unable to submit forms or sync with the server.
 - Populate the new environment
   - Import the dump files (each blob file will need to be imported individually)
     - `./manage.py import_blob_zip <filename.zip>`
-    - `./manage.py load-domain-data <filename.zip>`
+    - `./manage.py load_domain_data <filename.zip>`
   - Rebuild elasticsearch indices
     - `./manage.py ptop_preindex`
   - Print the database numbers and compare them to the values obtained previously
