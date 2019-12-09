@@ -567,7 +567,7 @@ Export Sentry events. One line per event JSON.
 
 ```
 commcare-cloud <env> export-sentry-events -k API_KEY -p PROJECT_ID [-q QUERY] [--start START] [--end END]
-                                          --organization ORGANIZATION
+                                          [--organization ORGANIZATION] [--full]
 ```
 
 ##### Optional Arguments
@@ -595,6 +595,10 @@ UTC end date. Format YYYY-MM-DDTHH:MM:SS
 ###### `--organization ORGANIZATION`
 
 Organization slug
+
+###### `--full`
+
+Export the full event details
 
 ---
 ### Operational
