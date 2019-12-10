@@ -67,8 +67,6 @@ dbs:
   form_processing:
     proxy:
       host: plproxy0
-    proxy_standby:
-      host: plproxy1
     partitions:
       p10:
         shards: [0, 51]
