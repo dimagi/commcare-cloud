@@ -5,6 +5,9 @@
   template:
     src: "../templates/celery_bash_runner.sh.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   with_items:
     - file_name: "celery_bash_runner.sh"
     - file_name: "celery_bash_runner_optimized.sh"
@@ -18,6 +21,9 @@
   template:
     src: "{{ item.template }}"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   when: item.should_apply
   with_items:
     - template: ../templates/supervisor_celery_flower.conf.j2
@@ -38,6 +44,9 @@
   template:
     src: "../templates/supervisor_celery_workers.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   when: app_processes_config.celery_processes.get(inventory_hostname) is defined
   with_items:
     - env_vars:
