@@ -3,6 +3,8 @@ Utilities to get server hostname or IP address from an inventory file and group.
 """
 from __future__ import print_function
 from __future__ import absolute_import
+
+import re
 import sys
 
 from commcare_cloud.environment.main import get_environment
@@ -29,6 +31,11 @@ def get_server_address(environment, group, exit=sys.exit):
         username += "@"
     else:
         username = ""
+
+    if re.match(r'(\d+\.?){4}', group):
+        # short circuit for IP addresses
+        return username + group
+
     if ':' in group:
         group, index = group.rsplit(':', 1)
         try:
