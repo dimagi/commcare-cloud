@@ -291,7 +291,7 @@ class Cleanup(object):
                 try:
                     manifest = self.client.get_json(manifest_path)
                 except HTTPError as e:
-                    if e.status_code == 404:
+                    if e.response.status_code == 404:
                         pass
                     else:
                         raise
@@ -387,11 +387,6 @@ class DeleteSnapshotVersion(Cleanup):
         if self.snapshot_version in live_snapshots:
             live_snapshots.remove(self.snapshot_version)
 
-        if not self.dry_run:
-            index['snapshots'] = live_snapshots
-            logger.info('Removing snapshot version from index: %s', self.snapshot_version)
-            self.client.put_content('index', json.dumps(index))
-
         total_bytes = 0
         count = 0
         for item in get_items_for_snapshot_version(self.client, self.snapshot_version):
@@ -403,6 +398,11 @@ class DeleteSnapshotVersion(Cleanup):
                     self.client.delete(item['name'])
                 if count % 100 == 0:
                     logger.info('Deleted %s items (%s)', count, sizeof_fmt(total_bytes))
+
+        if not self.dry_run:
+            index['snapshots'] = live_snapshots
+            logger.info('Removing snapshot version from index: %s', self.snapshot_version)
+            self.client.put_content('index', json.dumps(index))
 
     def _can_remove(self, live_snapshots, item):
         if item['type'] != 'shard_file':
