@@ -322,6 +322,7 @@ class SynclogsDBOptions(DBOptions):
 class FormProcessingConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     proxy = jsonobject.ObjectProperty(lambda: FormProcessingProxyDBOptions, required=True)
+    proxy_standby = jsonobject.ObjectProperty(lambda: FormProcessingStandbyProxyDBOptions, required=False)
     partitions = jsonobject.DictProperty(lambda: StrictPartitionDBOptions, required=True)
 
     @classmethod
@@ -333,13 +334,21 @@ class FormProcessingConfig(jsonobject.JsonObject):
         return self
 
     def get_db_list(self):
-        return [self.proxy] + sorted(self.partitions.values(),
-                                     key=lambda db: alphanum_key(db.django_alias))
+        return (
+            [self.proxy]
+            + ([self.proxy_standby] if self.proxy_standby.host else [])
+            + sorted(self.partitions.values(), key=lambda db: alphanum_key(db.django_alias))
+        )
 
 
 class FormProcessingProxyDBOptions(DBOptions):
     name = constants.form_processing_proxy_db_name
     django_alias = 'proxy'
+
+
+class FormProcessingStandbyProxyDBOptions(DBOptions):
+    name = constants.form_processing_proxy_standby_db_name
+    django_alias = 'proxy_standby'
 
 
 class PartitionDBOptions(DBOptions):

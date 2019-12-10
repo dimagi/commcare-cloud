@@ -45,14 +45,17 @@ DATABASES = { {% for config in postgresql_dbs.all %}
             'ACCEPTABLE_REPLICATION_DELAY': {{ config.acceptable_replication_delay }},
         }
     {% endif -%}
-        {% if postgresql_dbs.form_processing and (config.get('shards') or config.name == postgresql_dbs.form_processing.proxy.name) -%}
+        {% if postgresql_dbs.form_processing and config.get('shards') -%}
         'PLPROXY': {
-            {% if config.get('shards') -%}
             'SHARDS': {{config.shards|to_json}},
-            {% endif -%}
-            {% if config.name == postgresql_dbs.form_processing.proxy.name -%}
+        }
+    {% elif postgresql_dbs.form_processing and config.name == postgresql_dbs.form_processing.proxy.name -%}
+        'PLPROXY': {
             'PROXY': True,
-        {% endif -%}
+        }
+    {% elif postgresql_dbs.form_processing and config.name == postgresql_dbs.form_processing.proxy_standby.name -%}
+        'PLPROXY': {
+            'PROXY_FOR_STANDBYS': True,
         }
     {% endif -%}
     },
@@ -551,28 +554,6 @@ INTERNAL_DATA = {
                 "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"]
 }
 
-INDICATOR_ENABLED_PROJECTS = ["mvp-potou", "mvp-sauri", "mvp-bonsaaso", "mvp-ruhiira", "mvp-mwandama", "mvp-sada"]
-
-INDICATOR_NAMESPACES = {
-    'mvp-sauri': (
-        ('mvp_indicators', "MVP"),
-    ),
-    'mvp-potou': (
-        ('mvp_indicators', "MVP"),
-    ),
-    'mvp-bonsaaso': (
-        ('mvp_indicators', "MVP"),
-    ),
-    'mvp-ruhiira': (
-        ('mvp_indicators', "MVP"),
-    ),
-    'mvp-mwandama': (
-        ('mvp_indicators', "MVP"),
-    ),
-    'mvp-sada': (
-        ('mvp_indicators', "MVP"),
-    ),
-}
 COUCH_STALE_QUERY = 'update_after'
 
 API_THROTTLE_REQUESTS = 5
@@ -871,6 +852,11 @@ AUDIT_VIEWS= [
   {% endfor -%}
 ]
 {% endif %}
+
+{% if localsettings.get('STATIC_TOGGLE_STATES') is not none %}
+STATIC_TOGGLE_STATES = {{ localsettings.STATIC_TOGGLE_STATES }}
+{% endif %}
+
 
 SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'

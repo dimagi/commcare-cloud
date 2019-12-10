@@ -1,4 +1,4 @@
-DEFAULT_POSTGRESQL_HOST: pgmain0
+DEFAULT_POSTGRESQL_HOST: pgmain1
 
 REPORTING_DATABASES:
   ucr: ucr
@@ -7,19 +7,19 @@ REPORTING_DATABASES:
 LOAD_BALANCED_APPS:
   auth:
     - [default, 1]
-    - [pgmainstandby0, 4]
-    - [pgmainstandby1, 4]
-    - [pgmainstandby2, 4]
+    - [pgmain1standby0, 4]
+    - [pgmain1standby1, 4]
+    - [pgmain1standby2, 4]
   locations:
     - [default, 1]
-    - [pgmainstandby0, 4]
-    - [pgmainstandby1, 4]
-    - [pgmainstandby2, 4]
+    - [pgmain1standby0, 4]
+    - [pgmain1standby1, 4]
+    - [pgmain1standby2, 4]
   userreports:
     - [default, 1]
-    - [pgmainstandby0, 4]
-    - [pgmainstandby1, 4]
-    - [pgmainstandby2, 4]
+    - [pgmain1standby0, 4]
+    - [pgmain1standby1, 4]
+    - [pgmain1standby2, 4]
 
 pgbouncer_override:
   pgbouncer_pool_mode: transaction
@@ -56,17 +56,19 @@ postgres_override:
 
 dbs:
   main:
-    host: pgmain0
+    host: pgmain1
     query_stats: True
   formplayer:
-    host: pgmain0
+    host: pgmain1
   ucr:
-    host: pgmain0
+    host: pgmain1
   synclogs:
-    host: pgsynclog0
+    host: pgsynclog1
   form_processing:
     proxy:
       host: plproxy0
+    proxy_standby:
+      host: plproxy1
     partitions:
       p10:
         shards: [0, 51]
@@ -140,16 +142,16 @@ dbs:
     - name: airflow
       django_migrate: False
   standby:
-    - django_alias: pgmainstandby0
-      host: pgmainstandby0
+    - django_alias: pgmain1standby0
+      host: pgmain1standby0
       acceptable_replication_delay: 0
       master: default
-    - django_alias: pgmainstandby1
-      host: pgmainstandby1
+    - django_alias: pgmain1standby1
+      host: pgmain1standby1
       acceptable_replication_delay: 0
       master: default
-    - django_alias: pgmainstandby2
-      host: pgmainstandby2
+    - django_alias: pgmain1standby2
+      host: pgmain1standby2
       acceptable_replication_delay: 0
       master: default
     - django_alias: p10_standby

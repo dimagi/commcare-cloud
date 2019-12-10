@@ -410,8 +410,8 @@ class Postgresql(MultiAnsibleService):
 class Citusdb(Postgresql):
     name = 'citusdb'
     service_process_mapping = {
-        'postgresql': ('postgresql', 'postgresql,pg_standby'),
-        'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
+        'citusdb': ('postgresql', 'citusdb'),
+        'pgbouncer': ('pgbouncer', 'citusdb')
     }
     log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
