@@ -3,6 +3,9 @@
   template:
     src: "../templates/supervisor_airflow_webserver.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_webserver.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   tags:
     - services
   register: airflow_webserver_conf_file
@@ -12,6 +15,9 @@
   template:
     src: "../templates/supervisor_airflow_scheduler.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_scheduler.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   tags:
     - services
   register: airflow_scheduler_conf_file
