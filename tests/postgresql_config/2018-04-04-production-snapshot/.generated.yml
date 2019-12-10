@@ -256,6 +256,19 @@ postgresql_dbs:
       port: 6432
       query_stats: false
       user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    proxy_standby:
+      create: true
+      django_alias: proxy_standby
+      django_migrate: true
+      host: null
+      name: commcarehq_proxy_standby
+      options: {}
+      password: null
+      pg_config: []
+      pgbouncer_host: null
+      port: null
+      query_stats: false
+      user: null
   formplayer:
     create: true
     django_alias: null
