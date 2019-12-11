@@ -90,8 +90,9 @@ server_reset_query = {% if pgbouncer_pool_mode == 'session' %}DISCARD ALL{% endi
 ; in startup packet.
 ; - extra_float_digits - Newer JDBC versions require the extra_float_digits here.
 ; - geqo - Some ODBC connections like Tableau pass this in startup, pgbouncer should ignore this.
+; - options - postgres-checkup passes this
 ;
-ignore_startup_parameters = extra_float_digits, geqo
+ignore_startup_parameters = extra_float_digits, geqo, options
 
 ;
 ; When taking idle server into use, this query is ran first.
