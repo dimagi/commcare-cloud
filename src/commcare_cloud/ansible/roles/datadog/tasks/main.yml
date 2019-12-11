@@ -48,6 +48,7 @@
     update: yes
   when: "inventory_hostname in datadog_parsers|map(attribute='hosts')|join"
   notify: restart datadog
+  tags: datadog_integrations
 
 - import_tasks: add_integrations.yml
   when: DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
