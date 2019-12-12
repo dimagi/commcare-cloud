@@ -1,0 +1,20 @@
+title: Update Formplayer Configuration
+key: update_formplayer_configuration
+date: 2019-11-06
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Some properties in the Formplayer configuration have changed names.
+
+details:
+  The old values are still supported however it is recommended to update the config with the new names.
+
+update_steps: |
+  ```bash
+  # ensure that you have a new version of formplayer
+  $ commcare-cloud <env> deploy formplayer
+  
+  # update the configuration
+  $ commcare-cloud <env> update-config --limit formplayer
+  ```

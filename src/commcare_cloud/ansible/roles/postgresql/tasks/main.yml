@@ -32,16 +32,12 @@
   when: hashlib_stat.stat.exists == False
   tags: pghashlib
 
-- name: Create plproxy extension
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_ext:
-    name: plproxy
-    db: "{{postgresql_dbs.form_processing.proxy.name}}"
-    port: "{{ postgresql_port }}"
-  when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname
+- name: Setup plproxy
+  include: plproxy.yml
+  when: item.get('host')
+  loop:
+    - "{{ postgresql_dbs.form_processing.proxy|default({}) }}"
+    - "{{ postgresql_dbs.form_processing.proxy_standby|default({}) }}"
 
 - name: Create pghashlib extension
   become: yes
@@ -55,26 +51,6 @@
   with_items: "{{ postgresql_dbs.all }}"
   when: item.create and not is_pg_standby and ((item.host == inventory_hostname) or is_monolith|bool)
   tags: pghashlib
-
-- name: Make plproxy a trusted language
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_lang:
-    lang: plproxy
-    trust: True
-    db: "{{postgresql_dbs.form_processing.proxy.name}}"
-    port: "{{ postgresql_port }}"
-  when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname
-
-- name: Grant usage on plproxy FDW
-  become: yes
-  become_user: postgres
-  vars:
-    ansible_ssh_pipelining: true
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{postgresql_dbs.form_processing.proxy.name}} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to \\\"{{postgresql_dbs.form_processing.proxy.user}}\\\"\""
-  when: postgresql_dbs.form_processing and postgresql_dbs.form_processing.proxy.host == inventory_hostname
 
 - name: Set vm.dirty_background_bytes
   become: yes

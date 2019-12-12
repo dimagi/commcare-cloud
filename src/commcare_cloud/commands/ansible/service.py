@@ -407,6 +407,16 @@ class Postgresql(MultiAnsibleService):
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
 
 
+class Citusdb(Postgresql):
+    name = 'citusdb'
+    service_process_mapping = {
+        'citusdb': ('postgresql', 'citusdb'),
+        'pgbouncer': ('pgbouncer', 'citusdb')
+    }
+    log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
+                   'Pgbouncer: /var/log/postgresql/pgbouncer.log'
+
+
 class SingleSupervisorService(SupervisorService):
     """Single service that is managed by supervisor"""
     managed_services = []
@@ -573,6 +583,7 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
 
 SERVICES = [
     Postgresql,
+    Citusdb,
     Nginx,
     Couchdb2,
     RabbitMq,

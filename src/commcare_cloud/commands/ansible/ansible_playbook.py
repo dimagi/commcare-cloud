@@ -222,8 +222,23 @@ class UpdateConfig(CommandBase):
 
     def run(self, args, unknown_args):
         unknown_args += ('-e', '{"_should_update_formplayer_in_place": true}')
-        return commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
+        rc = commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
                               tags='localsettings', branch=args.branch, *unknown_args)
+        if rc == 0 and ask("Would you like to run Django checks to validate the settings?"):
+            environment = get_environment(args.env_name)
+            server_args = []
+            try:
+                limit_arg = unknown_args.index('--limit')
+            except ValueError:
+                pass
+            else:
+                servers = environment.inventory_manager.get_hosts(unknown_args[limit_arg + 1])
+                server_args.extend(['--server', servers[0]])
+            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy'] + server_args))
+            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy', '-t', 'database'] + server_args))
+            commcare_cloud(args.env_name, 'django-manage', *(['check_services'] + server_args))
+        else:
+            return rc
 
 
 class AfterReboot(_AnsiblePlaybookAlias):

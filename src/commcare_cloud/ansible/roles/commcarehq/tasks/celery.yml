@@ -2,9 +2,13 @@
 # validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
 
 - name: Add celery_bash_runner files
+  become: yes
   template:
     src: "../templates/celery_bash_runner.sh.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   with_items:
     - file_name: "celery_bash_runner.sh"
     - file_name: "celery_bash_runner_optimized.sh"
@@ -14,10 +18,13 @@
   register: celery_bash_runner_files
 
 - name: define special celery services
-  become: cchq
+  become: yes
   template:
     src: "{{ item.template }}"
     dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   when: item.should_apply
   with_items:
     - template: ../templates/supervisor_celery_flower.conf.j2
@@ -34,10 +41,13 @@
   register: celery_special_service_files
 
 - name: define celery workers
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_celery_workers.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   when: app_processes_config.celery_processes.get(inventory_hostname) is defined
   with_items:
     - env_vars:

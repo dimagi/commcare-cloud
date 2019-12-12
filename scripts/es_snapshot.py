@@ -10,6 +10,7 @@ import inspect
 import json
 import logging
 import os
+import subprocess
 from datetime import datetime
 from textwrap import indent
 from functools import wraps
@@ -81,6 +82,36 @@ class SwiftClient(object):
         resp = requests.get(url, headers=self._auth_headers(), timeout=self.timeout)
         resp.raise_for_status()
         return resp.content
+
+    def write_content_to_file(self, item, local_dir_path, clobber=False):
+        path = item['name']
+        expected_md5 = item['hash']
+        output_path = os.path.join(local_dir_path, path)
+        if self._should_skip(output_path, expected_md5, clobber):
+            logger.debug('Skipping (md5 match to existing file) %s: %s', item['name'], sizeof_fmt(item['bytes']))
+            return
+
+        logger.debug('Downloading %s: %s', item['name'], sizeof_fmt(item['bytes']))
+        os.makedirs(os.path.join(local_dir_path, os.path.dirname(path)), exist_ok=True)
+        url = '/'.join([self.storage_url, self.container, path])
+        with requests.get(url, headers=self._auth_headers(), timeout=self.timeout, stream=True) as r:
+            r.raise_for_status()
+            with open(output_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+
+    def _should_skip(self, output_path, expected_md5, clobber):
+        if os.path.exists(output_path) and os.path.isfile(output_path) and expected_md5:
+            md5 = subprocess.check_output(['md5sum', output_path]).decode('utf8').split()[0]
+            if md5 == expected_md5:
+                return True
+            if not clobber:
+                raise Exception(
+                    f'Existing file md5 mismatch: {output_path}, {md5} != {expected_md5}\n'
+                    f'Consider using "--clobber" to overwrite existing files.'
+                )
+            return False
 
     @retry_timeouts
     def get_json(self, path):
@@ -260,7 +291,7 @@ class Cleanup(object):
                 try:
                     manifest = self.client.get_json(manifest_path)
                 except HTTPError as e:
-                    if e.status_code == 404:
+                    if e.response.status_code == 404:
                         pass
                     else:
                         raise
@@ -356,11 +387,6 @@ class DeleteSnapshotVersion(Cleanup):
         if self.snapshot_version in live_snapshots:
             live_snapshots.remove(self.snapshot_version)
 
-        if not self.dry_run:
-            index['snapshots'] = live_snapshots
-            logger.info('Removing snapshot version from index: %s', self.snapshot_version)
-            self.client.put_content('index', json.dumps(index))
-
         total_bytes = 0
         count = 0
         for item in get_items_for_snapshot_version(self.client, self.snapshot_version):
@@ -373,6 +399,11 @@ class DeleteSnapshotVersion(Cleanup):
                 if count % 100 == 0:
                     logger.info('Deleted %s items (%s)', count, sizeof_fmt(total_bytes))
 
+        if not self.dry_run:
+            index['snapshots'] = live_snapshots
+            logger.info('Removing snapshot version from index: %s', self.snapshot_version)
+            self.client.put_content('index', json.dumps(index))
+
     def _can_remove(self, live_snapshots, item):
         if item['type'] != 'shard_file':
             return True
@@ -382,6 +413,63 @@ class DeleteSnapshotVersion(Cleanup):
 
         # make sure we don't remove anything that's also part of a live snapshot
         return item['name'] not in self._shard_files_to_keep(live_snapshots, item['shard'])
+
+
+class DownloadSnapshotVersion(object):
+    slug = 'download'
+    help = """Download all files for a snapshot version"""
+
+    def __init__(self, client, args):
+        self.client = client
+        self.dry_run = args.dry_run
+        self.snapshot_version = args.snapshot_version
+        self.download_path = args.download_path
+        self.clobber = args.clobber
+
+    @classmethod
+    def add_arguments(cls, parser):
+        parser.add_argument('snapshot_version', help="Name of snapshot version to download")
+        parser.add_argument('download_path', help="Directory to download the files to")
+        parser.add_argument('--clobber', action='store_true', help="Overwrite existing files")
+
+    def run(self):
+        index = self.client.get_json('index')
+        live_snapshots = index['snapshots']
+
+        logger.info('Found %s live snapshots', len(live_snapshots))
+        logger.debug('Live snapshots: %s', live_snapshots)
+
+        if self.snapshot_version not in live_snapshots:
+            logger.error(f"Snapshot version '{self.snapshot_version}' not found")
+            return 1
+
+        if not self.dry_run:
+            with open(os.path.join(self.download_path, 'index'), 'w') as fp:
+                json.dump({'snapshots': [self.snapshot_version]}, fp)
+
+        total_bytes = 0
+        count = 0
+        for item in get_items_for_snapshot_version(self.client, self.snapshot_version):
+            if self._should_download(item):
+                total_bytes += item['bytes']
+                count += 1
+                if not self.dry_run:
+                    self.client.write_content_to_file(
+                        item, self.download_path, self.clobber
+                    )
+                else:
+                    logger.debug('Downloading %s: %s (dry run)', item['name'], sizeof_fmt(bytes))
+                if count % 100 == 0:
+                    logger.info('Downloaded %s items (%s)', count, sizeof_fmt(total_bytes))
+
+    def _should_download(self, item):
+        if item['type'] != 'shard_file':
+            return True
+
+        if item.get('missing', False):
+            return False
+
+        return True
 
 
 class VerifySnapshotVersion(object):
@@ -431,6 +519,7 @@ COMMANDS = [
     Info,
     DeleteSnapshotVersion,
     VerifySnapshotVersion,
+    DownloadSnapshotVersion,
 ]
 
 

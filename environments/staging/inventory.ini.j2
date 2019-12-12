@@ -94,12 +94,6 @@ es3
 [shared_dir_host:children]
 redis1
 
-{{ __airflow1__ }}
-
-[airflow:children]
-# Amazon EC2
-airflow1
-
 {{ __control0__ }}
 
 [control:children]
@@ -111,5 +105,3 @@ rds_pg0
 [django_manage:children]
 # Amazon EC2
 web3
-
-{{ __hwarehouse0__ }}

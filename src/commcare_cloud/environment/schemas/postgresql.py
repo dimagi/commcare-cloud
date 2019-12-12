@@ -1,3 +1,4 @@
+import copy
 from collections import defaultdict
 
 import jsonobject
@@ -73,7 +74,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
     SEPARATE_SYNCLOGS_DB = jsonobject.BooleanProperty(default=True)
     SEPARATE_FORM_PROCESSING_DBS = jsonobject.BooleanProperty(default=True)
     DEFAULT_POSTGRESQL_HOST = jsonobject.StringProperty(default=None)
-    DEFAULT_CONN_MAX_AGE = jsonobject.IntegerProperty(default=None)
     REPORTING_DATABASES = jsonobject.DictProperty(default=lambda: {"ucr": "ucr"})
     LOAD_BALANCED_APPS = jsonobject.DictProperty(default={})
     host_settings = jsonobject.DictProperty(lambda: HostSettings)
@@ -126,14 +126,30 @@ class PostgresqlConfig(jsonobject.JsonObject):
             root_pg_host = self._get_root_pg_host(host, environment)
             dbs_by_host[host] = dbs_by_host[root_pg_host]
 
+        for host in environment.groups.get('citusdb_worker', []):
+            citusdb_masters = set(environment.groups.get('citusdb_master', []))
+            pg_standbys = set(environment.groups.get('pg_standby', []))
+            citusdb_master = list(citusdb_masters - pg_standbys)[0]
+            citus_dbs = []
+            for db in sorted_dbs:
+                if db['host'] == citusdb_master:
+                    db_config = copy.deepcopy(db)
+                    db_config['host'] = host
+                    db_config['pgbouncer_host'] = host
+                    citus_dbs.append(db_config)
+
+            dbs_by_host[host] = citus_dbs
+
         data['postgresql_dbs']['by_host'] = dict(dbs_by_host)
         return data
 
     def _get_root_pg_host(self, standby_host, env):
+        standby_host = env.translate_host(standby_host, env.paths.inventory_source)
         vars = env.get_host_vars(standby_host)
         standby_master = vars.get('hot_standby_master')
         if not standby_master:
-            raise PGConfigException('{} has not root pig host'.format(standby_host))
+            raise PGConfigException('{} has not root PG host'.format(standby_host))
+        standby_master = env.translate_host(standby_master, env.paths.inventory_source)
         potential_masters = env.groups['postgresql'] + env.groups.get('citusdb',[])
         if standby_master in potential_masters:
             return standby_master
@@ -151,7 +167,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
             for host, value in self.host_settings.items()
         }
 
-        for db in self.generate_postgresql_dbs():
+        all_dbs = self.generate_postgresql_dbs()
+        for db in all_dbs:
             if db.host is None:
                 db.host = self.DEFAULT_POSTGRESQL_HOST
             elif db.host != '127.0.0.1':
@@ -167,9 +184,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 else:
                     db.port = DEFAULT_PORT
 
-            if db.conn_max_age is None:
-                db.conn_max_age = self.DEFAULT_CONN_MAX_AGE
-
         for replication in self.replications:
             replication.source_host = environment.translate_host(replication.source_host, environment.paths.postgresql_yml)
             replication.target_host = environment.translate_host(replication.target_host, environment.paths.postgresql_yml)
@@ -180,6 +194,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 host, mask = netmask.split('/')
                 host = environment.translate_host(host, environment.paths.postgresql_yml)
                 entry['netmask'] = '{}/{}'.format(host, mask)
+
+        all_dbs_by_alias = {db.django_alias: db for db in all_dbs}
+        for db in self.dbs.standby:
+            if not db.name and db.master in all_dbs_by_alias:
+                db.name = all_dbs_by_alias[db.master].name
 
     def generate_postgresql_dbs(self):
         return filter(None, [
@@ -210,9 +229,23 @@ class PostgresqlConfig(jsonobject.JsonObject):
             validate_shards({name: db.shards
                              for name, db in self.dbs.form_processing.partitions.items()})
 
+    def _check_standbys(self):
+        if self.dbs.standby:
+            defined_django_aliases = {
+                db.django_alias: db for db in self.generate_postgresql_dbs()
+                if db.django_alias is not None
+            }
+            for db in self.dbs.standby:
+                master_db = defined_django_aliases.get(db.master)
+                assert master_db, \
+                    'Standby databases reference missing masters: {}'.format(db.master)
+                assert master_db.name == db.name, \
+                    'Master and standby have different names: {}'.format(db.django_alias)
+
     def check(self):
         self._check_reporting_databases()
         self._check_shards()
+        self._check_standbys()
         assert (self.SEPARATE_SYNCLOGS_DB if self.dbs.synclogs is not None
                 else not self.SEPARATE_SYNCLOGS_DB), \
             'synclogs should be None if and only if SEPARATE_SYNCLOGS_DB is False'
@@ -256,7 +289,6 @@ class DBOptions(jsonobject.JsonObject):
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
     options = jsonobject.DictProperty(unicode)
-    conn_max_age = jsonobject.IntegerProperty(default=None)
     django_alias = jsonobject.StringProperty()
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)
@@ -290,6 +322,7 @@ class SynclogsDBOptions(DBOptions):
 class FormProcessingConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     proxy = jsonobject.ObjectProperty(lambda: FormProcessingProxyDBOptions, required=True)
+    proxy_standby = jsonobject.ObjectProperty(lambda: FormProcessingStandbyProxyDBOptions, required=False)
     partitions = jsonobject.DictProperty(lambda: StrictPartitionDBOptions, required=True)
 
     @classmethod
@@ -301,13 +334,21 @@ class FormProcessingConfig(jsonobject.JsonObject):
         return self
 
     def get_db_list(self):
-        return [self.proxy] + sorted(self.partitions.values(),
-                                     key=lambda db: alphanum_key(db.django_alias))
+        return (
+            [self.proxy]
+            + ([self.proxy_standby] if self.proxy_standby.host else [])
+            + sorted(self.partitions.values(), key=lambda db: alphanum_key(db.django_alias))
+        )
 
 
 class FormProcessingProxyDBOptions(DBOptions):
     name = constants.form_processing_proxy_db_name
     django_alias = 'proxy'
+
+
+class FormProcessingStandbyProxyDBOptions(DBOptions):
+    name = constants.form_processing_proxy_standby_db_name
+    django_alias = 'proxy_standby'
 
 
 class PartitionDBOptions(DBOptions):
@@ -319,7 +360,11 @@ class CustomDBOptions(PartitionDBOptions):
 
 
 class StandbyDBOptions(PartitionDBOptions):
-    hq_acceptable_standby_delay = jsonobject.IntegerProperty(default=None)
+    name = jsonobject.StringProperty()
+    master = jsonobject.StringProperty(required=True)
+    acceptable_replication_delay = jsonobject.IntegerProperty(default=None)
+    create = False
+    django_migrate = False
 
 
 class LogicalReplicationOptions(jsonobject.JsonObject):

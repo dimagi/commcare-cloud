@@ -41,8 +41,13 @@ unix_socket_dir = /var/run/postgresql
 ;;;
 ;;; Authentication settings
 ;;;
-
-auth_type = md5
+{% if pgbouncer_client_tls_key_file and pgbouncer_client_tls_cert_file %}
+;; SSL needed to connect between citus controller and worker machines.
+client_tls_sslmode = prefer
+client_tls_key_file = {{ pgbouncer_client_tls_key_file }}
+client_tls_cert_file = {{ pgbouncer_client_tls_cert_file }}
+{% endif %}
+auth_type = {{ pgbouncer_auth_type|default('md5') }}
 auth_file = {{ pgbouncer_users }}
 
 ;;;
@@ -85,8 +90,9 @@ server_reset_query = {% if pgbouncer_pool_mode == 'session' %}DISCARD ALL{% endi
 ; in startup packet.
 ; - extra_float_digits - Newer JDBC versions require the extra_float_digits here.
 ; - geqo - Some ODBC connections like Tableau pass this in startup, pgbouncer should ignore this.
+; - options - postgres-checkup passes this
 ;
-ignore_startup_parameters = extra_float_digits, geqo
+ignore_startup_parameters = extra_float_digits, geqo, options
 
 ;
 ; When taking idle server into use, this query is ran first.

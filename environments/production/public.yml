@@ -22,8 +22,6 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 
 DATADOG_ENABLED: True
-CLOUDANT_CLUSTER_NAME: dimagi003
-datadog_integration_cloudant: true
 
 DATADOG_TRACE:
   TAGS:
@@ -142,6 +140,15 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  STATIC_TOGGLE_STATES:
+    mobile_ucr_linked_domain:
+      always_enabled:
+        - 'fmoh-echis-staging'
+    couch_sql_migration_blacklist:
+      always_enabled:
+        - 'ews-ghana'
+        - 'ils-gateway'
+        - 'ils-gateway-train'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

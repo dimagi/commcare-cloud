@@ -1,8 +1,11 @@
 - name: define management command services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_management_commands.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   when: app_processes_config.management_commands.get(inventory_hostname, {})
   tags:
     - services

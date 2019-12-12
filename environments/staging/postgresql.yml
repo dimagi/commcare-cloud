@@ -48,8 +48,3 @@ dbs:
         pgbouncer_host: pgproxy1
         shards: [400, 511]
         query_stats: True
-  custom:
-    - name: airflow
-      pgbouncer_host: pgproxy1
-      django_migrate: False
-

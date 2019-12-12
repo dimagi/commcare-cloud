@@ -20,7 +20,6 @@ nginx_sites:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
-   add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
     - name: /

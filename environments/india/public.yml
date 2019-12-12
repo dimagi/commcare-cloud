@@ -5,7 +5,7 @@ couchdb2:
 DATADOG_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_memory: '8192m'
+elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 1.7.6
 elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
@@ -125,15 +125,76 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
+  LOCAL_MIDDLEWARE:
+    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
 #  STATIC_ROOT:
   TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
+  USER_REPORTING_METADATA_BATCH_ENABLED: True
   UCR_COMPARISONS:
     static-mpr_1_person_cases:
     static-mpr_2a_3_child_delivery_forms:
     static-mpr_2ci_child_birth_list:
     static-asr_2_pregnancies:
+  STATIC_TOGGLE_STATES:
+    ucr_sum_when_templates:
+      always_enabled:
+        - 'icds-cas'
+    hierarchical_location_fixture:
+      always_enabled:
+        - 'icds-cas'
+    extension_sync:
+      always_enabled:
+        - 'icds-cas'
+    livequery_sync:
+      always_enabled:
+        - 'icds-cas'
+    mobile_ucr:
+      always_enabled:
+        - 'icds-cas'
+    mobile_ucr_linked_domain:
+      always_enabled:
+        - 'icds-cas'
+    cautious_multimedia:
+      always_enabled:
+        - 'icds-cas'
+        - 'icds'
+    icds:
+      always_enabled:
+        - 'icds-cas'
+        - 'icds-dashboard-qa'
+        - 'reach-test'
+        - 'icds-sql'
+        - 'icds-test'
+        - 'icds-cas-sandbox'
+    show_build_profile_in_app_status:
+      always_enabled:
+        - 'icds-cas'
+    mm_case_properties:
+      always_disabled:
+        - 'icds-cas'
+    async_restore:
+      always_disabled:
+        - 'icds-cas'
+    sync_all_locations:
+      always_disabled:
+        - 'icds-cas'
+    FORM_SUBMISSION_BLACKLIST:
+      always_disabled:
+        - 'icds-cas'
+    run_auto_case_updates_on_save:
+      always_disabled:
+        - 'icds-cas'
+    mobile_user_login_lockout:
+      always_disabled:
+        - 'icds-cas'
+    sort_out_of_order_form_submissions_sql:
+      always_disabled:
+        - 'icds-cas'
+    manage_releases_per_location:
+      always_disabled:
+        - 'icds-cas'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
