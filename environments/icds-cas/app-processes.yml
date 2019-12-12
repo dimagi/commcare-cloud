@@ -250,30 +250,53 @@ pillows:
     kafka-ucr-static-awc-location:
       num_processes: 1
       processor_chunk_size: 100
+    kafka-ucr-main:
+      num_processes: 1
+      processor_chunk_size: 100
   'pillow22':
   'pillow23':
-    xform-pillow:
+    xform-pillow-non-dashboard:
       start_process: 0
-      num_processes: 24
-      total_processes: 96
+      num_processes: 8
+      total_processes: 32
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 0
+      num_processes: 8
+      total_processes: 32
       processor_chunk_size: 100
   'pillow24':
-    xform-pillow:
-      start_process: 24
-      num_processes: 24
-      total_processes: 96
+    xform-pillow-non-dashboard:
+      start_process: 8
+      num_processes: 8
+      total_processes: 32
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 8
+      num_processes: 8
+      total_processes: 32
       processor_chunk_size: 100
   'pillow25':
-    xform-pillow:
-      start_process: 48
-      num_processes: 24
-      total_processes: 96
+    xform-pillow-non-dashboard:
+      start_process: 16
+      num_processes: 8
+      total_processes: 32
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 16
+      num_processes: 8
+      total_processes: 32
       processor_chunk_size: 100
   'pillow26':
-    xform-pillow:
-      start_process: 72
-      num_processes: 24
-      total_processes: 96
+    xform-pillow-non-dashboard:
+      start_process: 24
+      num_processes: 8
+      total_processes: 32
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 24
+      num_processes: 8
+      total_processes: 32
       processor_chunk_size: 100
   'pillow27':
     case-pillow:
