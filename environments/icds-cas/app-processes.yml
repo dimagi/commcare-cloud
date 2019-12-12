@@ -254,56 +254,56 @@ pillows:
   'pillow23':
     xform-pillow:
       start_process: 0
-      num_processes: 12
-      total_processes: 48
+      num_processes: 24
+      total_processes: 96
       processor_chunk_size: 100
   'pillow24':
     xform-pillow:
-      start_process: 12
-      num_processes: 12
-      total_processes: 48
+      start_process: 24
+      num_processes: 24
+      total_processes: 96
       processor_chunk_size: 100
   'pillow25':
     xform-pillow:
-      start_process: 24
-      num_processes: 12
-      total_processes: 48
+      start_process: 48
+      num_processes: 24
+      total_processes: 96
       processor_chunk_size: 100
   'pillow26':
     xform-pillow:
-      start_process: 36
-      num_processes: 12
-      total_processes: 48
+      start_process: 72
+      num_processes: 24
+      total_processes: 96
       processor_chunk_size: 100
   'pillow27':
     case-pillow:
       start_process: 0
-      num_processes: 24
-      total_processes: 120
+      num_processes: 48
+      total_processes: 240
       processor_chunk_size: 100
   'pillow28':
     case-pillow:
-      start_process: 24
-      num_processes: 24
-      total_processes: 120
+      start_process: 48
+      num_processes: 48
+      total_processes: 240
       processor_chunk_size: 100
   'pillow29':
     case-pillow:
-      start_process: 48
-      num_processes: 24
-      total_processes: 120
+      start_process: 96
+      num_processes: 48
+      total_processes: 240
       processor_chunk_size: 100
   'pillow30':
     case-pillow:
-      start_process: 72
-      num_processes: 24
-      total_processes: 120
+      start_process: 144
+      num_processes: 48
+      total_processes: 240
       processor_chunk_size: 100
   'pillow31':
     case-pillow:
-      start_process: 96
-      num_processes: 24
-      total_processes: 120
+      start_process: 192
+      num_processes: 48
+      total_processes: 240
       processor_chunk_size: 100
   'pillow32':
   'pillow33':
