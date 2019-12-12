@@ -1,5 +1,5 @@
 - name: define airflow webserver service
-  become: cchq
+  become: yes 
   template:
     src: "../templates/supervisor_airflow_webserver.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_webserver.conf"
@@ -11,7 +11,7 @@
   register: airflow_webserver_conf_file
 
 - name: define airflow scheduler service
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_airflow_scheduler.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_scheduler.conf"
