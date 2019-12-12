@@ -109,9 +109,9 @@
   become: yes
   cron:
     name: "Clean PG WAL Archive"
-    job: "find {{ postgresql_archive_path }} -mmin +120 -delete"
+    job: "find {{ postgresql_archive_path }} -type f -mmin +10 -delete"
     user: root
-    special_time: hourly
+    minute: "*/30"
     cron_file: clean_pg_archive
     state: "{{ 'present' if postgresql_enable_archive and not disable_archive_cleanup_cron else 'absent' }}"
 

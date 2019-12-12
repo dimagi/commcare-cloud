@@ -168,9 +168,16 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
+    _set_code_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
     execute(_confirm_deploying_same_code)
+
+
+def _set_code_branch(default_branch):
+    if not getattr(env, 'code_branch', None):
+        env.code_branch = default_branch
+    print("Using commcare-hq branch {}".format(env.code_branch))
 
 
 def _confirm_environment_time(env_name):
@@ -310,10 +317,10 @@ def mail_admins(subject, message, use_current_release=False):
 
 
 def _confirm_translated():
-    if datetime.datetime.now().isoweekday() != 2 or env.deploy_env != 'production':
+    if datetime.datetime.now().isoweekday() != 3 or env.deploy_env != 'production':
         return True
     return console.confirm(
-        "It's Tuesday, did you update the translations from transifex? "
+        "It's the weekly Wednesday deploy, did you update the translations from transifex? "
         "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
 
@@ -827,9 +834,12 @@ def deploy_airflow():
 def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
-        tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-        tasks[env_name].__doc__ = get_environment(env_name).proxy_config['SITE_HOST']
+        environment = get_environment(env_name)
+        if not environment.meta_config.bare_non_cchq_environment:
+            tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
+            tasks[env_name].__doc__ = environment.proxy_config['SITE_HOST']
     return tasks
+
 
 # Automatically create a task for each environment
 locals().update(make_tasks_for_envs(get_available_envs()))

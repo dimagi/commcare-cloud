@@ -1,4 +1,3 @@
-airflow1-staging: 10.201.10.147
 celery1-staging: 10.201.10.108
 control0-staging: 10.201.10.116
 couch3-staging: 10.201.40.182
@@ -7,7 +6,6 @@ couch5-staging: 10.201.40.147
 es2-staging: 10.201.40.143
 es3-staging: 10.201.40.171
 formplayer1-staging: 10.201.10.234
-hwarehouse0-staging: 10.201.10.192
 kafka1-staging: 10.201.40.14
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pg0-staging-replica: pg0-staging-replica.czkracjslrn2.us-east-1.rds.amazonaws.com

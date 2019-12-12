@@ -9,6 +9,7 @@
 #    state: absent
 
 - import_tasks: www_log_dir.yml
+  tags: logging
 
 - name: create required directories
   become: yes
@@ -144,6 +145,7 @@
     state: file
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
+    mode: 0600
   tags:
     - localsettings
     - hq-localsettings

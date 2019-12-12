@@ -1,0 +1,24 @@
+# Configuration for additional syslog config files
+#
+#  additional_syslog_config:
+#    hostname_or_group:
+#      - dest: /etc/rsyslog.d/my-config.conf
+#        content: |-
+#        :msg, contains, "something" /var/log/something.log
+additional_syslog_config: {}
+
+# Configuration for additional logrotate scripts
+#
+#  additional_logrotate_scripts:
+#    hostname_or_group:
+#      - name: "name"
+#        path: "/path/to/logs/*.log"
+#        options:
+#          - daily
+#          - size 100M
+#        scripts:
+#          postrotate: "invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true"
+additional_logrotate_scripts: {}
+
+rsyslog_configs: "{{additional_syslog_config.get(inventory_hostname, []) + additional_syslog_config | dict2items | selectattr('key', 'in', group_names) | map(attribute='value') | flatten}}"
+logrotate_scripts: "{{additional_logrotate_scripts.get(inventory_hostname, []) + additional_logrotate_scripts | dict2items | selectattr('key', 'in', group_names) | map(attribute='value') | flatten}}"

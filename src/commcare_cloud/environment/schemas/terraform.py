@@ -66,6 +66,7 @@ class BlockDevice(jsonobject.JsonObject):
 class RdsInstanceConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     identifier = jsonobject.StringProperty(required=True)
+    engine_version = jsonobject.StringProperty(default='9.6.6')
     instance_type = jsonobject.StringProperty(required=True)  # should start with 'db.'
     multi_az = jsonobject.BooleanProperty(default=False)
     storage = jsonobject.IntegerProperty()

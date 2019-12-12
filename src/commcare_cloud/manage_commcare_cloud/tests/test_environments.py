@@ -8,15 +8,21 @@ from commcare_cloud.environment.main import Environment, get_environment
 from commcare_cloud.environment.paths import get_available_envs
 
 
-@parameterized(get_available_envs())
-def test_all(env):
-    environment = get_environment(env)
+commcare_envs = [
+    (env,) for env in (
+        get_environment(env_name) for env_name in get_available_envs()
+    )
+    if not env.meta_config.bare_non_cchq_environment
+]
+
+
+@parameterized(commcare_envs)
+def test_all(environment):
     environment.check()
 
 
-@parameterized(get_available_envs())
-def test_hostnames(env):
-    environment = get_environment(env)
+@parameterized(commcare_envs)
+def test_hostnames(environment):
     missing_hostnames = set()
     for group, hosts in environment.sshable_hostnames_by_group.items():
         for host in hosts:
@@ -31,9 +37,8 @@ def test_hostnames(env):
     assert len(missing_hostnames) == 0, "Environment hosts missing hostnames {}".format(list(missing_hostnames))
 
 
-@parameterized(get_available_envs())
-def test_pickle_environment(env):
-    environment = get_environment(env)
+@parameterized(commcare_envs)
+def test_pickle_environment(environment):
     properties = [property_name for property_name in dir(Environment) if
                   isinstance(getattr(Environment, property_name), property)]
     # Call each property so it will get pickled

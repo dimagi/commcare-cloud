@@ -15,7 +15,7 @@
     - {role: postgresql, tags: 'postgresql'}
 
 - name: pgbouncer
-  hosts: postgresql:pg_standby
+  hosts: postgresql:pg_standby:!citusdb
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}

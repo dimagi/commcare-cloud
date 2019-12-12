@@ -148,7 +148,7 @@ class Tmux(_Ssh):
                 'sudo -iu {cchq_user} tmux attach || sudo -iu {cchq_user} tmux new -n {window_name}'
                 .format(cchq_user=cchq_user, window_name=window_name_expression)
             ]
-        Ssh(self.parser).run(args, ssh_args)
+        return Ssh(self.parser).run(args, ssh_args)
 
 
 class DjangoManage(CommandBase):
@@ -221,7 +221,7 @@ class DjangoManage(CommandBase):
         args.server = args.server or 'django_manage:0'
         if args.tmux:
             args.remote_command = remote_command
-            Tmux(self.parser).run(args, [])
+            return Tmux(self.parser).run(args, [])
         else:
             ssh_args = ['sudo -u {cchq_user} {remote_command}'.format(
                 cchq_user=cchq_user,
@@ -230,4 +230,4 @@ class DjangoManage(CommandBase):
             if manage_args and manage_args[0] in ["shell", "dbshell"]:
                 # force ssh to allocate a pseudo-terminal
                 ssh_args = ['-t'] + ssh_args
-            Ssh(self.parser).run(args, ssh_args)
+            return Ssh(self.parser).run(args, ssh_args)

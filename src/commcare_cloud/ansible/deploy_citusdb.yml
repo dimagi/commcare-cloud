@@ -21,6 +21,15 @@
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
 
+- name: pgbouncer
+  hosts: citusdb_worker
+  become: true
+  vars_files:
+    - roles/citusdb/defaults/main.yml
+    - roles/citusdb/vars/pgbouncer_workers.yml
+  roles:
+    - {role: pgbouncer, tags: 'pgbouncer'}
+
 # Disables transparent huge pages (THP)
 - name: Disable THP
   become: true

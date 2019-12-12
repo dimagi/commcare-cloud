@@ -11,7 +11,7 @@
  - name: Add Workers Nodes to the Cordinator
    become: yes
    become_user: postgres
-   shell: psql {{ item.0.name }} -c "SELECT * from master_add_node( '{{item.1|ipaddr}}' , 5432) ; "
+   shell: psql {{ item.0.name }} -c "SELECT * from master_add_node( '{{item.1|ipaddr}}' , 6432) ; "
    with_nested: 
     - "{{ postgresql_dbs.all }}"
     - "{{ groups['citusdb_worker'] | difference(groups['pg_standby']) }}"

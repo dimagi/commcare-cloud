@@ -1,8 +1,11 @@
 - name: define formplayer spring services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_formplayer_spring.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   with_items:
     - env_vars:
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
