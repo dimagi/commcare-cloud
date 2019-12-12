@@ -1,5 +1,5 @@
 - name: define management command services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_management_commands.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
