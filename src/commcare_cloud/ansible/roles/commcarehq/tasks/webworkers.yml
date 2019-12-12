@@ -1,5 +1,5 @@
 - name: define errand boy services
-  become: cchq
+  become: yes 
   template:
     src: "../templates/supervisor_errand_boy.conf"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
@@ -11,7 +11,7 @@
   register: webworker_errand_boy_conf_file
 
 - name: define django worker service
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_django.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
