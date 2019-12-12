@@ -1,5 +1,5 @@
 - name: define formplayer spring services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_formplayer_spring.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
