@@ -52,6 +52,7 @@ setup(
         'PyGithub>=1.43.3',
         'pytz==2017.2',
         'six',
+        'tabulate'
     ),
     tests_require=test_deps,
     extras_require=extras,
