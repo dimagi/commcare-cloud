@@ -55,5 +55,6 @@ requests==2.22.0          # via couchdb-cluster-admin, datadog, pygithub
 s3transfer==0.2.0         # via boto3
 simplejson==3.16.0        # via datadog
 six==1.12.0
+tabulate==0.8.6
 urllib3==1.24.3           # via botocore, requests
 wrapt==1.11.1             # via deprecated
