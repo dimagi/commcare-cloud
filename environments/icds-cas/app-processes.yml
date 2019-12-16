@@ -250,10 +250,10 @@ pillows:
     kafka-ucr-static-awc-location:
       num_processes: 1
       processor_chunk_size: 100
-    kafka-ucr-main:
-      num_processes: 1
-      processor_chunk_size: 100
   'pillow22':
+    kafka-ucr-main:
+      num_processes: 16
+      processor_chunk_size: 100
   'pillow23':
     xform-pillow-non-dashboard:
       start_process: 0
