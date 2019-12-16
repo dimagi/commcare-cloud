@@ -206,6 +206,28 @@ localsettings:
             - 'location'
           include_ucrs:
             - 'static-awc_location'
+      - name: 'case-pillow-non-dashboard'
+        class: 'pillowtop.pillow.interface.ConstructedPillow'
+        instance: 'corehq.pillows.case.get_case_pillow'
+        params:
+          skip_ucr: True
+      - name: 'xform-pillow-non-dashboard'
+        class: 'pillowtop.pillow.interface.ConstructedPillow'
+        instance: 'corehq.pillows.xform.get_xform_pillow'
+        params:
+          skip_ucr: True
+      - name: 'case-pillow-dashboard'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'case-sql'
+      - name: 'xform-pillow-dashboard'
+        class: 'corehq.apps.userreports.pillow.ConfigurableReportKafkaPillow'
+        instance: 'corehq.apps.userreports.pillow.get_kafka_ucr_static_pillow'
+        params:
+          topics:
+            - 'form-sql'
   RUN_CASE_SEARCH_PILLOW: False
   RUN_UNKNOWN_USER_PILLOW: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True

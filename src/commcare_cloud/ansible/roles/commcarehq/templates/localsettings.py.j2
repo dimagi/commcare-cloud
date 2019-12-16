@@ -234,14 +234,7 @@ LOCAL_PILLOWTOPS = {
             "class": "{{ pillow.class }}",
             "instance": "{{ pillow.instance }}",
 {% if pillow.params is defined %}
-            "params": {
-                "topics": {{ pillow.params.topics }},
-                "include_ucrs": [
-{% for ucr in pillow.params.include_ucrs %}
-                     "{{ ucr }}",
-{% endfor %}
-                ]
-            }
+            "params": json.loads('{{ pillow.params|to_json }}')
 {% endif %}
         },
 {% endfor %}
