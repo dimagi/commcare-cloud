@@ -422,6 +422,13 @@ ELASTICSEARCH_HOSTS = [
 ]
 ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 
+####### setting Elasticsearch major version #####
+{% if 'ELASTICSEARCH_MAJOR_VERSION' in localsettings %}
+ELASTICSEARCH_MAJOR_VERSION = {{ localsettings.ELASTICSEARCH_MAJOR_VERSION }}
+{% else %}
+ELASTICSEARCH_MAJOR_VERSION = 1
+{% endif %}
+
 ES_SETTINGS = {{ ES_SETTINGS }}
 
 SECRET_KEY = "{{ SECRET_KEY }}"
