@@ -2,7 +2,11 @@ DEFAULT_POSTGRESQL_HOST: pgmain1
 
 REPORTING_DATABASES:
   ucr: ucr
-  icds-ucr-citus: icds-ucr-citus
+  icds-ucr-citus:
+    WRITE: icds-ucr-citus
+    READ:
+      - [icds-ucr-citus, 1]
+      - [icds-ucr-citus-standby, 4]
 
 LOAD_BALANCED_APPS:
   auth:
@@ -51,6 +55,10 @@ postgres_override:
     - contype: local
       users: TCLBKPADMIN
     - contype: host
+      users: TCLBKPADMIN
+      netmask: 100.71.188.129/32
+    - contype: host
+      databases: replication
       users: TCLBKPADMIN
       netmask: 100.71.188.129/32
 
@@ -234,3 +242,7 @@ dbs:
       master: p29
       host: pgshard29standby
       acceptable_replication_delay: 0
+    - django_alias: icds-ucr-citus-standby
+      host: citusmaster1standby
+      acceptable_replication_delay: 300
+      master: icds-ucr-citus
