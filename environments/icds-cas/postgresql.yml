@@ -238,3 +238,7 @@ dbs:
       master: p29
       host: pgshard29standby
       acceptable_replication_delay: 0
+    - django_alias: icds-ucr-citus-standby
+      host: citusmaster1standby
+      acceptable_replication_delay: 300
+      master: icds-ucr-citus
