@@ -234,14 +234,7 @@ LOCAL_PILLOWTOPS = {
             "class": "{{ pillow.class }}",
             "instance": "{{ pillow.instance }}",
 {% if pillow.params is defined %}
-            "params": {
-                "topics": {{ pillow.params.topics }},
-                "include_ucrs": [
-{% for ucr in pillow.params.include_ucrs %}
-                     "{{ ucr }}",
-{% endfor %}
-                ]
-            }
+            "params": json.loads('{{ pillow.params|to_json }}')
 {% endif %}
         },
 {% endfor %}
@@ -428,6 +421,13 @@ ELASTICSEARCH_HOSTS = [
     {% endfor -%}
 ]
 ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
+
+####### setting Elasticsearch major version #####
+{% if 'ELASTICSEARCH_MAJOR_VERSION' in localsettings %}
+ELASTICSEARCH_MAJOR_VERSION = {{ localsettings.ELASTICSEARCH_MAJOR_VERSION }}
+{% else %}
+ELASTICSEARCH_MAJOR_VERSION = 1
+{% endif %}
 
 ES_SETTINGS = {{ ES_SETTINGS }}
 
@@ -870,6 +870,7 @@ INTERNAL_SUBSCRIPTION_CHANGE_EMAIL = '{{ internal_subscription_change_email }}'
 BILLING_EMAIL = '{{ billing_email }}'
 INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
 GROWTH_EMAIL = '{{ growth_email }}'
+SAAS_REPORTING_EMAIL = '{{ saas_reporting_email }}'
 MASTER_LIST_EMAIL = '{{ master_list_email }}'
 SALES_EMAIL = '{{ sales_email }}'
 PRIVACY_EMAIL = '{{ privacy_email }}'

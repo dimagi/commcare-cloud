@@ -1,4 +1,5 @@
 import collections
+import csv
 import subprocess
 import sys
 from collections import defaultdict
@@ -8,6 +9,7 @@ from clint.textui import puts, indent
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
 from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
+from tabulate import tabulate
 
 from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
 from commcare_cloud.commands import shared_args
@@ -96,7 +98,14 @@ class CeleryResourceReport(CommandBase):
     Report of celery resources by queue.
     """
 
-    arguments = ()
+    arguments = (
+        Argument('--show-workers', action='store_true', help=(
+            "Includes the list of worker nodes for each queue"
+        )),
+        Argument('--csv', action='store_true', help=(
+            "Output table as CSV"
+        )),
+    )
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
@@ -110,18 +119,29 @@ class CeleryResourceReport(CommandBase):
                 queue['pooling'].add(options.pooling)
                 queue['worker_hosts'].add(host)
 
-        max_name_len = max([len(name) for name in by_queue])
-        template = "{{:<8}} | {{:<{}}} | {{:<12}} | {{:<12}} | {{:<12}} | {{:<12}}".format(max_name_len + 2)
-        print(template.format('Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker', 'Worker Hosts'))
-        print(template.format('-------', '-------------', '---------', '-----------', '--------------------------', '------------'))
+        headers = ['Pooling', 'Worker Queues', 'Processes', 'Concurrency', 'Avg Concurrency per worker']
+        if args.show_workers:
+            headers.append('Worker Hosts')
+        rows = []
         for queue_name, stats in sorted(by_queue.items(), key=itemgetter(0)):
             workers = stats['num_workers']
             concurrency_ = stats['concurrency']
-            worker_hosts = stats['worker_hosts']
-            print(template.format(
-                list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers,
-                ','.join(sorted([get_machine_alias(environment, worker_host) for worker_host in worker_hosts]))
-            ))
+            row = [list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers]
+            if args.show_workers:
+                worker_hosts = stats['worker_hosts']
+                row.append(','.join(sorted([get_machine_alias(environment, worker_host) for worker_host in worker_hosts])))
+            rows.append(row)
+
+        print_table(headers, rows, args.csv)
+
+
+def print_table(headers, rows, output_csv=False):
+    if output_csv:
+        writer = csv.writer(sys.stdout)
+        writer.writerow(headers)
+        writer.writerows(rows)
+    else:
+        print(tabulate(rows, headers=headers, tablefmt='github'))
 
 
 class PillowResourceReport(CommandBase):
@@ -130,12 +150,23 @@ class PillowResourceReport(CommandBase):
     Report of pillow resources.
     """
 
-    arguments = ()
+    arguments = (
+        Argument('--csv', action='store_true', help=(
+            "Output table as CSV"
+        )),
+    )
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
         by_process = _get_pillow_resources_by_name(environment)
-        _print_table(by_process)
+
+        headers = ['Pillow', 'Processes']
+        rows = [
+            [queue_name, stats['num_processes']]
+            for queue_name, stats in sorted(by_process.items(), key=itemgetter(0))
+        ]
+
+        print_table(headers, rows, args.csv)
 
 
 def _get_pillow_resources_by_name(environment):
@@ -146,16 +177,6 @@ def _get_pillow_resources_by_name(environment):
             config = by_process[name]
             config['num_processes'] += options.get('num_processes', 1)
     return by_process
-
-
-def _print_table(by_process):
-    max_name_len = max([len(name) for name in by_process])
-    template = "{{:<{}}} | {{:<12}}".format(max_name_len + 2)
-    print(template.format('Pillow', 'Processes'))
-    print(template.format('------', '---------'))
-    for queue_name, stats in sorted(by_process.items(), key=itemgetter(0)):
-        workers = stats['num_processes']
-        print(template.format(queue_name, workers))
 
 
 class CouchDBClusterInfo(CommandBase):

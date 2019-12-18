@@ -11,7 +11,7 @@ Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
 Environment=ES_HEAP_SIZE={{ elasticsearch_memory }}
 Environment=HEAP_DUMP_LOCATION={{ elasticsearch_data_dir }}/logs
 
-WorkingDirectory=/opt/elasticsearch-1.7.6
+WorkingDirectory={{ elasticsearch_home }}
 
 User=elasticsearch
 Group=elasticsearch
