@@ -1191,8 +1191,18 @@ Gives additional databases on the server.
 Report of celery resources by queue.
 
 ```
-commcare-cloud <env> celery-resource-report
+commcare-cloud <env> celery-resource-report [--show-workers] [--csv]
 ```
+
+##### Optional Arguments
+
+###### `--show-workers`
+
+Includes the list of worker nodes for each queue
+
+###### `--csv`
+
+Output table as CSV
 
 ---
 
@@ -1201,8 +1211,14 @@ commcare-cloud <env> celery-resource-report
 Report of pillow resources.
 
 ```
-commcare-cloud <env> pillow-resource-report
+commcare-cloud <env> pillow-resource-report [--csv]
 ```
+
+##### Optional Arguments
+
+###### `--csv`
+
+Output table as CSV
 
 ---
 

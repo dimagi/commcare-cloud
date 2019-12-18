@@ -251,59 +251,107 @@ pillows:
       num_processes: 1
       processor_chunk_size: 100
   'pillow22':
+    kafka-ucr-main:
+      num_processes: 16
+      processor_chunk_size: 100
   'pillow23':
-    xform-pillow:
+    xform-pillow-non-dashboard:
       start_process: 0
-      num_processes: 24
-      total_processes: 96
+      num_processes: 6
+      total_processes: 24
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 0
+      num_processes: 12
+      total_processes: 48
       processor_chunk_size: 100
   'pillow24':
-    xform-pillow:
-      start_process: 24
-      num_processes: 24
-      total_processes: 96
+    xform-pillow-non-dashboard:
+      start_process: 6
+      num_processes: 6
+      total_processes: 24
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 12
+      num_processes: 12
+      total_processes: 48
       processor_chunk_size: 100
   'pillow25':
-    xform-pillow:
-      start_process: 48
-      num_processes: 24
-      total_processes: 96
+    xform-pillow-non-dashboard:
+      start_process: 12
+      num_processes: 6
+      total_processes: 24
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 24
+      num_processes: 12
+      total_processes: 48
       processor_chunk_size: 100
   'pillow26':
-    xform-pillow:
-      start_process: 72
-      num_processes: 24
-      total_processes: 96
+    xform-pillow-non-dashboard:
+      start_process: 18
+      num_processes: 6
+      total_processes: 24
+      processor_chunk_size: 100
+    xform-pillow-dashboard:
+      start_process: 36
+      num_processes: 12
+      total_processes: 48
       processor_chunk_size: 100
   'pillow27':
-    case-pillow:
+    case-pillow-non-dashboard:
       start_process: 0
-      num_processes: 48
-      total_processes: 240
+      num_processes: 6
+      total_processes: 30
+      processor_chunk_size: 100
+    case-pillow-dashboard:
+      start_process: 0
+      num_processes: 24
+      total_processes: 120
       processor_chunk_size: 100
   'pillow28':
-    case-pillow:
-      start_process: 48
-      num_processes: 48
-      total_processes: 240
+    case-pillow-non-dashboard:
+      start_process: 6
+      num_processes: 6
+      total_processes: 30
+      processor_chunk_size: 100
+    case-pillow-dashboard:
+      start_process: 24
+      num_processes: 24
+      total_processes: 120
       processor_chunk_size: 100
   'pillow29':
-    case-pillow:
-      start_process: 96
-      num_processes: 48
-      total_processes: 240
+    case-pillow-non-dashboard:
+      start_process: 12
+      num_processes: 6
+      total_processes: 30
+      processor_chunk_size: 100
+    case-pillow-dashboard:
+      start_process: 48
+      num_processes: 24
+      total_processes: 120
       processor_chunk_size: 100
   'pillow30':
-    case-pillow:
-      start_process: 144
-      num_processes: 48
-      total_processes: 240
+    case-pillow-non-dashboard:
+      start_process: 18
+      num_processes: 6
+      total_processes: 30
+      processor_chunk_size: 100
+    case-pillow-dashboard:
+      start_process: 72
+      num_processes: 24
+      total_processes: 120
       processor_chunk_size: 100
   'pillow31':
-    case-pillow:
-      start_process: 192
-      num_processes: 48
-      total_processes: 240
+    case-pillow-non-dashboard:
+      start_process: 24
+      num_processes: 6
+      total_processes: 30
+      processor_chunk_size: 100
+    case-pillow-dashboard:
+      start_process: 96
+      num_processes: 24
+      total_processes: 120
       processor_chunk_size: 100
   'pillow32':
   'pillow33':
