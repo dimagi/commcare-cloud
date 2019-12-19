@@ -21,6 +21,22 @@
     owner: rabbitmq
     mode: 0644
 
+- name: Create directory for ulimt
+  file:
+    path: /etc/systemd/system/rabbitmq-server.service.d
+    state: directory
+    mode: '0755'
+  when: ansible_distribution_version == '18.04'
+
+- name: setting Ulimit for rabbitmq
+  raw: echo "[Service]\nLimitNOFILE=65536" > /etc/systemd/system/rabbitmq-server.service.d/limits.conf
+  when: ansible_distribution_version == '18.04'
+
+- name: just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  when: ansible_distribution_version == '18.04'
+
 - name: Make sure RabbitMQ service is started before running config tasks
   become: yes
   service: name=rabbitmq-server state=started
