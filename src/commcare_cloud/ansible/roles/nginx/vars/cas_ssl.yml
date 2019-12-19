@@ -99,6 +99,22 @@ nginx_sites:
        proxy_cache: app_cache
        client_body_buffer_size: 5m
        proxy_ignore_headers: Set-Cookie
+     - name: "~* /a/icds-cas/apps/download/.*/.*_profile.ccpr"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       proxy_cache: app_cache
+       proxy_cache_lock: "on"
+       proxy_cache_lock_timeout: 30s
+       # exclude username arg from cache key
+       proxy_cache_key: "$proxy_host$request_uri_no_username"
+       client_body_buffer_size: 5m
+       proxy_ignore_headers: Set-Cookie
+       limit_reqs:
+         - zone_name: "app_downloads"
+           burst: 10
+           nodelay: True
      - name: "/a/icds-cas/apps/download"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
