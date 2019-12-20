@@ -117,6 +117,7 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
 ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(False) }}
+IS_DIMAGI_ENVIRONMENT = {{ localsettings.IS_DIMAGI_ENVIRONMENT|default(False) }}
 
 SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
