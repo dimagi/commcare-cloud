@@ -31,7 +31,7 @@
   become: yes
   with_items:
     - {name: 'n', version: '2.1.12'}
-    - {name: 'less', version: '2.7.2'}
+    - {name: 'less', version: '3.10.3'}
     - {name: 'bower', version: '1.8.4'}
     - {name: 'uglify-js', version: '2.6.1'}
   tags:
