@@ -49,6 +49,10 @@ nginx_sites:
       zone: "$server_name"
       size: "10m"
       rate: "20r/s"
+    - name: "per_ip_restore"
+      zone: "$server_name"
+      size: "10m"
+      rate: "2r/m"
     - name: "submissions"
       zone: "$server_name"
       size: "10m"
@@ -150,6 +154,9 @@ nginx_sites:
          - zone_name: "incremental_restore"
            burst: 10
            nodelay: True
+        - zone_name: "per_ip_restore"
+          burst: 10
+          nodelay: True
          - zone_name: "overall_restore"
            burst: 100
            nodelay: True
