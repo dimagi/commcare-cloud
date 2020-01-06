@@ -19,6 +19,7 @@ nadir_hour: 16
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 
 # ElasticSearch Backup on Swift API
 backup_es_swift: True
@@ -163,6 +164,7 @@ localsettings:
   EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160
   ICDS_USE_CITUS: True
