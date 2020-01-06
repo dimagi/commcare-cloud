@@ -61,6 +61,7 @@ root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply@dimagi.com
+return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
