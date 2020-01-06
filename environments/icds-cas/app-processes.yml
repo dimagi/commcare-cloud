@@ -218,7 +218,7 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  celery35,celery36,celery37,celery38,celery39:
+  celery35,celery36,celery37,celery38,celery39,celery40,celery41,celery42,celery43,celery44,celery45,celery46,celery47:
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
