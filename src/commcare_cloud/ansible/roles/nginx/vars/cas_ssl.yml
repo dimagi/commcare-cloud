@@ -34,7 +34,7 @@ nginx_sites:
           value: '""'
     - name: "$incremental_sync"
       variable: "$http_x_commcarehq_lastsynctoken"
-      # If header is provided, rate limit on $server_name
+      # If header is provided, rate limit on $limit_bucket
       default_value: "$limit_bucket"
       var_mappings:
         # If the header is not provided, do not rate limit
