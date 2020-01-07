@@ -13,14 +13,6 @@ nginx_sites:
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
    mappings:
-    - name: "$incremental_sync"
-      variable: "$http_x_commcarehq_lastsynctoken"
-      # If header is provided, rate limit on $server_name
-      default_value: "$server_name"
-      var_mappings:
-        # If the header is not provided, do not rate limit
-        - key: '""'
-          value: '""'
     # Remove 'username' query param from request uri for use in cache key
     # https://stackoverflow.com/a/45587134
     # https://stackoverflow.com/a/35772678
@@ -39,6 +31,14 @@ nginx_sites:
       default_value: "$server_name"
       var_mappings: # whitelisted IP addresses not to be rate-limited
         - key: '192.168.8.218' # Ben Talbot
+          value: '""'
+    - name: "$incremental_sync"
+      variable: "$http_x_commcarehq_lastsynctoken"
+      # If header is provided, rate limit on $server_name
+      default_value: "$server_name"
+      var_mappings:
+        # If the header is not provided, do not rate limit
+        - key: '""'
           value: '""'
    limit_req_zones:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
