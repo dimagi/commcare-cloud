@@ -2,6 +2,7 @@ dev_users:
   present:
     - ddobre
     - pdelcroix
+    - crenner
   absent:
     - ava
     - gcastro
