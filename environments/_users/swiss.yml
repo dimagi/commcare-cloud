@@ -3,4 +3,6 @@ dev_users:
     - gcastro
     - ddobre
     - pdelcroix
-  absent: []
+  absent:
+    - ava
+    - gon
