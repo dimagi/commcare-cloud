@@ -71,10 +71,8 @@ localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
     - testserver
-    - sanjay1.commcarehq.org
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
-  ALTERNATE_HOSTS: sanjay1.commcarehq.org
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
