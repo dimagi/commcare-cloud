@@ -26,6 +26,12 @@ contained in this directory and the README files list the actual commands that w
 * Redis
   * Since the data in Redis is only a cache it was not necessary to migrate it
 
+## Reference docs
+
+* [Migration tracker](https://docs.google.com/spreadsheets/d/1ATq3y-2bhp6a6IMAiUnyLCK9695QQT1MXTQO1MGEtKY/edit#gid=251109428)
+* [Migration notes](https://docs.google.com/document/d/1EwC6agZ-N7_YvEQJ8Fx0RdikjBSjmcDqRP3tqwcWl08/edit)
+
+
 ### Useful commands
 * Stop monit
 ```
