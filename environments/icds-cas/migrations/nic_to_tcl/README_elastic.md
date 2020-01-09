@@ -16,9 +16,9 @@
 3. Copy data
 
     ```
-    cchq icds-cas copy-files environments/icds-cas/migrations/elastic-files.yml prepare
-    cchq icds-cas copy-files environments/icds-cas/migrations/elastic-files.yml copy
-    cchq icds-cas copy-files environments/icds-cas/migrations/elastic-files.yml cleanup
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/elastic-files.yml prepare
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/elastic-files.yml copy
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/elastic-files.yml cleanup
     ```
 
 4. Turn on new elasticsearch nodes
