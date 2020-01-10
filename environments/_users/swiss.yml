@@ -1,6 +1,9 @@
 dev_users:
   present:
-    - gcastro
     - ddobre
     - pdelcroix
-  absent: []
+    - crenner
+  absent:
+    - ava
+    - gcastro
+    - gon
