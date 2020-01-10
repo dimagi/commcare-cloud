@@ -1,0 +1,7 @@
+#
+# {{ ansible_managed }}
+#
+# https://www.rabbitmq.com/rabbitmq-env.conf.5.html
+{% if rabbitmq_nodename|default() %}
+NODENAME={{rabbitmq_nodename}}
+{% endif %}
