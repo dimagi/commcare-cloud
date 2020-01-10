@@ -548,6 +548,11 @@ In Case PostgreSQL fails with  `No space left on device` error message and in or
 * There is a dummy file of 1GB placed in encrypted root path `/opt/data/emerg_delete.dummy` which can be deleted.
 * It will give you enough space to restart Database. Reclaim the disk space.
 * Start the `Pgbouncer`
+* Once the issue has been resolved you should re-add the dummy file for future use:
+```
+   dd if=/dev/zero of=/opt/data/emerg_delete.dummy count=1024 bs=1048576
+```
+
 ### Deleting old WAL logs
 At all the times, PostgreSQL maintains a write-ahead log (WAL) in the pg_xlog/ for version <10 and in pg_wal/ for version >=10 subdirectory of the cluster’s data directory. The log records for every change made to the database’s data files. These log messages exists primarily for crash-safety purposes.
 
