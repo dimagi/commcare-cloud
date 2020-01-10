@@ -60,9 +60,3 @@
     state: present
     sysctl_file: /etc/sysctl.d/90-commcare-cloud.conf
   when: dirty_background_bytes is defined
-
-- name: Create 1GB Dummmy file for Emergency
-  become: yes
-  shell: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
-  args:
-    creates: "{{ encrypted_root }}/emerg_delete.dummy"
