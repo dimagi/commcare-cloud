@@ -1,5 +1,3 @@
-msp_users: "{{ secrets.MSP_USERS }}"
-
 DATADOG_ENABLED: True
 DATADOG_INTEGRATIONS_ENABLED: True
 

@@ -41,18 +41,6 @@
   authorized_key: user="{{ cchq_user }}" key='' state=present exclusive=yes
   tags: commcarehq
 
-- name: Add MSP user sudo user
-  user: name="{{ item.value.username }}" state=present shell=/bin/bash groups="sudo" password="{{ item.value.password }}"
-  when: msp_users|default(false)
-  with_dict: '{{ msp_users }}'
-
-- name: Add public key for MSP
-  become: yes
-  authorized_key: user="{{ item.value.username }}" state=present key="{{ lookup('file', 'vars/{{ deploy_env }}/{{ item.value.username }}.pub') }}"
-  when: msp_users|default(false)
-  with_dict: '{{ msp_users }}'
-  ignore_errors: "{{ ansible_check_mode }}"
-
 - name: Add ansible user
   user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_sudo_pass|password_hash('sha512') }}"
 
