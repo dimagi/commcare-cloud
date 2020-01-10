@@ -543,7 +543,7 @@ GROUP BY main_table
 ORDER BY n_tup_ins DESC;
 ```
 ### Disk Full on Data partition
-In Case Postgresql fails with  `No space left on device` Error message and in order to free up space you need to restart the Postgresql then Please take the following steps
+In Case PostgreSQL fails with  `No space left on device` error message and in order to free up space needed to restart the PostgreSQL then take the following steps
 * Stop the `Pgbouncer`
 * There is a dummy file of 1GB placed in encrypted root path `/opt/data/emerg_delete.dummy` which can be deleted.
 * It will give you enough space to restart Database. Reclaim the disk space.
