@@ -24,7 +24,7 @@ and run full stack deploy
 ```bash
 commcare-cloud <env> bootstrap-users
 commcare-cloud <env> deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
-commcare-cloud <env> deploy --set ignore_kafka_checkpoint_warning=true
+commcare-cloud <env> deploy commcare --set ignore_kafka_checkpoint_warning=true
 ```
 
 Note: if you already have a running site with a previous cert,
