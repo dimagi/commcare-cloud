@@ -23,7 +23,7 @@ KSPLICE_ACTIVE: yes
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply+staging@dimagi.com
 return_path_email: commcarehq-bounces+staging@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
