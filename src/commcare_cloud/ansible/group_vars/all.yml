@@ -10,6 +10,7 @@ nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
+ALTERNATE_HOSTS: null
 
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
