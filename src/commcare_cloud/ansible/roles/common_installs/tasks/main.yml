@@ -11,22 +11,10 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add pango repo for trusty
-  apt_repository: repo='ppa:jonathonf/gtk3.18' state=present
-  register: add_pango_repo
-  when: ansible_distribution_version == '14.04'
-
 - name: Add Python PPA for trusty
   apt_repository: repo='ppa:deadsnakes/ppa' state=present
   register: add_python_ppa_trusty
   when: ansible_distribution_version == '14.04'
-  tags:
-    - py3
-
-- name: Add Python PPA for bionic and xenial
-  apt_repository: repo='ppa:jonathonf/python-3.6' state=present
-  register: add_python_ppa_bionic
-  when: ansible_distribution_version == '18.04' or ansible_distribution_version == '16.04'
   tags:
     - py3
 
