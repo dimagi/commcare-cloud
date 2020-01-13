@@ -1,0 +1,40 @@
+- name: Redis
+  hosts: redis
+  become: true
+  roles:
+    - {role: redis, tags: 'redis'}
+
+- name: configure the master redis server
+  hosts: redis-master
+  become: true
+  roles:
+    - {role: redis, tags: 'redis'}
+
+- name: configure redis slaves
+  hosts: redis-slave
+  become: true
+  vars:
+    - redis_slaveof: "{{ groups['redis-master'][0] }} {{ redis_port }}"
+  roles:
+    - {role: redis, tags: 'redis'}
+
+- name: configure redis sentinel nodes
+  hosts: redis-sentinel
+  become: true
+  vars:
+    - redis_sentinel_monitors:
+      - name: master01
+        host: "{{ groups['redis-master'][0] }}"
+        port: "{{ redis_port }}"
+        down_after_milliseconds: 15000
+    - redis_sentinel_dir: "{{ encrypted_root }}/redis"
+    - redis_sentinel_logfile: "{{ redis_dir }}/sentinel.log"
+    - redis_sentinel: True
+  roles:
+    - {role: redis, tags: 'redis'}
+
+- name: Redis Monitoring
+  hosts: redis
+  become: true
+  roles:
+    - redis_monitoring
