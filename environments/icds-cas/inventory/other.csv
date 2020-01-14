@@ -1,5 +1,5 @@
 hostname,host_address,group 1,group 2,var: hostname,var: rabbitmq_nodename,var: public_ip,I.var: kafka_broker_id
-airflow2,100.71.188.13,airflow,,MUMGCCWCDPRDAFV00,,,
+airflow2,100.71.188.13,airflow,airflow_scheduler,MUMGCCWCDPRDAFV00,,,
 formplayer2,100.71.188.30,formplayer,,MUMGCCWCDPRDFPV00,,,
 formplayer3,100.71.188.75,formplayer,,MUMGCCWCDPRDFPV01,,,
 rabbit2,100.71.188.45,rabbitmq,,MUMGCCWCDPRDRBV00,rabbit@MUMGCCWCDPRDRBV00,,

@@ -11,6 +11,7 @@
   register: airflow_webserver_conf_file
 
 - name: define airflow scheduler service
+  hosts: airflow_scheduler
   become: yes
   template:
     src: "../templates/supervisor_airflow_scheduler.conf.j2"
