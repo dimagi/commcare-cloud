@@ -4,7 +4,7 @@
     - name: "Check host count in airflow_scheduler group"
       assert:
         that: 
-          - groups.airflow |length == 1
+          - groups.airflow_scheduler |length == 1
         fail_msg: "No of host in airflow group shouldn't exceed 1"
 
 - name: Airflow
