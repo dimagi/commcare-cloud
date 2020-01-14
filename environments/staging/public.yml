@@ -41,7 +41,7 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-ALTERNATE_HOSTS: "sanjay1.commcarehq.org"
+ALTERNATE_HOSTS: "sanjay1.commcarehq.org sanjay2.commcarehq.org"
 
 couch_dbs:
   default:
@@ -75,7 +75,7 @@ localsettings:
     - sanjay1.commcarehq.org
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
-  ALTERNATE_HOSTS: "sanjay1.commcarehq.org"
+  ALTERNATE_HOSTS: "sanjay1.commcarehq.org sanjay2.commcarehq.org"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
