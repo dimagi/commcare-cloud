@@ -10,6 +10,4 @@
 - name: Airflow
   hosts: airflow
   roles:
-    - role: airflow
-      tags: airflow 
-      when: groups.airflow |length == 1
+    - {role: airflow, tags: airflow}
