@@ -242,3 +242,9 @@
   retries: 5
   delay: 20
   when: not ansible_check_mode
+
+- name: Create 1GB Dummmy file for Emergency
+  become: yes
+  shell: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
+  args:
+    creates: "{{ encrypted_root }}/emerg_delete.dummy"

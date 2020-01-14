@@ -1,0 +1,5 @@
+deploy_env: jenkins
+env_monitoring_id: jenkins
+users:
+  - dimagi
+bare_non_cchq_environment: True

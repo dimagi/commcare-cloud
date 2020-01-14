@@ -7,7 +7,10 @@
 
 - name: Ensure vhost commcarehq is present
   become: true
-  rabbitmq_vhost: name=commcarehq state=present
+  rabbitmq_vhost:
+    name: commcarehq
+    node: "{{ rabbitmq_nodename|default('rabbit') }}"
+    state: present
   notify:
   - restart rabbitmq
 
@@ -21,12 +24,16 @@
     configure_priv=.*
     write_priv=.*
     read_priv=.*
+    node={{ rabbitmq_nodename|default('rabbit') }}
     state=present
   notify:
   - restart rabbitmq
 
 - name: Remove default guest user
   become: true
-  rabbitmq_user: user=guest state=absent
+  rabbitmq_user:
+    user: guest
+    node: "{{ rabbitmq_nodename|default('rabbit') }}"
+    state: absent
   notify:
   - restart rabbitmq
