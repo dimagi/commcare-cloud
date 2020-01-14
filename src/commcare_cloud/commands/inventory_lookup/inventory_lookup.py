@@ -132,20 +132,21 @@ class Tmux(_Ssh):
         # Name tabs like "droberts (2018-04-13)"
         window_name_expression = '"`whoami` (`date +%Y-%m-%d`)"'
         if args.remote_command:
+            # add bash as second command to keep tmux open after command exits
+            remote_command = shlex_quote('{} ; bash'.format(args.remote_command))
             ssh_args = [
                 '-t',
-                r'sudo -iu {cchq_user} tmux attach \; new-window -n {window_name} {remote_command} '
-                r'|| sudo -iu {cchq_user} tmux new -n {window_name} {remote_command}'
+                r'tmux attach \; new-window -n {window_name} {remote_command} '
+                r'|| tmux new -n {window_name} {remote_command}'
                 .format(
-                    cchq_user=cchq_user,
-                    remote_command=shlex_quote('{} ; bash'.format(args.remote_command)),
+                    remote_command="sudo -iu {} -- sh -c {}".format(cchq_user, remote_command),
                     window_name=window_name_expression,
                 )
             ] + ssh_args
         else:
             ssh_args = [
                 '-t',
-                'sudo -iu {cchq_user} tmux attach || sudo -iu {cchq_user} tmux new -n {window_name}'
+                'tmux attach || tmux new -n {window_name} sudo -iu {cchq_user} '
                 .format(cchq_user=cchq_user, window_name=window_name_expression)
             ]
         return Ssh(self.parser).run(args, ssh_args)

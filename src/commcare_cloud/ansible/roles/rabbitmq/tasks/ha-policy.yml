@@ -3,6 +3,7 @@
     name: HA
     pattern: .*
     vhost: "{{ item }}"
+    node: "{{ rabbitmq_nodename|default('rabbit') }}"
   with_items:
      - commcarehq
   args:
