@@ -1,5 +1,5 @@
 ---
-- hosts: airflow
+- hosts: airflow_scheduler
   tasks:
     - name: "Check host count in airflow_scheduler group"
       assert:
