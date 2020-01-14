@@ -1,7 +1,7 @@
 ---
 - hosts: airflow
   tasks:
-    - name: "Check host count in airflow group"
+    - name: "Check host count in airflow_scheduler group"
       assert:
         that: 
           - groups.airflow |length == 1
