@@ -343,7 +343,7 @@ rds_instances:
     engine_version: 9.6.15
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t3.large"
     storage: 1000
     multi_az: true
     engine_version: 9.6.15
