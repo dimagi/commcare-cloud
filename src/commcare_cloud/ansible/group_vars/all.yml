@@ -10,7 +10,6 @@ nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
-ALTERNATE_HOSTS: null
 
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
@@ -121,6 +120,7 @@ daily_deploy_email: null
 check_s3_backups_email: null
 
 
+ALTERNATE_HOSTS: []
 AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY | default(None) }}"
 AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY | default(None) }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
