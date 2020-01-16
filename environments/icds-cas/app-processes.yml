@@ -130,12 +130,12 @@ celery_processes:
       concurrency: 4 
     ucr_queue:
       concurrency: 4       
-  celery44,celery45,celery46,celery47,celery112,celery13,celery14:
+  celery44,celery45,celery46,celery47,celery48,celery49,celery50:
     ucr_indicator_queue:
       concurrency: 4
     icds_dashboard_reports_queue:
       concurrency: 2
-  celery16,celery17,celery18,celery19,celery32,celery33,celery34:
+  celery51,celery52,celery53,celery54,celery55,celery56,celery57:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -218,7 +218,6 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  celery48,celery49,celery50,celery51,celery52,celery53,celery54,celery55,celery56,celery57:    
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
