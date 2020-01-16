@@ -13,8 +13,10 @@ from tabulate import tabulate
 
 from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
 from commcare_cloud.commands import shared_args
+from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
+from commcare_cloud.commands.inventory_lookup.inventory_lookup import DjangoManage
 from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.main import get_environment
@@ -167,6 +169,34 @@ class PillowResourceReport(CommandBase):
         ]
 
         print_table(headers, rows, args.csv)
+
+
+class PillowTopicAssignments(CommandBase):
+    command = 'pillow-topic-assignments'
+    help = """
+    Print out the list of Kafka partitions assigned to each pillow process.
+    """
+
+    arguments = (
+        Argument('pillow_name', help=(
+            "Name of the pillow."
+        )),
+        Argument('--csv', action='store_true', help=(
+            "Output as CSV"
+        )),
+    )
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        processes_per_pillow = _get_pillow_resources_by_name(environment)
+        total_processes = processes_per_pillow[args.pillow_name]
+        manage_args = ['pillow_topic_assignments', args.pillow_name, str(total_processes)]
+        if args.csv:
+            manage_args.append('--csv')
+        args.release = None
+        args.server = None
+        args.tmux = None
+        return DjangoManage(self.parser).run(args, manage_args)
 
 
 def _get_pillow_resources_by_name(environment):
