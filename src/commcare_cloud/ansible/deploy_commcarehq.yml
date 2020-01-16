@@ -66,7 +66,7 @@
       tags: services
 
 - name: Airflow Supervisor Config
-  hosts: airflow
+  hosts: airflow_scheduler
   tasks:
     - include_tasks: roles/commcarehq/tasks/airflow.yml
       tags: services
