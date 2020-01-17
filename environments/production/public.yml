@@ -2,7 +2,7 @@ daily_deploy_email: tech-announce-daily@dimagi.com
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply-production@dimagi.com
 return_path_email: commcarehq-bounces+production@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
@@ -22,6 +22,8 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+ALTERNATE_HOSTS:
+  - rec-mobile.sante.gov.bf
 
 DATADOG_ENABLED: True
 

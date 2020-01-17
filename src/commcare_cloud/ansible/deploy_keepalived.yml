@@ -1,19 +1,4 @@
 ---
 - name: deploy keepalived
-  hosts: couchdb2_proxy
-  become: true
-  vars:
-     keepalived_check_process: "pgrep haproxy"
   roles:
     - role: keepalived
-      when: groups.couchdb2_proxy |length == 2 
-
-- name: deploy keepalived
-  hosts: keepalived_redis
-  become: true
-  vars:
-     keepalived_check_process: "{{check_process_script}}/redis_is_master"
-     keepalived_check_interval: 15
-  roles:
-    - role: keepalived
-      when: groups.keepalived_redis |length >= 2 

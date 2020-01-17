@@ -1,4 +1,12 @@
 ---
+- hosts: airflow_scheduler
+  tasks:
+    - name: "Check host count in airflow_scheduler group"
+      assert:
+        that: 
+          - groups.airflow_scheduler |length == 1
+        fail_msg: "Only 1 host is allowed in the airflow_scheduler group"
+
 - name: Airflow
   hosts: airflow
   roles:

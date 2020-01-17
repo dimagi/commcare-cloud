@@ -40,11 +40,11 @@
         validate_certs: no
 
     - name: Run Certbot command when there is a www host
-      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}'
+      command: "certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}} -d {{ NO_WWW_SITE_HOST }}{% if ALTERNATE_HOSTS %} -d {{ ALTERNATE_HOSTS | join(' -d ') }}{% endif %} --expand"
       when: NO_WWW_SITE_HOST|bool
 
     - name: Run Certbot command when there is no www host
-      command: 'certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}}'
+      command: "certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}}{% if ALTERNATE_HOSTS %} -d {{ ALTERNATE_HOSTS | join(' -d ') }}{% endif %} --expand"
       when: not NO_WWW_SITE_HOST
 
     - name: Reload Nginx

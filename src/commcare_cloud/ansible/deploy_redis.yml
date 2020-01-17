@@ -5,26 +5,26 @@
     - {role: redis, tags: 'redis'}
 
 - name: configure the master redis server
-  hosts: redis-master
+  hosts: redis_master
   become: true
   roles:
     - {role: redis, tags: 'redis'}
 
 - name: configure redis slaves
-  hosts: redis-slave
+  hosts: redis_slave
   become: true
   vars:
-    - redis_slaveof: "{{ groups['redis-master'][0] }} {{ redis_port }}"
+    - redis_slaveof: "{{ groups['redis_master'][0] }} {{ redis_port }}"
   roles:
     - {role: redis, tags: 'redis'}
 
 - name: configure redis sentinel nodes
-  hosts: redis-sentinel
+  hosts: redis_sentinel
   become: true
   vars:
     - redis_sentinel_monitors:
       - name: master01
-        host: "{{ groups['redis-master'][0] }}"
+        host: "{{ groups['redis_master'][0] }}"
         port: "{{ redis_port }}"
         down_after_milliseconds: 15000
     - redis_sentinel_dir: "{{ encrypted_root }}/redis"
@@ -32,6 +32,29 @@
     - redis_sentinel: True
   roles:
     - {role: redis, tags: 'redis'}
+
+- name: deploy keepalived
+  hosts: keepalived_redis
+  become: true
+  vars:
+     keepalived_check_process: "{{check_process_script}}/redis_is_master"
+     keepalived_check_interval: 15
+     keepalived_router_id: 53
+  roles:
+    - role: keepalived
+      when: groups.keepalived_redis |length >= 2
+  tags: redis
+
+- name: Create redis master check script
+  template:
+    src: redis_is_master.j2
+    dest: "{{ check_process_script }}/redis_is_master"
+    mode: 0755
+    owner: root
+    group: root
+  when: "'keepalived_redis' in group_names"
+  tags: redis
+  notify: restart keepalived
 
 - name: Redis Monitoring
   hosts: redis

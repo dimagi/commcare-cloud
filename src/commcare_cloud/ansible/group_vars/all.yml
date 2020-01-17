@@ -121,6 +121,7 @@ check_s3_backups_email: null
 return_path_email: null
 
 
+ALTERNATE_HOSTS: []
 AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY | default(None) }}"
 AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY | default(None) }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
