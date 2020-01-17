@@ -51,7 +51,7 @@ nginx_sites:
       rate: "20r/s"
     - name: "per_ip_restore"
       zone: "$server_name"
-      size: "10m"
+      size: "50m"
       rate: "2r/m"
     - name: "submissions"
       zone: "$server_name"
