@@ -12,8 +12,6 @@
 
     *   Setup SSL certificates
         *   Copy Letsencrypt Configuration dir from live proxy `/etc/letsencrypt` to new server
-        *   Perfrom a dry run for cert check `certbot renew --dry-run`
-
 3.  QA
     *   Do a test if it's working by editing local `/etc/hosts` file.
 
@@ -21,5 +19,5 @@
 
 5.  Post steps
     *   Replace the old server with the new server in the `staticfiles` inventory group.
-    *   Confirm that the SSL certificate can be renewed correctly.
+    *   Confirm that the SSL certificate can be renewed correctly by running `certbot renew --dry-run`
     *   Run a code deploy to ensure that the CommCare staticfile process is working correctly with the new proxy.
