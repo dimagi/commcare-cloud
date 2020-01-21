@@ -1,0 +1,24 @@
+env_key: environment.name
+id: 11866550
+message: |-
+  {{#is_alert}}
+  {{device.name}} drive is mounted as read-only file system on {{host.name}}
+  @slack-alerts-icds 
+  {{/is_alert}}
+name: Disk  Mounted as  Read only Filesystem.
+options:
+  notify_audit: false
+  locked: false
+  timeout_h: 0
+  silenced: {}
+  include_tags: true
+  thresholds:
+    warning: 1
+    ok: 1
+    critical: 1
+  new_host_delay: 300
+  notify_no_data: false
+  renotify_interval: 0
+query: '"disk.read_write".over("environment:icds").by("device","host").last(2).count_by_status()'
+tags: []
+type: service check
