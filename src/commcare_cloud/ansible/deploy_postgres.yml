@@ -71,3 +71,11 @@
    - after-reboot
   roles:
     - role: thp
+
+- name: Install and configure pg_repack
+  hosts: "{{ pg_repack|list }}"
+  become: true
+  roles:
+    - role: pg_repack
+  tags:
+    pg_repack
