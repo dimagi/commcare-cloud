@@ -15,9 +15,9 @@
 3. Copy data
 
     ```
-    cchq icds-cas copy-files environments/icds-cas/migrations/postgresql-files.yml prepare
-    cchq icds-cas copy-files environments/icds-cas/migrations/postgresql-files.yml copy
-    cchq icds-cas copy-files environments/icds-cas/migrations/postgresql-files.yml cleanup
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/postgresql-files.yml prepare
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/postgresql-files.yml copy
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/postgresql-files.yml cleanup
     ```
 
 4. Start PG on new nodes

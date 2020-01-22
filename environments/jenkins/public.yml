@@ -1,0 +1,3 @@
+DATADOG_ENABLED: no
+localsettings:
+  DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"

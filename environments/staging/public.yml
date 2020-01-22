@@ -23,7 +23,8 @@ KSPLICE_ACTIVE: yes
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply-staging@dimagi.com
+return_path_email: commcarehq-bounces+staging@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
@@ -41,6 +42,8 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+ALTERNATE_HOSTS:
+  - sanjay1.commcarehq.org
 
 couch_dbs:
   default:
@@ -87,6 +90,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  IS_DIMAGI_ENVIRONMENT: True
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   EULA_COMPLIANCE: True
   HQ_INSTANCE: 'staging'

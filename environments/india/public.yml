@@ -7,8 +7,8 @@ DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'indiahqes-1.x'
-elasticsearch_version: 1.7.6
-elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+elasticsearch_version: 2.4.6
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
 supervisor_http_enabled: True
 
@@ -60,7 +60,8 @@ s3_signature_version: 's3v4'
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply-india@dimagi.com
+return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
@@ -99,6 +100,8 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ELASTICSEARCH_MAJOR_VERSION: 2
+  IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
   HQ_INSTANCE: 'india'
   INACTIVITY_TIMEOUT: 20160
