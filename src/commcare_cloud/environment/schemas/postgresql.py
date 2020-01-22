@@ -83,6 +83,9 @@ class PostgresqlConfig(jsonobject.JsonObject):
     postgres_override = jsonobject.ObjectProperty(PostgresqlOverride)
     pgbouncer_override = jsonobject.ObjectProperty(PgbouncerOverride)
 
+    # Mapping of host to list of databases to run pg_repack on
+    pg_repack = jsonobject.DictProperty()
+
     @classmethod
     def wrap(cls, data):
         # for better validation error message
@@ -183,6 +186,12 @@ class PostgresqlConfig(jsonobject.JsonObject):
                     db.port = host_settings[db.host].port
                 else:
                     db.port = DEFAULT_PORT
+
+        pg_repack = {
+            environment.translate_host(host, environment.paths.postgresql_yml): databases
+            for host, databases in self.pg_repack.items()
+        }
+        self.pg_repack = pg_repack
 
         for replication in self.replications:
             replication.source_host = environment.translate_host(replication.source_host, environment.paths.postgresql_yml)
