@@ -32,6 +32,19 @@ nginx_sites:
       var_mappings: # whitelisted IP addresses not to be rate-limited
         - key: '192.168.8.218' # Ben Talbot
           value: '""'
+        - key: '180.151.231.114' # Ashish
+          value: '""'
+        - key: '120.56.84.164' # Sankalp
+          value: '""'
+    - name: "$limit_bucket_per_ip"
+      variable: "$remote_addr"
+      default_value: "$binary_remote_addr"
+      var_mappings: # whitelisted IP addresses not to be rate-limited
+        - key: '192.168.8.218' # Ben Talbot
+          value: '""'
+        - key: '180.151.231.114' # Ashish
+          value: '""'
+        - key: '120.56.84.164' # Sankalp
     - name: "$incremental_sync"
       variable: "$http_x_commcarehq_lastsynctoken"
       # If header is provided, rate limit on $limit_bucket
