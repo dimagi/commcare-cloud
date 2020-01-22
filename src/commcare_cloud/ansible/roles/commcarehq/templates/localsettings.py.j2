@@ -17,7 +17,7 @@ from celery.schedules import crontab
 
 _ROOT_DIR  = os.path.dirname(os.path.abspath(__file__))
 
-ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS|default([]) + [SITE_HOST, 'localhost', '127.0.0.1'] + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list + groups.proxy | map('extract', hostvars, 'public_ip') | map('default', 'localhost') | list) | unique | to_json }}
+ALLOWED_HOSTS = {{ (localsettings.ALLOWED_HOSTS|default([]) + ALTERNATE_HOSTS + [SITE_HOST, 'localhost', '127.0.0.1'] + groups.proxy + groups.proxy | map('extract', hostvars, 'ansible_host') | map('default', 'localhost') | list + groups.proxy | map('extract', hostvars, 'public_ip') | map('default', 'localhost') | list) | unique | to_json }}
 
 {% if SEPARATE_SYNCLOGS_DB %}
 SYNCLOGS_SQL_DB_ALIAS = "synclogs"
@@ -114,9 +114,12 @@ EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 {% endif %}
 
+RETURN_PATH_EMAIL_PASSWORD = '{{ RETURN_PATH_EMAIL_PASSWORD }}'
+
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
 ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(False) }}
+IS_DIMAGI_ENVIRONMENT = {{ localsettings.IS_DIMAGI_ENVIRONMENT|default(False) }}
 
 SERVER_ENVIRONMENT = '{{ env_monitoring_id }}'
 
@@ -860,6 +863,7 @@ STATIC_TOGGLE_STATES = {{ localsettings.STATIC_TOGGLE_STATES }}
 
 SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
+RETURN_PATH_EMAIL = '{{ return_path_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
 PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
 CCHQ_BUG_REPORT_EMAIL = '{{ cchq_bug_report_email }}'

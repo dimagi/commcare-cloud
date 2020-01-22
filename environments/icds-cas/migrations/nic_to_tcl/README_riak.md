@@ -27,9 +27,9 @@ On the new cluster:
 
     Run copy commands
     ```
-    cchq icds-cas copy-files environments/icds-cas/migrations/riak-files.yml prepare
-    cchq icds-cas copy-files environments/icds-cas/migrations/riak-files.yml copy
-    cchq icds-cas copy-files environments/icds-cas/migrations/riak-files.yml cleanup
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/riak-files.yml prepare
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/riak-files.yml copy
+    cchq icds-cas copy-files /home/skelly/src/commcare-cloud/environments/icds/migrations/nic_to_tcl/riak-files.yml cleanup
     ```
 
 3. Re-IP first node

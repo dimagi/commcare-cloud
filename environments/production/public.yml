@@ -2,7 +2,8 @@ daily_deploy_email: tech-announce-daily@dimagi.com
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply-production@dimagi.com
+return_path_email: commcarehq-bounces+production@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
@@ -21,6 +22,8 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+ALTERNATE_HOSTS:
+  - rec-mobile.sante.gov.bf
 
 DATADOG_ENABLED: True
 
@@ -32,6 +35,8 @@ LOCAL_APPS: []
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_version: 2.4.6
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
@@ -114,6 +119,8 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ELASTICSEARCH_MAJOR_VERSION: 2
+  IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
