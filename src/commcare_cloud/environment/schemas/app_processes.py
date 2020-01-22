@@ -194,8 +194,7 @@ def get_machine_alias(environment, host):
     :param host: the inventory host (expressed as i.e. an ip address) to look up
     :return: the canonical group name for that host
     """
-    for group, hosts in environment.groups.items():
-        if len(hosts) == 1 and hosts[0] == host:
-            return group
-    else:
-        return host
+    for name, group in environment.inventory_manager.groups.items():
+        if len(group.hosts) == 1 and group.hosts[0].name == host:
+            return name
+    return host
