@@ -10,7 +10,7 @@ from commcare_cloud.environment.paths import DefaultPaths
 
 from nose.tools import assert_equal
 
-TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'postgresql_config')
+TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
 
 
