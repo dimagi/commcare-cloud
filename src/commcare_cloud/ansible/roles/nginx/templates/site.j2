@@ -18,12 +18,22 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% if geo in item.server %}
+geo {{item.server.geo.name}} {
+  {% for var_map in item.server.geo.mappings %}
+  {{ var_map.key }}      {{ var_map.value }};
+  {% endfor %}
+}
+{% endif %}
+
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
   {% for map_value in var_map.var_mappings %}
   {{ map_value.key}}     {{ map_value.value }};
   {% endfor %}
+  {% if 'default_value' in var_map %}
   default     {{ var_map.default_value}};
+  {% endif %}
 }
 {% endfor %}
 
