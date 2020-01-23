@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+from unittest import SkipTest
 
 import yaml
 from parameterized import parameterized
@@ -17,6 +18,9 @@ TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
 @parameterized(TEST_ENVIRONMENTS)
 def test_postgresql_config(env_name):
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
+
+    if not os.path.exists(env.paths.generated_yml):
+        raise SkipTest
 
     with open(env.paths.generated_yml) as f:
         generated = yaml.safe_load(f)
