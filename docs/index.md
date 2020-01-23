@@ -40,8 +40,7 @@ that machine is also the control machine.
 - CouchDB
     - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node.md)
 - [PostgreSQL](services/postgresql.md)
-- Proxy
-    - [Enable HTTPS](howto/enable-https.md)
+- [Nginx](services/nginx.md)
 - [BlobDB/S3](services/blobdb.md)
 - Firewall
     - [Configure a firewall on the servers](howto/firewall.md)
