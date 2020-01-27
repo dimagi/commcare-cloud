@@ -637,10 +637,10 @@ def manage(cmd):
 @task
 def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
-    fab <env> deploy:confirm=no  # do not confirm
-    fab <env> deploy:resume=yes  # resume from previous deploy
-    fab <env> deploy:offline=yes  # offline deploy
-    fab <env> deploy:skip_record=yes  # skip record_successful_release
+    fab <env> deploy_commcare:confirm=no  # do not confirm
+    fab <env> deploy_commcare:resume=yes  # resume from previous deploy
+    fab <env> deploy_commcare:offline=yes  # offline deploy
+    fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
     _require_target()
     if strtobool(confirm) and (
