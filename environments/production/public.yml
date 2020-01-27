@@ -35,6 +35,8 @@ LOCAL_APPS: []
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_version: 2.4.6
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
@@ -75,7 +77,7 @@ couchdb2:
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "17:00"}, {to, "5:00"}]'
+  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "16:00"}, {to, "6:00"}]'
 
 
 couchdb2_client_max_body_size: 100M
@@ -117,6 +119,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
@@ -135,6 +138,7 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
+  RATE_LIMIT_SUBMISSIONS: yes
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

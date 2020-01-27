@@ -45,17 +45,6 @@
       when: groups.keepalived_redis |length >= 2
   tags: redis
 
-- name: Create redis master check script
-  template:
-    src: redis_is_master.j2
-    dest: "{{ check_process_script }}/redis_is_master"
-    mode: 0755
-    owner: root
-    group: root
-  when: "'keepalived_redis' in group_names"
-  tags: redis
-  notify: restart keepalived
-
 - name: Redis Monitoring
   hosts: redis
   become: true

@@ -238,7 +238,7 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    proxy = servers['proxy']
+    staticfiles = servers.get('staticfiles', [servers['proxy'][0]])
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
     postgresql = servers['postgresql']
@@ -252,6 +252,12 @@ def env_common():
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
+    if len(staticfiles) > 1:
+        utils.abort(
+            "There should be only one 'staticfiles' host. "
+            "Ensure that only one host is assigned to the 'staticfiles' group"
+        )
+
     env.roledefs = {
         'all': all,
         'pg': postgresql,
@@ -262,7 +268,7 @@ def env_common():
         'django_manage': django_manage,
         'django_pillowtop': pillowtop,
         'formplayer': formplayer,
-        'staticfiles': proxy,
+        'staticfiles': staticfiles,
         'lb': [],
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times

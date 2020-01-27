@@ -144,7 +144,7 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
-  celery20,celery21:
+  celery58,celery59:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -157,7 +157,7 @@ celery_processes:
       concurrency: 8
     celery_periodic:
        concurrency: 4  
-  celery22,celery23:
+  celery60,celery61:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -170,7 +170,7 @@ celery_processes:
        concurrency: 2
     email_queue:
       concurrency: 2
-  celery24,celery25:
+  celery62,celery63:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -184,7 +184,7 @@ celery_processes:
     saved_exports_queue:
       concurrency: 3
       optimize: True
-  celery26,celery27:
+  celery64,celery65:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -198,7 +198,7 @@ celery_processes:
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 8
-  celery28,celery29:
+  celery66,celery67:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -209,7 +209,7 @@ celery_processes:
       num_workers: 2
     background_queue,analytics_queue:
       concurrency: 6
-  celery30,celery31:
+  celery68,celery69:
     reminder_queue:
       pooling: gevent
       concurrency: 5
@@ -217,6 +217,11 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 10
+      num_workers: 2
+  celery70,celery71: 
+    send_report_throttled:
+      concurrency: 2
+      pooling: gevent
       num_workers: 2
 pillows:
   'pillow21':
