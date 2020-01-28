@@ -148,7 +148,6 @@ localsettings:
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   STATIC_TOGGLE_STATES:
     mobile_ucr_linked_domain:
       always_enabled:
@@ -158,6 +157,8 @@ localsettings:
         - 'ews-ghana'
         - 'ils-gateway'
         - 'ils-gateway-train'
+  USER_REPORTING_METADATA_BATCH_ENABLED: True
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
