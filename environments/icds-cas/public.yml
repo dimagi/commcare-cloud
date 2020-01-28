@@ -24,7 +24,7 @@ nginx_dynamic_limits:
     zone_args: "--overall_restore 50 --incremental_restore 40"
   - from_hour: 11
     from_minute: 30
-    zone_args: "--overall_restore 25 --incremental_restore 25"
+    zone_args: "--overall_restore 30 --incremental_restore 25"
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
