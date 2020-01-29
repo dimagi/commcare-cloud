@@ -3,7 +3,9 @@ from __future__ import print_function
 from collections import Counter, namedtuple
 
 import jsonobject
+from clint.textui import puts, indent
 
+from commcare_cloud.colors import color_warning
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -51,6 +53,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
         self.management_commands = check_and_translate_hosts(environment, self.management_commands)
         self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
         self.pillows = check_and_translate_hosts(environment, self.pillows)
+        self.pillows = filter_out_deprecated_pillows(environment, self.pillows)
         _validate_all_required_machines_mentioned(environment, self)
 
     def get_celery_heartbeat_thresholds(self):
@@ -198,3 +201,29 @@ def get_machine_alias(environment, host):
         if len(group.hosts) == 1 and group.hosts[0].name == host:
             return name
     return host
+
+
+def filter_out_deprecated_pillows(environment, pillows):
+    deprecated_pillows = ['GeographyFluffPillow', 'FarmerRecordFluffPillow']
+    good_pillows = {}
+    bad_pillows = set()
+    for host, pillow_configs in pillows.items():
+        good_pillows[host] = {}
+        for pillow_name, pillow_config in pillow_configs.items():
+            if pillow_name not in deprecated_pillows:
+                good_pillows[host][pillow_name] = pillow_config
+            else:
+                bad_pillows.add(pillow_name)
+    if bad_pillows:
+        puts(color_warning(
+            'This environment references deprecated pillow(s):\n'
+        ))
+        with indent():
+            for pillow_name in sorted(bad_pillows):
+                puts(color_warning('- {}'.format(pillow_name)))
+        puts(color_warning(
+            '\nThis pillows are unused and no longer needed.\n'
+            'To get rid of this warning, remove those pillows from {}'
+            .format(environment.paths.app_processes_yml)
+        ))
+    return good_pillows
