@@ -36,8 +36,6 @@ pillows:
       num_processes: 1
     FormSubmissionMetadataTrackerPillow:
       num_processes: 1
-    GeographyFluffPillow:
-      num_processes: 1
     GroupPillow:
       num_processes: 1
     GroupToUserPillow:

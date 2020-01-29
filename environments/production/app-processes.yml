@@ -100,10 +100,6 @@ pillows:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
-    FarmerRecordFluffPillow:
-      num_processes: 1
-    GeographyFluffPillow:
-      num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
