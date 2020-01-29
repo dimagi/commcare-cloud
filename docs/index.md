@@ -37,6 +37,11 @@ that machine is also the control machine.
 - [Server Management Basics](commcare-cloud/basics)
 
 ## Services
+
+### CommCare Services
+- [Pillowtop](services/pillowtop.md) (aka 'change feeds')
+
+### 3rd party services
 - CouchDB
     - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node.md)
 - [PostgreSQL](services/postgresql.md)
