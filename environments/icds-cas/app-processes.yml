@@ -384,23 +384,23 @@ pillows:
   'pillow35':
     FormSubmissionMetadataTrackerPillow:
       start_process: 0
-      num_processes: 20
-      total_process: 80
+      num_processes: 30
+      total_process: 116
   'pillow36':
     FormSubmissionMetadataTrackerPillow:
-      start_process: 20
-      num_processes: 20
-      total_process: 80
+      start_process: 30
+      num_processes: 30
+      total_process: 116
   'pillow37':
     FormSubmissionMetadataTrackerPillow:
-      start_process: 40
-      num_processes: 20
-      total_process: 80
+      start_process: 60
+      num_processes: 30
+      total_process: 116
   'pillow38':
     FormSubmissionMetadataTrackerPillow:
-      start_process: 60
-      num_processes: 20
-      total_process: 80
+      start_process: 90
+      num_processes: 26
+      total_process: 116
   'pillow39':
   'pillow40':
   'pillow41':
