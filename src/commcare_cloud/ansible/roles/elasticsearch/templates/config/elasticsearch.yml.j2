@@ -21,6 +21,7 @@ transport.tcp.port: {{ elasticsearch_tcp_port }}
 http.port: {{ elasticsearch_http_port }}
 
 http.cors.enabled: true
+http.cors.allow-origin: "null"
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
