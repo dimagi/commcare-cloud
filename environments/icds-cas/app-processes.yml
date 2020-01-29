@@ -382,9 +382,25 @@ pillows:
       total_processes: 40
       processor_chunk_size: 50
   'pillow35':
+    FormSubmissionMetadataTrackerPillow:
+      start_process: 0
+      num_processes: 10
+      total_process: 40
   'pillow36':
+    FormSubmissionMetadataTrackerPillow:
+      start_process: 10
+      num_processes: 10
+      total_process: 40
   'pillow37':
+    FormSubmissionMetadataTrackerPillow:
+      start_process: 20
+      num_processes: 10
+      total_process: 40
   'pillow38':
+    FormSubmissionMetadataTrackerPillow:
+      start_process: 30
+      num_processes: 10
+      total_process: 40
   'pillow39':
   'pillow40':
   'pillow41':

@@ -240,6 +240,7 @@ localsettings:
           topics:
             - 'form-sql'
   RUN_CASE_SEARCH_PILLOW: False
+  RUN_FORM_META_PILLOW: False
   RUN_UNKNOWN_USER_PILLOW: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
