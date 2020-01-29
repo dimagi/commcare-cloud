@@ -32,10 +32,10 @@ sql_alchemy_pool_recycle = 3600
 # The amount of parallelism as a setting to the executor. This defines
 # the max number of task instances that should run simultaneously
 # on this airflow installation
-parallelism = 32
+parallelism = {{ airflow_parallelism }}
 
 # The number of task instances allowed to run concurrently by the scheduler
-dag_concurrency = 16
+dag_concurrency = {{ airflow_dag_concurrency }}
 
 # Are DAGs paused by default at creation
 dags_are_paused_at_creation = True
