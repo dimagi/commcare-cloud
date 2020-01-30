@@ -4,8 +4,8 @@ global_defs {
       script_user {{script_user}}
 }
 vrrp_script chk_service {           
-        script "pgrep {{keepalived_check_process}}"  
-        interval 2    
+        script "{{keepalived_check_process}}"  
+        interval {{keepalived_check_interval}}    
 }
 vrrp_instance VI_1 {
     state {{ keepalived_role }}
