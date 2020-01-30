@@ -362,7 +362,7 @@ pillows:
     xform-pillow-non-dashboard:
       start_process: 24
       num_processes: 6
-      total_processes: 40 
+      total_processes: 40
       processor_chunk_size: 50
     xform-pillow-dashboard:
       start_process: 48
@@ -374,7 +374,7 @@ pillows:
       start_process: 30
       num_processes: 6
       total_processes: 40
-      processor_chunk_size: 50    
+      processor_chunk_size: 50
   'pillow34':
     xform-pillow-non-dashboard:
       start_process: 36
@@ -385,22 +385,22 @@ pillows:
     FormSubmissionMetadataTrackerPillow:
       start_process: 0
       num_processes: 30
-      total_process: 116
+      total_processes: 116
   'pillow36':
     FormSubmissionMetadataTrackerPillow:
       start_process: 30
       num_processes: 30
-      total_process: 116
+      total_processes: 116
   'pillow37':
     FormSubmissionMetadataTrackerPillow:
       start_process: 60
       num_processes: 30
-      total_process: 116
+      total_processes: 116
   'pillow38':
     FormSubmissionMetadataTrackerPillow:
       start_process: 90
       num_processes: 26
-      total_process: 116
+      total_processes: 116
   'pillow39':
   'pillow40':
   'pillow41':
