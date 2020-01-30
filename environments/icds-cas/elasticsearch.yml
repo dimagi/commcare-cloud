@@ -5,3 +5,5 @@ settings:
     number_of_replicas: 0
   hqusers:
     number_of_replicas: 2  # stored in triplicate
+  smslogs:
+    number_of_shards: 10

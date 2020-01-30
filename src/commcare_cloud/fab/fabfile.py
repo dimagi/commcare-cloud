@@ -282,6 +282,7 @@ def env_common():
     env.hosts = env.roledefs['deploy']
     env.resume = False
     env.offline = False
+    env.full_deploy = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
@@ -412,7 +413,8 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    env.deploy_metadata.tag_setup_release()
+    if env.full_deploy:
+        env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
     execute_with_timing(release.update_code(full_cluster), deploy_ref)
     execute_with_timing(release.update_virtualenv(full_cluster))
@@ -637,10 +639,10 @@ def manage(cmd):
 @task
 def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
-    fab <env> deploy:confirm=no  # do not confirm
-    fab <env> deploy:resume=yes  # resume from previous deploy
-    fab <env> deploy:offline=yes  # offline deploy
-    fab <env> deploy:skip_record=yes  # skip record_successful_release
+    fab <env> deploy_commcare:confirm=no  # do not confirm
+    fab <env> deploy_commcare:resume=yes  # resume from previous deploy
+    fab <env> deploy_commcare:offline=yes  # offline deploy
+    fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
     _require_target()
     if strtobool(confirm) and (
@@ -650,6 +652,8 @@ def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
             '{env.deploy_env}?'.format(env=env), default=False)
     ):
         utils.abort('Deployment aborted.')
+
+    env.full_deploy = True
 
     if resume == 'yes':
         try:

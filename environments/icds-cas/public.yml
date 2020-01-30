@@ -17,6 +17,15 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
+#NGINX dynamic Conf
+nginx_dynamic_limits:
+  - from_hour: 4
+    from_minute: 30
+    zone_args: "--overall_restore 50 --incremental_restore 40"
+  - from_hour: 11
+    from_minute: 30
+    zone_args: "--overall_restore 30 --incremental_restore 25"
+
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
 RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
@@ -231,6 +240,7 @@ localsettings:
           topics:
             - 'form-sql'
   RUN_CASE_SEARCH_PILLOW: False
+  RUN_FORM_META_PILLOW: False
   RUN_UNKNOWN_USER_PILLOW: False
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   PILLOWTOP_MACHINE_ID: pil0
