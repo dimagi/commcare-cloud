@@ -94,6 +94,6 @@
     minute: "{{ item.from_minute }}"
     hour: "{{ item.from_hour }}"
     user: root
-    cron_file: "{{ 50 | random }}"
+    cron_file: "{{ item.name }}"
   loop: "{{ nginx_dynamic_limits }}"
   when: nginx_dynamic_limits is defined
