@@ -23,6 +23,14 @@ class CeleryOptions(jsonobject.JsonObject):
     optimize = jsonobject.BooleanProperty(default=False)
 
 
+class PillowOptions(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    start_process = jsonobject.IntegerProperty(default=0)
+    num_processes = jsonobject.IntegerProperty(default=1)
+    total_processes = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
+    processor_chunk_size = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
+
+
 class AppProcessesConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     django_bind = IpAddressProperty()
@@ -42,7 +50,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     service_blacklist = jsonobject.ListProperty(unicode)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
-    pillows = jsonobject.DictProperty(jsonobject.DictProperty())
+    pillows = jsonobject.DictProperty(jsonobject.DictProperty(PillowOptions))
 
     celery_heartbeat_thresholds = jsonobject.DictProperty(int)
 
