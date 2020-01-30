@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# This is a helper script to check if the current redis instance is the master of the replication scheme.
+# This accounts for cases when the local redis instance is down. Since that means this node can't be the master, we handle
+# that gracefully.
+{% if localsettings.get('REDIS_PASSWORD') %}
+REPLICATION_DATA=`redis-cli -a {{ localsettings.REDIS_PASSWORD }} info replication 2> /dev/null`
+{% else %}
+REPLICATION_DATA=`redis-cli  info replication 2> /dev/null`
+{% endif %}
+if [ $? -ne 0 ]; then
+ exit 1;
+fi
+
+# Check the data for master information
+echo $REPLICATION_DATA | grep -q 'role:master'
+
+exit $?
