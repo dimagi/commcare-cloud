@@ -57,10 +57,14 @@ nginx_sites:
       zone: "$limit_bucket"
       size: "10m"
       rate: "30r/s"
+    - name: "profile_downloads"
+      zone: "$limit_bucket"
+      size: "10m"
+      rate: "5r/s"
     - name: "app_downloads"
       zone: "$limit_bucket"
       size: "10m"
-      rate: "2r/s"
+      rate: "10r/s"
     - name: "multimedia"
       zone: "$limit_bucket"
       size: "10m"
@@ -112,7 +116,7 @@ nginx_sites:
        client_body_buffer_size: 5m
        proxy_ignore_headers: Set-Cookie
        limit_reqs:
-         - zone_name: "app_downloads"
+         - zone_name: "profile_downloads"
            burst: 10
            nodelay: True
      - name: "/a/icds-cas/apps/download"
