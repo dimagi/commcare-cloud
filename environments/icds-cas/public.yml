@@ -19,12 +19,14 @@ nadir_hour: 16
 
 #NGINX dynamic Conf
 nginx_dynamic_limits:
-  - from_hour: 4
-    from_minute: 30
-    zone_args: "--overall_restore 50 --incremental_restore 40"
-  - from_hour: 11
+  - name: "nginx_dynamic_peak"
+    from_hour: 4
     from_minute: 30
     zone_args: "--overall_restore 30 --incremental_restore 25"
+  - name: "nginx_dynamic_offpeak"
+    from_hour: 11
+    from_minute: 30
+    zone_args: "--overall_restore 40 --incremental_restore 50"
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
