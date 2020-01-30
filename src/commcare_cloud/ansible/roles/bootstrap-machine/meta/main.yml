@@ -6,3 +6,4 @@ dependencies:
       - bootstrap-users
   - {role: ssh, tags: ssh}
   - {role: swap, tags: swap}
+  - {role: systemd_timers }

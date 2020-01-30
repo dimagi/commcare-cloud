@@ -1,0 +1,13 @@
+#
+# Managed by ansible
+# Role: systemd-timer
+#
+[Unit]
+Description={{ item.key }} Service
+
+[Service]
+Type=oneshot
+ExecStart={{ item.value.timer_command }}
+{% if item.value.timer_user is defined %}
+User={{ item.value.timer_user }}
+{% endif %}
