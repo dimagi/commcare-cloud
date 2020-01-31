@@ -90,7 +90,7 @@ main() {
              change_limits "$cfg_file" "server_name" "limit_bucket" "$default_server"
     fi
 
-    nginx -t
+    service nginx configtest
 
     if [ $? -eq 0 ]; then
             systemctl reload nginx
