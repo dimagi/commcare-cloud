@@ -221,3 +221,17 @@
   tags:
     - cron
     - backups
+
+- name: "Tune vm.max_map_count"
+  lineinfile:
+    dest: /etc/sysctl.conf
+    line: "vm.max_map_count=262144"
+    state: present
+  become: yes
+
+- name: "Tune vm.max_map_count (for current session)"
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+  become: yes
