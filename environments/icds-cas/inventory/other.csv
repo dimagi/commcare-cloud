@@ -1,5 +1,6 @@
 hostname,host_address,group 1,group 2,group 3,group 4,var: hostname,var: rabbitmq_nodename,var: public_ip,I.var: kafka_broker_id,var: keepalived_role,var: keepalived_shared_ip,var: keepalived_shared_iface
 airflow2,100.71.188.13,airflow,airflow_scheduler,,,MUMGCCWCDPRDAFV00,,,,,,
+airflow3,100.71.188.178,airflow,,,,MUMGCCWCDPRDAFV01,,,,,,
 formplayer2,100.71.188.30,formplayer,,,,MUMGCCWCDPRDFPV00,,,,,,
 formplayer3,100.71.188.75,formplayer,,,,MUMGCCWCDPRDFPV01,,,,,,
 rabbit2,100.71.188.45,rabbitmq,,,,MUMGCCWCDPRDRBV00,rabbit@MUMGCCWCDPRDRBV00,,,,,
