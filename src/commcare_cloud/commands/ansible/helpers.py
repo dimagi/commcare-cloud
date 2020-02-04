@@ -185,8 +185,8 @@ def get_pillowtop_processes(environment):
     """
     for host, pillows in environment.app_processes_config.pillows.items():
         for name, params in pillows.items():
-            start = params.get('start_process', 0)
-            num_processes = params.get('num_processes', 1)
+            start = params.start_process
+            num_processes = params.num_processes
             for num_process in range(start, start + num_processes):
                 process_name = "commcare-hq-{deploy_env}-pillowtop-{pillow_name}-{num_process}".format(
                     deploy_env=environment.meta_config.deploy_env,
