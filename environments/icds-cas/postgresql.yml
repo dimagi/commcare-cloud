@@ -78,9 +78,9 @@ dbs:
     host: pgsynclog1
   form_processing:
     proxy:
-      host: plproxy0
+      host: plproxy2
     proxy_standby:
-      host: plproxy1
+      host: plproxy3
     partitions:
       p10:
         shards: [0, 51]
