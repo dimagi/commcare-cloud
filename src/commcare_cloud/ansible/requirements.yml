@@ -17,3 +17,10 @@
   name: ansible-logrotate
 - src: DavidWittman.redis
   version: 1.2.5
+- src: sansible.logstash
+  version: v2.4.2
+- src: geerlingguy.filebeat
+  version: 2.0.0
+- src: git+https://github.com/dimagi/commcare-logstash.git
+  version: 88dfa9c66f3301788c6fc98db25ace3d296d6392
+  name: commcare-logstash

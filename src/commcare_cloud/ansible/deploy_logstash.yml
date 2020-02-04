@@ -1,0 +1,27 @@
+- name: FileBeat
+  hosts: filebeat
+  become: yes
+  gather_facts: true
+  vars:
+    filebeat_version: 7.x
+    filebeat_prospectors:
+      - input_type: log
+        paths:
+          - "{{ log_home }}/{{ deploy_env }}-timing.log"
+        fields:
+          type: nginx-timing
+        fields_under_root: true
+
+  roles:
+    - role: geerlingguy.filebeat
+    - role: commcare-logstash
+  tags: filebeat
+
+- name: Logstash
+  hosts: logproxy
+  become: yes
+  gather_facts: true
+  roles:
+    - role: sansible.logstash
+    - role: commcare-logstash
+  tags: logstash
