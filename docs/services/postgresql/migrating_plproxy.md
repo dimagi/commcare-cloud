@@ -20,7 +20,7 @@ This Migration doesn't require downtime since the databases do not contain any d
 7.  Check for errors
     *   Load the site in a browser
     *   Watch monitoring dashboards for errors
-    *   Watch sentry for errors
+    *   Watch Sentry for errors
 8.  Restart remaining services
     *   `cchq <env> service commcare restart --limit= 'all:!mobile_webworkers'`
 9.  Check for errors again (see step 7)
