@@ -20,7 +20,7 @@ upgrading_steps: |
 
   4.login to any ES server and disable the cluster routing
   
-  curl -XPUT Elasticsearchserver-IP:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'
+  curl -XPUT Elasticsearchserver-IP:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'
 
   5. stop the monit and Elasticsearch service
   
@@ -56,7 +56,7 @@ upgrading_steps: |
 
   12. Login to anyserver and enable the cluster routing
   
-  curl -XPUT Elasticsearchserver-IP:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'
+  curl -XPUT Elasticsearchserver-IP:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'
 
   13.start the site
   
