@@ -8,7 +8,7 @@ This Migration doesn't require downtime since the databases do not contain any d
 3.  Run `cchq <env> update-config --limit=django_manage`
     *   Expect to see changes to django settings for this server
 4.  Validate on `django_manage` machine:
-    * Log into `django_manage machine`,switch to `cchq user`, Navigate to `/home/cchq/<env>/current/` and activate virtual env
+    * Log into `django_manage machine`, switch to `cchq user`, navigate to `/home/cchq/<env>/current/` and activate python virtual environment
     *   Run `python manage.py configure_pl_proxy_cluster --create_only` 
     *   Run `env CCHQ_IS_FRESH_INSTALL=1 python manage.py migrate --database <Django DB alias Name>` (proxy,proxy_standby)
     *   Validate settings
