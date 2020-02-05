@@ -1,5 +1,5 @@
 #### Migrate plproxy to new node
-This Migration Doesn't require downtime.
+This Migration doesn't require downtime since the databases do not contain any data.
 1.  Update the new node in env config:
     *  Add the nodes to `plporxy` group in inventory
     *  Update `<env>/postgresql.yml` with new nodes
