@@ -25,11 +25,13 @@ class Install(CommandBase):
             os.makedirs(ANSIBLE_ROLES_PATH)
 
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
-        cmd_parts = ['ansible-galaxy', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print_command(cmd)
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
-        p.communicate()
+        cmd_roles_parts = ['ansible-galaxy', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
+        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
+        for cmd_parts in (cmd_roles_parts,cmd_collection_parts):
+            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            print_command(cmd)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
+            p.communicate()
 
         puts(color_notice("To finish first-time installation, run `manage-commcare-cloud configure`".format()))
         return p.returncode
