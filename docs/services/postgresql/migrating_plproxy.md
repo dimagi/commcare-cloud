@@ -1,0 +1,28 @@
+#### Migrate plproxy to new node
+This Migration Doesn't require downtime.
+1.  Update the new node in env config:
+    *  Add the nodes to `plporxy` group in inventory
+    *  Update `<env>/postgresql.yml` with new nodes
+2.  Run `cchq <env> deploy-stack --limit=<new nodes>` on new nodes.
+
+3.  Run `cchq <env> update-config --limit=django_manage`
+    *   Expect to see changes to django settings for this server
+4.  Validate on `django_manage` machine:
+    * Log into `django_manage machine`,switch to `cchq user`, Navigate to `/home/cchq/<env>/current/` and activate virtual env
+    *   Run `python manage.py configure_pl_proxy_cluster --create_only` 
+    *   Run `env CCHQ_IS_FRESH_INSTALL=1 python manage.py migrate --database <Django DB alias Name>` (proxy,proxy_standby)
+    *   Validate settings
+        *   ` python manage.py check_services`
+        *   ` python manage.py check --deploy -t database`
+5.  Run `cchq <env> update-config` (no limit)
+6.  Restart mobile webworkers
+    *   `cchq <env> service commcare restart --limit=mobile_webworkers`
+7.  Check for errors
+    *   Load the site in a browser
+    *   Watch datadog dashboard for errors
+    *   Watch sentry for errors
+8.  Restart remaining services
+    *   `cchq <env> service commcare restart --limit= 'all:!mobile_webworkers'`
+9.  Check for errors again (see step 7)
+10. Cleanup:
+    *   Remove old plproxy nodes from env config (inventory etc)
