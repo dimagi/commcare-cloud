@@ -19,7 +19,7 @@ This Migration doesn't require downtime since the databases do not contain any d
     *   `cchq <env> service commcare restart --limit=mobile_webworkers`
 7.  Check for errors
     *   Load the site in a browser
-    *   Watch datadog dashboard for errors
+    *   Watch monitoring dashboards for errors
     *   Watch sentry for errors
 8.  Restart remaining services
     *   `cchq <env> service commcare restart --limit= 'all:!mobile_webworkers'`
