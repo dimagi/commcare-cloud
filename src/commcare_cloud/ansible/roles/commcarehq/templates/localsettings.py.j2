@@ -929,3 +929,7 @@ STATIC_DATA_SOURCE_PROVIDERS = [
 {% endfor %}
 ]
 {% endif %}
+
+{% if localsettings.ES_SEARCH_TIMEOUT is defined %}
+ES_SEARCH_TIMEOUT = {{ localsettings.ES_SEARCH_TIMEOUT }}
+{% endif %}
