@@ -81,7 +81,7 @@ commcare-cloud <env> run-shell-command all "service elasticsearch start" -b --li
 curl -XGET <ES-IP>:9200/_cluster/health?pretty
 ```
   
-12. enable the cluster routing
+12. Enable the cluster routing
 ```bash
 curl -XPUT <ES-IP>:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'
 ```
