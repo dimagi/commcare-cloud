@@ -1,0 +1,4 @@
+deploy_env: small_cluster
+env_monitoring_id: small_cluster
+users:
+  - dimagi

@@ -18,6 +18,19 @@ DNS level, without requiring a change on each device.
 
 - Set up a domain name to be used for the migration. Have it point to the old
    environment.
+- Add that domain name to the old environment's public.yml:
+   ```
+   ALTERNATE_HOSTS:
+     - commcare.example.com
+   ```
+- Update the list of valid hosts in nginx and Django, then restart services for
+   it to take effect.  After this, CommCareHQ should be accessible at the new
+   domain name.
+   ```
+   $ cchq <env> ansible-playbook deploy_proxy.yml
+   $ cchq <env> update-config
+   $ cchq <env> fab restart_services
+   ```
 - Enable the feature flag `CUSTOM_APP_BASE_URL` for the project. This will need
    to be done by a site administrator.
 - For each app in the project, navigate to Settings > Advanced Settings, and

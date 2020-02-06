@@ -77,7 +77,7 @@ couchdb2:
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "17:00"}, {to, "5:00"}]'
+  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "16:00"}, {to, "6:00"}]'
 
 
 couchdb2_client_max_body_size: 100M
@@ -138,16 +138,17 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
+  RATE_LIMIT_SUBMISSIONS: yes
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  STALE_EXPORT_THRESHOLD: 1800  # 30 minutes
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   STATIC_TOGGLE_STATES:
     mobile_ucr_linked_domain:
       always_enabled:
@@ -157,6 +158,8 @@ localsettings:
         - 'ews-ghana'
         - 'ils-gateway'
         - 'ils-gateway-train'
+  USER_REPORTING_METADATA_BATCH_ENABLED: True
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

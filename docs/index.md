@@ -37,19 +37,22 @@ that machine is also the control machine.
 - [Server Management Basics](commcare-cloud/basics)
 
 ## Services
+
+### CommCare Services
+- [Pillowtop](services/pillowtop.md) (aka 'change feeds')
+
+### 3rd party services
 - CouchDB
     - [Add a new CouchDB node to an existing cluster](howto/add-couchdb2-node.md)
 - [PostgreSQL](services/postgresql.md)
-- Proxy
-    - [Enable HTTPS](howto/enable-https.md)
+- [Nginx](services/nginx.md)
 - [BlobDB/S3](services/blobdb.md)
 - Firewall
     - [Configure a firewall on the servers](howto/firewall.md)
 - [Kafka](services/kafka.md)
 - Celery
     - [Add a new Celery machine](howto/add-celery-machines.md)
-- Redis
-	- [Setup Redis Cluster](howto/redis-cluster.md)
+- [Redis](services/redis.md)
 
 ### Optional
 - [Airflow](services/airflow.md)

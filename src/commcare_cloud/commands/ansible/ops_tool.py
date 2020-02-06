@@ -201,12 +201,11 @@ class PillowTopicAssignments(CommandBase):
 
 def _get_pillow_resources_by_name(environment):
     pillows = environment.app_processes_config.pillows
-    by_process = defaultdict(lambda: {'num_processes': 0, 'total_processes': None})
+    total_processes = defaultdict(int)
     for host, processes in pillows.items():
         for name, options in processes.items():
-            config = by_process[name]
-            config['num_processes'] += options.get('num_processes', 1)
-    return by_process
+            total_processes[name] += options.num_processes
+    return total_processes
 
 
 class CouchDBClusterInfo(CommandBase):
