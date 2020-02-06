@@ -4,17 +4,21 @@
 
 **Date:** 2020-02-05
 
-**Optional per env:** _only required on some environments_
+**Optional per env:** _required on all environments_
 
 
 ## CommCare Version Dependency
-This change is not known to be dependent on any particular version of CommCare.
+The following version of CommCare must be deployed before rolling out this change:
+[19be5069](https://github.com/dimagi/commcare-hq/commit/19be50699bf78b25a8da6e3e13eb5bc6d13245e8)
 
 
 ## Change Context
-None
+This change upgrade Elasticsearch from 1.7.6 to 2.4.6 version.
+
 ## Details
-None
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+libraries we have updated Elasticsearch from 1.7.6 to 2.4.6 version.
+
 ## Steps to update
 
 1. Stop the site
@@ -22,40 +26,40 @@ None
 commcare-cloud <env> downtime start
 ```
   
-2. Create a PR by adding below parameters in commcare-cloud/environments/<env>/public.yml and merge
-{ 
+2. Add the following parameters to your environment's `public.yml`:
+``` 
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 ELASTICSEARCH_MAJOR_VERSION: 2
-}
+```
   
 3. Update the local settings
 ```bash
 commcare-cloud <env> update-config
 ```  
-4. Login to any ES server and disable the cluster routing
+4. Disable the cluster routing
 ```bash
-curl -XPUT Elasticsearchserver-IP:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'
+curl -XPUT <ES-IP>:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'
 ```
   
-5. Stop the monit and Elasticsearch service
+5. Stop the Monit and Elasticsearch services
 ```bash
 commcare-cloud <env> run-shell-command all "service monit stop" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
 ```
   
-6. Download and extract the new version with below command and which will start the ES service with new version also
+6. Install and run the new version of Elasticsearch
 ```bash
 commcare-cloud <env> ansible-playbook deploy_stack.yml --limit=elasticsearch --tags=elasticsearch
 ```
   
-7. Stop the monit and Elasticsearch service
+7. Stop the Monit and Elasticsearch services
 ```bash
 commcare-cloud <env> run-shell-command all "service monit stop" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
 ```
   
-8. Rename the 1.7.6 ES data folder with new version 2.4.6
+8. Take the backup of existing 2.4.6 data directory and Rename the 1.7.6 data folder with new version 2.4.6
 ```bash
 commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-2.4.6 /opt/data/elasticsearch-2.4.6-new-installation" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-1.7.6 /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
@@ -66,20 +70,20 @@ commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-1.7.6 /op
 commcare-cloud <env> run-shell-command all "du -ch /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
 ```
   
-10. Start the monit and Elasticsearch sevice
+10. Start the Monit and Elasticsearch services
 ```bash
 commcare-cloud <env> run-shell-command all "service monit start" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "service elasticsearch start" -b --limit=elasticsearch
 ```
   
-11. Verify the cluster status and if it is yello state then enable the cluster routing and start the site
+11. Verify that the cluster status is yellow
 ```bash
-commcare-cloud <env> run-shell-command all "curl -XGET '<ES-IP>:9200/_cluster/health?pretty'" -b --limit=elasticsearch
+curl -XGET <ES-IP>:9200/_cluster/health?pretty
 ```
   
-12. Login to anyserver and enable the cluster routing
+12. enable the cluster routing
 ```bash
-curl -XPUT Elasticsearchserver-IP:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'
+curl -XPUT <ES-IP>:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'
 ```
   
 13. Start the site
