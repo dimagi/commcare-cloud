@@ -1,0 +1,73 @@
+---
+- include_vars: 'roles/postgresql_base/defaults/main.yml'
+
+- name: check if pg_repack installed
+  stat:
+    path: "{{ postgres_install_dir }}/bin/pg_repack"
+  register: pg_repack_stat
+
+- name: check pg_repack version
+  command: "{{ postgres_install_dir }}/bin/pg_repack --version"
+  register: pg_repack_installed_version
+  when: pg_repack_stat.stat.exists == True
+  check_mode: no
+  changed_when: False
+
+- debug:
+    msg: "Updating pg_repack from version {{ pg_repack_installed_version.stdout.split()[1] }}"
+  when: pg_repack_stat.stat.exists and pg_repack_installed_version.stdout.split()[1] != pg_repack_version
+
+- block:
+  - name: Download pg_repack
+    get_url:
+      url: "{{ pg_repack_source }}"
+      dest: /tmp/pg_repack.zip
+
+  - name: Unzip pg_repack
+    unarchive:
+      remote_src: yes
+      src: /tmp/pg_repack.zip
+      dest: /tmp
+      creates: "/tmp/pg_repack-{{ pg_repack_version }}"
+    when: not ansible_check_mode
+
+  - name: Install pg_repack
+    become: yes
+    shell: "PG_CONFIG={{ postgres_install_dir }}/bin/pg_config make install"
+    args:
+      chdir: "/tmp/pg_repack-{{ pg_repack_version }}"
+      creates: "{{ postgres_install_dir }}/bin/pg_repack"
+    when: not ansible_check_mode
+
+  - name: Create pg_repack extension
+    become: yes
+    become_user: postgres
+    vars:
+      ansible_ssh_pipelining: true
+    postgresql_ext:
+      name: pg_repack
+      db: "{{ item }}"
+      port: "{{ postgresql_port }}"
+      version: "{{ pg_repack_version }}"
+    loop: "{{ pg_repack.get(inventory_hostname, []) }}"
+  when: pg_repack_stat.stat.exists == False or pg_repack_installed_version.stdout.split()[1] != pg_repack_version
+
+- name: Create pg_repack script
+  become: yes
+  copy:
+    src: pg_repack.py
+    dest: "{{ pg_repack_script_path }}"
+    owner: "postgres"
+    group: "postgres"
+    mode: 0755
+
+- name: Create pg_repack cron
+  become: yes
+  cron:
+    name: "pg_repack {{ item }}"
+    job: "{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack -d {{ item }}"
+    minute: "30"
+    hour: "{{ nadir_hour + 2 }}"
+    user: postgres
+    cron_file: "pg_repack_{{ item }}"
+  loop: "{{ pg_repack.get(inventory_hostname, []) }}"
