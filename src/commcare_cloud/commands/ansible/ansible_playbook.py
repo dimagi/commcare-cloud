@@ -17,7 +17,7 @@ from commcare_cloud.commands.ansible.helpers import (
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR
-from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
+from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
 
 
 class AnsiblePlaybook(CommandBase):
@@ -54,7 +54,7 @@ class AnsiblePlaybook(CommandBase):
             "The ansible-playbook options below are available as well:",
             filtered_help_message(
                 "ansible-playbook -h",
-                below_line='Options:',
+                below_line=ANSIBLE_HELP_OPTIONS_PREFIX,
                 above_line=None,
                 exclude_args=DEPRECATED_ANSIBLE_ARGS + [
                     '--help',

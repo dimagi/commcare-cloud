@@ -13,7 +13,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.parse_help import add_to_help_text, filtered_help_message
+from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 NON_POSITIONAL_ARGUMENTS = (
@@ -61,7 +61,7 @@ class RunAnsibleModule(CommandBase):
             "The ansible options below are available as well:",
             filtered_help_message(
                 "ansible -h",
-                below_line='Options:',
+                below_line=ANSIBLE_HELP_OPTIONS_PREFIX,
                 above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
                 exclude_args=DEPRECATED_ANSIBLE_ARGS + [
                     '--help',
