@@ -18,13 +18,13 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
-{% if 'geo' in item.server %}
-geo {{item.server.geo.name}} {
-  {% for var_map in item.server.geo.mappings %}
+{% for geo in item.server.geo|default([]) %}
+geo {{geo.name}} {
+  {% for var_map in geo.mappings %}
   {{ var_map.key }}      {{ var_map.value }};
   {% endfor %}
 }
-{% endif %}
+{% endfor %}
 
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
