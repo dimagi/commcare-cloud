@@ -18,7 +18,7 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
-{% if geo in item.server %}
+{% if 'geo' in item.server %}
 geo {{item.server.geo.name}} {
   {% for var_map in item.server.geo.mappings %}
   {{ var_map.key }}      {{ var_map.value }};
