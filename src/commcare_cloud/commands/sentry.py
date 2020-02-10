@@ -15,39 +15,30 @@ class ExportSentryEvents(CommandBase):
 
     arguments = (
         Argument('-k', '--api-key', help="Sentry API Key", required=True),
-        Argument('-p', '--project-id', help="Sentry project ID", required=True),
-        Argument('-q', '--query', help="Text query", default=None),
-        Argument('--start', help="UTC start date. Format YYYY-MM-DDTHH:MM:SS", default=None),
-        Argument('--end', help="UTC end date. Format YYYY-MM-DDTHH:MM:SS", default=None),
-        Argument('--organization', help="Organization slug", default='dimagi'),
+        Argument('-i', '--issue-id', help="Sentry project ID", required=True),
         Argument('--full', action='store_true', help="Export the full event details"),
+        Argument('--cursor', help="Starting position for the cursor"),
     )
 
     def run(self, args, unknown_args):
         env = get_environment(args.env_name)
 
-        url = "https://sentry.io/api/0/organizations/{organization_slug}/events/".format(
-            organization_slug=args.organization,
-        )
+        url = "https://sentry.io/api/0/issues/{}/events/".format(args.issue_id)
 
         params = {'environment': env.meta_config.env_monitoring_id}
-        if args.query:
-            params['query'] = args.query
-        if args.start:
-            params['start'] = args.start
-        if args.end:
-            params['end'] = args.end
-        if args.project_id:
-            params['project'] = args.project_id
         if args.full:
             params['full'] = True
+        if args.cursor:
+            params['cursor'] = args.cursor
 
         while True:
             resp = requests.get(url, params, headers={
                 'Authorization': 'Bearer {}'.format(args.api_key)
             })
             events = resp.json()
+            last_date = None
             for event in events:
+                last_date = event.get('dateCreated')
                 print(json.dumps(event))
 
             # see https://docs.sentry.io/api/pagination/
@@ -57,5 +48,8 @@ class ExportSentryEvents(CommandBase):
             if results.strip() != 'results="true"':
                 return
 
-            sys.stderr.write("Fetching next page: {}\n".format(cursor.strip()))
+            last_date = last_date or 'unknown'
+            sys.stderr.write("Late event from {}. Fetching next page: {}\n".format(last_date, cursor.strip()))
             url = next_url.strip()[1:-1]
+            if 'cursor' in params:
+                del params['cursor']
