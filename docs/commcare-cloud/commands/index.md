@@ -566,8 +566,7 @@ tmux windows will a new one be opened.
 Export Sentry events. One line per event JSON.
 
 ```
-commcare-cloud <env> export-sentry-events -k API_KEY -p PROJECT_ID [-q QUERY] [--start START] [--end END]
-                                          [--organization ORGANIZATION] [--full]
+commcare-cloud <env> export-sentry-events -k API_KEY -i ISSUE_ID [--full] [--cursor CURSOR]
 ```
 
 ##### Optional Arguments
@@ -576,29 +575,17 @@ commcare-cloud <env> export-sentry-events -k API_KEY -p PROJECT_ID [-q QUERY] [-
 
 Sentry API Key
 
-###### `-p PROJECT_ID, --project-id PROJECT_ID`
+###### `-i ISSUE_ID, --issue-id ISSUE_ID`
 
 Sentry project ID
-
-###### `-q QUERY, --query QUERY`
-
-Text query
-
-###### `--start START`
-
-UTC start date. Format YYYY-MM-DDTHH:MM:SS
-
-###### `--end END`
-
-UTC end date. Format YYYY-MM-DDTHH:MM:SS
-
-###### `--organization ORGANIZATION`
-
-Organization slug
 
 ###### `--full`
 
 Export the full event details
+
+###### `--cursor CURSOR`
+
+Starting position for the cursor
 
 ---
 
