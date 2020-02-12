@@ -8,7 +8,7 @@ from clint.textui import puts
 
 from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.colors import color_error, color_success
-from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH
+from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
 from six.moves import shlex_quote
 
 DEPRECATED_ANSIBLE_ARGS = []
@@ -18,6 +18,7 @@ class AnsibleContext(object):
     config = 'ANSIBLE_CONFIG'
     roles_path = 'ANSIBLE_ROLES_PATH'
     stdout_callback = 'ANSIBLE_STDOUT_CALLBACK'
+    collections_paths= 'ANSIBLE_COLLECTIONS_PATHS'
 
     def __init__(self, args):
         self.env_vars = self._build_env(args)
@@ -29,6 +30,8 @@ class AnsibleContext(object):
         env = os.environ.copy()
         env[self.config] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
         env[self.roles_path] = ANSIBLE_ROLES_PATH
+        env[self.collections_paths] = ANSIBLE_COLLECTIONS_PATHS
+
         if hasattr(args, 'stdout_callback'):
             env[self.stdout_callback] = args.stdout_callback
         return env
@@ -59,7 +62,7 @@ def get_common_ssh_args(environment, use_factory_auth=False):
         common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
 
     if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args="{}"'.format(' '.join(shlex_quote(arg) for arg in common_ssh_args)),)
     return cmd_parts_with_common_ssh_args
 
 

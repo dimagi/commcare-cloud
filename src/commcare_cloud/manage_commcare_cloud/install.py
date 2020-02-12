@@ -29,7 +29,7 @@ class Install(CommandBase):
 
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
         env['ANSIBLE_COLLECTIONS_PATHS'] = ANSIBLE_COLLECTIONS_PATHS
-        cmd_roles_parts = ['ansible-galaxy', 'roles', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
+        cmd_roles_parts = ['ansible-galaxy', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
         cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml'),  '-p', ANSIBLE_COLLECTIONS_PATHS]
         
         for cmd_parts in (cmd_roles_parts, cmd_collection_parts):

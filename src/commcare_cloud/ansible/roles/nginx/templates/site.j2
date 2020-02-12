@@ -18,12 +18,22 @@ upstream {{ balancer.name }} {
 }
 {% endfor %}
 
+{% for geo in item.server.geo|default([]) %}
+geo {{geo.name}} {
+  {% for var_map in geo.mappings %}
+  {{ var_map.key }}      {{ var_map.value }};
+  {% endfor %}
+}
+{% endfor %}
+
 {% for var_map in item.server.get('mappings', []) %}
 map {{ var_map.variable }} {{ var_map.name }} {
   {% for map_value in var_map.var_mappings %}
   {{ map_value.key}}     {{ map_value.value }};
   {% endfor %}
+  {% if 'default_value' in var_map %}
   default     {{ var_map.default_value}};
+  {% endif %}
 }
 {% endfor %}
 
@@ -71,7 +81,7 @@ server {
 {% endif %}
 
 {% for k,v in item.server.iteritems() %}
-  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings'] %}
+  {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings', 'geo'] %}
   {{ k }} {{ v }};
   {% endif %}
 {% endfor %}

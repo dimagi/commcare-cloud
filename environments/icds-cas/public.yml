@@ -82,6 +82,9 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+bug_report_email: commcarehq-support@dimagi.com
+new_domain_email: inquiries@dimagi.com
+exchange_email: exchange@dimagi.com
 
 commcare_errors_branch: "master-icds"
 
@@ -175,6 +178,7 @@ localsettings:
   EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ES_SEARCH_TIMEOUT: 300
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160

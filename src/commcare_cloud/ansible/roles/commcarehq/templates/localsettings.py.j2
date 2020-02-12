@@ -353,9 +353,9 @@ EULA_COMPLIANCE = {{ localsettings.EULA_COMPLIANCE|default(False) }}
 
 AXES_LOCK_OUT_AT_FAILURE = False
 
-BUG_REPORT_RECIPIENTS = ['commcarehq-support@dimagi.com']
-NEW_DOMAIN_RECIPIENTS = ['inquiries@dimagi.com']
-EXCHANGE_NOTIFICATION_RECIPIENTS = ["exchange@dimagi.com"]
+BUG_REPORT_RECIPIENTS = ['{{ bug_report_email }}']
+NEW_DOMAIN_RECIPIENTS = ['{{ new_domain_email }}']
+EXCHANGE_NOTIFICATION_RECIPIENTS = ["{{ exchange_email }}"]
 
 CUSTOM_REPORT_MAP = {
     "pathfinder": [
@@ -932,4 +932,8 @@ STATIC_DATA_SOURCE_PROVIDERS = [
     '{{ provider }}',
 {% endfor %}
 ]
+{% endif %}
+
+{% if localsettings.ES_SEARCH_TIMEOUT is defined %}
+ES_SEARCH_TIMEOUT = {{ localsettings.ES_SEARCH_TIMEOUT }}
 {% endif %}

@@ -43,7 +43,7 @@ def bower_install():
 
 
 @parallel
-@roles(ROLES_DJANGO + ROLES_CELERY)
+@roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
 def npm_install():
     with cd(env.code_root):
         sudo('npm prune --production')

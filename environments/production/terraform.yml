@@ -168,7 +168,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 4000
+      volume_size: 5000
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
@@ -177,7 +177,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 4000
+      volume_size: 5000
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
@@ -186,7 +186,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 4000
+      volume_size: 5000
     group: "couchdb2"
     os: bionic
 
@@ -305,7 +305,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 500
     multi_az: true
     engine_version: 9.6.15
