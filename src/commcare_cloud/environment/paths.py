@@ -22,7 +22,7 @@ def get_virtualenv_bin_path():
 
 PACKAGE_BASE = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 ANSIBLE_ROLES_PATH = os.path.realpath(os.path.join(get_python_lib(), '.ansible/roles'))
-ANSIBLE_COLLECTION_PATHS = os.path.realpath(os.path.join(get_python_lib(), '.ansible/ansible_collections'))
+ANSIBLE_COLLECTIONS_PATHS = os.path.realpath(os.path.join(get_python_lib(), '.ansible/ansible_collections'))
 ANSIBLE_DIR = os.path.join(PACKAGE_BASE, 'ansible')
 TERRAFORM_DIR = os.path.join(PACKAGE_BASE, 'terraform')
 # only works with egg install (`pip install -e .`)

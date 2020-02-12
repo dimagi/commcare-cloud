@@ -8,7 +8,7 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.paths import put_virtualenv_bin_on_the_path, \
-    ANSIBLE_ROLES_PATH, ANSIBLE_DIR, ANSIBLE_COLLECTION_PATHS
+    ANSIBLE_ROLES_PATH, ANSIBLE_DIR, ANSIBLE_COLLECTIONS_PATHS
 
 
 class Install(CommandBase):
@@ -24,13 +24,13 @@ class Install(CommandBase):
         if not os.path.exists(ANSIBLE_ROLES_PATH):
             os.makedirs(ANSIBLE_ROLES_PATH)
         
-        if not os.path.exists(ANSIBLE_COLLECTION_PATHS):
-            os.makedirs(ANSIBLE_COLLECTION_PATHS)
+        if not os.path.exists(ANSIBLE_COLLECTIONS_PATHS):
+            os.makedirs(ANSIBLE_COLLECTIONS_PATHS)
 
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
-        env['ANSIBLE_COLLECTION_PATHS'] = ANSIBLE_COLLECTION_PATHS
+        env['ANSIBLE_COLLECTIONS_PATHS'] = ANSIBLE_COLLECTIONS_PATHS
         cmd_roles_parts = ['ansible-galaxy', 'roles', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml'),  '-p', ANSIBLE_COLLECTION_PATHS]
+        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml'),  '-p', ANSIBLE_COLLECTIONS_PATHS]
         
         for cmd_parts in (cmd_roles_parts, cmd_collection_parts):
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
