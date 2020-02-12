@@ -23,6 +23,8 @@ nginx_sites:
         value: 0
       - key: '120.56.84.164' # Sankalp
         value: 0
+      - key: '50.78.242.97' # Boston office
+        value: 0
    mappings:
     # Remove 'username' query param from request uri for use in cache key
     # https://stackoverflow.com/a/45587134
