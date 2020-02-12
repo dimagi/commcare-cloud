@@ -1,8 +1,7 @@
 #### Migrate plproxy to new node
 This Migration doesn't require downtime since the databases do not contain any data.
 1.  Update the new node in env config:
-    *  Add the nodes to `plporxy` group in inventory
-    *  Replace the old notes in `<env>/postgresql.yml` with new nodes
+    *  Replace the old nodes in `<env>/postgresql.yml` with new nodes
 2.  Run `cchq <env> deploy-stack --limit=<new nodes>` on new nodes.
 
 3.  Run `cchq <env> update-config --limit=django_manage`
