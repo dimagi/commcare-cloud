@@ -3,7 +3,7 @@ title: ES upgrade from 1.7.6 to 2.4.6
 key: upgrade-elasticsearch
 date: 2020-02-05
 optional_per_env: no
-min_commcare_version: 19be50699bf78b25a8da6e3e13eb5bc6d13245e8
+min_commcare_version: 064bb6dfc2b333cc8e6e3955b0c5d30513c5f4be
 context: |
   This change upgrade Elasticsearch from 1.7.6 to 2.4.6 version.
 
@@ -85,7 +85,7 @@ update_steps: |
   curl -XGET <ES-IP>:9200/_cluster/health?pretty
   ```
     
-  13. enable the cluster routing
+  12. Enable the cluster routing
   ```bash
   curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
   {
