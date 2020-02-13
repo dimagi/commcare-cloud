@@ -6,7 +6,6 @@ control1-production: 10.202.10.158
 couch12-production: 10.202.40.52
 couch13-production: 10.202.40.154
 couch14-production: 10.202.40.216
-couchproxy0-production: 10.202.40.162
 couchproxy1-production: 10.202.40.39
 djangomanage1-production: 10.202.10.54
 es15-production: 10.202.40.113
@@ -20,8 +19,8 @@ esmaster5-production: 10.202.40.226
 formplayer2-production: 10.202.10.129
 formplayer3-production: 10.202.10.13
 kafka1-production: 10.202.40.200
-pgbouncer0-production: 10.202.40.58
 pgbouncer1-production: 10.202.40.8
+pgbouncer2-production: 10.202.40.59
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgproxy2-production: 10.202.40.5
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
