@@ -59,13 +59,6 @@ celery_processes:
     # not really queues
     flower: {}
     beat: {}
-    # custom queues
-    ils_gateway_sms_queue:
-      # Use 1 worker with concurrency 8 in order to enforce the
-      # restriction of having 8 max simultaneous connections with
-      # the push sms gateway
-      pooling: gevent
-      concurrency: 8
     logistics_background_queue:
       concurrency: 2
     logistics_reminder_queue:
