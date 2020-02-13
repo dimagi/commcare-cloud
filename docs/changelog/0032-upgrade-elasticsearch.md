@@ -9,7 +9,7 @@
 
 ## CommCare Version Dependency
 The following version of CommCare must be deployed before rolling out this change:
-[19be5069](https://github.com/dimagi/commcare-hq/commit/19be50699bf78b25a8da6e3e13eb5bc6d13245e8)
+[064bb6df](https://github.com/dimagi/commcare-hq/commit/064bb6dfc2b333cc8e6e3955b0c5d30513c5f4be)
 
 
 ## Change Context
@@ -93,7 +93,7 @@ commcare-cloud <env> run-shell-command all "service elasticsearch start" -b --li
 curl -XGET <ES-IP>:9200/_cluster/health?pretty
 ```
   
-13. enable the cluster routing
+12. Enable the cluster routing
 ```bash
 curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
 {
