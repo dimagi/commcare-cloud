@@ -46,7 +46,7 @@
     dest: "{{ datadog_parsers_dest }}"
     accept_hostkey: yes
     update: yes
-    version: "{{ datadog_parsers_version }}"
+    version: "{{ datedog_parsers_version }}"
   when: "inventory_hostname in datadog_parsers|map(attribute='hosts')|join"
   notify: restart datadog
   tags: datadog_integrations
