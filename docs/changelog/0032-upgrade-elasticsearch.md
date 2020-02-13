@@ -27,7 +27,7 @@ commcare-cloud <env> downtime start
 ```
   
 2. Add the following parameters to your environment's `public.yml`:
-``` 
+```
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 ELASTICSEARCH_MAJOR_VERSION: 2
@@ -36,57 +36,75 @@ ELASTICSEARCH_MAJOR_VERSION: 2
 3. Update the local settings
 ```bash
 commcare-cloud <env> update-config
-```  
+```
+
 4. Disable the cluster routing
 ```bash
-curl -XPUT <ES-IP>:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'
+curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+     "cluster.routing.allocation.enable": "none"
+  }
+}
+'
+```
+
+5. Perform a synced flush
+```bash
+curl -X POST ""<ES-IP>:9200/_flush/synced?pretty"
 ```
   
-5. Stop the Monit and Elasticsearch services
+6. Stop the Monit and Elasticsearch services
 ```bash
 commcare-cloud <env> run-shell-command all "service monit stop" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
 ```
   
-6. Install and run the new version of Elasticsearch
+7. Install and run the new version of Elasticsearch
 ```bash
 commcare-cloud <env> ansible-playbook deploy_stack.yml --limit=elasticsearch --tags=elasticsearch
 ```
   
-7. Stop the Monit and Elasticsearch services
+8. Stop the Monit and Elasticsearch services
 ```bash
 commcare-cloud <env> run-shell-command all "service monit stop" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
 ```
   
-8. Take the backup of existing 2.4.6 data directory and Rename the 1.7.6 data folder with new version 2.4.6
+9. Take the backup of existing 2.4.6 data directory and Rename the 1.7.6 data folder with new version 2.4.6
 ```bash
 commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-2.4.6 /opt/data/elasticsearch-2.4.6-new-installation" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-1.7.6 /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
 ```
   
-9. Verify the permissions of data folder and new data direcory size
+10. Verify the permissions of data folder and new data direcory size
 ```bash
 commcare-cloud <env> run-shell-command all "du -ch /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
 ```
   
-10. Start the Monit and Elasticsearch services
+11. Start the Monit and Elasticsearch services
 ```bash
 commcare-cloud <env> run-shell-command all "service monit start" -b --limit=elasticsearch
 commcare-cloud <env> run-shell-command all "service elasticsearch start" -b --limit=elasticsearch
 ```
   
-11. Verify that the cluster status is yellow
+12. Verify that the cluster status is yellow
 ```bash
 curl -XGET <ES-IP>:9200/_cluster/health?pretty
 ```
   
-12. enable the cluster routing
+13. enable the cluster routing
 ```bash
-curl -XPUT <ES-IP>:9200/_cluster/settings -d '{\"persistent\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'
+curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+     "cluster.routing.allocation.enable": "all"
+  }
+}
+'
 ```
   
-13. Start the site
+14. Start the site
 ```bash
 commcare-cloud <env> downtime end
 ```
