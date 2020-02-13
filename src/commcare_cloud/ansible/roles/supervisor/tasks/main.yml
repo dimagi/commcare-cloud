@@ -23,6 +23,8 @@
   changed_when: false
   failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
   check_mode: no
+  tags:
+    - after-reboot
 
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
@@ -83,3 +85,5 @@
   become: yes
   service: name=supervisord enabled=yes state=started
   when: which_supervisord.stdout
+  tags:
+    - after-reboot
