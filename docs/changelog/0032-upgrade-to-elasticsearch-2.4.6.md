@@ -14,6 +14,8 @@ The following version of CommCare must be deployed before rolling out this chang
 
 ## Change Context
 This change upgrade Elasticsearch from 1.7.6 to 2.4.6 version.
+CommCare HQ releases after April 2, 2020 will not continue to support Elasticsearch 1.7.6,
+so we strongly recommend applying this change before then.
 
 ## Details
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
@@ -21,29 +23,40 @@ libraries we have updated Elasticsearch from 1.7.6 to 2.4.6 version.
 
 ## Steps to update
 
+Before you start, make sure that your disk usage is well below 50%,
+or that you have a place to back up to on another disk or remotely.
+
+0. For commands including `${ENV}` below to work, make sure to set `ENV` to the name of your environment
+```
+ENV=${ENV}
+```
+
 1. Stop the site
 ```bash
-commcare-cloud <env> downtime start
+commcare-cloud ${ENV} downtime start
 ```
-  
+
 2. Add the following parameters to your environment's `public.yml`:
 ```
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
-ELASTICSEARCH_MAJOR_VERSION: 2
-```
-  
-3. Update the local settings
-```bash
-commcare-cloud <env> update-config
+...
+localsettings:
+  ...
+  ELASTICSEARCH_MAJOR_VERSION: 2
 ```
 
-4. Disable the cluster routing
+3. Update the local settings
 ```bash
-curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+commcare-cloud ${ENV} update-config
+```
+
+4. Disable Elasticsearch shard allocation
+```bash
+curl -X PUT "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
 {
   "persistent": {
-     "cluster.routing.allocation.enable": "none"
+    "cluster.routing.allocation.enable": "none"
   }
 }
 '
@@ -51,51 +64,51 @@ curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: applicatio
 
 5. Perform a synced flush
 ```bash
-curl -X POST "<ES-IP>:9200/_flush/synced?pretty"
+curl -X POST "$(cchq ${ENV} lookup elasticsearch:0):9200/_flush/synced?pretty"  # safe to reissue a few times if it fails
 ```
-  
+
 6. Stop the Monit and Elasticsearch services
 ```bash
-commcare-cloud <env> run-shell-command all "service monit stop" -b --limit=elasticsearch
-commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "service monit stop" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
 ```
-  
+
 7. Install and run the new version of Elasticsearch
 ```bash
-commcare-cloud <env> ansible-playbook deploy_stack.yml --limit=elasticsearch --tags=elasticsearch
+commcare-cloud ${ENV} ansible-playbook deploy_stack.yml --limit=elasticsearch --tags=elasticsearch
 ```
-  
+
 8. Stop the Monit and Elasticsearch services
 ```bash
-commcare-cloud <env> run-shell-command all "service monit stop" -b --limit=elasticsearch
-commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "service monit stop" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
 ```
-  
-9. Rename the newly created 2.4.6 data directory with diffrent name and then rename the 1.7.6 data folder with new version 2.4.6
+
+9. Rename the newly created 2.4.6 data directory so it's out of the way, and make a backup of the 1.7.6 data directory, and then move it to the new 2.4.6 data directory location
 ```bash
-commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-2.4.6 /opt/data/elasticsearch-2.4.6-new-installation" -b --limit=elasticsearch
-commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-1.7.6 /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "mv /opt/data/elasticsearch-2.4.6 /opt/data/elasticsearch-2.4.6-new-installation" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "cp -r /opt/data/elasticsearch-1.7.6 /opt/data/elasticsearch-1.7.6-backup" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "mv /opt/data/elasticsearch-1.7.6 /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
 ```
-  
-10. Verify the permissions of data folder and new data direcory size
+10. Verify the permissions and size of the data directory
 ```bash
-commcare-cloud <env> run-shell-command all "du -ch /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "du -ch /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
 ```
-  
+
 11. Start the Monit and Elasticsearch services
 ```bash
-commcare-cloud <env> run-shell-command all "service monit start" -b --limit=elasticsearch
-commcare-cloud <env> run-shell-command all "service elasticsearch start" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "service monit start" -b --limit=elasticsearch
+commcare-cloud ${ENV} run-shell-command all "service elasticsearch start" -b --limit=elasticsearch
 ```
-  
+
 12. Verify that the cluster status is yellow
 ```bash
-curl -XGET <ES-IP>:9200/_cluster/health?pretty
+curl -XGET "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/health?pretty"
 ```
-  
+
 12. Enable the cluster routing
 ```bash
-curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+curl -X PUT "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
 {
   "persistent": {
      "cluster.routing.allocation.enable": "all"
@@ -103,8 +116,8 @@ curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: applicatio
 }
 '
 ```
-  
+
 14. Start the site
 ```bash
-commcare-cloud <env> downtime end
+commcare-cloud ${ENV} downtime end
 ```
