@@ -23,8 +23,9 @@ gce_updated_hostname: yes
 # DEPRECATED: use conf.d/disk.yaml instead to configure it
 use_mount: no
 
-{% if inventory_hostname in datadog_parsers|map(attribute='hosts')|join %}
-dogstreams: {% for parser in datadog_parsers -%}
+{% set dd_parsers = datadog_parsers + datadog_custom_parsers|default([]) %}
+{% if inventory_hostname in dd_parsers|map(attribute='hosts')|join %}
+dogstreams: {% for parser in dd_parsers -%}
     {%- if inventory_hostname in parser.hosts -%}
         {{ parser.input }}
         {%- if parser.python_file is defined -%}
