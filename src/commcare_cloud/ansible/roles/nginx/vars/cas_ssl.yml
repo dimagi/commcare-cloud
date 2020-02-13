@@ -107,7 +107,7 @@ nginx_sites:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
-   access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
+   access_log: "{{ log_home }}/{{ deploy_env }}_cas-timing.log timing"
    locations:
      - name: "/hq/multimedia/file"
        balancer: "{{ deploy_env }}_cas_commcare"
