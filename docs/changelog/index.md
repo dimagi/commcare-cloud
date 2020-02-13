@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2020-02-05** [ES upgrade from 1.7.6 to 2.4.6](0032-upgrade-elasticsearch.md)
+This change upgrade Elasticsearch from 1.7.6 to 2.4.6 version.
+
 ### **2019-11-06** [Update Formplayer Configuration](0031-update-formplayer-config.md)
 Some properties in the Formplayer configuration have changed names.
 
