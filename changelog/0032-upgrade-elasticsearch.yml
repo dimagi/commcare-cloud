@@ -63,7 +63,7 @@ update_steps: |
   commcare-cloud <env> run-shell-command all "service elasticsearch stop" -b --limit=elasticsearch
   ```
     
-  9. Take the backup of existing 2.4.6 data directory and Rename the 1.7.6 data folder with new version 2.4.6
+  9. Rename the newly created 2.4.6 data directory with diffrent name and then rename the 1.7.6 data folder with new version 2.4.6
   ```bash
   commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-2.4.6 /opt/data/elasticsearch-2.4.6-new-installation" -b --limit=elasticsearch
   commcare-cloud <env> run-shell-command all "mv /opt/data/elasticsearch-1.7.6 /opt/data/elasticsearch-2.4.6" -b --limit=elasticsearch
