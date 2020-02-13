@@ -51,7 +51,7 @@ curl -X PUT "<ES-IP>:9200/_cluster/settings?pretty" -H 'Content-Type: applicatio
 
 5. Perform a synced flush
 ```bash
-curl -X POST ""<ES-IP>:9200/_flush/synced?pretty"
+curl -X POST "<ES-IP>:9200/_flush/synced?pretty"
 ```
   
 6. Stop the Monit and Elasticsearch services
