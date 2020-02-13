@@ -1,10 +1,13 @@
-title: Fix python3 virutalenvs
+title: Fix python3 virutalenvs (Deprecated)
 key: fix-python3-virtualenvs
 date: 2019-08-23
 optional_per_env: yes
 min_commcare_version:
 max_commcare_version:
 context: |
+  **Update (2019-11-27)**: This fix is no longer necessary as it has been superceded by changes
+  to the deploy script that make this change automatically if necessary.
+
   This fixes a bug with how python3 virtualenvs were created by ansible. This fix needs to be applied to any
   machine which has a python3 virtualenv that was created by commcare-cloud.
 

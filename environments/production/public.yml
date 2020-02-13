@@ -2,7 +2,8 @@ daily_deploy_email: tech-announce-daily@dimagi.com
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply@dimagi.com
+default_from_email: commcarehq-noreply-production@dimagi.com
+return_path_email: commcarehq-bounces+production@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
@@ -13,6 +14,7 @@ internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
+saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
 privacy_email: privacy@dimagi.com
@@ -20,10 +22,13 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+bug_report_email: commcarehq-support@dimagi.com
+new_domain_email: inquiries@dimagi.com
+exchange_email: exchange@dimagi.com
+ALTERNATE_HOSTS:
+  - rec-mobile.sante.gov.bf
 
 DATADOG_ENABLED: True
-CLOUDANT_CLUSTER_NAME: dimagi003
-datadog_integration_cloudant: true
 
 DATADOG_TRACE:
   TAGS:
@@ -33,6 +38,8 @@ LOCAL_APPS: []
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_version: 2.4.6
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
@@ -73,7 +80,7 @@ couchdb2:
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "17:00"}, {to, "5:00"}]'
+  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "16:00"}, {to, "6:00"}]'
 
 
 couchdb2_client_max_body_size: 100M
@@ -115,6 +122,8 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ELASTICSEARCH_MAJOR_VERSION: 2
+  IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
@@ -132,15 +141,27 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
+  RATE_LIMIT_SUBMISSIONS: yes
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  STALE_EXPORT_THRESHOLD: 1800  # 30 minutes
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
+  STATIC_TOGGLE_STATES:
+    mobile_ucr_linked_domain:
+      always_enabled:
+        - 'fmoh-echis-staging'
+    couch_sql_migration_blacklist:
+      always_enabled:
+        - 'ews-ghana'
+        - 'ils-gateway'
+        - 'ils-gateway-train'
+  USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
 
 # comment these two lines out to make a new rackspace machine

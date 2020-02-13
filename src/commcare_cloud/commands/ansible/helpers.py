@@ -59,7 +59,7 @@ def get_common_ssh_args(environment, use_factory_auth=False):
         common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
 
     if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args', ' '.join(shlex_quote(arg) for arg in common_ssh_args))
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args="{}"'.format(' '.join(shlex_quote(arg) for arg in common_ssh_args)),)
     return cmd_parts_with_common_ssh_args
 
 
@@ -185,8 +185,8 @@ def get_pillowtop_processes(environment):
     """
     for host, pillows in environment.app_processes_config.pillows.items():
         for name, params in pillows.items():
-            start = params.get('start_process', 0)
-            num_processes = params.get('num_processes', 1)
+            start = params.start_process
+            num_processes = params.num_processes
             for num_process in range(start, start + num_processes):
                 process_name = "commcare-hq-{deploy_env}-pillowtop-{pillow_name}-{num_process}".format(
                     deploy_env=environment.meta_config.deploy_env,

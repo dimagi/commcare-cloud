@@ -20,22 +20,13 @@
 - import_playbook: deploy_couchdb2.yml
 
 - name: Redis
-  hosts: redis
-  become: true
-  roles:
-    - {role: redis, tags: 'redis'}
+  import_playbook: deploy_redis.yml
 
 - name: Elasticsearch
   hosts: elasticsearch
   become: true
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
-
-- name: Redis Monitoring
-  hosts: redis
-  become: true
-  roles:
-    - redis_monitoring
 
 - import_playbook: deploy_rabbitmq.yml
   tags:
@@ -67,10 +58,3 @@
     - after-reboot
   roles:
     - role: thp
-
-- name: Move logrotate to hourly
-  hosts:
-    - proxy
-  become: true
-  roles:
-    - role: logrotate

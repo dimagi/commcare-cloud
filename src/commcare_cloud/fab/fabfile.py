@@ -168,9 +168,16 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
+    _set_code_branch(env.default_branch)
     _confirm_environment_time(env_name)
     execute(env_common)
     execute(_confirm_deploying_same_code)
+
+
+def _set_code_branch(default_branch):
+    if not getattr(env, 'code_branch', None):
+        env.code_branch = default_branch
+    print("Using commcare-hq branch {}".format(env.code_branch))
 
 
 def _confirm_environment_time(env_name):
@@ -231,7 +238,7 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    proxy = servers['proxy']
+    staticfiles = servers.get('staticfiles', [servers['proxy'][0]])
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
     postgresql = servers['postgresql']
@@ -245,6 +252,12 @@ def env_common():
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
+    if len(staticfiles) > 1:
+        utils.abort(
+            "There should be only one 'staticfiles' host. "
+            "Ensure that only one host is assigned to the 'staticfiles' group"
+        )
+
     env.roledefs = {
         'all': all,
         'pg': postgresql,
@@ -255,7 +268,7 @@ def env_common():
         'django_manage': django_manage,
         'django_pillowtop': pillowtop,
         'formplayer': formplayer,
-        'staticfiles': proxy,
+        'staticfiles': staticfiles,
         'lb': [],
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
@@ -269,6 +282,7 @@ def env_common():
     env.hosts = env.roledefs['deploy']
     env.resume = False
     env.offline = False
+    env.full_deploy = False
     env.supervisor_roles = ROLES_ALL_SRC
 
 
@@ -310,10 +324,10 @@ def mail_admins(subject, message, use_current_release=False):
 
 
 def _confirm_translated():
-    if datetime.datetime.now().isoweekday() != 2 or env.deploy_env != 'production':
+    if datetime.datetime.now().isoweekday() != 3 or env.deploy_env != 'production':
         return True
     return console.confirm(
-        "It's Tuesday, did you update the translations from transifex? "
+        "It's the weekly Wednesday deploy, did you update the translations from transifex? "
         "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
 
@@ -399,7 +413,8 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
-    env.deploy_metadata.tag_setup_release()
+    if env.full_deploy:
+        env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
     execute_with_timing(release.update_code(full_cluster), deploy_ref)
     execute_with_timing(release.update_virtualenv(full_cluster))
@@ -624,10 +639,10 @@ def manage(cmd):
 @task
 def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
-    fab <env> deploy:confirm=no  # do not confirm
-    fab <env> deploy:resume=yes  # resume from previous deploy
-    fab <env> deploy:offline=yes  # offline deploy
-    fab <env> deploy:skip_record=yes  # skip record_successful_release
+    fab <env> deploy_commcare:confirm=no  # do not confirm
+    fab <env> deploy_commcare:resume=yes  # resume from previous deploy
+    fab <env> deploy_commcare:offline=yes  # offline deploy
+    fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
     _require_target()
     if strtobool(confirm) and (
@@ -637,6 +652,8 @@ def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
             '{env.deploy_env}?'.format(env=env), default=False)
     ):
         utils.abort('Deployment aborted.')
+
+    env.full_deploy = True
 
     if resume == 'yes':
         try:
@@ -827,9 +844,12 @@ def deploy_airflow():
 def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
-        tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
-        tasks[env_name].__doc__ = get_environment(env_name).proxy_config['SITE_HOST']
+        environment = get_environment(env_name)
+        if not environment.meta_config.bare_non_cchq_environment:
+            tasks[env_name] = task(alias=env_name)(functools.partial(_setup_env, env_name))
+            tasks[env_name].__doc__ = environment.proxy_config['SITE_HOST']
     return tasks
+
 
 # Automatically create a task for each environment
 locals().update(make_tasks_for_envs(get_available_envs()))

@@ -12,11 +12,12 @@ for host in $(echo ${hosts} | sed 's/:/ /g')
 do
 
     cchq ${env} terraform apply --skip-secrets -target module.server__${host}-${env}.aws_ebs_volume.ebs_volume &&
-    ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} run-shell-command ${host} "reboot" -b && sleep 10 &&
+    ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} run-shell-command ${host} "reboot" -b && : || sleep 10 &&
     until cchq ${env} ping ${host}
     do
         sleep 5
     done &&
-    ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} run-shell-command ${host} "resize2fs /dev/nvme1n1" -b &&
+    ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} run-shell-command ${host} "resize2fs /dev/nvme1n1" -b ||
+    ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} run-shell-command ${host} "resize2fs /dev/nvme0n1" -b &&
     ANSIBLE_VAULT_PASSWORD="${vault_password}" cchq ${env} after-reboot ${host} --branch=${branch} --quiet
 done

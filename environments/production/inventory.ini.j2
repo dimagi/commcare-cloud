@@ -79,16 +79,12 @@ rabbit1
 [rabbitmq:vars]
 swap_size=2G
 
-{{ __kafka0__ }} kafka_broker_id=1
-
 {{ __kafka1__ }} kafka_broker_id=2
 
 [zookeeper:children]
-kafka0
 kafka1
 
 [kafka:children]
-kafka0
 kafka1
 
 {{ __celery9__ }}
@@ -114,9 +110,9 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer2__ }}
+{{ __formplayer2__ }} swap_size=8G
 
-{{ __formplayer3__ }}
+{{ __formplayer3__ }} swap_size=8G
 
 [formplayer:children]
 formplayer2
@@ -188,7 +184,10 @@ swap_size=8G
 [couchdb2_proxy:children]
 couchproxy1
 
-{{ __control__ }}
+{{ __control1__ }}
+
+[control:children]
+control1
 
 {{ __djangomanage1__ }}
 

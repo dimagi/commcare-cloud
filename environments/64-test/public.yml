@@ -22,8 +22,6 @@ KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
 DATADOG_ENABLED: True
 
-CLOUDANT_CLUSTER_NAME: null
-
 backup_es_s3: False
 backup_postgres: plain
 backup_blobdb: True
@@ -74,6 +72,7 @@ localsettings:
 root_email: droberts+root@dimagi.com
 server_email: droberts+commcarehq-noreply@dimagi.com
 default_from_email: droberts+commcarehq-noreply@dimagi.com
+return_path_email: droberts+commcarehq-bounces@dimagi.com
 support_email: droberts+support@dimagi.com
 probono_support_email: droberts+pro-bono@dimagi.com
 cchq_bug_report_email: droberts+commcarehq-bug-reports@dimagi.com

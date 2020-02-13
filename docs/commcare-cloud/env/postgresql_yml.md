@@ -70,9 +70,25 @@ Configuration for the db that form, case, and related tables live in.
 It is broken down into the proxy config and the config for partitions
 
 #### `proxy`
-- Type: [db config](#db-config-type)
+- Type: [db config](#db-config-type) with defaults:
+- Default values:
+  ```yaml
+  django_alias: proxy
+  name: commcarehq_proxy
+  ```
 
 Configuration for the proxy db in the partitioned setup.
+
+#### `proxy_standby`
+- Type: [db config](#db-config-type) with defaults:
+- Default values:
+  ```yaml
+  django_alias: proxy_standby
+  name: commcarehq_proxy_standby
+  ```
+
+Configuration for the proxy db in the partitioned setup which can be used to
+query the standby partitions.
 
 #### `partitions`
 - Type: dict of partition name to (augmented) [db config](#db-config-type)

@@ -109,9 +109,9 @@
   become: yes
   cron:
     name: "Clean PG WAL Archive"
-    job: "find {{ postgresql_archive_path }} -mmin +120 -delete"
+    job: "find {{ postgresql_archive_path }} -type f -mmin +10 -delete"
     user: root
-    special_time: hourly
+    minute: "*/30"
     cron_file: clean_pg_archive
     state: "{{ 'present' if postgresql_enable_archive and is_pg_standby and not disable_archive_cleanup_cron else 'absent' }}"
 
@@ -242,3 +242,9 @@
   retries: 5
   delay: 20
   when: not ansible_check_mode
+
+- name: Create 1GB Dummmy file for Emergency
+  become: yes
+  shell: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
+  args:
+    creates: "{{ encrypted_root }}/emerg_delete.dummy"

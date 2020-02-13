@@ -11,9 +11,11 @@ nginx_sites:
     - name: "{{ deploy_env }}_formplayer"
       hosts: formplayer
       port: "{{ formplayer_port }}"
-      # hash off sessionid cookie or X-FORMPLAYER-SESSION header
-      # but only one of the two will be present in any given request
-      method: "hash $cookie_sessionid$http_x_formplayer_session consistent"
+      # hash off formplayer_session cookie or X-FORMPLAYER-SESSION header
+      # Note: this assumes only one of the two is present in any given request.
+      # (If a request sends _both_, that will break sticky routing
+      # unless it's done perfectly consistently. Please don't!)
+      method: "hash $cookie_formplayer_session$http_x_formplayer_session consistent"
    proxy_cache_path:
     - name: "hq_media_cache"
       path: "{{ www_home }}/hq_media/cache"
@@ -22,14 +24,13 @@ nginx_sites:
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl http2{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
    root: "/var/www/html"
-   server_name: "{{ SITE_HOST }}"
+   server_name: "{{ SITE_HOST }}{% if ALTERNATE_HOSTS %} {{ ALTERNATE_HOSTS | join(' ') }}{% endif %}"
    client_max_body_size: 600m
    proxy_max_temp_file_size: 5120m
    proxy_set_headers:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
-   add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
     - name: /

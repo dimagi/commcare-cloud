@@ -67,6 +67,20 @@ servers:
     volume_size: 150
     group: citusdb_worker
     os: bionic
+  - server_name: "citus1standby-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: citusdb_worker
+    os: bionic
+  - server_name: "citus2standby-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: citusdb_worker
+    os: bionic
 
   - server_name: "airflow1-india"
     server_instance_type: "c5.large"
@@ -151,7 +165,7 @@ servers:
     os: bionic
 
   - server_name: "formplayer1-india"
-    server_instance_type: "c5.xlarge"
+    server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 200

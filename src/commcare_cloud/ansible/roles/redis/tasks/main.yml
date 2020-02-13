@@ -1,7 +1,7 @@
 ---
 
 - include: setup_cluster.yml
-  when: is_redis_cluster|bool
+  when: is_redis_cluster|bool and inventory_hostname in groups['redis_cluster_master']
 
 - name: start the redis service
   service: name="{{ redis_service_name }}" state=started enabled=yes

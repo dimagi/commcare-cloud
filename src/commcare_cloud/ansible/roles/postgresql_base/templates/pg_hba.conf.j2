@@ -13,6 +13,9 @@ local   replication     postgres                                peer
 {% endfor %}
 
 {% if inventory_hostname in groups.get('citusdb_worker', []) %}
+# Allow trust from localhost for pgbouncer
+host    all             all             127.0.0.1/32            trust 
+host    all             all             ::1/128                 trust
 {% for host in groups.get('citusdb_master', []) %}
 {% if host | ipaddr %}
 host   all	all	{{ host }}/32   trust

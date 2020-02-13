@@ -117,3 +117,7 @@
     group: root
     mode: 0770
   tags: mount-ecryptfs
+
+- name: Include wal drive encryption 
+  include: wal.yml
+  when: encrypted_wal_archive is defined

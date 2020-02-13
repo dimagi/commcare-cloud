@@ -1,8 +1,11 @@
 - name: define pillowtop services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_pillowtop.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   tags:
     - services
   register: pillowtop_conf_file

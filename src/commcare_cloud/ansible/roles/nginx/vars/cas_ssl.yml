@@ -12,15 +12,20 @@ nginx_sites:
       hosts: formplayer
       port: "{{ formplayer_port }}"
       method: "hash $cookie_sessionid consistent"
+   geo:
+    - name: "$limited"
+      mappings:
+      - key: "default"
+        value: 1
+      - key: '192.168.8.218' # Ben Talbot
+        value: 0
+      - key: '180.151.231.114' # Ashish
+        value: 0
+      - key: '120.56.84.164' # Sankalp
+        value: 0
+      - key: '50.78.242.97' # Boston office
+        value: 0
    mappings:
-    - name: "$incremental_sync"
-      variable: "$http_x_commcarehq_lastsynctoken"
-      # If header is provided, rate limit on $server_name
-      default_value: "$server_name"
-      var_mappings:
-        # If the header is not provided, do not rate limit
-        - key: '""'
-          value: '""'
     # Remove 'username' query param from request uri for use in cache key
     # https://stackoverflow.com/a/45587134
     # https://stackoverflow.com/a/35772678
@@ -34,11 +39,27 @@ nginx_sites:
         # username is not first query param
         - key: '"~^(?P<path>[^?]*)\?(?P<args1>.*?)(&?username=[^&]*)(?P<args2>&?.*)?$"'
           value: '$path?$args1$args2'
-    - name: "$limit_bucket"
-      variable: "$remote_addr"
-      default_value: "$server_name"
-      var_mappings: # whitelisted IP addresses not to be rate-limited
-        - key: '192.168.8.218' # Ben Talbot
+    - name: "$global_limit"
+      variable: "$limited"
+      var_mappings:
+        - key: "1"
+          value: "$server_name"
+        - key: "0"
+          value: '""'
+    - name: "$per_ip_limit"
+      variable: "$limited"
+      var_mappings:
+        - key: "1"
+          value: "$binary_remote_addr"
+        - key: "0"
+          value: '""'
+    - name: "$incremental_sync"
+      variable: "$http_x_commcarehq_lastsynctoken"
+      # If header is provided, rate limit on $limit_bucket
+      default_value: "$global_limit"
+      var_mappings:
+        # If the header is not provided, do not rate limit
+        - key: '""'
           value: '""'
    limit_req_zones:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
@@ -46,23 +67,31 @@ nginx_sites:
       size: "10m"
       rate: "20r/s"
     - name: "overall_restore" # Limits all restores
-      zone: "$server_name"
+      zone: "$global_limit"
       size: "10m"
       rate: "20r/s"
+    - name: "per_ip_restore"
+      zone: "$per_ip_limit"
+      size: "50m"
+      rate: "2r/m"
     - name: "submissions"
-      zone: "$server_name"
+      zone: "$global_limit"
       size: "10m"
       rate: "200r/s"
     - name: "server_name"
-      zone: "$server_name"
+      zone: "$global_limit"
       size: "10m"
       rate: "30r/s"
-    - name: "app_downloads"
+    - name: "profile_downloads"
       zone: "$limit_bucket"
       size: "10m"
-      rate: "2r/s"
+      rate: "5r/s"
+    - name: "app_downloads"
+      zone: "$global_limit"
+      size: "10m"
+      rate: "10r/s"
     - name: "multimedia"
-      zone: "$limit_bucket"
+      zone: "$global_limit"
       size: "10m"
       rate: "200r/s"
    proxy_cache_path:
@@ -78,7 +107,6 @@ nginx_sites:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
-   add_header: "X-Frame-Options SAMEORIGIN"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
      - name: "/hq/multimedia/file"
@@ -100,6 +128,22 @@ nginx_sites:
        proxy_cache: app_cache
        client_body_buffer_size: 5m
        proxy_ignore_headers: Set-Cookie
+     - name: "~* /a/icds-cas/apps/download/.*/.*_profile.ccpr"
+       balancer: "{{ deploy_env }}_cas_commcare"
+       proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
+       proxy_next_upstream_tries: 1
+       proxy_read_timeout: 900s
+       proxy_cache: app_cache
+       proxy_cache_lock: "on"
+       proxy_cache_lock_timeout: 30s
+       # exclude username arg from cache key
+       proxy_cache_key: "$proxy_host$request_uri_no_username"
+       client_body_buffer_size: 5m
+       proxy_ignore_headers: Set-Cookie
+       limit_reqs:
+         - zone_name: "profile_downloads"
+           burst: 10
+           nodelay: True
      - name: "/a/icds-cas/apps/download"
        balancer: "{{ deploy_env }}_cas_commcare"
        proxy_redirect: "http://{{ CAS_SITE_HOST }} https://{{ CAS_SITE_HOST }}"
@@ -134,6 +178,9 @@ nginx_sites:
        limit_reqs:
          - zone_name: "incremental_restore"
            burst: 10
+           nodelay: True
+         - zone_name: "per_ip_restore"
+           burst: 2
            nodelay: True
          - zone_name: "overall_restore"
            burst: 100

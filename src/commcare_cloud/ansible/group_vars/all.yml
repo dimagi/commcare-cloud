@@ -66,7 +66,6 @@ s3_blob_db_access_key: "{{ s3_access_key|default('') }}"
 s3_blob_db_secret_key:  "{{ s3_secret_key|default('') }}"
 
 datadog_integration_airflow: false
-datadog_integration_cloudant: false
 datadog_integration_couch: false
 datadog_integration_elastic: false
 datadog_integration_gunicorn: false
@@ -109,6 +108,7 @@ internal_subscription_change_email: accounts+subchange+internal@example.com
 billing_email: sales@example.com
 invoicing_contact_email: billing-support@example.com
 growth_email: growth@example.com
+saas_reporting_email: null
 master_list_email: master-list@example.com
 sales_email: sales@example.com
 privacy_email: privacy@dimagi.com
@@ -118,8 +118,13 @@ contact_email: info@example.com
 soft_assert_email: commcarehq-ops+soft_asserts@example.com
 daily_deploy_email: null
 check_s3_backups_email: null
+return_path_email: null
+bug_report_email: commcarehq-support@example.com
+new_domain_email: inquiries@example.com
+exchange_email: exchange@example.com
 
 
+ALTERNATE_HOSTS: []
 AMAZON_S3_ACCESS_KEY: "{{ localsettings_private.AMAZON_S3_ACCESS_KEY | default(None) }}"
 AMAZON_S3_SECRET_KEY: "{{ localsettings_private.AMAZON_S3_SECRET_KEY | default(None) }}"
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
@@ -143,6 +148,7 @@ DROPBOX_SECRET: "{{ localsettings_private.DROPBOX_SECRET | default(None)}}"
 ELASTICSEARCH_PORT: 9200
 EMAIL_LOGIN: "{{ localsettings_private.EMAIL_LOGIN | default(None) }}"
 EMAIL_PASSWORD: "{{ localsettings_private.EMAIL_PASSWORD | default(None) }}"
+RETURN_PATH_EMAIL_PASSWORD: "{{ localsettings_private.RETURN_PATH_EMAIL_PASSWORD | default(None) }}"
 FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY | default(None) }}"
 FULLSTORY_ID: "{{ localsettings_private.FULLSTORY_ID | default('', true)}}"
 GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY | default('') }}"

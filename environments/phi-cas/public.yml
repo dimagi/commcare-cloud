@@ -67,6 +67,9 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 check_s3_backups_email: commcarehq-ops+root@dimagi.com
+bug_report_email: commcarehq-support@dimagi.com
+new_domain_email: inquiries@dimagi.com
+exchange_email: exchange@dimagi.com
 
 TWO_FACTOR_GATEWAY_ENABLED: False
 
@@ -90,6 +93,7 @@ localsettings:
   EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
   HQ_INSTANCE: 'phi-cas'
   HUBSPOT_API_ID:

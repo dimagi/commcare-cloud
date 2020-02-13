@@ -64,6 +64,9 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+bug_report_email: commcarehq-support@dimagi.com
+new_domain_email: inquiries@dimagi.com
+exchange_email: exchange@dimagi.com
 
 KSPLICE_ACTIVE: yes
 
@@ -87,13 +90,12 @@ localsettings:
   COUCH_SERVER_ROOT: "127.0.0.1"
   COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
   COUCH_PORT: 5984
-# pna is not hosted by Cloudant
-  COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EMAIL_SMTP_HOST: 'localhost'
   EMAIL_SMTP_PORT: 25
   EMAIL_USE_TLS: no
   ENABLE_SOFT_ASSERT_EMAILS: True
+  IS_DIMAGI_ENVIRONMENT: False
   HQ_INSTANCE: 'pna'
   HUBSPOT_API_ID:
   HUBSPOT_API_KEY:

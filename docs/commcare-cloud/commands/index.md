@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -263,77 +263,77 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ##### The ansible options below are available as well
 ```
-  -B SECONDS, --background=SECONDS
-                        run asynchronously, failing after X seconds
-                        (default=N/A)
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=50)
-  -l SUBSET, --limit=SUBSET
-                        further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
-  -o, --one-line        condense output
-  --playbook-dir=BASEDIR
+  --playbook-dir BASEDIR
                         Since this tool does not use playbooks, use this as a
                         substitute playbook directory.This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
-  -P POLL_INTERVAL, --poll=POLL_INTERVAL
-                        set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
-  -t TREE, --tree=TREE  log output to this directory
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
+  --vault-id VAULT_IDS  the vault identity to use
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
+  -B SECONDS, --background SECONDS
+                        run asynchronously, failing after X seconds
+                        (default=N/A)
+  -M MODULE_PATH, --module-path MODULE_PATH
+                        prepend colon-separated path(s) to module library (def
+                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
+                        gins/modules)
+  -P POLL_INTERVAL, --poll POLL_INTERVAL
+                        set the poll interval if using -B (default=15)
+  -e EXTRA_VARS, --extra-vars EXTRA_VARS
+                        set additional variables as key=value or YAML/JSON, if
+                        filename prepend with @
+  -f FORKS, --forks FORKS
+                        specify number of parallel processes to use
+                        (default=50)
+  -l SUBSET, --limit SUBSET
+                        further limit selected hosts to an additional pattern
+  -o, --one-line        condense output
+  -t TREE, --tree TREE  log output to this directory
+  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
+                        connection debugging)
 
 ```
-#####   Privilege Escalation Options
+##### Privilege Escalation Options
 ```
-    control how and which user you become as on target hosts
+  control how and which user you become as on target hosts
 
-    --become-method=BECOME_METHOD
+  --become-method BECOME_METHOD
                         privilege escalation method to use (default=sudo), use
                         `ansible-doc -t become -l` to list valid choices.
-    -K, --ask-become-pass
+  -K, --ask-become-pass
                         ask for privilege escalation password
 
 ```
-#####   Connection Options
+##### Connection Options
 ```
-    control as whom and how to connect to hosts
+  control as whom and how to connect to hosts
 
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
+  --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE
                         use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=30)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
+  --scp-extra-args SCP_EXTRA_ARGS
+                        specify extra arguments to pass to scp only (e.g. -l)
+  --sftp-extra-args SFTP_EXTRA_ARGS
                         specify extra arguments to pass to sftp only (e.g. -f,
                         -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
+  --ssh-common-args SSH_COMMON_ARGS
+                        specify common arguments to pass to sftp/scp/ssh (e.g.
+                        ProxyCommand)
+  --ssh-extra-args SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
+  -T TIMEOUT, --timeout TIMEOUT
+                        override the connection timeout in seconds
+                        (default=30)
+  -c CONNECTION, --connection CONNECTION
+                        connection type to use (default=smart)
+  -k, --ask-pass        ask for connection password
+  -u REMOTE_USER, --user REMOTE_USER
+                        connect as this user (default=None)
 ```
 
 ---
@@ -384,77 +384,77 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ##### The ansible options below are available as well
 ```
-  -B SECONDS, --background=SECONDS
-                        run asynchronously, failing after X seconds
-                        (default=N/A)
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=50)
-  -l SUBSET, --limit=SUBSET
-                        further limit selected hosts to an additional pattern
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
-  -o, --one-line        condense output
-  --playbook-dir=BASEDIR
+  --playbook-dir BASEDIR
                         Since this tool does not use playbooks, use this as a
                         substitute playbook directory.This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
-  -P POLL_INTERVAL, --poll=POLL_INTERVAL
-                        set the poll interval if using -B (default=15)
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
-  -t TREE, --tree=TREE  log output to this directory
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
+  --vault-id VAULT_IDS  the vault identity to use
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
+  -B SECONDS, --background SECONDS
+                        run asynchronously, failing after X seconds
+                        (default=N/A)
+  -M MODULE_PATH, --module-path MODULE_PATH
+                        prepend colon-separated path(s) to module library (def
+                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
+                        gins/modules)
+  -P POLL_INTERVAL, --poll POLL_INTERVAL
+                        set the poll interval if using -B (default=15)
+  -e EXTRA_VARS, --extra-vars EXTRA_VARS
+                        set additional variables as key=value or YAML/JSON, if
+                        filename prepend with @
+  -f FORKS, --forks FORKS
+                        specify number of parallel processes to use
+                        (default=50)
+  -l SUBSET, --limit SUBSET
+                        further limit selected hosts to an additional pattern
+  -o, --one-line        condense output
+  -t TREE, --tree TREE  log output to this directory
+  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
+                        connection debugging)
 
 ```
-#####   Privilege Escalation Options
+##### Privilege Escalation Options
 ```
-    control how and which user you become as on target hosts
+  control how and which user you become as on target hosts
 
-    --become-method=BECOME_METHOD
+  --become-method BECOME_METHOD
                         privilege escalation method to use (default=sudo), use
                         `ansible-doc -t become -l` to list valid choices.
-    -K, --ask-become-pass
+  -K, --ask-become-pass
                         ask for privilege escalation password
 
 ```
-#####   Connection Options
+##### Connection Options
 ```
-    control as whom and how to connect to hosts
+  control as whom and how to connect to hosts
 
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
+  --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE
                         use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=30)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
+  --scp-extra-args SCP_EXTRA_ARGS
+                        specify extra arguments to pass to scp only (e.g. -l)
+  --sftp-extra-args SFTP_EXTRA_ARGS
                         specify extra arguments to pass to sftp only (e.g. -f,
                         -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
+  --ssh-common-args SSH_COMMON_ARGS
+                        specify common arguments to pass to sftp/scp/ssh (e.g.
+                        ProxyCommand)
+  --ssh-extra-args SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
+  -T TIMEOUT, --timeout TIMEOUT
+                        override the connection timeout in seconds
+                        (default=30)
+  -c CONNECTION, --connection CONNECTION
+                        connection type to use (default=smart)
+  -k, --ask-pass        ask for connection password
+  -u REMOTE_USER, --user REMOTE_USER
+                        connect as this user (default=None)
 ```
 
 ---
@@ -566,8 +566,7 @@ tmux windows will a new one be opened.
 Export Sentry events. One line per event JSON.
 
 ```
-commcare-cloud <env> export-sentry-events -k API_KEY -p PROJECT_ID [-q QUERY] [--start START] [--end END]
-                                          --organization ORGANIZATION
+commcare-cloud <env> export-sentry-events -k API_KEY -i ISSUE_ID [--full] [--cursor CURSOR]
 ```
 
 ##### Optional Arguments
@@ -576,25 +575,39 @@ commcare-cloud <env> export-sentry-events -k API_KEY -p PROJECT_ID [-q QUERY] [-
 
 Sentry API Key
 
-###### `-p PROJECT_ID, --project-id PROJECT_ID`
+###### `-i ISSUE_ID, --issue-id ISSUE_ID`
 
 Sentry project ID
 
-###### `-q QUERY, --query QUERY`
+###### `--full`
 
-Text query
+Export the full event details
 
-###### `--start START`
+###### `--cursor CURSOR`
 
-UTC start date. Format YYYY-MM-DDTHH:MM:SS
+Starting position for the cursor
 
-###### `--end END`
+---
 
-UTC end date. Format YYYY-MM-DDTHH:MM:SS
+#### `pillow-topic-assignments`
 
-###### `--organization ORGANIZATION`
+Print out the list of Kafka partitions assigned to each pillow process.
 
-Organization slug
+```
+commcare-cloud <env> pillow-topic-assignments [--csv] pillow_name
+```
+
+##### Positional Arguments
+
+###### `pillow_name`
+
+Name of the pillow.
+
+##### Optional Arguments
+
+###### `--csv`
+
+Output as CSV
 
 ---
 ### Operational
@@ -662,78 +675,78 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ##### The ansible-playbook options below are available as well
 ```
-  -e EXTRA_VARS, --extra-vars=EXTRA_VARS
-                        set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
   --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
-  -f FORKS, --forks=FORKS
-                        specify number of parallel processes to use
-                        (default=50)
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --list-tags           list all available tags
   --list-tasks          list all tasks that would be executed
-  -M MODULE_PATH, --module-path=MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
-  --skip-tags=SKIP_TAGS
+  --skip-tags SKIP_TAGS
                         only run plays and tasks whose tags do not match these
                         values
-  --start-at-task=START_AT_TASK
+  --start-at-task START_AT_TASK
                         start the playbook at the task matching this name
   --step                one-step-at-a-time: confirm each task before running
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
-  -t TAGS, --tags=TAGS  only run plays and tasks tagged with these values
-  --vault-id=VAULT_IDS  the vault identity to use
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
+  --vault-id VAULT_IDS  the vault identity to use
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
+  -M MODULE_PATH, --module-path MODULE_PATH
+                        prepend colon-separated path(s) to module library (def
+                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
+                        gins/modules)
+  -e EXTRA_VARS, --extra-vars EXTRA_VARS
+                        set additional variables as key=value or YAML/JSON, if
+                        filename prepend with @
+  -f FORKS, --forks FORKS
+                        specify number of parallel processes to use
+                        (default=50)
+  -t TAGS, --tags TAGS  only run plays and tasks tagged with these values
+  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
+                        connection debugging)
 
 ```
-#####   Connection Options
+##### Connection Options
 ```
-    control as whom and how to connect to hosts
+  control as whom and how to connect to hosts
 
-    -k, --ask-pass      ask for connection password
-    --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
+  --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE
                         use this file to authenticate the connection
-    -u REMOTE_USER, --user=REMOTE_USER
-                        connect as this user (default=None)
-    -c CONNECTION, --connection=CONNECTION
-                        connection type to use (default=smart)
-    -T TIMEOUT, --timeout=TIMEOUT
-                        override the connection timeout in seconds
-                        (default=30)
-    --ssh-common-args=SSH_COMMON_ARGS
-                        specify common arguments to pass to sftp/scp/ssh (e.g.
-                        ProxyCommand)
-    --sftp-extra-args=SFTP_EXTRA_ARGS
+  --scp-extra-args SCP_EXTRA_ARGS
+                        specify extra arguments to pass to scp only (e.g. -l)
+  --sftp-extra-args SFTP_EXTRA_ARGS
                         specify extra arguments to pass to sftp only (e.g. -f,
                         -l)
-    --scp-extra-args=SCP_EXTRA_ARGS
-                        specify extra arguments to pass to scp only (e.g. -l)
-    --ssh-extra-args=SSH_EXTRA_ARGS
+  --ssh-common-args SSH_COMMON_ARGS
+                        specify common arguments to pass to sftp/scp/ssh (e.g.
+                        ProxyCommand)
+  --ssh-extra-args SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
+  -T TIMEOUT, --timeout TIMEOUT
+                        override the connection timeout in seconds
+                        (default=30)
+  -c CONNECTION, --connection CONNECTION
+                        connection type to use (default=smart)
+  -k, --ask-pass        ask for connection password
+  -u REMOTE_USER, --user REMOTE_USER
+                        connect as this user (default=None)
 
 ```
-#####   Privilege Escalation Options
+##### Privilege Escalation Options
 ```
-    control how and which user you become as on target hosts
+  control how and which user you become as on target hosts
 
-    -b, --become        run operations with become (does not imply password
-                        prompting)
-    --become-method=BECOME_METHOD
+  --become-method BECOME_METHOD
                         privilege escalation method to use (default=sudo), use
                         `ansible-doc -t become -l` to list valid choices.
-    --become-user=BECOME_USER
+  --become-user BECOME_USER
                         run operations as this user (default=root)
-    -K, --ask-become-pass
+  -K, --ask-become-pass
                         ask for privilege escalation password
+  -b, --become          run operations with become (does not imply password
+                        prompting)
 ```
 
 ---
@@ -981,8 +994,8 @@ Manage services.
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
                              
-                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
-                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
+                             {celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
+                             [{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
                              {start,stop,restart,status,logs,help}
 ```
 
@@ -1004,7 +1017,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
+###### `{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
@@ -1187,8 +1200,18 @@ Gives additional databases on the server.
 Report of celery resources by queue.
 
 ```
-commcare-cloud <env> celery-resource-report
+commcare-cloud <env> celery-resource-report [--show-workers] [--csv]
 ```
+
+##### Optional Arguments
+
+###### `--show-workers`
+
+Includes the list of worker nodes for each queue
+
+###### `--csv`
+
+Output table as CSV
 
 ---
 
@@ -1197,8 +1220,14 @@ commcare-cloud <env> celery-resource-report
 Report of pillow resources.
 
 ```
-commcare-cloud <env> pillow-resource-report
+commcare-cloud <env> pillow-resource-report [--csv]
 ```
+
+##### Optional Arguments
+
+###### `--csv`
+
+Output table as CSV
 
 ---
 

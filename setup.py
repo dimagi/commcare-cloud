@@ -30,7 +30,7 @@ setup(
     },
     install_requires=(
         'ansible-vault==1.1.1',
-        'ansible>=2.8.0',
+        'ansible>=2.9.4',
         'argparse>=1.4',
         'attrs>=18.1.0',
         'boto3>=1.9.131',
@@ -52,6 +52,7 @@ setup(
         'PyGithub>=1.43.3',
         'pytz==2017.2',
         'six',
+        'tabulate'
     ),
     tests_require=test_deps,
     extras_require=extras,

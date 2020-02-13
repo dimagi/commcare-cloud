@@ -29,7 +29,7 @@ celery_processes:
     celery:
       concurrency: 4
     celery_periodic:
-      concurrency: 3
+      concurrency: 4
     email_queue:
       pooling: gevent
       concurrency: 134
@@ -99,10 +99,6 @@ pillows:
     DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
-      num_processes: 1
-    FarmerRecordFluffPillow:
-      num_processes: 1
-    GeographyFluffPillow:
       num_processes: 1
     KafkaDomainPillow:
       num_processes: 1

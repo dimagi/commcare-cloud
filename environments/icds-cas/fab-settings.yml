@@ -3,3 +3,4 @@ acceptable_maintenance_window:
   hour_end: 23
   timezone: Asia/Kolkata
 email_enabled: True
+tag_deploy_commits: True

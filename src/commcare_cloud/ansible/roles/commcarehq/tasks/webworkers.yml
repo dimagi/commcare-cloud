@@ -1,17 +1,23 @@
 - name: define errand boy services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_errand_boy.conf"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   tags:
     - services
   register: webworker_errand_boy_conf_file
 
 - name: define django worker service
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_django.conf.j2"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   with_items:
     - env_vars:
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"

@@ -28,13 +28,13 @@ external_routes:
     gateway_id: "vgw-05c8c22d05e33c5bf"
 
 servers:
-  - server_name: "control-production"
+  - server_name: "control1-production"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     group: "control"
-    os: trusty
+    os: bionic
 
   - server_name: "djangomanage1-production"
     server_instance_type: m5.xlarge
@@ -168,7 +168,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 4000
+      volume_size: 5000
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
@@ -177,7 +177,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 4000
+      volume_size: 5000
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
@@ -186,7 +186,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 4000
+      volume_size: 5000
     group: "couchdb2"
     os: bionic
 
@@ -220,7 +220,7 @@ servers:
     group: "celery"
     os: bionic
   - server_name: "celery12-production"
-    server_instance_type: t3.2xlarge  # todo: switch back to r5.xlarge after t3 RI expires
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
@@ -228,7 +228,7 @@ servers:
     os: bionic
 
   - server_name: "pillow1-production"
-    server_instance_type: r5a.4xlarge  # todo: switch to m5.4xlarge once r5a RI expires
+    server_instance_type: r5a.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
@@ -266,14 +266,6 @@ servers:
     volume_size: 100
     group: "shared_dir_host"
     os: bionic
-
-  - server_name: "kafka0-production"
-    server_instance_type: t3.medium
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 160
-    group: "kafka"
-    os: trusty
     
   - server_name: "kafka1-production"
     server_instance_type: t3.medium
@@ -312,43 +304,49 @@ proxy_servers:
 
 
 rds_instances:
-  - identifier: "pgmain0-production"  # replaces old hqdb0
-    instance_type: "db.t2.xlarge"
+  - identifier: "pgmain0-production"
+    instance_type: "db.t3.xlarge"
     storage: 500
     multi_az: true
+    engine_version: 9.6.15
 
-  - identifier: "pgucr0-production"  # replaces old hqdb3
-    instance_type: "db.t2.xlarge"
+  - identifier: "pgucr0-production"
+    instance_type: "db.t3.large"
     storage: 500
     multi_az: true
+    engine_version: 9.6.15
 
-  # replace old hqdb1, hqdb5
   - identifier: "pgshard1-production"
-    instance_type: "db.t2.large"
+    instance_type: "db.t3.medium"
     storage: 250
     multi_az: true
+    engine_version: 9.6.15
   - identifier: "pgshard2-production"
-    instance_type: "db.t2.large"
+    instance_type: "db.t3.medium"
     storage: 250
     multi_az: true
+    engine_version: 9.6.15
   - identifier: "pgshard3-production"
-    instance_type: "db.t2.large"
+    instance_type: "db.t3.medium"
     storage: 250
     multi_az: true
+    engine_version: 9.6.15
   - identifier: "pgshard4-production"
-    instance_type: "db.t2.large"
+    instance_type: "db.t3.medium"
     storage: 250
     multi_az: true
+    engine_version: 9.6.15
   - identifier: "pgshard5-production"
-    instance_type: "db.t2.large"
+    instance_type: "db.t3.medium"
     storage: 250
     multi_az: true
+    engine_version: 9.6.15
 
-  # replaces old pgsynclog1
   - identifier: "pgsynclog0-production"
-    instance_type: "db.t2.large"
+    instance_type: "db.t3.large"
     storage: 1000
     multi_az: true
+    engine_version: 9.6.15
     params:
       work_mem: 2457kB
       shared_buffers: 3840MB

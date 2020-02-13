@@ -5,7 +5,7 @@
   shell: rabbitmqctl stop_app
 
 - name: add this node to cluster
-  shell: rabbitmqctl join_cluster rabbit@{{ hostvars[rabbitmq_cluster_master]['ansible_hostname']}}
+  shell: rabbitmqctl join_cluster rabbit@"{{ RABBITMQ_CLUSTER_NAME|default(hostvars[rabbitmq_cluster_master]['ansible_hostname']) }}"
   register: join_cluster_output
   ignore_errors: True
 

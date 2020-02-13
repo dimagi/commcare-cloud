@@ -11,11 +11,13 @@
 - name: PostgreSQL
   hosts: postgresql:pg_standby:!citusdb
   become: true
+  vars:
+    postgresql_archive_path: "{{ encrypted_wal_archive }}"
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
 - name: pgbouncer
-  hosts: postgresql:pg_standby
+  hosts: postgresql:pg_standby:!citusdb
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
@@ -71,3 +73,11 @@
    - after-reboot
   roles:
     - role: thp
+
+- name: Install and configure pg_repack
+  hosts: "{{ pg_repack|list }}"
+  become: true
+  roles:
+    - role: pg_repack
+  tags:
+    pg_repack

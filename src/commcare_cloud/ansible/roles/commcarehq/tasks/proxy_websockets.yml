@@ -1,8 +1,11 @@
 - name: define websockets services
-  become: cchq
+  become: yes
   template:
     src: "../templates/supervisor_websockets.conf"
     dest: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   tags:
     - services
   register: proxy_websocket_conf_file

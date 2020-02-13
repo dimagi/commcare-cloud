@@ -61,7 +61,7 @@ file representing each of these groups. You may name the file anything
 you wish; you will reference these files by name in the `meta.yml`
 file of each environment.
 
-In the sample environments, this file is called `dimagi.yml`. You may use and edit this file if you wish.
+In the sample environments, this file is called `admins.yml`. You may use and edit this file if you wish.
 
 Each of these files should contain YAML of the following format:
 

@@ -111,13 +111,18 @@
     version: 1.9.0
 
 - name: Check for installed plugins
-  shell: "{{ elasticsearch_home }}/bin/plugin --list"
+  shell: "{{ elasticsearch_home }}/bin/plugin list"
   register: installed_plugins
 
 - name: Install elasticsearch aws plugin
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout)
+  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '1.7.6'
+  
+- name: Install elasticsearch aws plugin
+  become: yes
+  shell: "{{ elasticsearch_home }}/bin/plugin install cloud-aws"
+  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '2.4.6'
 
 - name: Install elasticsearch swift plugin
   become: yes
@@ -216,3 +221,17 @@
   tags:
     - cron
     - backups
+
+- name: "Tune vm.max_map_count"
+  lineinfile:
+    dest: /etc/sysctl.conf
+    line: "vm.max_map_count=262144"
+    state: present
+  become: yes
+
+- name: "Tune vm.max_map_count (for current session)"
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+  become: yes

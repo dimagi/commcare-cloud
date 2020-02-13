@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 
+ANSIBLE_HELP_OPTIONS_PREFIX='optional arguments:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')
 _AVAILABLE_HELP_CACHES = {
     'ansible -h': os.path.join(_HELP_CACHE, 'ansible.txt'),

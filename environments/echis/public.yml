@@ -63,12 +63,12 @@ localsettings:
   COMMCARE_NAME: 'eCHIS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_STALE_QUERY: 'update_after'
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EMAIL_SMTP_HOST: 'smtp.gmail.com'
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: no
+  IS_DIMAGI_ENVIRONMENT: False
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
   HQ_INSTANCE: 'echis'
   INACTIVITY_TIMEOUT: 20160
@@ -82,3 +82,7 @@ localsettings:
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True
+  STATIC_TOGGLE_STATES:
+    mobile_ucr_linked_domain:
+      always_enabled:
+        - 'fmoh-echis-staging'
