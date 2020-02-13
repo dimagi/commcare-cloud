@@ -161,7 +161,7 @@ function ansible-deploy-control() {
     && ANSIBLE_CONFIG=$ANSIBLE_DIR/ansible.cfg \
     && ENV_DIR=/home/$USER/commcare-cloud/environments \
     && VENV=/home/$USER/.virtualenvs/ansible \
-    && ANSIBLE_COLLECTIONS_PATHS=$VENV/lib/python2.7/site-packages/.ansible/ansible_collections \
+    && ANSIBLE_COLLECTIONS_PATHS=$VENV/lib/python2.7/site-packages/.ansible/ \
     && ANSIBLE_ROLES_PATH=$VENV/lib/python2.7/site-packages/.ansible/roles \
     $VENV/bin/ansible-playbook \
     -i localhost, $ANSIBLE_DIR/deploy_control.yml \
