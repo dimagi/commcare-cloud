@@ -19,6 +19,10 @@ Group=elasticsearch
 ExecStart={{ elasticsearch_home }}/bin/elasticsearch \
                                               --path.conf=${CONF_DIR} \
                                               --path.home=${ES_HOME}
+
+Restart=always
+RestartSec=10
+
 #
 # StandardOutput is configured to redirect to journalctl since
 # some error messages may be logged in standard output before
