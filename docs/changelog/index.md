@@ -7,8 +7,10 @@ newest first.
 
 ## Changelog
 
-### **2020-02-05** [ES upgrade from 1.7.6 to 2.4.6](0032-upgrade-elasticsearch.md)
+### **2020-02-05** [ES upgrade from 1.7.6 to 2.4.6](0032-upgrade-to-elasticsearch-2.4.6.md)
 This change upgrade Elasticsearch from 1.7.6 to 2.4.6 version.
+CommCare HQ releases after April 2, 2020 will not continue to support Elasticsearch 1.7.6,
+so we strongly recommend applying this change before then.
 
 ### **2019-11-06** [Update Formplayer Configuration](0031-update-formplayer-config.md)
 Some properties in the Formplayer configuration have changed names.
