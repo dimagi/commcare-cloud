@@ -26,9 +26,10 @@ libraries we have updated Elasticsearch from 1.7.6 to 2.4.6 version.
 Before you start, make sure that your disk usage is well below 50%,
 or that you have a place to back up to on another disk or remotely.
 
-0. For commands including `${ENV}` below to work, make sure to set `ENV` to the name of your environment
+0. For commands including `${ENV}` and ${ES_HOST} below to work, make sure to set `ENV` to the name of your environment, and `ES_HOST` to the IP address of one of your ES nodes:
 ```
 ENV=${ENV}
+ES_HOST=$(commcare-cloud ${ENV} lookup elasticsearch:0)
 ```
 
 1. Stop the site
@@ -53,7 +54,7 @@ commcare-cloud ${ENV} update-config
 
 4. Disable Elasticsearch shard allocation
 ```bash
-curl -X PUT "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+curl -X PUT "${ES_HOST}:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
 {
   "persistent": {
     "cluster.routing.allocation.enable": "none"
@@ -64,7 +65,7 @@ curl -X PUT "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/settings?pretty
 
 5. Perform a synced flush
 ```bash
-curl -X POST "$(cchq ${ENV} lookup elasticsearch:0):9200/_flush/synced?pretty"  # safe to reissue a few times if it fails
+curl -X POST "${ES_HOST}:9200/_flush/synced?pretty"  # safe to reissue a few times if it fails
 ```
 
 6. Stop the Monit and Elasticsearch services
@@ -103,12 +104,12 @@ commcare-cloud ${ENV} run-shell-command all "service elasticsearch start" -b --l
 
 12. Verify that the cluster status is yellow
 ```bash
-curl -XGET "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/health?pretty"
+curl -XGET "${ES_HOST}:9200/_cluster/health?pretty"
 ```
 
 12. Enable the cluster routing
 ```bash
-curl -X PUT "$(cchq ${ENV} lookup elasticsearch:0):9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+curl -X PUT "${ES_HOST}:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
 {
   "persistent": {
      "cluster.routing.allocation.enable": "all"
