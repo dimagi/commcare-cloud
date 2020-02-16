@@ -17,8 +17,6 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
-encrypted_wal_archive: /wal_archive
-
 #NGINX dynamic Conf
 nginx_dynamic_limits:
   - name: "nginx_dynamic_peak"

@@ -46,11 +46,7 @@ effective_io_concurrency = {{ postgresql_effective_io_concurrency }}
 # WRITE AHEAD LOG
 {% if postgresql_enable_archive and not is_pg_standby %}
 archive_mode = on
-{% if hot_standby_server %}
-archive_command = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null %p {{hot_standby_server}}:{{ postgresql_archive_path }}/%f'
-{% else %}
 archive_command = '{{ postgresql_archive_command }}'
-{% endif %}
 archive_timeout = {{ postgresql_archive_timeout }}
 {% endif %}
 
