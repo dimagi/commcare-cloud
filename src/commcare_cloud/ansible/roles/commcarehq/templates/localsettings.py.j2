@@ -572,6 +572,11 @@ SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
 STALE_EXPORT_THRESHOLD = {{ localsettings.STALE_EXPORT_THRESHOLD }}
 {% endif %}
 
+{% if 'REQUIRE_TWO_FACTOR_FOR_SUPERUSERS' in localsettings %}
+REQUIRE_TWO_FACTOR_FOR_SUPERUSERS = {{ localsettings.REQUIRE_TWO_FACTOR_FOR_SUPERUSERS }}
+{% endif %}
+
+
 {% if MAPS_LAYERS %}
 MAPS_LAYERS = json.loads('{{ MAPS_LAYERS|to_json }}')
 {% endif %}
