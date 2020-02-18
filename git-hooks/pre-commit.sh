@@ -5,7 +5,7 @@
 # If not, commit will fail with an error message
 #
 # File should be .git/hooks/pre-commit and executable
-VAULT_FILE_INCLUDE_PATTERN='(/vault.yml|.*.vault)$'
+VAULT_FILE_INCLUDE_PATTERN='(/vault.yml|.*.vault|.*vault.*)$'
 VAULT_FILE_EXCLUDE_PATTERN='^tests|development'
 REQUIRED='ANSIBLE_VAULT'
 
