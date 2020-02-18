@@ -42,7 +42,9 @@
   tags: commcarehq
 
 - name: Add ansible user
-  user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ ansible_sudo_pass|password_hash('sha512') }}"
+  user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512') }}"
+  tags:
+    - new_ansible_sudo_pass
 
 - name: Authorize current devs to login as ansible
   become: yes
