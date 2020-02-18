@@ -33,10 +33,6 @@ web13
 hq_webworkers
 mobile_webworkers
 
-{{ __pgproxy2__ }}
-
-{{ __pgbouncer1__ }}
-
 {{ __pgbouncer2__ }}
 
 {{ __rds_pgmain0__ }}
@@ -66,8 +62,6 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgproxy2
-pgbouncer1
 pgbouncer2
 remote_postgresql
 
