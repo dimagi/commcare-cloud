@@ -114,7 +114,7 @@ EMAIL_SMTP_PORT = {{ localsettings.EMAIL_SMTP_PORT }}
 EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 {% endif %}
 
-RETURN_PATH_EMAIL_PASSWORD = '{{ RETURN_PATH_EMAIL_PASSWORD }}'
+RETURN_PATH_EMAIL_PASSWORD = "{{ RETURN_PATH_EMAIL_PASSWORD }}"
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
