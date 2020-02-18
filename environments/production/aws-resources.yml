@@ -19,10 +19,8 @@ esmaster5-production: 10.202.40.226
 formplayer2-production: 10.202.10.129
 formplayer3-production: 10.202.10.13
 kafka1-production: 10.202.40.200
-pgbouncer1-production: 10.202.40.8
 pgbouncer2-production: 10.202.40.59
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pgproxy2-production: 10.202.40.5
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
