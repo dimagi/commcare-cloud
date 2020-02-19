@@ -78,7 +78,16 @@ will be unable to submit forms or sync with the server.
     - `./manage.py load_domain_data <filename.zip>`
     - `./manage.py import_blob_zip <filename.zip>`
   - Rebuild elasticsearch indices
-    - `./manage.py ptop_preindex`
+    - Figure out what the elasticearch IP is:
+      `commcare-cloud ${ENV} lookup elasticsearch:0`
+    - Go ahead and check the size of the forms index to make sure this is the
+      correct cluster.  Be VERY sure this is correct.
+      `curl -XGET "${ES_IP}:9200/xforms/_stats/docs?pretty`
+    - Delete all elasticsearch data in that cluster
+      `curl -X DELETE ${ES_IP}:9200/_all?pretty`
+    - Rebuild the indices with the new data
+      `./manage.py ptop_preindex`
+      `./manage.py ptop_es_manage --flip_all_aliases`
   - Print the database numbers and compare them to the values obtained previously
     - `./manage.py print_domain_stats <domain_name>`
   - Rebuild case ownership cleanliness flags
