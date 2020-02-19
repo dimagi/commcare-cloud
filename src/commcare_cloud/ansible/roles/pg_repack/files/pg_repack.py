@@ -20,7 +20,7 @@ GB = 1024**3
 
 TUPLE_QUERY = """
     SELECT relname AS table_name, n_live_tup AS live_tup, n_dead_tup AS dead_tup
-    FROM pg_stat_user_tables
+    FROM pg_stat_user_tables where schemaname = 'public'
     """
 
 SIZE_QUERY = """
