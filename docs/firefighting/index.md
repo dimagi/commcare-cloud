@@ -735,12 +735,6 @@ Resources:
 Formplayer sometimes fails on deploy due to a startup task (which will hopefully be resolved soon).  The process may not fail, but formplayer will still return failure responses. You can try just restarting the process with `sudo supervisorctl restart all` (or specify the name if it's a monolithic environment)
 
 
-# Debugging Slowness
-
-You can navigate to https://rpm.newrelic.com/accounts/366142/servers to get an overview of the memory usage, Disk IO, CPU usage of each server (login creds can be found in the dimagi_shared.kdb, search for newrelic). That will hopefully give you some leads as to why things are being slow. It lists all servers CPU usage and Physical memory. Lastly, you can check out http://stats.pingdom.com/6wqkruu52i2u/307542 to get stats on uptime and response times.
-
-When you do pinpoint a server that is being slow, you can SSH in and run the htop command to give more information on what is hogging memory and/or CPU. Here is a decent blog post explaining the different pieces of the htop command: http://www.deonsworld.co.za/2012/12/20/understanding-and-using-htop-monitor-system-resources/.
-
 # Full Drives / Out of Disk Space
 
 If disk usage on the proxy ever hits 100%, many basic functions on the machine will stop working.  Here are some ways to buy some time.

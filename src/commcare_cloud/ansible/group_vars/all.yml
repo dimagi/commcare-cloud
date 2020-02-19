@@ -181,7 +181,6 @@ DATADOG_API_KEY: "{{ secrets.DATADOG_API_KEY | default(None) }}"
 DATADOG_APP_KEY: "{{ secrets.DATADOG_APP_KEY | default(None) }}"
 ECRYPTFS_PASSWORD: "{{ secrets.ECRYPTFS_PASSWORD | default(None) }}"
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY | default(None) }}"
-NEW_RELIC_KEY: "{{ secrets.NEW_RELIC_KEY | default(None) }}"
 
 formplayer_sentry_dsn: '{{ secrets.FORMPLAYER_SENTRY_DSN | default(None) }}'
 internal_domain_name: null

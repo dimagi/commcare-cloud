@@ -27,7 +27,5 @@ gunicorn_workers_factor: 1
 gunicorn_workers_static_factor: 0
 formplayer_memory: "3584m"
 http_proxy: null
-newrelic_djangoagent: False
-newrelic_javaagent: False
 django_command_prefix: ''
 celery_command_prefix: ''

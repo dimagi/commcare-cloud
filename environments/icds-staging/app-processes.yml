@@ -1,5 +1,4 @@
 formplayer_memory: "7000m"
-newrelic_javaagent: True
 management_commands:
   web0:
     run_submission_reprocessing_queue:

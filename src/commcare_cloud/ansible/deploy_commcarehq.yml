@@ -101,13 +101,3 @@
       with_items: "{{ contents.stdout_lines }}"
       when: item not in supervisor_files
       tags: services
-
-- name: newrelic
-  hosts:
-    - webworkers
-  become: true
-  tasks:
-    - import_role:
-        name: newrelic
-      when: app_processes_config.newrelic_djangoagent and NEW_RELIC_KEY is defined and NEW_RELIC_KEY
-      tags: newrelic

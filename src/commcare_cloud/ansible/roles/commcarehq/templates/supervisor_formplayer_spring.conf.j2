@@ -1,7 +1,7 @@
 [program:{{ project }}-{{ deploy_env }}-formsplayer-spring]
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
 
-command=java {% if app_processes_config.newrelic_javaagent %}-javaagent:/home/cchq/www/{{ deploy_env }}/newrelic/newrelic.jar{% endif %} -Xmx{{ app_processes_config.formplayer_memory }} -XX:MaxMetaspaceSize=128m -XX:-OmitStackTraceInFastThrow -Xss1024k -jar {{ www_home }}/formplayer_build/current/formplayer.jar
+command=java -Xmx{{ app_processes_config.formplayer_memory }} -XX:MaxMetaspaceSize=128m -XX:-OmitStackTraceInFastThrow -Xss1024k -jar {{ www_home }}/formplayer_build/current/formplayer.jar
 user={{ cchq_user }}
 autostart=true
 autorestart=true

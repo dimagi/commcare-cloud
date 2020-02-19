@@ -1,5 +1,3 @@
-newrelic_djangoagent: False
-newrelic_javaagent: True
 datadog_pythonagent: True
 django_command_prefix: ''
 celery_command_prefix: ''
