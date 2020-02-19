@@ -62,24 +62,25 @@ During the downtime, mobile users will still be able to collect data, but they
 will be unable to submit forms or sync with the server.
 
 - On the old environment:
-  - Block data access by turning on the DATA_MIGRATION feature flag.
-  - Print information about the numbers in the database for later reference:
+  - Block data access by turning on the `DATA_MIGRATION` feature flag.
+  - Print information about the numbers in the database for later reference.
+    This will take a while (15 mins) even on small domains. Tip: add `--csv` to
+    the command to save the output in a csv file.
     - `./manage.py print_domain_stats <domain_name>`
-  - A site administrator will need to run the data dump commands. Ensure that
-    these are run on a machine that has the disk space to store the output.
+  - A site administrator will need to run the data dump commands. First run
+    `$ tf -h` to ensure the machine has the disk space to store the output. Then
+    run the data dumps.
     - `./manage.py dump_domain_data <domain_name>` 
     - `./manage.py run_blob_export --all <domain_name>`
-  - Transfer this file to the new environment.
+  - Transfer these two zip files to the new environment.
 - Populate the new environment
   - Import the dump files (each blob file will need to be imported individually)
-    - `./manage.py import_blob_zip <filename.zip>`
     - `./manage.py load_domain_data <filename.zip>`
+    - `./manage.py import_blob_zip <filename.zip>`
   - Rebuild elasticsearch indices
     - `./manage.py ptop_preindex`
   - Print the database numbers and compare them to the values obtained previously
     - `./manage.py print_domain_stats <domain_name>`
-- Prepare the new project space
-  - Set up a subscription for the new project space.
   - Rebuild case ownership cleanliness flags
     - `./manage.py set_cleanliness_flags --force <domain_name>`
 - Manually perform QA on the new environment.  Test all critical workflows at this stage.
