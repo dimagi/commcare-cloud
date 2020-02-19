@@ -77,6 +77,8 @@ will be unable to submit forms or sync with the server.
 
 ## 3. Prepare the new environment to be populated
 
+- Stop all services
+  `$ commcare-cloud <env> downtime start`
 - TODO wipe couch
 - TODO wipe postgres
 - TODO others?
@@ -103,6 +105,8 @@ will be unable to submit forms or sync with the server.
   - `./manage.py print_domain_stats <domain_name>`
 - Rebuild case ownership cleanliness flags
   - `./manage.py set_cleanliness_flags --force <domain_name>`
+- Bring the site back up
+  `$ commcare-cloud <env> downtime end`
 
 
 ## 5. Ensure the new environment is fully functional. Test all critical workflows at this stage.
