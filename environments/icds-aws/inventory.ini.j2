@@ -1,30 +1,6 @@
 [pgwarehouse0]
 10.203.40.118 hostname=pgwarehouse0 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme1n1 datavol_device1=/dev/nvme1n1 is_datavol_ebsnvme=yes swap_size=8G
 
-[masternode1]
-10.203.40.22 hostname=masternode1 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[masternode2]
-10.203.40.70 hostname=masternode2 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[masternode3]
-10.203.40.19 hostname=masternode3 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[gateway0]
-10.203.40.111 hostname=gateway0 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[datanode1]
-10.203.40.91 hostname=datanode1 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[datanode2]
-10.203.40.170 hostname=datanode2 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[datanode3]
-10.203.40.187 hostname=datanode3 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
-[datanode4]
-10.203.40.200 hostname=datanode4 ufw_private_interface=ens5 ansible_python_interpreter=/usr/bin/python3 datavol_device=/dev/nvme2n1 datavol_device1=/dev/nvme2n1 is_datavol_ebsnvme=yes swap_size=8G
-
 [localhost]
 10.203.20.205 hostname=localhost swap_size=8G ufw_private_interface=ens160
 
@@ -38,14 +14,6 @@
 
 [postgresql:children]
 pgwarehouse0
-masternode1
-masternode2
-masternode3
-gateway0
-datanode1
-datanode2
-datanode3
-datanode4
 
 [zookeeper:children]
 
