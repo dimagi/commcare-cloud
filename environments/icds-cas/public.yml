@@ -50,7 +50,6 @@ KSPLICE_ACTIVE: no
 DATADOG_ENABLED: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
-datedog_parsers_version: b46f25b72ed7a98d012a17ea846c3d10c418f158
 datadog_custom_parsers:
   - input: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
     python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
