@@ -6,7 +6,6 @@ elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
-supervisor_http_enabled: True
 run_websockets_wsgi: True
 
 backup_blobdb: False

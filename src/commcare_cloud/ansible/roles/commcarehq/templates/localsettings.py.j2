@@ -681,12 +681,6 @@ ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
 ENABLE_DRACONIAN_SECURITY_FEATURES = True
 {% endif %}
 
-{% if supervisor_http_enabled|default(false) %}
-SUPERVISOR_RPC_ENABLED = True
-SUPERVISOR_USERNAME = '{{ supervisor_http_username }}'
-SUPERVISOR_PASSWORD = '{{ supervisor_http_password }}'
-{% endif %}
-
 {% if HQ_PRIVATE_KEY %}
 HQ_PRIVATE_KEY = \
 {{ HQ_PRIVATE_KEY }}

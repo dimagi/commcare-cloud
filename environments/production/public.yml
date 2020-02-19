@@ -46,8 +46,6 @@ elasticsearch_fielddata_cache_size: "40%"
 
 nofile_limit: 65536
 
-supervisor_http_enabled: True
-
 backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: True
