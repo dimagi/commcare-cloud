@@ -144,6 +144,7 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
   STALE_EXPORT_THRESHOLD: 1800  # 30 minutes
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
