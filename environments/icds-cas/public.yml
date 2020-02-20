@@ -54,6 +54,14 @@ datadog_custom_parsers:
     python_function: parse_logs
     hosts: "{{ groups['proxy'] }}"
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+filebeat_output_logstash_hosts:
+  - "{{ groups.logproxy.0 }}:5044"
+
 etc_hosts_lines:
   - '127.0.0.1        localhost'
   - '100.71.181.10		cas.commcarehq.org'
