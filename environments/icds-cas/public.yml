@@ -56,9 +56,9 @@ datadog_custom_parsers:
 
 etc_hosts_lines:
   - '127.0.0.1        localhost'
-  - '100.71.181.10		cas.commcarehq.org'
-  - '100.71.181.10		reports.icds-cas.gov.in'
-  - '100.71.181.10		www.icds-cas.gov.in'
+  - '100.71.181.11		cas.commcarehq.org'
+  - '100.71.181.11		reports.icds-cas.gov.in'
+  - '100.71.181.11		www.icds-cas.gov.in'
   - '100.126.21.242     mowcdmum.ipstorage.tatacommunications.com'
 etc_hosts_lines_removed: []
 ssh_allow_password_users:
