@@ -91,6 +91,7 @@ will be unable to submit forms or sync with the server.
   - Delete all elasticsearch data in that cluster
     `curl -X DELETE ${ES_IP}:9200/_all?pretty`
 - Clear the redis cache data
+  `./manage.py flush_caches`
 - Clear kafka
 
 
