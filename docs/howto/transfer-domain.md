@@ -79,9 +79,9 @@ will be unable to submit forms or sync with the server.
 
 - Stop all services
   `$ commcare-cloud <env> downtime start`
-- TODO wipe couch
-- TODO wipe postgres
-- TODO others?
+- Delete any blob data
+- Delete the PostgreSQL database
+- Delete the CouchDB database
 - Delete all elasticsearch indices
   - Figure out what the elasticearch IP is:
     `ES_IP=$(commcare-cloud ${ENV} lookup elasticsearch:0)`
@@ -90,6 +90,8 @@ will be unable to submit forms or sync with the server.
     `curl -XGET "${ES_IP}:9200/xforms/_stats/docs?pretty`
   - Delete all elasticsearch data in that cluster
     `curl -X DELETE ${ES_IP}:9200/_all?pretty`
+- Clear the redis cache data
+- Clear kafka
 
 
 ## 4. Import the data to the new environment
