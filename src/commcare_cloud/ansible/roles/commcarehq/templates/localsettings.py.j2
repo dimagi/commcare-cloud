@@ -260,8 +260,12 @@ RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
 CASE_ES_DROP_FORM_FIELDS = {{ localsettings.CASE_ES_DROP_FORM_FIELDS }}
 {% endif %}
 
+{% BITLY_OAUTH_TOKEN %}
+BITLY_OAUTH_TOKEN = '{{ BITLY_OAUTH_TOKEN }}'
+{% else %}
 BITLY_LOGIN = '{{ BITLY_LOGIN }}'
 BITLY_APIKEY = '{{ BITLY_APIKEY }}'
+{% endif %}
 
 JAR_SIGN = dict(
     key_store = os.path.join('{{ www_dir }}', "DimagiKeyStore"),
