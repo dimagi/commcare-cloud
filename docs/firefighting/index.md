@@ -121,7 +121,7 @@ $ cchq <env> service commcare stop
 
 ## Couch node is down
 
-If a couch node is down, the couch disk might be full. In that case, see "Couch node data disk is full" below. Otherwise, it could mean that the node is slow to respond, erroring frequently, or that the couch process or VM itself in a stopped state.
+If a couch node is down, the couch disk might be full. In that case, see [Couch node data disk is full](#couch-node-data-disk-is-full) below. Otherwise, it could mean that the node is slow to respond, erroring frequently, or that the couch process or VM itself in a stopped state.
 
 Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as "instance:http://<proxy ip>/_node/couchdb_<couch node ip>/".
 
