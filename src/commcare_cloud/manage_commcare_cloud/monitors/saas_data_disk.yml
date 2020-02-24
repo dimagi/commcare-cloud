@@ -1,0 +1,31 @@
+env_key: host.environment
+id: 16004813
+message: |-
+  {{#is_alert}}ALERT: Disk usage {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
+  {{#is_warning}}WARNING: Disk usage {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
+  https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
+  << notification_block >>
+name: Disk space running low on data disk {{host.name}} ({{device.name}})
+options:
+  escalation_message: |-
+    {{#is_alert}}ALERT: Disk usage still {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
+    {{#is_warning}}WARNING: Disk usage still {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
+    https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
+    << notification_block >>
+  include_tags: false
+  locked: false
+  new_host_delay: 300
+  no_data_timeframe: null
+  notify_audit: false
+  notify_no_data: false
+  renotify_interval: 1440
+  require_full_window: true
+  silenced: {}
+  thresholds:
+    critical: 0.9
+    warning: 0.8
+  timeout_h: 0
+query: min(last_1h):max:system.disk.in_use{device:/opt/data,!environment:icds,!environment:pna} by
+  {host,environment,device}.rollup(max) >= 0.9
+tags: []
+type: query alert
