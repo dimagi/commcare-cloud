@@ -28,6 +28,12 @@ nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags:  nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 control_machine_ip: 10.162.36.196

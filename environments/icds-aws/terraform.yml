@@ -17,13 +17,3 @@ vpn_connections: []
 
 external_routes: []
 
-servers:
-  - server_name: "pgwarehouse0-icds"
-    server_instance_type: "t3a.2xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 50
-    block_device:
-      volume_size: 512
-    group: postgresql
-    os: bionic

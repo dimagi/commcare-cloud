@@ -57,16 +57,20 @@ datadog_custom_parsers:
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
     tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}_cas_commcare-nginx_error.log"
     tags: nginx-error
 filebeat_output_logstash_hosts:
   - "{{ groups.logproxy.0 }}:5044"
 
 etc_hosts_lines:
   - '127.0.0.1        localhost'
-  - '100.71.181.10		cas.commcarehq.org'
-  - '100.71.181.10		reports.icds-cas.gov.in'
-  - '100.71.181.10		www.icds-cas.gov.in'
+  - '100.71.181.11		cas.commcarehq.org'
+  - '100.71.181.11		reports.icds-cas.gov.in'
+  - '100.71.181.11		www.icds-cas.gov.in'
   - '100.126.21.242     mowcdmum.ipstorage.tatacommunications.com'
 etc_hosts_lines_removed: []
 ssh_allow_password_users:

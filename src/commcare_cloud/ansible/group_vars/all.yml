@@ -138,6 +138,7 @@ BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH | def
 BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE | default('')}}"
 BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY | default('') }}"
 BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN | default('') }}"
+BITLY_OAUTH_TOKEN: "{{ localsettings_private.BITLY_OAUTH_TOKEN | default('') }}"
 BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS | default(None) }}"
 DRIFT_ID: "{{ localsettings_private.DRIFT_ID | default('', true) }}"
 DROPBOX_APP_NAME: 'CommCareHQFiles'
