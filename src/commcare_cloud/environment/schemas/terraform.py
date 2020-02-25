@@ -1,4 +1,6 @@
 import jsonobject
+from clint.textui import puts
+from commcare_cloud.colors import color_warning
 
 
 class TerraformConfig(jsonobject.JsonObject):
@@ -61,6 +63,15 @@ class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
+    encrypted = jsonobject.BooleanProperty(default=False, required=True)
+
+    @classmethod
+    def wrap(cls, data):
+        if 'encrypted' in data:
+            puts(color_warning(
+                'Warning! The "encrypted" option on block_device is experimental '
+                'and not well-integrated into provisioning scripts.'))
+        return super(BlockDevice, cls).wrap(data)
 
 
 class RdsInstanceConfig(jsonobject.JsonObject):
