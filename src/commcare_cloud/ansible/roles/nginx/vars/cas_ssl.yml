@@ -73,7 +73,7 @@ nginx_sites:
     - name: "per_ip_restore"
       zone: "$per_ip_limit"
       size: "50m"
-      rate: "2r/m"
+      rate: "6r/m"
     - name: "submissions"
       zone: "$global_limit"
       size: "10m"
