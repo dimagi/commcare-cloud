@@ -68,7 +68,7 @@ will be unable to submit forms or sync with the server.
   the command to save the output in a csv file.
   - `./manage.py print_domain_stats <domain_name>`
 - A site administrator will need to run the data dump commands. First run
-  `$ tf -h` to ensure the machine has the disk space to store the output. Then
+  `$ df -h` to ensure the machine has the disk space to store the output. Then
   run the data dumps.
   - `./manage.py dump_domain_data <domain_name>` 
   - `./manage.py run_blob_export --all <domain_name>`
