@@ -400,7 +400,11 @@ REPORT_CACHE = 'redis'
 redis_cache = {
     'BACKEND': 'django_redis.cache.RedisCache',
 {% if 'REDIS_DB' in localsettings %}
+{% if localsettings.get('REDIS_PASSWORD') %}
+    'LOCATION': 'redis://:{{ localsettings.REDIS_PASSWORD}}@{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
+{% else %}
     'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
+{% endif %}
 {% else %}
     'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
 {% endif %}
