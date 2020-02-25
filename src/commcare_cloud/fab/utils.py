@@ -12,7 +12,7 @@ import re
 from getpass import getpass
 from memoized import memoized_property, memoized
 
-from github import Github, UnknownObjectException
+from github import Github, UnknownObjectException, GithubException
 from fabric.api import execute, env
 from fabric.colors import magenta
 
@@ -140,8 +140,11 @@ class DeployMetadata(object):
             return env.code_branch
 
         # turn whatever `code_branch` is into a commit hash
-        branch = self.repo.get_branch(self._code_branch)
-        return branch.commit.sha
+        try:
+            branch = self.repo.get_branch(self._code_branch)
+            return branch.commit.sha
+        except GithubException:
+            return self.repo.get_commit(sha=self._code_branch).sha
 
     def tag_setup_release(self):
         if _github_auth_provided():
