@@ -121,9 +121,9 @@ $ cchq <env> service commcare stop
 
 ## Couch node is down
 
-If a couch node is down, it could mean that it is either very slow at responding to requests or it has stopped running.
+If a couch node is down, the couch disk might be full. In that case, see [Couch node data disk is full](#couch-node-data-disk-is-full) below. Otherwise, it could mean that the node is slow to respond, erroring frequently, or that the couch process or VM itself in a stopped state.
 
-Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as instance:http://<proxy ip>/_node/couchdb_<couch node ip>/
+Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as "instance:http://<proxy ip>/_node/couchdb_<couch node ip>/".
 
 1. log into couch node ip
 2. service couchdb2 status
@@ -132,6 +132,45 @@ Monitors are setup to ping the proxy instead of couch instance directly, so the 
     a. Use fauxton to see if any tasks are running that could cause couch to become unresponsive (like large indexing tasks)
     b. It could also have ballooned (ICDS) which is out of our control
 5. If it's unresponsive and it's out of our control to fix it at the time, go to the proxy machine and comment out the fault node from the nginx config. This will stop sending requests to that server, but it will continue to replicate. When the slowness is over you can uncomment this line and begin proxying reads to it again
+
+## Couch node data disk is full
+
+### Stop routing data to the node
+
+If there is more than one couch node, and the other nodes are healthy, the fastest way to get to a calmer place is to pull the node with the full disk out of the proxy so requests stop getting routed to it. First
+
+- Check that the other nodes do not have a full disk
+
+To stop routing data to the node:
+
+1. Comment it out under `[couchdb2]` in the `inventory.ini`
+2. Run
+    ```bash
+    cchq <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
+    ``` 
+3. Stop its couchdb process
+    ```bash
+    cchq production run-shell-command <node-name> 'monit stop couchdb2' -b
+    ```
+
+### Increase its disk
+
+The steps for this will differ depending on your hosting situation.
+
+Link to internal Dimagi docs on [How to modify volume size on AWS](https://confluence.dimagi.com/display/internal/How+to+modify+volume+size+on+AWS).
+
+Once the disk is resized, couchdb should start normally. You may want to immediately investigate how to compact more aggressively to avoid the situation again, or to increase disk on the other nodes as well, since what happens on one is likely to happen on others sooner rather than later barring any other changes.
+
+### Add the node back
+
+Once the node has enough disk
+
+1. Start the node (or ensure that it's already started)
+2. Reset your inventory.ini to the way it was (i.e. with the node present under the `[couchdb2]` group)
+3. Run the same command again to now route a portion of traffic back to the node again:
+    ```bash
+    cchq <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
+    ```
 
 ## Compacting a shard
 
