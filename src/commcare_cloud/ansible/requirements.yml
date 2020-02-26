@@ -19,4 +19,4 @@ roles:
   - src: DavidWittman.redis
     version: 1.2.5
 collections:
-  - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.6.0/dimagi-commcare_logstash-0.6.0.tar.gz
+  - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.7.0/dimagi-commcare_logstash-0.7.0.tar.gz
