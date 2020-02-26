@@ -8,9 +8,19 @@
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
 
+- name: Encrypt WAL Drive
+  hosts: pg_standby
+  tasks:
+    - name: Encrypt drive
+      vars:
+        dir_path: "{{ postgresql_archive_path }}"
+      include: encrypt_dir.yml
+      when: postgresql_archive_path is defined
+  tags: ecryptfs
+
 - name: CitusDB
   hosts: 
-    - citusdb
+    - citusdb_pg_master,citusdb_pg_standby
   become: true
   roles:
     - {role: citusdb, tags: 'citusdb'}
@@ -20,6 +30,20 @@
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
+
+- name: Setup auth for standby
+  hosts:
+    - citusdb
+  vars:
+    - userFrom: postgres
+    - hostTo: "{{ hot_standby_server }}"
+    - userTo: postgres
+    - state: 'present'
+  tasks:
+    - import_tasks: roles/setup_auth_keys.yml
+      when: hot_standby_server is defined and hot_standby_server
+  tags:
+    - pg_standby
 
 - name: pgbouncer
   hosts: citusdb_worker
