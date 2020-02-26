@@ -73,7 +73,7 @@ nginx_sites:
     - name: "per_ip_restore"
       zone: "$per_ip_limit"
       size: "50m"
-      rate: "2r/m"
+      rate: "6r/m"
     - name: "submissions"
       zone: "$global_limit"
       size: "10m"
@@ -86,14 +86,6 @@ nginx_sites:
       zone: "$limit_bucket"
       size: "10m"
       rate: "5r/s"
-    - name: "app_downloads"
-      zone: "$global_limit"
-      size: "10m"
-      rate: "10r/s"
-    - name: "multimedia"
-      zone: "$global_limit"
-      size: "10m"
-      rate: "200r/s"
    proxy_cache_path:
     - name: "app_cache"
       path: "{{ www_home }}/app_downloads/cache"
@@ -115,10 +107,6 @@ nginx_sites:
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
        proxy_cache: app_cache
-       limit_reqs:
-         - zone_name: "multimedia"
-           burst: 50
-           nodelay: True
        limit_rate: 500k
      - name: "/a/icds-test/apps/download"
        balancer: "{{ deploy_env }}_cas_commcare"
