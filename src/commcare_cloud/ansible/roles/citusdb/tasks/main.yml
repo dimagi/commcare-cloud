@@ -32,7 +32,7 @@
      postgresql_shared_preload_libraries:
        - 'citus'
        - 'pg_stat_statements'
-     postgresql_custom_settings: "{{ [\"citus.use_secondary_nodes = 'always'\"] if is_pg_standby else []}}"
+     postgresql_custom_settings: "{{ [\"citus.use_secondary_nodes = 'always'\"] if is_pg_standby and 'citusdb_master' in groups else []}}"
 
  - name: Set up Citus Worker DBs
    import_tasks: setup_worker.yml
