@@ -15,16 +15,14 @@ nginx_sites:
    geo:
     - name: "$limited"
       mappings:
-      - key: "default"
-        value: 1
-      - key: '192.168.8.218' # Ben Talbot
-        value: 0
-      - key: '180.151.231.114' # Ashish
-        value: 0
-      - key: '120.56.84.164' # Sankalp
-        value: 0
-      - key: '50.78.242.97' # Boston office
-        value: 0
+      - 'default    1;'
+      - '192.168.8.218    0;  # Ben Talbot'
+      - '180.151.231.114    0;  # Ashish'
+      - '120.56.84.164    0;  # Sankalp'
+      - '50.78.242.97    0;  # Boston office'
+      - '203.100.67.204    0;  # Surabhi'
+      - '120.56.80.94    0;  # Sankalp'
+      - '106.210.65.91    0;  # Jayshree'
    mappings:
     # Remove 'username' query param from request uri for use in cache key
     # https://stackoverflow.com/a/45587134
