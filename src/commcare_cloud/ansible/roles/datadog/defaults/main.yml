@@ -1,5 +1,4 @@
 couchdb2_first_host: "{{ groups['couchdb2'][0] if 'couchdb2' in groups else 'NO HOST SHOULD MATCH THIS' }}"
-
 datadog_celery_version: 90abf6a347348c78bcca8d908ee2e3d31b77bd26
 datadog_celery_sha256sum: 492362bde07d16d1f4664ef84a0bba971b75fa46156e90501fedf8310b651661
 
