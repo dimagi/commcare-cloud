@@ -8,8 +8,8 @@
     filebeat_version: 7.x
   tasks:
     - include_role:
-        name: geerlingguy.filebeat      
-    - import_role:   
+        name: geerlingguy.filebeat
+    - import_role:
         name: dimagi.commcare_logstash.filebeat
   tags: filebeat
 
