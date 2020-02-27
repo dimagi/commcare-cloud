@@ -940,3 +940,11 @@ STATIC_DATA_SOURCE_PROVIDERS = [
 {% if localsettings.ES_SEARCH_TIMEOUT is defined %}
 ES_SEARCH_TIMEOUT = {{ localsettings.ES_SEARCH_TIMEOUT }}
 {% endif %}
+
+{% if localsettings.ES_XFORM_INDEX_NAME is defined %}
+ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
+{% endif %}
+
+{% if localsettings.ES_XFORM_DISABLE_ALL is defined %}
+ES_XFORM_DISABLE_ALL = {{ localsettings.ES_XFORM_DISABLE_ALL }}
+{% endif %}
