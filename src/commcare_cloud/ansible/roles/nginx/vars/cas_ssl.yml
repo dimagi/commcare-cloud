@@ -81,7 +81,7 @@ nginx_sites:
       size: "10m"
       rate: "30r/s"
     - name: "profile_downloads"
-      zone: "$limit_bucket"
+      zone: "$global_limit"
       size: "10m"
       rate: "5r/s"
    proxy_cache_path:
