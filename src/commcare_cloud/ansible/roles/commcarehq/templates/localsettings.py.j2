@@ -942,7 +942,7 @@ ES_SEARCH_TIMEOUT = {{ localsettings.ES_SEARCH_TIMEOUT }}
 {% endif %}
 
 {% if localsettings.ES_XFORM_INDEX_NAME is defined %}
-ES_XFORM_INDEX_NAME = {{ localsettings.ES_XFORM_INDEX_NAME }}
+ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 {% endif %}
 
 {% if localsettings.ES_XFORM_DISABLE_ALL is defined %}
