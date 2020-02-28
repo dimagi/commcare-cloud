@@ -7,12 +7,12 @@
 - name: Download deb package
   get_url:
     url="https://www.lpar2rrd.com/agent/lpar2rrd-agent_6.15-0_all.deb"
-    dest="/{{ ansible_env.USER }}/lpar2rrd-agent_6.15-0_all.deb"
+    dest="/home/{{ ansible_env.USER }}/lpar2rrd-agent_6.15-0_all.deb"
   when: lpar2rrd_check_deb.rc == 1
   ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Install lpar2rrd OS agent
-  apt: deb="/{{ ansible_env.USER }}/lpar2rrd-agent_6.15-0_all.deb"
+  apt: deb="/home/{{ ansible_env.USER }}/lpar2rrd-agent_6.15-0_all.deb"
   when: lpar2rrd_check_deb.rc == 1 
   ignore_errors: '{{ ansible_check_mode }}'
 
