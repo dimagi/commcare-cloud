@@ -61,26 +61,17 @@ nginx_sites:
         # If the header is not provided, do not rate limit
         - key: '""'
           value: '""'
-    - name: "$restore_limit"
-      variable: "$days_since_last_sync"
-      var_mapping:
-        - key: "0"
-          value: 0
-        - key: "~\d+"
-          value: 1
-        - key: "default"
-          value: '""'  
     - name: "$synced_today_bucket"
-      variable: "$restore_limit"
+      variable: "$days_since_last_sync"
       var_mapping:
         - key: "0"
           value: "$limit_bucket"
         - key: "default"
           value: '""'
     - name: "$synced_old_bucket"
-      variable: "$restore_limit"
+      variable: "$days_since_last_sync"
       var_mapping:
-        - key: "1"
+        - key: "~[1-9]\d*"  # match number > 0
           value: "$limit_bucket"
         - key: "default"
           value: '""'        
@@ -93,10 +84,6 @@ nginx_sites:
     - name: "synced_old_bucket"
       zone: "$restore_limit"
       rate: "60r/s"  
-    - name: "incremental_restore" # Limits restores that are not new device or 412s
-      zone: "$incremental_sync"
-      size: "10m"
-      rate: "20r/s"
     - name: "overall_restore" # Limits all restores
       zone: "$global_limit"
       size: "10m"
@@ -192,14 +179,7 @@ nginx_sites:
        proxy_read_timeout: 900s
        limit_reqs:
          - zone_name: "synced_old_bucket"
-           burst: 10
-           nodelay: True
          - zone_name: "synced_today_bucket"
-           burst: 10
-           nodelay: True  
-         - zone_name: "incremental_restore"
-           burst: 10
-           nodelay: True
          - zone_name: "per_ip_restore"
            burst: 2
            nodelay: True
