@@ -38,7 +38,7 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
-        if args.commcare_branch and args.commcare_sha:
+        if args.commcare_branch and args.commcare_hash:
             print(color_notice("You cannot deploy from both a commcare-branch and a commcare-hash."))
             exit(-1)
         commcare_commit = args.commcare_branch or args.commcare_hash
