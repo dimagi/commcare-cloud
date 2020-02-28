@@ -141,7 +141,7 @@ class DeployMetadata(object):
             return env.code_branch
 
         # turn whatever `code_branch` is into a commit hash
-        return sh.git.bake(_tty_out=False)("rev-parse", self._code_branch).strip()
+        return self.repo.get_commit(self._code_branch).sha
 
     def tag_setup_release(self):
         if _github_auth_provided():
