@@ -1,4 +1,4 @@
-env_key: host.environment
+env_key: environment.name
 id: 16132440
 message: |-
   {{#is_alert}}{{pillow_name.name}} is experiencing significant lag ({{eval "value / 3600"}}h).{{/is_alert}}
@@ -6,15 +6,18 @@ message: |-
   << notification_block >>
 name: Reporting and API Lag (aka Pillow Lag)
 options:
-  escalation_message: ''
+  escalation_message: |-
+    {{#is_alert}}There's still pillow lag for {{pillow_name.name}}: {{eval "value / 3600"}}h.{{/is_alert}}
+    {{#is_warning}}There's still pillow lag for {{pillow_name.name}}: {{eval "value / 60"}}m.{{/is_warning}}
+    << notification_block >>
   include_tags: true
   locked: false
   new_host_delay: 300
   no_data_timeframe: null
   notify_audit: false
   notify_no_data: false
-  renotify_interval: 0
-  require_full_window: true
+  renotify_interval: 10
+  require_full_window: false
   silenced: {}
   thresholds:
     critical: 3600.0
