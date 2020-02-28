@@ -962,7 +962,7 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-branch COMMCARE_BRANCH] [--commcare-hash COMMCARE_HASH] [{commcare,formplayer}]
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-branch COMMCARE_BRANCH] [{commcare,formplayer}]
 ```
 
 ##### Positional Arguments
@@ -983,11 +983,7 @@ Skip the steps involved in recording and announcing the fact of the deploy.
 
 ###### `--commcare-branch COMMCARE_BRANCH`
 
-The name of the commcare-hq git branch to deploy. Not allowed if `--commcare-hash` is specified.
-
-###### `--commcare-hash COMMCARE_HASH`
-
-A commit hash from commcare-hq to deploy. Not allowed if `--commcare-branch` is specified.
+The name of the commcare-hq git branch to deploy.
 
 ---
 
