@@ -9,7 +9,6 @@ from fabric.operations import sudo
 from fabric.context_managers import cd, settings
 from fabric.api import local
 import re
-import sh
 from getpass import getpass
 from memoized import memoized_property, memoized
 
