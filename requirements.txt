@@ -53,6 +53,7 @@ pytz==2017.2              # via commcare-cloud (setup.py)
 pyyaml==5.1               # via ansible, couchdb-cluster-admin
 requests==2.22.0          # via couchdb-cluster-admin, datadog, pygithub
 s3transfer==0.2.0         # via boto3
+sh==1.12.14
 simplejson==3.16.0        # via datadog
 six==1.12.0               # via bcrypt, commcare-cloud (setup.py), cryptography, fabric3, jsonobject, pynacl, pyopenssl, python-dateutil
 tabulate==0.8.6           # via commcare-cloud (setup.py)
