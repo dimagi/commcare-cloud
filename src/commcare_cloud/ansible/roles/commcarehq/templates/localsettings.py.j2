@@ -948,3 +948,8 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 {% if localsettings.ES_XFORM_DISABLE_ALL is defined %}
 ES_XFORM_DISABLE_ALL = {{ localsettings.ES_XFORM_DISABLE_ALL }}
 {% endif %}
+
+
+{% if localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER is defined %}
+USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER = {{ localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER }}
+{% endif %}
