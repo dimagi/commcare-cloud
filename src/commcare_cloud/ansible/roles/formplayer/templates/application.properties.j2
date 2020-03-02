@@ -44,10 +44,6 @@ redis.clusterString={{ groups.redis_cluster_master | join(":" + localsettings.RE
 redis.hostname={{ localsettings.REDIS_HOST }}
 {% endif %}
 
-{% if localsettings.get('REDIS_PASSWORD') %}
-redis.Password={{ localsettings.REDIS_PASSWORD }}
-{% endif %}
-
 endpoints.enabled=true
 management.address: 0.0.0.0
 management.port: 8081

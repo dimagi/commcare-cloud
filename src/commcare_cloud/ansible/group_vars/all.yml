@@ -46,7 +46,6 @@ couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
 }"
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
-redis_bind: 0.0.0.0
 run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service
