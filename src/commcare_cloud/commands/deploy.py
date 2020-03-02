@@ -35,16 +35,16 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
-        self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
+        commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
         if args.component == 'commcare':
-            print(color_summary("You are about to deploy commcare from {}".format(args.commcare_rev)))
+            print(color_summary("You are about to deploy commcare from {}".format(commcare_rev)))
             if ask('Deploy commcare?', quiet=args.quiet):
                 print(color_notice("Formplayer will not be deployed right now,"))
                 print(color_notice("but we recommend deploying formplayer about once a month as well."))
                 print(color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
                 print(color_notice("but keeps these services up to date."))
                 print(color_notice("You can do so by running `commcare-cloud <env> deploy formplayer`"))
-                self.deploy_commcare(environment, args.commcare_rev, args, unknown_args)
+                self.deploy_commcare(environment, commcare_rev, args, unknown_args)
         elif args.component == 'formplayer':
             self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
@@ -110,6 +110,8 @@ class Deploy(CommandBase):
             ).format(commcare_rev=commcare_rev)
             if not ask(message, quiet=quiet):
                 exit(-1)
+
+        return commcare_rev
 
     @staticmethod
     def _announce_formplayer_deploy_start(environment):
