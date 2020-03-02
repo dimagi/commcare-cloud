@@ -4,15 +4,9 @@ roles:
     name: andrewrothstein.couchdb
   - version: v1.1.4
     name: andrewrothstein.couchdb-cluster
-  - src: git+https://github.com/debops-contrib/ansible-etckeeper.git
-    version: 29c721de3df965ff355cbed242db813f70b811a2
-    name: debops-contrib.etckeeper
   - src: git+https://github.com/ANXS/tmpreaper.git
     version: 46f8e0b8b8f5732eecc68b08b5e0c392c418e3f3
     name: tmpreaper
-  - src: git+https://github.com/mrlesmithjr/ansible-squid.git
-    version: 2d015170b7e4f28e4bc782af829f340974efaf2d
-    name: squid
   - src: git+https://github.com/nickhammond/ansible-logrotate.git
     version: e7a498
     name: ansible-logrotate

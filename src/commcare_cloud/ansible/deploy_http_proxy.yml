@@ -1,18 +1,3 @@
-- name: Configure squid proxy
-  hosts: squid
-  vars:
-    squid_cache_peering: True
-    squid_cache_peer:
-      - name: parent
-        host: "{{ http_proxy_parent_address }}"
-        type: parent
-        proxy_port: "{{ http_proxy_parent_port }}"
-        icp_port: 0
-        options: 'no-query no-digest'
-    pri_domain_name: "{{ internal_domain_name }}"
-  roles:
-    - {role: squid, tags: 'squid', when: http_proxy_address|default(false)}
-
 - name: HTTP proxy for external calls
   hosts: all
   become: yes
