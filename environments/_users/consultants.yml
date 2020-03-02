@@ -1,4 +1,4 @@
 dev_users:
-  present: []
-  absent: 
-    - jmoeller
+  present: 
+    - strivedi
+  absent: []

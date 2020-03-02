@@ -16,5 +16,5 @@ redis10,100.71.185.5,redis,redis_slave,redis_sentinel,keepalived_redis,MUMGCCWCD
 control0,100.71.181.9,patch,control,,,MUMGCCWCDPRDPTV00,,,,,,
 proxy2,100.71.181.11,proxy,cas_proxy,staticfiles,,MUMGCCWCDPRDPXV01,,14.141.62.10,,,,
 proxy3,100.71.181.15,proxy,cas_proxy,,,MUMGCCWCDPRDPXV02,,14.141.62.11,,,,
-nicbackup,100.71.188.129,,,,,MUMGCCWCDFTP01,,,,,,
+nicbackup,100.71.188.129,lpar2rrd_master,,,,MUMGCCWCDFTP01,,,,,,
 logproxy1,100.71.185.8,logproxy,,,,MUMGCCWCDPRDRDV01,,,,,,

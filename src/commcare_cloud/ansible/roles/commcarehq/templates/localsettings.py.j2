@@ -399,10 +399,14 @@ REPORT_CACHE = 'redis'
 
 redis_cache = {
     'BACKEND': 'django_redis.cache.RedisCache',
+{% set redis_url = 'redis://:{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}' %}
+{% if localsettings.get('REDIS_PASSWORD') %}
+{% set redis_url = 'redis://:{{ localsettings.REDIS_PASSWORD}}@{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}' %}
+{% endif %}
 {% if 'REDIS_DB' in localsettings %}
-    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}/{{ localsettings.REDIS_DB }}',
+    'LOCATION': '{{ redis_url }}/{{ localsettings.REDIS_DB }}',
 {% else %}
-    'LOCATION': 'redis://{{ localsettings.REDIS_HOST }}:{{ localsettings.REDIS_PORT }}',
+    'LOCATION': '{{ redis_url }}',
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
@@ -939,4 +943,12 @@ STATIC_DATA_SOURCE_PROVIDERS = [
 
 {% if localsettings.ES_SEARCH_TIMEOUT is defined %}
 ES_SEARCH_TIMEOUT = {{ localsettings.ES_SEARCH_TIMEOUT }}
+{% endif %}
+
+{% if localsettings.ES_XFORM_INDEX_NAME is defined %}
+ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
+{% endif %}
+
+{% if localsettings.ES_XFORM_DISABLE_ALL is defined %}
+ES_XFORM_DISABLE_ALL = {{ localsettings.ES_XFORM_DISABLE_ALL }}
 {% endif %}
