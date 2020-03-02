@@ -23,6 +23,8 @@ nginx_sites:
       - '203.100.67.204    0;  # Surabhi'
       - '120.56.80.94    0;  # Sankalp'
       - '106.210.65.91    0;  # Jayshree'
+      - '223.238.195.139  0;  # Shubham'
+      - '120.56.91.78     0; # Sankalp'
    mappings:
     # Remove 'username' query param from request uri for use in cache key
     # https://stackoverflow.com/a/45587134
