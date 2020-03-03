@@ -57,7 +57,7 @@ nginx_sites:
     - name: "$synced_never_bucket"
       variable: "$days_since_last_sync"
       var_mapping:
-        - key: ""
+        - key: '""'
           value: "$global_limit"
         - key: "default"
           value: '""'      
