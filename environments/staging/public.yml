@@ -44,8 +44,6 @@ soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
 exchange_email: exchange@dimagi.com
-ALTERNATE_HOSTS:
-  - sanjay1.commcarehq.org
 
 couch_dbs:
   default:
