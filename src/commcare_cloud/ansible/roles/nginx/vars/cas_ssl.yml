@@ -81,8 +81,8 @@ nginx_sites:
       zone: "$restore_limit"
       size: "10m"
       rate: "40r/s"
-    - name: "synced_old_bucket"
-      zone: "$restore_limit"
+    - name: "synced_old"
+      zone: "$synced_old_bucket"
       rate: "60r/s"  
     - name: "overall_restore" # Limits all restores
       zone: "$global_limit"
