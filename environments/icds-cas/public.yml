@@ -34,6 +34,7 @@ RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 backup_es_swift: True
 swift_container: mowcdmumelasticdb
 swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
+datadog_integration_swift: True
 
 nofile_limit: 65536
 

@@ -53,7 +53,7 @@
     dest: /etc/dd-agent/checks.d/swift.py
     sha256sum: "{{ datadog_swift_sha256sum }}"
     force: yes
-  when: datadog_integration_swift|default(False)
+  when: datadog_integration_swift|default(False) and inventory_hostname == groups.control[0]
   notify: restart datadog
   tags:
     - datadog_integrations
@@ -87,4 +87,4 @@
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
     - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
-    - {"name": "swift", "enabled": "{{ datadog_integration_swift }}"}
+    - {"name": "swift", "enabled": "{{ datadog_integration_swift and inventory_hostname == groups.control[0]}}"}
