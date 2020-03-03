@@ -39,7 +39,7 @@ datadog_swift_instances:
     swift_auth_url: "{{ swift_url }}"
     swift_username: "{{ secrets.es_swift_username }}"
     swift_password: "{{ secrets.es_swift_password }}"
-  - nmae: commcare
+  - name: commcare
     swift_auth_url: "https://mowcddbmum.ipstorage.tatacommunications.com/auth/v1.0/"
     swift_username: "{{ secrets.hq_swift_username }}"
     swift_password: "{{ secrets.hq_swift_password }}"
