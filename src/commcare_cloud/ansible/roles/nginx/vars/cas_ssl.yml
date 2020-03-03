@@ -53,14 +53,13 @@ nginx_sites:
           value: "$binary_remote_addr"
         - key: "0"
           value: '""'
-    - name: "$incremental_sync"
-      variable: "$http_x_commcarehq_lastsynctoken"
-      # If header is provided, rate limit on $limit_bucket
-      default_value: "$global_limit"
-      var_mappings:
-        # If the header is not provided, do not rate limit
-        - key: '""'
-          value: '""'
+    - name: "$synced_never_bucket"
+      variable: "$days_since_last_sync"
+      var_mapping:
+        - key: ""
+          value: "$global_limit"
+        - key: "default"
+          value: '""'      
     - name: "$synced_today_bucket"
       variable: "$days_since_last_sync"
       var_mapping:
@@ -77,17 +76,21 @@ nginx_sites:
           value: '""'        
 
    limit_req_zones:
+    - name: "synced_never_bucket"
+      zone: "$global_limit"
+      size: "10m"
+      rate: "10r/s"
     - name: "synced_today_bucket"
       zone: "$restore_limit"
       size: "10m"
-      rate: "40r/s"
+      rate: "10r/s"
     - name: "synced_old_bucket"
       zone: "$restore_limit"
-      rate: "60r/s"  
+      rate: "10r/s"  
     - name: "overall_restore" # Limits all restores
       zone: "$global_limit"
       size: "10m"
-      rate: "20r/s"
+      rate: "30r/s"
     - name: "per_ip_restore"
       zone: "$per_ip_limit"
       size: "50m"
@@ -178,6 +181,7 @@ nginx_sites:
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
        limit_reqs:
+         - zone_name: "synced_never_bucket"
          - zone_name: "synced_old_bucket"
          - zone_name: "synced_today_bucket"
          - zone_name: "per_ip_restore"
