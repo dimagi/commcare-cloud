@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2020-02-28** [Update `deploy` CommandArgs](0033-update-deploy-args.md)
+We are adding support for deploying from a specific commit hash or tag, replacing
+the deploy command's `commcare-branch` argument with a more general `commcare-rev` argument.
+
 ### **2020-02-05** [ES upgrade from 1.7.6 to 2.4.6](0032-upgrade-to-elasticsearch-2.4.6.md)
 This change upgrade Elasticsearch from 1.7.6 to 2.4.6 version.
 CommCare HQ releases after April 2, 2020 will not continue to support Elasticsearch 1.7.6,
