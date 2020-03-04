@@ -55,23 +55,23 @@ nginx_sites:
         - key: "0"
           value: '""'
     - name: "$synced_never_bucket"
-      variable: "$days_since_last_sync"
-      var_mapping:
+      variable: "$arg_days_since_last_sync"
+      var_mappings:
         - key: '""'
           value: "$global_limit"
         - key: "default"
           value: '""'      
     - name: "$synced_today_bucket"
-      variable: "$days_since_last_sync"
-      var_mapping:
+      variable: "$arg_days_since_last_sync"
+      var_mappings:
         - key: "0"
           value: "$global_limit"
         - key: "default"
           value: '""'
     - name: "$synced_old_bucket"
-      variable: "$days_since_last_sync"
-      var_mapping:
-        - key: "~[1-9]\d*"  # match number > 0
+      variable: "$arg_days_since_last_sync"
+      var_mappings:
+        - key: ~^[1-9]\d*  # match number > 0
           value: "$global_limit"
         - key: "default"
           value: '""'        
@@ -87,6 +87,7 @@ nginx_sites:
       rate: "10r/s" 
     - name: "synced_old"
       zone: "$synced_old_bucket"
+      size: "10m"
       rate: "10r/s"  
     - name: "overall_restore" # Limits all restores
       zone: "$global_limit"
