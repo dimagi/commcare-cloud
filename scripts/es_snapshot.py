@@ -197,11 +197,11 @@ def get_matching_shard_items(client, shard, matcher):
         yield item
 
 
-def sizeof_fmt(num, suffix='B'):
+def sizeof_fmt(num, suffix='iB'):
     for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
-        if abs(num) < 1000.0:
+        if abs(num) < 1024.0:
             return "%3.1f%s%s" % (num, unit, suffix)
-        num /= 1000.0
+        num /= 1024.0
     return "%.1f%s%s" % (num, 'Y', suffix)
 
 

@@ -50,8 +50,6 @@ soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
 exchange_email: exchange@dimagi.com
-ALTERNATE_HOSTS:
-  - sanjay1.commcarehq.org
 
 couch_dbs:
   default:
@@ -123,6 +121,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
+  USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
