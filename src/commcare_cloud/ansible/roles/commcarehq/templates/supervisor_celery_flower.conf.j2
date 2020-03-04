@@ -14,6 +14,6 @@ stderr_logfile={{ log_home }}/celery_flower.error.log
 startsecs=10
 ; Need to wait for currently executing tasks to finish at shutdown.
 ; Increase this if you have very long running tasks.
-stopwaitsecs = 600
+stopwaitsecs = 10
 ; if rabbitmq is supervised, set its priority higher
 ; so it starts first

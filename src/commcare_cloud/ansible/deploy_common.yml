@@ -106,3 +106,12 @@
       - dns
       - after-reboot
   tags: common
+  
+- name: Deploy lpar2rrd agent
+  hosts: all
+  become: yes
+  tasks:
+    - name: Deploy lpar2rrd
+      include: deploy_lpar2rrd.yml 
+      when: lpar2rrd_agent_enabled | default(False)
+  tags: lpar2rrd        

@@ -15,16 +15,14 @@ nginx_sites:
    geo:
     - name: "$limited"
       mappings:
-      - key: "default"
-        value: 1
-      - key: '192.168.8.218' # Ben Talbot
-        value: 0
-      - key: '180.151.231.114' # Ashish
-        value: 0
-      - key: '120.56.84.164' # Sankalp
-        value: 0
-      - key: '50.78.242.97' # Boston office
-        value: 0
+      - 'default    1;'
+      - '192.168.8.218    0;  # Ben Talbot'
+      - '180.151.231.114    0;  # Ashish'
+      - '120.56.84.164    0;  # Sankalp'
+      - '50.78.242.97    0;  # Boston office'
+      - '203.100.67.204    0;  # Surabhi'
+      - '120.56.80.94    0;  # Sankalp'
+      - '106.210.65.91    0;  # Jayshree'
    mappings:
     # Remove 'username' query param from request uri for use in cache key
     # https://stackoverflow.com/a/45587134
@@ -65,11 +63,11 @@ nginx_sites:
     - name: "incremental_restore" # Limits restores that are not new device or 412s
       zone: "$incremental_sync"
       size: "10m"
-      rate: "20r/s"
+      rate: "35r/s"
     - name: "overall_restore" # Limits all restores
       zone: "$global_limit"
       size: "10m"
-      rate: "20r/s"
+      rate: "40r/s"
     - name: "per_ip_restore"
       zone: "$per_ip_limit"
       size: "50m"
@@ -77,15 +75,15 @@ nginx_sites:
     - name: "submissions"
       zone: "$global_limit"
       size: "10m"
-      rate: "200r/s"
+      rate: "300r/s"
     - name: "server_name"
       zone: "$global_limit"
       size: "10m"
-      rate: "30r/s"
+      rate: "50r/s"
     - name: "profile_downloads"
-      zone: "$limit_bucket"
+      zone: "$global_limit"
       size: "10m"
-      rate: "5r/s"
+      rate: "2r/s"
    proxy_cache_path:
     - name: "app_cache"
       path: "{{ www_home }}/app_downloads/cache"

@@ -119,6 +119,12 @@ $ cchq <env> service commcare stop
 
 # Couch 2.0
 
+Important note about CouchDB clusters. At Dimagi we run our CouchDB clusters with at least 3 nodes, and **store all data in triplicate**. That means if one node goes down (or even two nodes!), there are no user-facing effects with regards to data completeness so long as no traffic is being routed to the defective node or nodes.
+
+Thus in most cases, the correct approach is to stop routing traffic to the defective node, to stop it, and then to solve the issue with some better breathing room.
+
+(If you do not store your data in duplicate or triplicate, than this does not apply to your cluster, and a single node being down means the database is either down or serving incomplete data.)
+
 ## Couch node is down
 
 If a couch node is down, the couch disk might be full. In that case, see [Couch node data disk is full](#couch-node-data-disk-is-full) below. Otherwise, it could mean that the node is slow to respond, erroring frequently, or that the couch process or VM itself in a stopped state.

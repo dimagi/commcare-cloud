@@ -21,7 +21,7 @@ upstream {{ balancer.name }} {
 {% for geo in item.server.geo|default([]) %}
 geo {{geo.name}} {
   {% for var_map in geo.mappings %}
-  {{ var_map.key }}      {{ var_map.value }};
+    {{ var_map }}
   {% endfor %}
 }
 {% endfor %}

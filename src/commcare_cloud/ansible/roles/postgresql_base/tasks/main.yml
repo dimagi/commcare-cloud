@@ -103,7 +103,7 @@
     state: directory
     owner: postgres
     group: postgres
-  when: postgresql_enable_archive|bool
+  when: postgresql_enable_archive|bool and is_pg_standby|bool
 
 - name: Create clean WAL archive cron
   become: yes
@@ -113,7 +113,7 @@
     user: root
     minute: "*/30"
     cron_file: clean_pg_archive
-    state: "{{ 'present' if postgresql_enable_archive and not disable_archive_cleanup_cron else 'absent' }}"
+    state: "{{ 'present' if postgresql_enable_archive and is_pg_standby and not disable_archive_cleanup_cron else 'absent' }}"
 
 - name: PostgreSQL app configuration
   template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
