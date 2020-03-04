@@ -1,0 +1,11 @@
+init_config:
+
+instances:
+{% for instance in datadog_swift_instances %}
+    -   swift_auth_url: {{ instance.swift_auth_url }}
+        swift_username: {{ instance.swift_username }}
+        swift_password: {{ instance.swift_password }}
+        tags:
+           - name:{{ instance.name }}
+{% endfor %}
+
