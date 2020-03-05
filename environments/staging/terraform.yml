@@ -96,7 +96,7 @@ servers:
     az: "a"
     volume_size: 400
     block_device:
-      volume_size: 400
+      volume_size: 50
       encrypted: true
     group: "couchdb2"
     os: bionic
@@ -106,7 +106,7 @@ servers:
     az: "a"
     volume_size: 400
     block_device:
-      volume_size: 400
+      volume_size: 50
       encrypted: true
     group: "couchdb2"
     os: bionic
@@ -116,7 +116,7 @@ servers:
     az: "a"
     volume_size: 400
     block_device:
-      volume_size: 400
+      volume_size: 50
       encrypted: true
     group: "couchdb2"
     os: bionic
