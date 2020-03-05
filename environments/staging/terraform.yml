@@ -95,6 +95,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    block_device:
+      volume_size: 400
+      encrypted: true
     group: "couchdb2"
     os: bionic
   - server_name: "couch4-staging"
@@ -102,6 +105,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    block_device:
+      volume_size: 400
+      encrypted: true
     group: "couchdb2"
     os: bionic
   - server_name: "couch5-staging"
@@ -109,6 +115,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    block_device:
+      volume_size: 400
+      encrypted: true
     group: "couchdb2"
     os: bionic
     
