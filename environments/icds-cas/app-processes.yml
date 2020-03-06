@@ -76,7 +76,7 @@ celery_processes:
     ucr_indicator_queue:
       concurrency: 6
     dashboard_comparison_queue:
-      concurrency: 4
+      concurrency: 8
   'celery38':
     reminder_case_update_queue:
       pooling: gevent
@@ -127,7 +127,7 @@ celery_processes:
     icds_dashboard_reports_queue:
         concurrency: 2
     dashboard_comparison_queue:
-      concurrency: 4 
+      concurrency: 8
     ucr_queue:
       concurrency: 4       
   celery44,celery45,celery46,celery47,celery48,celery49,celery50:
@@ -135,6 +135,8 @@ celery_processes:
       concurrency: 4
     icds_dashboard_reports_queue:
       concurrency: 2
+    dashboard_comparison_queue:
+      concurrency: 8
   celery51,celery52,celery53,celery54,celery55,celery56,celery57:
     reminder_queue:
       pooling: gevent
