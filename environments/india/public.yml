@@ -139,7 +139,6 @@ localsettings:
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
 #  STATIC_ROOT:
-  TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
