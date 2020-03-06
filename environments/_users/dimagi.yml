@@ -20,6 +20,7 @@ dev_users:
     - sbansal
     - spokhriyal
     - sgoswami
+    - aphulera
   absent:
     - astone
     - wpride
