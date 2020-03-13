@@ -10,6 +10,7 @@ elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
+redis_versin: 5.0.8
 backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: True
