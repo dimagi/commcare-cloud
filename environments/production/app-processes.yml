@@ -73,9 +73,9 @@ celery_processes:
 pillows:
   pillow1:
     case-pillow:
-      num_processes: 64
+      num_processes: 16
     xform-pillow:
-      num_processes: 8
+      num_processes: 16
     user-pillow:
       num_processes: 1
     group-pillow:
