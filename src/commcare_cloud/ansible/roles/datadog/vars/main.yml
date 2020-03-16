@@ -3,14 +3,6 @@ datadog_parsers_repo: https://github.com/dimagi/datadog-parsers
 datadog_parsers_dest: "{{ datadog_custom_dir }}/datadog-parsers"
 datedog_parsers_version: b46f25b72ed7a98d012a17ea846c3d10c418f158
 datadog_parsers:
-  - input: "{{ log_home }}/{{ deploy_env }}-timing.log"
-    python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
-    python_function: parse_logs
-    hosts: "{{ groups['proxy'] }}"
-  - input: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-    python_file: "{{ datadog_parsers_dest }}/nginx/errors.py"
-    python_function: parse_nginx_errors
-    hosts: "{{ groups['proxy'] }}"
   - input: "{{ log_home }}/{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log"
     python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
     python_function: parse_couch_logs
