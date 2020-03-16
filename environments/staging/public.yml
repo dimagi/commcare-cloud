@@ -13,6 +13,12 @@ backup_postgres: plain
 backup_es_s3: False
 postgres_s3: False
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+
 aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
