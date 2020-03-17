@@ -182,8 +182,6 @@ class AwsFillInventoryHelper(object):
                 ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
                 ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
             ]
-            print('=====================================')
-            print(server)
             if server.block_device:
                 if server.block_device.encrypted:
                     inventory_vars.extend([
@@ -192,11 +190,12 @@ class AwsFillInventoryHelper(object):
                         ('datavol_device1', '/dev/sdf'),
                         ('is_datavol_ebsnvme', 'yes'),
                     ])
-                inventory_vars.extend([
-                    ('datavol_device', '/dev/sdf'),
-                    ('datavol_device1', '/dev/sdf'),
-                    ('is_datavol_ebsnvme', 'yes'),
-                ])
+                else :
+                    inventory_vars.extend([
+                        ('datavol_device', '/dev/sdf'),
+                        ('datavol_device1', '/dev/sdf'),
+                        ('is_datavol_ebsnvme', 'yes'),
+                    ])
 
             context.update(
                 self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
