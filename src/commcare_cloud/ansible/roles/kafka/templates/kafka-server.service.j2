@@ -9,6 +9,9 @@ Environment=JMX_PORT={{ kafka_jmx_port }}
 Type=simple
 User=kafka
 Group=kafka
+LimitNOFILE=32000
+Restart=always
+RestartSec=1
 ExecStart=/opt/kafka/bin/kafka-server-start.sh {{ kafka_conf_dir }}/server.properties
 ExecStop=/opt/kafka/bin/kafka-server-stop.sh
 
