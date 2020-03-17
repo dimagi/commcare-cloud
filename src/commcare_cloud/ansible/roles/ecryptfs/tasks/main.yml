@@ -25,7 +25,7 @@
 - name: Format block storage volume
   become: yes
   filesystem: fstype=ext4 dev="{{ datavol_device1 }}"
-  when: datavol_device is defined
+  when: datavol_device is defined and root_encryption_mode != 'aws'
 
 - name: Mount block storage volume
   become: yes
@@ -37,7 +37,7 @@
     opts: "defaults,noatime{{ datavol_opts | default('') | regex_replace('^(?=.)', ',') }}"
     dump: "0"
     passno: "0"
-  when: datavol_device is defined
+  when: datavol_device is defined and root_encryption_mode != 'aws'
 
 - name: Check for already mounted encrypted drive
   shell: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
@@ -48,6 +48,7 @@
   tags:
     - mount-ecryptfs
     - after-reboot
+  when: root_encryption_mode != 'aws'
 
 - name: Install ecryptfs-utils
   become: yes
@@ -63,6 +64,7 @@
   tags:
     - mount-ecryptfs
     - after-reboot
+  when: root_encryption_mode != 'aws'
 
 - name: Add encryption password to keyring
   become: yes
@@ -72,6 +74,7 @@
   tags:
     - mount-ecryptfs
     - after-reboot
+  when: root_encryption_mode != 'aws'
 
 - name: Mount data drive
   become: yes
@@ -80,6 +83,7 @@
   tags:
     - mount-ecryptfs
     - after-reboot
+  when: root_encryption_mode != 'aws'
 
 - name: "Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS"
   become: yes
@@ -87,6 +91,7 @@
   file: path="{{ encrypted_root }}/blobdb" owner=nobody group="{{ shared_dir_gid }}" mode=0775 state=directory
   tags:
     - ecryptfs-blobdb
+  when: root_encryption_mode != 'aws'
 
 - name: Create shared data dir
   become: yes
@@ -96,16 +101,17 @@
     group: "{{ shared_dir_gid }}"
     mode: "u=rwx,g=rwx,o=rx"
     state: directory
-  when: not shared_drive_enabled
+  when: not shared_drive_enabled and root_encryption_mode != 'aws'
   tags:
     - ecryptfs-blobdb
 
 - name: Create blob DB symlink (cchq looks for it in the shared drive)
   become: yes
-  when: not shared_drive_enabled
+  when: not shared_drive_enabled and root_encryption_mode != 'aws'
   file: src="{{ encrypted_root }}/blobdb" dest="{{ shared_data_dir }}/blobdb" state=link
   tags:
     - ecryptfs-blobdb
+  when: root_encryption_mode != 'aws'
 
 - name: Drop unencrypted readme in directory
   become: yes
@@ -117,3 +123,4 @@
     group: root
     mode: 0770
   tags: mount-ecryptfs
+  when: root_encryption_mode != 'aws'
