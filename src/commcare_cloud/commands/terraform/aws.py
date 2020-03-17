@@ -182,7 +182,16 @@ class AwsFillInventoryHelper(object):
                 ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
                 ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
             ]
+            print('=====================================')
+            print(server)
             if server.block_device:
+                if server.block_device.encrypted:
+                    inventory_vars.extend([
+                        ('root_encryption_mode', 'aws'),
+                        ('datavol_device', '/dev/sdf'),
+                        ('datavol_device1', '/dev/sdf'),
+                        ('is_datavol_ebsnvme', 'yes'),
+                    ])
                 inventory_vars.extend([
                     ('datavol_device', '/dev/sdf'),
                     ('datavol_device1', '/dev/sdf'),
@@ -379,4 +388,3 @@ def _has_valid_session_credentials(
         return False
 
     return datetime.utcnow() < expiration
-
