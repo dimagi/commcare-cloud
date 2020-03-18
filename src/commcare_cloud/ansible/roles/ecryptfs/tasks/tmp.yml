@@ -1,70 +1,72 @@
 ---
-- name: Check for already mounted encrypted tmp drive
-  shell: grep '{{ encrypted_tmp }} ecryptfs' /etc/mtab
-  register: mtab_contents
-  failed_when: false
-  changed_when: false
-  check_mode: no
-  tags:
-    - mount-ecryptfs
-    - after-reboot
+- block:
+		- name: Check for already mounted encrypted tmp drive
+			shell: grep '{{ encrypted_tmp }} ecryptfs' /etc/mtab
+  		register: mtab_contents
+  		failed_when: false
+  		changed_when: false
+  		check_mode: no
+  		tags:
+    		- mount-ecryptfs
+    		- after-reboot
 
-- name: Install ecryptfs-utils
-  become: yes
-  apt: name=ecryptfs-utils state=present
-  # Do not install ecryptfs utils if already mounted. This should trigger alarm
-  # bells if something causes a false positive result on checking for encrypted
-  # volume is already mounted.
-  when: encrypted_root not in mtab_contents.stdout
+		- name: Install ecryptfs-utils
+  		become: yes
+  		apt: name=ecryptfs-utils state=present
+  		# Do not install ecryptfs utils if already mounted. This should trigger alarm
+  		# bells if something causes a false positive result on checking for encrypted
+  		# volume is already mounted.
+  		when: encrypted_root not in mtab_contents.stdout
 
-- name: Add encryption password to keyring
-  become: yes
-  shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
-  register: password_hash
-  when: encrypted_tmp not in mtab_contents.stdout
-  tags:
-    - mount-ecryptfs
-    - after-reboot
+		- name: Add encryption password to keyring
+  		become: yes
+  		shell: 'printf "%s" "{{ ECRYPTFS_PASSWORD }}" | ecryptfs-add-passphrase | grep -o "\[.*\]" | sed "s/\[//g;s/\]//g"'
+  		register: password_hash
+  		when: encrypted_tmp not in mtab_contents.stdout
+  		tags:
+    		- mount-ecryptfs
+    		- after-reboot
 
-- name: Create {{encrypted_tmp}} to use for as tmp directory.
-  become: yes
-  file:
-    path: "{{ encrypted_tmp }}"
-    mode: "u=rwx,g=rwx,o=rx"
-    state: directory
-    owner: cchq
-    group: cchq
+		- name: Create {{encrypted_tmp}} to use for as tmp directory.
+  		become: yes
+  		file:
+    		path: "{{ encrypted_tmp }}"
+    		mode: "u=rwx,g=rwx,o=rx"
+    		state: directory
+    		owner: cchq
+    		group: cchq
 
-  tags:
-    - mount-ecryptfs
-    - after-reboot
-    - tmp-encrypt
+ 		 tags:
+    		- mount-ecryptfs
+    		- after-reboot
+    		- tmp-encrypt
 
-- name: Mount tmp drive
-  become: yes
-  shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_tmp }}/ {{ encrypted_tmp }}/"
-  when: (password_hash.stdout is defined) and ( encrypted_tmp not in mtab_contents.stdout )
-  tags:
-    - mount-ecryptfs
-    - after-reboot
+		- name: Mount tmp drive
+  		become: yes
+  		shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_tmp }}/ {{ encrypted_tmp }}/"
+  		when: (password_hash.stdout is defined) and ( encrypted_tmp not in mtab_contents.stdout )
+  		tags:
+    		- mount-ecryptfs
+    		- after-reboot
 
-- name: Drop unencrypted readme in directory
-  become: yes
-  lineinfile:
-    dest: "{{ encrypted_tmp }}/README"
-    line: 'If you can read this file the directory is unencrypted'
-    create: yes
-    owner: root
-    group: root
-    mode: 0770
-  tags: mount-ecryptfs
+		- name: Drop unencrypted readme in directory
+  		become: yes
+  		lineinfile:
+    		dest: "{{ encrypted_tmp }}/README"
+    		line: 'If you can read this file the directory is unencrypted'
+    		create: yes
+    		owner: root
+    		group: root
+    		mode: 0770
+  		tags: mount-ecryptfs
 
-- name: Create purging cron jobs
-  become: yes
-  cron:
-    name: "Purge files in {{ encrypted_tmp }}"
-    special_time: daily
-    job: "/usr/sbin/tmpreaper 2d {{ encrypted_tmp }}"
-    user: root
-    cron_file: purge_tmp_files
-  tags: cron
+		- name: Create purging cron jobs
+  		become: yes
+  		cron:
+    		name: "Purge files in {{ encrypted_tmp }}"
+    		special_time: daily
+    		job: "/usr/sbin/tmpreaper 2d {{ encrypted_tmp }}"
+    		user: root
+    		cron_file: purge_tmp_files
+  		tags: cron
+	when: root_encryption_mode == 'ecryptfs'
