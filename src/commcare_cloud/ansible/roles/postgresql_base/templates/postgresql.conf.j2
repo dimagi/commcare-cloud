@@ -158,6 +158,11 @@ lc_time = 'en_US.UTF-8'
 
 default_text_search_config = 'pg_catalog.english'
 
+# QUERY PLANNER SETTINGS
+{% if not enable_material|default(True) %}
+enable_material = off
+{% endif %}
+
 {% for setting in postgresql_custom_settings|sort %}
 {{setting}}
 {% endfor %}
