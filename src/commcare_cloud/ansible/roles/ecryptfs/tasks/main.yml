@@ -3,7 +3,7 @@
 - block:
     - name: Check for valid partition table on block storage device
       become: yes
-      shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
+      shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition tablef'
       register: partition_check
       when: datavol_device is defined and ansible_hostname not in groups.get('lvm', [])
       changed_when: false
@@ -103,7 +103,7 @@
 
     - name: Create blob DB symlink (cchq looks for it in the shared drive)
       become: yes
-      when: not shared_drive_enabled and root_encryption_mode != 'aws'
+      when: not shared_drive_enabled
       file: src="{{ encrypted_root }}/blobdb" dest="{{ shared_data_dir }}/blobdb" state=link
       tags:
         - ecryptfs-blobdb
