@@ -38,7 +38,7 @@
     - name: Drop unencrypted readme in directory
       become: yes
       lineinfile:
-      dest: "{{ dir_path }}/README"
+        dest: "{{ dir_path }}/README"
         line: 'If you can read this file the directory is unencrypted'
         create: yes
         owner: root
