@@ -188,6 +188,10 @@ class AwsFillInventoryHelper(object):
                     ('datavol_device1', '/dev/sdf'),
                     ('is_datavol_ebsnvme', 'yes'),
                 ])
+                if server.block_device.encrypted:
+                    inventory_vars.append(
+                        ('root_encryption_mode', 'aws'),
+                    )
 
             context.update(
                 self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
@@ -379,4 +383,3 @@ def _has_valid_session_credentials(
         return False
 
     return datetime.utcnow() < expiration
-

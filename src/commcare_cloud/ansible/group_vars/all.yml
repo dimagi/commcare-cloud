@@ -8,6 +8,7 @@ service_home: "{{ www_home }}/services"
 py3_virtualenv_home: "{{ code_home }}/python_env-3.6"
 nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
+root_encryption_mode: "ecryptfs"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
 
