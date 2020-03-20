@@ -218,6 +218,8 @@ celery_processes:
       pooling: gevent
       concurrency: 10
       num_workers: 2
+    submission_reprocessing_queue:
+      concurrency: 10
       
   celery70,celery71: 
     send_report_throttled:
@@ -225,10 +227,10 @@ celery_processes:
       pooling: gevent
       num_workers: 2
     submission_reprocessing_queue:
-      concurrency: 6
+      concurrency: 10
   celery72,celery73:
     submission_reprocessing_queue:
-      concurrency: 10
+      concurrency: 20
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
