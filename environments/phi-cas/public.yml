@@ -51,7 +51,6 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply@icds-cas.gov.in
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
-cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
@@ -67,7 +66,6 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 check_s3_backups_email: commcarehq-ops+root@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
 exchange_email: exchange@dimagi.com
 

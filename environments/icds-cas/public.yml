@@ -85,7 +85,6 @@ ssh_allow_password_users:
 
 default_from_email: commcarehq-noreply@icds-cas.gov.in
 server_email: commcarehq-noreply@icds-cas.gov.in
-cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 root_email: commcarehq-ops+root@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
 support_email: support@dimagi.com
@@ -104,7 +103,6 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
 exchange_email: exchange@dimagi.com
 

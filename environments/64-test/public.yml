@@ -73,7 +73,6 @@ default_from_email: droberts+commcarehq-noreply@dimagi.com
 return_path_email: droberts+commcarehq-bounces@dimagi.com
 support_email: droberts+support@dimagi.com
 probono_support_email: droberts+pro-bono@dimagi.com
-cchq_bug_report_email: droberts+commcarehq-bug-reports@dimagi.com
 accounts_email: droberts+accounts@dimagi.com
 data_email: droberts+datatree@dimagi.com
 subscription_change_email: droberts+accounts+subchange@dimagi.com
