@@ -67,7 +67,6 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 check_s3_backups_email: commcarehq-ops+root@dimagi.com
 new_domain_email: inquiries@dimagi.com
-exchange_email: exchange@dimagi.com
 
 TWO_FACTOR_GATEWAY_ENABLED: False
 

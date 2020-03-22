@@ -122,7 +122,6 @@ daily_deploy_email: null
 check_s3_backups_email: null
 return_path_email: null
 new_domain_email: inquiries@example.com
-exchange_email: exchange@example.com
 
 
 ALTERNATE_HOSTS: []
