@@ -107,11 +107,10 @@
       - after-reboot
   tags: common
   
-- name: Deploy lpar2rrd agent
+- name: Deploy lpar2rrd agent and server
   hosts: all
   become: yes
-  tasks:
-    - name: Deploy lpar2rrd
-      include: deploy_lpar2rrd.yml 
+  roles:
+    - role: lpar2rrd
       when: lpar2rrd_agent_enabled | default(False)
   tags: lpar2rrd        

@@ -1,0 +1,6 @@
+---
+- include: install_agent.yml
+  tags: lpar2rrd_agent
+- include: install_master.yml
+  when: inventory_hostname in groups.lpar2rrd_master|default([])
+  tags: lpar2rrd_master 
