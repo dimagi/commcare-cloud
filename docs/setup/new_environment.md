@@ -8,6 +8,7 @@ This document will walk you through the process of setting up a new monolith ser
     * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCareHQ as a demo, and any production environment should be given many more resources.
     * Ubuntu 18.04 server 64-bit installed 
     * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
+    * A domain name which directs to your server.
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
 
 ## Step 1: Prepare system for automated deploy
@@ -72,6 +73,16 @@ This document will walk you through the process of setting up a new monolith ser
     ```
     
     You can read more about the files contained in this environments folder [here](../commcare-cloud/env/index.md).
+
+1. Update to the real domain name. This example configuration contains
+   references to `monolith.commcarehq.test`. Update the following:
+
+   - `proxy.yml`
+     - `SITE_HOST`
+   - `public.yml`
+     - `ALLOWED_HOSTS`
+     - `server_email`
+     - `default_from_email`
 
 1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
 
