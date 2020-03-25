@@ -193,6 +193,9 @@ class DjangoManage(CommandBase):
             E.g. '2018-04-13_18.16'.
             If none is specified, the `current` release will be used.
         """),
+        Argument('--tee', dest='tee_file', help="""
+            Tee output to the screen and to this file on the remote machine
+        """)
     )
 
     def run(self, args, manage_args):
@@ -209,14 +212,24 @@ class DjangoManage(CommandBase):
             code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
                 cchq_user=cchq_user, deploy_env=deploy_env)
 
+        if args.tee_file:
+            tee_file_cmd = ' | tee {}'.format(shlex_quote(args.tee_file))
+        else:
+            tee_file_cmd = ''
+
         python_env = 'python_env-3.6'
         remote_command = (
-            'bash -c "cd {code_dir}; {python_env}/bin/python manage.py {args}"'
-            .format(
-                python_env=python_env,
-                cchq_user=cchq_user,
-                code_dir=code_dir,
-                args=' '.join(shlex_quote(arg) for arg in manage_args),
+            'bash -c {}'.format(
+                shlex_quote(
+                    'cd {code_dir}; {python_env}/bin/python manage.py {args}{tee_file_cmd}'
+                    .format(
+                        python_env=python_env,
+                        cchq_user=cchq_user,
+                        code_dir=code_dir,
+                        args=' '.join(shlex_quote(arg) for arg in manage_args),
+                        tee_file_cmd=tee_file_cmd,
+                    )
+                )
             )
         )
         args.server = args.server or 'django_manage:0'
