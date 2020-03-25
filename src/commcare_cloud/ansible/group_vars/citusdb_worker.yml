@@ -2,3 +2,4 @@ datadog_integration_pgbouncer: true
 datadog_integration_postgres: true
 is_pg_standby: false
 allow_direct_citusdb_access: true
+enable_material: false

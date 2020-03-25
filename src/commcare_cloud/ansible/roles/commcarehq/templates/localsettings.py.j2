@@ -699,10 +699,14 @@ HQ_PRIVATE_KEY = \
 {{ HQ_PRIVATE_KEY }}
 {% endif %}
 
+{% set metrics_providers = [] %}
 {% if DATADOG_ENABLED|default(false) %}
+{% set metrics_providers = metrics_providers + ['corehq.util.metrics.datadog.DatadogMetrics'] %}
 DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
 DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
+
+METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 
 {% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
 WS4REDIS_CONNECTION = {

@@ -37,7 +37,7 @@ servers:
     os: bionic
 
   - server_name: "djangomanage1-production"
-    server_instance_type: m5.xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -309,27 +309,27 @@ rds_instances:
     engine_version: 9.6.15
 
   - identifier: "pgshard1-production"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t3.large"
     storage: 250
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t3.large"
     storage: 250
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t3.large"
     storage: 250
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t3.large"
     storage: 250
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t3.large"
     storage: 250
     multi_az: true
     engine_version: 9.6.15

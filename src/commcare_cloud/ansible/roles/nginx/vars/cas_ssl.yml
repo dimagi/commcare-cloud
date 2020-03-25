@@ -54,23 +54,45 @@ nginx_sites:
           value: "$binary_remote_addr"
         - key: "0"
           value: '""'
-    - name: "$incremental_sync"
-      variable: "$http_x_commcarehq_lastsynctoken"
-      # If header is provided, rate limit on $limit_bucket
-      default_value: "$global_limit"
+    - name: "$synced_never_bucket"
+      variable: "$arg_days_since_last_sync"
       var_mappings:
-        # If the header is not provided, do not rate limit
         - key: '""'
+          value: "$global_limit"
+        - key: "default"
+          value: '""'      
+    - name: "$synced_today_bucket"
+      variable: "$arg_days_since_last_sync"
+      var_mappings:
+        - key: "0"
+          value: "$global_limit"
+        - key: "default"
           value: '""'
+    - name: "$synced_old_bucket"
+      variable: "$arg_days_since_last_sync"
+      var_mappings:
+        - key: ~^[1-9]\d*  # match number > 0
+          value: "$global_limit"
+        - key: "default"
+          value: '""'        
+
    limit_req_zones:
-    - name: "incremental_restore" # Limits restores that are not new device or 412s
-      zone: "$incremental_sync"
+    - name: "synced_never"
+      zone: "$synced_never_bucket"
       size: "10m"
-      rate: "35r/s"
+      rate: "10r/s"
+    - name: "synced_today"
+      zone: "$synced_today_bucket"
+      size: "10m"
+      rate: "10r/s" 
+    - name: "synced_old"
+      zone: "$synced_old_bucket"
+      size: "10m"
+      rate: "10r/s"  
     - name: "overall_restore" # Limits all restores
       zone: "$global_limit"
       size: "10m"
-      rate: "40r/s"
+      rate: "30r/s"
     - name: "per_ip_restore"
       zone: "$per_ip_limit"
       size: "50m"
@@ -161,9 +183,9 @@ nginx_sites:
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
        limit_reqs:
-         - zone_name: "incremental_restore"
-           burst: 10
-           nodelay: True
+         - zone_name: "synced_never"
+         - zone_name: "synced_old"
+         - zone_name: "synced_today"
          - zone_name: "per_ip_restore"
            burst: 2
            nodelay: True

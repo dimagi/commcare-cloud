@@ -9,6 +9,9 @@
 # Amazon EC2
 proxy0
 
+[logproxy:children]
+proxy0
+
 {{ __web3__ }} swap_size=1G
 
 {{ __web4__ }} swap_size=1G
