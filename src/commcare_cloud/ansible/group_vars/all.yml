@@ -103,7 +103,6 @@ server_admin_email: commcarehq-ops+admins@example.com
 default_from_email: commcarehq-noreply@example.com
 support_email: support@example.com
 probono_support_email: pro-bono@example.com
-cchq_bug_report_email: commcarehq-bug-reports@example.com
 accounts_email: accounts@example.com
 data_email: datatree@example.com
 subscription_change_email: accounts+subchange@example.com
@@ -122,9 +121,7 @@ soft_assert_email: commcarehq-ops+soft_asserts@example.com
 daily_deploy_email: null
 check_s3_backups_email: null
 return_path_email: null
-bug_report_email: commcarehq-support@example.com
 new_domain_email: inquiries@example.com
-exchange_email: exchange@example.com
 
 
 ALTERNATE_HOSTS: []
