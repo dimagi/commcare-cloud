@@ -56,6 +56,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: "elasticsearch"
     os: bionic
   - server_name: "es3-staging"
@@ -63,6 +66,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: "elasticsearch"
     os: bionic
     
