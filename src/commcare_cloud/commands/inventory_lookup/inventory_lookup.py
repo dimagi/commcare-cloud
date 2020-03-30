@@ -2,11 +2,15 @@ from __future__ import print_function
 import subprocess
 import sys
 
+from clint.textui import puts
+
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from .getinventory import get_server_address, get_monolith_address
 from six.moves import shlex_quote
+
+from ...colors import color_error
 
 
 class Lookup(CommandBase):
@@ -187,12 +191,15 @@ class DjangoManage(CommandBase):
         Argument('--server', help="""
             Server to run management command on.
             Defaults to first server under django_manage inventory group
-        """),
+        """, default='django_manage:0'),
         Argument('--release', help="""
             Name of release to run under.
             E.g. '2018-04-13_18.16'.
             If none is specified, the `current` release will be used.
         """),
+        Argument('--tee', dest='tee_file', help="""
+            Tee output to the screen and to this file on the remote machine
+        """)
     )
 
     def run(self, args, manage_args):
@@ -209,25 +216,46 @@ class DjangoManage(CommandBase):
             code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
                 cchq_user=cchq_user, deploy_env=deploy_env)
 
+        def _get_ssh_args(remote_command):
+            return ['sudo -u {cchq_user} bash -c {remote_command}'.format(
+                cchq_user=cchq_user,
+                remote_command=shlex_quote(remote_command),
+            )]
+
+        if args.tee_file:
+            rc = Ssh(self.parser).run(args, _get_ssh_args(
+                'cd {code_dir}; [[ -f {tee_file} ]]'
+                .format(code_dir=code_dir, tee_file=shlex_quote(args.tee_file))
+            ))
+            if rc in (0, 1):
+                file_already_exists = (rc == 0)
+            else:
+                return rc
+
+            if file_already_exists:
+                puts(color_error("Refusing to --tee to a file that already exists ({})".format(args.tee_file)))
+                return 1
+
+            tee_file_cmd = ' | tee {}'.format(shlex_quote(args.tee_file))
+        else:
+            tee_file_cmd = ''
+
         python_env = 'python_env-3.6'
         remote_command = (
-            'bash -c "cd {code_dir}; {python_env}/bin/python manage.py {args}"'
+            'cd {code_dir}; {python_env}/bin/python manage.py {args}{tee_file_cmd}'
             .format(
                 python_env=python_env,
                 cchq_user=cchq_user,
                 code_dir=code_dir,
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
+                tee_file_cmd=tee_file_cmd,
             )
         )
-        args.server = args.server or 'django_manage:0'
         if args.tmux:
             args.remote_command = remote_command
             return Tmux(self.parser).run(args, [])
         else:
-            ssh_args = ['sudo -u {cchq_user} {remote_command}'.format(
-                cchq_user=cchq_user,
-                remote_command=remote_command,
-            )]
+            ssh_args = _get_ssh_args(remote_command)
             if manage_args and manage_args[0] in ["shell", "dbshell"]:
                 # force ssh to allocate a pseudo-terminal
                 ssh_args = ['-t'] + ssh_args
