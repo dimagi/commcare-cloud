@@ -10,6 +10,8 @@ elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
+couchdb_use_haproxy: True
+
 nofile_limit: 65536
 
 KSPLICE_ACTIVE: yes
@@ -47,9 +49,9 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
 s3_signature_version: 's3v4'
 
 root_email: commcarehq-ops+root@dimagi.com
-server_email: commcarehq-noreply@dimagi.com
+server_email: commcarehq-noreply@icds-cas.gov.in
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply-india@dimagi.com
+default_from_email: commcarehq-noreply-india@icds-cas.gov.in
 return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: icds-support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
@@ -187,9 +189,6 @@ localsettings:
     manage_releases_per_location:
       always_disabled:
         - 'icds-cas'
-
-commcare_cloud_root_user: ubuntu
-commcare_cloud_pem: ~/.ssh/id_rsa
 
 airflow_dag_concurrency: 4
 airflow_parallelism: 8

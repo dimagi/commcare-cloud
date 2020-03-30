@@ -1,6 +1,6 @@
-deploy_env: india
-env_monitoring_id: india
+deploy_env: icds-staging
+env_monitoring_id: icds-staging
 users:
   - dimagi
   - fissionlabs
-slack_alerts_channel: alerts-india
+slack_alerts_channel: icds-staging
