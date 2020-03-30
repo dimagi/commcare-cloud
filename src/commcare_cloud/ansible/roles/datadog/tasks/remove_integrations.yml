@@ -34,6 +34,15 @@
   tags:
     - datadog_integrations
 
+- name: Remove swift check
+  file:
+    path: /etc/dd-agent/checks.d/swift.py
+    state: absent
+  when: not datadog_swift_instances or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  notify: restart datadog
+  tags:
+    - datadog_integrations
+
 - name: remove datadog integration configs
   file:
     path: "/etc/dd-agent/conf.d/{{ item.name }}.yaml"
@@ -60,6 +69,7 @@
     - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
+    - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
+    - {"name": "swift", "enabled": "{{ datadog_swift_instances }}"}
     # "Datadog Integration Graveyard": list globally removed integrations below
     - {"name": "couchdb2", "enabled": false}
-    - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}

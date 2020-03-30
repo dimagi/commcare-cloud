@@ -3,5 +3,4 @@ env_monitoring_id: icds
 users:
   - dimagi
   - fissionlabs
-  - consultants
 slack_alerts_channel: alerts-icds

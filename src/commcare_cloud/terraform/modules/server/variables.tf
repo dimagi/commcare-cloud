@@ -18,5 +18,6 @@ variable "network_tier" {}
 variable "volume_size" {}
 variable "secondary_volume_size" {}
 variable "secondary_volume_type" {}
+variable "secondary_volume_encrypted" {}
 variable "az" {}
 variable "group_tag" {}

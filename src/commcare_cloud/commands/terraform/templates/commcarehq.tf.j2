@@ -89,6 +89,7 @@ module "server__{{ server.server_name }}" {
   volume_size = {{ server.volume_size|tojson }}
   secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
+  secondary_volume_encrypted = {{ server.block_device.encrypted|default(False)|tojson }}
 
 {% if server.os == 'bionic' %}
   server_image = "${var.bionic_server_image}"

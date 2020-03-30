@@ -1,0 +1,20 @@
+lpar2rrd_agent_version: 6.15-0
+lpar2rrd_server_version: 6.15
+lpar2rrd_server_dir: "{{ encrypted_root }}/lpar2rrd-{{ lpar2rrd_server_version }}"
+perl_packages:
+  - perl
+  - rrdtool
+  - librrdp-perl
+  - libxml-sax-perl
+  - libxml-simple-perl 
+  - libtimedate-perl
+  - libenv-sanctify-perl 
+  - libcgi-pm-perl 
+  - libdata-dumper-simple-perl 
+  - libpdf-api2-perl 
+  - libxml2-utils
+  - liblwp-protocol-https-perl 
+  - libcrypt-ssleay-perl 
+  - libio-socket-ssl-perl 
+  - libmozilla-ldap-perl 
+  - libxml-parser-perl 

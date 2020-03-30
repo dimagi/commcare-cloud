@@ -3,4 +3,5 @@ env_monitoring_id: india
 users:
   - dimagi
   - fissionlabs
+  - consultants
 slack_alerts_channel: alerts-india

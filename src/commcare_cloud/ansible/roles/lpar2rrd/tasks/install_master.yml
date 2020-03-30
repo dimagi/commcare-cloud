@@ -1,0 +1,64 @@
+- name: Install Perl dependencies
+  apt: 
+    name: "{{ perl_packages }}"
+    state: present 
+
+- name: install apache2
+  apt: name=apache2 update_cache=yes state=latest
+
+- name: enabled mod_cgi
+  apache2_module: name=cgid state=present
+  notify:
+    - restart apache2
+
+- name: Configure  Apache2
+  template: src=apache2.conf.j2 dest=/etc/apache2/apache2.conf
+  notify: restart apache2
+
+- name: Check if lpar2rrd server is installed 
+  stat:
+    path: "{{ lpar2rrd_server_dir }}" 
+  register: lpar2rrd_check_master
+
+- name: Download lpar2rrd tar archive
+  get_url:
+    url=" https://sourceforge.net/projects/lpar2rrd/files/lpar2rrd/{{ lpar2rrd_server_version }}/lpar2rrd-{{ lpar2rrd_server_version }}.tar/download"
+    dest="{{ encrypted_root }}/lpar2rrd-agent_{{ lpar2rrd_server_version }}.tar"
+  when: not lpar2rrd_check_master.stat.exists
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Extract lpar2rrd master archive
+  unarchive: src="{{encrypted_root }}/lpar2rrd-agent_{{ lpar2rrd_server_version }}.tar"
+             dest="{{encrypted_root }}"
+             remote_src=yes 
+  when: not lpar2rrd_check_master.stat.exists
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Install lpar2rrd master server
+  shell: "/bin/bash install.sh <<< '{{ lpar2rrd_server_dir }}'"
+  args:
+    executable: /bin/bash      
+    chdir: "{{ lpar2rrd_server_dir }}"
+  when: not lpar2rrd_check_master.stat.exists
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Recursively change ownership of a directory
+  file:
+    path: "{{ lpar2rrd_server_dir }}"
+    state: directory
+    recurse: yes
+    owner: lpar2rrd
+    group: lpar2rrd
+
+- name: Creates a cron for lpar2rrd Master
+  cron:
+    name: Run lpar2rrd master every hour
+    minute: "0"
+    hour: "*"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: lpar2rrd
+    job: "/bin/bash {{ lpar2rrd_server_dir }}/load.sh > {{ lpar2rrd_server_dir }}/load.out 2>&1"
+    cron_file: lpar2rrd_master
+

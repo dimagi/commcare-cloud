@@ -34,12 +34,22 @@ RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 backup_es_swift: True
 swift_container: mowcdmumelasticdb
 swift_url: https://mowcdmum.ipstorage.tatacommunications.com/auth/v1.0/
+datadog_swift_instances:
+  - name: backup
+    swift_auth_url: "{{ swift_url }}"
+    swift_username: "{{ secrets.es_swift_username }}"
+    swift_password: "{{ secrets.es_swift_password }}"
+  - name: commcare
+    swift_auth_url: "https://mowcddbmum.ipstorage.tatacommunications.com/auth/v1.0/"
+    swift_username: "{{ secrets.hq_swift_username }}"
+    swift_password: "{{ secrets.hq_swift_password }}"
 
 nofile_limit: 65536
 
 redis_maxmemory: 6gb
 redis_maxmemory_policy: allkeys-lfu
 redis_auto_aof_rewrite_percentage: "50"
+redis_password: "{{ localsettings_private.REDIS_PASSWORD }}"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 
@@ -48,11 +58,20 @@ KSPLICE_ACTIVE: no
 DATADOG_ENABLED: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
-datadog_custom_parsers:
-  - input: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
-    python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
-    python_function: parse_logs
-    hosts: "{{ groups['proxy'] }}"
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}_cas_commcare-nginx_error.log"
+    tags: nginx-error
+filebeat_output_logstash_hosts:
+  - "{{ groups.logproxy.0 }}:5044"
+
+lpar2rrd_agent_enabled: True
 
 etc_hosts_lines:
   - '127.0.0.1        localhost'
@@ -66,10 +85,9 @@ ssh_allow_password_users:
 
 default_from_email: commcarehq-noreply@icds-cas.gov.in
 server_email: commcarehq-noreply@icds-cas.gov.in
-cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 root_email: commcarehq-ops+root@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-support_email: support@dimagi.com
+support_email: icds-support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
@@ -85,9 +103,7 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
-exchange_email: exchange@dimagi.com
 
 commcare_errors_branch: "master-icds"
 
@@ -154,12 +170,6 @@ localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
   ASYNC_INDICATORS_TO_QUEUE: 60000
-  ASYNC_INDICATOR_QUEUE_TIMES:
-    '*':
-      - [16, 23]
-      - [0, 3]
-    7:
-      - [0, 24]
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []
@@ -257,6 +267,7 @@ localsettings:
   REDIS_DB: '0'
   REDIS_HOST: "{{ hostvars[groups.keepalived_redis.0].keepalived_shared_ip }}" 
   REDIS_PORT: '6379'
+  REDIS_PASSWORD: '{{ localsettings_private.REDIS_PASSWORD }}'
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
   SMS_GATEWAY_URL:

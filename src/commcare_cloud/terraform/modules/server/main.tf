@@ -37,6 +37,7 @@ resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = "${aws_instance.server.availability_zone}"
   size = "${var.secondary_volume_size}"
   type = "${var.secondary_volume_type}"
+  encrypted = "${var.secondary_volume_encrypted}"
 
   tags {
     Name = "data-vol-${var.server_name}"

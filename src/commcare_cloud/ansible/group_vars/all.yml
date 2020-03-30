@@ -8,6 +8,7 @@ service_home: "{{ www_home }}/services"
 py3_virtualenv_home: "{{ code_home }}/python_env-3.6"
 nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
+root_encryption_mode: "ecryptfs"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
 
@@ -46,6 +47,7 @@ couchdb_admins: "{
   '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
 }"
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
+redis_bind: 0.0.0.0
 run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service
@@ -85,6 +87,7 @@ datadog_integration_http: false
 datadog_integration_haproxy: false
 datadog_integration_tcp_check: false
 datadog_integration_disk_check: true
+datadog_swift_instances: []
 datadog_extra_host_checks: []
 datadog_patch_modules:
   - requests:true
@@ -100,7 +103,6 @@ server_admin_email: commcarehq-ops+admins@example.com
 default_from_email: commcarehq-noreply@example.com
 support_email: support@example.com
 probono_support_email: pro-bono@example.com
-cchq_bug_report_email: commcarehq-bug-reports@example.com
 accounts_email: accounts@example.com
 data_email: datatree@example.com
 subscription_change_email: accounts+subchange@example.com
@@ -119,9 +121,7 @@ soft_assert_email: commcarehq-ops+soft_asserts@example.com
 daily_deploy_email: null
 check_s3_backups_email: null
 return_path_email: null
-bug_report_email: commcarehq-support@example.com
 new_domain_email: inquiries@example.com
-exchange_email: exchange@example.com
 
 
 ALTERNATE_HOSTS: []
@@ -138,6 +138,7 @@ BANK_ROUTING_NUMBER_ACH: "{{ localsettings_private.BANK_ROUTING_NUMBER_ACH | def
 BANK_ROUTING_NUMBER_WIRE: "{{ localsettings_private.BANK_ROUTING_NUMBER_WIRE | default('')}}"
 BITLY_APIKEY: "{{ localsettings_private.BITLY_APIKEY | default('') }}"
 BITLY_LOGIN: "{{ localsettings_private.BITLY_LOGIN | default('') }}"
+BITLY_OAUTH_TOKEN: "{{ localsettings_private.BITLY_OAUTH_TOKEN | default('') }}"
 BOOKKEEPER_CONTACT_EMAILS: "{{ localsettings_private.BOOKKEEPER_CONTACT_EMAILS | default(None) }}"
 DRIFT_ID: "{{ localsettings_private.DRIFT_ID | default('', true) }}"
 DROPBOX_APP_NAME: 'CommCareHQFiles'

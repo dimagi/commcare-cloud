@@ -1,0 +1,36 @@
+- name: FileBeat
+  hosts: proxy
+  become: yes
+  gather_facts: true
+  vars:
+    sansible_java_version: 8
+    sansible_java_apt_keyserver: 'http://keys.gnupg.net'
+    filebeat_version: 7.x
+  tasks:
+    - include_role:
+        name: geerlingguy.filebeat
+    - import_role:
+        name: dimagi.commcare_logstash.filebeat
+  tags: filebeat
+
+- name: Logstash
+  hosts: logproxy
+  become: yes
+  gather_facts: true
+  vars:
+    sansible_logstash_family: 7.x
+    sansible_java_version: 8
+    sansible_java_apt_keyserver: 'http://keys.gnupg.net'
+    sansible_logstash_version: 1:7.5.2-1
+    sansible_logstash_plugins:
+      - logstash-patterns-core
+      - logstash-filter-alter
+      - logstash-output-datadog_metrics
+    sansible_logstash_default_config: no
+  tasks:
+    - include_role:
+        name: sansible.logstash
+    - import_role: 
+        name: dimagi.commcare_logstash.logstash
+  tags: logstash
+

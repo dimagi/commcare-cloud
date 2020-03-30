@@ -13,6 +13,12 @@ backup_postgres: plain
 backup_es_s3: False
 postgres_s3: False
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+
 aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
@@ -26,7 +32,6 @@ default_from_email: commcarehq-noreply-staging@dimagi.com
 return_path_email: commcarehq-bounces+staging@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
-cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
@@ -41,11 +46,7 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
-exchange_email: exchange@dimagi.com
-ALTERNATE_HOSTS:
-  - sanjay1.commcarehq.org
 
 couch_dbs:
   default:
@@ -117,6 +118,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
+  USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:

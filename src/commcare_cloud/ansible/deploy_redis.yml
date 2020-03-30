@@ -27,6 +27,8 @@
         host: "{{ groups['redis_master'][0] }}"
         port: "{{ redis_port }}"
         down_after_milliseconds: 15000
+        auth_pass: "{{ redis_password }}"
+    - redis_sentinel_password: "{{ redis_password }}"
     - redis_sentinel_dir: "{{ encrypted_root }}/redis"
     - redis_sentinel_logfile: "{{ redis_dir }}/sentinel.log"
     - redis_sentinel: True

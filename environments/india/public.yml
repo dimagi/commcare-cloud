@@ -28,6 +28,12 @@ nameservers:
   - 8.8.8.8
   - 8.8.4.4
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags:  nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 control_machine_ip: 10.162.36.196
@@ -62,7 +68,6 @@ default_from_email: commcarehq-noreply-india@dimagi.com
 return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
-cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
@@ -77,9 +82,7 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
-exchange_email: exchange@dimagi.com
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
@@ -133,7 +136,6 @@ localsettings:
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
 #  STATIC_ROOT:
-  TRANSFER_SERVER: 'nginx'
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True

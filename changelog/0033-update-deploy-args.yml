@@ -1,0 +1,18 @@
+title: Update `deploy` CommandArgs
+key: update-deploy-args
+date: 2020-02-28
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  We are adding support for deploying from a specific commit hash or tag, replacing
+  the deploy command's `commcare-branch` argument with a more general `commcare-rev` argument.
+
+details: |
+  We previously supported deploying only from named branches. This change enables more control
+  over which code is deployed for users who do not have the ability to create branches.
+
+update_steps: |
+  The only change you need to make is to replace any usage of
+  `commcare-cloud <env> fab deploy --commcare-branch=BRANCH` with
+  `commcare-cloud <env> fab deploy --commcare-rev=BRANCH`.

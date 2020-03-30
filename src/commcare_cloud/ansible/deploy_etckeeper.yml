@@ -5,14 +5,26 @@
 - name: Put /etc under version control using etckeeper
   hosts: all_commcarehq
   become: True
-  roles:
-    - role: debops-contrib.etckeeper
-      tags: 'etckeeper'
   tasks:
+    - name: Install EtcKeeper
+      apt:
+        name: etckeeper
+        state: latest
+        update_cache: yes
+
     - name: Config git for /etc
       git_config:
         name: user.email
         repo: /etc
         scope: local
         value: 'root@{{ ansible_fqdn }}'
-      tags: 'etckeeper'
+
+    - name: Initial VCS
+      command: etckeeper init
+      args:
+        creates: '/etc/.etckeeper'
+      register: etckeeper__register_init
+
+    - name: Create root commit
+      command: etckeeper commit 'Initial commit created by Ansible.'
+      when: etckeeper__register_init is changed
