@@ -148,6 +148,30 @@ servers:
     volume_size: 40
     group: redis
     os: bionic
+    
+  - server_name: "esmaster2-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+    group: "elasticsearch"
+    os: bionic
+    
+  - server_name: "esmaster3-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+    group: "elasticsearch"
+    os: bionic
+    
+  - server_name: "esmaster4-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    group: "elasticsearch"
+    os: bionic
 
   - server_name: "es0-india"
     server_instance_type: "t3.large"
