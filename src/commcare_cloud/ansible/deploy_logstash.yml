@@ -32,5 +32,9 @@
         name: sansible.logstash
     - import_role: 
         name: dimagi.commcare_logstash.logstash
+    - sysctl:
+        name: net.core.rmem_max
+        value: '26214400'
+        state: present
   tags: logstash
 
