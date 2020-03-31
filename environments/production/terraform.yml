@@ -163,7 +163,7 @@ servers:
     os: bionic
 
   - server_name: "couch12-production"
-    server_instance_type: c5.9xlarge  # todo: switch to m5.8xlarge once c5 RI expires
+    server_instance_type: c5.9xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -172,7 +172,7 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
-    server_instance_type: c5.9xlarge  # todo: switch to m5.8xlarge once c5 RI expires
+    server_instance_type: c5.9xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -181,7 +181,7 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
-    server_instance_type: m5.8xlarge
+    server_instance_type: c5.9xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
