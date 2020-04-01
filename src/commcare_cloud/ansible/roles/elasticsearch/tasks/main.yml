@@ -241,3 +241,14 @@
     value: '262144'
     state: present
   become: yes
+  
+- name: Elasticsearch monit config
+  become: yes
+  template:
+    src: "monit.elasticsearch.j2"
+    dest: "/etc/monit/conf.d/elasticsearch"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
