@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import copy
 from collections import defaultdict
 
@@ -9,6 +10,7 @@ import six
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import PGConfigException
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
+from six.moves import range
 
 PostgresqlOverride = get_defaults_jsonobject(
     'postgresql_base',
@@ -210,11 +212,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.name = all_dbs_by_alias[db.master].name
 
     def generate_postgresql_dbs(self):
-        return filter(None, [
+        return [_f for _f in [
             self.dbs.main, self.dbs.synclogs,
         ] + (
             self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
-        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom + self.dbs.standby)
+        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom + self.dbs.standby if _f]
 
     def _check_reporting_databases(self):
         referenced_django_aliases = set()
@@ -297,7 +299,7 @@ class DBOptions(jsonobject.JsonObject):
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    options = jsonobject.DictProperty(unicode)
+    options = jsonobject.DictProperty(six.text_type)
     django_alias = jsonobject.StringProperty()
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)
@@ -346,7 +348,7 @@ class FormProcessingConfig(jsonobject.JsonObject):
         return (
             [self.proxy]
             + ([self.proxy_standby] if self.proxy_standby.host else [])
-            + sorted(self.partitions.values(), key=lambda db: alphanum_key(db.django_alias))
+            + sorted(list(self.partitions.values()), key=lambda db: alphanum_key(db.django_alias))
         )
 
 

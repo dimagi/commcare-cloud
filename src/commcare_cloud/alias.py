@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import six
 
 
@@ -6,12 +7,12 @@ def _encode_args(*args, **kwargs):
 
     def encode_string(value):
         if isinstance(value, six.string_types + six.integer_types):
-            return unicode(value).encode('utf-8')
+            return six.text_type(value).encode('utf-8')
         else:
             TypeError("Do not know how to interpret type {} as a command-line argument: {}"
                       .format(type(value), value))
     for arg in args:
-        argv.append(unicode(arg).encode('utf-8'))
+        argv.append(six.text_type(arg).encode('utf-8'))
     for key, value in kwargs.items():
         if value is False or value is None:
             continue

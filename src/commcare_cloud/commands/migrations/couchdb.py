@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import difflib
 import json
 import os
@@ -27,6 +29,7 @@ from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_f
     copy_scripts_to_target_host, execute_file_copy_scripts
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
+from six.moves import map
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
@@ -462,7 +465,7 @@ def get_shard_table(shard_allocation_docs):
     lines = []
     last_header = None
     db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
-    max_db_name_len = max(map(len, db_names))
+    max_db_name_len = max(list(map(len, db_names)))
     for shard_allocation_doc in sorted(shard_allocation_docs, key=lambda doc: doc.db_name):
         this_header = sorted(shard_allocation_doc.by_range)
         change_header = (last_header != this_header)

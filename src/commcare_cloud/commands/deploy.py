@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import check_branch, ask
 from commcare_cloud.colors import color_notice, color_summary
@@ -37,13 +39,13 @@ class Deploy(CommandBase):
         environment = get_environment(args.env_name)
         commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
         if args.component == 'commcare':
-            print(color_summary("You are about to deploy commcare from {}".format(commcare_rev)))
+            print((color_summary("You are about to deploy commcare from {}".format(commcare_rev))))
             if ask('Deploy commcare?', quiet=args.quiet):
-                print(color_notice("Formplayer will not be deployed right now,"))
-                print(color_notice("but we recommend deploying formplayer about once a month as well."))
-                print(color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
-                print(color_notice("but keeps these services up to date."))
-                print(color_notice("You can do so by running `commcare-cloud <env> deploy formplayer`"))
+                print((color_notice("Formplayer will not be deployed right now,")))
+                print((color_notice("but we recommend deploying formplayer about once a month as well.")))
+                print((color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,")))
+                print((color_notice("but keeps these services up to date.")))
+                print((color_notice("You can do so by running `commcare-cloud <env> deploy formplayer`")))
                 self.deploy_commcare(environment, commcare_rev, args, unknown_args)
         elif args.component == 'formplayer':
             self._announce_formplayer_deploy_start(environment)

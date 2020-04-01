@@ -3,6 +3,7 @@
 # Script run by cron to execute pg_repack under certain conditions
 # Must be run as the ``postgres`` user.
 #
+from __future__ import absolute_import
 import argparse
 import multiprocessing
 import subprocess
