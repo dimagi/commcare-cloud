@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import getpass
 
 import requests
@@ -33,12 +35,12 @@ def main():
               rev = res.json()['_rev']
               url = node_url.format(old_node)
               res = requests.delete('{}?rev={}'.format(url, rev), auth=auth)
-              print('DELETE node {}'.format(old_node), res.status_code)
+              print(('DELETE node {}'.format(old_node), res.status_code))
 
         res = requests.get(node_url.format(new_node), auth=auth)
         if res.status_code != 200:
           res = requests.put(node_url.format(new_node), data="{}", auth=auth)
-          print('ADD node {}'.format(new_node), res.status_code)
+          print(('ADD node {}'.format(new_node), res.status_code))
 
 
     print('\nUPDATING DATABASE DOCS\n')
@@ -67,7 +69,7 @@ def main():
                 new_db_doc = new_db_doc.replace(old_node, new_node)
         if db_doc != new_db_doc:
           res = requests.put(dbs_url.format( db), data=new_db_doc, auth=auth)
-          print('UPDATE DB {}'.format(db), res.status_code)
+          print(('UPDATE DB {}'.format(db), res.status_code))
 
     print('\nRE-CREATING SYSTEM DATABASES\n')
     system_dbs = [
@@ -84,11 +86,11 @@ def main():
           if create:
             rev = db_doc['_rev']
             res = requests.delete('http://{}:15986/_dbs/{}{}'.format(control_node, db, '?rev={}'.format(rev)), auth=auth)
-            print('DELETE db {}'.format(db), res.status_code)
+            print(('DELETE db {}'.format(db), res.status_code))
 
         if create:
           res = requests.put('http://{}:15984/{}'.format(control_node, db), data="{}", auth=auth)
-          print("CREATE db {}".format(db), res.status_code)
+          print(("CREATE db {}".format(db), res.status_code))
 
 if __name__ == '__main__':
     main()
