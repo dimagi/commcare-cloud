@@ -1,8 +1,10 @@
 from __future__ import print_function
+from __future__ import absolute_import
 from collections import namedtuple
 import os
 import subprocess
 import sys
+from six.moves import range
 
 ANSIBLE_HELP_OPTIONS_PREFIX='optional arguments:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')
@@ -24,7 +26,7 @@ _LARGE_INDENT = '                        '
 
 
 class _States(object):
-    NOT_STARTED, LOOKING_FOR_ARG, FOUND_ARG, TRAVERSING_ARG_LINES, FOUND_EOF = range(5)
+    NOT_STARTED, LOOKING_FOR_ARG, FOUND_ARG, TRAVERSING_ARG_LINES, FOUND_EOF = list(range(5))
 
 _Section = namedtuple('Section', 'arg_names lines')
 

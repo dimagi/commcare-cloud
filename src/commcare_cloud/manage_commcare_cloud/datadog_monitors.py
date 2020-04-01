@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import difflib
 import os
 import re
@@ -335,7 +337,7 @@ class UpdateDatadogMonitors(CommandBase):
         if any_diffs:
             if ask("Do you want to push these changes to Datadog?"):
                 for id, expected in monitors_with_diffs.items():
-                    print("Updating '{}'".format(expected['name']))
+                    print(("Updating '{}'".format(expected['name'])))
                     remote_monitor_api.update(id, get_data_to_update(expected, keys_to_update))
 
         if only_remote:

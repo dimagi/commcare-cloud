@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import sys
 
@@ -39,7 +41,7 @@ class ExportSentryEvents(CommandBase):
             last_date = None
             for event in events:
                 last_date = event.get('dateCreated')
-                print(json.dumps(event))
+                print((json.dumps(event)))
 
             # see https://docs.sentry.io/api/pagination/
             links = resp.headers['Link']

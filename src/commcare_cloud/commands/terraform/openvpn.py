@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook, \
     AnsiblePlaybook, _AnsiblePlaybookAlias
 from commcare_cloud.commands.command_base import CommandBase, Argument

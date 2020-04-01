@@ -1,11 +1,13 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
 from collections import Counter, namedtuple
 
 import jsonobject
 from clint.textui import puts, indent
 
 from commcare_cloud.colors import color_warning
+import six
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -45,7 +47,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
-    service_blacklist = jsonobject.ListProperty(unicode)
+    service_blacklist = jsonobject.ListProperty(six.text_type)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty(PillowOptions))

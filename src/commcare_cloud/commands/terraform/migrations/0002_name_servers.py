@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 def get_new_resource_address(environment, old_resource_address):
     import re
     server_matcher = re.compile(r'^module.servers.aws_instance.server\[(\d+)\]$')

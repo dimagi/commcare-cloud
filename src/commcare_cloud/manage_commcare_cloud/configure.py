@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import textwrap
 from six.moves import shlex_quote
@@ -39,7 +41,7 @@ class Configure(CommandBase):
 
         if not environments_dir:
             if environ_value and not have_same_realpath(environ_value, DIMAGI_ENVIRONMENTS_DIR):
-                print("I see you have COMMCARE_CLOUD_ENVIRONMENTS set to {} in your environment".format(environ_value))
+                print(("I see you have COMMCARE_CLOUD_ENVIRONMENTS set to {} in your environment".format(environ_value)))
                 if ask("Would you like to use environments at that location?"):
                     environments_dir = environ_value
 
