@@ -91,6 +91,12 @@
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
 
+- name: Disable Java Heap Dump
+  replace:
+    path: "{{ elasticsearch_home }}/bin/elasticsearch.in.sh"
+    regexp: '^JAVA_OPTS="\$JAVA_OPTS -XX:\+HeapDumpOnOutOfMemoryError"'
+    replace: '#JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"'
+
 - name: Create Elasticsearch data directories
   become: yes
   file:
