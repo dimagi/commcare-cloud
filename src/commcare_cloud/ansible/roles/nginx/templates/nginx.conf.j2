@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 user {{ nginx_user }};
-worker_processes  {{ ansible_processor_count }};
+worker_processes  {{ ansible_processor_vcpus }};
 pid /run/nginx.pid;
 
 worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
