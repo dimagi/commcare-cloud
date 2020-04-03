@@ -15,3 +15,4 @@ aws_plugin_version: "2.7.1"
 swift_plugin_version: "1.7.0"
 backup_es_swift: no
 elasticsearch_enable_inline_groovy_scripts: True
+elasticsearch_service_name: elasticsearch
