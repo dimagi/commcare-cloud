@@ -87,7 +87,7 @@ celery_processes:
       concurrency: 5
       num_workers: 1
     ucr_indicator_queue:
-      concurrency: 4
+      concurrency: 8
     icds_dashboard_reports_queue:
       concurrency: 2
   'celery39':
@@ -101,7 +101,7 @@ celery_processes:
       concurrency: 2
   'celery40':
     ucr_indicator_queue:
-      concurrency: 4
+      concurrency: 8
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 5
@@ -114,7 +114,7 @@ celery_processes:
       num_workers: 4
   'celery41':
     ucr_indicator_queue:
-      concurrency: 4
+      concurrency: 8
     icds_dashboard_reports_queue:
       concurrency: 2
     sms_queue:
@@ -123,7 +123,7 @@ celery_processes:
       num_workers: 4
   celery42,celery43:
     ucr_indicator_queue:
-        concurrency: 4
+        concurrency: 8
     icds_dashboard_reports_queue:
         concurrency: 2
     dashboard_comparison_queue:
@@ -132,7 +132,7 @@ celery_processes:
       concurrency: 4       
   celery44,celery45,celery46,celery47,celery48,celery49,celery50:
     ucr_indicator_queue:
-      concurrency: 4
+      concurrency: 8
     icds_dashboard_reports_queue:
       concurrency: 2
     dashboard_comparison_queue:
