@@ -41,6 +41,7 @@ setup(
         'datadog==0.2.0',
         'dimagi-memoized>=1.1.0',
         'dnspython',
+        'simplejson',
         'Fabric3>=1.10.2,<1.11',
         # can remove once requests bumps its version requirement
         # https://github.com/requests/requests/issues/4681
