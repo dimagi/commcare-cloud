@@ -7,6 +7,7 @@ from __future__ import absolute_import
 import re
 import sys
 
+from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
 
 
@@ -30,7 +31,11 @@ def get_server_address(environment, group, exit=sys.exit):
         username, group = group.split('@', 1)
         username += "@"
     else:
-        username = ""
+        default_username = get_default_username()
+        if default_username.is_guess:
+            username = ""
+        else:
+            username = "{}@".format(default_username)
 
     if re.match(r'(\d+\.?){4}', group):
         # short circuit for IP addresses
