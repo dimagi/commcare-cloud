@@ -9,7 +9,7 @@ fi
 
 
 function realpath() {
-    python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
+    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
 
@@ -50,8 +50,8 @@ if [ -z ${TRAVIS_TEST} ]; then
     source virtualenvwrapper.sh
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
-        mkvirtualenv ansible --python $(which python2)
-    elif ~/.virtualenvs/ansible/bin/python -c 'print ""' 2> /dev/null; [ "$?" -ne "0" ]; then
+        mkvirtualenv ansible --python $(which python)
+    elif ~/.virtualenvs/ansible/bin/python -c 'print("")' 2> /dev/null; [ "$?" -ne "0" ]; then
         echo "######################################################"
         echo "#                                                    #"
         echo "#  You're working from a python3 virtualenv,         #"
