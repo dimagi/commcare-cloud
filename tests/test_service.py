@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
 from nose.tools import assert_equal, assert_dict_equal
 from nose_parameterized import parameterized
 

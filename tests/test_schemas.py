@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
 import itertools
 import os
 
@@ -16,7 +17,7 @@ TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 def test_get_machine_alias():
     env = get_environment('small_cluster')
 
-    all_hosts = set(itertools.chain.from_iterable(env.groups.values()))
+    all_hosts = set(itertools.chain.from_iterable(list(env.groups.values())))
     assert_equal(all_hosts, {'172.19.3.0', '172.19.3.1', '172.19.3.2', '172.19.3.3'})
     aliases = set([get_machine_alias(env, host) for host in all_hosts])
     assert_equal(aliases, {'demo_server0', 'demo_server1', 'demo_server2', 'demo_server3'})
