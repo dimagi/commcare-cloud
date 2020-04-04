@@ -217,7 +217,7 @@ class DjangoManage(CommandBase):
                 cchq_user=cchq_user, deploy_env=deploy_env)
 
         def _get_ssh_args(remote_command):
-            return ['sudo -u {cchq_user} bash -c {remote_command}'.format(
+            return ['sudo -iu {cchq_user} bash -c {remote_command}'.format(
                 cchq_user=cchq_user,
                 remote_command=shlex_quote(remote_command),
             )]
