@@ -140,6 +140,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: "kafka"
     os: bionic
 
