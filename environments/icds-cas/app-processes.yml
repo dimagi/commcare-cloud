@@ -229,6 +229,7 @@ celery_processes:
   celery72,celery73:
     submission_reprocessing_queue:
       concurrency: 10
+  celery74,celery75,celery76,celery77,celery78,celery79,celery80,celery81,celery82,celery83,celery84,celery85:    
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
@@ -407,6 +408,4 @@ pillows:
       start_process: 90
       num_processes: 26
       total_processes: 116
-  'pillow39':
-  'pillow40':
-  'pillow41':
+  pillow39,pillow40,pillow41,pillow42,pillow43,pillow44,pillow45,pillow46,pillow47,pillow48,pillow49,pillow50,pillow51,pillow52,pillow53,pillow54:
