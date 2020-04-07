@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from __future__ import absolute_import
 from nose.tools import assert_equal, assert_dict_equal
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from commcare_cloud.commands.ansible.helpers import ProcessDescriptor
 from commcare_cloud.commands.ansible.service import get_managed_service_options, get_processes_by_host, \

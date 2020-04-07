@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import os
 
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
