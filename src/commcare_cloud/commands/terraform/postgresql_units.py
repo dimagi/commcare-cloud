@@ -118,5 +118,5 @@ def convert_to_standard_unit(param, value):
         try:
             return convert_to_unit(value, new_unit=UNITS_BY_PARAM[param])
         except ValueError as e:
-            e.message += " ({})".format(param)
+            e.args += (e.args[0] + " ({})".format(param),)
             raise
