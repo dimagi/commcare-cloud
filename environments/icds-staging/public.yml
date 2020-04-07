@@ -26,6 +26,9 @@ control_machine_ip: 100.71.188.147
 
 run_websockets_wsgi: True
 
+ssh_allow_password_users:
+  - unixadmin
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_proxy[0] }}"
