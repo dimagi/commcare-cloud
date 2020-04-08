@@ -166,6 +166,29 @@ additional_syslog_config:
 
 kafka_log_retention: 504 # 21 days
 
+# Promethues,Alertmanager,grafana,exporter settings
+prometheus_db_dir: "{{ encrypted_root }}/prometheus"
+prometheus_storage_retention: "365d"
+prod_mode: True
+alertmanager_external_url: "http://{{ ansible_host }}:9093"
+alertmanager_slack_api_url: "{{ secrets.alertmanager_slack_api_url }}"
+alertmanager_receivers:
+- name: slack
+  slack_configs:
+  - send_resolved: true
+    channel: '#alerts'
+alertmanager_route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: slack
+grafana_data_dir: "{{ encrypted_root }}/grafana"
+grafana_security:
+  admin_user: "{{ secrets.grafana_admin_user }}"
+  admin_password: "{{ secrets.grafana_admin_password }}"
+node_exporter_enabled_collectors: ['systemd','ntp','processes','supervisord']
+
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'

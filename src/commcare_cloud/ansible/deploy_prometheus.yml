@@ -1,0 +1,41 @@
+- name: Encrypt Data Drive
+  hosts: control1
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+
+- name: Prometheus
+  hosts: prometheus
+  become: true
+  tasks:
+    - include_role:
+        name: cloudalchemy.prometheus
+    - import_role:
+        name: dimagi.commcare_prometheus.prometheus
+  tags: prometheus
+
+- name: AlertManager
+  hosts: alertmanager
+  become: true
+  tasks:
+    - include_role:
+        name: cloudalchemy.alertmanager 
+    - import_role:
+        name: dimagi.commcare_prometheus.alertmanager
+  tags: alertmanager
+
+- name: Grafana
+  hosts: grafana
+  become: true
+  tasks:
+    - include_role:
+        name: cloudalchemy.grafana
+  tags: grafana
+
+- name: Prometheus Node Exporter
+  hosts: all
+  become: true
+  tasks: 
+    - include_role:
+        name: cloudalchemy.node-exporter
+  tags: node_exporter
