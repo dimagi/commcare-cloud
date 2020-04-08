@@ -20,10 +20,7 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 
 # RESOURCE USAGE (except WAL)
-
-{% if postgresql_shared_buffers %}
 shared_buffers = {{ (ansible_memtotal_mb/1024*0.25)|int|abs }}GB
-{% endif %}
 work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
 maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
@@ -83,9 +80,7 @@ max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
 {% endif %}
 
 # QUERY TUNING
-{% if postgresql_effective_cache_size %}
 effective_cache_size = {{ (ansible_memtotal_mb/1024*0.75)|int|abs }}GB
-{% endif %}
 {% if enable_nestloop is defined %}
 enable_nestloop = {{ enable_nestloop }}
 {% endif %}
