@@ -5,7 +5,11 @@ import cgi
 import inspect
 import os
 import textwrap
-from StringIO import StringIO
+#https://stackoverflow.com/questions/11914472/stringio-in-python3
+try:
+    from StringIO import StringIO ## for Python 2
+except ImportError:
+    from io import StringIO ## for Python 3
 
 import jinja2
 
