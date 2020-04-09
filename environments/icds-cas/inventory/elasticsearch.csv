@@ -16,6 +16,9 @@ es30,100.71.184.214,elasticsearch,zone_vmware,MUMGCCWCDPRDESV13,es30,,
 es31,100.71.184.215,elasticsearch,zone_vmware,MUMGCCWCDPRDESV14,es31,,
 es32,100.71.184.216,elasticsearch,zone_vmware,MUMGCCWCDPRDESV15,es32,,
 es33,100.71.184.217,elasticsearch,zone_vmware,MUMGCCWCDPRDESV16,es33,,
+es35,100.71.185.153,elasticsearch,zone_vmware,MUMGCCWCDPRDESV17,es35,,
+es36,100.71.185.151,elasticsearch,zone_vmware,MUMGCCWCDPRDESV18,es36,,
+es37,100.71.185.152,elasticsearch,zone_vmware,MUMGCCWCDPRDESV19,es37,,
 esm3,100.71.184.218,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV0,esm3,true,false
 esm4,100.71.184.219,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV1,esm4,true,false
 esm5,100.71.184.220,elasticsearch,zone_vmware,MUMGCCWCDPRDESMV2,esm5,true,false
