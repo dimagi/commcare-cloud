@@ -159,6 +159,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
+    block_device:
+      volume_size: 60
+      encrypted: true
     group: "redis"
     os: bionic
 
