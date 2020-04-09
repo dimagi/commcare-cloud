@@ -119,7 +119,7 @@ python -c 'import Crypto' || {
 if [ ! -f "${COMMCARE_CLOUD_REPO}/.git/hooks/pre-commit" ]
 then
 echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
-cd ${COMMCARE_CLOUD_REPO} && ./git-hoks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
+cd ${COMMCARE_CLOUD_REPO} && ./git-hooks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
 cd -
 fi
 
