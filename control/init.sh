@@ -115,6 +115,14 @@ python -c 'import Crypto' || {
     cd ${COMMCARE_CLOUD_REPO} && pip uninstall pycryptodome pycrypto --yes &&  pip-sync && pip install -e . && cd - ;
 }
 
+# git-hook install to protect the commit of unencrypted vault.yml file
+if [ ! -f "${COMMCARE_CLOUD_REPO}/.git/hooks/pre-commit" ]
+then
+echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
+cd ${COMMCARE_CLOUD_REPO} && ./git-hoks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
+cd -
+fi
+
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
 cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -

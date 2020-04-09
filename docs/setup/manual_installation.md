@@ -41,3 +41,15 @@ $ mkvirtualenv ansible
 ```
 
 You will then be able to use cchq from anywhere.
+
+## git-hook setup
+
+If you have done the manual setup, Before making any commits, make sure you install the git hooks:
+the set up is pretty simple. Just run:
+
+```
+(ansible)$ cd ~/commcare-cloud
+(ansible)$ ./git-hooks/install.sh
+```
+
+This will make sure you never commit an unencrypted vault.yml file.
