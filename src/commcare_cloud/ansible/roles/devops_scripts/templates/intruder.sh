@@ -1,6 +1,6 @@
 #!/bin/bash
 #Filename: intruder_detect.sh
-#Description: Intruder reporting tool with secure log as input
+#Description: Intruder reporting tool with auth.log as input
 AUTHLOG=/var/log/auth.log
 AUTHLOG1=/var/log/auth.log.1
 if [[ -n $1 ]];
@@ -17,7 +17,7 @@ egrep "Failed pass" $AUTHLOG1 >> $FAILED_LOG
 # Collect the successful login attempts
 SUCCESS_LOG=/tmp/success.$$.log
 egrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG > $SUCCESS_LOG
-egrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG1 > $SUCCESS_LOG
+egrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG1 >> $SUCCESS_LOG
 
 # extract the users who failed
 failed_users=$(cat $FAILED_LOG | grep -oP '(?<=for )[^ ]*' | sort | uniq)
