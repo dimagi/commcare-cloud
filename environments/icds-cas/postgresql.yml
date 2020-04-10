@@ -10,7 +10,6 @@ REPORTING_DATABASES:
     WRITE: icds-ucr-citus
     READ:
       - [icds-ucr-citus, 1]
-      - [icds-ucr-citus-standby, 9]
 
 LOAD_BALANCED_APPS:
   auth:
