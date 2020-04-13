@@ -1,23 +1,27 @@
 #!/bin/bash
 #Filename: intruder_detect.sh
 #Description: Intruder reporting tool with auth.log as input
-AUTHLOG=/var/log/auth.log
-AUTHLOG1=/var/log/auth.log.1
-if [[ -n $1 ]];
-then
-  AUTHLOG=$1
-  echo Using Log file : $AUTHLOG
-fi
 
-# Collect the failed login attempts
 FAILED_LOG=/tmp/failed.$$.log
-egrep "Failed pass" $AUTHLOG > $FAILED_LOG 
-egrep "Failed pass" $AUTHLOG1 >> $FAILED_LOG 
-
-# Collect the successful login attempts
 SUCCESS_LOG=/tmp/success.$$.log
-egrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG > $SUCCESS_LOG
-egrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG1 >> $SUCCESS_LOG
+SUDO_LOG=/tmp/sudo.$$.log
+
+cp /dev/null $FAILED_LOG
+cp /dev/null $SUCCESS_LOG
+cp /dev/null $SUDO_LOG
+
+for AUTHLOG in `ls /var/log/auth.log*`
+do
+
+	# Collect the failed login attempts
+        zegrep "Failed pass" $AUTHLOG >> $FAILED_LOG 
+
+        # Collect the successful login attempts
+        zegrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG >> $SUCCESS_LOG
+	
+	#sudo success and Failure Reports
+	zegrep "sudo: pam_unix|sudo: .*authentication failure" $AUTHLOG >> $SUDO_LOG
+done
 
 # extract the users who failed
 failed_users=$(cat $FAILED_LOG | grep -oP '(?<=for )[^ ]*' | sort | uniq)
@@ -77,5 +81,11 @@ do
   done
 done
 
+echo "#################################################################################"
+echo " Below is the sudo attempt report "
+echo "#################################################################################"
+echo "There were $(grep -c ' sudo: pam_unix' $SUDO_LOG) attempts to use sudo, $(grep -c ' sudo: .*authentication failure' $SUDO_LOG) of which failed."
+
 rm -f $FAILED_LOG
 rm -f $SUCCESS_LOG
+rm -f $SUDO_LOG
