@@ -1,0 +1,39 @@
+---
+
+- name: Delete all PostgreSQL databases
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  hosts:
+    - shard_dbs
+  tasks:
+    - name: Drop "public" schema
+      postgresql_query:
+        query: "DROP SCHEMA public CASCADE"
+        login_host: "{{ db_is_remote and postgresql_host or omit }}"
+        port: "{{ postgresql_port }}"
+        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+
+    - name: Recreate "public" schema
+      postgresql_query:
+        query: "CREATE SCHEMA public"
+        login_host: "{{ db_is_remote and postgresql_host or omit }}"
+        port: "{{ postgresql_port }}"
+        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+
+    - name: Grant privs to postgres user
+      postgresql_query:
+        # We can't use postgresql_privs because "database" is a required param for it
+        query: "GRANT ALL ON SCHEMA public TO postgres"
+        login_host: "{{ db_is_remote and postgresql_host or omit }}"
+        port: "{{ postgresql_port }}"
+        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+
+    - name: Grant privs to public user
+      postgresql_query:
+        query: "GRANT ALL ON SCHEMA public TO public"
+        login_host: "{{ db_is_remote and postgresql_host or omit }}"
+        port: "{{ postgresql_port }}"
+        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
