@@ -8,6 +8,42 @@
     - start_kafka
     - stop_kafka
 
+- name: Delete all Kafka topics
+  become: true
+  hosts: kafka
+  tasks:
+    - name: Set wipe_everything True
+      vars:
+        wipe_everything: 1
+
+    - name: Allow Kafka server to delete topics
+      template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
+
+    - name: Get Kafka topics
+      become: yes
+      become_user: "{{ cchq_user }}"
+      django_manage:
+        # TODO: Requires corehq/apps/change_feed/management/commands/list_kafka_topics.py
+        command: 'list_kafka_topics'
+        app_path: "{{ code_home }}"
+        virtualenv: "{{ py3_virtualenv_home }}"
+      register: topics_result
+
+    - name: Delete all the topics
+      loop: "{{ topics_result.stdout_lines }}"
+      # This runs on all Kafka hosts, and assumes Zookeeper is accessible at localhost:2181.
+      # TODO: Is that a valid assumption? (docs/services/kafka.md also makes this assumption.)
+      # Topics are marked for deletion. This command needs to be executed by
+      # the leader broker for the deletion to take effect.
+      command: "/opt/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic {{ topic }}"
+
+    - name: Set wipe_everything False
+      vars:
+        wipe_everything: 0
+
+    - name: Prevent Kafka server from deleting topics
+      template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
+
 - name: "{{ desired_action|capitalize }} Zookeeper"
   become: true
   hosts: zookeeper
