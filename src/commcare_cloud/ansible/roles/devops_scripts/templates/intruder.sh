@@ -28,6 +28,13 @@ failed_users=$(cat $FAILED_LOG | grep -oP '(?<=for )[^ ]*' | sort | uniq)
 
 # extract the users who successfully logged in
 success_users=$(cat $SUCCESS_LOG | grep -oP '(?<=for )[^ ]*' | sort | uniq)
+
+#extract the users for successful sudo
+sudo_success_users=$(cat $SUDO_LOG | grep ' sudo: pam_unix(sudo:session): session opened for user root' |grep -oP '(?<=by )[^ ]*' | sort | uniq)
+
+#extract the users for failed sudo
+sudo_failed_users=$(cat $SUDO_LOG | grep ' sudo: .*authentication failure' |grep -oP '(?<=user=)[^ ]*' | sort | uniq)
+
 # extract the IP Addresses of successful and failed login attempts
 failed_ip_list="$(egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" $FAILED_LOG | sort | uniq)"
 success_ip_list="$(egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" $SUCCESS_LOG | sort | uniq)"
@@ -82,9 +89,24 @@ do
 done
 
 echo "#################################################################################"
-echo " Below is the sudo attempt report "
+echo " Below is the sudo attempt summary report "
 echo "#################################################################################"
-echo "There were $(grep -c ' sudo: pam_unix' $SUDO_LOG) attempts to use sudo, $(grep -c ' sudo: .*authentication failure' $SUDO_LOG) of which failed."
+echo "There were $(grep -c ' sudo: pam_unix(sudo:session): session opened for user root' $SUDO_LOG) successful attempts to use sudo, and  $(grep -c ' sudo: .*authentication failure' $SUDO_LOG) were failed sudo attempts."
+# Print the heading
+printf "%-12s|%-17s|%s\n" "SudoAttempts" "User" "Attempts"
+for user in $sudo_success_users;
+do
+	# Count successful sudo attempts by this user
+	attempts=`cat $SUDO_LOG|grep ' sudo: pam_unix(sudo:session): session opened for user root'|grep -cw "$user"`
+	printf "%-12s|%-17s|%-s\n" "Success" "$user" "$attempts"
+done
+
+for user in $sudo_failed_users;
+do
+	# Count Failed sudo attempts by this user
+	attempts=`cat $SUDO_LOG|grep ' sudo: .*authentication failure'|grep -cw "$user"`
+	printf "%-12s|%-17s|%-s\n" "Failed" "$user" "$attempts"
+done
 
 rm -f $FAILED_LOG
 rm -f $SUCCESS_LOG
