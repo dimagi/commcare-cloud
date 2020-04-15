@@ -127,6 +127,7 @@
   
 - name: Install elasticsearch aws plugin
   become: yes
+  become_user: elasticsearch
   shell: "{{ elasticsearch_home }}/bin/plugin install cloud-aws"
   when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '2.4.6'
 
@@ -160,26 +161,6 @@
     port: 9200
     delay: 20
 
-- name: Create initial snapshot
-  uri:
-    url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
-    method: PUT
-    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{aws_endpoint}}" }}'
-  when: backup_es_s3 and inventory_hostname == groups.elasticsearch.0
-  tags:
-    - cron
-    - backups
-
-- name: Create initial snapshot
-  uri:
-    url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
-    method: PUT
-    body: ' {"type": "swift", "settings": {"swift_url": "{{ swift_url }}", "swift_container": "{{ swift_container }}", "swift_username": "{{ secrets.es_swift_username }}", "swift_password": "{{ secrets.es_swift_password }}" }}'
-  when: backup_es_swift and inventory_hostname == groups.elasticsearch.0
-  tags:
-    - cron
-    - backups
-
 - name: Register Local Repository
   file:
     dest: "{{ elasticsearch_data_dir }}/snapshot/"
@@ -200,15 +181,17 @@
 - name: Copy es backup script
   become: yes
   template:
-    src: "{{ item }}"
-    dest: "/usr/local/sbin/"
+    src: "{{ item.src }}"
+    dest: "/usr/local/sbin/{{ item.dest }}"
     group: root
     owner: root
     mode: 0700
     backup: yes
   with_items:
-    - create_es_snapshot.py.j2
-    - check_snapshot_status.py.j2
+    - src: create_es_snapshot.py.j2
+      dest: create_es_snapshot.py
+    - src: check_snapshot_status.py.j2
+      dest: check_snapshot_status.py
   when: (es_local_repo or backup_es_s3 or backup_es_swift) and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
@@ -224,6 +207,26 @@
     user: root
     cron_file: create_es_snapshot
   when: (es_local_repo or backup_es_s3 or backup_es_swift) and inventory_hostname == groups.elasticsearch.0
+  tags:
+    - cron
+    - backups
+
+- name: Create initial snapshot
+  uri:
+    url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
+    method: PUT
+    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{aws_endpoint}}" }}'
+  when: backup_es_s3 and inventory_hostname == groups.elasticsearch.0
+  tags:
+    - cron
+    - backups
+
+- name: Create initial snapshot
+  uri:
+    url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
+    method: PUT
+    body: ' {"type": "swift", "settings": {"swift_url": "{{ swift_url }}", "swift_container": "{{ swift_container }}", "swift_username": "{{ secrets.es_swift_username }}", "swift_password": "{{ secrets.es_swift_password }}" }}'
+  when: backup_es_swift and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
     - backups
