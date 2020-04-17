@@ -297,10 +297,12 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.t3.2xlarge"
     storage: 500
     multi_az: true
     engine_version: 9.6.15
+    params:
+      shared_preload_libraries: pg_stat_statements
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.large"
