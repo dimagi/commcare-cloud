@@ -46,7 +46,9 @@ def update_code(full_cluster=True):
             _update_code_from_previous_release()
         with cd(env.code_root if not use_current_release else env.code_current):
             sudo('git remote prune origin')
-            sudo('git fetch origin --tags -q')
+            # this can get into a state where running it once fails
+            # but primes it to succeed the next time it runs
+            sudo('git fetch origin --tags -q || git fetch origin --tags -q')
             sudo('git checkout {}'.format(git_tag))
             sudo('git reset --hard {}'.format(git_tag))
             sudo('git submodule sync')

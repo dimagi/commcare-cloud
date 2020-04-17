@@ -14,6 +14,9 @@ couch7-india: 10.203.40.56
 djangomanage0-india: 10.203.10.37
 es0-india: 10.203.40.175
 es1-india: 10.203.40.142
+esmaster2-india: 10.203.41.233
+esmaster3-india: 10.203.41.191
+esmaster4-india: 10.203.40.181
 formplayer1-india: 10.203.10.208
 kafka1-india: 10.203.40.207
 pgbouncer0-india: 10.203.40.199

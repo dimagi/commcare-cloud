@@ -35,7 +35,8 @@ celery_processes:
       concurrency: 5
     reminder_case_update_queue:
       pooling: gevent
-      concurrency: 4
+      concurrency: 64
+      num_workers: 2
     reminder_queue:
       pooling: gevent
       concurrency: 10
@@ -73,9 +74,9 @@ celery_processes:
 pillows:
   pillow1:
     case-pillow:
-      num_processes: 8
+      num_processes: 16
     xform-pillow:
-      num_processes: 8
+      num_processes: 16
     user-pillow:
       num_processes: 1
     group-pillow:

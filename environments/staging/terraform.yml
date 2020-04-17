@@ -56,6 +56,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: "elasticsearch"
     os: bionic
   - server_name: "es3-staging"
@@ -63,6 +66,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: "elasticsearch"
     os: bionic
     
@@ -87,6 +93,9 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: formplayer
     os: bionic
     
@@ -95,6 +104,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    block_device:
+      volume_size: 50
+      encrypted: true
     group: "couchdb2"
     os: bionic
   - server_name: "couch4-staging"
@@ -102,6 +114,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    block_device:
+      volume_size: 50
+      encrypted: true
     group: "couchdb2"
     os: bionic
   - server_name: "couch5-staging"
@@ -109,6 +124,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    block_device:
+      volume_size: 50
+      encrypted: true
     group: "couchdb2"
     os: bionic
     
@@ -125,6 +143,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: "kafka"
     os: bionic
 
@@ -133,6 +154,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: postgresql
     os: bionic
 
@@ -141,6 +165,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
+    block_device:
+      volume_size: 60
+      encrypted: true
     group: "redis"
     os: bionic
 

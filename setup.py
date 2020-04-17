@@ -36,7 +36,10 @@ setup(
         'boto3>=1.9.131',
         'clint',
         'couchdb-cluster-admin>=0.5.0',
-        'cryptography>=2.3',  # security update
+        # 2.8 solves issue on MacOS Catalina
+        # https://github.com/pypa/pip/issues/7254
+        # but 2.9 fails to compile
+        'cryptography~=2.8.0',
         'datadog==0.2.0',
         'dimagi-memoized>=1.1.0',
         'dnspython',

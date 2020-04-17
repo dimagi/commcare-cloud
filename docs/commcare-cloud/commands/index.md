@@ -484,7 +484,7 @@ Text content of the datadog event.
 Run a django management command.
 
 ```
-commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE]
+commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE] [--tee TEE_FILE]
 ```
 
 `commcare-cloud <env> django-manage ...`
@@ -525,6 +525,10 @@ Defaults to first server under django_manage inventory group
 Name of release to run under.
 E.g. '2018-04-13_18.16'.
 If none is specified, the `current` release will be used.
+
+###### `--tee TEE_FILE`
+
+Tee output to the screen and to this file on the remote machine
 
 ---
 

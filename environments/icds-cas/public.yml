@@ -58,11 +58,6 @@ KSPLICE_ACTIVE: no
 DATADOG_ENABLED: True
 datadog_extra_host_checks:
   - url: "https://{{ CAS_SITE_HOST }}/accounts/login/"
-datadog_custom_parsers:
-  - input: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
-    python_file: "{{ datadog_parsers_dest }}/nginx/timings.py"
-    python_function: parse_logs
-    hosts: "{{ groups['proxy'] }}"
 
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
@@ -90,10 +85,9 @@ ssh_allow_password_users:
 
 default_from_email: commcarehq-noreply@icds-cas.gov.in
 server_email: commcarehq-noreply@icds-cas.gov.in
-cchq_bug_report_email: commcarehq-bug-reports@icds-cas.gov.in
 root_email: commcarehq-ops+root@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-support_email: support@dimagi.com
+support_email: icds-support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
@@ -109,9 +103,7 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
-exchange_email: exchange@dimagi.com
 
 commcare_errors_branch: "master-icds"
 
@@ -174,16 +166,47 @@ additional_syslog_config:
 
 kafka_log_retention: 504 # 21 days
 
+# Promethues,Alertmanager,grafana,exporter settings
+prometheus_db_dir: "{{ encrypted_root }}/prometheus"
+prometheus_storage_retention: "365d"
+prometheus_web_external_url: "http://0.0.0.0:9090/prometheus"
+prometheus_monitoring_enabled: True
+alertmanager_web_external_url: "http://0.0.0.0:9093/alertmanager"
+alertmanager_slack_api_url: "{{ secrets.alertmanager_slack_api_url }}"
+alertmanager_receivers:
+- name: slack
+  slack_configs:
+  - send_resolved: true
+    channel: '#alerts'
+alertmanager_route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: slack
+grafana_data_dir: "{{ encrypted_root }}/grafana"
+grafana_url: "http://0.0.0.0:3000/grafana/"
+grafana_security:
+  admin_user: "{{ secrets.grafana_admin_user }}"
+  admin_password: "{{ secrets.grafana_admin_password }}"
+node_exporter_enabled_collectors: ['systemd','processes']
+couchdb_username: "{{ couchdb2.username }}"
+couchdb_password: "{{ couchdb2.password }}"
+redis_exporter_redis_password: "{{ redis_password }}"
+rabbit_user: "{{ AMQP_USER }}"
+rabbit_password: "{{ AMQP_PASSWORD }}"
+airflow_prometheus_database_host: "{{ postgresql_dbs.main.pgbouncer_host }}"
+airflow_prometheus_database_user: "{{ postgres_users.commcare.username }}"
+airflow_prometheus_database_password: "{{ postgres_users.commcare.password }}"
+pgbouncer_exporter_dbuser: "{{ secrets.POSTGRES_USERS.devreadonly.username }}"
+pgbouncer_exporter_dbpassword: "{{ secrets.POSTGRES_USERS.devreadonly.password }}"
+celery_exporter_broker_url: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}"
+
+
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
   ASYNC_INDICATORS_TO_QUEUE: 120000
-  ASYNC_INDICATOR_QUEUE_TIMES:
-    '*':
-      - [16, 23]
-      - [0, 3]
-    7:
-      - [0, 24]
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []
@@ -206,6 +229,8 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ES_SEARCH_TIMEOUT: 300
+  ES_XFORM_INDEX_NAME: 'xforms_2020-02-20'
+  ES_XFORM_DISABLE_ALL: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'icds'

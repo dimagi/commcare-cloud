@@ -3,17 +3,17 @@
   register: lpar2rrd_check_deb
   failed_when: lpar2rrd_check_deb.rc > 1
   changed_when: lpar2rrd_check_deb.rc == 1
-      
+
 - name: Download deb package
   get_url:
-    url="https://www.lpar2rrd.com/agent/lpar2rrd-agent_6.15-0_all.deb"
-    dest="/home/{{ ansible_env.USER }}/lpar2rrd-agent_6.15-0_all.deb"
+    url="https://www.lpar2rrd.com/agent/lpar2rrd-agent_{{ lpar2rrd_agent_version }}_all.deb"
+    dest="/home/{{ ansible_env.USER }}/lpar2rrd-agent_{{ lpar2rrd_agent_version }}_all.deb"
   when: lpar2rrd_check_deb.rc == 1
   ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Install lpar2rrd OS agent
-  apt: deb="/home/{{ ansible_env.USER }}/lpar2rrd-agent_6.15-0_all.deb"
-  when: lpar2rrd_check_deb.rc == 1 
+  apt: deb="/home/{{ ansible_env.USER }}/lpar2rrd-agent_{{ lpar2rrd_agent_version }}_all.deb"
+  when: lpar2rrd_check_deb.rc == 1
   ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Add the user 'lpar2rrd'
@@ -21,7 +21,10 @@
     name: lpar2rrd
     comment: LPAR2RRD agent user
     shell: /bin/bash
-     
+
+- name: clear users password valid time
+  shell: chage -M -1 lpar2rrd
+
 - name: Creates a cron for lpar2rrd agent
   cron:
     name: Run lpar2rrd agent every minute
@@ -33,4 +36,3 @@
     user: lpar2rrd
     job: "/usr/bin/perl /opt/lpar2rrd-agent/lpar2rrd-agent.pl {{ groups.lpar2rrd_master.0 }} > /var/tmp/lpar2rrd-agent.out 2>&1"
     cron_file: lpar2rrd_agent
-     

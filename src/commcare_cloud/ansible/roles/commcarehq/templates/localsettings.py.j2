@@ -357,9 +357,7 @@ EULA_COMPLIANCE = {{ localsettings.EULA_COMPLIANCE|default(False) }}
 
 AXES_LOCK_OUT_AT_FAILURE = False
 
-BUG_REPORT_RECIPIENTS = ['{{ bug_report_email }}']
 NEW_DOMAIN_RECIPIENTS = ['{{ new_domain_email }}']
-EXCHANGE_NOTIFICATION_RECIPIENTS = ["{{ exchange_email }}"]
 
 CUSTOM_REPORT_MAP = {
     "pathfinder": [
@@ -570,6 +568,10 @@ COUCH_STALE_QUERY = 'update_after'
 API_THROTTLE_REQUESTS = 5
 API_THROTTLE_TIMEFRAME = 10
 
+{% if 'ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE' in localsettings %}
+ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE = {{ localsettings.ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE }}
+{% endif %}
+
 RATE_LIMIT_SUBMISSIONS = {{ localsettings.RATE_LIMIT_SUBMISSIONS | default(False) }}
 
 {% if 'SAVED_EXPORT_ACCESS_CUTOFF' in localsettings %}
@@ -699,10 +701,14 @@ HQ_PRIVATE_KEY = \
 {{ HQ_PRIVATE_KEY }}
 {% endif %}
 
+{% set metrics_providers = [] %}
 {% if DATADOG_ENABLED|default(false) %}
+{% set metrics_providers = metrics_providers + ['corehq.util.metrics.datadog.DatadogMetrics'] %}
 DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
 DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
+
+METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 
 {% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
 WS4REDIS_CONNECTION = {
@@ -879,7 +885,6 @@ DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
 RETURN_PATH_EMAIL = '{{ return_path_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
 PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
-CCHQ_BUG_REPORT_EMAIL = '{{ cchq_bug_report_email }}'
 ACCOUNTS_EMAIL = '{{ accounts_email }}'
 DATA_EMAIL = '{{ data_email }}'
 SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'

@@ -20,8 +20,7 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 
 # RESOURCE USAGE (except WAL)
-
-shared_buffers = {{ postgresql_shared_buffers }}
+shared_buffers = {{ (ansible_memtotal_mb/1024*0.25)|int|abs }}GB
 work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
 maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
@@ -81,7 +80,7 @@ max_standby_streaming_delay = {{ postgresql_max_standby_delay }}
 {% endif %}
 
 # QUERY TUNING
-effective_cache_size = {{ postgresql_effective_cache_size }}
+effective_cache_size = {{ (ansible_memtotal_mb/1024*0.75)|int|abs }}GB
 {% if enable_nestloop is defined %}
 enable_nestloop = {{ enable_nestloop }}
 {% endif %}
@@ -157,6 +156,11 @@ lc_numeric = 'en_US.UTF-8'
 lc_time = 'en_US.UTF-8'
 
 default_text_search_config = 'pg_catalog.english'
+
+# QUERY PLANNER SETTINGS
+{% if not enable_material|default(True) %}
+enable_material = off
+{% endif %}
 
 {% for setting in postgresql_custom_settings|sort %}
 {{setting}}

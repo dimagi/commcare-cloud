@@ -10,6 +10,8 @@ elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
+couchdb_use_haproxy: True
+
 nofile_limit: 65536
 
 KSPLICE_ACTIVE: yes
@@ -23,6 +25,9 @@ kafka_log_dir: "{{ encrypted_root }}/kafka"
 control_machine_ip: 100.71.188.147
 
 run_websockets_wsgi: True
+
+ssh_allow_password_users:
+  - unixadmin
 
 couch_dbs:
   default:
@@ -42,18 +47,17 @@ couchdb_cluster_settings:
 
 #check for blobdb
 s3_blob_db_enabled: yes
-s3_blob_db_url: "https://s3.amazonaws.com"
-s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
-s3_signature_version: 's3v4'
+s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
+s3_blob_db_s3_bucket: 'icds-staging'
+s3_bulk_delete_chunksize: 200
 
 root_email: commcarehq-ops+root@dimagi.com
-server_email: commcarehq-noreply@dimagi.com
+server_email: commcarehq-noreply@icds-cas.gov.in
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply-india@dimagi.com
+default_from_email: commcarehq-noreply-india@icds-cas.gov.in
 return_path_email: commcarehq-bounces+india@dimagi.com
-support_email: support@dimagi.com
+support_email: icds-support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
-cchq_bug_report_email: commcarehq-bug-reports@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
@@ -68,9 +72,7 @@ feedback_email: hq-feedback@dimagi.com
 eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
-bug_report_email: commcarehq-support@dimagi.com
 new_domain_email: inquiries@dimagi.com
-exchange_email: exchange@dimagi.com
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
@@ -190,9 +192,6 @@ localsettings:
     manage_releases_per_location:
       always_disabled:
         - 'icds-cas'
-
-commcare_cloud_root_user: ubuntu
-commcare_cloud_pem: ~/.ssh/id_rsa
 
 airflow_dag_concurrency: 4
 airflow_parallelism: 8
