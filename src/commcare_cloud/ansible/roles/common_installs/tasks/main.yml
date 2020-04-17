@@ -11,41 +11,18 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add Python PPA for trusty
-  apt_repository: repo='ppa:deadsnakes/ppa' state=present
-  register: add_python_ppa_trusty
-  when: ansible_distribution_version == '14.04'
-  tags:
-    - py3
-
 - name: Update package list
   apt: update_cache=yes
   when: |
     add_mosh_repo is defined and add_mosh_repo is changed or
     add_postgres_repo is defined and add_postgres_repo is changed or
-    add_pango_repo is defined and add_pango_repo is changed or
-    add_python_ppa_trusty is defined and add_python_ppa_trusty is changed or
-    add_python_ppa_bionic is defined and add_python_ppa_bionic is changed
-  tags:
-    - py3
-
-
-- name: Install python3.6 packages
-  become: yes
-  apt:
-    name:
-      - python3.6
-      - python3.6-dev
-  tags:
-    - py3
+    add_pango_repo is defined and add_pango_repo is changed
 
 # Install base packages, common to all servers
 - name: Install common packages
   become: yes
   apt:
     name:
-      - build-essential
-      - python-psycopg2
       - postgresql-client-common
       - postgresql-client-{{ postgresql_version }}
       - libxml2-dev
@@ -84,6 +61,14 @@
 - include: bionic_apt_installs.yml
   when: ansible_distribution_version == '18.04'
 
+- include: install_python.yml
+  when: ansible_distribution_version == '14.04' or
+        ansible_distribution_version == '18.04'
+  vars:
+    python_ver: "3.8.2"
+  tags:
+    - py3
+
 - name: Install pip packages
   pip:
     name:
@@ -91,6 +76,7 @@
       - sh
       - httplib2
       - pexpect
+      - psycopg2
     executable: pip2
     umask: "0022"
   become: yes

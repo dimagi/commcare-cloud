@@ -1,0 +1,58 @@
+- name: Install Python dependencies
+  become: yes
+  apt:
+    name:
+      - make
+      - libssl-dev
+      - zlib1g-dev
+      - libbz2-dev
+      - libreadline-dev
+      - libsqlite3-dev
+      - wget
+      - curl
+      - llvm
+      - libncurses5-dev
+      - libncursesw5-dev
+      - xz-utils
+      - tk-dev
+      - build-essential
+  tags:
+    - py3
+
+- name: Download Python source
+  get_url:
+    url: "https://www.python.org/ftp/python/{{ python_ver }}/Python-{{ python_ver }}.tgz"
+    dest: "/tmp/Python-{{ python_ver }}.tgz"
+    checksum: md5:f9f3768f757e34b342dbc06b41cbc844
+  tags:
+    - py3
+
+- name: Extract Python source
+  unarchive:
+    src: "/tmp/Python-{{ python_ver }}.tgz"
+    dest: /tmp/
+  tags:
+    - py3
+
+- name: Configure Python source
+  command: "./configure --enable-optimizations --with-ensurepip=install"
+  args:
+    chdir: "/tmp/Python-{{ python_ver }}"
+  tags:
+    - py3
+
+- name: Build Python source
+  make:
+    chdir: "/tmp/Python-{{ python_ver }}"
+    params:
+      j: 8  # Build in parallel
+  tags:
+    - py3
+
+- name: Install Python alongside pre-installed binary
+  become: yes
+  make:
+    chdir: "/tmp/Python-{{ python_ver }}"
+    target: altinstall
+  tags:
+    - py3

@@ -3,6 +3,4 @@
   apt:
     name:
       - software-properties-common
-      - python-minimal
-      - python3-pip
       - ufw
