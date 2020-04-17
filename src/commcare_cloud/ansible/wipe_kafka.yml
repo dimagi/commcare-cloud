@@ -1,0 +1,68 @@
+---
+- name: Delete all Kafka topics
+  become: true
+  hosts: zookeeper  # Doesn't need to run on all Kafka hosts
+  tasks:
+    - name: Check wipe_environment_enabled has been set to True
+      assert:
+        that: "{{ wipe_environment_enabled|default(False) }} == True"
+        fail_msg: 'This playbook will delete all data. To continue, set
+          "wipe_environment_enabled: True" in public.yml. Take care to unset
+          "wipe_environment_enabled" when the environment setup is complete.'
+
+    - name: Import kafka role for `kafka_conf_dir` value
+      import_role:
+        name: kafka
+
+    - name: Get Kafka topics
+      # django_manage does not support check mode, and this task does not
+      # change the system. Force this task to run in normal mode even when
+      # check mode is on:
+      check_mode: no
+      django_manage:
+        command: 'list_kafka_topics'
+        app_path: "{{ code_home }}"
+        virtualenv: "{{ py3_virtualenv_home }}"
+      register: topics_result
+      # topics_result does not have `stdout` or `stdout_lines`. Use
+      # `out.split()` instead. e.g.
+      #    {
+      #        "changed": false,
+      #        "failed": false,
+      #        "out": "case\ncase-sql\ncommcare-user\ndomain\nform\nform-sql\n"
+      #               "group\nledger\nmeta\nsms\nweb-user\napp\nlocation\n"
+      #               "synclog-sql\n",
+      #        # ...
+      #    }
+
+    - name: Allow Kafka server to delete topics
+      template:
+        src: roles/kafka/templates/server.properties.j2
+        dest: "{{ kafka_conf_dir }}/server.properties"
+      vars:
+        allow_topic_deletion: True
+
+    - name: Restart Kafka
+      # `kafka-server` service does not support reload
+      service:
+        name: kafka-server
+        state: restarted
+
+    - name: Delete topics
+      loop: "{{ topics_result.out.split() }}"
+      command: "/opt/kafka/bin/kafka-topics.sh
+        --delete
+        --zookeeper localhost:{{ zookeeper_client_port }}
+        --topic {{ item }}"
+
+    - name: Prevent Kafka server from deleting topics
+      template:
+        src: roles/kafka/templates/server.properties.j2
+        dest: "{{ kafka_conf_dir }}/server.properties"
+      vars:
+        allow_topic_deletion: False
+
+    - name: Restart Kafka
+      service:
+        name: kafka-server
+        state: restarted

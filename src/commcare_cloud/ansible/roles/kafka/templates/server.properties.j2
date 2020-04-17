@@ -19,6 +19,13 @@
 # The id of the broker. This must be set to a unique integer for each broker.
 broker.id={{ kafka_broker_id }}
 
+{% if allow_topic_deletion|default(False) %}
+################################## Bad Ideas ##################################
+
+# Allow topics to be deleted
+delete.topic.enable=true
+
+{% endif %}
 ############################# Socket Server Settings #############################
 
 # The port the socket server listens on
