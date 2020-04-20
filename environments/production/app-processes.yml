@@ -23,7 +23,7 @@ celery_processes:
     case_import_queue:
       concurrency: 3
     case_rule_queue:
-      concurrency: 3
+      concurrency: 8
     celery:
       concurrency: 4
     celery_periodic:
