@@ -107,8 +107,8 @@ class CouchMigrationPlan(jsonobject.JsonObject):
     target_allocation = jsonobject.ListProperty()
 
     def get_all_nodes(self):
-        return {
+        return [
             node
             for nodes, _ in (group.split(':', 1) for group in self.target_allocation)
             for node in nodes.split(',')
-        }
+        ]
