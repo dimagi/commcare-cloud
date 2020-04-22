@@ -19,7 +19,7 @@
 # The id of the broker. This must be set to a unique integer for each broker.
 broker.id={{ kafka_broker_id }}
 
-{% if allow_topic_deletion|default(False) %}
+{% if wipe_environment_enabled|default(False) %}
 ################################## Bad Ideas ##################################
 
 # Allow topics to be deleted

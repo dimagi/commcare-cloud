@@ -8,9 +8,11 @@
         that: "{{ wipe_environment_enabled|default(False) }} == True"
         fail_msg: 'This playbook will delete all data. To continue, set
           "wipe_environment_enabled: True" in public.yml. Take care to unset
-          "wipe_environment_enabled" when the environment setup is complete.'
+          "wipe_environment_enabled" and run the `deploy_kafka.yml` playbook
+          again when the environment setup is complete.'
 
     - name: Import kafka role for `kafka_conf_dir` value
+      # ... and to update server.properties
       import_role:
         name: kafka
 
@@ -39,8 +41,6 @@
       template:
         src: roles/kafka/templates/server.properties.j2
         dest: "{{ kafka_conf_dir }}/server.properties"
-      vars:
-        allow_topic_deletion: True
 
     - name: Restart Kafka
       # `kafka-server` service does not support reload
@@ -54,15 +54,3 @@
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
         --topic {{ item }}"
-
-    - name: Prevent Kafka server from deleting topics
-      template:
-        src: roles/kafka/templates/server.properties.j2
-        dest: "{{ kafka_conf_dir }}/server.properties"
-      vars:
-        allow_topic_deletion: False
-
-    - name: Restart Kafka
-      service:
-        name: kafka-server
-        state: restarted
