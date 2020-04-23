@@ -1,0 +1,31 @@
+---
+
+- name: Delete all PostgreSQL databases
+  hosts: postgresql:pg_standby:!citusdb
+  vars:
+    postgresql_host: "{{ inventory_hostname }}"
+  tasks:
+    - name: Check wipe_environment_enabled has been set to True
+      assert:
+        that: "{{ wipe_environment_enabled|default(False) }} == True"
+        fail_msg: 'This playbook will delete all data. To continue, set
+          "wipe_environment_enabled: True" in public.yml. Take care to unset
+          "wipe_environment_enabled" when the environment setup is complete.'
+
+    - name: Get PostgreSQL defaults
+      include_vars: roles/postgresql_base/defaults/main.yml
+
+    - name: Drop PostgreSQL databases
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+      with_items: "{{ postgresql_dbs.all }}"
+      # Only delete the databases we created (standby DB is not created, and not deleted)
+      when: item.create and ((item.host == postgresql_host) or is_monolith|bool)
+      postgresql_db:
+        name: "{{ item.name }}"
+        state: absent
+        port: "{{ postgresql_port }}"
+        login_host: 127.0.0.1
+        login_user: "{{ item.user }}"
+        login_password: "{{ item.password }}"
