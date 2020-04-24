@@ -1,0 +1,23 @@
+- name: Add command logging in global bashrc
+  lineinfile:
+    path: /etc/bash.bashrc
+    regexp: '^export PROMPT_COMMAND'
+    line: "export PROMPT_COMMAND='logger -p local6.debug \"$(whoami) : $(history 1 | sed \"s/^[ ]*[0-9]\\+[ ]*//\" ) \"'"
+    state: present
+
+
+- name: Create bash command logging configuration
+  copy:
+    src: files/audit.conf
+    dest:  /etc/rsyslog.d/commands.conf
+    owner: root
+    group: root
+  notify: restart rsyslog
+
+- name: Configure logrotate for audit logs
+  lineinfile:
+    path: /etc/logrotate.d/rsyslog
+    regexp: '^/var/log/commands.log'
+    line: '/var/log/commands.log'
+    state: present
+
