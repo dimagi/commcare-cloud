@@ -18,6 +18,7 @@
   lineinfile:
     path: /etc/logrotate.d/rsyslog
     regexp: '^/var/log/commands.log'
+    insertafter: '^/var/log/messages'
     line: '/var/log/commands.log'
     state: present
 
