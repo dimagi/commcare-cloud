@@ -47,7 +47,7 @@ couchdb_cluster_settings:
 
 #check for blobdb
 s3_blob_db_enabled: yes
-s3_blob_db_url: "https://mowcdmum.ipstorage.tatacommunications.com"
+s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
 s3_blob_db_s3_bucket: 'icds-staging'
 s3_bulk_delete_chunksize: 200
 
