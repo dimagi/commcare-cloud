@@ -6,3 +6,11 @@
     owner: postgres
     group: postgres
     mode: "u=rwx,g=rwx,o=r"
+
+- name: Copy intruder.sh script to /usr/local/sbin
+  template:
+    src: intruder.sh
+    dest: /usr/local/sbin/intruder.sh
+    owner: ansible
+    group: ansible
+    mode: "u=rwx,g=rwx,o=r"

@@ -65,7 +65,14 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: bionic
-    
+  - server_name: "web5-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "hq_webworkers"
+    os: bionic
+
   - server_name: "web10-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
@@ -251,6 +258,38 @@ servers:
     group: "formplayer"
     os: bionic
 
+  - server_name: "formplayer4-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: "formplayer"
+    os: bionic
+
+  - server_name: "formplayer5-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: "formplayer"
+    os: bionic
+
+  - server_name: "formplayer6-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: "formplayer"
+    os: bionic
+
+  - server_name: "formplayer7-production"
+    server_instance_type: t3.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    group: "formplayer"
+    os: bionic
+
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
     network_tier: "db-private"
@@ -297,10 +336,12 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.t3.2xlarge"
     storage: 500
     multi_az: true
     engine_version: 9.6.15
+    params:
+      shared_preload_libraries: pg_stat_statements
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.large"

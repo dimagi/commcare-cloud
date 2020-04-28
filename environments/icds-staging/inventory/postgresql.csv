@@ -1,6 +1,6 @@
 hostname,host_address,group 1,group 2,group 3,group 4,group 5,group 6,group 7,var: hostname,H.var: hot_standby_server,H.var: hot_standby_master,L.var: postgresql_replication_slots,var: replication_slot,var: disable_archive_cleanup_cron
 pg0,100.71.185.18,postgresql,main_dbs,synclog_dbs,plproxy,shard_dbs,,,MUMGCCWCDSTGPGV00,pg1,,"[""standby0"",""spare""]",,
-pg1,100.71.185.19,pg_standby,main_dbs,synclog_dbs,plproxy,shard_dbs,airflow,airflow_scheduler,MUMGCCWCDSTGPGV01,,pg0,,standby0,
+pg1,100.71.185.19,pg_standby,main_dbs,synclog_dbs,plproxy,shard_dbs,,,MUMGCCWCDSTGPGV01,,pg0,,standby0,
 ,,,,,,,,,,,,,,
 group,var,val,type,,,,,,,,,,,
 shard_dbs,ansible_python_interpreter,/usr/bin/python3,S,,,,,,,,,,,

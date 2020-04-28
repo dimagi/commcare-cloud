@@ -99,5 +99,5 @@ def _get_old_formplayer_builds(build_dir):
 
 
 def formplayer_is_running_from_old_release_location():
-    ps_formplayer = sudo('ps aux | grep formplaye[r]')
+    ps_formplayer = sudo('ps aux | grep formplaye[r] || echo')
     return env.code_current in ps_formplayer

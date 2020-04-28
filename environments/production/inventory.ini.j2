@@ -9,6 +9,8 @@ proxy1
 
 {{ __web4__ }} datadog_integration_tcp_check=yes
 
+{{ __web5__ }}
+
 {{ __web10__ }}
 
 {{ __web11__ }} datadog_integration_tcp_check=yes
@@ -24,6 +26,7 @@ proxy1
 web2
 web3
 web4
+web5
 
 [mobile_webworkers:children]
 web10
@@ -110,12 +113,19 @@ swap_size=8G
 pillow1
 
 {{ __formplayer2__ }} swap_size=8G
-
 {{ __formplayer3__ }} swap_size=8G
+{{ __formplayer4__ }} swap_size=8G
+{{ __formplayer5__ }} swap_size=8G
+{{ __formplayer6__ }} swap_size=8G
+{{ __formplayer7__ }} swap_size=8G
 
 [formplayer:children]
 formplayer2
 formplayer3
+formplayer4
+formplayer5
+formplayer6
+formplayer7
 
 {{ __redis0__ }} swap_size=1G
 

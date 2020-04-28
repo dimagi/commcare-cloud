@@ -1,4 +1,4 @@
-check file elasticsearch with path {{ elasticsearch_data_dir }}/logs/icds-2.0.log
+check file elasticsearch with path {{ elasticsearch_data_dir }}/logs/{{ elasticsearch_cluster_name }}.log
    group database
    group elasticsearch
    start program = "/bin/systemctl start {{ elasticsearch_service_name }}"
