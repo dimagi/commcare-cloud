@@ -15,6 +15,7 @@ from ansible.vars.manager import VariableManager
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
 from six.moves import shlex_quote
+from jsonobject import JsonObject
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
@@ -26,6 +27,7 @@ from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
+from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -224,6 +226,18 @@ class Environment(object):
         return proxy_config
 
     @memoized_property
+    def prometheus_config(self):
+        try:
+            with open(self.paths.prometheus_yml) as f:
+                prometheus_json = yaml.safe_load(f)
+        except IOError:
+            return JsonObject()
+        
+        prometheus_config = PrometheusConfig.wrap(prometheus_json)
+        prometheus_config.check()
+        return prometheus_config
+
+    @memoized_property
     def users_config(self):
         user_groups_from_yml = self.meta_config.users
         absent_users = []
@@ -412,6 +426,8 @@ class Environment(object):
             generated_variables.update(self.app_processes_config.to_generated_variables())
             generated_variables.update(self.postgresql_config.to_generated_variables(self))
             generated_variables.update(self.proxy_config.to_generated_variables())
+            generated_variables.update(self.prometheus_config.to_generated_variables())
+
         generated_variables.update(constants.to_json())
 
         if os.path.exists(self.paths.dimagi_key_store_vault):
