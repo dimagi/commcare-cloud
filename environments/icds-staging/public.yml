@@ -9,22 +9,17 @@ elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'icds-staging'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_enable_inline_groovy_scripts: False
 
 couchdb_use_haproxy: True
 
 nofile_limit: 65536
 
-KSPLICE_ACTIVE: yes
-
-nameservers:
-  - 8.8.8.8
-  - 8.8.4.4
+KSPLICE_ACTIVE: no
 
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
-control_machine_ip: 100.71.188.147
-
-run_websockets_wsgi: True
+run_websockets_wsgi: False
 
 ssh_allow_password_users:
   - unixadmin
@@ -74,20 +69,13 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 
-TWO_FACTOR_GATEWAY_ENABLED: True
-
 localsettings:
   ALLOWED_HOSTS:
     - "{{ CAS_SITE_HOST }}"
-    - "{{ J2ME_SITE_HOST }}"
   ASYNC_INDICATORS_TO_QUEUE: 30000
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   EMAIL_SMTP_HOST: relay.sendermile.com 
   EMAIL_SMTP_PORT: 26 
@@ -96,8 +84,7 @@ localsettings:
   ENABLE_SOFT_ASSERT_EMAILS: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
-  EULA_COMPLIANCE: True
-  HQ_INSTANCE: 'india'
+  HQ_INSTANCE: 'icds-staging'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -111,26 +98,20 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  PILLOWTOP_MACHINE_ID: indiacloud
-  RATE_LIMIT_SUBMISSIONS: yes
+  PILLOWTOP_MACHINE_ID: icds-staging
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SENTRY_PROJECT_SLUG: 'icds-cas'
-  SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
   LOCAL_MIDDLEWARE:
     - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
-#  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  UCR_COMPARISONS:
+  UCR_COMPARISONS:  # don't think this is needed
     static-mpr_1_person_cases:
     static-mpr_2a_3_child_delivery_forms:
     static-mpr_2ci_child_birth_list:
