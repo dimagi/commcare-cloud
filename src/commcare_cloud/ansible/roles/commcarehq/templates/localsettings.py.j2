@@ -282,11 +282,6 @@ def get_url_base():
 GET_URL_BASE  = 'settings.get_url_base'
 EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 
-
-{% if 'ICDS_DOMAIN' in localsettings %}
-ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
-{% endif %}
-
 {% if 'USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS' in localsettings %}
 USER_REPORTING_METADATA_UPDATE_FREQUENCY = {{ localsettings.USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS }} * 60
 {% endif %}
@@ -714,11 +709,6 @@ METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 WS4REDIS_CONNECTION = {
     'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
 }
-{% endif %}
-
-{% if TWO_FACTOR_GATEWAY_ENABLED %}
-TWO_FACTOR_SMS_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
-TWO_FACTOR_CALL_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
 {% endif %}
 
 {% if 'ENFORCE_TWO_FACTOR_FOR_SUPERUSERS' in localsettings %}
