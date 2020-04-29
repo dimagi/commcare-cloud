@@ -120,6 +120,6 @@ zookeeper.connection.timeout.ms=1000000
 {% if kafka_version == "2.4.1" %}
 inter.broker.protocol.version=2.4
 log.message.format.version=2.4
-KAFKA_LISTENERS: PLAINTEXT://:9092
-KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+listeners=PLAINTEXT://:9092
+advertised_listener=PLAINTEXT://{{inventory_hostname}}:9092
 {% endif %}
