@@ -1,61 +1,32 @@
-couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
-
-DATADOG_ENABLED: True
+daily_deploy_email: tech-announce-daily@dimagi.com
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'icds-staging'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
-
-couchdb_use_haproxy: True
+elasticsearch_enable_inline_groovy_scripts: False
 
 nofile_limit: 65536
 
-KSPLICE_ACTIVE: yes
-
-nameservers:
-  - 8.8.8.8
-  - 8.8.4.4
-
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
-control_machine_ip: 100.71.188.147
+KSPLICE_ACTIVE: no
+
+DATADOG_ENABLED: True
 
 run_websockets_wsgi: True
 
 ssh_allow_password_users:
   - unixadmin
 
-couch_dbs:
-  default:
-    host: "{{ groups.couchdb2_proxy[0] }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
+airflow_dag_concurrency: 4
+airflow_parallelism: 8
 
-couchdb_reduce_limit: False
-couchdb_cluster_settings:
-  q: 8
-  r: 1
-  w: 1
-  n: 1
-
-#check for blobdb
-s3_blob_db_enabled: yes
-s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
-s3_blob_db_s3_bucket: 'icds-staging'
-s3_bulk_delete_chunksize: 200
-
-root_email: commcarehq-ops+root@dimagi.com
+default_from_email: commcarehq-noreply@icds-cas.gov.in
 server_email: commcarehq-noreply@icds-cas.gov.in
+root_email: commcarehq-ops+root@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply-india@icds-cas.gov.in
-return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: icds-support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
@@ -74,30 +45,64 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 
-TWO_FACTOR_GATEWAY_ENABLED: True
+couchdb_use_haproxy: True
+couchdb_reduce_limit: False
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2_proxy[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
+s3_blob_db_s3_bucket: 'icds-staging'
+s3_bulk_delete_chunksize: 200
 
 localsettings:
   ALLOWED_HOSTS:
-    - "{{ CAS_SITE_HOST }}"
-    - "{{ J2ME_SITE_HOST }}"
-  ASYNC_INDICATORS_TO_QUEUE: 30000
+    - '{{ CAS_SITE_HOST }}'
+  ASYNC_INDICATORS_TO_QUEUE: 120000
+  AUDIT_MODEL_SAVE: []
+  AUDIT_MODULES: []
+  AUDIT_VIEWS: []
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  EMAIL_SMTP_HOST: relay.sendermile.com 
-  EMAIL_SMTP_PORT: 26 
+  BIGCOUCH: True
+  BIGCOUCH_QUORUM_COUNT: 2
+  BYPASS_SESSIONS_FOR_MOBILE: True
+  CASE_ES_DROP_FORM_FIELDS: True
+  CELERY_TIMEZONE: 'Asia/Kolkata'
+  COMMCARE_HQ_NAME: 'ICDS-CAS Staging Server'
+  COMMCARE_NAME: 'ICDS-CAS Staging'
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  DAYS_TO_KEEP_DEVICE_LOGS: 45
+  DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
+  EMAIL_SMTP_HOST: relay.sendermile.com
+  EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  ENABLE_PRELOGIN_SITE: False
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENTERPRISE_MODE: True
+  ES_XFORM_DISABLE_ALL: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
-  EULA_COMPLIANCE: True
-  HQ_INSTANCE: 'india'
+  HQ_INSTANCE: 'icds-staging'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -111,31 +116,163 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  PILLOWTOP_MACHINE_ID: indiacloud
-  RATE_LIMIT_SUBMISSIONS: yes
+  KAFKA_API_VERSION: [0, 8, 2]
+  LOCAL_MIDDLEWARE:
+    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
+  PILLOWTOP_MACHINE_ID: icds-staging
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SENTRY_PROJECT_SLUG: 'icds-cas'
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  STATIC_DATA_SOURCE_PROVIDERS: []
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
-  LOCAL_MIDDLEWARE:
-    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
-#  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  UCR_COMPARISONS:
+  USER_REPORTING_METADATA_BATCH_SCHEDULE: {'crontab': {'minute': '*/2', 'hour': '17-21'}}
+  USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  UCR_COMPARISONS:  # not sure this is needed
     static-mpr_1_person_cases:
     static-mpr_2a_3_child_delivery_forms:
     static-mpr_2ci_child_birth_list:
     static-asr_2_pregnancies:
   STATIC_TOGGLE_STATES:
+    advanced-app-builder:
+      always_enabled:
+        - 'icds-cas'
+    case_list_custom_xml:
+      always_enabled:
+        - 'icds-cas'
+    case_list_custom_variables:
+      always_enabled:
+        - 'icds-cas'
+    case_list_tile:
+      always_enabled:
+        - 'icds-cas'
+    case_list_lookup:
+      always_enabled:
+        - 'icds-cas'
+    data_file_download:
+      always_enabled:
+        - 'icds-cas'
+    detail-list-tab-nodesets:
+      always_enabled:
+        - 'icds-cas'
+    graph-creation:
+      always_enabled:
+        - 'icds-cas'
+    app_builder_visit_scheduler:
+      always_enabled:
+        - 'icds-cas'
+    user_reports:
+      always_enabled:
+        - 'icds-cas'
+    locations_in_ucr:
+      always_enabled:
+        - 'icds-cas'
+    report_builder:
+      always_enabled:
+        - 'icds-cas'
+    role_webapps_permissions:
+      always_enabled:
+        - 'icds-cas'
+    form_link_workflow:
+      always_enabled:
+        - 'icds-cas'
+    save_to_case:
+      always_enabled:
+        - 'icds-cas'
+    allow_data_reference_in_setvalue:
+      always_enabled:
+        - 'icds-cas'
+    custom_properties:
+      always_enabled:
+        - 'icds-cas'
+    enable_loadtest_users:
+      always_enabled:
+        - 'icds-cas'
+    commtrack:
+      always_enabled:
+        - 'icds-cas'
+    dashboard_icds_reports:
+      always_enabled:
+        - 'icds-cas'
+    legacy_child_modules:
+      always_enabled:
+        - 'icds-cas'
+    fixture_case:
+      always_enabled:
+        - 'icds-cas'
+    call_center_location_owners:
+      always_enabled:
+        - 'icds-cas'
+    custom_app_base_url:
+      always_enabled:
+        - 'icds-cas'
+    hide_messaging_dashboard:
+      always_enabled:
+        - 'icds-cas'
+    mobile_user_demo_mode:
+      always_enabled:
+        - 'icds-cas'
+    locale_id_integrity:
+      always_enabled:
+        - 'icds-cas'
+    emwf_worker_activity_report:
+      always_enabled:
+        - 'icds-cas'
+    data_dictionary:
+      always_enabled:
+        - 'icds-cas'
+    paginated_exports:
+      always_enabled:
+        - 'icds-cas'
+    phone_apk_heartbeat:
+      always_enabled:
+        - 'icds-cas'
+    mobile_recovery_measures:
+      always_enabled:
+        - 'icds-cas'
+    enable_all_add_ons:
+      always_enabled:
+        - 'icds-cas'
+    filtered_bulk_user_download:
+      always_enabled:
+        - 'icds-cas'
+    linked_domains:
+      always_enabled:
+        - 'icds-cas'
+    multi_master_linked_domains:
+      always_enabled:
+        - 'icds-cas'
+    target_commcare_flavor:
+      always_enabled:
+        - 'icds-cas'
+    allow_blank_case_tags:
+      always_enabled:
+        - 'icds-cas'
+    restrict_app_release:
+      always_enabled:
+        - 'icds-cas'
+    release_builds_per_profile:
+      always_enabled:
+        - 'icds-cas'
+    parallel_mpr_asr_report:
+      always_enabled:
+        - 'icds-cas'
+    enable_ucr_mirrors:
+      always_enabled:
+        - 'icds-cas'
+    location_columns_app_status_report:
+      always_enabled:
+        - 'icds-cas'
+    skip_creating_default_build_files_on_build:
+      always_enabled:
+        - 'icds-cas'
     ucr_sum_when_templates:
       always_enabled:
         - 'icds-cas'
@@ -169,6 +306,234 @@ localsettings:
     show_build_profile_in_app_status:
       always_enabled:
         - 'icds-cas'
+    custom-parent-ref:
+      always_disabled:
+        - 'icds-cas'
+    shadow-app-builder:
+      always_disabled:
+        - 'icds-cas'
+    show_persist_case_context_setting:
+      always_disabled:
+        - 'icds-cas'
+    biometric_integration:
+      always_disabled:
+        - 'icds-cas'
+    add_users_from_location:
+      always_disabled:
+        - 'icds-cas'
+    case_detail_print:
+      always_disabled:
+        - 'icds-cas'
+    copy_form_to_app:
+      always_disabled:
+        - 'icds-cas'
+    dhis2_integration:
+      always_disabled:
+        - 'icds-cas'
+    new_multimedia_uploader:
+      always_disabled:
+        - 'icds-cas'
+    report_builder_beta_group:
+      always_disabled:
+        - 'icds-cas'
+    search_claim:
+      always_disabled:
+        - 'icds-cas'
+    case_list_explorer:
+      always_disabled:
+        - 'icds-cas'
+    explore_case_data:
+      always_disabled:
+        - 'icds-cas'
+    ecd_migrated_domains:
+      always_disabled:
+        - 'icds-cas'
+    ecd_enterprise_domains:
+      always_disabled:
+        - 'icds-cas'
+    no_vellum:
+      always_disabled:
+        - 'icds-cas'
+    stock_and_sms_handler:
+      always_disabled:
+        - 'icds-cas'
+    products_per_location:
+      always_disabled:
+        - 'icds-cas'
+    allow_case_attachments_view:
+      always_disabled:
+        - 'icds-cas'
+    transfer_domain:
+      always_disabled:
+        - 'icds-cas'
+    printing:
+      always_disabled:
+        - 'icds-cas'
+    cache_and_index:
+      always_disabled:
+        - 'icds-cas'
+    API_BLACKLIST:
+      always_disabled:
+        - 'icds-cas'
+    non_commtrack_ledgers:
+      always_disabled:
+        - 'icds-cas'
+    custom_instances:
+      always_disabled:
+        - 'icds-cas'
+    custom_assertions:
+      always_disabled:
+        - 'icds-cas'
+    openclinica:
+      always_disabled:
+        - 'icds-cas'
+    icds_dashboard_temporary_downtime:
+      always_disabled:
+        - 'icds-cas'
+    openmrs_integration:
+      always_disabled:
+        - 'icds-cas'
+    APP_BUILDER_CONDITIONAL_NAMES:
+      always_disabled:
+        - 'icds-cas'
+    formplayer_use_livequery:
+      always_disabled:
+        - 'icds-cas'
+    sms_log_changes:
+      always_disabled:
+        - 'icds-cas'
+    enable_include_sms_gateway_charging:
+      always_disabled:
+        - 'icds-cas'
+    mobile_worker_self_registration:
+      always_disabled:
+        - 'icds-cas'
+    legacy_sync_support:
+      always_disabled:
+        - 'icds-cas'
+    not_tf_sql_backend:
+      always_disabled:
+        - 'icds-cas'
+    phone_numbers_report:
+      always_disabled:
+        - 'icds-cas'
+    inbound_sms_leniency:
+      always_disabled:
+        - 'icds-cas'
+    unlimited_report_builder_reports:
+      always_disabled:
+        - 'icds-cas'
+    emg_and_rec_sms_handlers:
+      always_disabled:
+        - 'icds-cas'
+    allow_user_defined_export_columns:
+      always_disabled:
+        - 'icds-cas'
+    disable_column_limit_in_ucr:
+      always_disabled:
+        - 'icds-cas'
+    use_latest_build_cloudcare:
+      always_disabled:
+        - 'icds-cas'
+    bulk_update_multimedia_paths:
+      always_disabled:
+        - 'icds-cas'
+    user_testing_simplify:
+      always_disabled:
+        - 'icds-cas'
+    data_migration:
+      always_disabled:
+        - 'icds-cas'
+    sort_calculation_in_case_list:
+      always_disabled:
+        - 'icds-cas'
+    app-changes-with-improved-diff:
+      always_disabled:
+        - 'icds-cas'
+    couch_sql_migration_blacklist:
+      always_disabled:
+        - 'icds-cas'
+    publish_custom_reports:
+      always_disabled:
+        - 'icds-cas'
+    display_condition_on_nodeset:
+      always_disabled:
+        - 'icds-cas'
+    skip_remove_indices:
+      always_disabled:
+        - 'icds-cas'
+    prevent_mobile_ucr_sync:
+      always_disabled:
+        - 'icds-cas'
+    bulk_upload_date_opened:
+      always_disabled:
+        - 'icds-cas'
+    regex_field_validation:
+      always_disabled:
+        - 'icds-cas'
+    custom_icon_badges:
+      always_disabled:
+        - 'icds-cas'
+    training-module:
+      always_disabled:
+        - 'icds-cas'
+    export_multisort:
+      always_disabled:
+        - 'icds-cas'
+    export_ownership:
+      always_disabled:
+        - 'icds-cas'
+    aggregate_ucrs:
+      always_disabled:
+        - 'icds-cas'
+    show_raw_data_sources_in_report_builder:
+      always_disabled:
+        - 'icds-cas'
+    related_locations:
+      always_disabled:
+        - 'icds-cas'
+    filter_on_groups_and_locations:
+      always_disabled:
+        - 'icds-cas'
+    dont_index_same_casetype:
+      always_disabled:
+        - 'icds-cas'
+    location_safe_case_imports:
+      always_disabled:
+        - 'icds-cas'
+    hide_hq_on_mobile_experience:
+      always_disabled:
+        - 'icds-cas'
+    dashboard_reach_reports:
+      always_disabled:
+        - 'icds-cas'
+    partial_ui_translations:
+      always_disabled:
+        - 'icds-cas'
+    skip_orm_fixture_upload:
+      always_disabled:
+        - 'icds-cas'
+    disable_case_update_rule_task:
+      always_disabled:
+        - 'icds-cas'
+    group_api_use_couch_backend:
+      always_disabled:
+        - 'icds-cas'
+    user_api_use_es_backend:
+      always_disabled:
+        - 'icds-cas'
+    phi_cas_integration:
+      always_disabled:
+        - 'icds-cas'
+    rate_limit_submissions:
+      always_disabled:
+        - 'icds-cas'
+    rate_limit_restores:
+      always_disabled:
+        - 'icds-cas'
+    skip_updating_user_reporting_metadata:
+      always_disabled:
+        - 'icds-cas'
     mm_case_properties:
       always_disabled:
         - 'icds-cas'
@@ -193,6 +558,3 @@ localsettings:
     manage_releases_per_location:
       always_disabled:
         - 'icds-cas'
-
-airflow_dag_concurrency: 4
-airflow_parallelism: 8
