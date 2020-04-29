@@ -10,6 +10,18 @@
     - services
   register: webworker_errand_boy_conf_file
 
+- name: define prometheus service
+  become: yes
+  template:
+    src: "../templates/supervisor_prometheus.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
+  tags:
+    - services
+  when: prometheus_monitoring_enabled|default(False)
+
 - name: define django worker service
   become: yes
   template:
@@ -25,6 +37,7 @@
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
         TMPDIR: '{{ encrypted_tmp }}'
         DATADOG_PATCH_MODULES: "{% if app_processes_config.datadog_pythonagent %}{{ datadog_patch_modules|join(',') }}{% endif %}"
+        prometheus_multiproc_dir: "{% if prometheus_monitoring_enabled|default(False) %}{{ cchq_home}}/www/{{ deploy_env }}/metrics {% endif %}"
         DATADOG_ENV: "{% if app_processes_config.datadog_pythonagent %}{{ env_monitoring_id }}{% endif %}"
         DD_REQUESTS_SERVICE_NAME: "{% if app_processes_config.datadog_pythonagent %}requests{% endif %}"
         DD_REQUESTS_SPLIT_BY_DOMAIN: "{% if app_processes_config.datadog_pythonagent %}True{% endif %}"
