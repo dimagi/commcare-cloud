@@ -55,6 +55,12 @@
 
 - name: Copies kafka log4j.properties
   copy: src=log4j.properties dest=/opt/kafka/config owner=root group=root mode=644
+  when: "{{ kafka_version }}" == '0.8.2.2'
+  tags: log4j
+
+- name: Copies kafka log4j_new.properties
+  copy: src=log4j_new.properties dest=/opt/kafka/config/log4j.properties owner=root group=root mode=644
+  when: "{{ kafka_version }}" == '2.4.1'
   tags: log4j
 
 - name: Install Kafka init script
