@@ -231,11 +231,8 @@ class Environment(object):
             with open(self.paths.prometheus_yml) as f:
                 prometheus_json = yaml.safe_load(f)
         except IOError:
-            return JsonObject()
-        
-        prometheus_config = PrometheusConfig.wrap(prometheus_json)
-        prometheus_config.check()
-        return prometheus_config
+            return None
+        return PrometheusConfig.wrap(prometheus_json)
 
     @memoized_property
     def users_config(self):
@@ -426,7 +423,8 @@ class Environment(object):
             generated_variables.update(self.app_processes_config.to_generated_variables())
             generated_variables.update(self.postgresql_config.to_generated_variables(self))
             generated_variables.update(self.proxy_config.to_generated_variables())
-            generated_variables.update(self.prometheus_config.to_generated_variables())
+            if self.prometheus_config:
+                generated_variables.update(self.prometheus_config.to_generated_variables())
 
         generated_variables.update(constants.to_json())
 
