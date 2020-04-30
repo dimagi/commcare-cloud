@@ -5,6 +5,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
+Type=simple
 Environment=ES_HOME={{ elasticsearch_home }}
 Environment=CONF_DIR={{ elasticsearch_conf_dir}}
 Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
