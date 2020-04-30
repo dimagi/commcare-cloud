@@ -1,6 +1,4 @@
 import jsonobject
-import logging
-logging.basicConfig(level=logging.INFO)
 
 class PrometheusConfig(jsonobject.JsonObject):
     prometheus_monitoring_enabled = jsonobject.BooleanProperty()
