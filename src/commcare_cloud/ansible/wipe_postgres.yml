@@ -26,6 +26,12 @@
         name: "{{ item.name }}"
         state: absent
         port: "{{ postgresql_port }}"
+        # This task will fail if `login_host` does not match the host
+        # definition in pg_hba.conf. See pg_hba.conf.j2:
+        #     IPv4 local connections:
+        #     host    all             all             127.0.0.1/32            md5
+        # (I tried to use sockets by dropping both `port` and `login_host`,
+        # but that also failed.)
         login_host: 127.0.0.1
         login_user: "{{ item.user }}"
         login_password: "{{ item.password }}"
