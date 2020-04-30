@@ -73,7 +73,7 @@ s3_bulk_delete_chunksize: 200
 
 localsettings:
   ALLOWED_HOSTS:
-    - '{{ CAS_SITE_HOST }}'
+    - '{{ SITE_HOST }}'
   ASYNC_INDICATORS_TO_QUEUE: 120000
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
