@@ -20,10 +20,8 @@
           "wipe_environment_enabled" and run the `deploy_kafka.yml` playbook
           again when the environment setup is complete.'
 
-    - name: Import kafka role for `kafka_conf_dir` value
-      # ... and to update server.properties
-      import_role:
-        name: kafka
+    - name: Get PostgreSQL defaults
+      include_vars: roles/kafka/defaults/main.yml
 
     - name: Get Kafka topics
       # django_manage does not support check mode, and this task does not
@@ -47,9 +45,11 @@
       #    }
 
     - name: Allow Kafka server to delete topics
-      template:
-        src: roles/kafka/templates/server.properties.j2
-        dest: "{{ kafka_conf_dir }}/server.properties"
+      lineinfile:
+        line: 'delete.topic.enable=true'
+        path: "{{kafka_conf_dir}}/server.properties"
+        regexp: 'delete\.topic\.enable'
+        state: present
 
     - name: Restart Kafka
       # `kafka-server` service does not support reload
