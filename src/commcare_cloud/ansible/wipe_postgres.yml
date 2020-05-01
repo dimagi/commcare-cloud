@@ -4,7 +4,16 @@
   hosts: postgresql:pg_standby:!citusdb
   vars:
     postgresql_host: "{{ inventory_hostname }}"
+  vars_prompt:
+    - name: confirm_wipe
+      prompt: "Are you sure you want to delete all PostgreSQL databases? [yN]"
+      private: no
+
   tasks:
+    - name: Check confirm_wipe
+      assert:
+        that: confirm_wipe == 'y'
+
     - name: Check wipe_environment_enabled has been set to True
       assert:
         that: "{{ wipe_environment_enabled|default(False) }} == True"

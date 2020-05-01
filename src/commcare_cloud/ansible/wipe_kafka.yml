@@ -2,7 +2,16 @@
 - name: Delete all Kafka topics
   become: true
   hosts: zookeeper  # Doesn't need to run on all Kafka hosts
+  vars_prompt:
+    - name: confirm_wipe
+      prompt: "Are you sure you want to delete all Kafka topics? [yN]"
+      private: no
+
   tasks:
+    - name: Check confirm_wipe
+      assert:
+        that: confirm_wipe == 'y'
+
     - name: Check wipe_environment_enabled has been set to True
       assert:
         that: "{{ wipe_environment_enabled|default(False) }} == True"
