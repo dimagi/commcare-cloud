@@ -107,4 +107,4 @@
   tasks:
     - include_tasks: roles/commcarehq/tasks/prometheus.yml
       tags: services
-  when: prometheus_monitoring_enabled|default(False)
+      when: prometheus_monitoring_enabled|default(False)

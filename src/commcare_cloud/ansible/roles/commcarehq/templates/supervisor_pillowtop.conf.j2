@@ -2,7 +2,8 @@
 {% for num_process in range(params.get('start_process', 0), params.get('start_process', 0) + params.get('num_processes', 1)) %}
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
-environment=TMPDIR="{{ encrypted_tmp }}",READ_FROM_PLPROXY_STANDBYS="1"
+environment=TMPDIR="{{ encrypted_tmp }}",READ_FROM_PLPROXY_STANDBYS="1" {% if prometheus_monitoring_enabled|default(False) %},prometheus_multiproc_dir="{{ cchq_home}}/www/{{ deploy_env }}/metrics" {% endif %}
+
 command={{ py3_virtualenv_home }}/bin/python
     {{ code_home }}/manage.py run_ptop
     --pillow-name {{ pillow_name }}
