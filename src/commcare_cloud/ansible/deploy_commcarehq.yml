@@ -101,3 +101,9 @@
       with_items: "{{ contents.stdout_lines }}"
       when: item not in supervisor_files
       tags: services
+
+- name: Prometheus Supervisor Config
+  hosts: celery,webworkers,pillowtop
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/prometheus.yml
+      tags: services

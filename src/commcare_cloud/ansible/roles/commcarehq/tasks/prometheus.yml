@@ -1,0 +1,11 @@
+- name: define prometheus service
+  become: yes
+  template:
+    src: "../templates/supervisor_prometheus.conf"
+    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
+  tags:
+    - services
+  when: prometheus_monitoring_enabled|default(False)
