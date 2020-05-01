@@ -15,7 +15,6 @@ from ansible.vars.manager import VariableManager
 from ansible_vault import Vault
 from memoized import memoized, memoized_property
 from six.moves import shlex_quote
-from jsonobject import JsonObject
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException

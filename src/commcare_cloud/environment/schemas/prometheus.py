@@ -2,7 +2,7 @@ import jsonobject
 
 
 class PrometheusConfig(jsonobject.JsonObject):
-    prometheus_monitoring_enabled = jsonobject.BooleanProperty()
+    prometheus_monitoring_enabled = jsonobject.BooleanProperty(required=True)
     grafana_security = jsonobject.DictProperty(required=True)
 
     def to_generated_variables(self):
