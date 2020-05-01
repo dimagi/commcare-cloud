@@ -59,7 +59,7 @@
   tags:
     - services
   register: celery_worker_files
-    
+
 - set_fact:
     celery_supervisor_files: "{{ celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
   tags:
