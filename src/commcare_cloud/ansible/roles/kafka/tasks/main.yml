@@ -61,6 +61,7 @@
     check_mode: yes
     changed_when: false
     register: version_2.4_infile
+    
 - name: Ensure old version
   lineinfile:
     path: /etc/kafka/config/server.properties
