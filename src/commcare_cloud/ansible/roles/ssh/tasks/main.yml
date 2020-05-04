@@ -13,11 +13,21 @@
   tags:
    - generate_rsa
 
+- name: Remove TCL template generated ssh_host_keys
+  file:
+    state: absent
+    path: "{{item}}"
+  loop:
+  - /etc/ssh/ssh_host_rsa_key
+  - /etc/ssh/ssh_host_rsa_key.pub
+  when: rsa_stat.stat.checksum == '4e10e3206dabbe18d91080329cecd4796b43c20cf197fea95d84d9e34c4e4ac4'
+  tags:
+   - generate_rsa
+
 - name: Generate /etc/ssh RSA host key
   command: ssh-keygen -q -t rsa -f /etc/ssh/ssh_host_rsa_key -C "" -N ""
   args:
     creates: /etc/ssh/ssh_host_rsa_key
-  when: rsa_stat.stat.checksum == '5bcc93ee0b94a384f15cde6799c074edd65ead46'
   notify: Restart ssh
   tags:
    - generate_rsa
