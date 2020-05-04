@@ -3,3 +3,22 @@
     src: ../templates/sshd_config.j2
     dest: /etc/ssh/sshd_config
   notify: Restart ssh
+
+- name: get sha256 sum of ssh_host_key
+  stat:
+    path: /etc/ssh/ssh_host_rsa_key
+    checksum_algorithm: sha256
+    get_checksum: yes
+  register: rsa_stat
+  tags:
+   - generate_rsa
+
+- name: Generate /etc/ssh RSA host key
+  command: ssh-keygen -q -t rsa -f /etc/ssh/ssh_host_rsa_key -C "" -N ""
+  args:
+    creates: /etc/ssh/ssh_host_rsa_key
+  when: rsa_stat.stat.checksum == '5bcc93ee0b94a384f15cde6799c074edd65ead46'
+  notify: Restart ssh
+  tags:
+   - generate_rsa
+  
