@@ -77,6 +77,13 @@
     - include_tasks: roles/commcarehq/tasks/management_commands.yml
       tags: services
 
+- name: Prometheus Supervisor Config
+  hosts: celery,webworkers,pillowtop
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/prometheus.yml
+      tags: services
+      when: prometheus_monitoring_enabled|default(False)
+
 # https://stackoverflow.com/a/30372407
 - name: Remove old supervisor files
   hosts:
@@ -101,10 +108,3 @@
       with_items: "{{ contents.stdout_lines }}"
       when: item not in supervisor_files
       tags: services
-
-- name: Prometheus Supervisor Config
-  hosts: celery,webworkers,pillowtop
-  tasks:
-    - include_tasks: roles/commcarehq/tasks/prometheus.yml
-      tags: services
-      when: prometheus_monitoring_enabled|default(False)

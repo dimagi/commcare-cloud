@@ -6,6 +6,11 @@
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
+  with_items:
+    - env_vars:
+        TMPDIR: '{{ encrypted_tmp }}'
+        READ_FROM_PLPROXY_STANDBYS: 1
+        prometheus_multiproc_dir: "{% if prometheus_monitoring_enabled|default(False) %}{{ cchq_home}}/www/{{ deploy_env }}/metrics{% endif %}"
   tags:
     - services
   register: pillowtop_conf_file
