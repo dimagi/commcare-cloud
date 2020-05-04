@@ -50,21 +50,7 @@ if [ -z ${TRAVIS_TEST} ]; then
     source virtualenvwrapper.sh
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
-        mkvirtualenv ansible --python $(which python2)
-    elif ~/.virtualenvs/ansible/bin/python -c 'print ""' 2> /dev/null; [ "$?" -ne "0" ]; then
-        echo "######################################################"
-        echo "#                                                    #"
-        echo "#  You're working from a python3 virtualenv,         #"
-        echo "#  but commcare-cloud doesn't yet support Python 3.  #"
-        echo "#  To reset your virtualenv, run the following:      #"
-        echo "#                                                    #"
-        echo "#    rmvirtualenv ansible                            #"
-        echo "#                                                    #"
-        echo "#  Then run this script again. If it runs on login,  #"
-        echo "#  you can just log out and log back in.             #"
-        echo "#                                                    #"
-        echo "######################################################"
-        return -1
+        mkvirtualenv ansible
     else
         workon ansible
     fi
