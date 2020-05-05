@@ -1,0 +1,48 @@
+---
+- name: Uninstall PostgreSQL and remove data directory
+  hosts: postgresql:pg_standby:!citusdb
+  become: true
+  vars_prompt:
+    - name: confirm_purge
+      prompt: "Are you sure you want to purge PostgreSQL? [yN]"
+      private: no
+
+  tasks:
+    - name: Confirm purge
+      assert:
+        that: confirm_purge == 'y'
+
+    - name: Check wipe_environment_enabled has been set to True
+      assert:
+        that: "{{ wipe_environment_enabled|default(False) }} == True"
+        fail_msg: 'This playbook is extremely destructive. To continue, set
+          "wipe_environment_enabled: True" in public.yml. Take care to unset
+          "wipe_environment_enabled" when the environment setup is complete.'
+
+    - name: Load variables from postgresql_base role
+      include_vars: roles/postgresql_base/defaults/main.yml
+
+    - name: Stop pgbouncer
+      service:
+        name: pgbouncer
+        state: stopped
+
+    - name: Uninstall pgbouncer
+      apt:
+        name: pgbouncer
+        state: absent
+
+    - name: Stop PostgreSQL
+      service:
+        name: postgresql
+        state: stopped
+
+    - name: Uninstall PostgreSQL
+      apt:
+        name: "{{postgresql_binary}}"
+        state: absent
+
+    - name: Remove PostgreSQL data directory
+      file:
+        path: "{{ postgresql_data_dir }}"
+        state: absent
