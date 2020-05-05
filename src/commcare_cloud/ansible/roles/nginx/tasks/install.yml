@@ -28,13 +28,6 @@
     line: 'ULIMIT="-n 65536"'
   ignore_errors: "{{ ansible_check_mode }}"
 
-- name: Enable lpv6 on loopback interface
-  become: yes
-  sysctl:
-    name: net.ipv6.conf.lo.disable_ipv6
-    value: '0'
-    state: present
-
 - name: Create sites-available and sites-enabled and allow cchq user to modify
   become: yes
   file:

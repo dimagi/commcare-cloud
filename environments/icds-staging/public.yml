@@ -15,6 +15,18 @@ KSPLICE_ACTIVE: no
 
 DATADOG_ENABLED: True
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}_cas_commcare-nginx_error.log"
+    tags: nginx-error
+filebeat_output_logstash_hosts:
+  - "{{ groups.logproxy.0 }}:5044"
+
 run_websockets_wsgi: True
 
 ssh_allow_password_users:
