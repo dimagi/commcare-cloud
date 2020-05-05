@@ -1,0 +1,39 @@
+---
+- name: Uninstall Elasticsearch and remove data directory
+  hosts: elasticsearch
+  become: true
+  vars_prompt:
+    - name: confirm_purge
+      prompt: "Are you sure you want to purge Elasticsearch? [yN]"
+      private: no
+
+  tasks:
+    - name: Confirm purge
+      assert:
+        that: confirm_purge == 'y'
+
+    - name: Check wipe_environment_enabled has been set to True
+      assert:
+        that: "{{ wipe_environment_enabled|default(False) }} == True"
+        fail_msg: 'This playbook is extremely destructive. To continue, set
+          "wipe_environment_enabled: True" in public.yml. Take care to unset
+          "wipe_environment_enabled" when the environment setup is complete.'
+
+    - name: Load variables from elasticsearch role
+      include_vars: roles/elasticsearch/defaults/main.yml
+
+    - name: Stop Elasticsearch
+      service:
+        name: elasticsearch
+        state: stopped
+
+    - name: Uninstall Elasticsearch
+      file:
+        path: "{{ elasticsearch_home }}"
+        state: absent
+
+    - name: Remove Elasticsearch data directory
+      become: yes
+      file:
+        path: "{{ elasticsearch_data_dir }}"
+        state: absent
