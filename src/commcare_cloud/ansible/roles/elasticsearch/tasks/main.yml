@@ -20,6 +20,7 @@
     src: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: /opt/
     copy: no
+    creates: "{{ elasticsearch_home }}"
 
 - name: Chown Elasticsearch
   become: yes
