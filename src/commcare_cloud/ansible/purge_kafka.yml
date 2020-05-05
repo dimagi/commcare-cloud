@@ -1,0 +1,51 @@
+---
+- name: Confirm purge Kafka
+  tasks:
+    - name: Confirm purge
+      assert:
+        that: confirm_purge == 'y'
+
+    - name: Check wipe_environment_enabled has been set to True
+      assert:
+        that: "{{ wipe_environment_enabled|default(False) }} == True"
+        fail_msg: 'This playbook is extremely destructive. To continue, set
+          "wipe_environment_enabled: True" in public.yml. Take care to unset
+          "wipe_environment_enabled" when the environment setup is complete.'
+
+- name: Uninstall Kafka
+  hosts: kafka
+  become: true
+  tasks:
+    - name: Load variables from kafka role
+      include_vars: roles/kafka/defaults/main.yml
+
+    - name: Stop Kafka
+      service:
+        name: kafka-server
+        state: stopped
+
+    - name: Remove symlink
+      file:
+        path: /opt/kafka
+        state: absent
+
+    - name: Remove Kafka
+      file:
+        path: "/opt/kafka_2.10-{{ kafka_version }}"
+        state: absent
+
+    - name: Remove Kafka data directory
+      file:
+        path: "{{ kafka_data_dir }}"
+        state: absent
+
+- name: Uninstall Zookeeper
+  hosts: zookeeper
+  become: true
+  tasks:
+    - name: Uninstall zookeeper
+      apt:
+        name:
+          - zookeeper
+          - zookeeperd
+        state: absent
