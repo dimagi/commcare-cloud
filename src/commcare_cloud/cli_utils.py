@@ -64,7 +64,7 @@ def git_branch():
             return None
         else:
             raise
-    return git_status.splitlines()[0].strip().split()[-1]
+    return git_status.splitlines()[0].strip().split()[-1].decode('utf-8')
 
 
 def check_branch(args):
