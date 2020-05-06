@@ -5,8 +5,6 @@
 # See this doc for info on snapshot storage structure:
 #   https://www.elastic.co/blog/found-dive-into-elasticsearch-storage#storing-snapshots
 
-from __future__ import absolute_import
-from __future__ import print_function
 import argparse
 import inspect
 import json
@@ -19,7 +17,6 @@ from functools import wraps
 
 import requests
 from requests import HTTPError, Timeout
-from six.moves import input
 
 logger = logging.getLogger(__name__)
 
@@ -252,8 +249,8 @@ class Cleanup(object):
         for version in live_snapshots:
             print(f'    {version}')
 
-        confirm = eval(input(
-            f"Are you sure you want to delete all files that don't belong to a live ES snapshot? [y/n]"))
+        confirm = input(
+            f"Are you sure you want to delete all files that don't belong to a live ES snapshot? [y/n]")
         if confirm != 'y':
             return
 
@@ -383,7 +380,7 @@ class DeleteSnapshotVersion(Cleanup):
         logger.info('Found %s live snapshots', len(live_snapshots))
         logger.debug('Live snapshots: %s', live_snapshots)
 
-        confirm = eval(input(f"Are you sure you want to delete a snapshot: {self.snapshot_version}? [y/n]"))
+        confirm = input(f"Are you sure you want to delete a snapshot: {self.snapshot_version}? [y/n]")
         if confirm != 'y':
             return
 
