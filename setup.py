@@ -36,7 +36,7 @@ setup(
         'attrs>=18.1.0',
         'boto3>=1.9.131',
         'clint',
-        'couchdb-cluster-admin>=0.5.0',
+        'couchdb-cluster-admin>=0.6.0',
         # 2.8 solves issue on MacOS Catalina
         # https://github.com/pypa/pip/issues/7254
         # but 2.9 fails to compile
