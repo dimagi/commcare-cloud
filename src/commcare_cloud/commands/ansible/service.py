@@ -70,7 +70,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             self.print_help()
             return 0
         elif action == 'logs':
-            print(("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.name))))
+            print("Logs can be found at:\n{}".format(self.log_location.format(env=self.environment.name)))
             return 0
         try:
             return self.execute_action(action, host_pattern, process_pattern)
@@ -351,7 +351,7 @@ class Elasticsearch(ServiceBase):
         service = Pillowtop(self.environment, AnsibleContext(None))
         exit_code = service.run(action=action)
         if not exit_code == 0:
-            print(("ERROR while trying to {} pillows. Exiting.".format(action)))
+            print("ERROR while trying to {} pillows. Exiting.".format(action))
             sys.exit(1)
 
     def _run_rolling_restart_yml(self, tags, limit):

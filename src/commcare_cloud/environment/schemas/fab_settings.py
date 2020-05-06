@@ -26,12 +26,12 @@ class FabSettingsConfig(jsonobject.JsonObject):
     def wrap(cls, data):
         for deprecated_property in ('py3_include_venv', 'py3_run_deploy'):
             if deprecated_property in data:
-                print(("{} {} {}".format(
+                print("{} {} {}".format(
                     color_notice("The property"),
                     color_code(deprecated_property),
                     color_notice("is deprecated and has no effect.")
-                )))
-                print((color_notice("Feel free to remove it from your fab-settings.yml.")))
+                ))
+                print(color_notice("Feel free to remove it from your fab-settings.yml."))
                 del data[deprecated_property]
 
         obj = super(FabSettingsConfig, cls).wrap(data)

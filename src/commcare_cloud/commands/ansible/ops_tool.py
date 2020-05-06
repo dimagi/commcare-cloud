@@ -53,15 +53,15 @@ class ListDatabases(CommandBase):
         # Print Logic
         # Printing Comparison
         for host_address in dbs_expected_on_host.keys():
-            print((host_address + ":"))
-            print((" " * 4 + "Expected Databases:"))
+            print(host_address + ":")
+            print(" " * 4 + "Expected Databases:")
             for database in dbs_expected_on_host[host_address]:
-                print((" " * 8 + "- " + database))
+                print(" " * 8 + "- " + database)
             if args.compare:
-                print((" " * 4 + "Additional Databases:"))
+                print(" " * 4 + "Additional Databases:")
                 for database in dbs_present_in_host[host_address]:
                     if database not in dbs_expected_on_host[host_address]:
-                        print((" " * 8 + "- " + database))
+                        print(" " * 8 + "- " + database)
 
     @staticmethod
     def get_present_dbs( args):
@@ -145,7 +145,7 @@ def print_table(headers, rows, output_csv=False):
         writer.writerow(headers)
         writer.writerows(rows)
     else:
-        print((tabulate(rows, headers=headers, tablefmt='github')))
+        print(tabulate(rows, headers=headers, tablefmt='github'))
 
 
 class PillowResourceReport(CommandBase):
@@ -309,15 +309,15 @@ class UpdateLocalKnownHosts(CommandBase):
             updated = updated_keys_by_host.get(host_key_type, None)
             if updated and original:
                 if updated != original:
-                    print((color_changed('Updating key: {} {}'.format(*host_key_type))))
+                    print(color_changed('Updating key: {} {}'.format(*host_key_type)))
             elif updated:
-                print((color_added('Adding key: {} {}'.format(*host_key_type))))
+                print(color_added('Adding key: {} {}'.format(*host_key_type)))
             elif original:
                 if limit or host in error_hosts:
                     # if we're limiting or there was an error keep original key
                     updated = original
                 else:
-                    print((color_removed('Removing key: {} {}'.format(*host_key_type))))
+                    print(color_removed('Removing key: {} {}'.format(*host_key_type)))
 
             if updated:
                 lines.append('{} {} {}'.format(host, key_type, updated))
@@ -328,7 +328,7 @@ class UpdateLocalKnownHosts(CommandBase):
         try:
             environment.check_known_hosts()
         except EnvironmentException as e:
-            print((color_error(str(e))))
+            print(color_error(str(e)))
             return 1
         return 0
 

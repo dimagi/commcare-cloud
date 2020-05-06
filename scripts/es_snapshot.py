@@ -324,7 +324,7 @@ class Info(object):
 
     def run(self):
         info = self.client.account_info()
-        print((
+        print(
                 'Account info: \n'
                 '   Objects:    %s\n'
                 '   Capacity:   %.1f%% (%s / %s)\n' %
@@ -334,7 +334,7 @@ class Info(object):
                     sizeof_fmt(info['used_bytes']),
                     sizeof_fmt(info['quota_bytes']),
                 )
-        ))
+        )
 
         index = self.client.get_json('index')
         live_snapshots = index['snapshots']
@@ -356,11 +356,11 @@ class Info(object):
                 duration = str(end - start)
                 print(f"        Took {duration} from {start.strftime('%Y-%m-%d %H:%M:%S')} to {end.strftime('%Y-%m-%d %H:%M:%S')}")
                 if failure:
-                    print((indent(json.dumps(snap_info['failures'], indent=4), ' ' * 8)))
+                    print(indent(json.dumps(snap_info['failures'], indent=4), ' ' * 8))
                 print()
 
             if self.metadata:
-                print((indent(json.dumps(snap_info, indent=4), ' ' * 8)))
+                print(indent(json.dumps(snap_info, indent=4), ' ' * 8))
                 print()
 
 
@@ -514,7 +514,7 @@ class VerifySnapshotVersion(object):
 
         if self.metadata:
             metadata = self.client.get_json(f'snapshot-{self.snapshot_version}')
-            print((json.dumps(metadata, indent=4)))
+            print(json.dumps(metadata, indent=4))
 
 
 COMMANDS = [
@@ -566,7 +566,7 @@ def main():
 
     if missing_args:
         parser.print_help()
-        print(('\nSome required arguments are missing: {}'.format(', '.join(missing_args))))
+        print('\nSome required arguments are missing: {}'.format(', '.join(missing_args)))
         return 1
 
     command = [c for c in COMMANDS if c.slug == args.command]

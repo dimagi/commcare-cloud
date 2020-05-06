@@ -161,9 +161,9 @@ def get_role_defaults(role):
 
 def get_available_envs(exclude_symlinks=False):
     if not os.path.exists(ENVIRONMENTS_DIR):
-        print(("The directory {!r} does not exist.\n"
+        print("The directory {!r} does not exist.\n"
               "Set COMMCARE_CLOUD_ENVIRONMENTS to a directory that exists."
-              .format(ENVIRONMENTS_DIR)))
+              .format(ENVIRONMENTS_DIR))
         exit(1)
     return sorted(
         env for env in os.listdir(ENVIRONMENTS_DIR)

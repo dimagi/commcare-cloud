@@ -169,11 +169,11 @@ def _get_github_credentials():
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
-        print((
+        print(
             "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
-        ).format(project_root=PROJECT_ROOT))
+        ).format(project_root=PROJECT_ROOT)
         username = input('Github username (leave blank for no auth): ') or None
         password = getpass('Github password: ') if username else None
         return (username, password)
