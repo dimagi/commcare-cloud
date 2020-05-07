@@ -9,3 +9,5 @@ settings:
     number_of_shards: 10
   hqdomains:
     number_of_shards: 1
+  xforms:
+    number_of_shards: 20
