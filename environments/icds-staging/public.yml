@@ -32,6 +32,9 @@ run_websockets_wsgi: True
 ssh_allow_password_users:
   - unixadmin
 
+lpar2rrd_agent_enabled: True
+lpar2rrd_master_address: 100.71.188.129
+
 airflow_dag_concurrency: 4
 airflow_parallelism: 8
 
