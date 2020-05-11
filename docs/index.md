@@ -69,21 +69,21 @@ that machine is also the control machine.
 
 ## A word of caution
 
-CommCare HQ is a complex, distributed software application,
-made up of dozens of processes
-and several pieces of third-party open source database software.
-It has been built for scale rather than simplicity,
-and as a result even for small deployments a CommCare server or server cluster
-can be challenging to maintain.
-An organization endeavoring to manage their own CommCare server environment
-must be willing to devote **considerable effort and system administration capacity**
-not only in the initial phases of provisioning, setup, and installation,
-but in steady state as well.
+CommCare HQ is a complex, distributed software application, made up of dozens of
+processes and several pieces of third-party open source database software. It
+has been built for scale rather than simplicity, and as a result even for small
+deployments a CommCare server or server cluster can be challenging to maintain.
+An organization endeavoring to manage their own CommCare server environment must
+be willing to devote **considerable effort and system administration capacity**
+not only in the initial phases of provisioning, setup, and installation, but in
+steady state as well.
 
-If you or your organization is hosting or interested in hosting
-its own CommCare server environment,
-we strongly suggest you read our [Hosting Considerations](system/hosting-considerations.md) page
-before going any further.
+If you or your organization is hosting or interested in hosting its own CommCare
+server environment, we strongly suggest you read our
+[Hosting Considerations](system/hosting-considerations.md) page before going any further.
+
+You should also be familiar with our [Expecations for Ongoing Maintenance](system/maintenance-expectations.md).
+
 
 ## CommCare HQ in Production: System Overview
 
