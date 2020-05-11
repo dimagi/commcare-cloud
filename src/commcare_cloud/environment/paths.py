@@ -67,6 +67,10 @@ class DefaultPaths(object):
         return self.get_env_file_path('aws-resources.yml')
 
     @lazy_immutable_property
+    def aws_yml(self):
+        return self.get_env_file_path('aws.yml')
+
+    @lazy_immutable_property
     def inventory_csv(self):
         return self.get_env_file_path('inventory.csv')
 
