@@ -260,7 +260,6 @@ class Environment(object):
 
     @memoized_property
     def aws_config(self):
-        print(self.paths.aws_yml)
         try:
             with open(self.paths.aws_yml) as f:
                 config_yml = yaml.safe_load(f)

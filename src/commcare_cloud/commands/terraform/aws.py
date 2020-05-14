@@ -25,15 +25,16 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
 
-def check_output(cmd_parts, env):
+def check_output(cmd_parts, env, silent=False):
 
     env_vars = os.environ.copy()
     env_vars.update(env)
-    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-    print_command('{} {}'.format(
-        ' '.join('{}={}'.format(key, value) for key, value in env.items()),
-        cmd,
-    ))
+    if not silent:
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print_command('{} {}'.format(
+            ' '.join('{}={}'.format(key, value) for key, value in env.items()),
+            cmd,
+        ))
     return subprocess.check_output(cmd_parts, env=env_vars)
 
 
@@ -312,8 +313,9 @@ def _aws_sign_in_with_sso(environment):
              (Always the passed in profile followed by ':session')
     """
     aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
+    # todo: add `... or if _date_modified(aws_config_path) > _date_modified(aws_credentials_path)`
     if not _has_profile_for_sso(aws_session_profile):
-        print("Configuring SSO. To further customize, run `aws configure sso`")
+        puts(color_notice("Configuring SSO. To further customize, run `aws configure sso --profile {}`".format(aws_session_profile)))
         _write_profile_for_sso(
             aws_session_profile,
             sso_start_url=environment.aws_config.sso_config.sso_start_url,
@@ -326,12 +328,15 @@ def _aws_sign_in_with_sso(environment):
         check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
 
     if not _has_valid_v1_session_credentials(aws_session_profile):
-
-        caller_identity = _get_caller_identity(aws_session_profile)
+        caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
+        if not caller_identity:
+            raise ValueError((
+                "SSO profile mis-configured and cannot fix automatically. "
+                "Edit [profile {}] in ~/.aws/config manually;"
+                "to start over, remove it from the file manually and try again.").format(aws_session_profile))
         # Until this is built in to aws, we need this insane workaround to get backwards compatibility
         # with the credential format that terraform uses
         cli_cache_dir = os.path.expanduser('~/.aws/cli/cache/')
-        print("target caller_identity", caller_identity)
 
         for filename in os.listdir(cli_cache_dir):
             with open(os.path.join(cli_cache_dir, filename)) as f:
@@ -343,13 +348,17 @@ def _aws_sign_in_with_sso(environment):
                     if data.get('ProviderType') != 'sso':
                         continue
                     credentials = data['Credentials']
-                    comparison = check_output(['aws', 'sts', 'get-caller-identity'], env={
+                    comparison = _get_caller_identity({
                         'AWS_ACCESS_KEY_ID': credentials.get('AccessKeyId'),
                         'AWS_SECRET_ACCESS_KEY': credentials.get('SecretAccessKey'),
                         'AWS_SESSION_TOKEN': credentials.get('SessionToken'),
                     })
                     if comparison == caller_identity:
                         break
+        else:
+            raise ValueError((
+                "Unable to find cached credentials immediately after SSO. "
+                "There aren't known ways for this to happen, so this will require debugging."))
 
         _write_credentials_to_aws_credentials(
             aws_session_profile,
@@ -362,11 +371,17 @@ def _aws_sign_in_with_sso(environment):
     return aws_session_profile
 
 
-def _get_caller_identity(aws_session_profile):
+def _get_caller_identity(env_vars):
     try:
-        caller_identity = check_output(['aws', 'sts', 'get-caller-identity'], env={'AWS_PROFILE': aws_session_profile})
+        caller_identity = check_output(['aws', 'sts', 'get-caller-identity'], env=env_vars,
+                                       # This call isn't really useful to the commcare-cloud user
+                                       # and is sometimes called with explicit credentials
+                                       # that we don't want to print to the screen.
+                                       silent=True)
     except subprocess.CalledProcessError as e:
-        if e.returncode != 255:
+        # 255: Not logged in / missing credentials
+        # 254: "The security token included in the request is expired"
+        if e.returncode not in (255, 254):
             raise
         # this means we're not signed in
         return None
