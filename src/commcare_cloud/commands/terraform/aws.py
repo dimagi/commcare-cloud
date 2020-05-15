@@ -355,17 +355,18 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
                 data = json.load(f)
             except JSONDecodeError:
                 continue
-            else:
-                if data.get('ProviderType') != 'sso':
-                    continue
-                credentials = data['Credentials']
-                comparison = _get_caller_identity({
-                    'AWS_ACCESS_KEY_ID': credentials.get('AccessKeyId'),
-                    'AWS_SECRET_ACCESS_KEY': credentials.get('SecretAccessKey'),
-                    'AWS_SESSION_TOKEN': credentials.get('SessionToken'),
-                })
-                if comparison == caller_identity:
-                    break
+
+            if data.get('ProviderType') != 'sso':
+                continue
+
+            credentials = data['Credentials']
+            comparison = _get_caller_identity({
+                'AWS_ACCESS_KEY_ID': credentials.get('AccessKeyId'),
+                'AWS_SECRET_ACCESS_KEY': credentials.get('SecretAccessKey'),
+                'AWS_SESSION_TOKEN': credentials.get('SessionToken'),
+            })
+            if comparison == caller_identity:
+                break
     else:
         raise ValueError((
             "Unable to find cached credentials immediately after SSO. "
@@ -394,8 +395,8 @@ def _get_caller_identity(env_vars):
             raise
         # this means we're not signed in
         return None
-    else:
-        return caller_identity
+
+    return caller_identity
 
 
 @memoized
@@ -487,8 +488,8 @@ def _has_profile_for_sso(aws_profile):
         config.get(section, 'sso_start_url')
     except configparser.NoOptionError:
         return False
-    else:
-        return True
+
+    return True
 
 
 def _write_profile_for_sso(
@@ -520,10 +521,10 @@ def _has_valid_session_credentials_for_sso():
                 contents = json.load(f)
         except JSONDecodeError:
             continue
-        else:
-            if 'startUrl' in contents and 'expiresAt' in contents:
-                expiration = datetime.strptime(contents['expiresAt'], "%Y-%m-%dT%H:%M:%SUTC")
-                return datetime.utcnow() < expiration
+
+        if 'startUrl' in contents and 'expiresAt' in contents:
+            expiration = datetime.strptime(contents['expiresAt'], "%Y-%m-%dT%H:%M:%SUTC")
+            return datetime.utcnow() < expiration
     return False
 
 
