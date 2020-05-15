@@ -19,3 +19,11 @@ resource "aws_lb" "public" {
     Group = "load-balancer"
   }
 }
+
+resource "aws_globalaccelerator_accelerator" "global_accelerator" {
+  provider = "aws.us-west-2"
+  name = "global-accelerator-${var.environment}"
+  tags {
+    Group = "accelerator"
+  }
+}
