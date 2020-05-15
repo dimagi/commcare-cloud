@@ -2,6 +2,7 @@
 
 resource aws_instance "vpn_host" {
   ami                    = "${local.openvpn_image}"
+  iam_instance_profile    = "AmazonSSMRoleForInstancesQuickSetup"
   instance_type          = "${var.vpn_size}"
   subnet_id              = "${var.instance_subnet}"
   key_name               = "${var.key_name}"
