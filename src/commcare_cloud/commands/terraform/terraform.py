@@ -148,7 +148,8 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params_by_rds_instance(environment)
+        'postgresql_params': get_postgresql_params_by_rds_instance(environment),
+        'credential_style': environment.aws_config.credential_style,
     })
 
     context.update({

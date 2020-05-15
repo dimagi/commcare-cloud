@@ -145,6 +145,7 @@ module "openvpn" {
 module "Users" {
   source = "./modules/iam"
   account_alias = "${var.account_alias}"
+  credential_style = "${var.credential_style}"
 }
 
 {%- for user in (users if manage_users else []) %}
@@ -154,9 +155,11 @@ resource "aws_key_pair" {{ user.username|tojson }} {
   public_key = {{ user.public_key|tojson }}
 }
 {%- endif %}
+{% if credential_style == 'iam' %}
 module "iam_user__{{ user.username }}" {
   source = "./modules/iam/user"
   username = {{ user.username|tojson }}
-  administrators_iam_group = "${module.Users.administrators_iam_group}"
+  administrators_iam_group = "${module.Users.administrators_iam_group[0]}"
 }
+{% endif %}
 {%- endfor %}
