@@ -294,13 +294,17 @@ class AwsSignIn(CommandBase):
 
 AWS_CREDENTIALS_PATH = os.path.expanduser('~/.aws/credentials')
 AWS_CONFIG_PATH = os.path.expanduser('~/.aws/config')
+AWS_DOT_DIR = os.path.expanduser('~/.aws/')
 AWS_SSO_CACHE_DIR = os.path.expanduser('~/.aws/sso/cache/')
 AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
 
 
 @memoized
 def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
+    _ensure_all_dirs(AWS_DOT_DIR)
     if environment.aws_config.credential_style == 'sso':
+        for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
+            _ensure_all_dirs(path)
         return _aws_sign_in_with_sso(environment)
     else:
         return _aws_sign_in_with_iam(environment.terraform_config.aws_profile, duration_minutes=duration_minutes,
@@ -549,3 +553,8 @@ def _iter_files_in_dir(directory):
         filepath = os.path.join(directory, filename)
         if os.path.isfile(filepath):
             yield filepath
+
+
+def _ensure_all_dirs(path, mode=0700):
+    if not os.path.exists(path):
+        os.makedirs(path, mode=mode)
