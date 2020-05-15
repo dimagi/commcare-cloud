@@ -328,47 +328,51 @@ def _aws_sign_in_with_sso(environment):
         check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
 
     if not _has_valid_v1_session_credentials(aws_session_profile):
-        caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
-        if not caller_identity:
-            raise ValueError((
-                "SSO profile mis-configured and cannot fix automatically. "
-                "Edit [profile {}] in ~/.aws/config manually; "
-                "to start over, remove it from the file manually and try again.").format(aws_session_profile))
-        # Until this is built in to aws, we need this insane workaround to get backwards compatibility
-        # with the credential format that terraform uses
-        cli_cache_dir = os.path.expanduser('~/.aws/cli/cache/')
-
-        for filename in os.listdir(cli_cache_dir):
-            with open(os.path.join(cli_cache_dir, filename)) as f:
-                try:
-                    data = json.load(f)
-                except JSONDecodeError:
-                    continue
-                else:
-                    if data.get('ProviderType') != 'sso':
-                        continue
-                    credentials = data['Credentials']
-                    comparison = _get_caller_identity({
-                        'AWS_ACCESS_KEY_ID': credentials.get('AccessKeyId'),
-                        'AWS_SECRET_ACCESS_KEY': credentials.get('SecretAccessKey'),
-                        'AWS_SESSION_TOKEN': credentials.get('SessionToken'),
-                    })
-                    if comparison == caller_identity:
-                        break
-        else:
-            raise ValueError((
-                "Unable to find cached credentials immediately after SSO. "
-                "There aren't known ways for this to happen, so this will require debugging."))
-
-        _write_credentials_to_aws_credentials(
-            aws_session_profile,
-            aws_access_key_id=credentials['AccessKeyId'],
-            aws_secret_access_key=credentials['SecretAccessKey'],
-            aws_session_token=credentials['SessionToken'],
-            expiration=datetime.strptime(credentials['Expiration'], "%Y-%m-%dT%H:%M:%SUTC"),
-        )
+        _sync_sso_to_v1_credentials(aws_session_profile)
 
     return aws_session_profile
+
+
+def _sync_sso_to_v1_credentials(aws_session_profile):
+    caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
+    if not caller_identity:
+        raise ValueError((
+            "SSO profile mis-configured and cannot fix automatically. "
+            "Edit [profile {}] in ~/.aws/config manually; "
+            "to start over, remove it from the file manually and try again.").format(aws_session_profile))
+    # Until this is built in to aws, we need this insane workaround to get backwards compatibility
+    # with the credential format that terraform uses
+    cli_cache_dir = os.path.expanduser('~/.aws/cli/cache/')
+
+    for filename in os.listdir(cli_cache_dir):
+        with open(os.path.join(cli_cache_dir, filename)) as f:
+            try:
+                data = json.load(f)
+            except JSONDecodeError:
+                continue
+            else:
+                if data.get('ProviderType') != 'sso':
+                    continue
+                credentials = data['Credentials']
+                comparison = _get_caller_identity({
+                    'AWS_ACCESS_KEY_ID': credentials.get('AccessKeyId'),
+                    'AWS_SECRET_ACCESS_KEY': credentials.get('SecretAccessKey'),
+                    'AWS_SESSION_TOKEN': credentials.get('SessionToken'),
+                })
+                if comparison == caller_identity:
+                    break
+    else:
+        raise ValueError((
+            "Unable to find cached credentials immediately after SSO. "
+            "There aren't known ways for this to happen, so this will require debugging."))
+
+    _write_credentials_to_aws_credentials(
+        aws_session_profile,
+        aws_access_key_id=credentials['AccessKeyId'],
+        aws_secret_access_key=credentials['SecretAccessKey'],
+        aws_session_token=credentials['SessionToken'],
+        expiration=datetime.strptime(credentials['Expiration'], "%Y-%m-%dT%H:%M:%SUTC"),
+    )
 
 
 def _get_caller_identity(env_vars):
