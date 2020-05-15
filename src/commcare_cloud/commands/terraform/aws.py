@@ -344,8 +344,8 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
     # with the credential format that terraform uses
     cli_cache_dir = os.path.expanduser('~/.aws/cli/cache/')
 
-    for filename in os.listdir(cli_cache_dir):
-        with open(os.path.join(cli_cache_dir, filename)) as f:
+    for filepath in _iter_files_in_dir(cli_cache_dir):
+        with open(filepath) as f:
             try:
                 data = json.load(f)
             except JSONDecodeError:
@@ -513,9 +513,9 @@ def _write_profile_for_sso(
 
 
 def _has_valid_session_credentials_for_sso(aws_sso_cache_path=os.path.expanduser('~/.aws/sso/cache/')):
-    for filename in os.listdir(aws_sso_cache_path):
+    for filepath in _iter_files_in_dir(aws_sso_cache_path):
         try:
-            with open(os.path.join(aws_sso_cache_path, filename), 'r') as f:
+            with open(filepath, 'r') as f:
                 contents = json.load(f)
         except JSONDecodeError:
             continue
@@ -538,3 +538,13 @@ def _has_valid_v1_session_credentials(
         return False
 
     return datetime.utcnow() < expiration
+
+
+def _iter_files_in_dir(directory):
+    """
+    Yield each filepath under a directory path that corresponds to a file (not a dir)
+    """
+    for filename in os.listdir(directory):
+        filepath = os.path.join(directory, filename)
+        if os.path.isfile(filepath):
+            yield filepath
