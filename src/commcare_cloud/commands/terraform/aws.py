@@ -335,7 +335,7 @@ def _aws_sign_in_with_sso(environment):
         )
 
     if not _has_valid_session_credentials_for_sso():
-        check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
+        _refresh_sso_credentials(aws_session_profile)
 
     if not _has_valid_v1_session_credentials(aws_session_profile):
         _sync_sso_to_v1_credentials(aws_session_profile)
@@ -346,10 +346,15 @@ def _aws_sign_in_with_sso(environment):
 def _sync_sso_to_v1_credentials(aws_session_profile):
     caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
     if not caller_identity:
-        raise ValueError((
-            "SSO profile mis-configured and cannot fix automatically. "
-            "Edit [profile {}] in ~/.aws/config manually; "
-            "to start over, remove it from the file manually and try again.").format(aws_session_profile))
+        # _has_valid_session_credentials_for_sso is a mediocre heuristic,
+        # so just assume it was wrong and refresh the sso credentials before failing hard
+        _refresh_sso_credentials(aws_session_profile)
+        caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
+        if not caller_identity:
+            raise ValueError((
+                "SSO profile mis-configured and cannot fix automatically. "
+                "Edit [profile {}] in ~/.aws/config manually; "
+                "to start over, remove it from the file manually and try again.").format(aws_session_profile))
     # Until this is built in to aws, we need this insane workaround to get backwards compatibility
     # with the credential format that terraform uses
 
@@ -530,6 +535,10 @@ def _has_valid_session_credentials_for_sso():
             expiration = datetime.strptime(contents['expiresAt'], "%Y-%m-%dT%H:%M:%SUTC")
             return datetime.utcnow() < expiration
     return False
+
+
+def _refresh_sso_credentials(aws_session_profile):
+    check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
 
 
 def _has_valid_v1_session_credentials(aws_profile):
