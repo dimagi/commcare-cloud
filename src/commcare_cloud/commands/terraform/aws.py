@@ -292,6 +292,12 @@ class AwsSignIn(CommandBase):
         aws_sign_in(environment, duration_minutes, force_new=True)
 
 
+AWS_CREDENTIALS_PATH = os.path.expanduser('~/.aws/credentials')
+AWS_CONFIG_PATH = os.path.expanduser('~/.aws/config')
+AWS_SSO_CACHE_DIR = os.path.expanduser('~/.aws/sso/cache/')
+AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
+
+
 @memoized
 def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
     if environment.aws_config.credential_style == 'sso':
@@ -313,7 +319,7 @@ def _aws_sign_in_with_sso(environment):
              (Always the passed in profile followed by ':session')
     """
     aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
-    # todo: add `... or if _date_modified(aws_config_path) > _date_modified(aws_credentials_path)`
+    # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
     if not _has_profile_for_sso(aws_session_profile):
         puts(color_notice("Configuring SSO. To further customize, run `aws configure sso --profile {}`".format(aws_session_profile)))
         _write_profile_for_sso(
@@ -342,9 +348,8 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
             "to start over, remove it from the file manually and try again.").format(aws_session_profile))
     # Until this is built in to aws, we need this insane workaround to get backwards compatibility
     # with the credential format that terraform uses
-    cli_cache_dir = os.path.expanduser('~/.aws/cli/cache/')
 
-    for filepath in _iter_files_in_dir(cli_cache_dir):
+    for filepath in _iter_files_in_dir(AWS_CLI_CACHE_DIR):
         with open(filepath) as f:
             try:
                 data = json.load(f)
@@ -456,26 +461,23 @@ def generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
 
 
 def _write_credentials_to_aws_credentials(
-        aws_profile, aws_access_key_id, aws_secret_access_key, aws_session_token,
-        expiration,
-        aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+        aws_profile, aws_access_key_id, aws_secret_access_key, aws_session_token, expiration):
     # followed code examples from https://gist.github.com/incognick/c121038dbd2180c683fda6ae5e30cba3
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(aws_credentials_path))
+    config.read(os.path.realpath(AWS_CREDENTIALS_PATH))
     if aws_profile not in config.sections():
         config.add_section(aws_profile)
     config.set(aws_profile, 'aws_access_key_id', aws_access_key_id)
     config.set(aws_profile, 'aws_secret_access_key', aws_secret_access_key)
     config.set(aws_profile, 'aws_session_token', aws_session_token)
     config.set(aws_profile, 'expiration', expiration.strftime("%Y-%m-%dT%H:%M:%SZ"))
-    with open(aws_credentials_path, 'w') as f:
+    with open(AWS_CREDENTIALS_PATH, 'w') as f:
         config.write(f)
 
 
-def _has_profile_for_sso(
-        aws_profile, aws_config_path=os.path.expanduser('~/.aws/config')):
+def _has_profile_for_sso(aws_profile):
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(aws_config_path))
+    config.read(os.path.realpath(AWS_CONFIG_PATH))
     section = 'profile {}'.format(aws_profile)
 
     if section not in config.sections():
@@ -494,10 +496,9 @@ def _write_profile_for_sso(
         sso_start_url,
         sso_region,
         sso_account_id,
-        region,
-        aws_config_path=os.path.expanduser('~/.aws/config')):
+        region):
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(aws_config_path))
+    config.read(os.path.realpath(AWS_CONFIG_PATH))
     section = 'profile {}'.format(aws_profile)
 
     if section not in config.sections():
@@ -508,12 +509,12 @@ def _write_profile_for_sso(
     config.set(section, 'sso_role_name', 'AWSPowerUserAccess')
     config.set(section, 'region', region)
     config.set(section, 'output', 'json')
-    with open(aws_config_path, 'w') as f:
+    with open(AWS_CONFIG_PATH, 'w') as f:
         config.write(f)
 
 
-def _has_valid_session_credentials_for_sso(aws_sso_cache_path=os.path.expanduser('~/.aws/sso/cache/')):
-    for filepath in _iter_files_in_dir(aws_sso_cache_path):
+def _has_valid_session_credentials_for_sso():
+    for filepath in _iter_files_in_dir(AWS_SSO_CACHE_DIR):
         try:
             with open(filepath, 'r') as f:
                 contents = json.load(f)
@@ -526,10 +527,9 @@ def _has_valid_session_credentials_for_sso(aws_sso_cache_path=os.path.expanduser
     return False
 
 
-def _has_valid_v1_session_credentials(
-        aws_profile, aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+def _has_valid_v1_session_credentials(aws_profile):
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(aws_credentials_path))
+    config.read(os.path.realpath(AWS_CREDENTIALS_PATH))
     if aws_profile not in config.sections():
         return False
     try:
