@@ -12,3 +12,5 @@ variable "SITE_HOST" {}
 variable "proxy_server_ids" {
   type = "list"
 }
+
+variable "account_id" {}

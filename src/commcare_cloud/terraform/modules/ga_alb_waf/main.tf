@@ -1,3 +1,75 @@
+locals {
+  // Used in bucket policy
+  // See https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
+  // For more regions
+  aws_elb_account_map = {
+    us-east-1 = "127311923021"
+    ap-south-1 = "718504428378"
+  }
+  log_bucket_name = "dimagi-commcare-${var.environment}-logs"
+  log_bucket_prefix = "alb-${var.environment}"
+}
+
+data "aws_region" "current" {}
+
+resource "aws_s3_bucket" "front_end_alb_logs" {
+  bucket = "${local.log_bucket_name}"
+  acl = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "front_end_alb_logs" {
+  bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
+  policy = <<POLICY
+{
+  "Id": "AWSConsole-AccessLogs-Policy-1589489332145",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${local.aws_elb_account_map[data.aws_region.current.name]}:root"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Sid": "AWSConsoleStmt-1589489332145"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+      },
+      "Sid": "AWSLogDeliveryWrite"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}",
+      "Sid": "AWSLogDeliveryAclCheck"
+    }
+  ]
+}
+POLICY
+}
+
+
 resource "aws_lb" "front_end" {
   name               = "alb-${var.environment}"
   internal           = true
@@ -8,9 +80,8 @@ resource "aws_lb" "front_end" {
   enable_deletion_protection = true
 
   access_logs {
-    # todo: dmr/ga-alb-waf Hook this semi-hard-coded bucket name to something that actually creates it
-    bucket  = "dimagi-commcare-${var.environment}-logs"
-    prefix  = "alb-staging"
+    bucket  = "${aws_s3_bucket.front_end_alb_logs.id}"
+    prefix  = "${local.log_bucket_prefix}"
     enabled = true
   }
 

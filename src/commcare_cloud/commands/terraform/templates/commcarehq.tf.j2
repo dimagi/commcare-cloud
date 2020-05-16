@@ -177,4 +177,5 @@ module "ga_alb_waf" {
     "${module.server__{{ server.server_name }}.server}"
     {%- endfor %}
   ]
+  account_id = {{ account_id|tojson }}
 }
