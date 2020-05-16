@@ -160,3 +160,14 @@ module "iam_user__{{ user.username }}" {
   administrators_iam_group = "${module.Users.administrators_iam_group}"
 }
 {%- endfor %}
+
+module "ga_alb_waf" {
+  source = "./modules/ga_alb_waf"
+  environment = "${var.environment}"
+  security_groups = ["${module.network.proxy-sg}"]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+}
