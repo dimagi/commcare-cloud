@@ -164,7 +164,7 @@ module "iam_user__{{ user.username }}" {
 module "ga_alb_waf" {
   source = "./modules/ga_alb_waf"
   environment = "${var.environment}"
-  security_groups = ["${module.network.proxy-sg}"]
+  security_groups = ["${module.network.alb-sg}"]
   subnets = [
     {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
     "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"

@@ -202,6 +202,24 @@ resource "aws_security_group" "proxy-sg" {
   vpc_id = "${aws_vpc.main.id}"
 
   ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.main.cidr_block}"]
+  }
+
+  egress = "${local.default_egress}"
+
+  tags {
+    Name = "proxy-sg-${var.env}"
+  }
+}
+
+resource "aws_security_group" "alb-sg" {
+  name   = "alb-sg-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
     from_port =         "80"
     to_port =           "80"
     protocol =          "tcp"
@@ -227,7 +245,7 @@ resource "aws_security_group" "proxy-sg" {
   egress = "${local.default_egress}"
 
   tags {
-    Name = "proxy-sg-${var.env}"
+    Name = "alb-sg-${var.env}"
   }
 }
 

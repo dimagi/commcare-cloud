@@ -22,6 +22,10 @@ output "proxy-sg" {
   value = "${aws_security_group.proxy-sg.id}"
 }
 
+output "alb-sg" {
+  value = "${aws_security_group.alb-sg.id}"
+}
+
 output "rds-sg" {
   value = "${aws_security_group.rds.id}"
 }
