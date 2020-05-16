@@ -9,3 +9,6 @@ variable "vpc_id" {}
 
 variable "SITE_HOST" {}
 
+variable "proxy_server_ids" {
+  type = "list"
+}

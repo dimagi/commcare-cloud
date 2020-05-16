@@ -30,6 +30,14 @@ resource "aws_lb_target_group" "front_end" {
   }
 }
 
+resource "aws_lb_target_group_attachment" "front_end_proxy" {
+  count = "${length(var.proxy_server_ids)}"
+  target_group_arn = "${aws_lb_target_group.front_end.arn}"
+  // todo: don't hard-code
+  target_id        = "${var.proxy_server_ids[count.index]}"
+  port             = 443
+}
+
 resource "aws_acm_certificate" "front_end" {
   domain_name       = "${var.SITE_HOST}"
   validation_method = "DNS"
