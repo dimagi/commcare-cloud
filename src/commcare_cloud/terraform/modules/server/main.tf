@@ -1,5 +1,6 @@
 resource aws_instance "server" {
   ami                     = "${var.server_image}"
+  iam_instance_profile    = "AmazonSSMRoleForInstancesQuickSetup"
   instance_type           = "${var.server_instance_type}"
   subnet_id               = "${var.subnet_options[
     format("%s-%s", var.network_tier, var.az)
