@@ -67,10 +67,6 @@ class BlockDevice(jsonobject.JsonObject):
 
     @classmethod
     def wrap(cls, data):
-        if 'encrypted' in data:
-            puts(color_warning(
-                'Warning! The "encrypted" option on block_device is experimental '
-                'and not well-integrated into provisioning scripts.'))
         return super(BlockDevice, cls).wrap(data)
 
 
