@@ -5,4 +5,7 @@ variable "security_groups" {
 variable "subnets" {
   type = "list"
 }
+variable "vpc_id" {}
+
+variable "SITE_HOST" {}
 

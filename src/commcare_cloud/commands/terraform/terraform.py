@@ -143,6 +143,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         raise UnauthorizedUser(key_name)
 
     context.update({
+        'SITE_HOST': environment.proxy_config.SITE_HOST,
         'users': [{
             'username': username,
             'public_key': environment.get_authorized_key(username)
