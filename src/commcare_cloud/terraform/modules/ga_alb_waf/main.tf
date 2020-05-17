@@ -103,12 +103,19 @@ resource "aws_lb_target_group" "front_end" {
     Environment = "${var.environment}"
     Group = "frontend"
   }
+
+  health_check {
+    enabled = true
+    path = "/"
+    matcher = "302"
+    healthy_threshold = 5
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb_target_group_attachment" "front_end_proxy" {
   count = "${length(var.proxy_server_ids)}"
   target_group_arn = "${aws_lb_target_group.front_end.arn}"
-  // todo: don't hard-code
   target_id        = "${var.proxy_server_ids[count.index]}"
   port             = 443
 }
