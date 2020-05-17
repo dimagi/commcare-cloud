@@ -71,7 +71,7 @@ POLICY
 
 
 resource "aws_lb" "front_end" {
-  name               = "alb-${var.environment}"
+  name               = "frontend-alb-${var.environment}"
   internal           = true
   load_balancer_type = "application"
   security_groups    = ["${var.security_groups}"]
@@ -87,17 +87,18 @@ resource "aws_lb" "front_end" {
 
   tags {
     Environment = "${var.environment}"
-    Group = "load-balancer"
+    Group = "frontend"
   }
 }
 
 resource "aws_lb_target_group" "front_end" {
-  name     = "proxy"
+  name     = "proxy-tg-${var.environment}"
   port     = 443
   protocol = "HTTPS"
   vpc_id   = "${var.vpc_id}"
   tags {
-    Group = "proxy"
+    Environment = "${var.environment}"
+    Group = "frontend"
   }
 }
 
@@ -113,9 +114,9 @@ resource "aws_acm_certificate" "front_end" {
   domain_name       = "${var.SITE_HOST}"
   validation_method = "DNS"
 
-  tags = {
+  tags {
     Environment = "${var.environment}"
-    Group = "cert"
+    Group = "frontend"
   }
 
   lifecycle {
@@ -156,16 +157,17 @@ resource "aws_lb_listener" "front_end_http_redirect" {
   }
 }
 
-resource "aws_globalaccelerator_accelerator" "global_accelerator" {
+resource "aws_globalaccelerator_accelerator" "front_end" {
   provider = "aws.us-west-2"
-  name = "global-accelerator-${var.environment}"
+  name = "frontend-globalaccelerator-${var.environment}"
   tags {
-    Group = "accelerator"
+    Environment = "${var.environment}"
+    Group = "frontend"
   }
 }
 
-resource "aws_globalaccelerator_listener" "global_accelerator" {
-  accelerator_arn = "${aws_globalaccelerator_accelerator.global_accelerator.id}"
+resource "aws_globalaccelerator_listener" "front_end" {
+  accelerator_arn = "${aws_globalaccelerator_accelerator.front_end.id}"
   protocol        = "TCP"
 
   port_range {
@@ -179,8 +181,8 @@ resource "aws_globalaccelerator_listener" "global_accelerator" {
   }
 }
 
-resource "aws_globalaccelerator_endpoint_group" "global_accelerator" {
-  listener_arn = "${aws_globalaccelerator_listener.global_accelerator.id}"
+resource "aws_globalaccelerator_endpoint_group" "front_end" {
+  listener_arn = "${aws_globalaccelerator_listener.front_end.id}"
 
   endpoint_configuration {
     endpoint_id = "${aws_lb.front_end.arn}"
