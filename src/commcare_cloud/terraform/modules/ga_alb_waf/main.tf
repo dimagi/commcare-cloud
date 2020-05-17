@@ -1,13 +1,13 @@
 locals {
-  // Used in bucket policy
-  // See https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
-  // For more regions
+  // Used in bucket policy. See
+  // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
+  // for more regions
   aws_elb_account_map = {
     us-east-1 = "127311923021"
     ap-south-1 = "718504428378"
   }
   log_bucket_name = "dimagi-commcare-${var.environment}-logs"
-  log_bucket_prefix = "alb-${var.environment}"
+  log_bucket_prefix = "frontend-alb-${var.environment}"
 }
 
 data "aws_region" "current" {}
@@ -25,6 +25,7 @@ resource "aws_s3_bucket" "front_end_alb_logs" {
   }
 }
 
+// To analyze logs, see https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
 resource "aws_s3_bucket_policy" "front_end_alb_logs" {
   bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
   policy = <<POLICY
@@ -76,6 +77,8 @@ resource "aws_lb" "front_end" {
   load_balancer_type = "application"
   security_groups    = ["${var.security_groups}"]
   subnets            = ["${var.subnets}"]
+
+  depends_on = ["aws_s3_bucket_policy.front_end_alb_logs"]
 
   enable_deletion_protection = true
 
