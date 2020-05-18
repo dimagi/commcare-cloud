@@ -201,6 +201,42 @@ resource "aws_security_group" "proxy-sg" {
   name   = "proxy-sg-${var.env}"
   vpc_id = "${aws_vpc.main.id}"
 
+  /* todo: delete this block to cut off direct public internet access to proxy { */
+  ingress {
+    from_port =         "80"
+    to_port =           "80"
+    protocol =          "tcp"
+    cidr_blocks =       ["0.0.0.0/0"]
+    ipv6_cidr_blocks =  ["::/0"]
+  }
+
+  ingress {
+    protocol =          "tcp"
+    to_port =           "443"
+    from_port =         "443"
+    cidr_blocks =       ["0.0.0.0/0"]
+    ipv6_cidr_blocks =  ["::/0"]
+  }
+  /* } */
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.main.cidr_block}"]
+  }
+
+  egress = "${local.default_egress}"
+
+  tags {
+    Name = "proxy-sg-${var.env}"
+  }
+}
+
+resource "aws_security_group" "alb-sg" {
+  name   = "alb-sg-${var.env}"
+  vpc_id = "${aws_vpc.main.id}"
+
   ingress {
     from_port =         "80"
     to_port =           "80"
@@ -227,7 +263,7 @@ resource "aws_security_group" "proxy-sg" {
   egress = "${local.default_egress}"
 
   tags {
-    Name = "proxy-sg-${var.env}"
+    Name = "alb-sg-${var.env}"
   }
 }
 
