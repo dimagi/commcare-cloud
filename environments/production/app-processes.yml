@@ -49,7 +49,7 @@ celery_processes:
       concurrency: 12
     sms_queue:
       pooling: gevent
-      concurrency: 10
+      concurrency: 20
     ucr_indicator_queue:
       concurrency: 1
     ucr_queue:
