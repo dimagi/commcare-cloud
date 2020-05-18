@@ -72,6 +72,38 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: bionic
+  - server_name: "web6-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
+  - server_name: "web7-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
+  - server_name: "web8-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
+  - server_name: "web9-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
 
   - server_name: "web10-production"
     server_instance_type: m5.2xlarge
