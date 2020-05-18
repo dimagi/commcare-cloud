@@ -88,6 +88,7 @@ module "server__{{ server.server_name }}" {
   network_tier = {{ server.network_tier|tojson }}
   az = {{ server.az|tojson }}
   volume_size = {{ server.volume_size|tojson }}
+  volume_encrypted = {{ server.volume_encrypted|tojson }}
   secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server.block_device.encrypted|default(False)|tojson }}

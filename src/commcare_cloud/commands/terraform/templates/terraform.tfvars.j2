@@ -56,6 +56,7 @@ proxy_servers = [
     network_tier = {{ server.network_tier|tojson }}
     az = {{ server.az|tojson }}
     volume_size = {{ server.volume_size|tojson }}
+    volume_encrypted = {{ server.volume_encrypted|tojson }}
   },
 {%- endfor %}
 ]
