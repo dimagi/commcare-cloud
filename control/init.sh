@@ -83,9 +83,9 @@ fi
 if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
-    cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd -
+    cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && make requirements && pip-sync  && pip install -e . && cd -
 else
-    { COMMCARE= && cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd - ; } &
+    { COMMCARE= && cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && make requirements && pip-sync && pip install -e . && cd - ; } &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
