@@ -865,6 +865,10 @@ AUDIT_VIEWS= [
 ]
 {% endif %}
 
+{% if localsettings.AUDIT_ALL_VIEWS is defined %}
+AUDIT_ALL_VIEWS = {{ localsettings.AUDIT_ALL_VIEWS }}
+{% endif %}
+
 {% if localsettings.get('STATIC_TOGGLE_STATES') is not none %}
 STATIC_TOGGLE_STATES = {{ localsettings.STATIC_TOGGLE_STATES }}
 {% endif %}
