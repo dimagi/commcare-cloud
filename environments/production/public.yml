@@ -108,6 +108,7 @@ localsettings:
     - "{{ J2ME_SITE_HOST }}"
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
+  AUDIT_ALL_VIEWS: True
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
