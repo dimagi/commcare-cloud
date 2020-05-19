@@ -12,6 +12,7 @@ resource aws_instance "server" {
   ebs_optimized = true
   root_block_device {
     volume_size           = "${var.volume_size}"
+    encrypted             = "${var.volume_encrypted}"
     volume_type           = "gp2"
     delete_on_termination = true
   }
