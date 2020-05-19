@@ -216,6 +216,8 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 2
+    reminder_rule_queue:
+      concurrency: 2
     sms_queue:
       pooling: gevent
       concurrency: 10
@@ -231,7 +233,20 @@ celery_processes:
   celery72,celery73:
     submission_reprocessing_queue:
       concurrency: 10
-  celery74,celery75,celery76,celery77,celery78,celery79,celery80,celery81,celery82,celery83,celery84,celery85:    
+  celery74,celery75,celery76,celery77:
+    # These tasks are live only when conditional alerts on HQ are being activated
+    reminder_rule_queue:
+      concurrency: 8
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 4
+  celery78,celery79,celery80:
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+  celery81,celery82,celery83,celery84,celery85:
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
