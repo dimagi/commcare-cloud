@@ -79,6 +79,7 @@ localsettings:
     - testserver
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
+  AUDIT_ALL_VIEWS: True
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
