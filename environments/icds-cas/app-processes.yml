@@ -241,7 +241,12 @@ celery_processes:
       pooling: gevent
       concurrency: 5
       num_workers: 4
-  celery78,celery79,celery80,celery81,celery82,celery83,celery84,celery85:
+  celery78,celery79,celery80:
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 5
+      num_workers: 8
+  celery81,celery82,celery83,celery84,celery85:
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
