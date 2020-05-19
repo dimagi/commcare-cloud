@@ -262,6 +262,7 @@ localsettings:
         params:
           topics:
             - 'form-sql'
+  MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False
   RUN_UNKNOWN_USER_PILLOW: False
