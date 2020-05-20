@@ -960,3 +960,7 @@ USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER = {{ localsettings.USE_KAFKA_SHORTEST_BAC
 {% if localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE is defined %}
 MESSAGING_RULE_CASE_CHUNK_SIZE = {{ localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE }}
 {% endif %}
+
+{% if localsettings.TRACK_ES_REPORT_LOAD is defined %}
+TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
+{% endif %}

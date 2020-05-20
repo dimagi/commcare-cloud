@@ -282,6 +282,7 @@ localsettings:
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   USER_REPORTING_METADATA_BATCH_SCHEDULE: {'crontab': {'minute': '*/2', 'hour': '17-21'}}
   USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  TRACK_ES_REPORT_LOAD: True
   STATIC_TOGGLE_STATES:
     advanced-app-builder:
       always_enabled:
