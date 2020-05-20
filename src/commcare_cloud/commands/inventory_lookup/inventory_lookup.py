@@ -73,7 +73,7 @@ class Ssh(_Ssh):
     """
 
     def run(self, args, ssh_args):
-        if args.server == 'control' and '-A' not in ssh_args:
+        if args.server.split(':')[0] == 'control' and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
         ukhf = "UserKnownHostsFile="
