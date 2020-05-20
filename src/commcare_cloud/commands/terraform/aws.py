@@ -565,6 +565,6 @@ def _iter_files_in_dir(directory):
             yield filepath
 
 
-def _ensure_all_dirs(path, mode=0700):
+def _ensure_all_dirs(path, mode=0o700):
     if not os.path.exists(path):
         os.makedirs(path, mode=mode)
