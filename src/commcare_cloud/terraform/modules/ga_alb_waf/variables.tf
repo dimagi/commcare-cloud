@@ -14,3 +14,4 @@ variable "proxy_server_ids" {
 }
 
 variable "account_id" {}
+variable "ssl_policy" {}
