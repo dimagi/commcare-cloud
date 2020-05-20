@@ -1,0 +1,169 @@
+- name: Encrypt Data Drive
+  hosts: prometheus 
+  become: true
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+
+- name: Prometheus
+  hosts: prometheus
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.prometheus
+  tags: prometheus
+
+- name: AlertManager
+  hosts: alertmanager
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.alertmanager
+  tags: alertmanager
+
+- name: Grafana
+  hosts: grafana
+  become: true
+  tasks:
+    - import_role:
+        name: cloudalchemy.grafana
+  tags: grafana
+
+- name: Nginx
+  hosts: prometheus_proxy
+  become: true
+  tasks: 
+    - import_role:
+        name: dimagi.commcare_prometheus.nginx
+  tags: prometheus_proxy
+
+- name: Prometheus Node Exporter
+  hosts: all
+  become: true
+  tasks:
+    - import_role:
+        name: cloudalchemy.node-exporter
+  tags: node_exporter
+
+- name: Prometheus Haproxy Exporter
+  hosts: couchdb2_proxy
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.haproxy_exporter
+  tags: haproxy_exporter
+
+- name: Prometheus Nginx Exporter
+  hosts: proxy
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.nginx_exporter
+  tags: nginx_exporter
+
+- name: Prometheus CouchDB Exporter
+  hosts: couchdb2
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.couchdb_exporter
+      when: inventory_hostname == groups.couchdb2.0 
+  tags: couchdb_exporter
+
+- name: Prometheus Redis Exporter
+  hosts: redis
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.redis_exporter
+  tags: redis_exporter
+
+- name: Prometheus RabbitMQ Exporter
+  hosts: rabbitmq
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.rabbitmq_exporter
+  tags: rabbitmq_exporter
+
+- name: Prometheus Kafka Exporter
+  hosts: kafka
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.kafka_exporter
+      when: inventory_hostname == groups.kafka.0
+  tags: kafka_exporter
+
+- name: Prometheus Elasticsearch Exporter
+  hosts: elasticsearch
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.elasticsearch_exporter
+      when: inventory_hostname == groups.elasticsearch.0
+  tags: elasticsearch_exporter
+
+- name: Prometheus Postgresql Exporter
+  hosts: postgresql,pg_standby,citusdb
+  become: true
+  vars:
+    ansible_service_mgr: "systemd"
+    postgres_exporter_datasource: "postgresql://postgres@:5432/postgres?host=/var/run/postgresql/&sslmode=disable"
+    postgres_exporter_flags: ['--auto-discover-databases']
+  tasks:
+    - import_role:
+        name: bdellegrazie.postgres_exporter
+  tags: postgres_exporter
+
+- name: Prometheus Pgbouncer Exporter
+  hosts: postgresql,pg_standby,citusdb
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.pgbouncer_exporter
+  tags: pgbouncer_exporter
+
+- name: Prometheus Airflow Exporter
+  hosts: airflow
+  become: true
+  tasks: 
+    - import_role:
+         name: dimagi.commcare_prometheus.airflow_exporter
+      when: inventory_hostname == groups.airflow.0
+  tags: airflow_exporter
+
+- name: Prometheus Statsd Exporter
+  hosts: logproxy
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.statsd_exporter
+  tags: statsd_exporter
+
+- name: Prometheus Celery Exporter
+  hosts: celery
+  become: true
+  tasks: 
+    - import_role:
+        name: dimagi.commcare_prometheus.celery_exporter
+      when: inventory_hostname == groups.celery.0
+  tags: celery_exporter
+
+- name: Prometheus Blackbox Exporter
+  hosts: prometheus
+  become: true
+  tasks: 
+    - import_role:
+        name: dimagi.commcare_prometheus.blackbox_exporter
+      when: inventory_hostname == groups.prometheus.0
+  tags: blackbox_exporter
+
+- name: Prometheus Swift Exporter
+  hosts: prometheus
+  become: true
+  tasks: 
+    - import_role:
+        name: dimagi.commcare_prometheus.swift_exporter
+      when: swift_accounts is defined and inventory_hostname == groups.prometheus.0
+  tags: swift_exporter
+

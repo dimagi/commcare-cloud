@@ -164,3 +164,7 @@
 - import_tasks: logging.yml
   tags:
     - logging
+
+- import_tasks: audit.yml
+  tags:
+    - audit

@@ -11,3 +11,6 @@
   apt:
     name:
       - git
+    state: latest
+  tags:
+    - install_git

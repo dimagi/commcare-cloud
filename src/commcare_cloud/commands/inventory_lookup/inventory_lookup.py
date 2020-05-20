@@ -27,6 +27,8 @@ class Lookup(CommandBase):
             multiple servers if there is more than one in the group. For
             example: webworkers:0 will pick the first webworker. May also be
             omitted for environments with only a single server.
+
+            Use '-' for default (django_manage:0)
         """),
     )
 
@@ -48,6 +50,8 @@ class Lookup(CommandBase):
 class _Ssh(Lookup):
 
     def run(self, args, ssh_args):
+        if args.server == '-':
+            args.server = 'django_manage:0'
         address = self.lookup_server_address(args)
         if ':' in address:
             address, port = address.split(':')
@@ -113,11 +117,7 @@ class Tmux(_Ssh):
     commcare-cloud <env> tmux -
     ```
     """
-    arguments = (
-        Argument('server', help="""
-            Server to run tmux session on.
-            Use '-' for default (django_manage:0)
-        """),
+    arguments = _Ssh.arguments + (
         Argument('remote_command', nargs='?', help="""
             Command to run in the tmux.
             If a command specified, then it will always run in a new window.
@@ -130,8 +130,6 @@ class Tmux(_Ssh):
     def run(self, args, ssh_args):
         environment = get_environment(args.env_name)
         public_vars = environment.public_vars
-        if args.server == '-':
-            args.server = 'django_manage:0'
         # the default 'cchq' is redundant with ansible/group_vars/all.yml
         cchq_user = public_vars.get('cchq_user', 'cchq')
         # Name tabs like "droberts (2018-04-13)"

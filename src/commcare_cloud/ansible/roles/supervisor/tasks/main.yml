@@ -60,6 +60,7 @@
     src: supervisord.upstart.conf.j2
     dest: /etc/init/supervisord.conf
   when: ansible_distribution_version == '14.04'
+  register: service_conf
 
 - name: Add Systemd Conf
   become: yes
@@ -67,10 +68,12 @@
     src: supervisord.systemd.service.j2
     dest: /etc/systemd/system/supervisord.service
   when: ansible_distribution_version == '18.04'
+  register: service_conf
 
 - name: stop supervisor to pick up configuration changes
   become: yes
   service: name=supervisord state=stopped
+  when: service_conf.changed
 
 - name: pkill supervisord if run by cchq
   command: pkill -9 -U cchq supervisord
@@ -80,6 +83,7 @@
   # rc = 1: no processes match
   failed_when: result.rc > 1
   changed_when: result.rc == 0
+  when: service_conf.changed
 
 - name: start and enable supervisord
   become: yes

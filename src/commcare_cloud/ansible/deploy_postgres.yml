@@ -9,13 +9,13 @@
     - {role: backups, tags: 'backups'}
 
 - name: Encrypt WAL Drive
-  hosts: pg_standby
-  tasks: 
-    - name: Encrypt drive 
-      vars: 
+  hosts: postgresql
+  tasks:
+    - name: Encrypt drive
+      vars:
         dir_path: "{{ postgresql_archive_path }}"
       include: encrypt_dir.yml
-      when: postgresql_archive_path is defined    
+      when: postgresql_archive_path is defined
   tags: ecryptfs
 
 - name: PostgreSQL

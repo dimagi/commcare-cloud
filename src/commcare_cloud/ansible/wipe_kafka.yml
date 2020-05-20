@@ -1,0 +1,65 @@
+---
+- name: Delete all Kafka topics
+  become: true
+  hosts: zookeeper  # Doesn't need to run on all Kafka hosts
+  vars_prompt:
+    - name: confirm_wipe
+      prompt: "Are you sure you want to delete all Kafka topics? [yN]"
+      private: no
+
+  tasks:
+    - name: Check confirm_wipe
+      assert:
+        that: confirm_wipe == 'y'
+
+    - name: Check wipe_environment_enabled has been set to True
+      assert:
+        that: "{{ wipe_environment_enabled|default(False) }} == True"
+        fail_msg: 'This playbook will delete all data. To continue, set
+          "wipe_environment_enabled: True" in public.yml. Take care to unset
+          "wipe_environment_enabled" and run the `deploy_kafka.yml` playbook
+          again when the environment setup is complete.'
+
+    - name: Get PostgreSQL defaults
+      include_vars: roles/kafka/defaults/main.yml
+
+    - name: Get Kafka topics
+      # django_manage does not support check mode, and this task does not
+      # change the system. Force this task to run in normal mode even when
+      # check mode is on:
+      check_mode: no
+      django_manage:
+        command: 'list_kafka_topics'
+        app_path: "{{ code_home }}"
+        virtualenv: "{{ py3_virtualenv_home }}"
+      register: topics_result
+      # topics_result does not have `stdout` or `stdout_lines`. Use
+      # `out.split()` instead. e.g.
+      #    {
+      #        "changed": false,
+      #        "failed": false,
+      #        "out": "case\ncase-sql\ncommcare-user\ndomain\nform\nform-sql\n"
+      #               "group\nledger\nmeta\nsms\nweb-user\napp\nlocation\n"
+      #               "synclog-sql\n",
+      #        # ...
+      #    }
+
+    - name: Allow Kafka server to delete topics
+      lineinfile:
+        line: 'delete.topic.enable=true'
+        path: "{{kafka_conf_dir}}/server.properties"
+        regexp: 'delete\.topic\.enable'
+        state: present
+
+    - name: Restart Kafka
+      # `kafka-server` service does not support reload
+      service:
+        name: kafka-server
+        state: restarted
+
+    - name: Delete topics
+      loop: "{{ topics_result.out.split() }}"
+      command: "/opt/kafka/bin/kafka-topics.sh
+        --delete
+        --zookeeper localhost:{{ zookeeper_client_port }}
+        --topic {{ item }}"

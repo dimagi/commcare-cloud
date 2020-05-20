@@ -72,6 +72,7 @@ filebeat_output_logstash_hosts:
   - "{{ groups.logproxy.0 }}:5044"
 
 lpar2rrd_agent_enabled: True
+lpar2rrd_master_address: 100.71.188.129
 
 etc_hosts_lines:
   - '127.0.0.1        localhost'
@@ -132,8 +133,6 @@ couch_dbs:
     password: "{{ localsettings_private.COUCH_PASSWORD }}"
     is_https: False
 
-TWO_FACTOR_GATEWAY_ENABLED: True
-
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
 s3_blob_db_s3_bucket: 'mowcddb-c1'
@@ -169,7 +168,7 @@ kafka_log_retention: 504 # 21 days
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
-  ASYNC_INDICATORS_TO_QUEUE: 60000
+  ASYNC_INDICATORS_TO_QUEUE: 120000
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []
@@ -190,7 +189,10 @@ localsettings:
   EMAIL_SMTP_HOST: relay.sendermile.com
   EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
+  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  ENABLE_PRELOGIN_SITE: False
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENTERPRISE_MODE: True
   ES_SEARCH_TIMEOUT: 300
   ES_XFORM_INDEX_NAME: 'xforms_2020-02-20'
   ES_XFORM_DISABLE_ALL: True
@@ -198,7 +200,6 @@ localsettings:
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'icds'
   INACTIVITY_TIMEOUT: 20160
-  ICDS_USE_CITUS: True
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
     'first_line': "585 Massachusetts Ave"
@@ -261,6 +262,7 @@ localsettings:
         params:
           topics:
             - 'form-sql'
+  MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False
   RUN_UNKNOWN_USER_PILLOW: False
@@ -270,23 +272,16 @@ localsettings:
   REDIS_HOST: "{{ hostvars[groups.keepalived_redis.0].keepalived_shared_ip }}" 
   REDIS_PORT: '6379'
   REDIS_PASSWORD: '{{ localsettings_private.REDIS_PASSWORD }}'
-  REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   REMINDERS_QUEUE_ENABLED: True
+  REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   SMS_GATEWAY_URL:
   SMS_QUEUE_ENABLED: True
   STATIC_DATA_SOURCE_PROVIDERS: []
-  # sumologic toggle is set to 0 so having this here just incurs another cache hit for nothing
-  # can re-enable if we want to
-  SUMOLOGIC_URL: # "{{ localsettings_private.SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
-  ENABLE_PRELOGIN_SITE: False
   CUSTOM_LANDING_TEMPLATE: 'icds/login.html'
-  ENTERPRISE_MODE: True
-  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
-  ICDS_DOMAIN: "{{ localsettings_private.ICDS_DOMAIN }}"
-  USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   USER_REPORTING_METADATA_BATCH_SCHEDULE: {'crontab': {'minute': '*/2', 'hour': '17-21'}}
+  USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
   STATIC_TOGGLE_STATES:
     advanced-app-builder:
       always_enabled:

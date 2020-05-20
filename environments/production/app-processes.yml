@@ -3,6 +3,7 @@ django_command_prefix: ''
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 1
+formplayer_memory: "15g"
 management_commands:
   celery12:
     run_submission_reprocessing_queue:
@@ -23,7 +24,7 @@ celery_processes:
     case_import_queue:
       concurrency: 3
     case_rule_queue:
-      concurrency: 3
+      concurrency: 8
     celery:
       concurrency: 4
     celery_periodic:
@@ -46,10 +47,10 @@ celery_processes:
       pooling: gevent
       concurrency: 200
     saved_exports_queue:
-      concurrency: 8
+      concurrency: 12
     sms_queue:
       pooling: gevent
-      concurrency: 10
+      concurrency: 20
     ucr_indicator_queue:
       concurrency: 1
     ucr_queue:

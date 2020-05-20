@@ -93,6 +93,9 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: formplayer
     os: bionic
     
@@ -151,6 +154,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 80
+      encrypted: true
     group: postgresql
     os: bionic
 
@@ -159,6 +165,9 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
+    block_device:
+      volume_size: 60
+      encrypted: true
     group: "redis"
     os: bionic
 

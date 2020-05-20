@@ -1,0 +1,34 @@
+# Promethues,Alertmanager,grafana,exporter settings
+prometheus_db_dir: "{{ encrypted_root }}/prometheus"
+prometheus_storage_retention: "180d"
+prometheus_web_external_url: "http://0.0.0.0:9090/prometheus"
+prometheus_monitoring_enabled: True
+prometheus_monitoring_env: "icds-staging"
+prometheus_monitoring_slack_channel: "#alerts-prometheus"
+alertmanager_web_external_url: "http://0.0.0.0:9093/alertmanager"
+alertmanager_slack_api_url: "{{ secrets.alertmanager_slack_api_url }}"
+alertmanager_receivers:
+- name: slack
+  slack_configs:
+  - send_resolved: true
+    channel: '#alerts'
+alertmanager_route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: slack
+node_exporter_enabled_collectors: ['systemd','processes']
+couchdb_username: "{{ couchdb2.username }}"
+couchdb_password: "{{ couchdb2.password }}"
+rabbit_user: "{{ AMQP_USER }}"
+rabbit_password: "{{ AMQP_PASSWORD }}"
+airflow_prometheus_database_host: "{{ postgresql_dbs.main.pgbouncer_host }}"
+airflow_prometheus_database_user: "{{ postgres_users.commcare.username }}"
+airflow_prometheus_database_password: "{{ postgres_users.commcare.password }}"
+pgbouncer_exporter_dbuser: "{{ secrets.POSTGRES_USERS.devreadonly.username }}"
+pgbouncer_exporter_dbpassword: "{{ secrets.POSTGRES_USERS.devreadonly.password }}"
+celery_exporter_broker_url: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}"
+prometheus_http_probe_urls:
+  - http://icds-staging.commcarehq.org/
+

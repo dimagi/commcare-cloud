@@ -142,7 +142,7 @@
 
 - name: Start Elasticsearch
   become: yes
-  service: name=elasticsearch state=started
+  service: name=elasticsearch state=started  enabled=yes
   register: result
   failed_when: (result.state is defined) and (result.state != "started")
   tags: after-reboot

@@ -82,7 +82,7 @@ class Terraform(CommandBase):
             with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
-        env_vars = {'AWS_PROFILE': aws_sign_in(environment.terraform_config.aws_profile)}
+        env_vars = {'AWS_PROFILE': aws_sign_in(environment)}
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
@@ -144,6 +144,8 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         raise UnauthorizedUser(key_name)
 
     context.update({
+        'SITE_HOST': environment.proxy_config.SITE_HOST,
+        'account_id': environment.aws_config.sso_config.sso_account_id,
         'users': [{
             'username': username,
             'public_key': environment.get_authorized_key(username)

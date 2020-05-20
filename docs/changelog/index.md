@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2020-04-16** [Update git to the latest version](0034-update-git.md)
+Due to a [high-severity security advisory](https://github.com/git/git/security/advisories/GHSA-qm7j-c969-7j4q) on the popular version control software program `git`,
+observing security best practices dictates upgrading to one of the git versions designated as "Patched"
+such as 2.26.1.
+
 ### **2020-02-28** [Update `deploy` CommandArgs](0033-update-deploy-args.md)
 We are adding support for deploying from a specific commit hash or tag, replacing
 the deploy command's `commcare-branch` argument with a more general `commcare-rev` argument.

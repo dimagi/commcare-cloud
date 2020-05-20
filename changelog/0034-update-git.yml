@@ -1,0 +1,37 @@
+title: Update git to the latest version
+key: update-git
+date: 2020-04-16
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Due to a [high-severity security advisory](https://github.com/git/git/security/advisories/GHSA-qm7j-c969-7j4q) on the popular version control software program `git`,
+  observing security best practices dictates upgrading to one of the git versions designated as "Patched"
+  such as 2.26.1.
+
+details: |
+  CommCare Cloud uses `git` to update CommCare code from the central repository to each machine
+  that needs the code. There is no known attempt to exploit the above vulnerability in any CommCare environment,
+  nor is there a known direct procedue for exploiting it in a CommCare environment. However, security best practices
+  dictate preemptive action.
+
+update_steps: |
+  To update git on all machines in your environment run
+
+  1. Update git to the latest version
+  ```bash
+  cchq <env> deploy-stack --tags=install_git
+  ```
+
+  2. Make sure the version is one of the "Patched" versions in the hyperlink above, such as 2.26.1.
+  ```bash
+  cchq <env> run-shell-command all 'git --version'
+  ```
+  Output should looks something like
+  ```
+  x.x.x.x | CHANGED | rc=0 >>
+  git version 2.26.1
+  y.y.y.y | CHANGED | rc=0 >>
+  git version 2.26.1
+  ...
+  ```
