@@ -229,6 +229,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 6650
+      volume_encrypted: no
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
@@ -239,6 +240,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 5000
+      volume_encrypted: no
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
@@ -249,6 +251,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 5000
+      volume_encrypted: no
     group: "couchdb2"
     os: bionic
 
