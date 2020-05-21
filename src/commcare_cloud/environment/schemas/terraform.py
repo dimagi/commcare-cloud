@@ -53,7 +53,7 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
-    volume_encrypted = jsonobject.BooleanProperty(default=False, required=True)
+    volume_encrypted = jsonobject.BooleanProperty(default=True, required=False)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     # todo: invert this so that all new machines are bionic unless otherwise specified
