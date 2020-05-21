@@ -65,7 +65,7 @@ class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
-    encrypted = jsonobject.BooleanProperty(default=False, required=True)
+    encrypted = jsonobject.BooleanProperty(default=True, required=True)
 
     @classmethod
     def wrap(cls, data):
