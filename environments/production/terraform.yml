@@ -83,7 +83,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "hq_webworkers"
     os: bionic
   - server_name: "web7-production"
@@ -91,7 +91,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "hq_webworkers"
     os: bionic
   - server_name: "web8-production"
@@ -99,7 +99,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "hq_webworkers"
     os: bionic
   - server_name: "web9-production"
@@ -107,7 +107,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "hq_webworkers"
     os: bionic
 
