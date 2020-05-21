@@ -33,6 +33,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    volume_encrypted: no
     group: "control"
     os: bionic
 
@@ -41,6 +42,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: "django_manage"
     os: bionic
 
@@ -49,6 +51,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web3-production"
@@ -56,6 +59,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web4-production"
@@ -63,6 +67,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web5-production"
@@ -70,6 +75,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web6-production"
@@ -77,7 +83,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: yes
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web7-production"
@@ -85,7 +91,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: yes
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web8-production"
@@ -93,7 +99,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: yes
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
   - server_name: "web9-production"
@@ -101,7 +107,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: yes
+    volume_encrypted: no
     group: "hq_webworkers"
     os: bionic
 
@@ -111,6 +117,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 40
+    volume_encrypted: no
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web11-production"
@@ -118,6 +125,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 40
+    volume_encrypted: no
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web12-production"
@@ -125,6 +133,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 40
+    volume_encrypted: no
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web13-production"
@@ -132,6 +141,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    volume_encrypted: no
     group: "mobile_webworkers"
     os: bionic
 
@@ -143,6 +153,7 @@ servers:
     group: "elasticsearch"
     os: bionic
     volume_size: 40
+    volume_encrypted: no
   - server_name: "esmaster4-production"
     server_instance_type: t3.large
     network_tier: "db-private"
@@ -150,12 +161,14 @@ servers:
     group: "elasticsearch"
     os: bionic
     volume_size: 40
+    volume_encrypted: no
   - server_name: "esmaster5-production"
     server_instance_type: t3.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
     os: bionic
+    volume_encrypted: no
 
 
   - server_name: "es15-production"
@@ -163,6 +176,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 1000
+    volume_encrypted: no
     group: "elasticsearch"
     os: bionic
   - server_name: "es16-production"
@@ -170,6 +184,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 1000
+    volume_encrypted: no
     group: "elasticsearch"
     os: bionic
   - server_name: "es17-production"
@@ -177,6 +192,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 1000
+    volume_encrypted: no
     group: "elasticsearch"
     os: bionic
   - server_name: "es18-production"
@@ -184,6 +200,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 1000
+    volume_encrypted: no
     group: "elasticsearch"
     os: bionic
   - server_name: "es19-production"
@@ -191,6 +208,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 1000
+    volume_encrypted: no
     group: "elasticsearch"
     os: bionic
     
@@ -199,6 +217,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: "couchdb2_proxy"
     os: bionic
 
@@ -207,8 +226,10 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_encrypted: no
     block_device:
       volume_size: 6650
+      volume_encrypted: no
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
@@ -216,8 +237,10 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_encrypted: no
     block_device:
       volume_size: 5000
+      volume_encrypted: no
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
@@ -225,8 +248,10 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_encrypted: no
     block_device:
       volume_size: 5000
+      volume_encrypted: no
     group: "couchdb2"
     os: bionic
 
@@ -235,6 +260,7 @@ servers:
     network_tier: "db-private"
     az: "c"
     volume_size: 80
+    volume_encrypted: no
     group: "rabbitmq"
     os: bionic
 
@@ -243,6 +269,7 @@ servers:
     network_tier: "app-private"
     az: "c"
     volume_size: 200
+    volume_encrypted: no
     group: "celery"
     os: bionic
   - server_name: "celery10-production"
@@ -250,6 +277,7 @@ servers:
     network_tier: "app-private"
     az: "c"
     volume_size: 200
+    volume_encrypted: no
     group: "celery"
     os: bionic
   - server_name: "celery11-production"
@@ -257,6 +285,7 @@ servers:
     network_tier: "app-private"
     az: "c"
     volume_size: 200
+    volume_encrypted: no
     group: "celery"
     os: bionic
   - server_name: "celery12-production"
@@ -264,6 +293,7 @@ servers:
     network_tier: "app-private"
     az: "c"
     volume_size: 200
+    volume_encrypted: no
     group: "celery"
     os: bionic
 
@@ -272,6 +302,7 @@ servers:
     network_tier: "app-private"
     az: "c"
     volume_size: 150
+    volume_encrypted: no
     group: "pillowtop"
     os: bionic
 
@@ -280,6 +311,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
+    volume_encrypted: no
     group: "formplayer"
     os: bionic
     
@@ -288,6 +320,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
+    volume_encrypted: no
     group: "formplayer"
     os: bionic
 
@@ -296,6 +329,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
+    volume_encrypted: no
     group: "formplayer"
     os: bionic
 
@@ -304,6 +338,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
+    volume_encrypted: no
     group: "formplayer"
     os: bionic
 
@@ -312,6 +347,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
+    volume_encrypted: no
     group: "formplayer"
     os: bionic
 
@@ -320,6 +356,7 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 150
+    volume_encrypted: no
     group: "formplayer"
     os: bionic
 
@@ -328,6 +365,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
+    volume_encrypted: no
     group: "redis"
     os: bionic
 
@@ -336,6 +374,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 100
+    volume_encrypted: no
     group: "shared_dir_host"
     os: bionic
     
@@ -344,6 +383,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 160
+    volume_encrypted: no
     group: "kafka"
     os: bionic
 
@@ -352,6 +392,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: "postgresql"
     os: bionic
 
@@ -363,6 +404,7 @@ proxy_servers:
     network_tier: "public"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: "proxy"
     os: bionic
 
