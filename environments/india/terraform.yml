@@ -133,6 +133,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 270
+      volume_encrypted: no
     group: couchdb2
     os: bionic
   - server_name: "couch6-india"
@@ -143,6 +144,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 250
+      volume_encrypted: no
     group: couchdb2
     os: bionic
   - server_name: "couch7-india"
@@ -153,6 +155,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 250
+      volume_encrypted: no
     group: couchdb2
     os: bionic
 
