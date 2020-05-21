@@ -179,4 +179,5 @@ module "ga_alb_waf" {
     {%- endfor %}
   ]
   account_id = {{ account_id|tojson }}
+  ssl_policy = {{ ssl_policy|tojson }}
 }
