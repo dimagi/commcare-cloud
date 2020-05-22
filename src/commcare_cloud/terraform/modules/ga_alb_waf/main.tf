@@ -105,6 +105,7 @@ resource "aws_lb_target_group" "front_end" {
   }
 
   health_check {
+    protocol = "HTTPS"
     enabled = true
     path = "/"
     matcher = "302"
