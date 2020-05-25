@@ -29,8 +29,6 @@ nginx_sites:
    proxy_max_temp_file_size: 5120m
    proxy_set_headers:
    - "Host $host"
-   - "X-Forwarded-For $remote_addr"
-   - "X-Forwarded-Protocol  $scheme"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
     - name: /
