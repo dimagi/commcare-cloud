@@ -13,6 +13,7 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
+from commcare_cloud.commands.terraform.constants import COMMCAREHQ_XML_POST_URLS_REGEX
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
@@ -150,7 +151,8 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params_by_rds_instance(environment)
+        'postgresql_params': get_postgresql_params_by_rds_instance(environment),
+        'commcarehq_xml_post_urls_regex': COMMCAREHQ_XML_POST_URLS_REGEX,
     })
 
     context.update({

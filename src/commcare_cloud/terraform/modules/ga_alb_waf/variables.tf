@@ -15,3 +15,6 @@ variable "proxy_server_ids" {
 
 variable "account_id" {}
 variable "ssl_policy" {}
+variable "commcarehq_xml_post_urls_regex" {
+  type = "list"
+}
