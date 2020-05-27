@@ -15,6 +15,7 @@ class TerraformConfig(jsonobject.JsonObject):
     openvpn_image = jsonobject.StringProperty()
     azs = jsonobject.ListProperty(str)
     az_codes = jsonobject.ListProperty(str, default=['a', 'b', 'c'])
+    ssl_policy = jsonobject.StringProperty(default="ELBSecurityPolicy-2016-08")
     vpc_begin_range = jsonobject.StringProperty()
     vpn_connections = jsonobject.ListProperty(lambda: VpnConnectionConfig)
     external_routes = jsonobject.ListProperty(lambda: ExternalRouteConfig)
@@ -53,7 +54,7 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
-    volume_encrypted = jsonobject.BooleanProperty(default=False, required=True)
+    volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     # todo: invert this so that all new machines are bionic unless otherwise specified
@@ -64,7 +65,7 @@ class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
-    encrypted = jsonobject.BooleanProperty(default=False, required=True)
+    encrypted = jsonobject.BooleanProperty(default=True, required=True)
 
     @classmethod
     def wrap(cls, data):

@@ -189,4 +189,32 @@ or grep through for errors.
 
 ---
 
+## One of the setup commands is showing...
+
+Notes:
+Error requesting archive. Problem with NPM phantomjs package downloading and path not found issue
+```
+ErrorMessage:
+Status: 404 
+Request options: {
+    “url”: “https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2”
+    “encoding”: null,
+    “followRedirect”: true,
+    “headers”: {},
+    “strictSSL”: true
+}
+```
+##### steps to resolve
+```bash 
+cd /usr/local/share
+sudo wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2
+sudo tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2
+sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/share/phantomjs
+sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs
+sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
+
+---
+
+
+
 [︎⬅︎ Overview](..)

@@ -155,11 +155,13 @@ resource "aws_key_pair" {{ user.username|tojson }} {
   public_key = {{ user.public_key|tojson }}
 }
 {%- endif %}
+{% if credential_style == 'iam' %}
 module "iam_user__{{ user.username }}" {
   source = "./modules/iam/user"
   username = {{ user.username|tojson }}
   administrators_iam_group = "${module.Users.administrators_iam_group}"
 }
+{% endif %}
 {%- endfor %}
 
 module "ga_alb_waf" {
@@ -179,4 +181,5 @@ module "ga_alb_waf" {
     {%- endfor %}
   ]
   account_id = {{ account_id|tojson }}
+  ssl_policy = {{ ssl_policy|tojson }}
 }
