@@ -77,7 +77,7 @@ resource "aws_lb" "front_end" {
   load_balancer_type = "application"
   security_groups    = ["${var.security_groups}"]
   subnets            = ["${var.subnets}"]
-  idle_timeout  = 600
+  idle_timeout  = 1200
 
   depends_on = ["aws_s3_bucket_policy.front_end_alb_logs"]
 
