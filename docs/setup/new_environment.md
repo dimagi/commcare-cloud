@@ -83,8 +83,6 @@ This document will walk you through the process of setting up a new monolith ser
      - `ALLOWED_HOSTS`
      - `server_email`
      - `default_from_email`
-3. Add valid `root_email` address in public.yml file
-    - `public.yml`
       - `root_email`
 1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
 
