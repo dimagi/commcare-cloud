@@ -20,4 +20,4 @@ if [ $count -eq 2 ]; then
 else
 	echo "All required ports are not accessible. Please check"
 fi
-echo "The following required ports aren't accessible: ${restricted_ports[*]} \n For more information visit ../docs/Commcare_Ports_information.xlsx"
+echo -e "The following required ports aren't accessible: ${restricted_ports[*]} \n For more information visit ../docs/Commcare_Ports_information.xlsx"
