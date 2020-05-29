@@ -24,6 +24,17 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls" {
   }
 }
 
+resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
+  name        = "XML_QUERYSTRING_urls"
+  description = "URLs that should circumvent CrossSiteScripting_QUERYSTRING rule"
+  scope       = "REGIONAL"
+
+  regular_expression = ["${var.commcarehq_xml_querystring_urls_regex}"]
+
+  tags = {
+  }
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"

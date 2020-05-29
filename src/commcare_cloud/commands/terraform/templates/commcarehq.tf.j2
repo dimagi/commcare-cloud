@@ -185,4 +185,7 @@ module "ga_alb_waf" {
   commcarehq_xml_post_urls_regex = [{% for regex_string in commcarehq_xml_post_urls_regex %}{
     regex_string = {{ regex_string|tojson }}
   },{% endfor %}]
+  commcarehq_xml_querystring_urls_regex = [{% for regex_string in commcarehq_xml_querystring_urls_regex %}{
+    regex_string = {{ regex_string|tojson }}
+  },{% endfor %}]
 }
