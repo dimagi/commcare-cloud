@@ -45,7 +45,7 @@ pgshard28standby,100.71.184.189,pg_standby,shard_dbs,,MUMGCCWCDPRDSS28,,pgshard2
 pgshard29standby,100.71.184.190,pg_standby,shard_dbs,,MUMGCCWCDPRDSS29,,pgshard29,,standby0,,
 plproxy2,100.71.185.12,postgresql,plproxy,,MUMGCCWCDPRDPLPV0,,,,,,
 plproxy3,100.71.185.9,postgresql,plproxy,,MUMGCCWCDPRDPLPV1,,,,,,
-pgsynclog1,100.71.184.252,postgresql,synclog_dbs,,MUMGCCWCDPRDPSLV0,pgsynclog1standby,pgsynclog0,"[""spare"",""standby0""]",,,
+pgsynclog1,100.71.184.252,postgresql,synclog_dbs,,MUMGCCWCDPRDPSLV0,pgsynclog1standby,pgsynclog0,"[""spare"",""standby0""]",,TRUE,
 pgsynclog1standby,100.71.184.251,pg_standby,synclog_dbs,elasticsearch,MUMGCCWCDPRDPSLV1,,pgsynclog1,,standby0,,es34
 ,,,,,,,,,,,
 group,var,val,type,,,,,,,,
