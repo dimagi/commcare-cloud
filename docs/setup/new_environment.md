@@ -314,7 +314,7 @@ $ commcare-cloud monolith after-reboot all
 ## Step 7: Setting set up valid SSL certificates 
 If you wish to set up valid SSL certificate please follow below instructions 
 
-    ### 1. Request a letsencrypt cert
+### 1. Request a letsencrypt cert
 
 Run the playbook to request a letsencrypt cert:
 ```bash
