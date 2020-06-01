@@ -311,11 +311,29 @@ $ commcare-cloud monolith after-reboot all
 ```
 
 
-### In Order to set up valid SSL certificates 
-If you wish to set up valid SSL certificate please follow instructions provide in this link (../services/nginx/ssl.md)
+## Step 7: Setting set up valid SSL certificates 
+If you wish to set up valid SSL certificate please follow below instructions 
+
+    ### 1. Request a letsencrypt cert
+
+Run the playbook to request a letsencrypt cert:
+```bash
+cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
+```
+
+### 2. Update settings to take advantage of new certs
+
+In `proxy.yml`:
+- set `fake_ssl_cert` to `no`
+
+and deploy proxy again.
+
+```bash
+cchq <env> ansible-playbook deploy_proxy.yml
+```
 
 
-## Step 7: Getting started with CommCareHQ
+## Step 8: Getting started with CommCareHQ
 
 ### Make a user
 
