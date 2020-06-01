@@ -717,7 +717,7 @@ $ tail -f /opt/data/elasticsearch-1.7.1/logs/prodhqes-1.x_index_search_slowlog.l
 ```
 
 ## Unassigned shards
-Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a node goes down all the shards that were on the node get unassigned. Do not turn on automatic shard allocation immediately since that might cause lot of unexpected shards to move around. Instead follow below instructions
+Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a node goes down all the shards that were on the node get unassigned. Do not turn on automatic shard allocation immediately since that might cause lot of unexpected shards to move around. Instead follow below instructions (the last point is very important for large ES clusters)
 
 - Check which nodes are down and restart them.
 - Once all nodes are up, all the primary nodes should automatically get assigned.
@@ -739,7 +739,7 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
   curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
   ```
   - Wait for replicas to get assigned.
-  - Finally *remember to turn off* auto shard allocation using
+- Finally **remember to turn off** auto shard allocation using
     ```
     curl 'http://<es_url>/_cluster/settings/' -X PUT  --data ‘{"persistent":{"cluster.routing.allocation.enable":"none"}}'
     ```
