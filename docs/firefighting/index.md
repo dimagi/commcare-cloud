@@ -717,7 +717,33 @@ $ tail -f /opt/data/elasticsearch-1.7.1/logs/prodhqes-1.x_index_search_slowlog.l
 ```
 
 ## Unassigned shards
-Currently on ICDS (maybe on prod/india) shard allocation is disabled. If there are unassigned shards you should run:
+Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a node goes down all the shards that were on the node get unassigned. Do not turn on automatic shard allocation immediately since that might cause lot of unexpected shards to move around. Instead follow below instructions
+
+- Check which nodes are down and restart them.
+- Once all nodes are up, all the primary nodes should automatically get assigned.
+  - Shard assignment can be checked via Elasticsearch [shards API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-shards.html) or the shards graph on Elasticsearch datadog dashboard
+- If any primaries are not allocated. Use rereoute API ([official docs](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/cluster-reroute.html))
+  - Reroute according to existing shard allocation
+  - Example reroute command to allocate primary shard
+    ```
+    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "allow_primary": true, "index": "xforms_2020-02-20"}}’
+    ```
+  - Example reroute command to allocate replica shard
+    ```
+    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "index": "xforms_2020-02-20"}}’
+    ```
+- Replicas won’t get auto assigned. To assign replicas, auto shard allocation needs to be enabled
+  - Make sure no primaries are unassigned
+  - Turn on auto shard allocation using
+  ```
+  curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
+  ```
+  - Wait for replicas to get assigned.
+  - Finally *remember to turn off* auto shard allocation using
+    ```
+    curl 'http://<es_url>/_cluster/settings/' -X PUT  --data ‘{"persistent":{"cluster.routing.allocation.enable":"none"}}'
+    ```
+
 
 ```
 curl -XPUT '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
