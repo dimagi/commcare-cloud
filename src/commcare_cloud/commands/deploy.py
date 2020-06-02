@@ -16,7 +16,7 @@ class Deploy(CommandBase):
     )
 
     arguments = (
-        Argument('component', nargs='?', choices=['commcare', 'formplayer'], default='commcare', help="""
+        Argument('component', nargs='?', choices=['commcare', 'formplayer', None], default=None, help="""
             The component to deploy.
         """),
         Argument('--resume', action='store_true', help="""
@@ -35,7 +35,11 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
+        always_deploy_formplayer = environment.meta_config.always_deploy_formplayer
         commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
+        if args.component is None:
+            args.component = always_deploy_formplayer
+
         if args.component == 'commcare':
             print(color_summary("You are about to deploy commcare from {}".format(commcare_rev)))
             if ask('Deploy commcare?', quiet=args.quiet):
@@ -48,6 +52,17 @@ class Deploy(CommandBase):
         elif args.component == 'formplayer':
             self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
+        elif args.component == 'all':
+            print(color_summary("You are about to deploy both Commcare and Formplayer from {}".format(commcare_rev)))
+            if ask('Deploy both?', quiet=args.quiet):
+                print(color_notice("commcare & Formplayer will be deployed right now,"))
+                print(color_notice("but we recommend deploying formplayer about once a month as well."))
+                print(color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
+                print(color_notice("but keeps these services up to date."))
+                print(color_notice("You can do so by running individually `commcare-cloud <env> deploy <Component>`"))
+                self.deploy_commcare(environment, commcare_rev, args, unknown_args)
+                self._announce_formplayer_deploy_start(environment)
+                self.deploy_formplayer(environment, args, unknown_args)
 
     def deploy_commcare(self, environment, commcare_rev, args, unknown_args):
         fab_func_args = self.get_deploy_commcare_fab_func_args(args)
