@@ -38,8 +38,8 @@ lpar2rrd_master_address: 100.71.188.129
 airflow_dag_concurrency: 4
 airflow_parallelism: 8
 
-default_from_email: commcarehq-noreply@icds-cas.gov.in
-server_email: commcarehq-noreply@icds-cas.gov.in
+default_from_email: commcarehq-noreply@staging.icds-cas.gov.in
+server_email: commcarehq-noreply@staging.icds-cas.gov.in
 root_email: commcarehq-ops+root@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
 support_email: icds-support@dimagi.com
