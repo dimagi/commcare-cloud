@@ -6,6 +6,7 @@ couch5-staging: 10.201.40.147
 es2-staging: 10.201.40.143
 es3-staging: 10.201.40.171
 formplayer1-staging: 10.201.10.234
+formplayer2-staging: 10.201.10.198
 kafka1-staging: 10.201.40.14
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy1-staging: 10.201.40.187
