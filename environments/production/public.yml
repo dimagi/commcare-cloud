@@ -45,7 +45,7 @@ nofile_limit: 65536
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es_s3: True
+backup_es_s3: False
 backup_couch: False
 postgres_s3: True
 postgresql_backup_days: 1
