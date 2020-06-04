@@ -12,7 +12,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es_s3: True
+backup_es_s3: False
 postgres_s3: True
 postgresql_backup_weeks: 1
 postgresql_backup_days: 1
