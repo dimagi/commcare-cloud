@@ -52,9 +52,9 @@ couch_dbs:
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
-  r: 1
-  w: 1
-  n: 1
+  r: 2
+  w: 2
+  n: 3
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
