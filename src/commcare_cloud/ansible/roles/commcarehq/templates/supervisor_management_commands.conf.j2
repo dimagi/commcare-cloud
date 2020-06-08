@@ -2,7 +2,8 @@
 [program:{{ project }}-{{ deploy_env }}-{{ command_name }}]
 directory={{ code_home }}
 environment=TMPDIR="{{ encrypted_tmp }}"
-command={{ py3_virtualenv_home }}/bin/python manage.py {{ command_name }}
+environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
+command=/bin/bash {{ service_home }}/{{ deploy_env }}_django_bash_runner.sh {{ command_name }}
 user={{ cchq_user }}
 numprocs=1
 autostart=true

@@ -3,9 +3,7 @@
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
-
-command={{ py3_virtualenv_home }}/bin/python
-    {{ code_home }}/manage.py run_ptop
+command=/bin/bash {{ service_home }}/{{ deploy_env }}_django_bash_runner.sh run_ptop
     --pillow-name {{ pillow_name }}
     --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }}
     --process-number={{ num_process }}
