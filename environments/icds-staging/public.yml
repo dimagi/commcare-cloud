@@ -213,9 +213,3 @@ localsettings:
     manage_releases_per_location:
       always_disabled:
         - 'icds-cas'
-
-commcare_cloud_root_user: ubuntu
-commcare_cloud_pem: ~/.ssh/id_rsa
-
-airflow_dag_concurrency: 4
-airflow_parallelism: 8
