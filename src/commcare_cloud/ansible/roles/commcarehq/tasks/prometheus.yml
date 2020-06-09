@@ -20,6 +20,19 @@
   when: prometheus_monitoring_enabled|default(False)
   register: prometheus_conf_file
 
+- name: Add django_bash_runner
+  become: yes
+  template:
+    src: "../templates/django_bash_runner.sh.j2"
+    dest: "{{ django_bash_runner_path }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
+  when: prometheus_monitoring_enabled|default(False)
+  tags:
+    - services
+  register: django_bash_runner_files
+
 - set_fact:
     prometheus_supervisor_files: "{{ [prometheus_conf_file] }}"
   tags:

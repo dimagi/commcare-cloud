@@ -13,6 +13,8 @@ root_encryption_mode: "ecryptfs"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
 
+prometheus_monitoring_enabled: False
+
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
 

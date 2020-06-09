@@ -3,3 +3,5 @@ code_source: "{{ code_releases }}/{{ ansible_date_time.date }}_{{ ansible_date_t
 py3_virtualenv_source: "{{ code_source }}/python_env-3.6"
 py3_virtualenv_home: "{{ code_home }}/python_env-3.6"
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+
+django_bash_runner_path: "{{ service_home }}/{{ deploy_env }}_django_bash_runner.sh"
