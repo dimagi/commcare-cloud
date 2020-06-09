@@ -1,7 +1,0 @@
-deploy_env: icds-aws 
-env_monitoring_id: icds-aws
-users:
-  - dimagi
-  - fissionlabs
-  - icds-aws
-slack_alerts_channel: alerts-icds

@@ -74,6 +74,7 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
 
     target_tags = {
       GroupDetail = "couchdb2:data"
+      Group = "elasticsearch"
     }
   }
 }
@@ -87,6 +88,7 @@ module "server__{{ server.server_name }}" {
   network_tier = {{ server.network_tier|tojson }}
   az = {{ server.az|tojson }}
   volume_size = {{ server.volume_size|tojson }}
+  volume_encrypted = {{ server.volume_encrypted|tojson }}
   secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server.block_device.encrypted|default(False)|tojson }}
@@ -153,9 +155,37 @@ resource "aws_key_pair" {{ user.username|tojson }} {
   public_key = {{ user.public_key|tojson }}
 }
 {%- endif %}
+{% if credential_style == 'iam' %}
 module "iam_user__{{ user.username }}" {
   source = "./modules/iam/user"
   username = {{ user.username|tojson }}
   administrators_iam_group = "${module.Users.administrators_iam_group}"
 }
+{% endif %}
 {%- endfor %}
+
+module "ga_alb_waf" {
+  source = "./modules/ga_alb_waf"
+  environment = "${var.environment}"
+  security_groups = ["${module.network.alb-sg}"]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+  vpc_id = "${module.network.vpc-id}"
+  SITE_HOST = {{ SITE_HOST|tojson }}
+  proxy_server_ids = [
+    {%- for server in proxy_servers %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server.server_name }}.server}"
+    {%- endfor %}
+  ]
+  account_id = {{ account_id|tojson }}
+  ssl_policy = {{ ssl_policy|tojson }}
+  commcarehq_xml_post_urls_regex = [{% for regex_string in commcarehq_xml_post_urls_regex %}{
+    regex_string = {{ regex_string|tojson }}
+  },{% endfor %}]
+  commcarehq_xml_querystring_urls_regex = [{% for regex_string in commcarehq_xml_querystring_urls_regex %}{
+    regex_string = {{ regex_string|tojson }}
+  },{% endfor %}]
+}

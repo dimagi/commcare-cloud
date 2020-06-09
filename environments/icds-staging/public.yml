@@ -1,61 +1,47 @@
-couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
-
-DATADOG_ENABLED: True
+daily_deploy_email: tech-announce-daily@dimagi.com
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'icds-staging'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
-
-couchdb_use_haproxy: True
+elasticsearch_enable_inline_groovy_scripts: False
 
 nofile_limit: 65536
 
-KSPLICE_ACTIVE: yes
-
-nameservers:
-  - 8.8.8.8
-  - 8.8.4.4
-
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
-control_machine_ip: 100.71.188.147
+KSPLICE_ACTIVE: no
+
+DATADOG_ENABLED: True
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_cas-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}_cas_commcare-nginx_error.log"
+    tags: nginx-error
+filebeat_output_logstash_hosts:
+  - "{{ groups.logproxy.0 }}:5044"
 
 run_websockets_wsgi: True
 
 ssh_allow_password_users:
   - unixadmin
 
-couch_dbs:
-  default:
-    host: "{{ groups.couchdb2_proxy[0] }}"
-    port: "{{ couchdb2_proxy_port }}"
-    name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
-    is_https: False
+lpar2rrd_agent_enabled: True
+lpar2rrd_master_address: 100.71.188.129
 
-couchdb_reduce_limit: False
-couchdb_cluster_settings:
-  q: 8
-  r: 1
-  w: 1
-  n: 1
+airflow_dag_concurrency: 4
+airflow_parallelism: 8
 
-#check for blobdb
-s3_blob_db_enabled: yes
-s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
-s3_blob_db_s3_bucket: 'icds-staging'
-s3_bulk_delete_chunksize: 200
-
+default_from_email: commcarehq-noreply@staging.icds-cas.gov.in
+server_email: commcarehq-noreply@staging.icds-cas.gov.in
 root_email: commcarehq-ops+root@dimagi.com
-server_email: commcarehq-noreply@icds-cas.gov.in
 server_admin_email: commcarehq-ops+admins@dimagi.com
-default_from_email: commcarehq-noreply-india@icds-cas.gov.in
-return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: icds-support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
@@ -74,30 +60,64 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 
-TWO_FACTOR_GATEWAY_ENABLED: True
+couchdb_use_haproxy: True
+couchdb_reduce_limit: False
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+couchdb2:
+  username: "{{ localsettings_private.COUCH_USERNAME }}"
+  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2_proxy[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq
+    username: "{{ localsettings_private.COUCH_USERNAME }}"
+    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    is_https: False
+
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://mowcddbmum.ipstorage.tatacommunications.com"
+s3_blob_db_s3_bucket: 'icds-staging'
+s3_bulk_delete_chunksize: 200
 
 localsettings:
   ALLOWED_HOSTS:
-    - "{{ CAS_SITE_HOST }}"
-    - "{{ J2ME_SITE_HOST }}"
-  ASYNC_INDICATORS_TO_QUEUE: 30000
+    - '{{ SITE_HOST }}'
+  ASYNC_INDICATORS_TO_QUEUE: 120000
+  AUDIT_MODEL_SAVE: []
+  AUDIT_MODULES: []
+  AUDIT_VIEWS: []
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-#  COUCH_CACHE_DOCS:
-#  COUCH_CACHE_VIEWS:
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
-  EMAIL_SMTP_HOST: relay.sendermile.com 
-  EMAIL_SMTP_PORT: 26 
+  BIGCOUCH: True
+  BIGCOUCH_QUORUM_COUNT: 2
+  BYPASS_SESSIONS_FOR_MOBILE: True
+  CASE_ES_DROP_FORM_FIELDS: True
+  CELERY_TIMEZONE: 'Asia/Kolkata'
+  COMMCARE_HQ_NAME: 'ICDS-CAS Staging Server'
+  COMMCARE_NAME: 'ICDS-CAS Staging'
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  DAYS_TO_KEEP_DEVICE_LOGS: 45
+  DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
+  EMAIL_SMTP_HOST: relay.sendermile.com
+  EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
   ENABLE_DRACONIAN_SECURITY_FEATURES: yes
+  ENABLE_PRELOGIN_SITE: False
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENTERPRISE_MODE: True
+  ES_XFORM_DISABLE_ALL: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
-  EULA_COMPLIANCE: True
-  HQ_INSTANCE: 'india'
+  HQ_INSTANCE: 'icds-staging'
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
@@ -111,25 +131,26 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  PILLOWTOP_MACHINE_ID: indiacloud
-  RATE_LIMIT_SUBMISSIONS: yes
+  KAFKA_API_VERSION: [0, 8, 2]
+  LOCAL_MIDDLEWARE:
+    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
+  PILLOWTOP_MACHINE_ID: icds-staging
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   SAVED_EXPORT_ACCESS_CUTOFF: 180
+  SENTRY_PROJECT_SLUG: 'icds-cas'
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  STATIC_DATA_SOURCE_PROVIDERS: []
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
-  LOCAL_MIDDLEWARE:
-    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
-#  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  UCR_COMPARISONS:
+  USER_REPORTING_METADATA_BATCH_SCHEDULE: {'crontab': {'minute': '*/2', 'hour': '17-21'}}
+  USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS: 6
+  UCR_COMPARISONS:  # not sure this is needed
     static-mpr_1_person_cases:
     static-mpr_2a_3_child_delivery_forms:
     static-mpr_2ci_child_birth_list:
@@ -192,6 +213,3 @@ localsettings:
     manage_releases_per_location:
       always_disabled:
         - 'icds-cas'
-
-airflow_dag_concurrency: 4
-airflow_parallelism: 8

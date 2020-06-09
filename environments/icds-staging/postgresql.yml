@@ -2,7 +2,6 @@ DEFAULT_POSTGRESQL_HOST: pg0
 REPORTING_DATABASES:
   ucr: ucr
   icds-ucr-citus: icds-ucr-citus
-  aaa-data: aaa-data
 
 pgbouncer_override:
   pgbouncer_default_pool: 290
@@ -61,10 +60,6 @@ dbs:
       pg_config:
         - name: citus.shard_count
           value: 32
-    - django_alias: aaa-data
-      name: aaa-data
-      django_migrate: True  # AAA dashboard models are stored here
-      pgbouncer_host: pg0
     - name: airflow
       django_migrate: False
       pgbouncer_host: pg0

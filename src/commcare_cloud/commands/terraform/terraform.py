@@ -13,6 +13,8 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
+from commcare_cloud.commands.terraform.constants import COMMCAREHQ_XML_POST_URLS_REGEX, \
+    COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
@@ -81,7 +83,7 @@ class Terraform(CommandBase):
             with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
-        env_vars = {'AWS_PROFILE': aws_sign_in(environment.terraform_config.aws_profile)}
+        env_vars = {'AWS_PROFILE': aws_sign_in(environment)}
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
@@ -143,12 +145,16 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         raise UnauthorizedUser(key_name)
 
     context.update({
+        'SITE_HOST': environment.proxy_config.SITE_HOST,
+        'account_id': environment.aws_config.sso_config.sso_account_id,
         'users': [{
             'username': username,
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params_by_rds_instance(environment)
+        'postgresql_params': get_postgresql_params_by_rds_instance(environment),
+        'commcarehq_xml_post_urls_regex': COMMCAREHQ_XML_POST_URLS_REGEX,
+        'commcarehq_xml_querystring_urls_regex': COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX,
     })
 
     context.update({

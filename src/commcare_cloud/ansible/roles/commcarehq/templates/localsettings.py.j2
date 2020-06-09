@@ -282,11 +282,6 @@ def get_url_base():
 GET_URL_BASE  = 'settings.get_url_base'
 EDITOR_URL = 'http://localhost:8011/xep/initiate/'
 
-
-{% if 'ICDS_DOMAIN' in localsettings %}
-ICDS_SMS_INDICATOR_DOMAINS = ['{{ localsettings.ICDS_DOMAIN }}']
-{% endif %}
-
 {% if 'USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS' in localsettings %}
 USER_REPORTING_METADATA_UPDATE_FREQUENCY = {{ localsettings.USER_REPORTING_METADATA_UPDATE_FREQUENCY_HOURS }} * 60
 {% endif %}
@@ -879,6 +874,10 @@ AUDIT_VIEWS= [
 ]
 {% endif %}
 
+{% if localsettings.AUDIT_ALL_VIEWS is defined %}
+AUDIT_ALL_VIEWS = {{ localsettings.AUDIT_ALL_VIEWS }}
+{% endif %}
+
 {% if localsettings.get('STATIC_TOGGLE_STATES') is not none %}
 STATIC_TOGGLE_STATES = {{ localsettings.STATIC_TOGGLE_STATES }}
 {% endif %}
@@ -965,4 +964,12 @@ ES_XFORM_DISABLE_ALL = {{ localsettings.ES_XFORM_DISABLE_ALL }}
 
 {% if localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER is defined %}
 USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER = {{ localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER }}
+{% endif %}
+
+{% if localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE is defined %}
+MESSAGING_RULE_CASE_CHUNK_SIZE = {{ localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE }}
+{% endif %}
+
+{% if localsettings.TRACK_ES_REPORT_LOAD is defined %}
+TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
 {% endif %}

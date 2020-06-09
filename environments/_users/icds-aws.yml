@@ -1,8 +1,0 @@
-dev_users:
-  present:
-    - dgadiraju
-    - rchilaka
-    - rkrushna
-    - amohammed
-    - sbaig 
-  absent: []

@@ -20,12 +20,14 @@ from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
+from commcare_cloud.environment.schemas.aws import AwsConfig
 from commcare_cloud.environment.schemas.elasticsearch import ElasticsearchConfig
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
+from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -224,6 +226,15 @@ class Environment(object):
         return proxy_config
 
     @memoized_property
+    def prometheus_config(self):
+        try:
+            with open(self.paths.prometheus_yml) as f:
+                prometheus_json = yaml.safe_load(f)
+        except IOError:
+            return None
+        return PrometheusConfig.wrap(prometheus_json)
+
+    @memoized_property
     def users_config(self):
         user_groups_from_yml = self.meta_config.users
         absent_users = []
@@ -246,6 +257,15 @@ class Environment(object):
             return None
         config_yml['environment'] = config_yml.get('environment', self.meta_config.env_monitoring_id)
         return TerraformConfig.wrap(config_yml)
+
+    @memoized_property
+    def aws_config(self):
+        try:
+            with open(self.paths.aws_yml) as f:
+                config_yml = yaml.safe_load(f)
+        except IOError:
+            config_yml = {}
+        return AwsConfig.wrap(config_yml)
 
     def get_authorized_key(self, user):
         with open(self.paths.get_authorized_key_file(user)) as f:
@@ -412,6 +432,9 @@ class Environment(object):
             generated_variables.update(self.app_processes_config.to_generated_variables())
             generated_variables.update(self.postgresql_config.to_generated_variables(self))
             generated_variables.update(self.proxy_config.to_generated_variables())
+            if self.prometheus_config:
+                generated_variables.update(self.prometheus_config.to_generated_variables())
+
         generated_variables.update(constants.to_json())
 
         if os.path.exists(self.paths.dimagi_key_store_vault):

@@ -48,3 +48,7 @@ web2-production: 10.202.10.224
 web3-production: 10.202.10.10
 web4-production: 10.202.10.123
 web5-production: 10.202.10.102
+web6-production: 10.202.10.65
+web7-production: 10.202.10.201
+web8-production: 10.202.10.223
+web9-production: 10.202.10.55

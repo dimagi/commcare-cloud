@@ -12,12 +12,13 @@ resource aws_instance "server" {
   ebs_optimized = true
   root_block_device {
     volume_size           = "${var.volume_size}"
+    encrypted             = "${var.volume_encrypted}"
     volume_type           = "gp2"
     delete_on_termination = true
   }
   lifecycle {
     ignore_changes = ["user_data", "key_name", "root_block_device.0.delete_on_termination",
-      "ebs_optimized", "ami", "volume_tags"]
+      "ebs_optimized", "ami", "volume_tags", "iam_instance_profile"]
   }
   tags {
     Name        = "${var.server_name}"

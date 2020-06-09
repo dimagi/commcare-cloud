@@ -34,5 +34,5 @@
     month: "*"
     weekday: "*"
     user: lpar2rrd
-    job: "/usr/bin/perl /opt/lpar2rrd-agent/lpar2rrd-agent.pl {{ groups.lpar2rrd_master.0 }} > /var/tmp/lpar2rrd-agent.out 2>&1"
+    job: "/usr/bin/perl /opt/lpar2rrd-agent/lpar2rrd-agent.pl {{ lpar2rrd_master_address }} > /var/tmp/lpar2rrd-agent.out 2>&1"
     cron_file: lpar2rrd_agent

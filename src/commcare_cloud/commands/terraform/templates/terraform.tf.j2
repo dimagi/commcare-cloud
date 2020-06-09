@@ -9,8 +9,14 @@ terraform {
 }
 
 provider "aws" {
-  version = "~> 1.44"
+  version = "~> 2.63"
   region  = {{ region|tojson }}
+}
+
+// for global accelerator which can only be configured in us-west-2
+provider "aws" {
+  alias = "us-west-2"
+  region = "us-west-2"
 }
 
 variable "rds_password" {

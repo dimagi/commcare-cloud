@@ -3,6 +3,7 @@ state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
 environment: "staging"
+ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2019-08'
 azs:
   - "us-east-1a"
   - "us-east-1b"
@@ -33,14 +34,16 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 50
+    volume_encrypted: no
     group: "control"
     os: bionic
-    
+
   - server_name: "web3-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_encrypted: no
     group: webworkers
     os: bionic
   - server_name: "web4-staging"
@@ -48,6 +51,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_encrypted: no
     group: webworkers
     os: bionic
 
@@ -56,6 +60,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     block_device:
       volume_size: 80
       encrypted: true
@@ -66,25 +71,28 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     block_device:
       volume_size: 80
       encrypted: true
     group: "elasticsearch"
     os: bionic
-    
+
   - server_name: "pillow1-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: pillowtop
     os: bionic
-    
+
   - server_name: "celery1-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: celery
     os: bionic
 
@@ -93,17 +101,31 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     block_device:
       volume_size: 80
       encrypted: true
     group: formplayer
     os: bionic
     
+  - server_name: "formplayer2-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 50
+    volume_encrypted: no
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: formplayer
+    os: bionic
+
   - server_name: "couch3-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    volume_encrypted: no
     block_device:
       volume_size: 50
       encrypted: true
@@ -114,6 +136,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    volume_encrypted: no
     block_device:
       volume_size: 50
       encrypted: true
@@ -124,25 +147,28 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 400
+    volume_encrypted: no
     block_device:
       volume_size: 50
       encrypted: true
     group: "couchdb2"
     os: bionic
-    
+
   - server_name: "rabbit1-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: "rabbitmq"
     os: bionic
-    
+
   - server_name: "kafka1-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     block_device:
       volume_size: 80
       encrypted: true
@@ -154,6 +180,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     block_device:
       volume_size: 80
       encrypted: true
@@ -165,6 +192,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
+    volume_encrypted: no
     block_device:
       volume_size: 60
       encrypted: true
@@ -178,6 +206,7 @@ proxy_servers:
     network_tier: "public"
     az: "a"
     volume_size: 80
+    volume_encrypted: no
     group: "proxy"
     os: bionic
 

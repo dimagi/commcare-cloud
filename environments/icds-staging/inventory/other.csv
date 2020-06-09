@@ -1,2 +1,2 @@
-hostname,host_address,group 1,group 2,group 3,group 4,group 5,group 6,var: hostname,var: public_ip
-proxy0,100.71.188.147,proxy,cas_proxy,staticfiles,patch,control,formplayer,MUMGCCWCDSTGPX00,14.141.62.13
+hostname,host_address,group 1,group 2,group 3,group 4,group 5,group 6,group 7,group 8,var: hostname,var: public_ip
+proxy0,100.71.188.147,proxy,staticfiles,patch,control,formplayer,logproxy,prometheus,alertmanager,MUMGCCWCDSTGPX00,14.141.62.13

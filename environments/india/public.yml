@@ -12,7 +12,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es_s3: True
+backup_es_s3: False
 postgres_s3: True
 postgresql_backup_weeks: 1
 postgresql_backup_days: 1
@@ -52,9 +52,9 @@ couch_dbs:
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
-  r: 1
-  w: 1
-  n: 1
+  r: 2
+  w: 2
+  n: 3
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
@@ -91,6 +91,7 @@ localsettings:
     - "{{ CAS_SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
   ASYNC_INDICATORS_TO_QUEUE: 30000
+  AUDIT_ALL_VIEWS: True
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'

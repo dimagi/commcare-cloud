@@ -14,6 +14,7 @@ import six
 import yaml
 from clint.textui import puts
 from memoized import memoized
+from simplejson import JSONDecodeError
 from six.moves import shlex_quote
 from six.moves import configparser
 from six.moves import input
@@ -24,22 +25,23 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 
 
-def check_output(cmd_parts, env):
+def check_output(cmd_parts, env, silent=False):
 
     env_vars = os.environ.copy()
     env_vars.update(env)
-    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-    print_command('{} {}'.format(
-        ' '.join('{}={}'.format(key, value) for key, value in env.items()),
-        cmd,
-    ))
+    if not silent:
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print_command('{} {}'.format(
+            ' '.join('{}={}'.format(key, value) for key, value in env.items()),
+            cmd,
+        ))
     return subprocess.check_output(cmd_parts, env=env_vars)
 
 
 def aws_cli(environment, cmd_parts):
 
     return json.loads(
-        check_output(cmd_parts, env={'AWS_PROFILE': aws_sign_in(environment.terraform_config.aws_profile)}))
+        check_output(cmd_parts, env={'AWS_PROFILE': aws_sign_in(environment)}))
 
 
 def get_aws_resources(environment):
@@ -287,13 +289,127 @@ class AwsSignIn(CommandBase):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         duration_minutes = args.duration_minutes
-        aws_profile = environment.terraform_config.aws_profile
-        aws_sign_in(aws_profile, duration_minutes, force_new=True)
+        aws_sign_in(environment, duration_minutes, force_new=True)
+
+
+AWS_CREDENTIALS_PATH = os.path.expanduser('~/.aws/credentials')
+AWS_CONFIG_PATH = os.path.expanduser('~/.aws/config')
+AWS_DOT_DIR = os.path.expanduser('~/.aws/')
+AWS_SSO_CACHE_DIR = os.path.expanduser('~/.aws/sso/cache/')
+AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
 
 
 @memoized
-def aws_sign_in(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES,
-                force_new=False):
+def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
+    _ensure_all_dirs(AWS_DOT_DIR)
+    if environment.aws_config.credential_style == 'sso':
+        for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
+            _ensure_all_dirs(path)
+        return _aws_sign_in_with_sso(environment)
+    else:
+        return _aws_sign_in_with_iam(environment.terraform_config.aws_profile, duration_minutes=duration_minutes,
+                                     force_new=force_new)
+
+
+@memoized
+def _aws_sign_in_with_sso(environment):
+    """
+    Create a temp session through MFA for a given aws profile
+
+    :param aws_profile: The name of an existing aws profile to create a temp session for
+    :param duration_minutes: How long to set the session expiration if a new one is created
+    :param force_new: If set to True, creates new credentials even if valid ones are found
+    :return: The name of temp session profile.
+             (Always the passed in profile followed by ':session')
+    """
+    aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
+    # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
+    if not _has_profile_for_sso(aws_session_profile):
+        puts(color_notice("Configuring SSO. To further customize, run `aws configure sso --profile {}`".format(aws_session_profile)))
+        _write_profile_for_sso(
+            aws_session_profile,
+            sso_start_url=environment.aws_config.sso_config.sso_start_url,
+            sso_account_id=environment.aws_config.sso_config.sso_account_id,
+            sso_region=environment.aws_config.sso_config.sso_region,
+            region=environment.aws_config.sso_config.region,
+        )
+
+    if not _has_valid_session_credentials_for_sso():
+        _refresh_sso_credentials(aws_session_profile)
+
+    if not _has_valid_v1_session_credentials(aws_session_profile):
+        _sync_sso_to_v1_credentials(aws_session_profile)
+
+    return aws_session_profile
+
+
+def _sync_sso_to_v1_credentials(aws_session_profile):
+    caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
+    if not caller_identity:
+        # _has_valid_session_credentials_for_sso is a mediocre heuristic,
+        # so just assume it was wrong and refresh the sso credentials before failing hard
+        _refresh_sso_credentials(aws_session_profile)
+        caller_identity = _get_caller_identity({'AWS_PROFILE': aws_session_profile})
+        if not caller_identity:
+            raise ValueError((
+                "SSO profile mis-configured and cannot fix automatically. "
+                "Edit [profile {}] in ~/.aws/config manually; "
+                "to start over, remove it from the file manually and try again.").format(aws_session_profile))
+    # Until this is built in to aws, we need this insane workaround to get backwards compatibility
+    # with the credential format that terraform uses
+
+    for filepath in _iter_files_in_dir(AWS_CLI_CACHE_DIR):
+        with open(filepath) as f:
+            try:
+                data = json.load(f)
+            except JSONDecodeError:
+                continue
+
+            if data.get('ProviderType') != 'sso':
+                continue
+
+            credentials = data['Credentials']
+            comparison = _get_caller_identity({
+                'AWS_ACCESS_KEY_ID': credentials.get('AccessKeyId'),
+                'AWS_SECRET_ACCESS_KEY': credentials.get('SecretAccessKey'),
+                'AWS_SESSION_TOKEN': credentials.get('SessionToken'),
+            })
+            if comparison == caller_identity:
+                break
+    else:
+        raise ValueError((
+            "Unable to find cached credentials immediately after SSO. "
+            "There aren't known ways for this to happen, so this will require debugging."))
+
+    _write_credentials_to_aws_credentials(
+        aws_session_profile,
+        aws_access_key_id=credentials['AccessKeyId'],
+        aws_secret_access_key=credentials['SecretAccessKey'],
+        aws_session_token=credentials['SessionToken'],
+        expiration=datetime.strptime(credentials['Expiration'], "%Y-%m-%dT%H:%M:%SUTC"),
+    )
+
+
+def _get_caller_identity(env_vars):
+    try:
+        caller_identity = check_output(['aws', 'sts', 'get-caller-identity'], env=env_vars,
+                                       # This call isn't really useful to the commcare-cloud user
+                                       # and is sometimes called with explicit credentials
+                                       # that we don't want to print to the screen.
+                                       silent=True)
+    except subprocess.CalledProcessError as e:
+        # 255: Not logged in / missing credentials
+        # 254: "The security token included in the request is expired"
+        if e.returncode not in (255, 254):
+            raise
+        # this means we're not signed in
+        return None
+
+    return caller_identity
+
+
+@memoized
+def _aws_sign_in_with_iam(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
     """
     Create a temp session through MFA for a given aws profile
 
@@ -305,7 +421,7 @@ def aws_sign_in(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES,
     """
     aws_session_profile = '{}:session'.format(aws_profile)
     if not force_new \
-            and _has_valid_session_credentials(aws_session_profile):
+            and _has_valid_v1_session_credentials(aws_session_profile):
         return aws_session_profile
 
     default_username = get_default_username()
@@ -355,26 +471,79 @@ def generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
 
 
 def _write_credentials_to_aws_credentials(
-        aws_profile, aws_access_key_id, aws_secret_access_key, aws_session_token,
-        expiration,
-        aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+        aws_profile, aws_access_key_id, aws_secret_access_key, aws_session_token, expiration):
     # followed code examples from https://gist.github.com/incognick/c121038dbd2180c683fda6ae5e30cba3
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(aws_credentials_path))
+    config.read(os.path.realpath(AWS_CREDENTIALS_PATH))
     if aws_profile not in config.sections():
         config.add_section(aws_profile)
     config.set(aws_profile, 'aws_access_key_id', aws_access_key_id)
     config.set(aws_profile, 'aws_secret_access_key', aws_secret_access_key)
     config.set(aws_profile, 'aws_session_token', aws_session_token)
     config.set(aws_profile, 'expiration', expiration.strftime("%Y-%m-%dT%H:%M:%SZ"))
-    with open(aws_credentials_path, 'w') as f:
+    with open(AWS_CREDENTIALS_PATH, 'w') as f:
         config.write(f)
 
 
-def _has_valid_session_credentials(
-        aws_profile, aws_credentials_path=os.path.expanduser('~/.aws/credentials')):
+def _has_profile_for_sso(aws_profile):
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(aws_credentials_path))
+    config.read(os.path.realpath(AWS_CONFIG_PATH))
+    section = 'profile {}'.format(aws_profile)
+
+    if section not in config.sections():
+        return False
+
+    try:
+        config.get(section, 'sso_start_url')
+    except configparser.NoOptionError:
+        return False
+
+    return True
+
+
+def _write_profile_for_sso(
+        aws_profile,
+        sso_start_url,
+        sso_region,
+        sso_account_id,
+        region):
+    config = configparser.ConfigParser()
+    config.read(os.path.realpath(AWS_CONFIG_PATH))
+    section = 'profile {}'.format(aws_profile)
+
+    if section not in config.sections():
+        config.add_section(section)
+    config.set(section, 'sso_start_url', sso_start_url)
+    config.set(section, 'sso_region', sso_region)
+    config.set(section, 'sso_account_id', sso_account_id)
+    config.set(section, 'sso_role_name', 'AWSPowerUserAccess')
+    config.set(section, 'region', region)
+    config.set(section, 'output', 'json')
+    with open(AWS_CONFIG_PATH, 'w') as f:
+        config.write(f)
+
+
+def _has_valid_session_credentials_for_sso():
+    for filepath in _iter_files_in_dir(AWS_SSO_CACHE_DIR):
+        try:
+            with open(filepath, 'r') as f:
+                contents = json.load(f)
+        except JSONDecodeError:
+            continue
+
+        if 'startUrl' in contents and 'expiresAt' in contents:
+            expiration = datetime.strptime(contents['expiresAt'], "%Y-%m-%dT%H:%M:%SUTC")
+            return datetime.utcnow() < expiration
+    return False
+
+
+def _refresh_sso_credentials(aws_session_profile):
+    check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
+
+
+def _has_valid_v1_session_credentials(aws_profile):
+    config = configparser.ConfigParser()
+    config.read(os.path.realpath(AWS_CREDENTIALS_PATH))
     if aws_profile not in config.sections():
         return False
     try:
@@ -383,3 +552,18 @@ def _has_valid_session_credentials(
         return False
 
     return datetime.utcnow() < expiration
+
+
+def _iter_files_in_dir(directory):
+    """
+    Yield each filepath under a directory path that corresponds to a file (not a dir)
+    """
+    for filename in os.listdir(directory):
+        filepath = os.path.join(directory, filename)
+        if os.path.isfile(filepath):
+            yield filepath
+
+
+def _ensure_all_dirs(path, mode=0700):
+    if not os.path.exists(path):
+        os.makedirs(path, mode=mode)

@@ -45,7 +45,7 @@ nofile_limit: 65536
 
 backup_blobdb: False
 backup_postgres: plain
-backup_es_s3: True
+backup_es_s3: False
 backup_couch: False
 postgres_s3: True
 postgresql_backup_days: 1
@@ -81,7 +81,7 @@ couchdb2:
   password: "{{ localsettings_private.COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {from, "16:00"}, {to, "6:00"}]'
+  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {parallel_view_compaction, true}]'
 
 
 couchdb2_client_max_body_size: 100M
@@ -108,6 +108,7 @@ localsettings:
     - "{{ J2ME_SITE_HOST }}"
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
+  AUDIT_ALL_VIEWS: True
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
