@@ -14,11 +14,9 @@
 #
 # See Section 12.2.2 of http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
 #
-if [ ! -z "${prometheus_multiproc_dir}" ]; then
-    trap 'echo "Cleaning Prometheus metrics from ${prometheus_multiproc_dir} for PID $PID";
-        rm ${prometheus_multiproc_dir}/*${PID}*;
-        echo "done";' TERM INT
-fi
+trap 'echo "Cleaning Prometheus metrics from ${prometheus_multiproc_dir} for PID $PID";
+    rm ${prometheus_multiproc_dir}/*${PID}*;
+    echo "done";' TERM INT
 
 {{ django_direct_runner }} $@ &
 
