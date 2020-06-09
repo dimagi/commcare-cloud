@@ -10,7 +10,7 @@
   with_items:
     - env_vars:
         TMPDIR: '{{ encrypted_tmp }}'
-        prometheus_multiproc_dir: "{% if prometheus_monitoring_enabled|default(False) %}{{ cchq_home}}/www/{{ deploy_env }}/metrics{% endif %}"
+        prometheus_multiproc_dir: "{% if prometheus_monitoring_enabled|default(False) %}{{ metrics_home }}{% endif %}"
   tags:
     - services
   register: management_commands_file

@@ -1,7 +1,7 @@
 - name: Creates Prometheus Metrics directory
   become: yes
   file: 
-    path: "{{ cchq_home}}/www/{{ deploy_env }}/metrics"
+    path: "{{ metrics_home }}"
     state: directory
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
