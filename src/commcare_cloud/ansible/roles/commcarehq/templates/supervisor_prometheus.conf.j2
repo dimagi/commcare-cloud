@@ -1,6 +1,5 @@
 [program:{{ project }}-{{ deploy_env }}-prometheus]
 directory={{ code_home }}/
-; gunicorn
 environment=prometheus_multiproc_dir="{{ metrics_home }}"
 command={{ py3_virtualenv_home }}/bin/python
      {{ code_home }}/deployment/prometheus_server.py
