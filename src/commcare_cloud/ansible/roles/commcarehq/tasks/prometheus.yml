@@ -1,4 +1,4 @@
-- name: Creates  Prometheus Metrics directory
+- name: Creates Prometheus Metrics directory
   become: yes
   file: 
     path: "{{ cchq_home}}/www/{{ deploy_env }}/metrics"
