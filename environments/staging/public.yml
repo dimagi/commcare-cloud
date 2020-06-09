@@ -7,8 +7,9 @@ elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
 kafka_version: 2.4.1
-kafka_download_sha512: 060242ac7bf520fdaf625ecb640f400a3ae6cf580e2e58d9038ef7121d5556d6d939caef3c53a660b7b1434e49b6005e082f039ba3a0d892f95b58a94a7593b8 
-kafka_base_version: 2.12
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
 run_websockets_wsgi: True
 

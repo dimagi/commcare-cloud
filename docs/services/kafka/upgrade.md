@@ -16,6 +16,7 @@ Refer to [Kafka Upgrade documentation](https://kafka.apache.org/documentation/#u
     **environments/<env>/public.yml**
     ```
     kafka_version: 2.4.1
+    kafka_scala_version: 2.12
     ```
 
 3. Upgrade the Kafka binaries and config
