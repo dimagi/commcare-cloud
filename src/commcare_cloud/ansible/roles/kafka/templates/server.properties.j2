@@ -33,6 +33,9 @@ host.name=0.0.0.0
 # java.net.InetAddress.getCanonicalHostName().
 {% if kafka_version == "0.8.2.2" %}
 advertised.host.name={{ inventory_hostname }}
+{% else %}
+listeners=PLAINTEXT://:9092
+advertised_listener=PLAINTEXT://{{inventory_hostname}}:9092
 {% endif %}
 
 
@@ -120,9 +123,6 @@ zookeeper.connect={% for host in groups['zookeeper'] %}{{ host }}:{{ zookeeper_c
 
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=1000000
-{% if kafka_version == "2.4.1" %}
-inter.broker.protocol.version=0.8.2.2
-log.message.format.version=0.8.2.2
-listeners=PLAINTEXT://:9092
-advertised_listener=PLAINTEXT://{{inventory_hostname}}:9092
-{% endif %}
+
+inter.broker.protocol.version={{kafka_inter_broker_protocol_version}}
+log.message.format.version={{kafka_log_message_format_version}}

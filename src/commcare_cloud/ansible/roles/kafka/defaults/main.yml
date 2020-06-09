@@ -9,3 +9,5 @@ kafka_conf_dir: /etc/kafka/config
 kafka_log_dir: /var/log/kafka
 kafka_log_retention: 672 # 28 days
 kafka_jmx_port: 9999
+kafka_inter_broker_protocol_version: 0.8.2.2
+kafka_log_message_format_version: 0.8.2.2
