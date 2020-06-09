@@ -41,6 +41,7 @@
 - name: Pillowtop Supervisor Config
   hosts: pillowtop
   tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/pillowtop.yml
       tags: services
 
@@ -74,12 +75,14 @@
 - name: Management Command Supervisor Config
   hosts: commcarehq
   tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/management_commands.yml
       tags: services
 
 - name: Prometheus Supervisor Config
   hosts: webworkers,pillowtop
   tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/prometheus.yml
       tags: services
       when: prometheus_monitoring_enabled|default(False)
