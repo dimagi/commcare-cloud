@@ -6,4 +6,4 @@ BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ 
 
 django_bash_runner_path: "{{ service_home }}/{{ deploy_env }}_django_bash_runner.sh"
 django_bash_runner: "/bin/bash {{ django_bash_runner_path }}"
-django_manage: "{{ py3_virtualenv_home }}/bin/python manage.py {{ command_name }}"
+django_direct_runner: "{{ py3_virtualenv_home }}/bin/python {{ code_home }}/manage.py"

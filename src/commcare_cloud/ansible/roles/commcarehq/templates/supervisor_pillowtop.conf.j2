@@ -3,7 +3,7 @@
 
 [program:commcare-hq-{{ deploy_env }}-pillowtop-{{ pillow_name }}-{{ num_process }}]
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
-command={{ django_manage if prometheus_monitoring_enabled else django_bash_runner }} run_ptop
+command={{ django_direct_runner if prometheus_monitoring_enabled else django_bash_runner }} run_ptop
     --pillow-name {{ pillow_name }}
     --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }}
     --process-number={{ num_process }}

@@ -20,7 +20,7 @@ if [ ! -z "${prometheus_multiproc_dir}" ]; then
         echo "done";' TERM INT
 fi
 
-{{ py3_virtualenv_home }}/bin/python {{ code_home }}/manage.py $@ &
+{{ django_direct_runner }} $@ &
 
 PID=$!
 BASH_PID=$$
