@@ -53,24 +53,6 @@
     dest: "/opt/kafka/bin/kafka-reassign-tool.rb"
     mode: 0755
 
-- name: Ensure new version
-  lineinfile:
-    path: /etc/kafka/config/server.properties
-    regexp: '^inter.broker.protocol.version=2.4'
-    state: absent
-  check_mode: yes
-  changed_when: false
-  register: version_2_4_infile
-
-- name: Ensure old version
-  lineinfile:
-    path: /etc/kafka/config/server.properties
-    regexp: '^inter.broker.protocol.version=0.8.2.2'
-    state: absent
-  check_mode: yes
-  changed_when: false
-  register: version_0_8_2_2_infile
-    
 - name: Copies kafka log4j.properties
   copy: src=log4j.properties dest=/opt/kafka/config owner=root group=root mode=644
   when: kafka_version  == '0.8.2.2'
