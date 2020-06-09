@@ -35,7 +35,7 @@ servers:
     group: control
     os: bionic
   - server_name: "web0-india"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 500
@@ -43,7 +43,7 @@ servers:
     group: control
     os: bionic
   - server_name: "web1-india"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
