@@ -3,6 +3,7 @@
 directory={{ code_home }}
 environment=TMPDIR="{{ encrypted_tmp }}"
 environment={% for name, value in item.env_vars.items() %}{% if value %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
+
 command={{ django_bash_runner if prometheus_monitoring_enabled else django_direct_runner }} {{ command_name }}
 user={{ cchq_user }}
 numprocs=1
