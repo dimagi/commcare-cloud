@@ -1,0 +1,29 @@
+- name: Add an Apt signing key, will not download if present
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: E0C56BD4
+    state: present
+
+- name: add apt repo of clickhouse server
+  apt_repository:
+    repo: "deb http://repo.yandex.ru/clickhouse/deb/stable/ main/"
+    state: present
+
+- name: Install clickhouse-server
+  apt:
+    name: clickhouse-server
+    state: present
+  notify: restart clickhouse-server
+
+- name : Create clickhouse data directory
+  file:
+    path: "{{ clickhouse_data_dir }}"
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+
+- name: Copy clickhouse config files
+  template:
+    src: clickhouse.xml.j2
+    dest: "/etc/clickhouse-server/config.d/clickhouse.xml"
+  notify: restart clickhouse-server

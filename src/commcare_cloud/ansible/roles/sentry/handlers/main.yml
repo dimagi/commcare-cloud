@@ -1,0 +1,12 @@
+---
+- name: restart supervisor
+  systemd: 
+    name: supervisor
+    state: restarted
+    daemon_reload: yes 
+
+- name: restart clickhouse-server
+  systemd:
+    name: clickhouse-server
+    state: restarted
+    daemon_reload: yes

@@ -1,0 +1,34 @@
+
+- name: Create virtualenv  directory for snuba
+  file:
+    path: "{{ sentry_home_dir }}/snuba_app"
+    state: directory
+
+- name: Install virtualenv via pip
+  pip:
+    name: virtualenv
+    executable: pip3
+
+- name: Create virtual env for Snuba
+  pip:
+    name: requests
+    virtualenv: "{{ sentry_home_dir }}/snuba_app"
+    virtualenv_python: python3.7
+
+- name: Clone Snuba git repo
+  git:
+    repo: "https://github.com/getsentry/snuba.git"
+    dest: "{{ sentry_home_dir }}/snuba_app/snuba"
+    version: 3b11c3b
+
+- name: run Make commands for snuba 
+  shell: "source {{ sentry_home_dir }}/snuba_app/bin/activate && make install-python-dependencies && make install-librdkafka"
+  args:
+    executable: /bin/bash
+    chdir: "{{ sentry_home_dir }}/snuba_app/snuba"
+
+- name: Create supervisor file
+  template:
+    src: snuba_service.conf.j2
+    dest: "/etc/supervisor/conf.d/snuba_service.conf"
+  notify: restart supervisor

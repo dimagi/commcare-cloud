@@ -1,0 +1,82 @@
+from sentry.conf.server import *
+
+import os.path
+
+CONF_ROOT = os.path.dirname(__file__)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'sentry.db.postgres',
+        'NAME': '{{ sentry_database }}',
+        'USER': '{{ sentry_dbuser }}',
+        'PASSWORD': '{{ sentry_dbpassword }}',
+        'HOST': '{{ sentry_dbhost | default('127.0.0.1') }}',
+        'PORT': '{{sentry_dbport | default('5432') }}',
+        'AUTOCOMMIT': True,
+        'ATOMIC_REQUESTS': False,
+    }
+}
+
+# You should not change this setting after your database has been created
+# unless you have altered all schemas first
+SENTRY_USE_BIG_INTS = True
+
+###########
+# General #
+###########
+
+SENTRY_SINGLE_ORGANIZATION = True
+DEBUG = False
+
+#########
+# Cache #
+#########
+
+# A primary cache is required for things such as processing events
+SENTRY_CACHE = 'sentry.cache.redis.RedisCache'
+
+#########
+# Queue #
+#########
+
+BROKER_URL = 'redis://localhost:6379'
+
+###############
+# Rate Limits #
+###############
+
+SENTRY_RATELIMITER = 'sentry.ratelimits.redis.RedisRateLimiter'
+
+##################
+# Update Buffers #
+##################
+
+SENTRY_BUFFER = 'sentry.buffer.redis.RedisBuffer'
+
+##########
+# Quotas #
+##########
+
+SENTRY_QUOTAS = 'sentry.quotas.redis.RedisQuota'
+
+########
+# TSDB #
+########
+
+SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
+
+###########
+# Digests #
+###########
+
+SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
+
+##############
+# Web Server #
+##############
+
+SENTRY_WEB_HOST = '{{ sentry_web_host }}'
+SENTRY_WEB_PORT = {{ sentry_web_port }}
+SENTRY_WEB_OPTIONS = {
+    'workers': 4,
+}
