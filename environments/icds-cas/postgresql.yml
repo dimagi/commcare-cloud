@@ -250,5 +250,5 @@ dbs:
       host: citusmaster1standby
       acceptable_replication_delay: 300
       master: icds-ucr-citus
-  - sentrydb:
-      host: sentry
+  sentrydb:
+    host: logproxy1 
