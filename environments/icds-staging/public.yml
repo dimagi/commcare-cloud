@@ -105,6 +105,7 @@ localsettings:
   COMMCARE_NAME: 'ICDS-CAS Staging'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
   EMAIL_SMTP_HOST: relay.sendermile.com
