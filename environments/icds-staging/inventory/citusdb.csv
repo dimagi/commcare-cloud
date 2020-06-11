@@ -1,9 +1,10 @@
 hostname,host_address,group 1,group 2,group 3,group 4,group 5,group 6,group 7,var: hostname,I.var: kafka_broker_id
 db0,100.71.185.13,citusdb,citusdb_master,couchdb2,redis,kafka,couchdb2_proxy,,MUMGCCWCDSTGDBV00,1
-db1,100.71.185.14,citusdb,citusdb_worker,couchdb2,,kafka,couchdb2_proxy,,MUMGCCWCDSTGDBV01,2
-db2,100.71.185.15,citusdb,citusdb_worker,couchdb2,,kafka,,zookeeper,MUMGCCWCDSTGDBV02,3
+db1,100.71.185.14,citusdb,citusdb_worker,couchdb2,celery,kafka,couchdb2_proxy,,MUMGCCWCDSTGDBV01,2
+db2,100.71.185.15,citusdb,citusdb_worker,couchdb2,celery,kafka,,zookeeper,MUMGCCWCDSTGDBV02,3
 ,,,,,,,,,,
 group,var,val,type,,,,,,,
+celery,ansible_python_interpreter,/usr/bin/python3,S,,,,,,,
 couchdb2,ansible_python_interpreter,/usr/bin/python3,S,,,,,,,
 couchdb2_proxy,ansible_python_interpreter,/usr/bin/python3,S,,,,,,,
 citusdb,ansible_python_interpreter,/usr/bin/python3,S,,,,,,,
