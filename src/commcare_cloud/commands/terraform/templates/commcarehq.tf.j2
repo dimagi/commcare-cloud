@@ -182,4 +182,10 @@ module "ga_alb_waf" {
   ]
   account_id = {{ account_id|tojson }}
   ssl_policy = {{ ssl_policy|tojson }}
+  commcarehq_xml_post_urls_regex = [{% for regex_string in commcarehq_xml_post_urls_regex %}{
+    regex_string = {{ regex_string|tojson }}
+  },{% endfor %}]
+  commcarehq_xml_querystring_urls_regex = [{% for regex_string in commcarehq_xml_querystring_urls_regex %}{
+    regex_string = {{ regex_string|tojson }}
+  },{% endfor %}]
 }

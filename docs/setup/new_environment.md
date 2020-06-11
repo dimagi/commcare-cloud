@@ -83,7 +83,7 @@ This document will walk you through the process of setting up a new monolith ser
      - `ALLOWED_HOSTS`
      - `server_email`
      - `default_from_email`
-
+      - `root_email`
 1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
 
     Encrypt the provided vault file, using that password:
@@ -310,7 +310,30 @@ If you ever reboot this machine, make sure to follow the [after reboot procedure
 $ commcare-cloud monolith after-reboot all
 ```
 
-## Step 7: Getting started with CommCareHQ
+
+## Step 7: Setting set up valid SSL certificates 
+If you wish to set up valid SSL certificate please follow below instructions 
+
+### 1. Request a letsencrypt cert
+
+Run the playbook to request a letsencrypt cert:
+```bash
+cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
+```
+
+### 2. Update settings to take advantage of new certs
+
+In `proxy.yml`:
+- set `fake_ssl_cert` to `no`
+
+and deploy proxy again.
+
+```bash
+cchq <env> ansible-playbook deploy_proxy.yml
+```
+
+
+## Step 8: Getting started with CommCareHQ
 
 ### Make a user
 

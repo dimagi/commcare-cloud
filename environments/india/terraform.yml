@@ -35,7 +35,7 @@ servers:
     group: control
     os: bionic
   - server_name: "web0-india"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 500
@@ -43,7 +43,7 @@ servers:
     group: control
     os: bionic
   - server_name: "web1-india"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -170,7 +170,7 @@ servers:
     os: bionic
     
   - server_name: "esmaster2-india"
-    server_instance_type: t3.small
+    server_instance_type: t3.medium
     network_tier: "db-private"
     az: "b"
     volume_size: 40
@@ -179,7 +179,7 @@ servers:
     os: bionic
     
   - server_name: "esmaster3-india"
-    server_instance_type: t3.small
+    server_instance_type: t3.medium
     network_tier: "db-private"
     az: "b"
     volume_size: 40
@@ -188,7 +188,7 @@ servers:
     os: bionic
     
   - server_name: "esmaster4-india"
-    server_instance_type: t3.small
+    server_instance_type: t3.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 40
