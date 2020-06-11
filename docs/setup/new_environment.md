@@ -98,13 +98,13 @@ This document will walk you through the process of setting up a new monolith ser
 
 ### Add passwords to the vault file
 
-In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
-
 You can generate unique passwords using the below command. This command will provide you 10 unique passwords with 16chars for your application. You can use these to update the password/key field in the vault.yml. 
    
    ``` bash
     $ makepasswd --chars 16 --count 10
    ``` 
+
+In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
 
 ``` bash
 $ ansible-vault edit ~/environments/monolith/vault.yml
