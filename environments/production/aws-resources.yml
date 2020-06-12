@@ -13,6 +13,9 @@ es16-production: 10.202.40.81
 es17-production: 10.202.40.12
 es18-production: 10.202.40.217
 es19-production: 10.202.40.144
+es20-production: 10.202.40.146
+es21-production: 10.202.40.220
+es22-production: 10.202.40.160
 esmaster3-production: 10.202.41.183
 esmaster4-production: 10.202.41.247
 esmaster5-production: 10.202.40.226
