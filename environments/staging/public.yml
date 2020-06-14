@@ -118,6 +118,7 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   RATE_LIMIT_SUBMISSIONS: yes
+  SES_CONFIGURATION_SET: staging-email-events
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'

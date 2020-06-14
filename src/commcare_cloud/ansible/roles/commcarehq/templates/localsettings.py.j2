@@ -116,6 +116,10 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 
 RETURN_PATH_EMAIL_PASSWORD = "{{ RETURN_PATH_EMAIL_PASSWORD }}"
 
+{% if 'SES_CONFIGURATION_SET' in localsettings %}
+SES_CONFIGURATION_SET = "{{ localsettings.SES_CONFIGURATION_SET }}"
+{% endif %}
+
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
 ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(False) }}
