@@ -4,7 +4,7 @@
 
 mail.backend: 'smtp'  # Use dummy if you want to disable email entirely
 mail.host: '{{ localsettings.EMAIL_SMTP_HOST }}'
-mail.port: {{ localsettings.EMAIL_SMTP_HOST }}
+mail.port: {{ localsettings.EMAIL_SMTP_PORT }}
 mail.username: '{{ localsettings_private.EMAIL_LOGIN | default(None) }}'
 mail.password: '{{ localsettings_private.EMAIL_PASSWORD | default(None) }}'
 mail.use-tls: yes

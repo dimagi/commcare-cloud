@@ -10,7 +10,7 @@
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: postgresql, tags: 'postgresql_sentry'}
-    - {role: davidwittman.redis, tags: 'redis_sentry'}
+    - {role: DavidWittman.redis, tags: 'redis_sentry'}
     - {role: zookeeper, tags: 'zookeeper_sentry'}
     - {role: kafka, tags: 'kafka_sentry'}
 
