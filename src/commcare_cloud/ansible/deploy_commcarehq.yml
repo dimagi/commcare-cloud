@@ -111,7 +111,17 @@
     - webworkers
   tasks:
     - set_fact:
-        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) + airflow_managed_files|default([]) + formplayer_managed_files|default([]) + mgmt_cmd_managed_files|default([]) + prometheus_managed_files|default([]) + errand_boy_managed_files|default([]) + prometheus_django_runner_managed_files|default([]) }}"
+        supervisor_files:
+          - "{{ celery_managed_files|default([]) }}"
+          - "{{ pillowtop_managed_files|default([]) }}"
+          - "{{ proxy_managed_files|default([]) }}"
+          - "{{ webworker_managed_files|default([]) }}"
+          - "{{ airflow_managed_files|default([]) }}"
+          - "{{ formplayer_managed_files|default([]) }}"
+          - "{{ mgmt_cmd_managed_files|default([]) }}"
+          - "{{ prometheus_managed_files|default([]) }}"
+          - "{{ errand_boy_managed_files|default([]) }}"
+          - "{{ prometheus_django_runner_managed_files|default([]) }}"
     - shell: find {{ service_home|quote }} -type f
       register: contents
       check_mode: no
@@ -121,5 +131,5 @@
         path: "{{ item }}"
         state: absent
       with_items: "{{ contents.stdout_lines }}"
-      when: item not in supervisor_files
+      when: item not in supervisor_files|sum(start=[])
   tags: services
