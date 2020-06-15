@@ -3,13 +3,13 @@
 ###############
 
 mail.backend: 'smtp'  # Use dummy if you want to disable email entirely
-# mail.host: 'localhost'
-# mail.port: 25
-# mail.username: ''
-# mail.password: ''
-# mail.use-tls: false
+mail.host: '{{ localsettings.EMAIL_SMTP_HOST }}'
+mail.port: {{ localsettings.EMAIL_SMTP_HOST }}
+mail.username: '{{ localsettings_private.EMAIL_LOGIN | default(None) }}'
+mail.password: '{{ localsettings_private.EMAIL_PASSWORD | default(None) }}'
+mail.use-tls: yes
 # The email address to send on behalf of
-# mail.from: 'root@localhost'
+mail.from: 'sentry@sentryhost'
 
 # If you'd like to configure email replies, enable this.
 # mail.enable-replies: false
