@@ -115,6 +115,13 @@ resource "aws_eip" "proxy__{{ server.server_name }}" {
 }
 {% endfor %}
 
+resource "aws_efs_file_system" "formplayer" {
+  encrypted = true
+  tags = {
+    Name = "formplayer"
+  }
+}
+
 {% if elasticache %}
 module "Redis" {
   source               = "./modules/elasticache"
