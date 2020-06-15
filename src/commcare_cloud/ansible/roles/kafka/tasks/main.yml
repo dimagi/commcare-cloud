@@ -13,13 +13,13 @@
     state: "{{ 'present' if ansible_distribution_version == '14.04' else 'absent' }}"
 
 - name: Download Kafka
-  get_url: url="http://{{ apache_mirror }}/kafka/{{ kafka_version }}/kafka_2.10-{{ kafka_version }}.tgz" dest="/opt/kafka_2.10-{{ kafka_version }}.tgz"
+  get_url: url="http://{{ apache_mirror }}/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz" dest="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
 
 - name: Extract Kafka
-  unarchive: src="/opt/kafka_2.10-{{ kafka_version }}.tgz" dest=/opt/ copy=no creates="/opt/kafka_2.10-{{ kafka_version }}"
+  unarchive: src="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz" dest=/opt/ copy=no creates="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}"
 
 - name: Symlink install directory
-  file: src="/opt/kafka_2.10-{{ kafka_version }}" path=/opt/kafka state=link
+  file: src="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}" path=/opt/kafka state=link
 
 - name: Set permissions to Kafka folder
   file: path=/opt/kafka/ owner=root group=root recurse=yes follow=no
@@ -54,7 +54,12 @@
     mode: 0755
 
 - name: Copies kafka log4j.properties
-  copy: src=log4j.properties dest=/opt/kafka/config owner=root group=root mode=644
+  copy:
+    src: "log4j_{kafka_version}.properties"
+    dest: /opt/kafka/config
+    owner: root
+    group: root
+    mode: 644
   tags: log4j
 
 - name: Install Kafka init script
