@@ -25,7 +25,7 @@ Refer to [Kafka Upgrade documentation](https://kafka.apache.org/documentation/#u
     $ cchq <env> ap deploy_kafka.yml
     ```
 
-4. Validate that the system is still working
+4. Upgrade the brokers one at a time Once you have done so, the brokers will be running the latest version   and you can verify that the cluster's behavior and performance meets expectations. It is still possible to downgrade at this point if there are any problems.
 
 5. Update Kafka config:
 
