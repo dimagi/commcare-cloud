@@ -107,5 +107,5 @@
         path: "{{ item }}"
         state: absent
       with_items: "{{ contents.stdout_lines }}"
-      when: not ansible_check_mode and item not in supervisor_files
+      when: item not in supervisor_files
   tags: services
