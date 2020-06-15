@@ -1,20 +1,9 @@
 - set_fact:
-    supervisor_errand_boy: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
     supervisor_django: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
 
 - set_fact:
     webworker_managed_files:
-      - "{{ supervisor_errand_boy }}"
       - "{{ supervisor_django }}"
-
-- name: define errand boy services
-  become: yes
-  template:
-    src: "../templates/supervisor_errand_boy.conf"
-    dest: "{{ supervisor_errand_boy }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    mode: 0644
 
 - name: define django worker service
   become: yes
