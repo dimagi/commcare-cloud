@@ -237,6 +237,12 @@ class AwsFillInventoryHelper(object):
         return context
 
 
+class AwsStartSession(CommandBase):
+    arguments = (Argument("server", nargs="?"),)
+    def run(self, args, unknown_args):
+        pass
+
+
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
 
 
