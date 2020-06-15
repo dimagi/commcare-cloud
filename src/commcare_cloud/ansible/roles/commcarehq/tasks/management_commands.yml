@@ -1,8 +1,15 @@
+- set_fact:
+    supervisor_management_commands: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+
+- set_fact:
+    mgmt_cmd_managed_files:
+      - "{{ supervisor_management_commands }}"
+
 - name: define management command services
   become: yes
   template:
     src: "../templates/supervisor_management_commands.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+    dest: "{{ supervisor_management_commands }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
@@ -11,16 +18,3 @@
     - env_vars:
         TMPDIR: '{{ encrypted_tmp }}'
         prometheus_multiproc_dir: "{% if prometheus_monitoring_enabled|default(False) %}{{ metrics_home }}{% endif %}"
-  tags:
-    - services
-  register: management_commands_file
-
-- set_fact:
-    mgmt_cmd_supervisor_files: "{{ management_commands_file.get('results', []) }}"
-  tags:
-    - services
-
-- set_fact:
-    mgmt_cmd_managed_files: "{{ mgmt_cmd_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + mgmt_cmd_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
-  tags:
-    - services

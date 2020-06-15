@@ -1,20 +1,26 @@
+- set_fact:
+    supervisor_errand_boy: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
+    supervisor_django: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+
+- set_fact:
+    webworker_managed_files:
+      - "{{ supervisor_errand_boy }}"
+      - "{{ supervisor_django }}"
+
 - name: define errand boy services
   become: yes
   template:
     src: "../templates/supervisor_errand_boy.conf"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
+    dest: "{{ supervisor_errand_boy }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  tags:
-    - services
-  register: webworker_errand_boy_conf_file
 
 - name: define django worker service
   become: yes
   template:
     src: "../templates/supervisor_django.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+    dest: "{{ supervisor_django }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
@@ -30,16 +36,3 @@
         DD_REQUESTS_SERVICE_NAME: "{% if app_processes_config.datadog_pythonagent %}requests{% endif %}"
         DD_REQUESTS_SPLIT_BY_DOMAIN: "{% if app_processes_config.datadog_pythonagent %}True{% endif %}"
       gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
-  tags:
-    - services
-  register: webworker_django_worker_conf_file
-
-- set_fact:
-    webworker_supervisor_files: "{{ [webworker_errand_boy_conf_file] + webworker_django_worker_conf_file.get('results', []) }}"
-  tags:
-    - services
-
-- set_fact:
-    webworker_managed_files: "{{ webworker_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + webworker_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
-  tags:
-    - services

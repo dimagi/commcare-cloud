@@ -1,5 +1,21 @@
 # Note: Make sure to add queues with associated tasks to the solo_queues list in
 # validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
+- set_fact:
+    celery_bash_runner: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh"
+    celery_bash_runner_optimized: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner_optimized.sh"
+    supervisor_celery_flower: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
+    supervisor_celery_beat: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
+    supervisor_errand_boy: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
+    supervisor_celery_workers: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+
+- set_fact:
+    celery_managed_files:
+      - "{{celery_bash_runner}}"
+      - "{{celery_bash_runner_optimized}}"
+      - "{{supervisor_celery_flower}}"
+      - "{{supervisor_celery_beat}}"
+      - "{{supervisor_errand_boy}}"
+      - "{{supervisor_celery_workers}}"
 
 - name: Add celery_bash_runner files
   become: yes
@@ -10,12 +26,9 @@
     group: "{{ cchq_user }}"
     mode: 0644
   with_items:
-    - file_name: "celery_bash_runner.sh"
-    - file_name: "celery_bash_runner_optimized.sh"
+    - file_name: "{{ celery_bash_runner }}"
+    - file_name: "{{ celery_bash_runner_optimized }}"
       python_options: "-O"
-  tags:
-    - services
-  register: celery_bash_runner_files
 
 - name: define special celery services
   become: yes
@@ -28,23 +41,20 @@
   when: item.should_apply
   with_items:
     - template: ../templates/supervisor_celery_flower.conf.j2
-      file_name: supervisor_celery_flower.conf
+      file_name: "{{supervisor_celery_flower}}"
       should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
     - template: ../templates/supervisor_celery_beat.conf.j2
-      file_name: supervisor_celery_beat.conf
+      file_name: "{{supervisor_celery_beat}}"
       should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).beat is defined }}"
     - template: ../templates/supervisor_errand_boy.conf
-      file_name: supervisor_errand_boy.conf
+      file_name: "{{supervisor_errand_boy}}"
       should_apply: yes
-  tags:
-    - services
-  register: celery_special_service_files
 
 - name: define celery workers
   become: yes
   template:
     src: "../templates/supervisor_celery_workers.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+    dest: "{{ supervisor_celery_workers }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
@@ -55,16 +65,3 @@
         https_proxy: "{% if http_proxy_address is defined %}https://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
         TMPDIR: '{{ encrypted_tmp }}'
-  tags:
-    - services
-  register: celery_worker_files
-
-- set_fact:
-    celery_supervisor_files: "{{ celery_bash_runner_files.get('results', []) + celery_special_service_files.get('results', []) + celery_worker_files.get('results', []) }}"
-  tags:
-    - services
-
-- set_fact:
-    celery_managed_files: "{{ celery_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + celery_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
-  tags:
-    - services

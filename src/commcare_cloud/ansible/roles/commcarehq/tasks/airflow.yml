@@ -1,29 +1,26 @@
+- set_fact:
+    airflow_webserver_conf: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_webserver.conf"
+    airflow_scheduler_conf: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_scheduler.conf"
+
+- set_fact:
+    airflow_managed_files:
+      - "{{ airflow_webserver_conf }}"
+      - "{{ airflow_scheduler_conf }}"
+
 - name: define airflow webserver service
   become: yes
   template:
     src: "../templates/supervisor_airflow_webserver.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_webserver.conf"
+    dest: "{{ airflow_webserver_conf }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  tags:
-    - services
-  register: airflow_webserver_conf_file
 
 - name: define airflow scheduler service
   become: yes
   template:
     src: "../templates/supervisor_airflow_scheduler.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_airflow_scheduler.conf"
+    dest: "{{ airflow_scheduler_conf }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  tags:
-    - services
-  register: airflow_scheduler_conf_file
-
-- set_fact:
-    airflow_supervisor_files: "{{ [airflow_webserver_conf_file] + [airflow_scheduler_conf_file] }}"
-
-- set_fact:
-    airflow_managed_files: "{{ airflow_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + airflow_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
