@@ -21,7 +21,7 @@
   become: yes
   template:
     src: "../templates/celery_bash_runner.sh.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+    dest: "{{ item.file_name }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
@@ -34,7 +34,7 @@
   become: yes
   template:
     src: "{{ item.template }}"
-    dest: "{{ service_home }}/{{ deploy_env }}_{{ item.file_name }}"
+    dest: "{{ item.file_name }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
