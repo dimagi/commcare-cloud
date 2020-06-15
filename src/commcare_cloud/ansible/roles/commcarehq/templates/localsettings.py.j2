@@ -119,6 +119,9 @@ RETURN_PATH_EMAIL_PASSWORD = "{{ RETURN_PATH_EMAIL_PASSWORD }}"
 {% if 'SES_CONFIGURATION_SET' in localsettings %}
 SES_CONFIGURATION_SET = "{{ localsettings.SES_CONFIGURATION_SET }}"
 {% endif %}
+{% if 'SES_CONFIGURATION_SET' in localsettings %}
+SNS_EMAIL_EVENT_SECRET = "{{ localsettings.SNS_EMAIL_EVENT_SECRET }}"
+{% endif %}
 
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
