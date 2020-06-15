@@ -42,7 +42,7 @@ host.name=0.0.0.0
 advertised.host.name={{ inventory_hostname }}
 {% else %}
 listeners=PLAINTEXT://:9092
-advertised_listener=PLAINTEXT://{{inventory_hostname}}:9092
+advertised.listeners=PLAINTEXT://{{inventory_hostname}}:9092
 {% endif %}
 
 
