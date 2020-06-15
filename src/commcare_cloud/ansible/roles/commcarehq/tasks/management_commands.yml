@@ -16,7 +16,7 @@
   register: management_commands_file
 
 - set_fact:
-    mgmt_cmd_supervisor_files: "{{ [management_commands_file] }}"
+    mgmt_cmd_supervisor_files: "{{ management_commands_file.get('results', []) }}"
   tags:
     - services
 

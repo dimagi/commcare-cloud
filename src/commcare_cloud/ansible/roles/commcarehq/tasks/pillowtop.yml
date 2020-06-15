@@ -16,7 +16,7 @@
   register: pillowtop_conf_file
 
 - set_fact:
-    pillowtop_supervisor_files: "{{ [pillowtop_conf_file] }}"
+    pillowtop_supervisor_files: "{{ pillowtop_conf_file.get('results', []) }}"
   tags:
     - services
 

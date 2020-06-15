@@ -23,7 +23,7 @@
   register: airflow_scheduler_conf_file
 
 - set_fact:
-    airflow_supervisor_files: "{{ airflow_webserver_conf_file.get('results', []) + airflow_scheduler_conf_file.get('results', []) }}"
+    airflow_supervisor_files: "{{ [airflow_webserver_conf_file] + [airflow_scheduler_conf_file] }}"
 
 - set_fact:
     airflow_managed_files: "{{ airflow_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + airflow_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
