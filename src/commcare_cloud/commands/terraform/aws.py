@@ -55,11 +55,15 @@ def get_aws_resources(environment):
         "Name=tag-key,Values=Environment",
         "Name=tag-value,Values={}".format(config.environment),
         "--query",
-        "Reservations[*].Instances[*][Tags[?Key=='Name'].Value, NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress]",
+        ("Reservations[*].Instances[*]["
+         "Tags[?Key=='Name'].Value, "
+         "NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress, "
+         "InstanceId"
+         "]"),
         "--output", "json",
         "--region", config.region,
     ])
-    name_private_ip_pairs = [(item[0][0][0], item[0][1]) for item in private_ip_query]
+    name_private_ip_instance_id_tuples = [(item[0][0][0], item[0][1], item[0][2]) for item in private_ip_query]
 
     # Public IP addresses
     public_ip_query = aws_cli(environment, [
@@ -83,8 +87,9 @@ def get_aws_resources(environment):
     ])
 
     resources = {}
-    for name, ip in name_private_ip_pairs:
+    for name, ip, instance_id in name_private_ip_instance_id_tuples:
         resources[name] = ip
+        resources['{}.instance_id'.format(name)] = instance_id
 
     for name, ip in name_public_ip_pairs:
         resources['{}.public_ip'.format(name)] = ip
