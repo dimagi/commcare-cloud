@@ -4,11 +4,10 @@
 - set_fact:
     prometheus_managed_files:
       - "{{ supervisor_prometheus }}"
-      - "{{ django_bash_runner_path }}"
 
 - name: Creates Prometheus Metrics directory
   become: yes
-  file: 
+  file:
     path: "{{ metrics_home }}"
     state: directory
     owner: "{{ cchq_user }}"
@@ -20,16 +19,6 @@
   template:
     src: "../templates/supervisor_prometheus.conf.j2"
     dest: "{{ supervisor_prometheus }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    mode: 0644
-  when: prometheus_monitoring_enabled|default(False)
-
-- name: Add django_bash_runner
-  become: yes
-  template:
-    src: "../templates/django_bash_runner.sh.j2"
-    dest: "{{ django_bash_runner_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
