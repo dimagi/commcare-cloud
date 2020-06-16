@@ -35,6 +35,73 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
   }
 }
 
+resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
+  name = "CommCareWhitelistRules"
+  capacity = "100"
+  scope = "REGIONAL"
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "CommCareWhitelistRules"
+    sampled_requests_enabled   = true
+  }
+
+  rule {
+    name = "AllowXMLQuerystring"
+    priority = 0
+
+    action {
+      allow {}
+    }
+
+    statement {
+      regex_pattern_set_reference_statement {
+        arn = "${aws_wafv2_regex_pattern_set.allow_xml_querystring_urls.arn}"
+        field_to_match {
+          uri_path {}
+        }
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "AllowXMLQuerystring"
+      sampled_requests_enabled = true
+    }
+  }
+
+  rule {
+    name = "AllowXMLBody"
+    priority = 1
+
+    action {
+      allow {}
+    }
+
+    statement {
+      regex_pattern_set_reference_statement {
+        arn = "${aws_wafv2_regex_pattern_set.allow_xml_post_urls.arn}"
+        field_to_match {
+          uri_path {}
+        }
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "AllowXMLBody"
+      sampled_requests_enabled = true
+    }
+  }
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"
