@@ -132,7 +132,7 @@ servers:
 
 
   - server_name: "esmaster3-production"
-    server_instance_type: t3.large
+    server_instance_type: r5.large
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
@@ -140,7 +140,7 @@ servers:
     volume_size: 40
     volume_encrypted: no
   - server_name: "esmaster4-production"
-    server_instance_type: t3.large
+    server_instance_type: r5.large
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
@@ -148,7 +148,7 @@ servers:
     volume_size: 40
     volume_encrypted: no
   - server_name: "esmaster5-production"
-    server_instance_type: t3.large
+    server_instance_type: r5.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
@@ -196,7 +196,40 @@ servers:
     volume_encrypted: no
     group: "elasticsearch"
     os: bionic
-    
+  - server_name: "es20-production"
+    server_instance_type: c5.9xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+  - server_name: "es21-production"
+    server_instance_type: c5.9xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+  - server_name: "es22-production"
+    server_instance_type: c5.9xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+
   - server_name: "couchproxy1-production"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
@@ -299,7 +332,7 @@ servers:
     volume_encrypted: no
     group: "formplayer"
     os: bionic
-    
+
   - server_name: "formplayer3-production"
     server_instance_type: t3.2xlarge
     network_tier: "app-private"
@@ -362,7 +395,7 @@ servers:
     volume_encrypted: no
     group: "shared_dir_host"
     os: bionic
-    
+
   - server_name: "kafka1-production"
     server_instance_type: t3.medium
     network_tier: "db-private"

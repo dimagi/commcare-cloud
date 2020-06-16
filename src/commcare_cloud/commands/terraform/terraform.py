@@ -153,8 +153,8 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
         'postgresql_params': get_postgresql_params_by_rds_instance(environment),
-        'commcarehq_xml_post_urls_regex': COMMCAREHQ_XML_POST_URLS_REGEX,
-        'commcarehq_xml_querystring_urls_regex': COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX,
+        'commcarehq_xml_post_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX),
+        'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
     })
 
     context.update({
@@ -170,3 +170,24 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
     ):
         with open(os.path.join(run_dir, output_file), 'w') as f:
             f.write(render_template(template_file, context, template_root).encode('utf-8'))
+
+
+def compact_waf_regexes(patterns):
+    """
+    Compact regexes into as few as possible regexes each of which is no longer
+    than 200 characters
+    """
+    compacted_regexes = []
+    regex_buffer = ''
+    for pattern in patterns:
+        if len(regex_buffer) + len(pattern) + 1 <= 200:
+            if regex_buffer:
+                regex_buffer += '|' + pattern
+            else:
+                regex_buffer = pattern
+        else:
+            compacted_regexes.append(regex_buffer)
+            regex_buffer = pattern
+    if regex_buffer:
+        compacted_regexes.append(regex_buffer)
+    return compacted_regexes

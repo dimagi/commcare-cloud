@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import re
 import subprocess
 from copy import deepcopy
 
@@ -197,6 +198,9 @@ class DeployStack(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         always_skip_check = False
         if args.first_time:
+            if not self._check_new_machine_setup(args.limit, args.env_name):
+                print('Bad configuration for new machine setup. Aborting.')
+                exit(1)
             rc = BootstrapUsers(self.parser).run(deepcopy(args), deepcopy(unknown_args))
             if rc != 0:
                 return rc
@@ -208,6 +212,34 @@ class DeployStack(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         return AnsiblePlaybook(self.parser).run(
             args, unknown_args, always_skip_check=always_skip_check)
+
+    def _check_new_machine_setup(self, limit, env_name):
+        """
+        There are some configurations that we allow for backwards compatibility
+        but don't want new machines using.
+        This method checks new machine setup and returns False if it contains undesirable config.
+        Config is undesirable under any of the following conditions:
+            - a host has `datavol_fstype` set to any value other than `ext4`
+        """
+        ok = True
+        limit = limit or 'all'
+        environment = get_environment(env_name)
+        group_names = re.split(r'[:,]', limit)
+        hosts = set()
+        for group_name in group_names:
+            if group_name in environment.groups:
+                hosts.update(environment.groups[group_name])
+        for host in hosts:
+            host_vars = environment.get_host_vars(host)
+            if host_vars.get('datavol_fstype', 'ext4') != 'ext4':
+                ok = False
+                val = host_vars.get('datavol_fstype')
+                if val == 'xfs':
+                    print('datavol_fstype=xfs is for backwards compatibility '
+                          'and not allowed for new machine setup')
+                else:
+                    print('datavol_fstype={} is not an allowed value'.format(val))
+        return ok
 
 
 class UpdateConfig(CommandBase):

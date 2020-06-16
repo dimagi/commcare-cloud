@@ -67,14 +67,6 @@ class BlockDevice(jsonobject.JsonObject):
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
 
-    @classmethod
-    def wrap(cls, data):
-        if 'encrypted' in data:
-            puts(color_warning(
-                'Warning! The "encrypted" option on block_device is experimental '
-                'and not well-integrated into provisioning scripts.'))
-        return super(BlockDevice, cls).wrap(data)
-
 
 class RdsInstanceConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False

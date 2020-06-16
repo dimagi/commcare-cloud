@@ -52,9 +52,9 @@ couch_dbs:
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
-  r: 1
-  w: 1
-  n: 1
+  r: 2
+  w: 2
+  n: 3
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
@@ -125,6 +125,8 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
+  SES_CONFIGURATION_SET: india-email-events
+  SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
