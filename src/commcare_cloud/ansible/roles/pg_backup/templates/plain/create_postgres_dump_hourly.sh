@@ -1,9 +1,9 @@
 #!/bin/bash
 BACKUP_TYPE=$1
-DAYS_TO_RETAIN_BACKUPS=$2
+HOURS_TO_RETAIN_BACKUPS=$2
 ENV="{{ deploy_env }}"
 HOSTNAME=$(hostname)
-TODAY=$(date +"%Y_%m_%d")
+TODAY=$(date +"%Y_%m_%d_%H")
 FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
 DIRECTORY="{{ postgresql_backup_dir }}/${FILENAME}"
 
@@ -46,8 +46,8 @@ if [[ $? -ne 0 ]] ; then
     echo "Postgres Backup : Tar Failed"
     exit 2
 else
-    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
-    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
+    find {{ postgresql_backup_dir }} -mmin "+$HOURS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
+    find {{ postgresql_backup_dir }} -mmin "+$HOURS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
 fi
 
 # Remove old backups of this backup type, if backup succeded

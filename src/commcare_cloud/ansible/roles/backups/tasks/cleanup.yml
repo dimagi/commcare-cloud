@@ -5,6 +5,17 @@
     path: "/etc/cron.d/create_blobdb_backup.sh"
     state: absent
 
+- name: Create Hourly Cron job (cleanup)
+  become: yes
+  cron:
+    name: "Backup blobdb hourly"
+    minute: 0
+    hour: "{{ nadir_hour_frequency|default(3) }}"
+    weekday: "1,2,3,4,5,6"
+    cron_file: backup_blobdb
+    state: absent
+  when: "'shared_dir_host' not in group_names or not blobdb_backup_hourly"
+
 - name: Create Daily Cron job (cleanup)
   become: yes
   cron:

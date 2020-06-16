@@ -140,13 +140,13 @@
   become: yes
   cron:
     name: "Backup couchdb hourly"
-    job: "/usr/local/sbin/create_couchdb_backup.sh hourly {{ couchdb_backup_days }}"
+    job: "/usr/local/sbin/create_couchdb_backup_hourly.sh hourly {{ couchdb_backup_hours * 60 }}"
     minute: 0
     hour: "*/{{ nadir_hour_frequency|default(3) }}"
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch else "absent"}}'
+    state: '{{ "present" if backup_couch else "absent"}} and couch_backup_hourly'
   tags:
     - cron
     - backups
