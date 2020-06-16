@@ -33,7 +33,7 @@
   pip:
     name: sentry=={{ sentry_version }}
     virtualenv: "{{ sentry_virtualenv_path }}"
-    virtualenv_command: virtualenv
+    virtualenv_python: python2.7
 
 
 - name: Copy sentry config files
@@ -51,3 +51,26 @@
     src: sentry_web_server.conf.j2
     dest: "/etc/supervisor/conf.d/sentry_web_service.conf"
   notify: restart supervisor
+
+- name: Create citext extension
+  become_user: postgres
+  postgresql_ext:
+    name: citext
+    db: "{{ sentry_database }}"
+    port: "{{ sentry_dbport | default('5432')}}"
+
+- name: sentry DB migration
+  shell: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  notify: restart sentry
+
+- name: Clean Sentry Database Cron
+  cron:
+    name: Clean Sentry Database
+    minute: "0"
+    hour: "22"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: sentry
+    job: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry cleanup --days=30"
+    cron_file: sentry_cleanup

@@ -10,3 +10,15 @@
     name: clickhouse-server
     state: restarted
     daemon_reload: yes
+
+- name: restart sentry
+  supervisorctl: name={{ item }} state=restarted
+  with_items:
+    - sentry-worker
+    - sentry-cron
+    - sentry-web
+
+- name: restart snuba
+  supervisorctl: name={{ item }} state=restarted
+  with_items:
+    - snuba-api

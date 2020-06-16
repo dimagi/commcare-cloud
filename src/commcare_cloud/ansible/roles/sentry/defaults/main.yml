@@ -1,6 +1,6 @@
 sentry_version: 10.0.0
 sentry_web_host: '0.0.0.0'
-sentry_web_port: 9000
+sentry_web_port: 8080
 sentry_database: 'sentrydb'
 sentry_dbuser: 'sentry'
 sentry_dbpassword: 'sentrypass'
@@ -11,8 +11,8 @@ sentry_virtualenv_path: "{{ sentry_home_dir }}/sentry_app"
 
 
 # SNUBA 
-snuba_version: 10.0.0
-snuba_get_url: "https://github.com/getsentry/snuba/releases/tag/{{ snuba_version }}"
+snuba_version: 20.6.0
+snuba_get_url: "https://github.com/getsentry/snuba/archive/{{ snuba_version }}.zip"
 snuba_virtualenv_path: "{{ sentry_home_dir }}/snuba_app"
 
 #clickhouse

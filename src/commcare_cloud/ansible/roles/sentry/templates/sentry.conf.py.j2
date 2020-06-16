@@ -38,9 +38,11 @@ SENTRY_CACHE = 'sentry.cache.redis.RedisCache'
 #########
 # Queue #
 #########
-
+{% if localsettings_private.REDIS_PASSWORD is defined %}
+BROKER_URL = 'redis://:{{ localsettings.REDIS_PASSWORD }}@localhost:6379'
+{% else %}
 BROKER_URL = 'redis://localhost:6379'
-
+{% endif %}
 ###############
 # Rate Limits #
 ###############

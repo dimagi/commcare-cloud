@@ -1,7 +1,14 @@
 
+- name: Install snuba python dependencies
+  apt: 
+    name: 
+      - python3.7
+      - python3.7-dev
+    state: present 
+
 - name: Create virtualenv  directory for snuba
   file:
-    path: "{{ sentry_home_dir }}/snuba_app"
+    path: "{{ snuba_virtualenv_path }}"
     state: directory
 
 - name: Install virtualenv via pip
@@ -11,24 +18,51 @@
 
 - name: Create virtual env for Snuba
   pip:
-    name: requests
-    virtualenv: "{{ sentry_home_dir }}/snuba_app"
+    name: pyuwsgi
+    virtualenv: "{{ snuba_virtualenv_path }}"
     virtualenv_python: python3.7
 
-- name: Clone Snuba git repo
-  git:
-    repo: "https://github.com/getsentry/snuba.git"
-    dest: "{{ sentry_home_dir }}/snuba_app/snuba"
-    version: 3b11c3b
+- name: Download Snuba source code
+  unarchive:
+    src: "{{ snuba_get_url }}"
+    dest: "{{ snuba_virtualenv_path }}"
+    remote_src: yes
 
-- name: run Make commands for snuba 
-  shell: "source {{ sentry_home_dir }}/snuba_app/bin/activate && make install-python-dependencies && make install-librdkafka"
+- name: Rename snuba version directory
+  shell: "mv snuba-{{ snuba_version }} snuba"
+  args:
+    chdir: "{{ snuba_virtualenv_path }}"
+    executable: /bin/bash
+
+- name: Run Make commands for snuba 
+  shell: "source {{ snuba_virtualenv_path }}/bin/activate && make install-python-dependencies"
   args:
     executable: /bin/bash
-    chdir: "{{ sentry_home_dir }}/snuba_app/snuba"
+    chdir: "{{ snuba_virtualenv_path }}/snuba"
+
+- name: Update Redis Password
+  replace:
+    path: "{{ snuba_virtualenv_path }}/snuba/snuba/settings.py"
+    regexp: "^REDIS_PASSWORD = None"
+    replace: "REDIS_PASSWORD = '{{ localsettings.REDIS_PASSWORD }}'"
+  when: localsettings.REDIS_PASSWORD is defined
 
 - name: Create supervisor file
   template:
     src: snuba_service.conf.j2
     dest: "/etc/supervisor/conf.d/snuba_service.conf"
-  notify: restart supervisor
+  notify: 
+    - restart supervisor
+    - restart snuba
+
+- name: Cleanup clickhouse partition
+  cron:
+    name: Cleanup clickhouse partition
+    minute: "0"
+    hour: "*/1"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: sentry
+    job: "{{ snuba_virtualenv_path }}/bin/snuba cleanup"
+    cron_file: snuba_cleanup

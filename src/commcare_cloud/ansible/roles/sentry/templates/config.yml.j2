@@ -9,7 +9,7 @@ mail.username: '{{ localsettings_private.EMAIL_LOGIN | default(None) }}'
 mail.password: '{{ localsettings_private.EMAIL_PASSWORD | default(None) }}'
 mail.use-tls: yes
 # The email address to send on behalf of
-mail.from: 'sentry@sentryhost'
+mail.from: '{{ default_sentry_from_email }}'
 
 # If you'd like to configure email replies, enable this.
 # mail.enable-replies: false
@@ -32,6 +32,10 @@ redis.clusters:
       0:
         host: 127.0.0.1
         port: 6379
+{% if localsettings_private.REDIS_PASSWORD is defined %}
+        password: '{{ localsettings_private.REDIS_PASSWORD }}'
+{% endif %}
+
 
 ################
 # File storage #

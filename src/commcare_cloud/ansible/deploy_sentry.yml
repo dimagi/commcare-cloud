@@ -2,11 +2,12 @@
 - name: Sentry Machine Setup
   hosts: sentry
   become: true
-  environment:
-    JMX_PORT: 9999
   vars:
-    - postgresql_version: 11
-    - redis_bind: 127.0.0.1
+      postgresql_version: 11
+      is_pg_standby: False
+      redis_version: 6.0.5
+      redis_bind: 127.0.0.1
+      redis_dir: "{{ encrypted_root }}/redis"
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: postgresql, tags: 'postgresql_sentry'}
@@ -17,11 +18,5 @@
 - name: Install and Configure Sentry
   hosts: sentry
   become: true
-  vars:
-    - sentry_dbuser: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-    - sentry_dbpassword: "{{ secrets.POSTGRES_USERS.commcare.password }}"
-    - sentry_database: sentrydb
-    - sentry_system_secret_key: "{{ secrets.SENTRY_SYSTEM_SECRET_KEY }}"
-    - clickhouse_data_dir: "{{ encrypted_root }}/clickhouse"
   roles:
     - {role: sentry, tags: 'sentry'}
