@@ -243,3 +243,6 @@ nginx_sites:
        balancer: "{{ deploy_env }}_cas_formplayer/"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
+     - name: /sentry
+       proxy_pass: "http://{{ groups['sentry'][0] }}:8080"
+       proxy_read_timeout: 900s
