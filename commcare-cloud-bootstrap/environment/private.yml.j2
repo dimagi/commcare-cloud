@@ -5,12 +5,15 @@ secrets:
   DATADOG_APP_KEY: null
   AMQP_USER: "{{ deploy_env }}_worker"
   AMQP_PASSWORD: '{{ generate_uuid() }}'
+  HAPROXY_STATS_PASSWORD: '{{ generate_uuid() }}'
+  SUPERVISOR_HTTP_USERNAME: 'supervisor_http'
+  SUPERVISOR_HTTP_PASSWORD: '{{ generate_uuid() }}'
   POSTGRES_USERS:
     commcare:
-      username: commcarehq
+      username: 'commcarehq'
       password: '{{ generate_uuid() }}'
     devreadonly:
-      username: "devreadonly"
+      username: 'devreadonly'
       password: '{{ generate_uuid() }}'
       role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
       privs:
@@ -23,9 +26,25 @@ secrets:
         role_attr_flags: 'LOGIN,REPLICATION'
 
 localsettings_private:
+  BANK_ACCOUNT_NUMBER:
+  BANK_ROUTING_NUMBER_ACH: ''
+  BANK_ROUTING_NUMBER_WIRE: ''
+  BOOKKEEPER_CONTACT_EMAILS: []
+  COUCH_USERNAME: 'commcarehq'
   COUCH_PASSWORD: '{{ generate_uuid() }}'
-  COUCH_USERNAME: commcarehq
+  BITLY_APIKEY: ''
+  BITLY_LOGIN: ''
+  DROPBOX_KEY: ''
+  DROPBOX_SECRET: ''
   FORMPLAYER_INTERNAL_AUTH_KEY: '{{ generate_uuid() }}'
+  EMAIL_LOGIN: ''
+  EMAIL_PASSWORD: ''
+  GMAPS_API_KEY: ''
+  GOOGLE_ANALYTICS_API_ID: ''
+  HUBSPOT_API_ID: ''
+  HUBSPOT_API_KEY: ''
+  JAR_KEY_PASS: ''
+  JAR_STORE_PASS: ''
   SECRET_KEY: '{{ generate_uuid() }}'
 
-ansible_sudo_pass: NkCl9ul5xtOeZGPx7JvXnaF9
+ansible_sudo_pass: 'NkCl9ul5xtOeZGPx7JvXnaF9'
