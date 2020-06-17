@@ -194,6 +194,10 @@ class AwsFillInventoryHelper(object):
                     inventory_vars.append(
                         ('root_encryption_mode', 'aws'),
                     )
+            elif server.volume_encrypted:
+                inventory_vars.append(
+                    ('root_encryption_mode', 'aws'),
+                )
 
             context.update(
                 self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)

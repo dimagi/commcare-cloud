@@ -30,32 +30,33 @@
     - file:
         path: "{{ legacy_service_home }}/"
         state: absent
-      tags: services
+  tags: services
 
 - name: Celery Supervisor Config
   hosts: celery
   tasks:
     - include_tasks: roles/commcarehq/tasks/celery.yml
-      tags: services
+  tags: services
 
 - name: Pillowtop Supervisor Config
   hosts: pillowtop
   tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/pillowtop.yml
-      tags: services
+  tags: services
 
 - name: Proxy Websockets Supervisor Config
   hosts: proxy
   tasks:
     - include_tasks: roles/commcarehq/tasks/proxy_websockets.yml
       when: run_websockets_wsgi|bool
-      tags: services
+  tags: services
 
 - name: Webworker Supervisor Config
   hosts: webworkers
   tasks:
     - include_tasks: roles/commcarehq/tasks/webworkers.yml
-      tags: services
+  tags: services
 
 - name: Formplayer Supervisor Config
   hosts: formplayer
@@ -63,19 +64,42 @@
     - import_role:
         name: commcarehq
         tasks_from: formplayer
-      tags: services
+  tags: services
 
 - name: Airflow Supervisor Config
   hosts: airflow_scheduler
   tasks:
     - include_tasks: roles/commcarehq/tasks/airflow.yml
-      tags: services
+  tags: services
 
 - name: Management Command Supervisor Config
   hosts: commcarehq
   tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/management_commands.yml
-      tags: services
+  tags: services
+
+- name: Prometheus Supervisor Config
+  hosts: webworkers,pillowtop
+  tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
+    - include_tasks: roles/commcarehq/tasks/prometheus.yml
+      when: prometheus_monitoring_enabled|default(False)
+  tags: services
+
+- name: Prometheus Django runner
+  hosts: commcarehq
+  tasks:
+    - include_vars: roles/commcarehq/vars/main.yml
+    - include_tasks: roles/commcarehq/tasks/prometheus_django_runner.yml
+      when: prometheus_monitoring_enabled|default(False)
+  tags: services
+
+- name: Errand Boy Config
+  hosts: celery,webworkers
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/errand_boy.yml
+  tags: services
 
 # https://stackoverflow.com/a/30372407
 - name: Remove old supervisor files
@@ -87,11 +111,19 @@
     - webworkers
   tasks:
     - set_fact:
-        supervisor_files: "{{ celery_managed_files|default([]) + pillowtop_managed_files|default([]) + proxy_managed_files|default([]) + webworker_managed_files|default([]) + airflow_managed_files|default([]) + formplayer_managed_files|default([]) + mgmt_cmd_managed_files|default([]) }}"
-      tags: services
+        supervisor_files:
+          - "{{ celery_managed_files|default([]) }}"
+          - "{{ pillowtop_managed_files|default([]) }}"
+          - "{{ proxy_managed_files|default([]) }}"
+          - "{{ webworker_managed_files|default([]) }}"
+          - "{{ airflow_managed_files|default([]) }}"
+          - "{{ formplayer_managed_files|default([]) }}"
+          - "{{ mgmt_cmd_managed_files|default([]) }}"
+          - "{{ prometheus_managed_files|default([]) }}"
+          - "{{ errand_boy_managed_files|default([]) }}"
+          - "{{ prometheus_django_runner_managed_files|default([]) }}"
     - shell: find {{ service_home|quote }} -type f
       register: contents
-      tags: services
       check_mode: no
       changed_when: no
     - name: "Remove supervisor configs that are no longer needed"
@@ -99,5 +131,5 @@
         path: "{{ item }}"
         state: absent
       with_items: "{{ contents.stdout_lines }}"
-      when: item not in supervisor_files
-      tags: services
+      when: item not in supervisor_files|sum(start=[])
+  tags: services

@@ -1,21 +1,20 @@
+- set_fact:
+    supervisor_pillowtop: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
+
+- set_fact:
+    pillowtop_managed_files:
+      - "{{ supervisor_pillowtop }}"
+
 - name: define pillowtop services
   become: yes
   template:
     src: "../templates/supervisor_pillowtop.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
+    dest: "{{ supervisor_pillowtop }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  tags:
-    - services
-  register: pillowtop_conf_file
-
-- set_fact:
-    pillowtop_supervisor_files: "{{ [pillowtop_conf_file] }}"
-  tags:
-    - services
-
-- set_fact:
-    pillowtop_managed_files: "{{ pillowtop_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + pillowtop_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
-  tags:
-    - services
+  with_items:
+    - env_vars:
+        TMPDIR: '{{ encrypted_tmp }}'
+        READ_FROM_PLPROXY_STANDBYS: 1
+        prometheus_multiproc_dir: "{% if prometheus_monitoring_enabled|default(False) %}{{ metrics_home }}{% endif %}"
