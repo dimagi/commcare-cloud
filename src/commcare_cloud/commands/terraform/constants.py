@@ -23,6 +23,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/receiver/secure/$
 ^/a/([\w\.:-]+)/receiver/secure/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/submission/?$
+^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
 ^/formplayer/new-form$
 ^/formplayer/validate_form$
