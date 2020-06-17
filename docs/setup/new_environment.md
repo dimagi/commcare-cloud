@@ -105,7 +105,7 @@ answer with `y`.
 
 For more information, see [Installing commcare-cloud](installation.md#step-2)
 
-# Generate secured passwords for the vault
+### Generate secured passwords for the vault
 
 ```bash
 $ python ~/commcare-cloud/commcare-cloud-bootstrap/generate_vault_passwords.py --env='monolith'
