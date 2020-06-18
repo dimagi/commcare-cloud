@@ -937,7 +937,39 @@ syntax rules apply.
 
 Use `-l` instead of a command to see the full list of commands.
 
-Available commands:
+##### Available commands
+```
+
+    apply_patch                Used to apply a git patch created via `git for...
+    check_status
+    clean_offline_releases     Cleans all releases in home directory
+    clean_releases             Cleans old and failed deploys from the ~/www/<...
+    deploy_airflow
+    deploy_commcare            Preindex and deploy if it completes quickly en...
+    kill_stale_celery_workers  Kills celery workers that failed to properly g...
+    manage                     run a management command
+    offline_setup_release
+    perform_system_checks
+    pillowtop
+    preindex_views             Creates a new release that runs preindex_every...
+    prepare_offline_deploy
+    reset_mvp_pillows
+    restart_services
+    restart_webworkers
+    reverse_patch              Used to reverse a git patch created via `git f...
+    rollback                   Rolls back the servers to the previous release...
+    rollback_formplayer
+    setup_limited_release      Sets up a release on a single machine
+    setup_release              Sets up a full release across the cluster
+    start_celery
+    start_pillows
+    stop_celery
+    stop_pillows
+    supervisorctl
+    unlink_current             Unlinks the current code directory. Use with c...
+    update_current
+    webworkers
+```
 
 ---
 
@@ -952,7 +984,7 @@ commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_
 
 ##### Positional Arguments
 
-###### `{commcare,formplayer,None}`
+###### `{commcare,formplayer}`
 
 The component to deploy. If not specified, will deploy CommCare, or
 both, if always_deploy_formplayer is set in meta.yml
