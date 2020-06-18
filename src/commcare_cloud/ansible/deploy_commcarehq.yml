@@ -80,7 +80,7 @@
   tags: services
 
 - name: Prometheus Supervisor Config
-  hosts: webworkers,pillowtop
+  hosts: commcarehq
   tasks:
     - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/prometheus.yml
