@@ -146,7 +146,7 @@
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch else "absent"}} and couch_backup_hourly'
+    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent"}}' 
   tags:
     - cron
     - backups
