@@ -73,6 +73,25 @@ SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
 
 SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
 
+#########
+# Snuba #
+#########
+
+SENTRY_SEARCH = "sentry.search.snuba.EventsDatasetSnubaSearchBackend"
+SENTRY_SEARCH_OPTIONS = {}
+SENTRY_TAGSTORE_OPTIONS = {}
+
+#########
+# Kafka #
+#########
+
+DEFAULT_KAFKA_OPTIONS = {
+    "bootstrap.servers": "localhost:9092",
+    "message.max.bytes": 50000000,
+    "socket.timeout.ms": 1000,
+}
+
+
 ##############
 # Web Server #
 ##############
