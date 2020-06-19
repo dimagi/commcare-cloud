@@ -247,6 +247,8 @@ celery_processes:
       concurrency: 5
       num_workers: 8
   celery81,celery82,celery83,celery84,celery85:
+    submission_reprocessing_queue:
+      concurrency: 12
 pillows:
   'pillow21':
     # Catch all server for low volume pillows
