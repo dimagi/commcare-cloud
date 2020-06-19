@@ -90,6 +90,9 @@ DEFAULT_KAFKA_OPTIONS = {
     "message.max.bytes": 50000000,
     "socket.timeout.ms": 1000,
 }
+SENTRY_EVENTSTREAM = "sentry.eventstream.kafka.KafkaEventStream"
+SENTRY_EVENTSTREAM_OPTIONS = {"producer_configuration": DEFAULT_KAFKA_OPTIONS}
+KAFKA_CLUSTERS["default"] = DEFAULT_KAFKA_OPTIONS
 
 
 ##############
