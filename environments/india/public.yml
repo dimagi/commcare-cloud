@@ -34,6 +34,10 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
     tags: nginx-timing
 
+kafka_version: 2.4.1
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 control_machine_ip: 10.162.36.196
