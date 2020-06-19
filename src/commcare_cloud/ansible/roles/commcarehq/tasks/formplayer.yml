@@ -1,9 +1,13 @@
 - set_fact:
     supervisor_formplayer_spring: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+  tags:
+    - formplayer_deploy
 
 - set_fact:
     formplayer_managed_files:
       - "{{ supervisor_formplayer_spring }}"
+  tags:
+    - formplayer_deploy
 
 - name: define formplayer spring services
   become: yes
