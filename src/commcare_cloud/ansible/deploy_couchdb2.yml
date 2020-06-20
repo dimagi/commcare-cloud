@@ -26,7 +26,7 @@
           path: "{{ couchdb_dir }}/var/log/*.stderr"
           options:
             - hourly
-            - size 100M
+            - size 300M
             - rotate 100
             - missingok
             - compress
