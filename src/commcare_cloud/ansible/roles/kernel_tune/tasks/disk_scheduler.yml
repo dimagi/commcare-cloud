@@ -9,7 +9,7 @@
   command: "echo noop > /sys/block/{{ item }}/queue/scheduler"
   with_items: "{{ raw_disk_list }}"
 
-- name: Adds transparent_hugepage=never to default grub config
+- name: Add elevator=noop to default grub config
   lineinfile:
     dest: /etc/default/grub
     regexp: '^GRUB_CMDLINE_LINUX=""$'
