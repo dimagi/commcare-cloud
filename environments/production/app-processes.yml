@@ -24,7 +24,7 @@ celery_processes:
     case_import_queue:
       concurrency: 3
     case_rule_queue:
-      concurrency: 8
+      concurrency: 4
     celery:
       concurrency: 4
     celery_periodic:
@@ -37,7 +37,6 @@ celery_processes:
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 64
-      num_workers: 2
     reminder_queue:
       pooling: gevent
       concurrency: 20
@@ -47,7 +46,7 @@ celery_processes:
       pooling: gevent
       concurrency: 200
     saved_exports_queue:
-      concurrency: 12
+      concurrency: 8
     sms_queue:
       pooling: gevent
       concurrency: 20
