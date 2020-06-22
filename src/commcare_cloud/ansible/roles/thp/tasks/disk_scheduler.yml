@@ -1,0 +1,24 @@
+- stat:
+    path: /etc/default/grub
+  register: uses_grub
+
+- set_fact:
+      raw_disk_list: "{{ hostvars[inventory_hostname].ansible_devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
+
+- name: set disk scheduler to noop for every raw device
+  command: "echo noop > /sys/block/{{ item }}/queue/scheduler"
+  with_items: "{{ raw_disk_list }}"
+
+- name: Adds elevator=noop to default grub config
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX=""$'
+    line: 'GRUB_CMDLINE_LINUX="elevator=noop"'
+    backrefs: yes
+    state: present
+  when: uses_grub.stat.exists
+  register: grub_updated
+
+- name: update grub
+  command: update-grub
+  when: grub_updated is changed
