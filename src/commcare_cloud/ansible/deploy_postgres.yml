@@ -80,7 +80,7 @@
    - kernel_tuning
    - after-reboot
   roles:
-    - role: thp
+    - role: kernel_tune 
 
 - name: Install and configure pg_repack
   hosts: "{{ pg_repack|list }}"
