@@ -154,48 +154,7 @@ servers:
     group: "elasticsearch"
     os: bionic
     volume_encrypted: no
-
-
-  - server_name: "es15-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es16-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es17-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es18-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es19-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
+    
   - server_name: "es20-production"
     server_instance_type: c5.9xlarge
     network_tier: "db-private"
