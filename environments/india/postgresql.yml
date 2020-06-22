@@ -55,7 +55,7 @@ dbs:
   custom:
     # remove citus from django
     # django_alias: icds-ucr-citus
-    # django_migrate: True  # ICDS dashboard models are stored here
+    django_migrate: False
     - name: icds-ucr-citus
       host: citus0
       pgbouncer_host: pgbouncer0
