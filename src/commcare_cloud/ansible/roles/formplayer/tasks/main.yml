@@ -85,6 +85,7 @@
   with_items:
     - filename: application.properties
     - filename: sentry.properties
+    - filename: logback-spring.xml
   tags:
     - formplayer_deploy
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
@@ -102,6 +103,8 @@
       filename: application.properties
     - template: sentry.properties.j2
       filename: sentry.properties
+    - template: logback-spring.xml.j2
+      filename: logback-spring.xml
   tags:
     - localsettings
 
