@@ -1,6 +1,7 @@
 ---
 apache_mirror: archive.apache.org/dist
 kafka_version: 0.8.2.2
+kafka_scala_version: "2.10"
 kafka_user: kafka
 kafka_group: kafka
 kafka_data_dir: "{{ encrypted_root }}/kafka/data"
@@ -8,3 +9,5 @@ kafka_conf_dir: /etc/kafka/config
 kafka_log_dir: /var/log/kafka
 kafka_log_retention: 672 # 28 days
 kafka_jmx_port: 9999
+kafka_inter_broker_protocol_version: 0.8.2.2
+kafka_log_message_format_version: 0.8.2.2

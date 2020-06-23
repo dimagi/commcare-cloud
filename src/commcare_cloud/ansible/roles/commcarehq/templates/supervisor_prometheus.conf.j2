@@ -1,0 +1,15 @@
+[program:{{ project }}-{{ deploy_env }}-prometheus]
+directory={{ code_home }}/
+environment=prometheus_multiproc_dir="{{ metrics_home }}"
+command={{ py3_virtualenv_home }}/bin/python
+     {{ code_home }}/deployment/prometheus_server.py
+user={{ cchq_user }}
+autostart=true
+autorestart=true
+stdout_logfile={{ log_home }}/prometheus.log
+redirect_stderr=true
+stderr_logfile={{ log_home }}/prometheus.error.log
+;stopsignal=QUIT
+;stopwaitsecs=60
+;killasgroup=true
+;stopasgroup=false

@@ -101,7 +101,7 @@ CELERY_PROCESSES = [
     CeleryProcess("async_restore_queue", required=False, blockage_threshold=60),
     CeleryProcess("background_queue", blockage_threshold=10 * 60),
     CeleryProcess("beat", required=False, is_queue=False),
-    CeleryProcess("case_rule_queue", blockage_threshold=10 * 60),
+    CeleryProcess("case_rule_queue", blockage_threshold=60 * 60),
     CeleryProcess("case_import_queue", blockage_threshold=60),
     CeleryProcess("celery", blockage_threshold=60),
     CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),

@@ -48,33 +48,28 @@ def get_aws_resources(environment):
     config = environment.terraform_config
 
     # Private IP addresses
-    private_ip_query = aws_cli(environment, [
+    ec2_instances_query = aws_cli(environment, [
         'aws', 'ec2', 'describe-instances',
         '--filter', "Name=tag-key,Values=Name", "Name=tag-value,Values=*",
         "Name=instance-state-name,Values=running",
         "Name=tag-key,Values=Environment",
         "Name=tag-value,Values={}".format(config.environment),
         "--query",
-        "Reservations[*].Instances[*][Tags[?Key=='Name'].Value, NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress]",
+        ("Reservations[*].Instances[*]["
+         "Tags[?Key=='Name'].Value, "
+         "NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress, "
+         "NetworkInterfaces[0].Association.PublicIp, "
+         "InstanceId"
+         "]"),
         "--output", "json",
         "--region", config.region,
     ])
-    name_private_ip_pairs = [(item[0][0][0], item[0][1]) for item in private_ip_query]
-
-    # Public IP addresses
-    public_ip_query = aws_cli(environment, [
-        'aws', 'ec2', 'describe-instances',
-        '--filter', "Name=tag-key,Values=Name", "Name=tag-value,Values=*",
-        "Name=instance-state-name,Values=running",
-        "Name=tag-key,Values=Environment",
-        "Name=tag-value,Values={}".format(config.environment),
-        "--query",
-        "Reservations[*].Instances[*][Tags[?Key=='Name'].Value[],NetworkInterfaces[0].Association.PublicIp]",
-        "--output", "json",
-        "--region", config.region,
-    ])
-    name_public_ip_pairs = [(item[0][0][0], item[0][1]) for item in public_ip_query
-                            if item[0][1] is not None]
+    ec2_instances_info = [{
+        'name': item[0][0][0],
+        'private_ip': item[0][1],
+        'public_ip': item[0][2],
+        'instance_id': item[0][3],
+    } for item in ec2_instances_query]
 
     rds_endpoints = aws_cli(environment, [
         'aws', 'rds', 'describe-db-instances',
@@ -83,11 +78,12 @@ def get_aws_resources(environment):
     ])
 
     resources = {}
-    for name, ip in name_private_ip_pairs:
-        resources[name] = ip
-
-    for name, ip in name_public_ip_pairs:
-        resources['{}.public_ip'.format(name)] = ip
+    for info in ec2_instances_info:
+        name = info['name']
+        resources[name] = info['private_ip']
+        if info['public_ip']:
+            resources['{}.public_ip'.format(name)] = info['public_ip']
+        resources['{}.instance_id'.format(name)] = info['instance_id']
 
     for name, endpoint in rds_endpoints:
         assert name not in resources
@@ -194,6 +190,10 @@ class AwsFillInventoryHelper(object):
                     inventory_vars.append(
                         ('root_encryption_mode', 'aws'),
                     )
+            elif server.volume_encrypted:
+                inventory_vars.append(
+                    ('root_encryption_mode', 'aws'),
+                )
 
             context.update(
                 self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)

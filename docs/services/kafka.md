@@ -10,6 +10,7 @@ from Kafka and process (pillows) them into Elasticsearch or other secondary data
 
 ## Resources
 
+* [Upgrade guide](kafka/upgrade.md)
 * [Command line tools](https://cwiki.apache.org/confluence/display/KAFKA/Replication+tools)
 
 ## Dependancies

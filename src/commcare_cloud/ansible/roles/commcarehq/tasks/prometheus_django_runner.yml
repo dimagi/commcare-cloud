@@ -1,0 +1,13 @@
+- set_fact:
+    prometheus_django_runner_managed_files:
+      - "{{ django_bash_runner_path }}"
+
+- name: Add django_bash_runner
+  become: yes
+  template:
+    src: "../templates/django_bash_runner.sh.j2"
+    dest: "{{ django_bash_runner_path }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
+  when: prometheus_monitoring_enabled|default(False)
