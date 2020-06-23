@@ -1,6 +1,6 @@
 #!/bin/bash
 ### Set initial time of file
-if [ ! -f /var/log/login_audit ];
+if [ ! -f /var/log/login_audit.log ];
    then
 LTIME=`stat -c %Y /var/log/auth.log.1`
 fi
