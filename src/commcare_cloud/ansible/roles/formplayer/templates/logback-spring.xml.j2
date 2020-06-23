@@ -7,16 +7,16 @@
     </appender>
 
     <appender name="requests" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>request_response.log</file>
+        <file>{{ formplayer_logging_dir }}/request_response.log</file>
         <!-- Keep a fixed number of logs. -->
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>request_response.%i.log</fileNamePattern>
+            <fileNamePattern>{{ formplayer_logging_dir }}/request_response.%i.log</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>1</maxIndex>
         </rollingPolicy>
         <!-- Limit the log file size. -->
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>2GB</maxFileSize>
+            <maxFileSize>1MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
             <pattern>%msg%n</pattern>

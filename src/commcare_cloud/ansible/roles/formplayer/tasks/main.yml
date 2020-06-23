@@ -56,6 +56,14 @@
     - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
 
+- name: Formplayer request-response logging directory
+  file:
+    path: "{{ formplayer_logging_dir }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+
 - name: Download formplayer release
   get_url:
     url: "{{ formplayer_build_url }}"
