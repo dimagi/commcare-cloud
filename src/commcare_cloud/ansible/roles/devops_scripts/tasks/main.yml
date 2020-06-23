@@ -14,3 +14,31 @@
     owner: ansible
     group: ansible
     mode: "u=rwx,g=rwx,o=r"
+
+- name: Copy sudo-report.sh script to /usr/local/sbin
+  template:
+    src: sudo-report.sh
+    dest: /usr/local/sbin/sudo-report.sh
+    owner: ansible
+    group: ansible
+    mode: "u=rwx,g=rwx,o=r"
+
+- name: Copy audit_log.sh script to /usr/local/sbin
+  template:
+    src: audit_log.sh
+    dest: /usr/local/sbin/audit_log.sh
+    owner: ansible
+    group: ansible
+    mode: "u=rwx,g=rwx,o=r"
+
+- name: Creates a cron for audit data collections 
+  cron:
+    name: Run audit data every 6 hours
+    minute: "00"
+    hour: "0,6,12,18"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: root 
+    job: "/usr/local/sbin/audit_log.sh"
+    cron_file: audit
