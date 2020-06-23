@@ -5,8 +5,8 @@
 
 - name: Copy ebsnvme-id
   become: yes
-  file:
-    src: "ebsnvme-id"
+  copy:
+    src: "_vendor/ebsnvme-id"
     dest: "/sbin/ebsnvme-id"
     owner: root
     group: root

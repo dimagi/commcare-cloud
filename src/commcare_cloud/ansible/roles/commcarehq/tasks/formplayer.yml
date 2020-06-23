@@ -1,8 +1,19 @@
+- set_fact:
+    supervisor_formplayer_spring: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+  tags:
+    - formplayer_deploy
+
+- set_fact:
+    formplayer_managed_files:
+      - "{{ supervisor_formplayer_spring }}"
+  tags:
+    - formplayer_deploy
+
 - name: define formplayer spring services
   become: yes
   template:
     src: "../templates/supervisor_formplayer_spring.conf.j2"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+    dest: "{{ supervisor_formplayer_spring }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
@@ -13,16 +24,4 @@
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
         TMPDIR: '{{ encrypted_tmp }}'
   tags:
-    - services
     - formplayer_deploy
-  register: formplayer_files
-
-- set_fact:
-    formplayer_supervisor_files: "{{ formplayer_files.get('results', []) }}"
-  tags:
-    - services
-
-- set_fact:
-    formplayer_managed_files: "{{ formplayer_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list }}"
-  tags:
-    - services

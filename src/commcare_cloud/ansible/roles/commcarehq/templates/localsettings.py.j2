@@ -710,6 +710,10 @@ DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
 DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
 
+{% if prometheus_monitoring_enabled|default(false) %}
+{% set metrics_providers = metrics_providers + ['corehq.util.metrics.prometheus.PrometheusMetrics'] %}
+{% endif %}
+
 METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 
 {% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
