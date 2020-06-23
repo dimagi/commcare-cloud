@@ -55,8 +55,8 @@ dbs:
   custom:
     # remove citus from django
     # django_alias: icds-ucr-citus
-    django_migrate: False
     - name: icds-ucr-citus
+      django_migrate: False
       host: citus0
       pgbouncer_host: pgbouncer0
       pg_config:
