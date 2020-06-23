@@ -8,6 +8,10 @@
       redis_version: 6.0.5
       redis_bind: 127.0.0.1
       redis_dir: "{{ encrypted_root }}/redis"
+      kafka_version: 2.5.0
+      kafka_scala_version: 2.13
+      kafka_inter_broker_protocol_version: 2.5
+      kafka_log_message_format_version: 2.5
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: postgresql, tags: 'postgresql_sentry'}
