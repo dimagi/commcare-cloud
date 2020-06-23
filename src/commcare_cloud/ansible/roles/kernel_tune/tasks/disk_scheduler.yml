@@ -9,11 +9,21 @@
   command: "echo noop > /sys/block/{{ item }}/queue/scheduler"
   with_items: "{{ raw_disk_list }}"
 
-- name: Add elevator=noop to default grub config
+- name: Add elevator=noop to default grub config if it's empty
   lineinfile:
     dest: /etc/default/grub
-    regexp: '^GRUB_CMDLINE_LINUX=""$'
-    line: 'GRUB_CMDLINE_LINUX="elevator=noop"'
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=""$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="elevator=noop"'
+    backrefs: yes
+    state: present
+  when: uses_grub.stat.exists
+  register: grub_updated
+
+- name: Add elevator=noop to default grub config if transparent hugepage is set
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never"$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="transparent_hugepage=never elevator=noop"'
     backrefs: yes
     state: present
   when: uses_grub.stat.exists
