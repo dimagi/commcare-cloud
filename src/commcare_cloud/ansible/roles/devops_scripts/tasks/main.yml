@@ -33,12 +33,41 @@
 
 - name: Creates a cron for audit data collections 
   cron:
-    name: Run audit data every 6 hours
+    name: Run audit data every 24 hours
     minute: "00"
-    hour: "0,6,12,18"
+    hour: "0"
     day: "*"
     month: "*"
     weekday: "*"
     user: root 
     job: "/usr/local/sbin/audit_log.sh"
     cron_file: audit
+
+- name: audit log rolling configurations
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: login_audit 
+        path: /var/log/login_audit.log
+        options:
+          - monthly
+          - size 100M
+          - rotate 14
+          - missingok
+          - compress
+          - delaycompress
+          - nocreate
+          - notifempty
+
+      - name: sudo_audit
+        path: /var/log/sudo_audit.log
+        options:
+          - monthly
+          - size 100M
+          - rotate 14
+          - missingok
+          - compress
+          - delaycompress
+          - nocreate
+          - notifempty
