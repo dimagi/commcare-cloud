@@ -6,6 +6,7 @@
     owner: postgres
     group: postgres
     mode: "u=rwx,g=rwx,o=r"
+  when: "'postgres' in groups" 
 
 - name: Copy intruder.sh script to /usr/local/sbin
   template:
