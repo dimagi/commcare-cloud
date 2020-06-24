@@ -6,7 +6,7 @@
     owner: postgres
     group: postgres
     mode: "u=rwx,g=rwx,o=r"
-  when: "'postgres' in groups" 
+  when: "'postgresql' in group_names or 'citusdb' in group_names or 'pg_standby' in group_names"
 
 - name: Copy intruder.sh script to /usr/local/sbin
   template:
