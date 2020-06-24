@@ -36,7 +36,7 @@ from the Dashboard page; the Dashboard page is the landing page post
 login. There is one Application link on the top ribbon and another in
 the box on the screen with a phone icon.
 
-You'll be brought to the page below. Give your app a name and select the
+You'll be brought to the page below. Give your app a name and click the
 '+Add' button. Choose the option 'Case List' to create an application
 that uses Case Management. We'll use case management to create cases
 later on.
@@ -84,7 +84,7 @@ Then, add those questions as Case Properties and save again.
 
 **These steps test:** that Applications can be created. Applications are
 the core of how CommCare works and will be used to collect data for your
-project. The App Building process validates that Formplayer is
+project. The App Building process also validates that Formplayer is
 functional.
 
 To further validate Formplayer, click the teal bar on the right of the
@@ -104,31 +104,28 @@ whatever username and password combo you'd like.
 
 ![](./new_environment_qa_img/mobile-worker.png)
 
-Your mobile worker will now appear as a link under the 'New Mobile
+Your mobile worker should now appear as a link under the 'New Mobile
 Workers' section.
 
 **This step tests:** Creating a mobile worker and validating a phone
-number. Creating a mobile worker validates Elasticsearch.
+number. The page that lists mobile workers relies on Elasticsearch.
 
 
 ## Step 4a: Deploying your application and submitting forms from mobile
 
-Note: If your project is going to use submissions from mobile devices,
-follow this step. If your organization intends to use Web Apps, proceed
-directly to 4b. If you'd like to test both mobile submissions and Web
-Apps or are unsure which you'd use, please execute both steps.
+Note: You may skip this step if your project intends to use only Web Apps for
+data collection.
 
-Now that we've built an app, we'll validate its deploy. In the top
-ribbon, select Applications and click your newly created test
-application. This will navigate you to the Release Page. Click the blue
-'Make New Version' button and within a few moments, a version will be
-available.
+Now that we've built an app, we'll validate its deploy. In the top ribbon,
+select Applications and click your newly created test application. This will
+navigate you to the Releases page. Click the blue 'Make New Version' button and
+within a few moments, a version will be available.
 
-Before proceeding with next steps, you'll need an Android device with
-the CommCare mobile app installed. If you do not have CommCare installed
-on your device, first go to the Playstore and download it.
+Before proceeding, you'll need an Android device with the CommCare mobile app
+installed. If you do not have CommCare installed on your device, first go to the
+Play Store and download it.
 
-On the Release Page, click the Publish button with your newly created
+On the 'Releases' page, click the 'Publish' button with your newly created
 version. This will launch a modal similar to the one in the image below.
 Your version number may differ from mine:
 
@@ -149,47 +146,45 @@ Followup form, press the blue 'Sync with Server' button on the CommCare
 mobile app's home screen. This will ensure the forms on your device are
 pushed to CommCareHQ.
 
-**This step tests:** When you attempt to build the app, you may see an
-error "Unable to validate form", this likely indicates that Formplayer
-isn't running or isn't connected properly to CommCareHQ. The act of
-logging in on your mobile device for the first time automatically syncs
-with the server. Logging in validates that connection is working
-correctly.
+**This step tests:** When you attempt to build the app, you may see an error
+"Unable to validate form", this likely indicates that Formplayer isn't running
+or isn't connected properly to CommCareHQ. The act of logging in on your mobile
+device for the first time automatically syncs with the server. Logging in
+validates that mobile devices are able to connect with the server.
 
 
 ## Step 4b: Submitting forms through Web Apps
 
-A method of submitting data to CommCareHQ online and with a desktop or
-laptop is with Web Apps. Web Apps must be enabled separately under your
-application's Advanced Settings. Return to CommCareHQ and then click the
-gear icon next to your application's name. Next, click Advanced Settings
-to enable Web Apps and save. Upon completing this step, a purple banner
-will appear under your application's name.
+'Web Apps' is a method of submitting data to CommCareHQ online and with a
+desktop or laptop. Web Apps must be enabled separately under your application's
+Advanced Settings. Return to CommCareHQ and then click the gear icon next to
+your application's name. Next, click 'Advanced Settings' to enable Web Apps and
+save. Upon completing this step, a purple banner will appear under your
+application's name.
 
 ![](./new_environment_qa_img/advanced-settings.png)
 
-We will need to make a new version of your application on the release
-page. To do so, click your application's name and the 'Make New Version'
-button. On this newly created version, it's important to toggle the
-'Released/In Test' button to 'Released.'
+We will need to make a new version of your application on the release page. To
+do so, click your application's name and the 'Make New Version' button. On this
+newly created version, it's important to toggle the 'Released/In Test' button to
+'Released.'
 
-After marking your version as released, click Web Apps from the top
-ribbon of CommCareHQ. There, you'll notice a purple button labeled,
-'Login As.' Click that and choose your Mobile Worker. While you can
-submit forms as a Web User (your CommCareHQ login), most CommCare users
-structure their apps around submissions from Mobile Workers. Using
-'Login As' allows you to submit forms as a mobile worker via Web Apps.
+After marking your version as released, click 'Web Apps' in the top ribbon of
+CommCareHQ. There, you'll notice a purple button labeled, 'Login As.' Click that
+and choose your Mobile Worker. While you can submit forms as a Web User (your
+CommCareHQ login), most CommCare users structure their apps around submissions
+from Mobile Workers. Using 'Login As' allows you to submit forms as a mobile
+worker via Web Apps.
 
-Click on your application and submit the registration and follow-up
-forms. Once the forms have been submitted, click the Home icon in Web
-Apps and then click the blue Sync button.
+Click on your application and submit the registration and follow-up forms. Once
+the forms have been submitted, click the Home icon in Web Apps and then click
+the blue Sync button.
 
 ![](./new_environment_qa_img/web-apps.png)
 
-**This step tests:** Using Web Apps tests that Formplayer is working
-correctly. A successful form submission via Web Apps also ensures that
-Pillowtop is sending data to Elasticsearch. We will know whether our
-submission was a success when we check reports in the next step.
+**This step tests:** Using Web Apps tests that Formplayer is working correctly.
+We will know whether our submission was a success when we check reports in the
+next step.
 
 
 ## Step 5: Viewing submitted data in reports
@@ -200,7 +195,7 @@ was received and accessible.
 We've now submitted data from either a mobile device, Web Apps or both.
 Let's now view this data in CommCareHQ. If still in Web Apps, click
 'Show Full Menu' at the top of the screen to view the ribbon. Otherwise,
-simply access CommCareHQ and click 'Reports' and 'Submit History.'
+simply access CommCareHQ and click 'Reports', then 'Submit History.'
 
 On the Submit History report, simply accept the defaults and click the
 blue Apply button. You'll be shown all the forms submitted for your
@@ -239,7 +234,7 @@ will look like:
 
 Select 'Add Export,' which will navigate you to the Create Case Data
 Export page. For now, accept the defaults and click 'Create' at the
-bottom of the screen. This will return you to the ''Export Case Data'
+bottom of the screen. This will return you to the 'Export Case Data'
 page and next to your newly created export, select the 'Export' button.
 You'll now be on the Download Case Data Export page, click 'Prepare
 Export' and when ready, click 'Download' to ensure the export works
@@ -249,18 +244,18 @@ This will initiate an xlsx download of your case data. Feel free to open
 it and explore, but simply downloading the data is enough to know the
 routine is functional.
 
-**This step tests:** Case Exports, and exports more generally, ensure
-that Riak and BlobDB are working as expected. The act of downloading an
-export ensures Celery is running. Celery processes the export and saves
-the result in BlobDB.
+**This step tests:** Case Exports, and exports more generally, ensure that
+Celery, BlobDB, and Redis are working as expected. Celery processes the export
+and saves the result in BlobDB, while process status (the progress bar) is
+stored in Redis.
 
 
-## Step 6b: Exporting CommCare Data: OData Feed
+## Step 6b: (Optional) Exporting CommCare Data: OData Feed
 
-CommCareHQ uses multiple API endpoints to allow users to access their
-data. One of the APIs built into the CommCare UI is the OData Feed
-export that can be integrated with Power BI and Tableau. Let's use this
-to further ensure our access to CommCare data is sound.
+CommCareHQ uses multiple API endpoints to allow users to access their data. One
+of the APIs built into the CommCare UI is the OData Feed export that can be
+integrated with Power BI and Tableau. If applicable to your project, let's use
+this to further ensure our access to CommCare data is sound.
 
 To begin, select Data from the top ribbon and click the Power BI/Tableau
 Integration. Once the page loads, click the '+Add OData Feed' button.
@@ -301,7 +296,7 @@ mobile workers.'
 After a moment, you will see 'Mobile Worker upload has finished -
 Successfully uploaded X mobile workers.'
 
-**This step tests:** This tests the Celery routine.
+**This step tests:** This tests Celery and Redis.
 
 
 ## Step 8: (Optional) SMS Gateway functionality
@@ -309,13 +304,9 @@ Successfully uploaded X mobile workers.'
 If your project is going to use SMS capability or wants to explore that
 option in the future, we recommend testing this step as well.
 
-To begin, access Messaging from the top ribbon and select View All.
-Then, click SMS Connectivity to see a list of CommCareHQ\'s shared
-Gateways. Note: If you do not wish to use one of the shared Gateways,
-please [review this article about how to set up a Gateway with
-Telerivet](https://confluence.dimagi.com/display/commcarepublic/Setup+an+Android+SMS+Gateway).
-Otherwise, please select the Gateway that works for your project and
-geography.
+To begin, access Messaging from the top ribbon and select View All. Here, you'll
+need to set up a new gateway by following the instructions in [this
+article](https://confluence.dimagi.com/display/commcarepublic/Setup+an+Android+SMS+Gateway).
 
 ![](./new_environment_qa_img/sms-gateway.png)
 
