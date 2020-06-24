@@ -115,6 +115,21 @@ resource "aws_eip" "proxy__{{ server.server_name }}" {
 }
 {% endfor %}
 
+resource "aws_efs_file_system" "formplayer" {
+  encrypted = true
+  tags = {
+    Name = "formplayer"
+  }
+}
+
+
+{%- for az in az_codes %}
+resource "aws_efs_mount_target" "formplayer-{{ az }}" {
+  file_system_id = "${aws_efs_file_system.formplayer.id}"
+  subnet_id      = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+}
+{% endfor %}
+
 {% if elasticache %}
 module "Redis" {
   source               = "./modules/elasticache"

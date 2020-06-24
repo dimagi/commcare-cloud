@@ -1,5 +1,29 @@
 ---
 
+- name: Update the apt cache
+  when: shared_drive_enabled|bool
+  apt:
+    update_cache: yes
+    cache_valid_time: 7200
+
+- name: Install NFS packages
+  become: yes
+  when: shared_drive_enabled|bool
+  apt:
+    name:
+      - nfs-kernel-server
+      - portmap
+  tags:
+    - nfs
+
+- name: ensure nfs service is running
+  when: shared_drive_enabled|bool
+  service:
+    name: nfs-kernel-server
+    state: started
+  tags:
+    - nfs
+
 - name: Create shared data dir
   become: yes
   file:
