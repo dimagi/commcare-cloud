@@ -11,6 +11,8 @@ kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
 
+rabbitmq_version: 3.8.5
+
 run_websockets_wsgi: True
 
 backup_blobdb: False

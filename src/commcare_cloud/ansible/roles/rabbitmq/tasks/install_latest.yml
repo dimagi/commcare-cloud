@@ -1,0 +1,40 @@
+---
+- name: Install Erlang Solutions PGP key
+  apt_key:
+    url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+    state: present
+
+- name: Add Erlang Solutions repository
+  apt_repository:
+    repo: 'deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release|lower }} contrib'
+    state: present
+    update_cache: yes
+
+- name: Install Erlang packages
+  apt:
+    name: "esl-erlang=1:23.0.2-2"
+    state: present
+    update_cache: yes
+
+- name: Add rabbitmq official apt repository
+  apt_repository:
+    repo: 'deb https://dl.bintray.com/rabbitmq/debian {{ ansible_distribution_release|lower }} main'
+    state: present
+
+- name: Add trusted key
+  apt_key:
+    url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+    state: present
+
+- name: Install package
+  apt:
+    name: "rabbitmq-server=3.8.5-1"
+    update_cache: yes
+    state: present
+
+- name: Enable rabbitmq plugins
+  rabbitmq_plugin:
+    names: rabbitmq_management,rabbitmq_tracing,rabbitmq_federation
+    state: enabled
+  notify:
+  - restart rabbitmq
