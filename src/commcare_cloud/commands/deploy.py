@@ -37,25 +37,22 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
-        always_deploy_formplayer = environment.meta_config.always_deploy_formplayer
         commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
-        if args.component is None:
-            args.component = always_deploy_formplayer
 
-        if args.component == 'commcare':
+        deploy_component = args.component
+        if deploy_component == None:
+            deploy_component = 'both' if environment.meta_config.always_deploy_formplayer else 'commcare'
+
+        if deploy_component in ['commcare', 'both']:
             print(color_summary("You are about to deploy commcare from {}".format(commcare_rev)))
             if ask('Deploy commcare?', quiet=args.quiet):
-                _warn_no_formplayer()
+                if deploy_component != 'both':
+                    _warn_no_formplayer()
                 self.deploy_commcare(environment, commcare_rev, args, unknown_args)
-        elif args.component == 'formplayer':
+
+        if deploy_component in ['formplayer', 'both']:
             self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
-        elif args.component == 'all':
-            print(color_summary("You are about to deploy both Commcare and Formplayer from {}".format(commcare_rev)))
-            if ask('Deploy both?', quiet=args.quiet):
-                self.deploy_commcare(environment, commcare_rev, args, unknown_args)
-                self._announce_formplayer_deploy_start(environment)
-                self.deploy_formplayer(environment, args, unknown_args)
 
     def deploy_commcare(self, environment, commcare_rev, args, unknown_args):
         fab_func_args = self.get_deploy_commcare_fab_func_args(args)
