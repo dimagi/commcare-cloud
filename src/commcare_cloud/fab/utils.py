@@ -15,6 +15,7 @@ from memoized import memoized_property, memoized
 from github import Github, UnknownObjectException
 from fabric.api import execute, env
 from fabric.colors import magenta
+from gevent.pool import Pool
 
 from .const import (
     PROJECT_ROOT,
@@ -273,3 +274,23 @@ def generate_bower_command(command, production=True, config=None):
 def bower_command(command, production=True, config=None):
     cmd = generate_bower_command(command, production, config)
     sudo(cmd)
+
+def migrationAlert(compare_url):
+    try:
+        last_deploy = last_commit_sha
+        current_deploy = deploy_ref
+        # from the get_deploy_email fn:
+        # ref_comparison = compare_url.split('/')[-1]
+        # last_deploy, current_deploy = ref_comparison.split('...')
+    except ValueError:
+        # last_commit_sha OR deploy_ref not working?
+        last_deploy = current_deploy = 'Unavailable'
+        print('Unavailable')
+        pr_infos = []
+    else:
+        # have to include fn _get_pr_numbers
+        pr_numbers = _get_pr_numbers(last_deploy, current_deploy)
+        # Pool: multithreading tool.. didn't import it?
+        pool = Pool(5)
+        # what '_f' doing here
+        pr_infos = [_f for _f in pool.map(_get_pr_info, pr_numbers) if _f]
