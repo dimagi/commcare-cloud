@@ -1,10 +1,12 @@
+from textwrap import dedent
+
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import check_branch, ask
+from commcare_cloud.cli_utils import ask, check_branch
 from commcare_cloud.colors import color_notice, color_summary
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
 
@@ -43,11 +45,7 @@ class Deploy(CommandBase):
         if args.component == 'commcare':
             print(color_summary("You are about to deploy commcare from {}".format(commcare_rev)))
             if ask('Deploy commcare?', quiet=args.quiet):
-                print(color_notice("Formplayer will not be deployed right now,"))
-                print(color_notice("but we recommend deploying formplayer about once a month as well."))
-                print(color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
-                print(color_notice("but keeps these services up to date."))
-                print(color_notice("You can do so by running `commcare-cloud <env> deploy formplayer`"))
+                _warn_no_formplayer()
                 self.deploy_commcare(environment, commcare_rev, args, unknown_args)
         elif args.component == 'formplayer':
             self._announce_formplayer_deploy_start(environment)
@@ -55,11 +53,6 @@ class Deploy(CommandBase):
         elif args.component == 'all':
             print(color_summary("You are about to deploy both Commcare and Formplayer from {}".format(commcare_rev)))
             if ask('Deploy both?', quiet=args.quiet):
-                print(color_notice("commcare & Formplayer will be deployed right now,"))
-                print(color_notice("but we recommend deploying formplayer about once a month as well."))
-                print(color_notice("It causes about 1 minute of service interruption to Web Apps and App Preview,"))
-                print(color_notice("but keeps these services up to date."))
-                print(color_notice("You can do so by running individually `commcare-cloud <env> deploy <Component>`"))
                 self.deploy_commcare(environment, commcare_rev, args, unknown_args)
                 self._announce_formplayer_deploy_start(environment)
                 self.deploy_formplayer(environment, args, unknown_args)
@@ -138,6 +131,16 @@ class Deploy(CommandBase):
             ),
             message='',
         )
+
+
+def _warn_no_formplayer():
+    print(color_notice(dedent("""
+        Formplayer will not be deployed right now, but we recommend deploying
+        formplayer about once a month as well.
+        It causes about 1 minute of service interruption to Web Apps and App
+        Preview, but keeps these services up to date.
+        You can do so by running `commcare-cloud <env> deploy formplayer`
+    """)))
 
 
 def mail_admins(environment, subject, message):
