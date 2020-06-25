@@ -1,6 +1,6 @@
 ---
 - include: install_latest.yml
-  when: rabbitmq_version == '3.8.5'
+  when: rabbitmq_version == '3.8.5-1'
 
 - include: install_old.yml
   when: rabbitmq_version == '3.6.15'

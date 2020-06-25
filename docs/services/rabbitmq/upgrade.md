@@ -1,7 +1,7 @@
 # Upgrading RabbitMQ 
 
 * Current default RabbitMQ version: 3.6.15
-* Example target version:3.8.5
+* Example target version:3.8.5-1
 ## Dependency on Erlang Version
 * Current default Erlang version: 20.2.2
 * Example target version: 23.0.2 
@@ -19,17 +19,16 @@ Refer to [RabbitMQ Upgrade documentation](https://www.rabbitmq.com/upgrade.html#
 
     **environments/<env>/public.yml**
     ```
-    rabbitmq_version: 3.8.5
+    rabbitmq_version: 3.8.5-1
     ```
-3. Update the RabbitMQ and Erlang version in `main.yml`
+3. Update the Erlang version in `main.yml`
 
    **src/commcare_cloud/ansible/roles/rabbitmq/defaults/main.yml**
    ```
    erlang: 1:23.0.2-2
-   rabbitmqserver: 3.8.5-1
    ```
 
-4. Full RabbitMQ Cluster downtime is required to upgrade from 3.6.15 to 3.8.5 version. 
+4. Full RabbitMQ Cluster downtime is required to upgrade from 3.6.15 to 3.8.5-1 version. 
    
 
 5. Export the current configuration backup using rabbitmqadmin or from rabbitmq console.

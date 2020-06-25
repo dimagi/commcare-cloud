@@ -30,7 +30,7 @@
 
 - name: Install package
   apt:
-    name: "rabbitmq-server={{ rabbitmqserver }}"
+    name: "rabbitmq-server={{ rabbitmq_version }}"
     update_cache: yes
     state: present
   ignore_errors: '{{ ansible_check_mode }}'
