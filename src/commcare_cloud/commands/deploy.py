@@ -19,7 +19,8 @@ class Deploy(CommandBase):
 
     arguments = (
         Argument('component', nargs='?', choices=['commcare', 'formplayer'], help="""
-            The component to deploy.
+            The component to deploy. If not specified, will deploy CommCare, or
+            both, if always_deploy_formplayer is set in meta.yml
         """),
         Argument('--resume', action='store_true', help="""
             Rather than starting a new deploy, start where you left off the last one.
