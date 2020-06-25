@@ -9,7 +9,7 @@
   when: "'postgresql' in group_names or 'citusdb' in group_names or 'pg_standby' in group_names"
 
 - name: Copy intruder.sh script to /usr/local/sbin
-  template:
+  copy:
     src: intruder.sh
     dest: /usr/local/sbin/intruder.sh
     owner: ansible
@@ -17,7 +17,7 @@
     mode: "u=rwx,g=rwx,o=r"
 
 - name: Copy sudo-report.sh script to /usr/local/sbin
-  template:
+  copy:
     src: sudo-report.sh
     dest: /usr/local/sbin/sudo-report.sh
     owner: ansible
@@ -25,7 +25,7 @@
     mode: "u=rwx,g=rwx,o=r"
 
 - name: Copy audit_log.sh script to /usr/local/sbin
-  template:
+  copy:
     src: audit_log.sh
     dest: /usr/local/sbin/audit_log.sh
     owner: ansible
