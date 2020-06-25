@@ -12,14 +12,16 @@
 
 - name: Install Erlang packages
   apt:
-    name: "esl-erlang=1:23.0.2-2"
+    name: "esl-erlang={{ erlang }}"
     state: present
     update_cache: yes
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Add rabbitmq official apt repository
   apt_repository:
     repo: 'deb https://dl.bintray.com/rabbitmq/debian {{ ansible_distribution_release|lower }} main'
     state: present
+    update_cache: yes
 
 - name: Add trusted key
   apt_key:
@@ -28,9 +30,10 @@
 
 - name: Install package
   apt:
-    name: "rabbitmq-server=3.8.5-1"
+    name: "rabbitmq-server={{ rabbitmqserver }}"
     update_cache: yes
     state: present
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Enable rabbitmq plugins
   rabbitmq_plugin:

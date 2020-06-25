@@ -21,16 +21,29 @@ Refer to [RabbitMQ Upgrade documentation](https://www.rabbitmq.com/upgrade.html#
     ```
     rabbitmq_version: 3.8.5
     ```
+3. Update the RabbitMQ and Erlang version in `main.yml`
 
-3. Full RabbitMQ Cluster downtime is required to upgrade from 3.6.15 to 3.8.5 version. 
+   **src/commcare_cloud/ansible/roles/rabbitmq/defaults/main.yml**
+   ```
+   erlang: 1:23.0.2-2
+   rabbitmqserver: 3.8.5-1
+   ```
 
-4. Export the current configuration backup using rabbitmqadmin or from rabbitmq console.
+4. Full RabbitMQ Cluster downtime is required to upgrade from 3.6.15 to 3.8.5 version. 
+   
 
-5. Stop the RabbitMQ service [ if in cluster then stop them in sequence] .
+5. Export the current configuration backup using rabbitmqadmin or from rabbitmq console.
 
-6. Upgrade the RabbitMQ on the first node [ Upgrade the last node that was stopped first , if in cluster ]
+    **Download rabbitmqadmin command from "http://<IP-of-RabbitMQ>:15672/cli/"**
+    ```
+    $ rabbitmqadmin -u <usernamefromvault> -p <passwordfromvault> -U http://<IP-of-RabbitMQ>:15672 export rabbitmq-backup-config.json
+    ```
 
-7. Update RabbitMQ :
+6. Stop the RabbitMQ service [ if in cluster then stop them in sequence] .
+
+7. Upgrade the RabbitMQ on the first node [ Upgrade the last node that was stopped first , if in cluster ]
+
+8. Update RabbitMQ :
 
     ```
     $ cchq <env> ap deploy_rabbitmq.yml
