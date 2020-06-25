@@ -16,7 +16,7 @@ class Deploy(CommandBase):
     )
 
     arguments = (
-        Argument('component', nargs='?', choices=['commcare', 'formplayer', None], default=None, help="""
+        Argument('component', nargs='?', choices=['commcare', 'formplayer'], help="""
             The component to deploy.
         """),
         Argument('--resume', action='store_true', help="""
