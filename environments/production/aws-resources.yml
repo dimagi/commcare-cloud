@@ -72,8 +72,6 @@ shareddir1-production.instance_id: i-0d1e0f3874426383e
 vpn-production: 10.202.20.194
 vpn-production.instance_id: i-0f1b5684281df2e97
 vpn-production.public_ip: 18.235.223.2
-web10-production: 10.202.11.233
-web10-production.instance_id: i-0b8af52cbfa2e48c6
 web11-production: 10.202.11.117
 web11-production.instance_id: i-0214a29ce491e08a0
 web12-production: 10.202.11.58
