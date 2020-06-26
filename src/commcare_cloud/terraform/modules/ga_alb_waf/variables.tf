@@ -8,6 +8,7 @@ variable "subnets" {
 variable "vpc_id" {}
 
 variable "SITE_HOST" {}
+variable "NO_WWW_SITE_HOST" {}
 
 variable "proxy_server_ids" {
   type = "list"
