@@ -46,6 +46,10 @@ formplayer6-production: 10.202.10.213
 formplayer6-production.instance_id: i-086dc586a2c8c2f83
 formplayer7-production: 10.202.10.83
 formplayer7-production.instance_id: i-0a625e212c4075e61
+formplayer8-production: 10.202.10.200
+formplayer8-production.instance_id: i-00ab6e6c4daf95e50
+formplayer9-production: 10.202.10.61
+formplayer9-production.instance_id: i-0b4c74c0a836ce2e3
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
 pgbouncer2-production: 10.202.40.59
