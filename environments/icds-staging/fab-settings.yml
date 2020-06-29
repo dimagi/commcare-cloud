@@ -1,1 +1,2 @@
 tag_deploy_commits: True
+default_branch: icds-autostaging
