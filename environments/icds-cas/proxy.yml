@@ -9,6 +9,7 @@ CAS_SITE_HOST: 'cas.commcarehq.org'
 
 special_sites:
   - cas_ssl
+  - cas_sentry
 
 letsencrypt_cchq_ssl: True
 letsencrypt_cas_ssl: True
