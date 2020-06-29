@@ -31,11 +31,14 @@ class Deploy(CommandBase):
         Argument('--commcare-rev', help="""
             The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
         """, default=None),
+        Argument('--set', dest='fab_settings', help="""
+            fab settings in k1=v1,k2=v2 format to be passed down to fab 
+        """, default=None),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )
 
-    def run(self, args, unknown_args):
+    def run(self, args, unknown_args, color_warn=None):
         check_branch(args)
         environment = get_environment(args.env_name)
         commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
@@ -50,15 +53,23 @@ class Deploy(CommandBase):
                 if deploy_component != 'both':
                     _warn_no_formplayer()
                 self.deploy_commcare(environment, commcare_rev, args, unknown_args)
-
         if deploy_component in ['formplayer', 'both']:
+            if deploy_component != 'both':
+                if args.commcare_rev:
+                    print(color_warn('--commcare-rev does not apply to a formplayer deploy and will be ignored'))
+                if args.fab_settings:
+                    print(color_warn('--set does not apply to a formplayer deploy and will be ignored'))
             self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
 
     def deploy_commcare(self, environment, commcare_rev, args, unknown_args):
         fab_func_args = self.get_deploy_commcare_fab_func_args(args)
+        fab_settings = 'code_branch={}{}'.format(
+            commcare_rev,
+            ',{}'.format(args.fab_settings) if args.fab_settings else ''
+        )
         commcare_cloud(environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
-                       '--set', 'code_branch={}'.format(commcare_rev),
+                       '--set', fab_settings,
                        branch=args.branch, *unknown_args)
 
     def deploy_formplayer(self, environment, args, unknown_args):
