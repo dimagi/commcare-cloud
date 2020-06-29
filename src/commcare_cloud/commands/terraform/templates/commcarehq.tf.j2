@@ -191,6 +191,7 @@ module "ga_alb_waf" {
   vpc_id = "${module.network.vpc-id}"
   SITE_HOST = {{ SITE_HOST|tojson }}
   NO_WWW_SITE_HOST = {{ NO_WWW_SITE_HOST|tojson }}
+  ALTERNATE_HOSTS = {{ ALTERNATE_HOSTS|tojson }}
   proxy_server_ids = [
     {%- for server in proxy_servers %}{% if not loop.first %}, {% endif %}
     "${module.server__{{ server.server_name }}.server}"
