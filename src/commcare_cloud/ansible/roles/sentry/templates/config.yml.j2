@@ -54,7 +54,7 @@ filestore.options:
 #########
 
 {% if sentry_slack_integration is defined %}
-{% if k,v in sentry_slack_integration.items() %}
+{% for k,v in sentry_slack_integration.items() %}
 {{k}}: {{v}}
 {% endfor %}
 {% endif %}
