@@ -35,6 +35,16 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
   }
 }
 
+resource "aws_wafv2_ip_set" "temp_block" {
+  name               = "TempBlock"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = []
+
+  tags = {
+  }
+}
+
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name = "CommCareWhitelistRules"
   capacity = "100"
@@ -97,6 +107,37 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name = "AllowXMLBody"
+      sampled_requests_enabled = true
+    }
+  }
+}
+
+resource "aws_wafv2_rule_group" "dimagi_block_rules" {
+  name = "DimagiBlockRules"
+  capacity = "25"
+  scope = "REGIONAL"
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "DimagiBlockRules"
+    sampled_requests_enabled   = true
+  }
+  rule {
+    name = "BlockTemporaryIPs"
+    priority = 0
+
+    action {
+      block {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = "${aws_wafv2_ip_set.temp_block.arn}"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "BlockTemporaryIPs"
       sampled_requests_enabled = true
     }
   }
