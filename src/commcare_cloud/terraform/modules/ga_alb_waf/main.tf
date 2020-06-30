@@ -284,6 +284,38 @@ resource "aws_wafv2_web_acl_association" "front_end" {
   web_acl_arn  = "${aws_wafv2_web_acl.front_end.arn}"
 }
 
+resource "aws_kinesis_firehose_delivery_stream" "front_end_waf_logs" {
+  name = "aws-waf-logs-frontend-waf-${var.environment}"
+  destination = "extended_s3"
+  server_side_encryption {
+    enabled = true
+  }
+  extended_s3_configuration {
+    compression_format = "GZIP"
+    prefix = "frontend-waf-${var.environment}/"
+    error_output_prefix = "frontend-waf-${var.environment}-error/"
+    kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${var.account_id}:alias/aws/s3"
+    bucket_arn = "${aws_s3_bucket.front_end_alb_logs.arn}"
+    role_arn = "${aws_iam_role.firehose_role.arn}"
+  }
+  tags {
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_iam_role" "firehose_role" {
+  name = "firehose_delivery_role"
+
+  assume_role_policy = <<EOF
+{"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Service":"firehose.amazonaws.com"},"Action":"sts:AssumeRole","Condition":{"StringEquals":{"sts:ExternalId":"${var.account_id}"}}}]}
+EOF
+}
+
+resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
+  log_destination_configs = ["${aws_kinesis_firehose_delivery_stream.front_end_waf_logs.arn}"]
+  resource_arn            = "${aws_wafv2_web_acl.front_end.arn}"
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"
