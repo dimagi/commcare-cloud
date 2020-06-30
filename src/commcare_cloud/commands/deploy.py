@@ -2,7 +2,7 @@ from textwrap import dedent
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, check_branch
-from commcare_cloud.colors import color_notice, color_summary
+from commcare_cloud.colors import color_notice, color_summary, color_warning
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
@@ -38,7 +38,7 @@ class Deploy(CommandBase):
         shared_args.BRANCH_ARG,
     )
 
-    def run(self, args, unknown_args, color_warn=None):
+    def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
         commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
@@ -56,9 +56,9 @@ class Deploy(CommandBase):
         if deploy_component in ['formplayer', 'both']:
             if deploy_component != 'both':
                 if args.commcare_rev:
-                    print(color_warn('--commcare-rev does not apply to a formplayer deploy and will be ignored'))
+                    print(color_warning('--commcare-rev does not apply to a formplayer deploy and will be ignored'))
                 if args.fab_settings:
-                    print(color_warn('--set does not apply to a formplayer deploy and will be ignored'))
+                    print(color_warning('--set does not apply to a formplayer deploy and will be ignored'))
             self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
 
