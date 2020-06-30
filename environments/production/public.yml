@@ -93,6 +93,10 @@ couchdb_cluster_settings:
   w: 2
   n: 3
 
+kafka_version: 2.4.1
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 

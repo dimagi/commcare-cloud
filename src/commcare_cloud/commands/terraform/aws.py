@@ -77,6 +77,16 @@ def get_aws_resources(environment):
         '--output', 'json', '--region', config.region,
     ])
 
+    efs_info = [{
+        'name': name,
+        'efs_id': efs_id,
+        'efs_dns': '{efs_id}.efs.{config.region}.amazonaws.com'.format(efs_id=efs_id, config=config)
+    } for (name,), efs_id in aws_cli(environment, [
+        'aws', 'efs', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
+        "--output", "json",
+        "--region", config.region,
+    ])]
+
     resources = {}
     for info in ec2_instances_info:
         name = info['name']
@@ -88,6 +98,9 @@ def get_aws_resources(environment):
     for name, endpoint in rds_endpoints:
         assert name not in resources
         resources[name] = endpoint
+
+    for info in efs_info:
+        resources['{name}-efs'.format(**info)] = info['efs_dns']
 
     return resources
 
