@@ -146,6 +146,8 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
 
     context.update({
         'SITE_HOST': environment.proxy_config.SITE_HOST,
+        'NO_WWW_SITE_HOST': environment.proxy_config.NO_WWW_SITE_HOST or '',
+        'ALTERNATE_HOSTS': environment.public_vars.get('ALTERNATE_HOSTS', []),
         'account_id': environment.aws_config.sso_config.sso_account_id,
         'users': [{
             'username': username,

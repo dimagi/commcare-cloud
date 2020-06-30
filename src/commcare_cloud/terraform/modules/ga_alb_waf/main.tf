@@ -217,6 +217,39 @@ resource "aws_acm_certificate" "front_end" {
   validation_method = "DNS"
 
   tags {
+    Name = "SITE_HOST-${var.environment}"
+    Environment = "${var.environment}"
+    Group = "frontend"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate" "front_end_no_www" {
+  count = "${var.NO_WWW_SITE_HOST == "" ? 0 : 1}"
+  domain_name       = "${var.NO_WWW_SITE_HOST}"
+  validation_method = "DNS"
+
+  tags {
+    Name = "NO_WWW_SITE_HOST-${var.environment}"
+    Environment = "${var.environment}"
+    Group = "frontend"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate" "front_end_alternate_hosts" {
+  count = "${length(var.ALTERNATE_HOSTS)}"
+  domain_name       = "${var.ALTERNATE_HOSTS[count.index]}"
+  validation_method = "DNS"
+
+  tags {
+    Name = "ALTERNATE_HOSTS-${count.index}-${var.environment}"
     Environment = "${var.environment}"
     Group = "frontend"
   }
@@ -228,6 +261,16 @@ resource "aws_acm_certificate" "front_end" {
 
 resource "aws_acm_certificate_validation" "front_end" {
   certificate_arn = "${aws_acm_certificate.front_end.arn}"
+}
+
+resource "aws_acm_certificate_validation" "front_end_no_www" {
+  count = "${var.NO_WWW_SITE_HOST == "" ? 0 : 1}"
+  certificate_arn = "${aws_acm_certificate.front_end_no_www.arn}"
+}
+
+resource "aws_acm_certificate_validation" "front_end_alternate_hosts" {
+  count = "${length(var.ALTERNATE_HOSTS)}"
+  certificate_arn = "${aws_acm_certificate.front_end_alternate_hosts.*.arn[count.index]}"
 }
 
 resource "aws_lb_listener" "front_end" {
@@ -257,6 +300,18 @@ resource "aws_lb_listener" "front_end_http_redirect" {
       status_code = "HTTP_301"
     }
   }
+}
+
+resource "aws_lb_listener_certificate" "front_end_no_www" {
+  count = "${var.NO_WWW_SITE_HOST == "" ? 0 : 1}"
+  listener_arn    = "${aws_lb_listener.front_end.arn}"
+  certificate_arn = "${aws_acm_certificate.front_end_no_www.arn}"
+}
+
+resource "aws_lb_listener_certificate" "front_end_alternate_hosts" {
+  count = "${length(var.ALTERNATE_HOSTS)}"
+  listener_arn    = "${aws_lb_listener.front_end.arn}"
+  certificate_arn = "${aws_acm_certificate.front_end_alternate_hosts.*.arn[count.index]}"
 }
 
 resource "aws_globalaccelerator_accelerator" "front_end" {
