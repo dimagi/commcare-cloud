@@ -11,7 +11,7 @@ special_sites:
   - cas_ssl
   - cas_sentry
 
-special_sites:
+extra_sites:
   - 'sentry-icds.commcarehq.org'
 
 letsencrypt_cchq_ssl: True
