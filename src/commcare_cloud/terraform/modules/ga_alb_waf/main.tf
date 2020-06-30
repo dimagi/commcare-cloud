@@ -297,6 +297,15 @@ resource "aws_s3_bucket" "front_end_alb_logs" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "front_end_alb_logs" {
+  bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+}
+
 // To analyze logs, see https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
 resource "aws_s3_bucket_policy" "front_end_alb_logs" {
   bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
