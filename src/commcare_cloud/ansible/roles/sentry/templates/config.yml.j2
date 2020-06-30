@@ -36,6 +36,9 @@ redis.clusters:
         password: '{{ localsettings_private.REDIS_PASSWORD }}'
 {% endif %}
 
+{% if sentry_url_prefix is defined %}
+system.url-prefix: {{ sentry_url_prefix }}
+{% endif %}
 
 ################
 # File storage #
@@ -44,3 +47,14 @@ redis.clusters:
 filestore.backend: 'filesystem'
 filestore.options:
   location: '{{ sentry_home_dir }}/sentry-files'
+
+
+#########
+# Slack #
+#########
+
+{% if sentry_slack_integration is defined %}
+{% if k,v in sentry_slack_integration.items() %}
+{{k}}: {{v}}
+{% endfor %}
+{% endif %}
