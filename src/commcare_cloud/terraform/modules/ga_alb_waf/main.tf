@@ -279,6 +279,11 @@ resource "aws_wafv2_web_acl" "front_end" {
 
 }
 
+resource "aws_wafv2_web_acl_association" "front_end" {
+  resource_arn = "${aws_lb.front_end.arn}"
+  web_acl_arn  = "${aws_wafv2_web_acl.front_end.arn}"
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"
