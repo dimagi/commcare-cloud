@@ -15,3 +15,4 @@ _formplayer_target_dir: "{{
   if _should_update_formplayer_in_place
   else formplayer_release_dir
 }}"
+formplayer_sensitive_data_logging: false
