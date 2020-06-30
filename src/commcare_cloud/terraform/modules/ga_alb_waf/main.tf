@@ -143,6 +143,142 @@ resource "aws_wafv2_rule_group" "dimagi_block_rules" {
   }
 }
 
+resource "aws_wafv2_web_acl" "front_end" {
+  default_action {
+    allow {}
+  }
+  name = "frontend-waf-${var.environment}"
+  scope = "REGIONAL"
+
+  rule {
+    priority = "0"
+    name = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "1"
+    name = "AWS-AWSManagedRulesLinuxRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesLinuxRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesLinuxRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "2"
+    name = "AWS-AWSManagedRulesSQLiRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+        excluded_rule { name = "SQLi_BODY" }
+        excluded_rule { name = "SQLi_QUERYARGUMENTS" }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesSQLiRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "3"
+    name = "AWS-AWSManagedRulesAmazonIpReputationList"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesAmazonIpReputationList"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    priority = "4"
+    name = "CommCareWhitelistRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.commcare_whitelist_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "CommCareWhitelistRules"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "5"
+    name = "AWS-AWSManagedRulesCommonRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+        excluded_rule { name = "EC2MetaDataSSRF_COOKIE" }
+        excluded_rule { name = "GenericRFI_BODY" }
+        excluded_rule { name = "SizeRestrictions_BODY" }
+        excluded_rule { name = "GenericLFI_BODY" }
+        excluded_rule { name = "GenericRFI_QUERYARGUMENTS" }
+        excluded_rule { name = "NoUserAgent_HEADER" }
+        excluded_rule { name = "SizeRestrictions_QUERYSTRING" }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesCommonRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "6"
+    name = "DimagiBlockRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "DimagiBlockRules"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "frontend-waf-${var.environment}"
+    sampled_requests_enabled   = true
+  }
+
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"
