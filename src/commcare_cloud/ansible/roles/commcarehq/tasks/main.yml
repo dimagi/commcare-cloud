@@ -41,63 +41,22 @@
     - "{{ service_home }}"
   tags: services
 
-# Do not update source unless you're cloning for the first time
+- Clone CommCare source repository
+  include_tasks: git_repository.yml
+  loop:
+    - url: "{{ commcarehq_repository }}",
+      dest: "{{ code_source }}",
+      version: "{{ commcarehq_version }}",
+      requirements_path: "requirements/prod-requirements.txt"
 
-- name: register git repo
-  stat: path="{{ code_home }}/.git"
-  register: gitdir
-  tags:
-    - py3
-
-- block:
-    - name: Pull full CommcareHQ source
-      git:
-        repo: "{{ commcarehq_repository }}"
-        dest: "{{ code_source }}"
-        version: "{{ commcarehq_version }}"
-        recursive: yes
-        accept_hostkey: yes
-        update: yes
-      become_user: "{{ cchq_user }}"
-      become: true
-      tags:
-        - git
-        - slow
-
-    - name: Link source to code_home
-      become: true
-      file:
-        state: link
-        src: "{{ code_source }}"
-        dest: "{{ code_home }}"
-        owner: "{{ cchq_user }}"
-        group: "{{ cchq_user }}"
-
-    - name: install pip requirements
-      become: true
-      pip:
-        requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-        virtualenv: "{{ py3_virtualenv_source }}"
-        virtualenv_python: "python3.6"
-        chdir: "{{ code_home }}"
-      tags:
-        - slow
-        - py3
-      when: not testing|default(False)
-
-    - name: chown clone
-      become: true
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ cchq_user }}"
-        group: "{{ cchq_user }}"
-        recurse: yes
-      with_items:
-        - "{{ code_source }}"
-        - "{{ py3_virtualenv_source }}"
-
-  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
+- name: Link source to code_home
+  become: true
+  file:
+    state: link
+    src: "{{ code_source }}"
+    dest: "{{ code_home }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
 
 # This task has the additional effect of creating the virtualenv if it does not exist
 # i.e. on a python2 install that is getting a python3 env for the first time
@@ -125,17 +84,6 @@
     - py3
   when: not testing|default(False)
 
-- name: chown virtualenv
-  become: true
-  file:
-    path: "{{ py3_virtualenv_home }}"
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    recurse: yes
-  tags:
-    - py3
-
 - name: copy localsettings
   become: true
   template:
@@ -144,6 +92,20 @@
   tags:
     - localsettings
     - hq-localsettings
+
+- name: chown clone
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+  loop:
+    - "{{ code_source }}"
+    - "{{ py3_virtualenv_source }}"
+    - "{{ code_home }}"
+  tags:
+    - py3
 
 - name: chown localsettings
   become: true
