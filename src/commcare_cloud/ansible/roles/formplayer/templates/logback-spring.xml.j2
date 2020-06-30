@@ -41,6 +41,8 @@
         <level value="INFO" />
         <appender-ref ref="requests" />
     </logger>
+    {%- else %}
+    <logger name="org.commcare.formplayer.application.RequestResponseLoggingFilter" level="OFF" />
     {%- endif %}
 
 </configuration>
