@@ -49,6 +49,11 @@
       version: "{{ commcarehq_version }}",
       requirements_path: "requirements/prod-requirements.txt"
 
+- Clone additional source repositories
+  include_tasks: git_repository.yml
+  loop: "{{ git_repositories }}"
+  when: git_repositories
+
 - name: Link source to code_home
   become: true
   file:
