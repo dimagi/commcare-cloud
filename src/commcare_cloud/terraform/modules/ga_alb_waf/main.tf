@@ -35,6 +35,16 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
   }
 }
 
+resource "aws_wafv2_ip_set" "temp_block" {
+  name               = "TempBlock"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = []
+
+  tags = {
+  }
+}
+
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name = "CommCareWhitelistRules"
   capacity = "100"
@@ -102,6 +112,210 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   }
 }
 
+resource "aws_wafv2_rule_group" "dimagi_block_rules" {
+  name = "DimagiBlockRules"
+  capacity = "25"
+  scope = "REGIONAL"
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "DimagiBlockRules"
+    sampled_requests_enabled   = true
+  }
+  rule {
+    name = "BlockTemporaryIPs"
+    priority = 0
+
+    action {
+      block {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = "${aws_wafv2_ip_set.temp_block.arn}"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "BlockTemporaryIPs"
+      sampled_requests_enabled = true
+    }
+  }
+}
+
+resource "aws_wafv2_web_acl" "front_end" {
+  default_action {
+    allow {}
+  }
+  name = "frontend-waf-${var.environment}"
+  scope = "REGIONAL"
+
+  rule {
+    priority = "0"
+    name = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "1"
+    name = "AWS-AWSManagedRulesLinuxRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesLinuxRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesLinuxRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "2"
+    name = "AWS-AWSManagedRulesSQLiRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+        excluded_rule { name = "SQLi_BODY" }
+        excluded_rule { name = "SQLi_QUERYARGUMENTS" }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesSQLiRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "3"
+    name = "AWS-AWSManagedRulesAmazonIpReputationList"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesAmazonIpReputationList"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    priority = "4"
+    name = "CommCareWhitelistRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.commcare_whitelist_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "CommCareWhitelistRules"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "5"
+    name = "AWS-AWSManagedRulesCommonRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+        excluded_rule { name = "EC2MetaDataSSRF_COOKIE" }
+        excluded_rule { name = "GenericRFI_BODY" }
+        excluded_rule { name = "SizeRestrictions_BODY" }
+        excluded_rule { name = "GenericLFI_BODY" }
+        excluded_rule { name = "GenericRFI_QUERYARGUMENTS" }
+        excluded_rule { name = "NoUserAgent_HEADER" }
+        excluded_rule { name = "SizeRestrictions_QUERYSTRING" }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesCommonRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "6"
+    name = "DimagiBlockRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "DimagiBlockRules"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "frontend-waf-${var.environment}"
+    sampled_requests_enabled   = true
+  }
+
+}
+
+resource "aws_wafv2_web_acl_association" "front_end" {
+  resource_arn = "${aws_lb.front_end.arn}"
+  web_acl_arn  = "${aws_wafv2_web_acl.front_end.arn}"
+}
+
+resource "aws_kinesis_firehose_delivery_stream" "front_end_waf_logs" {
+  name = "aws-waf-logs-frontend-waf-${var.environment}"
+  destination = "extended_s3"
+  server_side_encryption {
+    enabled = true
+  }
+  extended_s3_configuration {
+    compression_format = "GZIP"
+    prefix = "frontend-waf-${var.environment}/"
+    error_output_prefix = "frontend-waf-${var.environment}-error/"
+    kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${var.account_id}:alias/aws/s3"
+    bucket_arn = "${aws_s3_bucket.front_end_alb_logs.arn}"
+    role_arn = "${aws_iam_role.firehose_role.arn}"
+  }
+  tags {
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_iam_role" "firehose_role" {
+  name = "firehose_delivery_role"
+
+  assume_role_policy = <<EOF
+{"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Service":"firehose.amazonaws.com"},"Action":"sts:AssumeRole","Condition":{"StringEquals":{"sts:ExternalId":"${var.account_id}"}}}]}
+EOF
+}
+
+resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
+  log_destination_configs = ["${aws_kinesis_firehose_delivery_stream.front_end_waf_logs.arn}"]
+  resource_arn            = "${aws_wafv2_web_acl.front_end.arn}"
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"
@@ -113,6 +327,15 @@ resource "aws_s3_bucket" "front_end_alb_logs" {
       }
     }
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "front_end_alb_logs" {
+  bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
 }
 
 // To analyze logs, see https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
