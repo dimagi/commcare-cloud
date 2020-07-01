@@ -39,11 +39,15 @@ def update_code(full_cluster=True):
 
     @roles(roles_to_use)
     @parallel
-    def update(git_tag):
+    def update(git_tag, subdir=None, code_repo=None):
+        code_repo = code_repo or env.code_repo
+        code_root = env.code_root
+        if subdir:
+            code_root = os.path.join(code_root, subdir)
         # If not updating current release,  we are making a new release and thus have to do cloning
         # we should only ever not make a new release when doing a hotfix deploy
-        _update_code_from_previous_release()
-        with cd(env.code_root):
+        _update_code_from_previous_release(code_repo, subdir)
+        with cd(code_root):
             sudo('git remote prune origin')
             # this can get into a state where running it once fails
             # but primes it to succeed the next time it runs
@@ -180,16 +184,21 @@ def _upload_and_extract(zippath, strip_components=0):
     ))
 
 
-def _update_code_from_previous_release():
-    if files.exists(env.code_current):
-        with cd(env.code_current):
+def _update_code_from_previous_release(code_repo, subdir=None):
+    code_current = env.code_current
+    code_root = env.code_root
+    if subdir:
+        code_current = os.path.join(code_current, subdir)
+        code_root = os.path.join(code_root, subdir)
+
+    if files.exists(code_root):
+        with cd(code_current):
             sudo('git submodule foreach "git fetch origin"')
-        _clone_code_from_local_path(env.code_current, env.code_root)
-        with cd(env.code_root):
-            sudo('git remote set-url origin {}'.format(env.code_repo))
+        _clone_code_from_local_path(code_current, code_root)
+        with cd(code_current):
+            sudo('git remote set-url origin {}'.format(code_repo))
     else:
-        with cd(env.code_root):
-            sudo('git clone {} {}'.format(env.code_repo, env.code_root))
+        sudo('git clone {} {}'.format(code_repo, code_root))
 
 
 def _get_submodule_list():
@@ -217,7 +226,7 @@ def _get_local_submodule_urls(path):
 
 def _get_remote_submodule_urls(path):
     submodule_list = _get_submodule_list()
-    with cd(env.code_current):
+    with cd(path):
         remote_submodule_config = [
             GitConfig(
                 key='submodule.{}.url'.format(submodule),
