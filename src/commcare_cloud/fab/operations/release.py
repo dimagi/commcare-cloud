@@ -301,7 +301,7 @@ def update_virtualenv(full_cluster=True):
     @roles(roles_to_use)
     @parallel
     def update():
-        def _update_virtualenv(virtualenv_current, virtualenv_root, requirements):
+        def _update_virtualenv(virtualenv_current, virtualenv_root, filepath, action, kwargs):
             # Optimization if we have current setup (i.e. not the first deploy)
             if files.exists(virtualenv_current):
                 _clone_virtual_env(virtualenv_current, virtualenv_root)
@@ -309,20 +309,31 @@ def update_virtualenv(full_cluster=True):
             with cd(env.code_root):
                 cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
                     env.sudo_user, virtualenv_root)
-                pip_uninstall(cmd_prefix, requirements=[
-                    posixpath.join(requirements, "uninstall-requirements.txt")
-                ], fail_if_absent=True)
-                pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
-                    posixpath.join(requirements, 'prod-requirements.txt'),
-                ])
-                pip_uninstall(cmd_prefix, requirements=[
-                    posixpath.join(requirements, "uninstall-requirements-after-install.txt"),
-                ],  fail_if_absent=False)
 
-        _update_virtualenv(
-            env.py3_virtualenv_current, env.py3_virtualenv_root,
-            posixpath.join(env.code_root, 'requirements')
-        )
+                if action == "uninstall":
+                    pip_uninstall(cmd_prefix, requirements=[filepath], **kwargs)
+
+                if action == "install":
+                    pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[filepath])
+
+        requirements_files = [
+            ("uninstall-requirements.txt", "uninstall", {"fail_if_absent": True}),
+            ("prod-requirements.txt", "install", {}),
+            ("uninstall-requirements-after-install.txt", "uninstall", {"fail_if_absent": False}),
+        ]
+        for filename, action, kwargs in requirements_files:
+            _update_virtualenv(
+                env.py3_virtualenv_current, env.py3_virtualenv_root,
+                posixpath.join(env.code_root, 'requirements', filename),
+                action, kwargs
+            )
+
+        for repo in env.ccc_environment.meta_config.git_repositories:
+            _update_virtualenv(
+                env.py3_virtualenv_current, env.py3_virtualenv_root,
+                posixpath.join(env.code_root, repo.relative_dest),
+                "install", {}
+            )
 
     return update
 

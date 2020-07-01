@@ -7,9 +7,13 @@ class GitRepository(jsonobject.JsonObject):
     version = jsonobject.StringProperty(default="master")
     requirements_path = jsonobject.StringProperty(default="requirements.txt")
 
+    @property
+    def relative_dest(self):
+        return "extra/" + self.dest
+
     def to_generated_variables(self):
         vars = self.to_json()
-        vars["dest"] = "extra/" + self.dest
+        vars["dest"] = self.relative_dest
         return vars
 
 
