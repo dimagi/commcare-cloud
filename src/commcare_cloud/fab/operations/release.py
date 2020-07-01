@@ -39,12 +39,11 @@ def update_code(full_cluster=True):
 
     @roles(roles_to_use)
     @parallel
-    def update(git_tag, use_current_release=False):
+    def update(git_tag):
         # If not updating current release,  we are making a new release and thus have to do cloning
         # we should only ever not make a new release when doing a hotfix deploy
-        if not use_current_release:
-            _update_code_from_previous_release()
-        with cd(env.code_root if not use_current_release else env.code_current):
+        _update_code_from_previous_release()
+        with cd(env.code_root):
             sudo('git remote prune origin')
             # this can get into a state where running it once fails
             # but primes it to succeed the next time it runs
