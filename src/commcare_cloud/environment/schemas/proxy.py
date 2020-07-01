@@ -20,6 +20,8 @@ class ProxyConfig(jsonobject.JsonObject):
     primary_ssl_env = jsonobject.StringProperty()
 
     special_sites = jsonobject.ListProperty(str)
+    
+    extra_sites = jsonobject.ListProperty(str)
 
     nginx_block_ips = jsonobject.ListProperty(str)
 
