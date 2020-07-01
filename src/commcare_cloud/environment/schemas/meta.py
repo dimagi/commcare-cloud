@@ -3,9 +3,14 @@ import jsonobject
 
 class GitRepository(jsonobject.JsonObject):
     url = jsonobject.StringProperty(required=True)
-    dest = jsonobject.StringProperty(default="")  # relative to the release directory
+    dest = jsonobject.StringProperty(required=True)  # relative to the code_source/external directory
     version = jsonobject.StringProperty(default="master")
     requirements_path = jsonobject.StringProperty(default="requirements.txt")
+
+    def to_generated_variables(self):
+        vars = self.to_json()
+        vars["dest"] = "extra/" + self.dest
+        return vars
 
 
 class MetaConfig(jsonobject.JsonObject):

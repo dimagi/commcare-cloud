@@ -41,15 +41,14 @@
     - "{{ service_home }}"
   tags: services
 
-- Clone CommCare source repository
+- name: Clone CommCare source repository
   include_tasks: git_repository.yml
   loop:
-    - url: "{{ commcarehq_repository }}",
-      dest: "{{ code_source }}",
-      version: "{{ commcarehq_version }}",
+    - url: "{{ commcarehq_repository }}"
+      version: "{{ commcarehq_version }}"
       requirements_path: "requirements/prod-requirements.txt"
 
-- Clone additional source repositories
+- name: Clone additional source repositories
   include_tasks: git_repository.yml
   loop: "{{ git_repositories }}"
   when: git_repositories
