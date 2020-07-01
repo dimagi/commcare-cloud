@@ -303,7 +303,7 @@ def update_virtualenv(full_cluster=True):
     def update():
         def _update_virtualenv(virtualenv_current, virtualenv_root, filepath, action, kwargs):
             # Optimization if we have current setup (i.e. not the first deploy)
-            if files.exists(virtualenv_current):
+            if files.exists(virtualenv_current) and not files.exists(virtualenv_root):
                 _clone_virtual_env(virtualenv_current, virtualenv_root)
 
             with cd(env.code_root):
@@ -331,7 +331,7 @@ def update_virtualenv(full_cluster=True):
         for repo in env.ccc_environment.meta_config.git_repositories:
             _update_virtualenv(
                 env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, repo.relative_dest),
+                posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
                 "install", {}
             )
 
