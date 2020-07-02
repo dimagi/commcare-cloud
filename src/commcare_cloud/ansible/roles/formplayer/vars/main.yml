@@ -1,4 +1,5 @@
 formplayer_build_dir: "{{ www_home }}/formplayer_build"
+formplayer_logging_dir: "{{ encrypted_root }}/formplayer/log"
 # formplayer_sentry_dsn: ..defined in secret file
 # formplayer_db_name: ..defined in secret file
 formplayer_build_url: "{{
@@ -13,3 +14,4 @@ _formplayer_target_dir: "{{
   if _should_update_formplayer_in_place
   else formplayer_release_dir
 }}"
+formplayer_sensitive_data_logging: false

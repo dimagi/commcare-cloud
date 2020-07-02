@@ -56,6 +56,14 @@
     - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
 
+- name: Formplayer request-response logging directory
+  file:
+    path: "{{ formplayer_logging_dir }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
+
 - name: Download formplayer release
   get_url:
     url: "{{ formplayer_build_url }}"
@@ -85,6 +93,7 @@
   with_items:
     - filename: application.properties
     - filename: sentry.properties
+    - filename: logback-spring.xml
   tags:
     - formplayer_deploy
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
@@ -102,6 +111,8 @@
       filename: application.properties
     - template: sentry.properties.j2
       filename: sentry.properties
+    - template: logback-spring.xml.j2
+      filename: logback-spring.xml
   tags:
     - localsettings
 
