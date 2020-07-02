@@ -7,7 +7,7 @@ locals {
     ap-south-1 = "718504428378"
   }
   log_bucket_name = "dimagi-commcare-${var.environment}-logs"
-  log_bucket_prefix = "frontend-alb-${var.environment}"
+  log_bucket_alb_prefix = "frontend-alb-${var.environment}"
 }
 
 data "aws_region" "current" {}
@@ -352,7 +352,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "AWS": "arn:aws:iam::${local.aws_elb_account_map[data.aws_region.current.name]}:root"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Sid": "AWSConsoleStmt-1589489332145"
     },
     {
@@ -361,7 +361,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "Service": "delivery.logs.amazonaws.com"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Condition": {
         "StringEquals": {
           "s3:x-amz-acl": "bucket-owner-full-control"
@@ -398,7 +398,7 @@ resource "aws_lb" "front_end" {
 
   access_logs {
     bucket  = "${aws_s3_bucket.front_end_alb_logs.id}"
-    prefix  = "${local.log_bucket_prefix}"
+    prefix  = "${local.log_bucket_alb_prefix}"
     enabled = true
   }
 
