@@ -20,6 +20,8 @@ postgresql_backup_days: 1
 
 aws_region: 'ap-south-1'
 
+formplayer_sensitive_data_logging: true
+
 nofile_limit: 65536
 
 KSPLICE_ACTIVE: yes
