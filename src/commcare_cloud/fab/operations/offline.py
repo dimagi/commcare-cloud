@@ -13,6 +13,7 @@ from commcare_cloud.fab.const import (
     WHEELS_ZIP_NAME,
     BOWER_ZIP_NAME,
     NPM_ZIP_NAME,
+    YARN_LOCK,
 )
 
 
@@ -35,7 +36,13 @@ def prepare_files():
     })))
 
     # NPM
-    local('cd {}/commcare-hq && npm install --production'.format(OFFLINE_STAGING_DIR))
+    local('cd {}/commcare-hq'.format(OFFLINE_STAGING_DIR))
+
+    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
+    if files.exists(yarn_lock):
+        local('yarn install --production')
+    else:
+        local('npm install --production')
 
     prepare_pip_wheels(os.path.join('requirements', 'requirements.txt'))
     prepare_pip_wheels(os.path.join('requirements', 'prod-requirements.txt'))
