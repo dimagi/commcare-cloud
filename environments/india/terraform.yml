@@ -74,6 +74,38 @@ servers:
     volume_encrypted: no
     group: citusdb_worker
     os: bionic
+  - server_name: "citusmaster0-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    volume_encrypted: no
+    group: citusdb_master
+    os: bionic
+  - server_name: "citusworker0-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    volume_encrypted: no
+    group: citusdb_worker
+    os: bionic
+  - server_name: "citusworker1-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    volume_encrypted: no
+    group: citusdb_worker
+    os: bionic
+  - server_name: "citusworker2-india"
+    server_instance_type: "c5.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 150
+    volume_encrypted: no
+    group: citusdb_worker
+    os: bionic
   - server_name: "citus1standby-india"
     server_instance_type: "c5.xlarge"
     network_tier: "app-private"
