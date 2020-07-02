@@ -39,7 +39,7 @@
     - npm
 
 - name: Update Node
-  command: 'n lts'
+  command: 'n 12.18.1'
   become: yes
 
 - name: Install correct npm version
