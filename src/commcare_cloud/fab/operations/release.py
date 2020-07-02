@@ -44,8 +44,6 @@ def update_code(full_cluster=True):
         code_root = env.code_root
         if subdir:
             code_root = os.path.join(code_root, subdir)
-        # If not updating current release,  we are making a new release and thus have to do cloning
-        # we should only ever not make a new release when doing a hotfix deploy
         _update_code_from_previous_release(code_repo, subdir)
         with cd(code_root):
             sudo('git remote prune origin')
