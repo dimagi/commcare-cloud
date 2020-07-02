@@ -30,15 +30,16 @@ def prepare_files():
 
     # Let's create bower and npm zip files
 
-    # Bower
-    local('cd {}/commcare-hq && {}'.format(OFFLINE_STAGING_DIR, generate_bower_command('install', {
-        'interactive': 'false',
-    })))
-
-    # NPM
-    local('cd {}/commcare-hq'.format(OFFLINE_STAGING_DIR))
-
     yarn_lock = os.path.join(env.code_root, YARN_LOCK)
+
+    # Bower
+    if not files.exists(yarn_lock):
+        local('cd {}/commcare-hq && {}'.format(OFFLINE_STAGING_DIR, generate_bower_command('install', {
+            'interactive': 'false',
+        })))
+
+    # NPM or Yarn
+    local('cd {}/commcare-hq'.format(OFFLINE_STAGING_DIR))
     if files.exists(yarn_lock):
         local('yarn install --production')
     else:

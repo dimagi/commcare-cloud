@@ -78,7 +78,6 @@ def yarn_install():
         return
 
     with cd(env.code_root):
-        sudo('npm install -g yarn')
         sudo('yarn install --production')
 
 
