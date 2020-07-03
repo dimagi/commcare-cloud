@@ -1,0 +1,48 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    {% if formplayer_sensitive_data_logging -%}
+    <appender name="requests" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>{{ formplayer_logging_dir }}/request_response.log</file>
+        <!-- Keep a fixed number of logs. -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>{{ formplayer_logging_dir }}/request_response.%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>1</maxIndex>
+        </rollingPolicy>
+        <!-- Limit the log file size. -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>1MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    {%- endif %}
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter">
+        <level value="INFO" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    {% if formplayer_sensitive_data_logging -%}
+    <!-- Request Response logging to file, additivity=false ensures it isn't logged
+     to root stdout logger. -->
+    <logger name="org.commcare.formplayer.application.RequestResponseLoggingFilter" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="requests" />
+    </logger>
+    {%- else %}
+    <logger name="org.commcare.formplayer.application.RequestResponseLoggingFilter" level="OFF" />
+    {%- endif %}
+
+</configuration>

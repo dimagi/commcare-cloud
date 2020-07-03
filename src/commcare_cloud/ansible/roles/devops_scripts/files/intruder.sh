@@ -4,13 +4,11 @@
 
 FAILED_LOG=/tmp/failed.$$.log
 SUCCESS_LOG=/tmp/success.$$.log
-SUDO_LOG=/tmp/sudo.$$.log
 
 cp /dev/null $FAILED_LOG
 cp /dev/null $SUCCESS_LOG
-cp /dev/null $SUDO_LOG
 
-for AUTHLOG in `ls /var/log/auth.log*`
+for AUTHLOG in `ls /var/log/auth.log.1`
 do
 
 	# Collect the failed login attempts
@@ -19,8 +17,6 @@ do
         # Collect the successful login attempts
         zegrep "Accepted password|Accepted publickey|keyboard-interactive" $AUTHLOG >> $SUCCESS_LOG
 	
-	#sudo success and Failure Reports
-	zegrep "sudo: pam_unix|sudo: .*authentication failure" $AUTHLOG >> $SUDO_LOG
 done
 
 # extract the users who failed
@@ -29,15 +25,13 @@ failed_users=$(cat $FAILED_LOG | grep -oP '(?<=for )[^ ]*' | sort | uniq)
 # extract the users who successfully logged in
 success_users=$(cat $SUCCESS_LOG | grep -oP '(?<=for )[^ ]*' | sort | uniq)
 
-#extract the users for successful sudo
-sudo_success_users=$(cat $SUDO_LOG | grep ' sudo: pam_unix(sudo:session): session opened for user root' |grep -oP '(?<=by )[^ ]*' | sort | uniq)
-
-#extract the users for failed sudo
-sudo_failed_users=$(cat $SUDO_LOG | grep ' sudo: .*authentication failure' |grep -oP '(?<=user=)[^ ]*' | sort | uniq)
-
 # extract the IP Addresses of successful and failed login attempts
 failed_ip_list="$(egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" $FAILED_LOG | sort | uniq)"
 success_ip_list="$(egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" $SUCCESS_LOG | sort | uniq)"
+
+echo "#################################################################################"
+echo " Below is the Login attempt summary report created on - $(date)"
+echo "#################################################################################"
 
 # Print the heading
 printf "%-10s|%-10s|%-10s|%-15s|%-15s|%s\n" "Status" "User" "Attempts" "IP address" "Host" "Time range"
@@ -88,26 +82,5 @@ do
   done
 done
 
-echo "#################################################################################"
-echo " Below is the sudo attempt summary report "
-echo "#################################################################################"
-echo "There were $(grep -c ' sudo: pam_unix(sudo:session): session opened for user root' $SUDO_LOG) successful attempts to use sudo, and  $(grep -c ' sudo: .*authentication failure' $SUDO_LOG) were failed sudo attempts."
-# Print the heading
-printf "%-12s|%-17s|%s\n" "SudoAttempts" "User" "Attempts"
-for user in $sudo_success_users;
-do
-	# Count successful sudo attempts by this user
-	attempts=`cat $SUDO_LOG|grep ' sudo: pam_unix(sudo:session): session opened for user root'|grep -cw "$user"`
-	printf "%-12s|%-17s|%-s\n" "Success" "$user" "$attempts"
-done
-
-for user in $sudo_failed_users;
-do
-	# Count Failed sudo attempts by this user
-	attempts=`cat $SUDO_LOG|grep ' sudo: .*authentication failure'|grep -cw "$user"`
-	printf "%-12s|%-17s|%-s\n" "Failed" "$user" "$attempts"
-done
-
 rm -f $FAILED_LOG
 rm -f $SUCCESS_LOG
-rm -f $SUDO_LOG

@@ -28,6 +28,7 @@ nginx_dynamic_limits:
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+rabbitmq_create_cluster: true
 RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 
 # ElasticSearch Backup on Swift API
@@ -46,12 +47,16 @@ datadog_swift_instances:
 
 nofile_limit: 65536
 
-redis_maxmemory: 6gb
+redis_maxmemory: 12gb
 redis_maxmemory_policy: allkeys-lfu
 redis_auto_aof_rewrite_percentage: "50"
 redis_password: "{{ localsettings_private.REDIS_PASSWORD }}"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
+kafka_version: 2.4.1
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
 KSPLICE_ACTIVE: no
 
@@ -178,7 +183,8 @@ kafka_log_retention: 504 # 21 days
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
-  ASYNC_INDICATORS_TO_QUEUE: 120000
+  ASYNC_INDICATORS_TO_QUEUE: 180000
+  ASYNC_INDICATOR_CHUNK_SIZE: 200
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []

@@ -115,6 +115,21 @@ resource "aws_eip" "proxy__{{ server.server_name }}" {
 }
 {% endfor %}
 
+resource "aws_efs_file_system" "formplayer" {
+  encrypted = true
+  tags = {
+    Name = "formplayer"
+  }
+}
+
+
+{%- for az in az_codes %}
+resource "aws_efs_mount_target" "formplayer-{{ az }}" {
+  file_system_id = "${aws_efs_file_system.formplayer.id}"
+  subnet_id      = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+}
+{% endfor %}
+
 {% if elasticache %}
 module "Redis" {
   source               = "./modules/elasticache"
@@ -175,6 +190,8 @@ module "ga_alb_waf" {
   ]
   vpc_id = "${module.network.vpc-id}"
   SITE_HOST = {{ SITE_HOST|tojson }}
+  NO_WWW_SITE_HOST = {{ NO_WWW_SITE_HOST|tojson }}
+  ALTERNATE_HOSTS = {{ ALTERNATE_HOSTS|tojson }}
   proxy_server_ids = [
     {%- for server in proxy_servers %}{% if not loop.first %}, {% endif %}
     "${module.server__{{ server.server_name }}.server}"

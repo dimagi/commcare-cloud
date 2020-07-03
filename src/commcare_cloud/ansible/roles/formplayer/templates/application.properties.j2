@@ -7,7 +7,7 @@ commcarehq.environment={{ env_monitoring_id }}
 commcarehq.formplayerAuthKey={{ FORMPLAYER_INTERNAL_AUTH_KEY }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
-logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
+logging.config=logback-spring.xml
 sqlite.dataDir={{ formplayer_data_dir }}/
 // Takes the format of https://<key>@sentry.io/<project>
 // More info on the DSN can be found here: https://docs.sentry.io/quickstart/#configure-the-dsn
@@ -51,3 +51,7 @@ redis.Password={{ localsettings.REDIS_PASSWORD }}
 endpoints.enabled=true
 management.address: 0.0.0.0
 management.port: 8081
+
+{% if formplayer_sensitive_data_logging %}
+sensitiveData.enableLogging=true
+{% endif %}

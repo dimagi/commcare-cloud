@@ -6,11 +6,69 @@
     owner: postgres
     group: postgres
     mode: "u=rwx,g=rwx,o=r"
+  when: "'postgresql' in group_names or 'citusdb' in group_names or 'pg_standby' in group_names"
 
 - name: Copy intruder.sh script to /usr/local/sbin
-  template:
+  copy:
     src: intruder.sh
     dest: /usr/local/sbin/intruder.sh
     owner: ansible
     group: ansible
     mode: "u=rwx,g=rwx,o=r"
+
+- name: Copy sudo-report.sh script to /usr/local/sbin
+  copy:
+    src: sudo-report.sh
+    dest: /usr/local/sbin/sudo-report.sh
+    owner: ansible
+    group: ansible
+    mode: "u=rwx,g=rwx,o=r"
+
+- name: Copy audit_log.sh script to /usr/local/sbin
+  copy:
+    src: audit_log.sh
+    dest: /usr/local/sbin/audit_log.sh
+    owner: ansible
+    group: ansible
+    mode: "u=rwx,g=rwx,o=r"
+
+- name: Creates a cron for audit data collections 
+  cron:
+    name: Run audit data every 24 hours
+    minute: "00"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: root 
+    job: "/usr/local/sbin/audit_log.sh"
+    cron_file: audit
+
+- name: audit log rolling configurations
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: login_audit 
+        path: /var/log/login_audit.log
+        options:
+          - monthly
+          - size 100M
+          - rotate 14
+          - missingok
+          - compress
+          - delaycompress
+          - nocreate
+          - notifempty
+
+      - name: sudo_audit
+        path: /var/log/sudo_audit.log
+        options:
+          - monthly
+          - size 100M
+          - rotate 14
+          - missingok
+          - compress
+          - delaycompress
+          - nocreate
+          - notifempty

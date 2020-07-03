@@ -789,6 +789,7 @@ ONLINE_DEPLOY_COMMANDS = [
     db.preindex_views,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
+    staticfiles.yarn_install,
     staticfiles.bower_install,
     staticfiles.npm_install,
     staticfiles.version_static,     # run after any new bower code has been installed

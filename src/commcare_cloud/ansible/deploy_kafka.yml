@@ -30,4 +30,4 @@
     - kernel_tuning
     - after-reboot
   roles:
-    - role: thp
+    - role: kernel_tune
