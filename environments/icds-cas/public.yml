@@ -28,6 +28,7 @@ nginx_dynamic_limits:
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+rabbitmq_create_cluster: true
 RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 
 # ElasticSearch Backup on Swift API
