@@ -1,4 +1,4 @@
-sentry_version: 10.0.0
+sentry_version: 20.6.0
 sentry_web_host: '0.0.0.0'
 sentry_web_port: 8080
 sentry_database: 'sentrydb'

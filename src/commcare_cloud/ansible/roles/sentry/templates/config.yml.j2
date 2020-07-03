@@ -54,7 +54,8 @@ filestore.options:
 #########
 
 {% if sentry_slack_integration is defined %}
+slack.legacy-app: False
 {% for k,v in sentry_slack_integration.items() %}
-{{k}}: {{v}}
+{{k}}: '{{v}}'
 {% endfor %}
 {% endif %}
