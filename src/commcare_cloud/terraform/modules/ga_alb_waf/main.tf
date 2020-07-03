@@ -492,6 +492,19 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
 POLICY
 }
 
+resource "aws_athena_workgroup" "primary" {
+  name = "primary"
+  configuration {
+    enforce_workgroup_configuration = false
+    result_configuration {
+      output_location = "s3://${local.log_bucket_name}/athena/"
+
+      encryption_configuration {
+        encryption_option = "SSE_S3"
+      }
+    }
+  }
+}
 
 resource "aws_lb" "front_end" {
   name               = "frontend-alb-${var.environment}"
