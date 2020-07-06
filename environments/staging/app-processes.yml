@@ -1,5 +1,5 @@
 management_commands:
-  celery1:
+  celery2:
     run_sms_queue:
   pillow1:
     run_pillow_retry_queue:
@@ -9,7 +9,7 @@ celery_processes:
     # so that no SMSes, etc. ever come from staging.
     celery_periodic: {}
     beat: {}
-  'celery1':
+  'celery2':
     repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,celery,export_download_queue,case_import_queue:
       concurrency: 4
     background_queue,case_rule_queue,analytics_queue:
