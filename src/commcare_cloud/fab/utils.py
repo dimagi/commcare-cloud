@@ -31,10 +31,6 @@ from .const import (
 from six.moves import input
 
 LABELS_TO_EXPAND = [
-    # "product/all-users-all-environments",
-    # "product/prod-india-all-users",
-    # "product/feature-flag",
-    # "product/all-users",
     "reindex/migration",
 ]
 
@@ -290,10 +286,10 @@ def warn_of_migrations(last_deploy_sha, current_deploy_sha):
     pool = Pool(5)
     pr_infos = [_f for _f in pool.map(_get_pr_info, pr_numbers) if _f]
 
-    prs_by_label = _get_prs_by_label(pr_infos)
     print("List of PRs since last deploy:")
     _print_prs_formatted(pr_infos)
 
+    prs_by_label = _get_prs_by_label(pr_infos)
     if prs_by_label:
         print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
         _print_prs_formatted(prs_by_label['reindex/migration'])
