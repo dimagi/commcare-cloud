@@ -7,7 +7,9 @@ locals {
     ap-south-1 = "718504428378"
   }
   log_bucket_name = "dimagi-commcare-${var.environment}-logs"
-  log_bucket_prefix = "frontend-alb-${var.environment}"
+  log_bucket_alb_prefix = "frontend-alb-${var.environment}"
+  log_bucket_waf_prefix = "frontend-waf-${var.environment}"
+  log_bucket_waf_error_prefix = "frontend-waf-${var.environment}-error"
 }
 
 data "aws_region" "current" {}
@@ -292,8 +294,8 @@ resource "aws_kinesis_firehose_delivery_stream" "front_end_waf_logs" {
   }
   extended_s3_configuration {
     compression_format = "GZIP"
-    prefix = "frontend-waf-${var.environment}/"
-    error_output_prefix = "frontend-waf-${var.environment}-error/"
+    prefix = "${local.log_bucket_waf_prefix}/"
+    error_output_prefix = "${local.log_bucket_waf_error_prefix}/"
     kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${var.account_id}:alias/aws/s3"
     bucket_arn = "${aws_s3_bucket.front_end_alb_logs.arn}"
     role_arn = "${aws_iam_role.firehose_role.arn}"
@@ -309,6 +311,113 @@ resource "aws_iam_role" "firehose_role" {
   assume_role_policy = <<EOF
 {"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Service":"firehose.amazonaws.com"},"Action":"sts:AssumeRole","Condition":{"StringEquals":{"sts:ExternalId":"${var.account_id}"}}}]}
 EOF
+}
+
+resource "aws_iam_role_policy" "firehose_role" {
+  name = "firehose_delivery_role_policy"
+  role = "${aws_iam_role.firehose_role.id}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTable",
+        "glue:GetTableVersion",
+        "glue:GetTableVersions"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${local.log_bucket_name}",
+        "arn:aws:s3:::${local.log_bucket_name}/*",
+        "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
+        "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-east-1:${var.account_id}:function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:${var.account_id}:alias/aws/s3"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-east-1.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_waf_prefix}*",
+            "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_waf_error_prefix}*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-east-1:${var.account_id}:log-group:/aws/kinesisfirehose/${aws_kinesis_firehose_delivery_stream.front_end_waf_logs.name}:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-east-1:${var.account_id}:stream/%FIREHOSE_STREAM_NAME%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:${var.account_id}:key/%SSE_KEY_ID%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.%REGION_NAME%.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:%REGION_NAME%:${var.account_id}:stream/%FIREHOSE_STREAM_NAME%"
+        }
+      }
+    }
+  ]
+}EOF
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
@@ -352,7 +461,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "AWS": "arn:aws:iam::${local.aws_elb_account_map[data.aws_region.current.name]}:root"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Sid": "AWSConsoleStmt-1589489332145"
     },
     {
@@ -361,7 +470,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "Service": "delivery.logs.amazonaws.com"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Condition": {
         "StringEquals": {
           "s3:x-amz-acl": "bucket-owner-full-control"
@@ -383,6 +492,19 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
 POLICY
 }
 
+resource "aws_athena_workgroup" "primary" {
+  name = "primary"
+  configuration {
+    enforce_workgroup_configuration = false
+    result_configuration {
+      output_location = "s3://${local.log_bucket_name}/athena/"
+
+      encryption_configuration {
+        encryption_option = "SSE_S3"
+      }
+    }
+  }
+}
 
 resource "aws_lb" "front_end" {
   name               = "frontend-alb-${var.environment}"
@@ -398,7 +520,7 @@ resource "aws_lb" "front_end" {
 
   access_logs {
     bucket  = "${aws_s3_bucket.front_end_alb_logs.id}"
-    prefix  = "${local.log_bucket_prefix}"
+    prefix  = "${local.log_bucket_alb_prefix}"
     enabled = true
   }
 
