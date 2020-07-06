@@ -14,7 +14,7 @@ from memoized import memoized_property, memoized
 
 from github import Github, UnknownObjectException
 from fabric.api import execute, env
-from fabric.colors import magenta, red, green
+from fabric.colors import magenta, red
 from gevent.pool import Pool
 from collections import defaultdict
 import requests
@@ -285,24 +285,21 @@ def bower_command(command, production=True, config=None):
     cmd = generate_bower_command(command, production, config)
     sudo(cmd)
 
-def migrationAlert():
-    pr_numbers = _get_pr_numbers()
+def warn_of_migrations(last_deploy_sha, current_deploy_sha):
+    pr_numbers = _get_pr_numbers(last_deploy_sha, current_deploy_sha)
     pool = Pool(5)
-    # pr_infos gets all the available PRs between the two defined in _get_pr_numbers
     pr_infos = [_f for _f in pool.map(_get_pr_info, pr_numbers) if _f]
-    # prs_by_label filters the prs by specific labels
-    prs_by_label = _get_prs_by_label(pr_infos)
-    for pr in pr_infos:
-        print(pr)
-    print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the link for additional context.'))
-    print(green(prs_by_label))
-    return None
 
-def _get_pr_numbers():
-    # change organization for testing
-    repo = gh.get_organization('dimagi').get_repo('commcare-hq')
-    last_deploy_sha = '33f0f1dafc9762a6b3625dace21128f158b2f751'
-    current_deploy_sha = '7a08fbbaf7a8fd5ee53409f6954b6cd5f07ae626'
+    prs_by_label = _get_prs_by_label(pr_infos)
+    print("List of PRs since last deploy:")
+    _print_prs_formatted(pr_infos)
+
+    if prs_by_label:
+        print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
+        _print_prs_formatted(prs_by_label['reindex/migration'])
+
+def _get_pr_numbers(last_deploy_sha, current_deploy_sha):
+    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
     comparison = repo.compare(last_deploy_sha,current_deploy_sha)
 
     return [
@@ -312,31 +309,17 @@ def _get_pr_numbers():
     ]
 
 def _get_pr_info(pr_number):
-    # change link for testing
     url = 'https://api.github.com/repos/dimagi/commcare-hq/pulls/{}'.format(pr_number)
     json_response = requests.get(url).json()
-    # print(json_response)
     if not json_response.get('number'):
         return None
     assert pr_number == json_response['number'], (pr_number, json_response['number'])
-    # additions = json_response['additions']
-    # deletions = json_response['deletions']
-
-    # line_changes = additions + deletions
 
     labels = _get_pr_labels(pr_number)
 
     return {
-        'number': json_response['number'],
         'title': json_response['title'],
-        # 'body': json_response['body'],
-        # 'opened_by': json_response['user']['login'],
         'url': json_response['html_url'],
-        # 'merge_base': json_response['base']['label'],
-        # 'merge_head': json_response['head']['label'],
-        # 'additions': additions,
-        # 'deletions': deletions,
-        # 'line_changes': line_changes,
         'labels': labels,
     }
 
@@ -360,28 +343,17 @@ def _get_prs_by_label(pr_infos):
                 prs_by_label[label['name']].append(pr)
     return dict(prs_by_label)
 
-if __name__ == '__main__':
-    # def setup_fake_django():
-    #     from django.conf import settings
-    #     import os
-    #     settings.configure(
-    #         TEMPLATE_LOADERS=('django.template.loaders.filesystem.Loader',),
-    #         TEMPLATE_DIRS=(os.path.join(os.path.dirname(__file__), '..', 'templates'),),
-    #     )
-    import sys
-    if sys.argv[1] == 'test':
-        print('Migration alert test initiated')
-        # try:
-        #     from .config import GITHUB_APIKEY
-        # except ImportError:
-        #     print('Import error')
-        # try:
-        #     Github(GITHUB_APIKEY, None)
-        #     print('Github authenticated')
-        # except ImportError:
-        #     print('Github error')
-
-        from .config import GITHUB_APIKEY
-        gh = Github(GITHUB_APIKEY)
-        # currently getting rate limited. Will likely have to sign in as Auth user
-        migrationAlert()
+def _print_prs_formatted(pr_list):
+    i = 1
+    for pr in pr_list:
+        print("{0}. ".format(i), end="")
+        print ("{title} {url} | ".format(**pr), end="")
+        j = 0
+        num_labels = len(pr['labels'])
+        for label in pr['labels']:
+            j += 1
+            if (j == num_labels):
+                print("{name}".format(**label))
+            else:
+                print ("{name} ".format(**label), end="")
+        i += 1
