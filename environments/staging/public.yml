@@ -33,6 +33,10 @@ formplayer_sensitive_data_logging: true
 
 KSPLICE_ACTIVE: yes
 
+nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
 server_admin_email: commcarehq-ops+admins@dimagi.com
