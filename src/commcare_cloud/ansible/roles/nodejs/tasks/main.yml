@@ -26,10 +26,6 @@
   command: 'npm config set registry http://registry.npmjs.org/'
   become: yes
 
-- name: Set Yarn registry
-  command: 'yarn config set registry http://registry.yarnpkg.com/ && yarn config set strict-ssl false'
-  become: yes
-
 - name: Install npm items
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
@@ -53,3 +49,7 @@
     - {name: 'npm', version: '6.14.5'}
   tags:
     - npm
+
+- name: Set Yarn registry
+  command: 'yarn config set registry http://registry.yarnpkg.com/ && yarn config set strict-ssl false'
+  become: yes
