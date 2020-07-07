@@ -136,9 +136,9 @@
         - name: "{{ deploy_env }}"
           path: "{{ log_home }}/*.log"
           options:
-            - monthly
+            - weekly
             - size 750M
-            - rotate 14
+            - rotate 4
             - missingok
             - compress
             - delaycompress
