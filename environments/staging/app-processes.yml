@@ -1,7 +1,7 @@
 management_commands:
   celery2:
     run_sms_queue:
-  pillow1:
+  pillow2:
     run_pillow_retry_queue:
 celery_processes:
   None:
@@ -28,7 +28,7 @@ celery_processes:
       concurrency: 4
     flower: {}
 pillows:
-  'pillow1':
+  'pillow2':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
