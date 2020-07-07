@@ -17,7 +17,6 @@ from fabric.api import execute, env
 from fabric.colors import magenta, red
 from gevent.pool import Pool
 from collections import defaultdict
-import requests
 
 from .const import (
     PROJECT_ROOT,
@@ -33,7 +32,6 @@ from six.moves import input
 LABELS_TO_EXPAND = [
     "reindex/migration",
 ]
-
 
 def execute_with_timing(fn, *args, **kwargs):
     start_time = datetime.datetime.utcnow()
@@ -305,38 +303,27 @@ def _get_pr_numbers(last_deploy_sha, current_deploy_sha):
     ]
 
 def _get_pr_info(pr_number):
-    url = 'https://api.github.com/repos/dimagi/commcare-hq/pulls/{}'.format(pr_number)
-    json_response = requests.get(url).json()
-    if not json_response.get('number'):
+    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
+    pr_response = repo.get_pull(pr_number)
+    if not pr_response.number:
+        # Likely rate limited by Github API
         return None
-    assert pr_number == json_response['number'], (pr_number, json_response['number'])
+    assert pr_number == pr_response.number, (pr_number, pr_response.number)
 
-    labels = _get_pr_labels(pr_number)
+    labels = [label.name for label in pr_response.labels]
 
     return {
-        'title': json_response['title'],
-        'url': json_response['html_url'],
+        'title': pr_response.title,
+        'url': pr_response.html_url,
         'labels': labels,
     }
-
-def _get_pr_labels(pr_number):
-    url = 'https://api.github.com/repos/dimagi/commcare-hq/issues/{}'.format(pr_number)
-    json_response = requests.get(url).json()
-    if not json_response.get('number'):
-        return []
-    assert pr_number == json_response['number'], (pr_number, json_response['number'])
-
-    return [
-        {'name': label['name'], 'color': label['color']}
-        for label in json_response['labels']
-    ]
 
 def _get_prs_by_label(pr_infos):
     prs_by_label = defaultdict(list)
     for pr in pr_infos:
         for label in pr['labels']:
-            if label['name'] in LABELS_TO_EXPAND:
-                prs_by_label[label['name']].append(pr)
+            if label in LABELS_TO_EXPAND:
+                prs_by_label[label].append(pr)
     return dict(prs_by_label)
 
 def _print_prs_formatted(pr_list):
@@ -344,12 +331,5 @@ def _print_prs_formatted(pr_list):
     for pr in pr_list:
         print("{0}. ".format(i), end="")
         print ("{title} {url} | ".format(**pr), end="")
-        j = 0
-        num_labels = len(pr['labels'])
-        for label in pr['labels']:
-            j += 1
-            if (j == num_labels):
-                print("{name}".format(**label))
-            else:
-                print ("{name} ".format(**label), end="")
+        print(" ".join(label for label in pr['labels']))
         i += 1
