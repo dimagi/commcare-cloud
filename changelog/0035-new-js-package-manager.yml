@@ -1,0 +1,27 @@
+title: Switch to new package manager
+key: new-js-package-manager
+date: 2020-07-20
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  To stay up to date with javascript package security alerts, we need to make sure we are using a javascript package manager
+  that is supported by Github.
+
+details: |
+  Our old package manager, `bower`, has been deprecated for a while and is no longer supported by Github.
+  We decided to use `yarn` in place of `bower` and `npm` (which we were using for "backend" javascript)
+  because `yarn` supports building older `bower`-configured dependencies as well as
+  `npm` repositories. Eventually we will phase out these older `bower`-only dependencies and move to
+  `npm` entirely. But for now our new package manager is `yarn`, meaning that `bower install` and `npm install` are
+  replaced by one command `yarn install`.
+
+update_steps: |
+  To update the package manager on all deployed machines in a particular environment please run:
+
+  ```bash
+  cchq <env> deploy-stack --tags=npm
+  ```
+
+  That's it! The command above should install `yarn` on all relevant machines so that it's ready to use
+  in the next deploy.
