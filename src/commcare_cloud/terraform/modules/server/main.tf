@@ -17,7 +17,7 @@ resource aws_instance "server" {
     delete_on_termination = true
   }
   lifecycle {
-    ignore_changes = ["user_data", "key_name", "root_block_device.0.delete_on_termination",
+    ignore_changes = ["user_data", "key_name", "root_block_device.delete_on_termination",
       "ebs_optimized", "ami", "volume_tags", "iam_instance_profile"]
   }
   tags {

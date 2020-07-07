@@ -155,7 +155,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "0"
     name = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       managed_rule_group_statement {
         name = "AWSManagedRulesKnownBadInputsRuleSet"
@@ -171,7 +173,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "1"
     name = "AWS-AWSManagedRulesLinuxRuleSet"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       managed_rule_group_statement {
         name = "AWSManagedRulesLinuxRuleSet"
@@ -187,7 +191,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "2"
     name = "AWS-AWSManagedRulesSQLiRuleSet"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       managed_rule_group_statement {
         name = "AWSManagedRulesSQLiRuleSet"
@@ -205,7 +211,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "3"
     name = "AWS-AWSManagedRulesAmazonIpReputationList"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       managed_rule_group_statement {
         name = "AWSManagedRulesAmazonIpReputationList"
@@ -222,7 +230,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "4"
     name = "CommCareWhitelistRules"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       rule_group_reference_statement {
         arn = "${aws_wafv2_rule_group.commcare_whitelist_rules.arn}"
@@ -237,7 +247,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "5"
     name = "AWS-AWSManagedRulesCommonRuleSet"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       managed_rule_group_statement {
         name = "AWSManagedRulesCommonRuleSet"
@@ -260,7 +272,9 @@ resource "aws_wafv2_web_acl" "front_end" {
   rule {
     priority = "6"
     name = "DimagiBlockRules"
-    override_action { none {} }
+    override_action {
+      none {}
+    }
     statement {
       rule_group_reference_statement {
         arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
@@ -417,7 +431,8 @@ resource "aws_iam_role_policy" "firehose_role" {
       }
     }
   ]
-}EOF
+}
+EOF
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
@@ -514,7 +529,7 @@ resource "aws_lb" "front_end" {
   subnets            = ["${var.subnets}"]
   idle_timeout  = 1200
 
-  depends_on = ["aws_s3_bucket_policy.front_end_alb_logs"]
+  depends_on = [aws_s3_bucket_policy.front_end_alb_logs]
 
   enable_deletion_protection = true
 
@@ -660,7 +675,7 @@ resource "aws_lb_listener_certificate" "front_end_alternate_hosts" {
 }
 
 resource "aws_globalaccelerator_accelerator" "front_end" {
-  provider = "aws.us-west-2"
+  provider = aws.us-west-2
   name = "frontend-globalaccelerator-${var.environment}"
   tags {
     Environment = "${var.environment}"

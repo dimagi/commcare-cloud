@@ -53,10 +53,10 @@ module "postgresql" {
 
   options = []
   storage_encrypted = true
-  tags {
+  tags = [{
     workload-type = "other"
     Name = "${var.rds_instance["identifier"]}"
     Environment = "${var.environment}"
     Group = "postgresql"
-  }
+  }]
 }
