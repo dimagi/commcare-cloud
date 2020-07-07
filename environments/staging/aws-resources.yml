@@ -1,5 +1,5 @@
-celery1-staging: 10.201.10.108
-celery1-staging.instance_id: i-04e26421dfb5b63ad
+celery2-staging: 10.201.10.230
+celery2-staging.instance_id: i-08299eefc63d74e3c
 control0-staging: 10.201.10.116
 control0-staging.instance_id: i-026b188d133e068a1
 couch3-staging: 10.201.40.182
