@@ -21,7 +21,8 @@ alertmanager_route:
   repeat_interval: 4h
   receiver: slack
 grafana_data_dir: "{{ encrypted_root }}/grafana"
-grafana_url: "http://0.0.0.0:3000/grafana/"
+grafana_domain: "www.icds-cas.gov.in"
+grafana_url: "https://www.icds-cas.gov.in/grafana/"
 grafana_security:
   admin_user: "{{ secrets.grafana_admin_user }}"
   admin_password: "{{ secrets.grafana_admin_password }}"

@@ -243,3 +243,5 @@ nginx_sites:
        balancer: "{{ deploy_env }}_cas_formplayer/"
        proxy_next_upstream_tries: 1
        proxy_read_timeout: 900s
+     - name: /grafana/
+       proxy_pass: http://{{ groups.grafana.0 }}:3000/
