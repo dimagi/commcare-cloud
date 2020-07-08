@@ -172,6 +172,10 @@ class DeployMetadata(object):
     def current_ref_is_different_than_last(self):
         return self.deploy_ref != self.last_commit_sha
 
+    @memoized_property
+    def diff(self):
+        return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
+
 
 @memoized
 def _get_github_credentials():
@@ -286,62 +290,62 @@ def bower_command(command, production=True, config=None):
     sudo(cmd)
 
 
-def warn_of_migrations(last_deploy_sha, current_deploy_sha):
-    pr_numbers = _get_pr_numbers(last_deploy_sha, current_deploy_sha)
-    pool = Pool(5)
-    pr_infos = [_f for _f in pool.map(_get_pr_info, pr_numbers) if _f]
+class DeployDiff:
+    def __init__(self, repo, last_commit, deploy_commit):
+        self.repo = repo
+        self.last_commit = last_commit
+        self.deploy_commit = deploy_commit
 
-    print("List of PRs since last deploy:")
-    _print_prs_formatted(pr_infos)
+    def warn_of_migrations(self):
+        pr_numbers = self._get_pr_numbers()
+        pool = Pool(5)
+        pr_infos = [_f for _f in pool.map(self._get_pr_info, pr_numbers) if _f]
 
-    prs_by_label = _get_prs_by_label(pr_infos)
-    if prs_by_label:
-        print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
-        _print_prs_formatted(prs_by_label['reindex/migration'])
+        print("List of PRs since last deploy:")
+        self._print_prs_formatted(pr_infos)
 
+        prs_by_label = self._get_prs_by_label(pr_infos)
+        if prs_by_label:
+            print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
+            self._print_prs_formatted(prs_by_label['reindex/migration'])
 
-def _get_pr_numbers(last_deploy_sha, current_deploy_sha):
-    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
-    comparison = repo.compare(last_deploy_sha, current_deploy_sha)
+    def _get_pr_numbers(self):
+        comparison = self.repo.compare(self.last_commit, self.deploy_commit)
+        return [
+            int(re.search(r'Merge pull request #(\d+)',
+                          repo_commit.commit.message).group(1))
+            for repo_commit in comparison.commits
+            if repo_commit.commit.message.startswith('Merge pull request')
+        ]
 
-    return [
-        int(re.search(r'Merge pull request #(\d+)',
-                      repo_commit.commit.message).group(1))
-        for repo_commit in comparison.commits
-        if repo_commit.commit.message.startswith('Merge pull request')
-    ]
+    def _get_pr_info(self, pr_number):
+        pr_response = self.repo.get_pull(pr_number)
+        if not pr_response.number:
+            # Likely rate limited by Github API
+            return None
+        assert pr_number == pr_response.number, (pr_number, pr_response.number)
 
+        labels = [label.name for label in pr_response.labels]
 
-def _get_pr_info(pr_number):
-    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
-    pr_response = repo.get_pull(pr_number)
-    if not pr_response.number:
-        # Likely rate limited by Github API
-        return None
-    assert pr_number == pr_response.number, (pr_number, pr_response.number)
+        return {
+            'title': pr_response.title,
+            'url': pr_response.html_url,
+            'labels': labels,
+        }
 
-    labels = [label.name for label in pr_response.labels]
+    def _get_prs_by_label(self, pr_infos):
+        prs_by_label = defaultdict(list)
+        for pr in pr_infos:
+            for label in pr['labels']:
+                if label in LABELS_TO_EXPAND:
+                    prs_by_label[label].append(pr)
+        return dict(prs_by_label)
 
-    return {
-        'title': pr_response.title,
-        'url': pr_response.html_url,
-        'labels': labels,
-    }
+    def _print_prs_formatted(self, pr_list):
+        i = 1
+        for pr in pr_list:
+            print("{0}. ".format(i), end="")
+            print("{title} {url} | ".format(**pr), end="")
+            print(" ".join(label for label in pr['labels']))
+            i += 1
 
-
-def _get_prs_by_label(pr_infos):
-    prs_by_label = defaultdict(list)
-    for pr in pr_infos:
-        for label in pr['labels']:
-            if label in LABELS_TO_EXPAND:
-                prs_by_label[label].append(pr)
-    return dict(prs_by_label)
-
-
-def _print_prs_formatted(pr_list):
-    i = 1
-    for pr in pr_list:
-        print("{0}. ".format(i), end="")
-        print("{title} {url} | ".format(**pr), end="")
-        print(" ".join(label for label in pr['labels']))
-        i += 1

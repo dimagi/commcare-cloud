@@ -317,6 +317,13 @@ def _confirm_translated():
     )
 
 
+def _confirm_changes():
+    env.deploy_metadata.diff.warn_of_migrations()
+    return console.confirm(
+        'Are you sure you want to preindex and deploy to '
+        '{env.deploy_env}?'.format(env=env), default=False)
+
+
 @task
 def kill_stale_celery_workers():
     """
@@ -632,9 +639,7 @@ def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     _require_target()
     if strtobool(confirm) and (
         not _confirm_translated() or
-        not console.confirm(
-            'Are you sure you want to preindex and deploy to '
-            '{env.deploy_env}?'.format(env=env), default=False)
+        not _confirm_changes()
     ):
         utils.abort('Deployment aborted.')
 
