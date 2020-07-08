@@ -1,0 +1,26 @@
+---
+- name: Sentry Machine Setup
+  hosts: sentry
+  become: true
+  vars:
+      postgresql_version: 11
+      is_pg_standby: False
+      redis_version: 6.0.5
+      redis_bind: 127.0.0.1
+      redis_dir: "{{ encrypted_root }}/redis"
+      kafka_version: 2.5.0
+      kafka_scala_version: 2.13
+      kafka_inter_broker_protocol_version: 2.5
+      kafka_log_message_format_version: 2.5
+  roles:
+    - {role: ecryptfs, tags: 'ecryptfs'}
+    - {role: postgresql, tags: 'postgresql_sentry'}
+    - {role: DavidWittman.redis, tags: 'redis_sentry'}
+    - {role: zookeeper, tags: 'zookeeper_sentry'}
+    - {role: kafka, tags: 'kafka_sentry'}
+
+- name: Install and Configure Sentry
+  hosts: sentry
+  become: true
+  roles:
+    - {role: sentry, tags: 'sentry'}

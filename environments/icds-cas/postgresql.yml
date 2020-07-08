@@ -153,6 +153,9 @@ dbs:
           value: 64
     - name: airflow
       django_migrate: False
+    - name: sentrydb
+      django_migrate: False
+      host: logproxy1
   standby:
     - django_alias: pgmain1standby0
       host: pgmain1standby0

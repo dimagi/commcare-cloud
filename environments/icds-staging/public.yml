@@ -15,6 +15,11 @@ kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
 kafka_inter_broker_protocol_version: 2.4
 
+rabbitmq_version: 3.8.5-1
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+rabbitmq_create_cluster: true
+
 KSPLICE_ACTIVE: no
 
 DATADOG_ENABLED: True

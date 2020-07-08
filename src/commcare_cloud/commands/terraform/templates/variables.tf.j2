@@ -26,8 +26,8 @@ variable "server_image" {
 variable "bionic_server_image" {
   # https://cloud-images.ubuntu.com/locator/ec2/
   # Using search hvm:ebs-ssd bionic amd64
-  # Current release: 20190617
-  default = "{{ {'us-east-1': 'ami-095192256fe1477ad', 'ap-south-1': 'ami-027d1dd332103051b'}[region] }}"
+  # Current release: 20200611
+  default = "{{ {'us-east-1': 'ami-0ac80df6eff0e70b5', 'ap-south-1': 'ami-02d55cb47e83a99a0'}[region] }}"
 }
 
 variable "dns_zone_id" {}

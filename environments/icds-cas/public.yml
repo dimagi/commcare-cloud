@@ -28,6 +28,7 @@ nginx_dynamic_limits:
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+rabbitmq_create_cluster: true
 RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 
 # ElasticSearch Backup on Swift API
@@ -52,6 +53,10 @@ redis_auto_aof_rewrite_percentage: "50"
 redis_password: "{{ localsettings_private.REDIS_PASSWORD }}"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
+kafka_version: 2.4.1
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
 KSPLICE_ACTIVE: no
 
@@ -73,6 +78,19 @@ filebeat_output_logstash_hosts:
 
 lpar2rrd_agent_enabled: True
 lpar2rrd_master_address: 100.71.188.129
+
+#Sentry config
+sentry_dbuser: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+sentry_dbpassword: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+sentry_database: 'sentrydb'
+sentry_url_prefix: "https://icds-sentry.commcarehq.org"
+sentry_system_secret_key: "{{ secrets.SENTRY_SYSTEM_SECRET_KEY }}"
+clickhouse_data_dir: "{{ encrypted_root }}/clickhouse"
+default_sentry_from_email: sentry-noreply@icds-cas.gov.in
+sentry_slack_integration:
+  slack.client-id: "{{ secrets.sentry_slack_client_id }}"
+  slack.client-secret: "{{ secrets.sentry_slack_client_secrets }}"
+  slack.verification-token: "{{ secrets.sentry_slack_verification_token }}"
 
 etc_hosts_lines:
   - '127.0.0.1        localhost'
@@ -168,7 +186,8 @@ kafka_log_retention: 504 # 21 days
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
-  ASYNC_INDICATORS_TO_QUEUE: 120000
+  ASYNC_INDICATORS_TO_QUEUE: 180000
+  ASYNC_INDICATOR_CHUNK_SIZE: 200
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []

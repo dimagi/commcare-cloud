@@ -1,5 +1,5 @@
-celery1-staging: 10.201.10.108
-celery1-staging.instance_id: i-04e26421dfb5b63ad
+celery2-staging: 10.201.10.230
+celery2-staging.instance_id: i-08299eefc63d74e3c
 control0-staging: 10.201.10.116
 control0-staging.instance_id: i-026b188d133e068a1
 couch3-staging: 10.201.40.182
@@ -22,8 +22,8 @@ kafka1-staging.instance_id: i-08b3574d73b6e99b4
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy1-staging: 10.201.40.187
 pgproxy1-staging.instance_id: i-027696cdedd3f4fc1
-pillow1-staging: 10.201.10.103
-pillow1-staging.instance_id: i-08eaa147d100141e1
+pillow2-staging: 10.201.10.163
+pillow2-staging.instance_id: i-0672c9637735b0a3e
 proxy0-staging: 10.201.20.89
 proxy0-staging.instance_id: i-030576f40d5d964e1
 proxy0-staging.public_ip: 3.216.37.252

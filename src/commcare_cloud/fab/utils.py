@@ -14,7 +14,9 @@ from memoized import memoized_property, memoized
 
 from github import Github, UnknownObjectException
 from fabric.api import execute, env
-from fabric.colors import magenta
+from fabric.colors import magenta, red
+from gevent.pool import Pool
+from collections import defaultdict
 
 from .const import (
     PROJECT_ROOT,
@@ -26,6 +28,10 @@ from .const import (
 )
 
 from six.moves import input
+
+LABELS_TO_EXPAND = [
+    "reindex/migration",
+]
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -49,6 +55,7 @@ def get_pillow_env_config():
 
 
 class DeployMetadata(object):
+
     def __init__(self, code_branch, environment):
         self.timestamp = datetime.datetime.utcnow().strftime(DATE_FMT)
         self._deploy_tag = None
@@ -101,10 +108,12 @@ class DeployMetadata(object):
             env.deploy_metadata.deploy_ref,
         ), capture=True)
 
-        tag_name = '{}-{}-offline-deploy'.format(self.timestamp, self._environment)
+        tag_name = '{}-{}-offline-deploy'.format(
+            self.timestamp, self._environment)
         local('cd {staging_dir}/commcare-hq && git tag -a -m "{message}" {tag} {commit}'.format(
             staging_dir=OFFLINE_STAGING_DIR,
-            message='{} offline deploy at {}'.format(self._environment, self.timestamp),
+            message='{} offline deploy at {}'.format(
+                self._environment, self.timestamp),
             tag=tag_name,
             commit=commit,
         ))
@@ -146,7 +155,9 @@ class DeployMetadata(object):
         if _github_auth_provided():
             try:
                 self.repo.create_git_ref(
-                    ref='refs/tags/' + '{}-{}-setup_release'.format(self.timestamp, self._environment),
+                    ref='refs/tags/' +
+                        '{}-{}-setup_release'.format(self.timestamp,
+                                                     self._environment),
                     sha=self.deploy_ref,
                 )
             except UnknownObjectException:
@@ -243,7 +254,7 @@ def traceback_string():
 
 
 def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None, no_index=False,
-        wheel_dir=None):
+                wheel_dir=None):
     parts = [cmd_prefix, 'pip install']
     if timeout is not None:
         parts.append('--timeout {}'.format(timeout))
@@ -273,3 +284,64 @@ def generate_bower_command(command, production=True, config=None):
 def bower_command(command, production=True, config=None):
     cmd = generate_bower_command(command, production, config)
     sudo(cmd)
+
+
+def warn_of_migrations(last_deploy_sha, current_deploy_sha):
+    pr_numbers = _get_pr_numbers(last_deploy_sha, current_deploy_sha)
+    pool = Pool(5)
+    pr_infos = [_f for _f in pool.map(_get_pr_info, pr_numbers) if _f]
+
+    print("List of PRs since last deploy:")
+    _print_prs_formatted(pr_infos)
+
+    prs_by_label = _get_prs_by_label(pr_infos)
+    if prs_by_label:
+        print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
+        _print_prs_formatted(prs_by_label['reindex/migration'])
+
+
+def _get_pr_numbers(last_deploy_sha, current_deploy_sha):
+    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
+    comparison = repo.compare(last_deploy_sha, current_deploy_sha)
+
+    return [
+        int(re.search(r'Merge pull request #(\d+)',
+                      repo_commit.commit.message).group(1))
+        for repo_commit in comparison.commits
+        if repo_commit.commit.message.startswith('Merge pull request')
+    ]
+
+
+def _get_pr_info(pr_number):
+    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
+    pr_response = repo.get_pull(pr_number)
+    if not pr_response.number:
+        # Likely rate limited by Github API
+        return None
+    assert pr_number == pr_response.number, (pr_number, pr_response.number)
+
+    labels = [label.name for label in pr_response.labels]
+
+    return {
+        'title': pr_response.title,
+        'url': pr_response.html_url,
+        'labels': labels,
+    }
+
+
+def _get_prs_by_label(pr_infos):
+    prs_by_label = defaultdict(list)
+    for pr in pr_infos:
+        for label in pr['labels']:
+            if label in LABELS_TO_EXPAND:
+                prs_by_label[label].append(pr)
+    return dict(prs_by_label)
+
+
+def _print_prs_formatted(pr_list):
+    i = 1
+    for pr in pr_list:
+        print("{0}. ".format(i), end="")
+        print("{title} {url} | ".format(**pr), end="")
+        print(" ".join(label for label in pr['labels']))
+        i += 1

@@ -1,10 +1,21 @@
 from __future__ import absolute_import
+
+import os
+
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
+from fabric.contrib import files
 
 from commcare_cloud.fab.utils import bower_command
 
-from ..const import ROLES_STATIC, ROLES_DJANGO, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_CELERY
+from ..const import (
+    ROLES_STATIC,
+    ROLES_DJANGO,
+    ROLES_ALL_SRC,
+    ROLES_DEPLOY,
+    ROLES_CELERY,
+    YARN_LOCK,
+)
 
 
 @roles(set(ROLES_STATIC + ROLES_DJANGO))
@@ -29,6 +40,10 @@ def version_static():
 @parallel
 @roles(set(ROLES_STATIC + ROLES_DJANGO))
 def bower_install():
+    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
+    if files.exists(yarn_lock):
+        return
+
     with cd(env.code_root):
         config = {
             'interactive': 'false',
@@ -45,10 +60,25 @@ def bower_install():
 @parallel
 @roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
 def npm_install():
+    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
+    if files.exists(yarn_lock):
+        return
+
     with cd(env.code_root):
         sudo('npm prune --production')
         sudo('npm install --production')
         sudo('npm update --production')
+
+
+@parallel
+@roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
+def yarn_install():
+    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
+    if not files.exists(yarn_lock):
+        return
+
+    with cd(env.code_root):
+        sudo('yarn install --production')
 
 
 @parallel
