@@ -90,12 +90,28 @@ You may also wish to revert to a previous version of the CommCareHQ code if the 
 $ commcare-cloud <env> fab rollback
 ```
 
+## Deploy static settings files
+
+When changes are made to the static configuration files (like `localsettings.py`), you will need to deploy those static changes independently. 
+
+``` bash
+$ cchq <env> update-config
+```
+
 # Deploying Formplayer
 
 In addition to the regular deploy, you must also separately deploy the service that backs Web Apps and App Preview, called formplayer. Since it is updated less frequently, we recommend deploying formplayer changes less frequently as well. Doing so causes about 1 minute of service interruption to Web Apps and App Preview, but keeps these services up to date.
 
 ``` bash
 commcare-cloud <env> deploy formplayer
+```
+
+## Formplayer static settings
+
+Some Formplayer updates will require deploying the application settings files. You can limit the local settings deploy to only Formplayer machines to roll these out
+
+``` bash
+$ cchq <env> update-config --limit formplayer
 ```
 
 # Scheduling Deploys
