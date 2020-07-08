@@ -127,3 +127,9 @@ Since CommCareHQ is an Open Source project, you can see all the new features tha
 ## Formplayer deploy
 
 In addition to the regular deploy, we recommend deploying formplayer **once a month**.
+
+## Local Settings deploy
+
+Settings generally only need to be deployed when static files are updated against your specific environment. 
+
+Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the [changelog](../changelog.md). To be notified of these changes, the [Developer Forum](https://forum.dimagi.com/) has a [dedicated topic](https://forum.dimagi.com/c/developers/maintainer-announcements/) which you can subscribe to.
