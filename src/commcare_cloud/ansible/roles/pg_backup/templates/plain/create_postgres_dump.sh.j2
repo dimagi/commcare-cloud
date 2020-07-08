@@ -59,7 +59,6 @@ if [[ $? -ne 0 ]] ; then
 else
     if [[ postgres_backup_hourly && "$BACKUP_TYPE" == "hourly" ]]; then
         find {{ postgresql_backup_dir }} -mmin "+${HOURS_TO_RETAIN_BACKUPS}" -name "postgres_${ENV}_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
-        find {{ postgresql_backup_dir }} -mmin "+${HOURS_TO_RETAIN_BACKUPS}" -name "postgres_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
     fi
 
     # Remove old backups of this backup type, if backup succeded

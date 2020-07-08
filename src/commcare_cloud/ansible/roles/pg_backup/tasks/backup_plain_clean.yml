@@ -3,8 +3,8 @@
   cron:
     name: "Backup postgres hourly"
     job: "/usr/local/sbin/create_postgres_dump.sh hourly {{ postgresql_backup_hours * 60 }}"
-    minute: 0
-    hour: "{{ nadir_hour_frequency|default(3) }}"
+    minute: 15
+    hour: "*/{{ nadir_hour_frequency|default(3) }}"
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres

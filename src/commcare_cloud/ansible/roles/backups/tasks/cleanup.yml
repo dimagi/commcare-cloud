@@ -9,8 +9,8 @@
   become: yes
   cron:
     name: "Backup blobdb hourly"
-    minute: 0
-    hour: "{{ nadir_hour_frequency|default(3) }}"
+    minute: 15
+    hour: "*/{{ nadir_hour_frequency|default(3) }}"
     weekday: "1,2,3,4,5,6"
     cron_file: backup_blobdb
     state: absent
