@@ -179,17 +179,20 @@ class DeployMetadata(object):
 
 @memoized
 def _get_github_credentials():
-    if not env.tag_deploy_commits:
-        return (None, None)
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
+        print(red("Github credentials not found!"))
+        print("This deploy script uses the Github API to display a summary of changes to be deployed.")
+        if env.tag_deploy_commits:
+            print("You're deploying an environment which uses release tags. "
+                  "Provide Github auth details to enable release tags.")
         print((
             "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username (leave blank for no auth): ') or None
+        username = input('Github username (leave blank to skip): ') or None
         password = getpass('Github password: ') if username else None
         return (username, password)
     else:
@@ -199,11 +202,6 @@ def _get_github_credentials():
 @memoized
 def _get_github():
     login_or_token, password = _get_github_credentials()
-    if env.tag_deploy_commits and not login_or_token:
-        print(magenta(
-            "Warning: Creation of release tags is disabled. "
-            "Provide Github auth details to enable release tags."
-        ))
     return Github(login_or_token=login_or_token, password=password)
 
 
@@ -297,6 +295,9 @@ class DeployDiff:
         self.deploy_commit = deploy_commit
 
     def warn_of_migrations(self):
+        if not _github_auth_provided():
+            return
+
         pr_numbers = self._get_pr_numbers()
         pool = Pool(5)
         pr_infos = [_f for _f in pool.map(self._get_pr_info, pr_numbers) if _f]
