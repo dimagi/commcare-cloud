@@ -11,4 +11,4 @@ nginx_sites:
    - "Host $host"
    locations:
      - name: /
-       proxy_pass: "http://{{groups.sentry.0}}:8080"
+       proxy_pass: "http://{{groups.sentry.0|default('')}}:8080"
