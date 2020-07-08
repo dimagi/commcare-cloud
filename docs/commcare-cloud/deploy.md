@@ -132,4 +132,4 @@ In addition to the regular deploy, we recommend deploying formplayer **once a mo
 
 Settings generally only need to be deployed when static files are updated against your specific environment. 
 
-Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the [changelog](../changelog/index.md). To be notified of these changes, the [Developer Forum](https://forum.dimagi.com/) has a [dedicated topic](https://forum.dimagi.com/c/developers/maintainer-announcements/) which you can subscribe to.
+Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the [changelog](../changelog/index.md). Announcements are made to the [Developer Forum](https://forum.dimagi.com/) in a [dedicated category](https://forum.dimagi.com/c/developers/maintainer-announcements/) when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed.
