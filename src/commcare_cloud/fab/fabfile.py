@@ -30,40 +30,28 @@ from __future__ import print_function
 import datetime
 import functools
 import os
+import pipes
 import posixpath
+from distutils.util import strtobool
 from getpass import getpass
 
-import pipes
 import pytz
-from distutils.util import strtobool
-
-from fabric import utils
-from fabric.api import roles, execute, task, sudo, env, parallel
-from fabric.colors import blue, red, magenta
-from fabric.context_managers import cd
-from fabric.contrib import files, console
-from fabric.operations import require
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from fabric import utils
+from fabric.api import env, execute, parallel, roles, sudo, task
+from fabric.colors import blue, magenta, red
+from fabric.context_managers import cd
+from fabric.contrib import console, files
+from fabric.operations import require
 
-from .const import (
-    ROLES_ALL_SRC,
-    ROLES_ALL_SERVICES,
-    ROLES_PILLOWTOP,
-    ROLES_DJANGO,
-    ROLES_DEPLOY,
-)
+from .checks import check_servers
+from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
-from .operations import (
-    db,
-    staticfiles,
-    supervisor,
-    formplayer,
-    release,
-    offline as offline_ops,
-    airflow
-)
+from .operations import airflow, db, formplayer
+from .operations import offline as offline_ops
+from .operations import release, staticfiles, supervisor
 from .utils import (
     DeployMetadata,
     cache_deploy_state,
@@ -72,9 +60,6 @@ from .utils import (
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
-)
-from .checks import (
-    check_servers,
 )
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
