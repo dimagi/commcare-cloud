@@ -10,6 +10,25 @@ This document will walk you through the process of setting up a new monolith ser
     * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
     * A domain name which directs to your server.
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
+* Below List of Ports are required for the commcare-cloud to be accessible without issues. We should make sure the External ports are whitelisted in respective security groups. 
+
+|Process|Port|Private|External|Allow in Iptables?|Allow in Iptables?|Comments|
+|:--|:--|:--|:--|:--|:--|:--|
+|SSH|22|yes|Restricted-IP|yes|yes||
+|Nginx https| 443 |-|yes|yes|yes|           |
+|Nginx http| 80 |-|yes|yes|yes||
+|Monolith Commcare|9010|yes|no|no|depends |routed via nginx |
+|Formplayer|8181|yes|no|no|depends|<sub>Accessible to private network</sub>|
+|Kafka|9092|yes|no|no|depends|<sub>Accessible to private network</sub>|
+|Zookeeper|2181|yes|no|no|depends|<sub>Accessible to private network</sub>|
+|Redis|6379|yes|no|no|depends|<sub>Accessible to private network</sub>|
+|PostgreSQL|5432<br>6432|yes|no|no|depends|<sub>Accessible to private network</sub>|
+|RabbitMQ   | 5672|  yes|  no |  no   |  depends |<sub>Accessible to private network</sub>|
+|ElasticSearch <br> Cluster | 9200 <br> 9300 |  yes|  no |  no   |  depends |<sub>Accessible to private network</sub>|
+|CouchDB    | 5984<br>4369  |  yes|  no |  no   |  depends |<sub>Accessible to private network</sub>|
+|Celery port          |      |    |  no |  no   |          |           |
+|Mail/SMTP ports      |           |    |  yes         |  no   |          |           |
+
 
 ## Step 1: Prepare system for automated deploy
 
