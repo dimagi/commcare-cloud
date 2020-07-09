@@ -76,5 +76,5 @@ nginx_sites:
       proxy_read_timeout: 900s
       proxy_cache: hq_media_cache
     - name: /grafana/
-      proxy_pass: http://{{ groups.grafana.0 }}:3000/
+      proxy_pass: http://{{ groups.grafana.0|default('')}}:3000/
    extra_locations: "{{ site_locations|default([]) }}"
