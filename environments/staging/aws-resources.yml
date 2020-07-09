@@ -34,7 +34,7 @@ redis1-staging.instance_id: i-053cff522459cac90
 vpn-staging: 10.201.20.112
 vpn-staging.instance_id: i-0e43738c0151d44b7
 vpn-staging.public_ip: 54.227.170.89
-web3-staging: 10.201.11.246
-web3-staging.instance_id: i-009a5fe8b8ff08cab
-web4-staging: 10.201.11.252
-web4-staging.instance_id: i-07ccdbe12f7782c54
+web5-staging: 10.201.11.173
+web5-staging.instance_id: i-073638892d7b5bdf4
+web6-staging: 10.201.11.180
+web6-staging.instance_id: i-0a142adb617637842
