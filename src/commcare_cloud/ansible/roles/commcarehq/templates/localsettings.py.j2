@@ -980,3 +980,23 @@ MESSAGING_RULE_CASE_CHUNK_SIZE = {{ localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE
 {% if localsettings.TRACK_ES_REPORT_LOAD is defined %}
 TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
 {% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_CONTENT = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_REMINDER_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_CRITERIA = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_ACTIONS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS|to_json }}')
+{% endif %}
