@@ -12,14 +12,14 @@ proxy0
 [logproxy:children]
 proxy0
 
-{{ __web3__ }} swap_size=1G
+{{ __web5__ }} swap_size=1G
 
-{{ __web4__ }} swap_size=1G
+{{ __web6__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web3
-web4
+web5
+web6
 
 {{ __pgproxy1__ }} datavol_fstype=xfs
 
@@ -110,4 +110,4 @@ rds_pg0
 
 [django_manage:children]
 # Amazon EC2
-web3
+web5
