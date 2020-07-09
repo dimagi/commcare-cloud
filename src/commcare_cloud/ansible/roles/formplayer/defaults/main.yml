@@ -9,3 +9,4 @@ formplayer_purge_time_spec: '2d'
 # This variable should never be set in public.yml,
 # and is only meant to be used by update-config
 _should_update_formplayer_in_place: no
+formplayer_data_dir: "{{ encrypted_root }}/formplayer"

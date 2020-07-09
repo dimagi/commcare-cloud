@@ -58,3 +58,5 @@ OFFLINE_STAGING_DIR = 'offline-staging'
 BOWER_ZIP_NAME = 'bower.tar.gz'
 NPM_ZIP_NAME = 'npm.tar.gz'
 WHEELS_ZIP_NAME = 'wheels.tar.gz'
+
+YARN_LOCK = 'yarn.lock'

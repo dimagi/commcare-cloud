@@ -62,7 +62,7 @@ def get_common_ssh_args(environment, use_factory_auth=False):
         common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
 
     if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args="{}"'.format(' '.join(shlex_quote(arg) for arg in common_ssh_args)),)
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(common_ssh_args)),)
     return cmd_parts_with_common_ssh_args
 
 

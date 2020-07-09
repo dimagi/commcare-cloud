@@ -1,0 +1,14 @@
+---
+nginx_ssl_cert: "{{ sentry_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ sentry_nginx_ssl_key }}"
+
+nginx_sites:
+- server:
+   file_name: cas_sentry
+   listen: "443 ssl"
+   server_name: "sentry-icds.commcarehq.org"
+   proxy_set_headers:
+   - "Host $host"
+   locations:
+     - name: /
+       proxy_pass: "http://{{groups.sentry.0|default('')}}:8080"

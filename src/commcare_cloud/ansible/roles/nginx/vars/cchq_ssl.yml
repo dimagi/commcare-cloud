@@ -29,7 +29,7 @@ nginx_sites:
    proxy_max_temp_file_size: 5120m
    proxy_set_headers:
    - "Host $host"
-   - "X-Forwarded-For $remote_addr"
+   - "X-Forwarded-For $proxy_add_x_forwarded_for"
    - "X-Forwarded-Protocol  $scheme"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    locations:
@@ -75,4 +75,6 @@ nginx_sites:
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
       proxy_cache: hq_media_cache
+    - name: /grafana/
+      proxy_pass: http://{{ groups.grafana.0 }}:3000/
    extra_locations: "{{ site_locations|default([]) }}"

@@ -3,6 +3,7 @@ www_dir: "{{ cchq_home }}/www"
 www_home: "{{ www_dir }}/{{ deploy_env }}"
 code_home: "{{ www_home }}/current"
 log_home: "{{ www_home }}/log"
+metrics_home: "{{ www_home }}/metrics"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
 py3_virtualenv_home: "{{ code_home }}/python_env-3.6"
@@ -11,6 +12,8 @@ encrypted_root: "/opt/data"
 root_encryption_mode: "ecryptfs"
 encrypted_tmp: "/opt/tmp"
 project: "commcare-hq"
+
+prometheus_monitoring_enabled: False
 
 airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"

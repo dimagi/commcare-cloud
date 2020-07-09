@@ -1,0 +1,25 @@
+- set_fact:
+    supervisor_prometheus: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
+
+- set_fact:
+    prometheus_managed_files:
+      - "{{ supervisor_prometheus }}"
+
+- name: Creates Prometheus Metrics directory
+  become: yes
+  file:
+    path: "{{ metrics_home }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+  tags: services
+
+- name: define prometheus service
+  become: yes
+  template:
+    src: "../templates/supervisor_prometheus.conf.j2"
+    dest: "{{ supervisor_prometheus }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
+  when: prometheus_monitoring_enabled|default(False)

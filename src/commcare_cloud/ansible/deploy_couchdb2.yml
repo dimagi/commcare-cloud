@@ -18,14 +18,16 @@
   become: true
   roles:
     - role: ansible-logrotate
-      tags: couchdb2
+      tags:
+        - couchdb2
+        - logging
       logrotate_scripts:
         - name: "{{ deploy_env }}_couchdb2"
           path: "{{ couchdb_dir }}/var/log/*.stderr"
           options:
-            - daily
-            - size 100M
-            - rotate 10
+            - hourly
+            - size 300M
+            - rotate 100
             - missingok
             - compress
             - delaycompress

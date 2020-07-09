@@ -1,21 +1,16 @@
+- set_fact:
+    supervisor_websockets: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+
+- set_fact:
+    :
+    proxy_managed_files:
+      - "{{ supervisor_websockets }}"
+
 - name: define websockets services
   become: yes
   template:
     src: "../templates/supervisor_websockets.conf"
-    dest: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+    dest: "{{ supervisor_websockets }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  tags:
-    - services
-  register: proxy_websocket_conf_file
-
-- set_fact:
-    proxy_supervisor_files: "{{ [proxy_websocket_conf_file] }}"
-  tags:
-    - services
-
-- set_fact:
-    proxy_managed_files: "{{ proxy_supervisor_files|selectattr('dest', 'string')|map(attribute='dest')|list + proxy_supervisor_files|selectattr('path', 'string')|map(attribute='path')|select|list }}"
-  tags:
-    - services

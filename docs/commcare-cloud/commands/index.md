@@ -978,14 +978,16 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [{commcare,formplayer}]
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+                            [{commcare,formplayer}]
 ```
 
 ##### Positional Arguments
 
 ###### `{commcare,formplayer}`
 
-The component to deploy.
+The component to deploy. If not specified, will deploy CommCare, or
+both, if always_deploy_formplayer is set in meta.yml
 
 ##### Optional Arguments
 
@@ -1000,6 +1002,10 @@ Skip the steps involved in recording and announcing the fact of the deploy.
 ###### `--commcare-rev COMMCARE_REV`
 
 The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
+
+###### `--set FAB_SETTINGS`
+
+fab settings in k1=v1,k2=v2 format to be passed down to fab
 
 ---
 

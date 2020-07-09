@@ -1,0 +1,5 @@
+---
+- include: thp.yml
+  tags: thp
+- include: disk_scheduler.yml
+  tags: disk_scheduler

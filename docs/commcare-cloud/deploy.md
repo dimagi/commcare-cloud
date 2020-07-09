@@ -90,12 +90,28 @@ You may also wish to revert to a previous version of the CommCareHQ code if the 
 $ commcare-cloud <env> fab rollback
 ```
 
+## Deploy static settings files
+
+When changes are made to the static configuration files (like `localsettings.py`), you will need to deploy those static changes independently. 
+
+``` bash
+$ cchq <env> update-config
+```
+
 # Deploying Formplayer
 
 In addition to the regular deploy, you must also separately deploy the service that backs Web Apps and App Preview, called formplayer. Since it is updated less frequently, we recommend deploying formplayer changes less frequently as well. Doing so causes about 1 minute of service interruption to Web Apps and App Preview, but keeps these services up to date.
 
 ``` bash
 commcare-cloud <env> deploy formplayer
+```
+
+## Formplayer static settings
+
+Some Formplayer updates will require deploying the application settings files. You can limit the local settings deploy to only Formplayer machines to roll these out
+
+``` bash
+$ cchq <env> update-config --limit formplayer
 ```
 
 # Scheduling Deploys
@@ -111,3 +127,13 @@ Since CommCareHQ is an Open Source project, you can see all the new features tha
 ## Formplayer deploy
 
 In addition to the regular deploy, we recommend deploying formplayer **once a month**.
+
+## Local Settings deploy
+
+Settings generally only need to be deployed when static files are updated against your specific environment. 
+
+Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the [changelog](../changelog/index.md). Announcements are made to the [Developer Forum](https://forum.dimagi.com/) in a [dedicated category](https://forum.dimagi.com/c/developers/maintainer-announcements/) when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed.
+
+# Other topics of interest
+
+* [Resolving issues encountered during deploy](deploy-debug.md)

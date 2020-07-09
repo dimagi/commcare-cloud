@@ -9,7 +9,7 @@
     - {role: backups, tags: 'backups'}
 
 - name: Encrypt WAL Drive
-  hosts: postgresql
+  hosts: postgresql:!plproxy
   tasks:
     - name: Encrypt drive
       vars:
@@ -80,7 +80,7 @@
    - kernel_tuning
    - after-reboot
   roles:
-    - role: thp
+    - role: kernel_tune 
 
 - name: Install and configure pg_repack
   hosts: "{{ pg_repack|list }}"

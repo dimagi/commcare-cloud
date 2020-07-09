@@ -1,0 +1,19 @@
+sentry_version: 20.6.0
+sentry_web_host: '0.0.0.0'
+sentry_web_port: 8080
+sentry_database: 'sentrydb'
+sentry_dbuser: 'sentry'
+sentry_dbpassword: 'sentrypass'
+sentry_system_secret_key: 'secret'
+sentry_home_dir: /home/sentry
+sentry_app_config: "{{ sentry_home_dir }}/config"
+sentry_virtualenv_path: "{{ sentry_home_dir }}/sentry_app"
+
+
+# SNUBA 
+snuba_version: 20.6.0
+snuba_get_url: "https://github.com/getsentry/snuba/archive/{{ snuba_version }}.zip"
+snuba_virtualenv_path: "{{ sentry_home_dir }}/snuba_app"
+
+#clickhouse
+clickhouse_data_dir: "/opt/data/clickhouse"

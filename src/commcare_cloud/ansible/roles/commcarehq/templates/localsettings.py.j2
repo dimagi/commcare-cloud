@@ -116,6 +116,13 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 
 RETURN_PATH_EMAIL_PASSWORD = "{{ RETURN_PATH_EMAIL_PASSWORD }}"
 
+{% if 'SES_CONFIGURATION_SET' in localsettings %}
+SES_CONFIGURATION_SET = "{{ localsettings.SES_CONFIGURATION_SET }}"
+{% endif %}
+{% if 'SES_CONFIGURATION_SET' in localsettings %}
+SNS_EMAIL_EVENT_SECRET = "{{ localsettings.SNS_EMAIL_EVENT_SECRET }}"
+{% endif %}
+
 EMAIL_SUBJECT_PREFIX = '[{{ env_monitoring_id }}] '
 
 ENABLE_SOFT_ASSERT_EMAILS = {{ localsettings.ENABLE_SOFT_ASSERT_EMAILS|default(False) }}
@@ -703,6 +710,10 @@ DATADOG_API_KEY = '{{ DATADOG_API_KEY }}'
 DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
 
+{% if prometheus_monitoring_enabled|default(false) %}
+{% set metrics_providers = metrics_providers + ['corehq.util.metrics.prometheus.PrometheusMetrics'] %}
+{% endif %}
+
 METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 
 {% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
@@ -972,4 +983,24 @@ TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
 
 {% if localsettings.ASYNC_INDICATOR_CHUNK_SIZE is defined %}
 ASYNC_INDICATOR_CHUNK_SIZE = {{ localsettings.ASYNC_INDICATOR_CHUNK_SIZE }}
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_CONTENT = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_REMINDER_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_CRITERIA = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_ACTIONS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS|to_json }}')
 {% endif %}

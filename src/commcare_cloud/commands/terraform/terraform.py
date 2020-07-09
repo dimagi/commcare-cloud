@@ -13,6 +13,8 @@ from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
+from commcare_cloud.commands.terraform.constants import COMMCAREHQ_XML_POST_URLS_REGEX, \
+    COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
@@ -144,13 +146,17 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
 
     context.update({
         'SITE_HOST': environment.proxy_config.SITE_HOST,
+        'NO_WWW_SITE_HOST': environment.proxy_config.NO_WWW_SITE_HOST or '',
+        'ALTERNATE_HOSTS': environment.public_vars.get('ALTERNATE_HOSTS', []),
         'account_id': environment.aws_config.sso_config.sso_account_id,
         'users': [{
             'username': username,
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params_by_rds_instance(environment)
+        'postgresql_params': get_postgresql_params_by_rds_instance(environment),
+        'commcarehq_xml_post_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX),
+        'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
     })
 
     context.update({
@@ -166,3 +172,24 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
     ):
         with open(os.path.join(run_dir, output_file), 'w') as f:
             f.write(render_template(template_file, context, template_root).encode('utf-8'))
+
+
+def compact_waf_regexes(patterns):
+    """
+    Compact regexes into as few as possible regexes each of which is no longer
+    than 200 characters
+    """
+    compacted_regexes = []
+    regex_buffer = ''
+    for pattern in patterns:
+        if len(regex_buffer) + len(pattern) + 1 <= 200:
+            if regex_buffer:
+                regex_buffer += '|' + pattern
+            else:
+                regex_buffer = pattern
+        else:
+            compacted_regexes.append(regex_buffer)
+            regex_buffer = pattern
+    if regex_buffer:
+        compacted_regexes.append(regex_buffer)
+    return compacted_regexes
