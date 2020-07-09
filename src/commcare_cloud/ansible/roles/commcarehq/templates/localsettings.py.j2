@@ -981,6 +981,10 @@ MESSAGING_RULE_CASE_CHUNK_SIZE = {{ localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE
 TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
 {% endif %}
 
+{% if localsettings.ASYNC_INDICATOR_CHUNK_SIZE is defined %}
+ASYNC_INDICATOR_CHUNK_SIZE = {{ localsettings.ASYNC_INDICATOR_CHUNK_SIZE }}
+{% endif %}
+
 {% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT is defined %}
 LOCAL_AVAILABLE_CUSTOM_SCHEDULING_CONTENT = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT|to_json }}')
 {% endif %}
