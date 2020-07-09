@@ -7,7 +7,7 @@ newest first.
 
 ## Changelog
 
-### **2020-07-10** [Switch to new package manager](0035-new-js-package-manager.md)
+### **2020-07-09** [Switch to new package manager](0035-new-js-package-manager.md)
 To stay up to date with javascript package security alerts, we need to make sure we are using a javascript package manager
 that is supported by Github.
 

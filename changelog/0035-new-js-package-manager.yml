@@ -1,6 +1,6 @@
 title: Switch to new package manager
 key: new-js-package-manager
-date: 2020-07-10
+date: 2020-07-09
 optional_per_env: no
 min_commcare_version:
 max_commcare_version:

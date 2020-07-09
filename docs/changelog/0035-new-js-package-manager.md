@@ -2,7 +2,7 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # 35. Switch to new package manager
 
-**Date:** 2020-07-10
+**Date:** 2020-07-09
 
 **Optional per env:** _required on all environments_
 
