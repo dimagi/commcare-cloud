@@ -1,6 +1,6 @@
 title: Switch to new package manager
 key: new-js-package-manager
-date: 2020-07-20
+date: 2020-07-10
 optional_per_env: no
 min_commcare_version:
 max_commcare_version:
@@ -24,4 +24,8 @@ update_steps: |
   ```
 
   That's it! The command above should install `yarn` on all relevant machines so that it's ready to use
-  in the next deploy.
+  in the next deploy. We will be merging in a change shortly after this announcement that moves both `commcare-hq`
+  and `vellum` to use `yarn` in place of `bower` and `npm`.
+
+  It's safe to run the above the command before these changes are officially merged in, and it is highly
+  recommended to do so in order to keep deployments smooth.
