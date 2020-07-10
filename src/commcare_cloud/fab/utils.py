@@ -60,7 +60,6 @@ class DeployMetadata(object):
         self.timestamp = datetime.datetime.utcnow().strftime(DATE_FMT)
         self._deploy_tag = None
         self._max_tags = 100
-        self._last_tag = None
         self._code_branch = code_branch
         self._environment = environment
 
