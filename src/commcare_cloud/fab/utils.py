@@ -69,24 +69,8 @@ class DeployMetadata(object):
 
     @memoized_property
     def last_commit_sha(self):
-        if self.last_tag:
-            return self.last_tag.commit.sha
-
         with cd(env.code_current):
             return sudo('git rev-parse HEAD')
-
-    @memoized_property
-    def last_tag(self):
-        pattern = ".*-{}-deploy".format(re.escape(self._environment))
-        for tag in self.repo.get_tags()[:self._max_tags]:
-            if re.match(pattern, tag.name):
-                return tag
-
-        print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
-            self._max_tags,
-            self._environment
-        )))
-        return None
 
     def tag_commit(self):
         if env.offline:
