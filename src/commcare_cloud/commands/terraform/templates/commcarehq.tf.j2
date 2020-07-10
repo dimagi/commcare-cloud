@@ -94,7 +94,7 @@ module "server__{{ server.server_name }}" {
   secondary_volume_encrypted = {{ server.block_device.encrypted|default(False)|tojson }}
 
 {% if server.os == 'bionic' %}
-  server_image = "${var.bionic_server_image}"
+  server_image = "${data.aws_ami.ubuntu_bionic.id}"
 {% else %}
   server_image = "${var.server_image}"
 {% endif %}
