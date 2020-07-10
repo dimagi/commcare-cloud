@@ -22,7 +22,6 @@ dev_users:
     - sgoswami
     - aphulera
     - knguyen
-    - mliang
   absent:
     - astone
     - wpride
