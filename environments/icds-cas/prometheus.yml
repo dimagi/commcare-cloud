@@ -45,7 +45,7 @@ airflow_prometheus_database_password: "{{ postgres_users.commcare.password }}"
 pgbouncer_exporter_dbuser: "{{ secrets.POSTGRES_USERS.devreadonly.username }}"
 pgbouncer_exporter_dbpassword: "{{ secrets.POSTGRES_USERS.devreadonly.password }}"
 celery_exporter_broker_url: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}"
-prometheus_celery_pushgateway: "{{ group.celery.0 }}:{{ prom_aggregation_gateway_listen_addr }}"
+prometheus_celery_pushgateway: "{{ groups.celery.0 }}:9120"
 prometheus_http_probe_urls:
   - https://www.icds-cas.gov.in/serverup.txt
   - https://cas.commcarehq.org/accounts/login/
