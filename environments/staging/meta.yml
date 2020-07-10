@@ -3,6 +3,7 @@ env_monitoring_id: staging
 users:
   - dimagi
   - dimagi-qa
+  - dimagi-interns
   - g2
   - fissionlabs
   - fission-warehouse
