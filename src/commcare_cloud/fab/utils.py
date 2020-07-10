@@ -124,25 +124,6 @@ class DeployMetadata(object):
                 tag=tag_name,
             ))
 
-    @property
-    def diff_url(self):
-        if env.offline:
-            return '"No diff url for offline deploy"'
-        if not env.tag_deploy_commits:
-            return '"Diff URLs are not enabled for this environment"'
-
-        if _github_auth_provided() and self._deploy_tag is None:
-            raise Exception("You haven't tagged anything yet.")
-
-        from_ = self.last_tag.name if self.last_tag and self.last_tag.name else self.last_commit_sha
-        if not from_:
-            return '"Previous deploy not found, cannot make comparison"'
-
-        return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
-            from_,
-            self._deploy_tag or self.deploy_ref,
-        )
-
     @memoized_property
     def deploy_ref(self):
         if env.offline:
@@ -293,6 +274,11 @@ class DeployDiff:
         self.repo = repo
         self.last_commit = last_commit
         self.deploy_commit = deploy_commit
+
+    @property
+    def url(self):
+        """Human-readable diff URL"""
+        return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
 
     def warn_of_migrations(self):
         if not _github_auth_provided():
