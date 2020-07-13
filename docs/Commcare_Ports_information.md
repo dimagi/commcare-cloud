@@ -13,4 +13,4 @@
 |ElasticSearch <br> ES Cluster | 9200 <br> 9300 |  yes|  no |  no   |  depends |<sub>Accessible to private network</sub>|
 |CouchDB    | 5984<br>4369  |  yes|  no |  no   |  depends |<sub>Accessible to private network</sub>|
 |Celery port          |      |    |  no |  no   |          |           |
-|Mail/SMTP ports      |           |    |  yes         |  no   |          |           |
+|Mail/SMTP ports      | 25<br>465<br>587      |    |  yes         |  no   |          |           |

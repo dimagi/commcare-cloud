@@ -978,12 +978,12 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [{commcare,formplayer}]
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [{commcare,formplayer,None}]
 ```
 
 ##### Positional Arguments
 
-###### `{commcare,formplayer}`
+###### `{commcare,formplayer,None}`
 
 The component to deploy.
 
