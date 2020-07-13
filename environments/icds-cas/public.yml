@@ -371,6 +371,8 @@ localsettings:
     - {name: "custom.icds", host: "all"}
     - {name: "custom.icds.data_management", host: "all"}
     - {name: "custom.icds_reports", host: "all"}
+  LOCAL_CUSTOM_DB_ROUTING:
+    icds_reports: icds-ucr-citus
   MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False
