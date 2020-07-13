@@ -367,6 +367,10 @@ localsettings:
     icds-test: custom.icds_reports
     icds-cas: custom.icds_reports
     icds-dashboard-qa: custom.icds_reports
+  LOCAL_APPS:
+    - {name: "custom.icds", host: "all"}
+    - {name: "custom.icds.data_management", host: "all"}
+    - {name: "custom.icds_reports", host: "all"}
   MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False
