@@ -1013,3 +1013,19 @@ LOCAL_STATIC_DATA_SOURCES = json.loads('{{ localsettings.LOCAL_STATIC_DATA_SOURC
 {% if localsettings.LOCAL_STATIC_UCR_REPORTS is defined %}
 LOCAL_STATIC_UCR_REPORTS = json.loads('{{ localsettings.LOCAL_STATIC_UCR_REPORTS|to_json }}')
 {% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS is defined %}
+LOCAL_CUSTOM_UCR_EXPRESSION_LISTS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTERS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_DOMAIN_MODULE_MAP is defined %}
+LOCAL_DOMAIN_MODULE_MAP = json.loads('{{ localsettings.LOCAL_DOMAIN_MODULE_MAP|to_json }}')
+{% endif %}
