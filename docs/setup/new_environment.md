@@ -10,15 +10,11 @@ This document will walk you through the process of setting up a new monolith ser
     * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
     * A domain name which directs to your server.
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
-* Below are list of Ports that are required for the commcare-cloud to be accessible. Please whitelisted/allow the external ports in the Iptables/Firewall/Security groups.
-
-    You can read more about the Ports used in this environments [here](../Commcare_Ports_information.md).
-
-- To Verify the whether required Ports are accessible from browser use below command after completion of environment setup and installation process
-    ```bash
-    # pass ip=<server_ip_address>. '0.0.0.0' checks anywhere.
-    $ bash ~/commcare-cloud/scripts/verify_ports_accessibility.sh ip="0.0.0.0" ports="80 443" 
-    ```
+* [This table](../Commcare_Ports_information.md) lists the ports that must be accessible in your network configuration. Please enable these ports in the Iptables/Firewall/Security groups.
+  * Run this command to verify that these ports are accessible:
+      ```bash
+      $ for PORT in 22 443 80 9010 8181 9092 2181 6379 5432 6432 5672 9200 9300 5984 4369 5555 25 465 587; do nc -zv localhost $PORT; done
+      ```
     
 ## Step 1: Prepare system for automated deploy
 
