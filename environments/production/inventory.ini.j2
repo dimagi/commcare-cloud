@@ -47,7 +47,7 @@ web13
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer2__ }}
+{{ __pgbouncer3__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -76,7 +76,7 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgbouncer2
+pgbouncer3
 remote_postgresql
 
 [ansible_skip:children]
