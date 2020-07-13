@@ -1029,3 +1029,7 @@ LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES = json.loads('{{ localsettings.LOCAL_CUSTO
 {% if localsettings.LOCAL_DOMAIN_MODULE_MAP is defined %}
 LOCAL_DOMAIN_MODULE_MAP = json.loads('{{ localsettings.LOCAL_DOMAIN_MODULE_MAP|to_json }}')
 {% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_DB_ROUTING is defined %}
+LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|to_json }}')
+{% endif %}
