@@ -346,6 +346,17 @@ localsettings:
         params:
           topics:
             - 'form-sql'
+  LOCAL_STATIC_DATA_SOURCES:
+    - custom/icds_reports/ucr/data_sources/*.json
+    - custom/icds_reports/ucr/data_sources/dashboard/*.json
+  LOCAL_STATIC_UCR_REPORTS:
+    - custom/icds_reports/ucr/reports/dashboard/*.json
+    - custom/icds_reports/ucr/reports/asr/*.json
+    - custom/icds_reports/ucr/reports/asr/ucr_v2/*.json
+    - custom/icds_reports/ucr/reports/mpr/*.json
+    - custom/icds_reports/ucr/reports/mpr/dashboard/*.json
+    - custom/icds_reports/ucr/reports/ls/*.json
+    - custom/icds_reports/ucr/reports/other/*.json
   MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False
