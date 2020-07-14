@@ -55,7 +55,7 @@ def get_server_address(environment, group):
     username, group, index = host_group.user, host_group.group, host_group.index
 
     if ':' in group:
-        display.warning("Using '[x]' to select hosts instead of ':x' which has been deprecated.")
+        display.warning("Use '[x]' to select hosts instead of ':x' which has been deprecated.")
         group, index = group.rsplit(':', 1)
         try:
             index = int(index)
