@@ -7,7 +7,7 @@ from clint.textui import puts
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
-from .getinventory import get_server_address, get_monolith_address
+from .getinventory import get_server_address, get_monolith_address, split_host_group
 from six.moves import shlex_quote
 
 from ...colors import color_error
@@ -50,7 +50,7 @@ class _Ssh(Lookup):
 
     def run(self, args, ssh_args):
         if args.server == '-':
-            args.server = 'django_manage:0'
+            args.server = 'django_manage[0]'
         address = self.lookup_server_address(args)
         if ':' in address:
             address, port = address.split(':')
@@ -73,7 +73,8 @@ class Ssh(_Ssh):
     """
 
     def run(self, args, ssh_args):
-        if args.server.split(':')[0] == 'control' and '-A' not in ssh_args:
+
+        if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
         ukhf = "UserKnownHostsFile="

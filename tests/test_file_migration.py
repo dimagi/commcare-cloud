@@ -7,7 +7,7 @@ from nose.tools import assert_multi_line_equal, assert_equal
 from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \
     FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename, read_plan, Plan
 from commcare_cloud.environment.main import get_environment
-from tests.test_utils import get_file_contents
+from tests.utils import get_file_contents
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'file_migration_data')
 SCRIPT_ROOT = os.path.join(TEST_DATA_DIR, '.generated_data')

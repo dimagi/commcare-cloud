@@ -1,14 +1,24 @@
 """
 Utilities to get server hostname or IP address from an inventory file and group.
 """
-from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import print_function
 
 import re
 import sys
+import warnings
+
+import attr
 
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
+
+
+@attr.s
+class HostPattern(object):
+    user = attr.ib()
+    group = attr.ib()
+    index = attr.ib()
 
 
 def get_instance_group(environment, group):
@@ -26,11 +36,29 @@ def get_monolith_address(environment, exit=sys.exit):
         return get_server_address(environment, 'all', exit=exit)
 
 
+def split_host_group(group):
+    ansible_style_pattern = re.match(r'^(?P<user>(.*?)@)?(?P<group>.*?)(\[(?P<index>\d+)\])?$', group)
+    if ansible_style_pattern:
+        user = ansible_style_pattern.group('user')
+        group = ansible_style_pattern.group('group')
+        index = ansible_style_pattern.group('index')
+        return HostPattern(user, group, int(index) if index else None)
+    return HostPattern(None, group, None)
+
+
 def get_server_address(environment, group, exit=sys.exit):
-    if "@" in group:
-        username, group = group.split('@', 1)
-        username += "@"
-    else:
+    host_group = split_host_group(group)
+    username, group, index = host_group.user, host_group.group, host_group.index
+
+    if ':' in group:
+        warnings.warn("Using '[x]' to select hosts instead of ':x' which has been deprecated.", DeprecationWarning)
+        group, index = group.rsplit(':', 1)
+        try:
+            index = int(index)
+        except (TypeError, ValueError):
+            exit("Non-numeric group index: {}".format(index))
+
+    if not username:
         default_username = get_default_username()
         if default_username.is_guess:
             username = ""
@@ -40,15 +68,6 @@ def get_server_address(environment, group, exit=sys.exit):
     if re.match(r'(\d+\.?){4}', group):
         # short circuit for IP addresses
         return username + group
-
-    if ':' in group:
-        group, index = group.rsplit(':', 1)
-        try:
-            index = int(index)
-        except (TypeError, ValueError):
-            exit("Non-numeric group index: {}".format(index))
-    else:
-        index = None
 
     try:
         servers = get_instance_group(environment, group)
