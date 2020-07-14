@@ -5,19 +5,6 @@ prometheus_web_external_url: "http://0.0.0.0:9090/prometheus"
 prometheus_monitoring_enabled: True
 prometheus_monitoring_env: "icds-staging"
 prometheus_monitoring_slack_channel: "#alerts-prometheus"
-alertmanager_web_external_url: "http://0.0.0.0:9093/alertmanager"
-alertmanager_slack_api_url: "{{ secrets.alertmanager_slack_api_url }}"
-alertmanager_receivers:
-- name: slack
-  slack_configs:
-  - send_resolved: true
-    channel: '#alerts'
-alertmanager_route:
-  group_by: ['alertname', 'cluster', 'service']
-  group_wait: 30s
-  group_interval: 5m
-  repeat_interval: 4h
-  receiver: slack
 node_exporter_enabled_collectors: ['systemd','processes']
 couchdb_username: "{{ couchdb2.username }}"
 couchdb_password: "{{ couchdb2.password }}"
