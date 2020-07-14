@@ -984,7 +984,7 @@ commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_
 
 ##### Positional Arguments
 
-###### `{commcare,formplayer}`
+###### `{commcare,formplayer,None}`
 
 The component to deploy. If not specified, will deploy CommCare, or
 both, if always_deploy_formplayer is set in meta.yml
