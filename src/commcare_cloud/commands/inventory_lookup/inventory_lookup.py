@@ -29,7 +29,7 @@ class Lookup(CommandBase):
             example: webworkers:0 will pick the first webworker. May also be
             omitted for environments with only a single server.
 
-            Use '-' for default (django_manage:0)
+            Use '-' for default (django_manage[0])
         """),
     )
 
@@ -193,7 +193,7 @@ class DjangoManage(CommandBase):
         Argument('--server', help="""
             Server to run management command on.
             Defaults to first server under django_manage inventory group
-        """, default='django_manage:0'),
+        """, default='django_manage[0]'),
         Argument('--release', help="""
             Name of release to run under.
             E.g. '2018-04-13_18.16'.
