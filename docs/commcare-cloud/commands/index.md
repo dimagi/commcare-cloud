@@ -161,7 +161,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -189,7 +189,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -218,7 +218,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -565,7 +565,7 @@ multiple servers if there is more than one in the group. For
 example: webworkers:0 will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ###### `remote_command`
 
