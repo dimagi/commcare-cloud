@@ -4,13 +4,14 @@ Utilities to get server hostname or IP address from an inventory file and group.
 from __future__ import absolute_import, print_function
 
 import re
-import sys
-import warnings
 
 import attr
+from ansible.utils.display import Display
 
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
+
+display = Display()
 
 
 class HostMatchException(Exception):
@@ -54,7 +55,7 @@ def get_server_address(environment, group):
     username, group, index = host_group.user, host_group.group, host_group.index
 
     if ':' in group:
-        warnings.warn("Using '[x]' to select hosts instead of ':x' which has been deprecated.", DeprecationWarning)
+        display.warning("Using '[x]' to select hosts instead of ':x' which has been deprecated.")
         group, index = group.rsplit(':', 1)
         try:
             index = int(index)
