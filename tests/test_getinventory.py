@@ -16,6 +16,8 @@ TEST_ENV_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
     ("user@control[0]", HostPattern("user@", "control", 0)),
     ("user@control:3", HostPattern("user@", "control:3", None)),
     ("control:3", HostPattern(None, "control:3", None)),
+    ("192.168.3.1", HostPattern(None, "192.168.3.1", None)),
+    ("user@192.168.3.1", HostPattern("user@", "192.168.3.1", None)),
 ])
 def test_split_host_group(pattern, expected):
     assert_equal(split_host_group(pattern), expected)
@@ -27,6 +29,8 @@ def test_split_host_group(pattern, expected):
     ("user@postgresql[3]", "user@10.247.164.20"),
     ("user@postgresql:3", "user@10.247.164.20"),
     ("postgresql:3", "10.247.164.20"),
+    ("192.168.3.1", "192.168.3.1"),
+    ("user@192.168.3.1", "user@192.168.3.1"),
 ])
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
 def test_get_server_address(pattern, expected):
