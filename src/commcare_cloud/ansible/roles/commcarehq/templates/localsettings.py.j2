@@ -724,7 +724,7 @@ WS4REDIS_CONNECTION = {
 {% endif %}
 
 {% if prometheus_celery_pushgateway is defined %}
-PUSHGATEWAY_HOST = '{{ prometheus_celery_pushgateway }}'
+PROMETHEUS_PUSHGATEWAY_HOST = '{{ prometheus_celery_pushgateway }}'
 {% endif %}
 
 {% if TWO_FACTOR_GATEWAY_ENABLED %}
