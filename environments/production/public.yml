@@ -31,8 +31,6 @@ DATADOG_TRACE:
   TAGS:
     env: production
 
-LOCAL_APPS: []
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 elasticsearch_version: 2.4.6

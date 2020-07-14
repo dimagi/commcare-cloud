@@ -224,8 +224,8 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 LOCAL_APPS = (
     'dimagi.utils',
     'gunicorn',
-    {% for entry in LOCAL_APPS %}
-    {% if inventory_hostname in groups[entry.host] %}
+    {% for entry in localsettings.LOCAL_APPS|default([]) %}
+    {% if entry.host == 'all' or inventory_hostname in groups[entry.host] %}
     '{{ entry.name }}',
     {% endif %}
     {% endfor %}
@@ -1004,4 +1004,32 @@ LOCAL_AVAILABLE_CUSTOM_RULE_CRITERIA = json.loads('{{ localsettings.AVAILABLE_CU
 
 {% if localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS is defined %}
 LOCAL_AVAILABLE_CUSTOM_RULE_ACTIONS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_STATIC_DATA_SOURCES is defined %}
+LOCAL_STATIC_DATA_SOURCES = json.loads('{{ localsettings.LOCAL_STATIC_DATA_SOURCES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_STATIC_UCR_REPORTS is defined %}
+LOCAL_STATIC_UCR_REPORTS = json.loads('{{ localsettings.LOCAL_STATIC_UCR_REPORTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS is defined %}
+LOCAL_CUSTOM_UCR_EXPRESSION_LISTS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTERS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_DOMAIN_MODULE_MAP is defined %}
+LOCAL_DOMAIN_MODULE_MAP = json.loads('{{ localsettings.LOCAL_DOMAIN_MODULE_MAP|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_DB_ROUTING is defined %}
+LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|to_json }}')
 {% endif %}
