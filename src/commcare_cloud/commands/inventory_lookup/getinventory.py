@@ -1,8 +1,7 @@
 """
 Utilities to get server hostname or IP address from an inventory file and group.
 """
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import re
 import sys
@@ -12,6 +11,10 @@ import attr
 
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
+
+
+class HostMatchException(Exception):
+    pass
 
 
 @attr.s
@@ -26,14 +29,14 @@ def get_instance_group(environment, group):
     return env.sshable_hostnames_by_group[group]
 
 
-def get_monolith_address(environment, exit=sys.exit):
+def get_monolith_address(environment):
     env = get_environment(environment)
     hosts = env.inventory_manager.get_hosts()
     if len(hosts) != 1:
-        exit("There are {} servers in the environment. Please include the 'server'"
+        raise HostMatchException("There are {} servers in the environment. Please include the 'server'"
              "argument to select one.".format(len(hosts)))
     else:
-        return get_server_address(environment, 'all', exit=exit)
+        return get_server_address(environment, 'all')
 
 
 def split_host_group(group):
@@ -46,7 +49,7 @@ def split_host_group(group):
     return HostPattern(None, group, None)
 
 
-def get_server_address(environment, group, exit=sys.exit):
+def get_server_address(environment, group):
     host_group = split_host_group(group)
     username, group, index = host_group.user, host_group.group, host_group.index
 
@@ -56,7 +59,7 @@ def get_server_address(environment, group, exit=sys.exit):
         try:
             index = int(index)
         except (TypeError, ValueError):
-            exit("Non-numeric group index: {}".format(index))
+            raise HostMatchException("Non-numeric group index: {}".format(index))
 
     if not username:
         default_username = get_default_username()
@@ -72,19 +75,19 @@ def get_server_address(environment, group, exit=sys.exit):
     try:
         servers = get_instance_group(environment, group)
     except IOError as err:
-        exit(err)
-    except KeyError as err:
-        exit("Unknown server name/group: {}\n".format(group))
+        raise HostMatchException(err)
+    except KeyError:
+        raise HostMatchException("Unknown server name/group: {}\n".format(group))
 
     if index is not None and index > len(servers) - 1:
-        exit(
+        raise HostMatchException(
             "Invalid group index: {index}\n"
             "Please specify a number between 0 and {max} inclusive\n"
             .format(index=index, max=len(servers) - 1)
         )
     if len(servers) > 1:
         if index is None:
-            exit(
+            raise HostMatchException(
                 "There are {num} servers in the '{group}' group\n"
                 "Please specify the index of the server. Example: {group}:0\n"
                 .format(num=len(servers), group=group)

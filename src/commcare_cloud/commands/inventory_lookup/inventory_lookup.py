@@ -1,16 +1,18 @@
 from __future__ import print_function
+
 import subprocess
 import sys
 
 from clint.textui import puts
-
-from commcare_cloud.cli_utils import print_command
-from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
-from .getinventory import get_server_address, get_monolith_address, split_host_group
 from six.moves import shlex_quote
 
+from commcare_cloud.cli_utils import print_command
+from commcare_cloud.commands.command_base import Argument, CommandBase
+from commcare_cloud.environment.main import get_environment
+
 from ...colors import color_error
+from .getinventory import (get_monolith_address, get_server_address,
+                           split_host_group)
 
 
 class Lookup(CommandBase):
@@ -32,11 +34,12 @@ class Lookup(CommandBase):
     )
 
     def lookup_server_address(self, args):
-        def exit(message):
-            self.parser.error("\n" + message)
-        if not args.server:
-            return get_monolith_address(args.env_name, exit)
-        return get_server_address(args.env_name, args.server, exit)
+        try:
+            if not args.server:
+                return get_monolith_address(args.env_name)
+            return get_server_address(args.env_name, args.server)
+        except Exception as e:
+            self.parser.error("\n" + e.message)
 
     def run(self, args, unknown_args):
         if unknown_args:
