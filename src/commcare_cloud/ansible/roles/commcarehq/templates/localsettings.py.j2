@@ -942,7 +942,7 @@ UCR_COMPARISONS = {
 {% endif %}
 
 {% if localsettings.KAFKA_API_VERSION is defined %}
-KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
+KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION|default(kafka_version.split('.')) }})
 {% endif %}
 
 {% if localsettings.ICDS_USE_CITUS is defined %}
