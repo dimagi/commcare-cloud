@@ -18,6 +18,7 @@ from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.sentry import ExportSentryEvents
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
+from commcare_cloud.commands.terraform.aws_ssm import AwsSsmStartSession
 from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
 from commcare_cloud.commands.terraform.terraform import Terraform
 from commcare_cloud.commands.terraform.terraform_migrate_state import TerraformMigrateState
@@ -83,6 +84,7 @@ COMMAND_GROUPS = OrderedDict([
         AwsSignIn,
         AwsList,
         AwsFillInventory,
+        AwsSsmStartSession,
         OpenvpnActivateUser,
         OpenvpnClaimUser,
     ])
