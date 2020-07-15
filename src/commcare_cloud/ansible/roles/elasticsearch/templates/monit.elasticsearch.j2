@@ -2,5 +2,5 @@ check file elasticsearch with path {{ elasticsearch_data_dir }}/logs/{{ elastics
    group database
    group elasticsearch
    start program = "/bin/systemctl start {{ elasticsearch_service_name }}"
-   stop program = "/bin/kill -9 $(ps -ef|grep -i {{ elasticsearch_service_name }}|grep -v grep |awk '{print $2}');/bin/systemctl stop {{ elasticsearch_service_name }}"
+   stop program = "/usr/bin/pkill -f {{ elasticsearch_service_name }};sleep 5;/bin/systemctl stop {{ elasticsearch_service_name }}"
    if content = "java.lang.OutOfMemoryError" then restart
