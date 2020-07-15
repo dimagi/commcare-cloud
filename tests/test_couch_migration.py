@@ -14,7 +14,7 @@ from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
     generate_shard_prune_playbook, generate_shard_plan, get_migration_file_configs
 from commcare_cloud.commands.migrations.copy_files import get_file_list_filename
 from commcare_cloud.environment.main import get_environment
-from tests.test_utils import get_file_contents
+from tests.utils import get_file_contents
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'couch_migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
