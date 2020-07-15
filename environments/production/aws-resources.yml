@@ -75,8 +75,6 @@ formplayer25-production: 10.202.10.100
 formplayer25-production.instance_id: i-0ec149f99ee806763
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
-pgbouncer2-production: 10.202.40.59
-pgbouncer2-production.instance_id: i-0c22ba54afd4deaf7
 pgbouncer3-production: 10.202.40.153
 pgbouncer3-production.instance_id: i-0894ff03612870021
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
