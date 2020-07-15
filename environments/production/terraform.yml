@@ -485,6 +485,13 @@ proxy_servers:
     volume_encrypted: no
     group: "proxy"
     os: bionic
+  - server_name: "proxy2-production"
+    server_instance_type: "m5.large"
+    network_tier: "public"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+    os: bionic
 
 
 rds_instances:
