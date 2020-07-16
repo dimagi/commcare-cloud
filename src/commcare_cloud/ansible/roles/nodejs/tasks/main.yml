@@ -41,6 +41,8 @@
 - name: Update Node
   command: 'n 12.18.1'
   become: yes
+  tags:
+    - npm
 
 - name: Install correct npm version
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
