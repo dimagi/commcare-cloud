@@ -98,7 +98,7 @@ def run_on_control_instead(args, sys_argv):
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
     cmd_parts = [
-        executable, args.env_name, 'ssh', 'control:0', '-t',
+        executable, args.env_name, 'ssh', 'control[0]', '-t',
         'cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
         '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
         .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))
