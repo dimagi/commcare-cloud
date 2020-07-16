@@ -12,7 +12,7 @@ celery_processes:
     beat: {}
     flower: {}
     export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue:
-    concurrency: 5
+      concurrency: 5
   web1:
     reminder_queue:
       pooling: gevent
@@ -34,6 +34,8 @@ celery_processes:
       optimize: True
     background_queue,dashboard_comparison_queue:
       concurrency: 2
+  None:
+    repeat_record_queue:
 pillows:
   web0,web1:
     AppDbChangeFeedPillow:
