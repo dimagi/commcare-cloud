@@ -456,6 +456,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
   resource_arn            = "${aws_wafv2_web_acl.front_end.arn}"
 }
 
+// todo: remove
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"

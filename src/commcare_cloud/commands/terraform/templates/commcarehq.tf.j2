@@ -179,6 +179,11 @@ module "iam_user__{{ user.username }}" {
 {% endif %}
 {%- endfor %}
 
+module "logshipping" {
+  environment = "${var.environment}"
+  source = "./modules/logshipping"
+}
+
 module "ga_alb_waf" {
   source = "./modules/ga_alb_waf"
   environment = "${var.environment}"
