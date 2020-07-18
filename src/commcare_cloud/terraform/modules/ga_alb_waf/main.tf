@@ -6,7 +6,6 @@ locals {
     us-east-1 = "127311923021"
     ap-south-1 = "718504428378"
   }
-  log_bucket_name = "dimagi-commcare-${var.environment}-logs"
   log_bucket_alb_prefix = "frontend-alb-${var.environment}"
   log_bucket_waf_prefix = "frontend-waf-${var.environment}"
   log_bucket_waf_error_prefix = "frontend-waf-${var.environment}-error"
@@ -328,7 +327,7 @@ resource "aws_kinesis_firehose_delivery_stream" "front_end_waf_logs" {
     prefix = "${local.log_bucket_waf_prefix}/"
     error_output_prefix = "${local.log_bucket_waf_error_prefix}/"
     kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${var.account_id}:alias/aws/s3"
-    bucket_arn = "${aws_s3_bucket.front_end_alb_logs.arn}"
+    bucket_arn = "${var.log_bucket_arn}"
     role_arn = "${aws_iam_role.firehose_role.arn}"
   }
   tags {
@@ -373,8 +372,8 @@ resource "aws_iam_role_policy" "firehose_role" {
         "s3:PutObject"
       ],
       "Resource": [
-        "arn:aws:s3:::${local.log_bucket_name}",
-        "arn:aws:s3:::${local.log_bucket_name}/*",
+        "arn:aws:s3:::${var.log_bucket_name}",
+        "arn:aws:s3:::${var.log_bucket_name}/*",
         "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
         "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
       ]
@@ -403,8 +402,8 @@ resource "aws_iam_role_policy" "firehose_role" {
         },
         "StringLike": {
           "kms:EncryptionContext:aws:s3:arn": [
-            "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_waf_prefix}*",
-            "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_waf_error_prefix}*"
+            "arn:aws:s3:::${var.log_bucket_name}/${local.log_bucket_waf_prefix}*",
+            "arn:aws:s3:::${var.log_bucket_name}/${local.log_bucket_waf_error_prefix}*"
           ]
         }
       }
@@ -456,22 +455,8 @@ resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
   resource_arn            = "${aws_wafv2_web_acl.front_end.arn}"
 }
 
-// todo: remove
-resource "aws_s3_bucket" "front_end_alb_logs" {
-  bucket = "${local.log_bucket_name}"
-  acl = "private"
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-}
-
 resource "aws_s3_bucket_public_access_block" "front_end_alb_logs" {
-  bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
+  bucket = "${var.log_bucket_name}"
 
   block_public_acls   = true
   block_public_policy = true
@@ -481,7 +466,7 @@ resource "aws_s3_bucket_public_access_block" "front_end_alb_logs" {
 
 // To analyze logs, see https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
 resource "aws_s3_bucket_policy" "front_end_alb_logs" {
-  bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
+  bucket = "${var.log_bucket_name}"
   policy = <<POLICY
 {
   "Id": "AWSConsole-AccessLogs-Policy-1589489332145",
@@ -493,7 +478,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "AWS": "arn:aws:iam::${local.aws_elb_account_map[data.aws_region.current.name]}:root"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${var.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Sid": "AWSConsoleStmt-1589489332145"
     },
     {
@@ -502,7 +487,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "Service": "delivery.logs.amazonaws.com"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${var.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Condition": {
         "StringEquals": {
           "s3:x-amz-acl": "bucket-owner-full-control"
@@ -516,7 +501,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "Service": "delivery.logs.amazonaws.com"
       },
       "Action": "s3:GetBucketAcl",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}",
+      "Resource": "arn:aws:s3:::${var.log_bucket_name}",
       "Sid": "AWSLogDeliveryAclCheck"
     }
   ]
@@ -529,7 +514,7 @@ resource "aws_athena_workgroup" "primary" {
   configuration {
     enforce_workgroup_configuration = false
     result_configuration {
-      output_location = "s3://${local.log_bucket_name}/athena/"
+      output_location = "s3://${var.log_bucket_name}/athena/"
 
       encryption_configuration {
         encryption_option = "SSE_S3"
@@ -551,7 +536,7 @@ resource "aws_lb" "front_end" {
   enable_deletion_protection = true
 
   access_logs {
-    bucket  = "${aws_s3_bucket.front_end_alb_logs.id}"
+    bucket  = "${var.log_bucket_name}"
     prefix  = "${local.log_bucket_alb_prefix}"
     enabled = true
   }

@@ -193,6 +193,8 @@ module "ga_alb_waf" {
     "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
     {%- endfor %}
   ]
+  log_bucket_name = "${module.logshipping.log_bucket_name}"
+  log_bucket_arn = "${module.logshipping.log_bucket_arn}"
   vpc_id = "${module.network.vpc-id}"
   SITE_HOST = {{ SITE_HOST|tojson }}
   NO_WWW_SITE_HOST = {{ NO_WWW_SITE_HOST|tojson }}
