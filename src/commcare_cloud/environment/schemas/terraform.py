@@ -74,7 +74,8 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     engine_version = jsonobject.StringProperty(default='9.6.6')
     instance_type = jsonobject.StringProperty(required=True)  # should start with 'db.'
     multi_az = jsonobject.BooleanProperty(default=False)
-    storage = jsonobject.IntegerProperty()
+    storage = jsonobject.IntegerProperty(required=True)
+    max_storage = jsonobject.IntegerProperty(default=0)
     create = jsonobject.BooleanProperty(default=True)
     username = "root"
     backup_window = "06:27-06:57"
