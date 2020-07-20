@@ -47,6 +47,17 @@ resource "aws_wafv2_ip_set" "temp_block" {
   }
 }
 
+resource "aws_wafv2_ip_set" "permanent_block" {
+  name               = "ManualDenyList"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  description        = "Manually Added IPs for denial"
+  addresses          = ["195.54.160.21/32"]
+
+  tags = {
+  }
+}
+
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name = "CommCareWhitelistRules"
   capacity = "100"
@@ -140,6 +151,26 @@ resource "aws_wafv2_rule_group" "dimagi_block_rules" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name = "BlockTemporaryIPs"
+      sampled_requests_enabled = true
+    }
+  }
+  rule {
+    name = "BlockManualDenyList"
+    priority = 1
+
+    action {
+      block {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = "${aws_wafv2_ip_set.permanent_block.arn}"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "BlockManualDenyList"
       sampled_requests_enabled = true
     }
   }
