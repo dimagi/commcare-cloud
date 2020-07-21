@@ -58,7 +58,6 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags: nginx-error
 
-formplayer_archive_time_spec: '100m'
 formplayer_purge_time_spec: '8d'
 formplayer_sensitive_data_logging: true
 
