@@ -9,7 +9,7 @@ class GitRepository(jsonobject.JsonObject):
 
     @property
     def relative_dest(self):
-        return "extra/" + self.dest
+        return "extensions/" + self.dest
 
     def to_generated_variables(self):
         vars = self.to_json()
