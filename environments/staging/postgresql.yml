@@ -15,36 +15,36 @@ pgbouncer_override:
 
 dbs:
   main:
-    pgbouncer_host: pgproxy1
+    pgbouncer_host: pgproxy2
     query_stats: True
   ucr:
-    pgbouncer_host: pgproxy1
+    pgbouncer_host: pgproxy2
     query_stats: True
   synclogs:
-    pgbouncer_host: pgproxy1
+    pgbouncer_host: pgproxy2
   formplayer:
-    pgbouncer_host: pgproxy1
+    pgbouncer_host: pgproxy2
   form_processing:
     proxy:
-      host: pgproxy1
+      host: pgproxy2
     partitions:
       p1:
-        pgbouncer_host: pgproxy1
+        pgbouncer_host: pgproxy2
         shards: [0, 99]
         query_stats: True
       p2:
-        pgbouncer_host: pgproxy1
+        pgbouncer_host: pgproxy2
         shards: [100, 199]
         query_stats: True
       p3:
-        pgbouncer_host: pgproxy1
+        pgbouncer_host: pgproxy2
         shards: [200, 299]
         query_stats: True
       p4:
-        pgbouncer_host: pgproxy1
+        pgbouncer_host: pgproxy2
         shards: [300, 399]
         query_stats: True
       p5:
-        pgbouncer_host: pgproxy1
+        pgbouncer_host: pgproxy2
         shards: [400, 511]
         query_stats: True
