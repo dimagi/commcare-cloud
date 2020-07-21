@@ -501,6 +501,7 @@ rds_instances:
   - identifier: "pgmain0-production"
     instance_type: "db.t3.2xlarge"
     storage: 500
+    max_storage: 5000
     multi_az: true
     engine_version: 9.6.15
     params:
@@ -509,38 +510,45 @@ rds_instances:
   - identifier: "pgucr0-production"
     instance_type: "db.t3.large"
     storage: 500
+    max_storage: 5000
     multi_az: true
     engine_version: 9.6.15
 
   - identifier: "pgshard1-production"
     instance_type: "db.t3.large"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
     instance_type: "db.t3.large"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
     instance_type: "db.t3.large"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
     instance_type: "db.t3.large"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
     instance_type: "db.t3.large"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
 
   - identifier: "pgsynclog0-production"
     instance_type: "db.t3.large"
     storage: 1000
+    max_storage: 10000
     multi_az: true
     engine_version: 9.6.15
     params:
