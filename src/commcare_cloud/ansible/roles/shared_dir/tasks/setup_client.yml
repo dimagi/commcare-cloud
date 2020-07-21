@@ -24,6 +24,7 @@
     group: "{{ shared_dir_gid }}"
     mode: 0775
     state: directory
+  run_once: yes
   tags:
     - nfs
 
